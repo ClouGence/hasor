@@ -20,14 +20,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.inject.Provider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.Settings;
+import net.hasor.core.binder.matcher.AopMatchers;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.more.util.StringUtils;
 /**
@@ -115,6 +116,9 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*---------------------------------------------------------------------------------------Bean*/
     private static long referIndex = 0;
+    private static long referIndex() {
+        return referIndex++;
+    }
     public BeanBindingBuilder defineBean(String beanName) {
         return new BeanBindingBuilderImpl().aliasName(beanName);
     }
@@ -135,7 +139,7 @@ public abstract class AbstractBinder implements ApiBinder {
             if (this.names.isEmpty() == true)
                 throw new UnsupportedOperationException("the bean name is undefined!");
             /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
-            String referID = beanType.getName() + "#" + String.valueOf(referIndex++);
+            String referID = beanType.getName() + "#" + String.valueOf(referIndex());
             LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
             //
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
@@ -157,7 +161,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.toImpl(implementation);
             return this;
         }
-        public ScopedBindingBuilder toInstance(T instance) {
+        public MetaDataBindingBuilder toInstance(T instance) {
             this.typeRegister.toInstance(instance);
             return this;
         }
@@ -169,23 +173,33 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.toConstructor(constructor);
             return this;
         }
-        public void asEagerSingleton() {
+        public MetaDataBindingBuilder asEagerSingleton() {
             this.typeRegister.setSingleton();
+            return this;
         }
         public LinkedBindingBuilder<T> nameWith(String name) {
             this.typeRegister.setName(name);
             return this;
         }
-        public void toScope(Scope scope) {
+        public MetaDataBindingBuilder toScope(Scope scope) {
             this.typeRegister.setScope(scope);
+            return this;
+        }
+        public MetaDataBindingBuilder metaData(String key, Object value) {
+            this.typeRegister.setMetaData(key, value);
+            return this;
         }
     }
     //
     /*---------------------------------------------------------------------------------------Bean*/
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
-        // TODO Auto-generated method stub
+        Matcher<Class<?>> matcherClass = AopMatchers.expressionClass(matcherExpression);
+        Matcher<Method> matcherMethod = AopMatchers.expressionMethod(matcherExpression);
+        this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
-        // TODO Auto-generated method stub
+        AopMatcherRegisterData ard = new AopMatcherRegisterData(matcherClass, matcherMethod, interceptor);
+        String referID = AopMatcherRegister.class.getName() + "#" + String.valueOf(referIndex());
+        this.bindingType(AopMatcherRegister.class).nameWith(referID).toInstance(ard).metaData(AopConst.AopAssembly, true);/*标上一个属性*/
     }
 }

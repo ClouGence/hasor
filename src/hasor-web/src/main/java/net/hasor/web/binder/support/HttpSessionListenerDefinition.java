@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import javax.inject.Provider;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import net.hasor.core.Provider;
 /**
  * 
  * @version : 2013-4-11

@@ -9,6 +9,8 @@
     04.所有Plugins都移动到Hasor-Quick项目中。
     05.将Hasor中stop生命周期，相关的支持全部删除不再支持。
     06.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
+    07.添加Provider接口、EventContext接口。
+    08.支持重复绑定检测。
 * 修复:
     01.更名 ModulePropxy 类名为 ModuleProxy。
 

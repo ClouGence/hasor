@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
+import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
@@ -36,7 +37,7 @@ import org.more.util.StringUtils;
  * @version : 2013-5-6
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-public class StandardEventManager implements EventManager {
+public class StandardEventManager implements EventContext {
     private static final EmptyEventCallBackHook    EmptyAsyncCallBack = new EmptyEventCallBackHook();
     //
     private Settings                               settings           = null;

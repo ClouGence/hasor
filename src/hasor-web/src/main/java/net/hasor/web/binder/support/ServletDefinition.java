@@ -18,7 +18,6 @@ import static net.hasor.web.binder.support.ManagedServletPipeline.REQUEST_DISPAT
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
-import javax.inject.Provider;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,6 +26,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import net.hasor.core.Provider;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**

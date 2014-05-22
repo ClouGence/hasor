@@ -15,7 +15,7 @@
  */
 package net.hasor.core.binder;
 import java.lang.reflect.Constructor;
-import javax.inject.Provider;
+import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
 /**

@@ -23,7 +23,7 @@ import net.hasor.core.builder.BeanBuilder;
  */
 public interface RegisterManager {
     /**注册Bean*/
-    public <T> TypeRegister<T> registerType(Class<T> type);
+    public <T> TypeRegister<T> registerType(Class<T> bindType);
     /**获取BeanBuilder，用来查询和创建Bean*/
     public BeanBuilder getBeanBuilder();
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.jstl.tagfun;
-import javax.inject.Provider;
 import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.StringUtils;
 /**

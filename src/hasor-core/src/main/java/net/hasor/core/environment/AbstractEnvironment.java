@@ -30,12 +30,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
+import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
-import net.hasor.core.event.EventManager;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.util.ResourceWatch;
@@ -118,7 +118,7 @@ public abstract class AbstractEnvironment implements Environment {
         tmpFile.createNewFile();
         Hasor.logDebug("create Temp File at %s.", tmpFile);
         return tmpFile;
-    };
+    }
     /**
     * 生成路径算法生成一个Path
     * @param number 参考数字
@@ -138,12 +138,12 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //
     /*--------------------------------------------------------------------------------------Event*/
-    private EventManager eventManager;
-    public EventManager getEventManager() {
+    private EventContext eventManager;
+    public EventContext getEventManager() {
         return this.eventManager;
     }
     /**创建{@link EventManager}接口对象*/
-    protected EventManager createEventManager() {
+    protected EventContext createEventManager() {
         return new StandardEventManager(this);
     }
     public void pushListener(String eventType, EventListener eventListener) {

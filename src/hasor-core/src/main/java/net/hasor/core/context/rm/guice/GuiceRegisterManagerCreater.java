@@ -15,12 +15,10 @@
  */
 package net.hasor.core.context.rm.guice;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import javax.inject.Provider;
 import net.hasor.core.Environment;
+import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.TypeRegister;
@@ -28,7 +26,7 @@ import net.hasor.core.binder.register.AbstractTypeRegister;
 import net.hasor.core.binder.register.FreeTypeRegister;
 import net.hasor.core.builder.BeanBuilder;
 import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.ContextInitializeListener;
+import net.hasor.core.context.AbstractRegisterManager;
 import net.hasor.core.context.RegisterManager;
 import net.hasor.core.context.RegisterManagerCreater;
 import org.more.util.Iterators;
@@ -57,43 +55,30 @@ public class GuiceRegisterManagerCreater implements RegisterManagerCreater {
     }
 }
 /*RegisterManager接口实现*/
-class GuiceRegisterManager implements RegisterManager, ContextInitializeListener {
+class GuiceRegisterManager extends AbstractRegisterManager {
     //
     /*-----------------------------------------------------------------Collect GuiceTypeRegisters*/
-    private List<GuiceTypeRegister<?>> tempRegisterList = new ArrayList<GuiceTypeRegister<?>>();
-    public <T> TypeRegister<T> registerType(Class<T> type) {
-        GuiceTypeRegister<T> register = new GuiceTypeRegister<T>(type);
-        this.tempRegisterList.add(register);
-        return register;
-    }
-    public synchronized void doInitialize(AbstractAppContext appContext) {
-        // TODO Auto-generated method stub
+    protected <T> TypeRegister<T> createRegisterType(Class<T> type) {
+        return new GuiceTypeRegister<T>(type);
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
     public void doInitializeCompleted(AbstractAppContext appContext) {
+        super.doInitializeCompleted(appContext);
         Injector guiceInjector = Guice.createInjector(new Module() {
             public void configure(Binder binder) {
-                Set<Class<?>> anonymityTypes = new HashSet<Class<?>>();
-                for (GuiceTypeRegister<?> tempItem : tempRegisterList) {
-                    GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
-                    if (ifAnonymity(register)) {
-                        /*多一层判断防止相同的类型的匿名注册重复调用configRegister方法*/
-                        Class<?> bindType = register.getType();
-                        if (anonymityTypes.contains(bindType) == true)
-                            continue;
-                        anonymityTypes.add(bindType);
-                    }
+                Iterator<TypeRegister<?>> regTypeRegister = registerIterator();
+                while (regTypeRegister.hasNext()) {
+                    GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) regTypeRegister.next();
+                    //1.处理绑定
                     configRegister(register, binder);
+                    //2.处理Aop
+                    //                    if (tempItem.getType().isAssignableFrom(AopMatcherRegister.class)) {}
+                    //                    GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
                 }
-                tempRegisterList.clear();
             }
         });
         this.guiceBeanBuilder = new GuiceBeanBuilder(guiceInjector);
-    }
-    /*测试register是否为匿名的*/
-    private boolean ifAnonymity(GuiceTypeRegister<Object> register) {
-        return StringUtils.isBlank(register.getName());
     }
     private void configRegister(GuiceTypeRegister<Object> register, Binder binder) {
         binder.bind(RegisterInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
@@ -110,7 +95,7 @@ class GuiceRegisterManager implements RegisterManager, ContextInitializeListener
         }
         //3.绑定实现
         if (register.getProvider() != null)
-            scopeBinding = linkedBinding.toProvider(new GuiceProvider<Object>(register.getProvider()));
+            scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getProvider()));
         else if (register.getImplConstructor() != null)
             scopeBinding = linkedBinding.toConstructor(register.getImplConstructor());
         else if (register.getImplType() != null)
@@ -201,22 +186,37 @@ class GuiceScope implements com.google.inject.Scope {
         return this.scope.toString();
     };
     public <T> com.google.inject.Provider<T> scope(Key<T> key, com.google.inject.Provider<T> unscoped) {
-        Provider<T> returnData = this.scope.scope(key, unscoped);
+        Provider<T> returnData = this.scope.scope(key, new ToHasorProvider<T>(unscoped));
         if (returnData instanceof com.google.inject.Provider)
             return (com.google.inject.Provider<T>) returnData;
-        return new GuiceProvider<T>(returnData);
+        else if (returnData instanceof ToHasorProvider)
+            return ((ToHasorProvider) returnData).getProvider();
+        else
+            return new ToGuiceProvider(returnData);
     }
 }
-/** 负责javax.inject.Provider到com.google.inject.Provider的对接转换*/
-class GuiceProvider<T> implements com.google.inject.Provider<T> {
+/** 负责com.google.inject.Provider到net.hasor.core.Provider的对接转换*/
+class ToHasorProvider<T> implements net.hasor.core.Provider<T> {
+    private com.google.inject.Provider<T> provider;
+    public ToHasorProvider(com.google.inject.Provider<T> provider) {
+        this.provider = provider;
+    }
+    public T get() {
+        return this.provider.get();
+    }
+    public com.google.inject.Provider<T> getProvider() {
+        return provider;
+    }
+}
+class ToGuiceProvider<T> implements com.google.inject.Provider<T> {
     private Provider<T> provider;
-    public GuiceProvider(Provider<T> provider) {
+    public ToGuiceProvider(Provider<T> provider) {
         this.provider = provider;
     }
     public T get() {
         return this.provider.get();
     }
     public Provider<T> getProvider() {
-        return this.provider;
+        return provider;
     }
 }

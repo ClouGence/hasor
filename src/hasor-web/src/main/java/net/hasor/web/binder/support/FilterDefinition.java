@@ -17,7 +17,6 @@ package net.hasor.web.binder.support;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
-import javax.inject.Provider;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -27,6 +26,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**

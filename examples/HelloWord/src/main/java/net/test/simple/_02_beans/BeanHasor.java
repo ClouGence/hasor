@@ -47,8 +47,14 @@ public class BeanHasor {
         appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
         //
         PojoBean myBean1 = appContext.getBean("myBean1");
-        System.out.println(myBean1.getName());
+        System.out.println(myBean1.getName() + "\t" + myBean1);
         PojoBean myBean2 = appContext.getBean("myBean2");
-        System.out.println(myBean2.getName());
+        System.out.println(myBean2.getName() + "\t" + myBean2);
+        {
+            myBean1 = appContext.getBean("myBean1");
+            System.out.println(myBean1.getName() + "\t" + myBean1);
+            myBean2 = appContext.getBean("myBean2");
+            System.out.println(myBean2.getName() + "\t" + myBean2);
+        }
     }
 }

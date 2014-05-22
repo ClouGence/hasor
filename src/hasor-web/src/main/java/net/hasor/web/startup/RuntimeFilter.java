@@ -15,7 +15,6 @@
  */
 package net.hasor.web.startup;
 import java.io.IOException;
-import javax.inject.Singleton;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,7 +33,6 @@ import net.hasor.web.binder.FilterPipeline;
  * @version : 2013-3-25
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
-@Singleton
 public class RuntimeFilter implements Filter {
     private WebAppContext  appContext       = null;
     private FilterPipeline filterPipeline   = null;

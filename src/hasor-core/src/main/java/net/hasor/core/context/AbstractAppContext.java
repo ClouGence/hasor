@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Provider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
@@ -30,6 +28,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
@@ -37,9 +36,10 @@ import net.hasor.core.binder.BeanInfo;
 import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.binder.register.FreeTypeRegister;
 import net.hasor.core.builder.BeanBuilder;
+import net.hasor.core.context.listener.ContextInitializeListener;
+import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.module.ModuleProxy;
 import net.hasor.core.module.ModuleReactor;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.more.UndefinedException;
 import org.more.util.ArrayUtils;
 import org.more.util.MergeUtils;

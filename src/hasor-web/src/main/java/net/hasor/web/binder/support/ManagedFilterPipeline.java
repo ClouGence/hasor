@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import com.google.inject.Inject;
 /**
  *  
  * @version : 2013-4-12
@@ -40,7 +39,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
     private WebAppContext                appContext  = null;
     //
     //
-    @Inject
     public ManagedFilterPipeline(ManagedServletPipeline servletPipeline) {
         this.servletPipeline = servletPipeline;
     }

@@ -41,10 +41,10 @@ public abstract class PluginHelper {
             this.pluginBean = pluginBean;
         }
         public void init(ApiBinder apiBinder) throws Throwable {
-            apiBinder.bindingType(HasorPlugin.class).toInstance(pluginBean);
-            pluginBean.loadPlugin(apiBinder);
-            apiBinder.configModule().setDisplayName("PropxyPlugin-" + pluginBean.getClass().getSimpleName());
-            apiBinder.configModule().setDescription(pluginBean.getClass().getName());
+            apiBinder.bindingType(HasorPlugin.class).toInstance(this.pluginBean);
+            this.pluginBean.loadPlugin(apiBinder);
+            apiBinder.configModule().setDisplayName("PropxyPlugin-" + this.pluginBean.getClass().getSimpleName());
+            apiBinder.configModule().setDescription(this.pluginBean.getClass().getName());
         }
         public void start(AppContext appContext) {}
     }

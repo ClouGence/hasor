@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.context.StandardAppContext;
 import net.hasor.core.module.ModuleProxy;
@@ -38,7 +39,6 @@ import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
 import net.hasor.web.startup.RuntimeFilter;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-7-16
@@ -86,9 +86,13 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
     protected void doBind(ApiBinder apiBinder) {
         super.doBind(apiBinder);
         //
-        apiBinder.bindingType(ManagedServletPipeline.class).asEagerSingleton();
-        apiBinder.bindingType(FilterPipeline.class).to(ManagedFilterPipeline.class).asEagerSingleton();
-        apiBinder.bindingType(ListenerPipeline.class).to(ManagedListenerPipeline.class).asEagerSingleton();
+        ManagedServletPipeline sPipline = new ManagedServletPipeline();
+        ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
+        ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
+        //
+        apiBinder.bindingType(ManagedServletPipeline.class).toInstance(sPipline);
+        apiBinder.bindingType(FilterPipeline.class).toInstance(fPipline);
+        apiBinder.bindingType(ListenerPipeline.class).toInstance(lPipline);
         //
         /*绑定ServletRequest对象的Provider*/
         apiBinder.bindingType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {

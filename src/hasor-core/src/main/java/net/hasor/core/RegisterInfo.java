@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import javax.inject.Provider;
 /**
  * 
  * @version : 2014-3-17
@@ -29,4 +28,6 @@ public interface RegisterInfo<T> {
     public boolean isSingleton();
     /**获取Provider*/
     public Provider<T> getProvider();
+    /**获取元信息。*/
+    public RegisterInfo<T> setMetaData(String key, Object value);
 }

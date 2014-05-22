@@ -15,7 +15,10 @@
  */
 package net.hasor.core.binder.register;
 import java.lang.reflect.Constructor;
-import javax.inject.Provider;
+import java.util.HashMap;
+import java.util.Map;
+import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.TypeRegister;
 /**
@@ -32,6 +35,8 @@ public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
     private Provider<T>              provider        = null;
     private Class<? extends T>       implType        = null;
     private Constructor<? extends T> implConstructor = null;
+    //
+    private Map<String, Object>      metaData        = new HashMap<String, Object>();
     //
     //
     //
@@ -81,6 +86,10 @@ public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
     public void toConstructor(Constructor<? extends T> implConstructor) {
         this.implConstructor = implConstructor;
     }
+    public RegisterInfo<T> setMetaData(String key, Object value) {
+        this.metaData.put(key, value);
+        return this;
+    }
     /**获取实现类*/
     public Class<? extends T> getImplType() {
         return implType;
@@ -88,6 +97,10 @@ public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
     /**获取用于创建该类的构造方法*/
     public Constructor<? extends T> getImplConstructor() {
         return implConstructor;
+    }
+    /**获取携带的元信息*/
+    public Map<String, Object> getMetaData() {
+        return metaData;
     }
     //
     /***/

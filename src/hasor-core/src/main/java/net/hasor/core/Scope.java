@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import javax.inject.Provider;
 /**
  * 
  * @version : 2014-5-10
