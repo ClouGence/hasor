@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package org.more;
-import org.more.util.exception.NestableRuntimeException;
 /**
  * <p>Thrown when it is impossible or undesirable to consume or throw a checked exception.</p>
  * This exception supplements the standard exception classes by providing a more
@@ -40,16 +39,14 @@ import org.more.util.exception.NestableRuntimeException;
  * @since 2.0
  * @version $Id: UnhandledException.java 437554 2006-08-28 06:21:41Z bayard $
  */
-public class UnhandledException extends NestableRuntimeException {
+public class UnhandledException extends RuntimeException {
     /**
      * Required for serialization support.
-     * 
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 1832101364842773720L;
     /**
      * Constructs the exception using a cause.
-     *
      * @param cause  the underlying cause
      */
     public UnhandledException(Throwable cause) {
@@ -57,7 +54,6 @@ public class UnhandledException extends NestableRuntimeException {
     }
     /**
      * Constructs the exception using a message and cause.
-     *
      * @param message  the message to use
      * @param cause  the underlying cause
      */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.module;
-import static net.hasor.core.AppContext.ModuleEvent_Started;
+import static net.hasor.core.EventContext.ModuleEvent_Started;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,7 +28,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
 import org.more.UnhandledException;
-import org.more.util.exception.ExceptionUtils;
 /**
  * 
  * @version : 2013-7-26
@@ -141,7 +140,7 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, Mod
     }
     /*解封异常*/
     private void proForceModule(Throwable e) {
-        e = ExceptionUtils.getRootCause(e);
+        //e = ExceptionUtils.getRootCause(e);
         if (e instanceof RuntimeException)
             throw (RuntimeException) e;
         else if (e instanceof Error)

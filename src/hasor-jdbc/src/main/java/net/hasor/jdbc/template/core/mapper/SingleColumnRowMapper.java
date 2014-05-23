@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.template.core.mapper;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import net.hasor.core.Hasor;
 import net.hasor.jdbc.template.RowMapper;
 import net.hasor.jdbc.template.core.JdbcTemplate;
-import org.more.util.NumberUtils;
+import org.more.util.StringUtils;
 /**
- * {@link RowMapper} implementation that converts a single column into a single
- * result value per row. Expects to operate on a <code>java.sql.ResultSet</code>
- * that just contains a single column.
- *
- * <p>The type of the result value for each row can be specified. The value
- * for the single column will be extracted from the <code>ResultSet</code>
- * and converted into the specified target type.
- *
- * @author Juergen Hoeller
- * @since 1.2
- * @see JdbcTemplate#queryForList(String, Class)
- * @see JdbcTemplate#queryForObject(String, Class)
+ * 
+ * @version : 2014年5月23日
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class SingleColumnRowMapper<T> implements RowMapper<T> {
     private Class<T> requiredType;
-    /**
-     * Create a new SingleColumnRowMapper.
-     * @see #setRequiredType
-     */
+    /** Create a new SingleColumnRowMapper. */
     public SingleColumnRowMapper() {}
     /**
      * Create a new SingleColumnRowMapper.
@@ -48,111 +41,143 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
     public SingleColumnRowMapper(Class<T> requiredType) {
         this.requiredType = requiredType;
     }
-    /**
-     * Set the type that each result object is expected to match.
-     * <p>If not specified, the column value will be exposed as
-     * returned by the JDBC driver.
-     */
+    /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver. */
     public void setRequiredType(Class<T> requiredType) {
         this.requiredType = requiredType;
     }
-    /**
-     * Extract a value for the single column in the current row.
-     * <p>Validates that there is only one column selected,
-     * then delegates to <code>getColumnValue()</code> and also
-     * <code>convertValueToRequiredType</code>, if necessary.
-     * @see java.sql.ResultSetMetaData#getColumnCount()
-     * @see #getColumnValue(java.sql.ResultSet, int, Class)
-     * @see #convertValueToRequiredType(Object, Class)
-     */
+    //
+    /**将当前行的第一列的值转换为指定的类型。*/
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-        // Validate column count.
+        //1.Validate column count.
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
-        if (nrOfColumns != 1) {
+        if (nrOfColumns != 1)
             throw new SQLException("Incorrect column count: expected 1, actual " + nrOfColumns);
+        //2.Extract column value from JDBC ResultSet.
+        Object result = getResultSetValue(rs, 1);
+        if (requiredType != null) {
+            if (result != null && this.requiredType != null && !this.requiredType.isInstance(result))
+                result = (T) convertValueToRequiredType(result, requiredType);
         }
-        // Extract column value from JDBC ResultSet.
-        Object result = getColumnValue(rs, 1, this.requiredType);
-        if (result != null && this.requiredType != null && !this.requiredType.isInstance(result)) {
-            // Extracted value does not match already: try to convert it.
-            try {
-                return (T) convertValueToRequiredType(result, this.requiredType);
-            } catch (IllegalArgumentException ex) {
-                throw new IllegalArgumentException("Type mismatch affecting row number " + rowNum + " and column type '" + rsmd.getColumnTypeName(1) + "': " + ex.getMessage());
-            }
-        }
+        //3.Return
         return (T) result;
     }
-    /**
-     * Retrieve a JDBC object value for the specified column.
-     * <p>The default implementation calls
-     * {@link JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)}.
-     * If no required type has been specified, this method delegates to
-     * <code>getColumnValue(rs, index)</code>, which basically calls
-     * <code>ResultSet.getObject(index)</code> but applies some additional
-     * default conversion to appropriate value types.
-     * @param rs is the ResultSet holding the data
-     * @param index is the column index
-     * @param requiredType the type that each result object is expected to match
-     * (or <code>null</code> if none specified)
-     * @return the Object value
-     * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)
-     * @see #getColumnValue(java.sql.ResultSet, int)
-     */
-    protected Object getColumnValue(ResultSet rs, int index, Class requiredType) throws SQLException {
-        if (requiredType != null) {
-            return JdbcUtils.getResultSetValue(rs, index, requiredType);
-        } else {
-            // No required type specified -> perform default extraction.
-            return getColumnValue(rs, index);
+    private static Object getResultSetValue(ResultSet rs, int index) throws SQLException {
+        Object obj = rs.getObject(index);
+        String className = null;
+        if (obj != null) {
+            className = obj.getClass().getName();
         }
+        if (obj instanceof Blob) {
+            obj = rs.getBytes(index);
+        } else if (obj instanceof Clob) {
+            obj = rs.getString(index);
+        } else if (className != null && ("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
+            obj = rs.getTimestamp(index);
+        } else if (className != null && className.startsWith("oracle.sql.DATE")) {
+            String metaDataClassName = rs.getMetaData().getColumnClassName(index);
+            if ("java.sql.Timestamp".equals(metaDataClassName) || "oracle.sql.TIMESTAMP".equals(metaDataClassName)) {
+                obj = rs.getTimestamp(index);
+            } else {
+                obj = rs.getDate(index);
+            }
+        } else if (obj != null && obj instanceof java.sql.Date) {
+            if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
+                obj = rs.getTimestamp(index);
+            }
+        }
+        return obj;
     }
-    /**
-     * Retrieve a JDBC object value for the specified column, using the most
-     * appropriate value type. Called if no required type has been specified.
-     * <p>The default implementation delegates to <code>JdbcUtils.getResultSetValue()</code>,
-     * which uses the <code>ResultSet.getObject(index)</code> method. Additionally,
-     * it includes a "hack" to get around Oracle returning a non-standard object for
-     * their TIMESTAMP datatype. See the <code>JdbcUtils#getResultSetValue()</code>
-     * javadoc for details.
-     * @param rs is the ResultSet holding the data
-     * @param index is the column index
-     * @return the Object value
-     * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int)
-     */
-    protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
-        return JdbcUtils.getResultSetValue(rs, index);
-    }
-    /**
-     * Convert the given column value to the specified required type.
-     * Only called if the extracted column value does not match already.
-     * <p>If the required type is String, the value will simply get stringified
-     * via <code>toString()</code>. In case of a Number, the value will be
-     * converted into a Number, either through number conversion or through
-     * String parsing (depending on the value type).
-     * @param value the column value as extracted from <code>getColumnValue()</code>
-     * (never <code>null</code>)
-     * @param requiredType the type that each result object is expected to match
-     * (never <code>null</code>)
-     * @return the converted value
-     * @see #getColumnValue(java.sql.ResultSet, int, Class)
-     */
+    /**转换对象到制定的类型*/
     protected Object convertValueToRequiredType(Object value, Class requiredType) {
         if (String.class.equals(requiredType)) {
             return value.toString();
         } else if (Number.class.isAssignableFrom(requiredType)) {
             if (value instanceof Number) {
                 // Convert original Number to target Number class.
-                return NumberUtils.convertNumberToTargetClass(((Number) value), requiredType);
+                return convertNumberToTargetClass(((Number) value), requiredType);
             } else {
                 // Convert stringified value to target Number class.
-                return NumberUtils.parseNumber(value.toString(), requiredType);
+                return parseNumber(value.toString(), requiredType);
             }
         } else {
             throw new IllegalArgumentException("Value [" + value + "] is of type [" + value.getClass().getName() + "] and cannot be converted to required type [" + requiredType.getName() + "]");
         }
+    }
+    public static Number parseNumber(String text, Class targetClass) {
+        Hasor.assertIsNotNull(number, "Number must not be null");
+        Hasor.assertIsNotNull(targetClass, "Target class must not be null");
+        String trimmed = StringUtils.trimAllWhitespace(text);
+        if (targetClass.equals(Byte.class)) {
+            return (isHexNumber(trimmed) ? Byte.decode(trimmed) : Byte.valueOf(trimmed));
+        } else if (targetClass.equals(Short.class)) {
+            return (isHexNumber(trimmed) ? Short.decode(trimmed) : Short.valueOf(trimmed));
+        } else if (targetClass.equals(Integer.class)) {
+            return (isHexNumber(trimmed) ? Integer.decode(trimmed) : Integer.valueOf(trimmed));
+        } else if (targetClass.equals(Long.class)) {
+            return (isHexNumber(trimmed) ? Long.decode(trimmed) : Long.valueOf(trimmed));
+        } else if (targetClass.equals(BigInteger.class)) {
+            return (isHexNumber(trimmed) ? decodeBigInteger(trimmed) : new BigInteger(trimmed));
+        } else if (targetClass.equals(Float.class)) {
+            return Float.valueOf(trimmed);
+        } else if (targetClass.equals(Double.class)) {
+            return Double.valueOf(trimmed);
+        } else if (targetClass.equals(BigDecimal.class) || targetClass.equals(Number.class)) {
+            return new BigDecimal(trimmed);
+        } else {
+            throw new IllegalArgumentException("Cannot convert String [" + text + "] to target class [" + targetClass.getName() + "]");
+        }
+    }
+    public static Number convertNumberToTargetClass(Number number, Class targetClass) throws IllegalArgumentException {
+        Hasor.assertIsNotNull(number, "Number must not be null");
+        Hasor.assertIsNotNull(targetClass, "Target class must not be null");
+        if (targetClass.isInstance(number)) {
+            return number;
+        } else if (targetClass.equals(Byte.class)) {
+            long value = number.longValue();
+            if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
+                raiseOverflowException(number, targetClass);
+            }
+            return new Byte(number.byteValue());
+        } else if (targetClass.equals(Short.class)) {
+            long value = number.longValue();
+            if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
+                raiseOverflowException(number, targetClass);
+            }
+            return new Short(number.shortValue());
+        } else if (targetClass.equals(Integer.class)) {
+            long value = number.longValue();
+            if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+                raiseOverflowException(number, targetClass);
+            }
+            return new Integer(number.intValue());
+        } else if (targetClass.equals(Long.class)) {
+            return new Long(number.longValue());
+        } else if (targetClass.equals(BigInteger.class)) {
+            if (number instanceof BigDecimal) {
+                // do not lose precision - use BigDecimal's own conversion
+                return ((BigDecimal) number).toBigInteger();
+            } else {
+                // original value is not a Big* number - use standard long conversion
+                return BigInteger.valueOf(number.longValue());
+            }
+        } else if (targetClass.equals(Float.class)) {
+            return new Float(number.floatValue());
+        } else if (targetClass.equals(Double.class)) {
+            return new Double(number.doubleValue());
+        } else if (targetClass.equals(BigDecimal.class)) {
+            // always use BigDecimal(String) here to avoid unpredictability of BigDecimal(double)
+            // (see BigDecimal javadoc for details)
+            return new BigDecimal(number.toString());
+        } else {
+            throw new IllegalArgumentException("Could not convert number [" + number + "] of type [" + number.getClass().getName() + "] to unknown target class [" + targetClass.getName() + "]");
+        }
+    }
+    private static boolean isHexNumber(String value) {
+        int index = (value.startsWith("-") ? 1 : 0);
+        return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith("#", index));
+    }
+    private static void raiseOverflowException(Number number, Class targetClass) {
+        throw new IllegalArgumentException("Could not convert number [" + number + "] of type [" + number.getClass().getName() + "] to target class [" + targetClass.getName() + "]: overflow");
     }
 }

@@ -19,8 +19,8 @@ import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
+import net.hasor.core.binder.matcher.AopMatchers;
 import net.hasor.core.plugin.AbstractHasorPlugin;
-import net.hasor.plugins.aop.matchers.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
 import org.more.RepeateException;
 /**
