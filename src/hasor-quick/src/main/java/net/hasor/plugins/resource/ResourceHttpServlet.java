@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -34,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.FileUtils;
 import org.more.util.IOUtils;
@@ -48,18 +48,17 @@ public class ResourceHttpServlet extends HttpServlet {
     private static ContextClassLoaderLocal<ResourceLoader[]> LoaderList       = new ContextClassLoaderLocal<ResourceLoader[]>();
     private static ContextClassLoaderLocal<File>             CacheDir         = new ContextClassLoaderLocal<File>();
     private Map<String, ReadWriteLock>                       cachingRes       = new HashMap<String, ReadWriteLock>();
-    @Inject
-    private AppContext                                       appContext;
     private boolean                                          isDebug;
     //
     public synchronized void init(ServletConfig config) throws ServletException {
-        this.isDebug = this.appContext.getEnvironment().isDebug();
+        AppContext appContext = RuntimeListener.getLocalAppContext();
+        this.isDebug = appContext.getEnvironment().isDebug();
         //
         ResourceLoader[] resLoaderArray = LoaderList.get();
         if (resLoaderArray != null)
             return;
         ResourceLoaderFactory factory = appContext.getInstance(ResourceLoaderFactory.class);
-        resLoaderArray = factory.loaderArray(this.appContext);
+        resLoaderArray = factory.loaderArray(appContext);
         if (resLoaderArray != null && resLoaderArray.length != 0)
             LoaderList.set(resLoaderArray);
     }

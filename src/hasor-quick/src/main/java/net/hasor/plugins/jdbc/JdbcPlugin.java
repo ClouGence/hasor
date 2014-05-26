@@ -16,12 +16,12 @@
 package net.hasor.plugins.jdbc;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Provider;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.EventListener;
+import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.plugin.AbstractHasorPlugin;

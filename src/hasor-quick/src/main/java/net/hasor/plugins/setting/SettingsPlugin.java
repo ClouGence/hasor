@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.plugins.setting;
-import static net.hasor.core.AppContext.ContextEvent_Started;
+import static net.hasor.core.EventContext.ContextEvent_Started;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Provider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.core.SettingsListener;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;

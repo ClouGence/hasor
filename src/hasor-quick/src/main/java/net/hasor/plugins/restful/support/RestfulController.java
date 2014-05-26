@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Singleton;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -35,22 +34,20 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.plugins.restful.Path;
 import net.hasor.plugins.restful.RestfulService;
+import net.hasor.web.startup.RuntimeListener;
 import org.more.util.BeanUtils;
 import org.more.util.exception.ExceptionUtils;
-import com.google.inject.Inject;
 /**
  * action功能的入口。
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
 class RestfulController implements Filter {
-    @Inject
-    private AppContext            appContext  = null;
     private RestfulInvokeDefine[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
-        Set<Class<?>> controllerSet = this.appContext.findClass(RestfulService.class);
+        AppContext appContext = RuntimeListener.getLocalAppContext();
+        Set<Class<?>> controllerSet = appContext.findClass(RestfulService.class);
         if (controllerSet == null)
             return;
         //1.注册服务
@@ -60,7 +57,7 @@ class RestfulController implements Filter {
             for (Method targetMethod : actionMethods) {
                 if (targetMethod.getAnnotation(Path.class) == null)
                     continue;
-                restfulList.add(new RestfulInvokeDefine(this.appContext, targetMethod));
+                restfulList.add(new RestfulInvokeDefine(appContext, targetMethod));
             }
         }
         Collections.sort(restfulList, new Comparator<RestfulInvokeDefine>() {

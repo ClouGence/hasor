@@ -36,11 +36,11 @@ import net.hasor.plugins.controller.Controller;
 import net.hasor.plugins.controller.ControllerException;
 import net.hasor.plugins.controller.ControllerIgnore;
 import net.hasor.plugins.controller.ControllerInvoke;
+import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.more.util.exception.ExceptionUtils;
-import com.google.inject.Inject;
 /**
  * action功能的入口。
  * @version : 2013-5-11
@@ -82,13 +82,12 @@ class ControllerServlet extends HttpServlet {
     //
     //
     //
-    @Inject
-    private AppContext            appContext = null;
-    private ControllerNameSpace[] spaceMap   = null;
+    private ControllerNameSpace[] spaceMap = null;
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        ControllerSettings settings = this.appContext.getInstance(ControllerSettings.class);
-        Set<Class<?>> controllerSet = this.appContext.findClass(Controller.class);
+        AppContext appContext = RuntimeListener.getLocalAppContext();
+        ControllerSettings settings = appContext.getInstance(ControllerSettings.class);
+        Set<Class<?>> controllerSet = appContext.findClass(Controller.class);
         if (controllerSet == null)
             return;
         //2.注册服务
@@ -114,7 +113,7 @@ class ControllerServlet extends HttpServlet {
                 if (targetMethod.getAnnotation(ControllerIgnore.class) != null)
                     continue;
                 //
-                nameSpace.addAction(targetMethod, this.appContext);
+                nameSpace.addAction(targetMethod, appContext);
             }
             /**/
         }
