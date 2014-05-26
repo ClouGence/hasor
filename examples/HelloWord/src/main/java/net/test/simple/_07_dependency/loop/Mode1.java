@@ -17,7 +17,7 @@ package net.test.simple._07_dependency.loop;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.module.AnnoModule;
+import net.hasor.quick.anno.AnnoModule;
 /**
  * 循环依赖检查演示，依赖关系：
  * Mode1
@@ -37,5 +37,4 @@ public class Mode1 implements Module {
     public void start(AppContext appContext) {
         System.out.println("Mode1 start!");
     }
-    public void stop(AppContext appContext) {}
 }

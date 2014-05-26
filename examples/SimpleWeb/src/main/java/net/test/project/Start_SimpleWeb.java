@@ -19,7 +19,7 @@ public class Start_SimpleWeb {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         //context.setDescriptor("web/WEB-INF/web.xml");
-        context.setResourceBase("src/main/webapps");
+        context.setResourceBase("src/main/webapp");
         context.setConfigurationDiscovered(true);
         server.setHandler(context);
         server.start();

@@ -21,10 +21,9 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.ApiBinder;
-import com.google.inject.Binder;
-import com.google.inject.Key;
+import net.hasor.core.Provider;
 /**
- * 该类是代理了{@link Binder}并且提供了注册Servlet和Filter的方法。
+ * 提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -44,48 +43,49 @@ public interface WebApiBinder extends ApiBinder {
     public SessionListenerBindingBuilder sessionListener();
     /**注册一个ServletContextListener监听器。*/
     public ServletContextListenerBindingBuilder contextListener();
+    //
     /**负责配置Filter，参考Guice 3.0接口设计。*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);
-        public void through(Key<? extends Filter> filterKey);
         public void through(Filter filter);
+        public void through(Provider<Filter> filterProvider);
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams);
-        public void through(Key<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(Filter filter, Map<String, String> initParams);
+        public void through(Provider<Filter> filterProvider, Map<String, String> initParams);
         //
         public void through(int index, Class<? extends Filter> filterKey);
-        public void through(int index, Key<? extends Filter> filterKey);
         public void through(int index, Filter filter);
+        public void through(int index, Provider<Filter> filterProvider);
         public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams);
-        public void through(int index, Key<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(int index, Filter filter, Map<String, String> initParams);
+        public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams);
     }
     /**负责配置Servlet，参考Guice 3.0接口设计。*/
     public static interface ServletBindingBuilder {
         public void with(Class<? extends HttpServlet> servletKey);
-        public void with(Key<? extends HttpServlet> servletKey);
         public void with(HttpServlet servlet);
+        public void with(Provider<HttpServlet> servletProvider);
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
-        public void with(Key<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(HttpServlet servlet, Map<String, String> initParams);
+        public void with(Provider<HttpServlet> servletProvider, Map<String, String> initParams);
         //
         public void with(int index, Class<? extends HttpServlet> servletKey);
-        public void with(int index, Key<? extends HttpServlet> servletKey);
         public void with(int index, HttpServlet servlet);
+        public void with(int index, Provider<HttpServlet> servletProvider);
         public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
-        public void with(int index, Key<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
+        public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams);
     }
     /**负责配置SessionListener。*/
     public static interface SessionListenerBindingBuilder {
         public void bind(Class<? extends HttpSessionListener> listenerKey);
-        public void bind(Key<? extends HttpSessionListener> listenerKey);
         public void bind(HttpSessionListener sessionListener);
+        public void bind(Provider<HttpSessionListener> listenerProvider);
     }
     /**负责配置ServletContextListener。*/
     public static interface ServletContextListenerBindingBuilder {
         public void bind(Class<? extends ServletContextListener> listenerKey);
-        public void bind(Key<? extends ServletContextListener> listenerKey);
         public void bind(ServletContextListener sessionListener);
+        public void bind(Provider<ServletContextListener> listenerProvider);
     }
 }

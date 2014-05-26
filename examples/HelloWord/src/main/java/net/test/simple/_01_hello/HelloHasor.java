@@ -17,7 +17,7 @@ package net.test.simple._01_hello;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.core.context.StandardAppContext;
 import org.junit.Test;
 /**
  * 本示列演示如何启动 Hasor 框架。
@@ -29,7 +29,10 @@ public class HelloHasor {
     public void testStartHasor() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testStartHasor<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = new AnnoStandardAppContext();
+        AppContext appContext = new StandardAppContext();
         appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
+        //
+        HelloHasor a=appContext.getInstance(HelloHasor.class);
+        System.out.println(a);
     }
 }

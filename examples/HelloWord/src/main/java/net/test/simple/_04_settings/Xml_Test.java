@@ -36,7 +36,7 @@ public class Xml_Test {
         settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼ş
         //
         //
-        XmlNode xmlNoe = settings.getXmlProperty("demoProject.menus");
+        XmlNode xmlNoe = settings.getXmlNode("demoProject.menus");
         for (XmlNode sub : xmlNoe.getChildren("menu")) {
             String menuCode = sub.getAttribute("code");
             String menuName = sub.getAttribute("name");

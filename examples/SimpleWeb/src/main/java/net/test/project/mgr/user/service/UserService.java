@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.test.project.mgr.user.service;
+import java.sql.SQLException;
 import java.util.List;
 import javax.inject.Inject;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.plugins.bean.Bean;
 import net.test.project.mgr.user.entity.UserBean;
 /**
@@ -30,7 +31,7 @@ public class UserService {
     private JdbcTemplate jdbcTemplate;
     //
     /*取得用户列表*/
-    public List<UserBean> getUserList() {
+    public List<UserBean> getUserList() throws SQLException {
         List<UserBean> userList = jdbcTemplate.queryForList("select * from TB_User", UserBean.class);
         return userList;
     }

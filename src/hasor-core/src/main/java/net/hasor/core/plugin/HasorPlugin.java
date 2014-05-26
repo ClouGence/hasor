@@ -16,10 +16,11 @@
 package net.hasor.core.plugin;
 import net.hasor.core.ApiBinder;
 /**
- * 
+ * 插件接口
  * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
 public interface HasorPlugin {
+    /**处理插件的初始化*/
     public void loadPlugin(ApiBinder apiBinder) throws Throwable;
 }

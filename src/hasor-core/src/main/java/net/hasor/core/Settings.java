@@ -95,7 +95,7 @@ public interface Settings {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
     public String getDirectoryPath(String name, String defaultValue);
     /**解析全局配置参数，并且返回其{@link XmlNode}形式对象。*/
-    public XmlNode getXmlProperty(String name);
+    public XmlNode getXmlNode(String name);
     //
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
     public Character[] getCharArray(String name);
@@ -154,5 +154,5 @@ public interface Settings {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
     public String[] getDirectoryPathArray(String name, String defaultValue);
     /**解析全局配置参数，并且返回其{@link XmlNode}形式对象。*/
-    public XmlNode[] getXmlPropertyArray(String name);
+    public XmlNode[] getXmlNodeArray(String name);
 }

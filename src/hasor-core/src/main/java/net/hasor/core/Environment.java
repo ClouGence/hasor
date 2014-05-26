@@ -14,47 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import java.util.Set;
 /**
  * 环境支持
  * @version : 2013-6-19
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Environment {
-    /**获取系统启动时间*/
-    public long getStartTime();
+public interface Environment extends EventContext {
     /**获取配置文件URI*/
     public URI getSettingURI();
-    /**获取应用程序配置。*/
-    public Settings getSettings();
-    /**获取事件操作接口。*/
-    public EventManager getEventManager();
-    /**设置扫描路径*/
-    public void setSpanPackage(String[] spanPackage);
     /**获取扫描路径*/
     public String[] getSpanPackage();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
-    /**释放环境所占用的资源*/
-    public void release();
     /**判断是否为调试模式。*/
     public boolean isDebug();
     //
+    /*-----------------------------------------------------------------------------------Settings*/
+    /**获取应用程序配置。*/
+    public Settings getSettings();
+    /**添加配置文件变更监听器。*/
+    public void addSettingsListener(SettingsListener settingsListener);
+    /**删除配置文件监听器。*/
+    public void removeSettingsListener(SettingsListener settingsListener);
     //
-    //
-    /**添加配置文件改变事件监听器。*/
-    public void addSettingsListener(SettingsListener listener);
-    /**删除配置文件改变事件监听器。*/
-    public void removeSettingsListener(SettingsListener listener);
-    /**获得所有配置文件改变事件监听器。*/
-    public SettingsListener[] getSettingListeners();
-    //
-    //
-    //
+    /*----------------------------------------------------------------------------------------Env*/
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_WORK_HOME</b>”节点上配置。*/
     public static final String Work_Home          = "HASOR_WORK_HOME";
     /**获取临时文件存放目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_TEMP_PATH</b>”节点上配置。*/
@@ -83,8 +68,4 @@ public interface Environment {
     public void addEnvVar(String varName, String value);
     /**删除环境变量，该方法从内部Map删除所保存的环境变量，这样做的目的是为了避免影响JVM正常运行。*/
     public void remoteEnvVar(String varName);
-    /**获取定义的环境变量集合，Map形式返回。*/
-    public Map<String, String> getEnv();
-    /**在缓存目录内创建一个不重名的临时文件名。*/
-    public File uniqueTempFile() throws IOException;
 }

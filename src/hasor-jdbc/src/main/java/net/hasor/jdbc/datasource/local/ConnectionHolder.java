@@ -19,11 +19,10 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
 import net.hasor.jdbc.datasource.SavepointManager;
-import net.hasor.jdbc.exceptions.DataAccessException;
 /**
  * 
- * @version : 2013-12-10
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2014-3-29
+ * @author 赵永春 (zyc@byshell.org)
  */
 public class ConnectionHolder implements SavepointManager {
     private int        referenceCount;
@@ -36,8 +35,8 @@ public class ConnectionHolder implements SavepointManager {
     public synchronized void requested() {
         this.referenceCount++;
     }
-    /**减少引用计数,一个因为持有人已被释放。*/
-    public synchronized void released() {
+    /**减少引用计数,一个因为持有人已被释放。 */
+    public synchronized void released() throws SQLException {
         this.referenceCount--;
         if (!isOpen() && this.connection != null) {
             try {
@@ -45,7 +44,7 @@ public class ConnectionHolder implements SavepointManager {
                 this.savepointsSupported = null;
                 this.connection.close();
             } catch (SQLException e) {
-                throw new DataAccessException("cant not close connection.", e);
+                throw e;
             } finally {
                 this.connection = null;
             }
@@ -64,6 +63,14 @@ public class ConnectionHolder implements SavepointManager {
             this.connection = this.dataSource.getConnection();
         }
         return this.connection;
+    }
+    /**是否存在事务*/
+    public boolean hasTransaction() throws SQLException {
+        Connection conn = getConnection();
+        if (conn == null)
+            return false;
+        //AutoCommit被标记为 false 表示开启了事务。
+        return conn.getAutoCommit() == false ? true : false;
     }
     //
     //
@@ -104,5 +111,10 @@ public class ConnectionHolder implements SavepointManager {
         checkConn(conn);
         //
         conn.releaseSavepoint(savepoint);
+    }
+    public boolean supportSavepoint() throws SQLException {
+        Connection conn = this.getConnection();
+        checkConn(conn);
+        return conn.getMetaData().supportsSavepoints();
     };
 }

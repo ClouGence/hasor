@@ -15,7 +15,6 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
-import net.hasor.core.EventManager;
 /**
  * 
  * @version : 2013-12-24
@@ -26,7 +25,6 @@ public class DoEvent_Tag extends AbstractHasorTag {
     private String            event            = null;
     private boolean           async            = false;
     private Object            params           = null;
-    private boolean           throwErr         = false;
     public String getEvent() {
         return event;
     }
@@ -45,29 +43,18 @@ public class DoEvent_Tag extends AbstractHasorTag {
     public void setParams(Object params) {
         this.params = params;
     }
-    public boolean isThrowErr() {
-        return throwErr;
-    }
-    public void setThrowErr(boolean throwErr) {
-        this.throwErr = throwErr;
-    }
     //
     public void release() {
         this.event = null;
         this.async = false;
         this.params = null;
-        this.throwErr = false;
     }
     public int doStartTag() throws JspException {
         try {
-            EventManager em = getAppContext().getEventManager();
             if (async == true) {
-                em.doAsync(event, params);
+                getAppContext().fireAsyncEvent(event, params);
             } else {
-                if (throwErr == true)
-                    em.doSyncHoldThrow(event, params);
-                else
-                    em.doSync(event, params);
+                getAppContext().fireSyncEvent(event, params);
             }
             return SKIP_BODY;
         } catch (Throwable e) {

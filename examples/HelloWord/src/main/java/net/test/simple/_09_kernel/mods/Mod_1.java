@@ -17,7 +17,7 @@ package net.test.simple._09_kernel.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.module.AnnoModule;
+import net.hasor.quick.anno.AnnoModule;
 /**
  * 
  * @version : 2013-9-14
@@ -30,8 +30,5 @@ public class Mod_1 implements Module {
     }
     public void start(AppContext appContext) {
         System.out.println("start->Mod_1");
-    }
-    public void stop(AppContext appContext) {
-        // TODO Auto-generated method stub
     }
 }

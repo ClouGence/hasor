@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.hasor.core.Hasor;
+import net.hasor.core.SettingsListener;
 import org.more.util.map.DecSequenceMap;
 /***
  * 基本支持。

@@ -16,7 +16,7 @@
 package net.test.simple._05_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.hasor.core.context.AnnoStandardAppContext;
+import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
  * 同步事件演示
@@ -37,7 +37,7 @@ public class SyncEvent_Test {
         //
         for (int i = 0; i < 10; i++)
             /*发送同步事件*/
-            appContext.getEventManager().doSync(Type_A, i);
+            appContext.fireSyncEvent(Type_A, i);
         System.out.println("after Event do sth...");
     }
 }

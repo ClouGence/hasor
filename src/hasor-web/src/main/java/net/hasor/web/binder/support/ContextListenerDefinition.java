@@ -16,47 +16,43 @@
 package net.hasor.web.binder.support;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import net.hasor.core.AppContext;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Provider;
+import net.hasor.core.Provider;
 /**
  * 
  * @version : 2013-4-11
  * @author ’‘”¿¥∫ (zyc@hasor.net)
  */
 class ContextListenerDefinition implements Provider<ContextListenerDefinition> {
-    private Key<? extends ServletContextListener> listenerKey      = null;
-    private ServletContextListener                listenerInstance = null;
+    private Provider<ServletContextListener> listenerProvider = null;
+    private ServletContextListener           listenerInstance = null;
     //
     //
-    public ContextListenerDefinition(Key<? extends ServletContextListener> listenerKey, ServletContextListener listenerInstance) {
-        this.listenerKey = listenerKey;
-        this.listenerInstance = listenerInstance;
+    public ContextListenerDefinition(Provider<ServletContextListener> listenerProvider) {
+        this.listenerProvider = listenerProvider;
     }
     //
     public ContextListenerDefinition get() {
         return this;
     }
-    protected ServletContextListener getTarget(Injector injector) {
+    protected ServletContextListener getTarget() {
         if (this.listenerInstance == null)
-            this.listenerInstance = injector.getInstance(this.listenerKey);
+            this.listenerInstance = listenerProvider.get();
         return this.listenerInstance;
     }
     public String toString() {
         return String.format("type %s listenerKey=%s",//
-                ContextListenerDefinition.class, this.listenerKey);
+                ContextListenerDefinition.class, this.listenerInstance);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void contextInitialized(AppContext appContext, ServletContextEvent event) {
-        ServletContextListener servletContextListener = this.getTarget(appContext.getGuice());
+    public void contextInitialized(ServletContextEvent event) {
+        ServletContextListener servletContextListener = this.getTarget();
         if (servletContextListener != null)
             servletContextListener.contextInitialized(event);
     }
     /**/
-    public void contextDestroyed(AppContext appContext, ServletContextEvent event) {
-        ServletContextListener servletContextListener = this.getTarget(appContext.getGuice());
+    public void contextDestroyed(ServletContextEvent event) {
+        ServletContextListener servletContextListener = this.getTarget();
         if (servletContextListener != null)
             servletContextListener.contextDestroyed(event);
     }

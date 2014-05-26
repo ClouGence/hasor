@@ -15,9 +15,9 @@
  */
 package net.hasor.web.jstl.tagfun;
 import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.StringUtils;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-12-24
@@ -47,7 +47,7 @@ public class Functions {
             return null;
         Class<?> defineType = Class.forName(bindingType);
         //
-        Provider<?> provider = getAppContext().findProviderByType(name, defineType);
+        Provider<?> provider = getAppContext().findBindingProvider(name, defineType);
         if (provider != null)
             return provider.get();
         return null;
@@ -66,7 +66,7 @@ public class Functions {
             return false;
         Class<?> defineType = Class.forName(className);
         //
-        Provider<?> provider = getAppContext().findProviderByType(name, defineType);
+        Provider<?> provider = getAppContext().findBindingProvider(name, defineType);
         return provider != null;
     }
 }

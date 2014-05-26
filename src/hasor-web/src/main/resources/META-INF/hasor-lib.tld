@@ -94,12 +94,6 @@
 			<required>no</required>
 			<rtexprvalue>yes</rtexprvalue>
 		</attribute>
-		<attribute>
-			<description>当执行事件遇到异常时是否抛出，该配置仅当以同步方式抛出事件时生效.</description>
-			<name>throwErr</name>
-			<required>no</required>
-			<rtexprvalue>yes</rtexprvalue>
-		</attribute>
 	</tag>
 
 

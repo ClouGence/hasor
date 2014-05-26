@@ -14,109 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Set;
-import com.google.inject.Binder;
-import com.google.inject.Key;
-import com.google.inject.Provider;
-import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.binder.ScopedBindingBuilder;
+import org.aopalliance.intercept.MethodInterceptor;
 /**
- * ApiBinder
+ * Hasor的核心接口，主要用于收集绑定配置信息。<p>
  * 
- * 
- * <p><b>BindingType</b>
- * <p>BindingType 可以将同一个类型的不同子类或实现类之间建立一种关系，并注册到 Guice 中。
- * 然后可以通过捆绑的类型获取它们，或者通过 Guice 创建这些类的实例对象。
- * 类型绑定这一功能是依据 Guice {@link Binder}的接口构建出来的，学习或理解它或许会有一些难度。
- * 建议通过下面几个简单的例子来理解 BindingType 使用方式。
- * 
- * <p><i>绑定</i>（将 USerA、USerB 对象绑定到其 User 类型上）
- * 
- * <pre>
- *   ApiBinder.bindingType(User.class , new User());//UserA
- *   ApiBinder.bindingType(User.class , new User());//UserB</pre>
- * 被绑定的对象可以通过绑定的类型进行检索，通过这种方式可以很方便的收集注册在 Guice 上的某一接口实现。
- * 
- * <pre>
- *   AppContext.getInstanceByBindingType(User.class); // or 
- *   AppContext.getProviderByBindingType(User.class);</pre>
- * 
- * <p><b>NameBindingType</b>
- * <p>是一种为绑定对象携带名称的行为，区别 BindingType 的是同一个类型上相同名称的绑定只能有一个有效。
- * 
- * <pre>
- *   ApiBinder.bindingType("u1" , User.class , new User());//UserA
- *   ApiBinder.bindingType("u2" , User.class , new User());//UserB</pre>
- * 被绑定的对象可以通过绑定的类型进行检索，通过这种方式可以很方便的收集注册在 Guice 上的某一接口实现。
- * 
- * <pre>
- *   AppContext.getInstanceByBindingType(User.class); // or 
- *   AppContext.getProviderByBindingType(User.class);</pre>
- * 
+ * Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
+ * <p>方法 {@link ApiBinder#configModule()} ,会返回一个接口用于配置当前模块依赖情况。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ApiBinder {
-    /**获取初始化环境*/
+public interface ApiBinder extends EventContext {
+    /**获取应用程序配置。*/
+    public Settings getSettings();
+    /**获取环境接口。*/
     public Environment getEnvironment();
-    /**获取事件管理器*/
-    public EventManager getEventManager();
-    /**获取用于初始化Guice的Binder。*/
-    public Binder getGuiceBinder();
-    /**
-     * See the EDSL examples at {@link Binder}.
-     * 将后面的对象绑定前一个类型上。可以通过 {@link AppContext} 使用绑定的类型重新获取绑定的对象。
-     * 使用下面的方法即可重新获取绑定的类型。
-     * <pre>
-     * AppContext :
-     *   appContext.findBindingsByType(BeanInfo.class);
-     * Guice :
-     *   TypeLiteral INFO_DEFS = TypeLiteral.get(BeanInfo.class);
-     *   appContext.getGuice().findBindingsByType(INFO_DEFS);
-     * </pre>
-     * */
-    public <T> LinkedBindingBuilder<T> bindingType(Class<T> type);
-    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class) */
-    public <T> void bindingType(Class<T> type, T instance);
-    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class) */
-    public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
-    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class) */
-    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<? extends T> provider);
-    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see ApiBinder#bindingType(Class) */
-    public <T> ScopedBindingBuilder bindingType(Class<T> type, Key<? extends T> targetKey);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see net.hasor.core.ApiBinder#bindingType(Class)*/
-    public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
-    public <T> void bindingType(String withName, Class<T> type, T instance);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
-    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
-    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<? extends T> provider);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see net.hasor.core.ApiBinder#bindingType(String, Class)*/
-    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Key<? extends T> targetKey);
-    //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
+    /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
+    public void registerAware(AppContextAware aware);
+    //
+    /*----------------------------------------------------------------------------------------Aop*/
+    /**配置Aop，表达式格式为*/
+    public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
+    /**配置Aop*/
+    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
+    /***/
+    public static interface Matcher<T> {
+        /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
+        public boolean matches(T t);
+    }
+    //
+    /*-------------------------------------------------------------------------------------Module*/
     /**配置模块依赖关系。*/
     public ModuleSettings configModule();
-    /**注册一个bean。*/
-    public BeanBindingBuilder defineBean(String beanName);
-    /**负责注册Bean*/
-    public static interface BeanBindingBuilder {
-        /**别名*/
-        public BeanBindingBuilder aliasName(String aliasName);
-        /**bean绑定的类型。*/
-        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
-    }
     /**该接口可以配置模块信息。*/
     public interface ModuleSettings extends ModuleInfo {
         /**依赖反制：强制目标模块依赖当前模块(弱依赖)。*/
@@ -128,6 +61,65 @@ public interface ApiBinder {
          * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
         public void weak(Class<? extends Module> targetModule);
     }
-    /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
-    public void registerAware(AppContextAware aware);
+    //
+    /*------------------------------------------------------------------------------------Binding*/
+    /** */
+    public <T> NamedBindingBuilder<T> bindingType(Class<T> type);
+    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
+     * @see #bindingType(Class) */
+    public <T> void bindingType(Class<T> type, T instance);
+    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
+     * @see #bindingType(Class) */
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
+    /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
+     * @see #bindingType(Class) */
+    public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<T> provider);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see #bindingType(Class)*/
+    public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see #bindingType(String, Class)*/
+    public <T> void bindingType(String withName, Class<T> type, T instance);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see #bindingType(String, Class)*/
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation);
+    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
+     * @see #bindingType(String, Class)*/
+    public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<T> provider);
+    //
+    /*---------------------------------------------------------------------------------------Bean*/
+    /**注册一个bean。*/
+    public BeanBindingBuilder defineBean(String beanName);
+    //
+    public interface BeanBindingBuilder {
+        /**别名*/
+        public BeanBindingBuilder aliasName(String aliasName);
+        /**设置属性*/
+        public BeanBindingBuilder setProperty(String attName, Object attValue);
+        /**bean绑定的类型。*/
+        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
+    }
+    public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
+        public LinkedBindingBuilder<T> nameWith(String name);
+    }
+    public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder {
+        /**为绑定设置一个实现类*/
+        public ScopedBindingBuilder to(Class<? extends T> implementation);
+        /**为绑定设置一个实例*/
+        public MetaDataBindingBuilder toInstance(T instance);
+        /**为绑定设置一个Provider*/
+        public ScopedBindingBuilder toProvider(Provider<T> provider);
+        /**为绑定设置一个构造方法*/
+        public ScopedBindingBuilder toConstructor(Constructor<? extends T> constructor);
+    }
+    public interface ScopedBindingBuilder extends MetaDataBindingBuilder {
+        /**注册为单例*/
+        public MetaDataBindingBuilder asEagerSingleton();
+        /**在容器上公开这个绑定*/
+        public MetaDataBindingBuilder toScope(Scope scope);
+    }
+    public interface MetaDataBindingBuilder {
+        /**获取元信息。*/
+        public MetaDataBindingBuilder metaData(String key, Object value);
+    }
 }

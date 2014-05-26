@@ -48,6 +48,12 @@
 			<artifactId>hasor-core</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
+		<!-- Quick -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-quick</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- JDBC -->
 		<dependency>
 			<groupId>net.hasor</groupId>

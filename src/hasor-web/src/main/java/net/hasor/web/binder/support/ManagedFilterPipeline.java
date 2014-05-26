@@ -15,7 +15,6 @@
  */
 package net.hasor.web.binder.support;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,12 +25,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.AppContext;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import com.google.inject.Binding;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.TypeLiteral;
 /**
  *  
  * @version : 2013-4-12
@@ -41,20 +36,19 @@ public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
     private FilterDefinition[]           filterDefinitions;
     private volatile boolean             initialized = false;
-    private AppContext                   appContext  = null;
+    private WebAppContext                appContext  = null;
     //
     //
-    @Inject
     public ManagedFilterPipeline(ManagedServletPipeline servletPipeline) {
         this.servletPipeline = servletPipeline;
     }
     //
-    public synchronized void initPipeline(AppContext appContext) throws ServletException {
+    public synchronized void initPipeline(WebAppContext appContext) throws ServletException {
         if (initialized)
             return;
         this.appContext = appContext;
-        this.filterDefinitions = collectFilterDefinitions(appContext.getGuice());
-        for (FilterDefinition filterDefinition : filterDefinitions) {
+        this.filterDefinitions = collectFilterDefinitions(appContext);
+        for (FilterDefinition filterDefinition : this.filterDefinitions) {
             filterDefinition.init(appContext);
         }
         //next, initialize servlets...
@@ -62,12 +56,8 @@ public class ManagedFilterPipeline implements FilterPipeline {
         //everything was ok...
         this.initialized = true;
     }
-    private FilterDefinition[] collectFilterDefinitions(Injector injector) {
-        List<FilterDefinition> filterDefinitions = new ArrayList<FilterDefinition>();
-        TypeLiteral<FilterDefinition> FILTER_DEFS = TypeLiteral.get(FilterDefinition.class);
-        for (Binding<FilterDefinition> entry : injector.findBindingsByType(FILTER_DEFS)) {
-            filterDefinitions.add(entry.getProvider().get());
-        }
+    private FilterDefinition[] collectFilterDefinitions(WebAppContext appContext) {
+        List<FilterDefinition> filterDefinitions = appContext.findBindingBean(FilterDefinition.class);
         Collections.sort(filterDefinitions, new Comparator<FilterDefinition>() {
             public int compare(FilterDefinition o1, FilterDefinition o2) {
                 int o1Index = o1.getIndex();
@@ -75,7 +65,6 @@ public class ManagedFilterPipeline implements FilterPipeline {
                 return (o1Index < o2Index ? -1 : (o1Index == o2Index ? 0 : 1));
             }
         });
-        // Convert to a fixed size array for speed.
         return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
     }
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
@@ -86,7 +75,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
         ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
         new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
     }
-    public void destroyPipeline(AppContext appContext) {
+    public void destroyPipeline(WebAppContext appContext) {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
         //go down chain and destroy all our filters

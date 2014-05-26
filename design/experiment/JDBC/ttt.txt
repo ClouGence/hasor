@@ -1,0 +1,25 @@
+1.对 web services 支持。
+2.事务控制支持。
+3.JSON 问题。
+4.权限控制。
+
+
+
+
+
+协议转换，格式转换
+
+HTTP
+SMB
+Hessian/Burlap
+Httpinvoker (Spring)
+AMF
+RMI
+WS
+FTP
+Email
+JMS
+
+
+
+http://blog.163.com/liuyb_94242/blog/static/4216764620124324548758/

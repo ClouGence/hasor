@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.jdbc.core.JdbcTemplate;
+import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.plugins.event.Listener;
 import com.google.inject.Inject;
 /**
@@ -38,9 +38,11 @@ public class OnStart implements EventListener {
         jdbcTemplate.loadSQL("net/test/project/common/init/TB_User.sql");
         jdbcTemplate.loadSQL("net/test/project/common/init/TB_User_Data.sql");
         //
-        XmlNode node1 = settings.getXmlProperty(".");
-        XmlNode node2 = settings.getXmlProperty("config");
-        XmlNode node3 = settings.getXmlProperty("hasor");
-        System.out.println();
+        XmlNode node1 = settings.getXmlNode(".");
+        XmlNode node2 = settings.getXmlNode("config");
+        XmlNode node3 = settings.getXmlNode("hasor");
+        System.out.println(String.format("node1 : %s", node1));
+        System.out.println(String.format("node2 : %s", node2));
+        System.out.println(String.format("node3 : %s", node3));
     }
 }

@@ -3,7 +3,7 @@
 	<groupId>net.hasor</groupId>
 	<artifactId>demo-SimpleWeb</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<!-- 构建描述 -->
 	<build>
 		<plugins>
@@ -48,6 +48,12 @@
 			<artifactId>hasor-core</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
+		<!-- Quick -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-quick</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
@@ -61,11 +67,11 @@
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<!-- Log -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.slf4j</groupId> -->
-		<!-- <artifactId>slf4j-log4j12</artifactId> -->
-		<!-- <version>1.7.2</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
 
 		<!-- HSQL & JDBC Driver -->
 		<dependency>
@@ -80,16 +86,12 @@
 			<scope>provided</scope>
 		</dependency>
 
-
-
-
-
-		<!-- 统一文件访问工具（smb共享访问） -->
-		<!-- <dependency> -->
-		<!-- <groupId>jcifs</groupId> -->
-		<!-- <artifactId>jcifs</artifactId> -->
-		<!-- <version>1.3.17</version> -->
-		<!-- </dependency> -->
+		<!-- Freemarker -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.20</version>
+		</dependency>
 		<!-- Hessian -->
 		<dependency>
 			<groupId>com.caucho</groupId>
@@ -97,6 +99,12 @@
 			<version>4.0.33</version>
 		</dependency>
 
+		<!-- 统一文件访问工具（smb共享访问） -->
+		<!-- <dependency> -->
+		<!-- <groupId>jcifs</groupId> -->
+		<!-- <artifactId>jcifs</artifactId> -->
+		<!-- <version>1.3.17</version> -->
+		<!-- </dependency> -->
 
 		<!-- Jetty Test -->
 		<dependency>

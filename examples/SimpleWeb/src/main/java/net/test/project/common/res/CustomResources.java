@@ -15,11 +15,11 @@
  */
 package net.test.project.common.res;
 import net.hasor.core.AppContext;
-import net.hasor.core.plugin.Plugin;
 import net.hasor.plugins.resource.ResourceHttpServlet;
 import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.resource.ResourceLoaderFactory;
 import net.hasor.plugins.resource.loader.ClassPathResourceLoader;
+import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
@@ -46,7 +46,7 @@ public class CustomResources extends AbstractWebHasorPlugin {
         apiBinder.serve("*.wav").with(ResourceHttpServlet.class);
         apiBinder.serve("*.avi").with(ResourceHttpServlet.class);
         //
-        apiBinder.getGuiceBinder().bind(ResourceLoaderFactory.class).toInstance(new ResourceLoaderFactory() {
+        apiBinder.bindingType(ResourceLoaderFactory.class).toInstance(new ResourceLoaderFactory() {
             public ResourceLoader[] loaderArray(AppContext appContext) {
                 ResourceLoader classLoader = new ClassPathResourceLoader("/META-INF/webapp");
                 return new ResourceLoader[] { classLoader };

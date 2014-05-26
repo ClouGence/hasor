@@ -380,10 +380,10 @@ public abstract class AbstractSettings implements Settings {
         return directoryPaths.toArray(new String[directoryPaths.size()]);
     }
     /**解析全局配置参数，并且返回其{@link XmlNode}形式对象。*/
-    public XmlNode getXmlProperty(String name) {
+    public XmlNode getXmlNode(String name) {
         return this.getToType(name, XmlNode.class, null);
     }
-    public XmlNode[] getXmlPropertyArray(String name) {
+    public XmlNode[] getXmlNodeArray(String name) {
         return this.getToTypeArray(name, XmlNode.class, null);
     }
 }

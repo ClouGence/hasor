@@ -17,7 +17,7 @@ package net.test.simple._07_dependency.weak;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.module.AnnoModule;
+import net.hasor.quick.anno.AnnoModule;
 /**
  * »ı“¿¿µ—› æ£¨“¿¿µπÿœµ£∫
  * Mode1
@@ -38,5 +38,4 @@ public class Mode1 implements Module {
     public void start(AppContext appContext) {
         System.out.println("Mode1 start!");
     }
-    public void stop(AppContext appContext) {}
 }

@@ -1,3 +1,19 @@
+===== Hasor-Core v0.0.8
+* 新增:
+    01.AopMatchers类型新增subClassesOf方法。匹配给定类型的子类（或实现了的接口），迁移至Hasor-Quick项目。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
+        --使其接近ApiBinder接口中bindingType方法的命名以便于开发者理解。
+    03.Hasor的Aop插件不在支持全局拦截器。
+    04.所有Plugins都移动到Hasor-Quick项目中。
+    05.将Hasor中stop生命周期，相关的支持全部删除不再支持。
+    06.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
+    07.添加Provider接口、EventContext接口。
+    08.支持重复绑定检测。
+* 修复:
+    01.更名 ModulePropxy 类名为 ModuleProxy。
+
 ===== Hasor-Core v0.0.7
 * 修复:
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
@@ -19,7 +35,6 @@
     03.部分接口方法名称更换。
     04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
     05.GlobalProperty接口更名为FieldProperty
-
 
 ===== Hasor-Core v0.0.6
 * 修复:

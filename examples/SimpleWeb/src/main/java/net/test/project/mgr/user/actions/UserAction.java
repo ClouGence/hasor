@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.project.mgr.user.actions;
+import java.sql.SQLException;
 import java.util.List;
 import javax.inject.Inject;
 import net.hasor.plugins.controller.AbstractController;
@@ -32,7 +33,7 @@ public class UserAction extends AbstractController {
     private UserService userService;
     /*获取用户列表，转发到‘/mgr/user/userList.jsp’*/
     @Forword
-    public String userList() {
+    public String userList() throws SQLException {
         List<UserBean> userList = userService.getUserList();
         this.setAttr("userList", userList);
         return "/mgr/user/userList_mvc1.jsp";

@@ -26,19 +26,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
 public class RuntimeFilter implements Filter {
-    @Inject
-    private AppContext     appContext       = null;
-    @Inject
+    private WebAppContext  appContext       = null;
     private FilterPipeline filterPipeline   = null;
     private String         requestEncoding  = null;
     private String         responseEncoding = null;
@@ -48,13 +44,13 @@ public class RuntimeFilter implements Filter {
     public synchronized void init(FilterConfig filterConfig) throws ServletException {
         if (appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
-            appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            appContext = (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
             Hasor.assertIsNotNull(appContext, "AppContext is null.");
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
         /*获取请求响应编码*/
-        this.requestEncoding = appContext.getSettings().getString("hasor-web.encoding.requestEncoding");
-        this.responseEncoding = appContext.getSettings().getString("hasor-web.encoding.responseEncoding");
+        this.requestEncoding = appContext.getSettings().getString("hasor-web.requestEncoding");
+        this.responseEncoding = appContext.getSettings().getString("hasor-web.responseEncoding");
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(appContext);
         Hasor.logInfo("PlatformFilter started.");
@@ -82,12 +78,6 @@ public class RuntimeFilter implements Filter {
             //执行.
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
-        } catch (IOException e) {
-            Hasor.logWarn("execFilterPipeline IOException %s.", e);
-            throw e;
-        } catch (ServletException e) {
-            Hasor.logWarn("execFilterPipeline ServletException %s.", e.getCause());
-            throw e;
         } finally {
             this.afterResponse(appContext, httpReq, httpRes);
         }
@@ -114,7 +104,6 @@ public class RuntimeFilter implements Filter {
         LocalRequest.remove();
         LocalResponse.remove();
     }
-    //
     //
     //
     private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();

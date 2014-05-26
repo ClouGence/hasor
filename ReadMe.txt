@@ -26,4 +26,4 @@ Github£ºhttps://github.com/zycgit/hasor
 
 Blog£ºhttp://my.oschina.net/u/1166271/blog/161439
 
-Email£ºcontact@hasor.net or zyc@byshell.org
+Email£ºzyc@byshell.org

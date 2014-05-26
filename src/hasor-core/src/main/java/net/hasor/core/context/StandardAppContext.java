@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,65 +18,96 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
-import net.hasor.core.environment.StandardEnvironment;
-import org.more.util.ResourcesUtils;
+import java.util.List;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
+import org.more.UndefinedException;
+import org.more.util.StringUtils;
 /**
- * {@link AppContext}接口默认实现。
- * @version : 2013-4-9
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014-5-10
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class StandardAppContext extends SimpleAppContext {
-    public static final String DefaultSettings = "hasor-config.xml";
-    /***/
+public class StandardAppContext extends AbstractConfigResourceAppContext {
+    private static final RegisterManager NullRegister = null;
+    /**设置主配置文件*/
     public StandardAppContext() throws IOException, URISyntaxException {
-        this(DefaultSettings, null);
+        this(NullRegister);
     }
-    /***/
-    public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
-        this(mainSettings, null);
-    }
-    /***/
+    /**设置主配置文件*/
     public StandardAppContext(File mainSettings) {
-        this(mainSettings, null);
+        this(mainSettings, NullRegister);
     }
-    /***/
+    /**设置主配置文件*/
     public StandardAppContext(URI mainSettings) {
-        this(mainSettings, null);
+        this(mainSettings, NullRegister);
     }
-    /***/
-    public StandardAppContext(String mainSettings, Object context) throws IOException, URISyntaxException {
-        URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL == null) {
-            Hasor.logWarn("can't find %s.", mainSettings);
-        } else {
-            this.mainSettings = resURL.toURI();
+    /**设置主配置文件*/
+    public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
+        this(mainSettings, NullRegister);
+    }
+    /**设置主配置文件*/
+    public StandardAppContext(RegisterManager registerManager) throws IOException, URISyntaxException {
+        super();
+        this.setRegisterContext(registerManager);
+    }
+    /**设置主配置文件*/
+    public StandardAppContext(File mainSettings, RegisterManager registerManager) {
+        super(mainSettings);
+        this.setRegisterContext(registerManager);
+    }
+    /**设置主配置文件*/
+    public StandardAppContext(URI mainSettings, RegisterManager registerManager) {
+        super(mainSettings);
+        this.setRegisterContext(registerManager);
+    }
+    /**设置主配置文件*/
+    public StandardAppContext(String mainSettings, RegisterManager registerManager) throws IOException, URISyntaxException {
+        super(mainSettings);
+        this.setRegisterContext(registerManager);
+    }
+    //
+    //
+    //
+    private RegisterManager registerManager = null;
+    private void setRegisterContext(RegisterManager registerManager) {
+        this.registerManager = registerManager;
+    }
+    protected RegisterManager getRegisterManager() {
+        if (this.registerManager == null) {
+            String createrToUse = null;
+            //1.取得即将创建的ManagerCreater类型
+            Settings setting = this.getSettings();
+            String defaultManager = setting.getString("hasor.registerManager.default");
+            XmlNode[] managerArray = setting.getXmlNodeArray("hasor.registerManager");
+            for (XmlNode manager : managerArray) {
+                List<XmlNode> createrList = manager.getChildren("creater");
+                for (XmlNode creater : createrList) {
+                    String createrName = creater.getAttribute("name");
+                    if (StringUtils.equalsIgnoreCase(createrName, defaultManager)) {
+                        createrToUse = creater.getAttribute("class");
+                        break;
+                    }
+                }
+                if (createrToUse != null)
+                    break;
+            }
+            //2.排错
+            if (createrToUse == null)
+                throw new UndefinedException(String.format("%s is not define.", defaultManager));
+            //3.创建Creater
+            try {
+                Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
+                RegisterManagerCreater creater = (RegisterManagerCreater) createrType.newInstance();
+                this.registerManager = creater.create(this.getEnvironment());
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
         }
-        //
-        this.setContext(context);
-    }
-    /***/
-    public StandardAppContext(File mainSettings, Object context) {
-        mainSettings = Hasor.assertIsNotNull(mainSettings);
-        this.mainSettings = mainSettings.toURI();
-        this.setContext(context);
-    }
-    /***/
-    public StandardAppContext(URI mainSettings, Object context) {
-        this.mainSettings = Hasor.assertIsNotNull(mainSettings);
-        this.setContext(context);
-    }
-    //
-    //
-    private URI mainSettings = null;
-    /**获取设置的主配置文件*/
-    public final URI getMainSettings() {
-        return mainSettings;
-    }
-    protected Environment createEnvironment() {
-        return new StandardEnvironment(this.mainSettings);
+        if (this.registerManager == null)
+            throw new NullPointerException("registerManager is null.");
+        return this.registerManager;
     }
 }

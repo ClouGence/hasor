@@ -14,153 +14,236 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
-import net.hasor.core.EventManager;
+import net.hasor.core.EventCallBackHook;
+import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
-import net.hasor.core.binder.AbstractApiBinder;
-import net.hasor.core.binder.BeanMetaData;
-import net.hasor.core.module.GuiceModule;
-import net.hasor.core.module.ModulePropxy;
+import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.binder.BeanInfo;
+import net.hasor.core.binder.TypeRegister;
+import net.hasor.core.binder.register.FreeTypeRegister;
+import net.hasor.core.builder.BeanBuilder;
+import net.hasor.core.context.listener.ContextInitializeListener;
+import net.hasor.core.context.listener.ContextStartListener;
+import net.hasor.core.module.ModuleProxy;
 import net.hasor.core.module.ModuleReactor;
 import org.more.UndefinedException;
-import com.google.inject.Binder;
-import com.google.inject.Binding;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Named;
-import com.google.inject.name.Names;
+import org.more.util.ArrayUtils;
+import org.more.util.MergeUtils;
+import org.more.util.StringUtils;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
- * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。
+ * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
+ * 
+ * 提示：initContext 方法是整个 AbstractAppContext 的入口方法。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractAppContext implements AppContext {
+public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
-    //-----------------------------------------------------------------------------------------Bean
-    private Map<String, BeanMetaData> beanInfoMap;
-    private void collectBeanInfos() {
-        this.beanInfoMap = new HashMap<String, BeanMetaData>();
-        List<Provider<BeanMetaData>> beanInfoProviderArray = this.findProviderByType(BeanMetaData.class);
-        if (beanInfoProviderArray == null)
-            return;
-        for (Provider<BeanMetaData> entry : beanInfoProviderArray) {
-            BeanMetaData beanMetaData = entry.get();
-            this.beanInfoMap.put(beanMetaData.getName(), beanMetaData);
-        }
-    }
-    /**通过名获取Bean的类型。*/
+    /*---------------------------------------------------------------------------------------Bean*/
     public <T> Class<T> getBeanType(String name) {
-        Hasor.assertIsNotNull(name, "bean name is null.");
-        if (this.beanInfoMap == null)
-            this.collectBeanInfos();
-        BeanMetaData info = this.beanInfoMap.get(name);
-        if (info != null)
-            return (Class<T>) info.getBeanType();
-        throw null;
+        BeanInfo info = this.findBindingBean(name, BeanInfo.class);
+        return info == null ? null : (Class<T>) info.getType();
     }
-    /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String getBeanName(Class<?> targetClass) {
+    public String[] getBeanNames(Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        if (this.beanInfoMap == null)
-            this.collectBeanInfos();
-        for (Entry<String, BeanMetaData> ent : this.beanInfoMap.entrySet()) {
-            if (ent.getValue().getBeanType() == targetClass)
-                return ent.getKey();
+        List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
+        if (infoArray == null)
+            infoArray = Collections.emptyList();
+        /*查找*/
+        ArrayList<String> nameList = new ArrayList<String>();
+        for (int i = 0; i < infoArray.size(); i++) {
+            BeanInfo info = infoArray.get(i);
+            String[] names = info.getNames();
+            for (String nameItem : names)
+                nameList.add(nameItem);
         }
-        return null;
+        return nameList.toArray(new String[nameList.size()]);
     }
-    /**获取已经注册的Bean名称。*/
     public String[] getBeanNames() {
-        if (this.beanInfoMap == null)
-            this.collectBeanInfos();
-        return this.beanInfoMap.keySet().toArray(new String[this.beanInfoMap.size()]);
+        List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
+        if (infoArray == null || infoArray.isEmpty())
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        /*查找*/
+        List<String> names = new ArrayList<String>();
+        for (BeanInfo info : infoArray) {
+            String[] aliasNames = info.getNames();
+            for (String aliasName : aliasNames)
+                names.add(aliasName);
+        }
+        return names.toArray(new String[names.size()]);
     }
-    /**通过名称创建bean实例，使用guice，如果获取的bean不存在则会引发{@link UndefinedException}类型异常。*/
+    public <T> T getInstance(String name) {
+        BeanInfo info = this.findBindingBean(name, BeanInfo.class);
+        if (info == null)
+            return null;
+        return (T) this.getInstance(info.getType());
+    }
+    /**创建Bean。*/
     public <T> T getBean(String name) {
-        BeanMetaData beanMetaData = this.getBeanInfo(name);
-        if (beanMetaData == null)
-            throw new UndefinedException("bean ‘" + name + "’ is undefined.");
-        return (T) this.getGuice().getInstance(beanMetaData.getBeanType());
+        /*1.在Hasor中所有Bean定义都是绑定到BeanInfo类型上，因此查找名字为name的BeanInfo对象。*/
+        RegisterInfo<BeanInfo> regInfo = this.findRegisterInfo(name, BeanInfo.class);
+        if (regInfo == null)
+            return null;
+        /*2.得到BeanInfo对象，并取得Bean的其真实类型和referID*/
+        BeanInfo beanInfo = regInfo.getProvider().get();
+        RegisterInfo<?> targetInfo = this.findRegisterInfo(beanInfo.getReferID(), beanInfo.getType());
+        return (T) this.getBeanBuilder().getInstance(targetInfo);
     };
-    /**通过类型创建该类实例，使用guice*/
-    public <T> T getInstance(Class<T> targetClass) {
-        return this.getGuice().getInstance(targetClass);
-    }
-    /**获取 Bean 的描述接口。*/
-    public BeanMetaData getBeanInfo(String name) {
-        if (this.beanInfoMap == null)
-            this.collectBeanInfos();
-        return this.beanInfoMap.get(name);
-    }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> findBeanByType(Class<T> bindingType) {
-        ArrayList<T> providerList = new ArrayList<T>();
-        TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
-        for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
-            Provider<T> bindingTypeProvider = entry.getProvider();
-            providerList.add(bindingTypeProvider.get());
-        }
+    /**创建Bean。*/
+    public <T> T getInstance(Class<T> oriType) {
+        /* 1.由于同一个Type可能会有多个注册，每个注册可能会映射了不同的实现，例如:
+         *     String -> "HelloWord"   > name = "Hi"
+         *     String -> "Say goodBy." > name = "By"
+         *     String -> "Body .."     > name = null  (匿名的)
+         * 因此查找那个没有名字的Type，倘若存在匿名的Type，返回它，否则返回null。*/
+        RegisterInfo<T> info = this.findRegisterInfo(null, oriType);
+        if (info == null)
+            info = new FreeTypeRegister<T>(oriType);
+        return this.getBeanBuilder().getInstance(info);
+    };
+    /**获取用于创建Bean对象的BeanBuilder接口*/
+    protected BeanBuilder getBeanBuilder() {
+        return this.getRegisterManager().getBeanBuilder();
+    };
+    //
+    /*------------------------------------------------------------------------------------Binding*/
+    public <T> T findBindingBean(String withName, Class<T> bindingType) {
+        Hasor.assertIsNotNull(withName, "withName is null.");
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
         //
-        if (providerList.isEmpty())
-            return null;
-        return providerList;
-    }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> findProviderByType(Class<T> bindingType) {
-        ArrayList<Provider<T>> providerList = new ArrayList<Provider<T>>();
-        TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
-        for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
-            Provider<T> bindingTypeProvider = entry.getProvider();
-            providerList.add(bindingTypeProvider);
-        }
-        //
-        if (providerList.isEmpty())
-            return null;
-        return providerList;
-    }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T findBeanByType(String withName, Class<T> bindingType) {
-        Provider<T> provider = findProviderByType(withName, bindingType);
-        if (provider == null)
-            return null;
-        return provider.get();
-    }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> findProviderByType(String withName, Class<T> bindingType) {
-        TypeLiteral<T> BindingType_DEFS = TypeLiteral.get(bindingType);
-        Named named = Names.named(withName);
-        //
-        for (Binding<T> entry : this.getGuice().findBindingsByType(BindingType_DEFS)) {
-            Provider<T> bindingTypeProvider = entry.getProvider();
-            Annotation nameAnno = entry.getKey().getAnnotation();
-            if (!named.equals(nameAnno))/*参见 Names.named。*/
-                continue;
-            return bindingTypeProvider;
+        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
+        /*找到那个RegisterInfo*/
+        for (RegisterInfo<T> info : targetRegisterList) {
+            String bindName = info.getName();
+            boolean nameTest = withName.equals(bindName);
+            if (nameTest)
+                return info.getProvider().get();
         }
         return null;
+    }
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
+        Hasor.assertIsNotNull(withName, "withName is null.");
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //F
+        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
+        /*找到那个RegisterInfo*/
+        for (RegisterInfo<T> info : targetRegisterList) {
+            String bindName = info.getName();
+            boolean nameTest = withName.equals(bindName);
+            if (nameTest)
+                return info.getProvider();
+        }
+        return null;
+    }
+    public <T> List<T> findBindingBean(Class<T> bindingType) {
+        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
+        /*将RegisterInfo<T>列表转换为<T>列表*/
+        List<T> targetList = new ArrayList<T>();
+        for (RegisterInfo<T> info : targetInfoList) {
+            Provider<T> target = info.getProvider();
+            targetList.add(target.get());
+        }
+        return targetList;
+    }
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
+        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
+        /*将RegisterInfo<T>列表转换为Provider<T>列表*/
+        List<Provider<T>> targetList = new ArrayList<Provider<T>>();
+        for (RegisterInfo<T> info : targetInfoList) {
+            Provider<T> target = info.getProvider();
+            targetList.add(target);
+        }
+        return targetList;
+    }
+    public RegisterScope getParentScope() {
+        return this.getParent();
+    }
+    public final Iterator<RegisterInfo<?>> getRegisterIterator() {
+        Iterator<RegisterInfo<?>> registerIterator = this.localRegisterIterator();
+        RegisterScope scope = this.getParentScope();
+        if (scope != null) {
+            Iterator<RegisterInfo<?>> parentIterator = scope.getRegisterIterator();
+            registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
+        }
+        return registerIterator;
+    }
+    /**查找RegisterInfo*/
+    public <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType) {
+        Iterator<RegisterInfo<T>> infoIterator = this.localRegisterIterator(bindType);
+        if (infoIterator == null || infoIterator.hasNext() == false)
+            return Collections.emptyList();
+        //
+        List<RegisterInfo<T>> infoList = new ArrayList<RegisterInfo<T>>();
+        while (infoIterator.hasNext())
+            infoList.add(infoIterator.next());
+        return infoList;
+    }
+    /**查找RegisterInfo*/
+    public <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType) {
+        List<RegisterInfo<T>> infoList = this.findRegisterInfo(bindingType);
+        for (RegisterInfo<T> info : infoList) {
+            if (StringUtils.equals(withName, info.getName()))
+                return info;
+        }
+        return null;
+    }
+    /**注册一个类型*/
+    protected <T> TypeRegister<T> registerType(Class<T> type) {
+        return this.getRegisterManager().registerType(type);
+    }
+    /**已注册的类型列表。*/
+    protected Iterator<RegisterInfo<?>> localRegisterIterator() {
+        return this.getBeanBuilder().getRegisterIterator();
+    }
+    /**已注册的类型列表。*/
+    protected <T> Iterator<RegisterInfo<T>> localRegisterIterator(Class<T> type) {
+        return this.getBeanBuilder().getRegisterIterator(type);
     }
     //
-    //--------------------------------------------------------------------------------------Context
-    private Injector injector = null;
-    private Object   context;
-    /**获得Guice环境。*/
-    public Injector getGuice() {
-        return this.injector;
+    /*--------------------------------------------------------------------------------------Event*/
+    public void pushListener(String eventType, EventListener eventListener) {
+        this.getEnvironment().pushListener(eventType, eventListener);
+    }
+    public void addListener(String eventType, EventListener eventListener) {
+        this.getEnvironment().addListener(eventType, eventListener);
+    }
+    public void removeListener(String eventType, EventListener eventListener) {
+        this.getEnvironment().removeListener(eventType, eventListener);
+    }
+    public void fireSyncEvent(String eventType, Object... objects) {
+        this.getEnvironment().fireSyncEvent(eventType, objects);
+    }
+    public void fireSyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.getEnvironment().fireSyncEvent(eventType, callBack, objects);
+    }
+    public void fireAsyncEvent(String eventType, Object... objects) {
+        this.getEnvironment().fireAsyncEvent(eventType, objects);
+    }
+    public void fireAsyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+        this.getEnvironment().fireAsyncEvent(eventType, callBack, objects);
+    }
+    //
+    /*------------------------------------------------------------------------------------Context*/
+    private AbstractAppContext parent;
+    private Object             context;
+    /**获取上下文*/
+    public AbstractAppContext getParent() {
+        return this.parent;
     }
     /**获取上下文*/
     public Object getContext() {
@@ -170,10 +253,6 @@ public abstract class AbstractAppContext implements AppContext {
     public void setContext(Object context) {
         this.context = context;
     }
-    /**获取系统启动时间*/
-    public long getStartTime() {
-        return this.getEnvironment().getStartTime();
-    };
     /**获取应用程序配置。*/
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
@@ -187,49 +266,41 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**创建环境对象*/
     protected abstract Environment createEnvironment();
-    /**获取事件操作接口。*/
-    public EventManager getEventManager() {
-        return this.getEnvironment().getEventManager();
-    }
+    /**获取RegisterContext对象*/
+    protected abstract RegisterManager getRegisterManager();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getEnvironment().findClass(featureType);
     }
-    //---------------------------------------------------------------------------------------Module
-    private List<ModulePropxy> moduleSet;
+    //
+    /*-------------------------------------------------------------------------------------Module*/
+    private List<ModuleProxy> tempModuleSet;
     /**创建或者获得用于存放所有ModuleInfo的集合对象*/
-    protected List<ModulePropxy> getModuleList() {
-        if (this.moduleSet == null)
-            this.moduleSet = new ArrayList<ModulePropxy>();
-        return moduleSet;
-    }
-    /**添加一个 Guice 模块*/
-    public void addGuiceModule(com.google.inject.Module guiceModule) {
-        if (this.isReady())
-            throw new IllegalStateException("context is inited.");
-        this.addModule(new GuiceModule(guiceModule));
+    private List<ModuleProxy> getModuleList() {
+        if (this.tempModuleSet == null)
+            this.tempModuleSet = new ArrayList<ModuleProxy>();
+        return tempModuleSet;
     }
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized ModuleInfo addModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
         /*防止重复添加*/
-        for (ModulePropxy info : this.getModuleList())
+        for (ModuleProxy info : this.getModuleList())
             if (info.getTarget() == hasorModule)
                 return info;
         /*添加模块*/
-        ModulePropxy propxy = new ContextModulePropxy(hasorModule, this);
-        List<ModulePropxy> propxyList = this.getModuleList();
-        if (propxyList.contains(propxy) == false)
-            propxyList.add(propxy);
+        ModuleProxy propxy = new ContextModulePropxy(hasorModule, this);
+        List<ModuleProxy> propxyList = this.getModuleList();
+        propxyList.add(propxy);
         return propxy;
     }
     /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized boolean removeModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        ModulePropxy targetInfo = null;
-        for (ModulePropxy info : this.getModuleList())
+        ModuleProxy targetInfo = null;
+        for (ModuleProxy info : this.getModuleList())
             if (info.getTarget() == hasorModule) {
                 targetInfo = info;
                 break;
@@ -241,45 +312,174 @@ public abstract class AbstractAppContext implements AppContext {
         return false;
     }
     /**获得所有模块*/
-    public ModuleInfo[] getModules() {
-        List<ModulePropxy> haosrModuleList = this.getModuleList();
-        ModuleInfo[] infoArray = new ModuleInfo[haosrModuleList.size()];
-        for (int i = 0; i < haosrModuleList.size(); i++)
-            infoArray[i] = haosrModuleList.get(i);
+    public final ModuleInfo[] getModules() {
+        List<ModuleProxy> moduleList = this.getModuleList();
+        ModuleInfo[] infoArray = new ModuleInfo[moduleList.size()];
+        for (int i = 0; i < moduleList.size(); i++)
+            infoArray[i] = moduleList.get(i);
         return infoArray;
     }
-    //----------------------------------------------------------------------------------------Utils
-    private boolean isStart;
-    /**判断容器是否处于运行状态*/
+    /**装载模块定义*/
+    protected void initModule() {
+        for (ModuleProxy propxy : this.getModuleList()) {
+            ApiBinder apiBinder = this.newApiBinder(propxy);
+            apiBinder.bindingType(ModuleInfo.class).nameWith(propxy.getDisplayName()).toInstance(propxy);/*仅仅是绑定*/
+            propxy.init(apiBinder);
+        }
+    }
+    /**位于容器中 ModulePropxy 抽象类的实现*/
+    protected class ContextModulePropxy extends ModuleProxy {
+        public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
+            super(targetModule, appContext);
+        }
+        protected ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
+            List<ModuleProxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
+            for (ModuleProxy moduleProxy : modulePropxyList)
+                if (targetModule == moduleProxy.getTarget().getClass())
+                    return moduleProxy;
+            throw new UndefinedException(targetModule.getName() + " module is Undefined!");
+        }
+    }
+    //
+    /*------------------------------------------------------------------------------------Process*/
+    //    /**执行 Initialize 过程。*/
+    //    protected void doInitialize(final Binder guiceBinder) {
+    //        Hasor.logInfo("send init sign...");
+    //        List<ModuleProxy> modulePropxyList = this.getModuleList();
+    //        /*引发模块init生命周期*/
+    //        for (ModuleProxy forModule : modulePropxyList) {
+    //            AbstractBinderContext apiBinder = this.newApiBinder(forModule, guiceBinder);
+    //            forModule.init(apiBinder);//触发生命周期 
+    //            apiBinder.configure(guiceBinder);
+    //        }
+    //        this.doBind(guiceBinder);
+    //        /*引发事件*/
+    //        this.getEventManager().doSync(ContextEvent_Initialized, apiBinder);
+    //        Hasor.logInfo("init modules finish.");
+    //    }
+    //
+    //
+    private boolean isStart = false;
+    private boolean isReady = false;
     public boolean isStart() {
         return this.isStart;
     }
-    /**表示AppContext是否准备好。*/
     public boolean isReady() {
-        return this.getGuice() != null;
+        return this.isReady;
     }
+    public synchronized final void start() {
+        if (this.isStart() == true)
+            return;
+        /*1.Init*/
+        if (!this.isReady()) {
+            Hasor.logInfo("send init sign.");
+            this.doInitialize();
+            this.initModule();
+            /*2.Bind*/
+            AbstractBinder apiBinder = new AbstractBinder(this.getEnvironment()) {
+                public ModuleSettings configModule() {
+                    return null;
+                }
+                protected <T> TypeRegister<T> registerType(Class<T> type) {
+                    return AbstractAppContext.this.registerType(type);
+                }
+            };
+            this.doBind(apiBinder);
+            this.doInitializeCompleted();
+            Hasor.logInfo("the init is completed!");
+            this.isReady = true;
+        }
+        //
+        //
+        //
+        /*3.Start*/
+        Hasor.logInfo("send start sign.");
+        this.doStart();
+        /*2.执行Aware通知*/
+        List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
+        if (awareList.isEmpty() == false) {
+            for (AppContextAware weak : awareList)
+                weak.setAppContext(this);
+        }
+        /*3.逐一启动模块*/
+        List<ModuleProxy> modulePropxyList = this.doReactor();
+        for (ModuleProxy mod : modulePropxyList)
+            mod.start(this);
+        /*4.发送启动事件*/
+        this.fireSyncEvent(ContextEvent_Started, this);
+        this.doStartCompleted();/*用于扩展*/
+        this.isStart = true;
+        /*5.打印模块状态*/
+        printModState(this);
+        Hasor.logInfo("hasor started!");
+    }
+    /**开始进入初始化过程.*/
+    protected void doInitialize() {
+        RegisterManager regContext = this.getRegisterManager();
+        if (regContext instanceof ContextInitializeListener)
+            ((ContextInitializeListener) regContext).doInitialize(this);
+    }
+    /**初始化过程完成.*/
+    protected void doInitializeCompleted() {
+        RegisterManager regContext = this.getRegisterManager();
+        if (regContext instanceof ContextInitializeListener)
+            ((ContextInitializeListener) regContext).doInitializeCompleted(this);
+    }
+    /**开始进入容器启动过程.*/
+    protected void doStart() {
+        RegisterManager regContext = this.getRegisterManager();
+        if (regContext instanceof ContextStartListener)
+            ((ContextStartListener) regContext).doStart(this);
+    }
+    /**容器启动完成*/
+    protected void doStartCompleted() {
+        RegisterManager regContext = this.getRegisterManager();
+        if (regContext instanceof ContextStartListener)
+            ((ContextStartListener) regContext).doStartCompleted(this);
+    }
+    //
+    //
+    /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder*/
-    protected AbstractApiBinder newApiBinder(final ModulePropxy forModule, final Binder guiceBinder) {
-        return new AbstractApiBinder(this.getEnvironment()) {
+    protected ApiBinder newApiBinder(final ModuleProxy forModule) {
+        return new AbstractBinder(this.getEnvironment()) {
             public ModuleSettings configModule() {
                 return forModule;
             }
-            public Binder getGuiceBinder() {
-                return guiceBinder;
+            protected <T> TypeRegister<T> registerType(Class<T> type) {
+                return AbstractAppContext.this.registerType(type);
             }
         };
     }
-    /**通过guice创建{@link Injector}，该方法会促使调用模块init生命周期*/
-    protected Injector createInjector(com.google.inject.Module[] guiceModules) {
-        return Guice.createInjector(guiceModules);
+    /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
+    protected void doBind(ApiBinder apiBinder) {
+        final AbstractAppContext appContet = this;
+        /*绑定Environment对象的Provider*/
+        apiBinder.bindingType(Environment.class).toProvider(new Provider<Environment>() {
+            public Environment get() {
+                return appContet.getEnvironment();
+            }
+        });
+        /*绑定Settings对象的Provider*/
+        apiBinder.bindingType(Settings.class).toProvider(new Provider<Settings>() {
+            public Settings get() {
+                return appContet.getSettings();
+            }
+        });
+        /*绑定AppContext对象的Provider*/
+        apiBinder.bindingType(AppContext.class).toProvider(new Provider<AppContext>() {
+            public AppContext get() {
+                return appContet;
+            }
+        });
     }
     /**打印模块状态*/
     protected static void printModState(AbstractAppContext appContext) {
-        List<ModulePropxy> modList = appContext.getModuleList();
+        ModuleInfo[] modArray = appContext.getModules();
         StringBuilder sb = new StringBuilder("");
-        int size = String.valueOf(modList.size() - 1).length();
-        for (int i = 0; i < modList.size(); i++) {
-            ModuleInfo info = modList.get(i);
+        int size = String.valueOf(modArray.length).length();
+        for (int i = 0; i < modArray.length; i++) {
+            ModuleInfo info = modArray[i];
             sb.append(String.format("%0" + size + "d", i));
             sb.append('.');
             sb.append("-->[");
@@ -295,169 +495,16 @@ public abstract class AbstractAppContext implements AppContext {
             sb.deleteCharAt(sb.length() - 1);
         Hasor.logInfo("Modules State List:\n%s", sb);
     }
-    //-----------------------------------------------------------------------------------------Life
-    /**初始化容器，请注意容器只能被初始化一次。该方法在创建 Guice 过程中会引发 doInitialize 方法的调用。*/
-    protected void initContext() {
-        if (this.injector != null)
-            return;
-        /*1.创建创建guice*/
-        Hasor.logInfo("createInjector...");
-        this.injector = this.createInjector(new com.google.inject.Module[] { new RootInitializeModule(this) });
-        Hasor.assertIsNotNull(this.injector, "can not be create Injector.");
-        /*2.使用反应堆对模块进行循环检查和排序*/
-        this.doReactor();
-        /*3.完成init*/
-        Hasor.logInfo("the init is completed!");
-    }
-    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
-    public synchronized void start() {
-        if (this.isStart() == true)
-            return;
-        /*1.初始化*/
-        this.initContext();
-        /*2.启动*/
-        this.doStart();
-    }
-    /**停止。向所有模块发送停止信号，并将容器的状态置为Stop。*/
-    public synchronized void stop() {
-        if (this.isStart() == false)
-            return;
-        doStop();
-    }
-    /**重新初始化并启动容器，强迫所有模块都重新初始化(Init)并启动(Start)*/
-    public synchronized void reboot() {
-        this.stop();
-        this.getEnvironment().release();
-        this.environment = null;
-        this.injector = null;
-        this.beanInfoMap = null;
-        this.moduleSet.clear();
-        this.start();
-    }
-    /**调用停止执行，而后调用start指令。*/
-    public synchronized void restart() {
-        this.stop();
-        this.start();
-    }
-    //--------------------------------------------------------------------------------------Process
-    /**执行 Initialize 过程。*/
-    protected void doInitialize(final Binder guiceBinder) {
-        Hasor.logInfo("send init sign...");
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
-        /*引发模块init生命周期*/
-        for (ModulePropxy forModule : modulePropxyList) {
-            AbstractApiBinder apiBinder = this.newApiBinder(forModule, guiceBinder);
-            forModule.init(apiBinder);//触发生命周期 
-            apiBinder.configure(guiceBinder);
-        }
-        this.doBind(guiceBinder);
-        /*引发事件*/
-        AbstractApiBinder apiBinder = new AbstractApiBinder(this.getEnvironment()) {
-            public ModuleSettings configModule() {
-                return null;
-            }
-            public Binder getGuiceBinder() {
-                return guiceBinder;
-            }
-        };
-        this.getEventManager().doSync(ContextEvent_Initialized, apiBinder);
-        Hasor.logInfo("init modules finish.");
-    }
     /**使用反应堆对模块进行循环检查和排序*/
-    private void doReactor() {
-        List<ModuleInfo> readOnlyModules = new ArrayList<ModuleInfo>();
-        for (ModulePropxy amp : this.getModuleList())
+    private List<ModuleProxy> doReactor() {
+        List<ModuleProxy> readOnlyModules = new ArrayList<ModuleProxy>();
+        for (ModuleProxy amp : this.getModuleList())
             readOnlyModules.add(amp);
         ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
-        List<ModuleInfo> result = reactor.process();
-        List<ModulePropxy> propxyList = this.getModuleList();
-        propxyList.clear();
-        for (ModuleInfo info : result)
-            propxyList.add((ModulePropxy) info);
-    }
-    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
-    protected void doStart() {
-        Hasor.logInfo("send start sign.");
-        /*1.执行Aware通知*/
-        List<AppContextAware> awareList = this.findBeanByType(AppContextAware.class);
-        if (awareList != null) {
-            for (AppContextAware weak : awareList)
-                weak.setAppContext(this);
-        }
-        /*2.逐一启动模块*/
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
-        for (ModulePropxy mod : modulePropxyList)
-            mod.start(this);
-        this.isStart = true;
-        /*3.发送启动事件*/
-        this.getEnvironment().getEventManager().doSync(ContextEvent_Started, this);
-        /*4.打印模块状态*/
-        printModState(this);
-        Hasor.logInfo("hasor started!");
-    }
-    /**执行 Stop 过程。*/
-    protected void doStop() {
-        this.isStart = false;
-        /*1.逐一停止模块*/
-        Hasor.logInfo("send stop sign.");
-        List<ModulePropxy> modulePropxyList = this.getModuleList();
-        for (ModulePropxy mod : modulePropxyList)
-            mod.stop(this);
-        /*2.发送停止事件*/
-        this.getEnvironment().getEventManager().doSync(ContextEvent_Stoped, this);
-        /*2.打印模块状态*/
-        printModState(this);
-        Hasor.logInfo("hasor stoped!");
-    }
-    /**当完成所有初始化过程之后调用，负责向 Guice 绑定一些预先定义的类型。*/
-    protected void doBind(Binder guiceBinder) {
-        final AbstractAppContext appContet = this;
-        /*绑定Environment对象的Provider*/
-        guiceBinder.bind(Environment.class).toProvider(new Provider<Environment>() {
-            public Environment get() {
-                return appContet.getEnvironment();
-            }
-        });
-        /*绑定EventManager对象的Provider*/
-        guiceBinder.bind(EventManager.class).toProvider(new Provider<EventManager>() {
-            public EventManager get() {
-                return appContet.getEnvironment().getEventManager();
-            }
-        });
-        /*绑定Settings对象的Provider*/
-        guiceBinder.bind(Settings.class).toProvider(new Provider<Settings>() {
-            public Settings get() {
-                return appContet.getSettings();
-            }
-        });
-        /*绑定AppContext对象的Provider*/
-        guiceBinder.bind(AppContext.class).toProvider(new Provider<AppContext>() {
-            public AppContext get() {
-                return appContet;
-            }
-        });
-    }
-    /**负责处理 Init 阶段的入口类。*/
-    private class RootInitializeModule implements com.google.inject.Module {
-        private AbstractAppContext appContet;
-        public RootInitializeModule(AbstractAppContext appContet) {
-            this.appContet = appContet;
-        }
-        public void configure(Binder guiceBinder) {
-            this.appContet.doInitialize(guiceBinder);
-        }
-    }
-    /**位于容器中 ModulePropxy 抽象类的实现*/
-    private class ContextModulePropxy extends ModulePropxy {
-        public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
-            super(targetModule, appContext);
-        }
-        protected ModulePropxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-            List<ModulePropxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
-            for (ModulePropxy modulePropxy : modulePropxyList)
-                if (targetModule == modulePropxy.getTarget().getClass())
-                    return modulePropxy;
-            throw new UndefinedException(targetModule.getName() + " module is Undefined!");
-        }
+        List<ModuleProxy> result = reactor.process();
+        List<ModuleProxy> propxyList = new ArrayList<ModuleProxy>();
+        for (ModuleProxy info : result)
+            propxyList.add(info);
+        return propxyList;
     }
 }

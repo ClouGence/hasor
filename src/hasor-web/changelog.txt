@@ -1,51 +1,57 @@
+===== Hasor-Web v0.0.6
+* 修复:
+    01.因 ModulePropxy 更名为 ModuleProxy所做的连带改动。
+* 改进:
+    01.所有Plugins都移动到Hasor-Quick项目中。
+    02.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
+
 ===== Hasor-Web v0.0.5
 * 修复:
-    1.修复 ControllerInterceptor 拦截器在调用标记了 @ControllerIgnore 方法时引发递归死循环问题。
+    01.修复 ControllerInterceptor 拦截器在调用标记了 @ControllerIgnore 方法时引发递归死循环问题。
 * 改进:
-    1.AnnoWebAppContext 类中增加，下面几个接口的绑定。
+    01.AnnoWebAppContext 类中增加，下面几个接口的绑定。
         ServletRequest、HttpServletRequest、ServletResponse、HttpServletResponse、HttpSession、ServletContext
 * 新增:
-    1.新增 JSP Tag 标签库，通过 Hasor JSP 标签库可以方便基于 jsp 的 Hasor 开发。
-
+    01.新增 JSP Tag 标签库，通过 Hasor JSP 标签库可以方便基于 jsp 的 Hasor 开发。
 
 ===== Hasor-Web v0.0.4
 * 改进:
-    1.少量代码优化。
-    2.修复 @Json 无法处理除（List、Map、基本类型）意外其它类型数据序列化的问题。
-    3.处理 @Json 注解时在返回的 json 数据前后增加 一对圆括号。
-    4.处理 Hasor Core 0.0.6 版本上变动。
-    5.j2ee 软件包 更名为 servlet3
+    01.少量代码优化。
+    02.修复 @Json 无法处理除（List、Map、基本类型）意外其它类型数据序列化的问题。
+    03.处理 @Json 注解时在返回的 json 数据前后增加 一对圆括号。
+    04.处理 Hasor Core 0.0.6 版本上变动。
+    05.j2ee 软件包 更名为 servlet3
 
 ===== Hasor-Web v0.0.3
 * 修复:
-    1.修复 #4 在 debug 模式下 Resources 模块在处理位于 Classpath 中资源时会反复的覆盖缓存结果。
+    01.修复 #4 在 debug 模式下 Resources 模块在处理位于 Classpath 中资源时会反复的覆盖缓存结果。
         -这样设计的目的是为了方便开发调试应用程序。
-    2.修复 #9 在负责加载资源的 HttpServlet 中增加了 404 情况的响应。
-    3.修复 #6 ZipResourceLoader 在构造方法中 new 一个 Set 用于存放压缩文件中的名称集合。
+    02.修复 #9 在负责加载资源的 HttpServlet 中增加了 404 情况的响应。
+    03.修复 #6 ZipResourceLoader 在构造方法中 new 一个 Set 用于存放压缩文件中的名称集合。
         Set 中存放的内容用于减少 Zip 压缩包打开的次数。
 * 新增:
-    1.ResourceLoader 接口新增 exist、canModify、close 方法。用于判断资源是否存在以及是否可能被更改。
+    01.ResourceLoader 接口新增 exist、canModify、close 方法。用于判断资源是否存在以及是否可能被更改。
         ClassPathResourceLoader、PathResourceLoader、ZipResourceLoader 分别实现了它们。
-    2.新增了 Resources 模块在每次启动时都会清理之前的缓存文件。
-    3.新增 WebEnvironment 接口，该接口可以在启动时通过 WebApiBinder 接口获取到。
-    4.WebApiBinder 接口中新增  getServletContext 方法用以获取 ServletContext 对象。
+    02.新增了 Resources 模块在每次启动时都会清理之前的缓存文件。
+    03.新增 WebEnvironment 接口，该接口可以在启动时通过 WebApiBinder 接口获取到。
+    04.WebApiBinder 接口中新增  getServletContext 方法用以获取 ServletContext 对象。
 * 改进:
-    1.Resource 组建的使用不在通过配置文件，而改为需要通过代码进行少量配置。这样以减少学习成本，增加灵活性。
-    2.RuntimeFilter 同一个应用程序只能实例化一个 RuntimeFilter 对象。
-    3.代码大面积优化。
+    01.Resource 组建的使用不在通过配置文件，而改为需要通过代码进行少量配置。这样以减少学习成本，增加灵活性。
+    02.RuntimeFilter 同一个应用程序只能实例化一个 RuntimeFilter 对象。
+    03.代码大面积优化。
 
 ===== Hasor-Web v0.0.2
 * 修复:
-    1.修复#1 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
-    2.修复#2 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
+    01.修复#1 Hasor-Web v0.0.1- Restful 服务无法正常发布的问题。
+    02.修复#2 从 WebApiBinder 接口中注册的 Filter 启动顺序不可控的问题。
 * 改进:
-    1.优化：抛出的异常。
-    2.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
-    3.删除：mime 相关代码。
+    01.优化：抛出的异常。
+    02.修改：根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+    03.删除：mime 相关代码。
 * 新增:
-    1.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
-    2.新增 Restful 拦截器的支持。
-    3.新增 Restful 服务可以使用 @Forword、@Include、@Json、@Redirect 注解。
+    01.接口WebApiBinder新增方法，可以通过代码形式注册 Servlet/Filter时指定顺序。
+    02.新增 Restful 拦截器的支持。
+    03.新增 Restful 服务可以使用 @Forword、@Include、@Json、@Redirect 注解。
 
 ===== Hasor-Web v0.0.1
 * 新增:

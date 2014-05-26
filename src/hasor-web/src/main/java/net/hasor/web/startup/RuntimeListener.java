@@ -21,10 +21,12 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.AbstractAppContext;
-import net.hasor.web.binder.SessionListenerPipeline;
-import net.hasor.web.context.AnnoWebAppContext;
+import net.hasor.core.Module;
+import net.hasor.web.WebAppContext;
+import net.hasor.web.binder.ListenerPipeline;
+import net.hasor.web.context.WebStandardAppContext;
 import org.more.util.ContextClassLoaderLocal;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-3-25
@@ -32,29 +34,38 @@ import org.more.util.ContextClassLoaderLocal;
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
     public static final String                             AppContextName          = AppContext.class.getName();
-    private AbstractAppContext                             appContext              = null;
-    private SessionListenerPipeline                        sessionListenerPipeline = null;
+    private WebAppContext                                  appContext              = null;
+    private ListenerPipeline                               sessionListenerPipeline = null;
     private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
-    protected AbstractAppContext createAppContext(ServletContext sc) throws Throwable {
-        return new AnnoWebAppContext("hasor-config.xml", sc);
+    protected WebAppContext createAppContext(ServletContext sc) throws Throwable {
+        return new WebStandardAppContext("hasor-config.xml", sc);
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         //1.创建AppContext
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
-            this.appContext.start();
+            String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
+            if (StringUtils.isBlank(startModule)) {
+                Hasor.logWarn("startModule is undefinition.");
+            } else {
+                Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
+                this.appContext.addModule(startModuleType.newInstance());
+                Hasor.logInfo("startModule is %s.", startModuleType);
+            }
+            //
+            if (this.appContext.isStart() == false)
+                this.appContext.start();
             LocalServletContext.set(servletContextEvent.getServletContext());
             LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            Hasor.logError("createAppContext error.\n%s", e);
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
             throw new RuntimeException(e);
         }
         //2.获取SessionListenerPipeline
-        this.sessionListenerPipeline = this.appContext.getInstance(SessionListenerPipeline.class);
+        this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
         Hasor.logInfo("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
@@ -64,7 +75,6 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
-        this.appContext.stop();
     }
     public void sessionCreated(HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionCreated(se);

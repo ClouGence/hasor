@@ -26,57 +26,40 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
+import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
-import com.google.inject.Key;
-import com.google.inject.Provider;
 /**
  * 
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
 class ServletDefinition extends AbstractServletModuleBinding implements Provider<ServletDefinition> {
-    private Key<? extends HttpServlet> servletKey      = null; /*HttpServlet对象既有可能绑定在这个Key上*/
-    private HttpServlet                servletInstance = null;
-    private UriPatternMatcher          patternMatcher  = null;
-    private AppContext                 appContext      = null;
+    private Provider<HttpServlet> servletProvider = null;
+    private HttpServlet           servletInstance = null;
+    private UriPatternMatcher     patternMatcher  = null;
+    private WebAppContext         appContext      = null;
     //
-    public ServletDefinition(int index, String pattern, Key<? extends HttpServlet> servletKey, UriPatternMatcher uriPatternMatcher, Map<String, String> initParams, HttpServlet servletInstance) {
+    public ServletDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher, Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
-        this.servletKey = servletKey;
-        this.servletInstance = servletInstance;
+        this.servletProvider = servletProvider;
         this.patternMatcher = uriPatternMatcher;
     }
     public ServletDefinition get() {
         return this;
     }
-    protected HttpServlet getTarget(AppContext appContext) {
-        if (this.servletInstance == null)
-            this.servletInstance = appContext.getGuice().getInstance(this.servletKey);
-        return this.servletInstance;
-    }
-    public String toString() {
-        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
-                ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
-    }
-    /*--------------------------------------------------------------------------------------------------------*/
-    /**/
-    public void init(final AppContext appContext) throws ServletException {
-        this.appContext = appContext;
-        HttpServlet servlet = this.getTarget(appContext);
-        if (servlet == null)
-            return;
-        final Map<String, String> initParams = this.getInitParams();
+    protected HttpServlet getTarget() throws ServletException {
+        if (this.servletInstance != null)
+            return this.servletInstance;
         //
-        servlet.init(new ServletConfig() {
+        final Map<String, String> initParams = this.getInitParams();
+        this.servletInstance = this.servletProvider.get();
+        this.servletInstance.init(new ServletConfig() {
             public String getServletName() {
-                return servletKey.toString();
+                return ((servletInstance == null) ? servletProvider : servletInstance).toString();
             }
             public ServletContext getServletContext() {
-                Object context = appContext.getContext();
-                if (context instanceof ServletContext)
-                    return (ServletContext) context;
-                return null;
+                return appContext.getServletContext();
             }
             public String getInitParameter(String s) {
                 return initParams.get(s);
@@ -85,6 +68,17 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
         });
+        return this.servletInstance;
+    }
+    public String toString() {
+        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+                ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
+    }
+    /*--------------------------------------------------------------------------------------------------------*/
+    /**/
+    public void init(final WebAppContext appContext) throws ServletException {
+        this.appContext = appContext;
+        this.getTarget();
     }
     /**/
     public boolean service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
@@ -147,16 +141,15 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
             }
         };
         //
-        HttpServlet servlet = this.getTarget(this.appContext);
+        HttpServlet servlet = this.getTarget();
         if (servlet == null)
             return;
         servlet.service(request, servletResponse);
     }
     /**/
-    public void destroy(AppContext appContext) {
-        HttpServlet servlet = this.getTarget(appContext);
-        if (servlet == null)
+    public void destroy() {
+        if (this.servletInstance == null)
             return;
-        servlet.destroy();
+        this.servletInstance.destroy();
     }
 }
