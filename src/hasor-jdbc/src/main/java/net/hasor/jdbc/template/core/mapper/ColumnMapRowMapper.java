@@ -42,49 +42,36 @@ import net.hasor.jdbc.template.core.LinkedCaseInsensitiveMap;
  * @see JdbcTemplate#queryForList(String)
  * @see JdbcTemplate#queryForMap(String)
  */
-public class ColumnMapRowMapper implements RowMapper<Map<String, Object>> {
-    public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
+    public final Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnCount = rsmd.getColumnCount();
         Map<String, Object> mapOfColValues = createColumnMap(columnCount);
         for (int i = 1; i <= columnCount; i++) {
-            String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i));
+            String key = getColumnKey(lookupColumnName(rsmd, i));
             Object obj = getColumnValue(rs, i);
             mapOfColValues.put(key, obj);
         }
         return mapOfColValues;
     }
-    /**
-     * Create a Map instance to be used as column map.
-     * <p>By default, a linked case-insensitive Map will be created.
-     * @param columnCount the column count, to be used as initial
-     * capacity for the Map
-     * @return the new Map instance
-     * @see org.noe.platform.modules.db.jdbcorm.util.LinkedCaseInsensitiveMap
-     */
-    protected Map<String, Object> createColumnMap(int columnCount) {
-        return new LinkedCaseInsensitiveMap<Object>(columnCount);
+    private static String lookupColumnName(ResultSetMetaData resultSetMetaData, int columnIndex) throws SQLException {
+        String name = resultSetMetaData.getColumnLabel(columnIndex);
+        if (name == null || name.length() < 1)
+            name = resultSetMetaData.getColumnName(columnIndex);
+        return name;
     }
-    /**
-     * Determine the key to use for the given column in the column Map.
-     * @param columnName the column name as returned by the ResultSet
-     * @return the column key to use
-     * @see java.sql.ResultSetMetaData#getColumnName
-     */
+    //
+    //
+    /**取得指定列的值*/
+    protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
+        return getResultSetValue(rs, index);
+    }
+    /**讲列名转换为合理的格式。*/
     protected String getColumnKey(String columnName) {
         return columnName;
     }
-    /**
-     * Retrieve a JDBC object value for the specified column.
-     * <p>The default implementation uses the <code>getObject</code> method.
-     * Additionally, this implementation includes a "hack" to get around Oracle
-     * returning a non standard object for their TIMESTAMP datatype.
-     * @param rs is the ResultSet holding the data
-     * @param index is the column index
-     * @return the Object returned
-     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue
-     */
-    protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
-        return JdbcUtils.getResultSetValue(rs, index);
+    /**创建一个 Map 用于存放数据*/
+    protected Map<String, Object> createColumnMap(int columnCount) {
+        return new LinkedCaseInsensitiveMap<Object>(columnCount);
     }
 }

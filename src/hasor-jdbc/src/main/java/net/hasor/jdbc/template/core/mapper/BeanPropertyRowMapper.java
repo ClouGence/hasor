@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.jdbc.template.core.mapper;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.Hasor;
-import net.hasor.jdbc.template.RowMapper;
 import org.more.UnhandledException;
 import org.more.util.BeanUtils;
 /**
@@ -30,19 +28,14 @@ import org.more.util.BeanUtils;
  * @version : 2013-12-18
  * @author 赵永春(zyc@hasor.net)
  */
-public class BeanPropertyRowMapper<T> implements RowMapper<T> {
+public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T>            requiredType;
     private boolean             caseInsensitive = false;
     private Map<String, String> columnMapping   = new HashMap<String, String>();
-    /**
-     * Create a new BeanPropertyRowMapper.
-     * @see #setRequiredType
-     */
+    //
+    /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper() {}
-    /**
-     * Create a new BeanPropertyRowMapper.
-     * @param requiredType the type that each result object is expected to match
-     */
+    /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper(Class<T> requiredType) {
         Hasor.assertIsNotNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
@@ -68,18 +61,17 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
         this.caseInsensitive = caseInsensitive;
     }
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+        T targetObject;
         try {
-            T targetObject = this.requiredType.newInstance();
+            targetObject = this.requiredType.newInstance();
             return this.tranResultSet(rs, targetObject);
-        } catch (Exception e) {
-            if (e instanceof SQLException)
-                throw (SQLException) e;
-            else if (e instanceof RuntimeException)
-                throw (RuntimeException) e;
+        } catch (InstantiationException e) {
+            throw new UnhandledException(e);
+        } catch (IllegalAccessException e) {
             throw new UnhandledException(e);
         }
     }
-    private T tranResultSet(ResultSet rs, T targetObject) throws SQLException, IOException {
+    private T tranResultSet(ResultSet rs, T targetObject) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         for (int i = 1; i < nrOfColumns; i++) {
@@ -87,7 +79,6 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
             /*处理属性*/
             if (!caseInsensitive)
                 colName = this.columnMapping.get(colName.toUpperCase());
-            //
             Class<?> paramType = BeanUtils.getPropertyOrFieldType(this.requiredType, colName);
             if (paramType == null)
                 continue;
@@ -96,51 +87,16 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
         }
         return targetObject;
     }
-    /**
-     * Retrieve a JDBC object value for the specified column.
-     * <p>The default implementation calls
-     * {@link JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)}.
-     * If no required type has been specified, this method delegates to
-     * <code>getColumnValue(rs, index)</code>, which basically calls
-     * <code>ResultSet.getObject(index)</code> but applies some additional
-     * default conversion to appropriate value types.
-     * @param rs is the ResultSet holding the data
-     * @param index is the column index
-     * @param requiredType the type that each result object is expected to match
-     * (or <code>null</code> if none specified)
-     * @return the Object value
-     * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)
-     * @see #getColumnValue(java.sql.ResultSet, int)
-     */
-    protected Object getColumnValue(ResultSet rs, int index, Class requiredType) throws SQLException {
-        if (requiredType != null) {
-            return JdbcUtils.getResultSetValue(rs, index, requiredType);
-        } else {
-            // No required type specified -> perform default extraction.
-            return getColumnValue(rs, index);
-        }
+    /**取得指定列的值*/
+    protected Object getColumnValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
+        Object resultData = getResultSetValue(rs, index);
+        if (requiredType != null)
+            return convertValueToRequiredType(resultData, requiredType);
+        else
+            return resultData;
     }
     /**
-     * Retrieve a JDBC object value for the specified column, using the most
-     * appropriate value type. Called if no required type has been specified.
-     * <p>The default implementation delegates to <code>JdbcUtils.getResultSetValue()</code>,
-     * which uses the <code>ResultSet.getObject(index)</code> method. Additionally,
-     * it includes a "hack" to get around Oracle returning a non-standard object for
-     * their TIMESTAMP datatype. See the <code>JdbcUtils#getResultSetValue()</code>
-     * javadoc for details.
-     * @param rs is the ResultSet holding the data
-     * @param index is the column index
-     * @return the Object value
-     * @throws SQLException in case of extraction failure
-     * @see net.hasor.jdbc.jdbc.core.util.support.noe.platform.modules.db.jdbcorm.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int)
-     */
-    protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
-        return JdbcUtils.getResultSetValue(rs, index);
-    }
-    /**
-     * Static factory method to create a new BeanPropertyRowMapper
-     * (with the mapped class specified only once).
+     * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
     public static <T> BeanPropertyRowMapper<T> newInstance(Class<T> mappedClass) {
