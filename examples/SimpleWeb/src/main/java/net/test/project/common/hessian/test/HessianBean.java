@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.test.project.common.hessian.test;
-import net.hasor.core.AppContext;
 import net.test.project.common.hessian.HessianService;
-import com.google.inject.Inject;
 /**
  * 
  * @version : 2013-12-25
@@ -24,11 +22,8 @@ import com.google.inject.Inject;
  */
 @HessianService("/testBean")
 public class HessianBean {
-    @Inject
-    private AppContext appContext;
-    //
     public long sayHello() {
-        long t = appContext.getStartTime();
+        long t = System.currentTimeMillis();
         System.out.println(t);
         return t;
     }

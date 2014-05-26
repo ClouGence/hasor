@@ -1,6 +1,5 @@
 Hasor-Quick
 
-
 ---Aop 插件---
     通过 @Aop、@GlobalAop 两个注解提供声明 Aop 切面。@Aop 可以标记到
 方法或类上，根据标记的位置来决定 Aop 切面作用的范围。@GlobalAop 注解
@@ -30,10 +29,6 @@ Hasor 中事件的处理分为同步(Sync)和异步(Async)。
     通过 @Settings 注解声明一个配置文件改变监听器。Hasor 在启动之后会持续
 监听配置文件是否改变，如发生改变 Hasor 会自动重载它。标记了 @Settings 注解的
 SettingsListener监听器会收到这个通知。
-
-
-
-
 
 ---Controller 插件---
     通过 @Controller 注解提供了 WebMVC 开发所需的支持。该插件还提供了请求响应拦截器功能。

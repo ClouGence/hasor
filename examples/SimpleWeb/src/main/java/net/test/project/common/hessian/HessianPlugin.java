@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.core.plugin.Plugin;
+import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
 import org.more.util.StringUtils;

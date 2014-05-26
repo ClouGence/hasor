@@ -1,3 +1,3 @@
 ===== Hasor-Quick v0.0.1
 * 仟奐:
-    01.
+    1.濡卞 aop、bean、cache、controller、datasource、encoding、event、jdbc、resource、restful、result、servlet3、setting 峨周。
