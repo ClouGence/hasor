@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package org.more.webui;
 /**
- * Êı¾İÒì³£¡£
+ * æ•°æ®å¼‚å¸¸ã€‚
  * @version 2009-4-29
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DataException extends RuntimeException {
     private static final long serialVersionUID = 3664651649094973500L;
-    /**Êı¾İÒì³£¡£*/
+    /**æ•°æ®å¼‚å¸¸ã€‚*/
     public DataException(String string) {
         super(string);
     }
-    /**Êı¾İÒì³£¡£*/
+    /**æ•°æ®å¼‚å¸¸ã€‚*/
     public DataException(Throwable error) {
         super(error);
     }
-    /**Êı¾İÒì³£¡£*/
+    /**æ•°æ®å¼‚å¸¸ã€‚*/
     public DataException(String string, Throwable error) {
         super(string, error);
     }

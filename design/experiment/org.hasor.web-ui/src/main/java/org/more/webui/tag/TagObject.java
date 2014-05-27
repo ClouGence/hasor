@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,42 +37,42 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.utility.DeepUnwrap;
 /**
- * Í¨ÓÃ±êÇ©¶ÔÏó¡£
+ * é€šç”¨æ ‡ç­¾å¯¹è±¡ã€‚
  * @version : 2012-5-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TagObject implements TemplateDirectiveModel {
     public final void execute(Environment arg0, Map arg1, TemplateModel[] arg2, TemplateDirectiveBody arg3) throws TemplateException, IOException {
-        //0.·´½â¹ı³Ì
+        //0.åè§£è¿‡ç¨‹
         HashMap<String, Object> objMap = new HashMap<String, Object>();
         if (arg1 != null)
             for (Object key : arg1.keySet()) {
                 TemplateModel item = (TemplateModel) arg1.get(key);
                 objMap.put(key.toString(), DeepUnwrap.permissiveUnwrap(item));
             }
-        //1.È¡µÃÎ»ÖÃ
+        //1.å–å¾—ä½ç½®
         TemplateElement element = null;
         try {
-            //A.È¡µÃStackÖĞ×îºóÒ»¸öÔªËØ
+            //A.å–å¾—Stackä¸­æœ€åä¸€ä¸ªå…ƒç´ 
             Field elementStackField = arg0.getClass().getDeclaredField("elementStack");
             elementStackField.setAccessible(true);
             List<Object> stackList = (List<Object>) elementStackField.get(arg0);
             element = (TemplateElement) stackList.get(stackList.size() - 1);
         } catch (Exception e) {
-            throw new TemplateException("Freemarker¼æÈİ´íÎó£ºÎŞ·¨»ñÈ¡elementStack×Ö¶ÎÖµ¡£½¨ÒéÊ¹ÓÃ½¨ÒéÊ¹ÓÃfreemarker 2.3.19°æ±¾¡£", e, arg0);
+            throw new TemplateException("Freemarkerå…¼å®¹é”™è¯¯ï¼šæ— æ³•è·å–elementStackå­—æ®µå€¼ã€‚å»ºè®®ä½¿ç”¨å»ºè®®ä½¿ç”¨freemarker 2.3.19ç‰ˆæœ¬ã€‚", e, arg0);
         }
-        //B.Èç¹ûÊÇÒ»¸ö×¢²áÔªËØÔò´¦Àí£¬·ñÔòºöÂÔ
+        //B.å¦‚æœæ˜¯ä¸€ä¸ªæ³¨å†Œå…ƒç´ åˆ™å¤„ç†ï¼Œå¦åˆ™å¿½ç•¥
         String tagType = element.getClass().getSimpleName();
         if (Hook_UserTag.Name.equals(tagType) == false)
-            throw new TemplateException("Óöµ½Ò»¸ö·Ç¡°UnifiedCall¡±ÀàĞÍ±êÇ©°ó¶¨¡£", arg0);
-        //C.È¡µÃ±êÇ©Ëù´¦ÎÄµµµÄÎ»ÖÃÂ·¾¶¡£
+            throw new TemplateException("é‡åˆ°ä¸€ä¸ªéâ€œUnifiedCallâ€ç±»å‹æ ‡ç­¾ç»‘å®šã€‚", arg0);
+        //C.å–å¾—æ ‡ç­¾æ‰€å¤„æ–‡æ¡£çš„ä½ç½®è·¯å¾„ã€‚
         UIComponent component = getComponentByElement(ViewContext.getCurrentViewContext().getViewRoot(), element);
         this.exec(component, arg0, objMap, arg2, arg3);
     }
     private UIComponent getComponentByElement(UIComponent component, TemplateElement element) {
         TemplateElement obj = (TemplateElement) component.getAtts().get(Hook_UserTag.Name);
-        //1.ÅĞ¶ÏÊÇ·ñÏàµÈ£¬ÔÚincludeÇé¿öÏÂ±È½Ï¸´ÔÓ²»ÄÜÊ¹ÓÃ==ÅĞ¶Ï
+        //1.åˆ¤æ–­æ˜¯å¦ç›¸ç­‰ï¼Œåœ¨includeæƒ…å†µä¸‹æ¯”è¾ƒå¤æ‚ä¸èƒ½ä½¿ç”¨==åˆ¤æ–­
         if (obj == element)
             return component;
         if (obj != null)
@@ -93,19 +93,19 @@ public class TagObject implements TemplateDirectiveModel {
     public void exec(UIComponent component, Environment arg0, Map<String, Object> objMap, TemplateModel[] arg2, TemplateDirectiveBody arg3) throws TemplateException, IOException {
         if (component == null)
             return;
-        //A.»ñÈ¡×é½¨
+        //A.è·å–ç»„å»º
         component.setupPropertys(objMap);
-        //B.ÅĞ¶ÏÊ±ºòĞèÒªÖ´ĞĞäÖÈ¾
+        //B.åˆ¤æ–­æ—¶å€™éœ€è¦æ‰§è¡Œæ¸²æŸ“
         if (component.isRender() == false)
             return;
-        //C.»ñÈ¡äÖÈ¾Àà
+        //C.è·å–æ¸²æŸ“ç±»
         UICom uicom = component.getClass().getAnnotation(UICom.class);
         if (uicom == null)
-            throw new LostException("×é½¨¡°" + component.getComponentID() + "¡±µÄÀàĞÍÎŞ·¨¶¨Î»µ½ÆääÖÈ¾Æ÷¡£");
+            throw new LostException("ç»„å»ºâ€œ" + component.getComponentID() + "â€çš„ç±»å‹æ— æ³•å®šä½åˆ°å…¶æ¸²æŸ“å™¨ã€‚");
         ViewContext viewContext = ViewContext.getCurrentViewContext();
         String kitScope = viewContext.getRenderKitScope();
         Render renderer = viewContext.getUIContext().getRenderKit(kitScope).getRender(uicom.tagName());
-        //D.×¼±¸ÊôĞÔ
+        //D.å‡†å¤‡å±æ€§
         Map<String, AbstractValueHolder> valHolderMap = component.getPropertys();
         if (valHolderMap != null)
             for (Entry<String, AbstractValueHolder> ent : valHolderMap.entrySet()) {
@@ -113,7 +113,7 @@ public class TagObject implements TemplateDirectiveModel {
                 Object var = ent.getValue();
                 arg0.setVariable(key, ObjectWrapper.DEFAULT_WRAPPER.wrap(var));
             }
-        //E.½øĞĞäÖÈ¾
+        //E.è¿›è¡Œæ¸²æŸ“
         TemplateBody body = new TemplateBody(arg3, arg0);
         Writer writer = arg0.getOut();
         renderer.beginRender(viewContext, component, body, writer);

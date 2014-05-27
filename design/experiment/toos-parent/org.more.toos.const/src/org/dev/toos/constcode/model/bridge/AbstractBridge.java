@@ -8,14 +8,14 @@ import org.more.util.BeanUtil;
 /**
  * 
  * @version : 2013-2-19
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractBridge<T> implements UpdateState<T> {
-    private ConstGroup          targetSource   = null;                           //´úÀíµÄÊı¾İÀ´Ô´
-    private T                   targetBean     = null;                           //´úÀíÄ¿±ê
-    private boolean             activateModify = false;                          //ÊÇ·ñ¼¤»îÁËĞŞ¸ÄÄ£Ê½
-    private boolean             newMark        = false;                          //ÊÇ·ñÎªĞÂ½¨ÏîÄ¿
-    private boolean             deleteMark     = false;                          //ÊÇ·ñÉ¾³ıÁË¸Ã¶ÔÏó
+    private ConstGroup          targetSource   = null;                           //ä»£ç†çš„æ•°æ®æ¥æº
+    private T                   targetBean     = null;                           //ä»£ç†ç›®æ ‡
+    private boolean             activateModify = false;                          //æ˜¯å¦æ¿€æ´»äº†ä¿®æ”¹æ¨¡å¼
+    private boolean             newMark        = false;                          //æ˜¯å¦ä¸ºæ–°å»ºé¡¹ç›®
+    private boolean             deleteMark     = false;                          //æ˜¯å¦åˆ é™¤äº†è¯¥å¯¹è±¡
     private Map<String, Object> tempProperty   = new Hashtable<String, Object>();
     //
     //
@@ -25,58 +25,58 @@ public abstract class AbstractBridge<T> implements UpdateState<T> {
         if (this.targetBean instanceof NEW)
             this.newMark = true;
     }
-    /**ÊÇ·ñÎªÖ»¶Á*/
+    /**æ˜¯å¦ä¸ºåªè¯»*/
     public boolean readOnly() {
         return this.targetSource.isReadOnly();
     }
-    /**»ñÈ¡´úÀíµÄÄ¿±ê*/
+    /**è·å–ä»£ç†çš„ç›®æ ‡*/
     public T getTarget() {
         return this.targetBean;
     }
-    /**»ñÈ¡´úÀíµÄÄ¿±ê*/
+    /**è·å–ä»£ç†çš„ç›®æ ‡*/
     public void setTarget(T target) {
         this.targetBean = target;
     }
-    /**»ñÈ¡À´Ô´*/
+    /**è·å–æ¥æº*/
     public ConstGroup getSource() {
         return this.targetSource;
     }
-    /**ÅĞ¶Ï¶ÔÏóÊÇ·ñÎªĞÂ½¨µÄ¡£*/
+    /**åˆ¤æ–­å¯¹è±¡æ˜¯å¦ä¸ºæ–°å»ºçš„ã€‚*/
     public boolean isNew() {
         return newMark;
     }
-    /**ÊÇ·ñ´¦ÓÚ±à¼­Ä£Ê½¡£*/
+    /**æ˜¯å¦å¤„äºç¼–è¾‘æ¨¡å¼ã€‚*/
     public boolean isActivateModify() {
         return this.activateModify;
     }
-    /**½øÈë±à¼­Ä£Ê½*/
+    /**è¿›å…¥ç¼–è¾‘æ¨¡å¼*/
     public void doEdit() {
         this.activateModify = true;
     }
-    /**È¡Ïû±à¼­Ä£Ê½*/
+    /**å–æ¶ˆç¼–è¾‘æ¨¡å¼*/
     public void cancelEdit() {
         this.activateModify = false;
     }
-    /**ÅĞ¶Ï¸ÃÊı¾İÊÇ·ñ±»É¾³ı*/
+    /**åˆ¤æ–­è¯¥æ•°æ®æ˜¯å¦è¢«åˆ é™¤*/
     public boolean isDelete() {
         return this.deleteMark;
     }
-    /**É¾³ıÊı¾İ*/
+    /**åˆ é™¤æ•°æ®*/
     public void delete() {
         this.deleteMark = true;
     }
-    /**»Ø¸´Êı¾İĞŞ¸ÄÇ°µÄ×´Ì¬*/
+    /**å›å¤æ•°æ®ä¿®æ”¹å‰çš„çŠ¶æ€*/
     public void recover() {
         clearMark();
     }
-    /**½«BridgeÉÏµÄÊı¾İ¸üĞÂµ½Êı¾İÄ£ĞÍÉÏ¡£*/
+    /**å°†Bridgeä¸Šçš„æ•°æ®æ›´æ–°åˆ°æ•°æ®æ¨¡å‹ä¸Šã€‚*/
     public abstract boolean applyData();
-    /**Çå¿ÕĞŞ¸Ä±ê¼Ç*/
+    /**æ¸…ç©ºä¿®æ”¹æ ‡è®°*/
     public void clearMark() {
         this.deleteMark = false;
         this.tempProperty.clear();
     }
-    /**»ñÈ¡ÊôĞÔÖµ*/
+    /**è·å–å±æ€§å€¼*/
     public Object getProperty(String propertyName) {
         if (this.tempProperty.containsKey(propertyName) == true)
             return this.tempProperty.get(propertyName);
@@ -84,7 +84,7 @@ public abstract class AbstractBridge<T> implements UpdateState<T> {
             return BeanUtil.readPropertyOrField(this.targetBean, propertyName);
         return null;
     }
-    /**ÉèÖÃÊôĞÔÖµ¡£*/
+    /**è®¾ç½®å±æ€§å€¼ã€‚*/
     public boolean setProperty(String propertyName, Object newValue) {
         if (this.readOnly() == true)
             return false;
@@ -100,11 +100,11 @@ public abstract class AbstractBridge<T> implements UpdateState<T> {
         this.getSource().setConstChanged(true);
         return true;
     }
-    /**ÅĞ¶ÏÊôĞÔÊÇ·ñĞŞ¸Ä¹ı¡£*/
+    /**åˆ¤æ–­å±æ€§æ˜¯å¦ä¿®æ”¹è¿‡ã€‚*/
     public boolean isPropertyChanged(String propertyName) {
         return this.tempProperty.containsKey(propertyName);
     }
-    /**ÊôĞÔÊÇ·ñ¸Ä±ä¹ı*/
+    /**å±æ€§æ˜¯å¦æ”¹å˜è¿‡*/
     public boolean isPropertyChanged() {
         if (this.deleteMark == true)
             return true;

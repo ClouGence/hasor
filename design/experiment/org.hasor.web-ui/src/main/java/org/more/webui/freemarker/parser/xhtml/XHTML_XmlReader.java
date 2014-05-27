@@ -8,9 +8,9 @@
 //import org.more.core.xml.stream.XmlStreamEvent;
 //import org.more.util.ResourcesUtil;
 ///**
-// * ÓÃÓÚ½âÎöxhtmlµÄUI±êÇ©¿â¡£
+// * ç”¨äºè§£æxhtmlçš„UIæ ‡ç­¾åº“ã€‚
 // * @version : 2012-5-13
-// * @author ÕÔÓÀ´º (zyc@byshell.org)
+// * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 // */
 //public class XHTML_XmlReader /* extends XmlReader */{
 //    //    public XHTML_XmlReader(InputStream inStrema, OutputStream outStrema) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.net.URL;
 import net.hasor.plugins.resource.ResourceLoader;
 import org.more.util.StringUtils;
 /**
- * ÓÃÓÚ´´½¨Ò»¸ö¿ÉÒÔ´ÓclasspathÖĞ»ñÈ¡×ÊÔ´µÄResourceLoader¡£
+ * ç”¨äºåˆ›å»ºä¸€ä¸ªå¯ä»¥ä»classpathä¸­è·å–èµ„æºçš„ResourceLoaderã€‚
  * @version : 2013-6-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ClassPathResourceLoader implements ResourceLoader {
     private String      packageName = null;
@@ -37,11 +37,11 @@ public class ClassPathResourceLoader implements ResourceLoader {
         this.packageName = packageName;
         this.classLoader = classLoader;
     }
-    /**»ñÈ¡×ÊÔ´»ñÈ¡µÄ°üÂ·¾¶¡£*/
+    /**è·å–èµ„æºè·å–çš„åŒ…è·¯å¾„ã€‚*/
     public String getPackageName() {
         return this.packageName;
     }
-    /**»ñÈ¡×°ÔØ×ÊÔ´Ê¹ÓÃµÄÀà×°ÔØÆ÷¡£*/
+    /**è·å–è£…è½½èµ„æºä½¿ç”¨çš„ç±»è£…è½½å™¨ã€‚*/
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }

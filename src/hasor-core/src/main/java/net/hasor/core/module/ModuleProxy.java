@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ import org.more.UnhandledException;
 /**
  * 
  * @version : 2013-7-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
-public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, ModuleSettings, Module {
+public abstract class ModuleProxy implements ModuleInfo/*æä¾›æ¨¡å—åŸºæœ¬ä¿¡æ¯*/, ModuleSettings, Module {
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -59,7 +59,7 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
     }
     public void bindingSettingsNamespace(String settingsNamespace) {
         if (isReady())
-            /*Ä£¿éÒÑ¾­×¼±¸ºÃ£¬Ö»ÓĞµ±Ä£¿éÔÚ×¼±¸ÆÚ²Å¿ÉÒÔÊ¹ÓÃ¸Ã·½·¨*/
+            /*æ¨¡å—å·²ç»å‡†å¤‡å¥½ï¼Œåªæœ‰å½“æ¨¡å—åœ¨å‡†å¤‡æœŸæ‰å¯ä»¥ä½¿ç”¨è¯¥æ–¹æ³•*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         this.namespace = settingsNamespace;
@@ -103,12 +103,12 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
     }
     //
     //----------------------------------------------------------------------------Dependency Method
-    /**³¢ÊÔ´ÓÈİÆ÷ÖĞ»ñÈ¡Ä£¿éµÄ´úÀí¶ÔÏó*/
+    /**å°è¯•ä»å®¹å™¨ä¸­è·å–æ¨¡å—çš„ä»£ç†å¯¹è±¡*/
     protected abstract ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext);
     //
     public void reverse(Class<? extends Module> targetModule) {
         if (isReady())
-            /*Ä£¿éÒÑ¾­×¼±¸ºÃ£¬Ö»ÓĞµ±Ä£¿éÔÚ×¼±¸ÆÚ²Å¿ÉÒÔÊ¹ÓÃ¸Ã·½·¨*/
+            /*æ¨¡å—å·²ç»å‡†å¤‡å¥½ï¼Œåªæœ‰å½“æ¨¡å—åœ¨å‡†å¤‡æœŸæ‰å¯ä»¥ä½¿ç”¨è¯¥æ–¹æ³•*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         ModuleProxy moduleInfo = this.getInfo(targetModule, this.appContext);
@@ -122,7 +122,7 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
     }
     private void _addDep(Class<? extends Module> targetModule, boolean forced) {
         if (isReady())
-            /*Ä£¿éÒÑ¾­×¼±¸ºÃ£¬Ö»ÓĞµ±Ä£¿éÔÚ×¼±¸ÆÚ²Å¿ÉÒÔÊ¹ÓÃ¸Ã·½·¨*/
+            /*æ¨¡å—å·²ç»å‡†å¤‡å¥½ï¼Œåªæœ‰å½“æ¨¡å—åœ¨å‡†å¤‡æœŸæ‰å¯ä»¥ä½¿ç”¨è¯¥æ–¹æ³•*/
             throw new IllegalStateException("Module is ready, only can use this method in run-up.");
         //
         ModuleProxy moduleInfo = this.getInfo(targetModule, this.appContext);
@@ -138,7 +138,7 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
     private boolean isFullStart() {
         return this.appContext.getSettings().getBoolean("hasor.fullStart", false);
     }
-    /*½â·âÒì³£*/
+    /*è§£å°å¼‚å¸¸*/
     private void proForceModule(Throwable e) {
         //e = ExceptionUtils.getRootCause(e);
         if (e instanceof RuntimeException)
@@ -162,7 +162,7 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
         }
     }
     public final void start(AppContext appContext) {
-        if (this.isReady() == false/*×¼±¸Ê§°Ü*/|| this.isStart() == true/*ÒÑ¾­Æô¶¯*/)
+        if (this.isReady() == false/*å‡†å¤‡å¤±è´¥*/|| this.isStart() == true/*å·²ç»å¯åŠ¨*/)
             return;
         //
         try {
@@ -177,18 +177,18 @@ public abstract class ModuleProxy implements ModuleInfo/*Ìá¹©Ä£¿é»ù±¾ĞÅÏ¢*/, Mod
                 this.proForceModule(e);
         }
     }
-    /*ÀûÓÃ AppContext ×÷ KEY ¿ÉÒÔ±£Ö¤ÔÚ²»Í¬»·¾³ÏÂ¾²Ì¬×Ö¶ÎÄÚÈİµÄÕıÈ·ĞÔ*/
+    /*åˆ©ç”¨ AppContext ä½œ KEY å¯ä»¥ä¿è¯åœ¨ä¸åŒç¯å¢ƒä¸‹é™æ€å­—æ®µå†…å®¹çš„æ­£ç¡®æ€§*/
     private static Map<AppContext, ModuleInfo> loacalModuleInfo = new HashMap<AppContext, ModuleInfo>();
-    /**¸ù¾İ AppContext ÈİÆ÷»ñÈ¡µ±Ç° ModuleInfo¡£<p>
-     * ×¢Òâ£ºÖ»ÓĞµ± ModuleInfo Î»ÓÚ start stop ¹ı³ÌÄÚ£¬¸Ã·½·¨²Å»á·µ»ØÏà¶ÔÓ¦µÄModuleInfo¡£·ñÔò·µ»ØÖµÎª¿Õ¡£*/
+    /**æ ¹æ® AppContext å®¹å™¨è·å–å½“å‰ ModuleInfoã€‚<p>
+     * æ³¨æ„ï¼šåªæœ‰å½“ ModuleInfo ä½äº start stop è¿‡ç¨‹å†…ï¼Œè¯¥æ–¹æ³•æ‰ä¼šè¿”å›ç›¸å¯¹åº”çš„ModuleInfoã€‚å¦åˆ™è¿”å›å€¼ä¸ºç©ºã€‚*/
     public static ModuleInfo getLocalModuleInfo(AppContext appContext) {
         return (appContext != null) ? loacalModuleInfo.get(appContext) : null;
     }
-    /**Ä£¿éµÄ init ÉúÃüÖÜÆÚµ÷ÓÃ*/
+    /**æ¨¡å—çš„ init ç”Ÿå‘½å‘¨æœŸè°ƒç”¨*/
     protected void onInit(Module forModule, ApiBinder apiBinder) throws Throwable {
         forModule.init(apiBinder);
     }
-    /**·¢ËÍÄ£¿éÆô¶¯ĞÅºÅ*/
+    /**å‘é€æ¨¡å—å¯åŠ¨ä¿¡å·*/
     protected void onStart(Module forModule, AppContext appContext) throws Throwable {
         try {
             loacalModuleInfo.put(this.appContext, this);

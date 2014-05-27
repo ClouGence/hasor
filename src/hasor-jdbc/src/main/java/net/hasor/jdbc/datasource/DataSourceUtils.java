@@ -22,7 +22,7 @@ import org.more.util.ContextClassLoaderLocal;
 /**
  * 
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class DataSourceUtils {
     private static class ServiceLocal extends ContextClassLoaderLocal<DataSourceHelper> {
@@ -32,7 +32,7 @@ public class DataSourceUtils {
     }
     private static ServiceLocal utilServiceLocal = new ServiceLocal();
     //
-    /**ÉêÇëÁ¬½Ó*/
+    /**ç”³è¯·è¿æ¥*/
     public static Connection getConnection(DataSource dataSource) throws SQLException {
         DataSourceHelper utilService = utilServiceLocal.get();
         Connection conn = utilService.getConnection(dataSource);
@@ -40,21 +40,21 @@ public class DataSourceUtils {
             throw new SQLException("getConnection. return null.");
         return conn;
     };
-    /**ÊÍ·ÅÁ¬½Ó*/
+    /**é‡Šæ”¾è¿æ¥*/
     public static void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
         DataSourceHelper utilService = utilServiceLocal.get();
         utilService.releaseConnection(con, dataSource);
     };
-    /**»ñµÃÄ³¸öÊı¾İÔ´µÄµ±Ç°Á¬½Ó*/
+    /**è·å¾—æŸä¸ªæ•°æ®æºçš„å½“å‰è¿æ¥*/
     public static Connection currentConnection(DataSource dataSource) throws SQLException {
         DataSourceHelper utilService = utilServiceLocal.get();
         return utilService.currentConnection(dataSource);
     };
-    /**»ñÈ¡DataSourceHelper*/
+    /**è·å–DataSourceHelper*/
     public static DataSourceHelper getDataSourceHelper() {
         return utilServiceLocal.get();
     }
-    /**¸ü»»Ä¬ÈÏDataSourceHelper*/
+    /**æ›´æ¢é»˜è®¤DataSourceHelper*/
     protected static void changeDataSourceUtilService(DataSourceHelper utilService) {
         utilServiceLocal.set(utilService);
     }

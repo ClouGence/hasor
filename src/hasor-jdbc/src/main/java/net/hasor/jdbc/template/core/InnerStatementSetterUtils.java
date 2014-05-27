@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 
  * @version : 2014-3-29
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class InnerStatementSetterUtils {
     public static final int               TYPE_UNKNOWN         = Integer.MIN_VALUE;
@@ -46,7 +46,7 @@ class InnerStatementSetterUtils {
         javaTypeToSqlTypeMap.put(Clob.class, Types.CLOB);
     }
     //
-    /**¸ù¾İ Java ÀàĞÍDerive a default SQL type from the given Java type.*/
+    /**æ ¹æ® Java ç±»å‹Derive a default SQL type from the given Java type.*/
     public static int javaTypeToSqlParameterType(Class<?> javaType) {
         Integer sqlType = javaTypeToSqlTypeMap.get(javaType);
         if (sqlType != null)
@@ -71,64 +71,64 @@ class InnerStatementSetterUtils {
     private static void setValue(PreparedStatement ps, int paramIndex, Object inValue) throws SQLException {
         int sqlType = javaTypeToSqlParameterType(inValue.getClass());
         if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || (sqlType == Types.CLOB && isStringValue(inValue.getClass()))) {
-            //×Ö·û
+            //å­—ç¬¦
             ps.setString(paramIndex, inValue.toString());
         } else if (sqlType == Types.DECIMAL || sqlType == Types.NUMERIC) {
-            //Êı×Ö
+            //æ•°å­—
             if (inValue instanceof BigDecimal)
                 ps.setBigDecimal(paramIndex, (BigDecimal) inValue);
             else
                 ps.setObject(paramIndex, inValue, sqlType);
         } else if (sqlType == Types.DATE) {
-            //ÈÕÆÚ
+            //æ—¥æœŸ
             if (inValue instanceof java.util.Date) {
-                /*Ê±¼ä*/
+                /*æ—¶é—´*/
                 if (inValue instanceof java.sql.Date)
                     ps.setDate(paramIndex, (java.sql.Date) inValue);
                 else
                     ps.setDate(paramIndex, new java.sql.Date(((java.util.Date) inValue).getTime()));
             } else if (inValue instanceof Calendar) {
-                /*ÈÕÀú*/
+                /*æ—¥å†*/
                 Calendar cal = (Calendar) inValue;
                 ps.setDate(paramIndex, new java.sql.Date(cal.getTime().getTime()), cal);
             } else {
-                /*ÆäËû*/
+                /*å…¶ä»–*/
                 ps.setObject(paramIndex, inValue, Types.DATE);
             }
         } else if (sqlType == Types.TIME) {
-            //Ê±¼ä
+            //æ—¶é—´
             if (inValue instanceof java.util.Date) {
-                /*SQLÊ±¼ä*/
+                /*SQLæ—¶é—´*/
                 if (inValue instanceof java.sql.Time)
                     ps.setTime(paramIndex, (java.sql.Time) inValue);
                 else
                     ps.setTime(paramIndex, new java.sql.Time(((java.util.Date) inValue).getTime()));
             } else if (inValue instanceof Calendar) {
-                /*ÈÕÀú*/
+                /*æ—¥å†*/
                 Calendar cal = (Calendar) inValue;
                 ps.setTime(paramIndex, new java.sql.Time(cal.getTime().getTime()), cal);
             } else {
-                /*ÆäËû*/
+                /*å…¶ä»–*/
                 ps.setObject(paramIndex, inValue, Types.TIME);
             }
         } else if (sqlType == Types.TIMESTAMP) {
-            //ÈÕÆÚÊ±¼ä
+            //æ—¥æœŸæ—¶é—´
             if (inValue instanceof java.util.Date) {
-                /*SQLÊ±¼ä´Á*/
+                /*SQLæ—¶é—´æˆ³*/
                 if (inValue instanceof java.sql.Timestamp)
                     ps.setTimestamp(paramIndex, (java.sql.Timestamp) inValue);
                 else
                     ps.setTimestamp(paramIndex, new java.sql.Timestamp(((java.util.Date) inValue).getTime()));
             } else if (inValue instanceof Calendar) {
-                /*ÈÕÀú*/
+                /*æ—¥å†*/
                 Calendar cal = (Calendar) inValue;
                 ps.setTimestamp(paramIndex, new java.sql.Timestamp(cal.getTime().getTime()), cal);
             } else {
-                /*ÆäËû*/
+                /*å…¶ä»–*/
                 ps.setObject(paramIndex, inValue, Types.TIMESTAMP);
             }
         } else if (sqlType == TYPE_UNKNOWN) {
-            //²»È·¶¨ÀàĞÍ
+            //ä¸ç¡®å®šç±»å‹
             if (isStringValue(inValue.getClass()))
                 ps.setString(paramIndex, inValue.toString());
             else if (isDateValue(inValue.getClass()))
@@ -137,10 +137,10 @@ class InnerStatementSetterUtils {
                 Calendar cal = (Calendar) inValue;
                 ps.setTimestamp(paramIndex, new java.sql.Timestamp(cal.getTime().getTime()), cal);
             } else
-                ps.setObject(paramIndex, inValue);//Í¨ÓÃµÄ²ÎÊıÉèÖÃ·½·¨
+                ps.setObject(paramIndex, inValue);//é€šç”¨çš„å‚æ•°è®¾ç½®æ–¹æ³•
         } else {
-            //È·¶¨ÀàĞÍ
-            ps.setObject(paramIndex, inValue, sqlType);//Í¨ÓÃµÄ²ÎÊıÉèÖÃ·½·¨
+            //ç¡®å®šç±»å‹
+            ps.setObject(paramIndex, inValue, sqlType);//é€šç”¨çš„å‚æ•°è®¾ç½®æ–¹æ³•
         }
     }
     /**

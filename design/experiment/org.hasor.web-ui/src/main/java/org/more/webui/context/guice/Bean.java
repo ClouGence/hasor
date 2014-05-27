@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 /**
  * 
  * @version : 2012-5-15
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

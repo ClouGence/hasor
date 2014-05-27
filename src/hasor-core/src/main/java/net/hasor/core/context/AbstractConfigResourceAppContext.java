@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,27 +25,27 @@ import net.hasor.core.Hasor;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ResourcesUtils;
 /**
- * {@link AppContext}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link AppContext}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractConfigResourceAppContext extends AbstractAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     private URI                mainSettings    = null;
     //
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     protected AbstractConfigResourceAppContext() throws IOException, URISyntaxException {
         this(DefaultSettings);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     protected AbstractConfigResourceAppContext(File mainSettings) {
         this.mainSettings = mainSettings.toURI();
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     protected AbstractConfigResourceAppContext(URI mainSettings) {
         this.mainSettings = mainSettings;
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     protected AbstractConfigResourceAppContext(String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
         if (resURL == null)
@@ -53,7 +53,7 @@ public abstract class AbstractConfigResourceAppContext extends AbstractAppContex
         else
             this.mainSettings = resURL.toURI();
     }
-    /**»ñÈ¡ÉèÖÃµÄÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è·å–è®¾ç½®çš„ä¸»é…ç½®æ–‡ä»¶*/
     public final URI getMainSettings() {
         return mainSettings;
     }

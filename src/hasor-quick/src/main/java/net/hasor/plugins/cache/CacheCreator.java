@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 package net.hasor.plugins.cache;
 import net.hasor.core.AppContext;
 /**
- * ÓÃÓÚ´´½¨Ö¸¶¨Ãû³ÆµÄ»º´æÆ÷¡£
+ * ç”¨äºåˆ›å»ºæŒ‡å®šåç§°çš„ç¼“å­˜å™¨ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface CacheCreator {
     /**
-     * ¸ù¾İÃû³Æ´´½¨»ò·µ»ØÒ»¸ö»º´æÆ÷
-     * @param appContext Ó¦ÓÃ³ÌĞò»·¾³
-     * @param groupName »º´æÆ÷
+     * æ ¹æ®åç§°åˆ›å»ºæˆ–è¿”å›ä¸€ä¸ªç¼“å­˜å™¨
+     * @param appContext åº”ç”¨ç¨‹åºç¯å¢ƒ
+     * @param groupName ç¼“å­˜å™¨
      */
     public Cache getCacheByName(AppContext appContext, String groupName);
 }

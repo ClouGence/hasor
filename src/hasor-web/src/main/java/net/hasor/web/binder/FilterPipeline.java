@@ -34,10 +34,10 @@ import net.hasor.web.WebAppContext;
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 public interface FilterPipeline {
-    /**³õÊ¼»¯¹ÜµÀ */
+    /**åˆå§‹åŒ–ç®¡é“ */
     public void initPipeline(WebAppContext appContext) throws ServletException;
-    /**Ö´ĞĞÇëÇó²Ù×÷*/
+    /**æ‰§è¡Œè¯·æ±‚æ“ä½œ*/
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
-    /**Ïú»Ù¹ÜµÀ*/
+    /**é”€æ¯ç®¡é“*/
     public void destroyPipeline(WebAppContext appContext);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /**
- * {@link Environment}½Ó¿ÚÊµÏÖÀà¡£
+ * {@link Environment}æ¥å£å®ç°ç±»ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
     private String[] spanPackage;
@@ -53,7 +53,7 @@ public abstract class AbstractEnvironment implements Environment {
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }
-    /**ÉèÖÃÉ¨ÃèÂ·¾¶*/
+    /**è®¾ç½®æ‰«æè·¯å¾„*/
     public void setSpanPackage(String[] spanPackage) {
         this.spanPackage = spanPackage;
     }
@@ -68,7 +68,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //
     /*----------------------------------------------------------------------------------------Env*/
-    /**³õÊ¼»¯·½·¨*/
+    /**åˆå§‹åŒ–æ–¹æ³•*/
     protected void initEnvironment() {
         Hasor.logInfo("initEnvironment.");
         //
@@ -103,9 +103,9 @@ public abstract class AbstractEnvironment implements Environment {
             this.settingWatch.start();
         }
     }
-    /**´´½¨{@link Settings}½Ó¿Ú¶ÔÏó*/
+    /**åˆ›å»º{@link Settings}æ¥å£å¯¹è±¡*/
     protected abstract Settings createSettings() throws IOException;
-    /**ÔÚ»º´æÄ¿Â¼ÄÚ´´½¨Ò»¸ö²»ÖØÃûµÄÁÙÊ±ÎÄ¼şÃû¡£ */
+    /**åœ¨ç¼“å­˜ç›®å½•å†…åˆ›å»ºä¸€ä¸ªä¸é‡åçš„ä¸´æ—¶æ–‡ä»¶åã€‚ */
     public synchronized File uniqueTempFile() throws IOException {
         try {
             Thread.sleep(1);
@@ -120,9 +120,9 @@ public abstract class AbstractEnvironment implements Environment {
         return tmpFile;
     }
     /**
-    * Éú³ÉÂ·¾¶Ëã·¨Éú³ÉÒ»¸öPath
-    * @param number ²Î¿¼Êı×Ö
-    * @param size Ã¿¸öÄ¿Â¼ÏÂ¿ÉÒÔÓµÓĞµÄ×ÓÄ¿Â¼»òÎÄ¼şÊıÄ¿¡£
+    * ç”Ÿæˆè·¯å¾„ç®—æ³•ç”Ÿæˆä¸€ä¸ªPath
+    * @param number å‚è€ƒæ•°å­—
+    * @param size æ¯ä¸ªç›®å½•ä¸‹å¯ä»¥æ‹¥æœ‰çš„å­ç›®å½•æˆ–æ–‡ä»¶æ•°ç›®ã€‚
     */
     public String genPath(long number, int size) {
         StringBuffer buffer = new StringBuffer();
@@ -142,7 +142,7 @@ public abstract class AbstractEnvironment implements Environment {
     public EventContext getEventManager() {
         return this.eventManager;
     }
-    /**´´½¨{@link EventManager}½Ó¿Ú¶ÔÏó*/
+    /**åˆ›å»º{@link EventContext}æ¥å£å¯¹è±¡*/
     protected EventContext createEventManager() {
         return new StandardEventManager(this);
     }
@@ -171,34 +171,34 @@ public abstract class AbstractEnvironment implements Environment {
     /*-----------------------------------------------------------------------HasorSettingListener*/
     private SettingWatch           settingWatch        = null;
     private List<SettingsListener> settingListenerList = null;
-    /**´¥·¢ÅäÖÃÎÄ¼şÖØÔØÊÂ¼ş¡£*/
+    /**è§¦å‘é…ç½®æ–‡ä»¶é‡è½½äº‹ä»¶ã€‚*/
     protected void onSettingChangeEvent() {
         for (SettingsListener listener : this.settingListenerList)
             listener.reload(this.getSettings());
     }
-    /**Ìí¼ÓÅäÖÃÎÄ¼ş±ä¸ü¼àÌıÆ÷¡£*/
+    /**æ·»åŠ é…ç½®æ–‡ä»¶å˜æ›´ç›‘å¬å™¨ã€‚*/
     public void addSettingsListener(SettingsListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == false)
             this.settingListenerList.add(settingsListener);
     }
-    /**É¾³ıÅäÖÃÎÄ¼ş¼àÌıÆ÷¡£*/
+    /**åˆ é™¤é…ç½®æ–‡ä»¶ç›‘å¬å™¨ã€‚*/
     public void removeSettingsListener(SettingsListener settingsListener) {
         if (this.settingListenerList.contains(settingsListener) == true)
             this.settingListenerList.remove(settingsListener);
     }
-    /**»ñµÃËùÓĞÅäÖÃÎÄ¼ş¸Ä±äÊÂ¼ş¼àÌıÆ÷¡£*/
+    /**è·å¾—æ‰€æœ‰é…ç½®æ–‡ä»¶æ”¹å˜äº‹ä»¶ç›‘å¬å™¨ã€‚*/
     public SettingsListener[] getSettingListeners() {
         return this.settingListenerList.toArray(new SettingsListener[this.settingListenerList.size()]);
     }
     //
     /*------------------------------------------------------------------------------ResourceWatch*/
-    /**´´½¨{@link SettingWatch}¶ÔÏó£¬¸Ã·½·¨¿ÉÒÔ·µ»Ønull±íÊ¾²»ĞèÒª¼àÊÓÆ÷¡£*/
+    /**åˆ›å»º{@link SettingWatch}å¯¹è±¡ï¼Œè¯¥æ–¹æ³•å¯ä»¥è¿”å›nullè¡¨ç¤ºä¸éœ€è¦ç›‘è§†å™¨ã€‚*/
     protected SettingWatch createSettingWatch() {
         final SettingWatch settingWatch = new SettingWatch(this) {};
-        /*ÉèÖÃ¼àÌıÆ÷¼ì²â¼ä¸ô*/
+        /*è®¾ç½®ç›‘å¬å™¨æ£€æµ‹é—´éš”*/
         long interval = this.getSettings().getLong("hasor.settingsMonitor.interval", 15000L);
         settingWatch.setCheckSeepTime(interval);
-        /*×¢²áÒ»¸öÅäÖÃÎÄ¼ş¼àÌıÆ÷£¬µ±ÅäÖÃÎÄ¼ş¸üĞÂÊ±Í¨Öª¼àÌıÆ÷¸üĞÂ¼ì²â¼ä¸ô*/
+        /*æ³¨å†Œä¸€ä¸ªé…ç½®æ–‡ä»¶ç›‘å¬å™¨ï¼Œå½“é…ç½®æ–‡ä»¶æ›´æ–°æ—¶é€šçŸ¥ç›‘å¬å™¨æ›´æ–°æ£€æµ‹é—´éš”*/
         this.addSettingsListener(new SettingsListener() {
             public void reload(Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
@@ -210,7 +210,7 @@ public abstract class AbstractEnvironment implements Environment {
         });
         return settingWatch;
     }
-    /** ¸ÃÀà¸ºÔğÖ÷ÅäÖÃÎÄ¼şµÄ¼àÌı¹¤×÷£¬ÒÔ¼°Òı·¢ÅäÖÃÎÄ¼şÖØÔØÊÂ¼ş¡£*/
+    /** è¯¥ç±»è´Ÿè´£ä¸»é…ç½®æ–‡ä»¶çš„ç›‘å¬å·¥ä½œï¼Œä»¥åŠå¼•å‘é…ç½®æ–‡ä»¶é‡è½½äº‹ä»¶ã€‚*/
     protected abstract static class SettingWatch extends ResourceWatch {
         private AbstractEnvironment env = null;
         //
@@ -218,12 +218,12 @@ public abstract class AbstractEnvironment implements Environment {
             this.env = env;
         }
         public void firstStart(URI resourceURI) throws IOException {}
-        /**µ±ÅäÖÃÎÄ¼ş±»¼ì²âµ½ÓĞĞŞ¸Ä¼£ÏóÊ±£¬µ÷ÓÃË¢ĞÂ½øĞĞÖØÔØ¡£*/
+        /**å½“é…ç½®æ–‡ä»¶è¢«æ£€æµ‹åˆ°æœ‰ä¿®æ”¹è¿¹è±¡æ—¶ï¼Œè°ƒç”¨åˆ·æ–°è¿›è¡Œé‡è½½ã€‚*/
         public final void onChange(URI resourceURI) throws IOException {
             this.env.getSettings().refresh();
             this.env.onSettingChangeEvent();
         }
-        /**¼ì²âÖ÷ÅäÖÃÎÄ¼şÊÇ·ñ±»ĞŞ¸Ä*/
+        /**æ£€æµ‹ä¸»é…ç½®æ–‡ä»¶æ˜¯å¦è¢«ä¿®æ”¹*/
         public long lastModify(URI resourceURI) throws IOException {
             if ("file".equals(resourceURI.getScheme()) == true)
                 return new File(resourceURI).lastModified();
@@ -234,7 +234,7 @@ public abstract class AbstractEnvironment implements Environment {
             Hasor.logInfo("settings Watch started thread name is %s.", this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
-            //2.Æô¶¯¼àÌıÆ÷
+            //2.å¯åŠ¨ç›‘å¬å™¨
             try {
                 if (mainConfig == null) {
                     Hasor.logWarn("ignore the master setting file, Watch Thread exit.");
@@ -269,17 +269,17 @@ public abstract class AbstractEnvironment implements Environment {
     public Map<String, String> getEnv() {
         return this.envVars.getEnv();
     }
-    /**´´½¨{@link EnvVars}½Ó¿Ú¶ÔÏó*/
+    /**åˆ›å»º{@link EnvVars}æ¥å£å¯¹è±¡*/
     protected EnvVars createEnvVars() {
         return new EnvVars(this);
     }
-    /** ¸ÃÀà¸ºÔğ´¦Àí»·¾³±äÁ¿Ïà¹Ø²Ù×÷*/
+    /** è¯¥ç±»è´Ÿè´£å¤„ç†ç¯å¢ƒå˜é‡ç›¸å…³æ“ä½œ*/
     protected class EnvVars implements SettingsListener {
-        /*ËùÊôµÄEnvironment*/
+        /*æ‰€å±çš„Environment*/
         private AbstractEnvironment env;
-        /*×îÖÕÊ¹ÓÃµÄ»·¾³±äÁ¿Map*/
+        /*æœ€ç»ˆä½¿ç”¨çš„ç¯å¢ƒå˜é‡Map*/
         private Map<String, String> finalEnvMap;
-        /*ÓÃ»§Í¨¹ıApiÌí¼ÓµÄ»·¾³±äÁ¿Map*/
+        /*ç”¨æˆ·é€šè¿‡Apiæ·»åŠ çš„ç¯å¢ƒå˜é‡Map*/
         private Map<String, String> userEnvMap;
         //
         public EnvVars(AbstractEnvironment env) {
@@ -318,11 +318,11 @@ public abstract class AbstractEnvironment implements Environment {
             return Collections.unmodifiableMap(this.finalEnvMap);
         }
         //
-        /**ÌØÊâÅäÖÃµÄ»·¾³±äÁ¿*/
+        /**ç‰¹æ®Šé…ç½®çš„ç¯å¢ƒå˜é‡*/
         protected Map<String, String> configEnvironment() {
             Settings settings = this.env.getSettings();
             XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
-            List<String> envNames = new ArrayList<String>();//ÓÃÓÚÊÕ¼¯»·¾³±äÁ¿Ãû³Æ
+            List<String> envNames = new ArrayList<String>();//ç”¨äºæ”¶é›†ç¯å¢ƒå˜é‡åç§°
             for (XmlNode xmlProp : xmlPropArray) {
                 for (XmlNode envItem : xmlProp.getChildren())
                     envNames.add(envItem.getName().toUpperCase());
@@ -330,7 +330,7 @@ public abstract class AbstractEnvironment implements Environment {
             Map<String, String> hasorEnv = new HashMap<String, String>();
             for (String envItem : envNames)
                 hasorEnv.put(envItem, settings.getString("hasor.environmentVar." + envItem));
-            /*µ¥¶À´¦Àíwork_home*/
+            /*å•ç‹¬å¤„ç†work_home*/
             String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
             workDir = workDir.replace("/", File.separator);
             if (workDir.startsWith("." + File.separatorChar))
@@ -340,14 +340,14 @@ public abstract class AbstractEnvironment implements Environment {
             return hasorEnv;
         }
         /*
-         * SettingListener ½Ó¿ÚÊµÏÖ
-         *   ÊµÏÖ¸Ã½Ó¿ÚµÄÄ¿µÄÊÇ£¬Í¨¹ı×¢²áSettingListener¶¯Ì¬¸üĞÂ»·¾³±äÁ¿Ïà¹ØĞÅÏ¢¡£
+         * SettingListener æ¥å£å®ç°
+         *   å®ç°è¯¥æ¥å£çš„ç›®çš„æ˜¯ï¼Œé€šè¿‡æ³¨å†ŒSettingListeneråŠ¨æ€æ›´æ–°ç¯å¢ƒå˜é‡ç›¸å…³ä¿¡æ¯ã€‚
          */
         public void reload(Settings newConfig) {
-            //1.ÏµÍ³»·¾³±äÁ¿ & JavaÏµÍ³ÊôĞÔ
+            //1.ç³»ç»Ÿç¯å¢ƒå˜é‡ & Javaç³»ç»Ÿå±æ€§
             Map<String, String> systemEnv = new HashMap<String, String>();
             systemEnv.putAll(System.getenv());
-            //2.JavaÊôĞÔ
+            //2.Javaå±æ€§
             Properties prop = System.getProperties();
             Map<String, String> javaProp = new HashMap<String, String>();
             for (Object propKey : prop.keySet()) {
@@ -356,20 +356,20 @@ public abstract class AbstractEnvironment implements Environment {
                 if (v != null)
                     javaProp.put(k, v.toString());
             }
-            //3.Hasor ÌØÓĞ±äÁ¿
+            //3.Hasor ç‰¹æœ‰å˜é‡
             Map<String, String> hasorEnv = this.configEnvironment();
             hasorEnv = (hasorEnv == null) ? new HashMap<String, String>() : hasorEnv;
-            //4.ÉèÖÃÉúĞ§
+            //4.è®¾ç½®ç”Ÿæ•ˆ
             DecSequenceMap<String, String> finalMap = new DecSequenceMap<String, String>();
             finalMap.addMap(userEnvMap);
             finalMap.addMap(hasorEnv);
             finalMap.addMap(javaProp);
             finalMap.addMap(systemEnv);
-            //5.½âÎöhasor ÌØÓĞ»·¾³±äÁ¿
+            //5.è§£æhasor ç‰¹æœ‰ç¯å¢ƒå˜é‡
             for (Entry<String, String> hasorEnt : hasorEnv.entrySet()) {
                 String k = hasorEnt.getKey();
                 String v = hasorEnt.getValue();
-                finalMap.put(k, "");/*Ô¤Êä³ö£¬·ÀÖ¹Ñ­»·*/
+                finalMap.put(k, "");/*é¢„è¾“å‡ºï¼Œé˜²æ­¢å¾ªç¯*/
                 v = this.evalString(v, finalMap);
                 finalMap.put(k, v);
                 hasorEnt.setValue(v);
@@ -377,7 +377,7 @@ public abstract class AbstractEnvironment implements Environment {
             //
             this.finalEnvMap = finalMap;
             //
-            /*ÈÕÖ¾Êä³ö*/
+            /*æ—¥å¿—è¾“å‡º*/
             if (Hasor.isInfoLogger()) {
                 int keyMaxSize = 0;
                 for (String key : finalMap.keySet())
@@ -407,7 +407,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         private String formatMap4log(int colWidth, Map<String, String> mapData) {
-            /*Êä³öÏµÍ³»·¾³±äÁ¿ÈÕÖ¾*/
+            /*è¾“å‡ºç³»ç»Ÿç¯å¢ƒå˜é‡æ—¥å¿—*/
             StringBuffer outLog = new StringBuffer("");
             for (String key : mapData.keySet()) {
                 String var = mapData.get(key);
@@ -432,14 +432,14 @@ public abstract class AbstractEnvironment implements Environment {
         private String evalEnvVar(String varName, Map<String, String> paramMap) {
             if (paramMap.containsKey(varName))
                 return paramMap.get(varName);
-            paramMap.put(varName, "");/*Ô¤´¦ÀíÖµ*/
+            paramMap.put(varName, "");/*é¢„å¤„ç†å€¼*/
             //
             String varValue = this.getEnv().get(varName);
             if (StringUtils.isBlank(varValue))
                 varValue = "";
             else
                 varValue = this.evalString(varValue, paramMap);
-            paramMap.put(varName, varValue);/*¸²¸ÇÔ¤´¦ÀíÖµ*/
+            paramMap.put(varName, varValue);/*è¦†ç›–é¢„å¤„ç†å€¼*/
             return varValue;
         }
         private String evalString(String evalString, Map<String, String> paramMap) {

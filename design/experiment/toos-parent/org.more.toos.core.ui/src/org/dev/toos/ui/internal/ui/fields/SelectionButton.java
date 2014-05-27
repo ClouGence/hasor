@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import org.eclipse.swt.widgets.Control;
 /**
  * 
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SelectionButton extends AbstractViewField<Boolean> implements SelectionListener {
     private String  text         = ".";
     private Boolean selection    = false;
     /*----------------------------------------------------------------------------*/
-    //°´Å¥Ïà¹Ø
+    //æŒ‰é’®ç›¸å…³
     private Button  dialogButton = null;
     private Button getButton(Composite parentComposite) {
         if (this.dialogButton != null)
@@ -68,7 +68,7 @@ public class SelectionButton extends AbstractViewField<Boolean> implements Selec
         if (this.dialogButton != null)
             this.dialogButton.setSelection(this.selection);
         else
-            fireOnFieldChanged();//Èç¹û¶ÔÏó»¹Î´´´½¨Ôò½ö½öÒı·¢ÊÂ¼ş¡£
+            fireOnFieldChanged();//å¦‚æœå¯¹è±¡è¿˜æœªåˆ›å»ºåˆ™ä»…ä»…å¼•å‘äº‹ä»¶ã€‚
     }
     public String getText() {
         return text;
@@ -82,7 +82,7 @@ public class SelectionButton extends AbstractViewField<Boolean> implements Selec
     public void widgetSelected(SelectionEvent e) {
         Boolean selectValue = this.selection;
         this.selection = this.dialogButton.getSelection();
-        //Èç¹û×Ö¶ÎÖµ·¢Éú±ä»¯ÔòÒı·¢ÊÂ¼ş¡£
+        //å¦‚æœå­—æ®µå€¼å‘ç”Ÿå˜åŒ–åˆ™å¼•å‘äº‹ä»¶ã€‚
         if (this.selection.equals(selectValue) == false)
             fireOnFieldChanged();
     }

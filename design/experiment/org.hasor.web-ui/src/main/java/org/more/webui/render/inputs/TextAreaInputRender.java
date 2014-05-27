@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ½«ÊäÈë×é½¨äÖÈ¾³Étextarea¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUIInput£¨UIInput.js£©
+ * å°†è¾“å…¥ç»„å»ºæ¸²æŸ“æˆtextareaã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUIInputï¼ˆUIInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class TextAreaInputRender<T extends UIInput> extends AbstractInputRender<T> {
-    /**ÒªÊ¹ÓÃµÄ±êÇ©*/
+    /**è¦ä½¿ç”¨çš„æ ‡ç­¾*/
     @Override
     public String tagName(ViewContext viewContext, T component) {
         return "textarea";
     }
-    /**¸Ã·½·¨µÄ·µ»ØÖµ»á±»tagAttributes·½·¨É¾³ı¡£*/
+    /**è¯¥æ–¹æ³•çš„è¿”å›å€¼ä¼šè¢«tagAttributesæ–¹æ³•åˆ é™¤ã€‚*/
     public InputType getInputType(ViewContext viewContext, T component) {
         return InputType.text;
     };

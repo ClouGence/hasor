@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import net.hasor.core.AppContext;
 import net.hasor.gift.icache.Cache;
 import net.hasor.gift.icache.CacheDefine;
 /**
- * Ê¹ÓÃMap×÷Îª»º´æ£¬MapCache»º´æ½ö×÷ÎªÄÚÖÃÌá¹©µÄÒ»¸öÄ¬ÈÏÊµÏÖ¡£
+ * ä½¿ç”¨Mapä½œä¸ºç¼“å­˜ï¼ŒMapCacheç¼“å­˜ä»…ä½œä¸ºå†…ç½®æä¾›çš„ä¸€ä¸ªé»˜è®¤å®ç°ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @CacheDefine("MapCache")
 public class MapCache<T> extends Thread implements Cache<T> {
@@ -42,9 +42,9 @@ public class MapCache<T> extends Thread implements Cache<T> {
     public void run() {
         this.setName(this.threadName);
         while (!this.exitThread) {
-            this.cacheEntityLock.writeLock().lock();//¼ÓËø(Ğ´)
+            this.cacheEntityLock.writeLock().lock();//åŠ é”(å†™)
             List<String> lostList = new ArrayList<String>();
-            /*±ê¼ÇÊ§Ğ§µÄÔªËØ*/
+            /*æ ‡è®°å¤±æ•ˆçš„å…ƒç´ */
             for (Entry<String, CacheEntity<T>> ent : this.cacheEntityMap.entrySet()) {
                 CacheEntity<T> cacheEnt = ent.getValue();
                 if (cacheEnt == null)
@@ -52,12 +52,12 @@ public class MapCache<T> extends Thread implements Cache<T> {
                 if (cacheEnt.isLost())
                     lostList.add(ent.getKey());
             }
-            /*ÒÆ³ıÊ§Ğ§µÄÔªËØ*/
+            /*ç§»é™¤å¤±æ•ˆçš„å…ƒç´ */
             if (lostList.isEmpty() == false) {
                 for (String lostKey : lostList)
                     this.cacheEntityMap.remove(lostKey);
             }
-            this.cacheEntityLock.writeLock().unlock();//½âËø(Ğ´)
+            this.cacheEntityLock.writeLock().unlock();//è§£é”(å†™)
             try {
                 sleep(settings.getThreadSeep());
             } catch (InterruptedException e) {}
@@ -82,51 +82,51 @@ public class MapCache<T> extends Thread implements Cache<T> {
     public boolean toCache(String key, T value, long timeout) {
         if (key == null)
             return false;
-        this.cacheEntityLock.writeLock().lock();//¼ÓËø(Ğ´)
+        this.cacheEntityLock.writeLock().lock();//åŠ é”(å†™)
         if (this.settings.isEternal() == true) {
             timeout = Long.MAX_VALUE;
         } else if (timeout <= 0)
             timeout = this.settings.getDefaultTimeout();
         CacheEntity<T> oldEnt = this.cacheEntityMap.put(key, new CacheEntity<T>(value, timeout));
-        this.cacheEntityLock.writeLock().unlock();//½âËø(Ğ´)
+        this.cacheEntityLock.writeLock().unlock();//è§£é”(å†™)
         return true;
     }
     public T fromCache(String key) {
         T returnData = null;
-        this.cacheEntityLock.readLock().lock();//¼ÓËø(¶Á)
+        this.cacheEntityLock.readLock().lock();//åŠ é”(è¯»)
         CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
         if (cacheEntity != null) {
             if (this.settings.isAutoRenewal() == true)
                 cacheEntity.refresh();
             returnData = cacheEntity.get();
         }
-        this.cacheEntityLock.readLock().unlock();//½âËø(¶Á)
+        this.cacheEntityLock.readLock().unlock();//è§£é”(è¯»)
         return returnData;
     }
     public boolean hasCache(String key) {
-        this.cacheEntityLock.readLock().lock();//¼ÓËø(¶Á)
+        this.cacheEntityLock.readLock().lock();//åŠ é”(è¯»)
         boolean res = this.cacheEntityMap.containsKey(key);
-        this.cacheEntityLock.readLock().unlock();//½âËø(¶Á)
+        this.cacheEntityLock.readLock().unlock();//è§£é”(è¯»)
         return res;
     }
     public boolean remove(String key) {
-        this.cacheEntityLock.writeLock().lock();//¼ÓËø(Ğ´)
+        this.cacheEntityLock.writeLock().lock();//åŠ é”(å†™)
         CacheEntity<T> cacheEntity = this.cacheEntityMap.remove(key);
-        this.cacheEntityLock.writeLock().unlock();//½âËø(Ğ´)
+        this.cacheEntityLock.writeLock().unlock();//è§£é”(å†™)
         return cacheEntity != null;
     }
     public boolean refreshCache(String key) {
-        this.cacheEntityLock.readLock().lock();//¼ÓËø(¶Á)
+        this.cacheEntityLock.readLock().lock();//åŠ é”(è¯»)
         CacheEntity<T> cacheEntity = this.cacheEntityMap.get(key);
         if (cacheEntity != null)
             cacheEntity.refresh();
-        this.cacheEntityLock.readLock().unlock();//½âËø(¶Á)
+        this.cacheEntityLock.readLock().unlock();//è§£é”(è¯»)
         return cacheEntity != null;
     }
     public boolean clear() {
-        this.cacheEntityLock.writeLock().lock();//¼ÓËø(Ğ´)
+        this.cacheEntityLock.writeLock().lock();//åŠ é”(å†™)
         this.cacheEntityMap.clear();
-        this.cacheEntityLock.writeLock().unlock();//½âËø(Ğ´)
+        this.cacheEntityLock.writeLock().unlock();//è§£é”(å†™)
         return true;
     }
     /*-------------------------------------------------------------------------------------*/

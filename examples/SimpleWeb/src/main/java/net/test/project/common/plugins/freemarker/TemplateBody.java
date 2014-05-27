@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import freemarker.template.TemplateException;
 /**
  * 
  * @version : 2012-6-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface TemplateBody {
-    /**±êÇ©ÊôĞÔ*/
+    /**æ ‡ç­¾å±æ€§*/
     public Map<String, Object> tagProperty();
-    /**»ñÈ¡±êÇ©Ö´ĞĞ»·¾³*/
+    /**è·å–æ ‡ç­¾æ‰§è¡Œç¯å¢ƒ*/
     public Environment getEnvironment();
-    /**äÖÈ¾Êä³ö±êÇ©ÄÚÈİ*/
+    /**æ¸²æŸ“è¾“å‡ºæ ‡ç­¾å†…å®¹*/
     public void doBody(Writer arg0) throws TemplateException, IOException;
-    /**äÖÈ¾Êä³ö±êÇ©ÄÚÈİ*/
+    /**æ¸²æŸ“è¾“å‡ºæ ‡ç­¾å†…å®¹*/
     public void doBody() throws TemplateException, IOException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
  */
 package org.more.classcode;
 /**
-* AopµÄreturningÇĞÃæ£¬µ±ÊÕµ½returningÇĞÃæµÄÊÂ¼şÍ¨ÖªÊ±»á×Ô¶¯µ÷ÓÃ¸Ã½Ó¿Ú¡£¸Ã½Ó¿Ú·½·¨»áÔÚÉú³ÉaopÁ´µÄµÚÒ»¸ö»·½Ú·¢³öµ÷ÓÃ¡£ÏÂÃæÕâÕÅÍ¼ÖĞReturning¾ÍÊÇÕâ¸ö½Ó¿ÚµÄ¹¤×÷µã¡£
-* µ«ÊÇÓÉÓÚreturningÊÇµ±filter_startµ÷ÓÃÍê³ÉÖ®ºóÔÚ½øĞĞµÄ¡£Òò´ËreturningµÄÏûÏ¢ÊÇÔÚ{@link AopInvokeFilter}¹ıÂËÆ÷Á´µ÷ÓÃÖ®ºó¡£Æä½á¹ûÒ²ÊÜµ½¹ıÂËÆ÷Á´µÄÓ°Ïì¡£
+* Aopçš„returningåˆ‡é¢ï¼Œå½“æ”¶åˆ°returningåˆ‡é¢çš„äº‹ä»¶é€šçŸ¥æ—¶ä¼šè‡ªåŠ¨è°ƒç”¨è¯¥æ¥å£ã€‚è¯¥æ¥å£æ–¹æ³•ä¼šåœ¨ç”Ÿæˆaopé“¾çš„ç¬¬ä¸€ä¸ªç¯èŠ‚å‘å‡ºè°ƒç”¨ã€‚ä¸‹é¢è¿™å¼ å›¾ä¸­Returningå°±æ˜¯è¿™ä¸ªæ¥å£çš„å·¥ä½œç‚¹ã€‚
+* ä½†æ˜¯ç”±äºreturningæ˜¯å½“filter_startè°ƒç”¨å®Œæˆä¹‹ååœ¨è¿›è¡Œçš„ã€‚å› æ­¤returningçš„æ¶ˆæ¯æ˜¯åœ¨{@link AopInvokeFilter}è¿‡æ»¤å™¨é“¾è°ƒç”¨ä¹‹åã€‚å…¶ç»“æœä¹Ÿå—åˆ°è¿‡æ»¤å™¨é“¾çš„å½±å“ã€‚
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-2
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public interface AopReturningListener {
     /**
-     * ÓÃÓÚ½ÓÊÕreturningÇĞÃæµÄÊÂ¼şµÄ·½·¨¡£
-     * @param target ±»µ÷ÓÃµÄ¶ÔÏó¡£
-     * @param method ±»µ÷ÓÃµÄ·½·¨¡£
-     * @param args µ÷ÓÃÕâ¸ö·½·¨´«µİµÄ²ÎÊı¡£
-     * @param result ¸Ã²ÎÊıÊÇÖ´ĞĞµ÷ÓÃÖ®ºóµÄ·½·¨·µ»ØÖµ¡£
+     * ç”¨äºæ¥æ”¶returningåˆ‡é¢çš„äº‹ä»¶çš„æ–¹æ³•ã€‚
+     * @param target è¢«è°ƒç”¨çš„å¯¹è±¡ã€‚
+     * @param method è¢«è°ƒç”¨çš„æ–¹æ³•ã€‚
+     * @param args è°ƒç”¨è¿™ä¸ªæ–¹æ³•ä¼ é€’çš„å‚æ•°ã€‚
+     * @param result è¯¥å‚æ•°æ˜¯æ‰§è¡Œè°ƒç”¨ä¹‹åçš„æ–¹æ³•è¿”å›å€¼ã€‚
      */
     public void returningInvoke(Object target, Method method, Object[] args, Object result) throws Throwable;
 }

@@ -16,8 +16,8 @@
 package net.hasor.core;
 /**
  * 
- * @version : 2014Äê5ÔÂ22ÈÕ
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @version : 2014å¹´5æœˆ22æ—¥
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Provider<T> {
     /** */

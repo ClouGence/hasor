@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package net.hasor.core.event;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.Hasor;
 /**
- * Òì²½ÊÂ¼ş»Øµ÷½Ó¿Ú¡£
+ * å¼‚æ­¥äº‹ä»¶å›è°ƒæ¥å£ã€‚
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class EmptyEventCallBackHook implements EventCallBackHook {
     public void handleException(String eventType, Object[] objects, Throwable e) {
-        Hasor.logWarn("During the execution of Event ¡®%s¡¯ throw an error.%s", eventType, e);
+        Hasor.logWarn("During the execution of Event â€˜%sâ€™ throw an error.%s", eventType, e);
     }
     public void handleComplete(String eventType, Object[] objects) {}
 }

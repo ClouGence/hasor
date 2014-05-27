@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**
- * ¸ºÔğ¸ù¾İ±êÇ©ÔªËØ´´½¨×é½¨¶ÔÏó£¬¸ÃÀà»á¶ÔfreemarkerÓĞÇ¿ÁÒµÄ°æ±¾ÏŞÖÆÒªÇó¡£¸ü»»freemarker°æ±¾¿ÉÄÜ»áÒı·¢ÎÊÌâ¡£
+ * è´Ÿè´£æ ¹æ®æ ‡ç­¾å…ƒç´ åˆ›å»ºç»„å»ºå¯¹è±¡ï¼Œè¯¥ç±»ä¼šå¯¹freemarkeræœ‰å¼ºçƒˆçš„ç‰ˆæœ¬é™åˆ¶è¦æ±‚ã€‚æ›´æ¢freemarkerç‰ˆæœ¬å¯èƒ½ä¼šå¼•å‘é—®é¢˜ã€‚
  * @version : 2012-5-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Hook_Include implements ElementHook {
     public static String Name = "Include";
@@ -29,13 +29,13 @@ public class Hook_Include implements ElementHook {
         try {
             String includeName = e.getDescription().split(" ")[1];
             includeName = includeName.substring(1, includeName.length() - 1);
-            /*´¦ÀíincludeµÄel*/
+            /*å¤„ç†includeçš„el*/
             viewContext.processTemplateString(includeName.trim());
             Template includeTemp = e.getTemplate().getConfiguration().getTemplate(includeName);
             scanner.parser(includeTemp, parent, viewContext);
             return null;
         } catch (Exception e2) {
-            throw new ElementHookException("½âÎöÒì³££º´¦Àíinclude·¢Éú´íÎó¡°" + e.getDescription() + "¡±", e2);
+            throw new ElementHookException("è§£æå¼‚å¸¸ï¼šå¤„ç†includeå‘ç”Ÿé”™è¯¯â€œ" + e.getDescription() + "â€", e2);
         }
     }
     public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {}

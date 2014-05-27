@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package org.more;
 /**
- * ◊™ªª“Ï≥£°£
+ * ËΩ¨Êç¢ÂºÇÂ∏∏„ÄÇ
  * @version 2009-7-8
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò• (zyc@hasor.net)
  */
 public class TransformException extends Exception {
     /**
@@ -25,15 +25,15 @@ public class TransformException extends Exception {
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 5032345759263916241L;
-    /**◊™ªª“Ï≥£°£*/
+    /**ËΩ¨Êç¢ÂºÇÂ∏∏„ÄÇ*/
     public TransformException(String string) {
         super(string);
     }
-    /**◊™ªª“Ï≥£°£*/
+    /**ËΩ¨Êç¢ÂºÇÂ∏∏„ÄÇ*/
     public TransformException(Throwable error) {
         super(error);
     }
-    /**◊™ªª“Ï≥£°£*/
+    /**ËΩ¨Êç¢ÂºÇÂ∏∏„ÄÇ*/
     public TransformException(String string, Throwable error) {
         super(string, error);
     }

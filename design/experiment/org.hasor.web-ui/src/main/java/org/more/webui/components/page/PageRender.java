@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import freemarker.template.TemplateModelException;
 /**
  * 
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class PageRender extends AbstractRender<PageCom> {
     @Override
@@ -37,7 +37,7 @@ public class PageRender extends AbstractRender<PageCom> {
     public String tagName(ViewContext viewContext, PageCom component) {
         return "ul";
     }
-    /**ÎŞÊı¾İÅĞ¶Ï£¬ÓĞÊı¾İÊ±Ê¼ÖÕ·µ»Øtrue*/
+    /**æ— æ•°æ®åˆ¤æ–­ï¼Œæœ‰æ•°æ®æ—¶å§‹ç»ˆè¿”å›true*/
     public boolean noData(boolean hasData, String noDateMode, String contains) {
         boolean doThis = true;
         if (hasData == false)
@@ -53,7 +53,7 @@ public class PageRender extends AbstractRender<PageCom> {
         viewContext.remove("isCurrent");
         viewContext.remove("PageIndex");
         viewContext.remove("RowNum");
-        viewContext.remove("RenderMode");//Öµ¿ÉÄÜÊÇÈçÏÂµÄ¼¸¸ö£ºFirst, Prev, Item, Next, Last, NoDate
+        viewContext.remove("RenderMode");//å€¼å¯èƒ½æ˜¯å¦‚ä¸‹çš„å‡ ä¸ªï¼šFirst, Prev, Item, Next, Last, NoDate
         viewContext.remove("PageLink");
         arg3.getEnvironment().setVariable("isFirst", null);
         arg3.getEnvironment().setVariable("isLast", null);
@@ -95,21 +95,21 @@ public class PageRender extends AbstractRender<PageCom> {
     public void render(ViewContext viewContext, PageCom component, TemplateBody arg3, Writer writer) throws IOException, TemplateException {
         if (arg3 == null)
             return;
-        /**ÆğÊ¼ºÅ*/
+        /**èµ·å§‹å·*/
         int startWith = component.getStartWith();
-        /**×ÜÊı*/
+        /**æ€»æ•°*/
         int rowCount = component.getRowCount();
-        /**Ò³´óĞ¡*/
+        /**é¡µå¤§å°*/
         int pageSize = component.getPageSize();
-        /**µ±Ç°Ò³Âë*/
+        /**å½“å‰é¡µç */
         int current = component.getCurrentPage();
-        /**¿ÉÒÔ·ÖÒ³µÄ×î´óÒ³Âë*/
+        /**å¯ä»¥åˆ†é¡µçš„æœ€å¤§é¡µç */
         float _pageMod = (float) (rowCount - startWith) % (float) pageSize;
         float _pageMax = (float) (rowCount - startWith) / (float) pageSize;
         int maxPage = (_pageMod != 0) ? ((int) _pageMax) + 1 : (int) _pageMax;
-        /**µ±Ã»ÓĞÊı¾İÊ±ÏÔÊ¾Ä£Ê½£¬¿Éµş¼Ó£¨¶ººÅ·Ö¸î£©¡£F(Ê×Ò³°´Å¥)¡¢P(ÉÏÒ»Ò³°´Å¥)¡¢N(ÏÂÒ»Ò³°´Å¥)¡¢L£¨Î²Ò³°´Å¥£©¡¢I(Ò³Âë°´Å¥)¡¢T(ÏÔÊ¾ui_pNoDate±êÇ©ÄÚÈİ)£º×¢ÒâIÓëTÖ»ÄÜÓĞÒ»¸öÉúĞ§*/
+        /**å½“æ²¡æœ‰æ•°æ®æ—¶æ˜¾ç¤ºæ¨¡å¼ï¼Œå¯å åŠ ï¼ˆé€—å·åˆ†å‰²ï¼‰ã€‚F(é¦–é¡µæŒ‰é’®)ã€P(ä¸Šä¸€é¡µæŒ‰é’®)ã€N(ä¸‹ä¸€é¡µæŒ‰é’®)ã€Lï¼ˆå°¾é¡µæŒ‰é’®ï¼‰ã€I(é¡µç æŒ‰é’®)ã€T(æ˜¾ç¤ºui_pNoDateæ ‡ç­¾å†…å®¹)ï¼šæ³¨æ„Iä¸Tåªèƒ½æœ‰ä¸€ä¸ªç”Ÿæ•ˆ*/
         String noDateMode = component.getNoDateMode();
-        /**ÓĞÎŞÊı¾İ*/
+        /**æœ‰æ— æ•°æ®*/
         boolean hasData = rowCount - startWith > 0;
         //
         //
@@ -148,13 +148,13 @@ public class PageRender extends AbstractRender<PageCom> {
         //4.NoDate
         if (hasData == false) {
             if (noDateMode.contains("I") == true) {
-                /**ÎŞÊı¾İ£ºÒ³Âë*/
+                /**æ— æ•°æ®ï¼šé¡µç */
                 this.clearVar(viewContext, arg3, component);
                 this.putCurrentVar(viewContext, arg3, true);
                 this.putVar(viewContext, arg3, 0, startWith, component, Mode.Item);
                 arg3.render(writer);
             } else if (noDateMode.contains("T") == true) {
-                /**ÎŞÊı¾İ£º±êÇ©*/
+                /**æ— æ•°æ®ï¼šæ ‡ç­¾*/
                 this.clearVar(viewContext, arg3, component);
                 this.putCurrentVar(viewContext, arg3, null);
                 this.putVar(viewContext, arg3, null, null, component, Mode.NoDate);

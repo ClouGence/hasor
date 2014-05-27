@@ -32,14 +32,14 @@
 ///**
 // * 
 // * @version : 2014-5-10
-// * @author ÕÔÓÀ´º (zyc@byshell.org)
+// * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 // */
 //public class SimpleRegisterManagerCreater implements RegisterManagerCreater {
 //    public RegisterManager create(Environment env) {
 //        return new SimpleRegisterManager();
 //    }
 //}
-///*RegisterManager½Ó¿ÚÊµÏÖ*/
+///*RegisterManageræ¥å£å®ç°*/
 //class SimpleRegisterManager implements RegisterManager, BeanBuilder {
 //    /*-----------------------------------------------------------------Collect SimpleTypeRegister*/
 //    private Map<Class<?>, List<RegisterInfo<?>>> registerInfoMap = new HashMap<Class<?>, List<RegisterInfo<?>>>();
@@ -56,7 +56,7 @@
 //    }
 //    /*---------------------------------------------------------------------------impl BeanBuilder*/
 //    public <T> T getInstance(RegisterInfo<T> oriType) {
-//        //1.·ÇTypeRegister
+//        //1.éTypeRegister
 //        if (oriType instanceof SimpleTypeRegister == false) {
 //            Provider<T> provider = oriType.getProvider();
 //            if (provider != null)
@@ -69,22 +69,22 @@
 //        return null;
 //    }
 //    public Iterator<RegisterInfo<?>> getRegisterIterator() {
-//        /*¸Ã·½·¨µÄÂß¼­ÊÇÓÃµü´úÆ÷µü´úMapµÄValue£¬ÖĞ±íÊ¾µÄRegisterInfo£¬µ«ÊÇÓÉÓÚMapµÄValueÊÇÒ»¸öList£¬Òò´Ëµü´úÆ÷ÓĞ±ØÒªÔÚ½øĞĞ¶ş´Îµİ½øµü´ú¡£*/
+//        /*è¯¥æ–¹æ³•çš„é€»è¾‘æ˜¯ç”¨è¿­ä»£å™¨è¿­ä»£Mapçš„Valueï¼Œä¸­è¡¨ç¤ºçš„RegisterInfoï¼Œä½†æ˜¯ç”±äºMapçš„Valueæ˜¯ä¸€ä¸ªListï¼Œå› æ­¤è¿­ä»£å™¨æœ‰å¿…è¦åœ¨è¿›è¡ŒäºŒæ¬¡é€’è¿›è¿­ä»£ã€‚*/
 //        final Iterator<List<RegisterInfo<?>>> entIterator = this.registerInfoMap.values().iterator();
 //        return new Iterator<RegisterInfo<?>>() {
 //            private Iterator<RegisterInfo<?>> regIterator = new ArrayList<RegisterInfo<?>>(0).iterator();
 //            public RegisterInfo<?> next() {
 //                while (true) {
 //                    if (this.regIterator.hasNext() == false) {
-//                        /*1.µ±Ç°Listµü´úÍêÁË£¬²¢ÇÒÃ»ÓĞ¿Éµü´úµÄListÁË --> break */
+//                        /*1.å½“å‰Listè¿­ä»£å®Œäº†ï¼Œå¹¶ä¸”æ²¡æœ‰å¯è¿­ä»£çš„Listäº† --> break */
 //                        if (entIterator.hasNext() == false)
 //                            break;
-//                        /*2.µ±Ç°Listµü´úÍêÁË£¬µü´úÏÂÒ»¸öList*/
+//                        /*2.å½“å‰Listè¿­ä»£å®Œäº†ï¼Œè¿­ä»£ä¸‹ä¸€ä¸ªList*/
 //                        this.regIterator = entIterator.next().iterator();
 //                    }
-//                    /*Ò»¶¨ÒªÔÚÅĞ¶ÏÒ»±é£¬·ñÔòºÜ¿ÉÄÜÏÂÒ»¸öµü´úÆ÷Ã»ÄÚÈİ¶øÅ×³öNoSuchElementExceptionÒì³££¬¶øÕâ¸öÊ±ºòÅ×³öÕâ¸öÒì³£ÊÇ²»ÊÊµ±µÄ¡£*/
+//                    /*ä¸€å®šè¦åœ¨åˆ¤æ–­ä¸€éï¼Œå¦åˆ™å¾ˆå¯èƒ½ä¸‹ä¸€ä¸ªè¿­ä»£å™¨æ²¡å†…å®¹è€ŒæŠ›å‡ºNoSuchElementExceptionå¼‚å¸¸ï¼Œè€Œè¿™ä¸ªæ—¶å€™æŠ›å‡ºè¿™ä¸ªå¼‚å¸¸æ˜¯ä¸é€‚å½“çš„ã€‚*/
 //                    if (this.regIterator.hasNext())
-//                        /*3.µ±Ç°µü´úÆ÷ÓĞÄÚÈİ*/
+//                        /*3.å½“å‰è¿­ä»£å™¨æœ‰å†…å®¹*/
 //                        break;
 //                }
 //                //

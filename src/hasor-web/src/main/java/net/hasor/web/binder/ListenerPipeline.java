@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import net.hasor.web.WebAppContext;
 /**
  * 
  * @version : 2013-4-17
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface ListenerPipeline extends HttpSessionListener, ServletContextListener {
-    /**³õÊ¼»¯ServletÒì³£¹³×Ó¡£*/
+    /**åˆå§‹åŒ–Servletå¼‚å¸¸é’©å­ã€‚*/
     public void init(WebAppContext appContext);
 }

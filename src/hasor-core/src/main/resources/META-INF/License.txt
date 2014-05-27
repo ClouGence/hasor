@@ -186,7 +186,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2013 Hasor of copyright ’‘”¿¥∫(zyc@hasor.net)
+   Copyright 2013 Hasor of copyright ËµµÊ∞∏Êò•(zyc@hasor.net)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -215,8 +215,8 @@ and conditions of the following licenses.
 ------------------------------------------------------------------------------------
 >>> ASM-3.0:
 
-package is °∞org.more.asm°±
-License °∞/META-INF/license/License.asm30.txt°±
+package is ‚Äúorg.more.asm‚Äù
+License ‚Äú/META-INF/license/License.asm30.txt‚Äù
 
 Copyright (c) 2000-2005 INRIA, France Telecom
 All rights reserved.
@@ -253,8 +253,8 @@ Copyright (c) 1999-2009, OW2 Consortium <http://www.ow2.org/>
 ------------------------------------------------------------------------------------
 >>> Ognl:
 
-package is °∞org.more.ognl°±
-License °∞/META-INF/license/License.ognl.txt°±
+package is ‚Äúorg.more.ognl‚Äù
+License ‚Äú/META-INF/license/License.ognl.txt‚Äù
 
 Copyright (c) 1998-2004, Drew Davidson and Luke Blanshard
 All rights reserved.
@@ -288,8 +288,8 @@ DAMAGE.
 ------------------------------------------------------------------------------------
 >>> jetty-util:
 
-package is °∞org.more.json°±
-License °∞/META-INF/license/License.ASF20.txt°±
+package is ‚Äúorg.more.json‚Äù
+License ‚Äú/META-INF/license/License.ASF20.txt‚Äù
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0

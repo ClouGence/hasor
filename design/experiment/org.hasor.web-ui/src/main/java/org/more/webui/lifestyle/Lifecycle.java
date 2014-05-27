@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import org.more.webui.lifestyle.phase.RestoreView_Phase;
 import org.more.webui.lifestyle.phase.UpdateModules_Phase;
 import org.more.webui.lifestyle.phase.Validation_Phase;
 /**
- * ÉúÃüÖÜÆÚÖ´ĞĞ·½·¨
+ * ç”Ÿå‘½å‘¨æœŸæ‰§è¡Œæ–¹æ³•
  * @version : 2011-8-3
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class Lifecycle {
     private List<PhaseListener> listeners = new ArrayList<PhaseListener>();
@@ -46,23 +46,23 @@ public abstract class Lifecycle {
     public FacesContext getFacesContext() {
         return this.uiContext;
     };
-    /**Ìí¼ÓÒ»¸ö½×¶Î¼àÌıÆ÷*/
+    /**æ·»åŠ ä¸€ä¸ªé˜¶æ®µç›‘å¬å™¨*/
     public void addPhaseListener(PhaseListener listener) {
         if (this.listeners.contains(listener) == false)
             this.listeners.add(listener);
     };
-    /**É¾³ıÒ»¸ö½×¶Î¼àÌıÆ÷*/
+    /**åˆ é™¤ä¸€ä¸ªé˜¶æ®µç›‘å¬å™¨*/
     public void removePhaseListener(PhaseListener listener) {
         if (this.listeners.contains(listener) == false)
             this.listeners.remove(listener);
     };
-    /**»ñÈ¡ËùÓĞ½×¶ÎµÄ¼àÌıÆ÷*/
+    /**è·å–æ‰€æœ‰é˜¶æ®µçš„ç›‘å¬å™¨*/
     public PhaseListener[] getPhaseListeners() {
         PhaseListener[] list = new PhaseListener[listeners.size()];
         this.listeners.toArray(list);
         return list;
     };
-    /**¿ªÊ¼´¦ÀíÕû¸öuiÉúÃüÖÜÆÚ·½·¨¡£ */
+    /**å¼€å§‹å¤„ç†æ•´ä¸ªuiç”Ÿå‘½å‘¨æœŸæ–¹æ³•ã€‚ */
     public void execute(ViewContext uiContext) throws UILifecycleException {
         for (Phase phase : this.getPhases())
             try {
@@ -71,16 +71,16 @@ public abstract class Lifecycle {
                 phase.doPhase(uiContext, this.listeners);
                 //                System.out.println("$$$$\t" + phase + "\t" + (System.currentTimeMillis() - t));
             } catch (Throwable e) {
-                throw new UILifecycleException("ÉúÃüÖÜÆÚÒì³££ºÔÚÖ´ĞĞ" + phase.getPhaseID() + "½×¶ÎÆÚ¼ä·¢ÉúÒì³£¡£", e);
+                throw new UILifecycleException("ç”Ÿå‘½å‘¨æœŸå¼‚å¸¸ï¼šåœ¨æ‰§è¡Œ" + phase.getPhaseID() + "é˜¶æ®µæœŸé—´å‘ç”Ÿå¼‚å¸¸ã€‚", e);
             }
     };
-    /**»ñÈ¡ÉúÃüÖÜÆÚÖĞµÄ¸÷¸ö½×¶Î¶ÔÏó¡£*/
+    /**è·å–ç”Ÿå‘½å‘¨æœŸä¸­çš„å„ä¸ªé˜¶æ®µå¯¹è±¡ã€‚*/
     public Phase[] getPhases() {
         Phase[] phase = new Phase[this.phase.size()];
         this.phase.toArray(phase);
         return phase;
     };
-    /**Ìí¼ÓÒ»¸ö½×¶Î*/
+    /**æ·»åŠ ä¸€ä¸ªé˜¶æ®µ*/
     public void addPhase(Phase phase) {
         this.phase.add(phase);
     };
@@ -93,30 +93,30 @@ public abstract class Lifecycle {
             threadLocal.remove();
         threadLocal.set(viewContext);
     };
-    /**»ñÈ¡µ±Ç°Ïß³ÌÔËĞĞÖĞµÄ½×¶Î¡£*/
+    /**è·å–å½“å‰çº¿ç¨‹è¿è¡Œä¸­çš„é˜¶æ®µã€‚*/
     public Phase getCurrentPhase() {
         if (threadLocal.get() != null)
             return threadLocal.get();
         return null;
     }
-    /**´´½¨Ä¬ÈÏµÄÉúÃüÖÜÆÚ¶ÔÏó*/
+    /**åˆ›å»ºé»˜è®¤çš„ç”Ÿå‘½å‘¨æœŸå¯¹è±¡*/
     public static Lifecycle getDefault(FacesConfig config, FacesContext context) {
-        /*´´½¨ÉúÃüÖÜÆÚ¶ÔÏó*/
+        /*åˆ›å»ºç”Ÿå‘½å‘¨æœŸå¯¹è±¡*/
         Lifecycle lifestyle = new Lifecycle(config, context) {};
         {
-            //µÚ1½×¶Î£¬ÓÃÓÚ³õÊ¼»¯ÊÓÍ¼ÖĞµÄ×é¼şÄ£ĞÍÊ÷¡£
+            //ç¬¬1é˜¶æ®µï¼Œç”¨äºåˆå§‹åŒ–è§†å›¾ä¸­çš„ç»„ä»¶æ¨¡å‹æ ‘ã€‚
             lifestyle.addPhase(new InitView_Phase());
-            //µÚ2½×¶Î£¬ÖØËÜUI×é¼ş×´Ì¬¡£
+            //ç¬¬2é˜¶æ®µï¼Œé‡å¡‘UIç»„ä»¶çŠ¶æ€ã€‚
             lifestyle.addPhase(new RestoreView_Phase());
-            //µÚ3½×¶Î£¬½«ÇëÇó²ÎÊıÖĞÒªÇó¹àÈëµÄÊôĞÔÖµ¹àÈëµ½ÊôĞÔÉÏ¡£
+            //ç¬¬3é˜¶æ®µï¼Œå°†è¯·æ±‚å‚æ•°ä¸­è¦æ±‚çŒå…¥çš„å±æ€§å€¼çŒå…¥åˆ°å±æ€§ä¸Šã€‚
             lifestyle.addPhase(new ApplyRequestValue_Phase());
-            //µÚ4½×¶Î£¬¶Ô×é¼şÄ£ĞÍÖĞµÄÊı¾İ½øĞĞÑéÖ¤¡£
+            //ç¬¬4é˜¶æ®µï¼Œå¯¹ç»„ä»¶æ¨¡å‹ä¸­çš„æ•°æ®è¿›è¡ŒéªŒè¯ã€‚
             lifestyle.addPhase(new Validation_Phase());
-            //µÚ5½×¶Î£¬½«×é¼şÄ£ĞÍÖĞµÄÖµÉèÖÃµ½Ó³ÉäµÄbeanÖĞ¡£
+            //ç¬¬5é˜¶æ®µï¼Œå°†ç»„ä»¶æ¨¡å‹ä¸­çš„å€¼è®¾ç½®åˆ°æ˜ å°„çš„beanä¸­ã€‚
             lifestyle.addPhase(new UpdateModules_Phase());
-            //µÚ6½×¶Î£¬´¦ÀíÇëÇóÏûÏ¢¡£ÖîÈçCommand£¬ClickÊÂ¼ş¡£µÈ¶¯×÷¡£
+            //ç¬¬6é˜¶æ®µï¼Œå¤„ç†è¯·æ±‚æ¶ˆæ¯ã€‚è¯¸å¦‚Commandï¼ŒClickäº‹ä»¶ã€‚ç­‰åŠ¨ä½œã€‚
             lifestyle.addPhase(new InvokeApplication_Phase());
-            //µÚ7½×¶Î£¬½«Ö´ĞĞÍêµÄUIĞÅÏ¢äÖÈ¾µ½¿Í»§»úÖĞ¡£
+            //ç¬¬7é˜¶æ®µï¼Œå°†æ‰§è¡Œå®Œçš„UIä¿¡æ¯æ¸²æŸ“åˆ°å®¢æˆ·æœºä¸­ã€‚
             lifestyle.addPhase(new Render_Phase());
         }
         return lifestyle;

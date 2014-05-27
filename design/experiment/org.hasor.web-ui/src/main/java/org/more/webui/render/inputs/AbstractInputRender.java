@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,22 +23,22 @@ import org.more.webui.render.AbstractRender;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ³éÏóÀà£¬ÊäÈë×é½¨µÄäÖÈ¾Æ÷£¬Ö÷ÒªÓÃÓÚinput±êÇ©¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUIInput£¨UIInput.js£©
+ * æŠ½è±¡ç±»ï¼Œè¾“å…¥ç»„å»ºçš„æ¸²æŸ“å™¨ï¼Œä¸»è¦ç”¨äºinputæ ‡ç­¾ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUIInputï¼ˆUIInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractInputRender<T extends UIInput> extends AbstractRender<T> {
     @Override
     public String getClientType() {
         return "UIInput";
     }
-    /**ÒªÊ¹ÓÃµÄ±êÇ©*/
+    /**è¦ä½¿ç”¨çš„æ ‡ç­¾*/
     @Override
     public String tagName(ViewContext viewContext, T component) {
         return "input";
     }
-    /**»ñÈ¡äÖÈ¾µÄinput±êÇ©ÆätypeÊôĞÔ*/
+    /**è·å–æ¸²æŸ“çš„inputæ ‡ç­¾å…¶typeå±æ€§*/
     public abstract InputType getInputType(ViewContext viewContext, T component);
     @Override
     public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {

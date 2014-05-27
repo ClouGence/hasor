@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * µÚ7½×¶Î£¬½«Ö´ĞĞÍêµÄUIĞÅÏ¢äÖÈ¾µ½¿Í»§»úÖĞ¡£
+ * ç¬¬7é˜¶æ®µï¼Œå°†æ‰§è¡Œå®Œçš„UIä¿¡æ¯æ¸²æŸ“åˆ°å®¢æˆ·æœºä¸­ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Render_Phase extends Phase {
     public static class Render_PhaseID extends PhaseID {
@@ -38,13 +38,13 @@ public class Render_Phase extends Phase {
         HttpServletResponse response = viewContext.getHttpResponse();
         if (response.isCommitted() == true)
             return;
-        //È·¶¨äÖÈ¾·¶Î§£¬½øĞĞäÖÈ¾
+        //ç¡®å®šæ¸²æŸ“èŒƒå›´ï¼Œè¿›è¡Œæ¸²æŸ“
         response.setCharacterEncoding(viewContext.getUIContext().getEnvironment().getOutEncoding());
         RenderType renderType = viewContext.getRenderType();
         if (renderType == RenderType.No)
             return;
-        else if (renderType == RenderType.Part) {//TODO : ÑÏÖØÎÊÌâ ÓĞ¿ÉÄÜ²»Ö§³Ö
-            System.out.println("¾Ö²¿äÖÈ¾::Ôİ²»Ö§³Ö.");
+        else if (renderType == RenderType.Part) {//TODO : ä¸¥é‡é—®é¢˜ æœ‰å¯èƒ½ä¸æ”¯æŒ
+            System.out.println("å±€éƒ¨æ¸²æŸ“::æš‚ä¸æ”¯æŒ.");
             return;
         } else if (renderType == RenderType.ALL)
             viewContext.getTemplate().process(viewContext.getViewELContext(), response.getWriter());

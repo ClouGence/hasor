@@ -18,13 +18,13 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 /**
- * ¸Ã½Ó¿ÚÓÃÓÚ´´½¨ CallableStatement ¶ÔÏó¡£
+ * è¯¥æ¥å£ç”¨äºåˆ›å»º CallableStatement å¯¹è±¡ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface CallableStatementCreator {
-    /**Ê¹ÓÃ²ÎÊı´«½øÀ´µÄÁ¬½Ó´´½¨ CallableStatement ¶ÔÏó¡£ */
+    /**ä½¿ç”¨å‚æ•°ä¼ è¿›æ¥çš„è¿æ¥åˆ›å»º CallableStatement å¯¹è±¡ã€‚ */
     public CallableStatement createCallableStatement(Connection con) throws SQLException;
 }

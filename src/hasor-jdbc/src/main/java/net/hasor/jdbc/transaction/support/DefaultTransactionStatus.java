@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,20 +21,20 @@ import net.hasor.jdbc.transaction.TransactionBehavior;
 import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionStatus;
 /**
- * ±íÊ¾Ò»¸öÓÃÓÚ¹ÜÀíÊÂÎñµÄ×´Ì¬µã
+ * è¡¨ç¤ºä¸€ä¸ªç”¨äºç®¡ç†äº‹åŠ¡çš„çŠ¶æ€ç‚¹
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class DefaultTransactionStatus implements TransactionStatus {
-    private Savepoint           savepoint     = null; //ÊÂÎñ±£´æµã
-    private TransactionObject   tranConn      = null; //µ±Ç°ÊÂÎñÊ¹ÓÃµÄÊı¾İ¿âÁ¬½Ó
-    private TransactionObject   suspendConn   = null; //µ±Ç°ÊÂÎñÖ®Ç°¹ÒÆğµÄÉÏÒ»¸öÊı¾İ¿âÊÂÎñ
-    private TransactionBehavior behavior      = null; //´«²¥ÊôĞÔ
-    private TransactionLevel    level         = null; //¸ôÀë¼¶±ğ
-    private boolean             completed     = false; //Íê³É£¨true±íÊ¾Íê³É£©
-    private boolean             rollbackOnly  = false; //ÒªÇó»Ø¹ö£¨true±íÊ¾»Ø¹ö£©
-    private boolean             newConnection = false; //ÊÇ·ñÊ¹ÓÃÁËÒ»¸öÈ«ĞÂµÄÊı¾İ¿âÁ¬½Ó¿ªÆôÊÂÎñ£¨true±íÊ¾ĞÂÁ¬½Ó£©
-    private boolean             readOnly      = false; //Ö»¶ÁÄ£Ê½£¨true±íÊ¾Ö»¶Á£©
+    private Savepoint           savepoint     = null; //äº‹åŠ¡ä¿å­˜ç‚¹
+    private TransactionObject   tranConn      = null; //å½“å‰äº‹åŠ¡ä½¿ç”¨çš„æ•°æ®åº“è¿æ¥
+    private TransactionObject   suspendConn   = null; //å½“å‰äº‹åŠ¡ä¹‹å‰æŒ‚èµ·çš„ä¸Šä¸€ä¸ªæ•°æ®åº“äº‹åŠ¡
+    private TransactionBehavior behavior      = null; //ä¼ æ’­å±æ€§
+    private TransactionLevel    level         = null; //éš”ç¦»çº§åˆ«
+    private boolean             completed     = false; //å®Œæˆï¼ˆtrueè¡¨ç¤ºå®Œæˆï¼‰
+    private boolean             rollbackOnly  = false; //è¦æ±‚å›æ»šï¼ˆtrueè¡¨ç¤ºå›æ»šï¼‰
+    private boolean             newConnection = false; //æ˜¯å¦ä½¿ç”¨äº†ä¸€ä¸ªå…¨æ–°çš„æ•°æ®åº“è¿æ¥å¼€å¯äº‹åŠ¡ï¼ˆtrueè¡¨ç¤ºæ–°è¿æ¥ï¼‰
+    private boolean             readOnly      = false; //åªè¯»æ¨¡å¼ï¼ˆtrueè¡¨ç¤ºåªè¯»ï¼‰
     //
     public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level) {
         this.behavior = behavior;
@@ -70,11 +70,11 @@ public class DefaultTransactionStatus implements TransactionStatus {
         //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
-    /*ÉèÖÃÍê³É×´Ì¬*/
+    /*è®¾ç½®å®ŒæˆçŠ¶æ€*/
     void setCompleted() {
         this.completed = true;
     }
-    /*±ê¼ÇÊ¹ÓÃµÄÊÇÈ«ĞÂÁ¬½Ó*/
+    /*æ ‡è®°ä½¿ç”¨çš„æ˜¯å…¨æ–°è¿æ¥*/
     void markNewConnection() {
         this.newConnection = true;
     }

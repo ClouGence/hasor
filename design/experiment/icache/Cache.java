@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 package net.hasor.gift.icache;
 import net.hasor.core.AppContext;
 /**
- * »º´æÊ¹ÓÃÈë¿Ú£¬»º´æµÄÄ¬ÈÏÊ¹ÓÃHashMap×÷ÎªÊµÏÖ¡£
+ * ç¼“å­˜ä½¿ç”¨å…¥å£ï¼Œç¼“å­˜çš„é»˜è®¤ä½¿ç”¨HashMapä½œä¸ºå®ç°ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Cache<T> {
-    /**³õÊ¼»¯Cache*/
+    /**åˆå§‹åŒ–Cache*/
     public void initCache(AppContext appContext);
-    /**Ïú»ÙCache*/
+    /**é”€æ¯Cache*/
     public void destroy(AppContext appContext);
-    /**½«Ò»¸ö¶ÔÏó·ÅÈë»º´æ¡£*/
+    /**å°†ä¸€ä¸ªå¯¹è±¡æ”¾å…¥ç¼“å­˜ã€‚*/
     public boolean toCache(String key, T value);
-    /**½«Ò»¸ö¶ÔÏó·ÅÈë»º´æ¡£*/
+    /**å°†ä¸€ä¸ªå¯¹è±¡æ”¾å…¥ç¼“å­˜ã€‚*/
     public boolean toCache(String key, T value, long timeout);
-    /**¸ù¾İkey´Ó»º´æÖĞ»ñÈ¡»º´æ¶ÔÏó¡£*/
+    /**æ ¹æ®keyä»ç¼“å­˜ä¸­è·å–ç¼“å­˜å¯¹è±¡ã€‚*/
     public T fromCache(String key);
-    /**ÅĞ¶Ï»º´æÖĞÊÇ·ñÓĞÒªÇóµÄ¶ÔÏó¡£*/
+    /**åˆ¤æ–­ç¼“å­˜ä¸­æ˜¯å¦æœ‰è¦æ±‚çš„å¯¹è±¡ã€‚*/
     public boolean hasCache(String key);
-    /**É¾³ıÄ³¸ö»º´æµÄÄÚÈİ*/
+    /**åˆ é™¤æŸä¸ªç¼“å­˜çš„å†…å®¹*/
     public boolean remove(String key);
-    /**Ë¢ĞÂÖ¸¶¨keyµÄ»º´æÊ±¼ä*/
+    /**åˆ·æ–°æŒ‡å®škeyçš„ç¼“å­˜æ—¶é—´*/
     public boolean refreshCache(String key);
-    /**Çå¿Õ»º´æ*/
+    /**æ¸…ç©ºç¼“å­˜*/
     public boolean clear();
 }

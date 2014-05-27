@@ -19,9 +19,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ±ê¼Ç¸ÃÀàÎªÒ»¸ö²å¼ş¡£
+ * æ ‡è®°è¯¥ç±»ä¸ºä¸€ä¸ªæ’ä»¶ã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

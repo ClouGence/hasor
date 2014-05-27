@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,23 +25,23 @@ import net.hasor.security._.AuthSession;
 import net.hasor.security._.SecurityContext;
 import org.hasor.Hasor;
 /**
- * {@link LogoutProcess}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link LogoutProcess}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class LogoutProcess extends AbstractProcess {
-    /**´¦ÀíµÇ³öÇëÇó*/
+    /**å¤„ç†ç™»å‡ºè¯·æ±‚*/
     public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
         AuthSession[] authSessions = secContext.getCurrentAuthSession();
         for (AuthSession authSession : authSessions) {
-            /*½«ËùÓĞÒÑµÇÈëµÄ»á»°È«²¿µÇ³ö*/
+            /*å°†æ‰€æœ‰å·²ç™»å…¥çš„ä¼šè¯å…¨éƒ¨ç™»å‡º*/
             if (authSession.isLogin() == false)
                 continue;
             String userCode = authSession.getUserObject().getUserCode();
             try {
-                authSession.doLogout();/*ÍË³ö»á»°*/
+                authSession.doLogout();/*é€€å‡ºä¼šè¯*/
                 Hasor.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardLogout();
             } catch (SecurityException e) {

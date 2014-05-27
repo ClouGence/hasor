@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package net.hasor.security;
 import java.io.Serializable;
 /**
- * ±íÊ¾Ò»¸öÈÏÖ¤±ê¼ÇÓÃ»§¡£
+ * è¡¨ç¤ºä¸€ä¸ªè®¤è¯æ ‡è®°ç”¨æˆ·ã€‚
  * @version : 2013-4-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Token extends Serializable {}

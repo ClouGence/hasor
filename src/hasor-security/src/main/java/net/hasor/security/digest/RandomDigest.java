@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,27 +23,27 @@ import javax.crypto.spec.PBEParameterSpec;
 import net.hasor.security.Digest;
 import org.more.util.CommonCodeUtils.Base64;
 /**
- * Ëæ»ú¼ÓÃÜ¡£
+ * éšæœºåŠ å¯†ã€‚
  * @version : 2013-4-24
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public final class RandomDigest implements Digest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
         PBEKeySpec pbks = new PBEKeySpec(generateKey.toCharArray());
-        // ÓÉ¿ÚÁîÉú³ÉÃÜÔ¿
+        // ç”±å£ä»¤ç”Ÿæˆå¯†é’¥
         SecretKeyFactory kf = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey k = kf.generateSecret(pbks);
-        // Éú³ÉËæ»úÊıÑÎ
+        // ç”Ÿæˆéšæœºæ•°ç›
         byte[] salt = new byte[8];
         Random r = new Random(System.currentTimeMillis());
         r.nextBytes(salt);
-        // ´´½¨²¢³õÊ¼»¯ÃÜÂëÆ÷
+        // åˆ›å»ºå¹¶åˆå§‹åŒ–å¯†ç å™¨
         Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
         PBEParameterSpec ps = new PBEParameterSpec(salt, 1000);
         cipher.init(Cipher.ENCRYPT_MODE, k, ps);
-        // »ñÈ¡Ã÷ÎÄ£¬Ö´ĞĞ¼ÓÃÜ
-        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+        // è·å–æ˜æ–‡ï¼Œæ‰§è¡ŒåŠ å¯†
+        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
         byte[] finalBytesData = new byte[bytesData.length + salt.length];
         System.arraycopy(salt, 0, finalBytesData, 0, salt.length);
         System.arraycopy(bytesData, 0, finalBytesData, salt.length, bytesData.length);
@@ -51,18 +51,18 @@ public final class RandomDigest implements Digest {
     }
     @Override
     public String decrypt(String strValue, String generateKey) throws Throwable {
-        // È¡µÃÃÜÎÄºÍÑÎ
+        // å–å¾—å¯†æ–‡å’Œç›
         byte[] finalBytesData = Base64.base64DecodeToArray(strValue);
         byte[] salt = new byte[8];
-        byte[] bytesData = new byte[finalBytesData.length - salt.length];// ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+        byte[] bytesData = new byte[finalBytesData.length - salt.length];// æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
         System.arraycopy(finalBytesData, 0, salt, 0, salt.length);
         System.arraycopy(finalBytesData, salt.length, bytesData, 0, bytesData.length);
         //
         PBEKeySpec pbks = new PBEKeySpec(generateKey.toCharArray());
-        // ÓÉ¿ÚÁîÉú³ÉÃÜÔ¿
+        // ç”±å£ä»¤ç”Ÿæˆå¯†é’¥
         SecretKeyFactory kf = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey k = kf.generateSecret(pbks);
-        // ´´½¨²¢³õÊ¼»¯ÃÜÂëÆ÷
+        // åˆ›å»ºå¹¶åˆå§‹åŒ–å¯†ç å™¨
         Cipher cp = Cipher.getInstance("PBEWithMD5AndDES");
         PBEParameterSpec ps = new PBEParameterSpec(salt, 1000);
         cp.init(Cipher.DECRYPT_MODE, k, ps);

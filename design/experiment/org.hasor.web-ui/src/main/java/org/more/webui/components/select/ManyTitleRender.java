@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package org.more.webui.components.select;
 import org.more.webui.render.select.CheckManySelectInputRender;
 /**
- * ¼Ì³Ğ×Ô{@link CheckManySelectInputRender}È¡ÏûÊä³öcheck¿ò¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUICheckManySelectInput£¨UICheckManySelectInput.js£©
+ * ç»§æ‰¿è‡ª{@link CheckManySelectInputRender}å–æ¶ˆè¾“å‡ºcheckæ¡†ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUICheckManySelectInputï¼ˆUICheckManySelectInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ManyTitleRender extends CheckManySelectInputRender<ManyTitle> {
     @Override

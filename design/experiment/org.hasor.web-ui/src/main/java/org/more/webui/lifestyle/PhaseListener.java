@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 package org.more.webui.lifestyle;
 import org.more.webui.context.ViewContext;
 /**
- * ½×¶ÎÊÂ¼ş¼àÌıÆ÷£¬µ±Ò»¸ö½×¶ÎµÄ·½·¨±»Ö´ĞĞÊ±»áµ÷ÓÃ¼àÌıÆ÷µÄÏà¹Ø·½·¨¡£
+ * é˜¶æ®µäº‹ä»¶ç›‘å¬å™¨ï¼Œå½“ä¸€ä¸ªé˜¶æ®µçš„æ–¹æ³•è¢«æ‰§è¡Œæ—¶ä¼šè°ƒç”¨ç›‘å¬å™¨çš„ç›¸å…³æ–¹æ³•ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface PhaseListener {
-    /**»ñÈ¡µ±Ç°µÄ¼àÌıÆ÷Òª¼àÌıµÄ¾ßÌå½×¶ÎID*/
+    /**è·å–å½“å‰çš„ç›‘å¬å™¨è¦ç›‘å¬çš„å…·ä½“é˜¶æ®µID*/
     public PhaseID getPhaseID();
-    /** µ±ÉúÃüÖÜÆÚÖĞÄ³Ò»¸ö½×¶ÎµÄexecute·½·¨±»Ö´ĞĞÖ®Ç°Ê±¡£*/
+    /** å½“ç”Ÿå‘½å‘¨æœŸä¸­æŸä¸€ä¸ªé˜¶æ®µçš„executeæ–¹æ³•è¢«æ‰§è¡Œä¹‹å‰æ—¶ã€‚*/
     public void afterPhase(ViewContext uiContext, Phase phase);
-    /** µ±ÉúÃüÖÜÆÚÖĞÄ³Ò»¸ö½×¶ÎµÄexecute·½·¨±»Ö´ĞĞÖ®ºóÊ±¡£*/
+    /** å½“ç”Ÿå‘½å‘¨æœŸä¸­æŸä¸€ä¸ªé˜¶æ®µçš„executeæ–¹æ³•è¢«æ‰§è¡Œä¹‹åæ—¶ã€‚*/
     public void beforePhase(ViewContext uiContext, Phase phase);
 };

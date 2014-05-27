@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package net.hasor.security._.support;
 /**
- * È¨ÏŞ»á»°Êı¾İ
+ * æƒé™ä¼šè¯æ•°æ®
  * @version : 2013-4-27
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SessionData implements Cloneable {
-    private String   userCode      = null;                      //ÓÃ»§±êÊ¶Âë
-    private String   authSystem    = null;                      //ÊÚÈ¨ÏµÍ³ID
-    private String[] permissionSet = null;                      //»á»°µÄÈ¨ÏŞ
-    private long     loginTime     = 0;                         //µÇÂ½Ê±¼ä
-    private long     lastTime      = System.currentTimeMillis(); //×îºó¸üĞÂÊ±¼ä
+    private String   userCode      = null;                      //ç”¨æˆ·æ ‡è¯†ç 
+    private String   authSystem    = null;                      //æˆæƒç³»ç»ŸID
+    private String[] permissionSet = null;                      //ä¼šè¯çš„æƒé™
+    private long     loginTime     = 0;                         //ç™»é™†æ—¶é—´
+    private long     lastTime      = System.currentTimeMillis(); //æœ€åæ›´æ–°æ—¶é—´
     /*--------------------------------------------------*/
     @Override
     public SessionData clone() throws CloneNotSupportedException {

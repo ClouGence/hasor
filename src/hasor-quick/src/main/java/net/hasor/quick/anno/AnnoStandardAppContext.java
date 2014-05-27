@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import net.hasor.core.ModuleInfo;
 import net.hasor.core.context.StandardAppContext;
 import org.more.util.StringUtils;
 /**
- * Ö§³ÖÍ¨¹ı @AnnoModule ×¢½âÀ´Ôö¼Ó Hasor Module¡£
+ * æ”¯æŒé€šè¿‡ @AnnoModule æ³¨è§£æ¥å¢åŠ  Hasor Moduleã€‚
  * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class AnnoStandardAppContext extends StandardAppContext {
     /***/
@@ -67,9 +67,9 @@ public class AnnoStandardAppContext extends StandardAppContext {
         super.doInitialize();
     }
     //
-    /**×°ÔØÄ£¿é*/
+    /**è£…è½½æ¨¡å—*/
     protected void loadModule() {
-        //1.É¨Ãèclasspath°ü
+        //1.æ‰«æclasspathåŒ…
         Set<Class<?>> initHookSet = this.getEnvironment().findClass(AnnoModule.class);
         if (Hasor.isInfoLogger()) {
             StringBuffer sb = new StringBuffer();
@@ -78,13 +78,13 @@ public class AnnoStandardAppContext extends StandardAppContext {
             String outData = (sb.length() == 0 ? "nothing." : sb.toString());
             Hasor.logInfo("find Module : " + outData);
         }
-        //2.¹ıÂËÎ´ÊµÏÖHasorModule½Ó¿ÚµÄÀà
+        //2.è¿‡æ»¤æœªå®ç°HasorModuleæ¥å£çš„ç±»
         for (Class<?> modClass : initHookSet) {
             if (!Module.class.isAssignableFrom(modClass)) {
                 Hasor.logWarn("not implemented net.hasor.core.Module :%s", modClass);
-                continue;/*´íÎó*/
+                continue;/*é”™è¯¯*/
             }
-            /*Hasor Ä£¿é*/
+            /*Hasor æ¨¡å—*/
             Module modObject = this.createModule(modClass);
             ModuleInfo moduleInfo = this.addModule(modObject);
             //

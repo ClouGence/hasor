@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ½«Ñ¡ÔñÊäÈë×é½¨äÖÈ¾³ÉÒ»×éradio¿ò¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUIRadioSelectOnlyInput£¨UIRadioSelectOnlyInput.js£©
+ * å°†é€‰æ‹©è¾“å…¥ç»„å»ºæ¸²æŸ“æˆä¸€ç»„radioæ¡†ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUIRadioSelectOnlyInputï¼ˆUIRadioSelectOnlyInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class RadioOnlySelectInputRender<T extends UISelectInput> extends AbstractSelectInputRender<T> {
     @Override
@@ -65,7 +65,7 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
                     keyValue = BeanUtils.readPropertyOrField(obj, keyField);
                     varValue = BeanUtils.readPropertyOrField(obj, varField);
                 }
-                //Êä³ö
+                //è¾“å‡º
                 String checkedStr = "no";
                 String checkedMark = "";
                 String titleMark = (this.getRenderType(component) == RenderType.onlyTitle) ? " style='display:none;'" : "";
@@ -91,9 +91,9 @@ public class RadioOnlySelectInputRender<T extends UISelectInput> extends Abstrac
     }
     /*----------------------------------------------------------------*/
     public static enum RenderType {
-        /**Ñ¡Ôñ¿òÇ°ÃæÊä³öÑ¡ÏîÎÄ±¾£¨ÓĞÑ¡Ôñ¿ò£©¡£*/
+        /**é€‰æ‹©æ¡†å‰é¢è¾“å‡ºé€‰é¡¹æ–‡æœ¬ï¼ˆæœ‰é€‰æ‹©æ¡†ï¼‰ã€‚*/
         normal,
-        /**Ñ¡Ôñ¿òÖ»°üº¬ÎÄ±¾£¨²»´øÓĞÑ¡Ôñ¿ò£©¡£*/
+        /**é€‰æ‹©æ¡†åªåŒ…å«æ–‡æœ¬ï¼ˆä¸å¸¦æœ‰é€‰æ‹©æ¡†ï¼‰ã€‚*/
         onlyTitle,
     }
     protected RenderType getRenderType(T component) {

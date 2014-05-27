@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ package org.more.classcode.objects;
 import org.more.classcode.ClassEngine;
 import org.more.classcode.ClassNameStrategy;
 /**
- * ¸ÃÀàÊÇ{@link ClassNameStrategy}µÄÄ¬ÈÏÊµÏÖ£¬ÆäÀàÃûÊÇ¡°_DynamicObject$¡±ÃûÇÒËùÊô¡°org.more.core.classcode¡±°ü¡£
+ * è¯¥ç±»æ˜¯{@link ClassNameStrategy}çš„é»˜è®¤å®ç°ï¼Œå…¶ç±»åæ˜¯â€œ_DynamicObject$â€åä¸”æ‰€å±â€œorg.more.core.classcodeâ€åŒ…ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DefaultClassNameStrategy implements ClassNameStrategy {
     private static long         generateID  = 0;
-    private static final String ClassPrefix = "_Dynamic$";                     //Éú³ÉÀàµÄÀàÃûºó×ºÃû
-    private static final String ClassName   = "org.more.core.classcode.Object"; //Ä¬ÈÏÉú³ÉÀàµÄÀàÃû
+    private static final String ClassPrefix = "_Dynamic$";                     //ç”Ÿæˆç±»çš„ç±»ååç¼€å
+    private static final String ClassName   = "org.more.core.classcode.Object"; //é»˜è®¤ç”Ÿæˆç±»çš„ç±»å
     public void initStrategy(ClassEngine classEngine) {}
     public synchronized String generateName(Class<?> superClass) {
         String cn = null;

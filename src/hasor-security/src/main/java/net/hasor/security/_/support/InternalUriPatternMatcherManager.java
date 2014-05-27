@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class InternalUriPatternMatcherManager {
     private SecuritySettings securitySettings = null;
@@ -33,13 +33,13 @@ class InternalUriPatternMatcherManager {
         if (StringUtils.isBlank(requestPath) == true)
             return null;
         requestPath = requestPath.toLowerCase();
-        //1.¼ì²éÅÅ³ıÅäÖÃ
+        //1.æ£€æŸ¥æ’é™¤é…ç½®
         List<UriPatternMatcher> excludeRules = this.securitySettings.getRulesExcludeList();
         for (UriPatternMatcher urlPattern : excludeRules) {
             if (requestPath.startsWith(urlPattern.getRequestURI()) == true)
                 return urlPattern;
         }
-        //2.¼ì²é°üº¬ÅäÖÃ
+        //2.æ£€æŸ¥åŒ…å«é…ç½®
         List<UriPatternMatcher> includeRules = this.securitySettings.getRulesIncludeList();
         for (UriPatternMatcher urlPattern : includeRules) {
             if (requestPath.startsWith(urlPattern.getRequestURI()) == true)

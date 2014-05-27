@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,22 +42,22 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.more.util.exception.ExceptionUtils;
 /**
- * action¹¦ÄÜµÄÈë¿Ú¡£
+ * actionåŠŸèƒ½çš„å…¥å£ã€‚
  * @version : 2013-5-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class ControllerServlet extends HttpServlet {
     private static final long serialVersionUID = -8402094243884745631L;
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         //
-        //1.²ğ·ÖÇëÇó×Ö·û´®
+        //1.æ‹†åˆ†è¯·æ±‚å­—ç¬¦ä¸²
         ControllerInvoke invoke = getActionInvoke(requestPath, request.getMethod());
         if (invoke == null) {
             String logInfo = String.format("%s action is not defined.", requestPath);
             throw new ControllerException(logInfo);
         }
-        //3.Ö´ĞĞµ÷ÓÃ
+        //3.æ‰§è¡Œè°ƒç”¨
         doInvoke(invoke, request, response);
     }
     private void doInvoke(ControllerInvoke invoke, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
@@ -90,8 +90,8 @@ class ControllerServlet extends HttpServlet {
         Set<Class<?>> controllerSet = appContext.findClass(Controller.class);
         if (controllerSet == null)
             return;
-        //2.×¢²á·şÎñ
-        Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//ºöÂÔ
+        //2.æ³¨å†ŒæœåŠ¡
+        Object[] ignoreMethods = settings.getIgnoreMethod().toArray();//å¿½ç•¥
         Map<String, ControllerNameSpace> nsMap = new HashMap<String, ControllerNameSpace>();
         for (Class<?> controllerType : controllerSet) {
             if (!AbstractController.class.isAssignableFrom(controllerType))
@@ -109,7 +109,7 @@ class ControllerServlet extends HttpServlet {
             List<Method> actionMethods = BeanUtils.getMethods(controllerType);
             for (Method targetMethod : actionMethods) {
                 if (ArrayUtils.contains(ignoreMethods, targetMethod.getName()) == true)
-                    continue;/*Ö´ĞĞºöÂÔ*/
+                    continue;/*æ‰§è¡Œå¿½ç•¥*/
                 if (targetMethod.getAnnotation(ControllerIgnore.class) != null)
                     continue;
                 //
@@ -123,11 +123,11 @@ class ControllerServlet extends HttpServlet {
         this.spaceMap = nsMap.values().toArray(new ControllerNameSpace[nsMap.size()]);
     }
     private ControllerInvoke getActionInvoke(String requestPath, String httpMethod) {
-        //1.²ğ·ÖÇëÇó×Ö·û´®
+        //1.æ‹†åˆ†è¯·æ±‚å­—ç¬¦ä¸²
         String actionNS = requestPath.substring(0, requestPath.lastIndexOf("/") + 1);
         String actionInvoke = requestPath.substring(requestPath.lastIndexOf("/") + 1);
         String actionMethod = actionInvoke.split("\\.")[0];
-        //2.»ñÈ¡ ActionInvoke
+        //2.è·å– ActionInvoke
         for (ControllerNameSpace ns : this.spaceMap) {
             if (!StringUtils.equalsIgnoreCase(ns.getNameSpace(), actionNS))
                 continue;
@@ -141,11 +141,11 @@ class ControllerServlet extends HttpServlet {
     //
     //
     //
-    /** Îª×ª·¢Ìá¹©Ö§³Ö */
+    /** ä¸ºè½¬å‘æä¾›æ”¯æŒ */
     public RequestDispatcher getRequestDispatcher(String path, String httpMethod) {
-        // TODO ĞèÒª¼ì²éÏÂÃæ´úÂëÊÇ·ñ·ûºÏServlet¹æ·¶£¨´ørequest²ÎÊıÇé¿öÏÂÒ²ĞèÒª¼ì²é£©
+        // TODO éœ€è¦æ£€æŸ¥ä¸‹é¢ä»£ç æ˜¯å¦ç¬¦åˆServletè§„èŒƒï¼ˆå¸¦requestå‚æ•°æƒ…å†µä¸‹ä¹Ÿéœ€è¦æ£€æŸ¥ï¼‰
         final String newRequestUri = path;
-        //1.²ğ·ÖÇëÇó×Ö·û´®
+        //1.æ‹†åˆ†è¯·æ±‚å­—ç¬¦ä¸²
         final ControllerInvoke define = getActionInvoke(path, httpMethod);
         if (define == null)
             return null;
@@ -153,7 +153,7 @@ class ControllerServlet extends HttpServlet {
             return new RequestDispatcher() {
                 public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                    /*Ö´ĞĞservlet*/
+                    /*æ‰§è¡Œservlet*/
                     try {
                         doInvoke(define, servletRequest, servletResponse);
                     } finally {
@@ -163,16 +163,16 @@ class ControllerServlet extends HttpServlet {
                 public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                     if (servletResponse.isCommitted() == true)
                         throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                    /*Çå¿Õ»º³å*/
+                    /*æ¸…ç©ºç¼“å†²*/
                     servletResponse.resetBuffer();
                     ServletRequest requestToProcess;
                     if (servletRequest instanceof HttpServletRequest) {
                         requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
                     } else {
-                        //Õı³£Çé¿öÖ®ÏÂ²»»áÖ´ĞĞÕâ¶Î´úÂë¡£
+                        //æ­£å¸¸æƒ…å†µä¹‹ä¸‹ä¸ä¼šæ‰§è¡Œè¿™æ®µä»£ç ã€‚
                         requestToProcess = servletRequest;
                     }
-                    /*Ö´ĞĞ×ª·¢*/
+                    /*æ‰§è¡Œè½¬å‘*/
                     servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                     try {
                         doInvoke(define, requestToProcess, servletResponse);
@@ -182,7 +182,7 @@ class ControllerServlet extends HttpServlet {
                 }
             };
     }
-    /** Ê¹ÓÃRequestDispatcherRequestWrapperÀà´¦Àírequest.getRequestURI·½·¨µÄ·µ»ØÖµ*/
+    /** ä½¿ç”¨RequestDispatcherRequestWrapperç±»å¤„ç†request.getRequestURIæ–¹æ³•çš„è¿”å›å€¼*/
     public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
     private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
         private final String newRequestUri;

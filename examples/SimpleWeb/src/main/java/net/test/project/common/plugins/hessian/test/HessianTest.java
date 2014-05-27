@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import net.test.project.common.plugins.hessian.HessianPlugin;
 /**
  * 
  * @version : 2013-12-25
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 public class HessianTest {
     public static void main(String[] args) throws MalformedURLException {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.util.Map;
 import net.hasor.core.AppContext;
 import net.hasor.plugins.controller.ControllerInvoke;
 /** 
- * ÃüÃû¿Õ¼ä¹ÜÀíÆ÷¡£ÏàÍ¬µÄactionÃüÃû¿Õ¼äÏÂµÄaction·½·¨£¬¿ÉÒÔ¶¨ÒåÔÚ²»Í¬µÄ¿ØÖÆÆ÷ÏÂ¡£
+ * å‘½åç©ºé—´ç®¡ç†å™¨ã€‚ç›¸åŒçš„actionå‘½åç©ºé—´ä¸‹çš„actionæ–¹æ³•ï¼Œå¯ä»¥å®šä¹‰åœ¨ä¸åŒçš„æ§åˆ¶å™¨ä¸‹ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class ControllerNameSpace {
     private String                        namespace;
@@ -45,6 +45,6 @@ class ControllerNameSpace {
         return actionInvokeMap.get(actionMethodName);
     }
     public String toString() {
-        return String.format("¡®%s¡¯ includes %s", this.namespace, this.actionInvokeMap.keySet());
+        return String.format("â€˜%sâ€™ includes %s", this.namespace, this.actionInvokeMap.keySet());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 import com.alibaba.fastjson.JSON;
 /**
- * µÚ2½×¶Î£¬ÖØËÜUI×é¼ş×´Ì¬¡£
+ * ç¬¬2é˜¶æ®µï¼Œé‡å¡‘UIç»„ä»¶çŠ¶æ€ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class RestoreView_Phase extends Phase {
     public static class RestoreView_PhaseID extends PhaseID {
@@ -41,7 +41,7 @@ public class RestoreView_Phase extends Phase {
         String targetPath = uiContext.getTargetPath();
         if (targetPath == null)
             return;
-        // »ØËİ×´Ì¬
+        // å›æº¯çŠ¶æ€
         UIViewRoot viewRoot = uiContext.getViewRoot();
         String stateJsonData = uiContext.getStateData();
         if (stateJsonData == null)

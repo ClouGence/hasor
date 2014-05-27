@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
  */
 package org.more.classcode;
 /**
-* AopµÄthrowingÇĞÃæ£¬µ±ÊÕµ½throwingÇĞÃæµÄÊÂ¼şÍ¨ÖªÊ±»á×Ô¶¯µ÷ÓÃ¸Ã½Ó¿Ú¡£¸Ã½Ó¿Ú·½·¨»áÔÚÉú³ÉaopÁ´µÄµÚÒ»¸ö»·½Ú·¢³öµ÷ÓÃ¡£ÏÂÃæÕâÕÅÍ¼ÖĞThrowing¾ÍÊÇÕâ¸ö½Ó¿ÚµÄ¹¤×÷µã¡£
-* µ«ÊÇÓÉÓÚthrowingÊÇµ±filter_startµ÷ÓÃÍê³ÉÖ®ºóÔÚ½øĞĞµÄ¡£Òò´ËthrowingµÄÏûÏ¢ÊÇÔÚ{@link AopInvokeFilter}¹ıÂËÆ÷Á´µ÷ÓÃÖ®ºó¡£Æä½á¹ûÒ²ÊÜµ½¹ıÂËÆ÷Á´µÄÓ°Ïì¡£
+* Aopçš„throwingåˆ‡é¢ï¼Œå½“æ”¶åˆ°throwingåˆ‡é¢çš„äº‹ä»¶é€šçŸ¥æ—¶ä¼šè‡ªåŠ¨è°ƒç”¨è¯¥æ¥å£ã€‚è¯¥æ¥å£æ–¹æ³•ä¼šåœ¨ç”Ÿæˆaopé“¾çš„ç¬¬ä¸€ä¸ªç¯èŠ‚å‘å‡ºè°ƒç”¨ã€‚ä¸‹é¢è¿™å¼ å›¾ä¸­Throwingå°±æ˜¯è¿™ä¸ªæ¥å£çš„å·¥ä½œç‚¹ã€‚
+* ä½†æ˜¯ç”±äºthrowingæ˜¯å½“filter_startè°ƒç”¨å®Œæˆä¹‹ååœ¨è¿›è¡Œçš„ã€‚å› æ­¤throwingçš„æ¶ˆæ¯æ˜¯åœ¨{@link AopInvokeFilter}è¿‡æ»¤å™¨é“¾è°ƒç”¨ä¹‹åã€‚å…¶ç»“æœä¹Ÿå—åˆ°è¿‡æ»¤å™¨é“¾çš„å½±å“ã€‚
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-2
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public interface AopThrowingListener {
     /**
-     * ÓÃÓÚ½ÓÊÕreturningÇĞÃæµÄÊÂ¼şµÄ·½·¨¡£
-     * @param target ±»µ÷ÓÃµÄ¶ÔÏó¡£
-     * @param method ±»µ÷ÓÃµÄ·½·¨¡£
-     * @param args µ÷ÓÃÕâ¸ö·½·¨´«µİµÄ²ÎÊı¡£
-     * @param e ½ÓÊÜ·¢ÉúµÄÒì³£
+     * ç”¨äºæ¥æ”¶returningåˆ‡é¢çš„äº‹ä»¶çš„æ–¹æ³•ã€‚
+     * @param target è¢«è°ƒç”¨çš„å¯¹è±¡ã€‚
+     * @param method è¢«è°ƒç”¨çš„æ–¹æ³•ã€‚
+     * @param args è°ƒç”¨è¿™ä¸ªæ–¹æ³•ä¼ é€’çš„å‚æ•°ã€‚
+     * @param e æ¥å—å‘ç”Ÿçš„å¼‚å¸¸
      */
     public Throwable throwsException(Object target, Method method, Object[] args, Throwable e);
 }

@@ -18,12 +18,12 @@ import java.lang.reflect.Method;
 import org.aopalliance.intercept.MethodInterceptor;
 /**
  * 
- * @version : 2014Äê5ÔÂ22ÈÕ
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @version : 2014å¹´5æœˆ22æ—¥
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface AopMatcherRegister extends MethodInterceptor {
-    /**Æ¥ÅäÀàĞÍ*/
+    /**åŒ¹é…ç±»å‹*/
     public boolean matcher(Class<?> targetClass);
-    /**Æ¥Åä·½·¨*/
+    /**åŒ¹é…æ–¹æ³•*/
     public boolean matcher(Method targetMethod);
 }

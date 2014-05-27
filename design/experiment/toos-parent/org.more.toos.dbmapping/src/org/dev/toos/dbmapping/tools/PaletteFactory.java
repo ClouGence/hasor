@@ -15,7 +15,7 @@ import org.eclipse.gef.requests.SimpleFactory;
 /**
  * 
  * @version : 2013-3-12
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class PaletteFactory {
     public static PaletteRoot createToolBars() {
@@ -24,7 +24,7 @@ public class PaletteFactory {
         paletteRoot.add(createConnectionTools(paletteRoot));
         return paletteRoot;
     }
-    /**π§æﬂÃıA*/
+    /**Â∑•ÂÖ∑Êù°A*/
     public static PaletteContainer createElementTools(PaletteRoot paletteRoot) {
         PaletteToolbar toolbar = new PaletteToolbar("Tools");
         ToolEntry tool = new PanningSelectionToolEntry();
@@ -54,7 +54,7 @@ public class PaletteFactory {
         toolbar.add(tool);
         return toolbar;
     }
-    /**π§æﬂÃıB*/
+    /**Â∑•ÂÖ∑Êù°B*/
     public static PaletteDrawer createConnectionTools(PaletteRoot paletteRoot) {
         PaletteDrawer componentsDrawer = new PaletteDrawer("Element");
         CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry("Element", "Create an Element", Element.class, new SimpleFactory(Element.class), null, null);

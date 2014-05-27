@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,41 +33,41 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 /**
- * <b>×÷ÓÃ</b>£ºÎÄ¼şÉÏ´«×é½¨¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_Upload
- * <br><b>±êÇ©</b>£º@ui_Upload
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnUpLoad
- * <br><b>äÖÈ¾Æ÷</b>£º{@link UploadRender}
+ * <b>ä½œç”¨</b>ï¼šæ–‡ä»¶ä¸Šä¼ ç»„å»ºã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_Upload
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_Upload
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnUpLoad
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link UploadRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_Upload", renderType = UploadRender.class)
 public class Upload extends UIInput {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**½ÓÊÕÉÏ´«µÄactionµØÖ·£¬Èç¹ûÅäÖÃÁË¸ÃÊôĞÔbizActionELÊôĞÔ»áÊ§Ğ§¡££¨R£©*/
+        /**æ¥æ”¶ä¸Šä¼ çš„actionåœ°å€ï¼Œå¦‚æœé…ç½®äº†è¯¥å±æ€§bizActionELå±æ€§ä¼šå¤±æ•ˆã€‚ï¼ˆRï¼‰*/
         uploadAction,
-        /**ÎÄ¼şÉÏ´«µÄÁÙÊ±Ä¿Â¼£¬Ä¬ÈÏÄ¿Â¼ÊÇ_uploadFileTempDir£¨-£©¡£*/
+        /**æ–‡ä»¶ä¸Šä¼ çš„ä¸´æ—¶ç›®å½•ï¼Œé»˜è®¤ç›®å½•æ˜¯_uploadFileTempDirï¼ˆ-ï¼‰ã€‚*/
         uploadTempDir,
-        /**ÓÃÓÚÉÏ´«µÄÄÚ´æ»º´æ´óĞ¡£¬Ä¬ÈÏ10MB£¨-£©¡£*/
+        /**ç”¨äºä¸Šä¼ çš„å†…å­˜ç¼“å­˜å¤§å°ï¼Œé»˜è®¤10MBï¼ˆ-ï¼‰ã€‚*/
         uploadSizeThreshold,
-        /**Ä¬ÈÏÔÊĞíµÄÎÄ¼ş£ºÈÎÒâ£¨RW£©*/
+        /**é»˜è®¤å…è®¸çš„æ–‡ä»¶ï¼šä»»æ„ï¼ˆRWï¼‰*/
         allowFiles,
-        /**Ä¬ÈÏÔÊĞíµÄÎÄ¼şÀàĞÍËµÃ÷£¨RW£©*/
+        /**é»˜è®¤å…è®¸çš„æ–‡ä»¶ç±»å‹è¯´æ˜ï¼ˆRWï¼‰*/
         allowFilesDesc,
-        /**Ä¬ÈÏÔÊĞíµÄ´óĞ¡£¬Àı£º1MB£¨RW£©*/
+        /**é»˜è®¤å…è®¸çš„å¤§å°ï¼Œä¾‹ï¼š1MBï¼ˆRWï¼‰*/
         allowSize,
-        /**ÉÏ´«°´Å¥¿í£¨RW£©*/
+        /**ä¸Šä¼ æŒ‰é’®å®½ï¼ˆRWï¼‰*/
         buttonWidth,
-        /**ÉÏ´«°´Å¥¸ß£¨RW£©*/
+        /**ä¸Šä¼ æŒ‰é’®é«˜ï¼ˆRWï¼‰*/
         buttonHeight,
-        /**°´Å¥ÉÏµÄÍ¼Æ¬£¨RW£©*/
+        /**æŒ‰é’®ä¸Šçš„å›¾ç‰‡ï¼ˆRWï¼‰*/
         buttonImage,
-        /**ÊÇ·ñÔÊĞí¶àÎÄ¼şÉÏ´«£¬Ä¬ÈÏ²»ÔÊĞí£¨RW£©*/
+        /**æ˜¯å¦å…è®¸å¤šæ–‡ä»¶ä¸Šä¼ ï¼Œé»˜è®¤ä¸å…è®¸ï¼ˆRWï¼‰*/
         allowMulti,
-        /**·şÎñ¶Ë´¦Àí¶¯×÷£¬Èç¹ûÅäÖÃÁËuploadActionÔò¸ÃÊôĞÔ»áÊ§Ğ§¡££¨-£©*/
+        /**æœåŠ¡ç«¯å¤„ç†åŠ¨ä½œï¼Œå¦‚æœé…ç½®äº†uploadActionåˆ™è¯¥å±æ€§ä¼šå¤±æ•ˆã€‚ï¼ˆ-ï¼‰*/
         bizActionEL,
-        /**ÊÇ·ñÏÔÊ¾½ø¶ÈÌõ£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºè¿›åº¦æ¡ï¼ˆRWï¼‰*/
         showProgress,
     }
     @Override
@@ -180,7 +180,7 @@ public class Upload extends UIInput {
         return this.onBizActionExp;
     }
 }
-/**¸ºÔğ´¦ÀíOnUpLoadÊÂ¼şµÄELµ÷ÓÃ*/
+/**è´Ÿè´£å¤„ç†OnUpLoadäº‹ä»¶çš„ELè°ƒç”¨*/
 class SWFUpload_Event_OnUpLoad implements EventListener {
     public static Event OnUpLoad = Event.getEvent("OnUpLoad");
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
@@ -188,10 +188,10 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
         HttpServletRequest httpRequest = viewContext.getHttpRequest();
         ServletContext servletContext = httpRequest.getSession(true).getServletContext();
         if (ServletFileUpload.isMultipartContent(httpRequest) == false)
-            return;// ¼ì²éÊäÈëÇëÇóÊÇ·ñ°üº¬multipart±íµ¥Êı¾İ¡£
+            return;// æ£€æŸ¥è¾“å…¥è¯·æ±‚æ˜¯å¦åŒ…å«multipartè¡¨å•æ•°æ®ã€‚
         try {
-            //1.×¼±¸ÉÏ´«»·¾³
-            DiskFileItemFactory factory = new DiskFileItemFactory();// Îª¸ÃÇëÇó´´½¨Ò»¸öDiskFileItemFactory¶ÔÏó£¬Í¨¹ıËüÀ´½âÎöÇëÇó¡£Ö´ĞĞ½âÎöºó£¬ËùÓĞµÄ±íµ¥ÏîÄ¿¶¼±£´æÔÚÒ»¸öListÖĞ¡£
+            //1.å‡†å¤‡ä¸Šä¼ ç¯å¢ƒ
+            DiskFileItemFactory factory = new DiskFileItemFactory();// ä¸ºè¯¥è¯·æ±‚åˆ›å»ºä¸€ä¸ªDiskFileItemFactoryå¯¹è±¡ï¼Œé€šè¿‡å®ƒæ¥è§£æè¯·æ±‚ã€‚æ‰§è¡Œè§£æåï¼Œæ‰€æœ‰çš„è¡¨å•é¡¹ç›®éƒ½ä¿å­˜åœ¨ä¸€ä¸ªListä¸­ã€‚
             ServletFileUpload upload = new ServletFileUpload(factory);
             String charset = httpRequest.getCharacterEncoding();
             if (charset != null)
@@ -201,7 +201,7 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
             if (uploadTempDir.exists() == false)
                 uploadTempDir.mkdirs();
             factory.setRepository(uploadTempDir);
-            //2.´¦Àí´«ÍêµÄÎÄ¼ş
+            //2.å¤„ç†ä¼ å®Œçš„æ–‡ä»¶
             List<FileItem> itemList = upload.parseRequest(httpRequest);
             List<FileItem> finalList = new ArrayList<FileItem>();
             Map<String, String> finalParam = new HashMap<String, String>();
@@ -210,7 +210,7 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
                     finalList.add(item);
                 else
                     finalParam.put(new String(item.getFieldName().getBytes("iso-8859-1")), new String(item.getString().getBytes("iso-8859-1")));
-            //3.Í¨ÖªÒµÎñÏµÍ³
+            //3.é€šçŸ¥ä¸šåŠ¡ç³»ç»Ÿ
             Object returnData = null;
             MethodExpression onBizActionExp = swfUpload.getOnBizActionExpression();
             if (onBizActionExp != null) {
@@ -221,12 +221,12 @@ class SWFUpload_Event_OnUpLoad implements EventListener {
                 upParam.put("up", upObject);
                 returnData = onBizActionExp.execute(component, viewContext, upParam);
             }
-            //4.ÇåÀíÊı¾İ
+            //4.æ¸…ç†æ•°æ®
             for (FileItem item : itemList)
                 try {
                     item.delete();
                 } catch (Exception e) {}
-            //5.ÏàÓ¦Êä³ö½á¹û
+            //5.ç›¸åº”è¾“å‡ºç»“æœ
             viewContext.sendObject(returnData);
         } catch (Exception e) {
             viewContext.sendError(e);

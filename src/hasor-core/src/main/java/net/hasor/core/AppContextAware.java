@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package net.hasor.core;
 /**
- * µ± AppContext Æô¶¯µÄµÚÒ»Ê±¼ä¡£ÈİÆ÷»áÍ¨ÖªÕâ¸ö½Ó¿ÚµÄÊµÏÖÀà£¬½«AppContext×¢Èë½øÀ´¡£<p>
+ * å½“ AppContext å¯åŠ¨çš„ç¬¬ä¸€æ—¶é—´ã€‚å®¹å™¨ä¼šé€šçŸ¥è¿™ä¸ªæ¥å£çš„å®ç°ç±»ï¼Œå°†AppContextæ³¨å…¥è¿›æ¥ã€‚<p>
  * 
- * Ê¹ÓÃËü£¬ĞèÒªÊµÏÖÕâ¸ö½Ó¿Ú²¢Í¨¹ı{@link ApiBinder#registerAware(AppContextAware)}·½·¨×¢²á¡£
+ * ä½¿ç”¨å®ƒï¼Œéœ€è¦å®ç°è¿™ä¸ªæ¥å£å¹¶é€šè¿‡{@link ApiBinder#registerAware(AppContextAware)}æ–¹æ³•æ³¨å†Œã€‚
  * 
  * @see ApiBinder#registerAware(AppContextAware)
  * @version : 2013-11-8
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface AppContextAware {
-    /**×¢ÈëAppContext*/
+    /**æ³¨å…¥AppContext*/
     public void setAppContext(AppContext appContext);
 }

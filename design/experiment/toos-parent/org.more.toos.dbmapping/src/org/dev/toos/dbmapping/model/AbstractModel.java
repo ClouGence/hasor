@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 
  * @version : 2013-3-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class AbstractModel implements Cloneable, Serializable {
     private static final long     serialVersionUID = 758614355552296549L;
@@ -17,11 +17,11 @@ public class AbstractModel implements Cloneable, Serializable {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         this.listeners.removePropertyChangeListener(listener);
     }
-    /**ÊôĞÔÖµ±ä»¯*/
+    /**å±æ€§å€¼å˜åŒ–*/
     protected void firePropertyChange(String prop, Object old, Object newValue) {
         this.listeners.firePropertyChange(prop, old, newValue);
     }
-    /**ÊôĞÔ½á¹¹·¢Éú±ä»¯*/
+    /**å±æ€§ç»“æ„å‘ç”Ÿå˜åŒ–*/
     protected void fireStructureChange(String prop, Object child) {
         listeners.firePropertyChange(prop, null, child);
     }

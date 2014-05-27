@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import java.net.URLClassLoader;
 import org.more.webui.resource.ClassPathResourceLoader;
 import org.more.webui.resource.IResourceLoader;
 /**
-* ¥¶¿ÌClasspath÷–µƒƒ£∞Â°£
+* Â§ÑÁêÜClasspath‰∏≠ÁöÑÊ®°Êùø„ÄÇ
 * @version : 2011-9-14
-* @author ’‘”¿¥∫ (zyc@byshell.org) 
+* @author ËµµÊ∞∏Êò• (zyc@byshell.org) 
 */
 public class ClassPathTemplateLoader extends URLClassLoader implements ITemplateLoader, IResourceLoader {
     private String                  packageName    = null;

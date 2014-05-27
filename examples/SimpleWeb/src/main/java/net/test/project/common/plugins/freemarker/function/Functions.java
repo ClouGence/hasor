@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import net.hasor.core.AppContext;
 import net.test.project.common.plugins.freemarker.FmMethod;
 import net.test.project.common.plugins.freemarker.FreemarkerService;
 /**
- * Freemarker Ä£°åÖĞÍ¨ÓÃº¯Êı
+ * Freemarker æ¨¡æ¿ä¸­é€šç”¨å‡½æ•°
  * @version : 2013-9-24
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class Functions {
     @Inject
@@ -31,14 +31,14 @@ public class Functions {
     /*-----------------------------------------------------------------*/
     //
     //
-    /**»ñÈ¡ÈİÆ÷Â·¾¶*/
+    /**è·å–å®¹å™¨è·¯å¾„*/
     @FmMethod("ctxPath")
     public String ctxPath() {
         return PlatformFilter.getLocalServletContext().getContextPath();
     };
     //
     //
-    //    /**½âÎöÄ£°å»ñÈ¡²¼¶ûÅäÖÃ*/
+    //    /**è§£ææ¨¡æ¿è·å–å¸ƒå°”é…ç½®*/
     //    @FmMethod("loadFtl")
     //    public String loadFtl(String templateName) {
     //        StringWriter sw = new StringWriter();
@@ -46,12 +46,12 @@ public class Functions {
     //    };
     //
     //
-    /**»ñÈ¡×Ö·û´®ÅäÖÃ*/
+    /**è·å–å­—ç¬¦ä¸²é…ç½®*/
     @FmMethod("str_settings")
     public String str_settings(String settingName, String defaultValue) {
         return this.appContext.getSettings().getString(settingName, defaultValue);
     };
-    /**»ñÈ¡²¼¶ûÅäÖÃ*/
+    /**è·å–å¸ƒå°”é…ç½®*/
     @FmMethod("bool_settings")
     public Boolean bool_settings(String settingName, Boolean defaultValue) {
         return this.appContext.getSettings().getBoolean(settingName, defaultValue);

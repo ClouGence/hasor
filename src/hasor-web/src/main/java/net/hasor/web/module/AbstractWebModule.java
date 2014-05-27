@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import net.hasor.web.WebAppContext;
 /**
  * 
  * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractWebModule implements Module {
     public final void init(ApiBinder apiBinder) {
@@ -39,8 +39,8 @@ public abstract class AbstractWebModule implements Module {
     }
     //
     //
-    /**³õÊ¼»¯¹ı³Ì¡£*/
+    /**åˆå§‹åŒ–è¿‡ç¨‹ã€‚*/
     public abstract void init(WebApiBinder apiBinder);
-    /**Æô¶¯ĞÅºÅ*/
+    /**å¯åŠ¨ä¿¡å·*/
     public abstract void start(WebAppContext appContext);
 }

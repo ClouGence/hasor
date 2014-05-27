@@ -5,21 +5,21 @@ import org.dev.toos.constcode.metadata.ConstVarBean;
 /**
  * 
  * @version : 2013-2-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class VarDao {
     protected abstract void initDao() throws Throwable;
     protected abstract <T> Source<T> getSource();
     //
     //
-    /**É¾³ı³£Á¿Öµ*/
+    /**åˆ é™¤å¸¸é‡å€¼*/
     public abstract boolean deleteVar(ConstVarBean targetVar);
-    /**»ñÈ¡¸ù²ã¼¶³£Á¿¡£*/
+    /**è·å–æ ¹å±‚çº§å¸¸é‡ã€‚*/
     public abstract List<ConstVarBean> getVarRoots(ConstBean parentConst);
-    /**»ñÈ¡³£Á¿µÄËùÓĞ×Ó½Úµã¡£*/
+    /**è·å–å¸¸é‡çš„æ‰€æœ‰å­èŠ‚ç‚¹ã€‚*/
     public abstract List<ConstVarBean> getVarChildren(ConstVarBean parentVar);
-    /**Ìí¼Ó³£Á¿,·µ»ØÌí¼Ó³É¹¦Ö®ºó³Ö¾Ã»¯µÄ³£Á¿¶ÔÏó¡£Ìí¼ÓÊ§°Ü·µ»Ønull£»*/
+    /**æ·»åŠ å¸¸é‡,è¿”å›æ·»åŠ æˆåŠŸä¹‹åæŒä¹…åŒ–çš„å¸¸é‡å¯¹è±¡ã€‚æ·»åŠ å¤±è´¥è¿”å›nullï¼›*/
     public abstract ConstVarBean addVar(ConstVarBean newVar, int newVarIndex);
-    /**¸üĞÂ³£Á¿,·µ»Ø¸üĞÂ³É¹¦Ö®ºó³Ö¾Ã»¯µÄ³£Á¿¶ÔÏó¡£Ìí¼ÓÊ§°Ü·µ»Ønull£»*/
+    /**æ›´æ–°å¸¸é‡,è¿”å›æ›´æ–°æˆåŠŸä¹‹åæŒä¹…åŒ–çš„å¸¸é‡å¯¹è±¡ã€‚æ·»åŠ å¤±è´¥è¿”å›nullï¼›*/
     public abstract ConstVarBean updateVar(ConstVarBean targetVar, int newVarIndex);
 }

@@ -19,8 +19,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 /**
  * 
- * @version : 2014Äê5ÔÂ23ÈÕ
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @version : 2014å¹´5æœˆ23æ—¥
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;
@@ -38,7 +38,7 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
         this.requiredType = requiredType;
     }
     //
-    /**½«µ±Ç°ĞĞµÄµÚÒ»ÁĞµÄÖµ×ª»»ÎªÖ¸¶¨µÄÀàĞÍ¡£*/
+    /**å°†å½“å‰è¡Œçš„ç¬¬ä¸€åˆ—çš„å€¼è½¬æ¢ä¸ºæŒ‡å®šçš„ç±»å‹ã€‚*/
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
         //1.Validate column count.
         ResultSetMetaData rsmd = rs.getMetaData();

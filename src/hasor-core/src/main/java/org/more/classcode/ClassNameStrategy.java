@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package org.more.classcode;
 /**
- * ÀàÃûÉú³É²ßÂÔ£¬¸Ã½Ó¿ÚÔÚClassEngine.builderClassÆÚ¼äµ÷ÓÃ¡£ÓÃÓÚ¾ö¶¨ĞÂÀàµÄÀàÃûºÍËùÊô°ü¡£
+ * ç±»åç”Ÿæˆç­–ç•¥ï¼Œè¯¥æ¥å£åœ¨ClassEngine.builderClassæœŸé—´è°ƒç”¨ã€‚ç”¨äºå†³å®šæ–°ç±»çš„ç±»åå’Œæ‰€å±åŒ…ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface ClassNameStrategy extends BaseStrategy {
-    /**»ñÈ¡ĞÂÀàµÄÀàÃû¡£*/
+    /**è·å–æ–°ç±»çš„ç±»åã€‚*/
     public String generateName(Class<?> superClass);
 };

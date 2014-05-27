@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package net.hasor.security;
 import net.hasor.core.Hasor;
 /**
- * ´ú±íÒ»¸öÈ¨ÏŞµã¡£
+ * ä»£è¡¨ä¸€ä¸ªæƒé™ç‚¹ã€‚
  * @version : 2013-3-26
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Permission {
     private String perCode = null;
@@ -27,7 +27,7 @@ public class Permission {
         Hasor.assertIsNotNull(perCode, "permission code is null.");
         this.perCode = perCode;
     }
-    /**»ñÈ¡È¨ÏŞµãµÄCodeÖµ¡£*/
+    /**è·å–æƒé™ç‚¹çš„Codeå€¼ã€‚*/
     public String getPermissionCode() {
         return this.perCode;
     }

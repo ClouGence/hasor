@@ -24,9 +24,9 @@ import net.hasor.core.Hasor;
 import org.more.UnhandledException;
 import org.more.util.BeanUtils;
 /**
- * ÓÃÓÚ POJO µÄ RowMapper
+ * ç”¨äº POJO çš„ RowMapper
  * @version : 2013-12-18
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T>            requiredType;
@@ -48,7 +48,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         this.loadMapping();
     }
     private void loadMapping() {
-        /*½èÖúÓÃÊôĞÔÃûÍ³Ò»´óĞ´£¬À´ÊµÏÖÊôĞÔ¸ĞĞÔ¡£*/
+        /*å€ŸåŠ©ç”¨å±æ€§åç»Ÿä¸€å¤§å†™ï¼Œæ¥å®ç°å±æ€§æ„Ÿæ€§ã€‚*/
         this.columnMapping.clear();
         List<String> prop = BeanUtils.getPropertysAndFields(this.requiredType);
         for (String pName : prop)
@@ -76,7 +76,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         int nrOfColumns = rsmd.getColumnCount();
         for (int i = 1; i < nrOfColumns; i++) {
             String colName = rsmd.getColumnName(i);
-            /*´¦ÀíÊôĞÔ*/
+            /*å¤„ç†å±æ€§*/
             if (!caseInsensitive)
                 colName = this.columnMapping.get(colName.toUpperCase());
             Class<?> paramType = BeanUtils.getPropertyOrFieldType(this.requiredType, colName);
@@ -87,7 +87,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         }
         return targetObject;
     }
-    /**È¡µÃÖ¸¶¨ÁĞµÄÖµ*/
+    /**å–å¾—æŒ‡å®šåˆ—çš„å€¼*/
     protected Object getColumnValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
         Object resultData = getResultSetValue(rs, index);
         if (requiredType != null)

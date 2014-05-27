@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package net.test.simple._02_beans.singleton;
 import javax.inject.Singleton;
 /**
- * ¸ÃÀı×ÓÑİÊ¾ÁËÈçºÎÍ¨¹ı JSR-330 ±ê×¼ÉùÃ÷Ò»¸ö Bean µÄµ¥ÊµÀı×´Ì¬£¨µ¥Àı£©¡£
+ * è¯¥ä¾‹å­æ¼”ç¤ºäº†å¦‚ä½•é€šè¿‡ JSR-330 æ ‡å‡†å£°æ˜ä¸€ä¸ª Bean çš„å•å®ä¾‹çŠ¶æ€ï¼ˆå•ä¾‹ï¼‰ã€‚
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Singleton
 public class SingletonBean {

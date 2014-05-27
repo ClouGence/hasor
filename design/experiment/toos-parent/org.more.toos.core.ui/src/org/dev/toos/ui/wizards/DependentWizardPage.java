@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 /**
  * 
  * @version : 2013-3-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DependentWizardPage extends WizardPage {
     protected DependentWizardPage() {
@@ -53,7 +53,7 @@ public class DependentWizardPage extends WizardPage {
         dbMappingService.setText("use DBMapping Service");
     }
     public boolean performFinish() {
-        /**Íê³ÉÅäÖÃ*/
+        /**å®Œæˆé…ç½®*/
         return true;
     }
 }

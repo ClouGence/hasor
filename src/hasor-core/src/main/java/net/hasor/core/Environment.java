@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,55 +17,55 @@ package net.hasor.core;
 import java.net.URI;
 import java.util.Set;
 /**
- * »·¾³Ö§³Ö
+ * ç¯å¢ƒæ”¯æŒ
  * @version : 2013-6-19
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface Environment extends EventContext {
-    /**»ñÈ¡ÅäÖÃÎÄ¼şURI*/
+    /**è·å–é…ç½®æ–‡ä»¶URI*/
     public URI getSettingURI();
-    /**»ñÈ¡É¨ÃèÂ·¾¶*/
+    /**è·å–æ‰«æè·¯å¾„*/
     public String[] getSpanPackage();
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇµÄ×¢½â£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°çš„æ³¨è§£ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType);
-    /**ÅĞ¶ÏÊÇ·ñÎªµ÷ÊÔÄ£Ê½¡£*/
+    /**åˆ¤æ–­æ˜¯å¦ä¸ºè°ƒè¯•æ¨¡å¼ã€‚*/
     public boolean isDebug();
     //
     /*-----------------------------------------------------------------------------------Settings*/
-    /**»ñÈ¡Ó¦ÓÃ³ÌĞòÅäÖÃ¡£*/
+    /**è·å–åº”ç”¨ç¨‹åºé…ç½®ã€‚*/
     public Settings getSettings();
-    /**Ìí¼ÓÅäÖÃÎÄ¼ş±ä¸ü¼àÌıÆ÷¡£*/
+    /**æ·»åŠ é…ç½®æ–‡ä»¶å˜æ›´ç›‘å¬å™¨ã€‚*/
     public void addSettingsListener(SettingsListener settingsListener);
-    /**É¾³ıÅäÖÃÎÄ¼ş¼àÌıÆ÷¡£*/
+    /**åˆ é™¤é…ç½®æ–‡ä»¶ç›‘å¬å™¨ã€‚*/
     public void removeSettingsListener(SettingsListener settingsListener);
     //
     /*----------------------------------------------------------------------------------------Env*/
-    /**»ñÈ¡¹¤×÷Ä¿Â¼£¬¹¤×÷Â·¾¶µÄÅäÖÃ¿ÉÒÔÔÚconfig.xmlµÄ¡°<b>environmentVar.HASOR_WORK_HOME</b>¡±½ÚµãÉÏÅäÖÃ¡£*/
+    /**è·å–å·¥ä½œç›®å½•ï¼Œå·¥ä½œè·¯å¾„çš„é…ç½®å¯ä»¥åœ¨config.xmlçš„â€œ<b>environmentVar.HASOR_WORK_HOME</b>â€èŠ‚ç‚¹ä¸Šé…ç½®ã€‚*/
     public static final String Work_Home          = "HASOR_WORK_HOME";
-    /**»ñÈ¡ÁÙÊ±ÎÄ¼ş´æ·ÅÄ¿Â¼£¬¹¤×÷Â·¾¶µÄÅäÖÃ¿ÉÒÔÔÚconfig.xmlµÄ¡°<b>environmentVar.HASOR_TEMP_PATH</b>¡±½ÚµãÉÏÅäÖÃ¡£*/
+    /**è·å–ä¸´æ—¶æ–‡ä»¶å­˜æ”¾ç›®å½•ï¼Œå·¥ä½œè·¯å¾„çš„é…ç½®å¯ä»¥åœ¨config.xmlçš„â€œ<b>environmentVar.HASOR_TEMP_PATH</b>â€èŠ‚ç‚¹ä¸Šé…ç½®ã€‚*/
     public static final String TempPath           = "HASOR_TEMP_PATH";
-    /**»ñÈ¡¹¤×÷¿Õ¼äÖĞ×¨ÃÅÓÃÓÚ´æ·ÅÈÕÖ¾µÄÄ¿Â¼¿Õ¼ä£¬ÅäÖÃ¿ÉÒÔÔÚconfig.xmlµÄ¡°<b>environmentVar.HASOR_LOG_PATH</b>¡±½ÚµãÉÏÅäÖÃ¡£*/
+    /**è·å–å·¥ä½œç©ºé—´ä¸­ä¸“é—¨ç”¨äºå­˜æ”¾æ—¥å¿—çš„ç›®å½•ç©ºé—´ï¼Œé…ç½®å¯ä»¥åœ¨config.xmlçš„â€œ<b>environmentVar.HASOR_LOG_PATH</b>â€èŠ‚ç‚¹ä¸Šé…ç½®ã€‚*/
     public static final String LogPath            = "HASOR_LOG_PATH";
-    /**»ñÈ¡¹¤×÷¿Õ¼äÖĞ×¨ÃÅÓÃÓÚ´æ·ÅÄ£¿éÅäÖÃĞÅÏ¢µÄÄ¿Â¼¿Õ¼ä£¬ÅäÖÃ¿ÉÒÔÔÚconfig.xmlµÄ¡°<b>environmentVar.HASOR_PLUGIN_PATH</b>¡±½ÚµãÉÏÅäÖÃ¡£*/
+    /**è·å–å·¥ä½œç©ºé—´ä¸­ä¸“é—¨ç”¨äºå­˜æ”¾æ¨¡å—é…ç½®ä¿¡æ¯çš„ç›®å½•ç©ºé—´ï¼Œé…ç½®å¯ä»¥åœ¨config.xmlçš„â€œ<b>environmentVar.HASOR_PLUGIN_PATH</b>â€èŠ‚ç‚¹ä¸Šé…ç½®ã€‚*/
     public static final String PluginPath         = "HASOR_PLUGIN_PATH";
-    /**»ñÈ¡¹¤×÷¿Õ¼äÖĞ×¨ÃÅÓÃÓÚ´æ·ÅÄ£¿éÅäÖÃĞÅÏ¢µÄÄ¿Â¼¿Õ¼ä£¬ÅäÖÃ¿ÉÒÔÔÚconfig.xmlµÄ¡°<b>environmentVar.HASOR_PLUGIN_SETTINGS</b>¡±½ÚµãÉÏÅäÖÃ¡£*/
+    /**è·å–å·¥ä½œç©ºé—´ä¸­ä¸“é—¨ç”¨äºå­˜æ”¾æ¨¡å—é…ç½®ä¿¡æ¯çš„ç›®å½•ç©ºé—´ï¼Œé…ç½®å¯ä»¥åœ¨config.xmlçš„â€œ<b>environmentVar.HASOR_PLUGIN_SETTINGS</b>â€èŠ‚ç‚¹ä¸Šé…ç½®ã€‚*/
     public static final String PluginSettingsPath = "HASOR_PLUGIN_SETTINGS";
     //
-    /**¼ÆËã×Ö·û´®£¬½«×Ö·û´®ÖĞ¶¨ÒåµÄ»·¾³±äÁ¿Ìæ»»Îª»·¾³±äÁ¿Öµ¡£»·¾³±äÁ¿Ãû²»Çø·Ö´óĞ¡Ğ´¡£<br/>
-     * <font color="ff0000"><b>×¢Òâ</b></font>£ºÖ»ÓĞ±»°Ù·ÖºÅ°ü¹üÆğÀ´µÄ²¿·Ö²Å±»½âÎö³ÉÎª»·¾³±äÁ¿Ãû£¬
-     * Èç¹ûÎŞ·¨½âÎöÄ³¸ö»·¾³±äÁ¿Æ½Ì¨»áÅ×³öÒ»Ìõ¾¯¸æ£¬²¢ÇÒ½«»·¾³±äÁ¿ÃûÁ¬Í¬°Ù·ÖºÅ×÷Îª»·¾³±äÁ¿ÖµÒ»Æğ·µ»Ø¡£<br/>
-     * <font color="00aa00"><b>ÀıÈç</b></font>£º»·¾³ÖĞ¶¨ÒåÁË±äÁ¿Hasor_Home=C:/hasor¡¢Java_Home=c:/app/java£¬ÏÂÃæµÄ½âÎö½á¹ûÎª
+    /**è®¡ç®—å­—ç¬¦ä¸²ï¼Œå°†å­—ç¬¦ä¸²ä¸­å®šä¹‰çš„ç¯å¢ƒå˜é‡æ›¿æ¢ä¸ºç¯å¢ƒå˜é‡å€¼ã€‚ç¯å¢ƒå˜é‡åä¸åŒºåˆ†å¤§å°å†™ã€‚<br/>
+     * <font color="ff0000"><b>æ³¨æ„</b></font>ï¼šåªæœ‰è¢«ç™¾åˆ†å·åŒ…è£¹èµ·æ¥çš„éƒ¨åˆ†æ‰è¢«è§£ææˆä¸ºç¯å¢ƒå˜é‡åï¼Œ
+     * å¦‚æœæ— æ³•è§£ææŸä¸ªç¯å¢ƒå˜é‡å¹³å°ä¼šæŠ›å‡ºä¸€æ¡è­¦å‘Šï¼Œå¹¶ä¸”å°†ç¯å¢ƒå˜é‡åè¿åŒç™¾åˆ†å·ä½œä¸ºç¯å¢ƒå˜é‡å€¼ä¸€èµ·è¿”å›ã€‚<br/>
+     * <font color="00aa00"><b>ä¾‹å¦‚</b></font>ï¼šç¯å¢ƒä¸­å®šä¹‰äº†å˜é‡Hasor_Home=C:/hasorã€Java_Home=c:/app/javaï¼Œä¸‹é¢çš„è§£æç»“æœä¸º
      * <div>%hasor_home%/tempDir/uploadfile.tmp&nbsp;&nbsp;--&gt;&nbsp;&nbsp;C:/hasor/tempDir/uploadfile.tmp</div>
      * <div>%JAVA_HOME%/bin/javac.exe&nbsp;&nbsp;--&gt;&nbsp;&nbsp;c:/app/java/bin/javac.exe</div>
-     * <div>%work_home%/data/range.png&nbsp;&nbsp;--&gt;&nbsp;&nbsp;%work_home%/data/range.png£»²¢°éËæÒ»Ìõ¾¯¸æ</div>
+     * <div>%work_home%/data/range.png&nbsp;&nbsp;--&gt;&nbsp;&nbsp;%work_home%/data/range.pngï¼›å¹¶ä¼´éšä¸€æ¡è­¦å‘Š</div>
      * */
     public String evalString(String eval);
-    /**¼ÆËãÖ¸¶¨Ãû³ÆµÄ»·¾³±äÁ¿Öµ.*/
+    /**è®¡ç®—æŒ‡å®šåç§°çš„ç¯å¢ƒå˜é‡å€¼.*/
     public String evalEnvVar(String varName);
-    /**¸ù¾İ»·¾³±äÁ¿Ãû³Æ»ñÈ¡»·¾³±äÁ¿µÄÖµ£¬Èç¹û²»´æÔÚ¸Ã»·¾³±äÁ¿µÄ¶¨ÒåÔò·µ»Ønull.*/
+    /**æ ¹æ®ç¯å¢ƒå˜é‡åç§°è·å–ç¯å¢ƒå˜é‡çš„å€¼ï¼Œå¦‚æœä¸å­˜åœ¨è¯¥ç¯å¢ƒå˜é‡çš„å®šä¹‰åˆ™è¿”å›null.*/
     public String getEnvVar(String varName);
-    /**Ìí¼Ó»·¾³±äÁ¿£¬Ìí¼ÓµÄ»·¾³±äÁ¿²¢²»»áÓ°Ïìµ½ÏµÍ³»·¾³±äÁ¿£¬Ëü»áÊ¹ÓÃÄÚ²¿Map±£´æ»·¾³±äÁ¿´Ó¶ø±ÜÃâÓ°ÏìJVMÕı³£ÔËĞĞ¡£*/
+    /**æ·»åŠ ç¯å¢ƒå˜é‡ï¼Œæ·»åŠ çš„ç¯å¢ƒå˜é‡å¹¶ä¸ä¼šå½±å“åˆ°ç³»ç»Ÿç¯å¢ƒå˜é‡ï¼Œå®ƒä¼šä½¿ç”¨å†…éƒ¨Mapä¿å­˜ç¯å¢ƒå˜é‡ä»è€Œé¿å…å½±å“JVMæ­£å¸¸è¿è¡Œã€‚*/
     public void addEnvVar(String varName, String value);
-    /**É¾³ı»·¾³±äÁ¿£¬¸Ã·½·¨´ÓÄÚ²¿MapÉ¾³ıËù±£´æµÄ»·¾³±äÁ¿£¬ÕâÑù×öµÄÄ¿µÄÊÇÎªÁË±ÜÃâÓ°ÏìJVMÕı³£ÔËĞĞ¡£*/
+    /**åˆ é™¤ç¯å¢ƒå˜é‡ï¼Œè¯¥æ–¹æ³•ä»å†…éƒ¨Mapåˆ é™¤æ‰€ä¿å­˜çš„ç¯å¢ƒå˜é‡ï¼Œè¿™æ ·åšçš„ç›®çš„æ˜¯ä¸ºäº†é¿å…å½±å“JVMæ­£å¸¸è¿è¡Œã€‚*/
     public void remoteEnvVar(String varName);
 }

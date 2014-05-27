@@ -17,14 +17,14 @@ package net.hasor.jdbc.template;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 /** 
- * JDBC ½á¹û¼¯ĞĞÊı¾İ´¦ÀíÆ÷¡£
+ * JDBC ç»“æœé›†è¡Œæ•°æ®å¤„ç†å™¨ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface RowCallbackHandler {
-    /**ÊµÏÖÕâ¸ö·½·¨ÓÃÓÚ´¦Àí½á¹û¼¯µÄÒ»ĞĞ¼ÇÂ¼¡£
-     * ×¢Òâ£º²»Òªµ÷ÓÃ½á¹û¼¯µÄ next() ·½·¨¡£*/
+    /**å®ç°è¿™ä¸ªæ–¹æ³•ç”¨äºå¤„ç†ç»“æœé›†çš„ä¸€è¡Œè®°å½•ã€‚
+     * æ³¨æ„ï¼šä¸è¦è°ƒç”¨ç»“æœé›†çš„ next() æ–¹æ³•ã€‚*/
     public void processRow(ResultSet rs) throws SQLException;
 }

@@ -3,9 +3,9 @@ import org.dev.toos.dbmapping.model.Connection;
 import org.dev.toos.dbmapping.model.Element;
 import org.eclipse.gef.commands.Command;
 /**
- * ´´½¨²Ù×÷
+ * åˆ›å»ºæ“ä½œ
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class CreateConnection extends Command {
     private int     lineStyle = 0;

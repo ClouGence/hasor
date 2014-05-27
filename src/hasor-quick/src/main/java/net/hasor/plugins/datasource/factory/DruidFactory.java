@@ -23,7 +23,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 /**
  * 
  * @version : 2013-10-8
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class DruidFactory implements DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
@@ -35,7 +35,7 @@ public class DruidFactory implements DataSourceFactory {
         String pwdString = configElement.getOneChildren("password").getText();//<password>abc123!@#</password>
         int poolMaxSize = 200;
         //
-        Hasor.logInfo("Druid Pool Info maxSize is ¡®%s¡¯ driver is ¡®%s¡¯ jdbcUrl is¡®%s¡¯", poolMaxSize, driverString, urlString);
+        Hasor.logInfo("Druid Pool Info maxSize is â€˜%sâ€™ driver is â€˜%sâ€™ jdbcUrl isâ€˜%sâ€™", poolMaxSize, driverString, urlString);
         //
         dataSource.setDriverClassName(driverString);
         dataSource.setUrl(urlString);

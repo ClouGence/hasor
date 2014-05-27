@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ÉùÃ÷¸Ã·½·¨»òÕß¸ÃÀàµÄËùÓĞ·½·¨ÔÚ±»µ÷ÓÃÊ±Ôö¼Ó»º´æÖ§³Ö¡£
+ * å£°æ˜è¯¥æ–¹æ³•æˆ–è€…è¯¥ç±»çš„æ‰€æœ‰æ–¹æ³•åœ¨è¢«è°ƒç”¨æ—¶å¢åŠ ç¼“å­˜æ”¯æŒã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface NeedCache {
-    /**Ê¹ÓÃµÄ»º´æÃû¡£*/
+    /**ä½¿ç”¨çš„ç¼“å­˜åã€‚*/
     public String cacheName() default "";
-    /**»º´æ³¬Ê±Ê±¼ä£¬Ä¬ÈÏÖµ0¡£*/
+    /**ç¼“å­˜è¶…æ—¶æ—¶é—´ï¼Œé»˜è®¤å€¼0ã€‚*/
     public long timeout() default 0;
 }

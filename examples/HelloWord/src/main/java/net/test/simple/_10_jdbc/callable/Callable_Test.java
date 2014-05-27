@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class Callable_Test extends AbstractJDBCTest {
     public static void main(String[] args) {
@@ -34,7 +34,7 @@ public class Callable_Test extends AbstractJDBCTest {
     }
     @Test
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
-        /*²âÊÔ µ÷ÓÃ´æ´¢¹ý³Ì¡£ */
+        /*æµ‹è¯• è°ƒç”¨å­˜å‚¨è¿‡ç¨‹ã€‚ */
         JdbcTemplate jdbc = getJdbcTemplate();
         //
         //        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {

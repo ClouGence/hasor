@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,17 @@ import java.util.Iterator;
 import java.util.List;
 import org.more.webui.context.ViewContext;
 /**
- * ±íÊ¾ÉúÃüÖÜÆÚÖĞµÄÒ»¸ö½×¶Î¡£
+ * è¡¨ç¤ºç”Ÿå‘½å‘¨æœŸä¸­çš„ä¸€ä¸ªé˜¶æ®µã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class Phase {
     //    private IAttribute flash = new AttBase();
-    //    /**»ñÈ¡Ò»¸öflashÕâ¸öflash¿ÉÒÔ´©Ô½µ±Ç°½×¶ÎµÄ¸÷¸ö´¦Àí²¿·Ö¡£*/
+    //    /**è·å–ä¸€ä¸ªflashè¿™ä¸ªflashå¯ä»¥ç©¿è¶Šå½“å‰é˜¶æ®µçš„å„ä¸ªå¤„ç†éƒ¨åˆ†ã€‚*/
     //    public IAttribute getFlash() {
     //        return this.flash;
     //    };
-    /**¿ªÊ¼´¦ÀíÖ®Ç°£¬´¦Àí½×¶ÎÊÂ¼ş*/
+    /**å¼€å§‹å¤„ç†ä¹‹å‰ï¼Œå¤„ç†é˜¶æ®µäº‹ä»¶*/
     public void doBefore(ViewContext uiContext, List<PhaseListener> listeners, PhaseID phaseID) {
         Iterator<PhaseListener> iterator = listeners.iterator();
         while (iterator.hasNext() == true) {
@@ -37,13 +37,13 @@ public abstract class Phase {
                 listener.beforePhase(uiContext, this);
         }
     };
-    /**´¦ÀíÊ± */
+    /**å¤„ç†æ—¶ */
     public void doPhase(ViewContext uiContext, List<PhaseListener> listeners) throws Throwable {
         this.doBefore(uiContext, listeners, this.getPhaseID());
         this.execute(uiContext);
         this.doAfter(uiContext, listeners, this.getPhaseID());
     };
-    /**´¦Àí½áÊø£¬´¦Àí½×¶ÎÊÂ¼ş*/
+    /**å¤„ç†ç»“æŸï¼Œå¤„ç†é˜¶æ®µäº‹ä»¶*/
     public void doAfter(ViewContext uiContext, List<PhaseListener> listeners, PhaseID phaseID) {
         Iterator<PhaseListener> iterator = listeners.iterator();
         while (iterator.hasNext() == true) {
@@ -52,8 +52,8 @@ public abstract class Phase {
                 listener.afterPhase(uiContext, this);
         }
     };
-    /**Ö´ĞĞ½×¶Î */
+    /**æ‰§è¡Œé˜¶æ®µ */
     public abstract void execute(ViewContext uiContext) throws Throwable;
-    /**»ñÈ¡½×¶ÎID*/
+    /**è·å–é˜¶æ®µID*/
     public abstract PhaseID getPhaseID();
 };

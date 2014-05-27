@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,42 +52,42 @@ import com.google.inject.Key;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
 /**
- * Ö§³ÖServiceµÈ×¢½â¹¦ÄÜ¡£
+ * æ”¯æŒServiceç­‰æ³¨è§£åŠŸèƒ½ã€‚
  * @version : 2013-4-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
-@Module(description = "org.hasor.securityÈí¼ş°ü¹¦ÄÜÖ§³Ö¡£")
+@Module(description = "org.hasor.securityè½¯ä»¶åŒ…åŠŸèƒ½æ”¯æŒã€‚")
 public class ServletSecuritySupportModule extends AbstractWebHasorModule {
     private SecurityContext         secService  = null;
     private SecuritySessionListener secListener = null;
     private SecuritySettings        settings    = null;
     @Override
     public void configuration(ModuleSettings info) {
-        info.afterMe(ServletAnnoSupportModule.class);//ÔÚhasor-servletÆô¶¯Ö®Ç°
+        info.afterMe(ServletAnnoSupportModule.class);//åœ¨hasor-servletå¯åŠ¨ä¹‹å‰
         info.followTarget(CacheSupportModule.class);
     }
-    /**³õÊ¼»¯.*/
+    /**åˆå§‹åŒ–.*/
     @Override
     public void init(WebApiBinder event) {
         Binder binder = event.getGuiceBinder();
-        /*ÅäÖÃ*/
+        /*é…ç½®*/
         this.settings = new SecuritySettings();
         this.settings.onLoadConfig(event.getInitContext().getSettings());
-        /*HttpSession´´½¨ºÍÏú»ÙÍ¨Öª»úÖÆ*/
+        /*HttpSessionåˆ›å»ºå’Œé”€æ¯é€šçŸ¥æœºåˆ¶*/
         this.secListener = new SecuritySessionListener();
         event.sessionListener().bind(this.secListener);
-        /*aop£¬·½·¨Ö´ĞĞÈ¨ÏŞÖ§³Ö*/
-        event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*×¢²áAop*/
-        /*×°ÔØSecurityAccess*/
+        /*aopï¼Œæ–¹æ³•æ‰§è¡Œæƒé™æ”¯æŒ*/
+        event.getGuiceBinder().bindInterceptor(new ClassPowerMatcher(), new MethodPowerMatcher(), new SecurityInterceptor());/*æ³¨å†ŒAop*/
+        /*è£…è½½SecurityAccess*/
         this.loadSecurityAuth(event);
         this.loadSecurityAccess(event);
-        /*°ó¶¨ºËĞÄ¹¦ÄÜÊµÏÖÀà¡£*/
-        binder.bind(SecuritySettings.class).toInstance(this.settings);//Í¨¹ıGuice
+        /*ç»‘å®šæ ¸å¿ƒåŠŸèƒ½å®ç°ç±»ã€‚*/
+        binder.bind(SecuritySettings.class).toInstance(this.settings);//é€šè¿‡Guice
         binder.bind(SecurityContext.class).to(InternalSecurityContext.class).asEagerSingleton();
         binder.bind(SecurityQuery.class).to(DefaultSecurityQuery.class);
         /**/
-        binder.bind(AuthRequestProcess.class);/*µÇÈë¹ı³Ì*/
-        binder.bind(TestPermissionProcess.class);/*URLÈ¨ÏŞ¼ì²â¹ı³Ì*/
+        binder.bind(AuthRequestProcess.class);/*ç™»å…¥è¿‡ç¨‹*/
+        binder.bind(TestPermissionProcess.class);/*URLæƒé™æ£€æµ‹è¿‡ç¨‹*/
         //
         event.filter("*").through(SecurityFilter.class);
     }
@@ -103,9 +103,9 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
         this.secService.destroySecurity(appContext);
     }
     //
-    /*×°ÔØSecurityAccess*/
+    /*è£…è½½SecurityAccess*/
     protected void loadSecurityAuth(ApiBinder event) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> authSet = event.getClassSet(SecAuth.class);
         if (authSet == null)
             return;
@@ -117,7 +117,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
                 authList.add((Class<? extends SecurityAuth>) cls);
             }
         }
-        //3.×¢²á·şÎñ
+        //3.æ³¨å†ŒæœåŠ¡
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> authIndex = new HashMap<String, Integer>();
         for (Class<? extends SecurityAuth> authType : authList) {
@@ -127,7 +127,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             //
             SecurityAuthDefinition authDefine = new SecurityAuthDefinition(authSystem, authKey);
             int maxIndex = (authIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : authIndex.get(authSystem);
-            if (authAnno.sort() <= maxIndex/*ÖµÔ½Ğ¡Ô½ÓÅÏÈ*/) {
+            if (authAnno.sort() <= maxIndex/*å€¼è¶Šå°è¶Šä¼˜å…ˆ*/) {
                 authIndex.put(authSystem, authAnno.sort());
                 binder.bind(SecurityAuthDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(authDefine);
                 binder.bind(SecurityAuth.class).annotatedWith(UniqueAnnotations.create()).toProvider(authDefine);
@@ -136,9 +136,9 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
         }
     }
     //
-    /*×°ÔØSecurityAccess*/
+    /*è£…è½½SecurityAccess*/
     protected void loadSecurityAccess(ApiBinder event) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> accessSet = event.getClassSet(SecAccess.class);
         if (accessSet == null)
             return;
@@ -150,7 +150,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
                 accessList.add((Class<? extends SecurityAccess>) cls);
             }
         }
-        //3.×¢²á·şÎñ
+        //3.æ³¨å†ŒæœåŠ¡
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> accessIndex = new HashMap<String, Integer>();
         for (Class<? extends SecurityAccess> accessType : accessList) {
@@ -160,7 +160,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             //
             SecurityAccessDefinition accessDefine = new SecurityAccessDefinition(authSystem, accessKey);
             int maxIndex = (accessIndex.containsKey(authSystem) == false) ? Integer.MAX_VALUE : accessIndex.get(authSystem);
-            if (accessAnno.sort() <= maxIndex/*ÖµÔ½Ğ¡Ô½ÓÅÏÈ*/) {
+            if (accessAnno.sort() <= maxIndex/*å€¼è¶Šå°è¶Šä¼˜å…ˆ*/) {
                 accessIndex.put(authSystem, accessAnno.sort());
                 binder.bind(SecurityAccessDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(accessDefine);
                 binder.bind(SecurityAccess.class).annotatedWith(UniqueAnnotations.create()).toProvider(accessDefine);
@@ -169,11 +169,11 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
         }
     }
     /*-------------------------------------------------------------------------------------*/
-    /*¸ºÔğ¼ì²âÀàÊÇ·ñÆ¥Åä¡£¹æÔò£ºÖ»ÒªÀàĞÍ»ò·½·¨ÉÏ±ê¼ÇÁË@Power¡£*/
+    /*è´Ÿè´£æ£€æµ‹ç±»æ˜¯å¦åŒ¹é…ã€‚è§„åˆ™ï¼šåªè¦ç±»å‹æˆ–æ–¹æ³•ä¸Šæ ‡è®°äº†@Powerã€‚*/
     private class ClassPowerMatcher extends AbstractMatcher<Class<?>> {
         @Override
         public boolean matches(Class<?> matcherType) {
-            /*Èç¹û´¦ÓÚ½ûÓÃ×´Ì¬ÔòºöÂÔÈ¨ÏŞ¼ì²â*/
+            /*å¦‚æœå¤„äºç¦ç”¨çŠ¶æ€åˆ™å¿½ç•¥æƒé™æ£€æµ‹*/
             if (settings.isEnableMethod() == false)
                 return false;
             /*----------------------------*/
@@ -192,11 +192,11 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             return false;
         }
     }
-    /*¸ºÔğ¼ì²â·½·¨ÊÇ·ñÆ¥Åä¡£¹æÔò£º·½·¨»ò·½·¨Ëù´¦ÀàÉÏ±ê¼ÇÁË@Power¡£*/
+    /*è´Ÿè´£æ£€æµ‹æ–¹æ³•æ˜¯å¦åŒ¹é…ã€‚è§„åˆ™ï¼šæ–¹æ³•æˆ–æ–¹æ³•æ‰€å¤„ç±»ä¸Šæ ‡è®°äº†@Powerã€‚*/
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
         @Override
         public boolean matches(Method matcherType) {
-            /*Èç¹û´¦ÓÚ½ûÓÃ×´Ì¬ÔòºöÂÔÈ¨ÏŞ¼ì²â*/
+            /*å¦‚æœå¤„äºç¦ç”¨çŠ¶æ€åˆ™å¿½ç•¥æƒé™æ£€æµ‹*/
             if (settings.isEnableMethod() == false)
                 return false;
             /*----------------------------*/
@@ -207,19 +207,19 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             return false;
         }
     }
-    /*À¹½ØÆ÷*/
+    /*æ‹¦æˆªå™¨*/
     private class SecurityInterceptor implements MethodInterceptor {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
-            /*Èç¹û´¦ÓÚ½ûÓÃ×´Ì¬ÔòºöÂÔÈ¨ÏŞ¼ì²â*/
+            /*å¦‚æœå¤„äºç¦ç”¨çŠ¶æ€åˆ™å¿½ç•¥æƒé™æ£€æµ‹*/
             if (settings.isEnableMethod() == false)
                 return invocation.proceed();
             /*----------------------------*/
-            //1.»ñÈ¡È¨ÏŞÊı¾İ
+            //1.è·å–æƒé™æ•°æ®
             Power powerAnno = invocation.getMethod().getAnnotation(Power.class);
             if (powerAnno == null)
                 powerAnno = invocation.getMethod().getDeclaringClass().getAnnotation(Power.class);
-            //2.²âÊÔÈ¨ÏŞ
+            //2.æµ‹è¯•æƒé™
             boolean passPower = true;
             if (Level.NeedLogin == powerAnno.level()) {
                 passPower = this.doNeedLogin(powerAnno, invocation.getMethod());
@@ -228,7 +228,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             } else if (Level.Free == powerAnno.level()) {
                 passPower = true;
             }
-            //3.Ö´ĞĞ´úÂë
+            //3.æ‰§è¡Œä»£ç 
             if (passPower)
                 return invocation.proceed();
             String msg = powerAnno.errorMsg();
@@ -252,7 +252,7 @@ public class ServletSecuritySupportModule extends AbstractWebHasorModule {
             return query.testPermission(authSessions);
         }
     }
-    /*HttpSession¶¯Ì¬¼àÌı*/
+    /*HttpSessionåŠ¨æ€ç›‘å¬*/
     private class SecuritySessionListener implements HttpSessionListener {
         @Override
         public void sessionCreated(HttpSessionEvent se) {

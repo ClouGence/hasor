@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import javax.sql.DataSource;
 /**
  * 
  * @version : 2013-12-2
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface DataSourceHelper {
-    /**ÉêÇëÁ¬½Ó*/
+    /**ç”³è¯·è¿æ¥*/
     public Connection getConnection(DataSource dataSource) throws SQLException;
-    /**ÊÍ·ÅÁ¬½Ó*/
+    /**é‡Šæ”¾è¿æ¥*/
     public void releaseConnection(Connection con, DataSource dataSource) throws SQLException;
-    /**µ±Ç°Á¬½Ó*/
+    /**å½“å‰è¿æ¥*/
     public Connection currentConnection(DataSource dataSource) throws SQLException;
 }

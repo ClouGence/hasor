@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 /**
- * Ê¹ÓÃInputStream¶ÁÈ¡ReaderµÄ¹¤¾ßÀà
+ * ä½¿ç”¨InputStreamè¯»å–Readerçš„å·¥å…·ç±»
  * @version 2009-5-13
- * @author ÍøÂçÊÕ¼¯
+ * @author ç½‘ç»œæ”¶é›†
  */
 public class ReaderInputStream extends InputStream {
     private Reader                reader       = null;
@@ -36,8 +36,8 @@ public class ReaderInputStream extends InputStream {
     private int                   index, length = 0;
     //========================================================================================
     /**
-     * ´øReader²ÎÊı¹¹Ôìº¯Êı
-     * @param readerString - ÒªÔÄ¶ÁµÄ×Ö·û´®¡£
+     * å¸¦Readerå‚æ•°æ„é€ å‡½æ•°
+     * @param readerString - è¦é˜…è¯»çš„å­—ç¬¦ä¸²ã€‚
      */
     public ReaderInputStream(String readerString) {
         this.reader = new StringReader(readerString);
@@ -46,8 +46,8 @@ public class ReaderInputStream extends InputStream {
         chars = new char[1024];
     }
     /**
-     * ´øReader²ÎÊı¹¹Ôìº¯Êı
-     * @param reader - InputStreamÊ¹ÓÃµÄReader
+     * å¸¦Readerå‚æ•°æ„é€ å‡½æ•°
+     * @param reader - InputStreamä½¿ç”¨çš„Reader
      */
     public ReaderInputStream(Reader reader) {
         this.reader = reader;
@@ -56,10 +56,10 @@ public class ReaderInputStream extends InputStream {
         chars = new char[1024];
     }
     /**
-     * ´øReaderºÍ×Ö·û±àÂë¸ñÊ½²ÎÊıµÄ¹¹Ôìº¯Êı
-     * @param reader   - InputStreamÊ¹ÓÃµÄReader
-     * @param encoding - InputStreamÊ¹ÓÃµÄ×Ö·û±àÂë¸ñÊ½.
-     * @throws Èç¹û×Ö·û±àÂë¸ñÊ½²»Ö§³Ö,ÔòÅ×UnsupportedEncodingExceptionÒì³£
+     * å¸¦Readerå’Œå­—ç¬¦ç¼–ç æ ¼å¼å‚æ•°çš„æ„é€ å‡½æ•°
+     * @param reader   - InputStreamä½¿ç”¨çš„Reader
+     * @param encoding - InputStreamä½¿ç”¨çš„å­—ç¬¦ç¼–ç æ ¼å¼.
+     * @throws å¦‚æœå­—ç¬¦ç¼–ç æ ¼å¼ä¸æ”¯æŒ,åˆ™æŠ›UnsupportedEncodingExceptionå¼‚å¸¸
      */
     public ReaderInputStream(Reader reader, String encoding) throws UnsupportedEncodingException {
         this.reader = reader;

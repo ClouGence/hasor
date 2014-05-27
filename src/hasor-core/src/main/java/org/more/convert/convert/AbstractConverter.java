@@ -43,21 +43,21 @@ import org.more.convert.Converter;
  * @since 1.8.0
  */
 public abstract class AbstractConverter implements Converter {
-    /** µ±×ª»»³ö´íÊ±ÊÇ·ñ·µ»ØÄ¬ÈÏÖµ¡£*/
+    /** å½“è½¬æ¢å‡ºé”™æ—¶æ˜¯å¦è¿”å›é»˜è®¤å€¼ã€‚*/
     private boolean useDefault   = false;
-    /**Ä¬ÈÏÖµ*/
+    /**é»˜è®¤å€¼*/
     private Object  defaultValue = null;
     // ----------------------------------------------------------- Constructors
-    /**´´½¨´´Ôì<i>Converter</i>×ª»»Æ÷£¬¿ÉÄÜ»áÒı·¢<code>ConversionException</code>Òì³£¡£*/
+    /**åˆ›å»ºåˆ›é€ <i>Converter</i>è½¬æ¢å™¨ï¼Œå¯èƒ½ä¼šå¼•å‘<code>ConversionException</code>å¼‚å¸¸ã€‚*/
     public AbstractConverter() {}
-    /**´´½¨´´Ôì<i>Converter</i>×ª»»Æ÷£¬¿ÉÄÜ»áÒı·¢<code>ConversionException</code>Òì³£¡£*/
+    /**åˆ›å»ºåˆ›é€ <i>Converter</i>è½¬æ¢å™¨ï¼Œå¯èƒ½ä¼šå¼•å‘<code>ConversionException</code>å¼‚å¸¸ã€‚*/
     public AbstractConverter(Object defaultValue) {
         setDefaultValue(defaultValue);
     }
     // --------------------------------------------------------- Public Methods
     /**
-     * µ±×ª»»ÆÚ¼ä·¢ÉúÒì³£Ê±ÊÇ·ñÊ¹ÓÃÄ¬ÈÏÖµ¡£
-     * @return Èç¹û<code>true</code>Ôò±íÊ¾µ±Óöµ½´íÎóÊ±ÉèÖÃµÄÄ¬ÈÏÖµ»á±»·µ»Ø¡£Èç¹û<code>false</code>»áÒı·¢{@link ConversionException}Òì³£¡£
+     * å½“è½¬æ¢æœŸé—´å‘ç”Ÿå¼‚å¸¸æ—¶æ˜¯å¦ä½¿ç”¨é»˜è®¤å€¼ã€‚
+     * @return å¦‚æœ<code>true</code>åˆ™è¡¨ç¤ºå½“é‡åˆ°é”™è¯¯æ—¶è®¾ç½®çš„é»˜è®¤å€¼ä¼šè¢«è¿”å›ã€‚å¦‚æœ<code>false</code>ä¼šå¼•å‘{@link ConversionException}å¼‚å¸¸ã€‚
      */
     public boolean isUseDefault() {
         return this.useDefault;
@@ -75,7 +75,7 @@ public abstract class AbstractConverter implements Converter {
     public Object convert(Class type, Object value) {
         Class sourceType = value == null ? null : value.getClass();
         Class targetType = primitive(type == null ? getDefaultType() : type);
-        value = convertArray(value);//Èç¹ûÊı¾İÔ´ÊÇÒ»¸öArray »ò ¼¯ºÏ ÄÇÃ´È¡µÃµÚÒ»¸öÔªËØ¡£
+        value = convertArray(value);//å¦‚æœæ•°æ®æºæ˜¯ä¸€ä¸ªArray æˆ– é›†åˆ é‚£ä¹ˆå–å¾—ç¬¬ä¸€ä¸ªå…ƒç´ ã€‚
         //Missing Value
         if (value == null)
             return handleMissing(targetType);
@@ -96,8 +96,8 @@ public abstract class AbstractConverter implements Converter {
         }
     }
     /**
-     * ´¦Àí×ª»»´íÎó¡£<p>
-     * Èç¹ûÉèÖÃÁËdefaultÊôĞÔÔòµ±Óöµ½´íÎóÊ±·µ»ØÄ¬ÈÏÖµ¡£·ñÔòÒı·¢{@link ConversionException}Òì³£¡£
+     * å¤„ç†è½¬æ¢é”™è¯¯ã€‚<p>
+     * å¦‚æœè®¾ç½®äº†defaultå±æ€§åˆ™å½“é‡åˆ°é”™è¯¯æ—¶è¿”å›é»˜è®¤å€¼ã€‚å¦åˆ™å¼•å‘{@link ConversionException}å¼‚å¸¸ã€‚
      */
     protected Object handleError(Class type, Object value, Throwable cause) {
         if (this.useDefault)
@@ -110,13 +110,13 @@ public abstract class AbstractConverter implements Converter {
         }
     }
     /**
-     * ×ª»»¶ÔÏó³ÉÎªString¸ñÊ½¡£<p>
-     * <b>×¢Òâ£º</b>Õâ¸ö·½·¨¼òµ¥Ê¹ÓÃ<code>toString()</code>ÊµÏÖ¸Ã¹¦ÄÜ£¬×ÓÀàÓ¦µ±ÖØĞ´¸Ã·½·¨ÒÔÍê³ÉÌØÊâµÄ×ª»»¹ı³Ì¡£
+     * è½¬æ¢å¯¹è±¡æˆä¸ºStringæ ¼å¼ã€‚<p>
+     * <b>æ³¨æ„ï¼š</b>è¿™ä¸ªæ–¹æ³•ç®€å•ä½¿ç”¨<code>toString()</code>å®ç°è¯¥åŠŸèƒ½ï¼Œå­ç±»åº”å½“é‡å†™è¯¥æ–¹æ³•ä»¥å®Œæˆç‰¹æ®Šçš„è½¬æ¢è¿‡ç¨‹ã€‚
      */
     protected String convertToString(Object value) throws Throwable {
         return value.toString();
     }
-    /**Ö´ĞĞÀàĞÍ×ª»»´úÂë¡£*/
+    /**æ‰§è¡Œç±»å‹è½¬æ¢ä»£ç ã€‚*/
     protected abstract Object convertToType(Class type, Object value) throws Throwable;
     /**
      * Return the first element from an Array (or Collection)
@@ -147,7 +147,7 @@ public abstract class AbstractConverter implements Converter {
         }
         return value;
     }
-    /**ÉèÖÃÄ¬ÈÏÖµ */
+    /**è®¾ç½®é»˜è®¤å€¼ */
     protected void setDefaultValue(Object defaultValue) {
         this.useDefault = false;
         if (defaultValue == null)
@@ -156,9 +156,9 @@ public abstract class AbstractConverter implements Converter {
             this.defaultValue = convert(getDefaultType(), defaultValue);
         this.useDefault = true;
     }
-    /**»ñÈ¡Ä¬ÈÏÖµ*/
+    /**è·å–é»˜è®¤å€¼*/
     protected abstract Class getDefaultType();
-    /**·µ»ØÖ¸¶¨ÀàĞÍµÄÄ¬ÈÏÖµ.*/
+    /**è¿”å›æŒ‡å®šç±»å‹çš„é»˜è®¤å€¼.*/
     protected Object getDefault(Class type) {
         if (type.equals(String.class))
             return null;
@@ -172,7 +172,7 @@ public abstract class AbstractConverter implements Converter {
     public String toString() {
         return toString(getClass()) + "[UseDefault=" + useDefault + "]";
     }
-    /**µ±Óöµ½¿ÕÖµ´«Èë»òÕß·µ»ØÖµÎª¿ÕµÄÊ±ºò*/
+    /**å½“é‡åˆ°ç©ºå€¼ä¼ å…¥æˆ–è€…è¿”å›å€¼ä¸ºç©ºçš„æ—¶å€™*/
     protected Object handleMissing(Class type) {
         if (this.useDefault || type.equals(String.class)) {
             Object value = getDefault(type);
@@ -188,7 +188,7 @@ public abstract class AbstractConverter implements Converter {
         throw new ConversionException("No value specified for '" + toString(type) + "'");
     }
     // ----------------------------------------------------------- Package Methods
-    /** ×ª»»»ù±¾ÀàĞÍµ½°ü×°ÀàĞÍ. */
+    /** è½¬æ¢åŸºæœ¬ç±»å‹åˆ°åŒ…è£…ç±»å‹. */
     private Class primitive(Class type) {
         if (type == null || !type.isPrimitive()) {
             return type;

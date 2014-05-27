@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@ import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
 import org.more.RepeateException;
 /**
- * »º´æ·şÎñ¡£Æô¶¯¼¶±ğ£ºLv_0
+ * ç¼“å­˜æœåŠ¡ã€‚å¯åŠ¨çº§åˆ«ï¼šLv_0
  * @version : 2013-4-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin()
 public class CachePlugin extends AbstractHasorPlugin {
-    /**³õÊ¼»¯.*/
+    /**åˆå§‹åŒ–.*/
     public void loadPlugin(ApiBinder apiBinder) {
-        //1.¹ÒÔØAop
+        //1.æŒ‚è½½Aop
         Matcher<Class<?>> matcherCass = AopMatchers.annotatedWithClass(NeedCache.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(NeedCache.class);//
         apiBinder.bindInterceptor(matcherCass, matcherMethod, new CacheInterceptor(apiBinder));
-        //2.ÅÅ´í
+        //2.æ’é”™
         Set<Class<?>> cacheSet = apiBinder.findClass(Creator.class);
         if (cacheSet == null || cacheSet.isEmpty())
             return;
@@ -45,7 +45,7 @@ public class CachePlugin extends AbstractHasorPlugin {
         Class<?> cacheCreator = cacheSet.iterator().next();
         if (CacheCreator.class.isAssignableFrom(cacheCreator) == false)
             throw new ClassCastException("cannot be cast to " + CacheCreator.class.getName());
-        //2.×¢²á·şÎñ
+        //2.æ³¨å†ŒæœåŠ¡
         apiBinder.bindingType(CacheCreator.class, (Class<CacheCreator>) cacheCreator).asEagerSingleton();
     }
 }

@@ -3,7 +3,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 /**
  * 
  * @version : 2013-2-4
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class JobSchedulingRule implements ISchedulingRule {
     public static JobSchedulingRule JobRule = new JobSchedulingRule();

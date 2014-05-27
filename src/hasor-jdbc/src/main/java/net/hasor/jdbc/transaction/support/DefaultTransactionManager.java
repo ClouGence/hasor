@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,15 +33,15 @@ import net.hasor.jdbc.transaction.TransactionLevel;
 import net.hasor.jdbc.transaction.TransactionManager;
 import net.hasor.jdbc.transaction.TransactionStatus;
 /**
- * Ä³Ò»¸öÊı¾İÔ´µÄÊÂÎñ¹ÜÀíÆ÷
+ * æŸä¸€ä¸ªæ•°æ®æºçš„äº‹åŠ¡ç®¡ç†å™¨
  * 
- * <p><b><i>ÊÂÎñÕ»£º</i></b>
- * <p>ÊÂÎñ¹ÜÀíÆ÷ÔÊĞíÊ¹ÓÃ²»Í¬µÄ´«²¥ÊôĞÔ·´¸´¿ªÆôĞÂµÄÊÂÎñ¡£ËùÓĞ±»¿ªÆôµÄÊÂÎñÔÚÕıÈ·´¦ÖÃ£¨commit,rollback£©
- * ËüÃÇÖ®Ç°¶¼»á°´ÕÕÏÈºóË³ĞòÒÀ´ÎÑ¹ÈëÊÂÎñ¹ÜÀíÆ÷µÄ¡°ÊÂÎñÕ»¡±ÖĞ¡£Ò»µ©ÓĞÊÂÎñ±»´¦Àí£¨commit,rollback£©Õâ¸öÊÂÎñ²Å»á±»´ÓÊÂÎñÕ»ÖĞµ¯³ö¡£
- * <p>ÌÈÈô±»µ¯³öµÄÊÂÎñ(A)²¢²»ÊÇÕ»¶¥µÄÊÂÎñ£¬ÄÇÃ´ÔÚÊÂÎñ(A)±»´¦Àí£¨commit,rollback£©Ê±»áÓÅÏÈ´¦Àí×ÔÊÂÎñ(A)ÒÔºó¿ªÆôµÄÆäËüÊÂÎñ¡£
+ * <p><b><i>äº‹åŠ¡æ ˆï¼š</i></b>
+ * <p>äº‹åŠ¡ç®¡ç†å™¨å…è®¸ä½¿ç”¨ä¸åŒçš„ä¼ æ’­å±æ€§åå¤å¼€å¯æ–°çš„äº‹åŠ¡ã€‚æ‰€æœ‰è¢«å¼€å¯çš„äº‹åŠ¡åœ¨æ­£ç¡®å¤„ç½®ï¼ˆcommit,rollbackï¼‰
+ * å®ƒä»¬ä¹‹å‰éƒ½ä¼šæŒ‰ç…§å…ˆåé¡ºåºä¾æ¬¡å‹å…¥äº‹åŠ¡ç®¡ç†å™¨çš„â€œäº‹åŠ¡æ ˆâ€ä¸­ã€‚ä¸€æ—¦æœ‰äº‹åŠ¡è¢«å¤„ç†ï¼ˆcommit,rollbackï¼‰è¿™ä¸ªäº‹åŠ¡æ‰ä¼šè¢«ä»äº‹åŠ¡æ ˆä¸­å¼¹å‡ºã€‚
+ * <p>å€˜è‹¥è¢«å¼¹å‡ºçš„äº‹åŠ¡(A)å¹¶ä¸æ˜¯æ ˆé¡¶çš„äº‹åŠ¡ï¼Œé‚£ä¹ˆåœ¨äº‹åŠ¡(A)è¢«å¤„ç†ï¼ˆcommit,rollbackï¼‰æ—¶ä¼šä¼˜å…ˆå¤„ç†è‡ªäº‹åŠ¡(A)ä»¥åå¼€å¯çš„å…¶å®ƒäº‹åŠ¡ã€‚
  * 
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class DefaultTransactionManager implements TransactionManager {
     private LinkedList<DefaultTransactionStatus> tStatusStack = new LinkedList<DefaultTransactionStatus>();
@@ -52,15 +52,15 @@ public class DefaultTransactionManager implements TransactionManager {
     }
     //
     //
-    /**»ñÈ¡µ±Ç°ÊÂÎñ¹ÜÀíÆ÷¹ÜÀíµÄÊı¾İÔ´¶ÔÏó¡£*/
+    /**è·å–å½“å‰äº‹åŠ¡ç®¡ç†å™¨ç®¡ç†çš„æ•°æ®æºå¯¹è±¡ã€‚*/
     public DataSource getDataSource() {
         return this.dataSource;
     };
-    /**ÊÇ·ñ´æÔÚÎ´´¦ÀíÍêµÄÊÂÎñ£¨°üÀ¨±»¹ÒÆğµÄÊÂÎñ£©¡£*/
+    /**æ˜¯å¦å­˜åœ¨æœªå¤„ç†å®Œçš„äº‹åŠ¡ï¼ˆåŒ…æ‹¬è¢«æŒ‚èµ·çš„äº‹åŠ¡ï¼‰ã€‚*/
     public boolean hasTransaction() {
         return !tStatusStack.isEmpty();
     }
-    /**²âÊÔÊÂÎñ×´Ì¬ÊÇ·ñÎ»ÓÚÕ»¶¥¡£*/
+    /**æµ‹è¯•äº‹åŠ¡çŠ¶æ€æ˜¯å¦ä½äºæ ˆé¡¶ã€‚*/
     public boolean isTopTransaction(TransactionStatus status) {
         if (tStatusStack.isEmpty())
             return false;
@@ -68,44 +68,44 @@ public class DefaultTransactionManager implements TransactionManager {
     }
     //
     //
-    /**¿ªÆôÊÂÎñ*/
+    /**å¼€å¯äº‹åŠ¡*/
     public final TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException {
         return getTransaction(behavior, TransactionLevel.ISOLATION_DEFAULT);
     };
-    /**¿ªÆôÊÂÎñ*/
+    /**å¼€å¯äº‹åŠ¡*/
     public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
-        //1.»ñÈ¡Á¬½Ó
+        //1.è·å–è¿æ¥
         DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
-        this.tStatusStack.push(defStatus);/*ÈëÕ»*/
+        this.tStatusStack.push(defStatus);/*å…¥æ ˆ*/
         /*-------------------------------------------------------------
-        |                      »·¾³ÒÑ¾­´æÔÚÊÂÎñ
+        |                      ç¯å¢ƒå·²ç»å­˜åœ¨äº‹åŠ¡
         |
-        | PROPAGATION_REQUIRED     £º¼ÓÈëÒÑÓĞÊÂÎñ£¨²»´¦Àí£©
-        | RROPAGATION_REQUIRES_NEW £º¶ÀÁ¢ÊÂÎñ£¨¹ÒÆğµ±Ç°ÊÂÎñ£¬¿ªÆôĞÂÊÂÎñ£©
-        | PROPAGATION_NESTED       £ºÇ¶Ì×ÊÂÎñ£¨ÉèÖÃ±£´æµã£©
-        | PROPAGATION_SUPPORTS     £º¸úËæ»·¾³£¨²»´¦Àí£©
-        | PROPAGATION_NOT_SUPPORTED£º·ÇÊÂÎñ·½Ê½£¨½ö¹ÒÆğµ±Ç°ÊÂÎñ£©
-        | PROPAGATION_NEVER        £ºÅÅ³ıÊÂÎñ£¨Òì³££©
-        | PROPAGATION_MANDATORY    £ºÇ¿ÖÆÒªÇóÊÂÎñ£¨²»´¦Àí£©
+        | PROPAGATION_REQUIRED     ï¼šåŠ å…¥å·²æœ‰äº‹åŠ¡ï¼ˆä¸å¤„ç†ï¼‰
+        | RROPAGATION_REQUIRES_NEW ï¼šç‹¬ç«‹äº‹åŠ¡ï¼ˆæŒ‚èµ·å½“å‰äº‹åŠ¡ï¼Œå¼€å¯æ–°äº‹åŠ¡ï¼‰
+        | PROPAGATION_NESTED       ï¼šåµŒå¥—äº‹åŠ¡ï¼ˆè®¾ç½®ä¿å­˜ç‚¹ï¼‰
+        | PROPAGATION_SUPPORTS     ï¼šè·Ÿéšç¯å¢ƒï¼ˆä¸å¤„ç†ï¼‰
+        | PROPAGATION_NOT_SUPPORTEDï¼šéäº‹åŠ¡æ–¹å¼ï¼ˆä»…æŒ‚èµ·å½“å‰äº‹åŠ¡ï¼‰
+        | PROPAGATION_NEVER        ï¼šæ’é™¤äº‹åŠ¡ï¼ˆå¼‚å¸¸ï¼‰
+        | PROPAGATION_MANDATORY    ï¼šå¼ºåˆ¶è¦æ±‚äº‹åŠ¡ï¼ˆä¸å¤„ç†ï¼‰
         ===============================================================*/
         if (this.isExistingTransaction(defStatus) == true) {
-            /*RROPAGATION_REQUIRES_NEW£º¶ÀÁ¢ÊÂÎñ*/
+            /*RROPAGATION_REQUIRES_NEWï¼šç‹¬ç«‹äº‹åŠ¡*/
             if (behavior == RROPAGATION_REQUIRES_NEW) {
-                this.suspend(defStatus);/*¹ÒÆğµ±Ç°ÊÂÎñ*/
-                this.doBegin(defStatus);/*¿ªÆôĞÂÊÂÎñ*/
+                this.suspend(defStatus);/*æŒ‚èµ·å½“å‰äº‹åŠ¡*/
+                this.doBegin(defStatus);/*å¼€å¯æ–°äº‹åŠ¡*/
             }
-            /*PROPAGATION_NESTED£ºÇ¶Ì×ÊÂÎñ*/
+            /*PROPAGATION_NESTEDï¼šåµŒå¥—äº‹åŠ¡*/
             if (behavior == PROPAGATION_NESTED) {
-                defStatus.markHeldSavepoint();/*ÉèÖÃ±£´æµã*/
+                defStatus.markHeldSavepoint();/*è®¾ç½®ä¿å­˜ç‚¹*/
             }
-            /*PROPAGATION_NOT_SUPPORTED£º·ÇÊÂÎñ·½Ê½*/
+            /*PROPAGATION_NOT_SUPPORTEDï¼šéäº‹åŠ¡æ–¹å¼*/
             if (behavior == PROPAGATION_NOT_SUPPORTED) {
-                this.suspend(defStatus);/*¹ÒÆğÊÂÎñ*/
+                this.suspend(defStatus);/*æŒ‚èµ·äº‹åŠ¡*/
             }
-            /*PROPAGATION_NEVER£ºÅÅ³ıÊÂÎñ*/
+            /*PROPAGATION_NEVERï¼šæ’é™¤äº‹åŠ¡*/
             if (behavior == PROPAGATION_NEVER) {
                 this.cleanupAfterCompletion(defStatus);
                 throw new SQLException("Existing transaction found for transaction marked with propagation 'never'");
@@ -113,62 +113,62 @@ public class DefaultTransactionManager implements TransactionManager {
             return defStatus;
         }
         /*-------------------------------------------------------------
-        |                      »·¾³²»¾­´æÔÚÊÂÎñ
+        |                      ç¯å¢ƒä¸ç»å­˜åœ¨äº‹åŠ¡
         |
-        | PROPAGATION_REQUIRED     £º¼ÓÈëÒÑÓĞÊÂÎñ£¨¿ªÆôĞÂÊÂÎñ£©
-        | RROPAGATION_REQUIRES_NEW £º¶ÀÁ¢ÊÂÎñ£¨¿ªÆôĞÂÊÂÎñ£©
-        | PROPAGATION_NESTED       £ºÇ¶Ì×ÊÂÎñ£¨¿ªÆôĞÂÊÂÎñ£©
-        | PROPAGATION_SUPPORTS     £º¸úËæ»·¾³£¨²»´¦Àí£©
-        | PROPAGATION_NOT_SUPPORTED£º·ÇÊÂÎñ·½Ê½£¨²»´¦Àí£©
-        | PROPAGATION_NEVER        £ºÅÅ³ıÊÂÎñ£¨²»´¦Àí£©
-        | PROPAGATION_MANDATORY    £ºÇ¿ÖÆÒªÇóÊÂÎñ£¨Òì³££©
+        | PROPAGATION_REQUIRED     ï¼šåŠ å…¥å·²æœ‰äº‹åŠ¡ï¼ˆå¼€å¯æ–°äº‹åŠ¡ï¼‰
+        | RROPAGATION_REQUIRES_NEW ï¼šç‹¬ç«‹äº‹åŠ¡ï¼ˆå¼€å¯æ–°äº‹åŠ¡ï¼‰
+        | PROPAGATION_NESTED       ï¼šåµŒå¥—äº‹åŠ¡ï¼ˆå¼€å¯æ–°äº‹åŠ¡ï¼‰
+        | PROPAGATION_SUPPORTS     ï¼šè·Ÿéšç¯å¢ƒï¼ˆä¸å¤„ç†ï¼‰
+        | PROPAGATION_NOT_SUPPORTEDï¼šéäº‹åŠ¡æ–¹å¼ï¼ˆä¸å¤„ç†ï¼‰
+        | PROPAGATION_NEVER        ï¼šæ’é™¤äº‹åŠ¡ï¼ˆä¸å¤„ç†ï¼‰
+        | PROPAGATION_MANDATORY    ï¼šå¼ºåˆ¶è¦æ±‚äº‹åŠ¡ï¼ˆå¼‚å¸¸ï¼‰
         ===============================================================*/
-        /*PROPAGATION_REQUIRED£º¼ÓÈëÒÑÓĞÊÂÎñ*/
+        /*PROPAGATION_REQUIREDï¼šåŠ å…¥å·²æœ‰äº‹åŠ¡*/
         if (behavior == PROPAGATION_REQUIRED ||
-        /*RROPAGATION_REQUIRES_NEW£º¶ÀÁ¢ÊÂÎñ*/
+        /*RROPAGATION_REQUIRES_NEWï¼šç‹¬ç«‹äº‹åŠ¡*/
         behavior == RROPAGATION_REQUIRES_NEW ||
-        /*PROPAGATION_NESTED£ºÇ¶Ì×ÊÂÎñ*/
+        /*PROPAGATION_NESTEDï¼šåµŒå¥—äº‹åŠ¡*/
         behavior == PROPAGATION_NESTED) {
-            this.doBegin(defStatus);/*¿ªÆôĞÂÊÂÎñ*/
+            this.doBegin(defStatus);/*å¼€å¯æ–°äº‹åŠ¡*/
         }
-        /*PROPAGATION_MANDATORY£ºÇ¿ÖÆÒªÇóÊÂÎñ*/
+        /*PROPAGATION_MANDATORYï¼šå¼ºåˆ¶è¦æ±‚äº‹åŠ¡*/
         if (behavior == PROPAGATION_MANDATORY) {
             this.cleanupAfterCompletion(defStatus);
             throw new SQLException("No existing transaction found for transaction marked with propagation 'mandatory'");
         }
         return defStatus;
     }
-    /**ÅĞ¶ÏÁ¬½Ó¶ÔÏóÊÇ·ñ´¦ÓÚÊÂÎñÖĞ£¬¸Ã·½·¨»áÓÃÓÚÆÀ¹ÀÊÂÎñ´«²¥ÊôĞÔµÄ´¦Àí·½Ê½¡£ */
+    /**åˆ¤æ–­è¿æ¥å¯¹è±¡æ˜¯å¦å¤„äºäº‹åŠ¡ä¸­ï¼Œè¯¥æ–¹æ³•ä¼šç”¨äºè¯„ä¼°äº‹åŠ¡ä¼ æ’­å±æ€§çš„å¤„ç†æ–¹å¼ã€‚ */
     private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws SQLException {
         return defStatus.getTranConn().hasTransaction();
     };
-    /**³õÊ¼»¯Ò»¸öĞÂµÄÁ¬½Ó£¬²¢¿ªÆôÊÂÎñ¡£*/
+    /**åˆå§‹åŒ–ä¸€ä¸ªæ–°çš„è¿æ¥ï¼Œå¹¶å¼€å¯äº‹åŠ¡ã€‚*/
     protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
         tranConn.begin();
     }
     //
     //
-    /**µİ½»ÊÂÎñ*/
+    /**é€’äº¤äº‹åŠ¡*/
     public final void commit(TransactionStatus status) throws SQLException {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
-        /*ÒÑÍê±Ï£¬²»ĞèÒª´¦Àí*/
+        /*å·²å®Œæ¯•ï¼Œä¸éœ€è¦å¤„ç†*/
         if (defStatus.isCompleted())
             throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
         /*-------------------------------------------------------------
-        | 1.ÎŞÂÛºÎÖÖ´«²¥ĞÎÊ½£¬µİ½»ÊÂÎñ²Ù×÷¶¼»á½« isCompleted ÊôĞÔÖÃÎª true¡£
-        | 2.Èç¹ûÊÂÎñ×´Ì¬ÖĞ°üº¬Ò»¸öÎ´´¦ÀíµÄ±£´æµã¡£½öµİ½»±£´æµã£¬¶ø·Çµİ½»Õû¸öÊÂÎñ¡£
-        | 3.ÊÂÎñ isNew Ö»ÓĞÎª true Ê±²ÅÕæÕı´¥·¢µİ½»ÊÂÎñ²Ù×÷¡£
+        | 1.æ— è®ºä½•ç§ä¼ æ’­å½¢å¼ï¼Œé€’äº¤äº‹åŠ¡æ“ä½œéƒ½ä¼šå°† isCompleted å±æ€§ç½®ä¸º trueã€‚
+        | 2.å¦‚æœäº‹åŠ¡çŠ¶æ€ä¸­åŒ…å«ä¸€ä¸ªæœªå¤„ç†çš„ä¿å­˜ç‚¹ã€‚ä»…é€’äº¤ä¿å­˜ç‚¹ï¼Œè€Œéé€’äº¤æ•´ä¸ªäº‹åŠ¡ã€‚
+        | 3.äº‹åŠ¡ isNew åªæœ‰ä¸º true æ—¶æ‰çœŸæ­£è§¦å‘é€’äº¤äº‹åŠ¡æ“ä½œã€‚
         ===============================================================*/
         try {
             prepareCommit(defStatus);
             if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
-                /*»Ø¹öÇé¿ö*/
+                /*å›æ»šæƒ…å†µ*/
                 if (Hasor.isDebugLogger())
                     Hasor.logDebug("Transactional code has requested rollback");
                 doRollback(defStatus);
             } else {
-                /*Èç¹û°üº¬±£´æµã£¬ÔÚµİ½»ÊÂÎñÊ±Ö»´¦Àí±£´æµã*/
+                /*å¦‚æœåŒ…å«ä¿å­˜ç‚¹ï¼Œåœ¨é€’äº¤äº‹åŠ¡æ—¶åªå¤„ç†ä¿å­˜ç‚¹*/
                 if (defStatus.hasSavepoint())
                     defStatus.releaseHeldSavepoint();
                 else if (defStatus.isNewConnection())
@@ -176,23 +176,23 @@ public class DefaultTransactionManager implements TransactionManager {
             }
             //
         } catch (SQLException ex) {
-            doRollback(defStatus);/*µİ½»Ê§°Ü£¬»Ø¹ö*/
+            doRollback(defStatus);/*é€’äº¤å¤±è´¥ï¼Œå›æ»š*/
             throw ex;
         } finally {
             cleanupAfterCompletion(defStatus);
         }
     }
-    /**µİ½»Ç°µÄÔ¤´¦Àí*/
+    /**é€’äº¤å‰çš„é¢„å¤„ç†*/
     private void prepareCommit(DefaultTransactionStatus defStatus) throws SQLException {
-        /*Ê×ÏÈÔ¤´¦ÀíµÄÊÂÎñ±ØĞë´æÔÚÓÚ¹ÜÀíÆ÷µÄÊÂÎñÕ»ÄÚÄ³Ò»Î»ÖÃÖĞ£¬·ñÔòÒª´¦ÀíµÄÊÂÎñ²¢·ÇÀ´Ô´ÓÚ¸ÃÊÂÎñ¹ÜÀíÆ÷¡£*/
+        /*é¦–å…ˆé¢„å¤„ç†çš„äº‹åŠ¡å¿…é¡»å­˜åœ¨äºç®¡ç†å™¨çš„äº‹åŠ¡æ ˆå†…æŸä¸€ä½ç½®ä¸­ï¼Œå¦åˆ™è¦å¤„ç†çš„äº‹åŠ¡å¹¶éæ¥æºäºè¯¥äº‹åŠ¡ç®¡ç†å™¨ã€‚*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new SQLException("This transaction is not derived from this Manager.");
         /*-------------------------------------------------------------
-        | Èç¹ûÔ¤´¦ÀíµÄÊÂÎñ²¢·ÇÎ»ÓÚÕ»¶¥£¬Ôò½øĞĞµ¯Õ»²Ù×÷¡£
+        | å¦‚æœé¢„å¤„ç†çš„äº‹åŠ¡å¹¶éä½äºæ ˆé¡¶ï¼Œåˆ™è¿›è¡Œå¼¹æ ˆæ“ä½œã€‚
         |--------------------------\
-        | T5  ^   <-- pop-up       | ¼Ù¶¨Ô¤´¦ÀíµÄÊÂÎñÎª T4£¬ÄÇÃ´£º
-        | T4  ^   <-- pop-up       | T5 ÊÂÎñ»á±»ÏÈµİ½»£¬È»ºóÊÇ T4
-        | T3  .   <-- defStatus    | ½ÓÏÂÀ´¾ÍÍê³ÉÁËÔ¤´¦Àí¡£
+        | T5  ^   <-- pop-up       | å‡å®šé¢„å¤„ç†çš„äº‹åŠ¡ä¸º T4ï¼Œé‚£ä¹ˆï¼š
+        | T4  ^   <-- pop-up       | T5 äº‹åŠ¡ä¼šè¢«å…ˆé€’äº¤ï¼Œç„¶åæ˜¯ T4
+        | T3  .   <-- defStatus    | æ¥ä¸‹æ¥å°±å®Œæˆäº†é¢„å¤„ç†ã€‚
         | T2                       |
         | T1                       |
         |--------------------------/
@@ -203,27 +203,27 @@ public class DefaultTransactionManager implements TransactionManager {
         while ((inStackStatus = this.tStatusStack.peek()) != defStatus)
             this.commit(inStackStatus);
     }
-    /**´¦Àíµ±Ç°µ×²ãÊı¾İ¿âÁ¬½ÓµÄÊÂÎñµİ½»²Ù×÷¡£*/
+    /**å¤„ç†å½“å‰åº•å±‚æ•°æ®åº“è¿æ¥çš„äº‹åŠ¡é€’äº¤æ“ä½œã€‚*/
     protected void doCommit(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.commit();
     };
     //
     //
-    /**»Ø¹öÊÂÎñ*/
+    /**å›æ»šäº‹åŠ¡*/
     public final void rollBack(TransactionStatus status) throws SQLException {
         DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
-        /*ÒÑÍê±Ï£¬²»ĞèÒª´¦Àí*/
+        /*å·²å®Œæ¯•ï¼Œä¸éœ€è¦å¤„ç†*/
         if (defStatus.isCompleted())
             throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
         /*-------------------------------------------------------------
-        | 1.ÎŞÂÛºÎÖÖ´«²¥ĞÎÊ½£¬µİ½»ÊÂÎñ²Ù×÷¶¼»á½« isCompleted ÊôĞÔÖÃÎª true¡£
-        | 2.Èç¹ûÊÂÎñ×´Ì¬ÖĞ°üº¬Ò»¸öÎ´´¦ÀíµÄ±£´æµã¡£½ö»Ø¹ö±£´æµã£¬¶ø·Ç»Ø¹öÕû¸öÊÂÎñ¡£
-        | 3.ÊÂÎñ isNew Ö»ÓĞÎª true Ê±²ÅÕæÕı´¥·¢»Ø¹öÊÂÎñ²Ù×÷¡£
+        | 1.æ— è®ºä½•ç§ä¼ æ’­å½¢å¼ï¼Œé€’äº¤äº‹åŠ¡æ“ä½œéƒ½ä¼šå°† isCompleted å±æ€§ç½®ä¸º trueã€‚
+        | 2.å¦‚æœäº‹åŠ¡çŠ¶æ€ä¸­åŒ…å«ä¸€ä¸ªæœªå¤„ç†çš„ä¿å­˜ç‚¹ã€‚ä»…å›æ»šä¿å­˜ç‚¹ï¼Œè€Œéå›æ»šæ•´ä¸ªäº‹åŠ¡ã€‚
+        | 3.äº‹åŠ¡ isNew åªæœ‰ä¸º true æ—¶æ‰çœŸæ­£è§¦å‘å›æ»šäº‹åŠ¡æ“ä½œã€‚
         ===============================================================*/
         try {
             prepareRollback(defStatus);
-            /*Èç¹û°üº¬±£´æµã£¬ÔÚµİ½»ÊÂÎñÊ±Ö»´¦Àí±£´æµã*/
+            /*å¦‚æœåŒ…å«ä¿å­˜ç‚¹ï¼Œåœ¨é€’äº¤äº‹åŠ¡æ—¶åªå¤„ç†ä¿å­˜ç‚¹*/
             if (defStatus.hasSavepoint())
                 defStatus.rollbackToHeldSavepoint();
             else if (defStatus.isNewConnection())
@@ -236,17 +236,17 @@ public class DefaultTransactionManager implements TransactionManager {
             cleanupAfterCompletion(defStatus);
         }
     }
-    /**»Ø¹öÇ°µÄÔ¤´¦Àí*/
+    /**å›æ»šå‰çš„é¢„å¤„ç†*/
     private void prepareRollback(DefaultTransactionStatus defStatus) throws SQLException {
-        /*Ê×ÏÈÔ¤´¦ÀíµÄÊÂÎñ±ØĞë´æÔÚÓÚ¹ÜÀíÆ÷µÄÊÂÎñÕ»ÄÚÄ³Ò»Î»ÖÃÖĞ£¬·ñÔòÒª´¦ÀíµÄÊÂÎñ²¢·ÇÀ´Ô´ÓÚ¸ÃÊÂÎñ¹ÜÀíÆ÷¡£*/
+        /*é¦–å…ˆé¢„å¤„ç†çš„äº‹åŠ¡å¿…é¡»å­˜åœ¨äºç®¡ç†å™¨çš„äº‹åŠ¡æ ˆå†…æŸä¸€ä½ç½®ä¸­ï¼Œå¦åˆ™è¦å¤„ç†çš„äº‹åŠ¡å¹¶éæ¥æºäºè¯¥äº‹åŠ¡ç®¡ç†å™¨ã€‚*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new SQLException("This transaction is not derived from this Manager.");
         /*-------------------------------------------------------------
-        | Èç¹ûÔ¤´¦ÀíµÄÊÂÎñ²¢·ÇÎ»ÓÚÕ»¶¥£¬Ôò½øĞĞµ¯Õ»²Ù×÷¡£
+        | å¦‚æœé¢„å¤„ç†çš„äº‹åŠ¡å¹¶éä½äºæ ˆé¡¶ï¼Œåˆ™è¿›è¡Œå¼¹æ ˆæ“ä½œã€‚
         |--------------------------\
-        | T5  ^   <-- pop-up       | ¼Ù¶¨Ô¤´¦ÀíµÄÊÂÎñÎª T4£¬ÄÇÃ´£º
-        | T4  ^   <-- pop-up       | T5 ÊÂÎñ»á±»ÏÈ»Ø¹ö£¬È»ºóÊÇ T4
-        | T3  .   <-- defStatus    | ½ÓÏÂÀ´¾ÍÍê³ÉÁËÔ¤´¦Àí¡£
+        | T5  ^   <-- pop-up       | å‡å®šé¢„å¤„ç†çš„äº‹åŠ¡ä¸º T4ï¼Œé‚£ä¹ˆï¼š
+        | T4  ^   <-- pop-up       | T5 äº‹åŠ¡ä¼šè¢«å…ˆå›æ»šï¼Œç„¶åæ˜¯ T4
+        | T3  .   <-- defStatus    | æ¥ä¸‹æ¥å°±å®Œæˆäº†é¢„å¤„ç†ã€‚
         | T2                       |
         | T1                       |
         |--------------------------/
@@ -257,64 +257,64 @@ public class DefaultTransactionManager implements TransactionManager {
         while ((inStackStatus = this.tStatusStack.peek()) != defStatus)
             this.rollBack(inStackStatus);
     }
-    /**´¦Àíµ±Ç°µ×²ãÊı¾İ¿âÁ¬½ÓµÄÊÂÎñ»Ø¹ö²Ù×÷¡£*/
+    /**å¤„ç†å½“å‰åº•å±‚æ•°æ®åº“è¿æ¥çš„äº‹åŠ¡å›æ»šæ“ä½œã€‚*/
     protected void doRollback(DefaultTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.rollback();
     };
     //
     //
-    /**¹ÒÆğÊÂÎñ¡£*/
+    /**æŒ‚èµ·äº‹åŠ¡ã€‚*/
     protected final void suspend(DefaultTransactionStatus defStatus) throws SQLException {
-        /*ÊÂÎñÒÑ¾­±»¹ÒÆğ*/
+        /*äº‹åŠ¡å·²ç»è¢«æŒ‚èµ·*/
         if (defStatus.isSuspend() == true)
             throw new SQLException("the Transaction has Suspend.");
         //
-        /*ÊÇ·ñÎªÕ»¶¥ÊÂÎñ*/
+        /*æ˜¯å¦ä¸ºæ ˆé¡¶äº‹åŠ¡*/
         prepareCheckStack(defStatus);
-        /*¹ÒÆğÊÂÎñ*/
+        /*æŒ‚èµ·äº‹åŠ¡*/
         TransactionObject tranConn = defStatus.getTranConn();
-        defStatus.setSuspendConn(tranConn);/*¹ÒÆğ*/
-        SyncTransactionManager.clearSync(this.getDataSource());/*Çå³ıÏß³ÌÉÏµÄÍ¬²½ÊÂÎñ*/
-        defStatus.setTranConn(doGetConnection(defStatus));/*ÖØĞÂÉêÇëÊı¾İ¿âÁ¬½Ó*/
+        defStatus.setSuspendConn(tranConn);/*æŒ‚èµ·*/
+        SyncTransactionManager.clearSync(this.getDataSource());/*æ¸…é™¤çº¿ç¨‹ä¸Šçš„åŒæ­¥äº‹åŠ¡*/
+        defStatus.setTranConn(doGetConnection(defStatus));/*é‡æ–°ç”³è¯·æ•°æ®åº“è¿æ¥*/
     }
-    /**»Ö¸´±»¹ÒÆğµÄÊÂÎñ¡£*/
+    /**æ¢å¤è¢«æŒ‚èµ·çš„äº‹åŠ¡ã€‚*/
     protected final void resume(DefaultTransactionStatus defStatus) throws SQLException {
         if (defStatus.isCompleted() == false)
             throw new SQLException("the Transaction has not completed.");
         if (defStatus.isSuspend() == false)
             throw new SQLException("the Transaction has not Suspend.");
         //
-        /*¼ì²éÊÂÎñÊÇ·ñÎªÕ»¶¥ÊÂÎñ*/
+        /*æ£€æŸ¥äº‹åŠ¡æ˜¯å¦ä¸ºæ ˆé¡¶äº‹åŠ¡*/
         prepareCheckStack(defStatus);
-        /*»Ö¸´¹ÒÆğµÄÊÂÎñ*/
+        /*æ¢å¤æŒ‚èµ·çš„äº‹åŠ¡*/
         if (defStatus.isSuspend() == true) {
-            SyncTransactionManager.clearSync(this.getDataSource());/*Çå³ıÏß³ÌÉÏµÄÍ¬²½ÊÂÎñ*/
-            TransactionObject tranConn = defStatus.getSuspendConn();/*È¡µÃ¹ÒÆğµÄÊı¾İ¿âÁ¬½Ó*/
-            SyncTransactionManager.setSync(tranConn);/*ÉèÖÃÏß³ÌµÄÊı¾İ¿âÁ¬½Ó*/
+            SyncTransactionManager.clearSync(this.getDataSource());/*æ¸…é™¤çº¿ç¨‹ä¸Šçš„åŒæ­¥äº‹åŠ¡*/
+            TransactionObject tranConn = defStatus.getSuspendConn();/*å–å¾—æŒ‚èµ·çš„æ•°æ®åº“è¿æ¥*/
+            SyncTransactionManager.setSync(tranConn);/*è®¾ç½®çº¿ç¨‹çš„æ•°æ®åº“è¿æ¥*/
             defStatus.setTranConn(tranConn);
             defStatus.setSuspendConn(null);
         }
     }
     //
     //
-    /**¼ì²éÕıÔÚ´¦ÀíµÄÊÂÎñ×´Ì¬ÊÇ·ñÎ»ÓÚÕ»¶¥£¬·ñÔòÅ×³öÒì³£*/
+    /**æ£€æŸ¥æ­£åœ¨å¤„ç†çš„äº‹åŠ¡çŠ¶æ€æ˜¯å¦ä½äºæ ˆé¡¶ï¼Œå¦åˆ™æŠ›å‡ºå¼‚å¸¸*/
     private void prepareCheckStack(DefaultTransactionStatus defStatus) throws SQLException {
         if (!this.isTopTransaction(defStatus))
             throw new SQLException("the Transaction Status is not top in stack.");
     }
-    /**commit,rollback¡£Ö®ºóµÄÇåÀí¹¤×÷£¬Í¬Ê±Ò²¸ºÔğ»Ö¸´ÊÂÎñºÍ²Ù×÷ÊÂÎñ¶ÑÕ»¡£*/
+    /**commit,rollbackã€‚ä¹‹åçš„æ¸…ç†å·¥ä½œï¼ŒåŒæ—¶ä¹Ÿè´Ÿè´£æ¢å¤äº‹åŠ¡å’Œæ“ä½œäº‹åŠ¡å †æ ˆã€‚*/
     private void cleanupAfterCompletion(DefaultTransactionStatus defStatus) throws SQLException {
-        /*ÇåÀíµÄÊÂÎñ±ØĞëÊÇÎ»ÓÚÕ»¶¥*/
+        /*æ¸…ç†çš„äº‹åŠ¡å¿…é¡»æ˜¯ä½äºæ ˆé¡¶*/
         prepareCheckStack(defStatus);
-        /*±ê¼ÇÍê³É*/
+        /*æ ‡è®°å®Œæˆ*/
         defStatus.setCompleted();
-        /*ÊÍ·Å×ÊÔ´*/
+        /*é‡Šæ”¾èµ„æº*/
         defStatus.getTranConn().getHolder().released();//ref--
-        /*»Ö¸´¹ÒÆğµÄÊÂÎñ*/
+        /*æ¢å¤æŒ‚èµ·çš„äº‹åŠ¡*/
         if (defStatus.isSuspend())
             this.resume(defStatus);
-        /*ÇåÀídefStatus*/
+        /*æ¸…ç†defStatus*/
         this.tStatusStack.pop();
         defStatus.setTranConn(null);
         defStatus.setSuspendConn(null);
@@ -322,13 +322,13 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     //
     //
-    /**»ñÈ¡Êı¾İ¿âÁ¬½Ó£¨Ïß³Ì°ó¶¨µÄ£©*/
+    /**è·å–æ•°æ®åº“è¿æ¥ï¼ˆçº¿ç¨‹ç»‘å®šçš„ï¼‰*/
     protected TransactionObject doGetConnection(DefaultTransactionStatus defStatus) {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(getDataSource());
         ConnectionHolder holder = connSeq.currentHolder();
         if (holder.isOpen() == false)
-            defStatus.markNewConnection();/*ĞÂÊÂÎï£¬ĞÂÁ¬½Ó*/
+            defStatus.markNewConnection();/*æ–°äº‹ç‰©ï¼Œæ–°è¿æ¥*/
         holder.requested();
         return new TransactionObject(holder, getDataSource());
     };

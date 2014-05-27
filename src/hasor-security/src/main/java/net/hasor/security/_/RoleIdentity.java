@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package net.hasor.security._;
 /**
- * ±íÊ¾ÓÃ»§µÇÂ½½øÏµÍ³µÄÉí·İ
+ * è¡¨ç¤ºç”¨æˆ·ç™»é™†è¿›ç³»ç»Ÿçš„èº«ä»½
  * @version : 2013-5-3
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface RoleIdentity {
-    /**´«ÈëÒ»¸öÉí·İ±êÖ¾²âÊÔÓÃ»§ÊÇ·ñÆ¥Åä¸ÃÉí·İÌõ¼ş¡£*/
+    /**ä¼ å…¥ä¸€ä¸ªèº«ä»½æ ‡å¿—æµ‹è¯•ç”¨æˆ·æ˜¯å¦åŒ¹é…è¯¥èº«ä»½æ¡ä»¶ã€‚*/
     public boolean equals(RoleIdentity identity);
 }

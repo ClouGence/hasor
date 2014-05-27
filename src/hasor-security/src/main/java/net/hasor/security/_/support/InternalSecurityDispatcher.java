@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.more.util.StringConvertUtils;
 /**
  * 
  * @version : 2013-4-25
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 class InternalSecurityDispatcher implements SecurityDispatcher {
     private String                       contentPath    = null;
@@ -80,7 +80,7 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
         return "SecurityDispatcher at path: " + contentPath;
     }
     //
-    /**SecurityForwardΩ”ø⁄ µœ÷¿‡°£*/
+    /**SecurityForwardÊé•Âè£ÂÆûÁé∞Á±ª„ÄÇ*/
     class SecurityForwardImpl implements SecurityForward {
         private String      forwardTo   = null;
         private ForwardType forwardType = null;
@@ -111,7 +111,7 @@ class InternalSecurityDispatcher implements SecurityDispatcher {
                 throw new ServletException("forwardType nonsupport.");
             }
         }
-        /**≈◊≥ˆ“Ï≥£*/
+        /**ÊäõÂá∫ÂºÇÂ∏∏*/
         private void doThrowError(String errorType) throws IOException, ServletException {
             Object errorObject = null;
             try {

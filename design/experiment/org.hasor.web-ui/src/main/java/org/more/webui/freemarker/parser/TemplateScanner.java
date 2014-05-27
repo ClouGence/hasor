@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
 import freemarker.template.Template;
 /**
- * ¸ºÔğµİ¹éÉ¨ÃèÄ£°åÔªËØÒÔ´´½¨{@link UIViewRoot}¶ÔÏó¡£
+ * è´Ÿè´£é€’å½’æ‰«ææ¨¡æ¿å…ƒç´ ä»¥åˆ›å»º{@link UIViewRoot}å¯¹è±¡ã€‚
  * @version : 2012-5-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class TemplateScanner {
     private Map<String, ElementHook> blockRegister = new HashMap<String, ElementHook>();
@@ -36,27 +36,27 @@ public class TemplateScanner {
     public boolean containsType(String itemType) {
         return blockRegister.containsKey(itemType);
     }
-    /**½âÎöÄ£°åÓÃÓÚÉú³É{@link UIViewRoot}*/
+    /**è§£ææ¨¡æ¿ç”¨äºç”Ÿæˆ{@link UIViewRoot}*/
     public UIComponent parser(Template template, UIComponent uiViewRoot, ViewContext viewContext) throws ElementHookException {
         TemplateElement rootNode = template.getRootTreeNode();
         return parserElement(rootNode, uiViewRoot, viewContext);
     }
-    /**elementÒª½âÎöµÄÔªËØ£¬componentParentµ±Ç°Ëù´¦×é¼ş*/
+    /**elementè¦è§£æçš„å…ƒç´ ï¼ŒcomponentParentå½“å‰æ‰€å¤„ç»„ä»¶*/
     private UIComponent parserElement(TemplateElement element, UIComponent componentParent, ViewContext viewContext) throws ElementHookException {
         Enumeration<TemplateElement> enumItems = element.children();
         while (enumItems.hasMoreElements() == true) {
-            //µİ¹éÉ¨ÃèËùÓĞÄ£°å½Úµã¡£
+            //é€’å½’æ‰«ææ‰€æœ‰æ¨¡æ¿èŠ‚ç‚¹ã€‚
             TemplateElement e = enumItems.nextElement();
             Class<?> blockType = e.getClass();
             ElementHook hook = this.blockRegister.get(blockType.getSimpleName());
-            //componentItemÕâ¸ö±äÁ¿»á±£Ö¤Ã¿´Îµ÷ÓÃElementHook´«ÈëµÄUIComponent¶¼ÊÇTemplateElement±êÇ©Ëù´¦µÄ¸¸¼¶UIComponent¡£
-            //Í¬Ê±ËüÒ²±£Ö¤ÔÚµİ¹éµ÷ÓÃparserElement·½·¨µÄ¹ı³ÌÖĞelement²ÎÊıÓÀÔ¶ÊÇcomponentParentËù´¦×é¼şÏÂµÄ±êÇ©¡£
+            //componentItemè¿™ä¸ªå˜é‡ä¼šä¿è¯æ¯æ¬¡è°ƒç”¨ElementHookä¼ å…¥çš„UIComponentéƒ½æ˜¯TemplateElementæ ‡ç­¾æ‰€å¤„çš„çˆ¶çº§UIComponentã€‚
+            //åŒæ—¶å®ƒä¹Ÿä¿è¯åœ¨é€’å½’è°ƒç”¨parserElementæ–¹æ³•çš„è¿‡ç¨‹ä¸­elementå‚æ•°æ°¸è¿œæ˜¯componentParentæ‰€å¤„ç»„ä»¶ä¸‹çš„æ ‡ç­¾ã€‚
             UIComponent componentItem = null;
             if (hook != null)
-                componentItem = hook.beginAtBlcok(this, e, componentParent, viewContext);//ÔÚ½âÎöÔªËØÊ±Èç¹û·µ»ØÁËÒ»¸öUIComponentÔò½«Õâ¸öUIComponent¼ÓÈëµ½componentParent
+                componentItem = hook.beginAtBlcok(this, e, componentParent, viewContext);//åœ¨è§£æå…ƒç´ æ—¶å¦‚æœè¿”å›äº†ä¸€ä¸ªUIComponentåˆ™å°†è¿™ä¸ªUIComponentåŠ å…¥åˆ°componentParent
             if (componentItem != null)
                 componentParent.addChildren(componentItem);
-            this.parserElement(e, (componentItem != null) ? componentItem : componentParent, viewContext);//µİ¹é½âÎö
+            this.parserElement(e, (componentItem != null) ? componentItem : componentParent, viewContext);//é€’å½’è§£æ
             if (hook != null)
                 hook.endAtBlcok(this, e, componentParent, viewContext);
         }

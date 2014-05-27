@@ -4,7 +4,7 @@ import org.dev.toos.constcode.metadata.ConstVarBean;
 /**
  * 
  * @version : 2012-2-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class NewConstVarBean extends ConstVarBean implements NEW {
     public NewConstVarBean(ConstBean targetConst, ConstVarBean parent) {

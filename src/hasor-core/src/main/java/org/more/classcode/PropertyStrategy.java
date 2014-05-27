@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,33 @@
  */
 package org.more.classcode;
 /**
- * ¸Ã½Ó¿ÚÊÇ»ù±¾ÊôĞÔºÍÎ¯ÍĞÊôĞÔµÄ²ßÂÔ½Ó¿Ú£¬ÕâĞ©¸½¼ÓµÄÊôĞÔÔÚÊä³öµ½classÖ®Ç°¶¼»áÍ¨¹ı¸Ã½Ó¿ÚÀ´È·¶¨ÊÇ·ñºöÂÔËüÒÔ¼°ÊôĞÔµÄ¶ÁĞ´²ßÂÔ¡£
+ * è¯¥æ¥å£æ˜¯åŸºæœ¬å±æ€§å’Œå§”æ‰˜å±æ€§çš„ç­–ç•¥æ¥å£ï¼Œè¿™äº›é™„åŠ çš„å±æ€§åœ¨è¾“å‡ºåˆ°classä¹‹å‰éƒ½ä¼šé€šè¿‡è¯¥æ¥å£æ¥ç¡®å®šæ˜¯å¦å¿½ç•¥å®ƒä»¥åŠå±æ€§çš„è¯»å†™ç­–ç•¥ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface PropertyStrategy extends BaseStrategy {
     /**
-     * ¸Ã·½·¨ÊÇÓÃÓÚ¾ö¶¨ÊÇ·ñºöÂÔ¸½¼ÓµÄÊôĞÔ¡£Èç¹û·µ»ØtrueÔò±íÊ¾ºöÂÔÕâ¸öÊôĞÔ£¬±»ºöÂÔµÄÊôĞÔ²»»áÔÙ´Îµ÷ÓÃÆäisReadOnlyºÍisWriteOnly·½·¨¡£
-     * @param name ¸½¼ÓµÄÊôĞÔÃû¡£
-     * @param type ¸½¼ÓµÄÊôĞÔÀàĞÍ¡£
-     * @param isDelegate ¸ÃÊôĞÔÊÇ·ñÊÇÒ»¸ö´úÀíÊôĞÔ¡£
-     * @return Èç¹ûºöÂÔÕâ¸öÊôĞÔÔò·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£
+     * è¯¥æ–¹æ³•æ˜¯ç”¨äºå†³å®šæ˜¯å¦å¿½ç•¥é™„åŠ çš„å±æ€§ã€‚å¦‚æœè¿”å›trueåˆ™è¡¨ç¤ºå¿½ç•¥è¿™ä¸ªå±æ€§ï¼Œè¢«å¿½ç•¥çš„å±æ€§ä¸ä¼šå†æ¬¡è°ƒç”¨å…¶isReadOnlyå’ŒisWriteOnlyæ–¹æ³•ã€‚
+     * @param name é™„åŠ çš„å±æ€§åã€‚
+     * @param type é™„åŠ çš„å±æ€§ç±»å‹ã€‚
+     * @param isDelegate è¯¥å±æ€§æ˜¯å¦æ˜¯ä¸€ä¸ªä»£ç†å±æ€§ã€‚
+     * @return å¦‚æœå¿½ç•¥è¿™ä¸ªå±æ€§åˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚
      */
     public boolean isIgnore(String name, Class<?> type, boolean isDelegate);
     /**
-     * ¸Ã·½·¨ÓÃÓÚÈ·¶¨¼´½«Êä³öµÄÊôĞÔÊÇ·ñÎªÒ»¸öÖ»¶ÁÊôĞÔ¡£
-     * @param name ¸½¼ÓµÄÊôĞÔÃû¡£
-     * @param type ¸½¼ÓµÄÊôĞÔÀàĞÍ¡£
-     * @param isDelegate ¸ÃÊôĞÔÊÇ·ñÊÇÒ»¸ö´úÀíÊôĞÔ¡£
-     * @return Èç¹û¸ÃÊôĞÔÊÇÒ»¸öÖ»¶ÁÊôĞÔÔò·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£
+     * è¯¥æ–¹æ³•ç”¨äºç¡®å®šå³å°†è¾“å‡ºçš„å±æ€§æ˜¯å¦ä¸ºä¸€ä¸ªåªè¯»å±æ€§ã€‚
+     * @param name é™„åŠ çš„å±æ€§åã€‚
+     * @param type é™„åŠ çš„å±æ€§ç±»å‹ã€‚
+     * @param isDelegate è¯¥å±æ€§æ˜¯å¦æ˜¯ä¸€ä¸ªä»£ç†å±æ€§ã€‚
+     * @return å¦‚æœè¯¥å±æ€§æ˜¯ä¸€ä¸ªåªè¯»å±æ€§åˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚
      */
     public boolean isReadOnly(String name, Class<?> type, boolean isDelegate);
     /**
-     * ¸Ã·½·¨ÓÃÓÚÈ·¶¨¼´½«Êä³öµÄÊôĞÔÊÇ·ñÎªÒ»¸öÖ»Ğ´ÊôĞÔ¡£
-     * @param name ¸½¼ÓµÄÊôĞÔÃû¡£
-     * @param type ¸½¼ÓµÄÊôĞÔÀàĞÍ¡£
-     * @param isDelegate ¸ÃÊôĞÔÊÇ·ñÊÇÒ»¸ö´úÀíÊôĞÔ¡£
-     * @return Èç¹û¸ÃÊôĞÔÊÇÒ»¸öÖ»Ğ´ÊôĞÔÔò·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£
+     * è¯¥æ–¹æ³•ç”¨äºç¡®å®šå³å°†è¾“å‡ºçš„å±æ€§æ˜¯å¦ä¸ºä¸€ä¸ªåªå†™å±æ€§ã€‚
+     * @param name é™„åŠ çš„å±æ€§åã€‚
+     * @param type é™„åŠ çš„å±æ€§ç±»å‹ã€‚
+     * @param isDelegate è¯¥å±æ€§æ˜¯å¦æ˜¯ä¸€ä¸ªä»£ç†å±æ€§ã€‚
+     * @return å¦‚æœè¯¥å±æ€§æ˜¯ä¸€ä¸ªåªå†™å±æ€§åˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚
     */
     public boolean isWriteOnly(String name, Class<?> type, boolean isDelegate);
 }

@@ -17,14 +17,14 @@ package net.hasor.jdbc.template;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 /**
- * Õâ¸ö½Ó¿ÚÓÃÀ´Ó³Éä JDBC ½á¹û¼¯ÖĞÒ»ĞĞÊı¾İ¡£
+ * è¿™ä¸ªæ¥å£ç”¨æ¥æ˜ å°„ JDBC ç»“æœé›†ä¸­ä¸€è¡Œæ•°æ®ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface RowMapper<T> {
-    /**ÊµÏÖÕâ¸ö·½·¨Îª½á¹û¼¯µÄÒ»ĞĞ¼ÇÂ¼½øĞĞ×ª»»£¬²¢½«×îÖÕ×ª»»½á¹û·µ»Ø¡£
-     * Èç¹û·µ»ØÎª null µÈÍ¬ÓÚºöÂÔ¸ÃĞĞ¡£ĞèÒª×¢Òâ£¬²»Òªµ÷ÓÃ½á¹û¼¯µÄ next() ·½·¨¡£*/
+    /**å®ç°è¿™ä¸ªæ–¹æ³•ä¸ºç»“æœé›†çš„ä¸€è¡Œè®°å½•è¿›è¡Œè½¬æ¢ï¼Œå¹¶å°†æœ€ç»ˆè½¬æ¢ç»“æœè¿”å›ã€‚
+     * å¦‚æœè¿”å›ä¸º null ç­‰åŒäºå¿½ç•¥è¯¥è¡Œã€‚éœ€è¦æ³¨æ„ï¼Œä¸è¦è°ƒç”¨ç»“æœé›†çš„ next() æ–¹æ³•ã€‚*/
     public T mapRow(ResultSet rs, int rowNum) throws SQLException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import net.test.simple._03_aop.class_lv.ClassLv_FooBean;
 import net.test.simple._03_aop.method_lv.MethodLv_FooBean;
 import org.junit.Test;
 /**
- * ²âÊÔ Aop
+ * æµ‹è¯• Aop
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class TestAop {
-    /*·½·¨¼¶£¬À¹½ØÆ÷²âÊÔ*/
+    /*æ–¹æ³•çº§ï¼Œæ‹¦æˆªå™¨æµ‹è¯•*/
     @Test
     public void testMethodAop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testMethodAop<<--");
@@ -36,7 +36,7 @@ public class TestAop {
         MethodLv_FooBean fooBean = appContext.getInstance(MethodLv_FooBean.class);
         fooBean.fooCall();
     }
-    /*Àà¼¶±ð£¬À¹½ØÆ÷²âÊÔ*/
+    /*ç±»çº§åˆ«ï¼Œæ‹¦æˆªå™¨æµ‹è¯•*/
     @Test
     public void testClassAop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testClassAop<<--");

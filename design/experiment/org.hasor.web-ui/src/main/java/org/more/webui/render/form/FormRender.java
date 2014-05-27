@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import org.more.webui.components.UIForm;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.AbstractRender;
 /**
- * ½«°´Å¥×é½¨äÖÈ¾³Éform¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUIForm£¨UIForm.js£©
+ * å°†æŒ‰é’®ç»„å»ºæ¸²æŸ“æˆformã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUIFormï¼ˆUIForm.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class FormRender<T extends UIForm> extends AbstractRender<T> {
     @Override

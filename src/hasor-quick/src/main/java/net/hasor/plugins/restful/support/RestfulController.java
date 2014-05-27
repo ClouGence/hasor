@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ import net.hasor.web.startup.RuntimeListener;
 import org.more.util.BeanUtils;
 import org.more.util.exception.ExceptionUtils;
 /**
- * action¹¦ÄÜµÄÈë¿Ú¡£
+ * actionåŠŸèƒ½çš„å…¥å£ã€‚
  * @version : 2013-5-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class RestfulController implements Filter {
     private RestfulInvokeDefine[] invokeArray = null;
@@ -50,7 +50,7 @@ class RestfulController implements Filter {
         Set<Class<?>> controllerSet = appContext.findClass(RestfulService.class);
         if (controllerSet == null)
             return;
-        //1.×¢²á·şÎñ
+        //1.æ³¨å†ŒæœåŠ¡
         ArrayList<RestfulInvokeDefine> restfulList = new ArrayList<RestfulInvokeDefine>();
         for (Class<?> controllerType : controllerSet) {
             List<Method> actionMethods = BeanUtils.getMethods(controllerType);
@@ -74,13 +74,13 @@ class RestfulController implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
-        //1.»ñÈ¡ ActionInvoke
+        //1.è·å– ActionInvoke
         RestfulInvokeDefine define = this.getRestfulInvoke(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
         }
-        //3.Ö´ĞĞµ÷ÓÃ
+        //3.æ‰§è¡Œè°ƒç”¨
         this.doInvoke(define, request, resp);
     }
     private RestfulInvokeDefine getRestfulInvoke(String httpMethod, String requestPath) {
@@ -95,7 +95,7 @@ class RestfulController implements Filter {
     private void doInvoke(RestfulInvokeDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
             RestfulInvoke invoke = define.createIvnoke();
-            invoke.initHttp((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);//³õÊ¼»¯
+            invoke.initHttp((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);//åˆå§‹åŒ–
             invoke.invoke();
         } catch (Throwable e) {
             Throwable target = ExceptionUtils.getCause(e);
@@ -113,10 +113,10 @@ class RestfulController implements Filter {
     //
     //
     //
-    /** Îª×ª·¢Ìá¹©Ö§³Ö */
+    /** ä¸ºè½¬å‘æä¾›æ”¯æŒ */
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
-        // TODO ĞèÒª¼ì²éÏÂÃæ´úÂëÊÇ·ñ·ûºÏServlet¹æ·¶£¨´ørequest²ÎÊıÇé¿öÏÂÒ²ĞèÒª¼ì²é£©
-        //1.²ğ·ÖÇëÇó×Ö·û´®
+        // TODO éœ€è¦æ£€æŸ¥ä¸‹é¢ä»£ç æ˜¯å¦ç¬¦åˆServletè§„èŒƒï¼ˆå¸¦requestå‚æ•°æƒ…å†µä¸‹ä¹Ÿéœ€è¦æ£€æŸ¥ï¼‰
+        //1.æ‹†åˆ†è¯·æ±‚å­—ç¬¦ä¸²
         final RestfulInvokeDefine define = getRestfulInvoke(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
@@ -124,7 +124,7 @@ class RestfulController implements Filter {
         return new RequestDispatcher() {
             public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                /*Ö´ĞĞservlet*/
+                /*æ‰§è¡Œservlet*/
                 try {
                     doInvoke(define, servletRequest, servletResponse);
                 } finally {
@@ -134,16 +134,16 @@ class RestfulController implements Filter {
             public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 if (servletResponse.isCommitted() == true)
                     throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                /*Çå¿Õ»º³å*/
+                /*æ¸…ç©ºç¼“å†²*/
                 servletResponse.resetBuffer();
                 ServletRequest requestToProcess;
                 if (servletRequest instanceof HttpServletRequest) {
                     requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
                 } else {
-                    //Õı³£Çé¿öÖ®ÏÂ²»»áÖ´ĞĞÕâ¶Î´úÂë¡£
+                    //æ­£å¸¸æƒ…å†µä¹‹ä¸‹ä¸ä¼šæ‰§è¡Œè¿™æ®µä»£ç ã€‚
                     requestToProcess = servletRequest;
                 }
-                /*Ö´ĞĞ×ª·¢*/
+                /*æ‰§è¡Œè½¬å‘*/
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
                     doInvoke(define, requestToProcess, servletResponse);
@@ -153,7 +153,7 @@ class RestfulController implements Filter {
             }
         };
     }
-    /** Ê¹ÓÃRequestDispatcherRequestWrapperÀà´¦Àírequest.getRequestURI·½·¨µÄ·µ»ØÖµ*/
+    /** ä½¿ç”¨RequestDispatcherRequestWrapperç±»å¤„ç†request.getRequestURIæ–¹æ³•çš„è¿”å›å€¼*/
     public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
     private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
         private final String newRequestUri;

@@ -24,20 +24,20 @@ import javax.xml.parsers.SAXParserFactory;
 import net.hasor.core.Hasor;
 import net.hasor.core.setting.xml.SaxXmlParser;
 /***
- * ´«ÈëInputStreamµÄ·½Ê½»ñÈ¡Settings½Ó¿ÚµÄÖ§³Ö¡£
+ * ä¼ å…¥InputStreamçš„æ–¹å¼è·å–Settingsæ¥å£çš„æ”¯æŒã€‚
  * @version : 2013-9-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class InputStreamSettings extends AbstractBaseSettings implements IOSettings {
     private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
-    /**×ÓÀà¾ö¶¨ÈçºÎÌí¼Ó×ÊÔ´*/
+    /**å­ç±»å†³å®šå¦‚ä½•æ·»åŠ èµ„æº*/
     protected InputStreamSettings() {}
     //
-    /**´´½¨{@link InputStreamSettings}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link InputStreamSettings}å¯¹è±¡ã€‚*/
     public InputStreamSettings(InputStream inStream) throws IOException {
         this(new InputStream[] { inStream });
     }
-    /**´´½¨{@link InputStreamSettings}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link InputStreamSettings}å¯¹è±¡ã€‚*/
     public InputStreamSettings(InputStream[] inStreams) throws IOException {
         Hasor.assertIsNotNull(inStreams);
         if (inStreams.length == 0)
@@ -49,21 +49,21 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     }
     //
     //
-    /**½«Ò»¸öÊäÈëÁ÷Ìí¼Óµ½´ı¼ÓÔØ´¦ÀíÁĞ±í£¬Ê¹ÓÃload·½·¨¼ÓÔØ´ı´¦ÀíÁĞ±íÖĞµÄÁ÷¡£
-     * ×¢Òâ£º´ı´¦ÀíÁĞ±íÖĞµÄÁ÷Ò»µ©×°ÔØÍê±Ï½«»á´Ó´ı´¦ÀíÁĞ±íÖĞÇå³ı³öÈ¥¡£*/
+    /**å°†ä¸€ä¸ªè¾“å…¥æµæ·»åŠ åˆ°å¾…åŠ è½½å¤„ç†åˆ—è¡¨ï¼Œä½¿ç”¨loadæ–¹æ³•åŠ è½½å¾…å¤„ç†åˆ—è¡¨ä¸­çš„æµã€‚
+     * æ³¨æ„ï¼šå¾…å¤„ç†åˆ—è¡¨ä¸­çš„æµä¸€æ—¦è£…è½½å®Œæ¯•å°†ä¼šä»å¾…å¤„ç†åˆ—è¡¨ä¸­æ¸…é™¤å‡ºå»ã€‚*/
     public void addStream(InputStream stream) {
         if (stream != null)
             if (this.pendingStream.contains(stream) == false)
                 this.pendingStream.add(stream);
     }
     //
-    /**load×°ÔØËùÓĞ´ı´¦ÀíµÄÁ÷£¬Èç¹ûÃ»ÓĞ´ı´¦ÀíÁ÷ÔòÖ±½Óreturn¡£*/
+    /**loadè£…è½½æ‰€æœ‰å¾…å¤„ç†çš„æµï¼Œå¦‚æœæ²¡æœ‰å¾…å¤„ç†æµåˆ™ç›´æ¥returnã€‚*/
     public synchronized void loadSettings() throws IOException {
-        this.readyLoad();//×¼±¸×°ÔØ
+        this.readyLoad();//å‡†å¤‡è£…è½½
         {
             if (this.pendingStream.isEmpty() == true)
                 return;
-            //¹¹½¨×°ÔØ»·¾³
+            //æ„å»ºè£…è½½ç¯å¢ƒ
             Map<String, Map<String, Object>> loadTo = new HashMap<String, Map<String, Object>>();
             InputStream inStream = null;
             //
@@ -86,12 +86,12 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
             for (Map<String, Object> ent : loadTo.values())
                 this.getSettingsMap().addMap(ent);
         }
-        this.loadFinish();//Íê³É×°ÔØ
+        this.loadFinish();//å®Œæˆè£…è½½
     }
-    /**×¼±¸×°ÔØ*/
+    /**å‡†å¤‡è£…è½½*/
     protected void readyLoad() throws IOException {}
-    /**Íê³É×°ÔØ*/
+    /**å®Œæˆè£…è½½*/
     protected void loadFinish() throws IOException {}
-    /**{@link InputStreamSettings}ÀàĞÍ²»Ö§³Ö¸Ã·½·¨£¬µ÷ÓÃ¸Ã·½·¨²»»áÆğµ½ÈÎºÎ×÷ÓÃ¡£*/
+    /**{@link InputStreamSettings}ç±»å‹ä¸æ”¯æŒè¯¥æ–¹æ³•ï¼Œè°ƒç”¨è¯¥æ–¹æ³•ä¸ä¼šèµ·åˆ°ä»»ä½•ä½œç”¨ã€‚*/
     public void refresh() throws IOException {}
 }

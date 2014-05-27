@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 import org.more.webui.lifestyle.phase.InitView_Phase;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£ºËùÓĞ×é¼şµÄ¸ù£¬ÕâÀïÓµÓĞ×é¼şµÄËùÓĞ¹Ø¼ü·½·¨¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnLoadData
- * <br><b>äÖÈ¾Æ÷</b>£ºÎŞ
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šæ‰€æœ‰ç»„ä»¶çš„æ ¹ï¼Œè¿™é‡Œæ‹¥æœ‰ç»„ä»¶çš„æ‰€æœ‰å…³é”®æ–¹æ³•ã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnLoadData
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼šæ— 
 * @version : 2011-8-4
-* @author ÕÔÓÀ´º (zyc@byshell.org)
+* @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 */
 public abstract class UIComponent {
     private String                           componentID   = null;
@@ -46,41 +46,41 @@ public abstract class UIComponent {
     private Map<Event, List<EventListener>>  listener      = new HashMap<Event, List<EventListener>>();
     private Map<String, AbstractValueHolder> propertys     = new HashMap<String, AbstractValueHolder>();
     private Map<String, Object>              atts          = new HashMap<String, Object>();
-    /*-------------------------------------------------------------------------------get/setÊôĞÔ*/
-    /**·µ»Ø×é¼şµÄID*/
+    /*-------------------------------------------------------------------------------get/setå±æ€§*/
+    /**è¿”å›ç»„ä»¶çš„ID*/
     public String getComponentID() {
         return componentID;
     }
-    /**ÉèÖÃÊôĞÔID*/
+    /**è®¾ç½®å±æ€§ID*/
     public void setComponentID(String componentID) {
         this.componentID = componentID;
     }
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public static enum Propertys {
-        /**¿Í»§¶ËÔÚÇëÇóÖ®Ç°½øĞĞµÄµ÷ÓÃ£¬·µ»ØfalseÈ¡Ïû±¾´ÎajaxÇëÇó£¨R£©*/
+        /**å®¢æˆ·ç«¯åœ¨è¯·æ±‚ä¹‹å‰è¿›è¡Œçš„è°ƒç”¨ï¼Œè¿”å›falseå–æ¶ˆæœ¬æ¬¡ajaxè¯·æ±‚ï¼ˆRï¼‰*/
         beforeScript,
-        /**¿Í»§¶Ë½Å±¾»Øµ÷º¯Êı£¨R£©*/
+        /**å®¢æˆ·ç«¯è„šæœ¬å›è°ƒå‡½æ•°ï¼ˆRï¼‰*/
         afterScript,
-        /**µ÷ÓÃ´íÎó»Øµ÷º¯Êı£¨R£©*/
+        /**è°ƒç”¨é”™è¯¯å›è°ƒå‡½æ•°ï¼ˆRï¼‰*/
         errorScript,
-        /**AjaxÊÇ·ñÊ¹ÓÃÍ¬²½²Ù×÷£¨R£©*/
+        /**Ajaxæ˜¯å¦ä½¿ç”¨åŒæ­¥æ“ä½œï¼ˆRï¼‰*/
         async,
-        /**±íÊ¾ÊÇ·ñäÖÈ¾£¨-£©*/
+        /**è¡¨ç¤ºæ˜¯å¦æ¸²æŸ“ï¼ˆ-ï¼‰*/
         render,
-        /**±íÊ¾ÊÇ·ñäÖÈ¾×Ó×é½¨£¨-£©*/
+        /**è¡¨ç¤ºæ˜¯å¦æ¸²æŸ“å­ç»„å»ºï¼ˆ-ï¼‰*/
         renderChildren,
-        /**µ±·¢ÉúÊÂ¼şOnLoadDataÊ±´¥·¢£¬¸ÃÊÂ¼şÔÊĞíÓÃ»§Í¨¹ıÈÎÒâ×é½¨´Ó·şÎñ¶Ë×°ÔØÊı¾İµ½¿Í»§¶Ë¡££¨R£©*/
+        /**å½“å‘ç”Ÿäº‹ä»¶OnLoadDataæ—¶è§¦å‘ï¼Œè¯¥äº‹ä»¶å…è®¸ç”¨æˆ·é€šè¿‡ä»»æ„ç»„å»ºä»æœåŠ¡ç«¯è£…è½½æ•°æ®åˆ°å®¢æˆ·ç«¯ã€‚ï¼ˆRï¼‰*/
         onLoadDataEL,
-        /**·¢ÉúÊÂ¼şÊ±ÔÚURLºóÃæĞ¯´øµÄ²ÎÊı¡££¨RW£©*/
+        /**å‘ç”Ÿäº‹ä»¶æ—¶åœ¨URLåé¢æºå¸¦çš„å‚æ•°ã€‚ï¼ˆRWï¼‰*/
         ajaxParam,
     };
-    /**×ÓÀà¿ÉÒÔÍ¨¹ı¸Ã·½·¨³õÊ¼»¯×é¼ş¡£*/
+    /**å­ç±»å¯ä»¥é€šè¿‡è¯¥æ–¹æ³•åˆå§‹åŒ–ç»„ä»¶ã€‚*/
     protected void initUIComponent(ViewContext viewContext) {
-        /*ÉèÖÃÊôĞÔÄ¬ÈÏÖµ£¬µ±Ò³ÃæÖĞÓĞÖµ±»ÉèÖÃµÄÊ±ºòÕâÀïÉèÖÃµÄÄ¬ÈÏÖµ¾Í»áÊ§Ğ§*/
+        /*è®¾ç½®å±æ€§é»˜è®¤å€¼ï¼Œå½“é¡µé¢ä¸­æœ‰å€¼è¢«è®¾ç½®çš„æ—¶å€™è¿™é‡Œè®¾ç½®çš„é»˜è®¤å€¼å°±ä¼šå¤±æ•ˆ*/
         this.setPropertyMetaValue(Propertys.beforeScript.name(), "true");
         this.setPropertyMetaValue(Propertys.afterScript.name(), null);
         this.setPropertyMetaValue(Propertys.errorScript.name(), null);
-        this.setPropertyMetaValue(Propertys.async.name(), true);//Ä¬ÈÏÊ¹ÓÃÒì²½²Ù×÷ÊÂ¼ş
+        this.setPropertyMetaValue(Propertys.async.name(), true);//é»˜è®¤ä½¿ç”¨å¼‚æ­¥æ“ä½œäº‹ä»¶
         this.setPropertyMetaValue(Propertys.render.name(), true);
         this.setPropertyMetaValue(Propertys.renderChildren.name(), true);
         this.setPropertyMetaValue(Propertys.onLoadDataEL.name(), null);
@@ -115,37 +115,37 @@ public abstract class UIComponent {
     public void setAsync(boolean async) {
         this.getProperty(Propertys.async.name()).value(async);
     }
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ¾ö¶¨ÊÇ·ñäÖÈ¾¸Ã×é¼ş*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼å†³å®šæ˜¯å¦æ¸²æŸ“è¯¥ç»„ä»¶*/
     @NoState
     public boolean isRender() {
         return this.getProperty(Propertys.render.name()).valueTo(Boolean.TYPE);
     };
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ¾ö¶¨ÊÇ·ñäÖÈ¾¸Ã×é¼ş*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼å†³å®šæ˜¯å¦æ¸²æŸ“è¯¥ç»„ä»¶*/
     @NoState
     public void setRender(boolean isRender) {
         this.getProperty(Propertys.render.name()).value(isRender);
     };
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ¾ö¶¨ÊÇ·ñäÖÈ¾¸Ã×é¼şµÄ×Ó×é½¨¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼å†³å®šæ˜¯å¦æ¸²æŸ“è¯¥ç»„ä»¶çš„å­ç»„å»ºã€‚*/
     @NoState
     public boolean isRenderChildren() {
         return this.getProperty(Propertys.renderChildren.name()).valueTo(Boolean.TYPE);
     }
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ¾ö¶¨ÊÇ·ñäÖÈ¾¸Ã×é¼şµÄ×Ó×é½¨¡£*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼å†³å®šæ˜¯å¦æ¸²æŸ“è¯¥ç»„ä»¶çš„å­ç»„å»ºã€‚*/
     @NoState
     public void setRenderChildren(boolean isRenderChildren) {
         this.getProperty(Propertys.renderChildren.name()).value(isRenderChildren);
     }
-    /**µ±ÆóÍ¼×°ÔØÊı¾İÊ±ELµ÷ÓÃ±í´ïÊ½£¨Èç¹ûÅäÖÃ£©*/
+    /**å½“ä¼å›¾è£…è½½æ•°æ®æ—¶ELè°ƒç”¨è¡¨è¾¾å¼ï¼ˆå¦‚æœé…ç½®ï¼‰*/
     public String getOnLoadDataEL() {
         return this.getProperty(Propertys.onLoadDataEL.name()).valueTo(String.class);
     }
-    /**µ±ÆóÍ¼×°ÔØÊı¾İÊ±ELµ÷ÓÃ±í´ïÊ½£¨Èç¹ûÅäÖÃ£©*/
+    /**å½“ä¼å›¾è£…è½½æ•°æ®æ—¶ELè°ƒç”¨è¡¨è¾¾å¼ï¼ˆå¦‚æœé…ç½®ï¼‰*/
     @NoState
     public void setOnLoadDataEL(String onLoadDataEL) {
         this.getProperty(Propertys.onLoadDataEL.name()).value(onLoadDataEL);
     }
     private MethodExpression loadDataExp = null;
-    /**»ñÈ¡loadDataExpÊôĞÔµÄ{@link MethodExpression}¶ÔÏó¡£*/
+    /**è·å–loadDataExpå±æ€§çš„{@link MethodExpression}å¯¹è±¡ã€‚*/
     public MethodExpression getOnLoadDataExpression() {
         if (this.loadDataExp == null) {
             String loadDataExpString = this.getOnLoadDataEL();
@@ -154,22 +154,22 @@ public abstract class UIComponent {
         }
         return this.loadDataExp;
     }
-    /**·¢ÉúÊÂ¼şÊ±ÔÚURLºóÃæĞ¯´øµÄ²ÎÊı¡££¨RW£©*/
+    /**å‘ç”Ÿäº‹ä»¶æ—¶åœ¨URLåé¢æºå¸¦çš„å‚æ•°ã€‚ï¼ˆRWï¼‰*/
     public String getAjaxParam() {
         return this.getProperty(Propertys.ajaxParam.name()).valueTo(String.class);
     }
-    /**·¢ÉúÊÂ¼şÊ±ÔÚURLºóÃæĞ¯´øµÄ²ÎÊı¡££¨RW£©*/
+    /**å‘ç”Ÿäº‹ä»¶æ—¶åœ¨URLåé¢æºå¸¦çš„å‚æ•°ã€‚ï¼ˆRWï¼‰*/
     public void setAjaxParam(String ajaxParam) {
         this.getProperty(Propertys.ajaxParam.name()).value(ajaxParam);
     }
-    /*-------------------------------------------------------------------------------ºËĞÄ·½·¨*/
-    /**»ñÈ¡ÓÃÓÚ¸½¼ÓµÄÊôĞÔµÄMap¶ÔÏó*/
+    /*-------------------------------------------------------------------------------æ ¸å¿ƒæ–¹æ³•*/
+    /**è·å–ç”¨äºé™„åŠ çš„å±æ€§çš„Mapå¯¹è±¡*/
     public Map<String, Object> getAtts() {
         return this.atts;
     };
-    /**»ñÈ¡×é½¨ÀàĞÍ£¬Ã¿Ò»¸öUI×é½¨¶¼Ó¦¸Ã¾ß±¸Ò»¸ö¶ÀÒ»ÎŞ¶şµÄcomponentType£¬Õâ¸öIDÊÇÓÃÀ´±íÊ¾×é½¨ÀàĞÍ¡£*/
+    /**è·å–ç»„å»ºç±»å‹ï¼Œæ¯ä¸€ä¸ªUIç»„å»ºéƒ½åº”è¯¥å…·å¤‡ä¸€ä¸ªç‹¬ä¸€æ— äºŒçš„componentTypeï¼Œè¿™ä¸ªIDæ˜¯ç”¨æ¥è¡¨ç¤ºç»„å»ºç±»å‹ã€‚*/
     public abstract String getComponentType();
-    /**»ñÈ¡×é½¨ÔÚ×é½¨Ê÷ÖĞµÄÎ»ÖÃ¸ñÊ½Îª£º/1/3/4/2 */
+    /**è·å–ç»„å»ºåœ¨ç»„å»ºæ ‘ä¸­çš„ä½ç½®æ ¼å¼ä¸ºï¼š/1/3/4/2 */
     public String getComponentPath() {
         if (this.componentPath == null) {
             StringBuffer buffer = new StringBuffer("/");
@@ -190,7 +190,7 @@ public abstract class UIComponent {
         }
         return this.componentPath;
     }
-    /**»ñÈ¡Ò»¸ö¿ÉÓÃµÄ¿Í»§¶ËID*/
+    /**è·å–ä¸€ä¸ªå¯ç”¨çš„å®¢æˆ·ç«¯ID*/
     public String getClientID(ViewContext viewContext) {
         if (this.getComponentID() != null)
             return getComponentID();
@@ -202,9 +202,9 @@ public abstract class UIComponent {
             return null;
         String thisPath = this.getComponentPath();
         if (thisPath.equals(componentPath) == true)
-            return this;//ÅĞ¶ÏÄ¿±êÊÇ·ñ¾ÍÊÇ×Ô¼º¡£
+            return this;//åˆ¤æ–­ç›®æ ‡æ˜¯å¦å°±æ˜¯è‡ªå·±ã€‚
         if (componentPath.startsWith(thisPath) == false)
-            return null;//ÅÅ³ıÒª»ñÈ¡µÄÄ¿±ê²»ÊÇ×Ô¼ºº¢×ÓµÄÇé¿ö¡£
+            return null;//æ’é™¤è¦è·å–çš„ç›®æ ‡ä¸æ˜¯è‡ªå·±å­©å­çš„æƒ…å†µã€‚
         //
         String targetPath = componentPath.substring(thisPath.length());
         int firstSpan = targetPath.indexOf('/');
@@ -228,7 +228,7 @@ public abstract class UIComponent {
         else
             return comObject.getChildByPath(componentPath);
     }
-    /**ÔÚµ±Ç°×é¼şµÄ×Ó¼¶ÖĞÑ°ÕÒÄ³¸öÌØ¶¨IDµÄ×é¼ş*/
+    /**åœ¨å½“å‰ç»„ä»¶çš„å­çº§ä¸­å¯»æ‰¾æŸä¸ªç‰¹å®šIDçš„ç»„ä»¶*/
     public UIComponent getChildByID(String componentID) {
         if (componentID == null)
             return null;
@@ -241,15 +241,15 @@ public abstract class UIComponent {
         }
         return null;
     };
-    /**»ñÈ¡Ò»¸öint£¬¸ÃÖµ±íÃ÷µ±Ç°×é¼şÖĞ¹²ÓĞ¶àÉÙ¸ö×ÓÔªËØ*/
+    /**è·å–ä¸€ä¸ªintï¼Œè¯¥å€¼è¡¨æ˜å½“å‰ç»„ä»¶ä¸­å…±æœ‰å¤šå°‘ä¸ªå­å…ƒç´ */
     public int getChildCount() {
         return this.components.size();
     };
-    /**»ñÈ¡Ò»¸öÔªËØ¼¯ºÏ£¬¸Ã¼¯ºÏÊÇ´æ·Å×Ó×é¼şµÄ³¡Ëù*/
+    /**è·å–ä¸€ä¸ªå…ƒç´ é›†åˆï¼Œè¯¥é›†åˆæ˜¯å­˜æ”¾å­ç»„ä»¶çš„åœºæ‰€*/
     public List<UIComponent> getChildren() {
         return Collections.unmodifiableList(this.components);
     };
-    /**»ñÈ¡Ò»¸ö×é½¨ÁĞ±í¸ÃÁĞ±íÖĞ°üº¬ÁË¸Ã×é½¨ÒÔ¼°¸Ã×é½¨µÄËùÓĞ×Ó×é½¨¡£*/
+    /**è·å–ä¸€ä¸ªç»„å»ºåˆ—è¡¨è¯¥åˆ—è¡¨ä¸­åŒ…å«äº†è¯¥ç»„å»ºä»¥åŠè¯¥ç»„å»ºçš„æ‰€æœ‰å­ç»„å»ºã€‚*/
     public List<UIComponent> getALLChildren() {
         ArrayList<UIComponent> list = new ArrayList<UIComponent>();
         list.add(this);
@@ -257,31 +257,31 @@ public abstract class UIComponent {
             list.addAll(uic.getALLChildren());
         return list;
     };
-    /**Ìí¼Ó×Ó×é½¨*/
+    /**æ·»åŠ å­ç»„å»º*/
     public void addChildren(UIComponent componentItem) {
         componentItem.setParent(this);
         this.components.add(componentItem);
     };
-    /**»ñÈ¡×é½¨µÄ¸¸¼¶¡£*/
+    /**è·å–ç»„å»ºçš„çˆ¶çº§ã€‚*/
     public UIComponent getParent() {
         return this.parent;
     };
-    /**ÉèÖÃ×é½¨µÄ¸¸¼¶±ğ¡£*/
+    /**è®¾ç½®ç»„å»ºçš„çˆ¶çº§åˆ«ã€‚*/
     private void setParent(UIComponent parent) {
         this.parent = parent;
     }
-    /**»ñÈ¡±£´æÊôĞÔµÄ¼¯ºÏ¡£*/
+    /**è·å–ä¿å­˜å±æ€§çš„é›†åˆã€‚*/
     public Map<String, AbstractValueHolder> getPropertys() {
         return this.propertys;
     };
-    /**»ñÈ¡ÓÃÓÚ±íÊ¾×é¼şÊôĞÔ¶ÔÏó¡£*/
+    /**è·å–ç”¨äºè¡¨ç¤ºç»„ä»¶å±æ€§å¯¹è±¡ã€‚*/
     public AbstractValueHolder getProperty(String propertyName) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             return new StaticValueHolder();
         return value;
     };
-    /**Ìí¼ÓÒ»¸öELĞÎÊ½µÄ×é½¨¡£ÊôĞÔ²ÎÊıreadString¡¢writeString·Ö±ğ¶ÔÓ¦ÁËÒµÎñ×é½¨µÄ¶ÁĞ´ÊôĞÔ¡£*/
+    /**æ·»åŠ ä¸€ä¸ªELå½¢å¼çš„ç»„å»ºã€‚å±æ€§å‚æ•°readStringã€writeStringåˆ†åˆ«å¯¹åº”äº†ä¸šåŠ¡ç»„å»ºçš„è¯»å†™å±æ€§ã€‚*/
     public void setPropertyEL(String propertyName, String readString, String writeString) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         ExpressionValueHolder elValueHolder = null;
@@ -289,14 +289,14 @@ public abstract class UIComponent {
             elValueHolder = new ExpressionValueHolder(readString, writeString);
         this.getPropertys().put(propertyName, elValueHolder);
     };
-    /**¸Ã·½·¨»á½«elString²ÎÊı»á×÷ÎªreadStringºÍ¡¢writeString¡£*/
+    /**è¯¥æ–¹æ³•ä¼šå°†elStringå‚æ•°ä¼šä½œä¸ºreadStringå’Œã€writeStringã€‚*/
     public void setPropertyEL(String propertyName, String elString) {
         this.setPropertyEL(propertyName, elString, elString);
     };
-    /**ÉèÖÃ×é½¨ÊôĞÔµÄÖµ£¨¸ÃÖµµÄÉèÖÃÖ»»áÓ°Ïì±¾´ÎÇëÇóÉúÃüÖÜÆÚ£©¡£*/
+    /**è®¾ç½®ç»„å»ºå±æ€§çš„å€¼ï¼ˆè¯¥å€¼çš„è®¾ç½®åªä¼šå½±å“æœ¬æ¬¡è¯·æ±‚ç”Ÿå‘½å‘¨æœŸï¼‰ã€‚*/
     public void setProperty(String propertyName, Object newValue) {
         if (ViewContext.getCurrentViewContext().getPhaseID().equals(InitView_Phase.PhaseID) == true)
-            throw new RuntimeException("Çë²»ÒªÔÚInitView½×¶ÎÊ¹ÓÃ¸Ã·½·¨¡£");
+            throw new RuntimeException("è¯·ä¸è¦åœ¨InitViewé˜¶æ®µä½¿ç”¨è¯¥æ–¹æ³•ã€‚");
         //
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
@@ -304,19 +304,19 @@ public abstract class UIComponent {
         value.value(newValue);
         this.getPropertys().put(propertyName, value);
     };
-    /**ÉèÖÃ×é½¨ÊôĞÔµÄMetaValueÖµ£¨¸ÃÖµ¿ÉÒÔ×÷ÎªÊôĞÔÔÚÈ«²¿Ïß³ÌÉÏµÄÄ¬ÈÏ³õÊ¼»¯Öµ£¬ÕæÕıÒâÒåÉÏµÄÄ¬ÈÏÖµ£©¡£
-     * ×¢Òâ£ºÔÚinitUIComponent·½·¨ÖĞÊ¹ÓÃ¸Ã·½·¨Ö»»áÓ°Ïìµ½ÄÇĞ©Î´ÔÚÒ³ÃæÖĞ¶¨ÒåµÄÊôĞÔ¡£*/
+    /**è®¾ç½®ç»„å»ºå±æ€§çš„MetaValueå€¼ï¼ˆè¯¥å€¼å¯ä»¥ä½œä¸ºå±æ€§åœ¨å…¨éƒ¨çº¿ç¨‹ä¸Šçš„é»˜è®¤åˆå§‹åŒ–å€¼ï¼ŒçœŸæ­£æ„ä¹‰ä¸Šçš„é»˜è®¤å€¼ï¼‰ã€‚
+     * æ³¨æ„ï¼šåœ¨initUIComponentæ–¹æ³•ä¸­ä½¿ç”¨è¯¥æ–¹æ³•åªä¼šå½±å“åˆ°é‚£äº›æœªåœ¨é¡µé¢ä¸­å®šä¹‰çš„å±æ€§ã€‚*/
     public void setPropertyMetaValue(String propertyName, Object newValue) {
         AbstractValueHolder value = this.getPropertys().get(propertyName);
         if (value == null)
             value = new StaticValueHolder(newValue);
         this.getPropertys().put(propertyName, value);
-        //²»´¦Àíinit¹ı³ÌÖĞµÄÉèÖÃÇëÇó¡£
+        //ä¸å¤„ç†initè¿‡ç¨‹ä¸­çš„è®¾ç½®è¯·æ±‚ã€‚
         ViewContext view = ViewContext.getCurrentViewContext();
         if (view != null && view.getPhaseID().equals(InitView_Phase.PhaseID) == false)
             value.setMetaValue(newValue);
     };
-    /**½«mapÖĞµÄÊôĞÔÈ«²¿°²×°µ½µ±Ç°×é½¨ÉÏ*/
+    /**å°†mapä¸­çš„å±æ€§å…¨éƒ¨å®‰è£…åˆ°å½“å‰ç»„å»ºä¸Š*/
     public void setupPropertys(Map<String, Object> objMap) {
         if (objMap != null)
             for (String key : this.propertys.keySet())
@@ -326,26 +326,26 @@ public abstract class UIComponent {
                     vh.value(newValue);
                 }
     };
-    /*-------------------------------------------------------------------------------ÉúÃüÖÜÆÚ*/
-    /**×é½¨±»³õÊ¼»¯±ê¼Ç*/
+    /*-------------------------------------------------------------------------------ç”Ÿå‘½å‘¨æœŸ*/
+    /**ç»„å»ºè¢«åˆå§‹åŒ–æ ‡è®°*/
     private Boolean doInit = false;
-    /**µÚ1½×¶Î£¬´¦Àí³õÊ¼»¯½×¶Î£¬¸Ã½×¶Î¸ºÔğ³õÊ¼»¯×é¼ş¡£*/
+    /**ç¬¬1é˜¶æ®µï¼Œå¤„ç†åˆå§‹åŒ–é˜¶æ®µï¼Œè¯¥é˜¶æ®µè´Ÿè´£åˆå§‹åŒ–ç»„ä»¶ã€‚*/
     public final void processInit(ViewContext viewContext) throws Throwable {
         if (this.doInit == false) {
             this.initUIComponent(viewContext);
             this.doInit = true;
         }
-        /*ÖØÖÃÊôĞÔ£¬ÖØÖÃÊôĞÔ»á±£Ö¤Ã¿¸öÉúÃüÖÜÆÚÄÚµÄÊôĞÔÖµÊÇÓÉUIÖĞ¶¨ÒåµÄÔ­Ê¼Öµ¡£*/
+        /*é‡ç½®å±æ€§ï¼Œé‡ç½®å±æ€§ä¼šä¿è¯æ¯ä¸ªç”Ÿå‘½å‘¨æœŸå†…çš„å±æ€§å€¼æ˜¯ç”±UIä¸­å®šä¹‰çš„åŸå§‹å€¼ã€‚*/
         for (AbstractValueHolder vh : this.propertys.values())
             vh.reset();
         for (UIComponent com : this.components)
             com.processInit(viewContext);
     };
-    /**µÚ3½×¶Î£¬½«ÇëÇó²ÎÊıÖĞÓëÊôĞÔÃûÒ»ÖÂµÄÊôĞÔ¹àÈëÊôĞÔÉÏ¡£*/
+    /**ç¬¬3é˜¶æ®µï¼Œå°†è¯·æ±‚å‚æ•°ä¸­ä¸å±æ€§åä¸€è‡´çš„å±æ€§çŒå…¥å±æ€§ä¸Šã€‚*/
     public void processApplyRequest(ViewContext viewContext) throws Throwable {
-        /*½«ÇëÇó²ÎÊıÖĞÒªÇó¹àÈëµÄÊôĞÔÖµ¹àÈëµ½ÊôĞÔÉÏ*/
+        /*å°†è¯·æ±‚å‚æ•°ä¸­è¦æ±‚çŒå…¥çš„å±æ€§å€¼çŒå…¥åˆ°å±æ€§ä¸Š*/
         for (String key : this.propertys.keySet()) {
-            /*±»¹àÈëµÄÊôĞÔÃû£¬ÇëÇó²ÎÊıÖĞ±ØĞëÊÇ¡°componentID:attName¡±*/
+            /*è¢«çŒå…¥çš„å±æ€§åï¼Œè¯·æ±‚å‚æ•°ä¸­å¿…é¡»æ˜¯â€œcomponentID:attNameâ€*/
             String[] newValues = viewContext.getHttpRequest().getParameterValues(this.getComponentPath() + ":" + key);
             if (newValues == null)
                 continue;
@@ -357,14 +357,14 @@ public abstract class UIComponent {
         for (UIComponent com : this.components)
             com.processApplyRequest(viewContext);
     };
-    /**µÚ4½×¶Î£¬¸Ã½×¶ÎÓÃÓÚÌá¹©Ò»×éÑéÖ¤Êı¾İµÄºÏ·¨ĞÔ¡£*/
+    /**ç¬¬4é˜¶æ®µï¼Œè¯¥é˜¶æ®µç”¨äºæä¾›ä¸€ç»„éªŒè¯æ•°æ®çš„åˆæ³•æ€§ã€‚*/
     public void processValidate(ViewContext viewContext) throws Throwable {
         for (UIComponent com : this.components)
             com.processValidate(viewContext);
     };
-    /**µÚ5½×¶Î£¬½«×é¼şÄ£ĞÍÖĞµÄĞÂÖµÓ¦ÓÃµ½£¬Bean*/
+    /**ç¬¬5é˜¶æ®µï¼Œå°†ç»„ä»¶æ¨¡å‹ä¸­çš„æ–°å€¼åº”ç”¨åˆ°ï¼ŒBean*/
     public void processUpdate(ViewContext viewContext) throws Throwable {
-        /*¸üĞÂËùÓĞ×¢²áµ½propertysÖĞµÄÊôĞÔÖµ*/
+        /*æ›´æ–°æ‰€æœ‰æ³¨å†Œåˆ°propertysä¸­çš„å±æ€§å€¼*/
         for (String key : this.propertys.keySet()) {
             AbstractValueHolder vh = this.propertys.get(key);
             if (vh.isUpdate() == true)
@@ -373,20 +373,20 @@ public abstract class UIComponent {
         for (UIComponent com : this.components)
             com.processUpdate(viewContext);
     };
-    /**µÚ6½×¶Î£¬´¦ÀíAction¶¯×÷ºÍ¿Í»§¶Ë»Ø´«µÄÊÂ¼ş*/
+    /**ç¬¬6é˜¶æ®µï¼Œå¤„ç†ActionåŠ¨ä½œå’Œå®¢æˆ·ç«¯å›ä¼ çš„äº‹ä»¶*/
     public void processApplication(ViewContext viewContext) throws Throwable {
         if (this.getComponentPath().equals(viewContext.getTargetPath()) == true) {
-            /*´¦Àí¿Í»§¶ËÒı·¢µÄÊÂ*/
+            /*å¤„ç†å®¢æˆ·ç«¯å¼•å‘çš„äº‹*/
             Event eventType = Event.getEvent(viewContext.getEvent());
             if (eventType != null)
-                /**ÊÂ¼şÇëÇó*/
+                /**äº‹ä»¶è¯·æ±‚*/
                 this.doEvent(eventType, viewContext);
         }
         for (UIComponent com : this.components)
             com.processApplication(viewContext);
     };
-    /*-------------------------------------------------------------------------------ÊÂ¼şÏìÓ¦*/
-    /**Ö´ĞĞÊÂ¼ş*/
+    /*-------------------------------------------------------------------------------äº‹ä»¶å“åº”*/
+    /**æ‰§è¡Œäº‹ä»¶*/
     protected void doEvent(Event eventType, ViewContext viewContext) throws Throwable {
         try {
             for (Event e : this.listener.keySet())
@@ -403,7 +403,7 @@ public abstract class UIComponent {
                 throw e;
         }
     };
-    /**Ìí¼ÓÒ»ÖÖÀàĞÍÊÂ¼şµÄÊÂ¼ş¼àÌıÆ÷¡£*/
+    /**æ·»åŠ ä¸€ç§ç±»å‹äº‹ä»¶çš„äº‹ä»¶ç›‘å¬å™¨ã€‚*/
     public void addEventListener(Event eventType, EventListener listener) {
         if (eventType == null || listener == null)
             return;
@@ -416,44 +416,44 @@ public abstract class UIComponent {
         //        Log.debug("add event listener, event = " + eventType + ", listener = " + listener);
         listeners.add(listener);
     };
-    /*-------------------------------------------------------------------------------×´Ì¬´¦Àí*/
-    /**´Ó×´Ì¬Êı¾İÖĞ»Ö¸´×é½¨×´Ì¬*/
+    /*-------------------------------------------------------------------------------çŠ¶æ€å¤„ç†*/
+    /**ä»çŠ¶æ€æ•°æ®ä¸­æ¢å¤ç»„å»ºçŠ¶æ€*/
     public void restoreState(List<?> stateData) {
-        //1.Êı¾İ¼ì²é
+        //1.æ•°æ®æ£€æŸ¥
         if (stateData == null)
             return;
         if (stateData.size() == 0)
-            throw new DataException("WebUIÎŞ·¨ÖØËÜ×é¼ş×´Ì¬£¬ÔÚÖØËÜ×é¼ş[" + this.getComponentID() + "]×é¼ş·¢ÉúÊı¾İ¶ªÊ§");
-        //2.»Ö¸´×ÔÉíÊı¾İ
+            throw new DataException("WebUIæ— æ³•é‡å¡‘ç»„ä»¶çŠ¶æ€ï¼Œåœ¨é‡å¡‘ç»„ä»¶[" + this.getComponentID() + "]ç»„ä»¶å‘ç”Ÿæ•°æ®ä¸¢å¤±");
+        //2.æ¢å¤è‡ªèº«æ•°æ®
         Map<String, Object> mineState = (Map<String, Object>) stateData.get(0);
         for (String propName : mineState.keySet()) {
-            /*ÅÅ³ı´íÎó*/
+            /*æ’é™¤é”™è¯¯*/
             if (propName == null)
                 continue;
-            /*IDÊôĞÔ²»´¦Àí*/
+            /*IDå±æ€§ä¸å¤„ç†*/
             if (propName.toLowerCase().equals("id") == true)
                 continue;
-            /*´¦Àí×¢½â*/
+            /*å¤„ç†æ³¨è§£*/
             Method rm = BeanUtils.getWriteMethod(propName, this.getClass());
             if (rm == null)
                 continue;
             if (rm.getAnnotation(NoState.class) != null)
                 continue;
-            /*Ğ´ÈëÊôĞÔ*/
+            /*å†™å…¥å±æ€§*/
             AbstractValueHolder vh = this.propertys.get(propName);
             if (vh != null)
                 vh.value(mineState.get(propName));
         }
-        //3.»Ö¸´×Ó×é¼ş
+        //3.æ¢å¤å­ç»„ä»¶
         if (stateData.size() == 2) {
             Map<String, Object> childrenState = (Map<String, Object>) stateData.get(1);
             for (UIComponent com : components)
                 com.restoreState((List<?>) childrenState.get(com.getComponentPath()));
         }
     };
-    /**±£´æ×é½¨µÄµ±Ç°×´Ì¬£¬²»°üº¬×Ó×é½¨¡£*/
+    /**ä¿å­˜ç»„å»ºçš„å½“å‰çŠ¶æ€ï¼Œä¸åŒ…å«å­ç»„å»ºã€‚*/
     public List<Object> saveStateOnlyMe() {
-        //1.³Ö¾Ã»¯×ÔÉíµÄ×´Ì¬
+        //1.æŒä¹…åŒ–è‡ªèº«çš„çŠ¶æ€
         HashMap<String, Object> mineState = new HashMap<String, Object>();
         for (String propName : this.propertys.keySet()) {
             Method rm = BeanUtils.getReadMethod(propName, this.getClass());
@@ -464,25 +464,25 @@ public abstract class UIComponent {
             AbstractValueHolder vh = this.propertys.get(propName);
             mineState.put(propName, vh.value());
         }
-        //3.·µ»Ø³Ö¾Ã»¯×´Ì¬
+        //3.è¿”å›æŒä¹…åŒ–çŠ¶æ€
         ArrayList<Object> array = new ArrayList<Object>();
         array.add(mineState);
         return array;
     };
-    /**±£´æ×é½¨µÄµ±Ç°×´Ì¬£¬°üº¬×Ó×é½¨¡£*/
+    /**ä¿å­˜ç»„å»ºçš„å½“å‰çŠ¶æ€ï¼ŒåŒ…å«å­ç»„å»ºã€‚*/
     public List<Object> saveState() {
-        //1.³Ö¾Ã»¯×ÔÉíµÄ×´Ì¬
+        //1.æŒä¹…åŒ–è‡ªèº«çš„çŠ¶æ€
         List<Object> array = this.saveStateOnlyMe();
-        //2.³Ö¾Ã»¯×Ó×é¼şµÄ×´Ì¬
+        //2.æŒä¹…åŒ–å­ç»„ä»¶çš„çŠ¶æ€
         HashMap<String, Object> childrenState = new HashMap<String, Object>();
         for (UIComponent com : components)
             childrenState.put(com.getComponentPath(), com.saveState());
-        //3.·µ»Ø³Ö¾Ã»¯×´Ì¬
+        //3.è¿”å›æŒä¹…åŒ–çŠ¶æ€
         array.add(childrenState);
         return array;
     };
 };
-/**¸ºÔğ´¦ÀíOnLoadDataÊÂ¼şµÄELµ÷ÓÃ*/
+/**è´Ÿè´£å¤„ç†OnLoadDataäº‹ä»¶çš„ELè°ƒç”¨*/
 class Event_OnLoadData implements EventListener {
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {
         MethodExpression e = component.getOnLoadDataExpression();

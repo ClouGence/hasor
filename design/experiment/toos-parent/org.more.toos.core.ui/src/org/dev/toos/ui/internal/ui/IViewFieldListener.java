@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package org.dev.toos.ui.internal.ui;
 /**
- * ×Ö¶Î¼àÌıÆ÷£¬µ±×Ö¶ÎµÄÖµ·¢Éú¸Ä±äÖ®ºó´¥·¢¡£
+ * å­—æ®µç›‘å¬å™¨ï¼Œå½“å­—æ®µçš„å€¼å‘ç”Ÿæ”¹å˜ä¹‹åè§¦å‘ã€‚
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface IViewFieldListener {
-    /** ¼àÊÓµÄ×Ö¶ÎÔ´¶ÔÏó·¢Éú×Ö¶Î±ä»¯£¬²ÎÊıÎª±ä»¯µÄ×Ö¶Î¶ÔÏó¡£ */
+    /** ç›‘è§†çš„å­—æ®µæºå¯¹è±¡å‘ç”Ÿå­—æ®µå˜åŒ–ï¼Œå‚æ•°ä¸ºå˜åŒ–çš„å­—æ®µå¯¹è±¡ã€‚ */
     public void viewFieldChanged(AbstractViewField field);
 }

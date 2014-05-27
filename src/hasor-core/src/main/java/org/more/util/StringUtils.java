@@ -6239,7 +6239,7 @@ public class StringUtils {
         return false;
     }
     /**
-     * ×ª»»Ê××ÖÄ¸´óĞ´¡£
+     * è½¬æ¢é¦–å­—æ¯å¤§å†™ã€‚
      * <pre>
      * StringUtils.firstCharToUpperCase(null)      = null
      * StringUtils.firstCharToUpperCase("")        = ""
@@ -6258,7 +6258,7 @@ public class StringUtils {
         return sb.toString();
     }
     /**
-     * ×ª»»Ê××ÖÄ¸Ğ¡Ğ´¡£
+     * è½¬æ¢é¦–å­—æ¯å°å†™ã€‚
      * <pre>
      * StringUtils.firstCharToLowerCase(null)      = null
      * StringUtils.firstCharToLowerCase("")        = ""
@@ -6277,7 +6277,7 @@ public class StringUtils {
         return sb.toString();
     }
     /**
-     * Ö´ĞĞ×Ö·û´®Æ¥Åä¡£
+     * æ‰§è¡Œå­—ç¬¦ä¸²åŒ¹é…ã€‚
      * <pre>
      * StringUtils.equalsBlankIgnoreCase(null,"")         = true
      * StringUtils.equalsBlankIgnoreCase("","")           = true
@@ -6291,7 +6291,7 @@ public class StringUtils {
         return equalsIgnoreCase(trimToEmpty(str1), trimToEmpty(str2));
     }
     /**
-     * °´ÕÕÄ³¸ö×Ö·û×é×°¹Ì¶¨³¤¶ÈµÄµÄ×Ö·û´®¡£
+     * æŒ‰ç…§æŸä¸ªå­—ç¬¦ç»„è£…å›ºå®šé•¿åº¦çš„çš„å­—ç¬¦ä¸²ã€‚
      * <pre>
      * StringUtils.fixedString(' ',4)  = "    "
      * StringUtils.fixedString(' ',2)  = "  "

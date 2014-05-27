@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import org.hasor.Hasor;
 /**
  * 
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DefaultSecurityQuery implements SecurityQuery {
     protected SecurityNode testSecurityNode = new FixedValue(true);
     /*-------------------------------------------------------------------------------*/
-    /*-Âß¼­Óë-*/
+    /*-é€»è¾‘ä¸-*/
     @Override
     public SecurityQuery and(String permissionCode) {
         Hasor.assertIsNotNull(permissionCode);
@@ -43,7 +43,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
         Hasor.assertIsNotNull(securityQuery);
         return this.andCustomer(securityQuery);
     }
-    /*-Âß¼­»ò-*/
+    /*-é€»è¾‘æˆ–-*/
     @Override
     public SecurityQuery or(String permissionCode) {
         Hasor.assertIsNotNull(permissionCode);
@@ -59,7 +59,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
         Hasor.assertIsNotNull(securityQuery);
         return this.orCustomer(securityQuery);
     }
-    /*-Âß¼­·Ç-*/
+    /*-é€»è¾‘é-*/
     @Override
     public SecurityQuery not() {
         this.testSecurityNode = new CheckNot(this.testSecurityNode);
@@ -80,7 +80,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
         Hasor.assertIsNotNull(securityQuery);
         return this.notCustomer(securityQuery);
     }
-    /*-ÆäËû-*/
+    /*-å…¶ä»–-*/
     @Override
     public SecurityQuery andGuest() {
         return this.andCustomer(new CheckGuest());
@@ -134,7 +134,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
         return this.testSecurityNode.testPermission(authSession);
     }
     /*-------------------------------------------------------------------------------*/
-    /** »ùÀà */
+    /** åŸºç±» */
     public static abstract class AbstractCheckResolver implements SecurityNode {
         private SecurityNode prev = null;
         private SecurityNode next = null;
@@ -142,18 +142,18 @@ public class DefaultSecurityQuery implements SecurityQuery {
             this.prev = prev;
             this.next = next;
         }
-        /**»ñÈ¡ÉÏÒ»¸ö½Úµã¡£*/
+        /**è·å–ä¸Šä¸€ä¸ªèŠ‚ç‚¹ã€‚*/
         public SecurityNode getPrev() {
             return this.prev;
         }
-        /**»ñÈ¡ÏÂÒ»¸ö½Úµã¡£*/
+        /**è·å–ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ã€‚*/
         public SecurityNode getNext() {
             return this.next;
         }
         @Override
         public abstract String toString();
     }
-    /** ´¦ÀíÈ¨ÏŞÅĞ¶ÏÖĞÂß¼­¡°Óë¡±µÄ´¦Àí¡£ */
+    /** å¤„ç†æƒé™åˆ¤æ–­ä¸­é€»è¾‘â€œä¸â€çš„å¤„ç†ã€‚ */
     public static class CheckAnd extends AbstractCheckResolver {
         public CheckAnd(SecurityNode prev, SecurityNode next) {
             super(prev, next);
@@ -169,7 +169,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "(" + this.getPrev() + " and " + this.getNext() + ")";
         }
     }
-    /** ´¦ÀíÈ¨ÏŞÅĞ¶ÏÖĞÂß¼­¡°»ò¡±µÄ´¦Àí¡£ */
+    /** å¤„ç†æƒé™åˆ¤æ–­ä¸­é€»è¾‘â€œæˆ–â€çš„å¤„ç†ã€‚ */
     public static class CheckOr extends AbstractCheckResolver {
         public CheckOr(SecurityNode prev, SecurityNode next) {
             super(prev, next);
@@ -185,7 +185,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "(" + this.getPrev() + " or " + this.getNext() + ")";
         }
     }
-    /** ´¦ÀíÈ¨ÏŞÅĞ¶ÏÖĞÂß¼­¡°·Ç¡±µÄ´¦Àí¡£ */
+    /** å¤„ç†æƒé™åˆ¤æ–­ä¸­é€»è¾‘â€œéâ€çš„å¤„ç†ã€‚ */
     public static class CheckNot implements SecurityNode {
         private SecurityNode node = null;
         public CheckNot(SecurityNode node) {
@@ -200,7 +200,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "!" + this.node;
         }
     }
-    /** ¶ÔÈ¨ÏŞµãÇóÖµ£¬±íÊ¾ÓÃ»§ÊÇ·ñ¾ß±¸¸ÃÈ¨ÏŞµã¡£ */
+    /** å¯¹æƒé™ç‚¹æ±‚å€¼ï¼Œè¡¨ç¤ºç”¨æˆ·æ˜¯å¦å…·å¤‡è¯¥æƒé™ç‚¹ã€‚ */
     public static class CheckPermission implements SecurityNode {
         private Permission permission = null;
         public CheckPermission(Permission permission) {
@@ -220,7 +220,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "[" + this.permission.getPermissionCode() + "]";
         }
     }
-    /** ²âÊÔÊÇ·ñµÇÂ½ */
+    /** æµ‹è¯•æ˜¯å¦ç™»é™† */
     public static class CheckLogin implements SecurityNode {
         @Override
         public boolean testPermission(AuthSession[] authSessions) {
@@ -236,7 +236,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "[AuthSession.isLogin]";
         }
     }
-    /** ²âÊÔÊÇ·ñµÇÂ½ */
+    /** æµ‹è¯•æ˜¯å¦ç™»é™† */
     public static class CheckGuest implements SecurityNode {
         @Override
         public boolean testPermission(AuthSession[] authSessions) {
@@ -252,7 +252,7 @@ public class DefaultSecurityQuery implements SecurityQuery {
             return "[AuthSession.isGuest]";
         }
     }
-    /** ¹Ì¶¨Öµ */
+    /** å›ºå®šå€¼ */
     public static class FixedValue implements SecurityNode {
         private boolean defaultValue = true;
         public FixedValue(boolean defaultValue) {

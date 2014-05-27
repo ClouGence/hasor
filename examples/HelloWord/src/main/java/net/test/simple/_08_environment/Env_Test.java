@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import net.hasor.core.Environment;
 import net.hasor.core.context.StandardAppContext;
 import org.junit.Test;
 /**
- * »·¾³±äÁ¿²Ù×÷ÑİÊ¾
+ * ç¯å¢ƒå˜é‡æ“ä½œæ¼”ç¤º
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class Env_Test {
     private static String config = "net/test/simple/_08_environment/env-config.xml";

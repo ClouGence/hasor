@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ package net.test.simple._02_beans.inject;
 import javax.inject.Inject;
 import net.test.simple._02_beans.pojo.PojoBean;
 /**
-* ¸ÃÀı×ÓÑİÊ¾ÁËÈçºÎÍ¨¹ı JSR-330 ±ê×¼¸øÓè×Ö¶ÎÒÀÀµ×¢Èë£¨×Ö¶Î×¢Èë£©¡£
-* ±»×¢ÈëµÄ×Ö¶Î²»ĞèÒªÉú³ÉÆä get/set ·½·¨¡£
+* è¯¥ä¾‹å­æ¼”ç¤ºäº†å¦‚ä½•é€šè¿‡ JSR-330 æ ‡å‡†ç»™äºˆå­—æ®µä¾èµ–æ³¨å…¥ï¼ˆå­—æ®µæ³¨å…¥ï¼‰ã€‚
+* è¢«æ³¨å…¥çš„å­—æ®µä¸éœ€è¦ç”Ÿæˆå…¶ get/set æ–¹æ³•ã€‚
 * @version : 2014-1-3
-* @author ÕÔÓÀ´º(zyc@hasor.net)
+* @author èµµæ°¸æ˜¥(zyc@hasor.net)
 */
 public class FieldInject {
     @Inject
-    private PojoBean userBean; //±»×¢ÈëµÄ×Ö¶Î
+    private PojoBean userBean; //è¢«æ³¨å…¥çš„å­—æ®µ
     //
     public String getUserName() {
         return this.userBean.getName();

@@ -4,7 +4,7 @@
 ///**
 // * 
 // * @version : 2013-8-5
-// * @author ’‘”¿¥∫ (zyc@byshell.org)
+// * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
 // */
 //public class ECache implements Cache {
 //    private net.sf.ehcache.Cache cacheObject = null;

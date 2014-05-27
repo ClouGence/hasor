@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,28 @@ import net.hasor.core.context.StandardAppContext;
 import net.test.simple._02_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
- * ±¾Ê¾ÁÐÑÝÊ¾ÈçºÎÆô¶¯ Hasor ¿ò¼Ü¡£
+ * æœ¬ç¤ºåˆ—æ¼”ç¤ºå¦‚ä½•å¯åŠ¨ Hasor æ¡†æž¶ã€‚
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class BeanHasor {
     @Test
     public void testBeanHasor() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testBeanHasor<<--");
-        //1.´´½¨Ò»¸ö±ê×¼µÄ Hasor ÈÝÆ÷¡£
+        //1.åˆ›å»ºä¸€ä¸ªæ ‡å‡†çš„ Hasor å®¹å™¨ã€‚
         AppContext appContext = new StandardAppContext();
         appContext.addModule(new Module() {
             public void init(ApiBinder apiBinder) throws Throwable {
                 apiBinder.defineBean("myBean1").bindType(PojoBean.class);
                 PojoBean pojo = new PojoBean();
-                pojo.setName("Âí´óË§");
+                pojo.setName("é©¬å¤§å¸…");
                 apiBinder.defineBean("myBean2").bindType(PojoBean.class).toInstance(pojo);
             }
             public void start(AppContext appContext) throws Throwable {
                 // TODO Auto-generated method stub
             }
         });
-        appContext.start();//Æô¶¯ Hasor ÈÝÆ÷£¬Æô¶¯¹ý³Ì»á³õÊ¼»¯ËùÓÐÄ£¿éºÍ²å¼þ¡£
+        appContext.start();//å¯åŠ¨ Hasor å®¹å™¨ï¼Œå¯åŠ¨è¿‡ç¨‹ä¼šåˆå§‹åŒ–æ‰€æœ‰æ¨¡å—å’Œæ’ä»¶ã€‚
         //
         PojoBean myBean1 = appContext.getBean("myBean1");
         System.out.println(myBean1.getName() + "\t" + myBean1);

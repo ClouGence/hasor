@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,19 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-5-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class ControllerSettings {
-    /**actionÆôÓÃ½ûÓÃ.*/
+    /**actionå¯ç”¨ç¦ç”¨.*/
     public static final String ActionServlet_Enable       = "hasor-web.controller.enable";
-    /**actionÀ¹½ØÆ÷.*/
+    /**actionæ‹¦æˆªå™¨.*/
     public static final String ActionServlet_Intercept    = "hasor-web.controller.intercept";
-    /**·½·¨ºöÂÔµÄ·½·¨£¨¶ººÅ·Ö¸î¶à×é·½·¨Ãû£©£¬×¢Òâ£ºÔÚÕâÀïÅäÖÃµÄºöÂÔ»áÓ¦ÓÃµ½ËùÓĞactionÉÏ.*/
+    /**æ–¹æ³•å¿½ç•¥çš„æ–¹æ³•ï¼ˆé€—å·åˆ†å‰²å¤šç»„æ–¹æ³•åï¼‰ï¼Œæ³¨æ„ï¼šåœ¨è¿™é‡Œé…ç½®çš„å¿½ç•¥ä¼šåº”ç”¨åˆ°æ‰€æœ‰actionä¸Š.*/
     public static final String ActionServlet_GlobalIgnore = "hasor-web.controller.globalIgnore";
     //
     private boolean            enable;
-    private String             intercept;                                                       //actionÀ¹½ØÆ÷.
-    private List<String>       ignoreMethod;                                                    //ºöÂÔµÄ·½·¨
+    private String             intercept;                                                       //actionæ‹¦æˆªå™¨.
+    private List<String>       ignoreMethod;                                                    //å¿½ç•¥çš„æ–¹æ³•
     //
     public ControllerSettings(Settings settings) {
         this.enable = settings.getBoolean(ActionServlet_Enable, true);

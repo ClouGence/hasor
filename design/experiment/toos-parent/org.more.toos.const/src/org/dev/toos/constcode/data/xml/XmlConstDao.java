@@ -17,11 +17,11 @@ import org.eclipse.core.resources.IFile;
 /**
  * 
  * @version : 2013-2-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class XmlConstDao extends ConstDao {
     private XmlSource xmlSource = null;
-    /**Ã°ÏÕÖ±½ÓĞŞ¸ÄXmlSourceÊı¾İÔ´ÖĞµÄÊı¾İ»áÒı·¢ÓëDao²ã²»Í¬²½µÄÎÊÌâ¡£*/
+    /**å†’é™©ç›´æ¥ä¿®æ”¹XmlSourceæ•°æ®æºä¸­çš„æ•°æ®ä¼šå¼•å‘ä¸Daoå±‚ä¸åŒæ­¥çš„é—®é¢˜ã€‚*/
     public XmlSource getSource() {
         return xmlSource;
     }
@@ -35,7 +35,7 @@ public class XmlConstDao extends ConstDao {
     }
     //
     //
-    //×°ÔØ¹ı³Ì......
+    //è£…è½½è¿‡ç¨‹......
     private List<ConstBean> rootConstBean = new ArrayList<ConstBean>();
     protected void initDao() throws IOException, JAXBException {
         ConfigCodes configCodes = this.getSource().getSource();
@@ -54,7 +54,7 @@ public class XmlConstDao extends ConstDao {
         constBean.setConstLatType(LatType.No);
         for (VarType var : vt.getVar())
             this.spanNode(constBean, null, var);
-        //TODO ¿ÉÒÔµü´ú´¦Àíº¢×Ó...
+        //TODO å¯ä»¥è¿­ä»£å¤„ç†å­©å­...
         return constBean;
     }
     private void spanNode(XmlConstBean constBean, XmlConstVarBean parentVar, VarType currentVar) {
@@ -90,7 +90,7 @@ public class XmlConstDao extends ConstDao {
         if (parentConst instanceof XmlConstBean == false)
             return null;
         ConstType ct = ((XmlConstBean) parentConst).getTarget();
-        //TODO »ñÈ¡µ½º¢×Ó·µ»Ø´´½¨µÄXmlConstBean¶ÔÏó¼´¿É¡£
+        //TODO è·å–åˆ°å­©å­è¿”å›åˆ›å»ºçš„XmlConstBeanå¯¹è±¡å³å¯ã€‚
         return null;
     }
     @Override
@@ -100,7 +100,7 @@ public class XmlConstDao extends ConstDao {
         if (parent != null) {
             //children add
             if (parent instanceof XmlConstBean == false)
-                throw new RuntimeException("parent object did not create.");//¸¸¶ÔÏóÉĞÎ´Ìí¼Ó¡£
+                throw new RuntimeException("parent object did not create.");//çˆ¶å¯¹è±¡å°šæœªæ·»åŠ ã€‚
             ConstType ct = ((XmlConstBean) parent).getTarget();
             constList = this.asConstList(ct);
         } else {
@@ -136,7 +136,7 @@ public class XmlConstDao extends ConstDao {
         ct.setName(constBean.getConstVar());
         ct.setExtendsData(constBean.getConstExtData());
         if (constList.indexOf(ct) != upIndex) {
-            //Ë÷ÒıÎ»ÖÃ±ä¸ü
+            //ç´¢å¼•ä½ç½®å˜æ›´
             constList.remove(ct);
             if (upIndex >= constList.size())
                 constList.add(ct);
@@ -148,7 +148,7 @@ public class XmlConstDao extends ConstDao {
     //
     //
     //
-    /*È·¶¨Ä¿±êËùÔÚµÄ¼¯ºÏ*/
+    /*ç¡®å®šç›®æ ‡æ‰€åœ¨çš„é›†åˆ*/
     private List<ConstType> asConstList(ConstType vt) {
         List<ConstType> constList = null;
         try {
@@ -161,7 +161,7 @@ public class XmlConstDao extends ConstDao {
             if (constType == vt)
                 return constList;
             else {
-                //TODO µİ¹é²éÕÒ¿ÉÒÔÀ©Õ¹ÊµÏÖ
+                //TODO é€’å½’æŸ¥æ‰¾å¯ä»¥æ‰©å±•å®ç°
             }
         return null;
     };

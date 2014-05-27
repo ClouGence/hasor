@@ -17,6 +17,6 @@ package net.hasor.core.plugin;
 /**
  * 
  * @version : 2013-11-4
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 public abstract class AbstractHasorPlugin implements HasorPlugin {}

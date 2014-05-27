@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-9-26
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Plugin
 public class JavaEEPlugin extends AbstractWebHasorPlugin {
@@ -42,9 +42,9 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
         this.loadServlet(webBinder);
     }
     //
-    /**×°ÔØFilter*/
+    /**è£…è½½Filter*/
     protected void loadFilter(WebApiBinder apiBinder) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> webFilterSet = apiBinder.findClass(WebFilter.class);
         if (webFilterSet == null)
             return;
@@ -56,7 +56,7 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
         }
-        //2.×¢²á
+        //2.æ³¨å†Œ
         for (Class<? extends Filter> filterType : webFilterList) {
             WebFilter filterAnno = filterType.getAnnotation(WebFilter.class);
             Map<String, String> initMap = this.toMap(filterAnno.initParams());
@@ -67,9 +67,9 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
         }
     }
     //
-    /**×°ÔØServlet*/
+    /**è£…è½½Servlet*/
     protected void loadServlet(WebApiBinder apiBinder) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> webServletSet = apiBinder.findClass(WebServlet.class);
         if (webServletSet == null)
             return;
@@ -81,7 +81,7 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
         }
-        //2.×¢²á
+        //2.æ³¨å†Œ
         for (Class<? extends HttpServlet> servletType : webServletList) {
             WebServlet servletAnno = servletType.getAnnotation(WebServlet.class);
             Map<String, String> initMap = this.toMap(servletAnno.initParams());
@@ -93,7 +93,7 @@ public class JavaEEPlugin extends AbstractWebHasorPlugin {
         }
     }
     //
-    /**×ª»»²ÎÊı*/
+    /**è½¬æ¢å‚æ•°*/
     protected Map<String, String> toMap(WebInitParam[] initParams) {
         Map<String, String> initMap = new HashMap<String, String>();
         if (initParams != null)

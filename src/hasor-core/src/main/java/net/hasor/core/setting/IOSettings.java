@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import net.hasor.core.Settings;
 /**
- * ĞèÒª¾­¹ı½âÎö¶ÁÈ¡ÅäÖÃÎÄ¼ş×ÊÔ´µÄSettings
+ * éœ€è¦ç»è¿‡è§£æè¯»å–é…ç½®æ–‡ä»¶èµ„æºçš„Settings
  * @version : 2013-9-9
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface IOSettings extends Settings {
-    /**×°ÔØÅäÖÃÎÄ¼ş*/
+    /**è£…è½½é…ç½®æ–‡ä»¶*/
     public void loadSettings() throws IOException, XMLStreamException;
 }

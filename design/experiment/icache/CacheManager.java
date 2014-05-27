@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 package net.hasor.gift.icache;
 import net.hasor.core.AppContext;
 /** 
- * »º´æÊ¹ÓÃÈë¿Ú£¬»º´æµÄÊµÏÖÓÉÏµÍ³×ÔĞĞÌá¹©¡£
+ * ç¼“å­˜ä½¿ç”¨å…¥å£ï¼Œç¼“å­˜çš„å®ç°ç”±ç³»ç»Ÿè‡ªè¡Œæä¾›ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface CacheManager {
-    /**»ñÈ¡Ä¬ÈÏ»º´æ*/
+    /**è·å–é»˜è®¤ç¼“å­˜*/
     public <T> Cache<T> getDefaultCache();
-    /**»ñÈ¡»º´æ*/
+    /**è·å–ç¼“å­˜*/
     public <T> Cache<T> getCache(String cacheName);
-    /**¸ù¾İÑù±¾ÀàĞÍ»ñÈ¡¸ÃÀàĞÍµÄKeyÉú³ÉÆ÷¡£*/
+    /**æ ¹æ®æ ·æœ¬ç±»å‹è·å–è¯¥ç±»å‹çš„Keyç”Ÿæˆå™¨ã€‚*/
     public KeyBuilder getKeyBuilder(Class<?> sampleType);
-    /**³õÊ¼»¯Æô¶¯»º´æ·şÎñ¡£*/
+    /**åˆå§‹åŒ–å¯åŠ¨ç¼“å­˜æœåŠ¡ã€‚*/
     public void initManager(AppContext appContext);
 }

@@ -26,15 +26,15 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractRegisterManager implements RegisterManager, ContextInitializeListener {
     private List<TypeRegister<?>> tempRegisterList = new ArrayList<TypeRegister<?>>();
-    /**»ñÈ¡TypeRegisterµü´úÆ÷¡£*/
+    /**è·å–TypeRegisterè¿­ä»£å™¨ã€‚*/
     protected Iterator<TypeRegister<?>> registerIterator() {
         return this.tempRegisterList.iterator();
     }
-    /**×¢²áBean*/
+    /**æ³¨å†ŒBean*/
     public <T> TypeRegister<T> registerType(Class<T> type) {
         TypeRegister<T> register = this.createRegisterType(type);
         if (register == null)
@@ -42,10 +42,10 @@ public abstract class AbstractRegisterManager implements RegisterManager, Contex
         this.tempRegisterList.add(register);
         return register;
     }
-    /**´´½¨Ò»¸öTypeRegister½Ó¿Ú¶ÔÏó*/
+    /**åˆ›å»ºä¸€ä¸ªTypeRegisteræ¥å£å¯¹è±¡*/
     protected abstract <T> TypeRegister<T> createRegisterType(Class<T> type);
     //
-    /*²âÊÔregisterÊÇ·ñÎªÄäÃûµÄ*/
+    /*æµ‹è¯•registeræ˜¯å¦ä¸ºåŒ¿åçš„*/
     private boolean ifAnonymity(TypeRegister<?> register) {
         return StringUtils.isBlank(register.getName());
     }
@@ -56,7 +56,7 @@ public abstract class AbstractRegisterManager implements RegisterManager, Contex
         Set<Class<?>> anonymityTypes = new HashSet<Class<?>>();
         for (TypeRegister<?> register : tempRegisterList) {
             if (ifAnonymity(register)) {
-                /*¶àÒ»²ãÅĞ¶Ï·ÀÖ¹ÏàÍ¬µÄÀàĞÍµÄÄäÃû×¢²áÖØ¸´µ÷ÓÃconfigRegister·½·¨*/
+                /*å¤šä¸€å±‚åˆ¤æ–­é˜²æ­¢ç›¸åŒçš„ç±»å‹çš„åŒ¿åæ³¨å†Œé‡å¤è°ƒç”¨configRegisteræ–¹æ³•*/
                 Class<?> bindType = register.getType();
                 if (anonymityTypes.contains(bindType) == true)
                     throw new RepeateException(String.format("repeate bind Type : %s", bindType));

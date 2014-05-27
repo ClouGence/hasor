@@ -11,7 +11,7 @@ import org.eclipse.gef.EditPolicy;
 /**
  * 
  * @version : 2013-3-5
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ElementPart extends AbstractDBMappingGraphicalEditPart {
     @Override
@@ -21,7 +21,7 @@ public class ElementPart extends AbstractDBMappingGraphicalEditPart {
         f.setBackgroundColor(ColorConstants.green);
         return f;
     }
-    //    /**ÔÚÖ´ĞĞ¸üÃûµÄÊ±ºòÊ¹ÓÃDirectEditManager*/
+    //    /**åœ¨æ‰§è¡Œæ›´åçš„æ—¶å€™ä½¿ç”¨DirectEditManager*/
     //    protected DirectEditManager editManager;
     //    public void performRequest(Request req) {
     //        if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)) {
@@ -32,29 +32,29 @@ public class ElementPart extends AbstractDBMappingGraphicalEditPart {
     //            this.editManager.show();
     //        }
     //    }
-    /**ÊôĞÔ±ä¸ü¸üĞÂÄ£ĞÍ*/
+    /**å±æ€§å˜æ›´æ›´æ–°æ¨¡å‹*/
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
-        /*Ë¢ĞÂ×ÔÉí*/
+        /*åˆ·æ–°è‡ªèº«*/
         if (Element.Prop_Location.equals(prop))
             refreshVisuals();
-        /*Ë¢ĞÂ×ÔÉí*/
+        /*åˆ·æ–°è‡ªèº«*/
         else if (Element.Prop_Name.equals(prop))
             refreshVisuals();
-        /*Ë¢ĞÂÁ´³öµÄÁ¬½Ó*/
+        /*åˆ·æ–°é“¾å‡ºçš„è¿æ¥*/
         else if (Element.Prop_OutputConnection.equals(prop))
             refreshSourceConnections();
-        /*Ë¢ĞÂÁ´ÈëµÄÁ¬½Ó*/
+        /*åˆ·æ–°é“¾å…¥çš„è¿æ¥*/
         else if (Element.Prop_InputConnection.equals(prop))
             refreshTargetConnections();
     }
     @Override
     protected void createEditPolicies() {
-        /*µã»÷½øÈë±à¼­Ä£Ê½²ßÂÔ*/
+        /*ç‚¹å‡»è¿›å…¥ç¼–è¾‘æ¨¡å¼ç­–ç•¥*/
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ElementDirectEditPolicy());
-        /*Ä£ĞÍµÄÉ¾³ı²ßÂÔ*/
+        /*æ¨¡å‹çš„åˆ é™¤ç­–ç•¥*/
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new ElementEditPolicy());
-        /*Í¼ĞÎ»¯½Úµã²ßÂÔ*/
+        /*å›¾å½¢åŒ–èŠ‚ç‚¹ç­–ç•¥*/
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ElementGraphicalNodeEditPolicy());
     }
 }

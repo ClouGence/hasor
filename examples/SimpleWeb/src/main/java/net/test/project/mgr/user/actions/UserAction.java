@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import net.test.project.mgr.user.service.UserService;
 /**
  * 
  * @version : 2013-12-23
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Controller("/mgr/user")
 public class UserAction extends AbstractController {
     @Inject
     private UserService userService;
-    /*»ñÈ¡ÓÃ»§ÁĞ±í£¬×ª·¢µ½¡®/mgr/user/userList.jsp¡¯*/
+    /*è·å–ç”¨æˆ·åˆ—è¡¨ï¼Œè½¬å‘åˆ°â€˜/mgr/user/userList.jspâ€™*/
     @Forword
     public String userList() throws SQLException {
         List<UserBean> userList = userService.getUserList();

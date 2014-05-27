@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,19 @@ import org.more.webui.component.UIComponent;
 import org.more.webui.component.support.UICom;
 import org.more.webui.context.ViewContext;
 /**
- * <b>×÷ÓÃ</b>£ºÒ³ÃæÃæ°å£¬¿ÉÒÔÓÃÀ´ÔØÈëÆäËûÒ³Ãæ¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_Panel
- * <br><b>±êÇ©</b>£º@ui_Panel
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnLoadPage£¨ÎŞ´¦Àí£©
- * <br><b>äÖÈ¾Æ÷</b>£º{@link PanelRender}
+ * <b>ä½œç”¨</b>ï¼šé¡µé¢é¢æ¿ï¼Œå¯ä»¥ç”¨æ¥è½½å…¥å…¶ä»–é¡µé¢ã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_Panel
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_Panel
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnLoadPageï¼ˆæ— å¤„ç†ï¼‰
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link PanelRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_Panel", renderType = PanelRender.class)
 public class Panel extends UIComponent {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public static enum Propertys {
-        /**ÒªÔØÈëµÄµØÖ·£¨RW£©*/
+        /**è¦è½½å…¥çš„åœ°å€ï¼ˆRWï¼‰*/
         pageURL,
     }
     @Override

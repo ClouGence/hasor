@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
  */
 package org.more.classcode;
 /**
-* ´ú±í¹ıÂËÆ÷Á´µÄÒ»¸ö»·½Ú½Ó¿Ú£¬µ±{@link AopInvokeFilter}½Ó¿ÚµÄdoInvokeFilter·½·¨±»Ö´ĞĞÊ±{@link AopFilterChain}ÀàĞÍ²ÎÊı¶ÔÏó
-* ±íÊ¾Õâ¸ö¹ıÂËÆ÷Ëù´¦¹ıÂËÆ÷Á´µÄÏÂÒ»¸ö¹ıÂËÆ÷×ÊÔ´¡£±¾½Ó¿ÚµÄdoInvokeFilter·½·¨±íÊ¾Ö´ĞĞ¹ıÂËÆ÷×ÊÔ´£¬
-* ÏÂÒ»¸ö¹ıÂËÆ÷×ÊÔ´¿ÉÄÜÊÇ¹ıÂËÆ÷Á´µÄÏÂÒ»¸ö¹ıÂËÆ÷ÔªËØÒ²¿ÉÄÜÊÇÕæÊµµÄ×ÊÔ´·½·¨¡£¶ÔÓÚclasscode×îÖÕ×ÊÔ´¾ÍÊÇÄ¿±ê·½·¨¡£
+* ä»£è¡¨è¿‡æ»¤å™¨é“¾çš„ä¸€ä¸ªç¯èŠ‚æ¥å£ï¼Œå½“{@link AopInvokeFilter}æ¥å£çš„doInvokeFilteræ–¹æ³•è¢«æ‰§è¡Œæ—¶{@link AopFilterChain}ç±»å‹å‚æ•°å¯¹è±¡
+* è¡¨ç¤ºè¿™ä¸ªè¿‡æ»¤å™¨æ‰€å¤„è¿‡æ»¤å™¨é“¾çš„ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨èµ„æºã€‚æœ¬æ¥å£çš„doInvokeFilteræ–¹æ³•è¡¨ç¤ºæ‰§è¡Œè¿‡æ»¤å™¨èµ„æºï¼Œ
+* ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨èµ„æºå¯èƒ½æ˜¯è¿‡æ»¤å™¨é“¾çš„ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨å…ƒç´ ä¹Ÿå¯èƒ½æ˜¯çœŸå®çš„èµ„æºæ–¹æ³•ã€‚å¯¹äºclasscodeæœ€ç»ˆèµ„æºå°±æ˜¯ç›®æ ‡æ–¹æ³•ã€‚
 * @version 2009-10-30
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public interface AopFilterChain {
     /**
-     * Ö´ĞĞ¹ıÂËÆ÷ÏÂÒ»¸ö¹ıÂËÆ÷×ÊÔ´µÄ·½·¨£¬Í¨¹ı¸Ã·½·¨¼ÌĞøµ÷ÓÃ¹ıÂËÆ÷Á´µÄ¶¯×÷¡£
-     * @param target Ö´ĞĞ·½·¨µÄ¶ÔÏó¡£
-     * @param method ±»µ÷ÓÃµÄ·½·¨¸Ã¶ÔÏóÖĞ°üº¬ÁË±»µ÷ÓÃµÄ´úÀí·½·¨ºÍÔ­Ê¼·½·¨¡£
-     * @param args µ÷ÓÃ·½·¨Ëù´«µİµÄ²ÎÊı¡£
-     * @return ·µ»ØÖ´ĞĞ½á¹û¡£
-     * @throws Throwable Ö´ĞĞ¹ıÂËÆ÷×ÊÔ´Ê±·¢ÉúÒì³£¡£
+     * æ‰§è¡Œè¿‡æ»¤å™¨ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨èµ„æºçš„æ–¹æ³•ï¼Œé€šè¿‡è¯¥æ–¹æ³•ç»§ç»­è°ƒç”¨è¿‡æ»¤å™¨é“¾çš„åŠ¨ä½œã€‚
+     * @param target æ‰§è¡Œæ–¹æ³•çš„å¯¹è±¡ã€‚
+     * @param method è¢«è°ƒç”¨çš„æ–¹æ³•è¯¥å¯¹è±¡ä¸­åŒ…å«äº†è¢«è°ƒç”¨çš„ä»£ç†æ–¹æ³•å’ŒåŸå§‹æ–¹æ³•ã€‚
+     * @param args è°ƒç”¨æ–¹æ³•æ‰€ä¼ é€’çš„å‚æ•°ã€‚
+     * @return è¿”å›æ‰§è¡Œç»“æœã€‚
+     * @throws Throwable æ‰§è¡Œè¿‡æ»¤å™¨èµ„æºæ—¶å‘ç”Ÿå¼‚å¸¸ã€‚
      */
     public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable;
 }

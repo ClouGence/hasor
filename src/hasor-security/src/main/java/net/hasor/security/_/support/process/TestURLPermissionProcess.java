@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import net.hasor.plugins.secweb.UriPatternMatcher;
 import net.hasor.security._.AuthSession;
 import net.hasor.security._.SecurityContext;
 /**
- * {@link TestURLPermissionProcess}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link TestURLPermissionProcess}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class TestURLPermissionProcess extends AbstractProcess {
-    /**²âÊÔÒª´¦ÀíµÄ×ÊÔ´ÊÇ·ñ¾ßÓĞÈ¨ÏŞ·ÃÎÊ£¬Èç¹ûÈ¨ÏŞ¼ì²âÊ§°Ü»áÅ×³öPermissionExceptionÒì³£¡£*/
+    /**æµ‹è¯•è¦å¤„ç†çš„èµ„æºæ˜¯å¦å…·æœ‰æƒé™è®¿é—®ï¼Œå¦‚æœæƒé™æ£€æµ‹å¤±è´¥ä¼šæŠ›å‡ºPermissionExceptionå¼‚å¸¸ã€‚*/
     public boolean testURL(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) {
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         UriPatternMatcher uriMatcher = secContext.getUriMatcher(reqPath);

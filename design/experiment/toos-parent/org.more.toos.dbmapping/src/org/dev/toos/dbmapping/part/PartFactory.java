@@ -7,18 +7,18 @@ import org.eclipse.gef.EditPartFactory;
 /**
  * 
  * @version : 2013-3-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class PartFactory implements EditPartFactory {
     @Override
     public EditPart createEditPart(EditPart context, Object modelElement) {
-        /*´´½¨EditPart*/
+        /*åˆ›å»ºEditPart*/
         EditPart part = getPartForElement(modelElement);
-        /*ÉèÖÃÄ£ÐÍ¶ÔÏó*/
+        /*è®¾ç½®æ¨¡åž‹å¯¹è±¡*/
         part.setModel(modelElement);
         return part;
     }
-    /**´´½¨Part*/
+    /**åˆ›å»ºPart*/
     private EditPart getPartForElement(Object modelElement) {
         if (modelElement instanceof Diagram)
             return new DiagramPart();

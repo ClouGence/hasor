@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,54 +17,54 @@ package net.hasor.core;
 import java.util.List;
 import java.util.Set;
 /**
- * HasorµÄºËĞÄ½Ó¿Ú£¬ËüÎªÓ¦ÓÃ³ÌĞòÌá¹©ÁËÒ»¸öÍ³Ò»µÄÅäÖÃ½çÃæºÍÔËĞĞ»·¾³¡£
+ * Hasorçš„æ ¸å¿ƒæ¥å£ï¼Œå®ƒä¸ºåº”ç”¨ç¨‹åºæä¾›äº†ä¸€ä¸ªç»Ÿä¸€çš„é…ç½®ç•Œé¢å’Œè¿è¡Œç¯å¢ƒã€‚
  * @version : 2013-3-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface AppContext extends EventContext {
-    /**»ñÈ¡¸¸Ç×*/
+    /**è·å–çˆ¶äº²*/
     public AppContext getParent();
-    /**»ñÈ¡ÉÏÏÂÎÄ*/
+    /**è·å–ä¸Šä¸‹æ–‡*/
     public Object getContext();
-    /**»ñÈ¡Ó¦ÓÃ³ÌĞòÅäÖÃ¡£*/
+    /**è·å–åº”ç”¨ç¨‹åºé…ç½®ã€‚*/
     public Settings getSettings();
-    /**»ñÈ¡»·¾³½Ó¿Ú¡£*/
+    /**è·å–ç¯å¢ƒæ¥å£ã€‚*/
     public Environment getEnvironment();
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇµÄ×¢½â£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°çš„æ³¨è§£ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType);
-    /**±íÊ¾AppContextÊÇ·ñ×¼±¸ºÃ¡£*/
+    /**è¡¨ç¤ºAppContextæ˜¯å¦å‡†å¤‡å¥½ã€‚*/
     public boolean isReady();
-    /**Æô¶¯¡£ÏòËùÓĞÄ£¿é·¢ËÍÆô¶¯ĞÅºÅ£¬²¢½«ÈİÆ÷µÄ×´Ì¬ÖÃÎªStart¡££¨¸Ã·½·¨»á³¢ÊÔinitËùÓĞÄ£¿é£©*/
+    /**å¯åŠ¨ã€‚å‘æ‰€æœ‰æ¨¡å—å‘é€å¯åŠ¨ä¿¡å·ï¼Œå¹¶å°†å®¹å™¨çš„çŠ¶æ€ç½®ä¸ºStartã€‚ï¼ˆè¯¥æ–¹æ³•ä¼šå°è¯•initæ‰€æœ‰æ¨¡å—ï¼‰*/
     public void start();
-    /**ÅĞ¶ÏÈİÆ÷ÊÇ·ñ´¦ÓÚÔËĞĞ×´Ì¬*/
+    /**åˆ¤æ–­å®¹å™¨æ˜¯å¦å¤„äºè¿è¡ŒçŠ¶æ€*/
     public boolean isStart();
     //
     /*-------------------------------------------------------------------------------------Module*/
-    /**Ìí¼ÓÄ£¿é£¬Èç¹ûÈİÆ÷ÒÑ¾­³õÊ¼»¯ÄÇÃ´»áÒı·¢{@link IllegalStateException}Òì³£¡£*/
+    /**æ·»åŠ æ¨¡å—ï¼Œå¦‚æœå®¹å™¨å·²ç»åˆå§‹åŒ–é‚£ä¹ˆä¼šå¼•å‘{@link IllegalStateException}å¼‚å¸¸ã€‚*/
     public ModuleInfo addModule(Module hasorModule);
-    /**É¾³ıÄ£¿é£¬Èç¹ûÈİÆ÷ÒÑ¾­³õÊ¼»¯ÄÇÃ´»áÒı·¢{@link IllegalStateException}Òì³£¡£*/
+    /**åˆ é™¤æ¨¡å—ï¼Œå¦‚æœå®¹å™¨å·²ç»åˆå§‹åŒ–é‚£ä¹ˆä¼šå¼•å‘{@link IllegalStateException}å¼‚å¸¸ã€‚*/
     public boolean removeModule(Module hasorModule);
-    /**»ñµÃËùÓĞÄ£¿é*/
+    /**è·å¾—æ‰€æœ‰æ¨¡å—*/
     public ModuleInfo[] getModules();
     //
     /*---------------------------------------------------------------------------------------Bean*/
-    /**Í¨¹ıÃû»ñÈ¡BeanµÄÀàĞÍ¡£*/
+    /**é€šè¿‡åè·å–Beançš„ç±»å‹ã€‚*/
     public <T> Class<T> getBeanType(String name);
-    /**Èç¹û´æÔÚÄ¿±êÀàĞÍµÄBeanÔò·µ»ØBeanµÄÃû³Æ¡£*/
+    /**å¦‚æœå­˜åœ¨ç›®æ ‡ç±»å‹çš„Beanåˆ™è¿”å›Beançš„åç§°ã€‚*/
     public String[] getBeanNames(Class<?> targetClass);
-    /**»ñÈ¡ÒÑ¾­×¢²áµÄBeanÃû³Æ¡£*/
+    /**è·å–å·²ç»æ³¨å†Œçš„Beanåç§°ã€‚*/
     public String[] getBeanNames();
-    /**´´½¨Bean¡£*/
+    /**åˆ›å»ºBeanã€‚*/
     public <T> T getBean(String name);
-    /**´´½¨Bean¡£*/
+    /**åˆ›å»ºBeanã€‚*/
     public <T> T getInstance(Class<T> targetClass);
     //
-    /**Í¨¹ıÒ»¸öÀàĞÍ»ñÈ¡ËùÓĞ°ó¶¨µ½¸ÃÀàĞÍµÄÉÏµÄ¶ÔÏóÊµÀı¡£*/
+    /**é€šè¿‡ä¸€ä¸ªç±»å‹è·å–æ‰€æœ‰ç»‘å®šåˆ°è¯¥ç±»å‹çš„ä¸Šçš„å¯¹è±¡å®ä¾‹ã€‚*/
     public <T> List<T> findBindingBean(Class<T> bindingType);
-    /**Í¨¹ıÒ»¸öÀàĞÍ»ñÈ¡ËùÓĞ°ó¶¨µ½¸ÃÀàĞÍµÄÉÏµÄ¶ÔÏóÊµÀı¡£*/
+    /**é€šè¿‡ä¸€ä¸ªç±»å‹è·å–æ‰€æœ‰ç»‘å®šåˆ°è¯¥ç±»å‹çš„ä¸Šçš„å¯¹è±¡å®ä¾‹ã€‚*/
     public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType);
-    /**Í¨¹ıÒ»¸öÀàĞÍ»ñÈ¡ËùÓĞ°ó¶¨µ½¸ÃÀàĞÍµÄÉÏµÄ¶ÔÏóÊµÀı¡£*/
+    /**é€šè¿‡ä¸€ä¸ªç±»å‹è·å–æ‰€æœ‰ç»‘å®šåˆ°è¯¥ç±»å‹çš„ä¸Šçš„å¯¹è±¡å®ä¾‹ã€‚*/
     public <T> T findBindingBean(String withName, Class<T> bindingType);
-    /**Í¨¹ıÒ»¸öÀàĞÍ»ñÈ¡ËùÓĞ°ó¶¨µ½¸ÃÀàĞÍµÄÉÏµÄ¶ÔÏóÊµÀı¡£*/
+    /**é€šè¿‡ä¸€ä¸ªç±»å‹è·å–æ‰€æœ‰ç»‘å®šåˆ°è¯¥ç±»å‹çš„ä¸Šçš„å¯¹è±¡å®ä¾‹ã€‚*/
     public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType);
 }

@@ -1,19 +1,19 @@
 ===== Hasor-Jdbc v0.0.3
-* ¸Ä½ø:
-    01.DefaultDataSourceHelper ¸üÃûÎª LocalDataSourceHelper¡£
-    02.LocalDataSourceHelper Ö§³ÖÃ¿¸öÏß³Ì°ó¶¨¶à¸öÊı¾İ¿âÁ¬½Ó¡£
-    03.ÊİÉí 50% ÒÔÉÏ¡£
-    04.¶Ô SQL Òì³£²»ÔÚ·â×°¡£
+* æ”¹è¿›:
+    01.DefaultDataSourceHelper æ›´åä¸º LocalDataSourceHelperã€‚
+    02.LocalDataSourceHelper æ”¯æŒæ¯ä¸ªçº¿ç¨‹ç»‘å®šå¤šä¸ªæ•°æ®åº“è¿æ¥ã€‚
+    03.ç˜¦èº« 50% ä»¥ä¸Šã€‚
+    04.å¯¹ SQL å¼‚å¸¸ä¸åœ¨å°è£…ã€‚
 
 ===== Hasor-Jdbc v0.0.2
-* ĞŞ¸´:
-    01.½â¾ö DefaultDataSourceHelper Àà¹¤×÷ÔÚ¶àÏß³ÌÄ£Ê½ÏÂÎŞ·¨ÕıÈ·³õÊ¼»¯ ThreadLocal µÄÎÊÌâ¡£¸ÃÎÊÌâµ¼ÖÂÕû¸ö JDBC ²å¼ş²»¿ÉÓÃ¡£
-* ĞÂÔö:
-    01.ĞÂÔö SavepointDataSourceHelper ½Ó¿Ú£¬²¢ÇÒ DefaultDataSourceHelper ÀàÖ§³Ö¸Ã½Ó¿Ú¡£
-    02.ĞÂÔö¿ÉÒÔÍ¨¹ı DataSourceUtils »ñÈ¡µ±Ç°Á¬½ÓµÄ·½·¨¡£
+* ä¿®å¤:
+    01.è§£å†³ DefaultDataSourceHelper ç±»å·¥ä½œåœ¨å¤šçº¿ç¨‹æ¨¡å¼ä¸‹æ— æ³•æ­£ç¡®åˆå§‹åŒ– ThreadLocal çš„é—®é¢˜ã€‚è¯¥é—®é¢˜å¯¼è‡´æ•´ä¸ª JDBC æ’ä»¶ä¸å¯ç”¨ã€‚
+* æ–°å¢:
+    01.æ–°å¢ SavepointDataSourceHelper æ¥å£ï¼Œå¹¶ä¸” DefaultDataSourceHelper ç±»æ”¯æŒè¯¥æ¥å£ã€‚
+    02.æ–°å¢å¯ä»¥é€šè¿‡ DataSourceUtils è·å–å½“å‰è¿æ¥çš„æ–¹æ³•ã€‚
 
 ===== Hasor-Jdbc v0.0.1
-* ĞÂÔö:
-    01.Í¨¹ı net.hasor.jdbc Èí¼ş°üÎª Java Ó¦ÓÃ³ÌĞòÌá¹©ÁËÒ»¸öÇáÁ¿»¯ JDBC ²Ù×÷½Ó¿Ú¡£
-        -ËüµÄ 70% µÄ´úÂëÊÇ´Ó Spring JDBC Ô´ÂëÖĞ¾«¼òµÃÀ´¡£
-    02.Èí¼ş°ü net.hasor.plugins.datasource Îª Java Ó¦ÓÃ³ÌĞòÌá¹©ÁËÊı¾İÔ´·şÎñ¡£
+* æ–°å¢:
+    01.é€šè¿‡ net.hasor.jdbc è½¯ä»¶åŒ…ä¸º Java åº”ç”¨ç¨‹åºæä¾›äº†ä¸€ä¸ªè½»é‡åŒ– JDBC æ“ä½œæ¥å£ã€‚
+        -å®ƒçš„ 70% çš„ä»£ç æ˜¯ä» Spring JDBC æºç ä¸­ç²¾ç®€å¾—æ¥ã€‚
+    02.è½¯ä»¶åŒ… net.hasor.plugins.datasource ä¸º Java åº”ç”¨ç¨‹åºæä¾›äº†æ•°æ®æºæœåŠ¡ã€‚

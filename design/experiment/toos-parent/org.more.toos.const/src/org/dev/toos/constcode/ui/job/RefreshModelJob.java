@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * 
  * @version : 2013-2-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class RefreshModelJob extends Job {
     private Runnable callBack = null;
@@ -17,7 +17,7 @@ public class RefreshModelJob extends Job {
         this.callBack = callBack;
     }
     @Override
-    /**ÖØĞÂÔØÈë¹¤×÷¿Õ¼äÖĞµÄxml¡£*/
+    /**é‡æ–°è½½å…¥å·¥ä½œç©ºé—´ä¸­çš„xmlã€‚*/
     public IStatus run(IProgressMonitor monitor) {
         ConstModelSet.refresh(monitor);
         runCallBack();

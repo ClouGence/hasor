@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 package org.more.classcode;
 import java.lang.reflect.Method;
 /**
- * µ±Ê¹ÓÃ{@link ClassEngine}ÀàµÄaddDelegate·½·¨À´Ìí¼ÓÎ¯ÍĞ£¬Ìí¼ÓµÄÎ¯ÍĞ´¦Àíº¯Êı¶ÔÏó¾ÍÊÇ¸Ã½Ó¿Ú¶ÔÏó¡£
- * ±»Î¯ÍĞµÄ·½·¨½«»á²ÉÓÃ×¢²áÎ¯ÍĞÊ±´«µİµÄMethodDelegate½Ó¿Ú¶ÔÏó×÷Îª»Øµ÷¶ÔÏó¡£
+ * å½“ä½¿ç”¨{@link ClassEngine}ç±»çš„addDelegateæ–¹æ³•æ¥æ·»åŠ å§”æ‰˜ï¼Œæ·»åŠ çš„å§”æ‰˜å¤„ç†å‡½æ•°å¯¹è±¡å°±æ˜¯è¯¥æ¥å£å¯¹è±¡ã€‚
+ * è¢«å§”æ‰˜çš„æ–¹æ³•å°†ä¼šé‡‡ç”¨æ³¨å†Œå§”æ‰˜æ—¶ä¼ é€’çš„MethodDelegateæ¥å£å¯¹è±¡ä½œä¸ºå›è°ƒå¯¹è±¡ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface MethodDelegate {
     /**
-     * ĞÂÉú³ÉµÄÀà¸½¼Ó½Ó¿Ú·½·¨±»µ÷ÓÃÊ±ºò¼¤·¢¸Ã½Ó¿ÚµÄ·½·¨£¬Í¨¹ıcallMethod¿ÉÒÔ»ñµÃ±»µ÷ÓÃµÄ·½·¨¶ÔÏó¡£
-     * @param callMethod ±»µ÷ÓÃµÄº¯Êı¡£
-     * @param target µ÷ÓÃÎ¯ÍĞ·½·¨µÄÀà¶ÔÏó¡£
-     * @param params µ±µ÷ÓÃ·½·¨Ê±·½·¨µÄ²ÎÊı£¬Èç¹ûÃ»ÓĞ²ÎÊı´«ÈëÔòÊÇÒ»¸ö¿ÕÊı×é¡£
-     * @return ·µ»Ø·½·¨Ö´ĞĞ½á¹û£¬×¢ÒâÒÀÕÕÏà¹Ø½Ó¿Ú·½·¨µÄ·µ»ØÖµ½øĞĞ·µ»Ø{@link ClassEngine}²»»á×Ô¶¯×ª»»Æğ¸ñÊ½¡£
-     * Èç¹û·½·¨·µ»ØÀàĞÍÊÇjava»ù±¾ÀàĞÍÇëÎñ±Ø°´ÕÕ¸½¼ÓµÄ½Ó¿Ú·½·¨·µ»ØÏà¹Ø·µ»ØÖµ·ñÔò½«²úÉúÀàĞÍ×ª»»Òì³£¡£
-     * @throws InvokeException µ±µ÷ÓÃ¹ı³ÌÖĞ·¢ÉúµÄÒì³£¡£
+     * æ–°ç”Ÿæˆçš„ç±»é™„åŠ æ¥å£æ–¹æ³•è¢«è°ƒç”¨æ—¶å€™æ¿€å‘è¯¥æ¥å£çš„æ–¹æ³•ï¼Œé€šè¿‡callMethodå¯ä»¥è·å¾—è¢«è°ƒç”¨çš„æ–¹æ³•å¯¹è±¡ã€‚
+     * @param callMethod è¢«è°ƒç”¨çš„å‡½æ•°ã€‚
+     * @param target è°ƒç”¨å§”æ‰˜æ–¹æ³•çš„ç±»å¯¹è±¡ã€‚
+     * @param params å½“è°ƒç”¨æ–¹æ³•æ—¶æ–¹æ³•çš„å‚æ•°ï¼Œå¦‚æœæ²¡æœ‰å‚æ•°ä¼ å…¥åˆ™æ˜¯ä¸€ä¸ªç©ºæ•°ç»„ã€‚
+     * @return è¿”å›æ–¹æ³•æ‰§è¡Œç»“æœï¼Œæ³¨æ„ä¾ç…§ç›¸å…³æ¥å£æ–¹æ³•çš„è¿”å›å€¼è¿›è¡Œè¿”å›{@link ClassEngine}ä¸ä¼šè‡ªåŠ¨è½¬æ¢èµ·æ ¼å¼ã€‚
+     * å¦‚æœæ–¹æ³•è¿”å›ç±»å‹æ˜¯javaåŸºæœ¬ç±»å‹è¯·åŠ¡å¿…æŒ‰ç…§é™„åŠ çš„æ¥å£æ–¹æ³•è¿”å›ç›¸å…³è¿”å›å€¼å¦åˆ™å°†äº§ç”Ÿç±»å‹è½¬æ¢å¼‚å¸¸ã€‚
+     * @throws InvokeException å½“è°ƒç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿçš„å¼‚å¸¸ã€‚
      */
     public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException;
 }

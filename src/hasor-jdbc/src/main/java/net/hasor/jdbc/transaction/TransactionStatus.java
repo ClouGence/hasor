@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,35 @@
 package net.hasor.jdbc.transaction;
 import java.sql.SQLException;
 /**
- * ±íÊ¾Ò»¸öÊÂÎñ×´Ì¬
+ * è¡¨ç¤ºä¸€ä¸ªäº‹åŠ¡çŠ¶æ€
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface TransactionStatus {
-    /**»ñÈ¡ÊÂÎñÊ¹ÓÃµÄ´«²¥ĞĞÎª*/
+    /**è·å–äº‹åŠ¡ä½¿ç”¨çš„ä¼ æ’­è¡Œä¸º*/
     public TransactionBehavior getTransactionBehavior();
-    /**»ñÈ¡ÊÂÎñµÄ¸ôÀë¼¶±ğ*/
+    /**è·å–äº‹åŠ¡çš„éš”ç¦»çº§åˆ«*/
     public TransactionLevel getIsolationLevel();
     //
-    /**ÊÂÎñÊÇ·ñÒÑ¾­Íê³É¡£
-     * <p>µ±ÊÂÎñÒÑ¾­µİ½»»òÕß±»»Ø¹ö¾Í±êÖ¾×ÅÒÑÍê³É¡£*/
+    /**äº‹åŠ¡æ˜¯å¦å·²ç»å®Œæˆã€‚
+     * <p>å½“äº‹åŠ¡å·²ç»é€’äº¤æˆ–è€…è¢«å›æ»šå°±æ ‡å¿—ç€å·²å®Œæˆã€‚*/
     public boolean isCompleted();
-    /**ÊÇ·ñÒÑ±»±ê¼ÇÎª»Ø¹ö£¬Èç¹û·µ»ØÖµÎª true ÔòÔÚcommit Ê±»á»Ø¹ö¸ÃÊÂÎñ¡£*/
+    /**æ˜¯å¦å·²è¢«æ ‡è®°ä¸ºå›æ»šï¼Œå¦‚æœè¿”å›å€¼ä¸º true åˆ™åœ¨commit æ—¶ä¼šå›æ»šè¯¥äº‹åŠ¡ã€‚*/
     public boolean isRollbackOnly();
-    /**ÊÇ·ñÎªÖ»¶ÁÄ£Ê½¡£*/
+    /**æ˜¯å¦ä¸ºåªè¯»æ¨¡å¼ã€‚*/
     public boolean isReadOnly();
-    /**ÊÇ·ñÊ¹ÓÃÁËÒ»¸öÈ«ĞÂµÄÊı¾İ¿âÁ¬½Ó¿ªÆôÊÂÎñ*/
+    /**æ˜¯å¦ä½¿ç”¨äº†ä¸€ä¸ªå…¨æ–°çš„æ•°æ®åº“è¿æ¥å¼€å¯äº‹åŠ¡*/
     public boolean isNewConnection();
-    /**²âÊÔ¸ÃÊÂÎñÊÇ·ñ±»¹ÒÆğ*/
+    /**æµ‹è¯•è¯¥äº‹åŠ¡æ˜¯å¦è¢«æŒ‚èµ·*/
     public boolean isSuspend();
-    /**±íÊ¾ÊÂÎñÊÇ·ñĞ¯´øÁËÒ»¸ö±£´æµã£¬Ç¶Ì×ÊÂÎñÍ¨³£»á´´½¨Ò»¸ö±£´æµã×÷ÎªÇ¶Ì×ÊÂÎñÓëÉÏÒ»²ãÊÂÎñµÄ·Ö½çµã¡£
-     * <p>×¢Òâ£ºÈç¹ûÊÂÎñÖĞ°üº¬±£´æµã£¬ÔòÔÚµİ½»ÊÂÎñÊ±Ö»´¦ÀíÕâ¸ö±£´æµã¡£*/
+    /**è¡¨ç¤ºäº‹åŠ¡æ˜¯å¦æºå¸¦äº†ä¸€ä¸ªä¿å­˜ç‚¹ï¼ŒåµŒå¥—äº‹åŠ¡é€šå¸¸ä¼šåˆ›å»ºä¸€ä¸ªä¿å­˜ç‚¹ä½œä¸ºåµŒå¥—äº‹åŠ¡ä¸ä¸Šä¸€å±‚äº‹åŠ¡çš„åˆ†ç•Œç‚¹ã€‚
+     * <p>æ³¨æ„ï¼šå¦‚æœäº‹åŠ¡ä¸­åŒ…å«ä¿å­˜ç‚¹ï¼Œåˆ™åœ¨é€’äº¤äº‹åŠ¡æ—¶åªå¤„ç†è¿™ä¸ªä¿å­˜ç‚¹ã€‚*/
     public boolean hasSavepoint();
     //
-    /**ÉèÖÃÊÂÎñ×´Ì¬Îª»Ø¹ö£¬×÷ÎªÌæ´úÅ×³öÒì³£½ø¶ø´¥·¢»Ø¹ö²Ù×÷¡£
-     * <p>Ö»ÓĞµ±isCompleted Îª false Ê±ÉèÖÃ¸Ã·½·¨²Å»áÓĞĞ§¡£ */
+    /**è®¾ç½®äº‹åŠ¡çŠ¶æ€ä¸ºå›æ»šï¼Œä½œä¸ºæ›¿ä»£æŠ›å‡ºå¼‚å¸¸è¿›è€Œè§¦å‘å›æ»šæ“ä½œã€‚
+     * <p>åªæœ‰å½“isCompleted ä¸º false æ—¶è®¾ç½®è¯¥æ–¹æ³•æ‰ä¼šæœ‰æ•ˆã€‚ */
     public void setRollbackOnly() throws SQLException;
-    /**ÉèÖÃÊÂÎñ×´Ì¬ÎªÖ»¶Á¡£
-     * <p>Ö»ÓĞµ±isCompleted Îª false Ê±ÉèÖÃ¸Ã·½·¨²Å»áÓĞĞ§¡£*/
+    /**è®¾ç½®äº‹åŠ¡çŠ¶æ€ä¸ºåªè¯»ã€‚
+     * <p>åªæœ‰å½“isCompleted ä¸º false æ—¶è®¾ç½®è¯¥æ–¹æ³•æ‰ä¼šæœ‰æ•ˆã€‚*/
     public void setReadOnly() throws SQLException;
 }

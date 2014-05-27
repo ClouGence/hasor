@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ import java.util.Map;
 import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 /***
- * ×Ô¶¨Òå±êÇ©
+ * è‡ªå®šä¹‰æ ‡ç­¾
  * @version : 2013-5-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Tag {
-    /**×¼±¸¿ªÊ¼Ö´ÐÐ±êÇ©*/
+    /**å‡†å¤‡å¼€å§‹æ‰§è¡Œæ ‡ç­¾*/
     public boolean beforeTag(Map<String, Object> propxy, Environment environment) throws TemplateException;
-    /**Ö´ÐÐ±êÇ©*/
+    /**æ‰§è¡Œæ ‡ç­¾*/
     public void doTag(Map<String, Object> propxy, TemplateBody body) throws TemplateException, IOException;
-    /**±êÇ©Ö´ÐÐÍê±Ï*/
+    /**æ ‡ç­¾æ‰§è¡Œå®Œæ¯•*/
     public void afterTag(Map<String, Object> propxy, Environment environment) throws TemplateException;
 }

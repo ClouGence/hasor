@@ -27,9 +27,9 @@ import net.hasor.core.SettingsListener;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
 /**
- * Ìá¹© <code>@Settings</code>×¢½â ¹¦ÄÜÖ§³Ö¡£
+ * æä¾› <code>@Settings</code>æ³¨è§£ åŠŸèƒ½æ”¯æŒã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class SettingsPlugin extends AbstractHasorPlugin {
@@ -52,7 +52,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
             }
         });
     }
-    /**×°ÔØ×¢½âĞÎÊ½µÄSettingsListener*/
+    /**è£…è½½æ³¨è§£å½¢å¼çš„SettingsListener*/
     private void loadAnnoSettings(ApiBinder apiBinder) {
         final Environment env = apiBinder.getEnvironment();
         Set<Class<?>> settingSet = env.findClass(Settings.class);

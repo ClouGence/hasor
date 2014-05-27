@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
 /**
- * Èë¿ÚFilter£¬Í¬Ò»¸öÓ¦ÓÃ³ÌĞòÖ»ÄÜÊµÀı»¯Ò»¸ö RuntimeFilter ¶ÔÏó¡£
+ * å…¥å£Filterï¼ŒåŒä¸€ä¸ªåº”ç”¨ç¨‹åºåªèƒ½å®ä¾‹åŒ–ä¸€ä¸ª RuntimeFilter å¯¹è±¡ã€‚
  * @version : 2013-3-25
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
     private WebAppContext  appContext       = null;
@@ -40,7 +40,7 @@ public class RuntimeFilter implements Filter {
     private String         responseEncoding = null;
     //
     //
-    /**³õÊ¼»¯¹ıÂËÆ÷£¬³õÊ¼»¯»áÍ¬Ê±³õÊ¼»¯FilterPipeline*/
+    /**åˆå§‹åŒ–è¿‡æ»¤å™¨ï¼Œåˆå§‹åŒ–ä¼šåŒæ—¶åˆå§‹åŒ–FilterPipeline*/
     public synchronized void init(FilterConfig filterConfig) throws ServletException {
         if (appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
@@ -48,22 +48,22 @@ public class RuntimeFilter implements Filter {
             Hasor.assertIsNotNull(appContext, "AppContext is null.");
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
-        /*»ñÈ¡ÇëÇóÏìÓ¦±àÂë*/
+        /*è·å–è¯·æ±‚å“åº”ç¼–ç */
         this.requestEncoding = appContext.getSettings().getString("hasor-web.requestEncoding");
         this.responseEncoding = appContext.getSettings().getString("hasor-web.responseEncoding");
-        /*1.³õÊ¼»¯Ö´ĞĞÖÜÆÚ¹ÜÀíÆ÷¡£*/
+        /*1.åˆå§‹åŒ–æ‰§è¡Œå‘¨æœŸç®¡ç†å™¨ã€‚*/
         this.filterPipeline.initPipeline(appContext);
         Hasor.logInfo("PlatformFilter started.");
     }
     //
-    /** Ïú»Ù */
+    /** é”€æ¯ */
     public void destroy() {
         Hasor.logInfo("executeCycle destroyCycle.");
         if (this.filterPipeline != null)
             this.filterPipeline.destroyPipeline(appContext);
     }
     //
-    /** ´¦Àírequest£¬ÏìÓ¦response */
+    /** å¤„ç†requestï¼Œå“åº”response */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
@@ -75,7 +75,7 @@ public class RuntimeFilter implements Filter {
         Hasor.logDebug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         //
         try {
-            //Ö´ĞĞ.
+            //æ‰§è¡Œ.
             this.beforeRequest(appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } finally {
@@ -83,23 +83,23 @@ public class RuntimeFilter implements Filter {
         }
     }
     //
-    /**Ö´ĞĞFilterPipeline*/
+    /**æ‰§è¡ŒFilterPipeline*/
     private void processFilterPipeline(HttpServletRequest httpReq, HttpServletResponse httpRes, FilterChain chain) throws IOException, ServletException {
         this.filterPipeline.dispatch(httpReq, httpRes, chain);
     }
     //
-    /**»ñÈ¡{@link AppContext}½Ó¿Ú¡£*/
+    /**è·å–{@link AppContext}æ¥å£ã€‚*/
     protected final AppContext getAppContext() {
         return RuntimeListener.getLocalAppContext();
     }
     //
-    /**ÔÚfilterÇëÇó´¦ÀíÖ®Ç°£¬¸Ã·½·¨¸ºÔğÍ¨ÖªHttpRequestProvider¡¢HttpResponseProvider¡¢HttpSessionProvider¸üĞÂ¶ÔÏó¡£*/
+    /**åœ¨filterè¯·æ±‚å¤„ç†ä¹‹å‰ï¼Œè¯¥æ–¹æ³•è´Ÿè´£é€šçŸ¥HttpRequestProviderã€HttpResponseProviderã€HttpSessionProvideræ›´æ–°å¯¹è±¡ã€‚*/
     protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
         LocalRequest.set(httpReq);
         LocalResponse.set(httpRes);
     }
     //
-    /**ÔÚfilterÇëÇó´¦ÀíÖ®ºó£¬¸Ã·½·¨¸ºÔğÍ¨ÖªHttpRequestProvider¡¢HttpResponseProvider¡¢HttpSessionProviderÖØÖÃ¶ÔÏó¡£*/
+    /**åœ¨filterè¯·æ±‚å¤„ç†ä¹‹åï¼Œè¯¥æ–¹æ³•è´Ÿè´£é€šçŸ¥HttpRequestProviderã€HttpResponseProviderã€HttpSessionProvideré‡ç½®å¯¹è±¡ã€‚*/
     protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
         LocalRequest.remove();
         LocalResponse.remove();
@@ -109,22 +109,22 @@ public class RuntimeFilter implements Filter {
     private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();
     private static ThreadLocal<HttpServletResponse> LocalResponse = new ThreadLocal<HttpServletResponse>();
     //
-    /**»ñÈ¡{@link HttpServletRequest}*/
+    /**è·å–{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
         return LocalRequest.get();
     }
     //
-    /**»ñÈ¡{@link HttpServletResponse}*/
+    /**è·å–{@link HttpServletResponse}*/
     public static HttpServletResponse getLocalResponse() {
         return LocalResponse.get();
     }
     //
-    /**»ñÈ¡{@link ServletContext}*/
+    /**è·å–{@link ServletContext}*/
     public static ServletContext getLocalServletContext() {
         return RuntimeListener.getLocalServletContext();
     }
     //
-    /**»ñÈ¡{@link AppContext}*/
+    /**è·å–{@link AppContext}*/
     public static AppContext getLocalAppContext() {
         return RuntimeListener.getLocalAppContext();
     }

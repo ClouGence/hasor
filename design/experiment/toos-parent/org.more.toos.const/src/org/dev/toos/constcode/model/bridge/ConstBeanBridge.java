@@ -9,9 +9,9 @@ import org.dev.toos.constcode.metadata.create.NewConstBean;
 import org.dev.toos.constcode.model.ConstGroup;
 import org.more.util.StringConvertUtil;
 /**
- * ÓÃÓÚviewÖĞ±íÊöConstBean¶ÔÏó¡£
+ * ç”¨äºviewä¸­è¡¨è¿°ConstBeanå¯¹è±¡ã€‚
  * @version : 2013-2-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstBeanBridge extends AbstractBridge<ConstBean> {
     private ConstBeanBridge       parentBridge = null;
@@ -27,11 +27,11 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
         this.parentBridge = parent;
     }
     /*--------------------------------------------------------------------*/
-    /**»ñÈ¡¸¸*/
+    /**è·å–çˆ¶*/
     public ConstBeanBridge getParent() {
         return this.parentBridge;
     }
-    /**»ñÈ¡×Ó½Úµã*/
+    /**è·å–å­èŠ‚ç‚¹*/
     public List<ConstBeanBridge> getChildren() {
         if (this.childrenList == null) {
             this.childrenList = this.getSource().loadChildrenConst(this);
@@ -40,7 +40,7 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
         }
         return Collections.unmodifiableList(this.childrenList);
     }
-    /**»ñÈ¡³£Á¿Öµ¸ù½Úµã*/
+    /**è·å–å¸¸é‡å€¼æ ¹èŠ‚ç‚¹*/
     public List<VarBeanBridge> getVarRoots() {
         if (this.varList == null) {
             this.varList = this.getSource().loadVarRoots(this);
@@ -49,21 +49,21 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
         }
         return Collections.unmodifiableList(this.varList);
     }
-    //    /**Ìí¼Ó×ÓÔªËØ*/
+    //    /**æ·»åŠ å­å…ƒç´ */
     //    public void addConst(String constCode, String constName, GroupType type) {
     //        //TODO xxx
     //    }
-    //    /**Ìí¼Ó×ÓÔªËØ*/
+    //    /**æ·»åŠ å­å…ƒç´ */
     //    public void addVar() {
     //        //TODO xxx
     //    }
-    /**Ìí¼ÓÖµÔªËØ*/
+    /**æ·»åŠ å€¼å…ƒç´ */
     public boolean addVar(int index, VarBeanBridge newVar) {
-        getVarRoots();//³õÊ¼»¯×÷ÓÃ
+        getVarRoots();//åˆå§‹åŒ–ä½œç”¨
         if (this.varList.contains(newVar) == true)
             return false;
         this.varList.add(index, newVar);
-        this.getSource().setConstChanged(true);//Í¨ÖªĞŞ¸Ä¹ıÊı¾İ
+        this.getSource().setConstChanged(true);//é€šçŸ¥ä¿®æ”¹è¿‡æ•°æ®
         return true;
     }
     public void deleteVar(VarBeanBridge bridge) {
@@ -73,10 +73,10 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
             this.varList.remove(bridge);
         else
             bridge.delete();
-        this.getSource().setConstChanged(true);//Í¨ÖªĞŞ¸Ä¹ıÊı¾İ
+        this.getSource().setConstChanged(true);//é€šçŸ¥ä¿®æ”¹è¿‡æ•°æ®
     }
     /*--------------------------------------------------------------------*/
-    /**ÊôĞÔÊÇ·ñ¸Ä±ä¹ı£¬ÖØĞ´·½·¨°üº¬ÁË¶Ô×Ó¼¯³£Á¿ºÍ³£Á¿ÖµµÄ¼ì²â*/
+    /**å±æ€§æ˜¯å¦æ”¹å˜è¿‡ï¼Œé‡å†™æ–¹æ³•åŒ…å«äº†å¯¹å­é›†å¸¸é‡å’Œå¸¸é‡å€¼çš„æ£€æµ‹*/
     public boolean isPropertyChanged() {
         boolean res = super.isPropertyChanged();
         for (ConstBeanBridge childrenConst : this.getChildren())
@@ -130,7 +130,7 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
         target.setConstCode(this.getCode());
         target.setConstVar(this.getVar());
         target.setConstExtData(this.getExtData());
-        //´¦Àí×ÓÔªËØµÄapplyData
+        //å¤„ç†å­å…ƒç´ çš„applyData
         if (this.childrenList != null)
             for (ConstBeanBridge constBean : this.childrenList)
                 if (constBean.applyData() == false)
@@ -144,9 +144,9 @@ public class ConstBeanBridge extends AbstractBridge<ConstBean> {
     public void updateState(ConstBean target) {
         //A.Const part
         if (this.getTarget() != target) {
-            //target¸ü»»
+            //targetæ›´æ¢
             this.setTarget(target);
-            //¸üĞÂº¢×ÓµÄ¸¸Ç×
+            //æ›´æ–°å­©å­çš„çˆ¶äº²
             if (this.childrenList != null)
                 for (ConstBeanBridge constBean : this.childrenList) {
                     ConstBean _target = constBean.getTarget();

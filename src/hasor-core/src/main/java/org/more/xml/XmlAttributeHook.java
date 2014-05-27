@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.more.xml.stream.AttributeEvent;
 /**
- * µ±Óöµ½Ò»¸öÊôĞÔĞèÒª½âÎöÊ±Ê¹ÓÃ¸Ã½Ó¿Ú£¬Ê¹ÓÃ¸Ã½Ó¿Ú¿ÉÒÔÓÃÓÚ½âÎöÌØ¶¨µÄÊôĞÔ¡£
+ * å½“é‡åˆ°ä¸€ä¸ªå±æ€§éœ€è¦è§£ææ—¶ä½¿ç”¨è¯¥æ¥å£ï¼Œä½¿ç”¨è¯¥æ¥å£å¯ä»¥ç”¨äºè§£æç‰¹å®šçš„å±æ€§ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlAttributeHook extends XmlParserHook {
     /**
-     * µ±Óöµ½Ò»¸öÊôĞÔÊ±¡£
-     * @param context »·¾³ÉÏÏÂÎÄ¡£
-     * @param xpath µ±Ç°±êÇ©ÔÚËù¶¨ÒåµÄÃüÃû¿Õ¼äÖĞµÄxpath¡£
-     * @param event ÊÂ¼ş¡£
+     * å½“é‡åˆ°ä¸€ä¸ªå±æ€§æ—¶ã€‚
+     * @param context ç¯å¢ƒä¸Šä¸‹æ–‡ã€‚
+     * @param xpath å½“å‰æ ‡ç­¾åœ¨æ‰€å®šä¹‰çš„å‘½åç©ºé—´ä¸­çš„xpathã€‚
+     * @param event äº‹ä»¶ã€‚
      */
     public void attribute(XmlStackDecorator<Object> context, String xpath, AttributeEvent event) throws XMLStreamException, IOException;
 }

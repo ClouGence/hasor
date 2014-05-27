@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 /**
- * Ä£°å×ÊÔ´¶ÁÈ¡Àà£¬¸ÃÀàÊÇÒ»¸ö³éÏóÀà¡£ÆäÊµÏÖÀà¾ö¶¨ÈçºÎ¶ÁÈ¡²»Í¬ĞÎÊ½µÄ×ÊÔ´¡£
+ * æ¨¡æ¿èµ„æºè¯»å–ç±»ï¼Œè¯¥ç±»æ˜¯ä¸€ä¸ªæŠ½è±¡ç±»ã€‚å…¶å®ç°ç±»å†³å®šå¦‚ä½•è¯»å–ä¸åŒå½¢å¼çš„èµ„æºã€‚
  * @version : 2011-9-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface AbstractTemplateObject {
     public final static String DefaultEncoding = "utf-8";
-    /**»ñÈ¡¸Ã¶ÔÏó×îºóĞŞ¸ÄÊ±¼ä¡£*/
+    /**è·å–è¯¥å¯¹è±¡æœ€åä¿®æ”¹æ—¶é—´ã€‚*/
     public long lastModified();
-    /**»ñÈ¡¶ÔÏóµÄ{@link Reader}£¬ÔÚ»ñÈ¡Ö®Ç°¿ÉÄÜĞèÒªµ÷ÓÃ{@link #openObject()}·½·¨´ò¿ª¸Ã¶ÔÏó¡£*/
+    /**è·å–å¯¹è±¡çš„{@link Reader}ï¼Œåœ¨è·å–ä¹‹å‰å¯èƒ½éœ€è¦è°ƒç”¨{@link #openObject()}æ–¹æ³•æ‰“å¼€è¯¥å¯¹è±¡ã€‚*/
     public Reader getReader(String encoding) throws IOException;
-    /**»ñÈ¡¶ÔÏóµÄ{@link InputStream}¡£*/
+    /**è·å–å¯¹è±¡çš„{@link InputStream}ã€‚*/
     public InputStream getInputStream() throws IOException;
-    /**´ò¿ª×ÊÔ´*/
+    /**æ‰“å¼€èµ„æº*/
     public void openObject();
-    /**¹Ø±Õ×ÊÔ´*/
+    /**å…³é—­èµ„æº*/
     public void closeObject();
 };

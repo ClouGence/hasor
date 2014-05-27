@@ -17,18 +17,18 @@ package net.hasor.jdbc.template;
 import java.sql.SQLException;
 import java.sql.Statement;
 /**
- * Í¨ÓÃµÄ»Øµ÷½Ó¿Ú¡£ÓÃÀ´Ö´ĞĞ»ùÓÚ JDBC {@link Statement}
- * ÉÏµÄÈÎÒâÊıÁ¿ÈÎÒâÀàĞÍÊı¾İ¿â²Ù×÷¡£
+ * é€šç”¨çš„å›è°ƒæ¥å£ã€‚ç”¨æ¥æ‰§è¡ŒåŸºäº JDBC {@link Statement}
+ * ä¸Šçš„ä»»æ„æ•°é‡ä»»æ„ç±»å‹æ•°æ®åº“æ“ä½œã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface StatementCallback<T> {
     /**
-     * Ö´ĞĞÒ»¸ö JDBC ²Ù×÷¡£¿ª·¢Õß²»ĞèÒª¹ØĞÄÊı¾İ¿âÁ¬½ÓµÄ×´Ì¬ºÍÊÂÎñ¡£
-     * @param stmt Ò»¸ö¿ÉÓÃµÄ Statement ¶ÔÏóÁ¬½Ó
-     * @return ·µ»Ø²Ù×÷Ö´ĞĞµÄ×îÖÕ½á¹û¡£
+     * æ‰§è¡Œä¸€ä¸ª JDBC æ“ä½œã€‚å¼€å‘è€…ä¸éœ€è¦å…³å¿ƒæ•°æ®åº“è¿æ¥çš„çŠ¶æ€å’Œäº‹åŠ¡ã€‚
+     * @param stmt ä¸€ä¸ªå¯ç”¨çš„ Statement å¯¹è±¡è¿æ¥
+     * @return è¿”å›æ“ä½œæ‰§è¡Œçš„æœ€ç»ˆç»“æœã€‚
      */
     public T doInStatement(Statement stmt) throws SQLException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
-* ¸ÃÀàÊÇ¸ºÔğ×°ÔØÓÃ»§È¨ÏŞµÄÀà£¬¸ÃÀàĞèÒªÊµÏÖ{@link SecurityAccess}½Ó¿Ú¡£
-* Í¨¹ı¸ÃÀà¿ÉÒÔ½«¶àÖÖÈ¨ÏŞÄ£ĞÍ¼¯³Éµ½Ò»Æğ¡£
+* è¯¥ç±»æ˜¯è´Ÿè´£è£…è½½ç”¨æˆ·æƒé™çš„ç±»ï¼Œè¯¥ç±»éœ€è¦å®ç°{@link SecurityAccess}æ¥å£ã€‚
+* é€šè¿‡è¯¥ç±»å¯ä»¥å°†å¤šç§æƒé™æ¨¡å‹é›†æˆåˆ°ä¸€èµ·ã€‚
 * @version : 2013-3-25
-* @author ÕÔÓÀ´º (zyc@byshell.org)
+* @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface SecAccess {
-    /**³öÏÖÍ¬ÃûÊ±µÄÅÅĞòË³Ğò¡££¨Ô½Ğ¡Ô½ÓÅÏÈ£©¡£*/
+    /**å‡ºç°åŒåæ—¶çš„æ’åºé¡ºåºã€‚ï¼ˆè¶Šå°è¶Šä¼˜å…ˆï¼‰ã€‚*/
     public int sort() default Integer.MAX_VALUE;
-    /**ÈÏÖ¤ÏµÍ³Ãû¡£*/
+    /**è®¤è¯ç³»ç»Ÿåã€‚*/
     public String authSystem();
 }

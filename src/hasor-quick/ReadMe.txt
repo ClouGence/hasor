@@ -1,53 +1,53 @@
 Hasor-Quick
 
----Aop ²å¼þ---
-    Í¨¹ý @Aop¡¢@GlobalAop Á½¸ö×¢½âÌá¹©ÉùÃ÷ Aop ÇÐÃæ¡£@Aop ¿ÉÒÔ±ê¼Çµ½
-·½·¨»òÀàÉÏ£¬¸ù¾Ý±ê¼ÇµÄÎ»ÖÃÀ´¾ö¶¨ Aop ÇÐÃæ×÷ÓÃµÄ·¶Î§¡£@GlobalAop ×¢½â
-ÊÇ±ê¼Çµ½À¹½ØÆ÷ÉÏµÄ£¬ÓÃÓÚÅäÖÃÈ«¾ÖÀ¹½ØÆ÷£¬À¹½Ø·¶Î§¿ÉÒÔÍ¨¹ý×¢½â½øÐÐÅäÖÃ¡£
-Ö§³Ö±í´ïÊ½ÅäÖÃ£»Ö§³Ö Aop Á´¡£
+---Aop æ’ä»¶---
+    é€šè¿‡ @Aopã€@GlobalAop ä¸¤ä¸ªæ³¨è§£æä¾›å£°æ˜Ž Aop åˆ‡é¢ã€‚@Aop å¯ä»¥æ ‡è®°åˆ°
+æ–¹æ³•æˆ–ç±»ä¸Šï¼Œæ ¹æ®æ ‡è®°çš„ä½ç½®æ¥å†³å®š Aop åˆ‡é¢ä½œç”¨çš„èŒƒå›´ã€‚@GlobalAop æ³¨è§£
+æ˜¯æ ‡è®°åˆ°æ‹¦æˆªå™¨ä¸Šçš„ï¼Œç”¨äºŽé…ç½®å…¨å±€æ‹¦æˆªå™¨ï¼Œæ‹¦æˆªèŒƒå›´å¯ä»¥é€šè¿‡æ³¨è§£è¿›è¡Œé…ç½®ã€‚
+æ”¯æŒè¡¨è¾¾å¼é…ç½®ï¼›æ”¯æŒ Aop é“¾ã€‚
 
----Bean ²å¼þ---
-    ¸Ã²å¼þ»á½«ËùÓÐ±ê¼ÇÁË @Bean µÄÀàÍ¨¹ý¡°ApiBinder.defineBean(...)¡±
-´úÂë½«Æä×¢²áµ½ Hasor ÈÝÆ÷ÖÐ¡£×¢²áÖ®ºó¿ÉÒÔÍ¨¹ý¡°AppContext.getBean¡±
-»ñÈ¡Bean¶ÔÏó¡£ÓÃ¹ý Spring µÄ»°Ò»¶¨²»»áÄ°Éú¡£
+---Bean æ’ä»¶---
+    è¯¥æ’ä»¶ä¼šå°†æ‰€æœ‰æ ‡è®°äº† @Bean çš„ç±»é€šè¿‡â€œApiBinder.defineBean(...)â€
+ä»£ç å°†å…¶æ³¨å†Œåˆ° Hasor å®¹å™¨ä¸­ã€‚æ³¨å†Œä¹‹åŽå¯ä»¥é€šè¿‡â€œAppContext.getBeanâ€
+èŽ·å–Beanå¯¹è±¡ã€‚ç”¨è¿‡ Spring çš„è¯ä¸€å®šä¸ä¼šé™Œç”Ÿã€‚
 
----Cache ²å¼þ---
-    ¸Ã²å¼þ±¾Éí²¢²»Ìá¹©»º´æ¹¦ÄÜ£¬µ«ÊÇÎªÊ¹ÓÃ»º´æÌá¹©ÁËÍ³Ò»µÄ½Ó¿Ú¡£»º´æ¹¦ÄÜ
-µÄÌá¹©ÐèÒªÊµÏÖ CacheCreator ½Ó¿Ú²¢Í¨¹ý±ê¼Ç @Creator ×¢½âÒÔÉúÐ§¡£
-Ê¹ÓÃ»º´æ¿ÉÒÔÍ¨¹ýÔÚÐèÒª»º´æµÄ·½·¨ÉÏÍ¨¹ý±ê¼Ç @NeedCache ×¢½âÒÔÆôÓÃ½á¹û»º´æ¡£
+---Cache æ’ä»¶---
+    è¯¥æ’ä»¶æœ¬èº«å¹¶ä¸æä¾›ç¼“å­˜åŠŸèƒ½ï¼Œä½†æ˜¯ä¸ºä½¿ç”¨ç¼“å­˜æä¾›äº†ç»Ÿä¸€çš„æŽ¥å£ã€‚ç¼“å­˜åŠŸèƒ½
+çš„æä¾›éœ€è¦å®žçŽ° CacheCreator æŽ¥å£å¹¶é€šè¿‡æ ‡è®° @Creator æ³¨è§£ä»¥ç”Ÿæ•ˆã€‚
+ä½¿ç”¨ç¼“å­˜å¯ä»¥é€šè¿‡åœ¨éœ€è¦ç¼“å­˜çš„æ–¹æ³•ä¸Šé€šè¿‡æ ‡è®° @NeedCache æ³¨è§£ä»¥å¯ç”¨ç»“æžœç¼“å­˜ã€‚
 
----Event ²å¼þ---
-    Í¨¹ý±ê¼Ç @Listener ×¢½âÉùÃ÷Ò»¸ö ¡°net.hasor.core.EventListener¡±ÀàÐÍµÄ
-ÊÂ¼þ¼àÌýÆ÷¡£Í¨¹ý¡°EventManager.doSync or .doAsync¡±¿ÉÒÔÒý·¢ÊÂ¼þ¡£
-Hasor ÖÐÊÂ¼þµÄ´¦Àí·ÖÎªÍ¬²½(Sync)ºÍÒì²½(Async)¡£
+---Event æ’ä»¶---
+    é€šè¿‡æ ‡è®° @Listener æ³¨è§£å£°æ˜Žä¸€ä¸ª â€œnet.hasor.core.EventListenerâ€ç±»åž‹çš„
+äº‹ä»¶ç›‘å¬å™¨ã€‚é€šè¿‡â€œEventManager.doSync or .doAsyncâ€å¯ä»¥å¼•å‘äº‹ä»¶ã€‚
+Hasor ä¸­äº‹ä»¶çš„å¤„ç†åˆ†ä¸ºåŒæ­¥(Sync)å’Œå¼‚æ­¥(Async)ã€‚
 
----Guice ²å¼þ---
-    Í¨¹ý @GuiceModule ×¢½â¿ÉÒÔ½«ÈÎÒâÒ»¸ö»ùÓÚ Guice ¿ª·¢µÄ¡°com.google.inject.Module¡±
-Ä£¿é¼ÓÈëµ½ Hasor ÖÐ×÷Îª Hasor µÄÒ»¸öÄ£¿é¡£
+---Guice æ’ä»¶---
+    é€šè¿‡ @GuiceModule æ³¨è§£å¯ä»¥å°†ä»»æ„ä¸€ä¸ªåŸºäºŽ Guice å¼€å‘çš„â€œcom.google.inject.Moduleâ€
+æ¨¡å—åŠ å…¥åˆ° Hasor ä¸­ä½œä¸º Hasor çš„ä¸€ä¸ªæ¨¡å—ã€‚
 
----Setting ²å¼þ---
-    Í¨¹ý @Settings ×¢½âÉùÃ÷Ò»¸öÅäÖÃÎÄ¼þ¸Ä±ä¼àÌýÆ÷¡£Hasor ÔÚÆô¶¯Ö®ºó»á³ÖÐø
-¼àÌýÅäÖÃÎÄ¼þÊÇ·ñ¸Ä±ä£¬Èç·¢Éú¸Ä±ä Hasor »á×Ô¶¯ÖØÔØËü¡£±ê¼ÇÁË @Settings ×¢½âµÄ
-SettingsListener¼àÌýÆ÷»áÊÕµ½Õâ¸öÍ¨Öª¡£
+---Setting æ’ä»¶---
+    é€šè¿‡ @Settings æ³¨è§£å£°æ˜Žä¸€ä¸ªé…ç½®æ–‡ä»¶æ”¹å˜ç›‘å¬å™¨ã€‚Hasor åœ¨å¯åŠ¨ä¹‹åŽä¼šæŒç»­
+ç›‘å¬é…ç½®æ–‡ä»¶æ˜¯å¦æ”¹å˜ï¼Œå¦‚å‘ç”Ÿæ”¹å˜ Hasor ä¼šè‡ªåŠ¨é‡è½½å®ƒã€‚æ ‡è®°äº† @Settings æ³¨è§£çš„
+SettingsListenerç›‘å¬å™¨ä¼šæ”¶åˆ°è¿™ä¸ªé€šçŸ¥ã€‚
 
----Controller ²å¼þ---
-    Í¨¹ý @Controller ×¢½âÌá¹©ÁË WebMVC ¿ª·¢ËùÐèµÄÖ§³Ö¡£¸Ã²å¼þ»¹Ìá¹©ÁËÇëÇóÏìÓ¦À¹½ØÆ÷¹¦ÄÜ¡£
-ËùÓÐ¿ØÖÆÆ÷¶¼±ØÐëÒªÇó¼Ì³Ð×Ô AbstractController ³éÏóÀà£¬Èç¹ûÄ³¸ö·½·¨²»Ïñ±»·¢²¼³É action£¬
-¿ÉÒÔÍ¨¹ý@ControllerIgnore ×¢½â»òÕßÅäÖÃ¡°hasor-web.controller.globalIgnore¡±Òþ²ØËüÃÇ¡£
+---Controller æ’ä»¶---
+    é€šè¿‡ @Controller æ³¨è§£æä¾›äº† WebMVC å¼€å‘æ‰€éœ€çš„æ”¯æŒã€‚è¯¥æ’ä»¶è¿˜æä¾›äº†è¯·æ±‚å“åº”æ‹¦æˆªå™¨åŠŸèƒ½ã€‚
+æ‰€æœ‰æŽ§åˆ¶å™¨éƒ½å¿…é¡»è¦æ±‚ç»§æ‰¿è‡ª AbstractController æŠ½è±¡ç±»ï¼Œå¦‚æžœæŸä¸ªæ–¹æ³•ä¸åƒè¢«å‘å¸ƒæˆ actionï¼Œ
+å¯ä»¥é€šè¿‡@ControllerIgnore æ³¨è§£æˆ–è€…é…ç½®â€œhasor-web.controller.globalIgnoreâ€éšè—å®ƒä»¬ã€‚
     
----Restful ²å¼þ---
-    Í¨¹ý @RestfulService ×¢½â·¢²¼ Restful ·þÎñµÄÖ§³Ö£¬Hasor µÄ restful ²Î¿¼ÁË JSR-311¡£
-@Any¡¢@AttributeParam¡¢@CookieParam¡¢@Get¡¢@Head¡¢@HeaderParam¡¢@HttpMethod¡¢@Options
-@Path¡¢@PathParam¡¢@Post¡¢@Produces¡¢@Put¡¢@QueryParam ÕâÐ©×¢½âÊÇÓÉÕâ¸ö²å¼þÌá¹©µÄ¡£
+---Restful æ’ä»¶---
+    é€šè¿‡ @RestfulService æ³¨è§£å‘å¸ƒ Restful æœåŠ¡çš„æ”¯æŒï¼ŒHasor çš„ restful å‚è€ƒäº† JSR-311ã€‚
+@Anyã€@AttributeParamã€@CookieParamã€@Getã€@Headã€@HeaderParamã€@HttpMethodã€@Options
+@Pathã€@PathParamã€@Postã€@Producesã€@Putã€@QueryParam è¿™äº›æ³¨è§£æ˜¯ç”±è¿™ä¸ªæ’ä»¶æä¾›çš„ã€‚
     
----Result ²å¼þ---
-    ¸Ã²å¼þÊÇ Controller¡¢ResultÁ½¸ö²å¼þµÄÀ©Õ¹²å¼þ£¬ËüÎªÉÏÊöÁ½¸ö²å¼þÌá¹©ÁË·µ»ØÖµ¼¯´¦Àí»úÖÆ¡£
-@Forword¡¢@Include¡¢@Json¡¢@Redirect ¾ÍÊÇËüÌá¹©µÄ£¬¿ª·¢Õß»¹¿ÉÒÔ×Ô¼ºÁíÍâ×Ô¶¨ÒåÀ©Õ¹¡£
+---Result æ’ä»¶---
+    è¯¥æ’ä»¶æ˜¯ Controllerã€Resultä¸¤ä¸ªæ’ä»¶çš„æ‰©å±•æ’ä»¶ï¼Œå®ƒä¸ºä¸Šè¿°ä¸¤ä¸ªæ’ä»¶æä¾›äº†è¿”å›žå€¼é›†å¤„ç†æœºåˆ¶ã€‚
+@Forwordã€@Includeã€@Jsonã€@Redirect å°±æ˜¯å®ƒæä¾›çš„ï¼Œå¼€å‘è€…è¿˜å¯ä»¥è‡ªå·±å¦å¤–è‡ªå®šä¹‰æ‰©å±•ã€‚
 
----Servlet3 ²å¼þ---
-    ¸Ã²å¼þÊÇÓÃÀ´Ö§³ÖServlet3.0 ¹æ·¶µÄÈí¼þ°ü£¬µ± Servlet ÈÝÆ÷²»Ö§³Ö Servlet3.0 ¹æ·¶Ê±¿ÉÒÔ
-Í¨¹ý¸Ã²å¼þÌá¹©µÄ @WebFilter¡¢@WebServlet¡¢@WebInitParam À´ÊµÏÖ Servlet3.0¡£
+---Servlet3 æ’ä»¶---
+    è¯¥æ’ä»¶æ˜¯ç”¨æ¥æ”¯æŒServlet3.0 è§„èŒƒçš„è½¯ä»¶åŒ…ï¼Œå½“ Servlet å®¹å™¨ä¸æ”¯æŒ Servlet3.0 è§„èŒƒæ—¶å¯ä»¥
+é€šè¿‡è¯¥æ’ä»¶æä¾›çš„ @WebFilterã€@WebServletã€@WebInitParam æ¥å®žçŽ° Servlet3.0ã€‚
 
----Resource ²å¼þ---
-    Í¨¹ýÕâ¸ö²å¼þ¿ÉÒÔ½«Î»ÓÚClassPath¡¢ZipµÈÎ»ÖÃÖÐµÄ×ÊÔ´ÓÃ×÷ Web ÇëÇóÏìÓ¦¡£²å¼þÊÇÒÔ
-Servlet ·½Ê½Ìá¹©£¬¿ª·¢ÕßÐèÒª×Ô¼º×¢²áËü¡£
+---Resource æ’ä»¶---
+    é€šè¿‡è¿™ä¸ªæ’ä»¶å¯ä»¥å°†ä½äºŽClassPathã€Zipç­‰ä½ç½®ä¸­çš„èµ„æºç”¨ä½œ Web è¯·æ±‚å“åº”ã€‚æ’ä»¶æ˜¯ä»¥
+Servlet æ–¹å¼æä¾›ï¼Œå¼€å‘è€…éœ€è¦è‡ªå·±æ³¨å†Œå®ƒã€‚

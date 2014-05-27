@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,27 @@
  */
 package org.more.xml;
 /**
- * ¸ÃÀàÔÚ{@link XmlParserKitManager}Àà£¬ÓÃÓÚ±ê¼ÇÃüÃû¿Õ¼äºÍxpathµÄ¶ÔÓ¦¹ØÏµ¡£
+ * è¯¥ç±»åœ¨{@link XmlParserKitManager}ç±»ï¼Œç”¨äºæ ‡è®°å‘½åç©ºé—´å’Œxpathçš„å¯¹åº”å…³ç³»ã€‚
  * @version 2010-9-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class NameSpace {
-    private String       uri   = null; //ÃüÃû¿Õ¼ä
+    private String       uri   = null; //å‘½åç©ºé—´
     private StringBuffer xpath = null; //xpath
     /***/
     public NameSpace(String uri, String xpath) {
         this.uri = uri;
         this.xpath = new StringBuffer(xpath);
     }
-    /**»ñÈ¡ÃüÃû¿Õ¼ä¡£*/
+    /**è·å–å‘½åç©ºé—´ã€‚*/
     public String getUri() {
         return uri;
     }
-    /**»ñÈ¡xpath¡£*/
+    /**è·å–xpathã€‚*/
     public String getXpath() {
         return this.xpath.toString();
     }
-    /**×·¼ÓxpathÒ»¸ö½Úµã¡£*/
+    /**è¿½åŠ xpathä¸€ä¸ªèŠ‚ç‚¹ã€‚*/
     void appendXPath(String name, boolean isAttribute) {
         if (this.xpath.indexOf("/") != this.xpath.length() - 1)
             this.xpath.append("/");
@@ -43,7 +43,7 @@ public class NameSpace {
             this.xpath.append("@");
         this.xpath.append(name);
     }
-    /**É¾³ıxpathµÄ×îºóÒ»¸ö½Úµã¡£*/
+    /**åˆ é™¤xpathçš„æœ€åä¸€ä¸ªèŠ‚ç‚¹ã€‚*/
     void removeXPath() {
         int index = this.xpath.lastIndexOf("/");
         index = (index == 0) ? 1 : index;

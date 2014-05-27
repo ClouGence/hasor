@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,44 +31,44 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-4-23
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SecuritySettings implements SecurityConfig {
-    private boolean                    enable;                        //Security_Enable                             :ÆôÓÃ½ûÓÃ
-    private boolean                    enableMethod;                  //Security_EnableMethod                       :·½·¨È¨ÏŞ¼ì²é
-    private boolean                    enableURL;                     //Security_EnableURL                          :URLÈ¨ÏŞ¼ì²é
-    private String                     authSessionCacheName;          //Security_AuthSessionCache                   :È¨ÏŞÊı¾İ»º´æÃû
-    private long                       authSessionTimeout;            //Security_AuthSessionTimeout                 :Session³¬Ê±Ê±¼ä
-    private long                       authSessionCacheDefaultTimeout; //Security_AuthSessionCache_Timeout          :AuthSessionCache£¬ÉèÖÃµÄ³¬Ê±Ê±¼ä.
-    private boolean                    authSessionCacheEternal;       //Security_AuthSessionCache_Eternal           :AuthSessionCache£¬»º´æÊÇ·ñÓÀÔ¶²»Ïú»Ù.
-    private boolean                    authSessionCacheAutoRenewal;   //Security_AuthSessionCache_AutoRenewal       :AuthSessionCache£¬Ã¿µ±·ÃÎÊ»º´æ¶ÔÏóÊ±ÊÇ·ñ×Ô¶¯¶ÔÆäĞøÔ¼£¨ĞøÔ¼Ê±¼äÍ¬¼ÓÈëÊ±»º´æ³¬Ê±Ê±¼ä£©.
-    private long                       authSessionCacheThreadSeep;    //Security_AuthSessionCache_ThreadSeep        :AuthSessionCache£¬»º´æ»ØÊÕÏß³Ì¹¤×÷µÄÊ±¼äÆµÂÊ(ºÁÃë).
-    private String                     loginURL;                      //µÇÈëµØÖ·
-    private String                     logoutURL;                     //µÇ³öµØÖ·
-    private String                     accountField;                  //ÕÊºÅ×Ö¶Î
-    private String                     passwordField;                 //ÃÜÂë×Ö¶Î
-    private String                     authField;                     //Ê¹ÓÃµÄÈÏÖ¤ÏµÍ³×Ö¶Î
-    private UriPatternMatcher          rulesDefault;                  //URLÈ¨ÏŞ¼ì²éÄ¬ÈÏ²ßÂÔÅäÖÃ                                       :Login|Logout|Guest|Permission|None
-    private List<UriPatternMatcher>    rulesIncludeList;              //°üº¬µ½È¨ÏŞ¼ì²éÂ·¾¶
-    private List<UriPatternMatcher>    rulesExcludeList;              //ÅÅ³ıÈ¨ÏŞ¼ì²é
-    private List<SecurityDispatcher>   dispatcherForwardList;         //×ª·¢ÅäÖÃ
-    private boolean                    guestEnable;                   //Security_Guest_Enable                       :ÊÇ·ñÆôÓÃÀ´±öÕÊºÅ
-    private String                     guestAuthSystem;               //Security_Guest_AuthSystem                   :À´±öÕÊºÅµÄÈÏÖ¤ÏµÍ³
-    private String                     guestAccount;                  //Security_Guest_Account                      :À´±öÕÊºÅ
-    private String                     guestPassword;                 //Security_Guest_Password                     :À´±öÕÊºÅÃÜÂë
-    private String                     guestUserCode;                 //Security_Guest_UserCode                     :À´±öÓÃ»§Code
-    private String[]                   guestPermissions;              //Security_Guest_Permissions                  :À´±öÕÊºÅÈ¨ÏŞ
-    private boolean                    cookieEnable;                  //Security_ClientCookie_Enable                :ÊÇ·ñÆôÓÃ¿Í»§¶ËcookieÀ´Ğ­ÖúÈÏÖ¤¡£
-    private boolean                    loseCookieOnStart;             //Security_ClientCookie_LoseCookieOnStart     :µ±ÏµÍ³Æô¶¯Ê±ÊÇ·ñÇ¿ÖÆËùÓĞ¿Í»§¶ËÒÑ¾­µÇÂ½¹ıµÄCookieĞÅÏ¢Ê§Ğ§
-    private String                     cookieName;                    //Security_ClientCookie_CookieName            :¿Í»§¶ËcookieÃû³Æ
-    private int                        cookieTimeout;                 //Security_ClientCookie_Timeout               :cookie³¬Ê±Ê±¼ä£¬µ¥Î»£ºÃë
-    private String                     cookieDomain;                  //Security_ClientCookie_Domain                :cookieµÄDomainÅäÖÃ£¬ÉèÖÃÕâ¸öÊôĞÔÓÃÀ´Ö§³Ö¿çÓò·ÃÎÊcookie¡££¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©
-    private String                     cookiePath;                    //Security_ClientCookie_Path                  :cookieµÄpathÊôĞÔ£¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©
-    private boolean                    cookieEncryptionEnable;        //Security_ClientCookie_Encryption_Enable     :ÊÇ·ñ¼ÓÃÜcookieÄÚÈİ
-    private String                     cookieEncryptionEncodeType;    //Security_ClientCookie_Encryption_EncodeType :cookieÄÚÈİ¼ÓÃÜ·½Ê½£¬DES,BAS64µÈµÈ.
-    private String                     cookieEncryptionKey;           //Security_ClientCookie_Encryption_Key        :cookieÄÚÈİ¼ÓÃÜÊ±Ê¹ÓÃµÄKey
-    private String                     cookieEncryptionScope;         //Security_ClientCookie_Encryption_Scope      :cookie¼ÓÃÜ·¶Î§£¨ALL,Security£©
-    private Map<String, Class<Digest>> digestMap;                     //Security_EncryptionDigestSet                :¼ÓÃÜËã·¨ÅäÖÃ
+    private boolean                    enable;                        //Security_Enable                             :å¯ç”¨ç¦ç”¨
+    private boolean                    enableMethod;                  //Security_EnableMethod                       :æ–¹æ³•æƒé™æ£€æŸ¥
+    private boolean                    enableURL;                     //Security_EnableURL                          :URLæƒé™æ£€æŸ¥
+    private String                     authSessionCacheName;          //Security_AuthSessionCache                   :æƒé™æ•°æ®ç¼“å­˜å
+    private long                       authSessionTimeout;            //Security_AuthSessionTimeout                 :Sessionè¶…æ—¶æ—¶é—´
+    private long                       authSessionCacheDefaultTimeout; //Security_AuthSessionCache_Timeout          :AuthSessionCacheï¼Œè®¾ç½®çš„è¶…æ—¶æ—¶é—´.
+    private boolean                    authSessionCacheEternal;       //Security_AuthSessionCache_Eternal           :AuthSessionCacheï¼Œç¼“å­˜æ˜¯å¦æ°¸è¿œä¸é”€æ¯.
+    private boolean                    authSessionCacheAutoRenewal;   //Security_AuthSessionCache_AutoRenewal       :AuthSessionCacheï¼Œæ¯å½“è®¿é—®ç¼“å­˜å¯¹è±¡æ—¶æ˜¯å¦è‡ªåŠ¨å¯¹å…¶ç»­çº¦ï¼ˆç»­çº¦æ—¶é—´åŒåŠ å…¥æ—¶ç¼“å­˜è¶…æ—¶æ—¶é—´ï¼‰.
+    private long                       authSessionCacheThreadSeep;    //Security_AuthSessionCache_ThreadSeep        :AuthSessionCacheï¼Œç¼“å­˜å›æ”¶çº¿ç¨‹å·¥ä½œçš„æ—¶é—´é¢‘ç‡(æ¯«ç§’).
+    private String                     loginURL;                      //ç™»å…¥åœ°å€
+    private String                     logoutURL;                     //ç™»å‡ºåœ°å€
+    private String                     accountField;                  //å¸å·å­—æ®µ
+    private String                     passwordField;                 //å¯†ç å­—æ®µ
+    private String                     authField;                     //ä½¿ç”¨çš„è®¤è¯ç³»ç»Ÿå­—æ®µ
+    private UriPatternMatcher          rulesDefault;                  //URLæƒé™æ£€æŸ¥é»˜è®¤ç­–ç•¥é…ç½®                                       :Login|Logout|Guest|Permission|None
+    private List<UriPatternMatcher>    rulesIncludeList;              //åŒ…å«åˆ°æƒé™æ£€æŸ¥è·¯å¾„
+    private List<UriPatternMatcher>    rulesExcludeList;              //æ’é™¤æƒé™æ£€æŸ¥
+    private List<SecurityDispatcher>   dispatcherForwardList;         //è½¬å‘é…ç½®
+    private boolean                    guestEnable;                   //Security_Guest_Enable                       :æ˜¯å¦å¯ç”¨æ¥å®¾å¸å·
+    private String                     guestAuthSystem;               //Security_Guest_AuthSystem                   :æ¥å®¾å¸å·çš„è®¤è¯ç³»ç»Ÿ
+    private String                     guestAccount;                  //Security_Guest_Account                      :æ¥å®¾å¸å·
+    private String                     guestPassword;                 //Security_Guest_Password                     :æ¥å®¾å¸å·å¯†ç 
+    private String                     guestUserCode;                 //Security_Guest_UserCode                     :æ¥å®¾ç”¨æˆ·Code
+    private String[]                   guestPermissions;              //Security_Guest_Permissions                  :æ¥å®¾å¸å·æƒé™
+    private boolean                    cookieEnable;                  //Security_ClientCookie_Enable                :æ˜¯å¦å¯ç”¨å®¢æˆ·ç«¯cookieæ¥ååŠ©è®¤è¯ã€‚
+    private boolean                    loseCookieOnStart;             //Security_ClientCookie_LoseCookieOnStart     :å½“ç³»ç»Ÿå¯åŠ¨æ—¶æ˜¯å¦å¼ºåˆ¶æ‰€æœ‰å®¢æˆ·ç«¯å·²ç»ç™»é™†è¿‡çš„Cookieä¿¡æ¯å¤±æ•ˆ
+    private String                     cookieName;                    //Security_ClientCookie_CookieName            :å®¢æˆ·ç«¯cookieåç§°
+    private int                        cookieTimeout;                 //Security_ClientCookie_Timeout               :cookieè¶…æ—¶æ—¶é—´ï¼Œå•ä½ï¼šç§’
+    private String                     cookieDomain;                  //Security_ClientCookie_Domain                :cookieçš„Domainé…ç½®ï¼Œè®¾ç½®è¿™ä¸ªå±æ€§ç”¨æ¥æ”¯æŒè·¨åŸŸè®¿é—®cookieã€‚ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰
+    private String                     cookiePath;                    //Security_ClientCookie_Path                  :cookieçš„pathå±æ€§ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰
+    private boolean                    cookieEncryptionEnable;        //Security_ClientCookie_Encryption_Enable     :æ˜¯å¦åŠ å¯†cookieå†…å®¹
+    private String                     cookieEncryptionEncodeType;    //Security_ClientCookie_Encryption_EncodeType :cookieå†…å®¹åŠ å¯†æ–¹å¼ï¼ŒDES,BAS64ç­‰ç­‰.
+    private String                     cookieEncryptionKey;           //Security_ClientCookie_Encryption_Key        :cookieå†…å®¹åŠ å¯†æ—¶ä½¿ç”¨çš„Key
+    private String                     cookieEncryptionScope;         //Security_ClientCookie_Encryption_Scope      :cookieåŠ å¯†èŒƒå›´ï¼ˆALL,Securityï¼‰
+    private Map<String, Class<Digest>> digestMap;                     //Security_EncryptionDigestSet                :åŠ å¯†ç®—æ³•é…ç½®
     //
     //
     public void onLoadConfig(Settings newConfig) {
@@ -81,7 +81,7 @@ public class SecuritySettings implements SecurityConfig {
         }
         //
         this.authSessionCacheName = newConfig.getString(Security_AuthSessionCache);
-        this.authSessionTimeout = newConfig.getLong(Security_AuthSessionTimeout); //Session³¬Ê±Ê±¼ä
+        this.authSessionTimeout = newConfig.getLong(Security_AuthSessionTimeout); //Sessionè¶…æ—¶æ—¶é—´
         //
         this.loginURL = newConfig.getString(Security_LoginURL);
         this.logoutURL = newConfig.getString(Security_LogoutURL);
@@ -89,7 +89,7 @@ public class SecuritySettings implements SecurityConfig {
         this.passwordField = newConfig.getString(Security_LoginFormData_PasswordField);
         this.authField = newConfig.getString(Security_LoginFormData_AuthField);
         //
-        XmlProperty defaultRule = newConfig.getXmlProperty(Security_Rules_DefaultModel); //URLÈ¨ÏŞ¼ì²éÄ¬ÈÏ²ßÂÔÅäÖÃ
+        XmlProperty defaultRule = newConfig.getXmlProperty(Security_Rules_DefaultModel); //URLæƒé™æ£€æŸ¥é»˜è®¤ç­–ç•¥é…ç½®
         Map<String, String> itemAtt = defaultRule.getAttributeMap();
         itemAtt = (itemAtt == null) ? new HashMap<String, String>() : itemAtt;
         String modeType = itemAtt.get("mode");
@@ -97,37 +97,37 @@ public class SecuritySettings implements SecurityConfig {
         UriPatternType patternType = StringConvertUtils.changeType(modeType, UriPatternType.class, UriPatternType.None);
         this.rulesDefault = UriPatternType.get(patternType, "(Default)", permissionCodes);
         Hasor.warning("rules.defaultRule ->%s", this.rulesDefault);
-        XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //°üº¬ÔÚÈ¨ÏŞ¼ì²é·¶³ëµÄURLÅäÖÃ
+        XmlProperty rulesIncludes = newConfig.getXmlProperty(Security_Rules_Includes); //åŒ…å«åœ¨æƒé™æ£€æŸ¥èŒƒç•´çš„URLé…ç½®
         this.rulesIncludeList = new ArrayList<UriPatternMatcher>();
         this.readIncludeRules(rulesIncludes);
-        XmlProperty rulesExcludes = newConfig.getXmlProperty(Security_Rules_Excludes); //ÅÅ³ıÈ¨ÏŞ¼ì²é·¶³ëµÄURLÅäÖÃ
+        XmlProperty rulesExcludes = newConfig.getXmlProperty(Security_Rules_Excludes); //æ’é™¤æƒé™æ£€æŸ¥èŒƒç•´çš„URLé…ç½®
         this.rulesExcludeList = new ArrayList<UriPatternMatcher>();
         this.readExcludesRules(rulesExcludes);
         // 
-        XmlProperty dispatcherXml = newConfig.getXmlProperty(Security_Forwards); //×ª·¢ÅäÖÃ
+        XmlProperty dispatcherXml = newConfig.getXmlProperty(Security_Forwards); //è½¬å‘é…ç½®
         this.dispatcherForwardList = new ArrayList<SecurityDispatcher>();
         this.readDispatcherForward(dispatcherXml);
         //
-        this.guestEnable = newConfig.getBoolean(Security_Guest_Enable); //ÊÇ·ñÆôÓÃÀ´±öÕÊºÅ
-        this.guestAuthSystem = newConfig.getString(Security_Guest_AuthSystem); //À´±öÕÊºÅµÄÈÏÖ¤ÏµÍ³ guest.authSystem
-        this.guestAccount = newConfig.getString(Security_Guest_Account); //À´±öÕÊºÅ
-        this.guestPassword = newConfig.getString(Security_Guest_Password); //À´±öÕÊºÅÃÜÂë
-        this.guestUserCode = newConfig.getString(Security_Guest_UserCode); //À´±öÓÃ»§Code
-        String guestPermissions = newConfig.getString(Security_Guest_Permissions); //À´±öÕÊºÅÈ¨ÏŞ
+        this.guestEnable = newConfig.getBoolean(Security_Guest_Enable); //æ˜¯å¦å¯ç”¨æ¥å®¾å¸å·
+        this.guestAuthSystem = newConfig.getString(Security_Guest_AuthSystem); //æ¥å®¾å¸å·çš„è®¤è¯ç³»ç»Ÿ guest.authSystem
+        this.guestAccount = newConfig.getString(Security_Guest_Account); //æ¥å®¾å¸å·
+        this.guestPassword = newConfig.getString(Security_Guest_Password); //æ¥å®¾å¸å·å¯†ç 
+        this.guestUserCode = newConfig.getString(Security_Guest_UserCode); //æ¥å®¾ç”¨æˆ·Code
+        String guestPermissions = newConfig.getString(Security_Guest_Permissions); //æ¥å®¾å¸å·æƒé™
         this.guestPermissions = (guestPermissions != null) ? guestPermissions.split(",") : new String[0];
         //
-        this.cookieEnable = newConfig.getBoolean(Security_ClientCookie_Enable); //ÊÇ·ñÆôÓÃ¿Í»§¶ËcookieÀ´Ğ­ÖúÈÏÖ¤¡£
-        this.loseCookieOnStart = newConfig.getBoolean(Security_ClientCookie_LoseCookieOnStart);//µ±ÏµÍ³Æô¶¯Ê±ÊÇ·ñÇ¿ÖÆËùÓĞ¿Í»§¶ËÒÑ¾­µÇÂ½¹ıµÄCookieĞÅÏ¢Ê§Ğ§
-        this.cookieName = newConfig.getString(Security_ClientCookie_CookieName); //¿Í»§¶ËcookieÃû³Æ
-        this.cookieTimeout = newConfig.getInteger(Security_ClientCookie_Timeout); //cookie³¬Ê±Ê±¼ä£¬µ¥Î»£ºÃë
-        this.cookieDomain = newConfig.getString(Security_ClientCookie_Domain); //cookieµÄDomainÅäÖÃ£¬ÉèÖÃÕâ¸öÊôĞÔÓÃÀ´Ö§³Ö¿çÓò·ÃÎÊcookie¡££¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©
-        this.cookiePath = newConfig.getString(Security_ClientCookie_Path);//cookieµÄpathÊôĞÔ£¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©
-        this.cookieEncryptionEnable = newConfig.getBoolean(Security_ClientCookie_Encryption_Enable); //ÊÇ·ñ¼ÓÃÜcookieÄÚÈİ
-        this.cookieEncryptionEncodeType = newConfig.getString(Security_ClientCookie_Encryption_EncodeType); //cookieÄÚÈİ¼ÓÃÜ·½Ê½£¬DES,BAS64µÈµÈ.
-        this.cookieEncryptionKey = newConfig.getString(Security_ClientCookie_Encryption_Key); //cookieÄÚÈİ¼ÓÃÜÊ±Ê¹ÓÃµÄKey
-        this.cookieEncryptionScope = newConfig.getString(Security_ClientCookie_Encryption_Scope); //scope¼ÓÃÜ·¶Î§
+        this.cookieEnable = newConfig.getBoolean(Security_ClientCookie_Enable); //æ˜¯å¦å¯ç”¨å®¢æˆ·ç«¯cookieæ¥ååŠ©è®¤è¯ã€‚
+        this.loseCookieOnStart = newConfig.getBoolean(Security_ClientCookie_LoseCookieOnStart);//å½“ç³»ç»Ÿå¯åŠ¨æ—¶æ˜¯å¦å¼ºåˆ¶æ‰€æœ‰å®¢æˆ·ç«¯å·²ç»ç™»é™†è¿‡çš„Cookieä¿¡æ¯å¤±æ•ˆ
+        this.cookieName = newConfig.getString(Security_ClientCookie_CookieName); //å®¢æˆ·ç«¯cookieåç§°
+        this.cookieTimeout = newConfig.getInteger(Security_ClientCookie_Timeout); //cookieè¶…æ—¶æ—¶é—´ï¼Œå•ä½ï¼šç§’
+        this.cookieDomain = newConfig.getString(Security_ClientCookie_Domain); //cookieçš„Domainé…ç½®ï¼Œè®¾ç½®è¿™ä¸ªå±æ€§ç”¨æ¥æ”¯æŒè·¨åŸŸè®¿é—®cookieã€‚ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰
+        this.cookiePath = newConfig.getString(Security_ClientCookie_Path);//cookieçš„pathå±æ€§ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰
+        this.cookieEncryptionEnable = newConfig.getBoolean(Security_ClientCookie_Encryption_Enable); //æ˜¯å¦åŠ å¯†cookieå†…å®¹
+        this.cookieEncryptionEncodeType = newConfig.getString(Security_ClientCookie_Encryption_EncodeType); //cookieå†…å®¹åŠ å¯†æ–¹å¼ï¼ŒDES,BAS64ç­‰ç­‰.
+        this.cookieEncryptionKey = newConfig.getString(Security_ClientCookie_Encryption_Key); //cookieå†…å®¹åŠ å¯†æ—¶ä½¿ç”¨çš„Key
+        this.cookieEncryptionScope = newConfig.getString(Security_ClientCookie_Encryption_Scope); //scopeåŠ å¯†èŒƒå›´
         //
-        XmlProperty encryptionDigestXml = newConfig.getXmlProperty(Security_EncryptionDigestSet); //¼ÓÃÜËã·¨ÅäÖÃ
+        XmlProperty encryptionDigestXml = newConfig.getXmlProperty(Security_EncryptionDigestSet); //åŠ å¯†ç®—æ³•é…ç½®
         this.digestMap = new HashMap<String, Class<Digest>>();
         this.readCodeDigest(encryptionDigestXml);
     }

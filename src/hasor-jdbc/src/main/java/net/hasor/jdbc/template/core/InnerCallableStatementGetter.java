@@ -5,7 +5,7 @@ import org.more.util.ClassUtils;
 /**
  * 
  * @version : 2014-3-31
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 class InnerCallableStatementGetter {
     public static Object getValue(CallableStatement cs, int index, Class<?> requiredType) throws SQLException {

@@ -4630,7 +4630,7 @@ public class ArrayUtils {
         }
         return result;
     }
-    /**删除数组中空元素*/
+    /**鍒犻櫎鏁扮粍涓┖鍏冪礌*/
     public static Object[] clearNull(Object[] arr) {
         ArrayList<Object> list = new ArrayList<Object>();
         if (arr != null)

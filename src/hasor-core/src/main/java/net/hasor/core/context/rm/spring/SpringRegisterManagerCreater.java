@@ -43,14 +43,14 @@
 ///**
 // * 
 // * @version : 2014-5-10
-// * @author ÕÔÓÀ´º (zyc@byshell.org)
+// * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 // */
 //public class SpringRegisterManagerCreater implements RegisterManagerCreater {
 //    public RegisterManager create(Environment env) {
 //        return new SpringRegisterManager();
 //    }
 //}
-///*RegisterManager½Ó¿ÚÊµÏÖ*/
+///*RegisterManageræ¥å£å®ç°*/
 //class SpringRegisterManager implements RegisterManager, ContextInitializeListener {
 //    //
 //    /*-----------------------------------------------------------------Collect GuiceTypeRegisters*/
@@ -75,7 +75,7 @@
 //        for (SpringTypeRegister<?> tempItem : tempRegisterList) {
 //            SpringTypeRegister<Object> register = (SpringTypeRegister<Object>) tempItem;
 //            if (ifAnonymity(register)) {
-//                /*¶àÒ»²ãÅĞ¶Ï·ÀÖ¹ÏàÍ¬µÄÀàĞÍµÄÄäÃû×¢²áÖØ¸´×¢²á*/
+//                /*å¤šä¸€å±‚åˆ¤æ–­é˜²æ­¢ç›¸åŒçš„ç±»å‹çš„åŒ¿åæ³¨å†Œé‡å¤æ³¨å†Œ*/
 //                Class<?> bindType = register.getType();
 //                if (anonymityTypes.contains(bindType) == true)
 //                    continue;
@@ -92,7 +92,7 @@
 //        //
 //        this.springBuilder = new SpringBeanBuilder(spring);
 //    }
-//    /*²âÊÔregisterÊÇ·ñÎªÄäÃûµÄ*/
+//    /*æµ‹è¯•registeræ˜¯å¦ä¸ºåŒ¿åçš„*/
 //    private boolean ifAnonymity(SpringTypeRegister<Object> register) {
 //        return StringUtils.isBlank(register.getName());
 //    }
@@ -100,15 +100,15 @@
 //        AnnotatedGenericBeanDefinition define = new AnnotatedGenericBeanDefinition(register.getType());
 //        define.set
 //        //        
-//        //        //1.°ó¶¨ÀàĞÍ
-//        //        //2.°ó¶¨Ãû³Æ
+//        //        //1.ç»‘å®šç±»å‹
+//        //        //2.ç»‘å®šåç§°
 //        //        boolean haveName = false;
 //        //        String name = register.getName();
 //        //        if (!StringUtils.isBlank(name)) {
 //        //            linkedBinding = annoBinding.annotatedWith(Names.named(name));
 //        //            haveName = true;
 //        //        }
-//        //        //3.°ó¶¨ÊµÏÖ
+//        //        //3.ç»‘å®šå®ç°
 //        //        if (register.getProvider() != null)
 //        //            scopeBinding = linkedBinding.toProvider(new GuiceProvider<Object>(register.getProvider()));
 //        //        else if (register.getImplConstructor() != null)
@@ -117,14 +117,14 @@
 //        //            scopeBinding = linkedBinding.to(register.getImplType());
 //        //        else {
 //        //            if (haveName == true)
-//        //                scopeBinding = linkedBinding.to(register.getType());/*×Ô¼º°ó¶¨×Ô¼º*/
+//        //                scopeBinding = linkedBinding.to(register.getType());/*è‡ªå·±ç»‘å®šè‡ªå·±*/
 //        //        }
-//        //        //4.´¦Àíµ¥Àı
+//        //        //4.å¤„ç†å•ä¾‹
 //        //        if (register.isSingleton()) {
 //        //            scopeBinding.asEagerSingleton();
-//        //            return;/*µÚÎå²½²»½øĞĞ´¦Àí*/
+//        //            return;/*ç¬¬äº”æ­¥ä¸è¿›è¡Œå¤„ç†*/
 //        //        }
-//        //        //5.°ó¶¨×÷ÓÃÓò
+//        //        //5.ç»‘å®šä½œç”¨åŸŸ
 //        //        Scope scope = register.getScope();
 //        //        if (scope != null)
 //        //            scopeBinding.in(new GuiceScope(scope));
@@ -136,7 +136,7 @@
 //        return this.springBuilder;
 //    }
 //}
-///**ÓÃÀ´´´½¨Bean¡¢²éÕÒBean*/
+///**ç”¨æ¥åˆ›å»ºBeanã€æŸ¥æ‰¾Bean*/
 //class SpringBeanBuilder implements BeanBuilder {
 //    private AbstractApplicationContext spring;
 //    //

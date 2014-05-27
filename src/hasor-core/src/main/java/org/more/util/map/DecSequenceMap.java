@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,22 @@ import java.util.List;
 import java.util.Map;
 import org.more.util.MergeUtils;
 /**
- * ¿ÉÒÔ½«¶à¸öMapºÏ²¢³ÉÒ»¸öMap¶ÔÏó¸øÓè²Ù×÷¡£
+ * å¯ä»¥å°†å¤šä¸ªMapåˆå¹¶æˆä¸€ä¸ªMapå¯¹è±¡ç»™äºˆæ“ä½œã€‚
  * @version : 2012-2-23
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     private volatile SimpleSet<K, T> entrySet = null;
     //
     //
-    /** ´´½¨DecSequenceMap¶ÔÏó£¬¸ù¾İ{@link #DecSequenceMap(boolean) DecSequenceMap(true)}¹æÔò½øĞĞ³õÊ¼»¯¡£*/
+    /** åˆ›å»ºDecSequenceMapå¯¹è±¡ï¼Œæ ¹æ®{@link #DecSequenceMap(boolean) DecSequenceMap(true)}è§„åˆ™è¿›è¡Œåˆå§‹åŒ–ã€‚*/
     public DecSequenceMap() {
         this(true);
     }
     /**
-     * ´´½¨DecSequenceMap¶ÔÏó¡£initMap²ÎÊı±íÊ¾ÊÇ·ñÎªĞòÁĞÌí¼ÓÒ»¸öÄ¬ÈÏµÄ³õÊ¼Map¡£
-     * @param initMap true±íÊ¾×Ô¶¯¼ÓÈëÒ»¸ö³õÊ¼Map×÷ÎªµÚÒ»¸öÔªËØ£¬·ñÔòDecSequenceMapÖĞÃ»ÓĞÈÎºÎ³ÉÔ±¡£
-     *      ³õÊ¼MapµÄ´´½¨ÊÇÍ¨¹ıÊÜ±£»¤µÄ·½·¨{@link #initMap()}·½·¨´´½¨¡£
+     * åˆ›å»ºDecSequenceMapå¯¹è±¡ã€‚initMapå‚æ•°è¡¨ç¤ºæ˜¯å¦ä¸ºåºåˆ—æ·»åŠ ä¸€ä¸ªé»˜è®¤çš„åˆå§‹Mapã€‚
+     * @param initMap trueè¡¨ç¤ºè‡ªåŠ¨åŠ å…¥ä¸€ä¸ªåˆå§‹Mapä½œä¸ºç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œå¦åˆ™DecSequenceMapä¸­æ²¡æœ‰ä»»ä½•æˆå‘˜ã€‚
+     *      åˆå§‹Mapçš„åˆ›å»ºæ˜¯é€šè¿‡å—ä¿æŠ¤çš„æ–¹æ³•{@link #initMap()}æ–¹æ³•åˆ›å»ºã€‚
      */
     public DecSequenceMap(boolean initMap) {
         if (initMap) {
@@ -50,18 +50,18 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         }
     }
     /**
-     * ´´½¨DecSequenceMap¶ÔÏó¡£
-     * @param entryMap ²ÎÊı±íÊ¾ÔÚ³õÊ¼»¯Ê±ºò£¬½«²ÎÊı±íÊ¾µÄMap¶ÔÏó×÷ÎªÄ¬ÈÏ³õÊ¼Map¡£
-     *      Èç¹û²ÎÊıÎª¿ÕÔò¸ù¾İ{@link #DecSequenceMap(boolean) DecSequenceMap(true)}¹æÔò½øĞĞ³õÊ¼»¯¡£
+     * åˆ›å»ºDecSequenceMapå¯¹è±¡ã€‚
+     * @param entryMap å‚æ•°è¡¨ç¤ºåœ¨åˆå§‹åŒ–æ—¶å€™ï¼Œå°†å‚æ•°è¡¨ç¤ºçš„Mapå¯¹è±¡ä½œä¸ºé»˜è®¤åˆå§‹Mapã€‚
+     *      å¦‚æœå‚æ•°ä¸ºç©ºåˆ™æ ¹æ®{@link #DecSequenceMap(boolean) DecSequenceMap(true)}è§„åˆ™è¿›è¡Œåˆå§‹åŒ–ã€‚
      */
     public DecSequenceMap(Map<K, T> entryMap) {
         this(entryMap, true);
     }
     /**
-     * ´´½¨DecSequenceMap¶ÔÏó¡£Ê¹ÓÃentryMap¡¢initMap²ÎÊıÍ¬Ê±×÷ÓÃ³õÊ¼»¯¡£
-     * @param entryMap ²ÎÊı±íÊ¾ÔÚ³õÊ¼»¯Ê±ºò£¬½«²ÎÊı±íÊ¾µÄMap¶ÔÏó×÷ÎªÄ¬ÈÏ³õÊ¼µÚÒ»¸öÔªËØ¡£
-     *      Èç¹û²ÎÊıÎª¿ÕÔò¸ù¾İinitMap²ÎÊıÖµÀ´¾ö¶¨³õÊ¼»¯¹æÔò¡£
-     * @param initMap ¸ÃÖµÎªtrue±íÊ¾Ê¹ÓÃ{@link #initMap()}·½·¨´´½¨Ò»¸öMap×÷ÎªµÚÒ»¸öÔªËØ£¬·ñÔòDecSequenceMapÖĞÃ»ÓĞÈÎºÎ³ÉÔ±¡£
+     * åˆ›å»ºDecSequenceMapå¯¹è±¡ã€‚ä½¿ç”¨entryMapã€initMapå‚æ•°åŒæ—¶ä½œç”¨åˆå§‹åŒ–ã€‚
+     * @param entryMap å‚æ•°è¡¨ç¤ºåœ¨åˆå§‹åŒ–æ—¶å€™ï¼Œå°†å‚æ•°è¡¨ç¤ºçš„Mapå¯¹è±¡ä½œä¸ºé»˜è®¤åˆå§‹ç¬¬ä¸€ä¸ªå…ƒç´ ã€‚
+     *      å¦‚æœå‚æ•°ä¸ºç©ºåˆ™æ ¹æ®initMapå‚æ•°å€¼æ¥å†³å®šåˆå§‹åŒ–è§„åˆ™ã€‚
+     * @param initMap è¯¥å€¼ä¸ºtrueè¡¨ç¤ºä½¿ç”¨{@link #initMap()}æ–¹æ³•åˆ›å»ºä¸€ä¸ªMapä½œä¸ºç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œå¦åˆ™DecSequenceMapä¸­æ²¡æœ‰ä»»ä½•æˆå‘˜ã€‚
      */
     public DecSequenceMap(Map<K, T> entryMap, boolean initMap) {
         this(initMap);
@@ -78,27 +78,27 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
             this.entrySet = this.createSet();
         return this.entrySet;
     }
-    /**´´½¨{@link SimpleSet}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link SimpleSet}å¯¹è±¡ã€‚*/
     protected SimpleSet<K, T> createSet() {
         return new SimpleSet<K, T>();
     }
-    /**°´ÕÕË³Ğò¼ÓÈëÒ»¸öMapµ½ĞòÁĞÖĞ¡£*/
+    /**æŒ‰ç…§é¡ºåºåŠ å…¥ä¸€ä¸ªMapåˆ°åºåˆ—ä¸­ã€‚*/
     public void addMap(Map<K, T> newMap) {
         entrySet().addMap(newMap);
     }
-    /**°´ÕÕÖ¸¶¨Ë³Ğò²åÈëÒ»¸öMapµ½ĞòÁĞÖĞ¡£*/
+    /**æŒ‰ç…§æŒ‡å®šé¡ºåºæ’å…¥ä¸€ä¸ªMapåˆ°åºåˆ—ä¸­ã€‚*/
     public void addMap(int index, Map<K, T> newMap) {
         entrySet().addMap(index, newMap);
     }
-    /**É¾³ıÒ»¸ömap*/
+    /**åˆ é™¤ä¸€ä¸ªmap*/
     public void removeMap(int index) {
         entrySet().removeMap(index);
     }
-    /**É¾³ıÒ»¸ömap*/
+    /**åˆ é™¤ä¸€ä¸ªmap*/
     public void removeMap(Map<K, T> newMap) {
         entrySet().removeMap(newMap);
     }
-    /**É¾³ıËùÓĞÒÑ¾­Ìí¼ÓµÄmap*/
+    /**åˆ é™¤æ‰€æœ‰å·²ç»æ·»åŠ çš„map*/
     public void removeAllMap() {
         if (entrySet().isEmpty() == false)
             entrySet().clear();
@@ -106,14 +106,14 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     public List<Map<K, T>> elementMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     };
-    /**È·ÈÏKËùÔÚµÄMap*/
+    /**ç¡®è®¤Kæ‰€åœ¨çš„Map*/
     public Map<K, T> keyAt(K key) {
         for (Map<K, T> e : this.elementMapList())
             if (e.containsKey(key))
                 return e;
         return null;
     }
-    /**È·ÈÏTËùÔÚµÄMap*/
+    /**ç¡®è®¤Tæ‰€åœ¨çš„Map*/
     public Map<K, T> valueAt(T value) {
         for (Map<K, T> e : this.elementMapList())
             if (e.containsValue(value))

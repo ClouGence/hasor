@@ -62,24 +62,24 @@ import org.more.util.ArrayUtils;
 import org.more.util.IOUtils;
 import org.more.util.ResourcesUtils;
 /**
- * Êı¾İ¿â²Ù×÷Ä£°å·½·¨¡£
+ * æ•°æ®åº“æ“ä½œæ¨¡æ¿æ–¹æ³•ã€‚
  * @version : 2013-10-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
-    /*ÊÇ·ñºöÂÔ³öÏÖµÄ SQL ¾¯¸æ*/
+    /*æ˜¯å¦å¿½ç•¥å‡ºç°çš„ SQL è­¦å‘Š*/
     private boolean ignoreWarnings         = true;
-    /*JDBC²éÑ¯ºÍ´Ó½á¹û¼¯ÀïÃæÃ¿´ÎÈ¡ÉèÖÃĞĞÊı£¬Ñ­»·È¥È¡£¬Ö±µ½È¡Íê¡£ºÏÀíÉèÖÃ¸Ã²ÎÊı¿ÉÒÔ±ÜÃâÄÚ´æÒì³£¡£
-     * Èç¹ûÕâ¸ö±äÁ¿±»ÉèÖÃÎª·ÇÁãÖµ,Ëü½«±»ÓÃÓÚÉèÖÃ statements µÄ fetchSize ÊôĞÔ¡£*/
+    /*JDBCæŸ¥è¯¢å’Œä»ç»“æœé›†é‡Œé¢æ¯æ¬¡å–è®¾ç½®è¡Œæ•°ï¼Œå¾ªç¯å»å–ï¼Œç›´åˆ°å–å®Œã€‚åˆç†è®¾ç½®è¯¥å‚æ•°å¯ä»¥é¿å…å†…å­˜å¼‚å¸¸ã€‚
+     * å¦‚æœè¿™ä¸ªå˜é‡è¢«è®¾ç½®ä¸ºéé›¶å€¼,å®ƒå°†è¢«ç”¨äºè®¾ç½® statements çš„ fetchSize å±æ€§ã€‚*/
     private int     fetchSize              = 0;
-    /*´Ó JDBC ÖĞ¿ÉÒÔ²éÑ¯µÄ×î´óĞĞÊı¡£
-     * Èç¹ûÕâ¸ö±äÁ¿±»ÉèÖÃÎª·ÇÁãÖµ,Ëü½«±»ÓÃÓÚÉèÖÃ statements µÄ maxRows ÊôĞÔ¡£*/
+    /*ä» JDBC ä¸­å¯ä»¥æŸ¥è¯¢çš„æœ€å¤§è¡Œæ•°ã€‚
+     * å¦‚æœè¿™ä¸ªå˜é‡è¢«è®¾ç½®ä¸ºéé›¶å€¼,å®ƒå°†è¢«ç”¨äºè®¾ç½® statements çš„ maxRows å±æ€§ã€‚*/
     private int     maxRows                = 0;
-    /*´Ó JDBC ÖĞ¿ÉÒÔ²éÑ¯µÄ×î´óĞĞÊı¡£
-     * Èç¹ûÕâ¸ö±äÁ¿±»ÉèÖÃÎª·ÇÁãÖµ,Ëü½«±»ÓÃÓÚÉèÖÃ statements µÄ queryTimeout ÊôĞÔ¡£*/
+    /*ä» JDBC ä¸­å¯ä»¥æŸ¥è¯¢çš„æœ€å¤§è¡Œæ•°ã€‚
+     * å¦‚æœè¿™ä¸ªå˜é‡è¢«è®¾ç½®ä¸ºéé›¶å€¼,å®ƒå°†è¢«ç”¨äºè®¾ç½® statements çš„ queryTimeout å±æ€§ã€‚*/
     private int     queryTimeout           = 0;
-    /*µ±JDBC ½á¹û¼¯ÖĞÈç³öÏÖÏàÍ¬µÄÁĞÃû½ö½ö´óĞ¡Ğ´²»Í¬Ê±¡£ÊÇ·ñ±£Áô´óĞ¡Ğ´ÁĞÃûÃô¸Ğ¡£
-     * Èç¹ûÎª true ±íÊ¾Ãô¸Ğ£¬²¢ÇÒ½á¹û¼¯MapÖĞ±£ÁôÁ½¸ö¼ÇÂ¼¡£Èç¹ûÎª false Ôò±íÊ¾²»Ãô¸Ğ£¬Èç³öÏÖ³åÍ»ÁĞÃûºóÕß½«»á¸²¸ÇÇ°Õß¡£*/
+    /*å½“JDBC ç»“æœé›†ä¸­å¦‚å‡ºç°ç›¸åŒçš„åˆ—åä»…ä»…å¤§å°å†™ä¸åŒæ—¶ã€‚æ˜¯å¦ä¿ç•™å¤§å°å†™åˆ—åæ•æ„Ÿã€‚
+     * å¦‚æœä¸º true è¡¨ç¤ºæ•æ„Ÿï¼Œå¹¶ä¸”ç»“æœé›†Mapä¸­ä¿ç•™ä¸¤ä¸ªè®°å½•ã€‚å¦‚æœä¸º false åˆ™è¡¨ç¤ºä¸æ•æ„Ÿï¼Œå¦‚å‡ºç°å†²çªåˆ—ååè€…å°†ä¼šè¦†ç›–å‰è€…ã€‚*/
     private boolean resultsCaseInsensitive = false;
     //
     //
@@ -147,7 +147,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         IOUtils.copy(sqlReader, outWriter);
         this.execute(outWriter.toString());
     }
-    /** ÅĞ¶Ï±íÊÇ·ñÒÑ¾­´æÔÚ*/
+    /** åˆ¤æ–­è¡¨æ˜¯å¦å·²ç»å­˜åœ¨*/
     public boolean tableExist(final String name) throws SQLException {
         return this.execute(new ConnectionCallback<Boolean>() {
             public Boolean doInConnection(Connection con) throws SQLException {
@@ -162,24 +162,24 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T execute(ConnectionCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
-        DataSource ds = this.getDataSource();//»ñÈ¡Êı¾İÔ´
-        Connection con = DataSourceUtils.getConnection(ds);//ÉêÇë±¾µØÁ¬½Ó£¨ºÍµ±Ç°Ïß³Ì°ó¶¨µÄÁ¬½Ó£©
-        con = this.newProxyConnection(con, ds);//´úÀíÁ¬½Ó
+        DataSource ds = this.getDataSource();//è·å–æ•°æ®æº
+        Connection con = DataSourceUtils.getConnection(ds);//ç”³è¯·æœ¬åœ°è¿æ¥ï¼ˆå’Œå½“å‰çº¿ç¨‹ç»‘å®šçš„è¿æ¥ï¼‰
+        con = this.newProxyConnection(con, ds);//ä»£ç†è¿æ¥
         //
         try {
             return action.doInConnection(con);
         } catch (SQLException ex) {
             throw ex;
         } finally {
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//¹Ø±Õ»òÊÍ·ÅÁ¬½Ó
+            DataSourceUtils.releaseConnection(con, this.getDataSource());//å…³é—­æˆ–é‡Šæ”¾è¿æ¥
         }
     }
     public <T> T execute(StatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
-        DataSource ds = this.getDataSource();//»ñÈ¡Êı¾İÔ´
-        Connection con = DataSourceUtils.getConnection(ds);//ÉêÇë±¾µØÁ¬½Ó£¨ºÍµ±Ç°Ïß³Ì°ó¶¨µÄÁ¬½Ó£©
-        con = this.newProxyConnection(con, ds);//´úÀíÁ¬½Ó
+        DataSource ds = this.getDataSource();//è·å–æ•°æ®æº
+        Connection con = DataSourceUtils.getConnection(ds);//ç”³è¯·æœ¬åœ°è¿æ¥ï¼ˆå’Œå½“å‰çº¿ç¨‹ç»‘å®šçš„è¿æ¥ï¼‰
+        con = this.newProxyConnection(con, ds);//ä»£ç†è¿æ¥
         //
         Statement stmt = null;
         try {
@@ -194,7 +194,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             try {
                 stmt.close();
             } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//¹Ø±Õ»òÊÍ·ÅÁ¬½Ó
+            DataSourceUtils.releaseConnection(con, this.getDataSource());//å…³é—­æˆ–é‡Šæ”¾è¿æ¥
         }
     }
     public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws SQLException {
@@ -205,9 +205,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             Hasor.logDebug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
         //
-        DataSource ds = this.getDataSource();//»ñÈ¡Êı¾İÔ´
-        Connection con = DataSourceUtils.getConnection(ds);//ÉêÇë±¾µØÁ¬½Ó£¨ºÍµ±Ç°Ïß³Ì°ó¶¨µÄÁ¬½Ó£©
-        con = this.newProxyConnection(con, ds);//´úÀíÁ¬½Ó
+        DataSource ds = this.getDataSource();//è·å–æ•°æ®æº
+        Connection con = DataSourceUtils.getConnection(ds);//ç”³è¯·æœ¬åœ°è¿æ¥ï¼ˆå’Œå½“å‰çº¿ç¨‹ç»‘å®šçš„è¿æ¥ï¼‰
+        con = this.newProxyConnection(con, ds);//ä»£ç†è¿æ¥
         //
         PreparedStatement ps = null;
         try {
@@ -224,7 +224,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             try {
                 ps.close();
             } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//¹Ø±Õ»òÊÍ·ÅÁ¬½Ó
+            DataSourceUtils.releaseConnection(con, this.getDataSource());//å…³é—­æˆ–é‡Šæ”¾è¿æ¥
         }
     }
     public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException {
@@ -235,9 +235,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             Hasor.logDebug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
         //
-        DataSource ds = this.getDataSource();//»ñÈ¡Êı¾İÔ´
-        Connection con = DataSourceUtils.getConnection(ds);//ÉêÇë±¾µØÁ¬½Ó£¨ºÍµ±Ç°Ïß³Ì°ó¶¨µÄÁ¬½Ó£©
-        con = this.newProxyConnection(con, ds);//´úÀíÁ¬½Ó
+        DataSource ds = this.getDataSource();//è·å–æ•°æ®æº
+        Connection con = DataSourceUtils.getConnection(ds);//ç”³è¯·æœ¬åœ°è¿æ¥ï¼ˆå’Œå½“å‰çº¿ç¨‹ç»‘å®šçš„è¿æ¥ï¼‰
+        con = this.newProxyConnection(con, ds);//ä»£ç†è¿æ¥
         //
         CallableStatement cs = null;
         try {
@@ -254,7 +254,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             try {
                 cs.close();
             } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//¹Ø±Õ»òÊÍ·ÅÁ¬½Ó
+            DataSourceUtils.releaseConnection(con, this.getDataSource());//å…³é—­æˆ–é‡Šæ”¾è¿æ¥
         }
     }
     public <T> T execute(String sql, PreparedStatementCallback<T> action) throws SQLException {
@@ -594,14 +594,14 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 DatabaseMetaData dbmd = stmt.getConnection().getMetaData();
                 int[] rowsAffected = new int[sql.length];
                 if (dbmd.supportsBatchUpdates()) {
-                    /*Á¬½ÓÖ§³ÖÅú´¦Àí*/
+                    /*è¿æ¥æ”¯æŒæ‰¹å¤„ç†*/
                     for (String sqlStmt : sql) {
                         this.currSql = sqlStmt;
                         stmt.addBatch(sqlStmt);
                     }
                     rowsAffected = stmt.executeBatch();
                 } else {
-                    /*Á¬½Ó²»Ö§³ÖÅú´¦Àí*/
+                    /*è¿æ¥ä¸æ”¯æŒæ‰¹å¤„ç†*/
                     for (int i = 0; i < sql.length; i++) {
                         this.currSql = sql[i];
                         if (!stmt.execute(sql[i]))
@@ -701,7 +701,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     //
-    /**´´½¨ÓÃÓÚ±£´æ½á¹û¼¯µÄÊı¾İMap¡£*/
+    /**åˆ›å»ºç”¨äºä¿å­˜ç»“æœé›†çš„æ•°æ®Mapã€‚*/
     protected Map<String, Object> createResultsMap() {
         if (!isResultsCaseInsensitive())
             return new LinkedCaseInsensitiveMap<Object>();
@@ -712,7 +712,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     protected PreparedStatementSetter newArgPreparedStatementSetter(Object[] args) throws SQLException {
         return new InnerArgPreparedStatementSetter(args);
     }
-    /**¶ÔStatementµÄÊôĞÔ½øĞĞÉèÖÃ¡£ÉèÖÃ JDBC Statement ¶ÔÏóµÄ fetchSize¡¢maxRows¡¢TimeoutµÈ²ÎÊı¡£*/
+    /**å¯¹Statementçš„å±æ€§è¿›è¡Œè®¾ç½®ã€‚è®¾ç½® JDBC Statement å¯¹è±¡çš„ fetchSizeã€maxRowsã€Timeoutç­‰å‚æ•°ã€‚*/
     protected void applyStatementSettings(Statement stmt) throws SQLException {
         int fetchSize = getFetchSize();
         if (fetchSize > 0)
@@ -732,7 +732,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return new MapPreparedStatementCreator(sql, paramSource);
     }
     //
-    /**´¦ÀíÇ±ÔÚµÄ SQL ¾¯¸æ¡£µ±ÒªÇó²»ºöÂÔ SQL ¾¯¸æÊ±£¬¼ì²âµ½ SQL ¾¯¸æÅ×³ö SQL Òì³£¡£*/
+    /**å¤„ç†æ½œåœ¨çš„ SQL è­¦å‘Šã€‚å½“è¦æ±‚ä¸å¿½ç•¥ SQL è­¦å‘Šæ—¶ï¼Œæ£€æµ‹åˆ° SQL è­¦å‘ŠæŠ›å‡º SQL å¼‚å¸¸ã€‚*/
     private void handleWarnings(Statement stmt) throws SQLException {
         if (isIgnoreWarnings()) {
             if (Hasor.isDebugLogger()) {
@@ -755,7 +755,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             return null;
     }
     //
-    /**ÖÁ·µ»Ø½á¹û¼¯ÖĞµÄÒ»ÌõÊı¾İ¡£*/
+    /**è‡³è¿”å›ç»“æœé›†ä¸­çš„ä¸€æ¡æ•°æ®ã€‚*/
     private static <T> T requiredSingleResult(Collection<T> results) throws SQLException {
         int size = (results != null ? results.size() : 0);
         if (size == 0)
@@ -764,7 +764,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             throw new SQLException("Incorrect column count: expected " + 1 + ", actual " + size);
         return results.iterator().next();
     }
-    /**»ñÈ¡Óë±¾µØÏß³Ì°ó¶¨µÄÊı¾İ¿âÁ¬½Ó£¬JDBC ¿ò¼Ü»áÎ¬»¤Õâ¸öÁ¬½ÓµÄÊÂÎñ¡£¿ª·¢Õß²»±Ø¹ØĞÄ¸ÃÁ¬½ÓµÄÊÂÎñ¹ÜÀí£¬ÒÔ¼°×ÊÔ´ÊÍ·Å²Ù×÷¡£*/
+    /**è·å–ä¸æœ¬åœ°çº¿ç¨‹ç»‘å®šçš„æ•°æ®åº“è¿æ¥ï¼ŒJDBC æ¡†æ¶ä¼šç»´æŠ¤è¿™ä¸ªè¿æ¥çš„äº‹åŠ¡ã€‚å¼€å‘è€…ä¸å¿…å…³å¿ƒè¯¥è¿æ¥çš„äº‹åŠ¡ç®¡ç†ï¼Œä»¥åŠèµ„æºé‡Šæ”¾æ“ä½œã€‚*/
     private Connection newProxyConnection(Connection target, DataSource targetSource) {
         Hasor.assertIsNotNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
@@ -776,7 +776,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     protected static interface SqlProvider {
         public String getSql();
     }
-    /**Connection ½Ó¿Ú´úÀí£¬Ä¿µÄÊÇÎªÁË¿ØÖÆÒ»Ğ©·½·¨µÄµ÷ÓÃ¡£Í¬Ê±½øĞĞÒ»Ğ©ÌØÊâÀàĞÍµÄ´¦Àí¡£*/
+    /**Connection æ¥å£ä»£ç†ï¼Œç›®çš„æ˜¯ä¸ºäº†æ§åˆ¶ä¸€äº›æ–¹æ³•çš„è°ƒç”¨ã€‚åŒæ—¶è¿›è¡Œä¸€äº›ç‰¹æ®Šç±»å‹çš„å¤„ç†ã€‚*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {
         private final Connection target;
         private final DataSource targetSource;
@@ -813,7 +813,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             }
         }
     }
-    /**½Ó¿Ú {@link PreparedStatementCreator} µÄ¼òµ¥ÊµÏÖ£¬Ä¿µÄÊÇ¸ù¾İ SQL Óï¾ä´´½¨ {@link PreparedStatement}¶ÔÏó¡£*/
+    /**æ¥å£ {@link PreparedStatementCreator} çš„ç®€å•å®ç°ï¼Œç›®çš„æ˜¯æ ¹æ® SQL è¯­å¥åˆ›å»º {@link PreparedStatement}å¯¹è±¡ã€‚*/
     private static class SimplePreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
         private final String sql;
         public SimplePreparedStatementCreator(String sql) {
@@ -827,7 +827,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             return this.sql;
         }
     }
-    /**½Ó¿Ú {@link CallableStatementCreator} µÄ¼òµ¥ÊµÏÖ£¬Ä¿µÄÊÇ¸ù¾İ SQL Óï¾ä´´½¨ {@link CallableStatement}¶ÔÏó¡£*/
+    /**æ¥å£ {@link CallableStatementCreator} çš„ç®€å•å®ç°ï¼Œç›®çš„æ˜¯æ ¹æ® SQL è¯­å¥åˆ›å»º {@link CallableStatement}å¯¹è±¡ã€‚*/
     private static class SimpleCallableStatementCreator implements CallableStatementCreator, SqlProvider {
         private final String callString;
         public SimpleCallableStatementCreator(String callString) {
@@ -841,7 +841,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             return this.callString;
         }
     }
-    /**Ê¹ÓÃ {@link RowCallbackHandler} ÀàĞÍÑ­»·´¦ÀíÃ¿Ò»ĞĞ¼ÇÂ¼µÄÊÊÅäÆ÷*/
+    /**ä½¿ç”¨ {@link RowCallbackHandler} ç±»å‹å¾ªç¯å¤„ç†æ¯ä¸€è¡Œè®°å½•çš„é€‚é…å™¨*/
     private static class RowCallbackHandlerResultSetExtractor implements ResultSetExtractor<Object> {
         private final RowCallbackHandler rch;
         public RowCallbackHandlerResultSetExtractor(RowCallbackHandler rch) {
@@ -857,7 +857,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 //
 //
 //
-/**½Ó¿Ú {@link CallableStatementCreator} µÄ¼òµ¥ÊµÏÖ£¬Ä¿µÄÊÇ¸ù¾İ SQL Óï¾ä´´½¨ {@link CallableStatement}¶ÔÏó¡£*/
+/**æ¥å£ {@link CallableStatementCreator} çš„ç®€å•å®ç°ï¼Œç›®çš„æ˜¯æ ¹æ® SQL è¯­å¥åˆ›å»º {@link CallableStatement}å¯¹è±¡ã€‚*/
 class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
     private String             originalSql = null;
     private SqlParameterSource paramSource = null;
@@ -870,21 +870,21 @@ class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTempl
     //
     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
         //
-        //1.¹Ø¼ü²ÎÊı¶¨Òå
+        //1.å…³é”®å‚æ•°å®šä¹‰
         List<String> parameterNames = new ArrayList<String>();
         List<int[]> parameterIndexes = new ArrayList<int[]>();
-        int namedParameterCount = 0;//´øÓĞÃû×Ö²ÎÊıµÄ×ÜÊı
-        int unnamedParameterCount = 0;//ÎŞÃû×Ö²ÎÊı×ÜÊı
-        int totalParameterCount = 0;//²ÎÊı×ÜÊı
+        int namedParameterCount = 0;//å¸¦æœ‰åå­—å‚æ•°çš„æ€»æ•°
+        int unnamedParameterCount = 0;//æ— åå­—å‚æ•°æ€»æ•°
+        int totalParameterCount = 0;//å‚æ•°æ€»æ•°
         //
-        //2.·ÖÎöSQL£¬ÌáÈ¡³öSQLÖĞ²ÎÊıĞÅÏ¢
+        //2.åˆ†æSQLï¼Œæå–å‡ºSQLä¸­å‚æ•°ä¿¡æ¯
         {
             Hasor.assertIsNotNull(this.originalSql, "SQL must not be null");
             Set<String> namedParameters = new HashSet<String>();
             char[] statement = this.originalSql.toCharArray();
             int i = 0;
             while (i < statement.length) {
-                int skipToPosition = skipCommentsAndQuotes(statement, i);//´Óµ±Ç°ÎªÖ¹ÂÓ¹ıµÄ³¤¶È
+                int skipToPosition = skipCommentsAndQuotes(statement, i);//ä»å½“å‰ä¸ºæ­¢æ è¿‡çš„é•¿åº¦
                 if (i != skipToPosition) {
                     if (skipToPosition >= statement.length)
                         break;
@@ -919,12 +919,12 @@ class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTempl
                 }
                 i++;
             }
-            //this.namedParameterCount = namedParameterCount;/*´øÓĞÃû×Ö²ÎÊıµÄ×ÜÊı*/
-            //this.unnamedParameterCount = unnamedParameterCount;/*ÄäÃû²ÎÊıµÄ×ÜÊı*/
-            //this.totalParameterCount = totalParameterCount;/*×Ü¹²²ÎÊı¸öÊı*/
+            //this.namedParameterCount = namedParameterCount;/*å¸¦æœ‰åå­—å‚æ•°çš„æ€»æ•°*/
+            //this.unnamedParameterCount = unnamedParameterCount;/*åŒ¿åå‚æ•°çš„æ€»æ•°*/
+            //this.totalParameterCount = totalParameterCount;/*æ€»å…±å‚æ•°ä¸ªæ•°*/
         }
         //
-        //3.¸ù¾İ²ÎÊıĞÅÏ¢Éú³É×îÖÕ»áÖ´ĞĞµÄSQLÓï¾ä.
+        //3.æ ¹æ®å‚æ•°ä¿¡æ¯ç”Ÿæˆæœ€ç»ˆä¼šæ‰§è¡Œçš„SQLè¯­å¥.
         StringBuilder sqlToUse = new StringBuilder();
         {
             int lastIndex = 0;
@@ -968,7 +968,7 @@ class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTempl
             sqlToUse.append(this.originalSql.substring(lastIndex, this.originalSql.length()));
         }
         //
-        //4.È·¶¨²ÎÊı¶ÔÏó        
+        //4.ç¡®å®šå‚æ•°å¯¹è±¡        
         Object[] paramArray = new Object[totalParameterCount];
         if (namedParameterCount > 0 && unnamedParameterCount > 0)
             throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + this.originalSql + "]");
@@ -977,7 +977,7 @@ class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTempl
             paramArray[i] = this.paramSource.getValue(paramName);
         }
         //
-        //5.´´½¨PreparedStatement¶ÔÏó£¬²¢ÉèÖÃ²ÎÊı
+        //5.åˆ›å»ºPreparedStatementå¯¹è±¡ï¼Œå¹¶è®¾ç½®å‚æ•°
         PreparedStatement statement = con.prepareStatement(sqlToUse.toString());
         for (int i = 0; i < paramArray.length; i++)
             InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);

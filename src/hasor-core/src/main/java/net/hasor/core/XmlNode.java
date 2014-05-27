@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,26 @@ package net.hasor.core;
 import java.util.List;
 import java.util.Map;
 /**
- * XmlÊôĞÔ½Úµã¡£
+ * Xmlå±æ€§èŠ‚ç‚¹ã€‚
  * @version : 2013-4-22
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlNode {
-    /**»ñÈ¡Xml½ÚµãÔªËØÃû³Æ¡£*/
+    /**è·å–XmlèŠ‚ç‚¹å…ƒç´ åç§°ã€‚*/
     public String getName();
-    /**»ñÈ¡Xml½ÚµãÎÄ±¾Öµ¡£*/
+    /**è·å–XmlèŠ‚ç‚¹æ–‡æœ¬å€¼ã€‚*/
     public String getText();
-    /**»ñÈ¡Xml½ÚµãXmlÎÄ±¾Öµ¡£*/
+    /**è·å–XmlèŠ‚ç‚¹Xmlæ–‡æœ¬å€¼ã€‚*/
     public String getXmlText();
-    /**»ñÈ¡ÊôĞÔ¼¯ºÏ*/
+    /**è·å–å±æ€§é›†åˆ*/
     public Map<String, String> getAttributeMap();
-    /**»ñÈ¡Xml×Ó½Úµã¡£*/
+    /**è·å–Xmlå­èŠ‚ç‚¹ã€‚*/
     public List<XmlNode> getChildren();
     //
-    /**»ñÈ¡Xml×Ó½Úµã¡£*/
+    /**è·å–Xmlå­èŠ‚ç‚¹ã€‚*/
     public List<XmlNode> getChildren(String elementName);
-    /**»ñÈ¡Xml×Ó½Úµã£¬Èç¹ûÓĞ¶à¸ö·µ»ØµÚÒ»Ìõ¡£*/
+    /**è·å–Xmlå­èŠ‚ç‚¹ï¼Œå¦‚æœæœ‰å¤šä¸ªè¿”å›ç¬¬ä¸€æ¡ã€‚*/
     public XmlNode getOneChildren(String elementName);
-    /**»ñÈ¡Xml½ÚµãÉÏµÄÊôĞÔ¡£*/
+    /**è·å–XmlèŠ‚ç‚¹ä¸Šçš„å±æ€§ã€‚*/
     public String getAttribute(String attName);
 }

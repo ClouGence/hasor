@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@ package org.more.xml;
 import java.util.HashMap;
 import org.more.util.map.DecStackMap;
 /**
- * ¸ÃÀà¼Ì³Ğ×Ô{@link DecStackMap}×°ÊÎÆ÷£¬×÷ÓÃÊÇÌá¹©ÁËÒ»¸öcontext¶ÔÏóµÄÖ§³Ö¡£
+ * è¯¥ç±»ç»§æ‰¿è‡ª{@link DecStackMap}è£…é¥°å™¨ï¼Œä½œç”¨æ˜¯æä¾›äº†ä¸€ä¸ªcontextå¯¹è±¡çš„æ”¯æŒã€‚
  * @version 2010-9-23
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlStackDecorator<T> extends DecStackMap<String, Object> {
     private T context = null;
-    /**»ñÈ¡Context*/
+    /**è·å–Context*/
     public T getContext() {
         return context;
     }
-    /**ÉèÖÃContext*/
+    /**è®¾ç½®Context*/
     public void setContext(T context) {
         this.context = context;
     }

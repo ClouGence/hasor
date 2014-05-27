@@ -16,11 +16,11 @@
 package net.hasor.core.plugin;
 import net.hasor.core.ApiBinder;
 /**
- * ²å¼ş½Ó¿Ú
+ * æ’ä»¶æ¥å£
  * @version : 2013-11-4
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface HasorPlugin {
-    /**´¦Àí²å¼şµÄ³õÊ¼»¯*/
+    /**å¤„ç†æ’ä»¶çš„åˆå§‹åŒ–*/
     public void loadPlugin(ApiBinder apiBinder) throws Throwable;
 }

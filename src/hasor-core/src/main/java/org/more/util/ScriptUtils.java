@@ -1,5 +1,5 @@
 ///*
-// * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+// * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
 // * you may not use this file except in compliance with the License.
@@ -25,92 +25,92 @@
 //import javax.script.ScriptEngineManager;
 //import javax.script.SimpleScriptContext;
 ///**
-// * ½Å±¾Ö´ĞĞ¹¤¾ß
+// * è„šæœ¬æ‰§è¡Œå·¥å…·
 // * @version : 2011-7-22
-// * @author ÕÔÓÀ´º (zyc@hasor.net)
+// * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 // */
 //public abstract class ScriptUtils {
-//    /**Ä¬ÈÏ½Å±¾ÒıÇæ*/
+//    /**é»˜è®¤è„šæœ¬å¼•æ“*/
 //    public static final String DefaultScriptEngine = "javascript";
-//    /**´´½¨Ä¬ÈÏ½Å±¾ÒıÇæ¡£*/
+//    /**åˆ›å»ºé»˜è®¤è„šæœ¬å¼•æ“ã€‚*/
 //    public static ScriptEngine createScriptEngine() {
 //        return createScriptEngine(DefaultScriptEngine);
 //    };
-//    /**´´½¨½Å±¾ÒıÇæ¡£*/
+//    /**åˆ›å»ºè„šæœ¬å¼•æ“ã€‚*/
 //    public static ScriptEngine createScriptEngine(String engine) {
 //        ScriptEngineManager manager = new ScriptEngineManager();
 //        ScriptEngine engineObject = manager.getEngineByName(engine);
 //        if (engineObject == null)
-//            throw new UnsupportedOperationException("²»Ö§³ÖµÄ½Å±¾ÒıÇæ[" + engine + "]");
+//            throw new UnsupportedOperationException("ä¸æ”¯æŒçš„è„šæœ¬å¼•æ“[" + engine + "]");
 //        return engineObject;
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(InputStream script, Map<String, ?> params) throws Exception {
 //        return runScript(new InputStreamReader(script), params);
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(CharSequence sequence, Map<String, ?> params) throws Exception {
 //        StringBuffer sb = new StringBuffer(sequence);
 //        String str = sb.toString();
 //        return runScript(new StringReader(str), params);
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(Reader reader, Map<String, ?> params) throws Exception {
 //        return runScript(createScriptEngine(), reader, params);
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(ScriptEngine scriptEngine, InputStream script, Map<String, ?> params) throws Exception {
 //        return runScript(scriptEngine, new InputStreamReader(script), params);
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(ScriptEngine scriptEngine, CharSequence sequence, Map<String, ?> params) throws Exception {
 //        StringBuffer sb = new StringBuffer(sequence);
 //        String str = sb.toString();
 //        return runScript(scriptEngine, new StringReader(str), params);
 //    };
-//    /** Ö¸¶¨µ÷ÓÃAction·µ»ØÖ®ºóµÄ½Å±¾´¦ÀíÇëÇó¡£ */
+//    /** æŒ‡å®šè°ƒç”¨Actionè¿”å›ä¹‹åçš„è„šæœ¬å¤„ç†è¯·æ±‚ã€‚ */
 //    public static Object runScript(ScriptEngine scriptEngine, Reader reader, Map<String, ?> params) throws Exception {
 //        if (scriptEngine == null)
-//            throw new NullPointerException("½Å±¾ÒıÇæ²»ÄÜÎª¿Õ¡£");
+//            throw new NullPointerException("è„šæœ¬å¼•æ“ä¸èƒ½ä¸ºç©ºã€‚");
 //        if (reader == null)
-//            throw new NullPointerException("½Å±¾reader²ÎÊıÎª¿Õ¡£");
-//        //Ö´ĞĞ½Å±¾·½·¨callBack£¬²¢ÇÒ»ñÈ¡·µ»ØÖµ·µ»Ø
+//            throw new NullPointerException("è„šæœ¬readerå‚æ•°ä¸ºç©ºã€‚");
+//        //æ‰§è¡Œè„šæœ¬æ–¹æ³•callBackï¼Œå¹¶ä¸”è·å–è¿”å›å€¼è¿”å›
 //        SimpleScriptContext c = new SimpleScriptContext();
 //        for (String key : params.keySet())
 //            c.setAttribute(key, params.get(key), ScriptContext.GLOBAL_SCOPE);
 //        return scriptEngine.eval(reader, c);
 //    };
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(InputStream script, Map<String, ?> params) throws Exception {
 //        return getInvocable(new InputStreamReader(script), params);
 //    }
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(CharSequence sequence, Map<String, ?> params) throws Exception {
 //        StringBuffer sb = new StringBuffer(sequence);
 //        String str = sb.toString();
 //        return getInvocable(new StringReader(str), params);
 //    }
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(Reader reader, Map<String, ?> params) throws Exception {
 //        return getInvocable(createScriptEngine(), reader, params);
 //    }
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(ScriptEngine scriptEngine, InputStream script, Map<String, ?> params) throws Exception {
 //        return getInvocable(scriptEngine, new InputStreamReader(script), params);
 //    }
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(ScriptEngine scriptEngine, CharSequence sequence, Map<String, ?> params) throws Exception {
 //        StringBuffer sb = new StringBuffer(sequence);
 //        String str = sb.toString();
 //        return getInvocable(scriptEngine, new StringReader(str), params);
 //    }
-//    /**»ñÈ¡¿ÉÒÔÖ´ĞĞµ÷ÓÃµÄ{@link Invocable}¶ÔÏó¡£*/
+//    /**è·å–å¯ä»¥æ‰§è¡Œè°ƒç”¨çš„{@link Invocable}å¯¹è±¡ã€‚*/
 //    public static Invocable getInvocable(ScriptEngine scriptEngine, Reader reader, Map<String, ?> params) throws Exception {
 //        if (scriptEngine == null)
-//            throw new NullPointerException("½Å±¾ÒıÇæ²»ÄÜÎª¿Õ¡£");
+//            throw new NullPointerException("è„šæœ¬å¼•æ“ä¸èƒ½ä¸ºç©ºã€‚");
 //        if (reader == null)
-//            throw new NullPointerException("½Å±¾reader²ÎÊıÎª¿Õ¡£");
-//        //Ö´ĞĞ½Å±¾·½·¨callBack£¬²¢ÇÒ»ñÈ¡·µ»ØÖµ·µ»Ø
+//            throw new NullPointerException("è„šæœ¬readerå‚æ•°ä¸ºç©ºã€‚");
+//        //æ‰§è¡Œè„šæœ¬æ–¹æ³•callBackï¼Œå¹¶ä¸”è·å–è¿”å›å€¼è¿”å›
 //        SimpleScriptContext c = new SimpleScriptContext();
 //        for (String key : params.keySet())
 //            c.setAttribute(key, params.get(key), ScriptContext.GLOBAL_SCOPE);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2013-11-4
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public abstract class AbstractWebHasorPlugin extends AbstractHasorPlugin {
     public final void loadPlugin(ApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder == false) {
-            Hasor.logWarn("does not support ¡®%s¡¯ Web plug-in.", this.getClass());
+            Hasor.logWarn("does not support â€˜%sâ€™ Web plug-in.", this.getClass());
             return;
         }
         this.loadPlugin((WebApiBinder) apiBinder);
-        Hasor.logInfo("¡®%s¡¯ Plug-in loaded successfully", this.getClass());
+        Hasor.logInfo("â€˜%sâ€™ Plug-in loaded successfully", this.getClass());
     }
     public abstract void loadPlugin(WebApiBinder apiBinder);
 }

@@ -1,10 +1,10 @@
 Hasor-Core
 
-    ¸ÃÏîÄ¿ÊÇ Hasor ÌåÏµµÄºËÐÄ£¬¹²·ÖÎªÈý¸ö²¿·Ö¡£
-¡°net.hasor.core.*¡± Hasor µÄÎ¢ÄÚºË£¬ÕâÒ»²¿·ÖÊÇÕû¸ö Hasor µÄºËÐÄ¡£
-¡°net.hasor.plugins.*¡± ×÷Îª Hasor ºËÐÄÏîÄ¿¶ÔÍâÌá¹©µÄÒ»Ð©²å¼þ¡£
-¡°org.more.*¡±£¬Õâ²¿·Ö°üº¬ÁË Hasor ÒÀÀµµÄÒ»Ð©µÚÈý·½¹¤¾ßÀà£»
-ÒÔ¼°ÎÒÒÔÇ°Ð´µÄÒ»Ð©¶ÀÁ¢µÄ¹¤¾ß°ü£¬ÓÐºÜ´óÒ»²¿·Ö¹¤¾ß Hasor Ã»ÓÐÊ¹ÓÃËü¡£
-    Ä¿Ç°×îÐÂ°æ±¾ v0.0.3 ÊÇ Hasor µÄºËÐÄÈí¼þ°ü£¬¼¸ºõËùÓÐ Hasor 
-À©Õ¹Ä£¿é¶¼»áÒÀÀµµ½Ëü¡£¸ÃÈí¼þ°üÖÐ°üº¬ÁË£ºÄ£¿éÉúÃüÖÜÆÚ¹ÜÀí¡¢ÅäÖÃÎÄ¼þ·þÎñ¡¢
-ÊÂ¼þ·þÎñ¡¢»·¾³±äÁ¿¡¢IoC/Aop¡¢Bean¡£²¢ÇÒÍ¨¹ý GuiceÌá¹© JSR-330 ±ê×¼µÄ¼æÈÝ¡£
+    è¯¥é¡¹ç›®æ˜¯ Hasor ä½“ç³»çš„æ ¸å¿ƒï¼Œå…±åˆ†ä¸ºä¸‰ä¸ªéƒ¨åˆ†ã€‚
+â€œnet.hasor.core.*â€ Hasor çš„å¾®å†…æ ¸ï¼Œè¿™ä¸€éƒ¨åˆ†æ˜¯æ•´ä¸ª Hasor çš„æ ¸å¿ƒã€‚
+â€œnet.hasor.plugins.*â€ ä½œä¸º Hasor æ ¸å¿ƒé¡¹ç›®å¯¹å¤–æä¾›çš„ä¸€äº›æ’ä»¶ã€‚
+â€œorg.more.*â€ï¼Œè¿™éƒ¨åˆ†åŒ…å«äº† Hasor ä¾èµ–çš„ä¸€äº›ç¬¬ä¸‰æ–¹å·¥å…·ç±»ï¼›
+ä»¥åŠæˆ‘ä»¥å‰å†™çš„ä¸€äº›ç‹¬ç«‹çš„å·¥å…·åŒ…ï¼Œæœ‰å¾ˆå¤§ä¸€éƒ¨åˆ†å·¥å…· Hasor æ²¡æœ‰ä½¿ç”¨å®ƒã€‚
+    ç›®å‰æœ€æ–°ç‰ˆæœ¬ v0.0.3 æ˜¯ Hasor çš„æ ¸å¿ƒè½¯ä»¶åŒ…ï¼Œå‡ ä¹Žæ‰€æœ‰ Hasor 
+æ‰©å±•æ¨¡å—éƒ½ä¼šä¾èµ–åˆ°å®ƒã€‚è¯¥è½¯ä»¶åŒ…ä¸­åŒ…å«äº†ï¼šæ¨¡å—ç”Ÿå‘½å‘¨æœŸç®¡ç†ã€é…ç½®æ–‡ä»¶æœåŠ¡ã€
+äº‹ä»¶æœåŠ¡ã€çŽ¯å¢ƒå˜é‡ã€IoC/Aopã€Beanã€‚å¹¶ä¸”é€šè¿‡ Guiceæä¾› JSR-330 æ ‡å‡†çš„å…¼å®¹ã€‚

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,21 @@ package net.hasor.security._.support;
 /**
  * 
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityEventDefine {
-    /**µ±ÇëÇó¼ì²âURLÈ¨ÏŞÊ±£¬ÔÚÊÂ¼şÖĞ¿ÉÒÔ²Ù¿ØAuthSessionÁÙÊ±¸³ÓèÂ·¾¶·ÃÎÊÈ¨ÏŞ¡£*/
+    /**å½“è¯·æ±‚æ£€æµ‹URLæƒé™æ—¶ï¼Œåœ¨äº‹ä»¶ä¸­å¯ä»¥æ“æ§AuthSessionä¸´æ—¶èµ‹äºˆè·¯å¾„è®¿é—®æƒé™ã€‚*/
     public static final String TestURLPermission        = "Security_TestURLPermission";
-    /**µÇÈëÊÂ¼ş*/
+    /**ç™»å…¥äº‹ä»¶*/
     public static final String Login                    = "Security_Login";
-    /**µÇ³öÊÂ¼ş*/
+    /**ç™»å‡ºäº‹ä»¶*/
     public static final String Logout                   = "Security_Logout";
-    /**AuthSession±»¹Ø±Õ*/
+    /**AuthSessionè¢«å…³é—­*/
     public static final String AuthSession_Close        = "Security_AuthSession_Close";
-    /**AuthSession±»´´½¨*/
+    /**AuthSessionè¢«åˆ›å»º*/
     public static final String AuthSession_New          = "Security_AuthSession_New";
-    /**µ±Ç°Ïß³Ì¼¤»îµÄAuthSession¡£*/
+    /**å½“å‰çº¿ç¨‹æ¿€æ´»çš„AuthSessionã€‚*/
     public static final String AuthSession_Activate     = "Security_AuthSession_Activate";
-    /**µ±Ç°Ïß³Ì¶Û»¯µÄAuthSession¡£*/
+    /**å½“å‰çº¿ç¨‹é’åŒ–çš„AuthSessionã€‚*/
     public static final String AuthSession_Inactivation = "Security_AuthSession_Inactivation";
 }

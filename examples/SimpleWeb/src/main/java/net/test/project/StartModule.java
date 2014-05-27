@@ -27,15 +27,15 @@ import net.hasor.web.module.AbstractWebModule;
 /**
  * 
  * @version : 2014-5-10
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class StartModule extends AbstractWebModule {
     public void init(WebApiBinder apiBinder) {
         //1.Servlet
         apiBinder.serve("test.c").with(MyServlet.class);
         //2.Bean
-        apiBinder.defineBean("myName1").bindType(String.class).toInstance("’‘”¿¥∫");
-        apiBinder.defineBean("myName2").bindType(String.class).toInstance("≤È¿Ì");
+        apiBinder.defineBean("myName1").bindType(String.class).toInstance("ËµµÊ∞∏Êò•");
+        apiBinder.defineBean("myName2").bindType(String.class).toInstance("Êü•ÁêÜ");
     }
     public void start(WebAppContext appContext) {
         System.out.println(appContext.getBean("myName1"));

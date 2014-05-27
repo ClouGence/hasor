@@ -4,16 +4,16 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * µ±×ÊÔ´ÓĞ¸Ä¶¯Ê±¸ÃÀà»áµ÷ÓÃRun·½·¨¡£
+ * å½“èµ„æºæœ‰æ”¹åŠ¨æ—¶è¯¥ç±»ä¼šè°ƒç”¨Runæ–¹æ³•ã€‚
  * @version : 2012-8-2
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class ResourceWatch extends Thread {
     private static Logger log           = LoggerFactory.getLogger(ResourceWatch.class);
-    private URI           resourceURI   = null;                                        //×ÊÔ´µØÖ·
+    private URI           resourceURI   = null;                                        //èµ„æºåœ°å€
     //
-    private long          lastHashCode  = 0;                                           //ÉÏÒ»´Î¼ì²é×ÊÔ´µÄĞ£ÑéÂë£¬Á½´Î¼ì²éĞ£ÑéÂë²»Ò»ÖÂ½«Ö´ĞĞreload
-    private long          checkSeepTime = 0;                                           //¼ì²éµÄÊ±¼ä¼ä¸ô-15Ãë
+    private long          lastHashCode  = 0;                                           //ä¸Šä¸€æ¬¡æ£€æŸ¥èµ„æºçš„æ ¡éªŒç ï¼Œä¸¤æ¬¡æ£€æŸ¥æ ¡éªŒç ä¸ä¸€è‡´å°†æ‰§è¡Œreload
+    private long          checkSeepTime = 0;                                           //æ£€æŸ¥çš„æ—¶é—´é—´éš”-15ç§’
     //
     public ResourceWatch() {
         this(null, 15 * 1000);
@@ -25,13 +25,13 @@ public abstract class ResourceWatch extends Thread {
         this.resourceURI = resourceURI;
         this.checkSeepTime = checkSeepTime;
     }
-    /**Ê×´ÎÆô¶¯¼àÌı¡£*/
+    /**é¦–æ¬¡å¯åŠ¨ç›‘å¬ã€‚*/
     public abstract void firstStart(URI resourceURI) throws IOException;
-    /**µ±Óöµ½×ÊÔ´¸Ä±äÖ®ºóµ÷ÓÃ¡£*/
+    /**å½“é‡åˆ°èµ„æºæ”¹å˜ä¹‹åè°ƒç”¨ã€‚*/
     public abstract void onChange(URI resourceURI) throws IOException;
-    /**¼ì²é×ÊÔ´ÊÇ·ñĞŞ¸Ä£¬²¢ÇÒ·µ»ØĞŞ¸ÄµÄÊ±¼ä´Á¡£µ±Á½´Î¼ì²é²»Ò»ÖÂÊ±»áµ÷ÓÃ{@link #onChange(URI)}·½·¨¡£*/
+    /**æ£€æŸ¥èµ„æºæ˜¯å¦ä¿®æ”¹ï¼Œå¹¶ä¸”è¿”å›ä¿®æ”¹çš„æ—¶é—´æˆ³ã€‚å½“ä¸¤æ¬¡æ£€æŸ¥ä¸ä¸€è‡´æ—¶ä¼šè°ƒç”¨{@link #onChange(URI)}æ–¹æ³•ã€‚*/
     public abstract long lastModify(URI resourceURI) throws IOException;
-    /**Ê×´ÎÆô¶¯»áÏÈÖ´ĞĞloadÈ»ºóÔÚÆô¶¯Ïß³Ì*/
+    /**é¦–æ¬¡å¯åŠ¨ä¼šå…ˆæ‰§è¡Œloadç„¶ååœ¨å¯åŠ¨çº¿ç¨‹*/
     public synchronized void start() {
         try {
             this.firstStart(this.resourceURI);

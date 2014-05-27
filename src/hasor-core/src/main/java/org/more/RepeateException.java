@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package org.more;
 /**
- * ÖØ¸´¶¨Òå¡£
+ * é‡å¤å®šä¹‰ã€‚
  * @version 2009-4-29
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class RepeateException extends RuntimeException {
     /**
@@ -25,15 +25,15 @@ public class RepeateException extends RuntimeException {
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 2377606123252842745L;
-    /**ÖØ¸´¶¨Òå*/
+    /**é‡å¤å®šä¹‰*/
     public RepeateException(String string) {
         super(string);
     }
-    /**ÖØ¸´¶¨Òå*/
+    /**é‡å¤å®šä¹‰*/
     public RepeateException(Throwable error) {
         super(error);
     }
-    /**ÖØ¸´¶¨Òå*/
+    /**é‡å¤å®šä¹‰*/
     public RepeateException(String string, Throwable error) {
         super(string, error);
     }

@@ -17,11 +17,11 @@ package net.hasor.jdbc.template;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
- * ÓÃÓÚ´¦Àí PreparedStatement ½Ó¿ÚµÄ¶¯Ì¬²ÎÊıÉèÖÃ¡£
+ * ç”¨äºå¤„ç† PreparedStatement æ¥å£çš„åŠ¨æ€å‚æ•°è®¾ç½®ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface PreparedStatementSetter {
     /** 

@@ -14,7 +14,7 @@ package org.dev.toos.constcode.data.db;
 ///**
 // * 
 // * @version : 2013-2-17
-// * @author ’‘”¿¥∫ (zyc@byshell.org)
+// * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
 // */
 //public class DBSource implements Source<Connection> {
 //    private Connection connection = null;

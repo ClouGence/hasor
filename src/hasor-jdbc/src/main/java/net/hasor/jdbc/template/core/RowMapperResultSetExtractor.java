@@ -22,10 +22,10 @@ import net.hasor.core.Hasor;
 import net.hasor.jdbc.template.ResultSetExtractor;
 import net.hasor.jdbc.template.RowMapper;
 /**
- * {@link ResultSetExtractor} ½Ó¿ÚÊµÏÖÀà£¬¸ÃÀà»á½«½á¹û¼¯ÖĞµÄÃ¿Ò»ĞĞ½øĞĞ´¦Àí£¬²¢·µ»ØÒ»¸ö List ÓÃÒÔ·â×°´¦Àí½á¹û¼¯¡£
+ * {@link ResultSetExtractor} æ¥å£å®ç°ç±»ï¼Œè¯¥ç±»ä¼šå°†ç»“æœé›†ä¸­çš„æ¯ä¸€è¡Œè¿›è¡Œå¤„ç†ï¼Œå¹¶è¿”å›ä¸€ä¸ª List ç”¨ä»¥å°è£…å¤„ç†ç»“æœé›†ã€‚
  *
- * <p>×¢Òâ£º{@link RowMapper} Ó¦µ±ÊÇÎŞ×´Ì¬µÄ£¬·ñÔò¸Ã½Ó¿ÚÔÚ´¦ÀíÃ¿Ò»ĞĞÊı¾İÊ±²Å¿ÉÒÔÖØÓÃĞĞ´¦ÀíÆ÷¡£
- * <p>Àı£º
+ * <p>æ³¨æ„ï¼š{@link RowMapper} åº”å½“æ˜¯æ— çŠ¶æ€çš„ï¼Œå¦åˆ™è¯¥æ¥å£åœ¨å¤„ç†æ¯ä¸€è¡Œæ•°æ®æ—¶æ‰å¯ä»¥é‡ç”¨è¡Œå¤„ç†å™¨ã€‚
+ * <p>ä¾‹ï¼š
  *
  * <pre class="code">JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);  // reusable object
  * RowMapper rowMapper = new UserRowMapper();  // reusable object
@@ -39,23 +39,23 @@ import net.hasor.jdbc.template.RowMapper;
  *     new RowMapperResultSetExtractor(rowMapper, 1));</pre>
  * 
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  * @see RowMapper
  */
 public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
     private final RowMapper<T> rowMapper;
     private final int          rowsExpected;
     /**
-     * ´´½¨ {@link RowMapperResultSetExtractor} ¶ÔÏó
-     * @param rowMapper ĞĞÓ³ÉäÆ÷¡£
+     * åˆ›å»º {@link RowMapperResultSetExtractor} å¯¹è±¡
+     * @param rowMapper è¡Œæ˜ å°„å™¨ã€‚
      */
     public RowMapperResultSetExtractor(RowMapper<T> rowMapper) {
         this(rowMapper, 0);
     }
     /**
-     * ´´½¨ {@link RowMapperResultSetExtractor} ¶ÔÏó
-     * @param rowMapper ĞĞÓ³ÉäÆ÷¡£
-     * @param rowsExpected Ô¤ÆÚ½á¹û¼¯´óĞ¡£¨Êµ¼ÊµÃµ½µÄ½á¹û¼¯ÌõÄ¿²»ÊÜ´Ë²ÎÊıÏŞÖÆ£©¡£
+     * åˆ›å»º {@link RowMapperResultSetExtractor} å¯¹è±¡
+     * @param rowMapper è¡Œæ˜ å°„å™¨ã€‚
+     * @param rowsExpected é¢„æœŸç»“æœé›†å¤§å°ï¼ˆå®é™…å¾—åˆ°çš„ç»“æœé›†æ¡ç›®ä¸å—æ­¤å‚æ•°é™åˆ¶ï¼‰ã€‚
      */
     public RowMapperResultSetExtractor(RowMapper<T> rowMapper, int rowsExpected) {
         Hasor.assertIsNotNull(rowMapper, "RowMapper is required");

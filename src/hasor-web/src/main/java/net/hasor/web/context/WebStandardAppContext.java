@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import net.hasor.web.startup.RuntimeFilter;
 /**
  * 
  * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class WebStandardAppContext extends StandardAppContext implements WebAppContext {
     public WebStandardAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
@@ -65,14 +65,14 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         this.setContext(servletContext);
     }
     //
-    /**»ñÈ¡{@link ServletContext}*/
+    /**è·å–{@link ServletContext}*/
     public ServletContext getServletContext() {
         return ((WebEnvironment) this.getEnvironment()).getServletContext();
     }
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
-    /**ÎªÄ£¿é´´½¨ApiBinder*/
+    /**ä¸ºæ¨¡å—åˆ›å»ºApiBinder*/
     protected AbstractWebApiBinder newApiBinder(final ModuleProxy forModule) {
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
             public ModuleSettings configModule() {
@@ -94,38 +94,38 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         apiBinder.bindingType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindingType(ListenerPipeline.class).toInstance(lPipline);
         //
-        /*°ó¶¨ServletRequest¶ÔÏóµÄProvider*/
+        /*ç»‘å®šServletRequestå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
             public ServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
-        /*°ó¶¨HttpServletRequest¶ÔÏóµÄProvider*/
+        /*ç»‘å®šHttpServletRequestå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
             public HttpServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
-        /*°ó¶¨ServletResponse¶ÔÏóµÄProvider*/
+        /*ç»‘å®šServletResponseå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
             public ServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
-        /*°ó¶¨HttpServletResponse¶ÔÏóµÄProvider*/
+        /*ç»‘å®šHttpServletResponseå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
             public HttpServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
-        /*°ó¶¨HttpSession¶ÔÏóµÄProvider*/
+        /*ç»‘å®šHttpSessionå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(HttpSession.class).toProvider(new Provider<HttpSession>() {
             public HttpSession get() {
                 HttpServletRequest req = RuntimeFilter.getLocalRequest();
                 return (req != null) ? req.getSession(true) : null;
             }
         });
-        /*°ó¶¨ServletContext¶ÔÏóµÄProvider*/
+        /*ç»‘å®šServletContextå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             public ServletContext get() {
                 return getServletContext();

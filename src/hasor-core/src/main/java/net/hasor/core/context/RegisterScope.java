@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@ import net.hasor.core.RegisterInfo;
 /**
  * 
  * @version : 2014-4-4
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface RegisterScope {
-    /**¸¸¼¶*/
+    /**çˆ¶çº§*/
     public RegisterScope getParentScope();
-    /**»ñÈ¡¸Ã·¶Î§ÄÚµÄËùÓĞRegisterInfo×¢²á¡£*/
+    /**è·å–è¯¥èŒƒå›´å†…çš„æ‰€æœ‰RegisterInfoæ³¨å†Œã€‚*/
     public Iterator<RegisterInfo<?>> getRegisterIterator();
     //
-    /**²éÕÒRegisterInfo*/
+    /**æŸ¥æ‰¾RegisterInfo*/
     public <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType);
-    /**²éÕÒRegisterInfo*/
+    /**æŸ¥æ‰¾RegisterInfo*/
     public <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType);
 }

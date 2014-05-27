@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import java.util.LinkedList;
 /**
  * 
  * @version : 2013-12-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class ConnectionSequence {
     private ConnectionHolder             currentHolder = null;
@@ -30,12 +30,12 @@ public class ConnectionSequence {
     public ConnectionHolder currentHolder() {
         return this.currentHolder;
     }
-    /**Ñ¹Èë*/
+    /**åŽ‹å…¥*/
     public void push(ConnectionHolder newHolder) {
         this.currentHolder = newHolder;
         this.holderList.add(newHolder);
     }
-    /**µ¯³ö*/
+    /**å¼¹å‡º*/
     public void pop() {
         if (this.holderList.isEmpty() == true)
             this.currentHolder = null;

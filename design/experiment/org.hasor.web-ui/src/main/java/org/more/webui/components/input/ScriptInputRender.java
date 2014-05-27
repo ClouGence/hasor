@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package org.more.webui.components.input;
 import org.more.webui.render.inputs.HideInputRender;
 /**
- * ½«ÊäÈë×é½¨äÖÈ¾³Éinput[type=hidden]¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºui_ScriptInput£¨webui_extends.js£©
+ * å°†è¾“å…¥ç»„å»ºæ¸²æŸ“æˆinput[type=hidden]ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šui_ScriptInputï¼ˆwebui_extends.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ScriptInputRender extends HideInputRender<ScriptInput> {
     @Override

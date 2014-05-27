@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class InternalDispatcherManager {
     private SecuritySettings securitySettings = null;
-    /**¸ù¾İuri»ñÈ¡¿ÉÓÃÓÚÌø×ª¹¤¾ßÀà¡£*/
+    /**æ ¹æ®uriè·å–å¯ç”¨äºè·³è½¬å·¥å…·ç±»ã€‚*/
     public SecurityDispatcher getDispatcher(String requestPath) {
         if (StringUtils.isBlank(requestPath) == true)
             return null;

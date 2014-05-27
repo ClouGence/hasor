@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.exception.ExceptionUtils;
 /**
- * Ïß³Ì°²È«
+ * çº¿ç¨‹å®‰å…¨
  * @version : 2013-6-5
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ControllerInvoke {
     private Class<?>                        targetClass;
@@ -40,7 +40,7 @@ public class ControllerInvoke {
         this.targetMethod.setAccessible(false);
         this.targetClass = targetMethod.getDeclaringClass();
         this.appContext = appContext;
-        this.localObject = new ThreadLocal<AbstractController>();//Ê¹ÓÃThreadLocal È·±£Ã¿¸öÏß³ÌÔÚÖ´ĞĞ Action ¹ıÂËÆ÷ÆÚ¼ä²»»á´´½¨¶à¸ö Controller
+        this.localObject = new ThreadLocal<AbstractController>();//ä½¿ç”¨ThreadLocal ç¡®ä¿æ¯ä¸ªçº¿ç¨‹åœ¨æ‰§è¡Œ Action è¿‡æ»¤å™¨æœŸé—´ä¸ä¼šåˆ›å»ºå¤šä¸ª Controller
     }
     public AbstractController getTargetObject() {
         AbstractController targetObject = this.localObject.get();
@@ -57,7 +57,7 @@ public class ControllerInvoke {
             targetObject.initController(servletRequest, servletResponse);
             return this.targetMethod.invoke(targetObject, paramArrays);
         } catch (Throwable e) {
-            //´«ËÍÒì³£
+            //ä¼ é€å¼‚å¸¸
             Throwable target = ExceptionUtils.getCause(e);
             target = (target == null) ? e : target;
             throw new UnhandledException(target);
@@ -73,11 +73,11 @@ public class ControllerInvoke {
         targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
         targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
         ArrayList<Object> paramsArray = new ArrayList<Object>();
-        /*×¼±¸²ÎÊı*/
+        /*å‡†å¤‡å‚æ•°*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//»ñÈ¡²ÎÊı
-            /*»ñÈ¡µ½µÄ²ÎÊıĞèÒª×öÒ»¸öÀàĞÍ×ª»»£¬ÒÔ·ÀÖ¹method.invokeÊ±·¢ÉúÒì³£¡£*/
+            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//è·å–å‚æ•°
+            /*è·å–åˆ°çš„å‚æ•°éœ€è¦åšä¸€ä¸ªç±»å‹è½¬æ¢ï¼Œä»¥é˜²æ­¢method.invokeæ—¶å‘ç”Ÿå¼‚å¸¸ã€‚*/
             if (paramObject == null)
                 paramObject = BeanUtils.getDefaultValue(paramClass);
             else
@@ -87,7 +87,7 @@ public class ControllerInvoke {
         Object[] invokeParams = paramsArray.toArray();
         return invokeParams;
     }
-    /**»ñµÃ²ÎÊıÏî*/
+    /**è·å¾—å‚æ•°é¡¹*/
     private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno) {
         //        for (Annotation pAnno : paramAnno) {
         //            if (pAnno instanceof AttributeParam)

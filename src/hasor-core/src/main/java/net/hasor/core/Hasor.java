@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * Hasor »ù´¡¹¤¾ß°ü¡£
+ * Hasor åŸºç¡€å·¥å…·åŒ…ã€‚
  * @version : 2013-4-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class Hasor {
     //
@@ -76,9 +76,9 @@ public abstract class Hasor {
         return returnData.toArray(new String[returnData.size()]);
     }
     /**
-     * Êä³ö <i><b>µ÷ÊÔ</b></i> ÈÕÖ¾ĞÅÏ¢¡£¸Ã·½·¨Ê¹ÓÃ£º<code>String.format(String, Object[])</code>·½Ê½ÊµÏÖ¡£
-     * @param string ÒªÊä³öµÄÈÕÖ¾ĞÅÏ¢£¬»ò½«ÒªÊä³öµÄ¸ñÊ½»¯ÈÕÖ¾ĞÅÏ¢¡£
-     * @param params ĞèÒª±»¸ñÊ½»¯µÄÄÚÈİ¡£
+     * è¾“å‡º <i><b>è°ƒè¯•</b></i> æ—¥å¿—ä¿¡æ¯ã€‚è¯¥æ–¹æ³•ä½¿ç”¨ï¼š<code>String.format(String, Object[])</code>æ–¹å¼å®ç°ã€‚
+     * @param string è¦è¾“å‡ºçš„æ—¥å¿—ä¿¡æ¯ï¼Œæˆ–å°†è¦è¾“å‡ºçš„æ ¼å¼åŒ–æ—¥å¿—ä¿¡æ¯ã€‚
+     * @param params éœ€è¦è¢«æ ¼å¼åŒ–çš„å†…å®¹ã€‚
      */
     public static void logDebug(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
@@ -88,9 +88,9 @@ public abstract class Hasor {
         log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
     /**
-     * Êä³ö <i><b>´íÎó</b></i> ÈÕÖ¾ĞÅÏ¢¡£¸Ã·½·¨Ê¹ÓÃ£º<code>String.format(String, Object[])</code>·½Ê½ÊµÏÖ¡£
-     * @param string ÒªÊä³öµÄÈÕÖ¾ĞÅÏ¢£¬»ò½«ÒªÊä³öµÄ¸ñÊ½»¯ÈÕÖ¾ĞÅÏ¢¡£
-     * @param params ĞèÒª±»¸ñÊ½»¯µÄÄÚÈİ¡£
+     * è¾“å‡º <i><b>é”™è¯¯</b></i> æ—¥å¿—ä¿¡æ¯ã€‚è¯¥æ–¹æ³•ä½¿ç”¨ï¼š<code>String.format(String, Object[])</code>æ–¹å¼å®ç°ã€‚
+     * @param string è¦è¾“å‡ºçš„æ—¥å¿—ä¿¡æ¯ï¼Œæˆ–å°†è¦è¾“å‡ºçš„æ ¼å¼åŒ–æ—¥å¿—ä¿¡æ¯ã€‚
+     * @param params éœ€è¦è¢«æ ¼å¼åŒ–çš„å†…å®¹ã€‚
      */
     public static void logError(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
@@ -100,9 +100,9 @@ public abstract class Hasor {
         log.error(callerErr() + " ->> " + String.format(string, paramsStr));
     }
     /**
-     * Êä³ö <i><b>¾¯¸æ</b></i> ÈÕÖ¾ĞÅÏ¢¡£¸Ã·½·¨Ê¹ÓÃ£º<code>String.format(String, Object[])</code>·½Ê½ÊµÏÖ¡£
-     * @param string ÒªÊä³öµÄÈÕÖ¾ĞÅÏ¢£¬»ò½«ÒªÊä³öµÄ¸ñÊ½»¯ÈÕÖ¾ĞÅÏ¢¡£
-     * @param params ĞèÒª±»¸ñÊ½»¯µÄÄÚÈİ¡£
+     * è¾“å‡º <i><b>è­¦å‘Š</b></i> æ—¥å¿—ä¿¡æ¯ã€‚è¯¥æ–¹æ³•ä½¿ç”¨ï¼š<code>String.format(String, Object[])</code>æ–¹å¼å®ç°ã€‚
+     * @param string è¦è¾“å‡ºçš„æ—¥å¿—ä¿¡æ¯ï¼Œæˆ–å°†è¦è¾“å‡ºçš„æ ¼å¼åŒ–æ—¥å¿—ä¿¡æ¯ã€‚
+     * @param params éœ€è¦è¢«æ ¼å¼åŒ–çš„å†…å®¹ã€‚
      */
     public static void logWarn(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
@@ -112,9 +112,9 @@ public abstract class Hasor {
         log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
     }
     /**
-     * Êä³ö <i><b>ÏûÏ¢</b></i> ÈÕÖ¾ĞÅÏ¢¡£¸Ã·½·¨Ê¹ÓÃ£º<code>String.format(String, Object[])</code>·½Ê½ÊµÏÖ¡£
-     * @param string ÒªÊä³öµÄÈÕÖ¾ĞÅÏ¢£¬»ò½«ÒªÊä³öµÄ¸ñÊ½»¯ÈÕÖ¾ĞÅÏ¢¡£
-     * @param params ĞèÒª±»¸ñÊ½»¯µÄÄÚÈİ¡£
+     * è¾“å‡º <i><b>æ¶ˆæ¯</b></i> æ—¥å¿—ä¿¡æ¯ã€‚è¯¥æ–¹æ³•ä½¿ç”¨ï¼š<code>String.format(String, Object[])</code>æ–¹å¼å®ç°ã€‚
+     * @param string è¦è¾“å‡ºçš„æ—¥å¿—ä¿¡æ¯ï¼Œæˆ–å°†è¦è¾“å‡ºçš„æ ¼å¼åŒ–æ—¥å¿—ä¿¡æ¯ã€‚
+     * @param params éœ€è¦è¢«æ ¼å¼åŒ–çš„å†…å®¹ã€‚
      */
     public static void logInfo(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
@@ -124,9 +124,9 @@ public abstract class Hasor {
         log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
     /**
-     * Êä³ö <i><b>Trace</b></i> ÈÕÖ¾ĞÅÏ¢¡£¸Ã·½·¨Ê¹ÓÃ£º<code>String.format(String, Object[])</code>·½Ê½ÊµÏÖ¡£
-     * @param string ÒªÊä³öµÄÈÕÖ¾ĞÅÏ¢£¬»ò½«ÒªÊä³öµÄ¸ñÊ½»¯ÈÕÖ¾ĞÅÏ¢¡£
-     * @param params ĞèÒª±»¸ñÊ½»¯µÄÄÚÈİ¡£
+     * è¾“å‡º <i><b>Trace</b></i> æ—¥å¿—ä¿¡æ¯ã€‚è¯¥æ–¹æ³•ä½¿ç”¨ï¼š<code>String.format(String, Object[])</code>æ–¹å¼å®ç°ã€‚
+     * @param string è¦è¾“å‡ºçš„æ—¥å¿—ä¿¡æ¯ï¼Œæˆ–å°†è¦è¾“å‡ºçš„æ ¼å¼åŒ–æ—¥å¿—ä¿¡æ¯ã€‚
+     * @param params éœ€è¦è¢«æ ¼å¼åŒ–çš„å†…å®¹ã€‚
      */
     public static void logTrace(String string, Object... params) {
         Logger log = LoggerFactory.getLogger(callerClass());
@@ -135,14 +135,14 @@ public abstract class Hasor {
         Object[] paramsStr = getStringArray(params);
         log.info(callerTrace() + " ->> " + String.format(string, paramsStr));
     }
-    /**Ê¹ÓÃÈÕÖ¾µÄ·½Ê½¸ñÊ½»¯¡£*/
+    /**ä½¿ç”¨æ—¥å¿—çš„æ–¹å¼æ ¼å¼åŒ–ã€‚*/
     public static String formatString(String formatString, Object... args) {
         Object[] paramsStr = getStringArray(args);
         return String.format(formatString, paramsStr);
     }
     /**
-     * ×ª»»¶ÔÏóÎª×Ö·û´®ÄÚÈİ£¬ÓÃÒÔ´òÓ¡Ä¿µÄ¡£
-     * @param object ½«²ÎÊı¶ÔÏó×ª»»Îª¿ÉÒÔ×÷ÎªÈÕÖ¾Êä³öµÄ×Ö·û´®ÄÚÈİ¡£
+     * è½¬æ¢å¯¹è±¡ä¸ºå­—ç¬¦ä¸²å†…å®¹ï¼Œç”¨ä»¥æ‰“å°ç›®çš„ã€‚
+     * @param object å°†å‚æ•°å¯¹è±¡è½¬æ¢ä¸ºå¯ä»¥ä½œä¸ºæ—¥å¿—è¾“å‡ºçš„å­—ç¬¦ä¸²å†…å®¹ã€‚
      */
     public static String logString(Object object) {
         if (object == null)
@@ -197,38 +197,38 @@ public abstract class Hasor {
         return logString.toString();
     }
     //
-    /**ÊÇ·ñÊä³ö Trace ¼¶ÈÕÖ¾¡£*/
+    /**æ˜¯å¦è¾“å‡º Trace çº§æ—¥å¿—ã€‚*/
     public static boolean isTraceLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());
         return log.isTraceEnabled();
     }
-    /**ÊÇ·ñÊä³ö Debug ¼¶ÈÕÖ¾¡£*/
+    /**æ˜¯å¦è¾“å‡º Debug çº§æ—¥å¿—ã€‚*/
     public static boolean isDebugLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());
         return log.isDebugEnabled();
     }
-    /**ÊÇ·ñÊä³ö Error ¼¶ÈÕÖ¾¡£*/
+    /**æ˜¯å¦è¾“å‡º Error çº§æ—¥å¿—ã€‚*/
     public static boolean isErrorLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());
         return log.isErrorEnabled();
     }
-    /**ÊÇ·ñÊä³ö Warning ¼¶ÈÕÖ¾¡£*/
+    /**æ˜¯å¦è¾“å‡º Warning çº§æ—¥å¿—ã€‚*/
     public static boolean isWarningLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());
         return log.isWarnEnabled();
     }
-    /**ÊÇ·ñÊä³ö Info ¼¶ÈÕÖ¾¡£*/
+    /**æ˜¯å¦è¾“å‡º Info çº§æ—¥å¿—ã€‚*/
     public static boolean isInfoLogger() {
         Logger log = LoggerFactory.getLogger(callerClass());
         return log.isInfoEnabled();
     }
     //
     //
-    /**Èç¹û²ÎÊıÎª¿Õ»áÅ×³ö NullPointerException Òì³£¡£*/
+    /**å¦‚æœå‚æ•°ä¸ºç©ºä¼šæŠ›å‡º NullPointerException å¼‚å¸¸ã€‚*/
     public static <T> T assertIsNotNull(T object) {
         return assertIsNotNull(object, ""); //$NON-NLS-1$
     }
-    /**Èç¹û²ÎÊıÎª¿Õ»áÅ×³ö NullPointerException Òì³£¡£*/
+    /**å¦‚æœå‚æ•°ä¸ºç©ºä¼šæŠ›å‡º NullPointerException å¼‚å¸¸ã€‚*/
     public static <T> T assertIsNotNull(T object, String message) {
         if (object == null)
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$

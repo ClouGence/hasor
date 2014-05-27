@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import net.hasor.core.Dependency;
 import net.hasor.core.Hasor;
 import org.more.util.StringUtils;
 /**
- * Ä£¿é·´Ó¦¶Ñ£¬¸ÃÀàµÄÄ¿µÄÊÇ¶ÔÄ£¿é½øĞĞÅÅĞò¡£
+ * æ¨¡å—ååº”å †ï¼Œè¯¥ç±»çš„ç›®çš„æ˜¯å¯¹æ¨¡å—è¿›è¡Œæ’åºã€‚
  * @version : 2013-7-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ModuleReactor {
     private List<ModuleProxy> modules = null;
@@ -30,12 +30,12 @@ public class ModuleReactor {
         this.modules = modules;
     }
     //
-    /**¼ì²éÄ£¿éµÄÒÀÀµÊÇ·ñÕıÈ·¡£*/
+    /**æ£€æŸ¥æ¨¡å—çš„ä¾èµ–æ˜¯å¦æ­£ç¡®ã€‚*/
     public void checkModule(ModuleProxy info) {
         ModuleProxy infoBean = (ModuleProxy) info;
         List<ReactorModuleProxyElement> stackArray = new ArrayList<ReactorModuleProxyElement>();
         try {
-            //·Åµ½Õ»¶¥
+            //æ”¾åˆ°æ ˆé¡¶
             stackArray.add(new ReactorModuleProxyElement(0, infoBean, "[OK]    "));
             this.checkModuleInDependency(infoBean, 1, infoBean.getDependency(), new ArrayList<ModuleProxy>(), stackArray);
         } catch (RuntimeException e) {
@@ -52,7 +52,7 @@ public class ModuleReactor {
             stackArray.add(infoLog);
             //
             if (depArray.contains(info)) {
-                /*ÕâÀïÓöµ½Ñ­»·ÒÀÀµ£¬Ó¦¸ÃÊÇ³öÏÖÁË×Ô¼ºÒÀÀµ×Ô¼ºµÄÏÖÏó¡£*/
+                /*è¿™é‡Œé‡åˆ°å¾ªç¯ä¾èµ–ï¼Œåº”è¯¥æ˜¯å‡ºç°äº†è‡ªå·±ä¾èµ–è‡ªå·±çš„ç°è±¡ã€‚*/
                 infoLog.setMark("[Error] ");
                 throw new RuntimeException(depInfo.getDisplayName() + " modules depend on the loop.");
             } else {
@@ -62,25 +62,25 @@ public class ModuleReactor {
         }
     }
     //
-    /**°´ÕÕÃ÷È·µÄÄ£¿éÆô¶¯Ë³Ğò¶ÔÄ£¿é½øĞĞÅÅĞò£¬¸Ã·½·¨Í¬Ê±»¹½øĞĞÁËÑ­»·¼ì²â¡£*/
+    /**æŒ‰ç…§æ˜ç¡®çš„æ¨¡å—å¯åŠ¨é¡ºåºå¯¹æ¨¡å—è¿›è¡Œæ’åºï¼Œè¯¥æ–¹æ³•åŒæ—¶è¿˜è¿›è¡Œäº†å¾ªç¯æ£€æµ‹ã€‚*/
     public List<ModuleProxy> process() {
-        /*1.½øĞĞÑ­»·¼ì²é£¬È·±£Ä£¿éµÄÎÈ¶¨ÒÀÀµ*/
+        /*1.è¿›è¡Œå¾ªç¯æ£€æŸ¥ï¼Œç¡®ä¿æ¨¡å—çš„ç¨³å®šä¾èµ–*/
         Hasor.logInfo("begin cycle check...mods %s.", this.modules);
         for (ModuleProxy info : this.modules)
             this.checkModule(info);
-        /*2.¹¹½¨ModuleProxy¶ÔÏóÖĞµÄÒÀÀµÊ÷*/
+        /*2.æ„å»ºModuleProxyå¯¹è±¡ä¸­çš„ä¾èµ–æ ‘*/
         Hasor.logInfo("build dependency tree for ModuleProxy.");
         for (ModuleProxy info : this.modules) {
             ModuleProxy depInfo = (ModuleProxy) info;
             for (Dependency dep : depInfo.getDependency())
                 this.updateModuleDependency(dep);
         }
-        /*3.Ä£¿éÒÀÀµÊ÷*/
+        /*3.æ¨¡å—ä¾èµ–æ ‘*/
         List<ReactorModuleProxyElement> tree = new ArrayList<ReactorModuleProxyElement>();
         this.getDependenceTree(tree);
         String treeInfo = getTreeInfo(tree, null);
         Hasor.logInfo("dependence Tree\n%s", treeInfo);
-        /*4.È·¶¨Æô¶¯Ë³Ğò*/
+        /*4.ç¡®å®šå¯åŠ¨é¡ºåº*/
         List<ModuleProxy> finalList = this.getStartModule(tree);
         //
         StringBuilder sb = new StringBuilder("");
@@ -101,10 +101,10 @@ public class ModuleReactor {
         return finalList;
     }
     //
-    /**È·¶¨ÒÀÀµÊ÷*/
+    /**ç¡®å®šä¾èµ–æ ‘*/
     private void getDependenceTree(List<ReactorModuleProxyElement> infoList) {
-        ArrayList<ModuleProxy> allModule = new ArrayList<ModuleProxy>(this.modules);//¿ËÂ¡Ò»¸ö
-        /*È¥µôËùÓĞ±»ÒÀÀµµÄÏîÄ¿*/
+        ArrayList<ModuleProxy> allModule = new ArrayList<ModuleProxy>(this.modules);//å…‹éš†ä¸€ä¸ª
+        /*å»æ‰æ‰€æœ‰è¢«ä¾èµ–çš„é¡¹ç›®*/
         for (ModuleProxy info : this.modules) {
             ModuleProxy depInfo = (ModuleProxy) info;
             for (Dependency dep : depInfo.getDependency())
@@ -143,7 +143,7 @@ public class ModuleReactor {
         return sb.toString();
     }
     //
-    /**¸ù¾İÒÀÀµÊ÷È·¶¨Ä£¿éÆô¶¯Ë³Ğò*/
+    /**æ ¹æ®ä¾èµ–æ ‘ç¡®å®šæ¨¡å—å¯åŠ¨é¡ºåº*/
     private List<ModuleProxy> getStartModule(List<ReactorModuleProxyElement> infoList) {
         List<ModuleProxy> finalList = new ArrayList<ModuleProxy>();
         for (ReactorModuleProxyElement e : infoList)
@@ -165,7 +165,7 @@ public class ModuleReactor {
         }
     }
     //
-    /**¸üĞÂModuleProxy¶ÔÏóÖĞµÄÒÀÀµÊ÷*/
+    /**æ›´æ–°ModuleProxyå¯¹è±¡ä¸­çš„ä¾èµ–æ ‘*/
     private void updateModuleDependency(Dependency dep) {
         DependencyBean depBean = (DependencyBean) dep;
         List<Dependency> refDep = depBean.getModuleInfo().getDependency();

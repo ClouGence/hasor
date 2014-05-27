@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
- * Ïß³Ì°²È«
+ * çº¿ç¨‹å®‰å…¨
  * @version : 2013-6-5
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class RestfulInvoke {
     private HttpServletRequest                       requestLocal;
@@ -75,18 +75,18 @@ public class RestfulInvoke {
     //
     //
     //
-    /**»ñÈ¡µ÷ÓÃµÄÄ¿±ê¶ÔÏó*/
+    /**è·å–è°ƒç”¨çš„ç›®æ ‡å¯¹è±¡*/
     public Object getTargetObject() {
         if (targetObject != null)
             return targetObject;
         targetObject = this.define.getAppContext().getInstance(this.define.getTargetClass());
         return targetObject;
     }
-    /**»ñÈ¡request*/
+    /**è·å–request*/
     public HttpServletRequest getRequest() {
         return this.requestLocal;
     }
-    /**»ñÈ¡response*/
+    /**è·å–response*/
     public HttpServletResponse getResponse() {
         return this.responseLocal;
     }
@@ -96,12 +96,12 @@ public class RestfulInvoke {
     //
     //
     //
-    /**³õÊ¼»¯{@link HttpServletRequest}¡¢{@link HttpServletResponse}*/
+    /**åˆå§‹åŒ–{@link HttpServletRequest}ã€{@link HttpServletResponse}*/
     public void initHttp(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         this.requestLocal = httpRequest;
         this.responseLocal = httpResponse;
     }
-    /**Ö´ĞĞµ÷ÓÃ£¨ÔÚÀ¹½ØÆ÷ÖĞµ÷ÓÃ¸Ã·½·¨»áÒı·¢ËÀÑ­»·£©*/
+    /**æ‰§è¡Œè°ƒç”¨ï¼ˆåœ¨æ‹¦æˆªå™¨ä¸­è°ƒç”¨è¯¥æ–¹æ³•ä¼šå¼•å‘æ­»å¾ªç¯ï¼‰*/
     protected Object invoke() throws Throwable {
         //
         try {
@@ -116,7 +116,7 @@ public class RestfulInvoke {
             getLocalStack().pop();
         }
     }
-    /**×¼±¸²ÎÊı*/
+    /**å‡†å¤‡å‚æ•°*/
     public Object[] prepareParams() throws Throwable {
         Method targetMethod = this.define.getTargetMethod();
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
@@ -124,11 +124,11 @@ public class RestfulInvoke {
         targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
         targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
         ArrayList<Object> paramsArray = new ArrayList<Object>();
-        /*×¼±¸²ÎÊı*/
+        /*å‡†å¤‡å‚æ•°*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//»ñÈ¡²ÎÊı
-            /*»ñÈ¡µ½µÄ²ÎÊıĞèÒª×öÒ»¸öÀàĞÍ×ª»»£¬ÒÔ·ÀÖ¹method.invokeÊ±·¢ÉúÒì³£¡£*/
+            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//è·å–å‚æ•°
+            /*è·å–åˆ°çš„å‚æ•°éœ€è¦åšä¸€ä¸ªç±»å‹è½¬æ¢ï¼Œä»¥é˜²æ­¢method.invokeæ—¶å‘ç”Ÿå¼‚å¸¸ã€‚*/
             if (paramObject == null)
                 paramObject = BeanUtils.getDefaultValue(paramClass);
             else
@@ -141,12 +141,12 @@ public class RestfulInvoke {
     //
     //
     //
-    /**Ö´ĞĞµ÷ÓÃ£¨ÔÚÀ¹½ØÆ÷ÖĞµ÷ÓÃ¸Ã·½·¨»áÒı·¢ËÀÑ­»·£©*/
+    /**æ‰§è¡Œè°ƒç”¨ï¼ˆåœ¨æ‹¦æˆªå™¨ä¸­è°ƒç”¨è¯¥æ–¹æ³•ä¼šå¼•å‘æ­»å¾ªç¯ï¼‰*/
     protected Object invoke(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Throwable {
         this.initHttp(httpRequest, httpResponse);
         return this.invoke();
     }
-    /**×¼±¸²ÎÊı*/
+    /**å‡†å¤‡å‚æ•°*/
     public Object[] prepareParams(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Throwable {
         this.initHttp(httpRequest, httpResponse);
         return this.prepareParams();
@@ -248,7 +248,7 @@ public class RestfulInvoke {
             try {
                 oriData = URLDecoder.decode(pData, encoding);
             } catch (Exception e) {
-                Hasor.logWarn("use ¡®%s¡¯ decode ¡®%s¡¯ error.", encoding, pData);
+                Hasor.logWarn("use â€˜%sâ€™ decode â€˜%sâ€™ error.", encoding, pData);
                 continue;
             }
             String[] kv = oriData.split("=");

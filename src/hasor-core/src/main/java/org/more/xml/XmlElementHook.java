@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +19,23 @@ import javax.xml.stream.XMLStreamException;
 import org.more.xml.stream.EndElementEvent;
 import org.more.xml.stream.StartElementEvent;
 /**
- * ¸Ã¹³×ÓÓÃÓÚ´¦ÀíÔªËØ¿ªÊ¼ºÍÔªËØ½áÊøÊÂ¼ş¡£
+ * è¯¥é’©å­ç”¨äºå¤„ç†å…ƒç´ å¼€å§‹å’Œå…ƒç´ ç»“æŸäº‹ä»¶ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlElementHook extends XmlParserHook {
     /**
-     * µ±Óöµ½Ò»¸ö¿ªÊ¼±êÇ©Ê±¡£ÔÚ¸Ã·½·¨ÖĞ¿ÉÒÔÍ¨¹ıevent¶ÔÏó»ñÈ¡µ½Õâ¸ö±êÇ©µÄÊôĞÔ¡£
-     * @param context »·¾³ÉÏÏÂÎÄ¡£
-     * @param xpath µ±Ç°±êÇ©ÔÚËù¶¨ÒåµÄÃüÃû¿Õ¼äÖĞµÄxpath¡£
-     * @param event ÊÂ¼ş¡£
+     * å½“é‡åˆ°ä¸€ä¸ªå¼€å§‹æ ‡ç­¾æ—¶ã€‚åœ¨è¯¥æ–¹æ³•ä¸­å¯ä»¥é€šè¿‡eventå¯¹è±¡è·å–åˆ°è¿™ä¸ªæ ‡ç­¾çš„å±æ€§ã€‚
+     * @param context ç¯å¢ƒä¸Šä¸‹æ–‡ã€‚
+     * @param xpath å½“å‰æ ‡ç­¾åœ¨æ‰€å®šä¹‰çš„å‘½åç©ºé—´ä¸­çš„xpathã€‚
+     * @param event äº‹ä»¶ã€‚
      */
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException;
     /**
-     * µ±Óöµ½Ò»¸ö½áÊø±êÇ©Ê±¡£
-     * @param context »·¾³ÉÏÏÂÎÄ¡£
-     * @param xpath µ±Ç°±êÇ©ÔÚËù¶¨ÒåµÄÃüÃû¿Õ¼äÖĞµÄxpath¡£
-     * @param event ÊÂ¼ş¡£
+     * å½“é‡åˆ°ä¸€ä¸ªç»“æŸæ ‡ç­¾æ—¶ã€‚
+     * @param context ç¯å¢ƒä¸Šä¸‹æ–‡ã€‚
+     * @param xpath å½“å‰æ ‡ç­¾åœ¨æ‰€å®šä¹‰çš„å‘½åç©ºé—´ä¸­çš„xpathã€‚
+     * @param event äº‹ä»¶ã€‚
      */
     public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException;
 }

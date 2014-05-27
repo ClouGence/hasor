@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import java.util.Map;
 import net.test.project.common.plugins.freemarker.loader.FmTemplateLoader;
 import net.test.project.common.plugins.freemarker.loader.IResourceLoader;
 /**
- * ´¦ÀíÅäÖÃÎÄ¼şÖĞÌí¼ÓµÄÄ£°å¡£
+ * å¤„ç†é…ç½®æ–‡ä»¶ä¸­æ·»åŠ çš„æ¨¡æ¿ã€‚
  * @version : 2011-9-14
- * @author ÕÔÓÀ´º (zyc@byshell.org) 
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org) 
  */
 public class StringTemplateLoader implements FmTemplateLoader, IResourceLoader {
     private Map<String, String_TemplateObject> objectMap = null;
@@ -44,7 +44,7 @@ public class StringTemplateLoader implements FmTemplateLoader, IResourceLoader {
     public String getType() {
         return this.getClass().getSimpleName();
     }
-    /**½«×Ö·û´®×÷ÎªÄ£°åÄÚÈİÌí¼Óµ½×°ÔØÆ÷ÖĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²ä½œä¸ºæ¨¡æ¿å†…å®¹æ·»åŠ åˆ°è£…è½½å™¨ä¸­ã€‚*/
     public void addTemplateAsString(String name, String templateString) {
         this.objectMap.put(name, new String_TemplateObject(templateString));
     }

@@ -27,7 +27,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-10-8
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Plugin
 public class DataSourcePlugin extends AbstractHasorPlugin {
@@ -52,16 +52,16 @@ public class DataSourcePlugin extends AbstractHasorPlugin {
                 //
                 DataSource dataSourceObject = dsFactory.createDataSource(env, dsConfig);
                 if (dataSourceObject == null) {
-                    Hasor.logWarn("¡®%s¡¯ dataSource is null.", name);
+                    Hasor.logWarn("â€˜%sâ€™ dataSource is null.", name);
                     continue;
                 }
-                Hasor.logInfo("¡®%s¡¯ dataSource is defined.", name);
+                Hasor.logInfo("â€˜%sâ€™ dataSource is defined.", name);
                 apiBinder.bindingType(name, DataSource.class).toInstance(dataSourceObject);/*Bind DataSource.*/
                 apiBinder.bindingType(name, DataSourceFactory.class).toInstance(dsFactory);/*Bind Factory.*/
                 //default
                 if (StringUtils.equalsIgnoreCase(name, defaultDS)) {
                     apiBinder.bindingType(DataSource.class).toInstance(dataSourceObject);
-                    Hasor.logInfo("¡®%s¡¯ dataSource is default.", name);
+                    Hasor.logInfo("â€˜%sâ€™ dataSource is default.", name);
                 }
             }
         }

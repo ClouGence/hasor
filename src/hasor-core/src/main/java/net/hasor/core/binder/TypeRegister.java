@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,23 @@ import net.hasor.core.Scope;
 /**
  * 
  * @version : 2014-3-13
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface TypeRegister<T> extends RegisterInfo<T> {
-    /**»ñÈ¡×¢²áµÄÀàĞÍ*/
+    /**è·å–æ³¨å†Œçš„ç±»å‹*/
     public Class<T> getType();
-    /**ÎªÀàĞÍ°ó¶¨Ò»¸öÊµÏÖ£¬µ±»ñÈ¡ÀàĞÍÊµÀıÊ±ÆäÊµ»ñÈ¡µÄÊÇÊµÏÖ¶ÔÏó¡£*/
+    /**ä¸ºç±»å‹ç»‘å®šä¸€ä¸ªå®ç°ï¼Œå½“è·å–ç±»å‹å®ä¾‹æ—¶å…¶å®è·å–çš„æ˜¯å®ç°å¯¹è±¡ã€‚*/
     public void toImpl(Class<? extends T> implementation);
-    /**ÎªÀàĞÍ°ó¶¨Ò»¸öÊµÏÖ¶ÔÏó¡£*/
+    /**ä¸ºç±»å‹ç»‘å®šä¸€ä¸ªå®ç°å¯¹è±¡ã€‚*/
     public void toInstance(T instance);
-    /**ÎªÀàĞÍ°ó¶¨Ò»¸öProvider¡£*/
+    /**ä¸ºç±»å‹ç»‘å®šä¸€ä¸ªProviderã€‚*/
     public void toProvider(Provider<T> provider);
-    /**ÎªÀàĞÍ°ó¶¨Ò»¸ö³õÊ¼¹¹Ôì·½·¨¡£*/
+    /**ä¸ºç±»å‹ç»‘å®šä¸€ä¸ªåˆå§‹æ„é€ æ–¹æ³•ã€‚*/
     public void toConstructor(Constructor<? extends T> constructor);
-    /**ÎªÀàĞÍ°ó¶¨Ò»¸öÃû³Æ¡£*/
+    /**ä¸ºç±»å‹ç»‘å®šä¸€ä¸ªåç§°ã€‚*/
     public void setName(String name);
-    /**½«ÀàĞÍ·¢²¼Îªµ¥ÀıÄ£Ê½¡£*/
+    /**å°†ç±»å‹å‘å¸ƒä¸ºå•ä¾‹æ¨¡å¼ã€‚*/
     public void setSingleton();
-    /**½«ÀàĞÍ·¢²¼µ½Ò»¸ö¹Ì¶¨µÄÃüÃû¿Õ¼äÄÚ¡£*/
+    /**å°†ç±»å‹å‘å¸ƒåˆ°ä¸€ä¸ªå›ºå®šçš„å‘½åç©ºé—´å†…ã€‚*/
     public void setScope(Scope scope);
 }

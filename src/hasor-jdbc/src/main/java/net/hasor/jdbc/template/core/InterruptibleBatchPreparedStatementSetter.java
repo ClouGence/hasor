@@ -16,11 +16,11 @@
 package net.hasor.jdbc.template.core;
 import net.hasor.jdbc.template.BatchPreparedStatementSetter;
 /**
- * À©Õ¹ BatchPreparedStatementSetter ½Ó¿Ú£¬Ìá¹©ÁËÒ»¸ö·½·¨¿ÉÒÔÖĞ¶ÏÄ³Ò»¸öÅú²Ù×÷¡£
+ * æ‰©å±• BatchPreparedStatementSetter æ¥å£ï¼Œæä¾›äº†ä¸€ä¸ªæ–¹æ³•å¯ä»¥ä¸­æ–­æŸä¸€ä¸ªæ‰¹æ“ä½œã€‚
  * @version : 2013-10-14
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface InterruptibleBatchPreparedStatementSetter extends BatchPreparedStatementSetter {
-    /**²âÊÔÅú´¦ÀíÊÇ·ñ¼ÌĞø£¬·µ»Ø true ±íÊ¾´¦Àí¡£false ±íÊ¾ÔÚÅú´¦ÀíÖĞ·ÅÆúÕâ¸öÌõÄ¿¡£*/
+    /**æµ‹è¯•æ‰¹å¤„ç†æ˜¯å¦ç»§ç»­ï¼Œè¿”å› true è¡¨ç¤ºå¤„ç†ã€‚false è¡¨ç¤ºåœ¨æ‰¹å¤„ç†ä¸­æ”¾å¼ƒè¿™ä¸ªæ¡ç›®ã€‚*/
     public boolean isBatchExhausted(int i);
 }

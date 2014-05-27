@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,20 @@ import org.more.webui.context.ViewContext;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 /**
- * ¸ºÔğ¸ù¾İ±êÇ©ÔªËØ´´½¨×é½¨¶ÔÏó£¬¸ÃÀà»á¶ÔfreemarkerÓĞÇ¿ÁÒµÄ°æ±¾ÏŞÖÆÒªÇó¡£¸ü»»freemarker°æ±¾¿ÉÄÜ»áÒı·¢ÎÊÌâ¡£
+ * è´Ÿè´£æ ¹æ®æ ‡ç­¾å…ƒç´ åˆ›å»ºç»„å»ºå¯¹è±¡ï¼Œè¯¥ç±»ä¼šå¯¹freemarkeræœ‰å¼ºçƒˆçš„ç‰ˆæœ¬é™åˆ¶è¦æ±‚ã€‚æ›´æ¢freemarkerç‰ˆæœ¬å¯èƒ½ä¼šå¼•å‘é—®é¢˜ã€‚
  * @version : 2012-5-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Hook_UserTag implements ElementHook {
     public static String Name = "UnifiedCall";
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException {
-        //A.´´½¨×é½¨
+        //A.åˆ›å»ºç»„å»º
         String tagName = e.getDescription().split(" ")[1];
         UIComponent componentObject = viewContext.getUIContext().getComponent(tagName);
         if (componentObject == null)
             return null;
-        componentObject.getAtts().put(Name, e);//ÉèÖÃÀ´Ô´µÄTemplateElement
-        //B.×°ÔØÊôĞÔ¶¨Òå
+        componentObject.getAtts().put(Name, e);//è®¾ç½®æ¥æºçš„TemplateElement
+        //B.è£…è½½å±æ€§å®šä¹‰
         Map<String, Expression> namedArgs = null;
         try {
             Field field = e.getClass().getDeclaredField("namedArgs");
@@ -56,9 +56,9 @@ public class Hook_UserTag implements ElementHook {
             else
                 namedArgs = new HashMap<String, Expression>();
         } catch (Exception e2) {
-            throw new ElementHookException("Freemarker¼æÈİ´íÎó£ºÎŞ·¨¶ÁÈ¡namedArgs»òvalue×Ö¶Î¡£½¨ÒéÊ¹ÓÃ½¨ÒéÊ¹ÓÃfreemarker 2.3.19°æ±¾¡£", e2);
+            throw new ElementHookException("Freemarkerå…¼å®¹é”™è¯¯ï¼šæ— æ³•è¯»å–namedArgsæˆ–valueå­—æ®µã€‚å»ºè®®ä½¿ç”¨å»ºè®®ä½¿ç”¨freemarker 2.3.19ç‰ˆæœ¬ã€‚", e2);
         }
-        //C.½«×é½¨ºÍ±êÇ©¶ÔÏóµÄIDÖµÏà»¥°ó¶¨¡£
+        //C.å°†ç»„å»ºå’Œæ ‡ç­¾å¯¹è±¡çš„IDå€¼ç›¸äº’ç»‘å®šã€‚
         try {
             if (namedArgs.containsKey("id") == true) {
                 Expression idExp = namedArgs.get("id");
@@ -69,7 +69,7 @@ public class Hook_UserTag implements ElementHook {
             } else
                 componentObject.setComponentID(ViewContext.getCurrentViewContext().newClientID());
         } catch (Exception e2) {
-            throw new ElementHookException("Freemarker¼æÈİ´íÎó£ºÎŞ·¨´´½¨StringLiteralÀàĞÍ¶ÔÏó¡£½¨ÒéÊ¹ÓÃ½¨ÒéÊ¹ÓÃfreemarker 2.3.19°æ±¾¡£", e2);
+            throw new ElementHookException("Freemarkerå…¼å®¹é”™è¯¯ï¼šæ— æ³•åˆ›å»ºStringLiteralç±»å‹å¯¹è±¡ã€‚å»ºè®®ä½¿ç”¨å»ºè®®ä½¿ç”¨freemarker 2.3.19ç‰ˆæœ¬ã€‚", e2);
         }
         return componentObject;
     }

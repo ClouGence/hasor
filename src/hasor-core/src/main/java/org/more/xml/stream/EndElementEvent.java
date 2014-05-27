@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,47 +17,47 @@ package org.more.xml.stream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 /**
- * µ±Óöµ½±êÇ©½áÊøÊ±¡£
+ * å½“é‡åˆ°æ ‡ç­¾ç»“æŸæ—¶ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class EndElementEvent extends XmlStreamEvent {
     public EndElementEvent(String xpath, XMLStreamReader reader) {
         super(xpath, reader);
     }
-    /**»ñÈ¡ÔªËØÃû³Æ{@link QName}¶ÔÏó¡£*/
+    /**è·å–å…ƒç´ åç§°{@link QName}å¯¹è±¡ã€‚*/
     public QName getName() {
         return this.getReader().getName();
     }
-    /**»ñÈ¡ÔªËØÃû(²»°üº¬ÃüÃû¿Õ¼äÇ°×º)¡£*/
+    /**è·å–å…ƒç´ å(ä¸åŒ…å«å‘½åç©ºé—´å‰ç¼€)ã€‚*/
     public String getElementName() {
         return this.getName().getLocalPart();
     }
-    /**»ñÈ¡ÔªËØÃüÃû¿Õ¼äÇ°×º¡£*/
+    /**è·å–å…ƒç´ å‘½åç©ºé—´å‰ç¼€ã€‚*/
     public String getPrefix() {
         return this.getName().getPrefix();
     }
-    /**»ñÈ¡ÔªËØÃüÃû¿Õ¼ä¡£*/
+    /**è·å–å…ƒç´ å‘½åç©ºé—´ã€‚*/
     public String getNamespaceURI() {
         return this.getName().getNamespaceURI();
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÃüÃû¿Õ¼ä×ÜÊı¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„å‘½åç©ºé—´æ€»æ•°ã€‚*/
     public int getNamespaceCount() {
         return this.getReader().getNamespaceCount();
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨Ë÷ÒıµÄÃüÃû¿Õ¼äÇ°×º¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šç´¢å¼•çš„å‘½åç©ºé—´å‰ç¼€ã€‚*/
     public String getNamespacePrefix(int index) {
         return this.getReader().getNamespacePrefix(index);
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨Ë÷ÒıµÄÃüÃû¿Õ¼äURI¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šç´¢å¼•çš„å‘½åç©ºé—´URIã€‚*/
     public String getNamespaceURI(int index) {
         return this.getReader().getNamespaceURI(index);
     }
-    /**Ê¹ÓÃÖ¸¶¨µÄÃüÃû¿Õ¼äÇ°×º»ñÈ¡ÃüÃû¿Õ¼äURI¡£*/
+    /**ä½¿ç”¨æŒ‡å®šçš„å‘½åç©ºé—´å‰ç¼€è·å–å‘½åç©ºé—´URIã€‚*/
     public String getNamespaceURI(String prefix) {
         return this.getReader().getNamespaceURI(prefix);
     }
-    /**¸ÃÊÂ¼şµÄÅÄµµÊÇ{@link StartElementEvent}ÀàĞÍ¶ÔÏó£¬±»²âÊÔµÄ¶ÔÏóµÄ{@link QName}±ØĞëÓëµ±Ç°¶ÔÏóµÄ{@link QName}ÏàÍ¬£¬²¢ÇÒÒªÔÚÍ¬Ò»¸öxpathÏÂ¡£*/
+    /**è¯¥äº‹ä»¶çš„æ‹æ¡£æ˜¯{@link StartElementEvent}ç±»å‹å¯¹è±¡ï¼Œè¢«æµ‹è¯•çš„å¯¹è±¡çš„{@link QName}å¿…é¡»ä¸å½“å‰å¯¹è±¡çš„{@link QName}ç›¸åŒï¼Œå¹¶ä¸”è¦åœ¨åŒä¸€ä¸ªxpathä¸‹ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         if (e instanceof StartElementEvent == false)
             return false;
@@ -71,7 +71,7 @@ public class EndElementEvent extends XmlStreamEvent {
             return false;
         return true;
     };
-    /**ÔªËØ½áÊøÊÂ¼ş£¬²»ÊÇ¹²ÓĞÊÂ¼ş¡£*/
+    /**å…ƒç´ ç»“æŸäº‹ä»¶ï¼Œä¸æ˜¯å…±æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         return false;
     }

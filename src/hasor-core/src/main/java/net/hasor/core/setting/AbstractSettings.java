@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,16 @@ import org.more.convert.ConverterUtils;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 /**
- * Settings½Ó¿ÚµÄ³éÏóÊµÏÖ¡£
+ * Settingsæ¥å£çš„æŠ½è±¡å®ç°ã€‚
  * @version : 2013-4-2
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
     protected abstract Map<String, Object> getSettingsMap();
-    /**»ñÈ¡Ö¸ÔÚÄ³¸öÌØ¶¨ÃüÃû¿Õ¼äÏÂµÄSettings½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æŒ‡åœ¨æŸä¸ªç‰¹å®šå‘½åç©ºé—´ä¸‹çš„Settingsæ¥å£å¯¹è±¡ã€‚*/
     public abstract AbstractSettings getSettings(String namespace);
     //
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇÄ³¸ö×¢½âµÄÀà£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°æŸä¸ªæ³¨è§£çš„ç±»ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
         if (featureType == null)
             return null;
@@ -46,7 +46,7 @@ public abstract class AbstractSettings implements Settings {
             loadPackages = new String[] { "" };
         return ScanClassPath.getClassSet(loadPackages, featureType);
     }
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇÄ³¸ö×¢½âµÄÀà£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°æŸä¸ªæ³¨è§£çš„ç±»ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
         if (featureType == null)
             return null;
@@ -54,7 +54,7 @@ public abstract class AbstractSettings implements Settings {
         String[] spanPackage = loadPackages.split(",");
         return this.findClass(featureType, spanPackage);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØtoType²ÎÊıÖ¸¶¨µÄÀàĞÍ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›toTypeå‚æ•°æŒ‡å®šçš„ç±»å‹ã€‚*/
     public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
         Object oriObject = this.getSettingsMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());
         if (oriObject == null)
@@ -62,13 +62,13 @@ public abstract class AbstractSettings implements Settings {
         //
         T var = null;
         if (oriObject instanceof String)
-            //Ô­Ê¼Êı¾İÊÇ×Ö·û´®¾­¹ıEval¹ı³Ì
+            //åŸå§‹æ•°æ®æ˜¯å­—ç¬¦ä¸²ç»è¿‡Evalè¿‡ç¨‹
             var = (T) ConverterUtils.convert(toType, oriObject);
         else if (oriObject instanceof FieldProperty)
-            //Ô­Ê¼Êı¾İÊÇGlobalPropertyÖ±½Óget
+            //åŸå§‹æ•°æ®æ˜¯GlobalPropertyç›´æ¥get
             var = ((FieldProperty) oriObject).getValue(toType, defaultValue);
         else
-            //ÆäËûÀàĞÍ²»Óè´¦Àí£¨Êı¾İ¾ÍÊÇÒªµÄÖµ£©
+            //å…¶ä»–ç±»å‹ä¸äºˆå¤„ç†ï¼ˆæ•°æ®å°±æ˜¯è¦çš„å€¼ï¼‰
             var = (T) oriObject;
         return var == null ? defaultValue : var;
     };
@@ -80,7 +80,7 @@ public abstract class AbstractSettings implements Settings {
         for (String url : this.getSettingArray()) {
             T targetObject = this.getSettings(url).getToType(name, toType, defaultValue);
             if (targetObject == null)
-                continue;//¿Õ
+                continue;//ç©º
             //
             targetObjects.add(targetObject);
         }
@@ -89,23 +89,23 @@ public abstract class AbstractSettings implements Settings {
         }
         return targetObjects.toArray((T[]) Array.newInstance(toType, targetObjects.size()));
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØtoType²ÎÊıÖ¸¶¨µÄÀàĞÍ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›toTypeå‚æ•°æŒ‡å®šçš„ç±»å‹ã€‚*/
     public final <T> T getToType(String name, Class<T> toType) {
         return this.getToType(name, toType, null);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Object}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Object}å½¢å¼å¯¹è±¡ã€‚*/
     public Object getObject(String name) {
         return this.getToType(name, Object.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Object}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Object}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Object getObject(String name, Object defaultValue) {
         return this.getToType(name, Object.class, defaultValue);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚*/
     public Character getChar(String name) {
         return this.getToType(name, Character.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Character getChar(String name, Character defaultValue) {
         return this.getToType(name, Character.class, defaultValue);
     };
@@ -115,11 +115,11 @@ public abstract class AbstractSettings implements Settings {
     public Character[] getCharArray(String name, Character defaultValue) {
         return this.getToTypeArray(name, Character.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚*/
     public String getString(String name) {
         return this.getToType(name, String.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getString(String name, String defaultValue) {
         return this.getToType(name, String.class, defaultValue);
     };
@@ -129,11 +129,11 @@ public abstract class AbstractSettings implements Settings {
     public String[] getStringArray(String name, String defaultValue) {
         return this.getToTypeArray(name, String.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚*/
     public Boolean getBoolean(String name) {
         return this.getToType(name, Boolean.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Boolean getBoolean(String name, Boolean defaultValue) {
         return this.getToType(name, Boolean.class, defaultValue);
     };
@@ -143,11 +143,11 @@ public abstract class AbstractSettings implements Settings {
     public Boolean[] getBooleanArray(String name, Boolean defaultValue) {
         return this.getToTypeArray(name, Boolean.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚*/
     public Short getShort(String name) {
         return this.getToType(name, Short.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Short getShort(String name, Short defaultValue) {
         return this.getToType(name, Short.class, defaultValue);
     };
@@ -157,11 +157,11 @@ public abstract class AbstractSettings implements Settings {
     public Short[] getShortArray(String name, Short defaultValue) {
         return this.getToTypeArray(name, Short.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚*/
     public Integer getInteger(String name) {
         return this.getToType(name, Integer.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Integer getInteger(String name, Integer defaultValue) {
         return this.getToType(name, Integer.class, defaultValue);
     };
@@ -171,11 +171,11 @@ public abstract class AbstractSettings implements Settings {
     public Integer[] getIntegerArray(String name, Integer defaultValue) {
         return this.getToTypeArray(name, Integer.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚*/
     public Long getLong(String name) {
         return this.getToType(name, Long.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Long getLong(String name, Long defaultValue) {
         return this.getToType(name, Long.class, defaultValue);
     };
@@ -185,11 +185,11 @@ public abstract class AbstractSettings implements Settings {
     public Long[] getLongArray(String name, Long defaultValue) {
         return this.getToTypeArray(name, Long.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚*/
     public Float getFloat(String name) {
         return this.getToType(name, Float.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Float getFloat(String name, Float defaultValue) {
         return this.getToType(name, Float.class, defaultValue);
     };
@@ -199,11 +199,11 @@ public abstract class AbstractSettings implements Settings {
     public Float[] getFloatArray(String name, Float defaultValue) {
         return this.getToTypeArray(name, Float.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚*/
     public Double getDouble(String name) {
         return this.getToType(name, Double.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Double getDouble(String name, Double defaultValue) {
         return this.getToType(name, Double.class, defaultValue);
     };
@@ -213,23 +213,23 @@ public abstract class AbstractSettings implements Settings {
     public Double[] getDoubleArray(String name, Double defaultValue) {
         return this.getToTypeArray(name, Double.class, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date getDate(String name) {
         return this.getToType(name, Date.class);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, Date defaultValue) {
         return this.getToType(name, Date.class, defaultValue);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, long defaultValue) {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date getDate(String name, String format) {
         return this.getDate(name, format, null);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, String format, Date defaultValue) {
         String oriData = this.getToType(name, String.class);
         if (oriData == null || oriData.length() == 0)
@@ -244,7 +244,7 @@ public abstract class AbstractSettings implements Settings {
         else
             return parsedDate;
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, String format, long defaultValue) {
         return this.getDate(name, format, new Date(defaultValue));
     };
@@ -297,11 +297,11 @@ public abstract class AbstractSettings implements Settings {
         }
         return parsedDate;
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType) {
         return this.getToType(name, enmType, null);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue) {
         return this.getToType(name, enmType, defaultValue);
     };
@@ -311,15 +311,15 @@ public abstract class AbstractSettings implements Settings {
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue) {
         return this.getToTypeArray(name, enmType, defaultValue);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getFilePath(String name) {
         return this.getFilePath(name, null);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getFilePath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
         if (filePath == null || filePath.length() == 0)
-            return defaultValue;//¿Õ
+            return defaultValue;//ç©º
         //
         int length = filePath.length();
         if (filePath.charAt(length - 1) == File.separatorChar)
@@ -335,7 +335,7 @@ public abstract class AbstractSettings implements Settings {
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getFilePath(name, defaultValue);
             if (filePath == null || filePath.length() == 0)
-                continue;//¿Õ
+                continue;//ç©º
             //
             int length = filePath.length();
             if (filePath.charAt(length - 1) == File.separatorChar)
@@ -345,15 +345,15 @@ public abstract class AbstractSettings implements Settings {
         }
         return filePaths.toArray(new String[filePaths.size()]);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getDirectoryPath(String name) {
         return this.getDirectoryPath(name, null);
     };
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getDirectoryPath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
         if (filePath == null || filePath.length() == 0)
-            return defaultValue;//¿Õ
+            return defaultValue;//ç©º
         //
         int length = filePath.length();
         if (filePath.charAt(length - 1) == File.separatorChar)
@@ -369,7 +369,7 @@ public abstract class AbstractSettings implements Settings {
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getDirectoryPath(name, defaultValue);
             if (filePath == null || filePath.length() == 0)
-                continue;//¿Õ
+                continue;//ç©º
             //
             int length = filePath.length();
             if (filePath.charAt(length - 1) == File.separatorChar)
@@ -379,7 +379,7 @@ public abstract class AbstractSettings implements Settings {
         }
         return directoryPaths.toArray(new String[directoryPaths.size()]);
     }
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link XmlNode}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link XmlNode}å½¢å¼å¯¹è±¡ã€‚*/
     public XmlNode getXmlNode(String name) {
         return this.getToType(name, XmlNode.class, null);
     }

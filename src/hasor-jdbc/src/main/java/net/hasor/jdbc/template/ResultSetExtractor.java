@@ -17,13 +17,13 @@ package net.hasor.jdbc.template;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 /** 
- * »Øµ÷½Ó¿Ú£¬ÓÃÓÚ JDBC ½á¹û¼¯×ª»»¡£
+ * å›è°ƒæ¥å£ï¼Œç”¨äº JDBC ç»“æœé›†è½¬æ¢ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface ResultSetExtractor<T> {
-    /**½«½á¹û¼¯ÄÚÈİ×ª»»¡£ */
+    /**å°†ç»“æœé›†å†…å®¹è½¬æ¢ã€‚ */
     public T extractData(ResultSet rs) throws SQLException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,28 +38,28 @@ import org.more.util.io.AutoCloseInputStream;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
 /**
- * classpath¹¤¾ßÀà
+ * classpathå·¥å…·ç±»
  * @version 2010-9-24
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class ResourcesUtils {
-    /** ·¢ÏÖÊÂ¼ş */
+    /** å‘ç°äº‹ä»¶ */
     public static class ScanEvent {
         private String      name    = null;
-        private boolean     isRead  = false; //ÊÇ·ñ¿É¶Á¡£
-        private boolean     isWrite = false; //ÊÇ·ñ¿ÉĞ´
+        private boolean     isRead  = false; //æ˜¯å¦å¯è¯»ã€‚
+        private boolean     isWrite = false; //æ˜¯å¦å¯å†™
         //
         private InputStream stream  = null;
         private File        file    = null;
         //
-        /**´´½¨{@link ScanEvent}*/
+        /**åˆ›å»º{@link ScanEvent}*/
         ScanEvent(String name, File file) {
             this.isRead = file.canRead();
             this.isWrite = file.canWrite();
             this.file = file;
             this.name = name;
         }
-        /**´´½¨{@link ScanEvent}*/
+        /**åˆ›å»º{@link ScanEvent}*/
         ScanEvent(String name, JarEntry entry, InputStream stream) {
             this.isRead = !entry.isDirectory();
             this.isWrite = false;
@@ -84,12 +84,12 @@ public abstract class ResourcesUtils {
             return null;
         }
     }
-    /**É¨ÃèclasspathÊ±ÕÒµ½×ÊÔ´µÄ»Øµ÷½Ó¿Ú·½·¨¡£*/
+    /**æ‰«æclasspathæ—¶æ‰¾åˆ°èµ„æºçš„å›è°ƒæ¥å£æ–¹æ³•ã€‚*/
     public static interface ScanItem {
         /**
-         * ÕÒµ½×ÊÔ´(·µ»ØÖµÎªtrue±íÊ¾ÕÒµ½Ô¤ÆÚµÄ×ÊÔ´½áÊøÉ¨Ãè£¬false±íÊ¾¼ÌĞøÉ¨ÃèÊ£ÏÂµÄ×ÊÔ´)
-         * @param event ÕÒµ½×ÊÔ´ÊÂ¼ş¡£
-         * @param isInJar ÕÒµ½µÄ×ÊÔ´ÊÇ·ñ´¦ÔÚjarÎÄ¼şÀï¡£
+         * æ‰¾åˆ°èµ„æº(è¿”å›å€¼ä¸ºtrueè¡¨ç¤ºæ‰¾åˆ°é¢„æœŸçš„èµ„æºç»“æŸæ‰«æï¼Œfalseè¡¨ç¤ºç»§ç»­æ‰«æå‰©ä¸‹çš„èµ„æº)
+         * @param event æ‰¾åˆ°èµ„æºäº‹ä»¶ã€‚
+         * @param isInJar æ‰¾åˆ°çš„èµ„æºæ˜¯å¦å¤„åœ¨jaræ–‡ä»¶é‡Œã€‚
          */
         public void found(ScanEvent event, boolean isInJar) throws IOException;
     };
@@ -103,11 +103,11 @@ public abstract class ResourcesUtils {
     private static ClassLoader getCurrentLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
-    /**ºÏ³ÉËùÓĞÊôĞÔÎÄ¼şµÄÅäÖÃĞÅÏ¢µ½Ò»¸ö{@link Map}½Ó¿ÚÖĞ¡£*/
+    /**åˆæˆæ‰€æœ‰å±æ€§æ–‡ä»¶çš„é…ç½®ä¿¡æ¯åˆ°ä¸€ä¸ª{@link Map}æ¥å£ä¸­ã€‚*/
     public static Map<String, String> getPropertys(String[] resourcePaths) throws IOException {
         return getPropertys(Arrays.asList(resourcePaths).iterator());
     }
-    /**ºÏ³ÉËùÓĞÊôĞÔÎÄ¼şµÄÅäÖÃĞÅÏ¢µ½Ò»¸ö{@link Map}½Ó¿ÚÖĞ¡£*/
+    /**åˆæˆæ‰€æœ‰å±æ€§æ–‡ä»¶çš„é…ç½®ä¿¡æ¯åˆ°ä¸€ä¸ª{@link Map}æ¥å£ä¸­ã€‚*/
     public static Map<String, String> getPropertys(Iterator<String> iterator) throws IOException {
         if (iterator == null)
             return null;
@@ -121,7 +121,7 @@ public abstract class ResourcesUtils {
         }
         return iatt;
     }
-    /**¶ÁÈ¡Ò»¸öÊôĞÔÎÄ¼ş£¬²¢ÇÒÒÔ{@link Map}½Ó¿ÚµÄĞÎÊ½·µ»Ø¡£*/
+    /**è¯»å–ä¸€ä¸ªå±æ€§æ–‡ä»¶ï¼Œå¹¶ä¸”ä»¥{@link Map}æ¥å£çš„å½¢å¼è¿”å›ã€‚*/
     public static Map<String, String> getPropertys(String resourcePath) throws IOException {
         Properties prop = new Properties();
         InputStream in = getResourceAsStream(formatResource(resourcePath));
@@ -129,13 +129,13 @@ public abstract class ResourcesUtils {
             prop.load(in);
         return prop;
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºã€‚*/
     public static URL getResource(String resourcePath) throws IOException {
         resourcePath = formatResource(resourcePath);
         URL url = getCurrentLoader().getResource(resourcePath);
         return url;
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´ÁĞ±í¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºåˆ—è¡¨ã€‚*/
     public static List<URL> getResources(String resourcePath) throws IOException {
         resourcePath = formatResource(resourcePath);
         //
@@ -147,24 +147,24 @@ public abstract class ResourcesUtils {
         }
         return urls;
     }
-    /**»ñÈ¡¿ÉÄÜ´æÔÚµÄ×ÊÔ´£¬ÒÔÁ÷µÄĞÎÊ½·µ»Ø¡£*/
+    /**è·å–å¯èƒ½å­˜åœ¨çš„èµ„æºï¼Œä»¥æµçš„å½¢å¼è¿”å›ã€‚*/
     public static InputStream getResourceAsStream(File resourceFile) throws IOException {
         return getResourceAsStream(resourceFile.toURI().toURL());
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´£¬ÒÔÁ÷µÄĞÎÊ½·µ»Ø¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºï¼Œä»¥æµçš„å½¢å¼è¿”å›ã€‚*/
     public static InputStream getResourceAsStream(URI resourceURI) throws IOException {
         return getResourceAsStream(resourceURI.toURL());
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´£¬ÒÔÁ÷µÄĞÎÊ½·µ»Ø¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºï¼Œä»¥æµçš„å½¢å¼è¿”å›ã€‚*/
     public static InputStream getResourceAsStream(URL resourceURL) throws IOException {
         String protocol = resourceURL.getProtocol();
         File path = new File(URLDecoder.decode(resourceURL.getFile(), "utf-8"));
         if (protocol.equals("file") == true) {
-            //ÎÄ¼ş
+            //æ–‡ä»¶
             if (path.canRead() == true && path.isFile() == true)
                 return new AutoCloseInputStream(new FileInputStream(path));
         } else if (protocol.equals("jar") == true) {
-            //JARÎÄ¼ş
+            //JARæ–‡ä»¶
             JarFile jar = ((JarURLConnection) resourceURL.openConnection()).getJarFile();
             String jarFile = jar.getName().replace("\\", "/");
             String resourcePath = URLDecoder.decode(resourceURL.getPath(), "utf-8");
@@ -176,26 +176,26 @@ public abstract class ResourcesUtils {
             String resourcePath = formatResource(resourceURL.getPath());
             return getCurrentLoader().getResourceAsStream(resourcePath);
         }
-        // TODO ¸Ã´¦´¦ÀíÆäËûĞ­ÒéµÄ×ÊÔ´¼ÓÔØ¡£ÖîÈçOSGiµÈĞ­Òé¡£
+        // TODO è¯¥å¤„å¤„ç†å…¶ä»–åè®®çš„èµ„æºåŠ è½½ã€‚è¯¸å¦‚OSGiç­‰åè®®ã€‚
         return null;
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´£¬ÒÔÁ÷µÄĞÎÊ½·µ»Ø¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºï¼Œä»¥æµçš„å½¢å¼è¿”å›ã€‚*/
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
         resourcePath = formatResource(resourcePath);
         return getCurrentLoader().getResourceAsStream(resourcePath);
     }
-    /**»ñÈ¡classpathÖĞ¿ÉÄÜ´æÔÚµÄ×ÊÔ´ÁĞ±í£¬ÒÔÁ÷µÄĞÎÊ½·µ»Ø¡£*/
+    /**è·å–classpathä¸­å¯èƒ½å­˜åœ¨çš„èµ„æºåˆ—è¡¨ï¼Œä»¥æµçš„å½¢å¼è¿”å›ã€‚*/
     public static List<InputStream> getResourcesAsStream(String resourcePath) throws IOException {
         ArrayList<InputStream> iss = new ArrayList<InputStream>();
-        List<URL> urls = getResources(resourcePath);//ÒÑ¾­µ÷ÓÃ¹ı£¬formatResource(resourcePath);
+        List<URL> urls = getResources(resourcePath);//å·²ç»è°ƒç”¨è¿‡ï¼ŒformatResource(resourcePath);
         for (URL url : urls) {
-            InputStream in = getResourceAsStream(url);//ÒÑ¾­µ÷ÓÃ¹ı£¬formatResource(resourcePath);
+            InputStream in = getResourceAsStream(url);//å·²ç»è°ƒç”¨è¿‡ï¼ŒformatResource(resourcePath);
             if (in != null)
                 iss.add(in);
         }
         return iss;
     }
-    /**»ñÈ¡zipÁ÷ÖĞÖ¸¶¨µÄÄÇ¸ö×ÊÔ´£¬¸Ã·½·¨²¢²»»á´ÓzipÁ÷¿ªÊ¼³õ¶ÁÈ¡£¬ËüÖ»»á½Ó×ÅÁ÷µÄÎ»ÖÃ¼ÌĞø¶Á¡£*/
+    /**è·å–zipæµä¸­æŒ‡å®šçš„é‚£ä¸ªèµ„æºï¼Œè¯¥æ–¹æ³•å¹¶ä¸ä¼šä»zipæµå¼€å§‹åˆè¯»å–ï¼Œå®ƒåªä¼šæ¥ç€æµçš„ä½ç½®ç»§ç»­è¯»ã€‚*/
     public static InputStream getResourceByZip(ZipInputStream zipIN, String resourcePath) throws IOException {
         ZipEntry e = null;
         while ((e = zipIN.getNextEntry()) != null) {
@@ -206,40 +206,40 @@ public abstract class ResourcesUtils {
         return null;
     }
     /*------------------------------------------------------------------------------*/
-    /**¶ÔÄ³Ò»¸öÄ¿Â¼Ö´ĞĞÉ¨Ãè¡£*/
+    /**å¯¹æŸä¸€ä¸ªç›®å½•æ‰§è¡Œæ‰«æã€‚*/
     private static void scanDir(File dirFile, String wild, ScanItem item, File contextDir) throws IOException {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
-        //1.Èç¹û½øÀ´µÄ¾ÍÊÇÒ»¸öÎÄ¼ş¡£
+        //1.å¦‚æœè¿›æ¥çš„å°±æ˜¯ä¸€ä¸ªæ–‡ä»¶ã€‚
         if (dirFile.isDirectory() == false) {
-            //1)È¥³ıÉÏÏÂÎÄÄ¿Â¼
+            //1)å»é™¤ä¸Šä¸‹æ–‡ç›®å½•
             String dirPath = dirFile.getAbsolutePath().replace("\\", "/");
             if (dirPath.startsWith(contextPath) == true)
                 dirPath = dirPath.substring(contextPath.length(), dirPath.length());
-            //2)¼ÆËãºöÂÔ
+            //2)è®¡ç®—å¿½ç•¥
             if (MatchUtils.matchWild(wild, dirPath) == false)
                 return;
-            //3)Ö´ĞĞ·¢ÏÖ
+            //3)æ‰§è¡Œå‘ç°
             item.found(new ScanEvent(dirPath, dirFile), false);
             return;
         }
         //----------
         for (File f : dirFile.listFiles()) {
-            //1)È¥³ıÉÏÏÂÎÄÄ¿Â¼
+            //1)å»é™¤ä¸Šä¸‹æ–‡ç›®å½•
             String dirPath = f.getAbsolutePath().replace("\\", "/");
             if (dirPath.startsWith(contextPath) == true)
                 dirPath = dirPath.substring(contextPath.length() + 1, dirPath.length());
-            //3)Ö´ĞĞ·¢ÏÖ
+            //3)æ‰§è¡Œå‘ç°
             if (f.isDirectory() == true) {
-                //É¨ÃèÎÄ¼ş¼ĞÖĞµÄÄÚÈİ
+                //æ‰«ææ–‡ä»¶å¤¹ä¸­çš„å†…å®¹
                 scanDir(f, wild, item, contextDir);
             }
-            //2)¼ÆËãºöÂÔ
+            //2)è®¡ç®—å¿½ç•¥
             if (MatchUtils.matchWild(wild, dirPath) == false)
                 continue;
             item.found(new ScanEvent(dirPath, f), false);
         }
     }
-    /**¶ÔÄ³Ò»¸öjarÎÄ¼şÖ´ĞĞÉ¨Ãè¡£*/
+    /**å¯¹æŸä¸€ä¸ªjaræ–‡ä»¶æ‰§è¡Œæ‰«æã€‚*/
     public static void scanJar(JarFile jarFile, String wild, ScanItem item) throws IOException {
         final Enumeration<JarEntry> jes = jarFile.entries();
         while (jes.hasMoreElements() == true) {
@@ -251,19 +251,19 @@ public abstract class ResourcesUtils {
         }
     }
     /**
-     * É¨ÃèclasspathÄ¿Â¼ÖĞµÄ×ÊÔ´£¬Ã¿µ±·¢ÏÖÒ»¸ö×ÊÔ´Ê±¶¼½«²úÉú¶Ô{@link ScanItem}½Ó¿ÚµÄÒ»´Îµ÷ÓÃ¡£Çë×¢ÒâÊ×¸ö×Ö·û²»¿ÉÒÔÊÇÍ¨Åä·û¡£
-     * Èç¹û×ÊÔ´ÊÇ´æÔÚÓÚjar°üÖĞµÄÄÇÃ´ÔÚ»ñÈ¡µÄ¶ÔÏóÊäÈëÁ÷Ê±ÒªÔÚ»Øµ÷ÖĞ´¦ÀíÍê±Ï¡£
-     * ÔÚÉ¨ÃèÆÚ¼äÈç¹ûÏëËæÊ±ÍË³öÉ¨ÃèÔò{@link ScanItem}½Ó¿ÚµÄ·µ»ØÖµ¸øtrue¼´¿É¡£
-     * @param wild É¨ÃèÆÚ¼äÒªÅÅ³ı×ÊÔ´µÄÍ¨Åä·û¡£
-     * @param item µ±ÕÒµ½×ÊÔ´Ê±Ö´ĞĞ»Øµ÷µÄ½Ó¿Ú¡£
+     * æ‰«æclasspathç›®å½•ä¸­çš„èµ„æºï¼Œæ¯å½“å‘ç°ä¸€ä¸ªèµ„æºæ—¶éƒ½å°†äº§ç”Ÿå¯¹{@link ScanItem}æ¥å£çš„ä¸€æ¬¡è°ƒç”¨ã€‚è¯·æ³¨æ„é¦–ä¸ªå­—ç¬¦ä¸å¯ä»¥æ˜¯é€šé…ç¬¦ã€‚
+     * å¦‚æœèµ„æºæ˜¯å­˜åœ¨äºjaråŒ…ä¸­çš„é‚£ä¹ˆåœ¨è·å–çš„å¯¹è±¡è¾“å…¥æµæ—¶è¦åœ¨å›è°ƒä¸­å¤„ç†å®Œæ¯•ã€‚
+     * åœ¨æ‰«ææœŸé—´å¦‚æœæƒ³éšæ—¶é€€å‡ºæ‰«æåˆ™{@link ScanItem}æ¥å£çš„è¿”å›å€¼ç»™trueå³å¯ã€‚
+     * @param wild æ‰«ææœŸé—´è¦æ’é™¤èµ„æºçš„é€šé…ç¬¦ã€‚
+     * @param item å½“æ‰¾åˆ°èµ„æºæ—¶æ‰§è¡Œå›è°ƒçš„æ¥å£ã€‚
      */
     public static void scan(String wild, ScanItem item) throws IOException, URISyntaxException {
         if (wild == null || wild.equals("") == true)
             return;
         char firstChar = wild.charAt(0);
         if (firstChar == '?' || firstChar == '*')
-            throw new IllegalArgumentException("classpath°üÉ¨Ãè²»Ö§³ÖÊ×¸ö×ÖÄ¸ÎªÍ¨Åä·û×Ö·û¡£");
-        //È·¶¨Î»ÖÃ
+            throw new IllegalArgumentException("classpathåŒ…æ‰«æä¸æ”¯æŒé¦–ä¸ªå­—æ¯ä¸ºé€šé…ç¬¦å­—ç¬¦ã€‚");
+        //ç¡®å®šä½ç½®
         int index1 = wild.indexOf('?');
         int index2 = wild.indexOf('*');
         index1 = (index1 == -1) ? index1 = wild.length() : index1;
@@ -301,7 +301,7 @@ public abstract class ResourcesUtils {
             rootList.add(roote.nextElement());
         return rootList;
     };
-    /**»ñÈ¡ËùÓĞClassPathÌõÄ¿*/
+    /**è·å–æ‰€æœ‰ClassPathæ¡ç›®*/
     public static Enumeration<URL> findAllClassPath(String name) throws IOException {
         ClassLoader loader = getCurrentLoader();
         return loader.getResources(name);
@@ -311,11 +311,11 @@ public abstract class ResourcesUtils {
         //        else {
         //            URLClassLoader urlLoader = (URLClassLoader) loader;
         //            /*
-        //             * Jetty Ê¹ÓÃgetResources¡¢Tomcat Ê¹ÓÃfindResources
-        //             * ÔÚJettyÖĞWebappsClassLoaderÖ»ÊµÏÖÁËÃ»ÓĞÖØĞ´findResources
-        //             * ÔÚTomcatÖĞWebappsClassLoaderÖ»ÊµÏÖÁËÃ»ÓĞÖØĞ´getResources
+        //             * Jetty ä½¿ç”¨getResourcesã€Tomcat ä½¿ç”¨findResources
+        //             * åœ¨Jettyä¸­WebappsClassLoaderåªå®ç°äº†æ²¡æœ‰é‡å†™findResources
+        //             * åœ¨Tomcatä¸­WebappsClassLoaderåªå®ç°äº†æ²¡æœ‰é‡å†™getResources
         //             * 
-        //             * TODO : ¸Ã´¦Âß¼­Îª£ºÊ×ÏÈÅĞ¶ÏfindResources·½·¨ÊÇ·ñ±»ÖØĞ´£¬Èç¹û±»ÖØĞ´Ôòµ÷ÓÃËü·ñÔòµ÷ÓÃgetResources
+        //             * TODO : è¯¥å¤„é€»è¾‘ä¸ºï¼šé¦–å…ˆåˆ¤æ–­findResourcesæ–¹æ³•æ˜¯å¦è¢«é‡å†™ï¼Œå¦‚æœè¢«é‡å†™åˆ™è°ƒç”¨å®ƒå¦åˆ™è°ƒç”¨getResources
         //             */
         //            try {
         //                Class<?> loaderType = urlLoader.getClass();

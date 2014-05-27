@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,16 @@ import org.more.webui.event.EventListener;
 import org.more.webui.render.button.LinkButtonRender;
 import org.more.webui.render.inputs.ButtonInputRender;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£º°´Å¥×é½¨Ä£ĞÍ£¨±íµ¥ÔªËØ£©¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnAction
- * <br><b>äÖÈ¾Æ÷</b>£º{@link ButtonInputRender}¡¢{@link LinkButtonRender}
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šæŒ‰é’®ç»„å»ºæ¨¡å‹ï¼ˆè¡¨å•å…ƒç´ ï¼‰ã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnAction
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link ButtonInputRender}ã€{@link LinkButtonRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UIButton extends UIInput {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**Action¶¯×÷£¨R£©*/
+        /**ActionåŠ¨ä½œï¼ˆRï¼‰*/
         actionEL
     }
     @Override
@@ -41,11 +41,11 @@ public abstract class UIButton extends UIInput {
         this.setPropertyMetaValue(Propertys.actionEL.name(), null);
         this.addEventListener(UIButton_Event_OnAction.ActionEvent, new UIButton_Event_OnAction());
     }
-    /**»ñÈ¡Action EL×Ö·û´®*/
+    /**è·å–Action ELå­—ç¬¦ä¸²*/
     public String getActionEL() {
         return this.getProperty(Propertys.actionEL.name()).valueTo(String.class);
     }
-    /**ÉèÖÃAction EL×Ö·û´®*/
+    /**è®¾ç½®Action ELå­—ç¬¦ä¸²*/
     @NoState
     public void setActionEL(String action) {
         this.getProperty(Propertys.actionEL.name()).value(action);
@@ -57,7 +57,7 @@ public abstract class UIButton extends UIInput {
         return null;
     }
 };
-/**¸ºÔğ´¦ÀíOnActionÊÂ¼şµÄELµ÷ÓÃ*/
+/**è´Ÿè´£å¤„ç†OnActionäº‹ä»¶çš„ELè°ƒç”¨*/
 class UIButton_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnAction");
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-3-25
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò• (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
     public static final String                             AppContextName          = AppContext.class.getName();
@@ -43,7 +43,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         return new WebStandardAppContext("hasor-config.xml", sc);
     }
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        //1.¥¥Ω®AppContext
+        //1.ÂàõÂª∫AppContext
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
             String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
@@ -64,11 +64,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
                 throw (RuntimeException) e;
             throw new RuntimeException(e);
         }
-        //2.ªÒ»°SessionListenerPipeline
+        //2.Ëé∑ÂèñSessionListenerPipeline
         this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
         Hasor.logInfo("sessionListenerPipeline created.");
-        //3.∑≈»ÎServletContextª∑æ≥°£
+        //3.ÊîæÂÖ•ServletContextÁéØÂ¢É„ÄÇ
         Hasor.logInfo("ServletContext Attribut : " + AppContextName + " -->> " + Hasor.logString(this.appContext));
         servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
         this.sessionListenerPipeline.contextInitialized(servletContextEvent);
@@ -83,12 +83,12 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         this.sessionListenerPipeline.sessionDestroyed(se);
     }
     //
-    /**ªÒ»°{@link ServletContext}*/
+    /**Ëé∑Âèñ{@link ServletContext}*/
     public static ServletContext getLocalServletContext() {
         return LocalServletContext.get();
     }
     //
-    /**ªÒ»°{@link AppContext}*/
+    /**Ëé∑Âèñ{@link AppContext}*/
     public static AppContext getLocalAppContext() {
         return LocalAppContext.get();
     }

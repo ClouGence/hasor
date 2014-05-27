@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.FillLayout;
 /**
  * 
  * @version : 2013-3-14
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class SettingProjectWizardPage extends WizardPage {
     public SettingProjectWizardPage() {
@@ -46,23 +46,23 @@ public class SettingProjectWizardPage extends WizardPage {
         settingProject.setLayout(new GridLayout(2, false));
         Label groupLabel = new Label(settingProject, SWT.NONE);
         groupLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        groupLabel.setText("Group ID£∫");
+        groupLabel.setText("Group IDÔºö");
         Combo groupText = new Combo(settingProject, SWT.NONE);
         groupText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         Label artifactLabel = new Label(settingProject, SWT.NONE);
         artifactLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        artifactLabel.setText("Artifact ID£∫");
+        artifactLabel.setText("Artifact IDÔºö");
         Combo artifactText = new Combo(settingProject, SWT.NONE);
         artifactText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         Label versionLabel = new Label(settingProject, SWT.NONE);
         versionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        versionLabel.setText("Version£∫");
+        versionLabel.setText("VersionÔºö");
         Composite comA = new Composite(settingProject, SWT.NONE);
         comA.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         comA.setLayout(new GridLayout(3, false));
         Combo versionText = new Combo(comA, SWT.NONE);
         Label packageLabel = new Label(comA, SWT.NONE);
-        packageLabel.setText("Package£∫");
+        packageLabel.setText("PackageÔºö");
         Combo packageText = new Combo(comA, SWT.NONE);
         packageText.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         Group settingParent = new Group(root, SWT.NONE);
@@ -72,17 +72,17 @@ public class SettingProjectWizardPage extends WizardPage {
         Label pGroupLabel = new Label(settingParent, SWT.NONE);
         pGroupLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         pGroupLabel.setBounds(0, 0, 76, 20);
-        pGroupLabel.setText("Group ID£∫");
+        pGroupLabel.setText("Group IDÔºö");
         Combo pGroupText = new Combo(settingParent, SWT.NONE);
         pGroupText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         Label pArtifactLabel = new Label(settingParent, SWT.NONE);
         pArtifactLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        pArtifactLabel.setText("Artifact ID£∫");
+        pArtifactLabel.setText("Artifact IDÔºö");
         Combo pArtifactText = new Combo(settingParent, SWT.NONE);
         pArtifactText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         Label pVersionLabel = new Label(settingParent, SWT.NONE);
         pVersionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-        pVersionLabel.setText("Version£∫");
+        pVersionLabel.setText("VersionÔºö");
         Combo pVersionText = new Combo(settingParent, SWT.NONE);
         pVersionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         settingParent.setTabList(new Control[] { pGroupText, pArtifactText, pVersionText });
@@ -102,7 +102,7 @@ public class SettingProjectWizardPage extends WizardPage {
         selectWorkingSet.setText("Select ...");
     }
     public boolean performFinish() {
-        /** ÕÍ≥…≈‰÷√ */
+        /** ÂÆåÊàêÈÖçÁΩÆ */
         return true;
     }
 }

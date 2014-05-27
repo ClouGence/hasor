@@ -2,9 +2,9 @@ package org.dev.toos.dbmapping.commands;
 import org.dev.toos.dbmapping.model.Element;
 import org.eclipse.gef.commands.Command;
 /**
- * É¾³ı²Ù×÷
+ * åˆ é™¤æ“ä½œ
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DeleteElement extends Command {
     private Element targetElement = null;

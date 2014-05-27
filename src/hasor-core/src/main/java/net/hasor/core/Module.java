@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package net.hasor.core;
 /**
- * HasorÄ£¿é£¬¸Ã·½·¨ÖĞ¶¨ÒåÁËÄ£¿éÉúÃüÖÜÆÚ¡£
+ * Hasoræ¨¡å—ï¼Œè¯¥æ–¹æ³•ä¸­å®šä¹‰äº†æ¨¡å—ç”Ÿå‘½å‘¨æœŸã€‚
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface Module {
-    /**³õÊ¼»¯¹ı³Ì£¬×¢Òâ£ºapiBinder ²ÎÊıÖ»ÄÜÔÚ init ½×¶ÎÖĞÊ¹ÓÃ¡£*/
+    /**åˆå§‹åŒ–è¿‡ç¨‹ï¼Œæ³¨æ„ï¼šapiBinder å‚æ•°åªèƒ½åœ¨ init é˜¶æ®µä¸­ä½¿ç”¨ã€‚*/
     public void init(ApiBinder apiBinder) throws Throwable;
-    /**Æô¶¯ĞÅºÅ*/
+    /**å¯åŠ¨ä¿¡å·*/
     public void start(AppContext appContext) throws Throwable;
 }

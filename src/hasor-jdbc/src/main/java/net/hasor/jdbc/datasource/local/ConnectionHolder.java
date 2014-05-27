@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import net.hasor.jdbc.datasource.SavepointManager;
 /**
  * 
  * @version : 2014-3-29
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConnectionHolder implements SavepointManager {
     private int        referenceCount;
@@ -31,11 +31,11 @@ public class ConnectionHolder implements SavepointManager {
     public ConnectionHolder(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    /**Ôö¼ÓÒıÓÃ¼ÆÊı,Ò»¸öÒòÎª³ÖÓĞÈËÒÑ±»ÇëÇó¡£*/
+    /**å¢åŠ å¼•ç”¨è®¡æ•°,ä¸€ä¸ªå› ä¸ºæŒæœ‰äººå·²è¢«è¯·æ±‚ã€‚*/
     public synchronized void requested() {
         this.referenceCount++;
     }
-    /**¼õÉÙÒıÓÃ¼ÆÊı,Ò»¸öÒòÎª³ÖÓĞÈËÒÑ±»ÊÍ·Å¡£ */
+    /**å‡å°‘å¼•ç”¨è®¡æ•°,ä¸€ä¸ªå› ä¸ºæŒæœ‰äººå·²è¢«é‡Šæ”¾ã€‚ */
     public synchronized void released() throws SQLException {
         this.referenceCount--;
         if (!isOpen() && this.connection != null) {
@@ -55,7 +55,7 @@ public class ConnectionHolder implements SavepointManager {
             return false;
         return true;
     }
-    /**»ñÈ¡Á¬½Ó*/
+    /**è·å–è¿æ¥*/
     public synchronized Connection getConnection() throws SQLException {
         if (this.isOpen() == false)
             return null;
@@ -64,12 +64,12 @@ public class ConnectionHolder implements SavepointManager {
         }
         return this.connection;
     }
-    /**ÊÇ·ñ´æÔÚÊÂÎñ*/
+    /**æ˜¯å¦å­˜åœ¨äº‹åŠ¡*/
     public boolean hasTransaction() throws SQLException {
         Connection conn = getConnection();
         if (conn == null)
             return false;
-        //AutoCommit±»±ê¼ÇÎª false ±íÊ¾¿ªÆôÁËÊÂÎñ¡£
+        //AutoCommitè¢«æ ‡è®°ä¸º false è¡¨ç¤ºå¼€å¯äº†äº‹åŠ¡ã€‚
         return conn.getAutoCommit() == false ? true : false;
     }
     //
@@ -83,7 +83,7 @@ public class ConnectionHolder implements SavepointManager {
     public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
     private int                savepointCounter      = 0;
     private Boolean            savepointsSupported;
-    /**·µ»Ø JDBC Çı¶¯ÊÇ·ñÖ§³Ö±£´æµã¡£*/
+    /**è¿”å› JDBC é©±åŠ¨æ˜¯å¦æ”¯æŒä¿å­˜ç‚¹ã€‚*/
     public boolean supportsSavepoints() throws SQLException {
         Connection conn = this.getConnection();
         checkConn(conn);
@@ -92,7 +92,7 @@ public class ConnectionHolder implements SavepointManager {
             this.savepointsSupported = conn.getMetaData().supportsSavepoints();
         return this.savepointsSupported;
     }
-    /**Ê¹ÓÃÒ»¸öÈ«ĞÂµÄÃû³Æ´´½¨Ò»¸ö±£´æµã¡£*/
+    /**ä½¿ç”¨ä¸€ä¸ªå…¨æ–°çš„åç§°åˆ›å»ºä¸€ä¸ªä¿å­˜ç‚¹ã€‚*/
     public Savepoint createSavepoint() throws SQLException {
         Connection conn = this.getConnection();
         checkConn(conn);

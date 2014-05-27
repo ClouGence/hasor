@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.more.classcode;
 /**
- * ²ßÂÔ»ù½Ó¿Ú£¬¸Ã½Ó¿ÚÖĞ¶¨ÒåÁË³õÊ¼»¯²ßÂÔºÍÖØÖÃ²ßÂÔÁ½¸ö·½·¨¡£Ã¿µ±{@link ClassEngine#builderClass()}·½·¨±»µ÷ÓÃÊ±
- * ¶¼»áÏÈ³õÊ¼»¯ËùÓĞ²ßÂÔ£¬°´ºóÔÚÉú³ÉÀàÖ®ºóÖØÖÃËü¡£
+ * ç­–ç•¥åŸºæ¥å£ï¼Œè¯¥æ¥å£ä¸­å®šä¹‰äº†åˆå§‹åŒ–ç­–ç•¥å’Œé‡ç½®ç­–ç•¥ä¸¤ä¸ªæ–¹æ³•ã€‚æ¯å½“{@link ClassEngine#builderClass()}æ–¹æ³•è¢«è°ƒç”¨æ—¶
+ * éƒ½ä¼šå…ˆåˆå§‹åŒ–æ‰€æœ‰ç­–ç•¥ï¼ŒæŒ‰ååœ¨ç”Ÿæˆç±»ä¹‹åé‡ç½®å®ƒã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 interface BaseStrategy {
-    /**³õÊ¼»¯²ßÂÔ¡£*/
+    /**åˆå§‹åŒ–ç­–ç•¥ã€‚*/
     public void initStrategy(ClassEngine classEngine);
 }

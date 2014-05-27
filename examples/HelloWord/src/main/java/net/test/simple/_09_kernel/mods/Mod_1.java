@@ -21,7 +21,7 @@ import net.hasor.quick.anno.AnnoModule;
 /**
  * 
  * @version : 2013-9-14
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 @AnnoModule
 public class Mod_1 implements Module {

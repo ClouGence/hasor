@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@ import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
- * ¸ºÔğ×°ÔØjar°üÖĞµÄ×ÊÔ´¡£
+ * è´Ÿè´£è£…è½½jaråŒ…ä¸­çš„èµ„æºã€‚
  * @version : 2013-4-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Plugin()
 public class ResourcePlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
-        //1.×¼±¸²ÎÊı
+        //1.å‡†å¤‡å‚æ•°
         Environment env = apiBinder.getEnvironment();
-        //3.»º´æÂ·¾¶
+        //3.ç¼“å­˜è·¯å¾„
         String cacheSubPath = "%HASOR_PLUGIN_PATH%/net.hasor.web.resource/";
         File cacheDir = new File(env.evalString(cacheSubPath));
         if (!chekcCacheDir(cacheDir)) {

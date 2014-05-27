@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import freemarker.template.TemplateException;
 /**
  * 
  * @version : 2013-7-31
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class FmService implements FreemarkerService {
     @Inject
@@ -87,19 +87,19 @@ public class FmService implements FreemarkerService {
         this.processString(templateString, null, writer);
     }
     public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException {
-        //A.È¡µÃÖ¸ÎÆ
+        //A.å–å¾—æŒ‡çº¹
         String hashStr = null;
         try {
-            /*Ê¹ÓÃMD5¼ÓÃÜ*/
+            /*ä½¿ç”¨MD5åŠ å¯†*/
             hashStr = CommonCodeUtils.MD5.getMD5(templateString);
         } catch (NoSuchAlgorithmException e) {
-            /*Ê¹ÓÃhashCode*/
+            /*ä½¿ç”¨hashCode*/
             hashStr = String.valueOf(templateString.hashCode());
         }
         hashStr += ".temp";
-        //B.½«ÄÚÈİ¼ÓÈëµ½Ä£°å¼ÓÔØÆ÷ÖĞ¡£
+        //B.å°†å†…å®¹åŠ å…¥åˆ°æ¨¡æ¿åŠ è½½å™¨ä¸­ã€‚
         this.stringLoader.addTemplateAsString(hashStr, templateString);
-        //C.Ö´ĞĞÖ¸ÎÆÄ£°å
+        //C.æ‰§è¡ŒæŒ‡çº¹æ¨¡æ¿
         Writer writerTo = (writer == null) ? new InternalNoneWriter() : writer;
         Template temp = this.getTemplate(hashStr);
         if (temp != null)

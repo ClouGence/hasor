@@ -23,10 +23,10 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * 
  * @version : 2013-2-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstTreeProvider extends CellLabelProvider implements ITreeContentProvider {
-    /**ÊµÏÖCellLabelProviderÀàĞÍ·½·¨£¬ÓÃÓÚÏòµ¥Ôª¸ñÖĞÉèÖÃÏÔÊ¾µÄÊı¾İ*/
+    /**å®ç°CellLabelProviderç±»å‹æ–¹æ³•ï¼Œç”¨äºå‘å•å…ƒæ ¼ä¸­è®¾ç½®æ˜¾ç¤ºçš„æ•°æ®*/
     @Override
     public void update(ViewerCell cell) {
         ConstBeanBridge element = (ConstBeanBridge) cell.getElement();
@@ -35,17 +35,17 @@ public class ConstTreeProvider extends CellLabelProvider implements ITreeContent
         row.setText(1, element.getLatType().name());//latType
         row.setText(2, element.getSource().getName());//source
         //-------------------------------------------------------------------
-        //        //1.Ö»¶ÁÑÕÉ«
+        //        //1.åªè¯»é¢œè‰²
         //        if (element.readOnly() == true) {
         //            cell.setBackground(ColorUtils.getColor4ReadOnly());
         //            return;
         //        }
-        //2.ĞÂ½¨
+        //2.æ–°å»º
         if (element.isNew() == true) {
             cell.setBackground(ColorUtils.getColor4New());
             return;
         }
-        //3.À´Ô´ÑÕÉ«
+        //3.æ¥æºé¢œè‰²
         FromType formType = element.getSource().getType();
         if (formType == FromType.DB) {
             cell.setBackground(ColorUtils.getColor4DB());
@@ -57,15 +57,15 @@ public class ConstTreeProvider extends CellLabelProvider implements ITreeContent
             cell.setBackground(ColorUtils.getColor4Source());
             row.setImage(2, ResourceManager.getPluginImage("org.eclipse.jdt.ui", "/icons/full/obj16/packagefolder_obj.gif"));//type
         }
-        //4.ĞŞ¸Ä¹ıµÄ
+        //4.ä¿®æ”¹è¿‡çš„
         if (element.isPropertyChanged() == true)
             cell.setBackground(ColorUtils.getColor4Changed());
-        //5.¾ßÌåµÄÊôĞÔĞŞ¸Ä
+        //5.å…·ä½“çš„å±æ€§ä¿®æ”¹
         if (element.isCodeChanged() == true)
             row.setBackground(0, ColorUtils.getColor4Changed2());//code
         if (element.isLatTypeChanged() == true)
             row.setBackground(1, ColorUtils.getColor4Changed2());//latType
-        //6.É¾³ıµÄÌõÄ¿
+        //6.åˆ é™¤çš„æ¡ç›®
         FontData fontData = cell.getFont().getFontData()[0];
         if (element.isDelete() == true) {
             cell.setFont(SWTResourceManager.getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle() | SWT.BOLD | SWT.ITALIC));
@@ -77,28 +77,28 @@ public class ConstTreeProvider extends CellLabelProvider implements ITreeContent
     //
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        /*A-×¼±¸·Ö×éÊı¾İ*/
+        /*A-å‡†å¤‡åˆ†ç»„æ•°æ®*/
         ConstModel modelObject = ConstModelSet.getActivateModel();
         if (modelObject == null)
             return;
         ConstGroup currentGroup = modelObject.group((String) newInput);
         if (currentGroup == null)
-            currentGroup = ConstModelSet.getActivateModel().getGroups().get(0);//ËùÓĞ·Ö×é
+            currentGroup = ConstModelSet.getActivateModel().getGroups().get(0);//æ‰€æœ‰åˆ†ç»„
         if (currentGroup.constList().size() > 0)
             viewer.setSelection(new TreeSelection(new TreePath(new Object[] { currentGroup.constList().get(0) })));
         ((TreeViewer) viewer).refresh();
     }
-    /**¸ù¾İÀàĞÍ»ñÈ¡¸ù½Úµã*/
+    /**æ ¹æ®ç±»å‹è·å–æ ¹èŠ‚ç‚¹*/
     @Override
     public ConstBeanBridge[] getElements(Object inputElement) {
-        /*A-×¼±¸·Ö×éÊı¾İ*/
+        /*A-å‡†å¤‡åˆ†ç»„æ•°æ®*/
         ConstGroup currentGroup = ConstModelSet.getActivateModel().group((String) inputElement);
         List<ConstGroup> groupList = null;
         if (currentGroup == null)
-            groupList = ConstModelSet.getActivateModel().getGroups();//ËùÓĞ·Ö×é
+            groupList = ConstModelSet.getActivateModel().getGroups();//æ‰€æœ‰åˆ†ç»„
         else
-            groupList = Arrays.asList(currentGroup);//Ñ¡¶¨·Ö×é
-        /*B-ÀàĞÍ×ª»»*/
+            groupList = Arrays.asList(currentGroup);//é€‰å®šåˆ†ç»„
+        /*B-ç±»å‹è½¬æ¢*/
         ArrayList<ConstBeanBridge> ceList = new ArrayList<ConstBeanBridge>();
         for (ConstGroup ccg : groupList) {
             List<ConstBeanBridge> constBeanList = ccg.constList();
@@ -109,7 +109,7 @@ public class ConstTreeProvider extends CellLabelProvider implements ITreeContent
         /*C-*/
         return ceList.toArray(new ConstBeanBridge[ceList.size()]);
     }
-    /**»ñÈ¡×Ó½ÚµãÊı¾İ*/
+    /**è·å–å­èŠ‚ç‚¹æ•°æ®*/
     @Override
     public ConstBeanBridge[] getChildren(Object parentElement) {
         ConstBeanBridge constElementBridge = (ConstBeanBridge) parentElement;

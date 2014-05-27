@@ -2,7 +2,7 @@ package org.dev.toos.constcode.metadata;
 /**
  * 
  * @version : 2013-2-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public abstract class ConstBean {
     private ConstBean parent       = null;

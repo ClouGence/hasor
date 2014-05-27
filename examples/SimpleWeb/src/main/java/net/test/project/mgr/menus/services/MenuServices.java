@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,22 +26,22 @@ import org.more.util.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
- * µ¥ÀıµÄ
+ * å•ä¾‹çš„
  * @version : 2013-12-23
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Bean("MenuServices")
 @Singleton
 public class MenuServices {
-    /*´Ó¹¹Ôì·½·¨ÖĞ×¢Èë AppContext ½Ó¿Ú¶ÔÏó*/
+    /*ä»æ„é€ æ–¹æ³•ä¸­æ³¨å…¥ AppContext æ¥å£å¯¹è±¡*/
     @Inject
     public MenuServices(AppContext appContext) {
         this.menuList = new ArrayList<MenuBean>();
-        /*»ñÈ¡²Ù×İÅäÖÃÎÄ¼şµÄ½Ó¿Ú*/
+        /*è·å–æ“çºµé…ç½®æ–‡ä»¶çš„æ¥å£*/
         Settings setting = appContext.getSettings();
-        /*È¡µÃ¡®/demoProject/menus¡¯ Xml½Úµã*/
+        /*å–å¾—â€˜/demoProject/menusâ€™ XmlèŠ‚ç‚¹*/
         XmlNode xmlNode = setting.getXmlNode("demoProject.menus");
-        /*Ê¹ÓÃ DOM ·½Ê½½âÎö Xml½Úµã*/
+        /*ä½¿ç”¨ DOM æ–¹å¼è§£æ XmlèŠ‚ç‚¹*/
         List<XmlNode> menus = xmlNode.getChildren("menu");
         for (XmlNode node : menus) {
             MenuBean menuBean = new MenuBean();
@@ -57,7 +57,7 @@ public class MenuServices {
     @NeedCache
     public MenuBean findMenuByCode(String code) {
         for (MenuBean menu : menuList) {
-            /*ºöÂÔ´óĞ¡Ğ´ÅĞ¶ÏÊÇ·ñÏàµÈ*/
+            /*å¿½ç•¥å¤§å°å†™åˆ¤æ–­æ˜¯å¦ç›¸ç­‰*/
             if (!StringUtils.endsWithIgnoreCase(menu.getCode(), code))
                 continue;
             return menu;

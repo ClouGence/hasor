@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,37 +28,37 @@ import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.TextEvent;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- *  <b>Level 3</b>£º¸Ã¼¶±ğÊÇ»ùÓÚ¼¶±ğ2µÄÔöÇ¿£¬¸Ã¼¶±ğµÄÌØµãÊÇ¿ÉÒÔ½«Ä³¸öxpathËù±íÊ¾ÔªËØÓëÆä´¦ÀíÆ÷{@link XmlParserHook}½øĞĞ°ó¶¨¡£
- *  Õâ¸ö°ó¶¨ÓÉÓÚÊÇ»ùÓÚLevel 2Òò´Ë²»»áÓëÆäËûÃüÃû¿Õ¼äµÄÍ¬ÃûÔªËØÏà»ìÏı¡£
+ *  <b>Level 3</b>ï¼šè¯¥çº§åˆ«æ˜¯åŸºäºçº§åˆ«2çš„å¢å¼ºï¼Œè¯¥çº§åˆ«çš„ç‰¹ç‚¹æ˜¯å¯ä»¥å°†æŸä¸ªxpathæ‰€è¡¨ç¤ºå…ƒç´ ä¸å…¶å¤„ç†å™¨{@link XmlParserHook}è¿›è¡Œç»‘å®šã€‚
+ *  è¿™ä¸ªç»‘å®šç”±äºæ˜¯åŸºäºLevel 2å› æ­¤ä¸ä¼šä¸å…¶ä»–å‘½åç©ºé—´çš„åŒåå…ƒç´ ç›¸æ··æ·†ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlParserKit implements XmlNamespaceParser {
     private HashMap<String, ArrayList<XmlParserHook>> hooks = new HashMap<String, ArrayList<XmlParserHook>>();
     //----------------------------------------------------
-    /**×¢²áÒ»×é{@link XmlParserHook}½Ó¿Ú¶ÔÏóµ½Ò»¸öÖ¸¶¨µÄXpathÉÏ£¬Èç¹û×¢²áµÄÊÇ{@link XmlDocumentHook}½Ó¿Ú¶ÔÏóÔòÎñ±Ø½«xpathÌîĞ´Îª"/"·ñÔò¿ÉÄÜµ¼ÖÂ½ÓÊÕ²»µ½ÊÂ¼şµÄÏÖÏó¡£*/
+    /**æ³¨å†Œä¸€ç»„{@link XmlParserHook}æ¥å£å¯¹è±¡åˆ°ä¸€ä¸ªæŒ‡å®šçš„Xpathä¸Šï¼Œå¦‚æœæ³¨å†Œçš„æ˜¯{@link XmlDocumentHook}æ¥å£å¯¹è±¡åˆ™åŠ¡å¿…å°†xpathå¡«å†™ä¸º"/"å¦åˆ™å¯èƒ½å¯¼è‡´æ¥æ”¶ä¸åˆ°äº‹ä»¶çš„ç°è±¡ã€‚*/
     public void regeditHook(String[] xpath, XmlParserHook hook) {
         if (xpath != null && hook != null)
             for (String s : xpath)
                 this.regeditHook(s, hook);
     }
-    /**×¢²áÒ»¸ö{@link XmlParserHook}½Ó¿Ú¶ÔÏóµ½Ò»¸öÖ¸¶¨µÄXpathÉÏ£¬Èç¹û×¢²áµÄÊÇ{@link XmlDocumentHook}½Ó¿Ú¶ÔÏóÔòÎñ±Ø½«xpathÌîĞ´Îª"/"·ñÔò¿ÉÄÜµ¼ÖÂ½ÓÊÕ²»µ½ÊÂ¼şµÄÏÖÏó¡£*/
+    /**æ³¨å†Œä¸€ä¸ª{@link XmlParserHook}æ¥å£å¯¹è±¡åˆ°ä¸€ä¸ªæŒ‡å®šçš„Xpathä¸Šï¼Œå¦‚æœæ³¨å†Œçš„æ˜¯{@link XmlDocumentHook}æ¥å£å¯¹è±¡åˆ™åŠ¡å¿…å°†xpathå¡«å†™ä¸º"/"å¦åˆ™å¯èƒ½å¯¼è‡´æ¥æ”¶ä¸åˆ°äº‹ä»¶çš„ç°è±¡ã€‚*/
     public void regeditHook(String xpath, XmlParserHook hook) {
-        //2.¼ì²éÊÇ·ñÒÑ¾­´æÔÚµÄ×¢²á¡£
+        //2.æ£€æŸ¥æ˜¯å¦å·²ç»å­˜åœ¨çš„æ³¨å†Œã€‚
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
         if (arrayList == null)
             arrayList = new ArrayList<XmlParserHook>();
         if (arrayList.contains(hook) == true)
-            throw new RepeateException(xpath + "£ºÂ·¾¶ÉÏÖØ¸´°ó¶¨Í¬Ò»¸öXmlParserHook¡£");
+            throw new RepeateException(xpath + "ï¼šè·¯å¾„ä¸Šé‡å¤ç»‘å®šåŒä¸€ä¸ªXmlParserHookã€‚");
         arrayList.add(hook);
         this.hooks.put(xpath, arrayList);
     };
-    /**¸Ã·½·¨ÊÇ½â³ıÊ¹ÓÃregeditHook()·½·¨×¢²áµÄÒ»×é¹ØÁª¡£*/
+    /**è¯¥æ–¹æ³•æ˜¯è§£é™¤ä½¿ç”¨regeditHook()æ–¹æ³•æ³¨å†Œçš„ä¸€ç»„å…³è”ã€‚*/
     public void unRegeditHook(String[] xpath, XmlParserHook hook) {
         for (String s : xpath)
             this.unRegeditHook(s, hook);
     }
-    /**¸Ã·½·¨ÊÇ½â³ıÊ¹ÓÃregeditHook()·½·¨×¢²áµÄ¹ØÁª¡£*/
+    /**è¯¥æ–¹æ³•æ˜¯è§£é™¤ä½¿ç”¨regeditHook()æ–¹æ³•æ³¨å†Œçš„å…³è”ã€‚*/
     public void unRegeditHook(String xpath, XmlParserHook hook) {
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
         if (arrayList == null)
@@ -84,32 +84,32 @@ public class XmlParserKit implements XmlNamespaceParser {
             return;
         //-----------
         if (event instanceof StartDocumentEvent) {
-            //·Ö·¢ÎÄµµ¿ªÊ¼ÊÂ¼ş
+            //åˆ†å‘æ–‡æ¡£å¼€å§‹äº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlDocumentHook)
                     ((XmlDocumentHook) hook).beginDocument(context, (StartDocumentEvent) event);
         } else if (event instanceof EndDocumentEvent) {
-            //·Ö·¢ÎÄµµ½áÊøÊÂ¼ş
+            //åˆ†å‘æ–‡æ¡£ç»“æŸäº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlDocumentHook)
                     ((XmlDocumentHook) hook).endDocument(context, (EndDocumentEvent) event);
         } else if (event instanceof StartElementEvent) {
-            //·Ö·¢ÔªËØ¿ªÊ¼ÊÂ¼ş
+            //åˆ†å‘å…ƒç´ å¼€å§‹äº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlElementHook)
                     ((XmlElementHook) hook).beginElement(context, xpath, (StartElementEvent) event);
         } else if (event instanceof EndElementEvent) {
-            //·Ö·¢ÔªËØ½áÊøÊÂ¼ş
+            //åˆ†å‘å…ƒç´ ç»“æŸäº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlElementHook)
                     ((XmlElementHook) hook).endElement(context, xpath, (EndElementEvent) event);
         } else if (event instanceof TextEvent) {
-            //·Ö·¢ÎÄ±¾ÊÂ¼ş
+            //åˆ†å‘æ–‡æœ¬äº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlTextHook)
                     ((XmlTextHook) hook).text(context, xpath, (TextEvent) event);
         } else if (event instanceof AttributeEvent) {
-            //·Ö·¢ÊôĞÔÊÂ¼ş
+            //åˆ†å‘å±æ€§äº‹ä»¶
             for (XmlParserHook hook : hooks)
                 if (hook instanceof XmlAttributeHook)
                     ((XmlAttributeHook) hook).attribute(context, xpath, (AttributeEvent) event);

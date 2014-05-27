@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Menu;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class OpenActionHandler extends AbstractHandler implements IMenuCreator {
     private MenuManager dropDownMenuMgr = null;
@@ -45,7 +45,7 @@ public class OpenActionHandler extends AbstractHandler implements IMenuCreator {
     private void createDropDownMenuMgr() {
         if (this.dropDownMenuMgr == null) {
             this.dropDownMenuMgr = new MenuManager();
-            this.dropDownMenuMgr.setRemoveAllWhenShown(true);//ËùÓĞ²Ëµ¥È«²¿ÖØĞÂ×°ÔØ
+            this.dropDownMenuMgr.setRemoveAllWhenShown(true);//æ‰€æœ‰èœå•å…¨éƒ¨é‡æ–°è£…è½½
             this.dropDownMenuMgr.addMenuListener(new MenuListener(this));
         }
     }
@@ -57,12 +57,12 @@ public class OpenActionHandler extends AbstractHandler implements IMenuCreator {
         }
     }
     @Override
-    public Menu getMenu(Control parent) { //ÔÚ¹¤¾ßÀ¸±»µ÷ÓÃ
+    public Menu getMenu(Control parent) { //åœ¨å·¥å…·æ è¢«è°ƒç”¨
         createDropDownMenuMgr();
         return this.dropDownMenuMgr.createContextMenu(parent);
     }
     @Override
-    public Menu getMenu(Menu parent) { //ÔÚ²Ëµ¥À¸±»µ÷ÓÃ
+    public Menu getMenu(Menu parent) { //åœ¨èœå•æ è¢«è°ƒç”¨
         createDropDownMenuMgr();
         Menu menu = new Menu(parent);
         IContributionItem[] items = dropDownMenuMgr.getItems();
@@ -90,7 +90,7 @@ public class OpenActionHandler extends AbstractHandler implements IMenuCreator {
     //
     //
     //
-    /**µ±ÖØĞÂ´´½¨²Ëµ¥Ê±µÄ¼àÌıÆ÷*/
+    /**å½“é‡æ–°åˆ›å»ºèœå•æ—¶çš„ç›‘å¬å™¨*/
     private class MenuListener implements IMenuListener {
         private OpenActionHandler actionHandler = null;
         public MenuListener(OpenActionHandler actionHandler) {
@@ -102,7 +102,7 @@ public class OpenActionHandler extends AbstractHandler implements IMenuCreator {
                 manager.add(new ModeItemAction(this.actionHandler, model));
         }
     }
-    /**²Ëµ¥ÏîÄ¿*/
+    /**èœå•é¡¹ç›®*/
     class ModeItemAction extends AbstractHandler {
         private ConstModel currentModel = null;
         //

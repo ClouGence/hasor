@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.more.classcode;
 /**
- * ¹ıÂËÆ÷Á´µÄ×îÖÕÒ»²ã£¬¸ÃÀà¸ºÔğÔÚaopµ÷ÓÃÁ´µÄ×îºó»·½ÚÖ´ĞĞ·½·¨µ÷ÓÃ¡£Èç¹ûÔÚÖ´ĞĞ×îÖÕµ÷ÓÃÊ±method²ÎÊıÎŞ·¨¶¨Î»Æä·½·¨ÄÇÃ´½«»áµ¼ÖÂNoSuchMethodExceptionÒì³£
+ * è¿‡æ»¤å™¨é“¾çš„æœ€ç»ˆä¸€å±‚ï¼Œè¯¥ç±»è´Ÿè´£åœ¨aopè°ƒç”¨é“¾çš„æœ€åç¯èŠ‚æ‰§è¡Œæ–¹æ³•è°ƒç”¨ã€‚å¦‚æœåœ¨æ‰§è¡Œæœ€ç»ˆè°ƒç”¨æ—¶methodå‚æ•°æ— æ³•å®šä½å…¶æ–¹æ³•é‚£ä¹ˆå°†ä¼šå¯¼è‡´NoSuchMethodExceptionå¼‚å¸¸
  * @version 2010-9-2
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class AopFilterChain_End implements AopFilterChain {
     public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
         if (method == null)
-            throw new LostException("ÔÚAopÁ´×îÖÕ»·½Ú¶ªÊ§·½·¨¡£");
+            throw new LostException("åœ¨Aopé“¾æœ€ç»ˆç¯èŠ‚ä¸¢å¤±æ–¹æ³•ã€‚");
         return method.getTargetMeyhod().invoke(target, args);
     }
 }

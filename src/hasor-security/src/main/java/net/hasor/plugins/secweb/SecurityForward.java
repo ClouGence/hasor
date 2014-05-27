@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /***
- * Ö´ĞĞ×îÖÕÌø×ªµÄÌø×ª¶ÔÏó
+ * æ‰§è¡Œæœ€ç»ˆè·³è½¬çš„è·³è½¬å¯¹è±¡
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityForward {
-    /**urlÇëÇó´¦ÀíÆ÷ÈçºÎ´¦ÀíÇëÇó¡£*/
+    /**urlè¯·æ±‚å¤„ç†å™¨å¦‚ä½•å¤„ç†è¯·æ±‚ã€‚*/
     public static enum ForwardType {
-        /**·şÎñ¶Ë×ª·¢*/
+        /**æœåŠ¡ç«¯è½¬å‘*/
         Forward,
-        /**¿Í»§¶ËÖØ¶¨Ïò*/
+        /**å®¢æˆ·ç«¯é‡å®šå‘*/
         Redirect,
-        /**Å×³öÒì³£*/
+        /**æŠ›å‡ºå¼‚å¸¸*/
         Exception,
-        /**ÉèÖÃresponse¿Í»§¶Ë×´Ì¬*/
+        /**è®¾ç½®responseå®¢æˆ·ç«¯çŠ¶æ€*/
         State
     }
-    /**»ñÈ¡Ìø×ªÀàĞÍ*/
+    /**è·å–è·³è½¬ç±»å‹*/
     public ForwardType getForwardType();
-    /**Ö´ĞĞÌø×ª*/
+    /**æ‰§è¡Œè·³è½¬*/
     public void forward(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
 }

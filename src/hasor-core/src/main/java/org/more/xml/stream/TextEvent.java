@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  *
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class TextEvent extends XmlStreamEvent {
     private Type type = null;
@@ -30,7 +30,7 @@ public class TextEvent extends XmlStreamEvent {
     /**
     *
     * @version 2010-9-11
-    * @author ÕÔÓÀ´º (zyc@hasor.net)
+    * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
     */
     public enum Type {
         /***/
@@ -42,27 +42,27 @@ public class TextEvent extends XmlStreamEvent {
         /***/
         Space,
     }
-    /**Èç¹ûµ±Ç°ÊÂ¼şÊÇÒ»¸öCDATAÊÂ¼şÔò·µ»Øtrue¡£*/
+    /**å¦‚æœå½“å‰äº‹ä»¶æ˜¯ä¸€ä¸ªCDATAäº‹ä»¶åˆ™è¿”å›trueã€‚*/
     public boolean isCDATAEvent() {
         return this.type == Type.CDATA;
     };
-    /**Èç¹ûµ±Ç°ÊÂ¼şÊÇÒ»¸öCharsÊÂ¼şÔò·µ»Øtrue¡£*/
+    /**å¦‚æœå½“å‰äº‹ä»¶æ˜¯ä¸€ä¸ªCharsäº‹ä»¶åˆ™è¿”å›trueã€‚*/
     public boolean isCharsEvent() {
         return this.type == Type.Chars;
     };
-    /**Èç¹ûµ±Ç°ÊÂ¼şÊÇÒ»¸öSpaceÊÂ¼şÔò·µ»Øtrue¡£*/
+    /**å¦‚æœå½“å‰äº‹ä»¶æ˜¯ä¸€ä¸ªSpaceäº‹ä»¶åˆ™è¿”å›trueã€‚*/
     public boolean isSpaceEvent() {
         return this.type == Type.Space;
     };
-    /**Èç¹ûµ±Ç°ÊÂ¼şÊÇÒ»¸öCommentÊÂ¼şÔò·µ»Øtrue¡£*/
+    /**å¦‚æœå½“å‰äº‹ä»¶æ˜¯ä¸€ä¸ªCommentäº‹ä»¶åˆ™è¿”å›trueã€‚*/
     public boolean isCommentEvent() {
         return this.type == Type.Comment;
     };
-    /** Èç¹û¹â±êÖ¸ÏòÓÉËùÓĞ¿Õ¸ñ×é³ÉµÄ×Ö·ûÊı¾İÊÂ¼ş£¬Ôò·µ»Ø true¡£*/
+    /** å¦‚æœå…‰æ ‡æŒ‡å‘ç”±æ‰€æœ‰ç©ºæ ¼ç»„æˆçš„å­—ç¬¦æ•°æ®äº‹ä»¶ï¼Œåˆ™è¿”å› trueã€‚*/
     public boolean isWhiteSpace() {
         return this.getReader().isWhiteSpace();
     }
-    /**ÒÔ×Ö·û´®µÄĞÎÊ½·µ»ØÈ¥µôÇ°ºó¿Õ¸ñºÍ»Ø³µµÄgetText()Öµ¡£ */
+    /**ä»¥å­—ç¬¦ä¸²çš„å½¢å¼è¿”å›å»æ‰å‰åç©ºæ ¼å’Œå›è½¦çš„getText()å€¼ã€‚ */
     public String getTrimText() {
         String value = getText();
         if (value != null)
@@ -71,7 +71,7 @@ public class TextEvent extends XmlStreamEvent {
             return null;
     }
     private String textData = null;
-    /**ÒÔ×Ö·û´®µÄĞÎÊ½·µ»Ø½âÎöÊÂ¼şµÄµ±Ç°Öµ£¬´Ë·½·¨·µ»Ø CHARACTERS ÊÂ¼şµÄ×Ö·û´®Öµ£¬·µ»Ø COMMENT µÄÖµ¡¢CDATA ½ÚµÄ×Ö·û´®Öµ¡¢SPACE ÊÂ¼şµÄ×Ö·û´®Öµ¡£ */
+    /**ä»¥å­—ç¬¦ä¸²çš„å½¢å¼è¿”å›è§£æäº‹ä»¶çš„å½“å‰å€¼ï¼Œæ­¤æ–¹æ³•è¿”å› CHARACTERS äº‹ä»¶çš„å­—ç¬¦ä¸²å€¼ï¼Œè¿”å› COMMENT çš„å€¼ã€CDATA èŠ‚çš„å­—ç¬¦ä¸²å€¼ã€SPACE äº‹ä»¶çš„å­—ç¬¦ä¸²å€¼ã€‚ */
     public String getText() {
         if (textData == null) {
             char[] data = new char[this.getReader().getTextLength()];
@@ -83,38 +83,38 @@ public class TextEvent extends XmlStreamEvent {
     public String getOriginalText() {
         String originalText = this.getText();
         if (originalText != null) {
-            originalText = originalText.replace("&", "&amp;");//& ºÍ
-            originalText = originalText.replace("<", "&lt;");//Ğ¡ÓÚºÅ
-            originalText = originalText.replace(">", "&gt;");//´óÓÚºÅ
-            originalText = originalText.replace("'", "&apos;");//'µ¥ÒıºÅ
-            originalText = originalText.replace("\"", "&quot;");//'Ë«ÒıºÅ
+            originalText = originalText.replace("&", "&amp;");//& å’Œ
+            originalText = originalText.replace("<", "&lt;");//å°äºå·
+            originalText = originalText.replace(">", "&gt;");//å¤§äºå·
+            originalText = originalText.replace("'", "&apos;");//'å•å¼•å·
+            originalText = originalText.replace("\"", "&quot;");//'åŒå¼•å·
         }
         return originalText;
     };
-    /**·µ»ØÒ»¸ö°üº¬´ËÊÂ¼şÖĞ×Ö·ûµÄÊı×é¡£ */
+    /**è¿”å›ä¸€ä¸ªåŒ…å«æ­¤äº‹ä»¶ä¸­å­—ç¬¦çš„æ•°ç»„ã€‚ */
     public char[] getTextCharacters() {
         return this.getReader().getTextCharacters();
     };
-    /**»ñÈ¡Óë CHARACTERS¡¢SPACE »ò CDATA ÊÂ¼ş¹ØÁªµÄÎÄ±¾¡£ */
+    /**è·å–ä¸ CHARACTERSã€SPACE æˆ– CDATA äº‹ä»¶å…³è”çš„æ–‡æœ¬ã€‚ */
     public int getTextCharacters(int sourceStart, char[] target, int targetStart, int length) throws XMLStreamException {
         return this.getReader().getTextCharacters(sourceStart, target, targetStart, length);
     };
-    /**·µ»ØÎÄ±¾×Ö·ûÊı×éÖĞ´ËÎÄ±¾ÊÂ¼şµÄ×Ö·ûĞòÁĞ³¤¶È¡£*/
+    /**è¿”å›æ–‡æœ¬å­—ç¬¦æ•°ç»„ä¸­æ­¤æ–‡æœ¬äº‹ä»¶çš„å­—ç¬¦åºåˆ—é•¿åº¦ã€‚*/
     public int getTextLength() {
         return this.getReader().getTextLength();
     };
-    /** ·µ»Ø´æ´¢£¨´ËÎÄ±¾ÊÂ¼şµÄ£©µÚÒ»¸ö×Ö·ûÎ»ÖÃ´¦µÄÎÄ±¾×Ö·ûÊı×éµÄÆ«ÒÆÁ¿¡£ */
+    /** è¿”å›å­˜å‚¨ï¼ˆæ­¤æ–‡æœ¬äº‹ä»¶çš„ï¼‰ç¬¬ä¸€ä¸ªå­—ç¬¦ä½ç½®å¤„çš„æ–‡æœ¬å­—ç¬¦æ•°ç»„çš„åç§»é‡ã€‚ */
     public int getTextStart() {
         return this.getReader().getTextStart();
     }
-    /**¸ÃÊÂ¼şµÄÅÄµµÊÇËü×Ô¼º¡£*/
+    /**è¯¥äº‹ä»¶çš„æ‹æ¡£æ˜¯å®ƒè‡ªå·±ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         if (e instanceof TextEvent)
             return true;
         else
             return false;
     };
-    /**ÎÄ±¾ÊÂ¼ş£¬Èç¹ûÎÄ±¾ÀàĞÍÊÇComment£¬ÔòÊÇ¹²ÓĞÊÂ¼ş¡£ÆäËûÎªË½ÓĞÊÂ¼ş¡£*/
+    /**æ–‡æœ¬äº‹ä»¶ï¼Œå¦‚æœæ–‡æœ¬ç±»å‹æ˜¯Commentï¼Œåˆ™æ˜¯å…±æœ‰äº‹ä»¶ã€‚å…¶ä»–ä¸ºç§æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         if (this.isCommentEvent() == true)
             return true;

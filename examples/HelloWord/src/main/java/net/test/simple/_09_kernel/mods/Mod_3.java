@@ -19,14 +19,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.quick.anno.AnnoModule;
 /**
- * Ä£¿é3£¬ÒÀÀµÄ£¿é2£¬Ä£¿é2£¬ÒÀÀµÄ£¿é1
+ * æ¨¡å—3ï¼Œä¾èµ–æ¨¡å—2ï¼Œæ¨¡å—2ï¼Œä¾èµ–æ¨¡å—1
  * @version : 2013-9-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @AnnoModule
 public class Mod_3 implements Module {
     public void init(ApiBinder apiBinder) {
-        /*ÈõÒÀÀµ£¬¼´Ê¹ÒÀÀµµÄÄ£¿éÃ»ÓĞÕı³£Æô¶¯£¬Ä£¿é3ÒÀÈ»Æô¶¯¡£*/
+        /*å¼±ä¾èµ–ï¼Œå³ä½¿ä¾èµ–çš„æ¨¡å—æ²¡æœ‰æ­£å¸¸å¯åŠ¨ï¼Œæ¨¡å—3ä¾ç„¶å¯åŠ¨ã€‚*/
         apiBinder.configModule().weak(Mod_2.class);
     }
     public void start(AppContext appContext) {

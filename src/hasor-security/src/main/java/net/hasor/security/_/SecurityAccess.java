@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ import net.hasor.core.AppContext;
 import net.hasor.security.Permission;
 import net.hasor.security.Token;
 /**
- * ¸ºÔğÊÚÈ¨²Ù×÷£¬Í¨¹ı¸Ã½Ó¿Ú¿ÉÒÔ½«È¨ÏŞ¿ØÖÆ¿ò¼ÜÁ¬½Óµ½²»Í¬µÄÈ¨ÏŞÄ£ĞÍ¡£
+ * è´Ÿè´£æˆæƒæ“ä½œï¼Œé€šè¿‡è¯¥æ¥å£å¯ä»¥å°†æƒé™æ§åˆ¶æ¡†æ¶è¿æ¥åˆ°ä¸åŒçš„æƒé™æ¨¡å‹ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityAccess {
-    /**Í¨¹ıuserCodeµÇÂ½ÏµÍ³*/
+    /**é€šè¿‡userCodeç™»é™†ç³»ç»Ÿ*/
     public Token getUserInfo(String userCode);
-    /**Í¨¹ıÕÊºÅÃÜÂëµÇÂ½ÏµÍ³*/
+    /**é€šè¿‡å¸å·å¯†ç ç™»é™†ç³»ç»Ÿ*/
     public Token getUserInfo(String account, String password);
-    /**×°ÔØÓÃ»§µÄÈ¨ÏŞ¡£*/
+    /**è£…è½½ç”¨æˆ·çš„æƒé™ã€‚*/
     public List<Permission> loadPermission(Token userInfo);
 }

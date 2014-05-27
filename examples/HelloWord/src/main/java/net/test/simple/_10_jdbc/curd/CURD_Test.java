@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,41 @@ import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /***
- * »ù±¾ÔöÉ¾¸Ä²é²âÊÔ
+ * åŸºæœ¬å¢åˆ æ”¹æŸ¥æµ‹è¯•
  * @version : 2014-1-13
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class CURD_Test extends AbstractJDBCTest {
-    /*Ê¹ÓÃ insert ²åÈëÊı¾İ*/
+    /*ä½¿ç”¨ insert æ’å…¥æ•°æ®*/
     @Test
     public void insert() throws Exception {
-        /*»ñÈ¡ JDBC ²Ù×÷½Ó¿Ú¡£*/
+        /*è·å– JDBC æ“ä½œæ¥å£ã€‚*/
         JdbcTemplate jdbc = getJdbcTemplate();
         //
         System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
         //
-        String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','°²Äİ.±´Â¡','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-        jdbc.execute(insertUser);//Ö´ĞĞ²åÈëÓï¾ä
+        String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','å®‰å¦®.è´éš†','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        jdbc.execute(insertUser);//æ‰§è¡Œæ’å…¥è¯­å¥
         //
         System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
     }
-    /*Ê¹ÓÃ update ¸üĞÂÊı¾İ*/
+    /*ä½¿ç”¨ update æ›´æ–°æ•°æ®*/
     @Test
     public void update() throws Exception {
-        /*»ñÈ¡ JDBC ²Ù×÷½Ó¿Ú¡£*/
+        /*è·å– JDBC æ“ä½œæ¥å£ã€‚*/
         JdbcTemplate jdbc = getJdbcTemplate();
     }
-    /*Ê¹ÓÃ delete É¾³ıÊı¾İ*/
+    /*ä½¿ç”¨ delete åˆ é™¤æ•°æ®*/
     @Test
     public void delete() throws Exception {
-        /*»ñÈ¡ JDBC ²Ù×÷½Ó¿Ú¡£*/
+        /*è·å– JDBC æ“ä½œæ¥å£ã€‚*/
         JdbcTemplate jdbc = getJdbcTemplate();
         //
     }
-    /*Ê¹ÓÃ select ²éÑ¯Êı¾İ*/
+    /*ä½¿ç”¨ select æŸ¥è¯¢æ•°æ®*/
     @Test
     public void select() throws Exception {
-        /*»ñÈ¡ JDBC ²Ù×÷½Ó¿Ú¡£*/
+        /*è·å– JDBC æ“ä½œæ¥å£ã€‚*/
         JdbcTemplate jdbc = getJdbcTemplate();
         //
     }

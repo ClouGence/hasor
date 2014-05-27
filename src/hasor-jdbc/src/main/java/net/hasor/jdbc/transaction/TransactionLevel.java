@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,38 @@
 package net.hasor.jdbc.transaction;
 import java.sql.Connection;
 /**
- * ÊÂÎñ¸ôÀë¼¶±ð
+ * äº‹åŠ¡éš”ç¦»çº§åˆ«
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public enum TransactionLevel {
-    /**Ä¬ÈÏÊÂÎñ¸ôÀë¼¶±ð£¬¾ßÌåÊ¹ÓÃµÄÊý¾Ý¿âÊÂÎñ¸ôÀë¼¶±ðÓÉµ×²ã¾ö¶¨¡£
+    /**é»˜è®¤äº‹åŠ¡éš”ç¦»çº§åˆ«ï¼Œå…·ä½“ä½¿ç”¨çš„æ•°æ®åº“äº‹åŠ¡éš”ç¦»çº§åˆ«ç”±åº•å±‚å†³å®šã€‚
      * @see java.sql.Connection*/
     ISOLATION_DEFAULT(-1),
     /**
-     * Ôà¶Á
-     * <p>ÔÊÐíÔà¶ÁÈ¡£¬µ«²»ÔÊÐí¸üÐÂ¶ªÊ§¡£Èç¹ûÒ»¸öÊÂÎñÒÑ¾­¿ªÊ¼Ð´Êý¾Ý£¬
-     * ÔòÁíÍâÒ»¸öÊÂÎñÔò²»ÔÊÐíÍ¬Ê±½øÐÐÐ´²Ù×÷£¬µ«ÔÊÐíÆäËûÊÂÎñ¶Á´ËÐÐÊý¾Ý¡£
+     * è„è¯»
+     * <p>å…è®¸è„è¯»å–ï¼Œä½†ä¸å…è®¸æ›´æ–°ä¸¢å¤±ã€‚å¦‚æžœä¸€ä¸ªäº‹åŠ¡å·²ç»å¼€å§‹å†™æ•°æ®ï¼Œ
+     * åˆ™å¦å¤–ä¸€ä¸ªäº‹åŠ¡åˆ™ä¸å…è®¸åŒæ—¶è¿›è¡Œå†™æ“ä½œï¼Œä½†å…è®¸å…¶ä»–äº‹åŠ¡è¯»æ­¤è¡Œæ•°æ®ã€‚
      * @see java.sql.Connection#TRANSACTION_READ_UNCOMMITTED
      */
     ISOLATION_READ_UNCOMMITTED(Connection.TRANSACTION_READ_UNCOMMITTED),
     /**
-     * ²»¿ÉÖØ¸´¶Á
-     * <p>ÔÊÐí²»¿ÉÖØ¸´¶ÁÈ¡£¬µ«²»ÔÊÐíÔà¶ÁÈ¡¡£¶ÁÈ¡Êý¾ÝµÄÊÂÎñÔÊÐíÆäËûÊÂÎñ¼ÌÐø·ÃÎÊ¸ÃÐÐÊý¾Ý£¬
-     * µ«ÊÇÎ´Ìá½»µÄÐ´ÊÂÎñ½«»á½ûÖ¹ÆäËûÊÂÎñ·ÃÎÊ¸ÃÐÐ¡£
+     * ä¸å¯é‡å¤è¯»
+     * <p>å…è®¸ä¸å¯é‡å¤è¯»å–ï¼Œä½†ä¸å…è®¸è„è¯»å–ã€‚è¯»å–æ•°æ®çš„äº‹åŠ¡å…è®¸å…¶ä»–äº‹åŠ¡ç»§ç»­è®¿é—®è¯¥è¡Œæ•°æ®ï¼Œ
+     * ä½†æ˜¯æœªæäº¤çš„å†™äº‹åŠ¡å°†ä¼šç¦æ­¢å…¶ä»–äº‹åŠ¡è®¿é—®è¯¥è¡Œã€‚
      * @see java.sql.Connection#TRANSACTION_READ_COMMITTED
      */
     ISOLATION_READ_COMMITTED(Connection.TRANSACTION_READ_COMMITTED),
     /**
-     * ¿ÉÖØ¸´¶ÁÈ¡ 
-     * <p>½ûÖ¹²»¿ÉÖØ¸´¶ÁÈ¡ºÍÔà¶Á£¬µ«ÊÇÓÐÊ±¿ÉÄÜ³öÏÖ»ÃÓ°Êý¾Ý¡£
-     * ¶ÁÈ¡Êý¾ÝµÄÊÂÎñ½«»á½ûÖ¹Ð´ÊÂÎñ£¨µ«ÔÊÐí¶ÁÊÂÎñ£©£¬Ð´ÊÂÎñÔò½ûÖ¹ÈÎºÎÆäËûÊÂÎñ¡£
+     * å¯é‡å¤è¯»å– 
+     * <p>ç¦æ­¢ä¸å¯é‡å¤è¯»å–å’Œè„è¯»ï¼Œä½†æ˜¯æœ‰æ—¶å¯èƒ½å‡ºçŽ°å¹»å½±æ•°æ®ã€‚
+     * è¯»å–æ•°æ®çš„äº‹åŠ¡å°†ä¼šç¦æ­¢å†™äº‹åŠ¡ï¼ˆä½†å…è®¸è¯»äº‹åŠ¡ï¼‰ï¼Œå†™äº‹åŠ¡åˆ™ç¦æ­¢ä»»ä½•å…¶ä»–äº‹åŠ¡ã€‚
      * @see java.sql.Connection#TRANSACTION_REPEATABLE_READ
      */
     ISOLATION_REPEATABLE_READ(Connection.TRANSACTION_REPEATABLE_READ),
     /**
-     * Í¬²½ÊÂÎñ
-     * <p>Ìá¹©ÑÏ¸ñµÄÊÂÎñ¸ôÀë¡£ËüÒªÇóÊÂÎñÐòÁÐ»¯Ö´ÐÐ£¬ÊÂÎñÖ»ÄÜÒ»¸ö½Ó×ÅÒ»¸öµØÖ´ÐÐ£¬µ«²»ÄÜ²¢·¢Ö´ÐÐ¡£
+     * åŒæ­¥äº‹åŠ¡
+     * <p>æä¾›ä¸¥æ ¼çš„äº‹åŠ¡éš”ç¦»ã€‚å®ƒè¦æ±‚äº‹åŠ¡åºåˆ—åŒ–æ‰§è¡Œï¼Œäº‹åŠ¡åªèƒ½ä¸€ä¸ªæŽ¥ç€ä¸€ä¸ªåœ°æ‰§è¡Œï¼Œä½†ä¸èƒ½å¹¶å‘æ‰§è¡Œã€‚
      * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
      */
     ISOLATION_SERIALIZABLE(Connection.TRANSACTION_SERIALIZABLE);

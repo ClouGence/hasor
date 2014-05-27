@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import net.hasor.web.binder.ListenerPipeline;
 /**
  * 
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ManagedListenerPipeline implements ListenerPipeline {
     private HttpSessionListenerDefinition[] sessionListeners = null;
@@ -33,10 +33,10 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     public void init(WebAppContext appContext) {
         if (initialized)
             return;
-        //1.ÊÕ¼¯HttpSessionListenerDefinition
+        //1.æ”¶é›†HttpSessionListenerDefinition
         List<HttpSessionListenerDefinition> sessionListeners = appContext.findBindingBean(HttpSessionListenerDefinition.class);
         this.sessionListeners = sessionListeners.toArray(new HttpSessionListenerDefinition[sessionListeners.size()]);
-        //2.ÊÕ¼¯ContextListenerDefinition
+        //2.æ”¶é›†ContextListenerDefinition
         List<ContextListenerDefinition> contextListeners = appContext.findBindingBean(ContextListenerDefinition.class);
         this.contextListeners = contextListeners.toArray(new ContextListenerDefinition[contextListeners.size()]);
         //everything was ok...

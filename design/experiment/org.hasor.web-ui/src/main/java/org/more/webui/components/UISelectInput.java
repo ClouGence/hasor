@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,21 @@ import org.more.webui.render.select.RadioOnlySelectInputRender;
 import org.more.webui.render.select.SelectOnlySelectInputRender;
 import com.alibaba.fastjson.JSON;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£ºÓÃÓÚ±íÊö´Ó¶à¸öÖµµÄÊäÈëÊä³ö×é½¨£¨±íµ¥ÔªËØ£©¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <b>äÖÈ¾Æ÷</b>£º{@link CheckManySelectInputRender}¡¢{@link SelectOnlySelectInputRender}¡¢
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šç”¨äºè¡¨è¿°ä»å¤šä¸ªå€¼çš„è¾“å…¥è¾“å‡ºç»„å»ºï¼ˆè¡¨å•å…ƒç´ ï¼‰ã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <b>æ¸²æŸ“å™¨</b>ï¼š{@link CheckManySelectInputRender}ã€{@link SelectOnlySelectInputRender}ã€
  * {@link RadioOnlySelectInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UISelectInput extends UIInput {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public static enum Propertys {
-        /** Êı¾İ£¨R£©*/
+        /** æ•°æ®ï¼ˆRï¼‰*/
         listData,
-        /**ÏÔÊ¾Ãû³Æ×Ö¶Î£¨R£©*/
+        /**æ˜¾ç¤ºåç§°å­—æ®µï¼ˆRï¼‰*/
         keyField,
-        /**Öµ×Ö¶Î£¨R£©*/
+        /**å€¼å­—æ®µï¼ˆRï¼‰*/
         varField,
     }
     @Override
@@ -71,18 +71,18 @@ public abstract class UISelectInput extends UIInput {
     public void setVarField(String varField) {
         this.getProperty(Propertys.varField.name()).value(varField);
     }
-    /**Ñ¡ÔñµÄÎ¨Ò»Öµ£¬(R)<br/>getSelectValueÊÇ¶Ô{@link #getSelectValues()}·½·¨µÄÑÓÉì¡£
-     * ¸Ã·½·¨Ö»»á·µ»Ø{@link #getSelectValues()}·½·¨·µ»ØÖµµÄµÚÒ»¸öÔªËØ£¬Èç¹û²»´æÔÚÕâ¸öÔªËØÔò·µ»Ønull¡£*/
+    /**é€‰æ‹©çš„å”¯ä¸€å€¼ï¼Œ(R)<br/>getSelectValueæ˜¯å¯¹{@link #getSelectValues()}æ–¹æ³•çš„å»¶ä¼¸ã€‚
+     * è¯¥æ–¹æ³•åªä¼šè¿”å›{@link #getSelectValues()}æ–¹æ³•è¿”å›å€¼çš„ç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œå¦‚æœä¸å­˜åœ¨è¿™ä¸ªå…ƒç´ åˆ™è¿”å›nullã€‚*/
     public Object getSelectValue() {
         Object[] returnData = getSelectValues();
         if (returnData != null && returnData.length != 0)
             return returnData[0];
         return null;
     }
-    /**Ñ¡ÔñµÄÖµ£¬(R)<br/>SelectValueÊôĞÔÊÇ¶ÔvalueÊôĞÔÔöÇ¿½âÊÍ¡£
-     * µ±valueÖµÎªObjectÊ±selectvalueÊÇÒ»¸öÖ»ÓĞÒ»¸öÔªËØµÄÊı×é¡£
-     * Èç¹ûvalueÎªStringÔòselectvalue»á¸ù¾İ¡°£¬¡±¶Ô×Ö·û´®²ğ·Ö¡£
-     * Èç¹ûvalueÎªÊı×é»ò¼¯ºÏÔòselectValue·µ»Ø¼¯ºÏµÄÊı×éĞÎÊ½¡£*/
+    /**é€‰æ‹©çš„å€¼ï¼Œ(R)<br/>SelectValueå±æ€§æ˜¯å¯¹valueå±æ€§å¢å¼ºè§£é‡Šã€‚
+     * å½“valueå€¼ä¸ºObjectæ—¶selectvalueæ˜¯ä¸€ä¸ªåªæœ‰ä¸€ä¸ªå…ƒç´ çš„æ•°ç»„ã€‚
+     * å¦‚æœvalueä¸ºStringåˆ™selectvalueä¼šæ ¹æ®â€œï¼Œâ€å¯¹å­—ç¬¦ä¸²æ‹†åˆ†ã€‚
+     * å¦‚æœvalueä¸ºæ•°ç»„æˆ–é›†åˆåˆ™selectValueè¿”å›é›†åˆçš„æ•°ç»„å½¢å¼ã€‚*/
     public Object[] getSelectValues() {
         Object var = this.getValue();
         if (var == null || var.getClass().isArray() == false) {

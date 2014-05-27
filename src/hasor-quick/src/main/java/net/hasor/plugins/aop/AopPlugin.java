@@ -21,14 +21,14 @@ import net.hasor.core.binder.matcher.AopMatchers;
 import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
 /**
- * Ìá¹© <code>@Aop</code>×¢½â ¹¦ÄÜÖ§³Ö¡£
+ * æä¾› <code>@Aop</code>æ³¨è§£ åŠŸèƒ½æ”¯æŒã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class AopPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
-        //2.@AopÀ¹½ØÆ÷
+        //2.@Aopæ‹¦æˆªå™¨
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
         apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor(apiBinder));

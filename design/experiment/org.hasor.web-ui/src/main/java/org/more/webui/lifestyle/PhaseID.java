@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package org.more.webui.lifestyle;
 /**
- * ±íÊ¾Ò»¸ö½×¶ÎµÄÎ¨Ò»±àÂë¡£
+ * è¡¨ç¤ºä¸€ä¸ªé˜¶æ®µçš„å”¯ä¸€ç¼–ç ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class PhaseID {
-    /**ÅĞ¶Ï½×¶ÎIDÊÇ·ñÏàÍ¬*/
+    /**åˆ¤æ–­é˜¶æ®µIDæ˜¯å¦ç›¸åŒ*/
     public boolean equals(PhaseID phaseID) {
         return this.getPhaseID().equals(phaseID.getPhaseID());
     };
-    /**»ñÈ¡½×¶ÎID×Ö·û´®*/
+    /**è·å–é˜¶æ®µIDå­—ç¬¦ä¸²*/
     public abstract String getPhaseID();
 };

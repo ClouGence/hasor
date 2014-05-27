@@ -5,7 +5,7 @@ import org.dev.toos.constcode.metadata.ConstVarBean;
 /**
  * 
  * @version : 2012-2-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class XmlConstVarBean extends ConstVarBean {
     private VarType target = null;

@@ -1,9 +1,9 @@
 package org.more.webui.freemarker.parser;
 import java.io.IOException;
 /**
- * {@link ElementHook}½Ó¿ÚÖ´ĞĞ´íÎó¡£
+ * {@link ElementHook}æ¥å£æ‰§è¡Œé”™è¯¯ã€‚
  * @version : 2012-8-31
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ElementHookException extends IOException {
     private static final long serialVersionUID = 3571899846181079327L;

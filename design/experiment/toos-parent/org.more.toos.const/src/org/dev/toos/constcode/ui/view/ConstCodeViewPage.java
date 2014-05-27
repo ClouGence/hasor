@@ -53,26 +53,26 @@ import swing2swt.layout.BorderLayout;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstCodeViewPage extends Composite {
     private ConstCodeView parentView       = null;
-    /**µ±Ç°ÕıÔÚ±à¼­µÄÎÄ¼ş*/
+    /**å½“å‰æ­£åœ¨ç¼–è¾‘çš„æ–‡ä»¶*/
     private Label         modelPath;
-    /**³£Á¿É¸Ñ¡¿ì½İÊäÈë*/
+    /**å¸¸é‡ç­›é€‰å¿«æ·è¾“å…¥*/
     private Combo         constInput       = null;
     private ToolItem      includeDBGroup   = null;
-    /**³£Á¿Ê÷*/
+    /**å¸¸é‡æ ‘*/
     private Tree          constTree        = null;
-    /**³£Á¿Ê÷ÊÓÍ¼*/
+    /**å¸¸é‡æ ‘è§†å›¾*/
     private TreeViewer    constTreeViewer  = null;
-    /**³£Á¿ÖµÊ÷*/
+    /**å¸¸é‡å€¼æ ‘*/
     private Tree          varTree          = null;
-    /**³£Á¿ÖµÊ÷ÊÓÍ¼*/
+    /**å¸¸é‡å€¼æ ‘è§†å›¾*/
     private TreeViewer    varTreeViewer    = null;
-    /**³£Á¿ÖµXML±à¼­Æ÷*/
+    /**å¸¸é‡å€¼XMLç¼–è¾‘å™¨*/
     private StyledText    varCodeXMLEditer = null;
-    /**×°ÔØµÄ·Ö×é*/
+    /**è£…è½½çš„åˆ†ç»„*/
     private MenuItem      menuConstGroup   = null;
     //
     public ConstCodeViewPage(ConstCodeView parentView, Composite parent) {
@@ -84,7 +84,7 @@ public class ConstCodeViewPage extends Composite {
         return this.parentView;
     }
     //
-    /**¹¹½¨ÊÓÍ¼*/
+    /**æ„å»ºè§†å›¾*/
     public void initPartControl() {
         setLayout(new BorderLayout(0, 0));
         Composite panelTop = new Composite(this, SWT.NONE);

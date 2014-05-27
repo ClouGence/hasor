@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package org.more.classcode;
 /**
- * Î¯ÍĞÊôĞÔ£¬classcode×é½¨Ìá¹©Ò»ÖÖĞÂĞÍµÄÊôĞÔĞÎÌ¬£¬´«Í³µÄbeanµÄget/set·½·¨ÊÇÕë¶ÔÒ»¸öË½ÓĞ×Ö¶Î¡£
- * ¶øÎ¯ÍĞÊôĞÔÔòÊÇµ¼³öÕâ¸öget/set·½·¨µ½Ò»¸ö½Ó¿ÚÖĞ¡£´Ó¶ø±»Ìí¼ÓµÄÊôĞÔ¿ÉÒÔÍ¨¹ı½Ó¿ÚµÄÏàÓ¦·½·¨À´¸ºÔğ´¦Àí¡£
+ * å§”æ‰˜å±æ€§ï¼Œclasscodeç»„å»ºæä¾›ä¸€ç§æ–°å‹çš„å±æ€§å½¢æ€ï¼Œä¼ ç»Ÿçš„beançš„get/setæ–¹æ³•æ˜¯é’ˆå¯¹ä¸€ä¸ªç§æœ‰å­—æ®µã€‚
+ * è€Œå§”æ‰˜å±æ€§åˆ™æ˜¯å¯¼å‡ºè¿™ä¸ªget/setæ–¹æ³•åˆ°ä¸€ä¸ªæ¥å£ä¸­ã€‚ä»è€Œè¢«æ·»åŠ çš„å±æ€§å¯ä»¥é€šè¿‡æ¥å£çš„ç›¸åº”æ–¹æ³•æ¥è´Ÿè´£å¤„ç†ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface PropertyDelegate<T> {
-    /**»ñÈ¡Õâ¸öÎ¯ÍĞÊôĞÔµÄÊôĞÔÀàĞÍ¡£*/
+    /**è·å–è¿™ä¸ªå§”æ‰˜å±æ€§çš„å±æ€§ç±»å‹ã€‚*/
     public Class<? extends T> getType();
-    /**¸ÃÎ¯ÍĞÊôĞÔµÄget·½·¨£¬²ÎÊıÊÇÊôĞÔËù´¦µÄ¶ÔÏó¡£*/
+    /**è¯¥å§”æ‰˜å±æ€§çš„getæ–¹æ³•ï¼Œå‚æ•°æ˜¯å±æ€§æ‰€å¤„çš„å¯¹è±¡ã€‚*/
     public T get(Object target) throws PropertyException;
-    /**¸ÃÎ¯ÍĞÊôĞÔµÄset·½·¨£¬µÚÒ»¸ö²ÎÊıÊÇÊôĞÔËù´¦µÄ¶ÔÏó£¬µÚ¶ş¸ö²ÎÊı´ú±íÉèÖÃµÄĞÂÖµ¡£*/
+    /**è¯¥å§”æ‰˜å±æ€§çš„setæ–¹æ³•ï¼Œç¬¬ä¸€ä¸ªå‚æ•°æ˜¯å±æ€§æ‰€å¤„çš„å¯¹è±¡ï¼Œç¬¬äºŒä¸ªå‚æ•°ä»£è¡¨è®¾ç½®çš„æ–°å€¼ã€‚*/
     public void set(Object target, T newValue) throws PropertyException;
 }

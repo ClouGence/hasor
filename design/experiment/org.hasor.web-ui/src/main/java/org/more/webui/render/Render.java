@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 /**
- * ×é½¨äÖÈ¾Æ÷
+ * ç»„å»ºæ¸²æŸ“å™¨
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Render<T extends UIComponent> {
-    /**¿ªÊ¼äÖÈ¾×é½¨*/
+    /**å¼€å§‹æ¸²æŸ“ç»„å»º*/
     public void beginRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException;
-    /**½øĞĞäÖÈ¾*/
+    /**è¿›è¡Œæ¸²æŸ“*/
     public void render(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateException;
-    /**×é½¨äÖÈ¾½áÊø*/
+    /**ç»„å»ºæ¸²æŸ“ç»“æŸ*/
     public void endRender(ViewContext viewContext, T component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException;
 }

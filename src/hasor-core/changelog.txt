@@ -1,130 +1,130 @@
 ===== Hasor-Core v0.0.8
-* ����:
-    01.AopMatchers��������subClassesOf������ƥ��������͵����ࣨ��ʵ���˵Ľӿڣ���Ǩ����Hasor-Quick��Ŀ��
-* �Ľ�:
-    01.Settings�ӿڵ� getNameSpace ��������Ϊ getSetting��
-    02.AppContext�ӿڵ� findBean��findProvider �������� findBindingBean��findBindingProvider
-        --ʹ��ӽ�ApiBinder�ӿ���bindingType�����������Ա��ڿ��������⡣
-    03.Hasor��Aop�������֧��ȫ����������
-    04.����Plugins���ƶ���Hasor-Quick��Ŀ�С�
-    05.��Hasor��stop�������ڣ���ص�֧��ȫ��ɾ������֧�֡�
-    06.������Ҫ�ӿ�50%���Ͻ��иĽ����Ľ���Ŀ���ǲ���ǿ������Guice��
-    07.����Provider�ӿڡ�EventContext�ӿڡ�
-    08.֧���ظ��󶨼�⡣
-* �޸�:
-    01.���� ModulePropxy ����Ϊ ModuleProxy��
+* 新增:
+    01.AopMatchers类型新增subClassesOf方法。匹配给定类型的子类（或实现了的接口），迁移至Hasor-Quick项目。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
+        --使其接近ApiBinder接口中bindingType方法的命名以便于开发者理解。
+    03.Hasor的Aop插件不在支持全局拦截器。
+    04.所有Plugins都移动到Hasor-Quick项目中。
+    05.将Hasor中stop生命周期，相关的支持全部删除不再支持。
+    06.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
+    07.添加Provider接口、EventContext接口。
+    08.支持重复绑定检测。
+* 修复:
+    01.更名 ModulePropxy 类名为 ModuleProxy。
 
 ===== Hasor-Core v0.0.7
-* �޸�:
-    01.�޸� AbstractAppContext �ദ�� AppContextAware �ӿڷ���Ĵ��롣
-        --����ɨ����ɨ�費�� AppContextAware �ӿ�ʵ����ʱ����������doStart�׶ε��˳���
-    02.�޸���ʹ�� @Listener ע��ע�������¼�ʱ������ContextEvent_Initialized��ContextEvent_Started �����¼��޷���ȷ���õ����⡣
-    03.�޸��������ļ��У����ڵ��µ�һ��ڵ������������ڵ�ͬ�������µ����ݻ������⡣
-    04.�޸� new AnnoStandardAppContext() ������Bug��
-    05.�޸� FileEnvironment �ڴ��� FileSettings ʱ�����ظ����������ļ������⡣
-* ����:
-    01.Settings ͨ��ӳ�� key "." ����ȡ�ø��ڵ㡣
-    02.���� @GlobalAop ����ȫ����������
-    03.���� PluginHelper �����࣬���Խ�һ�����ת����Ϊ Hasor �� Module��
-    04.Settings �ӿ���������������ֵ�Ĺ��ܡ�
-    05.Environment �ӿ������������ð�ɨ�跶Χ�ķ�����
-    06.AbstractAppContext ������ addGuiceModule ��������ֱ�ӽ� Guice ģ����뵽 Hasor �С�
-* �Ľ�:
-    01.Settings�ӿڵ� getNameSpace ��������Ϊ getSetting��
-    02.���� Hasor ����ɨ����ƣ��� Class.forName ��Ϊ�ֽ������������������Ҫ��һ���Ż�����
-    03.���ֽӿڷ������Ƹ�����
-    04.�޸� Cache �ӿڵ� clean ������Ϊ cleanCache���Ա���� Map �ӿڳ�ͻ��
-    05.GlobalProperty�ӿڸ���ΪFieldProperty
+* 修复:
+    01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
+        --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
+    02.修复当使用 @Listener 注解注册容器事件时，导致ContextEvent_Initialized、ContextEvent_Started 两个事件无法正确调用的问题。
+    03.修复当配置文件中，根节点下第一层节点名称如果与根节点同名，导致的数据混乱问题。
+    04.修复 new AnnoStandardAppContext() 引发的Bug。
+    05.修复 FileEnvironment 在创建 FileSettings 时候导致重复加载配置文件的问题。
+* 新增:
+    01.Settings 通过映射 key "." 可以取得根节点。
+    02.新增 @GlobalAop 配置全局拦截器。
+    03.新增 PluginHelper 工具类，可以将一个插件转换成为 Hasor 的 Module。
+    04.Settings 接口新增可以设置新值的功能。
+    05.Environment 接口新增可以设置包扫描范围的方法。
+    06.AbstractAppContext 类新增 addGuiceModule 方法可以直接将 Guice 模块加入到 Hasor 中。
+* 改进:
+    01.Settings接口的 getNameSpace 方法改名为 getSetting。
+    02.改造 Hasor 的类扫描机制，从 Class.forName 改为字节码解析（性能上仍需要进一步优化）。
+    03.部分接口方法名称更换。
+    04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
+    05.GlobalProperty接口更名为FieldProperty
 
 ===== Hasor-Core v0.0.6
-* �޸�:
-    01.�Ľ� ��ʹ�� JSON ����List��Map���������ͣ���֮������ͳ������л�ʱ��õ�һ���쳣���޸�������⣬����������������߽�ʹ�� JSONPojoConvertor ����������л���
-* ����:
-    01.������ע�� ServicesRegisterHandler ʱʹ�� Class ���͡�ע��� Handler ֧�� ����ע�롣
-    02.AppContext �ӿ����� lookUpRegisterService ����������ͨ���÷���ȡ��ע��� ServicesRegisterHandler ����
-    03.BeanUtils ���������� copyProperty ���������Կ����ķ�������֧��POJO �� Map ֮���໥������
-* �Ľ�:
-    01.�Ľ� Hasor ��ʹ�������־ʱ���ڱ���ͨ�� new Exception ��ȷ����������λ�ã��Ӷ�������־������ܡ�
-    02.�Ľ� AopInterceptor �������ڻ������õ� methodInterceptorMap ���ԣ������ HashMap ���͸�Ϊ WeakHashMap����������ڴ�й©���⡣
-    03.�Ľ� AppContext ������ ServicesRegisterHandler ��ע��ͽ��ע��ʱ���� boolean ����ֵ��
-    04.Hasor �࣬��Ϊ core ��������
-    05.�Ľ� ConverterUtils ��ʹ�á�ConverterUtils.convert(Date.class, null);��ת��ʱ������ʱ�����쳣����ʵ null ������ת��Ϊ ��(Date)null����
-    06.ɾ�� Aware ������ò���� AppContextAware �ӿڽ��� ��net.hasor.core�� ֱ��֧�֡�
-        -��������һ�¼�������:
-          1.net.hasor.core �������Ѿ���ʼ�������ˡ�
-          2.��Ӧ�ó����д����˶�� AppContext ֮�� ��AwareUtil����Ĳ��������ʽ�ᵼ��ע����ҡ�
-    07.�� ��net.hasor.core�� ���޳����ߵ� ServicesRegisterHandler ���ܡ��ù����� v0.0.4 �汾���롣
-    08.AbstractAppContext �����ڲ��������ù��̣�ͨ���ܱ����ķ�����¶һЩ�ڲ�ִ�й��̡�
-    09.���������¼����Ͷ���Ϊ �������ĳ���׶ε�����֮���������׶��¼��� ���磺
-        --ContextEvent_Initialized ��������г�ʼ������֮��
-        --ContextEvent_Started     ������ģ�鶼 Start ֮��ȷ����ÿ��ģ�鶼�᳢�� start ֮�󣩡�
-        --ContextEvent_Stoped      ������ģ�鶼 Stop ֮��ȷ����ÿ��ģ�鶼�᳢�� stop ֮�󣩡�
+* 修复:
+    01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
+* 新增:
+    01.新增在注册 ServicesRegisterHandler 时使用 Class 类型。注册的 Handler 支持 依赖注入。
+    02.AppContext 接口新增 lookUpRegisterService 方法。可以通过该方法取得注册的 ServicesRegisterHandler 对象。
+    03.BeanUtils 工具类新增 copyProperty 用于做属性拷贝的方法。（支持POJO 与 Map 之间相互拷贝）
+* 改进:
+    01.改进 Hasor 类使其输出日志时不在必须通过 new Exception 来确定方法调用位置，从而提升日志输出性能。
+    02.改进 AopInterceptor 类中用于缓存作用的 methodInterceptorMap 属性，将其从 HashMap 类型改为 WeakHashMap。避免产生内存泄漏问题。
+    03.改进 AppContext 当处理 ServicesRegisterHandler 的注册和解除注册时新增 boolean 返回值。
+    04.Hasor 类，归为 core 软件包。
+    05.改进 ConverterUtils 当使用“ConverterUtils.convert(Date.class, null);”转换时间日期时出现异常。其实 null 本可以转换为 “(Date)null”。
+    06.删除 Aware 插件，该插件的 AppContextAware 接口将由 “net.hasor.core” 直接支持。
+        -这是由于一下几个方面:
+          1.net.hasor.core 软件包已经开始依赖它了。
+          2.当应用程序中创建了多个 AppContext 之后 “AwareUtil”类的插件处理方式会导致注入混乱。
+    07.从 “net.hasor.core” 中剔除鸡肋的 ServicesRegisterHandler 功能。该功能于 v0.0.4 版本加入。
+    08.AbstractAppContext 梳理内部方法调用过程，通过受保护的方法暴露一些内部执行过程。
+    09.所有容器事件发送都改为 “当完成某个阶段的任务之后在引发阶段事件” 例如：
+        --ContextEvent_Initialized 当完成所有初始化任务之后。
+        --ContextEvent_Started     当所有模块都 Start 之后（确保了每个模块都会尝试 start 之后）。
+        --ContextEvent_Stoped      当所有模块都 Stop 之后（确保了每个模块都会尝试 stop 之后）。
 
 ===== Hasor-Core v0.0.5
-* ����:
-    01.���� DomXmlAccept �����࣬�� Xml �ļ�ת��Ϊ  XmlNode �ӿ���ʽ�� Dom ����
-* �Ľ�:
-    01.�޸� DecSequenceMap �����࣬removeAllMap �������� ConcurrentModificationException �쳣�����⡣
-    02.�޸� ApiBinderModule �๹�췽��û�д��� Binder �������²������ʧ�ܵ����⡣
-    03.�޸� AbstractAppContext ��� Guice �������� createInjector��
-            �� Hasor ��������ģ��� createInjector�������ó���������������չ�÷���ʱ�� Hasor ��������˺���
-    04.Cache �ӿڷ����й� key ������ String ���͸���Ϊ Serializable����������һЩ������
-    05.�޸� StandardContextSettings �࣬ȷ��λ��jar���еġ�static-config.xml����Դ�ںϲ�ʱ���ȼ�����file��
+* 新增:
+    01.新增 DomXmlAccept 工具类，将 Xml 文件转换为  XmlNode 接口形式的 Dom 树。
+* 改进:
+    01.修复 DecSequenceMap 工具类，removeAllMap 方法引发 ConcurrentModificationException 异常的问题。
+    02.修复 ApiBinderModule 类构造方法没有处理 Binder 参数导致插件加载失败的问题。
+    03.修改 AbstractAppContext 类的 Guice 创建方法 createInjector。
+            将 Hasor 核心启动模块从 createInjector方法中拿出来，这样避免扩展该方法时对 Hasor 造成致命伤害。
+    04.Cache 接口方法有关 key 参数从 String 类型更换为 Serializable。并增加了一些方法。
+    05.修改 StandardContextSettings 类，确保位于jar包中的“static-config.xml”资源在合并时优先级低于file。
 
 ===== Hasor-Core v0.0.4
-* ����:
-    01.Environment �ӿ����� isDebug ���������ڱ�ʾӦ�ó��������Ƿ�Ϊ debug ģʽ��
-    02.Hasor ������ isDebugLogger��isErrorLogger��isWarningLogger��isInfoLogger ���������ж���־�Ƿ�֧�ָü���������
-    03.ԭ�� Hasor ���� debug��error��warning��info ��־����������ж���Ӧ�������־����Ƿ�֧�֡�
-    04.���� Hasor ���� trace��isTraceLogger ���������ڴ��� Trace ��־����
-    05.���ӷ���ע����ƣ���� ServicesRegisterHandler �ӿ��÷���
-    06.���� ModuleEvent_Start��ModuleEvent_Stoped�¼���
-    07.ApiBinder��AppContext �ӿ�������һЩ�й� BindingType �Ĺ��߷�����
-    08.���� Cache �����
-    09.���� Aware ������ò���ṩ��������ͨ�� @Inject ע��ע�� AppContext �ӿڵ��࣬ʹ���� AppContext �� Start �ĵ�һʱ��õ�ע�롣
-    10.���� ��־��������Կ�������б�������չʾ�˲���Ƿ���سɹ���
-* �Ľ�:
-    1.��� ContextEvent_Stop �¼�Ϊ ContextEvent_Stoped��
-    2.ɾ�� giftSupport ���Ե����ã�Gift ��չ��ʽ����ͨ�������ļ���ʽ���á�
-    3.Gift ��ϵ����Ϊ Plugin��ԭ�� Gift ����Ϊģ���һ�����䣬Ŀǰ��Ϊ��ܹ��ܲ����ϵ��
-    4.���������Ż���
+* 新增:
+    01.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
+    02.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
+    03.原有 Hasor 类中 debug、error、warning、info 日志输出方法会判断响应级别的日志输出是否支持。
+    04.增加 Hasor 类中 trace、isTraceLogger 方法，用于处理 Trace 日志级别。
+    05.增加服务注册机制，详见 ServicesRegisterHandler 接口用法。
+    06.增加 ModuleEvent_Start、ModuleEvent_Stoped事件。
+    07.ApiBinder、AppContext 接口中新增一些有关 BindingType 的工具方法。
+    08.新增 Cache 插件。
+    09.新增 Aware 插件，该插件提供给不方便通过 @Inject 注解注入 AppContext 接口的类，使其在 AppContext 在 Start 的第一时间得到注入。
+    10.新增 日志输出，可以看到插件列表，并且展示了插件是否加载成功。
+* 改进:
+    1.变更 ContextEvent_Stop 事件为 ContextEvent_Stoped。
+    2.删除 giftSupport 属性的配置，Gift 扩展方式不在通过配置文件形式启用。
+    3.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
+    4.代码大面积优化。
 
 ===== Hasor-Core v0.0.3
-* �Ľ�:
-    1.�޸ĸ�POM��Ϊ 0.0.2 �ð汾���Դ��� GBK ������ Javadocs ���ɡ�
-    2.�Ľ�JavaDoc���ݵ�������
+* 改进:
+    1.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
+    2.改进JavaDoc内容的质量。
 
 ===== Hasor-Core v0.0.2
-* �޸�:
-    1.�޸���StandardAppContext�����޲ι��췽�������쳣�����⣬ͬʱ�޸ļ���������Ĺ��췽����
-* ����:
-    1.������ģ������Ϊ�¼�������ִ�� Init\Start\Stopʱ���׳���Ӧ�¼���
-    2.���� Gift ��ϵ������չ��ģ����С���ߡ�
-* �Ľ�:
-    1.DefaultXmlProperty�����ΪDefaultXmlNode������XmlNode���Ӽ������÷�����
-    2.ɾ������Mapping����֧�֣���ش����Ƶ�demo��Ϊ���ӳ���
-    3.AbstractAppContext�����й��¼��������ƶ��� AppContext �ӿ��С�
-    4.@Before ����Ϊ @Aop�����ܽ������Ż���
-    5.ASM����Ϊ4.0��ClassCode����������
+* 修复:
+    1.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
+* 新增:
+    1.新增以模块类名为事件名，当执行 Init\Start\Stop时候，抛出对应事件。
+    2.增加 Gift 体系用于扩展非模块类小工具。
+* 改进:
+    1.DefaultXmlProperty类更名为DefaultXmlNode，并且XmlNode增加几个常用方法。
+    2.删除所有Mapping部分支持，相关代码移到demo作为例子程序。
+    3.AbstractAppContext类中有关事件的声明移动到 AppContext 接口中。
+    4.@Before 更名为 @Aop，性能进行了优化。
+    5.ASM升级为4.0、ClassCode连带升级。
 
 ===== Hasor-Core v0.0.1
-* ����:
-    01.����@GuiceModuleע�⣬���Ա����com.google.inject.Module�ӿ��ϣ����Խ�Guiceģ�����뵽Hasor�С�
-* �Ľ�:
-    01.Hasor-Core��80%���ϴ����ع����ع���Ҫ�漰���ݵ��ǽṹ���ع���
-            �ع�֮�󽫻�ʹHasor���Ĳ���߼�������������������չ���Ĳ㹦�ܡ�
-    02.InitContext�ӿڹ��ܺϲ���Environment�ӿ��С�
-    03.ApiBinder�ӿ�����ģ������������
-    04.HasorModule�ӿڸ���ΪModule��
-    05.HasorEventListener�ӿڸ���ΪEventListener��
-    06.XmlProperty�ӿڸ���ΪXmlNode��
-    07.config-mapping.properties�����ļ��Ľ��������Ǳ���ġ�
-    08.�ع�Settingsʵ�֡�Xml������ʽ��������ns.prop�����ļ���ʵ�ַ�ʽ��ΪSax��
-    09.@Moduleע�⣬����Ϊ@AnnoModule��
-    10.�ع�AppContextʵ�֡�
-    11.���ռ����������а������ƶ���net.hasor�£�����License�ļ���ɾ������ġ����õ��ࡣ
-    12.ɾ��������Web��ص�֧�֣��ⲿ�ֹ���ȫ���ƶ���Hasor-Web��Hasor-MVC������������
-    13.�������ڣ��ϲ�onReady��onInit�����������ڽ׶η�����ɾ�����ٹ��̡�
-    14.���߰��޶���ResourcesUtils�������У���ɨ������Ż���
-    15.���߰��޶���DecSequenceMap.java��DecStackMap.java�������ļ�����һЩ���õķ�����
-    16.����Demo���򶼻��ܵ�demo-project��Ŀ�С�
+* 新增:
+    01.增加@GuiceModule注解，可以标记在com.google.inject.Module接口上，可以将Guice模块引入到Hasor中。
+* 改进:
+    01.Hasor-Core：80%以上代码重构，重构主要涉及内容的是结构性重构。
+            重构之后将会使Hasor核心层的逻辑更加清晰，更便于扩展核心层功能。
+    02.InitContext接口功能合并到Environment接口中。
+    03.ApiBinder接口增加模块依赖管理。
+    04.HasorModule接口更名为Module。
+    05.HasorEventListener接口更名为EventListener。
+    06.XmlProperty接口更名为XmlNode。
+    07.config-mapping.properties属性文件的解析不在是必须的。
+    08.重构Settings实现。Xml解析方式不在依赖ns.prop属性文件，实现方式改为Sax。
+    09.@Module注解，更名为@AnnoModule。
+    10.重构AppContext实现。
+    11.包空间整理，所有包都被移动到net.hasor下，整理License文件。删除残余的、无用的类。
+    12.删除所有与Web相关的支持，这部分功能全部移动到Hasor-Web（Hasor-MVC更名而来）。
+    13.生命周期：合并onReady和onInit两个生命周期阶段方法，删除销毁过程。
+    14.工具包修订：ResourcesUtils工具类中，类扫描代码优化。
+    15.工具包修订：DecSequenceMap.java、DecStackMap.java两个类文件增加一些有用的方法。
+    16.所有Demo程序都汇总到demo-project项目中。

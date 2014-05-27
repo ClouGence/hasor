@@ -16,10 +16,10 @@
 package net.hasor.core.binder;
 /**
  * 
- * @version : 2014Äê5ÔÂ22ÈÕ
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @version : 2014å¹´5æœˆ22æ—¥
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface AopConst {
-    /**±íÊ¾×°ÅäAop*/
+    /**è¡¨ç¤ºè£…é…Aop*/
     public final static String AopAssembly = "AopAssembly";
 }

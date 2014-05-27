@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ÉùÃ÷Ò»¸ö»º´æ·şÎñÌá¹©Õß£¬±ê¼ÇÁË¸Ã½Ó¿ÚµÄÀà±ØĞëÒªÇóÊµÏÖ{@link CacheCreator}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªç¼“å­˜æœåŠ¡æä¾›è€…ï¼Œæ ‡è®°äº†è¯¥æ¥å£çš„ç±»å¿…é¡»è¦æ±‚å®ç°{@link CacheCreator}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

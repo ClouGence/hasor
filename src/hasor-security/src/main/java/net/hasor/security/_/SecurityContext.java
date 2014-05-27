@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,53 +26,53 @@ import net.hasor.security._.support.SecuritySettings;
 /**
  * 
  * @version : 2013-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityContext {
     public SecuritySettings getSettings();
-    /**½«²ÎÊı±íÊ¾µÄ»á»°¼¤»îµ½µ±Ç°Ïß³Ì¡£*/
+    /**å°†å‚æ•°è¡¨ç¤ºçš„ä¼šè¯æ¿€æ´»åˆ°å½“å‰çº¿ç¨‹ã€‚*/
     public boolean activateAuthSession(AuthSession activateAuthSession) throws SecurityException;
-    /**½«²ÎÊı±íÊ¾µÄ»á»°¼¤»îµ½µ±Ç°Ïß³Ì¡£*/
+    /**å°†å‚æ•°è¡¨ç¤ºçš„ä¼šè¯æ¿€æ´»åˆ°å½“å‰çº¿ç¨‹ã€‚*/
     public boolean activateAuthSession(String authSessionID) throws SecurityException;
-    /**´´½¨Ò»¸öÈ¨ÏŞ»á»°£¬²ÎÊıÎªÊ¹ÓÃµÄÊÚÈ¨ÏµÍ³*/
+    /**åˆ›å»ºä¸€ä¸ªæƒé™ä¼šè¯ï¼Œå‚æ•°ä¸ºä½¿ç”¨çš„æˆæƒç³»ç»Ÿ*/
     public AuthSession createAuthSession() throws SecurityException;
-    /**Ïú»Ù·şÎñ*/
+    /**é”€æ¯æœåŠ¡*/
     public void destroySecurity(AppContext appContext);
-    /**¸ù¾İÓÃ»§Éí·İÀàĞÍ´Óµ±Ç°Ïß³Ì»á»°ÁĞ±íÖĞ²éÕÒ»á»°¼¯ºÏ¡££¨²ÎÊıÎª¿Õ»á·µ»Øµ±Ç°Ïß³ÌÉÏËùÓĞµÄ»á»°¡££©*/
+    /**æ ¹æ®ç”¨æˆ·èº«ä»½ç±»å‹ä»å½“å‰çº¿ç¨‹ä¼šè¯åˆ—è¡¨ä¸­æŸ¥æ‰¾ä¼šè¯é›†åˆã€‚ï¼ˆå‚æ•°ä¸ºç©ºä¼šè¿”å›å½“å‰çº¿ç¨‹ä¸Šæ‰€æœ‰çš„ä¼šè¯ã€‚ï¼‰*/
     public AuthSession[] findCurrentAuthSession(RoleIdentity userIdentity);
     //
     public AppContext getAppContext();
-    /**Í¨¹ıAuthSessionID»ñÈ¡È¨ÏŞ»á»°£¬²»´æÔÚ·µ»Ø¿Õ¡£*/
+    /**é€šè¿‡AuthSessionIDè·å–æƒé™ä¼šè¯ï¼Œä¸å­˜åœ¨è¿”å›ç©ºã€‚*/
     public AuthSession getAuthSession(String authSessionID) throws SecurityException;
-    /**»ñÈ¡±àÂë¹¤¾ß*/
+    /**è·å–ç¼–ç å·¥å…·*/
     public Digest getCodeDigest(String name) throws SecurityException;
-    /**»ñÈ¡µ±Ç°Ïß³Ì°ó¶¨µÄÈ¨ÏŞ»á»°¼¯ºÏ¡£·µ»ØÖµ²»¿ÉÒÔÎª¿Õ¡£*/
+    /**è·å–å½“å‰çº¿ç¨‹ç»‘å®šçš„æƒé™ä¼šè¯é›†åˆã€‚è¿”å›å€¼ä¸å¯ä»¥ä¸ºç©ºã€‚*/
     public AuthSession[] getCurrentAuthSession();
-    /**»ñÈ¡±»±ê¼ÇÎªBlankµÄ»á»°£¨À´±öÓÃ»§»òÕßÎ´µÇÂ¼µÄ»á»°£©*/
+    /**è·å–è¢«æ ‡è®°ä¸ºBlankçš„ä¼šè¯ï¼ˆæ¥å®¾ç”¨æˆ·æˆ–è€…æœªç™»å½•çš„ä¼šè¯ï¼‰*/
     public AuthSession getCurrentBlankAuthSession();
-    /**»ñÈ¡µ±Ç°À´±öÓÃ»§£¬Èç¹û´æÔÚµÄ»°¡£*/
+    /**è·å–å½“å‰æ¥å®¾ç”¨æˆ·ï¼Œå¦‚æœå­˜åœ¨çš„è¯ã€‚*/
     public AuthSession getCurrentGuestAuthSession();
-    /**¸ù¾İuri»ñÈ¡¿ÉÓÃÓÚÌø×ª¹¤¾ßÀà¡£*/
+    /**æ ¹æ®uriè·å–å¯ç”¨äºè·³è½¬å·¥å…·ç±»ã€‚*/
     public SecurityDispatcher getDispatcher(String requestPath) throws ServletException;
-    /**½«Permission×¢½â×ª»»ÎªSecurityNode¡£*/
+    /**å°†Permissionæ³¨è§£è½¬æ¢ä¸ºSecurityNodeã€‚*/
     public SecurityNode getSecurityCondition(Permission permission);
-    /**½«String×¢½â×ª»»ÎªSecurityNode¡£*/
+    /**å°†Stringæ³¨è§£è½¬æ¢ä¸ºSecurityNodeã€‚*/
     public SecurityNode getSecurityCondition(String permissionCode);
-    /**¸ù¾İuri»ñÈ¡ÓÃÓÚÅĞ¶ÏÈ¨ÏŞµÄ¹¦ÄÜ½Ó¿Ú¡£*/
+    /**æ ¹æ®uriè·å–ç”¨äºåˆ¤æ–­æƒé™çš„åŠŸèƒ½æ¥å£ã€‚*/
     public UriPatternMatcher getUriMatcher(String requestPath);
-    /**´Óµ±Ç°Ïß³ÌÖĞ»î¶¯µÄ»á»°ÀïÈ¥µôÄ³¸ö»á»°¡£*/
+    /**ä»å½“å‰çº¿ç¨‹ä¸­æ´»åŠ¨çš„ä¼šè¯é‡Œå»æ‰æŸä¸ªä¼šè¯ã€‚*/
     public boolean inactivationAuthSession(AuthSession authSession);
-    /**´Óµ±Ç°Ïß³ÌÖĞ»î¶¯µÄ»á»°ÀïÈ¥µôÄ³¸ö»á»°¡£*/
+    /**ä»å½“å‰çº¿ç¨‹ä¸­æ´»åŠ¨çš„ä¼šè¯é‡Œå»æ‰æŸä¸ªä¼šè¯ã€‚*/
     public boolean inactivationAuthSession(String sessionID);
     //
-    /**³õÊ¼»¯·şÎñ*/
+    /**åˆå§‹åŒ–æœåŠ¡*/
     public void initSecurity(AppContext appContext);
-    /**´´½¨{@link SecurityQuery} Àà£¬¸ÃÀà¿ÉÒÔÓÃÀ´²âÊÔÓÃ»§µÄÈ¨ÏŞ¡£*/
+    /**åˆ›å»º{@link SecurityQuery} ç±»ï¼Œè¯¥ç±»å¯ä»¥ç”¨æ¥æµ‹è¯•ç”¨æˆ·çš„æƒé™ã€‚*/
     public SecurityQuery newSecurityQuery();
-    /**´´½¨{@link SecurityQuery} Àà£¬¸ÃÀà¿ÉÒÔÓÃÀ´²âÊÔÓÃ»§µÄÈ¨ÏŞ¡£*/
+    /**åˆ›å»º{@link SecurityQuery} ç±»ï¼Œè¯¥ç±»å¯ä»¥ç”¨æ¥æµ‹è¯•ç”¨æˆ·çš„æƒé™ã€‚*/
     public SecurityQuery newSecurityQuery(Permission permission);
-    /**´´½¨{@link SecurityQuery} Àà£¬¸ÃÀà¿ÉÒÔÓÃÀ´²âÊÔÓÃ»§µÄÈ¨ÏŞ¡£*/
+    /**åˆ›å»º{@link SecurityQuery} ç±»ï¼Œè¯¥ç±»å¯ä»¥ç”¨æ¥æµ‹è¯•ç”¨æˆ·çš„æƒé™ã€‚*/
     public SecurityQuery newSecurityQuery(SecurityNode testNode);
-    /**´´½¨{@link SecurityQuery} Àà£¬¸ÃÀà¿ÉÒÔÓÃÀ´²âÊÔÓÃ»§µÄÈ¨ÏŞ¡£*/
+    /**åˆ›å»º{@link SecurityQuery} ç±»ï¼Œè¯¥ç±»å¯ä»¥ç”¨æ¥æµ‹è¯•ç”¨æˆ·çš„æƒé™ã€‚*/
     public SecurityQuery newSecurityQuery(String permissionCode);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.more.util.ResourcesUtils;
 /**
  * 
  * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class Xml_Test {
     @Test
@@ -33,7 +33,7 @@ public class Xml_Test {
         System.out.println("--->>test_ProcessXml<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/xml-data.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
-        settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼þ
+        settings.loadSettings();//è£…è½½é…ç½®æ–‡ä»¶
         //
         //
         XmlNode xmlNoe = settings.getXmlNode("demoProject.menus");

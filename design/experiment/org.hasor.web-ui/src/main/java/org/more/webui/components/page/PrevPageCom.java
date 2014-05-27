@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package org.more.webui.components.page;
 import org.more.webui.component.support.UICom;
 import org.more.webui.components.page.PageCom.Mode;
 /**
- * ∑÷“≥◊ÈΩ®£∫…œ“ª“≥
+ * ÂàÜÈ°µÁªÑÂª∫Ôºö‰∏ä‰∏ÄÈ°µ
  * @version : 2012-5-15
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 @UICom(tagName = "ui_pPrev", renderType = AbstractItemRender.class)
 public class PrevPageCom extends AbstractItem {

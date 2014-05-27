@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package net.hasor.core.binder.matcher;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 /**
- * ¬ﬂº≠∆˜
+ * ÈÄªËæëÂô®
  * @version : 2013-8-20
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 public class MatcherDevice<T> implements Matcher<T> {
     private Matcher<T> matcherNode = null;
@@ -30,17 +30,17 @@ public class MatcherDevice<T> implements Matcher<T> {
     public final boolean matches(T t) {
         return matcherNode.matches(t);
     }
-    /**”Î*/
+    /**‰∏é*/
     public MatcherDevice<T> and(Matcher<T> other) {
         this.matcherNode = new And<T>(this.matcherNode, other);
         return this;
     }
-    /**ªÚ*/
+    /**Êàñ*/
     public MatcherDevice<T> or(Matcher<T> other) {
         this.matcherNode = new Or<T>(this.matcherNode, other);
         return this;
     }
-    /**∑«*/
+    /**Èùû*/
     public MatcherDevice<T> not() {
         this.matcherNode = new Not<T>(this.matcherNode);
         return this;

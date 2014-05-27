@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,40 @@
  */
 package net.hasor.jdbc.transaction;
 /**
- * ÊÂÎñ´«²¥ÊôÐÔ
+ * äº‹åŠ¡ä¼ æ’­å±žæ€§
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public enum TransactionBehavior {
     /**
-     * ¼ÓÈëÒÑÓÐÊÂÎñ
-     * <p><i><b>ÊÍÒâ</b></i>£º³¢ÊÔ¼ÓÈëÒÑ¾­´æÔÚµÄÊÂÎñÖÐ£¬Èç¹ûÃ»ÓÐÔò¿ªÆôÒ»¸öÐÂµÄÊÂÎñ¡£*/
+     * åŠ å…¥å·²æœ‰äº‹åŠ¡
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå°è¯•åŠ å…¥å·²ç»å­˜åœ¨çš„äº‹åŠ¡ä¸­ï¼Œå¦‚æžœæ²¡æœ‰åˆ™å¼€å¯ä¸€ä¸ªæ–°çš„äº‹åŠ¡ã€‚*/
     PROPAGATION_REQUIRED,
     /**
-     * ¶ÀÁ¢ÊÂÎñ
-     * <p><i><b>ÊÍÒâ</b></i>£º½«¹ÒÆðµ±Ç°´æÔÚµÄÊÂÎñ¹ÒÆð£¨Èç¹û´æÔÚµÄ»°£©¡£
-     * ²¢ÇÒ¿ªÆôÒ»¸öÈ«ÐÂµÄÊÂÎñ£¬ÐÂÊÂÎñÓëÒÑ´æÔÚµÄÊÂÎñÖ®¼ä±Ë´ËÃ»ÓÐ¹ØÏµ¡£*/
+     * ç‹¬ç«‹äº‹åŠ¡
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå°†æŒ‚èµ·å½“å‰å­˜åœ¨çš„äº‹åŠ¡æŒ‚èµ·ï¼ˆå¦‚æžœå­˜åœ¨çš„è¯ï¼‰ã€‚
+     * å¹¶ä¸”å¼€å¯ä¸€ä¸ªå…¨æ–°çš„äº‹åŠ¡ï¼Œæ–°äº‹åŠ¡ä¸Žå·²å­˜åœ¨çš„äº‹åŠ¡ä¹‹é—´å½¼æ­¤æ²¡æœ‰å…³ç³»ã€‚*/
     RROPAGATION_REQUIRES_NEW,
     /**
-     * Ç¶Ì×ÊÂÎñ
-     * <p><i><b>ÊÍÒâ</b></i>£ºÔÚµ±Ç°ÊÂÎñÖÐ¿ªÆôÒ»¸ö×ÓÊÂÎñ¡£Èç¹ûÊÂÎñµÝ½»½«Á¬Í¬ÉÏÒ»¼¶ÊÂÎñÒ»Í¬µÝ½»¡£
-     * <p><i><b>×¢Òâ</b></i>£ºÐèÒªÇý¶¯Ö§³Ö±£´æµã¡£*/
+     * åµŒå¥—äº‹åŠ¡
+     * <p><i><b>é‡Šæ„</b></i>ï¼šåœ¨å½“å‰äº‹åŠ¡ä¸­å¼€å¯ä¸€ä¸ªå­äº‹åŠ¡ã€‚å¦‚æžœäº‹åŠ¡é€’äº¤å°†è¿žåŒä¸Šä¸€çº§äº‹åŠ¡ä¸€åŒé€’äº¤ã€‚
+     * <p><i><b>æ³¨æ„</b></i>ï¼šéœ€è¦é©±åŠ¨æ”¯æŒä¿å­˜ç‚¹ã€‚*/
     PROPAGATION_NESTED,
     /**
-     * ¸úËæ»·¾³
-     * <p><i><b>ÊÍÒâ</b></i>£ºÈç¹ûµ±Ç°Ã»ÓÐÊÂÎñ´æÔÚ£¬¾ÍÒÔ·ÇÊÂÎñ·½Ê½Ö´ÐÐ£»Èç¹ûÓÐ£¬¾ÍÊ¹ÓÃµ±Ç°ÊÂÎñ¡£*/
+     * è·ŸéšçŽ¯å¢ƒ
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå¦‚æžœå½“å‰æ²¡æœ‰äº‹åŠ¡å­˜åœ¨ï¼Œå°±ä»¥éžäº‹åŠ¡æ–¹å¼æ‰§è¡Œï¼›å¦‚æžœæœ‰ï¼Œå°±ä½¿ç”¨å½“å‰äº‹åŠ¡ã€‚*/
     PROPAGATION_SUPPORTS,
     /**
-     * ·ÇÊÂÎñ·½Ê½
-     * <p><i><b>ÊÍÒâ</b></i>£ºÈç¹ûµ±Ç°Ã»ÓÐÊÂÎñ´æÔÚ£¬¾ÍÒÔ·ÇÊÂÎñ·½Ê½Ö´ÐÐ£»Èç¹ûÓÐ£¬¾Í½«µ±Ç°ÊÂÎñ¹ÒÆð¡£
+     * éžäº‹åŠ¡æ–¹å¼
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå¦‚æžœå½“å‰æ²¡æœ‰äº‹åŠ¡å­˜åœ¨ï¼Œå°±ä»¥éžäº‹åŠ¡æ–¹å¼æ‰§è¡Œï¼›å¦‚æžœæœ‰ï¼Œå°±å°†å½“å‰äº‹åŠ¡æŒ‚èµ·ã€‚
      * */
     PROPAGATION_NOT_SUPPORTED,
     /**
-     * ÅÅ³ýÊÂÎñ
-     * <p><i><b>ÊÍÒâ</b></i>£ºÈç¹ûµ±Ç°Ã»ÓÐÊÂÎñ´æÔÚ£¬¾ÍÒÔ·ÇÊÂÎñ·½Ê½Ö´ÐÐ£»Èç¹ûÓÐ£¬¾ÍÅ×³öÒì³£¡£*/
+     * æŽ’é™¤äº‹åŠ¡
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå¦‚æžœå½“å‰æ²¡æœ‰äº‹åŠ¡å­˜åœ¨ï¼Œå°±ä»¥éžäº‹åŠ¡æ–¹å¼æ‰§è¡Œï¼›å¦‚æžœæœ‰ï¼Œå°±æŠ›å‡ºå¼‚å¸¸ã€‚*/
     PROPAGATION_NEVER,
     /**
-     * ÒªÇó»·¾³ÖÐ´æÔÚÊÂÎñ
-     * <p><i><b>ÊÍÒâ</b></i>£ºÈç¹ûµ±Ç°Ã»ÓÐÊÂÎñ´æÔÚ£¬¾ÍÅ×³öÒì³££»Èç¹ûÓÐ£¬¾ÍÊ¹ÓÃµ±Ç°ÊÂÎñ¡£*/
+     * è¦æ±‚çŽ¯å¢ƒä¸­å­˜åœ¨äº‹åŠ¡
+     * <p><i><b>é‡Šæ„</b></i>ï¼šå¦‚æžœå½“å‰æ²¡æœ‰äº‹åŠ¡å­˜åœ¨ï¼Œå°±æŠ›å‡ºå¼‚å¸¸ï¼›å¦‚æžœæœ‰ï¼Œå°±ä½¿ç”¨å½“å‰äº‹åŠ¡ã€‚*/
     PROPAGATION_MANDATORY,
 }

@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * 
  * @version : 2013-2-4
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class ConstSortProviderProxy implements ITreeContentProvider {
     public static enum SortType {
@@ -22,7 +22,7 @@ public class ConstSortProviderProxy implements ITreeContentProvider {
     public void sortBy(SortType sortType) {
         this.sortType = sortType;
     }
-    /**ªÒ»°≈≈–Ú∑Ω Ω*/
+    /**Ëé∑ÂèñÊéíÂ∫èÊñπÂºè*/
     public SortType getSortType() {
         return sortType;
     }

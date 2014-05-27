@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.dev.toos.constcode.model.bridge.VarBeanBridge;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org) 
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org) 
  */
 public abstract class ConstGroup {
     public static enum FromType {
@@ -38,7 +38,7 @@ public abstract class ConstGroup {
     private FromType              fromType      = null;
     private boolean               isChanged     = false;
     //
-    /*º¢×ÓÃÇ*/
+    /*å­©å­ä»¬*/
     private List<ConstBeanBridge> constBeanList = new ArrayList<ConstBeanBridge>();
     //
     //
@@ -47,38 +47,38 @@ public abstract class ConstGroup {
             throw new NullPointerException();
         this.fromType = fromType;
     }
-    /**·Ö×éÊÇ·ñÎªÖ»¶ÁÊôĞÔ*/
+    /**åˆ†ç»„æ˜¯å¦ä¸ºåªè¯»å±æ€§*/
     public boolean isReadOnly() {
         return this.isReadOnly;
     }
     protected void setReadOnly(boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
     }
-    /**»ñÈ¡À´Ô´ÀàĞÍ*/
+    /**è·å–æ¥æºç±»å‹*/
     public FromType getType() {
         return this.fromType;
     }
-    /**»ñÈ¡Ãû³Æ*/
+    /**è·å–åç§°*/
     public String getName() {
         return name;
     }
-    /**ÉèÖÃÃû³Æ*/
+    /**è®¾ç½®åç§°*/
     public void setName(String name) {
         this.name = name;
     }
-    /**È·¶¨¸Ä×éµÄÊı¾İÊÇ·ñÒÑ¾­±»ĞŞ¸Ä¹ı¡£*/
+    /**ç¡®å®šæ”¹ç»„çš„æ•°æ®æ˜¯å¦å·²ç»è¢«ä¿®æ”¹è¿‡ã€‚*/
     public boolean isConstChanged() {
         return isChanged;
     }
-    /**ÓÉÍâ²¿¸ø¶¨Ò»¸öÖµ£¬¸ÃÖµÓÃÀ´ËµÃ÷³£Á¿·Ö×éµÄÊı¾İÒÑ¾­±»ĞŞ¸Ä¹ı¡£*/
+    /**ç”±å¤–éƒ¨ç»™å®šä¸€ä¸ªå€¼ï¼Œè¯¥å€¼ç”¨æ¥è¯´æ˜å¸¸é‡åˆ†ç»„çš„æ•°æ®å·²ç»è¢«ä¿®æ”¹è¿‡ã€‚*/
     public void setConstChanged(boolean isChanged) {
         this.isChanged = isChanged;
     }
-    /**·µ»ØÖ»¶ÁĞÎÊ½µÄ³£Á¿¼¯ºÏ*/
+    /**è¿”å›åªè¯»å½¢å¼çš„å¸¸é‡é›†åˆ*/
     public List<ConstBeanBridge> constList() {
         return Collections.unmodifiableList(constBeanList);
     }
-    /**ÔØÈë³£Á¿µÄº¢×Ó*/
+    /**è½½å…¥å¸¸é‡çš„å­©å­*/
     public List<ConstBeanBridge> loadChildrenConst(ConstBeanBridge constBean) {
         ArrayList<ConstBeanBridge> cbgList = new ArrayList<ConstBeanBridge>();
         ConstBean targetConstBean = constBean.getTarget();
@@ -90,7 +90,7 @@ public abstract class ConstGroup {
         }
         return cbgList;
     }
-    /**ÔØÈë³£Á¿ÖµµÄº¢×Ó*/
+    /**è½½å…¥å¸¸é‡å€¼çš„å­©å­*/
     public List<VarBeanBridge> loadChildrenVar(VarBeanBridge varBean) {
         ArrayList<VarBeanBridge> cbgList = new ArrayList<VarBeanBridge>();
         ConstVarBean targetVarBean = varBean.getTarget();
@@ -102,7 +102,7 @@ public abstract class ConstGroup {
         }
         return cbgList;
     }
-    /**ÔØÈë³£Á¿¶¨ÒåµÄ³£Á¿Öµ*/
+    /**è½½å…¥å¸¸é‡å®šä¹‰çš„å¸¸é‡å€¼*/
     public List<VarBeanBridge> loadVarRoots(ConstBeanBridge constBean) {
         ArrayList<VarBeanBridge> cbgList = new ArrayList<VarBeanBridge>();
         ConstBean targetConstBean = constBean.getTarget();
@@ -116,7 +116,7 @@ public abstract class ConstGroup {
     }
     //
     //
-    /**·µ»ØÊÇ·ñ×°ÔØ³É¹¦*/
+    /**è¿”å›æ˜¯å¦è£…è½½æˆåŠŸ*/
     public boolean loadData() {
         for (ConstBean constBean : this.getConstDao().getRootConst()) {
             ConstBeanBridge constBridge = new ConstBeanBridge(null, constBean, this);
@@ -124,35 +124,35 @@ public abstract class ConstGroup {
         }
         return true;
     };
-    /**ÖØĞÂ×°ÔØXML.Âú×ãÏÂÃæÒ»ÌõµÄ¾Í·ÅÆúÖØÔØ¡££¨jar¡¢ÉĞÎ´±£´æ£©*/
+    /**é‡æ–°è£…è½½XML.æ»¡è¶³ä¸‹é¢ä¸€æ¡çš„å°±æ”¾å¼ƒé‡è½½ã€‚ï¼ˆjarã€å°šæœªä¿å­˜ï¼‰*/
     public boolean reloadData() {
-        if (this.getType() == FromType.JAR)//Jar£¬·ÅÆú
+        if (this.getType() == FromType.JAR)//Jarï¼Œæ”¾å¼ƒ
             return false;
-        if (this.isConstChanged() == true)//ÉĞÎ´±£´æ£¬·ÅÆú
+        if (this.isConstChanged() == true)//å°šæœªä¿å­˜ï¼Œæ”¾å¼ƒ
             return false;
         //
         this.constBeanList.clear();
         return this.loadData();
     }
-    /**µÃµ½Í¨Öª×¼±¸¿ªÊ¼¸üĞÂ¡£*/
+    /**å¾—åˆ°é€šçŸ¥å‡†å¤‡å¼€å§‹æ›´æ–°ã€‚*/
     public void beginSave() throws Throwable {};
-    /**µÃµ½Í¨Öª¸üĞÂ¹ı³Ì½áÊø¡£*/
+    /**å¾—åˆ°é€šçŸ¥æ›´æ–°è¿‡ç¨‹ç»“æŸã€‚*/
     public void finishSave() throws Throwable {};
-    /**³Ö¾Ã»¯´¦Àí*/
+    /**æŒä¹…åŒ–å¤„ç†*/
     public void save() throws Throwable {
-        /*ÔÚÖ»¶ÁÄ£Ê½ÏÂ·ÅÆú²Ù×÷*/
+        /*åœ¨åªè¯»æ¨¡å¼ä¸‹æ”¾å¼ƒæ“ä½œ*/
         if (this.isReadOnly() == true)
             return;
-        /*½«BridgeÉÏµÄÊı¾İ¸üĞÂµ½Êı¾İÄ£ĞÍÉÏ,È»ºó½øĞĞ³Ö¾Ã»¯´¦Àí¡£*/
+        /*å°†Bridgeä¸Šçš„æ•°æ®æ›´æ–°åˆ°æ•°æ®æ¨¡å‹ä¸Š,ç„¶åè¿›è¡ŒæŒä¹…åŒ–å¤„ç†ã€‚*/
         for (int i = 0; i < this.constBeanList.size(); i++) {
             ConstBeanBridge beanBridge = this.constBeanList.get(i);
             if (beanBridge.isPropertyChanged() == false)
                 continue;
-            this.doUpdateConst(i, beanBridge);//TODO ºöÂÔ¿ÉÄÜµÄ´íÎó
+            this.doUpdateConst(i, beanBridge);//TODO å¿½ç•¥å¯èƒ½çš„é”™è¯¯
         }
         this.setConstChanged(false);
     }
-    /**Ìí¼Ó³£Á¿*/
+    /**æ·»åŠ å¸¸é‡*/
     public boolean addConst(ConstBeanBridge constBean) {
         this.setConstChanged(true);
         this.constBeanList.add(constBean);
@@ -163,7 +163,7 @@ public abstract class ConstGroup {
         this.constBeanList.add(index, newConst);
         return true;
     }
-    /**É¾³ı³£Á¿*/
+    /**åˆ é™¤å¸¸é‡*/
     public boolean deleteConst(ConstBeanBridge constBean) {
         this.setConstChanged(true);
         if (constBean.isNew() == true)
@@ -173,13 +173,13 @@ public abstract class ConstGroup {
         return true;
     }
     //
-    /**³Ö¾Ã»¯´¦Àí£¬³£Á¿*/
+    /**æŒä¹…åŒ–å¤„ç†ï¼Œå¸¸é‡*/
     private boolean doUpdateConst(int upDataIndex, ConstBeanBridge target) throws Throwable {
         boolean tempRes = true;
-        //0.Ó¦ÓÃĞÂÊı¾İ
+        //0.åº”ç”¨æ–°æ•°æ®
         if (target.applyData() == false)
             return false;
-        //1.³£Á¿´¦Àí
+        //1.å¸¸é‡å¤„ç†
         if (target.isDelete() == true) {
             return this.getConstDao().deleteConst(target.getTarget());
         }
@@ -191,7 +191,7 @@ public abstract class ConstGroup {
         if (newRes == null)
             return false;
         target.updateState(newRes);
-        //2.³£Á¿Öµ´¦Àí
+        //2.å¸¸é‡å€¼å¤„ç†
         List<VarBeanBridge> varList = target.getVarRoots();
         if (varList != null)
             for (int i = 0; i < varList.size(); i++) {
@@ -202,7 +202,7 @@ public abstract class ConstGroup {
                 if (tempRes == false)
                     return false;
             }
-        //3.º¢×Ó´¦Àí
+        //3.å­©å­å¤„ç†
         List<ConstBeanBridge> constChildren = target.getChildren();
         for (int i = 0; i < constChildren.size(); i++) {
             tempRes = this.doUpdateConst(i, constChildren.get(i));
@@ -211,13 +211,13 @@ public abstract class ConstGroup {
         }
         return true;
     };
-    /**³Ö¾Ã»¯´¦Àí£¬³£Á¿Öµ*/
+    /**æŒä¹…åŒ–å¤„ç†ï¼Œå¸¸é‡å€¼*/
     private boolean doUpdateVar(int upDataIndex, VarBeanBridge target) throws Throwable {
         boolean tempRes = true;
-        //0.Ó¦ÓÃĞÂÊı¾İ
+        //0.åº”ç”¨æ–°æ•°æ®
         if (target.applyData() == false)
             return false;
-        //1.³£Á¿´¦Àí
+        //1.å¸¸é‡å¤„ç†
         if (target.isDelete() == true)
             return this.getVarDao().deleteVar(target.getTarget());
         ConstVarBean newRes = null;
@@ -228,7 +228,7 @@ public abstract class ConstGroup {
         if (newRes == null)
             return false;
         target.updateState(newRes);
-        //2.º¢×Ó´¦Àí
+        //2.å­©å­å¤„ç†
         List<VarBeanBridge> varList = target.getChildren();
         if (varList != null)
             for (int i = 0; i < varList.size(); i++) {

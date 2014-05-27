@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.plugins.event.Listener;
 /**
- * ÊÂ¼ş¼àÌıÆ÷B
+ * äº‹ä»¶ç›‘å¬å™¨B
  * @version : 2014-1-11
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Listener("Event_B")
 public class B_EventListener implements EventListener {

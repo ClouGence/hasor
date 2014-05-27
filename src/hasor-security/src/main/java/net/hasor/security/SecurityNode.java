@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package net.hasor.security;
 import net.hasor.security._.AuthSession;
 /**
- * ÓÃÀ´ÅĞ¶ÏÈ¨ÏŞµÄ½Úµã¡£
+ * ç”¨æ¥åˆ¤æ–­æƒé™çš„èŠ‚ç‚¹ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityNode {
-    /**¼ÆËãÈ¨ÏŞÖµ¡£*/
+    /**è®¡ç®—æƒé™å€¼ã€‚*/
     public boolean testPermission(AuthSession authSession);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,46 +26,46 @@ import java.util.List;
 import net.hasor.core.Hasor;
 import org.more.util.ResourcesUtils;
 /**
- * ¼Ì³Ğ×ÔFileSettings¸¸Àà£¬¸ÃÀà×Ô¶¯×°ÔØClasspathÖĞËùÓĞ¾²Ì¬ÅäÖÃÎÄ¼ş¡£
- * ²¢ÇÒ×Ô¶¯×°ÔØÖ÷ÅäÖÃÎÄ¼ş£¨¸ÃÅäÖÃÎÄ¼şÓ¦µ±Ö»ÓĞÒ»¸ö£©¡£
+ * ç»§æ‰¿è‡ªFileSettingsçˆ¶ç±»ï¼Œè¯¥ç±»è‡ªåŠ¨è£…è½½Classpathä¸­æ‰€æœ‰é™æ€é…ç½®æ–‡ä»¶ã€‚
+ * å¹¶ä¸”è‡ªåŠ¨è£…è½½ä¸»é…ç½®æ–‡ä»¶ï¼ˆè¯¥é…ç½®æ–‡ä»¶åº”å½“åªæœ‰ä¸€ä¸ªï¼‰ã€‚
  * @version : 2013-9-9
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class StandardContextSettings extends InputStreamSettings {
-    /**Ö÷ÅäÖÃÎÄ¼şÃû³Æ*/
+    /**ä¸»é…ç½®æ–‡ä»¶åç§°*/
     public static final String MainSettingName   = "hasor-config.xml";
-    /**Ä¬ÈÏ¾²Ì¬ÅäÖÃÎÄ¼şÃû³Æ*/
+    /**é»˜è®¤é™æ€é…ç½®æ–‡ä»¶åç§°*/
     public static final String StaticSettingName = "static-config.xml";
     private URI                settingURI;
     //
-    /**´´½¨{@link StandardContextSettings}ÀàĞÍ¶ÔÏó¡£*/
+    /**åˆ›å»º{@link StandardContextSettings}ç±»å‹å¯¹è±¡ã€‚*/
     public StandardContextSettings() throws IOException, URISyntaxException {
         this(MainSettingName);
     }
-    /**´´½¨{@link StandardContextSettings}ÀàĞÍ¶ÔÏó¡£*/
+    /**åˆ›å»º{@link StandardContextSettings}ç±»å‹å¯¹è±¡ã€‚*/
     public StandardContextSettings(String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
         this.settingURI = url.toURI();
     }
-    /**´´½¨{@link StandardContextSettings}ÀàĞÍ¶ÔÏó¡£*/
+    /**åˆ›å»º{@link StandardContextSettings}ç±»å‹å¯¹è±¡ã€‚*/
     public StandardContextSettings(File mainSettings) throws IOException {
         this.settingURI = mainSettings.toURI();
     }
-    /**´´½¨{@link StandardContextSettings}ÀàĞÍ¶ÔÏó¡£*/
+    /**åˆ›å»º{@link StandardContextSettings}ç±»å‹å¯¹è±¡ã€‚*/
     public StandardContextSettings(URI mainSettings) throws IOException {
         this.settingURI = mainSettings;
     }
-    /**»ñÈ¡ÅäÖÃÎÄ¼şURI*/
+    /**è·å–é…ç½®æ–‡ä»¶URI*/
     public URI getSettingURI() {
         return settingURI;
     }
     //
     protected void readyLoad() throws IOException {
         super.readyLoad();
-        //1.×°ÔØËùÓĞstatic-config.xml
+        //1.è£…è½½æ‰€æœ‰static-config.xml
         List<URL> streamList = ResourcesUtils.getResources(StaticSettingName);
-        //2.ÅÅĞò£¬È·±£Î»ÓÚjar°üÖĞµÄ×ÊÔ´ÅÅĞòÓÅÏÈ¼¶¿¿ºó¡£
-        //ÒòÎª¸²¸Ç¼ÓÔØÊÇË³ĞòµÄ£¬Òò´ËÏÈ¼ÓÔØÎ»ÓÚjarÖĞµÄ×ÊÔ´¡£È»ºó¸²¸ÇËüÃÇ¡£
+        //2.æ’åºï¼Œç¡®ä¿ä½äºjaråŒ…ä¸­çš„èµ„æºæ’åºä¼˜å…ˆçº§é åã€‚
+        //å› ä¸ºè¦†ç›–åŠ è½½æ˜¯é¡ºåºçš„ï¼Œå› æ­¤å…ˆåŠ è½½ä½äºjarä¸­çš„èµ„æºã€‚ç„¶åè¦†ç›–å®ƒä»¬ã€‚
         Collections.sort(streamList, new Comparator<URL>() {
             public int compare(URL o1, URL o2) {
                 String o1p = o1.getProtocol();
@@ -82,14 +82,14 @@ public class StandardContextSettings extends InputStreamSettings {
         if (streamList != null) {
             for (URL resURL : streamList) {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
-                Hasor.logInfo("load ¡®%s¡¯", resURL);
+                Hasor.logInfo("load â€˜%sâ€™", resURL);
                 this.addStream(stream);
             }
         }
-        //2.×°ÔØhasor-config.xml
+        //2.è£…è½½hasor-config.xml
         if (this.settingURI != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(this.settingURI);
-            Hasor.logInfo("load ¡®%s¡¯", this.settingURI);
+            Hasor.logInfo("load â€˜%sâ€™", this.settingURI);
             this.addStream(stream);
         }
     }

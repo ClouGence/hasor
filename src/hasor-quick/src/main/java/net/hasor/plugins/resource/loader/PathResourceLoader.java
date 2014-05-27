@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import net.hasor.plugins.resource.ResourceLoader;
 /**
- * ½«Ò»¸öFile¶ÔÏóËù´ú±íµÄÂ·¾¶×÷Îª¸ùÂ·¾¶£¬×ÊÔ´»ñÈ¡Ïà¶ÔÓÚ¸ÃÂ·¾¶ÏÂ¡£
+ * å°†ä¸€ä¸ªFileå¯¹è±¡æ‰€ä»£è¡¨çš„è·¯å¾„ä½œä¸ºæ ¹è·¯å¾„ï¼Œèµ„æºè·å–ç›¸å¯¹äºè¯¥è·¯å¾„ä¸‹ã€‚
  * @version : 2011-9-17
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class PathResourceLoader implements ResourceLoader {
     private String dirPath = null;

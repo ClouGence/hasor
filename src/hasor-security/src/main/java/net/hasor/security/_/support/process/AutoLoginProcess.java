@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,29 +26,29 @@ import net.hasor.security._.support.process.CookieDataUtil.CookieUserData;
 import org.hasor.Hasor;
 import org.more.util.StringUtils;
 /**
- * {@link AutoLoginProcess}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link AutoLoginProcess}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class AutoLoginProcess extends AbstractProcess {
-    /**Ğ´Èë»á»°Êı¾İ¡£*/
+    /**å†™å…¥ä¼šè¯æ•°æ®ã€‚*/
     public void writeCookie(SecurityContext secContext, AuthSession[] authSessions, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
         //
         if (this.settings.isCookieEncryptionEnable() == false)
             return;
-        //2.Ğ´ÈëCookie¶ÔÏó
+        //2.å†™å…¥Cookieå¯¹è±¡
         CookieDataUtil cookieData = CookieDataUtil.create();
         if (authSessions != null)
             for (AuthSession authSession : authSessions) {
                 if (authSession.isLogin() == false)
                     continue;
                 CookieUserData cookieUserData = new CookieUserData();
-                cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//ÓÃ»§Code
-                cookieUserData.setAuthSystem(authSession.getAuthSystem());//ÓÃ»§À´Ô´
+                cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//ç”¨æˆ·Code
+                cookieUserData.setAuthSystem(authSession.getAuthSystem());//ç”¨æˆ·æ¥æº
                 cookieUserData.setAppStartTime(secContext.getAppContext().getAppStartTime());
                 cookieData.addCookieUserData(cookieUserData);
             }
-        //2.´´½¨Cookie
+        //2.åˆ›å»ºCookie
         String cookieValue = CookieDataUtil.parseString(cookieData);
         if (this.settings.isCookieEncryptionEnable() == true) {
             Digest digest = secContext.getCodeDigest(this.settings.getCookieEncryptionEncodeType());
@@ -67,18 +67,18 @@ public class AutoLoginProcess extends AbstractProcess {
             cookie.setPath(cookiePath);
         if (StringUtils.isBlank(cookieDomain) == false)
             cookie.setDomain(cookieDomain);
-        //3.Ğ´ÈëÏìÓ¦Á÷
+        //3.å†™å…¥å“åº”æµ
         response.addCookie(cookie);
     }
-    /**»Ö¸´È¨ÏŞ*/
+    /**æ¢å¤æƒé™*/
     public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
-        //1.»Ö¸´»á»°
+        //1.æ¢å¤ä¼šè¯
         boolean recoverMark = this.recoverAuthSession4HttpSession(secContext, request.getSession(true));
         if (recoverMark == false)
             recoverMark = this.recoverAuthSession4Cookie(secContext, request);
         if (recoverMark == true)
             return secContext.getCurrentAuthSession();
-        //2.´¦ÀíÀ´±öÕË»§
+        //2.å¤„ç†æ¥å®¾è´¦æˆ·
         if (this.settings.isGuestEnable() == true) {
             try {
                 AuthSession targetAuthSession = secContext.getCurrentBlankAuthSession();
@@ -87,7 +87,7 @@ public class AutoLoginProcess extends AbstractProcess {
                 String guestAccount = this.settings.getGuestAccount();
                 String guestPassword = this.settings.getGuestPassword();
                 String guestAuthSystem = this.settings.getGuestAuthSystem();
-                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*µÇÂ½À´±öÕÊºÅ*/
+                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*ç™»é™†æ¥å®¾å¸å·*/
             } catch (Exception e) {
                 Hasor.warning("%s", e);
             }
@@ -95,7 +95,7 @@ public class AutoLoginProcess extends AbstractProcess {
         return secContext.getCurrentAuthSession();
     }
     private void recoverUserByCode(SecurityContext secContext, String authSystem, String userCode) throws SecurityException {
-        /**Í¨¹ıuserCode²ÉÓÃÖØĞÂµÇÂ½µÄ·½Ê½»Ö¸´AuthSession*/
+        /**é€šè¿‡userCodeé‡‡ç”¨é‡æ–°ç™»é™†çš„æ–¹å¼æ¢å¤AuthSession*/
         AuthSession newAuthSession = null;
         try {
             newAuthSession = secContext.getCurrentBlankAuthSession();
@@ -110,15 +110,15 @@ public class AutoLoginProcess extends AbstractProcess {
         }
     }
     private boolean recoverAuthSession4Cookie(SecurityContext secContext, HttpServletRequest httpRequest) throws SecurityException {
-        /**»Ö¸´CookieÖĞµÄµÇÂ½ÕÊºÅ,¸Ã·½·¨»áµ¼ÖÂµ÷ÓÃwriteHttpSession·½·¨¡£*/
-        //1.¼ì²âCookie
+        /**æ¢å¤Cookieä¸­çš„ç™»é™†å¸å·,è¯¥æ–¹æ³•ä¼šå¯¼è‡´è°ƒç”¨writeHttpSessionæ–¹æ³•ã€‚*/
+        //1.æ£€æµ‹Cookie
         if (this.settings.isCookieEnable() == false)
             return false;
-        //2.½âÂëcookieµÄvalue
+        //2.è§£ç cookieçš„value
         Cookie[] cookieArray = httpRequest.getCookies();
         String cookieValue = null;
         for (Cookie cookie : cookieArray) {
-            //Æ¥ÅäcookieÃû³Æ
+            //åŒ¹é…cookieåç§°
             if (cookie.getName().endsWith(this.settings.getCookieName()) == false)
                 continue;
             cookieValue = cookie.getValue();
@@ -128,12 +128,12 @@ public class AutoLoginProcess extends AbstractProcess {
                     cookieValue = digest.decrypt(cookieValue, this.settings.getCookieEncryptionKey());
                 } catch (Throwable e) {
                     Hasor.warning("%s decode cookieValue error. cookieValue=%s", this.settings.getCookieEncryptionEncodeType(), cookieValue);
-                    return false;/*½âÃÜÊ§°ÜÒâÎ¶×ÅºóÃæµÄ»Ö¸´²Ù×÷¶¼²»»áÓÃµ½ÓĞĞ§Êı¾İÒò´Ëreturn.*/
+                    return false;/*è§£å¯†å¤±è´¥æ„å‘³ç€åé¢çš„æ¢å¤æ“ä½œéƒ½ä¸ä¼šç”¨åˆ°æœ‰æ•ˆæ•°æ®å› æ­¤return.*/
                 }
             }
             break;
         }
-        //3.¶ÁÈ¡cookieÄÚÈİ»Ö¸´È¨ÏŞ»á»°
+        //3.è¯»å–cookieå†…å®¹æ¢å¤æƒé™ä¼šè¯
         CookieUserData[] infos = null;
         try {
             CookieDataUtil cookieData = CookieDataUtil.parseJson(cookieValue);
@@ -145,19 +145,19 @@ public class AutoLoginProcess extends AbstractProcess {
             return false;
         }
         boolean returnData = false;
-        //4.»Ö¸´CookieÀï±£´æµÄ»á»°
+        //4.æ¢å¤Cookieé‡Œä¿å­˜çš„ä¼šè¯
         for (CookieUserData info : infos) {
             if (this.settings.isLoseCookieOnStart() == true)
                 if (secContext.getAppContext().getAppStartTime() != info.getAppStartTime())
                     continue;
-            /*ÓÃuserCode»Ö¸´³öÒ»¸öĞÂµÄ»á»°*/
+            /*ç”¨userCodeæ¢å¤å‡ºä¸€ä¸ªæ–°çš„ä¼šè¯*/
             this.recoverUserByCode(secContext, info.getAuthSystem(), info.getUserCode());
             returnData = true;
         }
         return returnData;
     }
     private boolean recoverAuthSession4HttpSession(SecurityContext secContext, HttpSession httpSession) {
-        /**»Ö¸´HttpSessionÖĞµÄµÇÂ½ÕÊºÅ¡£*/
+        /**æ¢å¤HttpSessionä¸­çš„ç™»é™†å¸å·ã€‚*/
         String authSessionIDs = (String) httpSession.getAttribute(AuthSession.HttpSessionAuthSessionSetName);
         if (StringUtils.isBlank(authSessionIDs) == true)
             return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,27 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 /**
- * HasorµÄºËĞÄ½Ó¿Ú£¬Ö÷ÒªÓÃÓÚÊÕ¼¯°ó¶¨ÅäÖÃĞÅÏ¢¡£<p>
+ * Hasorçš„æ ¸å¿ƒæ¥å£ï¼Œä¸»è¦ç”¨äºæ”¶é›†ç»‘å®šé…ç½®ä¿¡æ¯ã€‚<p>
  * 
- * Hasor ÔÚ³õÊ¼»¯Ä£¿éÊ±»áÎªÃ¿¸öÄ£¿é¶ÀÁ¢·ÖÅäÒ»¸ö ApiBinder ½Ó¿ÚÊµÀı¡£
- * <p>·½·¨ {@link ApiBinder#configModule()} ,»á·µ»ØÒ»¸ö½Ó¿ÚÓÃÓÚÅäÖÃµ±Ç°Ä£¿éÒÀÀµÇé¿ö¡£
+ * Hasor åœ¨åˆå§‹åŒ–æ¨¡å—æ—¶ä¼šä¸ºæ¯ä¸ªæ¨¡å—ç‹¬ç«‹åˆ†é…ä¸€ä¸ª ApiBinder æ¥å£å®ä¾‹ã€‚
+ * <p>æ–¹æ³• {@link ApiBinder#configModule()} ,ä¼šè¿”å›ä¸€ä¸ªæ¥å£ç”¨äºé…ç½®å½“å‰æ¨¡å—ä¾èµ–æƒ…å†µã€‚
  * @version : 2013-4-10
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface ApiBinder extends EventContext {
-    /**»ñÈ¡Ó¦ÓÃ³ÌĞòÅäÖÃ¡£*/
+    /**è·å–åº”ç”¨ç¨‹åºé…ç½®ã€‚*/
     public Settings getSettings();
-    /**»ñÈ¡»·¾³½Ó¿Ú¡£*/
+    /**è·å–ç¯å¢ƒæ¥å£ã€‚*/
     public Environment getEnvironment();
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇµÄ×¢½â£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°çš„æ³¨è§£ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType);
-    /**×¢²áÒ»¸öĞèÒª AppContextAware µÄÀà¡£¸Ã½Ó¿Ú»áÔÚ AppContext Æô¶¯ºóµÚÒ»Ê±¼ä×¢Èë AppContext¡£*/
+    /**æ³¨å†Œä¸€ä¸ªéœ€è¦ AppContextAware çš„ç±»ã€‚è¯¥æ¥å£ä¼šåœ¨ AppContext å¯åŠ¨åç¬¬ä¸€æ—¶é—´æ³¨å…¥ AppContextã€‚*/
     public void registerAware(AppContextAware aware);
     //
     /*----------------------------------------------------------------------------------------Aop*/
-    /**ÅäÖÃAop£¬±í´ïÊ½¸ñÊ½Îª*/
+    /**é…ç½®Aopï¼Œè¡¨è¾¾å¼æ ¼å¼ä¸º*/
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
-    /**ÅäÖÃAop*/
+    /**é…ç½®Aop*/
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
     /***/
     public static interface Matcher<T> {
@@ -48,78 +48,78 @@ public interface ApiBinder extends EventContext {
     }
     //
     /*-------------------------------------------------------------------------------------Module*/
-    /**ÅäÖÃÄ£¿éÒÀÀµ¹ØÏµ¡£*/
+    /**é…ç½®æ¨¡å—ä¾èµ–å…³ç³»ã€‚*/
     public ModuleSettings configModule();
-    /**¸Ã½Ó¿Ú¿ÉÒÔÅäÖÃÄ£¿éĞÅÏ¢¡£*/
+    /**è¯¥æ¥å£å¯ä»¥é…ç½®æ¨¡å—ä¿¡æ¯ã€‚*/
     public interface ModuleSettings extends ModuleInfo {
-        /**ÒÀÀµ·´ÖÆ£ºÇ¿ÖÆÄ¿±êÄ£¿éÒÀÀµµ±Ç°Ä£¿é(ÈõÒÀÀµ)¡£*/
+        /**ä¾èµ–ååˆ¶ï¼šå¼ºåˆ¶ç›®æ ‡æ¨¡å—ä¾èµ–å½“å‰æ¨¡å—(å¼±ä¾èµ–)ã€‚*/
         public void reverse(Class<? extends Module> targetModule);
-        /**Ç¿ÖÆÒÀÀµ£º¸úËæÄ¿±êÄ£¿éÆô¶¯¶øÆô¶¯¡£Èç¹ûÒÀÀµµÄÄ£¿éÃ»ÓĞ³É¹¦Æô¶¯£¬Ôò¸ÃÄ£¿é²»»áÆô¶¯¡£<br/> 
-         * ×¢Òâ£º¸Ã·½·¨ÒªÇóÔÚÄ¿±êÄ£¿éÆô¶¯Ö®ºóÔÚÆô¶¯¡£*/
+        /**å¼ºåˆ¶ä¾èµ–ï¼šè·Ÿéšç›®æ ‡æ¨¡å—å¯åŠ¨è€Œå¯åŠ¨ã€‚å¦‚æœä¾èµ–çš„æ¨¡å—æ²¡æœ‰æˆåŠŸå¯åŠ¨ï¼Œåˆ™è¯¥æ¨¡å—ä¸ä¼šå¯åŠ¨ã€‚<br/> 
+         * æ³¨æ„ï¼šè¯¥æ–¹æ³•è¦æ±‚åœ¨ç›®æ ‡æ¨¡å—å¯åŠ¨ä¹‹ååœ¨å¯åŠ¨ã€‚*/
         public void forced(Class<? extends Module> targetModule);
-        /**ÈõÒÀÀµ£ºÒªÇóÄ¿±êÄ£¿éµÄÆô¶¯ÔÚµ±Ç°Ä£¿éÖ®Ç°½øĞĞÆô¶¯¡£<br/>
-         * ×¢Òâ£º¸Ã·½·¨½ö½öÒªÇóÔÚÄ¿±êÄ£¿éÖ®ºóÆô¶¯¡£µ«Ä¿±êÄ£¿éÊÇ·ñÆô¶¯²¢ÎŞÇ¿ÖÆÒªÇó¡£*/
+        /**å¼±ä¾èµ–ï¼šè¦æ±‚ç›®æ ‡æ¨¡å—çš„å¯åŠ¨åœ¨å½“å‰æ¨¡å—ä¹‹å‰è¿›è¡Œå¯åŠ¨ã€‚<br/>
+         * æ³¨æ„ï¼šè¯¥æ–¹æ³•ä»…ä»…è¦æ±‚åœ¨ç›®æ ‡æ¨¡å—ä¹‹åå¯åŠ¨ã€‚ä½†ç›®æ ‡æ¨¡å—æ˜¯å¦å¯åŠ¨å¹¶æ— å¼ºåˆ¶è¦æ±‚ã€‚*/
         public void weak(Class<? extends Module> targetModule);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
     /** */
     public <T> NamedBindingBuilder<T> bindingType(Class<T> type);
-    /**½«ºóÃæµÄ¶ÔÏó°ó¶¨Ç°Ò»¸öÀàĞÍÉÏ¡£¿ÉÒÔÍ¨¹ıAppContextÊ¹ÓÃ°ó¶¨µÄÀàĞÍÖØĞÂ»ñÈ¡°ó¶¨µÄ¶ÔÏó¡£
+    /**å°†åé¢çš„å¯¹è±¡ç»‘å®šå‰ä¸€ä¸ªç±»å‹ä¸Šã€‚å¯ä»¥é€šè¿‡AppContextä½¿ç”¨ç»‘å®šçš„ç±»å‹é‡æ–°è·å–ç»‘å®šçš„å¯¹è±¡ã€‚
      * @see #bindingType(Class) */
     public <T> void bindingType(Class<T> type, T instance);
-    /**½«ºóÃæµÄ¶ÔÏó°ó¶¨Ç°Ò»¸öÀàĞÍÉÏ¡£¿ÉÒÔÍ¨¹ıAppContextÊ¹ÓÃ°ó¶¨µÄÀàĞÍÖØĞÂ»ñÈ¡°ó¶¨µÄ¶ÔÏó¡£
+    /**å°†åé¢çš„å¯¹è±¡ç»‘å®šå‰ä¸€ä¸ªç±»å‹ä¸Šã€‚å¯ä»¥é€šè¿‡AppContextä½¿ç”¨ç»‘å®šçš„ç±»å‹é‡æ–°è·å–ç»‘å®šçš„å¯¹è±¡ã€‚
      * @see #bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Class<? extends T> implementation);
-    /**½«ºóÃæµÄ¶ÔÏó°ó¶¨Ç°Ò»¸öÀàĞÍÉÏ¡£¿ÉÒÔÍ¨¹ıAppContextÊ¹ÓÃ°ó¶¨µÄÀàĞÍÖØĞÂ»ñÈ¡°ó¶¨µÄ¶ÔÏó¡£
+    /**å°†åé¢çš„å¯¹è±¡ç»‘å®šå‰ä¸€ä¸ªç±»å‹ä¸Šã€‚å¯ä»¥é€šè¿‡AppContextä½¿ç”¨ç»‘å®šçš„ç±»å‹é‡æ–°è·å–ç»‘å®šçš„å¯¹è±¡ã€‚
      * @see #bindingType(Class) */
     public <T> ScopedBindingBuilder bindingType(Class<T> type, Provider<T> provider);
-    /**Îª°ó¶¨µÄ¶ÔÏóÖ¸¶¨Ò»¸öÃû³Æ½øĞĞ°ó¶¨£¬ÏàÍ¬Ãû³ÆµÄÀàĞÍ°ó¶¨Ö»ÄÜ°ó¶¨Ò»´Î¡£
+    /**ä¸ºç»‘å®šçš„å¯¹è±¡æŒ‡å®šä¸€ä¸ªåç§°è¿›è¡Œç»‘å®šï¼Œç›¸åŒåç§°çš„ç±»å‹ç»‘å®šåªèƒ½ç»‘å®šä¸€æ¬¡ã€‚
      * @see #bindingType(Class)*/
     public <T> LinkedBindingBuilder<T> bindingType(String withName, Class<T> type);
-    /**Îª°ó¶¨µÄ¶ÔÏóÖ¸¶¨Ò»¸öÃû³Æ½øĞĞ°ó¶¨£¬ÏàÍ¬Ãû³ÆµÄÀàĞÍ°ó¶¨Ö»ÄÜ°ó¶¨Ò»´Î¡£
+    /**ä¸ºç»‘å®šçš„å¯¹è±¡æŒ‡å®šä¸€ä¸ªåç§°è¿›è¡Œç»‘å®šï¼Œç›¸åŒåç§°çš„ç±»å‹ç»‘å®šåªèƒ½ç»‘å®šä¸€æ¬¡ã€‚
      * @see #bindingType(String, Class)*/
     public <T> void bindingType(String withName, Class<T> type, T instance);
-    /**Îª°ó¶¨µÄ¶ÔÏóÖ¸¶¨Ò»¸öÃû³Æ½øĞĞ°ó¶¨£¬ÏàÍ¬Ãû³ÆµÄÀàĞÍ°ó¶¨Ö»ÄÜ°ó¶¨Ò»´Î¡£
+    /**ä¸ºç»‘å®šçš„å¯¹è±¡æŒ‡å®šä¸€ä¸ªåç§°è¿›è¡Œç»‘å®šï¼Œç›¸åŒåç§°çš„ç±»å‹ç»‘å®šåªèƒ½ç»‘å®šä¸€æ¬¡ã€‚
      * @see #bindingType(String, Class)*/
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Class<? extends T> implementation);
-    /**Îª°ó¶¨µÄ¶ÔÏóÖ¸¶¨Ò»¸öÃû³Æ½øĞĞ°ó¶¨£¬ÏàÍ¬Ãû³ÆµÄÀàĞÍ°ó¶¨Ö»ÄÜ°ó¶¨Ò»´Î¡£
+    /**ä¸ºç»‘å®šçš„å¯¹è±¡æŒ‡å®šä¸€ä¸ªåç§°è¿›è¡Œç»‘å®šï¼Œç›¸åŒåç§°çš„ç±»å‹ç»‘å®šåªèƒ½ç»‘å®šä¸€æ¬¡ã€‚
      * @see #bindingType(String, Class)*/
     public <T> ScopedBindingBuilder bindingType(String withName, Class<T> type, Provider<T> provider);
     //
     /*---------------------------------------------------------------------------------------Bean*/
-    /**×¢²áÒ»¸öbean¡£*/
+    /**æ³¨å†Œä¸€ä¸ªbeanã€‚*/
     public BeanBindingBuilder defineBean(String beanName);
     //
     public interface BeanBindingBuilder {
-        /**±ğÃû*/
+        /**åˆ«å*/
         public BeanBindingBuilder aliasName(String aliasName);
-        /**ÉèÖÃÊôĞÔ*/
+        /**è®¾ç½®å±æ€§*/
         public BeanBindingBuilder setProperty(String attName, Object attValue);
-        /**bean°ó¶¨µÄÀàĞÍ¡£*/
+        /**beanç»‘å®šçš„ç±»å‹ã€‚*/
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
     }
     public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
         public LinkedBindingBuilder<T> nameWith(String name);
     }
     public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder {
-        /**Îª°ó¶¨ÉèÖÃÒ»¸öÊµÏÖÀà*/
+        /**ä¸ºç»‘å®šè®¾ç½®ä¸€ä¸ªå®ç°ç±»*/
         public ScopedBindingBuilder to(Class<? extends T> implementation);
-        /**Îª°ó¶¨ÉèÖÃÒ»¸öÊµÀı*/
+        /**ä¸ºç»‘å®šè®¾ç½®ä¸€ä¸ªå®ä¾‹*/
         public MetaDataBindingBuilder toInstance(T instance);
-        /**Îª°ó¶¨ÉèÖÃÒ»¸öProvider*/
+        /**ä¸ºç»‘å®šè®¾ç½®ä¸€ä¸ªProvider*/
         public ScopedBindingBuilder toProvider(Provider<T> provider);
-        /**Îª°ó¶¨ÉèÖÃÒ»¸ö¹¹Ôì·½·¨*/
+        /**ä¸ºç»‘å®šè®¾ç½®ä¸€ä¸ªæ„é€ æ–¹æ³•*/
         public ScopedBindingBuilder toConstructor(Constructor<? extends T> constructor);
     }
     public interface ScopedBindingBuilder extends MetaDataBindingBuilder {
-        /**×¢²áÎªµ¥Àı*/
+        /**æ³¨å†Œä¸ºå•ä¾‹*/
         public MetaDataBindingBuilder asEagerSingleton();
-        /**ÔÚÈİÆ÷ÉÏ¹«¿ªÕâ¸ö°ó¶¨*/
+        /**åœ¨å®¹å™¨ä¸Šå…¬å¼€è¿™ä¸ªç»‘å®š*/
         public MetaDataBindingBuilder toScope(Scope scope);
     }
     public interface MetaDataBindingBuilder {
-        /**»ñÈ¡ÔªĞÅÏ¢¡£*/
+        /**è·å–å…ƒä¿¡æ¯ã€‚*/
         public MetaDataBindingBuilder metaData(String key, Object value);
     }
 }

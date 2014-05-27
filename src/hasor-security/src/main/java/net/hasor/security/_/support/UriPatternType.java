@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ import net.hasor.plugins.secweb.UriPatternMatcher;
 import net.hasor.security._.AuthSession;
 import org.more.util.StringUtils;
 /**
- * ¶ÔURI½øĞĞÈ¨ÏŞÅĞ¶Ï½Ó¿Ú¡£
+ * å¯¹URIè¿›è¡Œæƒé™åˆ¤æ–­æ¥å£ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 enum UriPatternType {
-    /**ÒªÇóµÇÂ½*/
+    /**è¦æ±‚ç™»é™†*/
     Login,
-    /**ÒªÇó·ÇµÇÂ½*/
+    /**è¦æ±‚éç™»é™†*/
     Logout,
-    /**ÒªÇó¾ßÓĞÀ´±öÉí·İ*/
+    /**è¦æ±‚å…·æœ‰æ¥å®¾èº«ä»½*/
     Guest,
-    /**ÒªÇó¾ßÓĞÈ¨ÏŞµã*/
+    /**è¦æ±‚å…·æœ‰æƒé™ç‚¹*/
     Permission,
-    /**ÎŞÈÎºÎÒªÇó*/
+    /**æ— ä»»ä½•è¦æ±‚*/
     None;
     //
     //

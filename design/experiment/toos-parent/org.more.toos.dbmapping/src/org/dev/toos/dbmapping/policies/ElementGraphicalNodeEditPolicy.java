@@ -10,35 +10,35 @@ import org.eclipse.gef.requests.ReconnectRequest;
 /**
  * 
  * @version : 2013-3-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ElementGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
     @Override
     protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-        /*µ±ÓĞÁ¬½Ó´ÓÔªËØÉÏ´´½¨Ê±¡£*/
+        /*å½“æœ‰è¿æ¥ä»å…ƒç´ ä¸Šåˆ›å»ºæ—¶ã€‚*/
         Element source = (Element) getHost().getModel();
         int style = ((Integer) request.getNewObjectType()).intValue();
         CreateConnection cmd = new CreateConnection(source, null, style);
-        request.setStartCommand(cmd);//±£´æÃüÁîÔÚgetConnectionCompleteCommandÊ±ºòÊ¹ÓÃ¡£
+        request.setStartCommand(cmd);//ä¿å­˜å‘½ä»¤åœ¨getConnectionCompleteCommandæ—¶å€™ä½¿ç”¨ã€‚
         return cmd;
     }
     @Override
     protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
-        /*µ±Á¬½Ó´´½¨½áÊøÊ±ºò£¨Á¬½Óµ½Ä¿±ê¶ÔÏóÉÏ£©¡£*/
+        /*å½“è¿æ¥åˆ›å»ºç»“æŸæ—¶å€™ï¼ˆè¿æ¥åˆ°ç›®æ ‡å¯¹è±¡ä¸Šï¼‰ã€‚*/
         CreateConnection cmd = (CreateConnection) request.getStartCommand();
         cmd.setTarget((Element) getHost().getModel());
         return cmd;
     }
     @Override
     protected Command getReconnectTargetCommand(ReconnectRequest request) {
-        /*µ±ÓĞÁ¬½ÓÁ¬ÈëÔªËØÊ±µÄ´¦Àí¡£*/
+        /*å½“æœ‰è¿æ¥è¿å…¥å…ƒç´ æ—¶çš„å¤„ç†ã€‚*/
         Connection conn = (Connection) request.getConnectionEditPart().getModel();
         Element newTarget = (Element) getHost().getModel();
         return new ConnectionReconnect(null, newTarget, conn);
     }
     @Override
     protected Command getReconnectSourceCommand(ReconnectRequest request) {
-        /*µ±ÓĞÁ¬½ÓÁ¬´Ó¸ÃÔªËØÁ¬³öÊ±µÄ´¦Àí¡£*/
+        /*å½“æœ‰è¿æ¥è¿ä»è¯¥å…ƒç´ è¿å‡ºæ—¶çš„å¤„ç†ã€‚*/
         Connection conn = (Connection) request.getConnectionEditPart().getModel();
         Element newSource = (Element) getHost().getModel();
         return new ConnectionReconnect(newSource, null, conn);

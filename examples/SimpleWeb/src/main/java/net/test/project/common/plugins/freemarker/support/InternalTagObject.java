@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.utility.DeepUnwrap;
 /**
- * ±êÇ©¶ÔÏó¡£
+ * æ ‡ç­¾å¯¹è±¡ã€‚
  * @version : 2012-5-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class InternalTagObject implements TemplateDirectiveModel {
     private Tag tagBody = null;
@@ -40,18 +40,18 @@ public class InternalTagObject implements TemplateDirectiveModel {
     }
     @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
-        //1.·´½â¹ı³Ì
+        //1.åè§£è¿‡ç¨‹
         HashMap<String, Object> objMap = new HashMap<String, Object>();
         if (params != null)
             for (Object key : params.keySet()) {
                 TemplateModel item = (TemplateModel) params.get(key);
                 objMap.put(key.toString(), DeepUnwrap.permissiveUnwrap(item));
             }
-        //3.Í¨Öª-¿ªÊ¼Ö´ĞĞ±êÇ©
+        //3.é€šçŸ¥-å¼€å§‹æ‰§è¡Œæ ‡ç­¾
         boolean toDo = this.tagBody.beforeTag(objMap, env);
         if (toDo)
             this.tagBody.doTag(objMap, new InternalTemplateBody(objMap, body, env));
-        //4.Í¨Öª-½áÊøÖ´ĞĞ±êÇ©
+        //4.é€šçŸ¥-ç»“æŸæ‰§è¡Œæ ‡ç­¾
         this.tagBody.afterTag(objMap, env);
     }
     private static class InternalTemplateBody implements TemplateBody {

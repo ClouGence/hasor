@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ import java.io.InputStream;
 /**
  * 
  * @version : 2013-6-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface ResourceLoader {
-    /**×°ÔØÖ¸¶¨×ÊÔ´¡£*/
+    /**è£…è½½æŒ‡å®šèµ„æºã€‚*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
-    /**×°ÔØÖ¸¶¨×ÊÔ´¡£*/
+    /**è£…è½½æŒ‡å®šèµ„æºã€‚*/
     public void close(Object resource) throws IOException;
-    /**²âÊÔ×ÊÔ´ÊÇ·ñ¿ÉÄÜ±»¸Ä±ä¡£*/
+    /**æµ‹è¯•èµ„æºæ˜¯å¦å¯èƒ½è¢«æ”¹å˜ã€‚*/
     public boolean canModify(String resourcePath) throws IOException;
-    /**²âÊÔ×ÊÔ´ÊÇ·ñ´æÔÚ¡£*/
+    /**æµ‹è¯•èµ„æºæ˜¯å¦å­˜åœ¨ã€‚*/
     public boolean exist(String resourcePath) throws IOException;
 }

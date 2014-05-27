@@ -5,9 +5,9 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Combo;
 import org.more.util.StringUtil;
 /**
- * ÓÃÓÚviewÖĞ±íÊöConstBean¶ÔÏó¡£
+ * ç”¨äºviewä¸­è¡¨è¿°ConstBeanå¯¹è±¡ã€‚
  * @version : 2013-2-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstTreeFilter extends ViewerFilter {
     private Combo constInput = null;

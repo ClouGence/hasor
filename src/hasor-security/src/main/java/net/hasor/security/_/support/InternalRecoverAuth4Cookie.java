@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 /**
  * 
  * @version : 2013-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class InternalRecoverAuth4Cookie {
     protected SecuritySettings settings = null;
@@ -36,15 +36,15 @@ class InternalRecoverAuth4Cookie {
     public InternalRecoverAuth4Cookie(SecuritySettings settings) {
         this.settings = settings;
     };
-    /**»Ö¸´È¨ÏŞ*/
+    /**æ¢å¤æƒé™*/
     public AuthSession[] recoverCookie(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException {
-        //1.»Ö¸´»á»°
+        //1.æ¢å¤ä¼šè¯
         boolean recoverMark = this.recoverAuthSession4HttpSession(secContext, request.getSession(true));
         if (recoverMark == false)
             recoverMark = this.recoverAuthSession4Cookie(secContext, request);
         if (recoverMark == true)
             return secContext.getCurrentAuthSession();
-        //2.´¦ÀíÀ´±öÕË»§
+        //2.å¤„ç†æ¥å®¾è´¦æˆ·
         if (this.settings.isGuestEnable() == true) {
             try {
                 AuthSession targetAuthSession = secContext.getCurrentBlankAuthSession();
@@ -53,7 +53,7 @@ class InternalRecoverAuth4Cookie {
                 String guestAccount = this.settings.getGuestAccount();
                 String guestPassword = this.settings.getGuestPassword();
                 String guestAuthSystem = this.settings.getGuestAuthSystem();
-                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*µÇÂ½À´±öÕÊºÅ*/
+                targetAuthSession.doLogin(guestAuthSystem, guestAccount, guestPassword);/*ç™»é™†æ¥å®¾å¸å·*/
             } catch (Exception e) {
                 Hasor.warning("%s", e);
             }
@@ -61,7 +61,7 @@ class InternalRecoverAuth4Cookie {
         return secContext.getCurrentAuthSession();
     }
     private void recoverUserByCode(SecurityContext secContext, String authSystem, String userCode) throws SecurityException {
-        /**Í¨¹ıuserCode²ÉÓÃÖØĞÂµÇÂ½µÄ·½Ê½»Ö¸´AuthSession*/
+        /**é€šè¿‡userCodeé‡‡ç”¨é‡æ–°ç™»é™†çš„æ–¹å¼æ¢å¤AuthSession*/
         AuthSession newAuthSession = null;
         try {
             newAuthSession = secContext.getCurrentBlankAuthSession();
@@ -76,22 +76,22 @@ class InternalRecoverAuth4Cookie {
         }
     }
     private boolean recoverAuthSession4Cookie(SecurityContext secContext, HttpServletRequest httpRequest) throws SecurityException {
-        /**»Ö¸´CookieÖĞµÄµÇÂ½ÕÊºÅ,¸Ã·½·¨»áµ¼ÖÂµ÷ÓÃwriteHttpSession·½·¨¡£*/
-        //1.¼ì²âCookie
+        /**æ¢å¤Cookieä¸­çš„ç™»é™†å¸å·,è¯¥æ–¹æ³•ä¼šå¯¼è‡´è°ƒç”¨writeHttpSessionæ–¹æ³•ã€‚*/
+        //1.æ£€æµ‹Cookie
         if (this.settings.isCookieEnable() == false)
             return false;
-        //2.½âÂëcookieµÄvalue
+        //2.è§£ç cookieçš„value
         String cookieValue = null;
         Cookie[] cookieArray = httpRequest.getCookies();
         if (cookieArray != null)
             for (Cookie cookie : cookieArray) {
-                //Æ¥ÅäcookieÃû³Æ
+                //åŒ¹é…cookieåç§°
                 if (cookie.getName().endsWith(this.settings.getCookieName()) == false)
                     continue;
                 cookieValue = cookie.getValue();
                 break;
             }
-        //3.¶ÁÈ¡cookieÄÚÈİ»Ö¸´È¨ÏŞ»á»°
+        //3.è¯»å–cookieå†…å®¹æ¢å¤æƒé™ä¼šè¯
         CookieUserData[] infos = null;
         try {
             CookieDataUtil cookieData = CookieDataUtil.parseJson(cookieValue);
@@ -103,19 +103,19 @@ class InternalRecoverAuth4Cookie {
             return false;
         }
         boolean returnData = false;
-        //4.»Ö¸´CookieÀï±£´æµÄ»á»°
+        //4.æ¢å¤Cookieé‡Œä¿å­˜çš„ä¼šè¯
         for (CookieUserData info : infos) {
             if (this.settings.isLoseCookieOnStart() == true)
                 if (secContext.getAppContext().getAppStartTime() != info.getAppStartTime())
                     continue;
-            /*ÓÃuserCode»Ö¸´³öÒ»¸öĞÂµÄ»á»°*/
+            /*ç”¨userCodeæ¢å¤å‡ºä¸€ä¸ªæ–°çš„ä¼šè¯*/
             this.recoverUserByCode(secContext, info.getAuthSystem(), info.getUserCode());
             returnData = true;
         }
         return returnData;
     }
     private boolean recoverAuthSession4HttpSession(SecurityContext secContext, HttpSession httpSession) {
-        /**»Ö¸´HttpSessionÖĞµÄµÇÂ½ÕÊºÅ¡£*/
+        /**æ¢å¤HttpSessionä¸­çš„ç™»é™†å¸å·ã€‚*/
         String authSessionIDs = (String) httpSession.getAttribute(AuthSession.HttpSessionAuthSessionSetName);
         if (StringUtils.isBlank(authSessionIDs) == true)
             return false;

@@ -18,52 +18,52 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 /**
- * ¸Ã½Ó¿ÚÉùÃ÷ÁËÒ»Ğ© JDBC »ù±¾²Ù×÷¡£
+ * è¯¥æ¥å£å£°æ˜äº†ä¸€äº› JDBC åŸºæœ¬æ“ä½œã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface JdbcOperations {
-    /**Í¨¹ı»Øµ÷º¯ÊıÖ´ĞĞÒ»¸öJDBCÊı¾İ·ÃÎÊ²Ù×÷¡£ */
+    /**é€šè¿‡å›è°ƒå‡½æ•°æ‰§è¡Œä¸€ä¸ªJDBCæ•°æ®è®¿é—®æ“ä½œã€‚ */
     public <T> T execute(ConnectionCallback<T> action) throws SQLException;
-    /**Í¨¹ı»Øµ÷º¯ÊıÖ´ĞĞÒ»¸öJDBCÊı¾İ·ÃÎÊ²Ù×÷¡£ */
+    /**é€šè¿‡å›è°ƒå‡½æ•°æ‰§è¡Œä¸€ä¸ªJDBCæ•°æ®è®¿é—®æ“ä½œã€‚ */
     public <T> T execute(StatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞ JDBC£¨´æ´¢¹ı³Ì¡¢º¯Êı£©Êı¾İ·ÃÎÊ²Ù×÷¡£
-     * <p>CallableStatementCreator ½Ó¿Ú»òÕß CallableStatementCallback ½Ó¿Ú ¶ÔÏóĞèÒª¶Ô´æ´¢¹ı³ÌµÄ´«Èë²ÎÊı½øĞĞÉèÖÃ¡£*/
+    /**æ‰§è¡Œ JDBCï¼ˆå­˜å‚¨è¿‡ç¨‹ã€å‡½æ•°ï¼‰æ•°æ®è®¿é—®æ“ä½œã€‚
+     * <p>CallableStatementCreator æ¥å£æˆ–è€… CallableStatementCallback æ¥å£ å¯¹è±¡éœ€è¦å¯¹å­˜å‚¨è¿‡ç¨‹çš„ä¼ å…¥å‚æ•°è¿›è¡Œè®¾ç½®ã€‚*/
     public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞ JDBC£¨´æ´¢¹ı³Ì¡¢º¯Êı£©Êı¾İ·ÃÎÊ²Ù×÷¡£SQL Óï¾ä»á±»±àÒë³É PreparedStatement ÀàĞÍÍ¨¹ı»Øµ÷½Ó¿Ú CallableStatementCallback Ö´ĞĞ¡£*/
+    /**æ‰§è¡Œ JDBCï¼ˆå­˜å‚¨è¿‡ç¨‹ã€å‡½æ•°ï¼‰æ•°æ®è®¿é—®æ“ä½œã€‚SQL è¯­å¥ä¼šè¢«ç¼–è¯‘æˆ PreparedStatement ç±»å‹é€šè¿‡å›è°ƒæ¥å£ CallableStatementCallback æ‰§è¡Œã€‚*/
     public <T> T execute(String callString, CallableStatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö JDBC ²Ù×÷¡£Õâ¸ö JDBC µ÷ÓÃ²Ù×÷½«»áÊ¹ÓÃ PreparedStatement ½Ó¿ÚÖ´ĞĞ¡£*/
+    /**æ‰§è¡Œä¸€ä¸ª JDBC æ“ä½œã€‚è¿™ä¸ª JDBC è°ƒç”¨æ“ä½œå°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ‰§è¡Œã€‚*/
     public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¶¯Ì¬ SQL Óï¾ä¡£SQL Óï¾ä»á±»±àÒë³É PreparedStatement ÀàĞÍÍ¨¹ı»Øµ÷½Ó¿Ú PreparedStatementCallback Ö´ĞĞ¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªåŠ¨æ€ SQL è¯­å¥ã€‚SQL è¯­å¥ä¼šè¢«ç¼–è¯‘æˆ PreparedStatement ç±»å‹é€šè¿‡å›è°ƒæ¥å£ PreparedStatementCallback æ‰§è¡Œã€‚*/
     public <T> T execute(String sql, PreparedStatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö JDBC ²Ù×÷¡£Õâ¸ö JDBC µ÷ÓÃ²Ù×÷½«»áÊ¹ÓÃ PreparedStatement ½Ó¿ÚÖ´ĞĞ¡£*/
+    /**æ‰§è¡Œä¸€ä¸ª JDBC æ“ä½œã€‚è¿™ä¸ª JDBC è°ƒç”¨æ“ä½œå°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ‰§è¡Œã€‚*/
     public <T> T execute(String sql, SqlParameterSource paramSource, PreparedStatementCallback<T> action) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¶¯Ì¬ SQL Óï¾ä¡£SQL Óï¾ä»á±»±àÒë³É PreparedStatement ÀàĞÍÍ¨¹ı»Øµ÷½Ó¿Ú PreparedStatementCallback Ö´ĞĞ¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªåŠ¨æ€ SQL è¯­å¥ã€‚SQL è¯­å¥ä¼šè¢«ç¼–è¯‘æˆ PreparedStatement ç±»å‹é€šè¿‡å›è°ƒæ¥å£ PreparedStatementCallback æ‰§è¡Œã€‚*/
     public <T> T execute(String sql, Map<String, ?> paramMap, PreparedStatementCallback<T> action) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö SQLÓï¾ä£¬Í¨³£ÊÇÒ»¸ö DDL Óï¾ä. */
+    /**æ‰§è¡Œä¸€ä¸ª SQLè¯­å¥ï¼Œé€šå¸¸æ˜¯ä¸€ä¸ª DDL è¯­å¥. */
     public void execute(String sql) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¶¯Ì¬²éÑ¯ SQL Óï¾ä¡£SQL Óï¾ä»á±»±àÒë³É PreparedStatement ÀàĞÍÍ¨¹ı»Øµ÷½Ó¿Ú PreparedStatementCallback Ö´ĞĞ¡£
-     * ·µ»ØµÄ½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªåŠ¨æ€æŸ¥è¯¢ SQL è¯­å¥ã€‚SQL è¯­å¥ä¼šè¢«ç¼–è¯‘æˆ PreparedStatement ç±»å‹é€šè¿‡å›è°ƒæ¥å£ PreparedStatementCallback æ‰§è¡Œã€‚
+     * è¿”å›çš„ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(PreparedStatementCreator psc, ResultSetExtractor<T> rse) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä¡£²¢Í¨¹ı ResultSetExtractor ×ª»»½á¹û¼¯¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ã€‚å¹¶é€šè¿‡ ResultSetExtractor è½¬æ¢ç»“æœé›†ã€‚*/
     public <T> T query(String sql, ResultSetExtractor<T> rse) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¶¯Ì¬²éÑ¯ SQL Óï¾ä¡£SQL Óï¾ä»á±»±àÒë³É PreparedStatement ÀàĞÍÍ¨¹ı»Øµ÷½Ó¿Ú PreparedStatementSetter Îª¶¯Ì¬ SQL ÉèÖÃÊôĞÔ¡£·µ»ØµÄ½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªåŠ¨æ€æŸ¥è¯¢ SQL è¯­å¥ã€‚SQL è¯­å¥ä¼šè¢«ç¼–è¯‘æˆ PreparedStatement ç±»å‹é€šè¿‡å›è°ƒæ¥å£ PreparedStatementSetter ä¸ºåŠ¨æ€ SQL è®¾ç½®å±æ€§ã€‚è¿”å›çš„ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(String sql, PreparedStatementSetter pss, ResultSetExtractor<T> rse) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½« SQL ²éÑ¯½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”å°† SQL æŸ¥è¯¢ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(String sql, ResultSetExtractor<T> rse, Object... args) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½« SQL ²éÑ¯½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”å°† SQL æŸ¥è¯¢ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(String sql, Object[] arg, ResultSetExtractor<T> rses) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½« SQL ²éÑ¯½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”å°† SQL æŸ¥è¯¢ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(String sql, SqlParameterSource paramSource, ResultSetExtractor<T> rse) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½« SQL ²éÑ¯½á¹û¼¯Ê¹ÓÃ ResultSetExtractor ×ª»»¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”å°† SQL æŸ¥è¯¢ç»“æœé›†ä½¿ç”¨ ResultSetExtractor è½¬æ¢ã€‚*/
     public <T> T query(String sql, Map<String, ?> paramMap, ResultSetExtractor<T> rse) throws SQLException;
     //
     //
@@ -75,17 +75,17 @@ public interface JdbcOperations {
      * @param rch object that will extract results, one row at a time
      */
     public void query(PreparedStatementCreator psc, RowCallbackHandler rch) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä¡£²¢Í¨¹ı RowCallbackHandler ´¦Àí½á¹û¼¯¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ã€‚å¹¶é€šè¿‡ RowCallbackHandler å¤„ç†ç»“æœé›†ã€‚*/
     public void query(String sql, RowCallbackHandler rch) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½á¹û¼¯ĞĞ´¦ÀíÊ¹ÓÃ RowCallbackHandler ½Ó¿Ú´¦Àí¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”ç»“æœé›†è¡Œå¤„ç†ä½¿ç”¨ RowCallbackHandler æ¥å£å¤„ç†ã€‚*/
     public void query(String sql, PreparedStatementSetter pss, RowCallbackHandler rch) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½á¹û¼¯ĞĞ´¦ÀíÊ¹ÓÃ RowCallbackHandler ½Ó¿Ú´¦Àí¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”ç»“æœé›†è¡Œå¤„ç†ä½¿ç”¨ RowCallbackHandler æ¥å£å¤„ç†ã€‚*/
     public void query(String sql, RowCallbackHandler rch, Object... args) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½á¹û¼¯ĞĞ´¦ÀíÊ¹ÓÃ RowCallbackHandler ½Ó¿Ú´¦Àí¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”ç»“æœé›†è¡Œå¤„ç†ä½¿ç”¨ RowCallbackHandler æ¥å£å¤„ç†ã€‚*/
     public void query(String sql, Object[] args, RowCallbackHandler rch) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½á¹û¼¯ĞĞ´¦ÀíÊ¹ÓÃ RowCallbackHandler ½Ó¿Ú´¦Àí¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”ç»“æœé›†è¡Œå¤„ç†ä½¿ç”¨ RowCallbackHandler æ¥å£å¤„ç†ã€‚*/
     public void query(String sql, SqlParameterSource paramSource, RowCallbackHandler rch) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷£¬²¢ÇÒ½á¹û¼¯ĞĞ´¦ÀíÊ¹ÓÃ RowCallbackHandler ½Ó¿Ú´¦Àí¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œï¼Œå¹¶ä¸”ç»“æœé›†è¡Œå¤„ç†ä½¿ç”¨ RowCallbackHandler æ¥å£å¤„ç†ã€‚*/
     public void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch) throws SQLException;
     //
     //
@@ -99,244 +99,244 @@ public interface JdbcOperations {
      * @return the result List, containing mapped objects
      */
     public <T> List<T> query(PreparedStatementCreator psc, RowMapper<T> rowMapper) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«·µ»ØÒ»¸ö List£¬Ã¿Ò»ĞĞ½«Í¨¹ı RowMapper Ó³Éä¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è¿”å›ä¸€ä¸ª Listï¼Œæ¯ä¸€è¡Œå°†é€šè¿‡ RowMapper æ˜ å°„ã€‚*/
     public <T> List<T> query(String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«·µ»ØÒ»¸ö List£¬Ã¿Ò»ĞĞ½«Í¨¹ı RowMapper Ó³Éä¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è¿”å›ä¸€ä¸ª Listï¼Œæ¯ä¸€è¡Œå°†é€šè¿‡ RowMapper æ˜ å°„ã€‚*/
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«·µ»ØÒ»¸ö List£¬Ã¿Ò»ĞĞ½«Í¨¹ı RowMapper Ó³Éä¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è¿”å›ä¸€ä¸ª Listï¼Œæ¯ä¸€è¡Œå°†é€šè¿‡ RowMapper æ˜ å°„ã€‚*/
     public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢Ê¹ÓÃ RowMapper ´¦Àí½á¹û¼¯¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶ä½¿ç”¨ RowMapper å¤„ç†ç»“æœé›†ã€‚*/
     public <T> List<T> query(String sql, RowMapper<T> rowMapper) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«·µ»ØÒ»¸ö List£¬Ã¿Ò»ĞĞ½«Í¨¹ı RowMapper Ó³Éä¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è¿”å›ä¸€ä¸ª Listï¼Œæ¯ä¸€è¡Œå°†é€šè¿‡ RowMapper æ˜ å°„ã€‚*/
     public <T> List<T> query(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«·µ»ØÒ»¸ö List£¬Ã¿Ò»ĞĞ½«Í¨¹ı RowMapper Ó³Éä¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è¿”å›ä¸€ä¸ª Listï¼Œæ¯ä¸€è¡Œå°†é€šè¿‡ RowMapper æ˜ å°„ã€‚*/
     public <T> List<T> query(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬½á¹û½«±»Ó³Éäµ½Ò»¸öÁĞ±í(Ò»¸öÌõÄ¿ÎªÃ¿Ò»ĞĞ)µÄ¶ÔÏó£¬ÁĞ±íÖĞÃ¿Ò»Ìõ¼ÇÂ¼¶¼ÊÇ<code>elementType</code>²ÎÊıÖ¸¶¨µÄÀàĞÍ¶ÔÏó¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œç»“æœå°†è¢«æ˜ å°„åˆ°ä¸€ä¸ªåˆ—è¡¨(ä¸€ä¸ªæ¡ç›®ä¸ºæ¯ä¸€è¡Œ)çš„å¯¹è±¡ï¼Œåˆ—è¡¨ä¸­æ¯ä¸€æ¡è®°å½•éƒ½æ˜¯<code>elementType</code>å‚æ•°æŒ‡å®šçš„ç±»å‹å¯¹è±¡ã€‚*/
     public <T> List<T> queryForList(String sql, Class<T> elementType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É elementType ²ÎÊıËù±íÊ¾µÄÀàĞÍ¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ elementType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹ã€‚
      * @throws SQLException if the query fails
      */
     public <T> List<T> queryForList(String sql, Class<T> elementType, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É elementType ²ÎÊıËù±íÊ¾µÄÀàĞÍ¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ elementType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹ã€‚
      * @throws SQLException if the query fails
      */
     public <T> List<T> queryForList(String sql, Object[] args, Class<T> elementType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É elementType ²ÎÊıËù±íÊ¾µÄÀàĞÍ¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ elementType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹ã€‚
      * @throws SQLException if the query fails
      */
     public <T> List<T> queryForList(String sql, SqlParameterSource paramSource, Class<T> elementType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É elementType ²ÎÊıËù±íÊ¾µÄÀàĞÍ¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ elementType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹ã€‚
      * @throws SQLException if the query fails
      */
     public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢Ê¹ÓÃ RowMapper ´¦Àí½á¹û¼¯¡£
-     * Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«È¡µÚÒ»Ìõ¼ÇÂ¼×÷Îª½á¹û¡£
-     * @return µ±²»´æÔÚ¼ÇÂ¼Ê±·µ»Ø<code>null</code>¡£
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶ä½¿ç”¨ RowMapper å¤„ç†ç»“æœé›†ã€‚
+     * é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†å–ç¬¬ä¸€æ¡è®°å½•ä½œä¸ºç»“æœã€‚
+     * @return å½“ä¸å­˜åœ¨è®°å½•æ—¶è¿”å›<code>null</code>ã€‚
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Í¨¹ı RowMapper Ó³Éä×ª»»²¢·µ»Ø¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†é€šè¿‡ RowMapper æ˜ å°„è½¬æ¢å¹¶è¿”å›ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Í¨¹ı RowMapper Ó³Éä×ª»»²¢·µ»Ø¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†é€šè¿‡ RowMapper æ˜ å°„è½¬æ¢å¹¶è¿”å›ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬²éÑ¯²ÎÊıÊ¹ÓÃ SqlParameterSource ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼ŒæŸ¥è¯¢å‚æ•°ä½¿ç”¨ SqlParameterSource å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬²éÑ¯²ÎÊıÊ¹ÓÃ Map ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼ŒæŸ¥è¯¢å‚æ•°ä½¿ç”¨ Map å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢½«½á¹û¼¯Êı¾İ×ª»»³É<code>requiredType</code>²ÎÊıÖ¸¶¨µÄÀàĞÍ¶ÔÏó¡£
-     * Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«È¡µÚÒ»Ìõ¼ÇÂ¼×÷Îª½á¹û¡£
-     * @return µ±²»´æÔÚ¼ÇÂ¼Ê±·µ»Ø<code>null</code>¡£
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶å°†ç»“æœé›†æ•°æ®è½¬æ¢æˆ<code>requiredType</code>å‚æ•°æŒ‡å®šçš„ç±»å‹å¯¹è±¡ã€‚
+     * é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†å–ç¬¬ä¸€æ¡è®°å½•ä½œä¸ºç»“æœã€‚
+     * @return å½“ä¸å­˜åœ¨è®°å½•æ—¶è¿”å›<code>null</code>ã€‚
      */
     public <T> T queryForObject(String sql, Class<T> requiredType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Í¨¹ı requiredType ²ÎÊıËù±íÊ¾µÄÀàĞÍ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†é€šè¿‡ requiredType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Í¨¹ı requiredType ²ÎÊıËù±íÊ¾µÄÀàĞÍ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†é€šè¿‡ requiredType å‚æ•°æ‰€è¡¨ç¤ºçš„ç±»å‹å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, Object[] args, Class<T> requiredType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬²éÑ¯²ÎÊıÊ¹ÓÃ SqlParameterSource ·â×°£¬²¢½«²éÑ¯½á¹ûÊ¹ÓÃ requiredType ²ÎÊı±íÊ¾µÄÀàĞÍ·µ»Ø¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼ŒæŸ¥è¯¢å‚æ•°ä½¿ç”¨ SqlParameterSource å°è£…ï¼Œå¹¶å°†æŸ¥è¯¢ç»“æœä½¿ç”¨ requiredType å‚æ•°è¡¨ç¤ºçš„ç±»å‹è¿”å›ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, SqlParameterSource paramSource, Class<T> requiredType) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬²éÑ¯²ÎÊıÊ¹ÓÃ Map ·â×°£¬²¢½«²éÑ¯½á¹ûÊ¹ÓÃ requiredType ²ÎÊı±íÊ¾µÄÀàĞÍ·µ»Ø¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼ŒæŸ¥è¯¢å‚æ•°ä½¿ç”¨ Map å°è£…ï¼Œå¹¶å°†æŸ¥è¯¢ç»“æœä½¿ç”¨ requiredType å‚æ•°è¡¨ç¤ºçš„ç±»å‹è¿”å›ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢½«½á¹û¼¯Êı¾İ×ª»»³É<code>Map</code>¡£
-     * Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«È¡µÚÒ»Ìõ¼ÇÂ¼×÷Îª½á¹û¡£
-     * @return µ±²»´æÔÚ¼ÇÂ¼Ê±·µ»Ø<code>null</code>¡£
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶å°†ç»“æœé›†æ•°æ®è½¬æ¢æˆ<code>Map</code>ã€‚
+     * é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†å–ç¬¬ä¸€æ¡è®°å½•ä½œä¸ºç»“æœã€‚
+     * @return å½“ä¸å­˜åœ¨è®°å½•æ—¶è¿”å›<code>null</code>ã€‚
      */
     public Map<String, Object> queryForMap(String sql) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Ê¹ÓÃ Map ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†ä½¿ç”¨ Map å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public Map<String, Object> queryForMap(String sql, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Ê¹ÓÃ Map ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†ä½¿ç”¨ Map å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public Map<String, Object> queryForMap(String sql, SqlParameterSource paramSource) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«Ê¹ÓÃ Map ·â×°¡£
-     * <p>Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ½«»áÈ¡µÃµÚÒ»ÌõÊı¾İ×÷Îª½á¹û¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†ä½¿ç”¨ Map å°è£…ã€‚
+     * <p>é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®å°†ä¼šå–å¾—ç¬¬ä¸€æ¡æ•°æ®ä½œä¸ºç»“æœã€‚
      * @throws SQLException if the query fails
      */
     public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢È¡µÃ long ÀàĞÍÊı¾İ¡£
-     * Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ»òÕß¶àÁĞ½«»áÒı·¢Òì³£¡£
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶å–å¾— long ç±»å‹æ•°æ®ã€‚
+     * é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®æˆ–è€…å¤šåˆ—å°†ä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @return the long value, or 0 in case of SQL NULL
      */
     public long queryForLong(String sql) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É long ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ long ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public long queryForLong(String sql, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬sql ²ÎÊıÍ¨¹ı SqlParameterSource ·â×°¡£²éÑ¯½á¹û½«×ª»»³É long ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œsql å‚æ•°é€šè¿‡ SqlParameterSource å°è£…ã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ long ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public long queryForLong(String sql, SqlParameterSource paramSource) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬sql ²ÎÊıÍ¨¹ı Map ·â×°¡£²éÑ¯½á¹û½«×ª»»³É long ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œsql å‚æ•°é€šè¿‡ Map å°è£…ã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ long ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public long queryForLong(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²¢È¡µÃ int ÀàĞÍÊı¾İ¡£
-     * Ô¤¼Æ¸Ã·½·¨Ö»»á´¦ÀíÒ»ÌõÊı¾İ£¬Èç¹û²éÑ¯½á¹û´æÔÚ¶àÌõÊı¾İ»òÕß¶àÁĞ½«»áÒı·¢Òì³£¡£
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œå¹¶å–å¾— int ç±»å‹æ•°æ®ã€‚
+     * é¢„è®¡è¯¥æ–¹æ³•åªä¼šå¤„ç†ä¸€æ¡æ•°æ®ï¼Œå¦‚æœæŸ¥è¯¢ç»“æœå­˜åœ¨å¤šæ¡æ•°æ®æˆ–è€…å¤šåˆ—å°†ä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @return the int value, or 0 in case of SQL NULL
      */
     public int queryForInt(String sql) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É int ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ int ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public int queryForInt(String sql, Object... args) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É int ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ int ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public int queryForInt(String sql, SqlParameterSource paramSource) throws SQLException;
     /**
-     * ²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹û½«×ª»»³É int ÀàĞÍ¡£
-     * ËùÒÔĞèÒª±£Ö¤²éÑ¯µÄ½á¹ûÖ»ÓĞÒ»ĞĞÒ»ÁĞ£¬·ñÔòÖ´ĞĞ»áÒı·¢Òì³£¡£
+     * æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœå°†è½¬æ¢æˆ int ç±»å‹ã€‚
+     * æ‰€ä»¥éœ€è¦ä¿è¯æŸ¥è¯¢çš„ç»“æœåªæœ‰ä¸€è¡Œä¸€åˆ—ï¼Œå¦åˆ™æ‰§è¡Œä¼šå¼•å‘å¼‚å¸¸ã€‚
      * @throws SQLException if the query fails
      */
     public int queryForInt(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬½á¹û½«±»Ó³Éäµ½Ò»¸öÁĞ±í(Ò»¸öÌõÄ¿ÎªÃ¿Ò»ĞĞ)µÄ¶ÔÏó£¬
-     * ÁĞ±íÖĞÃ¿Ò»Ìõ¼ÇÂ¼¶¼ÊÇ<code>Map</code>ÀàĞÍ¶ÔÏó¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼Œç»“æœå°†è¢«æ˜ å°„åˆ°ä¸€ä¸ªåˆ—è¡¨(ä¸€ä¸ªæ¡ç›®ä¸ºæ¯ä¸€è¡Œ)çš„å¯¹è±¡ï¼Œ
+     * åˆ—è¡¨ä¸­æ¯ä¸€æ¡è®°å½•éƒ½æ˜¯<code>Map</code>ç±»å‹å¯¹è±¡ã€‚*/
     public List<Map<String, Object>> queryForList(String sql) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯¼ÇÂ¼½«»áÊ¹ÓÃ Map ±£´æ£¬²¢·â×°µ½ List ÖĞ¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢è®°å½•å°†ä¼šä½¿ç”¨ Map ä¿å­˜ï¼Œå¹¶å°è£…åˆ° List ä¸­ã€‚*/
     public List<Map<String, Object>> queryForList(String sql, Object... args) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯¼ÇÂ¼½«»áÊ¹ÓÃ Map ±£´æ£¬²¢·â×°µ½ List ÖĞ¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢è®°å½•å°†ä¼šä½¿ç”¨ Map ä¿å­˜ï¼Œå¹¶å°è£…åˆ° List ä¸­ã€‚*/
     public List<Map<String, Object>> queryForList(String sql, SqlParameterSource paramSource) throws SQLException;
-    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯¼ÇÂ¼½«»áÊ¹ÓÃ Map ±£´æ£¬²¢·â×°µ½ List ÖĞ¡£*/
+    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢è®°å½•å°†ä¼šä½¿ç”¨ Map ä¿å­˜ï¼Œå¹¶å°è£…åˆ° List ä¸­ã€‚*/
     public List<Map<String, Object>> queryForList(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    //    /**Ö´ĞĞÒ»¸ö¾²Ì¬ SQL Óï¾ä£¬²éÑ¯½á¹ûÊ¹ÓÃ SqlRowSet ½Ó¿Ú·â×°¡£*/
+    //    /**æ‰§è¡Œä¸€ä¸ªé™æ€ SQL è¯­å¥ï¼ŒæŸ¥è¯¢ç»“æœä½¿ç”¨ SqlRowSet æ¥å£å°è£…ã€‚*/
     //    public SqlRowSet queryForRowSet(String sql) throws SQLException;
-    //    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹ûÊ¹ÓÃ SqlRowSet ½Ó¿Ú·â×°¡£
+    //    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœä½¿ç”¨ SqlRowSet æ¥å£å°è£…ã€‚
     //     * @see java.sql.Types*/
     //    public SqlRowSet queryForRowSet(String sql, Object... args) throws SQLException;
-    //    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹ûÊ¹ÓÃ SqlRowSet ½Ó¿Ú·â×°¡£
+    //    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœä½¿ç”¨ SqlRowSet æ¥å£å°è£…ã€‚
     //     * @see java.sql.Types*/
     //    public SqlRowSet queryForRowSet(String sql, Object[] args, int[] argTypes) throws SQLException;
-    //    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹ûÊ¹ÓÃ SqlRowSet ½Ó¿Ú·â×°¡£
+    //    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœä½¿ç”¨ SqlRowSet æ¥å£å°è£…ã€‚
     //     * @see java.sql.Types*/
     //    public SqlRowSet queryForRowSet(String sql, SqlParameterSource paramSource) throws SQLException;
-    //    /**²éÑ¯Ò»¸ö SQL Óï¾ä£¬Ê¹ÓÃÕâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£²éÑ¯½á¹ûÊ¹ÓÃ SqlRowSet ½Ó¿Ú·â×°¡£
+    //    /**æŸ¥è¯¢ä¸€ä¸ª SQL è¯­å¥ï¼Œä½¿ç”¨è¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚æŸ¥è¯¢ç»“æœä½¿ç”¨ SqlRowSet æ¥å£å°è£…ã€‚
     //     * @see java.sql.Types*/
     //    public SqlRowSet queryForRowSet(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    /**Ö´ĞĞÒ»¸ö¸üĞÂÓï¾ä£¨insert¡¢update¡¢delete£©£¬Õâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªæ›´æ–°è¯­å¥ï¼ˆinsertã€updateã€deleteï¼‰ï¼Œè¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚*/
     public int update(PreparedStatementCreator psc) throws SQLException;
-    /**Ö´ĞĞÒ»Ìõ insert »ò update¡¢delete Óï¾ä£¬·µ»ØÖµÓÃÓÚ±íÊ¾ÊÜÓ°ÏìµÄĞĞÊı¡£*/
+    /**æ‰§è¡Œä¸€æ¡ insert æˆ– updateã€delete è¯­å¥ï¼Œè¿”å›å€¼ç”¨äºè¡¨ç¤ºå—å½±å“çš„è¡Œæ•°ã€‚*/
     public int update(String sql) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¸üĞÂÓï¾ä£¨insert¡¢update¡¢delete£©£¬Õâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªæ›´æ–°è¯­å¥ï¼ˆinsertã€updateã€deleteï¼‰ï¼Œè¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚*/
     public int update(String sql, PreparedStatementSetter pss) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¸üĞÂÓï¾ä£¨insert¡¢update¡¢delete£©£¬Õâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªæ›´æ–°è¯­å¥ï¼ˆinsertã€updateã€deleteï¼‰ï¼Œè¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚*/
     public int update(String sql, Object... args) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¸üĞÂÓï¾ä£¨insert¡¢update¡¢delete£©£¬Õâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªæ›´æ–°è¯­å¥ï¼ˆinsertã€updateã€deleteï¼‰ï¼Œè¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚*/
     public int update(String sql, SqlParameterSource paramSource) throws SQLException;
-    /**Ö´ĞĞÒ»¸ö¸üĞÂÓï¾ä£¨insert¡¢update¡¢delete£©£¬Õâ¸ö²éÑ¯½«»áÊ¹ÓÃ PreparedStatement ½Ó¿Ú²Ù×÷¡£*/
+    /**æ‰§è¡Œä¸€ä¸ªæ›´æ–°è¯­å¥ï¼ˆinsertã€updateã€deleteï¼‰ï¼Œè¿™ä¸ªæŸ¥è¯¢å°†ä¼šä½¿ç”¨ PreparedStatement æ¥å£æ“ä½œã€‚*/
     public int update(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
-    /**ÅúÁ¿Ö´ĞĞ insert »ò update¡¢delete Óï¾ä£¬·µ»ØÖµÓÃÓÚ±íÊ¾ÊÜÓ°ÏìµÄĞĞÊı¡£*/
+    /**æ‰¹é‡æ‰§è¡Œ insert æˆ– updateã€delete è¯­å¥ï¼Œè¿”å›å€¼ç”¨äºè¡¨ç¤ºå—å½±å“çš„è¡Œæ•°ã€‚*/
     public int[] batchUpdate(String[] sql) throws SQLException;
-    /**ÅúÁ¿Ö´ĞĞ SQL Óï¾ä£¬ÕâÒ»Åú´ÎÖĞµÄSQL ²ÎÊıÊ¹ÓÃ BatchPreparedStatementSetter ½Ó¿ÚÉèÖÃ¡£*/
+    /**æ‰¹é‡æ‰§è¡Œ SQL è¯­å¥ï¼Œè¿™ä¸€æ‰¹æ¬¡ä¸­çš„SQL å‚æ•°ä½¿ç”¨ BatchPreparedStatementSetter æ¥å£è®¾ç½®ã€‚*/
     public int[] batchUpdate(String sql, BatchPreparedStatementSetter pss) throws SQLException;
-    /**ÅúÁ¿Ö´ĞĞ SQL Óï¾ä£¬ÕâÒ»Åú´ÎÖĞµÄSQL ²ÎÊıÊ¹ÓÃ BatchPreparedStatementSetter ½Ó¿ÚÉèÖÃ¡£*/
+    /**æ‰¹é‡æ‰§è¡Œ SQL è¯­å¥ï¼Œè¿™ä¸€æ‰¹æ¬¡ä¸­çš„SQL å‚æ•°ä½¿ç”¨ BatchPreparedStatementSetter æ¥å£è®¾ç½®ã€‚*/
     public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) throws SQLException;
-    /**ÅúÁ¿Ö´ĞĞ SQL Óï¾ä£¬ÕâÒ»Åú´ÎÖĞµÄSQL ²ÎÊıÊ¹ÓÃ BatchPreparedStatementSetter ½Ó¿ÚÉèÖÃ¡£*/
+    /**æ‰¹é‡æ‰§è¡Œ SQL è¯­å¥ï¼Œè¿™ä¸€æ‰¹æ¬¡ä¸­çš„SQL å‚æ•°ä½¿ç”¨ BatchPreparedStatementSetter æ¥å£è®¾ç½®ã€‚*/
     public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) throws SQLException;
     //-------------------------------------------------------------------------
     // Methods dealing with prepared statements
     //-------------------------------------------------------------------------
-    //    /** ÅúÁ¿Ôö¼Ó Êı¾İÀàĞÍÎªmap */
+    //    /** æ‰¹é‡å¢åŠ  æ•°æ®ç±»å‹ä¸ºmap */
     //    public int[] insertBatchMap(String tableName, List<Map<String, Object>> list);
-    //    /** ÅúÁ¿Ôö¼Ó Êı¾İÀàĞÍÎªmap   Map<String, Object>[] batch */
+    //    /** æ‰¹é‡å¢åŠ  æ•°æ®ç±»å‹ä¸ºmap   Map<String, Object>[] batch */
     //    public int[] insertBatchMap(String tableName, Map<String, Object>[] batch);
-    //    /** Í¨¹ımap·½Ê½ĞÂÔöÊı¾İ */
+    //    /** é€šè¿‡mapæ–¹å¼æ–°å¢æ•°æ® */
     //    public int insertMap(String tableName, Map<String, Object> map);
 }

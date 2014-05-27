@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.plugins.event.Listener;
 import com.google.inject.Inject;
 /**
- * ³õÊ¼»¯Êı¾İ¿â
+ * åˆå§‹åŒ–æ•°æ®åº“
  * @version : 2013-12-23
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Listener(AppContext.ContextEvent_Started)
 public class OnStart implements EventListener {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import freemarker.template.DefaultObjectWrapper;
 /**
  * 
  * @version : 2013-7-31
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 @Module()
 public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Configuration> {
@@ -55,7 +55,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
     //
     @Override
     public void readyModule(ModuleSettings info) {
-        //“¿¿µœÓ
+        //‰æùËµñÈ°π
         info.beforeMe(WebServletMod.class);
         info.beforeMe(WebFilterMod.class);
     }
@@ -68,9 +68,9 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
         this.serve("*.htm").with(FmServlet.class);
     }
     //
-    /**◊∞‘ÿFmTag*/
+    /**Ë£ÖËΩΩFmTag*/
     protected void loadFmTag(AppContext appContext, Configuration fmConfiguration) {
-        //1.ªÒ»°
+        //1.Ëé∑Âèñ
         Set<Class<?>> fmTagSet = appContext.getClassSet(FmTag.class);
         if (fmTagSet == null)
             return;
@@ -88,7 +88,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
         }
     }
     //
-    /**◊∞‘ÿFmMethod*/
+    /**Ë£ÖËΩΩFmMethod*/
     protected void loadFmMethod(AppContext appContext, Configuration fmConfiguration) {
         Set<Class<?>> fmMethodSet = appContext.findClass(Object.class);
         if (fmMethodSet == null)
@@ -114,7 +114,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
         }
     }
     //
-    /**◊∞‘ÿServices*/
+    /**Ë£ÖËΩΩServices*/
     protected void applyBean(AppContext appContext, Configuration configuration) {
         String[] names = appContext.getBeanNames();
         if (names == null || names.length == 0)
@@ -132,7 +132,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
     @Override
     public void start(WebAppContext appContext) {
         this.freemarkerConfig.setObjectWrapper(new DefaultObjectWrapper());
-        this.freemarkerConfig.setCacheStorage(new NullCacheStorage());//…Ë÷√ª∫¥ÊŒ™ø’
+        this.freemarkerConfig.setCacheStorage(new NullCacheStorage());//ËÆæÁΩÆÁºìÂ≠ò‰∏∫Á©∫
         this.freemarkerConfig.setEncoding(Locale.CHINA, "utf-8");
         this.freemarkerConfig.setOutputEncoding("utf-8");
         this.freemarkerConfig.setDefaultEncoding("utf-8");
@@ -151,7 +151,7 @@ public class FreemarkerMod extends AbstractWebHasorModule implements Provider<Co
             tempLoaderArray.add(new DirTemplateLoader(fmPath));
             Hasor.logInfo("workSpacePath = %s", fmPath);
             //
-            //this.getServletContext() <-- ∑Ω∑®÷ª”–‘⁄InitΩ◊∂Œ≤≈∆◊˜”√
+            //this.getServletContext() <-- ÊñπÊ≥ïÂè™ÊúâÂú®InitÈò∂ÊÆµÊâçËµ∑‰ΩúÁî®
             File webPath = new File(((ServletContext) appContext.getContext()).getRealPath("/"));
             webPath.mkdirs();
             tempLoaderArray.add(new DirTemplateLoader(webPath));

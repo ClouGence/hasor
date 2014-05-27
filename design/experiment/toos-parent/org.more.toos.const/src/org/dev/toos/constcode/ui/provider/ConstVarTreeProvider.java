@@ -15,10 +15,10 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * 
  * @version : 2013-2-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstVarTreeProvider extends CellLabelProvider implements ITreeContentProvider {
-    /**ÊµÏÖCellLabelProviderÀàĞÍ·½·¨£¬ÓÃÓÚÏòµ¥Ôª¸ñÖĞÉèÖÃÏÔÊ¾µÄÊı¾İ*/
+    /**å®ç°CellLabelProviderç±»å‹æ–¹æ³•ï¼Œç”¨äºå‘å•å…ƒæ ¼ä¸­è®¾ç½®æ˜¾ç¤ºçš„æ•°æ®*/
     @Override
     public void update(ViewerCell cell) {
         VarBeanBridge element = (VarBeanBridge) cell.getElement();
@@ -27,17 +27,17 @@ public class ConstVarTreeProvider extends CellLabelProvider implements ITreeCont
         row.setText(1, element.getVar());//var
         row.setText(2, element.getLat());//lat
         //-------------------------------------------------------------------
-        //1.¸¸Ç×±»É¾³ı
+        //1.çˆ¶äº²è¢«åˆ é™¤
         if (element.getConst().isDelete() == true) {
             cell.setBackground(ColorUtils.getColor4Delete());
             return;
         }
-        //2.ĞÂ½¨
+        //2.æ–°å»º
         if (element.isNew() == true) {
             cell.setBackground(ColorUtils.getColor4New());
             return;
         }
-        //3.À´Ô´ÑÕÉ«
+        //3.æ¥æºé¢œè‰²
         FromType formType = element.getConst().getSource().getType();
         if (formType == FromType.DB)
             cell.setBackground(ColorUtils.getColor4DB());
@@ -45,17 +45,17 @@ public class ConstVarTreeProvider extends CellLabelProvider implements ITreeCont
             cell.setBackground(ColorUtils.getColor4Jar());
         else if (formType == FromType.Source)
             cell.setBackground(ColorUtils.getColor4Source());
-        //4.ĞŞ¸Ä¹ıµÄ
+        //4.ä¿®æ”¹è¿‡çš„
         if (element.isPropertyChanged() == true)
             cell.setBackground(ColorUtils.getColor4Changed());
-        //5.¾ßÌåµÄÊôĞÔĞŞ¸Ä
+        //5.å…·ä½“çš„å±æ€§ä¿®æ”¹
         if (element.isKeyChanged() == true)
             row.setBackground(0, ColorUtils.getColor4Changed2());//key
         if (element.isVarChanged() == true)
             row.setBackground(1, ColorUtils.getColor4Changed2());//var
         if (element.isLatChanged() == true)
             row.setBackground(2, ColorUtils.getColor4Changed2());//lat
-        //6.É¾³ıµÄÌõÄ¿
+        //6.åˆ é™¤çš„æ¡ç›®
         FontData fontData = cell.getFont().getFontData()[0];
         if (element.isDelete() == true) {
             cell.setFont(SWTResourceManager.getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle() | SWT.BOLD | SWT.ITALIC));
@@ -69,14 +69,14 @@ public class ConstVarTreeProvider extends CellLabelProvider implements ITreeCont
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         //TODO Root Data Changed
     }
-    /**¸ù¾İÀàĞÍ»ñÈ¡¸ù½Úµã*/
+    /**æ ¹æ®ç±»å‹è·å–æ ¹èŠ‚ç‚¹*/
     @Override
     public VarBeanBridge[] getElements(Object inputElement) {
         ConstBeanBridge inputData = (ConstBeanBridge) inputElement;
         List<VarBeanBridge> varList = inputData.getVarRoots();
         return varList.toArray(new VarBeanBridge[varList.size()]);
     }
-    /**»ñÈ¡×Ó½ÚµãÊı¾İ*/
+    /**è·å–å­èŠ‚ç‚¹æ•°æ®*/
     @Override
     public VarBeanBridge[] getChildren(Object parentElement) {
         VarBeanBridge varElementBridge = (VarBeanBridge) parentElement;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,27 @@ package org.more.util.io;
 import java.io.IOException;
 import java.io.InputStream;
 /**
- * ¾ßÓĞ×Ô¶¯¹Ø±ÕµÄÊäÈëÁ÷
+ * å…·æœ‰è‡ªåŠ¨å…³é—­çš„è¾“å…¥æµ
  * @version 2009-5-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class AutoCloseInputStream extends InputStream {
-    /** Ä¿±ê¶ÁÈ¡µÄÁ÷ */
+    /** ç›®æ ‡è¯»å–çš„æµ */
     private InputStream in    = null;
-    /** Ä¿±ê¶ÁÈ¡µÄÁ÷ */
+    /** ç›®æ ‡è¯»å–çš„æµ */
     private boolean     close = false;
     //========================================================================================
     /**
-     * ´´½¨×Ô¶¯¹Ø±ÕµÄÊäÈëÁ÷
-     * @param in ¶ÁÈ¡µÄÄ¿±êÁ÷
+     * åˆ›å»ºè‡ªåŠ¨å…³é—­çš„è¾“å…¥æµ
+     * @param in è¯»å–çš„ç›®æ ‡æµ
      */
     public AutoCloseInputStream(InputStream in) {
         this.in = in;
     }
     //========================================================================================
     /**
-     * Èç¹û¶ÁÈ¡µÄÄ¿±êÁ÷ÒÑ¾­¶ÁÈ¡µ½Ä©Î²Ôò×Ô¶¯¹Ø±Õ¸ÃÁ÷£¬²¢ÇÒ¶ÔÓÚÒÑ¾­¹Ø±ÕµÄÁ÷µ÷ÓÃ¸Ã·½·¨½«Ê¼ÖÕ·µ»Ø-1¡£
-     * @return Èç¹û¶ÁÈ¡µÄÄ¿±êÁ÷ÒÑ¾­¶ÁÈ¡µ½Ä©Î²Ôò×Ô¶¯¹Ø±Õ¸ÃÁ÷£¬²¢ÇÒ¶ÔÓÚÒÑ¾­¹Ø±ÕµÄÁ÷µ÷ÓÃ¸Ã·½·¨½«Ê¼ÖÕ·µ»Ø-1¡£
+     * å¦‚æœè¯»å–çš„ç›®æ ‡æµå·²ç»è¯»å–åˆ°æœ«å°¾åˆ™è‡ªåŠ¨å…³é—­è¯¥æµï¼Œå¹¶ä¸”å¯¹äºå·²ç»å…³é—­çš„æµè°ƒç”¨è¯¥æ–¹æ³•å°†å§‹ç»ˆè¿”å›-1ã€‚
+     * @return å¦‚æœè¯»å–çš„ç›®æ ‡æµå·²ç»è¯»å–åˆ°æœ«å°¾åˆ™è‡ªåŠ¨å…³é—­è¯¥æµï¼Œå¹¶ä¸”å¯¹äºå·²ç»å…³é—­çš„æµè°ƒç”¨è¯¥æ–¹æ³•å°†å§‹ç»ˆè¿”å›-1ã€‚
      */
     public int read() throws IOException {
         if (this.close == true)

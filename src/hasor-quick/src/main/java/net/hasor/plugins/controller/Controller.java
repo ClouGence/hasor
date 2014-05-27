@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ±íÊ¾Ò»¸ö¿ØÖÆÆ÷Àà£¬ControllerÀà¿ÉÒÔ²»±ØÊµÏÖÈÎºÎ½Ó¿Ú»ò¼Ì³ĞÈÎºÎÀà¡£
+ * è¡¨ç¤ºä¸€ä¸ªæ§åˆ¶å™¨ç±»ï¼ŒControllerç±»å¯ä»¥ä¸å¿…å®ç°ä»»ä½•æ¥å£æˆ–ç»§æ‰¿ä»»ä½•ç±»ã€‚
  * @version : 2013-3-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Controller {
-    /**actionµØÖ·¿Õ¼ä£¬Ä¬ÈÏÖµÎª¡°/¡±*/
+    /**actionåœ°å€ç©ºé—´ï¼Œé»˜è®¤å€¼ä¸ºâ€œ/â€*/
     public String value() default "/";
 }

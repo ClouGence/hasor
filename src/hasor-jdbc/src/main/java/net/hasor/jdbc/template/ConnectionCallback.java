@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,18 @@ package net.hasor.jdbc.template;
 import java.sql.Connection;
 import java.sql.SQLException;
 /**
- * Í¨ÓÃµÄ»Øµ÷½Ó¿Ú¡£ÓÃÀ´Ö´ĞĞ»ùÓÚ JDBC {@link Connection}
- * ÉÏµÄÈÎÒâÊıÁ¿ÈÎÒâÀàĞÍÊı¾İ¿â²Ù×÷¡£
+ * é€šç”¨çš„å›è°ƒæ¥å£ã€‚ç”¨æ¥æ‰§è¡ŒåŸºäº JDBC {@link Connection}
+ * ä¸Šçš„ä»»æ„æ•°é‡ä»»æ„ç±»å‹æ•°æ®åº“æ“ä½œã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface ConnectionCallback<T> {
     /**
-     * Ö´ĞĞÒ»¸ö JDBC ²Ù×÷¡£¿ª·¢Õß²»ĞèÒª¹ØĞÄÊı¾İ¿âÁ¬½ÓµÄ×´Ì¬ºÍÊÂÎñ¡£
-     * @param con Ò»¸ö¿ÉÓÃµÄ JDBC Êı¾İ¿âÁ¬½Ó
-     * @return ·µ»Ø²Ù×÷Ö´ĞĞµÄ×îÖÕ½á¹û¡£
+     * æ‰§è¡Œä¸€ä¸ª JDBC æ“ä½œã€‚å¼€å‘è€…ä¸éœ€è¦å…³å¿ƒæ•°æ®åº“è¿æ¥çš„çŠ¶æ€å’Œäº‹åŠ¡ã€‚
+     * @param con ä¸€ä¸ªå¯ç”¨çš„ JDBC æ•°æ®åº“è¿æ¥
+     * @return è¿”å›æ“ä½œæ‰§è¡Œçš„æœ€ç»ˆç»“æœã€‚
      */
     public T doInConnection(Connection con) throws SQLException;
 }

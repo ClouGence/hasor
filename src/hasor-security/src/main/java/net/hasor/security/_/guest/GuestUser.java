@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package net.hasor.security._.guest;
 import net.hasor.security._.support.BaseUserInfo;
 /**
- * ±íÊ¾À´±öÓÃ»§£¬À´±öÓÃ»§±íÊ¾Î´µÇÂ¼×´Ì¬ÏÂµÄÓÃ»§¡£
+ * è¡¨ç¤ºæ¥å®¾ç”¨æˆ·ï¼Œæ¥å®¾ç”¨æˆ·è¡¨ç¤ºæœªç™»å½•çŠ¶æ€ä¸‹çš„ç”¨æˆ·ã€‚
  * @version : 2013-4-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class GuestUser extends BaseUserInfo {
     private String account;

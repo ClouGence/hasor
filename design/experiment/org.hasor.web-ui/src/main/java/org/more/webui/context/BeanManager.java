@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.more.webui.context;
 /**
- * bean¹ÜÀíÆ÷£¬¸ÃÀà¼Ì³ĞMap½Ó¿Ú½Ó¿Úºómap»á±»¼ÓÈëµ½ElÉÏÏÂÎÄ
+ * beanç®¡ç†å™¨ï¼Œè¯¥ç±»ç»§æ‰¿Mapæ¥å£æ¥å£åmapä¼šè¢«åŠ å…¥åˆ°Elä¸Šä¸‹æ–‡
  * @version : 2012-6-27
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface BeanManager {
-    /**³õÊ¼»¯¡£*/
+    /**åˆå§‹åŒ–ã€‚*/
     public void init(FacesConfig environment);
-    /**»ñÈ¡ĞèÒªµÄBean¶ÔÏó¡£*/
+    /**è·å–éœ€è¦çš„Beanå¯¹è±¡ã€‚*/
     public <T> T getBean(Class<T> type);
 }

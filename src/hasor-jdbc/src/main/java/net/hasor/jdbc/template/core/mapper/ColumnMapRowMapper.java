@@ -62,15 +62,15 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     }
     //
     //
-    /**È¡µÃÖ¸¶¨ÁĞµÄÖµ*/
+    /**å–å¾—æŒ‡å®šåˆ—çš„å€¼*/
     protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
         return getResultSetValue(rs, index);
     }
-    /**½²ÁĞÃû×ª»»ÎªºÏÀíµÄ¸ñÊ½¡£*/
+    /**è®²åˆ—åè½¬æ¢ä¸ºåˆç†çš„æ ¼å¼ã€‚*/
     protected String getColumnKey(String columnName) {
         return columnName;
     }
-    /**´´½¨Ò»¸ö Map ÓÃÓÚ´æ·ÅÊı¾İ*/
+    /**åˆ›å»ºä¸€ä¸ª Map ç”¨äºå­˜æ”¾æ•°æ®*/
     protected Map<String, Object> createColumnMap(int columnCount) {
         return new LinkedCaseInsensitiveMap<Object>(columnCount);
     }

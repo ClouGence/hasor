@@ -25,7 +25,7 @@ import org.more.asm.Opcodes;
 /**
  * 
  * @version : 2013-9-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ASMTest implements Opcodes {
     public static void main(String[] args) throws Exception {
@@ -67,7 +67,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         super(api, cv);
     }
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        //¸ü¸ÄÀàÃû£¬²¢Ê¹ĞÂÀà¼Ì³ĞÔ­ÓĞµÄÀà¡£
+        //æ›´æ”¹ç±»åï¼Œå¹¶ä½¿æ–°ç±»ç»§æ‰¿åŸæœ‰çš„ç±»ã€‚
         super.visit(version, access, name + "_Tmp", signature, name, interfaces);
         {
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);

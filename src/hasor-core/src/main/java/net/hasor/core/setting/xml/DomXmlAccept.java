@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import org.more.xml.stream.TextEvent;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- * ½« Xml ÎÄ¼ş×ª»»Îª  XmlNode ½Ó¿ÚĞÎÊ½µÄ Dom Ê÷¡£
+ * å°† Xml æ–‡ä»¶è½¬æ¢ä¸º  XmlNode æ¥å£å½¢å¼çš„ Dom æ ‘ã€‚
  * @version : 2013-11-14
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class DomXmlAccept implements XmlAccept {
     private DefaultXmlNode currentXmlNode;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package net.hasor.core;
 /**
- * Òì²½ÏûÏ¢»Øµ÷½Ó¿Ú
+ * å¼‚æ­¥æ¶ˆæ¯å›è°ƒæ¥å£
  * @version : 2014-3-19
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface EventCallBackHook {
-    /**ÔÚÖ´ĞĞÊÂ¼ş¼àÌıÆ÷·¢ÉúÒì³£Ê±µ÷ÓÃ¸Ã·½·¨¡£*/
+    /**åœ¨æ‰§è¡Œäº‹ä»¶ç›‘å¬å™¨å‘ç”Ÿå¼‚å¸¸æ—¶è°ƒç”¨è¯¥æ–¹æ³•ã€‚*/
     public void handleException(String eventType, Object[] objects, Throwable e);
-    /**µ±Íê³ÉÒì²½ÊÂ¼ş´¦ÀíÊ±»Øµ÷¡£<p>
-     * ×¢Òâ£ºÎŞÂÛÔÚÒì²½ÊÂ¼ş·Ö·¢¹ı³ÌÖĞÊÇ·ñ·¢ÉúÒì³££¬¸Ã·½·¨¶¼»áÈçÆÚµÄ±»Ö´ĞĞ¡£*/
+    /**å½“å®Œæˆå¼‚æ­¥äº‹ä»¶å¤„ç†æ—¶å›è°ƒã€‚<p>
+     * æ³¨æ„ï¼šæ— è®ºåœ¨å¼‚æ­¥äº‹ä»¶åˆ†å‘è¿‡ç¨‹ä¸­æ˜¯å¦å‘ç”Ÿå¼‚å¸¸ï¼Œè¯¥æ–¹æ³•éƒ½ä¼šå¦‚æœŸçš„è¢«æ‰§è¡Œã€‚*/
     public void handleComplete(String eventType, Object[] objects);
 }

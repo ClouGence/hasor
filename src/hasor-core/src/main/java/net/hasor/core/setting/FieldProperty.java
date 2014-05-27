@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package net.hasor.core.setting;
 /**
- * ¸Ã½Ó¿Ú±íÊ¾Ò»¸ö×Ô¶¨ÒåÊôĞÔ¶ÔÏó¡£
+ * è¯¥æ¥å£è¡¨ç¤ºä¸€ä¸ªè‡ªå®šä¹‰å±æ€§å¯¹è±¡ã€‚
  * @version : 2011-9-30
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface FieldProperty {
-    /** ¶ÁÈ¡ÊôĞÔ*/
+    /** è¯»å–å±æ€§*/
     public <T> T getValue(Class<T> toType, T defaultValue);
 }

@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,20 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.quick.anno.AnnoModule;
 /**
- * Ñ­»·ÒÀÀµ¼ì²éÑİÊ¾£¬ÒÀÀµ¹ØÏµ£º
+ * å¾ªç¯ä¾èµ–æ£€æŸ¥æ¼”ç¤ºï¼Œä¾èµ–å…³ç³»ï¼š
  * Mode1
  *    Mode2
  *       Mode3
  *          Mode4
  *             Mode1
  * @version : 2013-7-27
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @AnnoModule()
 public class Mode3 implements Module {
     public void init(ApiBinder apiBinder) {
-        /*Ç¿ÒÀÀµ£¬µ±Ç°Ä£¿éµÄÆô¶¯±ØĞëÒÀ¿¿Ä¿±êÄ£¿é*/
-        apiBinder.configModule().forced(Mode4.class);//Ç¿ÒÀÀµ£¬Ä£¿é4.
+        /*å¼ºä¾èµ–ï¼Œå½“å‰æ¨¡å—çš„å¯åŠ¨å¿…é¡»ä¾é ç›®æ ‡æ¨¡å—*/
+        apiBinder.configModule().forced(Mode4.class);//å¼ºä¾èµ–ï¼Œæ¨¡å—4.
     }
     public void start(AppContext appContext) {
         System.out.println("Mode3 start!");

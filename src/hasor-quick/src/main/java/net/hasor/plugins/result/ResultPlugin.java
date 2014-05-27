@@ -29,17 +29,17 @@ import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
  * F
  * @version : 2013-9-26
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class ResultPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> resultDefineSet = apiBinder.findClass(ResultDefine.class);
         if (resultDefineSet == null)
             return;
-        //2.×¢²á·şÎñ
+        //2.æ³¨å†ŒæœåŠ¡
         for (Class<?> resultDefineType : resultDefineSet) {
             if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
                 Hasor.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
@@ -52,14 +52,14 @@ public class ResultPlugin extends AbstractWebHasorPlugin {
             defineMap.put(resultType, defineType);
         }
         {
-            /*ËùÓĞ¼Ì³Ğ AbstractController ²¢ÇÒ±ê¼ÇÁË @Controller ×¢½âµÄÀà¶¼ÊÇ¿ØÖÆÆ÷*/
+            /*æ‰€æœ‰ç»§æ‰¿ AbstractController å¹¶ä¸”æ ‡è®°äº† @Controller æ³¨è§£çš„ç±»éƒ½æ˜¯æ§åˆ¶å™¨*/
             Matcher<Class<?>> matcherController = AopMatchers.subClassesOf(AbstractController.class);
             matcherController = AopMatchers.createDevice(matcherController).and(AopMatchers.annotatedWithClass(Controller.class));
             ResultCaller_Controller caller_1 = new ResultCaller_Controller(apiBinder, defineMap);
             apiBinder.bindInterceptor(matcherController, AopMatchers.anyMethod(), caller_1);
         }
         {
-            /*ËùÓĞ±ê¼ÇÁË @RestfulService ×¢½âµÄÀà¶¼ÊÇRestful·şÎñ*/
+            /*æ‰€æœ‰æ ‡è®°äº† @RestfulService æ³¨è§£çš„ç±»éƒ½æ˜¯RestfulæœåŠ¡*/
             ResultCaller_Restful caller_2 = new ResultCaller_Restful(apiBinder, defineMap);
             apiBinder.bindInterceptor(AopMatchers.annotatedWithClass(RestfulService.class), AopMatchers.anyMethod(), caller_2);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 /**
- * ºÏ²¢Á½¸öÍ¬ÀàĞÍ¶ÔÏóµÄ¹¤¾ßÀà¡£
+ * åˆå¹¶ä¸¤ä¸ªåŒç±»å‹å¯¹è±¡çš„å·¥å…·ç±»ã€‚
  * @version : 2012-2-10
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class MergeUtils {
-    /**ºÏ²¢Á½¸öµü´úÆ÷*/
+    /**åˆå¹¶ä¸¤ä¸ªè¿­ä»£å™¨*/
     public static <T> Enumeration<T> mergeEnumeration(final Enumeration<T> enum1, final Enumeration<T> enum2) {
         final Enumeration<T> i1 = (enum1 != null) ? enum1 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
         final Enumeration<T> i2 = (enum2 != null) ? enum2 : Iterators.asEnumeration(new ArrayList<T>(0).iterator());
@@ -43,7 +43,7 @@ public abstract class MergeUtils {
             }
         };
     };
-    /**ºÏ²¢Á½¸öµü´úÆ÷*/
+    /**åˆå¹¶ä¸¤ä¸ªè¿­ä»£å™¨*/
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
         final Iterator<T> i1 = (iterator1 != null) ? iterator1 : new ArrayList<T>(0).iterator();
         final Iterator<T> i2 = (iterator2 != null) ? iterator2 : new ArrayList<T>(0).iterator();
@@ -62,7 +62,7 @@ public abstract class MergeUtils {
             }
         };
     };
-    /**ºÏ²¢Á½¸ö{@link List}£¬ÅĞ¶ÏÒÀ¾İÀ´Ô´ÓÚequals·½·¨¡£*/
+    /**åˆå¹¶ä¸¤ä¸ª{@link List}ï¼Œåˆ¤æ–­ä¾æ®æ¥æºäºequalsæ–¹æ³•ã€‚*/
     public static <T> List<T> mergeList(List<T> data1, List<T> data2) {
         return mergeList(data1, data2, new Comparator<T>() {
             public int compare(T o1, T o2) {
@@ -70,12 +70,12 @@ public abstract class MergeUtils {
             }
         });
     }
-    /**ºÏ²¢Á½¸ö{@link List}£¬Ê¹ÓÃ{@link Comparator}½Ó¿ÚÅĞ¶ÏÊÇ·ñÖØ¸´£¨·µ»Ø0±íÊ¾ÖØ¸´£©¡£*/
+    /**åˆå¹¶ä¸¤ä¸ª{@link List}ï¼Œä½¿ç”¨{@link Comparator}æ¥å£åˆ¤æ–­æ˜¯å¦é‡å¤ï¼ˆè¿”å›0è¡¨ç¤ºé‡å¤ï¼‰ã€‚*/
     public static <T> List<T> mergeList(List<T> data1, List<T> data2, Comparator<T> comparator) {
-        //1.×¼±¸Êı¾İ
+        //1.å‡†å¤‡æ•°æ®
         List<T> d1 = (data1 != null) ? data1 : new ArrayList<T>(0);
         List<T> d2 = (data2 != null) ? data2 : new ArrayList<T>(0);
-        //2.Ö´ĞĞArrayºÏ²¢&È¥ÖØ
+        //2.æ‰§è¡ŒArrayåˆå¹¶&å»é‡
         ArrayList<T> array = new ArrayList<T>(d1);
         for (T itemTarget : d2) {
             boolean has = false;
@@ -89,16 +89,16 @@ public abstract class MergeUtils {
         }
         return array;
     };
-    /**ºÏ²¢Á½¸ö{@link Map}£¬ºÏ²¢²»Í¬keyµÄmapÏàÍ¬keyµÄÖ»»á±£ÁôÒ»¸ö¡£*/
+    /**åˆå¹¶ä¸¤ä¸ª{@link Map}ï¼Œåˆå¹¶ä¸åŒkeyçš„mapç›¸åŒkeyçš„åªä¼šä¿ç•™ä¸€ä¸ªã€‚*/
     public static <K, V> Map<K, V> mergeMap(Map<K, V> dataMap1, Map<K, V> dataMap2) {
         return mergeMap(dataMap1, dataMap2, null);
     };
-    /**ºÏ²¢Á½¸ö{@link Map}£¬Ê¹ÓÃ{@link Comparator}½Ó¿ÚÅĞ¶ÏÏàÍ¬µÄkey±£ÁôÄÇ¸ö£¨½Ó¿Ú·µ»ØÖµ´óÓÚ0Ê¹ÓÃo2¡¢Ğ¡ÓÚ0Ê¹ÓÃo1¡¢0Å×Æú³åÍ»ÊôĞÔ£©¡£*/
+    /**åˆå¹¶ä¸¤ä¸ª{@link Map}ï¼Œä½¿ç”¨{@link Comparator}æ¥å£åˆ¤æ–­ç›¸åŒçš„keyä¿ç•™é‚£ä¸ªï¼ˆæ¥å£è¿”å›å€¼å¤§äº0ä½¿ç”¨o2ã€å°äº0ä½¿ç”¨o1ã€0æŠ›å¼ƒå†²çªå±æ€§ï¼‰ã€‚*/
     public static <K, V> Map<K, V> mergeMap(Map<K, V> dataMap1, Map<K, V> dataMap2, Comparator<Map.Entry<K, V>> comparator) {
-        //1.×¼±¸Êı¾İ
+        //1.å‡†å¤‡æ•°æ®
         Map<K, V> m1 = (dataMap1 != null) ? dataMap1 : new HashMap<K, V>();
         Map<K, V> m2 = (dataMap2 != null) ? dataMap2 : new HashMap<K, V>();
-        //2.Ö´ĞĞMapºÏ²¢&È¥ÖØ
+        //2.æ‰§è¡ŒMapåˆå¹¶&å»é‡
         HashMap<K, V> hashMap = new HashMap<K, V>(m1);
         for (Map.Entry<K, V> e_m2 : m2.entrySet()) {
             V target = e_m2.getValue();
@@ -107,11 +107,11 @@ public abstract class MergeUtils {
                 if (e_m1.getKey().equals(e_m2.getKey()) == true) {
                     int res = comparator.compare(e_m1, e_m2);
                     if (res == 0)
-                        remove = true;//µÈÓÚ0
+                        remove = true;//ç­‰äº0
                     else if (res < 0)
-                        target = e_m1.getValue();//Ğ¡ÓÚ0
+                        target = e_m1.getValue();//å°äº0
                     else
-                        target = e_m2.getValue(); //´óÓÚ0
+                        target = e_m2.getValue(); //å¤§äº0
                 }
             if (remove == true)
                 hashMap.remove(e_m2.getKey());

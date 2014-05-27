@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ import java.util.Iterator;
 /**
  * 
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public final class Iterators {
-    /**ÓÃÓÚµü´úÆ÷ÀàĞÍ×ª»»*/
+    /**ç”¨äºè¿­ä»£å™¨ç±»å‹è½¬æ¢*/
     public static interface Converter<T, O> {
         public O converter(T target);
     }
-    /**µü´úÆ÷ÀàĞÍ×ª»»*/
+    /**è¿­ä»£å™¨ç±»å‹è½¬æ¢*/
     public static <T, O> Iterator<O> converIterator(final Iterator<T> oriIterator, final Converter<T, O> converter) {
         return new Iterator<O>() {
             public void remove() {

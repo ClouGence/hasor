@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,32 +22,32 @@ import javax.crypto.spec.DESKeySpec;
 import net.hasor.security.Digest;
 import org.more.util.CommonCodeUtils.Base64;
 /**
- * DES¼ÓÃÜ¡£
+ * DESåŠ å¯†ã€‚
  * @version : 2013-4-24
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public final class DESDigest implements Digest {
     @Override
     public String encrypt(String strValue, String generateKey) throws Throwable {
-        SecureRandom sr = new SecureRandom(); //DESËã·¨ÒªÇóÓĞÒ»¸ö¿ÉĞÅÈÎµÄËæ»úÊıÔ´
-        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // ´ÓÔ­Ê¼ÃÜ³×Êı¾İ´´½¨DESKeySpec¶ÔÏó
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // ´´½¨Ò»¸öÃÜ³×¹¤³§£¬È»ºóÓÃËü°ÑDESKeySpec×ª»»³É,Ò»¸öSecretKey¶ÔÏó
-        SecretKey securekey = keyFactory.generateSecret(dks); // Cipher¶ÔÏóÊµ¼ÊÍê³É¼ÓÃÜ²Ù×÷
-        Cipher cipher = Cipher.getInstance("DES"); // ÓÃÃÜ³×³õÊ¼»¯Cipher¶ÔÏó
-        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);// ÏÖÔÚ£¬»ñÈ¡Êı¾İ²¢¼ÓÃÜ
-        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+        SecureRandom sr = new SecureRandom(); //DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº
+        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // ä»åŸå§‹å¯†åŒ™æ•°æ®åˆ›å»ºDESKeySpecå¯¹è±¡
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // åˆ›å»ºä¸€ä¸ªå¯†åŒ™å·¥å‚ï¼Œç„¶åç”¨å®ƒæŠŠDESKeySpecè½¬æ¢æˆ,ä¸€ä¸ªSecretKeyå¯¹è±¡
+        SecretKey securekey = keyFactory.generateSecret(dks); // Cipherå¯¹è±¡å®é™…å®ŒæˆåŠ å¯†æ“ä½œ
+        Cipher cipher = Cipher.getInstance("DES"); // ç”¨å¯†åŒ™åˆå§‹åŒ–Cipherå¯¹è±¡
+        cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);// ç°åœ¨ï¼Œè·å–æ•°æ®å¹¶åŠ å¯†
+        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
         return Base64.base64EncodeFoArray(bytesData);
     };
     @Override
     public String decrypt(String strValue, String generateKey) throws Throwable {
         byte[] bytesData = Base64.base64DecodeToArray(strValue);
-        SecureRandom sr = new SecureRandom(); //DESËã·¨ÒªÇóÓĞÒ»¸ö¿ÉĞÅÈÎµÄËæ»úÊıÔ´
-        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // ´ÓÔ­Ê¼ÃÜ³×Êı¾İ´´½¨DESKeySpec¶ÔÏó
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // ´´½¨Ò»¸öÃÜ³×¹¤³§£¬È»ºóÓÃËü°ÑDESKeySpec×ª»»³É,Ò»¸öSecretKey¶ÔÏó
-        SecretKey securekey = keyFactory.generateSecret(dks); // Cipher¶ÔÏóÊµ¼ÊÍê³É¼ÓÃÜ²Ù×÷
-        Cipher cipher = Cipher.getInstance("DES"); // ÓÃÃÜ³×³õÊ¼»¯Cipher¶ÔÏó
-        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);// ÏÖÔÚ£¬»ñÈ¡Êı¾İ²¢¼ÓÃÜ
-        bytesData = cipher.doFinal(bytesData);// ÕıÊ½Ö´ĞĞ½âÃÜ²Ù×÷
+        SecureRandom sr = new SecureRandom(); //DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº
+        DESKeySpec dks = new DESKeySpec(generateKey.getBytes()); // ä»åŸå§‹å¯†åŒ™æ•°æ®åˆ›å»ºDESKeySpecå¯¹è±¡
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES"); // åˆ›å»ºä¸€ä¸ªå¯†åŒ™å·¥å‚ï¼Œç„¶åç”¨å®ƒæŠŠDESKeySpecè½¬æ¢æˆ,ä¸€ä¸ªSecretKeyå¯¹è±¡
+        SecretKey securekey = keyFactory.generateSecret(dks); // Cipherå¯¹è±¡å®é™…å®ŒæˆåŠ å¯†æ“ä½œ
+        Cipher cipher = Cipher.getInstance("DES"); // ç”¨å¯†åŒ™åˆå§‹åŒ–Cipherå¯¹è±¡
+        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);// ç°åœ¨ï¼Œè·å–æ•°æ®å¹¶åŠ å¯†
+        bytesData = cipher.doFinal(bytesData);// æ­£å¼æ‰§è¡Œè§£å¯†æ“ä½œ
         return new String(bytesData, "utf-8");
     }
 }

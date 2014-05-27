@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import net.hasor.plugins.resource.ResourceLoader;
 /**
- * ÓÃÓÚ´´½¨Ò»¸ö¿ÉÒÔ´ÓclasspathÖĞ»ñÈ¡×ÊÔ´µÄResourceLoader¡£
+ * ç”¨äºåˆ›å»ºä¸€ä¸ªå¯ä»¥ä»classpathä¸­è·å–èµ„æºçš„ResourceLoaderã€‚
  * @version : 2013-6-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ZipResourceLoader implements ResourceLoader {
     private File        zipFile     = null;
@@ -39,7 +39,7 @@ public class ZipResourceLoader implements ResourceLoader {
             this.zipEntrySet.add(entEnum.nextElement().getName());
         zipFileObj.close();
     }
-    /**»ñÈ¡×ÊÔ´»ñÈ¡µÄ°üÂ·¾¶¡£*/
+    /**è·å–èµ„æºè·å–çš„åŒ…è·¯å¾„ã€‚*/
     public String getZipFile() {
         return this.zipFile.getAbsolutePath();
     }

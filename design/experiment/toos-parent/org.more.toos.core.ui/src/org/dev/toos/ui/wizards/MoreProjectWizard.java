@@ -4,19 +4,19 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 /**
- * ´´½¨ÏîÄ¿JavaProjectWizard
+ * åˆ›å»ºé¡¹ç›®JavaProjectWizard
  * 
  * @version : 2013-3-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class MoreProjectWizard extends Wizard implements INewWizard {
-    // protected MavenProjectWizardLocationPage locationPage; /*Ñ¡ÔñÎ»ÖÃ*/
-    // protected MavenProjectWizardArchetypePage archetypePage; /*Ä£°åÑ¡Ôñ*/
-    // protected MavenProjectWizardArtifactPage artifactPage; /*ÏîÄ¿ÅäÖÃ*/
+    // protected MavenProjectWizardLocationPage locationPage; /*é€‰æ‹©ä½ç½®*/
+    // protected MavenProjectWizardArchetypePage archetypePage; /*æ¨¡æ¿é€‰æ‹©*/
+    // protected MavenProjectWizardArtifactPage artifactPage; /*é¡¹ç›®é…ç½®*/
     // protected MavenProjectWizardArchetypeParametersPage parametersPage;
-    // /*²ÎÊıÅäÖÃ*/
-    protected DependentWizardPage      configProjectPage           = null; /* noeÏîÄ¿ÅäÖÃ */
-    protected SettingProjectWizardPage settingNewProjectWizardPage = null; /* noeÏîÄ¿ÅäÖÃ */
+    // /*å‚æ•°é…ç½®*/
+    protected DependentWizardPage      configProjectPage           = null; /* noeé¡¹ç›®é…ç½® */
+    protected SettingProjectWizardPage settingNewProjectWizardPage = null; /* noeé¡¹ç›®é…ç½® */
     //
     //
     public MoreProjectWizard() {
@@ -30,14 +30,14 @@ public class MoreProjectWizard extends Wizard implements INewWizard {
     public void addPages() {
         // MavenPlugin.getProjectConfigurationManager().createSimpleProject(arg0,
         // arg1, arg2, arg3, arg4, arg5);
-        /* ÔÚ×îºóÑ¡ÔñÒÀÀµ¿â */
+        /* åœ¨æœ€åé€‰æ‹©ä¾èµ–åº“ */
         if (this.configProjectPage == null)
             this.configProjectPage = new DependentWizardPage();
         if (this.settingNewProjectWizardPage == null)
             this.settingNewProjectWizardPage = new SettingProjectWizardPage();
         addPage(this.configProjectPage);
         addPage(this.settingNewProjectWizardPage);
-        /* ÖØĞÂÉèÖÃMavenÏîÄ¿´´½¨±êÌâĞÅÏ¢¡£ */
+        /* é‡æ–°è®¾ç½®Mavené¡¹ç›®åˆ›å»ºæ ‡é¢˜ä¿¡æ¯ã€‚ */
         // this.locationPage.setTitle("Noe Project Maven Settings.");
         // this.archetypePage.setTitle("Noe Project Maven Settings.");
         // this.parametersPage.setTitle("Noe Project Maven Settings.");

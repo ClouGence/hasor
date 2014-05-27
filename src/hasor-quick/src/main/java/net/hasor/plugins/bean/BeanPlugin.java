@@ -23,9 +23,9 @@ import net.hasor.quick.plugin.Plugin;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
- * Ìá¹© <code>@Bean</code>×¢½â ¹¦ÄÜÖ§³Ö¡£
+ * æä¾› <code>@Bean</code>æ³¨è§£ åŠŸèƒ½æ”¯æŒã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class BeanPlugin extends AbstractHasorPlugin {

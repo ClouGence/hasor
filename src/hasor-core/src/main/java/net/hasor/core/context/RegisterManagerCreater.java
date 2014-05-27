@@ -18,7 +18,7 @@ import net.hasor.core.Environment;
 /**
  * 
  * @version : 2014-5-10
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public interface RegisterManagerCreater {
     public RegisterManager create(Environment env);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,19 @@ import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.inputs.TextAreaInputRender;
 /**
- * <b>×÷ÓÃ</b>£ºText¶àĞĞÊäÈë¿ò¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_TextArea
- * <br><b>±êÇ©</b>£º@ui_TextArea
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link TextAreaInputRender}
+ * <b>ä½œç”¨</b>ï¼šTextå¤šè¡Œè¾“å…¥æ¡†ã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_TextArea
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_TextArea
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link TextAreaInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_TextArea", renderType = TextAreaInputRender.class)
 public class TextArea extends UIInput {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**¸ÃÖµÊÇµ±valueÃ»ÓĞÉèÖÃÖµÊ±»áÓÃ¸ÃÖµÌæ´úÏÔÊ¾£¨RW£©*/
+        /**è¯¥å€¼æ˜¯å½“valueæ²¡æœ‰è®¾ç½®å€¼æ—¶ä¼šç”¨è¯¥å€¼æ›¿ä»£æ˜¾ç¤ºï¼ˆRWï¼‰*/
         tipTitle,
     }
     @Override

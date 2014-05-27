@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package net.hasor.core;
 import java.util.EventListener;
 /**
- * ÅäÖÃÎÄ¼şÖØÔØÊÂ¼ş¼àÌıÆ÷
+ * é…ç½®æ–‡ä»¶é‡è½½äº‹ä»¶ç›‘å¬å™¨
  * @version : 2013-4-18
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface SettingsListener extends EventListener {
-    /**µ±½ÓÊÕµ½ÅäÖÃÎÄ¼şÖØÔØÊÂ¼şÊ±´¥·¢¸Ã·½·¨¡£*/
+    /**å½“æ¥æ”¶åˆ°é…ç½®æ–‡ä»¶é‡è½½äº‹ä»¶æ—¶è§¦å‘è¯¥æ–¹æ³•ã€‚*/
     public void reload(Settings newConfig);
 }

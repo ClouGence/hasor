@@ -22,36 +22,36 @@ import net.hasor.core.Hasor;
 import net.hasor.core.SettingsListener;
 import org.more.util.map.DecSequenceMap;
 /***
- * »ù±¾Ö§³Ö¡£
+ * åŸºæœ¬æ”¯æŒã€‚
  * @version : 2013-9-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractBaseSettings extends AbstractSettings {
     private Map<String, Map<String, Object>> namespaceSettingsMap = new HashMap<String, Map<String, Object>>();
     private DecSequenceMap<String, Object>   mergeSettingsMap     = new DecSequenceMap<String, Object>();
     //
-    /**·Ö±ğ±£´æÃ¿¸öÃüÃû¿Õ¼äÏÂµÄÅäÖÃĞÅÏ¢Map*/
+    /**åˆ†åˆ«ä¿å­˜æ¯ä¸ªå‘½åç©ºé—´ä¸‹çš„é…ç½®ä¿¡æ¯Map*/
     protected final Map<String, Map<String, Object>> getNamespaceSettingMap() {
         return namespaceSettingsMap;
     }
     protected final DecSequenceMap<String, Object> getSettingsMap() {
         return mergeSettingsMap;
     }
-    /**Çå¿ÕÒÑ¾­×°ÔØµÄËùÓĞÊı¾İ¡£*/
+    /**æ¸…ç©ºå·²ç»è£…è½½çš„æ‰€æœ‰æ•°æ®ã€‚*/
     protected void cleanData() {
         this.getNamespaceSettingMap().clear();
         this.getSettingsMap().removeAllMap();
     }
     //
-    /**»ñÈ¡Ö¸ÔÚÄ³¸öÌØ¶¨ÃüÃû¿Õ¼äÏÂµÄSettings½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æŒ‡åœ¨æŸä¸ªç‰¹å®šå‘½åç©ºé—´ä¸‹çš„Settingsæ¥å£å¯¹è±¡ã€‚*/
     public String[] getSettingArray() {
         Set<String> nsSet = this.getNamespaceSettingMap().keySet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
-    /**ÉèÖÃ²ÎÊı¡£*/
+    /**è®¾ç½®å‚æ•°ã€‚*/
     public void setSettings(String key, Object value, String namespace) {
-        Map<String, Map<String, Object>> nsMap = this.getNamespaceSettingMap();//ËùÓĞÃüÃû¿Õ¼äµÄÊı¾İ
-        Map<String, Object> atMap = nsMap.get(namespace);//Òª put µÄÃüÃû¿Õ¼äÊı¾İ
+        Map<String, Map<String, Object>> nsMap = this.getNamespaceSettingMap();//æ‰€æœ‰å‘½åç©ºé—´çš„æ•°æ®
+        Map<String, Object> atMap = nsMap.get(namespace);//è¦ put çš„å‘½åç©ºé—´æ•°æ®
         //
         if (atMap == null) {
             atMap = new HashMap<String, Object>();
@@ -62,7 +62,7 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
         atMap.put(putKey, value);
     }
     //
-    /**»ñÈ¡Ö¸ÔÚÄ³¸öÌØ¶¨ÃüÃû¿Õ¼äÏÂµÄSettings½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æŒ‡åœ¨æŸä¸ªç‰¹å®šå‘½åç©ºé—´ä¸‹çš„Settingsæ¥å£å¯¹è±¡ã€‚*/
     public final AbstractSettings getSettings(final String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);

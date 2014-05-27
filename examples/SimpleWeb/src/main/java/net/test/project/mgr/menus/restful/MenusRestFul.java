@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,19 @@ import net.test.project.mgr.menus.entity.MenuBean;
 import net.test.project.mgr.menus.services.MenuServices;
 import com.google.inject.Inject;
 /**
- * ²Ëµ¥µ¼º½ÊÇÒÔÃÅÃæÄ£Ê½·½Ê½ÊµÏÖ
+ * èœå•å¯¼èˆªæ˜¯ä»¥é—¨é¢æ¨¡å¼æ–¹å¼å®ç°
  * @version : 2013-12-23
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @RestfulService
 public class MenusRestFul {
     @Inject
     private MenuServices menuServices;
-    /*Ê¹ÓÃÖØ¶¨Ïò×ª·¢*/
+    /*ä½¿ç”¨é‡å®šå‘è½¬å‘*/
     @Redirect
-    /*Ó³Éä restful ·şÎñµØÖ·£¬²¢¶¨ÒåÒ»¸ö²ÎÊı*/
+    /*æ˜ å°„ restful æœåŠ¡åœ°å€ï¼Œå¹¶å®šä¹‰ä¸€ä¸ªå‚æ•°*/
     @Path("/mgr/menus/nav/{menuCode}")
-    /*È¡µÃ²¢²ÎÊı£¬²¢Ìø×ªµ½¶ÔÓ¦µÄÒ³Ãæ*/
+    /*å–å¾—å¹¶å‚æ•°ï¼Œå¹¶è·³è½¬åˆ°å¯¹åº”çš„é¡µé¢*/
     public String menuList(@PathParam("menuCode") String menuCode) {
         MenuBean menuBean = menuServices.findMenuByCode(menuCode);
         return (menuBean == null) ? "/mgr" : menuBean.getUrl();

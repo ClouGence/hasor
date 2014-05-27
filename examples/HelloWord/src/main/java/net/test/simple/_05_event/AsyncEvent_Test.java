@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@ import java.net.URISyntaxException;
 import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
- * Òì²½²½ÊÂ¼þÑÝÊ¾
+ * å¼‚æ­¥æ­¥äº‹ä»¶æ¼”ç¤º
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class AsyncEvent_Test {
     private static String config = "net/test/simple/_05_event/event-config.xml";
     public static String  Type_A = "Event_A";
     public static String  Type_B = "Event_B";
     //
-    /*²âÊÔ£¬Òì²½ÊÂ¼þ*/
+    /*æµ‹è¯•ï¼Œå¼‚æ­¥äº‹ä»¶*/
     @Test
     public void test_AsyncEvent() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_AsyncEvent<<--");
@@ -36,10 +36,10 @@ public class AsyncEvent_Test {
         appContext.start();
         //
         for (int i = 0; i < 10; i++)
-            /*·¢ËÍÒì²½ÊÂ¼þ*/
+            /*å‘é€å¼‚æ­¥äº‹ä»¶*/
             appContext.fireAsyncEvent(Type_B, i);
         System.out.println("after Event do sth...");
-        /*ÓÉÓÚevent-config.xmlÖÐÅäÖÃÁË 3 ¸öÊÂ¼þÏß³Ì³Ø£¬Òò´Ë³¬¹ý 3 ¸öÒÔÉÏµÄÊÂ¼þ½«»áÅÅ¶Ó´¦Àí¡£*/
+        /*ç”±äºŽevent-config.xmlä¸­é…ç½®äº† 3 ä¸ªäº‹ä»¶çº¿ç¨‹æ± ï¼Œå› æ­¤è¶…è¿‡ 3 ä¸ªä»¥ä¸Šçš„äº‹ä»¶å°†ä¼šæŽ’é˜Ÿå¤„ç†ã€‚*/
         System.in.read();
     }
 }

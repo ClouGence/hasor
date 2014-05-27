@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import org.more.webui.render.Render;
 /**
  * 
  * @version : 2012-10-30
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface UICom {
-    /**ÉèÖÃ¸Ã×é½¨µÄ±êÇ©Ãû*/
+    /**è®¾ç½®è¯¥ç»„å»ºçš„æ ‡ç­¾å*/
     public String tagName();
-    /**äÖÈ¾Æ÷*/
+    /**æ¸²æŸ“å™¨*/
     public Class<? extends Render> renderType() default NoRender.class;
 }

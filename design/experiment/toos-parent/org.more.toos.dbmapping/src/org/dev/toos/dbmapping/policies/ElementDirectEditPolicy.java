@@ -8,19 +8,19 @@ import org.eclipse.gef.requests.DirectEditRequest;
 /**
  * 
  * @version : 2013-3-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ElementDirectEditPolicy extends DirectEditPolicy {
     @Override
     protected Command getDirectEditCommand(DirectEditRequest request) {
-        /**¸üÃû*/
+        /**æ›´å*/
         Element element = (Element) getHost().getModel();
         String newName = (String) request.getCellEditor().getValue();
         return new RenameElement(element, newName);
     }
     @Override
     protected void showCurrentEditValue(DirectEditRequest request) {
-        //ÏòFigureÉèÖÃÏÔÊ¾Öµ(ÆäÊµ¿ÉÒÔ²»ÓÃ£¬Ô­ÒòÊÇFigure´´½¨Ê±ºòÒÑ¾­ÉèÖÃÁËÏÔÊ¾Öµ)
+        //å‘Figureè®¾ç½®æ˜¾ç¤ºå€¼(å…¶å®å¯ä»¥ä¸ç”¨ï¼ŒåŸå› æ˜¯Figureåˆ›å»ºæ—¶å€™å·²ç»è®¾ç½®äº†æ˜¾ç¤ºå€¼)
         String value = (String) request.getCellEditor().getValue();
         ((ElementFigure) getHostFigure()).setName(value);
     }

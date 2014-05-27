@@ -20,7 +20,7 @@ import net.hasor.core.XmlNode;
 /**
  * 
  * @version : 2013-10-8
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 public interface DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable;

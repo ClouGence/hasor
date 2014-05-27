@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,99 +27,99 @@ import org.more.classcode.objects.DefaultDelegateStrategy;
 import org.more.classcode.objects.DefaultMethodStrategy;
 import org.more.classcode.objects.DefaultPropertyStrategy;
 /**
-* classcode v2.0ÒıÇæ¡£ĞÂÒıÇæÔö¼ÓÁËdebugÄ£Ê½£¬ÔÚdebugÄ£Ê½ÏÂ{@link ClassEngine#builderClass()}·½·¨ÔÚ×°ÔØÉú³ÉµÄĞÂÀà Ê±²»»áÅ×³ö¡£
-* Èç¹ûÃ»ÓĞÖ¸¶¨Àà×°ÔØÒıÇæ»áÊ¹ÓÃThread.currentThread().getContextClassLoader()·½·¨·µ»ØµÄÀà×°ÔØÆ÷À´×°ÔØÀà¡£
+* classcode v2.0å¼•æ“ã€‚æ–°å¼•æ“å¢åŠ äº†debugæ¨¡å¼ï¼Œåœ¨debugæ¨¡å¼ä¸‹{@link ClassEngine#builderClass()}æ–¹æ³•åœ¨è£…è½½ç”Ÿæˆçš„æ–°ç±» æ—¶ä¸ä¼šæŠ›å‡ºã€‚
+* å¦‚æœæ²¡æœ‰æŒ‡å®šç±»è£…è½½å¼•æ“ä¼šä½¿ç”¨Thread.currentThread().getContextClassLoader()æ–¹æ³•è¿”å›çš„ç±»è£…è½½å™¨æ¥è£…è½½ç±»ã€‚
 * @version 2010-9-5
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public class ClassEngine {
-    /**Ä¬ÈÏ³¬Ààjava.lang.Object¡£*/
+    /**é»˜è®¤è¶…ç±»java.lang.Objectã€‚*/
     public static final Class<?>             DefaultSuperClass        = java.lang.Object.class;
-    /**Ä¬ÈÏÉú³ÉÄ£Ê½{@link BuilderMode#Super}¡£*/
+    /**é»˜è®¤ç”Ÿæˆæ¨¡å¼{@link BuilderMode#Super}ã€‚*/
     public static final BuilderMode          DefaultBuilderMode       = BuilderMode.Super;
-    /**Ä¬ÈÏÀàÃû²ßÂÔ{@link DefaultClassNameStrategy}¡£*/
+    /**é»˜è®¤ç±»åç­–ç•¥{@link DefaultClassNameStrategy}ã€‚*/
     public static final ClassNameStrategy    DefaultClassNameStrategy = new DefaultClassNameStrategy();
-    /**Ä¬ÈÏÎ¯ÍĞ²ßÂÔ{@link DefaultDelegateStrategy}*/
+    /**é»˜è®¤å§”æ‰˜ç­–ç•¥{@link DefaultDelegateStrategy}*/
     public static final DelegateStrategy     DefaultDelegateStrategy  = new DefaultDelegateStrategy();
-    /**Ä¬ÈÏµÄAop²ßÂÔ{@link DefaultAopStrategy}¡£*/
+    /**é»˜è®¤çš„Aopç­–ç•¥{@link DefaultAopStrategy}ã€‚*/
     public static final AopStrategy          DefaultAopStrategy       = new DefaultAopStrategy();
-    /**Ä¬ÈÏ·½·¨²ßÂÔ{@link DefaultMethodStrategy}£¬¸ºÔğ·½·¨µÄ¹ÜÀí¡£*/
+    /**é»˜è®¤æ–¹æ³•ç­–ç•¥{@link DefaultMethodStrategy}ï¼Œè´Ÿè´£æ–¹æ³•çš„ç®¡ç†ã€‚*/
     public static final MethodStrategy       DefaultMethodStrategy    = new DefaultMethodStrategy();
-    /**Ä¬ÈÏÊôĞÔ²ßÂÔ{@link DefaultPropertyStrategy}¡£*/
+    /**é»˜è®¤å±æ€§ç­–ç•¥{@link DefaultPropertyStrategy}ã€‚*/
     public static final PropertyStrategy     DefaultPropertyStrategy  = new DefaultPropertyStrategy();
     //
-    //²ßÂÔĞÅÏ¢
-    private ClassNameStrategy                classNameStrategy        = DefaultClassNameStrategy;      //ÀàÃû²ßÂÔ£¬¸ºÔğÉú³ÉÀàÃûµÄ¹ÜÀí¡£
-    private DelegateStrategy                 delegateStrategy         = DefaultDelegateStrategy;       //Î¯ÍĞ²ßÂÔ£¬¸ºÔğÎ¯ÍĞ½Ó¿ÚÊµÏÖµÄ¹ÜÀí¡£
-    private AopStrategy                      aopStrategy              = DefaultAopStrategy;            //AOP²ßÂÔ£¬¸ºÔğAop·½·¨µÄ¹ÜÀí¡£
-    private PropertyStrategy                 propertyStrategy         = DefaultPropertyStrategy;       //ÊôĞÔ²ßÂÔ¡£
-    private MethodStrategy                   methodStrategy           = DefaultMethodStrategy;         //·½·¨²ßÂÔ£¬¸ºÔğ·½·¨µÄ¹ÜÀí¡£
-    //ĞÂÀàĞÅÏ¢
-    private String                           className                = null;                          //ĞÂÀàÃû³Æ,ÓÉ¹¹Ôì·½·¨³õÊ¼»¯¡£
-    private Class<?>                         superClass               = null;                          //³¬ÀàÀàĞÍ,ÓÉ¹¹Ôì·½·¨³õÊ¼»¯¡£
-    private BuilderMode                      builderMode              = DefaultBuilderMode;            //Éú³ÉÄ£Ê½
-    private Map<Class<?>, MethodDelegate>    addDelegateMap           = null;                          //Î¯ÍĞ±í
-    private Map<String, Class<?>>            addPropertyMap           = null;                          //ĞÂÊôĞÔ±í
-    private Map<String, PropertyDelegate<?>> addPropertyDelMap        = null;                          //ĞÂÎ¯ÍĞÊôĞÔ±í
-    //À¹½ØÆ÷£¬ÏûÏ¢Æ÷
-    private ArrayList<AopInvokeFilter>       aopFilters               = null;                          //aopÀ¹½ØÆ÷±í
-    private ArrayList<AopBeforeListener>     aopBeforeListeners       = null;                          //¿ªÊ¼µ÷ÓÃ£¬ÏûÏ¢¼àÌıÆ÷
-    private ArrayList<AopReturningListener>  aopReturningListeners    = null;                          //µ÷ÓÃ·µ»Ø£¬ÏûÏ¢¼àÌıÆ÷
-    private ArrayList<AopThrowingListener>   aopThrowingListeners     = null;                          //Å×³öÒì³££¬ÏûÏ¢¼àÌıÆ÷
-    //Éú³ÉµÄ
-    private Class<?>                         newClass                 = null;                          //ĞÂÀà
-    private byte[]                           newClassBytes            = null;                          //ĞÂÀàµÄ×Ö½ÚÂë¡£
+    //ç­–ç•¥ä¿¡æ¯
+    private ClassNameStrategy                classNameStrategy        = DefaultClassNameStrategy;      //ç±»åç­–ç•¥ï¼Œè´Ÿè´£ç”Ÿæˆç±»åçš„ç®¡ç†ã€‚
+    private DelegateStrategy                 delegateStrategy         = DefaultDelegateStrategy;       //å§”æ‰˜ç­–ç•¥ï¼Œè´Ÿè´£å§”æ‰˜æ¥å£å®ç°çš„ç®¡ç†ã€‚
+    private AopStrategy                      aopStrategy              = DefaultAopStrategy;            //AOPç­–ç•¥ï¼Œè´Ÿè´£Aopæ–¹æ³•çš„ç®¡ç†ã€‚
+    private PropertyStrategy                 propertyStrategy         = DefaultPropertyStrategy;       //å±æ€§ç­–ç•¥ã€‚
+    private MethodStrategy                   methodStrategy           = DefaultMethodStrategy;         //æ–¹æ³•ç­–ç•¥ï¼Œè´Ÿè´£æ–¹æ³•çš„ç®¡ç†ã€‚
+    //æ–°ç±»ä¿¡æ¯
+    private String                           className                = null;                          //æ–°ç±»åç§°,ç”±æ„é€ æ–¹æ³•åˆå§‹åŒ–ã€‚
+    private Class<?>                         superClass               = null;                          //è¶…ç±»ç±»å‹,ç”±æ„é€ æ–¹æ³•åˆå§‹åŒ–ã€‚
+    private BuilderMode                      builderMode              = DefaultBuilderMode;            //ç”Ÿæˆæ¨¡å¼
+    private Map<Class<?>, MethodDelegate>    addDelegateMap           = null;                          //å§”æ‰˜è¡¨
+    private Map<String, Class<?>>            addPropertyMap           = null;                          //æ–°å±æ€§è¡¨
+    private Map<String, PropertyDelegate<?>> addPropertyDelMap        = null;                          //æ–°å§”æ‰˜å±æ€§è¡¨
+    //æ‹¦æˆªå™¨ï¼Œæ¶ˆæ¯å™¨
+    private ArrayList<AopInvokeFilter>       aopFilters               = null;                          //aopæ‹¦æˆªå™¨è¡¨
+    private ArrayList<AopBeforeListener>     aopBeforeListeners       = null;                          //å¼€å§‹è°ƒç”¨ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+    private ArrayList<AopReturningListener>  aopReturningListeners    = null;                          //è°ƒç”¨è¿”å›ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+    private ArrayList<AopThrowingListener>   aopThrowingListeners     = null;                          //æŠ›å‡ºå¼‚å¸¸ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+    //ç”Ÿæˆçš„
+    private Class<?>                         newClass                 = null;                          //æ–°ç±»
+    private byte[]                           newClassBytes            = null;                          //æ–°ç±»çš„å­—èŠ‚ç ã€‚
     private CreatedConfiguration             configuration            = null;
-    private RootClassLoader                  rootClassLoader          = null;                          //´¦ÀíÀ´×ÔÀàĞÂÀà×°ÔØÇëÇóµÄÀà×°ÔØÆ÷¡£
+    private RootClassLoader                  rootClassLoader          = null;                          //å¤„ç†æ¥è‡ªç±»æ–°ç±»è£…è½½è¯·æ±‚çš„ç±»è£…è½½å™¨ã€‚
     //==================================================================================Constructor
-    /** ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬Ä¬ÈÏÉú³ÉµÄÀàÊÇObjectµÄ×ÓÀà£¬ */
+    /** åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œé»˜è®¤ç”Ÿæˆçš„ç±»æ˜¯Objectçš„å­ç±»ï¼Œ */
     public ClassEngine() throws ClassNotFoundException {
         this(null, DefaultSuperClass, null);
     };
-    /** ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬Ä¬ÈÏÉú³ÉµÄÀàÊÇObjectµÄ×ÓÀà£¬ */
+    /** åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œé»˜è®¤ç”Ÿæˆçš„ç±»æ˜¯Objectçš„å­ç±»ï¼Œ */
     public ClassEngine(String className) throws ClassNotFoundException {
         this(className, DefaultSuperClass, null);
     };
     /**
-     * ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬¸Ã¹¹Ôì²ÎÊıÖ¸¶¨ÁËĞÂÀàÀàÃû¡¢ĞÂÀàµÄ»ùÀàÒÔÀà×°ÔØÆ÷¡£<br/>
-     * Àà×°ÔØµÄÉè¶¨»á×ñÑ­ÈçÏÂ¹æÔò£¬Èç¹ûparentLoader²ÎÊıÎª¿ÕÔò»áÊ¹ÓÃµ±Ç°Ïß³ÌµÄÀà×°ÔØÆ÷×÷ÎªÒıÇæÀà×°ÔØÆ÷µÄ¸¸Àà×°ÔØÆ÷¡£
-     * Èç¹ûÖ¸¶¨µÄÊÇ{@link RootClassLoader}ÀàĞÍ×°ÔØÆ÷£¬ÔòÒıÇæÖ±½ÓÊ¹ÓÃ¸ÃÀà×°ÔØÆ÷×÷ÎªÒıÇæµÄÀà×°ÔØÆ÷¡£Èç¹ûÖ¸¶¨µÄÊÇÒ»¸ö
-     * {@link ClassLoader}ÀàĞÍ²ÎÊıÔòÒıÇæµÄÀà×°ÔØÆ÷»áÊ¹ÓÃÕâ¸öÀà×°ÔØÆ÷×÷ÎªÆä¸¸Àà×°ÔØÆ÷¡£     * @param className ĞÂÀàµÄÀàÃû£¬Èç¹ûÀàÃûÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏÉú³É²ßÂÔÉú³É¡£
-     * @param superClass ¸¸ÀàÀàĞÍ×Ö·û´®£¬¸ÃÀàĞÍ×îÖÕÊ¹ÓÃparentLoader²ÎÊıµÄÀà×°ÔØÆ÷×°ÔØ¡£
-     * @param parentLoader ClassEngineÀà×°ÔØÆ÷¡£
+     * åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œè¯¥æ„é€ å‚æ•°æŒ‡å®šäº†æ–°ç±»ç±»åã€æ–°ç±»çš„åŸºç±»ä»¥ç±»è£…è½½å™¨ã€‚<br/>
+     * ç±»è£…è½½çš„è®¾å®šä¼šéµå¾ªå¦‚ä¸‹è§„åˆ™ï¼Œå¦‚æœparentLoaderå‚æ•°ä¸ºç©ºåˆ™ä¼šä½¿ç”¨å½“å‰çº¿ç¨‹çš„ç±»è£…è½½å™¨ä½œä¸ºå¼•æ“ç±»è£…è½½å™¨çš„çˆ¶ç±»è£…è½½å™¨ã€‚
+     * å¦‚æœæŒ‡å®šçš„æ˜¯{@link RootClassLoader}ç±»å‹è£…è½½å™¨ï¼Œåˆ™å¼•æ“ç›´æ¥ä½¿ç”¨è¯¥ç±»è£…è½½å™¨ä½œä¸ºå¼•æ“çš„ç±»è£…è½½å™¨ã€‚å¦‚æœæŒ‡å®šçš„æ˜¯ä¸€ä¸ª
+     * {@link ClassLoader}ç±»å‹å‚æ•°åˆ™å¼•æ“çš„ç±»è£…è½½å™¨ä¼šä½¿ç”¨è¿™ä¸ªç±»è£…è½½å™¨ä½œä¸ºå…¶çˆ¶ç±»è£…è½½å™¨ã€‚     * @param className æ–°ç±»çš„ç±»åï¼Œå¦‚æœç±»åä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤ç”Ÿæˆç­–ç•¥ç”Ÿæˆã€‚
+     * @param superClass çˆ¶ç±»ç±»å‹å­—ç¬¦ä¸²ï¼Œè¯¥ç±»å‹æœ€ç»ˆä½¿ç”¨parentLoaderå‚æ•°çš„ç±»è£…è½½å™¨è£…è½½ã€‚
+     * @param parentLoader ClassEngineç±»è£…è½½å™¨ã€‚
      */
     public ClassEngine(String className, String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
         this(className, parentLoader.loadClass(superClass), parentLoader);
     };
-    /** ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬²ÎÊıÖ¸¶¨µÄÊÇĞÂÀàµÄ¸¸ÀàÀàĞÍ¡£*/
+    /** åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œå‚æ•°æŒ‡å®šçš„æ˜¯æ–°ç±»çš„çˆ¶ç±»ç±»å‹ã€‚*/
     public ClassEngine(Class<?> superClass) {
         this(null, superClass, null);
     };
-    /** ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬²ÎÊıÖ¸¶¨µÄÊÇĞÂÀàµÄ¸¸ÀàÀàĞÍ¡£*/
+    /** åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œå‚æ•°æŒ‡å®šçš„æ˜¯æ–°ç±»çš„çˆ¶ç±»ç±»å‹ã€‚*/
     public ClassEngine(Class<?> superClass, ClassLoader parentLoader) {
         this(null, superClass, parentLoader);
     };
     /**
-     * ´´½¨Ò»¸öClassEngineÀàĞÍ¶ÔÏó£¬¸Ã¹¹Ôì²ÎÊıÖ¸¶¨ÁËĞÂÀàÀàÃû¡¢ĞÂÀàµÄ»ùÀàÒÔÀà×°ÔØÆ÷¡£<br/>
-     * Àà×°ÔØµÄÉè¶¨»á×ñÑ­ÈçÏÂ¹æÔò£¬Èç¹ûparentLoader²ÎÊıÎª¿ÕÔò»áÊ¹ÓÃµ±Ç°Ïß³ÌµÄÀà×°ÔØÆ÷×÷ÎªÒıÇæÀà×°ÔØÆ÷µÄ¸¸Àà×°ÔØÆ÷¡£
-     * Èç¹ûÖ¸¶¨µÄÊÇ{@link RootClassLoader}ÀàĞÍ×°ÔØÆ÷£¬ÔòÒıÇæÖ±½ÓÊ¹ÓÃ¸ÃÀà×°ÔØÆ÷×÷ÎªÒıÇæµÄÀà×°ÔØÆ÷¡£Èç¹ûÖ¸¶¨µÄÊÇÒ»¸ö
-     * {@link ClassLoader}ÀàĞÍ²ÎÊıÔòÒıÇæµÄÀà×°ÔØÆ÷»áÊ¹ÓÃÕâ¸öÀà×°ÔØÆ÷×÷ÎªÆä¸¸Àà×°ÔØÆ÷¡£
-     * @param className ĞÂÀàµÄÀàÃû£¬Èç¹ûÀàÃûÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏÉú³É²ßÂÔÉú³É¡£
-     * @param superClass »ùÀàÀàĞÍ¡£
-     * @param parentLoader ¸¸Àà×°ÔØÆ÷£¬µÄ¸¸Àà×°ÔØÆ÷¡£
+     * åˆ›å»ºä¸€ä¸ªClassEngineç±»å‹å¯¹è±¡ï¼Œè¯¥æ„é€ å‚æ•°æŒ‡å®šäº†æ–°ç±»ç±»åã€æ–°ç±»çš„åŸºç±»ä»¥ç±»è£…è½½å™¨ã€‚<br/>
+     * ç±»è£…è½½çš„è®¾å®šä¼šéµå¾ªå¦‚ä¸‹è§„åˆ™ï¼Œå¦‚æœparentLoaderå‚æ•°ä¸ºç©ºåˆ™ä¼šä½¿ç”¨å½“å‰çº¿ç¨‹çš„ç±»è£…è½½å™¨ä½œä¸ºå¼•æ“ç±»è£…è½½å™¨çš„çˆ¶ç±»è£…è½½å™¨ã€‚
+     * å¦‚æœæŒ‡å®šçš„æ˜¯{@link RootClassLoader}ç±»å‹è£…è½½å™¨ï¼Œåˆ™å¼•æ“ç›´æ¥ä½¿ç”¨è¯¥ç±»è£…è½½å™¨ä½œä¸ºå¼•æ“çš„ç±»è£…è½½å™¨ã€‚å¦‚æœæŒ‡å®šçš„æ˜¯ä¸€ä¸ª
+     * {@link ClassLoader}ç±»å‹å‚æ•°åˆ™å¼•æ“çš„ç±»è£…è½½å™¨ä¼šä½¿ç”¨è¿™ä¸ªç±»è£…è½½å™¨ä½œä¸ºå…¶çˆ¶ç±»è£…è½½å™¨ã€‚
+     * @param className æ–°ç±»çš„ç±»åï¼Œå¦‚æœç±»åä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤ç”Ÿæˆç­–ç•¥ç”Ÿæˆã€‚
+     * @param superClass åŸºç±»ç±»å‹ã€‚
+     * @param parentLoader çˆ¶ç±»è£…è½½å™¨ï¼Œçš„çˆ¶ç±»è£…è½½å™¨ã€‚
      */
     public ClassEngine(String className, Class<?> superClass, ClassLoader parentLoader) {
-        //1.²ÎÊıclassName
+        //1.å‚æ•°className
         if (className == null || className.equals("") == true)
             this.className = this.classNameStrategy.generateName(superClass);
         else
             this.className = className;
-        //2.²ÎÊısuperClass
+        //2.å‚æ•°superClass
         if (superClass != null)
             this.superClass = superClass;
         else
             this.superClass = DefaultSuperClass;
-        //3.²ÎÊıparentLoader
+        //3.å‚æ•°parentLoader
         if (parentLoader == null)
             this.rootClassLoader = new RootClassLoader(Thread.currentThread().getContextClassLoader());
         else if (parentLoader instanceof RootClassLoader)
@@ -128,141 +128,141 @@ public class ClassEngine {
             this.rootClassLoader = new RootClassLoader(parentLoader);
     };
     //======================================================================================private
-    /**·µ»ØĞÂÀàµÄÃû³Æ(×Ö½ÚÂëĞÎÊ½)¡£*/
+    /**è¿”å›æ–°ç±»çš„åç§°(å­—èŠ‚ç å½¢å¼)ã€‚*/
     final String getAsmClassName() {
         return EngineToos.replaceClassName(this.getClassName());
     }
-    /**·µ»Ø¸¸ÀàµÄÃû³Æ(×Ö½ÚÂëĞÎÊ½)¡£*/
+    /**è¿”å›çˆ¶ç±»çš„åç§°(å­—èŠ‚ç å½¢å¼)ã€‚*/
     final String getAsmSuperClassName() {
         return EngineToos.replaceClassName(this.getSuperClass().getName());
     };
     //======================================================================================Get/Set
-    /**»ñÈ¡ÀàÃûµÄÉú³É²ßÂÔ¡£*/
+    /**è·å–ç±»åçš„ç”Ÿæˆç­–ç•¥ã€‚*/
     public ClassNameStrategy getClassNameStrategy() {
         return this.classNameStrategy;
     };
-    /**ÉèÖÃÀàÃûÉú³É²ßÂÔ£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏÀàÃûÉú³É²ßÂÔ¡£*/
+    /**è®¾ç½®ç±»åç”Ÿæˆç­–ç•¥ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤ç±»åç”Ÿæˆç­–ç•¥ã€‚*/
     public void setClassNameStrategy(ClassNameStrategy classNameStrategy) {
         if (classNameStrategy == null)
             this.classNameStrategy = DefaultClassNameStrategy;
         else
             this.classNameStrategy = classNameStrategy;
     };
-    /**»ñÈ¡´úÀíµÄÉú³É²ßÂÔ¡£*/
+    /**è·å–ä»£ç†çš„ç”Ÿæˆç­–ç•¥ã€‚*/
     public DelegateStrategy getDelegateStrategy() {
         return this.delegateStrategy;
     };
-    /**ÉèÖÃ´úÀíÉú³É²ßÂÔ£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏ´úÀíÉú³É²ßÂÔ¡£*/
+    /**è®¾ç½®ä»£ç†ç”Ÿæˆç­–ç•¥ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤ä»£ç†ç”Ÿæˆç­–ç•¥ã€‚*/
     public void setDelegateStrategy(DelegateStrategy delegateStrategy) {
         if (delegateStrategy == null)
             this.delegateStrategy = DefaultDelegateStrategy;
         else
             this.delegateStrategy = delegateStrategy;
     };
-    /**»ñÈ¡AopÉú³É²ßÂÔ¡£*/
+    /**è·å–Aopç”Ÿæˆç­–ç•¥ã€‚*/
     public AopStrategy getAopStrategy() {
         return this.aopStrategy;
     };
-    /**ÉèÖÃaopÉú³É²ßÂÔ£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏaopÉú³É²ßÂÔ¡£*/
+    /**è®¾ç½®aopç”Ÿæˆç­–ç•¥ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤aopç”Ÿæˆç­–ç•¥ã€‚*/
     public void setAopStrategy(AopStrategy aopStrategy) {
         if (aopStrategy == null)
             this.aopStrategy = DefaultAopStrategy;
         else
             this.aopStrategy = aopStrategy;
     };
-    /**»ñÈ¡ÊôĞÔÉú³É²ßÂÔ¡£*/
+    /**è·å–å±æ€§ç”Ÿæˆç­–ç•¥ã€‚*/
     public PropertyStrategy getPropertyStrategy() {
         return propertyStrategy;
     };
-    /**ÉèÖÃÊôĞÔÉú³É²ßÂÔ£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏÊôĞÔÉú³É²ßÂÔ¡£*/
+    /**è®¾ç½®å±æ€§ç”Ÿæˆç­–ç•¥ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤å±æ€§ç”Ÿæˆç­–ç•¥ã€‚*/
     public void setPropertyStrategy(PropertyStrategy propertyStrategy) {
         if (propertyStrategy == null)
             this.propertyStrategy = DefaultPropertyStrategy;
         else
             this.propertyStrategy = propertyStrategy;
     };
-    /**»ñÈ¡MethodÉú³É²ßÂÔ¡£*/
+    /**è·å–Methodç”Ÿæˆç­–ç•¥ã€‚*/
     public MethodStrategy getMethodStrategy() {
         return methodStrategy;
     };
-    /**ÉèÖÃMethodÉú³É²ßÂÔ£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏMethodÉú³É²ßÂÔ¡£*/
+    /**è®¾ç½®Methodç”Ÿæˆç­–ç•¥ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤Methodç”Ÿæˆç­–ç•¥ã€‚*/
     public void setMethodStrategy(MethodStrategy methodStrategy) {
         if (methodStrategy == null)
             this.methodStrategy = DefaultMethodStrategy;
         else
             this.methodStrategy = methodStrategy;
     };
-    /**»ñÈ¡ĞÂÀàÉú³É·½Ê½£¬Ä¬ÈÏµÄÉú³É·½Ê½{@link ClassEngine#DefaultBuilderMode Super}¡£*/
+    /**è·å–æ–°ç±»ç”Ÿæˆæ–¹å¼ï¼Œé»˜è®¤çš„ç”Ÿæˆæ–¹å¼{@link ClassEngine#DefaultBuilderMode Super}ã€‚*/
     public BuilderMode getBuilderMode() {
         return this.builderMode;
     };
-    /**ÉèÖÃĞÂÀàÉú³É·½Ê½£¬Èç¹ûÉèÖÃÎª¿ÕÔòÊ¹ÓÃÄ¬ÈÏÉú³É·½Ê½{@link ClassEngine#DefaultBuilderMode Super}¡£*/
+    /**è®¾ç½®æ–°ç±»ç”Ÿæˆæ–¹å¼ï¼Œå¦‚æœè®¾ç½®ä¸ºç©ºåˆ™ä½¿ç”¨é»˜è®¤ç”Ÿæˆæ–¹å¼{@link ClassEngine#DefaultBuilderMode Super}ã€‚*/
     public void setBuilderMode(BuilderMode builderMode) {
         if (builderMode == null)
             this.builderMode = DefaultBuilderMode;
         else
             this.builderMode = builderMode;
     };
-    /** »ñÈ¡Éú³ÉµÄÀàÍêÕûÏŞ¶¨ÃûÖĞÀàÃû²¿·Ö¡£*/
+    /** è·å–ç”Ÿæˆçš„ç±»å®Œæ•´é™å®šåä¸­ç±»åéƒ¨åˆ†ã€‚*/
     public String getSimpleName() {
         return EngineToos.splitSimpleName(this.className);
     };
-    /** »ñÈ¡Éú³ÉÀàµÄÍêÕûÀàÃû¡£*/
+    /** è·å–ç”Ÿæˆç±»çš„å®Œæ•´ç±»åã€‚*/
     public String getClassName() {
         return this.className;
     };
-    /**ÉèÖÃĞÂÀàµÄÀàÃûºÍÆäËùÊô°ü¡£Èç¹û°üÃûÎªnullÔòÒıÇæ»áµ÷ÓÃÃû³ÆÉú³É²ßÂÔ·µ»ØÉú³ÉµÄ°üÃû¡£ÀàÃûÒ²Í¬Àí¡£*/
+    /**è®¾ç½®æ–°ç±»çš„ç±»åå’Œå…¶æ‰€å±åŒ…ã€‚å¦‚æœåŒ…åä¸ºnullåˆ™å¼•æ“ä¼šè°ƒç”¨åç§°ç”Ÿæˆç­–ç•¥è¿”å›ç”Ÿæˆçš„åŒ…åã€‚ç±»åä¹ŸåŒç†ã€‚*/
     public void setClassName(String className) {
         if (className == null || className.equals("") == true)
             this.className = this.classNameStrategy.generateName(this.superClass);
         else
             this.className = className;
     };
-    /**¸Ã·½·¨ÊÇµ÷ÓÃÀàÃûÉú³É²ßÂÔÉú³ÉÒ»¸ö°üÃûÒÔ¼°ÀàÃû£¬ÆäÔ­Àí¾ÍÊÇÍ¨¹ıÉèÖÃ¿ÕÀàÃûºÍ¿Õ°üÃûÀ´ÊµÏÖ¡£¿ÉÒÔÍ¨¹ıµ÷ÓÃsetClassName·½·¨´«µİÁ½¸önullÀ´Íê³É¡£*/
+    /**è¯¥æ–¹æ³•æ˜¯è°ƒç”¨ç±»åç”Ÿæˆç­–ç•¥ç”Ÿæˆä¸€ä¸ªåŒ…åä»¥åŠç±»åï¼Œå…¶åŸç†å°±æ˜¯é€šè¿‡è®¾ç½®ç©ºç±»åå’Œç©ºåŒ…åæ¥å®ç°ã€‚å¯ä»¥é€šè¿‡è°ƒç”¨setClassNameæ–¹æ³•ä¼ é€’ä¸¤ä¸ªnullæ¥å®Œæˆã€‚*/
     public void generateName() {
         this.setClassName(null);
     };
-    /** »ñÈ¡Éú³ÉÀàµÄ³¬Àà(»ùÀà)¡£*/
+    /** è·å–ç”Ÿæˆç±»çš„è¶…ç±»(åŸºç±»)ã€‚*/
     public Class<?> getSuperClass() {
         return this.superClass;
     };
-    /**ÉèÖÃÉú³ÉÀàµÄ»ùÀàÀàĞÍ¡£*/
+    /**è®¾ç½®ç”Ÿæˆç±»çš„åŸºç±»ç±»å‹ã€‚*/
     public void setSuperClass(Class<?> superClass) {
         if (superClass == null)
-            throw new NullPointerException("²ÎÊıÎª¿Õ¡£");
+            throw new NullPointerException("å‚æ•°ä¸ºç©ºã€‚");
         this.superClass = superClass;
     };
-    /**ÉèÖÃÉú³ÉÀàµÄ»ùÀàÀàĞÍ£¬Ã¿´Î¸Ä±ä»ùÀàÀàĞÍ¶¼»áµ¼ÖÂÇå¿Õ¸½¼ÓÊµÏÖ½Ó¿ÚÁĞ±íÍ¬Ê±Çå¿ÕÉú³ÉµÄ×Ö½ÚÂëÊı¾İ¡£*/
+    /**è®¾ç½®ç”Ÿæˆç±»çš„åŸºç±»ç±»å‹ï¼Œæ¯æ¬¡æ”¹å˜åŸºç±»ç±»å‹éƒ½ä¼šå¯¼è‡´æ¸…ç©ºé™„åŠ å®ç°æ¥å£åˆ—è¡¨åŒæ—¶æ¸…ç©ºç”Ÿæˆçš„å­—èŠ‚ç æ•°æ®ã€‚*/
     public void setSuperClass(String superClass, ClassLoader parentLoader) throws ClassNotFoundException {
         this.setSuperClass(parentLoader.loadClass(superClass));
     };
-    /**»ñÈ¡µ±Ç°ÒıÇæÕıÔÚÊ¹ÓÃµÄ¸¸Àà×°ÔØÆ÷¡£*/
+    /**è·å–å½“å‰å¼•æ“æ­£åœ¨ä½¿ç”¨çš„çˆ¶ç±»è£…è½½å™¨ã€‚*/
     public RootClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     };
     /**
-     * ÏòĞÂÀàÖĞÌí¼ÓÒ»¸öÎ¯ÍĞ½Ó¿ÚÊµÏÖ£¬¸ÃÎ¯ÍĞ½Ó¿ÚÖĞµÄËùÓĞ·½·¨¾ùÍ¨¹ıÎ¯ÍĞ¶ÔÏó´úÀí´¦Àí¡£Èç¹ûÎ¯ÍĞ½Ó¿ÚÖĞÓĞ·½·¨Óë»ùÀàµÄ·½·¨³åÍ»Ê±¡£
-     * ĞÂÉú³ÉµÄÎ¯ÍĞ·½·¨Ôò»á¶ªÆúÎ¯ÍĞ½Ó¿ÚÖĞµÄ·½·¨È¥±£Áô»ùÀà·½·¨¡£ÕâÔÚjavaÖĞÒ²ÊÇÏàµ±ÓÚÊµÏÖ£¬µ«ÊÇ¸üÖØÒªµÄÊÇ±£»¤ÁË»ùÀà¡£
-     * Èç¹ûÖØ¸´Ìí¼ÓÍ¬Ò»¸ö½Ó¿ÚÔò¸Ã½Ó¿Ú½«±»ÖÃÓÚ×îºóÒ»´ÎÌí¼Ó¡£×¢Òâ£ºÈç¹ûÊÔÍ¼Ìí¼ÓÒ»¸ö·Ç½Ó¿ÚÀàĞÍÔò»áÒı·¢Òì³£¡£
-     * @param appendInterface Òª¸½¼ÓµÄ½Ó¿Ú¡£
-     * @param delegate Î¯ÍĞ½Ó¿ÚµÄ·½·¨´¦ÀíÎ¯ÍĞ¡£
+     * å‘æ–°ç±»ä¸­æ·»åŠ ä¸€ä¸ªå§”æ‰˜æ¥å£å®ç°ï¼Œè¯¥å§”æ‰˜æ¥å£ä¸­çš„æ‰€æœ‰æ–¹æ³•å‡é€šè¿‡å§”æ‰˜å¯¹è±¡ä»£ç†å¤„ç†ã€‚å¦‚æœå§”æ‰˜æ¥å£ä¸­æœ‰æ–¹æ³•ä¸åŸºç±»çš„æ–¹æ³•å†²çªæ—¶ã€‚
+     * æ–°ç”Ÿæˆçš„å§”æ‰˜æ–¹æ³•åˆ™ä¼šä¸¢å¼ƒå§”æ‰˜æ¥å£ä¸­çš„æ–¹æ³•å»ä¿ç•™åŸºç±»æ–¹æ³•ã€‚è¿™åœ¨javaä¸­ä¹Ÿæ˜¯ç›¸å½“äºå®ç°ï¼Œä½†æ˜¯æ›´é‡è¦çš„æ˜¯ä¿æŠ¤äº†åŸºç±»ã€‚
+     * å¦‚æœé‡å¤æ·»åŠ åŒä¸€ä¸ªæ¥å£åˆ™è¯¥æ¥å£å°†è¢«ç½®äºæœ€åä¸€æ¬¡æ·»åŠ ã€‚æ³¨æ„ï¼šå¦‚æœè¯•å›¾æ·»åŠ ä¸€ä¸ªéæ¥å£ç±»å‹åˆ™ä¼šå¼•å‘å¼‚å¸¸ã€‚
+     * @param appendInterface è¦é™„åŠ çš„æ¥å£ã€‚
+     * @param delegate å§”æ‰˜æ¥å£çš„æ–¹æ³•å¤„ç†å§”æ‰˜ã€‚
      */
     public void addDelegate(Class<?> appendInterface, MethodDelegate delegate) {
-        //1.²ÎÊıÅĞ¶Ï
+        //1.å‚æ•°åˆ¤æ–­
         if (appendInterface.isInterface() == false || delegate == null)
-            throw new FormatException("Î¯ÍĞ²»ÊÇÒ»¸öÓĞĞ§µÄ½Ó¿ÚÀàĞÍ£¬»òÕßMethodDelegateÀàĞÍ²ÎÊıÎª¿Õ¡£");
-        //2.²âÊÔ¸Ã½Ó¿ÚÊÇ·ñÒÑ¾­µÃµ½ÊµÏÖ
+            throw new FormatException("å§”æ‰˜ä¸æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„æ¥å£ç±»å‹ï¼Œæˆ–è€…MethodDelegateç±»å‹å‚æ•°ä¸ºç©ºã€‚");
+        //2.æµ‹è¯•è¯¥æ¥å£æ˜¯å¦å·²ç»å¾—åˆ°å®ç°
         try {
             this.superClass.asSubclass(appendInterface);
             return;
         } catch (Exception e) {}
-        //3.¼ì²âÖØ¸´,¸½¼Ó½Ó¿ÚÊµÏÖ
+        //3.æ£€æµ‹é‡å¤,é™„åŠ æ¥å£å®ç°
         if (this.addDelegateMap == null)
             this.addDelegateMap = new LinkedHashMap<Class<?>, MethodDelegate>();
         if (this.addDelegateMap.containsKey(appendInterface) == false)
             this.addDelegateMap.put(appendInterface, delegate);
     };
-    /**Ìí¼ÓÒ»¸öAOP¹ıÂËÆ÷£¬¸Ã¹ıÂËÆ÷¿ÉÒÔÖØ¸´Ìí¼Ó¡£*/
+    /**æ·»åŠ ä¸€ä¸ªAOPè¿‡æ»¤å™¨ï¼Œè¯¥è¿‡æ»¤å™¨å¯ä»¥é‡å¤æ·»åŠ ã€‚*/
     public void addAopFilter(AopInvokeFilter filter) {
         if (filter == null)
             return;
@@ -270,7 +270,7 @@ public class ClassEngine {
             this.aopFilters = new ArrayList<AopInvokeFilter>();
         this.aopFilters.add(filter);
     };
-    /**Ìí¼ÓÒ»¸ö{@link AopBeforeListener}¼àÌıÆ÷£¬¸Ã¼àÌıÆ÷¿ÉÒÔÖØ¸´Ìí¼Ó¡£*/
+    /**æ·»åŠ ä¸€ä¸ª{@link AopBeforeListener}ç›‘å¬å™¨ï¼Œè¯¥ç›‘å¬å™¨å¯ä»¥é‡å¤æ·»åŠ ã€‚*/
     public void addListener(AopBeforeListener listener) {
         if (listener == null)
             return;
@@ -278,7 +278,7 @@ public class ClassEngine {
             this.aopBeforeListeners = new ArrayList<AopBeforeListener>();
         this.aopBeforeListeners.add(listener);
     };
-    /**Ìí¼ÓÒ»¸ö{@link AopReturningListener}¼àÌıÆ÷£¬¸Ã¼àÌıÆ÷¿ÉÒÔÖØ¸´Ìí¼Ó¡£*/
+    /**æ·»åŠ ä¸€ä¸ª{@link AopReturningListener}ç›‘å¬å™¨ï¼Œè¯¥ç›‘å¬å™¨å¯ä»¥é‡å¤æ·»åŠ ã€‚*/
     public void addListener(AopReturningListener listener) {
         if (listener == null)
             return;
@@ -286,7 +286,7 @@ public class ClassEngine {
             this.aopReturningListeners = new ArrayList<AopReturningListener>();
         this.aopReturningListeners.add(listener);
     };
-    /**Ìí¼ÓÒ»¸ö{@link AopThrowingListener}¼àÌıÆ÷£¬¸Ã¼àÌıÆ÷¿ÉÒÔÖØ¸´Ìí¼Ó¡£*/
+    /**æ·»åŠ ä¸€ä¸ª{@link AopThrowingListener}ç›‘å¬å™¨ï¼Œè¯¥ç›‘å¬å™¨å¯ä»¥é‡å¤æ·»åŠ ã€‚*/
     public void addListener(AopThrowingListener listener) {
         if (listener == null)
             return;
@@ -294,23 +294,23 @@ public class ClassEngine {
             this.aopThrowingListeners = new ArrayList<AopThrowingListener>();
         this.aopThrowingListeners.add(listener);
     };
-    /**ÔÚĞÂÉú³ÉµÄÀàÖĞÌí¼ÓÒ»¸öÊôĞÔ×Ö¶Î£¬²¢ÇÒÒÀ¾İÊôĞÔ²ßÂÔÉú³ÉÆäget/set·½·¨¡£*/
+    /**åœ¨æ–°ç”Ÿæˆçš„ç±»ä¸­æ·»åŠ ä¸€ä¸ªå±æ€§å­—æ®µï¼Œå¹¶ä¸”ä¾æ®å±æ€§ç­–ç•¥ç”Ÿæˆå…¶get/setæ–¹æ³•ã€‚*/
     public void addProperty(String name, Class<?> type) {
         if (name == null || name.equals("") || type == null)
-            throw new NullPointerException("²ÎÊıname»òtypeÎª¿Õ¡£");
+            throw new NullPointerException("å‚æ•°nameæˆ–typeä¸ºç©ºã€‚");
         if (this.addPropertyMap == null)
             this.addPropertyMap = new LinkedHashMap<String, Class<?>>();
         this.addPropertyMap.put(name, type);
     };
-    /**ÔÚĞÂÉú³ÉµÄÀàÖĞÌí¼ÓÒ»¸öÎ¯ÍĞÊôĞÔ£¬²¢ÇÒÒÀ¾İÊôĞÔ²ßÂÔÉú³ÉÆäget/set·½·¨¡£*/
+    /**åœ¨æ–°ç”Ÿæˆçš„ç±»ä¸­æ·»åŠ ä¸€ä¸ªå§”æ‰˜å±æ€§ï¼Œå¹¶ä¸”ä¾æ®å±æ€§ç­–ç•¥ç”Ÿæˆå…¶get/setæ–¹æ³•ã€‚*/
     public void addProperty(String name, PropertyDelegate<?> delegate) {
         if (name == null || name.equals("") || delegate == null)
-            throw new NullPointerException("²ÎÊıname»òdelegateÎª¿Õ¡£");
+            throw new NullPointerException("å‚æ•°nameæˆ–delegateä¸ºç©ºã€‚");
         if (this.addPropertyDelMap == null)
             this.addPropertyDelMap = new LinkedHashMap<String, PropertyDelegate<?>>();
         this.addPropertyDelMap.put(name, delegate);
     };
-    /**»ñÈ¡ËùÓĞÌí¼ÓµÄÊôĞÔÃû¼¯ºÏ*/
+    /**è·å–æ‰€æœ‰æ·»åŠ çš„å±æ€§åé›†åˆ*/
     public String[] getAppendPropertys() {
         String[] simpleProp = this.getAppendSimplePropertys();
         String[] delegateProp = this.getAppendDelegatePropertys();
@@ -330,7 +330,7 @@ public class ClassEngine {
             all[index + i] = simpleProp[i];
         return all;
     };
-    /**»ñÈ¡ËùÓĞÌí¼ÓµÄ¼òµ¥ÊôĞÔÃû*/
+    /**è·å–æ‰€æœ‰æ·»åŠ çš„ç®€å•å±æ€§å*/
     public String[] getAppendSimplePropertys() {
         if (this.addPropertyMap == null || this.addPropertyMap.size() == 0)
             return null;
@@ -338,7 +338,7 @@ public class ClassEngine {
         this.addPropertyMap.keySet().toArray(strs);
         return strs;
     };
-    /**»ñÈ¡ËùÓĞÌí¼ÓµÄ´úÀíÊôĞÔÃû*/
+    /**è·å–æ‰€æœ‰æ·»åŠ çš„ä»£ç†å±æ€§å*/
     public String[] getAppendDelegatePropertys() {
         if (this.addPropertyDelMap == null || this.addPropertyDelMap.size() == 0)
             return null;
@@ -346,25 +346,25 @@ public class ClassEngine {
         this.addPropertyDelMap.keySet().toArray(strs);
         return strs;
     };
-    /**¸ù¾İÒªÊµÏÖµÄ´úÀí½Ó¿Ú»ñÈ¡Æä´úÀíÊµÏÖ¶ÔÏó¡£*/
+    /**æ ¹æ®è¦å®ç°çš„ä»£ç†æ¥å£è·å–å…¶ä»£ç†å®ç°å¯¹è±¡ã€‚*/
     public MethodDelegate getDelegate(Class<?> impl) {
         if (this.addDelegateMap == null)
             return null;
         return this.addDelegateMap.get(impl);
     };
-    /**¸ù¾İÊôĞÔÃû»ñÈ¡ÆäÊôĞÔÀàĞÍ¡£*/
+    /**æ ¹æ®å±æ€§åè·å–å…¶å±æ€§ç±»å‹ã€‚*/
     public Class<?> getSimplePropertyType(String name) {
         if (this.addPropertyMap == null)
             return null;
         return this.addPropertyMap.get(name);
     };
-    /**¸ù¾İ´úÀíÊôĞÔÃû£¬»ñÈ¡ÆäÊôĞÔ´úÀíÀà¡£*/
+    /**æ ¹æ®ä»£ç†å±æ€§åï¼Œè·å–å…¶å±æ€§ä»£ç†ç±»ã€‚*/
     public PropertyDelegate<?> getDelegateProperty(String name) {
         if (this.addPropertyDelMap == null)
             return null;
         return this.addPropertyDelMap.get(name);
     };
-    /** »ñÈ¡Éú³ÉµÄĞÂÀàËùÌí¼ÓµÄËùÓĞÎ¯ÍĞ½Ó¿ÚÊı×é¡£*/
+    /** è·å–ç”Ÿæˆçš„æ–°ç±»æ‰€æ·»åŠ çš„æ‰€æœ‰å§”æ‰˜æ¥å£æ•°ç»„ã€‚*/
     public Class<?>[] getDelegates() {
         if (this.addDelegateMap == null || this.addDelegateMap.size() == 0)
             return null;
@@ -372,7 +372,7 @@ public class ClassEngine {
         this.addDelegateMap.keySet().toArray(cl);
         return cl;
     };
-    /**»ñÈ¡ÆäAop¹ıÂËÆ÷¼¯ºÏ¡£*/
+    /**è·å–å…¶Aopè¿‡æ»¤å™¨é›†åˆã€‚*/
     public AopInvokeFilter[] getAopFilters() {
         if (this.aopFilters == null || this.aopFilters.size() == 0)
             return null;
@@ -380,7 +380,7 @@ public class ClassEngine {
         this.aopFilters.toArray(aops);
         return aops;
     };
-    /**»ñÈ¡beforeÇĞÃæ¼àÌıÆ÷¡£*/
+    /**è·å–beforeåˆ‡é¢ç›‘å¬å™¨ã€‚*/
     public AopBeforeListener[] getAopBeforeListeners() {
         if (this.aopBeforeListeners == null || this.aopBeforeListeners.size() == 0)
             return null;
@@ -388,7 +388,7 @@ public class ClassEngine {
         this.aopBeforeListeners.toArray(listeners);
         return listeners;
     };
-    /**»ñÈ¡returningÇĞÃæ¼àÌıÆ÷¡£*/
+    /**è·å–returningåˆ‡é¢ç›‘å¬å™¨ã€‚*/
     public AopReturningListener[] getAopReturningListeners() {
         if (this.aopReturningListeners == null || this.aopReturningListeners.size() == 0)
             return null;
@@ -396,7 +396,7 @@ public class ClassEngine {
         this.aopReturningListeners.toArray(listeners);
         return listeners;
     };
-    /**»ñÈ¡throwingÇĞÃæ¼àÌıÆ÷¡£*/
+    /**è·å–throwingåˆ‡é¢ç›‘å¬å™¨ã€‚*/
     public AopThrowingListener[] getAopThrowingListeners() {
         if (this.aopThrowingListeners == null || this.aopThrowingListeners.size() == 0)
             return null;
@@ -406,59 +406,59 @@ public class ClassEngine {
     };
     //=======================================================================================Method
     /**
-     * ÍêÈ«ÖØÖÃ£¬¸ÃÖØÖÃ·½·¨½«»áÇå³ıĞÂÉú³ÉµÄÀàÍ¬Ê±Ò²»áÇå³ıÌí¼ÓµÄÎ¯ÍĞ½Ó¿ÚÒÔ¼°ĞÂÊôĞÔ¡£<br/>
-     * ¶ÔÓÚĞÂÀàµÄÀà×°ÔØÆ÷¸Ã·½·¨Ò²»á½â³ıÔÚÆäÉíÉÏµÄ×¢²á¡£
+     * å®Œå…¨é‡ç½®ï¼Œè¯¥é‡ç½®æ–¹æ³•å°†ä¼šæ¸…é™¤æ–°ç”Ÿæˆçš„ç±»åŒæ—¶ä¹Ÿä¼šæ¸…é™¤æ·»åŠ çš„å§”æ‰˜æ¥å£ä»¥åŠæ–°å±æ€§ã€‚<br/>
+     * å¯¹äºæ–°ç±»çš„ç±»è£…è½½å™¨è¯¥æ–¹æ³•ä¹Ÿä¼šè§£é™¤åœ¨å…¶èº«ä¸Šçš„æ³¨å†Œã€‚
      */
     public void reset() {
         this.newClass = null;
         this.newClassBytes = null;
-        this.addDelegateMap = null; //Î¯ÍĞ±í
-        this.addPropertyMap = null; //ĞÂÊôĞÔ±í
-        this.addPropertyDelMap = null; //ĞÂÎ¯ÍĞÊôĞÔ±í
-        this.aopFilters = null; //aopÀ¹½ØÆ÷±í
-        this.aopBeforeListeners = null; //¿ªÊ¼µ÷ÓÃ£¬ÏûÏ¢¼àÌıÆ÷
-        this.aopReturningListeners = null; //µ÷ÓÃ·µ»Ø£¬ÏûÏ¢¼àÌıÆ÷
-        this.aopThrowingListeners = null; //Å×³öÒì³££¬ÏûÏ¢¼àÌıÆ÷
+        this.addDelegateMap = null; //å§”æ‰˜è¡¨
+        this.addPropertyMap = null; //æ–°å±æ€§è¡¨
+        this.addPropertyDelMap = null; //æ–°å§”æ‰˜å±æ€§è¡¨
+        this.aopFilters = null; //aopæ‹¦æˆªå™¨è¡¨
+        this.aopBeforeListeners = null; //å¼€å§‹è°ƒç”¨ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+        this.aopReturningListeners = null; //è°ƒç”¨è¿”å›ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+        this.aopThrowingListeners = null; //æŠ›å‡ºå¼‚å¸¸ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
         this.rootClassLoader.unRegeditEngine(this);//
     };
-    /**Çå¿ÕËùÓĞaopÅäÖÃ¡£*/
+    /**æ¸…ç©ºæ‰€æœ‰aopé…ç½®ã€‚*/
     public void resetAop() {
-        this.aopFilters = null; //aopÀ¹½ØÆ÷±í
-        this.aopBeforeListeners = null; //¿ªÊ¼µ÷ÓÃ£¬ÏûÏ¢¼àÌıÆ÷
-        this.aopReturningListeners = null; //µ÷ÓÃ·µ»Ø£¬ÏûÏ¢¼àÌıÆ÷
-        this.aopThrowingListeners = null; //Å×³öÒì³££¬ÏûÏ¢¼àÌıÆ÷ 
+        this.aopFilters = null; //aopæ‹¦æˆªå™¨è¡¨
+        this.aopBeforeListeners = null; //å¼€å§‹è°ƒç”¨ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+        this.aopReturningListeners = null; //è°ƒç”¨è¿”å›ï¼Œæ¶ˆæ¯ç›‘å¬å™¨
+        this.aopThrowingListeners = null; //æŠ›å‡ºå¼‚å¸¸ï¼Œæ¶ˆæ¯ç›‘å¬å™¨ 
     };
     /**
-     * ÖØÖÃÉú³É×´Ì¬µ±ÔÙ´Îµ÷ÓÃÉú³ÉÊ±½«»áÆô¶¯class¹¹½¨¹ı³Ì£¬¸Ã·½·¨²»»áÓ°Ïìµ½ÒÑ¾­×¢²áµÄaop£¬ĞÂÊôĞÔµÈĞÅÏ¢¡£
-     * µ«ÊÇ¸Ã·½·¨»á½â³ıÔÚĞÂÀà×°ÔØÉÏµÄ×¢²áÕâÑùÒÔÖúÓÚ´ÓĞÂ×°ÔØĞÂÀà¡£
+     * é‡ç½®ç”ŸæˆçŠ¶æ€å½“å†æ¬¡è°ƒç”¨ç”Ÿæˆæ—¶å°†ä¼šå¯åŠ¨classæ„å»ºè¿‡ç¨‹ï¼Œè¯¥æ–¹æ³•ä¸ä¼šå½±å“åˆ°å·²ç»æ³¨å†Œçš„aopï¼Œæ–°å±æ€§ç­‰ä¿¡æ¯ã€‚
+     * ä½†æ˜¯è¯¥æ–¹æ³•ä¼šè§£é™¤åœ¨æ–°ç±»è£…è½½ä¸Šçš„æ³¨å†Œè¿™æ ·ä»¥åŠ©äºä»æ–°è£…è½½æ–°ç±»ã€‚
      */
     public void resetBuilder() {
         this.newClass = null;
         this.newClassBytes = null;
         this.rootClassLoader.unRegeditEngine(this);//
     };
-    /**»ñÈ¡ÒÑ¾­Éú³ÉµÄÀà¶ÔÏó*/
+    /**è·å–å·²ç»ç”Ÿæˆçš„ç±»å¯¹è±¡*/
     public Class<?> toClass() {
         return this.newClass;
     };
-    /**»ñÈ¡ÒÑ¾­Éú³ÉµÄ×Ö½ÚÂëÊı¾İ*/
+    /**è·å–å·²ç»ç”Ÿæˆçš„å­—èŠ‚ç æ•°æ®*/
     public byte[] toBytes() {
         return this.newClassBytes;
     };
-    /**Æô¶¯Éú³É¹ı³ÌÉú³ÉĞÂÀà¡£*/
+    /**å¯åŠ¨ç”Ÿæˆè¿‡ç¨‹ç”Ÿæˆæ–°ç±»ã€‚*/
     public ClassEngine builderClass() throws ClassNotFoundException, IOException {
         if (newClassBytes != null)
             return this;
-        //1.³õÊ¼»¯²ßÂÔ
+        //1.åˆå§‹åŒ–ç­–ç•¥
         this.classNameStrategy.initStrategy(this);
         this.delegateStrategy.initStrategy(this);
         this.aopStrategy.initStrategy(this);
         this.propertyStrategy.initStrategy(this);
         this.methodStrategy.initStrategy(this);
-        this.rootClassLoader.regeditEngine(this);//×¢²áÀà×°ÔØ
+        this.rootClassLoader.regeditEngine(this);//æ³¨å†Œç±»è£…è½½
         //2.
         if (EngineToos.checkClassName(this.className) == false)
-            throw new FormatException("ÔÚÉú³ÉÀàµÄÊ±£¬¼ì²âÀàÃû²»Í¨¹ı¡£");
+            throw new FormatException("åœ¨ç”Ÿæˆç±»çš„æ—¶ï¼Œæ£€æµ‹ç±»åä¸é€šè¿‡ã€‚");
         if (className == null || className.equals("") == true)
             this.className = this.classNameStrategy.generateName(this.superClass);
         //3.
@@ -466,16 +466,16 @@ public class ClassEngine {
         cb.initBuilder(this);
         this.configuration = cb.builderClass();
         if (this.configuration == null)
-            throw new FormatException("builderClassÊ§°Ü¡£");
+            throw new FormatException("builderClasså¤±è´¥ã€‚");
         this.newClassBytes = cb.getClassBytes();
         //5.
         this.newClass = this.rootClassLoader.loadClass(this.className);
         return this;
     };
     //======================================================================================Builder
-    /**×ÓÀà¿ÉÒÔÍ¨¹ıÖØĞ´¸Ã·½·¨À´·µ»ØÒ»¸öĞÂµÄClassBuilder¶ÔÏó£¬ÔÚClassBuilder¶ÔÏóÖĞ¿ª·¢ÈËÔ±¿ÉÒÔÊ¹ÓÃclasscodeÀ©Õ¹¹¦ÄÜ£¬Í¬Ê±Ò²¿ÉÒÔÊ¹ÓÃasm¿ò¼ÜÀ´À©Õ¹¡£*/
+    /**å­ç±»å¯ä»¥é€šè¿‡é‡å†™è¯¥æ–¹æ³•æ¥è¿”å›ä¸€ä¸ªæ–°çš„ClassBuilderå¯¹è±¡ï¼Œåœ¨ClassBuilderå¯¹è±¡ä¸­å¼€å‘äººå‘˜å¯ä»¥ä½¿ç”¨classcodeæ‰©å±•åŠŸèƒ½ï¼ŒåŒæ—¶ä¹Ÿå¯ä»¥ä½¿ç”¨asmæ¡†æ¶æ¥æ‰©å±•ã€‚*/
     protected ClassBuilder createBuilder(BuilderMode builderMode) {
-        /*¿ÕÊµÏÖ*/
+        /*ç©ºå®ç°*/
         return new ClassBuilder() {
             protected ClassVisitor acceptClass(ClassWriter classVisitor) {
                 return null;
@@ -484,7 +484,7 @@ public class ClassEngine {
         };
     };
     //==========================================================================================New
-    /**×°ÔØ²¢ÇÒ´´½¨Õâ¸öĞÂÀàµÄÒ»¸öÊµÀı£¬Èç¹ûĞÂÀàÊÇPropxyÄ£Ê½ÏÂµÄ£¬ĞèÒªÖ¸¶¨´úÀíµÄ¸¸ÀàÀàĞÍ¡£Èç¹ûÊÇSuperÔò¸ønull¼´¿É¡£*/
+    /**è£…è½½å¹¶ä¸”åˆ›å»ºè¿™ä¸ªæ–°ç±»çš„ä¸€ä¸ªå®ä¾‹ï¼Œå¦‚æœæ–°ç±»æ˜¯Propxyæ¨¡å¼ä¸‹çš„ï¼Œéœ€è¦æŒ‡å®šä»£ç†çš„çˆ¶ç±»ç±»å‹ã€‚å¦‚æœæ˜¯Superåˆ™ç»™nullå³å¯ã€‚*/
     public Object newInstance(Object propxyBean) throws ClassNotFoundException, IOException {
         this.builderClass();
         Object obj = null;
@@ -494,14 +494,14 @@ public class ClassEngine {
             else
                 obj = this.newClass.getConstructor(this.superClass).newInstance(propxyBean);
         } catch (Exception e) {
-            throw new InitializationException("³õÊ¼»¯´´½¨ĞÂÀà[" + this.newClass.getName() + "]", e.getCause());
+            throw new InitializationException("åˆå§‹åŒ–åˆ›å»ºæ–°ç±»[" + this.newClass.getName() + "]", e.getCause());
         }
         return this.configuration.configBean(obj);
     };
-    /**ÅäÖÃbean£¬Ö´ĞĞaop×¢ÈëµÈ²Ù×÷£¬¸Ã²ÎÊı½ÓÊÕÈÎºÎClassEngine´´½¨µÄ¶ÔÏó¡£*/
+    /**é…ç½®beanï¼Œæ‰§è¡Œaopæ³¨å…¥ç­‰æ“ä½œï¼Œè¯¥å‚æ•°æ¥æ”¶ä»»ä½•ClassEngineåˆ›å»ºçš„å¯¹è±¡ã€‚*/
     public Object configBean(Object bean) {
         if (bean == null)
-            throw new NullPointerException("²ÎÊı²»ÄÜÎª¿Õ!");
+            throw new NullPointerException("å‚æ•°ä¸èƒ½ä¸ºç©º!");
         ClassLoader loader = bean.getClass().getClassLoader();
         if (loader instanceof RootClassLoader == false)
             return bean;
@@ -509,13 +509,13 @@ public class ClassEngine {
         ClassEngine engine = rootLoader.getRegeditEngine(bean.getClass().getName());
         return engine.configuration.configBean(bean);
     };
-    /**ÅĞ¶Ï¸ÃbeanÊÇ·ñÒÑ¾­¾­¹ıÅäÖÃ¡£*/
+    /**åˆ¤æ–­è¯¥beanæ˜¯å¦å·²ç»ç»è¿‡é…ç½®ã€‚*/
     public boolean isConfig(Object bean) {
         if (bean == null)
-            throw new NullPointerException("²ÎÊı²»ÄÜÎª¿Õ!");
+            throw new NullPointerException("å‚æ•°ä¸èƒ½ä¸ºç©º!");
         ClassLoader loader = bean.getClass().getClassLoader();
         if (loader instanceof RootClassLoader == false)
-            throw new TypeException("²ÎÊıËù±íÊ¾µÄbean²»ÊÇÒ»¸öÓĞĞ§µÄÉú³Ébean¡£");
+            throw new TypeException("å‚æ•°æ‰€è¡¨ç¤ºçš„beanä¸æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„ç”Ÿæˆbeanã€‚");
         //
         try {
             Method method_1 = bean.getClass().getMethod("get" + BuilderClassAdapter.ConfigMarkName);
@@ -524,7 +524,7 @@ public class ClassEngine {
                 return false;
             return res;
         } catch (Exception e) {
-            throw new InvokeException("ÔÚÖ´ĞĞµ÷ÓÃÆÚ¼ä·¢ÉúÒì³£¡£");
+            throw new InvokeException("åœ¨æ‰§è¡Œè°ƒç”¨æœŸé—´å‘ç”Ÿå¼‚å¸¸ã€‚");
         }
     };
 }

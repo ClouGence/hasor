@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,35 +19,35 @@ import org.more.webui.component.support.UICom;
 import org.more.webui.component.values.AbstractValueHolder;
 import org.more.webui.context.ViewContext;
 /**
- * ·ÖÒ³×é½¨
+ * åˆ†é¡µç»„å»º
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_Page", renderType = PageRender.class)
 public class PageCom extends UIComponent {
-    /**ÊôĞÔ±í*/
+    /**å±æ€§è¡¨*/
     public static enum Propertys {
-        /**ÊÇ·ñÏÔÊ¾¡¾Ê×Ò³¡¿°´Å¥£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºã€é¦–é¡µã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
         showFirst,
-        /**ÊÇ·ñÏÔÊ¾¡¾ÉÏÒ»Ò³¡¿°´Å¥£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºã€ä¸Šä¸€é¡µã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
         showPrev,
-        /**ÊÇ·ñÏÔÊ¾¡¾Ò³Âë¡¿°´Å¥£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºã€é¡µç ã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
         showNum,
-        /**ÊÇ·ñÏÔÊ¾¡¾ÏÂÒ»Ò³¡¿°´Å¥£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºã€ä¸‹ä¸€é¡µã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
         showNext,
-        /**ÊÇ·ñÏÔÊ¾¡¾Î²Ò³¡¿°´Å¥£¨RW£©*/
+        /**æ˜¯å¦æ˜¾ç¤ºã€å°¾é¡µã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
         showLast,
-        /**¿ªÊ¼µÄÒ³ÂëºÅ£¨RW£©*/
+        /**å¼€å§‹çš„é¡µç å·ï¼ˆRWï¼‰*/
         startWith,
-        /**Ò³´óĞ¡£¨RW£©*/
+        /**é¡µå¤§å°ï¼ˆRWï¼‰*/
         pageSize,
-        /**µ±Ç°Ò³£¨RW£©*/
+        /**å½“å‰é¡µï¼ˆRWï¼‰*/
         currentPage,
-        /**¼ÇÂ¼×ÜÊı£¨RW£©*/
+        /**è®°å½•æ€»æ•°ï¼ˆRWï¼‰*/
         rowCount,
-        /**µ±Ã»ÓĞÊı¾İÊ±ÏÔÊ¾Ä£Ê½£¬¿Éµş¼Ó£¨¶ººÅ·Ö¸î£©¡£B£¨·ÖÒ³´óĞ¡ÉèÖÃ£©¡¢G£¨Ò³ÂëÊäÈë¿ò£©¡¢F(Ê×Ò³°´Å¥)¡¢P(ÉÏÒ»Ò³°´Å¥)¡¢N(ÏÂÒ»Ò³°´Å¥)¡¢L£¨Î²Ò³°´Å¥£©¡¢I(Ò³Âë°´Å¥)¡¢T(ÏÔÊ¾ui_pNoDate±êÇ©ÄÚÈİ)£º×¢ÒâIÓëTÖ»ÄÜÓĞÒ»¸öÉúĞ§£¨RW£©*/
+        /**å½“æ²¡æœ‰æ•°æ®æ—¶æ˜¾ç¤ºæ¨¡å¼ï¼Œå¯å åŠ ï¼ˆé€—å·åˆ†å‰²ï¼‰ã€‚Bï¼ˆåˆ†é¡µå¤§å°è®¾ç½®ï¼‰ã€Gï¼ˆé¡µç è¾“å…¥æ¡†ï¼‰ã€F(é¦–é¡µæŒ‰é’®)ã€P(ä¸Šä¸€é¡µæŒ‰é’®)ã€N(ä¸‹ä¸€é¡µæŒ‰é’®)ã€Lï¼ˆå°¾é¡µæŒ‰é’®ï¼‰ã€I(é¡µç æŒ‰é’®)ã€T(æ˜¾ç¤ºui_pNoDateæ ‡ç­¾å†…å®¹)ï¼šæ³¨æ„Iä¸Tåªèƒ½æœ‰ä¸€ä¸ªç”Ÿæ•ˆï¼ˆRWï¼‰*/
         noDateMode,
-        /**·ÖÒ³×é½¨µÄÁ¬½Ó£¨RW£©*/
+        /**åˆ†é¡µç»„å»ºçš„è¿æ¥ï¼ˆRWï¼‰*/
         pageLink,
     };
     @Override
@@ -68,102 +68,102 @@ public class PageCom extends UIComponent {
         this.setPropertyMetaValue(Propertys.rowCount.name(), 0);
         this.setPropertyMetaValue(Propertys.noDateMode.name(), "T");
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Ê×Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€é¦–é¡µã€‘æŒ‰é’®*/
     public boolean isShowFirst() {
         return this.getProperty(Propertys.showFirst.name()).valueTo(Boolean.TYPE);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Ê×Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€é¦–é¡µã€‘æŒ‰é’®*/
     public void setShowFirst(boolean showFirst) {
         this.getProperty(Propertys.showFirst.name()).value(showFirst);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾ÉÏÒ»Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€ä¸Šä¸€é¡µã€‘æŒ‰é’®*/
     public boolean isShowPrev() {
         return this.getProperty(Propertys.showPrev.name()).valueTo(Boolean.TYPE);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾ÉÏÒ»Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€ä¸Šä¸€é¡µã€‘æŒ‰é’®*/
     public void setShowPrev(boolean showPrev) {
         this.getProperty(Propertys.showPrev.name()).value(showPrev);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Ò³Âë¡¿°´Å¥£¨RW£©*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€é¡µç ã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
     public boolean isShowNum() {
         return this.getProperty(Propertys.showNum.name()).valueTo(Boolean.TYPE);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Ò³Âë¡¿°´Å¥£¨RW£©*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€é¡µç ã€‘æŒ‰é’®ï¼ˆRWï¼‰*/
     public void setShowNum(boolean showNum) {
         this.getProperty(Propertys.showNum.name()).value(showNum);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾ÏÂÒ»Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€ä¸‹ä¸€é¡µã€‘æŒ‰é’®*/
     public boolean isShowNext() {
         return this.getProperty(Propertys.showNext.name()).valueTo(Boolean.TYPE);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾ÏÂÒ»Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€ä¸‹ä¸€é¡µã€‘æŒ‰é’®*/
     public void setShowNext(boolean showNext) {
         this.getProperty(Propertys.showNext.name()).value(showNext);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Î²Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€å°¾é¡µã€‘æŒ‰é’®*/
     public boolean isShowLast() {
         return this.getProperty(Propertys.showLast.name()).valueTo(Boolean.TYPE);
     }
-    /**ÊÇ·ñÏÔÊ¾¡¾Î²Ò³¡¿°´Å¥*/
+    /**æ˜¯å¦æ˜¾ç¤ºã€å°¾é¡µã€‘æŒ‰é’®*/
     public void setShowLast(boolean showLast) {
         this.getProperty(Propertys.showLast.name()).value(showLast);
     }
-    /**¿ªÊ¼µÄÒ³ÂëºÅ*/
+    /**å¼€å§‹çš„é¡µç å·*/
     public int getStartWith() {
         return this.getProperty(Propertys.startWith.name()).valueTo(Integer.TYPE);
     }
-    /**¿ªÊ¼µÄÒ³ÂëºÅ*/
+    /**å¼€å§‹çš„é¡µç å·*/
     public void setStartWith(Integer startWith) {
         this.getProperty(Propertys.startWith.name()).value(startWith);
     }
-    /**Ò³´óĞ¡*/
+    /**é¡µå¤§å°*/
     public int getPageSize() {
         return this.getProperty(Propertys.pageSize.name()).valueTo(Integer.TYPE);
     }
-    /**Ò³´óĞ¡*/
+    /**é¡µå¤§å°*/
     public void setDataSource(Integer pageSize) {
         this.getProperty(Propertys.pageSize.name()).value(pageSize);
     }
-    /**µ±Ç°Ò³Âë*/
+    /**å½“å‰é¡µç */
     public int getCurrentPage() {
         return this.getProperty(Propertys.currentPage.name()).valueTo(Integer.TYPE);
     }
-    /**µ±Ç°Ò³Âë*/
+    /**å½“å‰é¡µç */
     public void setCurrentPage(int currentPage) {
         this.getProperty(Propertys.currentPage.name()).value(currentPage);
     }
-    /**¼ÇÂ¼×ÜÊı*/
+    /**è®°å½•æ€»æ•°*/
     public int getRowCount() {
         return this.getProperty(Propertys.rowCount.name()).valueTo(Integer.TYPE);
     }
-    /**¼ÇÂ¼×ÜÊı*/
+    /**è®°å½•æ€»æ•°*/
     public void setRowCount(int rowCount) {
         this.getProperty(Propertys.rowCount.name()).value(rowCount);
     }
-    /**µ±Ã»ÓĞÊı¾İÊ±ÏÔÊ¾Ä£Ê½£¬¿Éµş¼Ó£¨¶ººÅ·Ö¸î£©¡£F(Ê×Ò³°´Å¥)¡¢P(ÉÏÒ»Ò³°´Å¥)¡¢N(ÏÂÒ»Ò³°´Å¥)¡¢L£¨Î²Ò³°´Å¥£©¡¢I(Ò³Âë°´Å¥)¡¢T(ÏÔÊ¾ui_pNoDate±êÇ©ÄÚÈİ)£º×¢ÒâIÓëTÖ»ÄÜÓĞÒ»¸öÉúĞ§*/
+    /**å½“æ²¡æœ‰æ•°æ®æ—¶æ˜¾ç¤ºæ¨¡å¼ï¼Œå¯å åŠ ï¼ˆé€—å·åˆ†å‰²ï¼‰ã€‚F(é¦–é¡µæŒ‰é’®)ã€P(ä¸Šä¸€é¡µæŒ‰é’®)ã€N(ä¸‹ä¸€é¡µæŒ‰é’®)ã€Lï¼ˆå°¾é¡µæŒ‰é’®ï¼‰ã€I(é¡µç æŒ‰é’®)ã€T(æ˜¾ç¤ºui_pNoDateæ ‡ç­¾å†…å®¹)ï¼šæ³¨æ„Iä¸Tåªèƒ½æœ‰ä¸€ä¸ªç”Ÿæ•ˆ*/
     public String getNoDateMode() {
         return this.getProperty(Propertys.noDateMode.name()).valueTo(String.class);
     }
-    /**µ±Ã»ÓĞÊı¾İÊ±ÏÔÊ¾Ä£Ê½£¬¿Éµş¼Ó£¨¶ººÅ·Ö¸î£©¡£F(Ê×Ò³°´Å¥)¡¢P(ÉÏÒ»Ò³°´Å¥)¡¢N(ÏÂÒ»Ò³°´Å¥)¡¢L£¨Î²Ò³°´Å¥£©¡¢I(Ò³Âë°´Å¥)¡¢T(ÏÔÊ¾ui_pNoDate±êÇ©ÄÚÈİ)£º×¢ÒâIÓëTÖ»ÄÜÓĞÒ»¸öÉúĞ§*/
+    /**å½“æ²¡æœ‰æ•°æ®æ—¶æ˜¾ç¤ºæ¨¡å¼ï¼Œå¯å åŠ ï¼ˆé€—å·åˆ†å‰²ï¼‰ã€‚F(é¦–é¡µæŒ‰é’®)ã€P(ä¸Šä¸€é¡µæŒ‰é’®)ã€N(ä¸‹ä¸€é¡µæŒ‰é’®)ã€Lï¼ˆå°¾é¡µæŒ‰é’®ï¼‰ã€I(é¡µç æŒ‰é’®)ã€T(æ˜¾ç¤ºui_pNoDateæ ‡ç­¾å†…å®¹)ï¼šæ³¨æ„Iä¸Tåªèƒ½æœ‰ä¸€ä¸ªç”Ÿæ•ˆ*/
     public void setNoDateMode(String noDateMode) {
         this.getProperty(Propertys.noDateMode.name()).value(noDateMode);
     }
-    /**·ÖÒ³×é½¨µÄÁ¬½Ó(Ê¹ÓÃEL½âÎö)*/
+    /**åˆ†é¡µç»„å»ºçš„è¿æ¥(ä½¿ç”¨ELè§£æ)*/
     public String getPageLink() {
         return this.getProperty(Propertys.pageLink.name()).valueTo(String.class);
     }
-    /**·ÖÒ³×é½¨µÄÁ¬½Ó(Ê¹ÓÃEL½âÎö)*/
+    /**åˆ†é¡µç»„å»ºçš„è¿æ¥(ä½¿ç”¨ELè§£æ)*/
     public void setPageLink(String pageLink) {
         this.getProperty(Propertys.pageLink.name()).value(pageLink);
     }
-    /**·ÖÒ³×é½¨µÄÁ¬½Ó(Ê¹ÓÃÄ£°å½âÎö)*/
+    /**åˆ†é¡µç»„å»ºçš„è¿æ¥(ä½¿ç”¨æ¨¡æ¿è§£æ)*/
     public String getPageLinkAsTemplate(ViewContext viewContext) {
         AbstractValueHolder avh = this.getProperty(Propertys.pageLink.name());
         String metaValue = (String) avh.getMetaValue();
         try {
             return viewContext.processTemplateString(metaValue);
         } catch (Exception e) {
-            return "javascript:alert('PageCom.getPageLinkAsTemplate()·½·¨Ö´ĞĞÓöµ½´íÎó¡£');";
+            return "javascript:alert('PageCom.getPageLinkAsTemplate()æ–¹æ³•æ‰§è¡Œé‡åˆ°é”™è¯¯ã€‚');";
         }
     }
     /*-------------------------------------------------------------------------------*/

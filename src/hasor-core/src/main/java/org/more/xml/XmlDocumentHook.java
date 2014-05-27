@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import javax.xml.stream.XMLStreamException;
 import org.more.xml.stream.EndDocumentEvent;
 import org.more.xml.stream.StartDocumentEvent;
 /**
- * ¸Ã¹³×ÓÓÃÓÚ´¦ÀíÎÄµµ¿ªÊ¼ºÍÎÄµµ½áÊøÊÂ¼ş¡£
+ * è¯¥é’©å­ç”¨äºå¤„ç†æ–‡æ¡£å¼€å§‹å’Œæ–‡æ¡£ç»“æŸäº‹ä»¶ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlDocumentHook extends XmlParserHook {
-    /**µ±Óöµ½ÎÄµµ¿ªÊ¼Ê±¡£context²ÎÊıÊÇ¹²ÓÃµÄ»·¾³¶ÔÏó¡£*/
+    /**å½“é‡åˆ°æ–‡æ¡£å¼€å§‹æ—¶ã€‚contextå‚æ•°æ˜¯å…±ç”¨çš„ç¯å¢ƒå¯¹è±¡ã€‚*/
     public void beginDocument(XmlStackDecorator<Object> context, StartDocumentEvent event) throws XMLStreamException, IOException;
-    /**µ±Óöµ½ÎÄµµ½áÊøÊ±¡£context²ÎÊıÊÇ¹²ÓÃµÄ»·¾³¶ÔÏó¡£*/
+    /**å½“é‡åˆ°æ–‡æ¡£ç»“æŸæ—¶ã€‚contextå‚æ•°æ˜¯å…±ç”¨çš„ç¯å¢ƒå¯¹è±¡ã€‚*/
     public void endDocument(XmlStackDecorator<Object> context, EndDocumentEvent event) throws XMLStreamException, IOException;
 }

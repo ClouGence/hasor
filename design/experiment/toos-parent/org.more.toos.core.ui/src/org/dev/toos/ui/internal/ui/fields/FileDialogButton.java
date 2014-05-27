@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Text;
 /**
  * 
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class FileDialogButton extends AbstractViewField<String> implements SelectionListener {
     /*----------------------------------------------------------------------------*/
-    //¶Ô»°¿òÏà¹Ø
+    //å¯¹è¯æ¡†ç›¸å…³
     private FileDialog dialog = null;
     private FileDialog getFileDialog(Composite parentComposite) {
         if (this.dialog != null)
@@ -51,7 +51,7 @@ public class FileDialogButton extends AbstractViewField<String> implements Selec
         return this.dialog;
     };
     /*----------------------------------------------------------------------------*/
-    //ÎÄ±¾¿òÏà¹Ø
+    //æ–‡æœ¬æ¡†ç›¸å…³
     private Text locationText = null;
     private Text getText(Composite parentComposite) {
         if (this.locationText != null)
@@ -61,7 +61,7 @@ public class FileDialogButton extends AbstractViewField<String> implements Selec
         return this.locationText;
     };
     /*----------------------------------------------------------------------------*/
-    //°´Å¥Ïà¹Ø
+    //æŒ‰é’®ç›¸å…³
     private Button dialogButton = null;
     private Button getButton(Composite parentComposite) {
         if (this.dialogButton != null)
@@ -85,7 +85,7 @@ public class FileDialogButton extends AbstractViewField<String> implements Selec
     public Control[] doFillIntoGrid(Composite parentComposite, int numColumnsCount) {
         assertEnoughColumns(numColumnsCount);
         //
-        FileDialog locationDialog = this.getFileDialog(parentComposite);/*½ö´´½¨*/
+        FileDialog locationDialog = this.getFileDialog(parentComposite);/*ä»…åˆ›å»º*/
         Label locationLabel = this.getLabelControl(parentComposite);
         Text locationText = this.getText(parentComposite);
         Button dialogButton = this.getButton(parentComposite);
@@ -100,7 +100,7 @@ public class FileDialogButton extends AbstractViewField<String> implements Selec
         String oldSelectFile = this.locationText.getText();
         String newSelectFile = this.dialog.open();
         this.locationText.setText(newSelectFile);
-        //Èç¹û×Ö¶ÎÖµ·¢Éú±ä»¯ÔòÒı·¢ÊÂ¼ş¡£
+        //å¦‚æœå­—æ®µå€¼å‘ç”Ÿå˜åŒ–åˆ™å¼•å‘äº‹ä»¶ã€‚
         if (oldSelectFile.equals(newSelectFile) == false)
             this.fireOnFieldChanged();
     }

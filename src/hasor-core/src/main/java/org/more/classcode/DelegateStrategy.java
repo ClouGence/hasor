@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package org.more.classcode;
 /**
- * Î¯ÍĞ²ßÂÔ£¬¸Ã½Ó¿Ú·½·¨ÔÚ{@link ClassBuilder#initBuilder(ClassEngine)}µ÷ÓÃÆÚ¼äµ÷ÓÃ¡£
- * ÓÃÓÚ¾ö¶¨Î¯ÍĞ½Ó¿ÚÊÇ·ñÉúĞ§¡£
+ * å§”æ‰˜ç­–ç•¥ï¼Œè¯¥æ¥å£æ–¹æ³•åœ¨{@link ClassBuilder#initBuilder(ClassEngine)}è°ƒç”¨æœŸé—´è°ƒç”¨ã€‚
+ * ç”¨äºå†³å®šå§”æ‰˜æ¥å£æ˜¯å¦ç”Ÿæ•ˆã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface DelegateStrategy extends BaseStrategy {
     /**
-     * ¸Ã·½·¨¿ÉÒÔÈ·¶¨Õâ¸öÎ¯ÍĞ½Ó¿ÚÀàĞÍÊÇ·ñ±»ºöÂÔ£¬Èç¹û±»ºöÂÔÔòĞÂÉú³ÉµÄÀà²»¿ÉÒÔ×ª»»³É¸ÃÀàĞÍ¡£
-     * Èç¹ûÈ·¶¨ĞèÒªºöÂÔÕâ¸öÎ¯ÍĞ½Ó¿ÚÔòĞèÒª·µ»Øtrue£¬·µ»Øfalse±íÊ¾²»ºöÂÔÕâ¸öÎ¯ÍĞ¡£
+     * è¯¥æ–¹æ³•å¯ä»¥ç¡®å®šè¿™ä¸ªå§”æ‰˜æ¥å£ç±»å‹æ˜¯å¦è¢«å¿½ç•¥ï¼Œå¦‚æœè¢«å¿½ç•¥åˆ™æ–°ç”Ÿæˆçš„ç±»ä¸å¯ä»¥è½¬æ¢æˆè¯¥ç±»å‹ã€‚
+     * å¦‚æœç¡®å®šéœ€è¦å¿½ç•¥è¿™ä¸ªå§”æ‰˜æ¥å£åˆ™éœ€è¦è¿”å›trueï¼Œè¿”å›falseè¡¨ç¤ºä¸å¿½ç•¥è¿™ä¸ªå§”æ‰˜ã€‚
      */
     public boolean isIgnore(Class<?> delegateType);
 }

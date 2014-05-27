@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import org.more.webui.components.UISelectInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.AbstractRender;
 /**
- * ³éÏóÀà£¬ÊäÈë×é½¨µÄäÖÈ¾Æ÷£¬Ö÷ÒªÓÃÓÚinput±êÇ©¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUISelectInput£¨UISelectInput.js£©
+ * æŠ½è±¡ç±»ï¼Œè¾“å…¥ç»„å»ºçš„æ¸²æŸ“å™¨ï¼Œä¸»è¦ç”¨äºinputæ ‡ç­¾ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUISelectInputï¼ˆUISelectInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractSelectInputRender<T extends UISelectInput> extends AbstractRender<T> {
     @Override

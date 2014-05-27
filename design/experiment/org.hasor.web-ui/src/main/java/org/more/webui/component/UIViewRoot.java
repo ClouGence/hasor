@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 import org.more.webui.web.PostFormEnum;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£ºËùÓĞ×é¼şµÄ¸ù£¬Í¬Ê±Ò²¸ºÔğ±£´æËùÓĞÊÓÍ¼²ÎÊı¡£¸Ã×é½¨²»Ê¹ÓÃ@UICom×¢½â×¢²á¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnInvoke
- * <br><b>äÖÈ¾Æ÷</b>£ºÎŞ
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šæ‰€æœ‰ç»„ä»¶çš„æ ¹ï¼ŒåŒæ—¶ä¹Ÿè´Ÿè´£ä¿å­˜æ‰€æœ‰è§†å›¾å‚æ•°ã€‚è¯¥ç»„å»ºä¸ä½¿ç”¨@UIComæ³¨è§£æ³¨å†Œã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnInvoke
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼šæ— 
  * @version : 2012-3-29
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class UIViewRoot extends UIComponent {
     public UIViewRoot() {
@@ -49,7 +49,7 @@ public class UIViewRoot extends UIComponent {
         return com.saveState();
     }
 }
-/**¸ºÔğ´¦ÀíOnInvokeÊÂ¼şµÄELµ÷ÓÃ*/
+/**è´Ÿè´£å¤„ç†OnInvokeäº‹ä»¶çš„ELè°ƒç”¨*/
 class UIViewRoot_Event_OnAction implements EventListener {
     public static Event ActionEvent = Event.getEvent("OnInvoke");
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {

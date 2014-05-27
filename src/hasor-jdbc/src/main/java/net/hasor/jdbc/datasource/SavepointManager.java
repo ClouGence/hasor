@@ -19,15 +19,15 @@ import java.sql.Savepoint;
 /**
  * 
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface SavepointManager {
-    /**ÊÇ·ñÖ§³Ö±£´æµã */
+    /**æ˜¯å¦æ”¯æŒä¿å­˜ç‚¹ */
     public boolean supportSavepoint() throws SQLException;
-    /**´´½¨ÊÂÎñµÄ±£´æµã£¬Í¨¹ı<code>releaseSavepoint</code>·½·¨ÊÍ·ÅÕâ¸ö±£´æµã¡£SQLException */
+    /**åˆ›å»ºäº‹åŠ¡çš„ä¿å­˜ç‚¹ï¼Œé€šè¿‡<code>releaseSavepoint</code>æ–¹æ³•é‡Šæ”¾è¿™ä¸ªä¿å­˜ç‚¹ã€‚SQLException */
     public Savepoint createSavepoint() throws SQLException;
-    /**»Ø¹öÊÂÎñµ½Ò»¸öÖ¸¶¨µÄ±£´æµã¡£*/
+    /**å›æ»šäº‹åŠ¡åˆ°ä¸€ä¸ªæŒ‡å®šçš„ä¿å­˜ç‚¹ã€‚*/
     public void rollbackToSavepoint(Savepoint savepoint) throws SQLException;
-    /**ÊÍ·ÅÄ³¸öÊÂÎñµÄ±£´æµã*/
+    /**é‡Šæ”¾æŸä¸ªäº‹åŠ¡çš„ä¿å­˜ç‚¹*/
     public void releaseSavepoint(Savepoint savepoint) throws SQLException;
 }

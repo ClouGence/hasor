@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package net.test.simple._02_beans.pojo;
 import java.util.UUID;
 /**
- * Ò»¸öBean
+ * ä¸€ä¸ªBean
  * @version : 2014-1-3
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class PojoBean {
     private String uuid    = UUID.randomUUID().toString();
-    private String name    = "ÂíÈı";
-    private String address = "±±¾©ÂíÁ¬Íİ½ÖµÀ°ì...";
+    private String name    = "é©¬ä¸‰";
+    private String address = "åŒ—äº¬é©¬è¿æ´¼è¡—é“åŠ...";
     public String getUuid() {
         return uuid;
     }

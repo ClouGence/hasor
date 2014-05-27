@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import net.hasor.core.setting.FieldProperty;
 import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 /**
- * XmlNode, GlobalProperty ½Ó¿ÚÊµÏÖÀà¡£
+ * XmlNode, GlobalProperty æ¥å£å®ç°ç±»ã€‚
  * @version : 2013-4-22
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DefaultXmlNode implements XmlNode, FieldProperty {
     private String              elementName       = null;
@@ -117,11 +117,11 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
             for (Entry<String, String> attEnt : this.arrMap.entrySet()) {
                 strBuilder.append(attEnt.getKey() + "=" + "\"");
                 String attVal = attEnt.getValue();
-                attVal = attVal.replace("<", "&lt;");//Ğ¡ÓÚºÅ
-                attVal = attVal.replace(">", "&gt;");//´óÓÚºÅ
-                attVal = attVal.replace("'", "&apos;");//'µ¥ÒıºÅ
-                attVal = attVal.replace("\"", "&quot;");//'Ë«ÒıºÅ
-                attVal = attVal.replace("&", "&amp;");//& ºÍ
+                attVal = attVal.replace("<", "&lt;");//å°äºå·
+                attVal = attVal.replace(">", "&gt;");//å¤§äºå·
+                attVal = attVal.replace("'", "&apos;");//'å•å¼•å·
+                attVal = attVal.replace("\"", "&quot;");//'åŒå¼•å·
+                attVal = attVal.replace("&", "&amp;");//& å’Œ
                 strBuilder.append(attVal + "\" ");
             }
             strBuilder.deleteCharAt(strBuilder.length() - 1);

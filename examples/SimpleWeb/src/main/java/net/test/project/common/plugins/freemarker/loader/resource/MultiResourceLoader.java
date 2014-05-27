@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import net.test.project.common.plugins.freemarker.loader.IResourceLoader;
 /**
-* ¿ÉÒÔ½«¶à¸ö{@link IResourceLoader}½Ó¿Ú¶ÔÏó×÷ÎªÒ»¸öÌá¹©³öÈ¥¡£¡£
+* å¯ä»¥å°†å¤šä¸ª{@link IResourceLoader}æ¥å£å¯¹è±¡ä½œä¸ºä¸€ä¸ªæä¾›å‡ºå»ã€‚ã€‚
 * @version : 2011-9-17
-* @author ÕÔÓÀ´º (zyc@byshell.org)
+* @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 */
 public class MultiResourceLoader implements IResourceLoader {
     private ArrayList<IResourceLoader> resourceLoaders = new ArrayList<IResourceLoader>();

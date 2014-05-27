@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,40 +30,40 @@ import net.test.simple._09_kernel.mods.Mod_2;
 import net.test.simple._09_kernel.mods.Mod_3;
 import org.junit.Test;
 /**
- * Hasor ÄÚºËÆô¶¯²âÊÔ
+ * Hasor å†…æ ¸å¯åŠ¨æµ‹è¯•
  * @version : 2014-1-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class StandardKernel_Test {
     private static String config = "/net/test/simple/_09_kernel/hasor-config.xml";
     @Test
     public void test_kernel() throws IOException, URISyntaxException {
         System.out.println("--->>test_kernel<<--");
-        //Hasor µÄ±ê×¼ÈİÆ÷
-        //--¸ÃÈİÆ÷²»¾ß±¸½âÎö @AnnoModule ×¢½â¹¦ÄÜ£¬µ«ÊÇ»á¼ÓÔØÄ¬ÈÏÎ»ÖÃÏÂµÄ¡°hasor-config.xml¡±¡¢¡°static-config.xml¡±ÅäÖÃÎÄ¼ş¡£
+        //Hasor çš„æ ‡å‡†å®¹å™¨
+        //--è¯¥å®¹å™¨ä¸å…·å¤‡è§£æ @AnnoModule æ³¨è§£åŠŸèƒ½ï¼Œä½†æ˜¯ä¼šåŠ è½½é»˜è®¤ä½ç½®ä¸‹çš„â€œhasor-config.xmlâ€ã€â€œstatic-config.xmlâ€é…ç½®æ–‡ä»¶ã€‚
         AppContext kernel = new StandardAppContext(config);
         kernel.start();
         //
     }
-    /*2.Ìí¼ÓÄ£¿é£¨ÓÉÓÚÎ¢ÄÚºË²»Ö§³Ö @AnnoModule ×¢½âÒò´ËÄ£¿éµÄÌí¼ÓĞèÒªÍ¨¹ı±àÂë£©*/
+    /*2.æ·»åŠ æ¨¡å—ï¼ˆç”±äºå¾®å†…æ ¸ä¸æ”¯æŒ @AnnoModule æ³¨è§£å› æ­¤æ¨¡å—çš„æ·»åŠ éœ€è¦é€šè¿‡ç¼–ç ï¼‰*/
     @Test
     public void test_module() throws IOException, URISyntaxException {
         System.out.println("--->>test_module<<--");
         StandardAppContext kernel = new StandardAppContext(config);
-        kernel.addModule(new Mod_1());//Ä£¿é1
-        kernel.addModule(new Mod_2());//Ä£¿é2
-        kernel.addModule(new Mod_3());//Ä£¿é3
+        kernel.addModule(new Mod_1());//æ¨¡å—1
+        kernel.addModule(new Mod_2());//æ¨¡å—2
+        kernel.addModule(new Mod_3());//æ¨¡å—3
         //
         kernel.start();
     }
-    /*3.ÊÖ¶¯Ìí¼Ó²å¼ş£¨ÓÉÓÚÎ¢ÄÚºË²»Ö§³Ö @Plugin ×¢½âÒò´ËÌí¼ÓĞèÒªÍ¨¹ı±àÂë£©*/
+    /*3.æ‰‹åŠ¨æ·»åŠ æ’ä»¶ï¼ˆç”±äºå¾®å†…æ ¸ä¸æ”¯æŒ @Plugin æ³¨è§£å› æ­¤æ·»åŠ éœ€è¦é€šè¿‡ç¼–ç ï¼‰*/
     @Test
     public void test_plugins() throws InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         System.out.println("--->>test_plugins<<--");
         StandardAppContext kernel = new StandardAppContext(config);
-        kernel.addModule(PluginHelper.toModule(BeanPlugin.class));//@Bean ²å¼ş
-        kernel.addModule(PluginHelper.toModule(ListenerPlugin.class));//@Listener ²å¼ş
-        kernel.addModule(PluginHelper.toModule(AopPlugin.class));//@Aop @GlobalAop ²å¼ş
+        kernel.addModule(PluginHelper.toModule(BeanPlugin.class));//@Bean æ’ä»¶
+        kernel.addModule(PluginHelper.toModule(ListenerPlugin.class));//@Listener æ’ä»¶
+        kernel.addModule(PluginHelper.toModule(AopPlugin.class));//@Aop @GlobalAop æ’ä»¶
         //
         kernel.start();
         // 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-12-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Plugin
 public class JdbcPlugin extends AbstractHasorPlugin {
     public void loadPlugin(ApiBinder apiBinder) {
         /*JdbcTemplate*/
         apiBinder.bindingType(JdbcTemplate.class).toProvider(new DefaultJdbcTemplateProvider(apiBinder));
-        /*´øÓĞÃû³ÆµÄ JdbcTemplate*/
+        /*å¸¦æœ‰åç§°çš„ JdbcTemplate*/
         Settings settings = apiBinder.getEnvironment().getSettings();
         XmlNode[] dataSourceSet = settings.getXmlNodeArray("hasor-jdbc.dataSourceSet");
         if (dataSourceSet == null)

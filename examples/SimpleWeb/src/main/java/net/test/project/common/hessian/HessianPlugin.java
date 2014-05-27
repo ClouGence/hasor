@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ import com.caucho.hessian.server.HessianServlet;
 /**
  * 
  * @version : 2013-12-25
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Plugin
 public class HessianPlugin extends AbstractWebHasorPlugin {
     public void loadPlugin(WebApiBinder apiBinder) {
         Set<Class<?>> servicesSet = apiBinder.findClass(HessianService.class);
-        /*1.×¢²á*/
+        /*1.æ³¨å†Œ*/
         final Map<Class<?>, HessianServlet> serviceMap = new HashMap<Class<?>, HessianServlet>();
         for (Class<?> serviceType : servicesSet) {
             //
@@ -50,28 +50,28 @@ public class HessianPlugin extends AbstractWebHasorPlugin {
             serviceMap.put(serviceType, serviceServlet);
             apiBinder.serve(pushPath).with(serviceServlet);
         }
-        /*2.³õÊ¼»¯*/
+        /*2.åˆå§‹åŒ–*/
         apiBinder.registerAware(new AppContextAware() {
             public void setAppContext(AppContext appContext) {
                 for (Entry<Class<?>, HessianServlet> ent : serviceMap.entrySet()) {
                     Class<?> serviceType = ent.getKey();
                     HessianServlet serviceServlet = ent.getValue();
                     serviceServlet.setAPIClass(serviceType);
-                    /*Í¨¹ı AppContext ´´½¨*/
+                    /*é€šè¿‡ AppContext åˆ›å»º*/
                     serviceServlet.setHome(appContext.getInstance(serviceType));
                 }
             }
         });
     }
     //
-    /**´´½¨ Hessian ¿Í»§¶Ëµ÷ÓÃ*/
+    /**åˆ›å»º Hessian å®¢æˆ·ç«¯è°ƒç”¨*/
     public static <T> T getPropxy(Class<T> propxyFaces) throws MalformedURLException {
         HessianClient hessAnno = propxyFaces.getAnnotation(HessianClient.class);
         if (hessAnno == null || StringUtils.isBlank(hessAnno.value()))
             return null;
         return getPropxy(propxyFaces, hessAnno.value());
     }
-    /**´´½¨ Hessian ¿Í»§¶Ëµ÷ÓÃ*/
+    /**åˆ›å»º Hessian å®¢æˆ·ç«¯è°ƒç”¨*/
     public static <T> T getPropxy(Class<T> propxyFaces, String url) throws MalformedURLException {
         if (propxyFaces.isInterface() == false)
             throw new ClassCastException("propxyFaces is not Interface.");

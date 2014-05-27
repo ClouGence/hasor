@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.dev.toos.internal.util.Message;
 /**
  * 
  * @version : 2013-2-2
- * @author ’‘”¿¥∫ (zyc@byshell.org) 
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org) 
  */
 public class JARSourceConstCodeGroup extends ConstGroup {
     private InputStream inStream = null;
@@ -44,7 +44,7 @@ public class JARSourceConstCodeGroup extends ConstGroup {
             this.constDao = new XmlConstDao(this.inStream);
             this.varDao = new XmlVarDao(this.constDao);
         } catch (Exception e) {
-            Message.errorInfo("Load °Æ" + this.getName() + "°Ø Resource Error.", e);
+            Message.errorInfo("Load ‚Äò" + this.getName() + "‚Äô Resource Error.", e);
         }
     }
     @Override

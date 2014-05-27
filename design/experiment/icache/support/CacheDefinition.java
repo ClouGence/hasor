@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import net.hasor.core.AppContext;
 import net.hasor.gift.icache.Cache;
 import com.google.inject.Provider;
 /**
- * ÉùÃ÷Ò»¸öCache£¬¸ÃCacheĞèÒªÊµÏÖ{@link Cache}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªCacheï¼Œè¯¥Cacheéœ€è¦å®ç°{@link Cache}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class CacheDefinition implements Provider<Cache<?>> {
     private String          name        = null;

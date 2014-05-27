@@ -8,7 +8,7 @@ import org.eclipse.gef.requests.CreateRequest;
 /**
  * 
  * @version : 2013-3-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class DiagramXYLayoutEditPolicy extends XYLayoutEditPolicy {
     protected Command getCreateCommand(CreateRequest request) {

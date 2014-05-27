@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ import org.more.util.FileUtils;
 import org.more.util.IOUtils;
 import org.more.util.StringUtils;
 /**
- * ¸ºÔğ×°ÔØjar°ü»òzip°üÖĞµÄ×ÊÔ´
+ * è´Ÿè´£è£…è½½jaråŒ…æˆ–zipåŒ…ä¸­çš„èµ„æº
  * @version : 2013-6-5
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ResourceHttpServlet extends HttpServlet {
     private static final long                                serialVersionUID = 2470188139577613256L;
@@ -72,7 +72,7 @@ public class ResourceHttpServlet extends HttpServlet {
     //
     //
     //
-    /**ÏìÓ¦×ÊÔ´*/
+    /**å“åº”èµ„æº*/
     private void forwardTo(File file, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         if (response.isCommitted() == true)
             return;
@@ -91,7 +91,7 @@ public class ResourceHttpServlet extends HttpServlet {
     }
     //
     //
-    /*»ñÈ¡ ReadWriteLock Ëø*/
+    /*è·å– ReadWriteLock é”*/
     private synchronized ReadWriteLock getReadWriteLock(String requestURI) {
         ReadWriteLock cacheRWLock = null;
         if (this.cachingRes.containsKey(requestURI) == true) {
@@ -102,20 +102,20 @@ public class ResourceHttpServlet extends HttpServlet {
         }
         return cacheRWLock;
     }
-    /*ÊÍ·Å ReadWriteLock Ëø*/
+    /*é‡Šæ”¾ ReadWriteLock é”*/
     private synchronized void releaseReadWriteLock(String requestURI) {
         if (this.cachingRes.containsKey(requestURI) == true)
             this.cachingRes.remove(requestURI);
     }
-    /**×ÊÔ´·şÎñÈë¿Ú·½·¨*/
+    /**èµ„æºæœåŠ¡å…¥å£æ–¹æ³•*/
     public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-        //1.È·¶¨Ê±ºòÀ¹½Ø
+        //1.ç¡®å®šæ—¶å€™æ‹¦æˆª
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
         try {
             requestURI = URLDecoder.decode(requestURI, "utf-8");
         } catch (Exception e) {}
-        //2.¼ì²é»º´æÂ·¾¶ÖĞÊÇ·ñ´æÔÚ
+        //2.æ£€æŸ¥ç¼“å­˜è·¯å¾„ä¸­æ˜¯å¦å­˜åœ¨
         File cacheFile = new File(CacheDir.get(), requestURI);
         if (this.isDebug) {
             boolean mark = this.cacheRes(cacheFile, requestURI, request, response);
@@ -125,34 +125,34 @@ public class ResourceHttpServlet extends HttpServlet {
                 ((HttpServletResponse) response).sendError(404, "not exist :" + requestURI);
             return;
         }
-        //3.´´½¨Ëø-A
+        //3.åˆ›å»ºé”-A
         ReadWriteLock cacheRWLock = this.getReadWriteLock(requestURI);
-        //4.ÔÚËøÏÂ»º´æÎÄ¼ş£¬ÏÂÃæ´úÂëÊÇÎªÁË·ÀÖ¹»º´æ´©Í¸
+        //4.åœ¨é”ä¸‹ç¼“å­˜æ–‡ä»¶ï¼Œä¸‹é¢ä»£ç æ˜¯ä¸ºäº†é˜²æ­¢ç¼“å­˜ç©¿é€
         boolean forwardType = true;
-        cacheRWLock.readLock().lock();//¶ÁÈ¡Ëø¶¨
+        cacheRWLock.readLock().lock();//è¯»å–é”å®š
         if (!cacheFile.exists()) {
-            /*Éı¼¶Ëø*/
+            /*å‡çº§é”*/
             cacheRWLock.readLock().unlock();
             cacheRWLock.writeLock().lock();
-            /*ÔÚdebugÄ£Ê½ÏÂ£¬»òÕßÉĞÎ´»º´æÊ±*/
+            /*åœ¨debugæ¨¡å¼ä¸‹ï¼Œæˆ–è€…å°šæœªç¼“å­˜æ—¶*/
             if (this.isDebug || !cacheFile.exists()) {
-                forwardType = this.cacheRes(cacheFile, requestURI, request, response);//µ±»º´æÊ§°ÜÊ±·µ»Øfalse
+                forwardType = this.cacheRes(cacheFile, requestURI, request, response);//å½“ç¼“å­˜å¤±è´¥æ—¶è¿”å›false
             }
             cacheRWLock.readLock().lock();
             cacheRWLock.writeLock().unlock();
         }
-        cacheRWLock.readLock().unlock();//¶ÁÈ¡½âËø
-        //5.»º´æÍê±Ï
+        cacheRWLock.readLock().unlock();//è¯»å–è§£é”
+        //5.ç¼“å­˜å®Œæ¯•
         if (forwardType)
             this.forwardTo(cacheFile, request, response);
         else
-            ((HttpServletResponse) response).sendError(404, "not exist this resource ¡®" + requestURI + "¡¯");
-        //6.ÊÍ·ÅËø-A
+            ((HttpServletResponse) response).sendError(404, "not exist this resource â€˜" + requestURI + "â€™");
+        //6.é‡Šæ”¾é”-A
         this.releaseReadWriteLock(requestURI);
     }
-    /*×ÊÔ´»º´æ*/
+    /*èµ„æºç¼“å­˜*/
     private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response) throws IOException, ServletException {
-        //3.³¢ÊÔÔØÈë×ÊÔ´ 
+        //3.å°è¯•è½½å…¥èµ„æº 
         ResourceLoader inLoader = null;
         InputStream inStream = null;
         ResourceLoader[] loaderList = LoaderList.get();
@@ -174,7 +174,7 @@ public class ResourceHttpServlet extends HttpServlet {
         }
         if (inStream == null)
             return false;
-        //4.Ğ´ÈëÁÙÊ±ÎÄ¼ş¼Ğ
+        //4.å†™å…¥ä¸´æ—¶æ–‡ä»¶å¤¹
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
         IOUtils.copy(inStream, out);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,25 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 
  * @version : 2012-6-21
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class CommonCodeUtils {
     /**
-     * ¼òµ¥±àÂëÀà£¬¸ÃÀàÌá¹©ÁËBase64µÄ±àÂë£¬¸Ã±àÂëÆ÷ÓëÅäÌ×µÄjs±àÂëÆ÷¿ÉÒÔÊµÏÖ»¥Ïà±àÂë»¥Ïà×ª»¯¹¦ÄÜ¡£
+     * ç®€å•ç¼–ç ç±»ï¼Œè¯¥ç±»æä¾›äº†Base64çš„ç¼–ç ï¼Œè¯¥ç¼–ç å™¨ä¸é…å¥—çš„jsç¼–ç å™¨å¯ä»¥å®ç°äº’ç›¸ç¼–ç äº’ç›¸è½¬åŒ–åŠŸèƒ½ã€‚
      * @version 2009-4-28
-     * @author ÕÔÓÀ´º (zyc@hasor.net)
+     * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
      */
     public static abstract class Base64 {
         protected static final String Base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*-"; // supplement
         /***/
-        //    /**·µ»ØÓëBase64¶ÔÓ¦µÄJSbase64±àÂë/½âÂë½Å±¾*/
+        //    /**è¿”å›ä¸Base64å¯¹åº”çš„JSbase64ç¼–ç /è§£ç è„šæœ¬*/
         //    public static Reader getJSReader() throws UnsupportedEncodingException {
         //        return new InputStreamReader(Base64.class.getResourceAsStream("/META-INF/resource/util/base64.js"), "utf-8");
         //    };
         /**
-         * Ê¹ÓÃUTF-8±àÂë½øĞĞBase64±àÂë
-         * @param s Òª±àÂëµÄÔ­Ê¼Êı¾İ
-         * @return ·µ»Ø±àÂëÖ®ºóµÄ×Ö·û´®¡£
+         * ä½¿ç”¨UTF-8ç¼–ç è¿›è¡ŒBase64ç¼–ç 
+         * @param s è¦ç¼–ç çš„åŸå§‹æ•°æ®
+         * @return è¿”å›ç¼–ç ä¹‹åçš„å­—ç¬¦ä¸²ã€‚
          */
         public static String base64Encode(final String s) {
             if (s == null || s.length() == 0)
@@ -142,26 +142,26 @@ public abstract class CommonCodeUtils {
         }
     }
     /**
-     * MD5Ëã·¨Ìá¹©
+     * MD5ç®—æ³•æä¾›
      * @version : 2011-11-7
-     * @author ÕÔÓÀ´º (zyc@hasor.net)
+     * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
      */
     public static abstract class MD5 {
         public static String encodeMD5(byte[] source) throws NoSuchAlgorithmException {
             String s = null;
-            // ÓÃÀ´½«×Ö½Ú×ª»»³É 16 ½øÖÆ±íÊ¾µÄ×Ö·û
+            // ç”¨æ¥å°†å­—èŠ‚è½¬æ¢æˆ 16 è¿›åˆ¶è¡¨ç¤ºçš„å­—ç¬¦
             char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
             md.update(source);
-            byte tmp[] = md.digest(); // MD5 µÄ¼ÆËã½á¹ûÊÇÒ»¸ö 128 Î»µÄ³¤ÕûÊı£¬ÓÃ×Ö½Ú±íÊ¾¾ÍÊÇ 16 ¸ö×Ö½Ú
-            char str[] = new char[16 * 2]; // Ã¿¸ö×Ö½ÚÓÃ 16 ½øÖÆ±íÊ¾µÄ»°£¬Ê¹ÓÃÁ½¸ö×Ö·û£¬ËùÒÔ±íÊ¾³É 16 ½øÖÆĞèÒª 32 ¸ö×Ö·û
-            int k = 0; // ±íÊ¾×ª»»½á¹ûÖĞ¶ÔÓ¦µÄ×Ö·ûÎ»ÖÃ
-            for (int i = 0; i < 16; i++) { // ´ÓµÚÒ»¸ö×Ö½Ú¿ªÊ¼£¬¶Ô MD5 µÄÃ¿Ò»¸ö×Ö½Ú×ª»»³É 16 ½øÖÆ×Ö·ûµÄ×ª»»
-                byte byte0 = tmp[i]; // È¡µÚ i ¸ö×Ö½Ú
-                str[k++] = hexDigits[byte0 >>> 4 & 0xf]; // È¡×Ö½ÚÖĞ¸ß 4 Î»µÄÊı×Ö×ª»», >>> ÎªÂß¼­ÓÒÒÆ£¬½«·ûºÅÎ»Ò»ÆğÓÒÒÆ
-                str[k++] = hexDigits[byte0 & 0xf]; // È¡×Ö½ÚÖĞµÍ 4 Î»µÄÊı×Ö×ª»»
+            byte tmp[] = md.digest(); // MD5 çš„è®¡ç®—ç»“æœæ˜¯ä¸€ä¸ª 128 ä½çš„é•¿æ•´æ•°ï¼Œç”¨å­—èŠ‚è¡¨ç¤ºå°±æ˜¯ 16 ä¸ªå­—èŠ‚
+            char str[] = new char[16 * 2]; // æ¯ä¸ªå­—èŠ‚ç”¨ 16 è¿›åˆ¶è¡¨ç¤ºçš„è¯ï¼Œä½¿ç”¨ä¸¤ä¸ªå­—ç¬¦ï¼Œæ‰€ä»¥è¡¨ç¤ºæˆ 16 è¿›åˆ¶éœ€è¦ 32 ä¸ªå­—ç¬¦
+            int k = 0; // è¡¨ç¤ºè½¬æ¢ç»“æœä¸­å¯¹åº”çš„å­—ç¬¦ä½ç½®
+            for (int i = 0; i < 16; i++) { // ä»ç¬¬ä¸€ä¸ªå­—èŠ‚å¼€å§‹ï¼Œå¯¹ MD5 çš„æ¯ä¸€ä¸ªå­—èŠ‚è½¬æ¢æˆ 16 è¿›åˆ¶å­—ç¬¦çš„è½¬æ¢
+                byte byte0 = tmp[i]; // å–ç¬¬ i ä¸ªå­—èŠ‚
+                str[k++] = hexDigits[byte0 >>> 4 & 0xf]; // å–å­—èŠ‚ä¸­é«˜ 4 ä½çš„æ•°å­—è½¬æ¢, >>> ä¸ºé€»è¾‘å³ç§»ï¼Œå°†ç¬¦å·ä½ä¸€èµ·å³ç§»
+                str[k++] = hexDigits[byte0 & 0xf]; // å–å­—èŠ‚ä¸­ä½ 4 ä½çš„æ•°å­—è½¬æ¢
             }
-            s = new String(str); // »»ºóµÄ½á¹û×ª»»Îª×Ö·û´®
+            s = new String(str); // æ¢åçš„ç»“æœè½¬æ¢ä¸ºå­—ç¬¦ä¸²
             return s;
         }
         public static String getMD5(String source) throws NoSuchAlgorithmException {
@@ -169,29 +169,29 @@ public abstract class CommonCodeUtils {
         }
         public static String getMD5(byte[] source) throws NoSuchAlgorithmException {
             String s = null;
-            // ÓÃÀ´½«×Ö½Ú×ª»»³É 16 ½øÖÆ±íÊ¾µÄ×Ö·û
+            // ç”¨æ¥å°†å­—èŠ‚è½¬æ¢æˆ 16 è¿›åˆ¶è¡¨ç¤ºçš„å­—ç¬¦
             char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
             md.update(source);
-            byte tmp[] = md.digest(); // MD5 µÄ¼ÆËã½á¹ûÊÇÒ»¸ö 128 Î»µÄ³¤ÕûÊı£¬ÓÃ×Ö½Ú±íÊ¾¾ÍÊÇ 16 ¸ö×Ö½Ú
-            char str[] = new char[16 * 2]; // Ã¿¸ö×Ö½ÚÓÃ 16 ½øÖÆ±íÊ¾µÄ»°£¬Ê¹ÓÃÁ½¸ö×Ö·û£¬ËùÒÔ±íÊ¾³É 16 ½øÖÆĞèÒª 32 ¸ö×Ö·û
-            int k = 0; // ±íÊ¾×ª»»½á¹ûÖĞ¶ÔÓ¦µÄ×Ö·ûÎ»ÖÃ
-            for (int i = 0; i < 16; i++) { // ´ÓµÚÒ»¸ö×Ö½Ú¿ªÊ¼£¬¶Ô MD5 µÄÃ¿Ò»¸ö×Ö½Ú×ª»»³É 16 ½øÖÆ×Ö·ûµÄ×ª»»
-                byte byte0 = tmp[i]; // È¡µÚ i ¸ö×Ö½Ú
-                str[k++] = hexDigits[byte0 >>> 4 & 0xf]; // È¡×Ö½ÚÖĞ¸ß 4 Î»µÄÊı×Ö×ª»», >>> ÎªÂß¼­ÓÒÒÆ£¬½«·ûºÅÎ»Ò»ÆğÓÒÒÆ
-                str[k++] = hexDigits[byte0 & 0xf]; // È¡×Ö½ÚÖĞµÍ 4 Î»µÄÊı×Ö×ª»»
+            byte tmp[] = md.digest(); // MD5 çš„è®¡ç®—ç»“æœæ˜¯ä¸€ä¸ª 128 ä½çš„é•¿æ•´æ•°ï¼Œç”¨å­—èŠ‚è¡¨ç¤ºå°±æ˜¯ 16 ä¸ªå­—èŠ‚
+            char str[] = new char[16 * 2]; // æ¯ä¸ªå­—èŠ‚ç”¨ 16 è¿›åˆ¶è¡¨ç¤ºçš„è¯ï¼Œä½¿ç”¨ä¸¤ä¸ªå­—ç¬¦ï¼Œæ‰€ä»¥è¡¨ç¤ºæˆ 16 è¿›åˆ¶éœ€è¦ 32 ä¸ªå­—ç¬¦
+            int k = 0; // è¡¨ç¤ºè½¬æ¢ç»“æœä¸­å¯¹åº”çš„å­—ç¬¦ä½ç½®
+            for (int i = 0; i < 16; i++) { // ä»ç¬¬ä¸€ä¸ªå­—èŠ‚å¼€å§‹ï¼Œå¯¹ MD5 çš„æ¯ä¸€ä¸ªå­—èŠ‚è½¬æ¢æˆ 16 è¿›åˆ¶å­—ç¬¦çš„è½¬æ¢
+                byte byte0 = tmp[i]; // å–ç¬¬ i ä¸ªå­—èŠ‚
+                str[k++] = hexDigits[byte0 >>> 4 & 0xf]; // å–å­—èŠ‚ä¸­é«˜ 4 ä½çš„æ•°å­—è½¬æ¢, >>> ä¸ºé€»è¾‘å³ç§»ï¼Œå°†ç¬¦å·ä½ä¸€èµ·å³ç§»
+                str[k++] = hexDigits[byte0 & 0xf]; // å–å­—èŠ‚ä¸­ä½ 4 ä½çš„æ•°å­—è½¬æ¢
             }
-            s = new String(str); // »»ºóµÄ½á¹û×ª»»Îª×Ö·û´®
+            s = new String(str); // æ¢åçš„ç»“æœè½¬æ¢ä¸ºå­—ç¬¦ä¸²
             return s;
         }
     }
     /**
-     * »ùÓÚÊ®Áù½øÖÆµÄ×Ö·û×ª»»
+     * åŸºäºåå…­è¿›åˆ¶çš„å­—ç¬¦è½¬æ¢
      * @version : 2013-8-13
-     * @author ÕÔÓÀ´º (zyc@hasor.net)
+     * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
      */
     public static abstract class HexConversion {
-        /** ×Ö·û´®×ª»»³ÉÊ®Áù½øÖÆ×Ö·û´® */
+        /** å­—ç¬¦ä¸²è½¬æ¢æˆåå…­è¿›åˆ¶å­—ç¬¦ä¸² */
         public static String str2HexStr(String str) {
             char[] chars = "0123456789ABCDEF".toCharArray();
             StringBuilder sb = new StringBuilder("");
@@ -205,7 +205,7 @@ public abstract class CommonCodeUtils {
             }
             return sb.toString();
         }
-        /** Ê®Áù½øÖÆ×ª»»×Ö·û´® */
+        /** åå…­è¿›åˆ¶è½¬æ¢å­—ç¬¦ä¸² */
         public static String hexStr2Str(String hexStr) {
             String str = "0123456789ABCDEF";
             char[] hexs = hexStr.toCharArray();
@@ -218,7 +218,7 @@ public abstract class CommonCodeUtils {
             }
             return new String(bytes);
         }
-        /** bytes×ª»»³ÉÊ®Áù½øÖÆ×Ö·û´® */
+        /** bytesè½¬æ¢æˆåå…­è¿›åˆ¶å­—ç¬¦ä¸² */
         public static String byte2HexStr(byte[] b) {
             String hs = "";
             String stmp = "";
@@ -232,7 +232,7 @@ public abstract class CommonCodeUtils {
             }
             return hs.toUpperCase();
         }
-        /** bytes×ª»»³ÉÊ®Áù½øÖÆ×Ö·û´® */
+        /** bytesè½¬æ¢æˆåå…­è¿›åˆ¶å­—ç¬¦ä¸² */
         public static byte[] hexStr2Bytes(String src) {
             int m = 0, n = 0;
             int l = src.length() / 2;
@@ -245,7 +245,7 @@ public abstract class CommonCodeUtils {
             }
             return ret;
         }
-        /** StringµÄ×Ö·û´®×ª»»³ÉunicodeµÄString */
+        /** Stringçš„å­—ç¬¦ä¸²è½¬æ¢æˆunicodeçš„String */
         public static String stringToUnicode(String strText) throws Exception {
             char c;
             String strRet = "";
@@ -258,25 +258,25 @@ public abstract class CommonCodeUtils {
                 if (intAsc > 128) {
                     strRet += "\\u" + strHex;
                 } else {
-                    // µÍÎ»ÔÚÇ°Ãæ²¹00
+                    // ä½ä½åœ¨å‰é¢è¡¥00
                     strRet += "\\u00" + strHex;
                 }
             }
             return strRet;
         }
-        /** unicodeµÄString×ª»»³ÉStringµÄ×Ö·û´® */
+        /** unicodeçš„Stringè½¬æ¢æˆStringçš„å­—ç¬¦ä¸² */
         public static String unicodeToString(String hex) {
             int t = hex.length() / 6;
             StringBuilder str = new StringBuilder();
             for (int i = 0; i < t; i++) {
                 String s = hex.substring(i * 6, (i + 1) * 6);
-                // ¸ßÎ»ĞèÒª²¹ÉÏ00ÔÙ×ª
+                // é«˜ä½éœ€è¦è¡¥ä¸Š00å†è½¬
                 String s1 = s.substring(2, 4) + "00";
-                // µÍÎ»Ö±½Ó×ª
+                // ä½ä½ç›´æ¥è½¬
                 String s2 = s.substring(4);
-                // ½«16½øÖÆµÄstring×ªÎªint
+                // å°†16è¿›åˆ¶çš„stringè½¬ä¸ºint
                 int n = Integer.valueOf(s1, 16) + Integer.valueOf(s2, 16);
-                // ½«int×ª»»Îª×Ö·û
+                // å°†intè½¬æ¢ä¸ºå­—ç¬¦
                 char[] chars = Character.toChars(n);
                 str.append(new String(chars));
             }

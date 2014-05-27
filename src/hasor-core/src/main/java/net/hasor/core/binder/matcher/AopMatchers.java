@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import net.hasor.core.Hasor;
 /**
  * 
  * @version : 2013-8-20
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class AopMatchers {
     private AopMatchers() {}
@@ -29,7 +29,7 @@ public class AopMatchers {
     public static <T> MatcherDevice<T> createDevice(Matcher<T> matcher) {
         return new MatcherDevice<T>(matcher);
     }
-    /** Æ¥ÅäÈÎÒâÀàĞÍ*/
+    /** åŒ¹é…ä»»æ„ç±»å‹*/
     public static Matcher<Class<?>> anyClass() {
         return new Matcher<Class<?>>() {
             public boolean matches(Class<?> t) {
@@ -37,7 +37,7 @@ public class AopMatchers {
             }
         };
     }
-    /** Æ¥ÅäÈÎÒâ·½·¨*/
+    /** åŒ¹é…ä»»æ„æ–¹æ³•*/
     public static Matcher<Method> anyMethod() {
         return new Matcher<Method>() {
             public boolean matches(Method t) {
@@ -45,24 +45,24 @@ public class AopMatchers {
             }
         };
     }
-    /** ÔÚÀàĞÍÖĞÆ¥Åä×¢½â */
+    /** åœ¨ç±»å‹ä¸­åŒ¹é…æ³¨è§£ */
     public static Matcher<Class<?>> annotatedWithClass(Class<? extends Annotation> annotationType) {
         return new ClassMatcherAnnotationType(annotationType);
     }
-    /** ÔÚ·½·¨ÖĞÆ¥Åä×¢½â */
+    /** åœ¨æ–¹æ³•ä¸­åŒ¹é…æ³¨è§£ */
     public static Matcher<Method> annotatedWithMethod(Class<? extends Annotation> annotationType) {
         return new MethodMatcherAnnotationType(annotationType);
     }
-    /** ·µ»ØÒ»¸öÆ¥ÅäÆ÷£¬Æ¥Åä¸ø¶¨ÀàĞÍµÄ×ÓÀà£¨»òÊµÏÖÁËµÄ½Ó¿Ú£© */
+    /** è¿”å›ä¸€ä¸ªåŒ¹é…å™¨ï¼ŒåŒ¹é…ç»™å®šç±»å‹çš„å­ç±»ï¼ˆæˆ–å®ç°äº†çš„æ¥å£ï¼‰ */
     public static Matcher<Class<?>> subClassesOf(Class<?> superclass) {
         return new SubclassesOf(superclass);
     }
-    /**½«±í´ïÊ½½âÎöÎª<code>Matcher&lt;Class&gt;</code>¡£*/
+    /**å°†è¡¨è¾¾å¼è§£æä¸º<code>Matcher&lt;Class&gt;</code>ã€‚*/
     public static Matcher<Class<?>> expressionClass(String matcherExpression) {
         // TODO Auto-generated method stub
         return null;
     }
-    /**½«±í´ïÊ½½âÎöÎª<code>Matcher&lt;Method&gt;</code>¡£*/
+    /**å°†è¡¨è¾¾å¼è§£æä¸º<code>Matcher&lt;Method&gt;</code>ã€‚*/
     public static Matcher<Method> expressionMethod(String matcherExpression) {
         // TODO Auto-generated method stub
         return null;
@@ -120,7 +120,7 @@ public class AopMatchers {
     //    public static Matcher<Method> returns(final Matcher<? super Class<?>> returnType) {
     //        return Matchers.returns(returnType);
     //    }
-    /**Æ¥Åä×ÓÀà*/
+    /**åŒ¹é…å­ç±»*/
     private static class SubclassesOf implements Matcher<Class<?>> {
         private final Class<?> superclass;
         public SubclassesOf(Class<?> superclass) {
@@ -139,7 +139,7 @@ public class AopMatchers {
             return "subclassesOf(" + superclass.getSimpleName() + ".class)";
         }
     }
-    /**¸ºÔğ¼ì²âÆ¥Åä¡£¹æÔò£ºÖ»ÒªÀàĞÍÉÏ±ê¼ÇÁËÄ³¸ö×¢½â¡£*/
+    /**è´Ÿè´£æ£€æµ‹åŒ¹é…ã€‚è§„åˆ™ï¼šåªè¦ç±»å‹ä¸Šæ ‡è®°äº†æŸä¸ªæ³¨è§£ã€‚*/
     private static class ClassMatcherAnnotationType implements Matcher<Class<?>> {
         private Class<? extends Annotation> annotationType = null;
         public ClassMatcherAnnotationType(Class<? extends Annotation> annotationType) {
@@ -161,7 +161,7 @@ public class AopMatchers {
             return false;
         }
     }
-    /**¸ºÔğ¼ì²âÆ¥Åä¡£¹æÔò£ºÖ»Òª·½·¨ÉÏ±ê¼ÇÁËÄ³¸ö×¢½â¡£*/
+    /**è´Ÿè´£æ£€æµ‹åŒ¹é…ã€‚è§„åˆ™ï¼šåªè¦æ–¹æ³•ä¸Šæ ‡è®°äº†æŸä¸ªæ³¨è§£ã€‚*/
     private static class MethodMatcherAnnotationType implements Matcher<Method> {
         private Class<? extends Annotation> annotationType = null;
         public MethodMatcherAnnotationType(Class<? extends Annotation> annotationType) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ import org.eclipse.jface.action.Action;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class AbstractHandler extends Action {
-    private ConstCodeView uiView = null; //³£Á¿¹ÜÀíÆ÷ÊÓÍ¼£¬View
+    private ConstCodeView uiView = null; //å¸¸é‡ç®¡ç†å™¨è§†å›¾ï¼ŒView
     //
     //
     public AbstractHandler(String toolTipText, ConstCodeView uiView) {
         this.uiView = uiView;
         this.setToolTipText(toolTipText);
     }
-    /**½«Ä£ĞÍµÄÊı¾İ¸üĞÂµ½ÊÓÍ¼ÉÏ¡£*/
+    /**å°†æ¨¡å‹çš„æ•°æ®æ›´æ–°åˆ°è§†å›¾ä¸Šã€‚*/
     public void updataView() {
         this.uiView.updataView();
     }
-    /**»ñÈ¡ÊÓÍ¼¶ÔÏó*/
+    /**è·å–è§†å›¾å¯¹è±¡*/
     public ConstCodeView getUiView() {
         return uiView;
     }

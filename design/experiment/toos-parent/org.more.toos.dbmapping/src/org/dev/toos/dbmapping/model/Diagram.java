@@ -9,29 +9,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
- * ´ú±íÕû¸öÉè¼ÆÍ¼
+ * ä»£è¡¨æ•´ä¸ªè®¾è®¡å›¾
  * @version : 2013-3-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Diagram extends AbstractModel {
     private static final long serialVersionUID = 6445402230441667429L;
     public static String      Prop_Element     = "Element";
-    private List<Element>     elements         = new ArrayList<Element>(); //ËùÓĞÔªËØ
+    private List<Element>     elements         = new ArrayList<Element>(); //æ‰€æœ‰å…ƒç´ 
     //----------------------------------------------------------------------
     public Diagram() {}
     //----------------------------------------------------------------------
     public List<Element> getElements() {
         return Collections.unmodifiableList(elements);
     }
-    /**´Óµ±Ç°ÔªËØ´´½¨Ò»¸öµ½Ä¿±êÔªËØµÄÁ¬½Ó¡£*/
+    /**ä»å½“å‰å…ƒç´ åˆ›å»ºä¸€ä¸ªåˆ°ç›®æ ‡å…ƒç´ çš„è¿æ¥ã€‚*/
     public Element createElement() {
         return new Element(this);
     }
-    /*µ±¡°ÔªËØ¡±¶ÔÏócreate·½·¨±»µ÷ÓÃÊ±ºò»áµ÷ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œå…ƒç´ â€å¯¹è±¡createæ–¹æ³•è¢«è°ƒç”¨æ—¶å€™ä¼šè°ƒç”¨è¯¥æ–¹æ³•ã€‚*/
     void addEmenemt(Element element) {
         this.elements.add(element);
     }
-    /*µ±¡°ÔªËØ¡±¶ÔÏódelete·½·¨±»µ÷ÓÃÊ±ºò»áµ÷ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œå…ƒç´ â€å¯¹è±¡deleteæ–¹æ³•è¢«è°ƒç”¨æ—¶å€™ä¼šè°ƒç”¨è¯¥æ–¹æ³•ã€‚*/
     void removeElement(Element element) {
         if (elements.contains(element) == false)
             return;
@@ -43,7 +43,7 @@ public class Diagram extends AbstractModel {
     //
     //
     //
-    /**½«µ±Ç°Ä£ĞÍ¶ÔÏóĞòÁĞ»¯±£´æ¡£*/
+    /**å°†å½“å‰æ¨¡å‹å¯¹è±¡åºåˆ—åŒ–ä¿å­˜ã€‚*/
     public InputStream getAsStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(os);
@@ -53,7 +53,7 @@ public class Diagram extends AbstractModel {
         os.close();
         return istream;
     }
-    /**´ÓÊäÈëÁ÷ÖĞ×°ÔØÄ£ĞÍ¶ÔÏó¡£*/
+    /**ä»è¾“å…¥æµä¸­è£…è½½æ¨¡å‹å¯¹è±¡ã€‚*/
     public static Diagram makeFromStream(InputStream istream) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(istream);
         Diagram diagram = (Diagram) ois.readObject();

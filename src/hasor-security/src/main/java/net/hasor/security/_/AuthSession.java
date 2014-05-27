@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,57 +20,57 @@ import net.hasor.security.SecurityException;
 import net.hasor.security.Token;
 
 /**
- * ¸ºÔğÈ¨ÏŞÏµÍ³ÖĞµÄÓÃ»§»á»°¡£ÓÃ»§»á»°ÖĞ±£´æÁËÓÃ»§µÇÈëÖ®ºóµÄÈ¨ÏŞÊı¾İ¡£
+ * è´Ÿè´£æƒé™ç³»ç»Ÿä¸­çš„ç”¨æˆ·ä¼šè¯ã€‚ç”¨æˆ·ä¼šè¯ä¸­ä¿å­˜äº†ç”¨æˆ·ç™»å…¥ä¹‹åçš„æƒé™æ•°æ®ã€‚
  * @version : 2013-3-26
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface AuthSession {
     public static final String HttpSessionAuthSessionSetName = AuthSession.class.getName();
-    /**»ñÈ¡»á»°ID¡£*/
+    /**è·å–ä¼šè¯IDã€‚*/
     public abstract String getSessionID();
-    /**»ñÈ¡µÇÈëµÄÓÃ»§¶ÔÏó£¬Èç¹ûÎ´µÇÂ¼ÏµÍ³¶øÇÒÆôÓÃÁËÀ´±öÕÊºÅÔò»á·µ»ØÀ´±öÕÊºÅ¡£*/
+    /**è·å–ç™»å…¥çš„ç”¨æˆ·å¯¹è±¡ï¼Œå¦‚æœæœªç™»å½•ç³»ç»Ÿè€Œä¸”å¯ç”¨äº†æ¥å®¾å¸å·åˆ™ä¼šè¿”å›æ¥å®¾å¸å·ã€‚*/
     public abstract Token getUserObject();
-    /**»ñÈ¡µÇÂ½»á»°Ê±Ê¹ÓÃµÄ¾ßÌåÈ¨ÏŞÏµÍ³¡£*/
+    /**è·å–ç™»é™†ä¼šè¯æ—¶ä½¿ç”¨çš„å…·ä½“æƒé™ç³»ç»Ÿã€‚*/
     public abstract String getAuthSystem();
-    /**Ïò»á»°Ìí¼ÓÒ»ÌõÁÙÊ±È¨ÏŞ¡£*/
+    /**å‘ä¼šè¯æ·»åŠ ä¸€æ¡ä¸´æ—¶æƒé™ã€‚*/
     public abstract void addPermission(Permission permission) throws SecurityException;
-    /**Ïò»á»°Ìí¼ÓÒ»ÌõÁÙÊ±È¨ÏŞ¡£*/
+    /**å‘ä¼šè¯æ·»åŠ ä¸€æ¡ä¸´æ—¶æƒé™ã€‚*/
     public abstract void addPermission(String permissionCode) throws SecurityException;
-    /**ÁÙÊ±³·ÏúÓÃ»§»á»°ÖĞÒ»ÌõÈ¨ÏŞ¡£*/
+    /**ä¸´æ—¶æ’¤é”€ç”¨æˆ·ä¼šè¯ä¸­ä¸€æ¡æƒé™ã€‚*/
     public abstract void removeTempPermission(Permission permission) throws SecurityException;
-    /**ÁÙÊ±³·ÏúÓÃ»§»á»°ÖĞÒ»ÌõÈ¨ÏŞ¡£*/
+    /**ä¸´æ—¶æ’¤é”€ç”¨æˆ·ä¼šè¯ä¸­ä¸€æ¡æƒé™ã€‚*/
     public abstract void removeTempPermission(String permissionCode) throws SecurityException;
-    /**»ñÈ¡»á»°ÖĞ°üº¬µÄËùÓĞÈ¨ÏŞĞÅÏ¢¡£*/
+    /**è·å–ä¼šè¯ä¸­åŒ…å«çš„æ‰€æœ‰æƒé™ä¿¡æ¯ã€‚*/
     public abstract Permission[] getPermissionObjects();
-    /**»ñÈ¡»á»°ÖĞ°üº¬µÄËùÓĞÈ¨ÏŞĞÅÏ¢¡£*/
+    /**è·å–ä¼šè¯ä¸­åŒ…å«çš„æ‰€æœ‰æƒé™ä¿¡æ¯ã€‚*/
     public abstract String[] getPermissions();
-    /**ÅĞ¶Ï»á»°ÖĞÊÇ·ñ°üº¬Ö¸¶¨È¨ÏŞ¡£*/
+    /**åˆ¤æ–­ä¼šè¯ä¸­æ˜¯å¦åŒ…å«æŒ‡å®šæƒé™ã€‚*/
     public abstract boolean hasPermission(Permission permission);
-    /**ÅĞ¶Ï»á»°ÖĞÊÇ·ñ°üº¬Ö¸¶¨È¨ÏŞ¡£*/
+    /**åˆ¤æ–­ä¼šè¯ä¸­æ˜¯å¦åŒ…å«æŒ‡å®šæƒé™ã€‚*/
     public abstract boolean hasPermission(String permissionCode);
-    /**ÅĞ¶Ï»á»°ÊÇ·ñ¹Ø±Õ*/
+    /**åˆ¤æ–­ä¼šè¯æ˜¯å¦å…³é—­*/
     public abstract boolean isClose();
-    /**ÊÇ·ñÒÑ¾­µÇÈë¡£*/
+    /**æ˜¯å¦å·²ç»ç™»å…¥ã€‚*/
     public abstract boolean isLogin();
-    /**ÅĞ¶ÏÊÇ·ñÎªÀ´±öÕÊºÅ¡£À´±öÕÊºÅÊÇÒ»ÖÖÓÃ»§Éí·İ£¬Í¨³£ÓÃÀ´±íÊ¾²»ĞèÒªµÇÈëÏµÍ³Ê±Ê¹ÓÃµÄÓÃ»§¡£
-     * ÓÃ»§Ê¹ÓÃÀ´±öÕÊºÅµÇÈëÏµÍ³ËäÈ»ÒÑ¾­µÇÈëµ«ÊÇÉí·İ²»»áËæ×ÅµÇÈë¶¯×÷±äÎª³£¹æÓÃ»§¡£*/
+    /**åˆ¤æ–­æ˜¯å¦ä¸ºæ¥å®¾å¸å·ã€‚æ¥å®¾å¸å·æ˜¯ä¸€ç§ç”¨æˆ·èº«ä»½ï¼Œé€šå¸¸ç”¨æ¥è¡¨ç¤ºä¸éœ€è¦ç™»å…¥ç³»ç»Ÿæ—¶ä½¿ç”¨çš„ç”¨æˆ·ã€‚
+     * ç”¨æˆ·ä½¿ç”¨æ¥å®¾å¸å·ç™»å…¥ç³»ç»Ÿè™½ç„¶å·²ç»ç™»å…¥ä½†æ˜¯èº«ä»½ä¸ä¼šéšç€ç™»å…¥åŠ¨ä½œå˜ä¸ºå¸¸è§„ç”¨æˆ·ã€‚*/
     public abstract boolean isGuest();
-    /**ÊÇ·ñÎª¿Õ°××´Ì¬£¬ĞÂµÄSession¡¢ÍË³öÖ®ºóµÄ.µ«ÊÇÉĞÎ´¹Ø±ÕµÄ¡£*/
+    /**æ˜¯å¦ä¸ºç©ºç™½çŠ¶æ€ï¼Œæ–°çš„Sessionã€é€€å‡ºä¹‹åçš„.ä½†æ˜¯å°šæœªå…³é—­çš„ã€‚*/
     public abstract boolean isBlank();
-    /**»ñÈ¡session´´½¨Ê±¼ä*/
+    /**è·å–sessionåˆ›å»ºæ—¶é—´*/
     public abstract long getLoginTime() throws SecurityException;
-    /**·ÅÆú»º´æÖĞµÄÈ¨ÏŞÊı¾İ£¬ÖØĞÂÔØÈëÊÚÈ¨Êı¾İ¡£*/
+    /**æ”¾å¼ƒç¼“å­˜ä¸­çš„æƒé™æ•°æ®ï¼Œé‡æ–°è½½å…¥æˆæƒæ•°æ®ã€‚*/
     public abstract void reloadPermission() throws SecurityException;
-    /**ÓÃÖ¸¶¨µÄÓÃ»§¶ÔÏóµÇÈëµ½È¨ÏŞÏµÍ³£¬Èç¹ûµÇÂ½Ê§°Ü»áÅ×³öSecurityExceptionÀàĞÍÒì³£¡£*/
+    /**ç”¨æŒ‡å®šçš„ç”¨æˆ·å¯¹è±¡ç™»å…¥åˆ°æƒé™ç³»ç»Ÿï¼Œå¦‚æœç™»é™†å¤±è´¥ä¼šæŠ›å‡ºSecurityExceptionç±»å‹å¼‚å¸¸ã€‚*/
     public abstract void doLogin(String authSystem, Token user) throws SecurityException;
-    /**ÓÃÖ¸¶¨µÄÓÃ»§userCodeµÇÈëµ½È¨ÏŞÏµÍ³£¬Èç¹ûµÇÂ½Ê§°Ü»áÅ×³öSecurityExceptionÀàĞÍÒì³£¡£*/
+    /**ç”¨æŒ‡å®šçš„ç”¨æˆ·userCodeç™»å…¥åˆ°æƒé™ç³»ç»Ÿï¼Œå¦‚æœç™»é™†å¤±è´¥ä¼šæŠ›å‡ºSecurityExceptionç±»å‹å¼‚å¸¸ã€‚*/
     public abstract void doLoginCode(String authSystem, String userCode) throws SecurityException;
-    /**ÓÃÖ¸¶¨µÄÓÃ»§ÕÊºÅÃÜÂëÏµÍ³¡£*/
+    /**ç”¨æŒ‡å®šçš„ç”¨æˆ·å¸å·å¯†ç ç³»ç»Ÿã€‚*/
     public abstract void doLogin(String authSystem, String account, String password) throws SecurityException;
-    /**Ö´ĞĞÍË³ö¡£*/
+    /**æ‰§è¡Œé€€å‡ºã€‚*/
     public abstract void doLogout() throws SecurityException;
-    /**¹Ø±Õ»á»°£¨ÍË³ö»á»°£¬²¢ÇÒ´Óµ±Ç°Ïß³ÌÖĞ×¢Ïú£©¡£*/
+    /**å…³é—­ä¼šè¯ï¼ˆé€€å‡ºä¼šè¯ï¼Œå¹¶ä¸”ä»å½“å‰çº¿ç¨‹ä¸­æ³¨é”€ï¼‰ã€‚*/
     public abstract void close() throws SecurityException;
-    /**Ë¢ĞÂÈ¨ÏŞÊı¾İÔÚ»º´æÖĞµÄÊ±¼ä,(Î´µÇÂ¼\À´±öÕÊºÅ\ÒÑ¾­¹Ø±Õ)Âú×ãÇ°ÃæÈı¸öÇé¿öÖĞÈÎÒâÒ»ÖÖÊ±¶¼·ÅÆúÏò»º´æ·şÎñ¸üĞÂ¡£*/
+    /**åˆ·æ–°æƒé™æ•°æ®åœ¨ç¼“å­˜ä¸­çš„æ—¶é—´,(æœªç™»å½•\æ¥å®¾å¸å·\å·²ç»å…³é—­)æ»¡è¶³å‰é¢ä¸‰ä¸ªæƒ…å†µä¸­ä»»æ„ä¸€ç§æ—¶éƒ½æ”¾å¼ƒå‘ç¼“å­˜æœåŠ¡æ›´æ–°ã€‚*/
     public abstract void refreshCacheTime();
 }

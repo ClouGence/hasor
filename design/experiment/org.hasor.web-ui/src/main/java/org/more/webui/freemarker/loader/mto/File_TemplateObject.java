@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.more.util.io.AutoCloseInputStream;
 /**
- * ´¦ÀíÎÄ¼şµÄ{@link AbstractTemplateObject}ÊµÏÖ
+ * å¤„ç†æ–‡ä»¶çš„{@link AbstractTemplateObject}å®ç°
  * @version : 2011-9-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class File_TemplateObject implements AbstractTemplateObject {
     private File filePath = null;

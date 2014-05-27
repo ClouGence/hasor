@@ -51,14 +51,14 @@ import com.google.inject.name.Names;
 /**
  * 
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class GuiceRegisterManagerCreater implements RegisterManagerCreater {
     public RegisterManager create(Environment env) {
         return new GuiceRegisterManager();
     }
 }
-/*RegisterManager½Ó¿ÚÊµÏÖ*/
+/*RegisterManageræ¥å£å®ç°*/
 class GuiceRegisterManager extends AbstractRegisterManager {
     //
     /*-----------------------------------------------------------------Collect GuiceTypeRegisters*/
@@ -74,9 +74,9 @@ class GuiceRegisterManager extends AbstractRegisterManager {
                 Iterator<TypeRegister<?>> regTypeRegister = registerIterator();
                 while (regTypeRegister.hasNext()) {
                     GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) regTypeRegister.next();
-                    //1.´¦Àí°ó¶¨
+                    //1.å¤„ç†ç»‘å®š
                     configRegister(register, binder);
-                    //2.´¦ÀíAop
+                    //2.å¤„ç†Aop
                     if (register.getType().isAssignableFrom(AopMatcherRegister.class)) {
                         if (register.getMetaData().containsKey(AopConst.AopAssembly)) {
                             final AopMatcherRegister amr = (AopMatcherRegister) register.getProvider().get();
@@ -99,18 +99,18 @@ class GuiceRegisterManager extends AbstractRegisterManager {
     }
     private void configRegister(GuiceTypeRegister<Object> register, Binder binder) {
         binder.bind(RegisterInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
-        //1.°ó¶¨ÀàĞÍ
+        //1.ç»‘å®šç±»å‹
         AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getType());
         LinkedBindingBuilder<Object> linkedBinding = annoBinding;
         ScopedBindingBuilder scopeBinding = annoBinding;
-        //2.°ó¶¨Ãû³Æ
+        //2.ç»‘å®šåç§°
         boolean haveName = false;
         String name = register.getName();
         if (!StringUtils.isBlank(name)) {
             linkedBinding = annoBinding.annotatedWith(Names.named(name));
             haveName = true;
         }
-        //3.°ó¶¨ÊµÏÖ
+        //3.ç»‘å®šå®ç°
         if (register.getProvider() != null)
             scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getProvider()));
         else if (register.getImplConstructor() != null)
@@ -119,14 +119,14 @@ class GuiceRegisterManager extends AbstractRegisterManager {
             scopeBinding = linkedBinding.to(register.getImplType());
         else {
             if (haveName == true)
-                scopeBinding = linkedBinding.to(register.getType());/*×Ô¼º°ó¶¨×Ô¼º*/
+                scopeBinding = linkedBinding.to(register.getType());/*è‡ªå·±ç»‘å®šè‡ªå·±*/
         }
-        //4.´¦Àíµ¥Àı
+        //4.å¤„ç†å•ä¾‹
         if (register.isSingleton()) {
             scopeBinding.asEagerSingleton();
-            return;/*µÚÎå²½²»½øĞĞ´¦Àí*/
+            return;/*ç¬¬äº”æ­¥ä¸è¿›è¡Œå¤„ç†*/
         }
-        //5.°ó¶¨×÷ÓÃÓò
+        //5.ç»‘å®šä½œç”¨åŸŸ
         Scope scope = register.getScope();
         if (scope != null)
             scopeBinding.in(new GuiceScope(scope));
@@ -137,7 +137,7 @@ class GuiceRegisterManager extends AbstractRegisterManager {
         return this.guiceBeanBuilder;
     }
 }
-/**ÓÃÀ´´´½¨Bean¡¢²éÕÒBean*/
+/**ç”¨æ¥åˆ›å»ºBeanã€æŸ¥æ‰¾Bean*/
 class GuiceBeanBuilder implements BeanBuilder {
     private Injector injector;
     //
@@ -159,11 +159,11 @@ class GuiceBeanBuilder implements BeanBuilder {
         throw new UnsupportedOperationException(String.format("%s RegisterInfo.", oriType.getClass()));
     }
     public Iterator<RegisterInfo<?>> getRegisterIterator() {
-        //1.Í¨¹ıGuiceµÄ·½Ê½²éÕÒÒÑ¾­°ó¶¨µÄËùÓĞRegisterInfo¡£
+        //1.é€šè¿‡Guiceçš„æ–¹å¼æŸ¥æ‰¾å·²ç»ç»‘å®šçš„æ‰€æœ‰RegisterInfoã€‚
         TypeLiteral<RegisterInfo> BindingType_DEFS = TypeLiteral.get(RegisterInfo.class);
         List<Binding<RegisterInfo>> bindList = this.injector.findBindingsByType(BindingType_DEFS);
         final Iterator<Binding<RegisterInfo>> bindIterator = bindList.iterator();
-        //2.½«BindingÀàĞÍµü´úÆ÷×ª»»ÎªRegisterInfoÀàĞÍµü´úÆ÷¡£
+        //2.å°†Bindingç±»å‹è¿­ä»£å™¨è½¬æ¢ä¸ºRegisterInfoç±»å‹è¿­ä»£å™¨ã€‚
         return Iterators.converIterator(bindIterator, new Converter<Binding<RegisterInfo>, RegisterInfo<?>>() {
             public RegisterInfo<?> converter(Binding<RegisterInfo> target) {
                 return target.getProvider().get();
@@ -193,7 +193,7 @@ class GuiceTypeRegister<T> extends AbstractTypeRegister<T> {
         return Key.get(this.getType(), Names.named(getName()));
     }
 }
-/**¸ºÔğnet.hasor.core.ScopeÓëcom.google.inject.ScopeµÄ¶Ô½Ó×ª»»*/
+/**è´Ÿè´£net.hasor.core.Scopeä¸com.google.inject.Scopeçš„å¯¹æ¥è½¬æ¢*/
 class GuiceScope implements com.google.inject.Scope {
     private Scope scope = null;
     public GuiceScope(Scope scope) {
@@ -212,7 +212,7 @@ class GuiceScope implements com.google.inject.Scope {
             return new ToGuiceProvider(returnData);
     }
 }
-/** ¸ºÔğcom.google.inject.Providerµ½net.hasor.core.ProviderµÄ¶Ô½Ó×ª»»*/
+/** è´Ÿè´£com.google.inject.Provideråˆ°net.hasor.core.Providerçš„å¯¹æ¥è½¬æ¢*/
 class ToHasorProvider<T> implements net.hasor.core.Provider<T> {
     private com.google.inject.Provider<T> provider;
     public ToHasorProvider(com.google.inject.Provider<T> provider) {

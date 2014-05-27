@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package org.more.classcode;
 /**
- * ³õÊ¼»¯Òì³£¡£
+ * åˆå§‹åŒ–å¼‚å¸¸ã€‚
  * @version 2009-7-7
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class InitializationException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 6489409968925378968L;
-    /**³õÊ¼»¯Òì³£*/
+    /**åˆå§‹åŒ–å¼‚å¸¸*/
     public InitializationException(String string) {
         super(string);
     }
-    /**³õÊ¼»¯Òì³£*/
+    /**åˆå§‹åŒ–å¼‚å¸¸*/
     public InitializationException(Throwable error) {
         super(error);
     }
-    /**³õÊ¼»¯Òì³£*/
+    /**åˆå§‹åŒ–å¼‚å¸¸*/
     public InitializationException(String string, Throwable error) {
         super(string, error);
     }

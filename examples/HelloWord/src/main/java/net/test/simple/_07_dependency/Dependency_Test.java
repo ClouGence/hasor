@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ import java.net.URISyntaxException;
 import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
- * »·¾³±äÁ¿²Ù×÷ÑÝÊ¾
+ * çŽ¯å¢ƒå˜é‡æ“ä½œæ¼”ç¤º
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class Dependency_Test {
-    /*²âÊÔÇ¿ÖÆÒÀÀµ*/
+    /*æµ‹è¯•å¼ºåˆ¶ä¾èµ–*/
     @Test
     public void testDep_Forced() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDep_Forced<<--");
@@ -32,7 +32,7 @@ public class Dependency_Test {
         //
         appContext.start();
     }
-    /*²âÊÔÈõÒÀÀµ*/
+    /*æµ‹è¯•å¼±ä¾èµ–*/
     @Test
     public void testDep_Weak() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDep_Weak<<--");
@@ -40,7 +40,7 @@ public class Dependency_Test {
         //
         appContext.start();
     }
-    /*²âÊÔÑ­»·ÒÀÀµ*/
+    /*æµ‹è¯•å¾ªçŽ¯ä¾èµ–*/
     @Test
     public void testDep_Loop() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDep_Loop<<--");
@@ -48,7 +48,7 @@ public class Dependency_Test {
         //
         appContext.start();
     }
-    /*²âÊÔÒÀÀµ·´ÖÆ*/
+    /*æµ‹è¯•ä¾èµ–ååˆ¶*/
     @Test
     public void testDep_Reverse() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testDep_Reverse<<--");

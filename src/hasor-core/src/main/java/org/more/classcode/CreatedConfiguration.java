@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,38 +17,38 @@ package org.more.classcode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 /**
- * ¸ÃÀàµÄ×÷ÓÃÊÇÓÃÓÚÅäÖÃ{@link ClassBuilder}Éú³ÉµÄĞÂÀà¡£
+ * è¯¥ç±»çš„ä½œç”¨æ˜¯ç”¨äºé…ç½®{@link ClassBuilder}ç”Ÿæˆçš„æ–°ç±»ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class CreatedConfiguration {
     private ClassBuilder      classBuilder             = null;
     //
-    private ArrayList<String> renderMethodList         = null; //ËùÓĞÎ¯ÍĞ½Ó¿ÚµÄ·½·¨Êı×é£¬ÊÇ¾ßÓĞË³ĞòµÄ¡£
-    private ArrayList<String> renderDelegateList       = null; //Î¯ÍĞ½Ó¿ÚÊı×é£¬ÊÇ¾ßÓĞË³ĞòµÄ¡£
-    private ArrayList<String> renderDelegatePropxyList = null; //Î¯ÍĞÊôĞÔÊı×é£¬ÊÇ¾ßÓĞË³ĞòµÄ¡£
-    private ArrayList<String> renderAopMethodList      = null; //¾ßÓĞAopÌØĞÔµÄ·½·¨Êı×é£¬ÊÇ¾ßÓĞË³ĞòµÄ¡£
+    private ArrayList<String> renderMethodList         = null; //æ‰€æœ‰å§”æ‰˜æ¥å£çš„æ–¹æ³•æ•°ç»„ï¼Œæ˜¯å…·æœ‰é¡ºåºçš„ã€‚
+    private ArrayList<String> renderDelegateList       = null; //å§”æ‰˜æ¥å£æ•°ç»„ï¼Œæ˜¯å…·æœ‰é¡ºåºçš„ã€‚
+    private ArrayList<String> renderDelegatePropxyList = null; //å§”æ‰˜å±æ€§æ•°ç»„ï¼Œæ˜¯å…·æœ‰é¡ºåºçš„ã€‚
+    private ArrayList<String> renderAopMethodList      = null; //å…·æœ‰Aopç‰¹æ€§çš„æ–¹æ³•æ•°ç»„ï¼Œæ˜¯å…·æœ‰é¡ºåºçš„ã€‚
     //
-    /**´´½¨ClassConfiguration¶ÔÏó¡£*/
+    /**åˆ›å»ºClassConfigurationå¯¹è±¡ã€‚*/
     CreatedConfiguration(ClassBuilder classBuilder, BuilderClassAdapter builderAdapter, AopClassAdapter aopAdapter) {
         this.classBuilder = classBuilder;
-        //»ñÈ¡µ±Ö´ĞĞÉú³ÉĞÂÀàÊ±ºòµÄ²ú³öĞÅÏ¢¡£
+        //è·å–å½“æ‰§è¡Œç”Ÿæˆæ–°ç±»æ—¶å€™çš„äº§å‡ºä¿¡æ¯ã€‚
         this.renderMethodList = builderAdapter.getRenderMethodList();
         this.renderDelegateList = builderAdapter.getRenderDelegateList();
         this.renderDelegatePropxyList = builderAdapter.getRenderDelegatePropxyList();
-        //»ñÈ¡aop²ú³öĞÅÏ¢¡£
+        //è·å–aopäº§å‡ºä¿¡æ¯ã€‚
         if (aopAdapter != null)
             this.renderAopMethodList = aopAdapter.getRenderAopMethodList();
     }
-    /**ÅäÖÃBean¶ÔÏó¡£*/
+    /**é…ç½®Beanå¯¹è±¡ã€‚*/
     public Object configBean(Object obj) throws InitializationException {
         ClassEngine classEngine = classBuilder.getClassEngine();
         Class<?> beanClass = obj.getClass();
         //
-        //1.×¢ÈëDelegateArrayNameºÍDelegateMethodArrayName
+        //1.æ³¨å…¥DelegateArrayNameå’ŒDelegateMethodArrayName
         if (this.classBuilder.isAddDelegate() == true) {
-            //1.»ñÈ¡MethodDelegate£¬delegateTypesÊı×é¶ÔÏó£¬ÆäË³ĞòÓÉrenderDelegateList¾ö¶¨¡£
-            Class<?>[] delegateTypes = new Class<?>[renderDelegateList.size()];//¸ù¾İÊµ¼ÊäÖÈ¾µÄ½Ó¿ÚÊµÏÖÊıÄ¿À´´´½¨Òª×¢ÈëµÄ´úÀíÊı×é¡£
+            //1.è·å–MethodDelegateï¼ŒdelegateTypesæ•°ç»„å¯¹è±¡ï¼Œå…¶é¡ºåºç”±renderDelegateListå†³å®šã€‚
+            Class<?>[] delegateTypes = new Class<?>[renderDelegateList.size()];//æ ¹æ®å®é™…æ¸²æŸ“çš„æ¥å£å®ç°æ•°ç›®æ¥åˆ›å»ºè¦æ³¨å…¥çš„ä»£ç†æ•°ç»„ã€‚
             MethodDelegate[] methodDelegates = new MethodDelegate[delegateTypes.length];
             for (Class<?> delType : this.classBuilder.getDelegateType()) {
                 int index = renderDelegateList.indexOf(EngineToos.replaceClassName(delType.getName()));
@@ -57,8 +57,8 @@ public class CreatedConfiguration {
                     methodDelegates[index] = classEngine.getDelegate(delType);
                 }
             }
-            //2.»ñÈ¡method·½·¨Êı×é¡£
-            Method[] methods = new Method[this.renderMethodList.size()];//¸ù¾İÊµ¼ÊäÖÈ¾µÄ´úÀí·½·¨ÊµÏÖÊıÄ¿À´´´½¨Êı×é¡£
+            //2.è·å–methodæ–¹æ³•æ•°ç»„ã€‚
+            Method[] methods = new Method[this.renderMethodList.size()];//æ ¹æ®å®é™…æ¸²æŸ“çš„ä»£ç†æ–¹æ³•å®ç°æ•°ç›®æ¥åˆ›å»ºæ•°ç»„ã€‚
             for (int i = 0; i < delegateTypes.length; i++) {
                 methodDelegates[i] = classEngine.getDelegate(delegateTypes[i]);
                 for (Method method : delegateTypes[i].getMethods()) {
@@ -71,17 +71,17 @@ public class CreatedConfiguration {
                         methods[index] = method;
                 }
             }
-            //3.Ö´ĞĞ×¢Èë
+            //3.æ‰§è¡Œæ³¨å…¥
             try {
                 Method method_1 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateArrayName, MethodDelegate[].class);
-                method_1.invoke(obj, new Object[] { methodDelegates });//×¢Èë´úÀí
+                method_1.invoke(obj, new Object[] { methodDelegates });//æ³¨å…¥ä»£ç†
                 Method method_2 = beanClass.getMethod("set" + BuilderClassAdapter.DelegateMethodArrayName, Method[].class);
-                method_2.invoke(obj, new Object[] { methods });//×¢Èë·½·¨      
+                method_2.invoke(obj, new Object[] { methods });//æ³¨å…¥æ–¹æ³•      
             } catch (Exception e) {
-                throw new InitializationException("³õÊ¼»¯´úÀí·½·¨´íÎó...");
+                throw new InitializationException("åˆå§‹åŒ–ä»£ç†æ–¹æ³•é”™è¯¯...");
             }
         }
-        //2.×¢Èë×Ö¶Î
+        //2.æ³¨å…¥å­—æ®µ
         if (this.classBuilder.isAddFields() == true) {
             String[] delegateFields = this.classBuilder.getDelegateFields();
             if (delegateFields != null) {
@@ -93,24 +93,24 @@ public class CreatedConfiguration {
                 }
                 try {
                     Method method = beanClass.getMethod("set" + BuilderClassAdapter.PropertyArrayName, PropertyDelegate[].class);
-                    method.invoke(obj, new Object[] { delegateProperty });//×¢Èë´úÀíÊôĞÔ
+                    method.invoke(obj, new Object[] { delegateProperty });//æ³¨å…¥ä»£ç†å±æ€§
                 } catch (Exception e) {
-                    throw new InitializationException("³õÊ¼»¯´úÀí×Ö¶Î´íÎó...");
+                    throw new InitializationException("åˆå§‹åŒ–ä»£ç†å­—æ®µé”™è¯¯...");
                 }
             }//end if
         }
-        //3.×¢ÈëAOP
+        //3.æ³¨å…¥AOP
         if (this.classBuilder.isRenderAop() == true) {
             AopStrategy aopStrategy = classEngine.getAopStrategy();
-            //(1)×¼±¸Êı¾İ
-            org.more.classcode.Method[] aopMethodArray = new org.more.classcode.Method[this.renderAopMethodList.size()];//¸ù¾İÊµ¼ÊäÖÈ¾µÄaop·½·¨ÊıÄ¿À´´´½¨Êı×é¡£
-            AopFilterChain_Start[] aopFilterChain = new AopFilterChain_Start[this.renderAopMethodList.size()];//¸ù¾İÊµ¼ÊäÖÈ¾µÄaop·½·¨ÊıÄ¿À´´´½¨Êı×é¡£
+            //(1)å‡†å¤‡æ•°æ®
+            org.more.classcode.Method[] aopMethodArray = new org.more.classcode.Method[this.renderAopMethodList.size()];//æ ¹æ®å®é™…æ¸²æŸ“çš„aopæ–¹æ³•æ•°ç›®æ¥åˆ›å»ºæ•°ç»„ã€‚
+            AopFilterChain_Start[] aopFilterChain = new AopFilterChain_Start[this.renderAopMethodList.size()];//æ ¹æ®å®é™…æ¸²æŸ“çš„aopæ–¹æ³•æ•°ç›®æ¥åˆ›å»ºæ•°ç»„ã€‚
             //
             AopBeforeListener[] aopBeforeListener = classEngine.getAopBeforeListeners();
             AopReturningListener[] aopReturningListener = classEngine.getAopReturningListeners();
             AopThrowingListener[] aopThrowingListener = classEngine.getAopThrowingListeners();
             AopInvokeFilter[] aopInvokeFilter = classEngine.getAopFilters();
-            //(3)Éú³É×¢ÈëÊı¾İ
+            //(3)ç”Ÿæˆæ³¨å…¥æ•°æ®
             for (int i = 0; i < this.renderAopMethodList.size(); i++) {
                 ArrayList<Method> methodArrays = EngineToos.findAllMethod(beanClass);
                 for (Method m : methodArrays) {
@@ -123,40 +123,40 @@ public class CreatedConfiguration {
                         final int nameStart = AopClassAdapter.AopMethodPrefix.length();
                         Method proxyMethod = EngineToos.findMethod(beanClass, m.getName().substring(nameStart), m.getParameterTypes());
                         if (proxyMethod == null)
-                            throw new InitializationException("ÅäÖÃaopÁ´´íÎó£¬Ä¿±ê·½·¨ÎŞĞ§...");
+                            throw new InitializationException("é…ç½®aopé“¾é”™è¯¯ï¼Œç›®æ ‡æ–¹æ³•æ— æ•ˆ...");
                         org.more.classcode.Method method = new org.more.classcode.Method(proxyMethod, m);
                         aopMethodArray[index] = method;
-                        //Ö´ĞĞ·½·¨µÄaop²ßÂÔ¡£
+                        //æ‰§è¡Œæ–¹æ³•çš„aopç­–ç•¥ã€‚
                         AopBeforeListener[] _aopBeforeListener = aopStrategy.filterAopBeforeListener(obj, m, aopBeforeListener);
                         AopReturningListener[] _aopReturningListener = aopStrategy.filterAopReturningListener(obj, m, aopReturningListener);
                         AopThrowingListener[] _aopThrowingListener = aopStrategy.filterAopThrowingListener(obj, m, aopThrowingListener);
                         AopInvokeFilter[] _aopInvokeFilter = aopStrategy.filterAopInvokeFilter(obj, m, aopInvokeFilter);
-                        //¹¹Ôì¹ıÂËÆ÷Á´
+                        //æ„é€ è¿‡æ»¤å™¨é“¾
                         AopFilterChain nextFilterChain = new AopFilterChain_End() {};
                         if (_aopInvokeFilter != null)
                             for (int j = 0; j < _aopInvokeFilter.length; j++)
                                 nextFilterChain = new AopFilterChain_Impl(_aopInvokeFilter[j], nextFilterChain);
-                        //¹¹Ôì¹ıÂËÆ÷Á´×îºó»·½Ú¡£
+                        //æ„é€ è¿‡æ»¤å™¨é“¾æœ€åç¯èŠ‚ã€‚
                         aopFilterChain[i] = new AopFilterChain_Start(nextFilterChain, _aopBeforeListener, _aopReturningListener, _aopThrowingListener);
                     }
                 }
                 //
             }
-            //(4)×¢Èë
+            //(4)æ³¨å…¥
             try {
                 Method method_1 = beanClass.getMethod("set" + AopClassAdapter.AopFilterChainName, AopFilterChain_Start[].class);
-                method_1.invoke(obj, new Object[] { aopFilterChain });//×¢Èë´úÀí
+                method_1.invoke(obj, new Object[] { aopFilterChain });//æ³¨å…¥ä»£ç†
                 Method method_2 = beanClass.getMethod("set" + AopClassAdapter.AopMethodArrayName, org.more.classcode.Method[].class);
-                method_2.invoke(obj, new Object[] { aopMethodArray });//×¢Èë·½·¨
+                method_2.invoke(obj, new Object[] { aopMethodArray });//æ³¨å…¥æ–¹æ³•
             } catch (Exception e) {
-                throw new InitializationException("³õÊ¼»¯aop´úÀí×¢Èë´íÎó,", e);
+                throw new InitializationException("åˆå§‹åŒ–aopä»£ç†æ³¨å…¥é”™è¯¯,", e);
             }
         }
-        //4.±ê¼ÇÅäÖÃ
+        //4.æ ‡è®°é…ç½®
         try {
             Method method_1 = beanClass.getMethod("set" + BuilderClassAdapter.ConfigMarkName, boolean.class);
-            method_1.invoke(obj, new Object[] { true });//×¢Èë´úÀí
-        } catch (Exception e) {/*±ê¼Ç±äÁ¿´íÎó*/}
+            method_1.invoke(obj, new Object[] { true });//æ³¨å…¥ä»£ç†
+        } catch (Exception e) {/*æ ‡è®°å˜é‡é”™è¯¯*/}
         return obj;
     }
 }

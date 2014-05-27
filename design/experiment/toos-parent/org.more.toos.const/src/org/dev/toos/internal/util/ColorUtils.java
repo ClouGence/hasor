@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * 
  * @version : 2013-2-22
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class ColorUtils {
     public static Color getColor4New() {

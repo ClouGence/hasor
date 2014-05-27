@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package net.hasor.core.services;
 /**
  * 
  * @version : 2013-10-29
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface ServicesRegisterHandler<T> {
-    /**·şÎñ¶ÔÏóÒªÇó±»×¢²á*/
+    /**æœåŠ¡å¯¹è±¡è¦æ±‚è¢«æ³¨å†Œ*/
     public void registerService(T serviceBean);
-    /**·şÎñ¶ÔÏóÒªÇó±»½â³ıÒÑÓĞµÄ×¢²á*/
+    /**æœåŠ¡å¯¹è±¡è¦æ±‚è¢«è§£é™¤å·²æœ‰çš„æ³¨å†Œ*/
     public void unRegisterService(T serviceBean);
 }

@@ -21,7 +21,7 @@ import net.hasor.core.Module;
 /**
  * 
  * @version : 2013-11-4
- * @author ’‘”¿¥∫(zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò•(zyc@hasor.net)
  */
 public abstract class PluginHelper {
     public static Module toModule(Class<? extends HasorPlugin> pluginType) throws InstantiationException, IllegalAccessException {

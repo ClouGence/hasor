@@ -1,4 +1,4 @@
-﻿var more=more;
+﻿锘縱ar more=more;
 if (typeof(more)=="undefined")
   more={util:{}};
 else if(typeof(more.util)=="undefined")

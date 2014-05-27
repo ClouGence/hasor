@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,23 +23,23 @@ import org.more.webui.freemarker.parser.TemplateScanner;
 import org.more.webui.web.DefaultWebUIFactory;
 import org.more.webui.web.WebUIFactory;
 /**
- * ¸ÃÀà¸ºÔğ´´½¨webuiµÄ¸÷Àà×é½¨ÒÔ¼°»ñÈ¡Ïà¹ØĞèÒªÅäÖÃ¡£
+ * è¯¥ç±»è´Ÿè´£åˆ›å»ºwebuiçš„å„ç±»ç»„å»ºä»¥åŠè·å–ç›¸å…³éœ€è¦é…ç½®ã€‚
  * @version : 2012-5-22
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class FacesConfig {
     public static enum WebUIConfig {
-        /**Ò³ÃæÄ£°åÊä³ö±àÂë£¬Ä¬ÈÏutf-8¡£*/
+        /**é¡µé¢æ¨¡æ¿è¾“å‡ºç¼–ç ï¼Œé»˜è®¤utf-8ã€‚*/
         OutEncoding("WebUI_OutEncoding"),
-        /**Ò³Ãæ×Ö·û±àÂë£¬Ä¬ÈÏutf-8¡£*/
+        /**é¡µé¢å­—ç¬¦ç¼–ç ï¼Œé»˜è®¤utf-8ã€‚*/
         PageEncoding("WebUI_PageEncoding"),
-        /**¹ú¼Ê»¯µÄÖ§³Ö£¬Ä¬ÈÏfalse¡£*/
+        /**å›½é™…åŒ–çš„æ”¯æŒï¼Œé»˜è®¤falseã€‚*/
         LocalizedLookup("WebUI_Localized"),
-        /**À¹½ØµÄÀ©Õ¹Ãû£¬Ä¬ÈÏ.xhtml*/
+        /**æ‹¦æˆªçš„æ‰©å±•åï¼Œé»˜è®¤.xhtml*/
         FacesSuffix("WebUI_Faces"),
-        /**{@link WebUIFactory}½Ó¿ÚÊµÏÖÀà£¬Ä¬ÈÏ£ºDefaultWebUIFactory¡£*/
+        /**{@link WebUIFactory}æ¥å£å®ç°ç±»ï¼Œé»˜è®¤ï¼šDefaultWebUIFactoryã€‚*/
         FactoryName("WebUI_FactoryName"),
-        /**É¨ÃèµÄ°ü£¬Ä¬ÈÏ:org.*,com.*,net.*,java.**/
+        /**æ‰«æçš„åŒ…ï¼Œé»˜è®¤:org.*,com.*,net.*,java.**/
         ScanPackages("WebUI_ScanPackages"), ;
         //
         private String value = null;
@@ -54,11 +54,11 @@ public class FacesConfig {
     public FacesConfig(FilterConfig initConfig) {
         this.initConfig = initConfig;
     }
-    /**»ñÈ¡³õÊ¼»¯µÄ»·¾³²ÎÊı¡£*/
+    /**è·å–åˆå§‹åŒ–çš„ç¯å¢ƒå‚æ•°ã€‚*/
     public String getInitConfig(String key) {
         return this.initConfig.getInitParameter(key);
     }
-    /**»ñÈ¡ServletContext*/
+    /**è·å–ServletContext*/
     public ServletContext getServletContext() {
         return this.initConfig.getServletContext();
     }
@@ -66,8 +66,8 @@ public class FacesConfig {
     public TemplateScanner getTemplateScanner() {
         if (templateScanner == null) {
             this.templateScanner = new TemplateScanner();
-            this.templateScanner.addElementHook(Hook_UserTag.Name, new Hook_UserTag());/*UnifiedCall£º@add*/
-            this.templateScanner.addElementHook(Hook_Include.Name, new Hook_Include());/*Include£º@Include*/
+            this.templateScanner.addElementHook(Hook_UserTag.Name, new Hook_UserTag());/*UnifiedCallï¼š@add*/
+            this.templateScanner.addElementHook(Hook_Include.Name, new Hook_Include());/*Includeï¼š@Include*/
         }
         return this.templateScanner;
     }
@@ -80,7 +80,7 @@ public class FacesConfig {
     };
     //
     private Boolean localizedLookup = null;
-    /**»ñÈ¡Ò»¸öbooleanÖµ¸ÃÖµ¾ö¶¨ÁËÄ£°åÊÇ·ñÖ§³Ö¹ú¼Ê»¯¡£*/
+    /**è·å–ä¸€ä¸ªbooleanå€¼è¯¥å€¼å†³å®šäº†æ¨¡æ¿æ˜¯å¦æ”¯æŒå›½é™…åŒ–ã€‚*/
     public boolean isLocalizedLookup() {
         if (this.localizedLookup == null)
             this.localizedLookup = StringConvertUtils.parseBoolean(this.getInitConfig(WebUIConfig.LocalizedLookup.value()), false);
@@ -88,7 +88,7 @@ public class FacesConfig {
     };
     //
     private String outEncoding = null;
-    /**Êä³ö±àÂë*/
+    /**è¾“å‡ºç¼–ç */
     public String getOutEncoding() {
         if (this.outEncoding == null)
             this.outEncoding = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.OutEncoding.value()), "utf-8");
@@ -96,7 +96,7 @@ public class FacesConfig {
     };
     //
     private String pageEncoding = null;
-    /**»ñÈ¡Ò³ÃæÊ¹ÓÃµÄ×Ö·û±àÂë*/
+    /**è·å–é¡µé¢ä½¿ç”¨çš„å­—ç¬¦ç¼–ç */
     public String getPageEncoding() {
         if (this.pageEncoding == null)
             this.pageEncoding = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.PageEncoding.value()), "utf-8");
@@ -104,7 +104,7 @@ public class FacesConfig {
     };
     //
     private String facesSuffix = null;
-    /**»ñÈ¡Ò»¸öÀ©Õ¹Ãû£¬·²ÊÇ¾ß±¸¸ÃÀ©Õ¹ÃûµÄÎÄ¼ş¶¼±»ÊÓÎªUIÎÄ¼ş¡£*/
+    /**è·å–ä¸€ä¸ªæ‰©å±•åï¼Œå‡¡æ˜¯å…·å¤‡è¯¥æ‰©å±•åçš„æ–‡ä»¶éƒ½è¢«è§†ä¸ºUIæ–‡ä»¶ã€‚*/
     public String getFacesSuffix() {
         if (this.facesSuffix == null)
             this.facesSuffix = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.FacesSuffix.value()), ".xhtml");
@@ -112,7 +112,7 @@ public class FacesConfig {
     };
     //
     private String scanPackages = null;
-    /**É¨ÃèµÄ°ü£¬Ä¬ÈÏ:org.*,com.*,net.*,java.* */
+    /**æ‰«æçš„åŒ…ï¼Œé»˜è®¤:org.*,com.*,net.*,java.* */
     public String getScanPackages() {
         if (this.scanPackages == null)
             this.scanPackages = StringConvertUtils.parseString(this.getInitConfig(WebUIConfig.ScanPackages.value()), "org.*,com.*,net.*,java.*");

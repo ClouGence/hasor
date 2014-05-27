@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,45 +15,45 @@
  */
 package net.hasor.security;
 /**
- * ÓÃ»§È¨ÏŞ²âÊÔ½Ó¿Ú£¬¸Ã½Ó¿ÚÈç¹ûÃ»ÓĞ¼ÓÈëÈÎºÎ²âÊÔÌõ¼şÔò²âÊÔ½á¹ûÎªtrue¡£
+ * ç”¨æˆ·æƒé™æµ‹è¯•æ¥å£ï¼Œè¯¥æ¥å£å¦‚æœæ²¡æœ‰åŠ å…¥ä»»ä½•æµ‹è¯•æ¡ä»¶åˆ™æµ‹è¯•ç»“æœä¸ºtrueã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityQuery extends SecurityNode {
-    /**Âß¼­Óë*/
+    /**é€»è¾‘ä¸*/
     public SecurityQuery and(String permissionCode);
     public SecurityQuery and(Permission permission);
     public SecurityQuery and(SecurityQuery testNode);
-    /**Âß¼­»ò*/
+    /**é€»è¾‘æˆ–*/
     public SecurityQuery or(String permissionCode);
     public SecurityQuery or(Permission permission);
     public SecurityQuery or(SecurityQuery testNode);
     /*-*/
-    /**Õû¸ö²éÑ¯½á¹ûÈ¡·Ç*/
+    /**æ•´ä¸ªæŸ¥è¯¢ç»“æœå–é*/
     public SecurityQuery not();
-    /**½á¹ûÖĞ±ØĞë²»°üº¬.*/
+    /**ç»“æœä¸­å¿…é¡»ä¸åŒ…å«.*/
     public SecurityQuery not(String permissionCode);
-    /**½á¹ûÖĞ±ØĞë²»°üº¬.*/
+    /**ç»“æœä¸­å¿…é¡»ä¸åŒ…å«.*/
     public SecurityQuery not(Permission permission);
-    /**½á¹ûÖĞ±ØĞë²»°üº¬.*/
+    /**ç»“æœä¸­å¿…é¡»ä¸åŒ…å«.*/
     public SecurityQuery not(SecurityQuery testNode);
     /*-*/
-    /**ĞèÒªµÇÈëÏµÍ³*/
+    /**éœ€è¦ç™»å…¥ç³»ç»Ÿ*/
     public SecurityQuery andLogin();
     public SecurityQuery orLogin();
-    /**ĞèÒªµÇ³öÏµÍ³*/
+    /**éœ€è¦ç™»å‡ºç³»ç»Ÿ*/
     public SecurityQuery andLogout();
     public SecurityQuery orLogout();
-    /**ĞèÒªÀ´±öÉí·İ*/
+    /**éœ€è¦æ¥å®¾èº«ä»½*/
     public SecurityQuery andGuest();
-    /**»òÕßÎªÀ´±öÉí·İ*/
+    /**æˆ–è€…ä¸ºæ¥å®¾èº«ä»½*/
     public SecurityQuery orGuest();
-    /**·ÇÀ´±öÉí·İ*/
+    /**éæ¥å®¾èº«ä»½*/
     public SecurityQuery notGuest();
-    /**×Ô¶¨Òå¼ì²â£¨Óë¹ØÏµ£©*/
+    /**è‡ªå®šä¹‰æ£€æµ‹ï¼ˆä¸å…³ç³»ï¼‰*/
     public SecurityQuery andCustomer(SecurityNode customerTest);
-    /**×Ô¶¨Òå¼ì²â£¨»ò¹ØÏµ£©*/
+    /**è‡ªå®šä¹‰æ£€æµ‹ï¼ˆæˆ–å…³ç³»ï¼‰*/
     public SecurityQuery orCustomer(SecurityNode customerTest);
-    /**×Ô¶¨Òå¼ì²â£¨·Ç¹ØÏµ£©*/
+    /**è‡ªå®šä¹‰æ£€æµ‹ï¼ˆéå…³ç³»ï¼‰*/
     public SecurityQuery notCustomer(SecurityNode customerTest);
 };

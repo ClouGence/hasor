@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package org.more.classcode;
 /**
-* AopµÄbeforeÇĞÃæ£¬µ±ÊÕµ½beforeÇĞÃæµÄÊÂ¼şÍ¨ÖªÊ±»á×Ô¶¯µ÷ÓÃ¸Ã½Ó¿Ú¡£¸Ã½Ó¿Ú·½·¨»áÔÚÉú³ÉaopÁ´µÄµÚÒ»¸ö»·½Ú·¢³öµ÷ÓÃ¡£ÏÂÃæÕâÕÅÍ¼ÖĞBefore¾ÍÊÇÕâ¸ö½Ó¿ÚµÄ¹¤×÷µã¡£
+* Aopçš„beforeåˆ‡é¢ï¼Œå½“æ”¶åˆ°beforeåˆ‡é¢çš„äº‹ä»¶é€šçŸ¥æ—¶ä¼šè‡ªåŠ¨è°ƒç”¨è¯¥æ¥å£ã€‚è¯¥æ¥å£æ–¹æ³•ä¼šåœ¨ç”Ÿæˆaopé“¾çš„ç¬¬ä¸€ä¸ªç¯èŠ‚å‘å‡ºè°ƒç”¨ã€‚ä¸‹é¢è¿™å¼ å›¾ä¸­Beforeå°±æ˜¯è¿™ä¸ªæ¥å£çš„å·¥ä½œç‚¹ã€‚
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-2
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public interface AopBeforeListener {
     /**
-     * ÓÃÓÚ½ÓÊÕbeforeÇĞÃæµÄÊÂ¼şµÄ·½·¨¡£
-     * @param target ±»µ÷ÓÃµÄ¶ÔÏó¡£
-     * @param method ±»µ÷ÓÃµÄ·½·¨¡£
-     * @param args µ÷ÓÃÕâ¸ö·½·¨´«µİµÄ²ÎÊı¡£
+     * ç”¨äºæ¥æ”¶beforeåˆ‡é¢çš„äº‹ä»¶çš„æ–¹æ³•ã€‚
+     * @param target è¢«è°ƒç”¨çš„å¯¹è±¡ã€‚
+     * @param method è¢«è°ƒç”¨çš„æ–¹æ³•ã€‚
+     * @param args è°ƒç”¨è¿™ä¸ªæ–¹æ³•ä¼ é€’çš„å‚æ•°ã€‚
      */
     public void beforeInvoke(final Object target, final Method method, final Object[] args) throws Throwable;
 }

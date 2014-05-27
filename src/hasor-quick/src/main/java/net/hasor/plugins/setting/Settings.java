@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.hasor.core.SettingsListener;
 /**
- * ÉùÃ÷Ò»¸öÅäÖÃÎÄ¼ş¸Ä±ä¼àÌıÆ÷£¬±ê¼ÇÁË¸Ã½Ó¿ÚµÄÀà±ØĞëÒªÇóÊµÏÖ{@link SettingsListener}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªé…ç½®æ–‡ä»¶æ”¹å˜ç›‘å¬å™¨ï¼Œæ ‡è®°äº†è¯¥æ¥å£çš„ç±»å¿…é¡»è¦æ±‚å®ç°{@link SettingsListener}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

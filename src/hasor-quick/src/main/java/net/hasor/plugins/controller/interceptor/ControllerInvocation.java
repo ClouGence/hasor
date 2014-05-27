@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.aopalliance.intercept.MethodInvocation;
 /***
  * 
  * @version : 2013-9-26
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public final class ControllerInvocation {
     private AbstractController controller;
@@ -33,31 +33,31 @@ public final class ControllerInvocation {
         this.controller = controller;
         this.invocation = invocation;
     }
-    /**»ñÈ¡{@link HttpServletRequest}¶ÔÏó*/
+    /**è·å–{@link HttpServletRequest}å¯¹è±¡*/
     public HttpServletRequest getRequest() {
         return this.controller.getRequest();
     };
-    /**»ñÈ¡{@link HttpServletResponse}¶ÔÏó*/
+    /**è·å–{@link HttpServletResponse}å¯¹è±¡*/
     public HttpServletResponse getResponse() {
         return this.controller.getResponse();
     };
-    /**»ñÈ¡{@link AppContext}¶ÔÏó*/
+    /**è·å–{@link AppContext}å¯¹è±¡*/
     public AppContext getAppContext() {
         return this.controller.getAppContext();
     };
-    /**»ñÈ¡ActionInvoke*/
+    /**è·å–ActionInvoke*/
     public AbstractController getController() {
         return controller;
     };
-    /**»ñÈ¡ActionInvoke*/
+    /**è·å–ActionInvoke*/
     public Method getControllerMethod() {
         return this.invocation.getMethod();
     };
-    /**µ÷ÓÃÄ¿±ê*/
+    /**è°ƒç”¨ç›®æ ‡*/
     public Object proceed() throws Throwable {
         return invocation.proceed();
     };
-    /**Ê¹ÓÃÖ¸¶¨µÄ req res µ÷ÓÃ*/
+    /**ä½¿ç”¨æŒ‡å®šçš„ req res è°ƒç”¨*/
     public Object proceed(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         this.getController().initController(request, response);
         return this.proceed();

@@ -18,7 +18,7 @@ import net.hasor.plugins.bean.Bean;
 /**
  * 
  * @version : 2013-9-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 @Bean({ "" })
 @TestAnno

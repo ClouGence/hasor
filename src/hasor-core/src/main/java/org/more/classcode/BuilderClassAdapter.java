@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,45 +26,45 @@ import org.more.asm.FieldVisitor;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
 /**
- * ¸ÃÀà¸ºÔğĞŞ¸ÄÀàµÄ×Ö½ÚÂë¸½¼Ó½Ó¿ÚÊµÏÖ·½·¨¡£
- * Éú³ÉÀà¹ı³Ì
+ * è¯¥ç±»è´Ÿè´£ä¿®æ”¹ç±»çš„å­—èŠ‚ç é™„åŠ æ¥å£å®ç°æ–¹æ³•ã€‚
+ * ç”Ÿæˆç±»è¿‡ç¨‹
  * visit
- *   1.¸½¼ÓÊµÏÖ½Ó¿Ú
- *   2.¼Ì³Ğ»ùÀà
- *   3.ĞŞ¸ÄĞÂÀàÀàÃû
+ *   1.é™„åŠ å®ç°æ¥å£
+ *   2.ç»§æ‰¿åŸºç±»
+ *   3.ä¿®æ”¹æ–°ç±»ç±»å
  * visitMethod
- *   1.ĞŞ¸Ä·½·¨ÃûÎª
- *   2.Êä³ö´úÀí·½·¨
- *   3.Ôö¼Ó±¾µØ·½·¨¼¯ºÏ
+ *   1.ä¿®æ”¹æ–¹æ³•åä¸º
+ *   2.è¾“å‡ºä»£ç†æ–¹æ³•
+ *   3.å¢åŠ æœ¬åœ°æ–¹æ³•é›†åˆ
  * visitEnd
- *   1.Êä³öPropxyµÄ¹¹Ôì·½·¨
- *   2.Êä³ö¼òµ¥ÊôĞÔ
- *   3.Êä³öÎ¯ÍĞÊôĞÔ
- *   4.Êä³öÎ¯ÍĞ·½·¨
+ *   1.è¾“å‡ºPropxyçš„æ„é€ æ–¹æ³•
+ *   2.è¾“å‡ºç®€å•å±æ€§
+ *   3.è¾“å‡ºå§”æ‰˜å±æ€§
+ *   4.è¾“å‡ºå§”æ‰˜æ–¹æ³•
  * @version 2010-8-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class BuilderClassAdapter extends ClassVisitor implements Opcodes {
-    //1.ClassAdapterÊ¹ÓÃµÄÀà¶ÔÏó¡£
+    //1.ClassAdapterä½¿ç”¨çš„ç±»å¯¹è±¡ã€‚
     private ClassBuilder        classBuilder              = null;
     private ClassEngine         classEngine               = null;
     private String              asmClassName              = null;
     private ArrayList<String>   localMethodList           = null;
-    //2.ÓÃÓÚ±£´æäÖÈ¾×Ö½ÚÂëµÄ½á¹û
+    //2.ç”¨äºä¿å­˜æ¸²æŸ“å­—èŠ‚ç çš„ç»“æœ
     private ArrayList<String>   renderMethodList          = null;
     private ArrayList<String>   renderDelegateList        = null;
     private ArrayList<String>   renderDelegatePropxyList  = null;
-    //3.µ±¹¤×÷ÔÚ´úÀíÄ£Ê½ÏÂ´úÀí×Ö¶ÎµÄÃû³Æ¡£
+    //3.å½“å·¥ä½œåœ¨ä»£ç†æ¨¡å¼ä¸‹ä»£ç†å­—æ®µçš„åç§°ã€‚
     public final static String  SuperPropxyName           = "$propxyObject";
-    //4.¶¨ÒåÁË´úÀíÊôĞÔ£¬´úÀí·½·¨µÄ×Ö¶ÎÃû³ÆºÍÀàĞÍ¡£
+    //4.å®šä¹‰äº†ä»£ç†å±æ€§ï¼Œä»£ç†æ–¹æ³•çš„å­—æ®µåç§°å’Œç±»å‹ã€‚
     public final static String  DelegateArrayName         = "$delegateArray";
     private final static String DelegateArrayType         = EngineToos.toAsmType(MethodDelegate[].class);
     public final static String  DelegateMethodArrayName   = "$delegateMethodArray";
     private final static String DelegateMethodArrayType   = EngineToos.toAsmType(Method[].class);
-    //5.¶¨ÒåÁË´úÀíÊôĞÔµÄ×Ö¶ÎÃû³Æ¡£
+    //5.å®šä¹‰äº†ä»£ç†å±æ€§çš„å­—æ®µåç§°ã€‚
     public final static String  PropertyArrayName         = "$propertyArray";
     private final static String PropertyDelegateArrayType = EngineToos.toAsmType(PropertyDelegate[].class);
-    //6.ÊÇ·ñÅäÖÃµÄ±ê¼Ç×Ö¶ÎÃû
+    //6.æ˜¯å¦é…ç½®çš„æ ‡è®°å­—æ®µå
     public final static String  ConfigMarkName            = "$configMark";
     //
     public BuilderClassAdapter(ClassVisitor cv, ClassBuilder classBuilder) {
@@ -90,70 +90,70 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
         return this.renderDelegatePropxyList;
     }
     //
-    //1.¸½¼ÓÊµÏÖ½Ó¿Ú
-    //2.¼Ì³Ğ»ùÀà
-    //3.ĞŞ¸ÄĞÂÀàÀàÃû
+    //1.é™„åŠ å®ç°æ¥å£
+    //2.ç»§æ‰¿åŸºç±»
+    //3.ä¿®æ”¹æ–°ç±»ç±»å
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        //1.¸½¼Ó½Ó¿ÚÊµÏÖ
+        //1.é™„åŠ æ¥å£å®ç°
         if (this.classBuilder.isAddDelegate() == true) {
             this.putSetMethod(DelegateArrayName, DelegateArrayType);
             this.putSetMethod(DelegateMethodArrayName, DelegateMethodArrayType);
             ArrayList<String> al = new ArrayList<String>(interfaces.length + 10);
-            Collections.addAll(al, interfaces);//ÒÑ¾­ÊµÏÖµÄ½Ó¿Ú
-            Collections.addAll(al, this.classBuilder.getDelegateString());//¸½¼Ó½Ó¿ÚÊµÏÖ
-            Collections.addAll(renderDelegateList, this.classBuilder.getDelegateString());//¸½¼Ó½Ó¿ÚÊµÏÖ
-            //×ª»»ListÎªArray
+            Collections.addAll(al, interfaces);//å·²ç»å®ç°çš„æ¥å£
+            Collections.addAll(al, this.classBuilder.getDelegateString());//é™„åŠ æ¥å£å®ç°
+            Collections.addAll(renderDelegateList, this.classBuilder.getDelegateString());//é™„åŠ æ¥å£å®ç°
+            //è½¬æ¢Listä¸ºArray
             interfaces = new String[al.size()];
             al.toArray(interfaces);
         }
-        //2.¼Ì³Ğ»ùÀà
+        //2.ç»§æ‰¿åŸºç±»
         superName = name;
-        //3.ĞŞ¸ÄĞÂÀàÀàÃû
+        //3.ä¿®æ”¹æ–°ç±»ç±»å
         name = this.asmClassName;
         super.visit(version, ACC_PUBLIC, name, signature, superName, interfaces);
     }
     //
-    //µ±ÊÇPropxyÄ£Ê½ÏÂÊ±ºò¾ÍºöÂÔ×Ö¶ÎµÄÊä³ö¡£
+    //å½“æ˜¯Propxyæ¨¡å¼ä¸‹æ—¶å€™å°±å¿½ç•¥å­—æ®µçš„è¾“å‡ºã€‚
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         if (this.classEngine.getBuilderMode() == BuilderMode.Propxy)
             return null;
         return super.visitField(access, name, desc, signature, value);
     }
     //
-    //1.·½·¨ºöÂÔ²ßÂÔ
-    //2.Êä³öÒÑÓĞ·½·¨£¬SuperºÍPropxy¡£
+    //1.æ–¹æ³•å¿½ç•¥ç­–ç•¥
+    //2.è¾“å‡ºå·²æœ‰æ–¹æ³•ï¼ŒSuperå’ŒPropxyã€‚
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         BuilderMode builderMode = this.classEngine.getBuilderMode();
         String asmSuperClassName = this.classBuilder.getClassEngine().getAsmSuperClassName();
         String fullDesc = name + desc;
         MethodStrategy methodStrategy = this.classEngine.getMethodStrategy();
         //
-        //1.ºöÂÔÌØ¶¨ÃèÊö·½·¨
-        if ((access | ACC_PRIVATE) == access) //ºöÂÔprivate·½·¨¡£
+        //1.å¿½ç•¥ç‰¹å®šæè¿°æ–¹æ³•
+        if ((access | ACC_PRIVATE) == access) //å¿½ç•¥privateæ–¹æ³•ã€‚
             return null;
-        if ((access | ACC_STATIC) == access)//ºöÂÔstaticÃèÊö·½·¨¡£
+        if ((access | ACC_STATIC) == access)//å¿½ç•¥staticæè¿°æ–¹æ³•ã€‚
             return null;
-        if ((access | ACC_FINAL) == access)//ºöÂÔfinalÃèÊö·½·¨¡£
+        if ((access | ACC_FINAL) == access)//å¿½ç•¥finalæè¿°æ–¹æ³•ã€‚
             return null;
-        if ((access | ACC_NATIVE) == access)//ºöÂÔnativeÃèÊö·½·¨¡£
+        if ((access | ACC_NATIVE) == access)//å¿½ç•¥nativeæè¿°æ–¹æ³•ã€‚
             if (fullDesc.equals("hashCode()I") == false && fullDesc.equals("clone()Ljava/lang/Object;") == false)
                 return null;
             else
                 access = access - ACC_NATIVE;
-        if (builderMode == BuilderMode.Propxy) {//µ±ÔÚPropxy¡£
-            if (name.equals("<init>") == true)//ºöÂÔPropxyÏÂµÄËùÓĞ¹¹Ôì·½·¨¡£
+        if (builderMode == BuilderMode.Propxy) {//å½“åœ¨Propxyã€‚
+            if (name.equals("<init>") == true)//å¿½ç•¥Propxyä¸‹çš„æ‰€æœ‰æ„é€ æ–¹æ³•ã€‚
                 return null;
-            if ((access | ACC_PROTECTED) == access)//ºöÂÔPropxyÏÂµÄ±£»¤·½·¨¡£
+            if ((access | ACC_PROTECTED) == access)//å¿½ç•¥Propxyä¸‹çš„ä¿æŠ¤æ–¹æ³•ã€‚
                 return null;
         }
-        //2.×¼±¸Êä³ö·½·¨Êı¾İ
+        //2.å‡†å¤‡è¾“å‡ºæ–¹æ³•æ•°æ®
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         //
-        //3.Ö´ĞĞ·½·¨ºöÂÔ²ßÂÔ
+        //3.æ‰§è¡Œæ–¹æ³•å¿½ç•¥ç­–ç•¥
         Class<?> superClass = this.classEngine.getSuperClass();
         boolean isConstructor = false;
         if (name.equals("<init>") == true)
@@ -163,26 +163,26 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
         if (isConstructor == true)
             try {
                 method = superClass.getConstructor(paramTypes);
-            } catch (Exception e) {/*ºöÂÔ*/}
+            } catch (Exception e) {/*å¿½ç•¥*/}
         else
             method = EngineToos.findMethod(superClass, name, paramTypes);
         if (method != null)
-            if (methodStrategy.isIgnore(superClass, method, isConstructor) == true)//ÆäËû²ßÂÔ
+            if (methodStrategy.isIgnore(superClass, method, isConstructor) == true)//å…¶ä»–ç­–ç•¥
                 return null;
         //
-        //4.Êä³ö·½·¨
+        //4.è¾“å‡ºæ–¹æ³•
         int maxLocals = 1;
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         mv.visitCode();
         if (builderMode == BuilderMode.Super) {
-            //Super Èç¹ûÊÇ¼Ì³Ğ·½Ê½µ÷ÓÃÔòÊ¹ÓÃsuper.invokeµ÷ÓÃ¡£
+            //Super å¦‚æœæ˜¯ç»§æ‰¿æ–¹å¼è°ƒç”¨åˆ™ä½¿ç”¨super.invokeè°ƒç”¨ã€‚
             mv.visitVarInsn(ALOAD, 0);
             for (int i = 0; i < asmParams.length; i++)
                 mv.visitVarInsn(EngineToos.getLoad(asmParams[i]), i + 1);
             mv.visitMethodInsn(INVOKESPECIAL, asmSuperClassName, name, desc);
             maxLocals += asmParams.length;
         } else {
-            //Propxy Èç¹ûÊÇ´úÀí·½Ê½ÔòÊ¹ÓÃthis.$propxyObject.invoke¡£
+            //Propxy å¦‚æœæ˜¯ä»£ç†æ–¹å¼åˆ™ä½¿ç”¨this.$propxyObject.invokeã€‚
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, asmClassName, SuperPropxyName, "L" + asmSuperClassName + ";");
             for (int i = 0; i < asmParams.length; i++)
@@ -190,26 +190,26 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKEVIRTUAL, asmSuperClassName, name, desc);
             maxLocals += (asmParams.length + 1);
         }
-        //5.´¦Àí·½·¨µ÷ÓÃµÄ·µ»ØÖµreturn¡£
+        //5.å¤„ç†æ–¹æ³•è°ƒç”¨çš„è¿”å›å€¼returnã€‚
         if (asmReturns.equals("V") == true)
             mv.visitInsn(RETURN);
         else
             mv.visitInsn(EngineToos.getReturn(asmReturns));
-        //6.½áÊø·½·¨Êä³ö£¬È·¶¨·½·¨¶ÑÕ»µÈĞÅÏ¢¡£
+        //6.ç»“æŸæ–¹æ³•è¾“å‡ºï¼Œç¡®å®šæ–¹æ³•å †æ ˆç­‰ä¿¡æ¯ã€‚
         mv.visitMaxs(maxLocals + 1, maxLocals + 1);
         mv.visitEnd();
-        //7.½«ÒÑ¾­´¦ÀíµÄ·½·¨Ìí¼Óµ½±¾µØ·½·¨±íÖĞ²¢·µ»Ø£¬ÔÚvisitInterfaceMethod·½·¨ÖĞ»áĞèÒªÕâ¸öĞÅÏ¢¡£
+        //7.å°†å·²ç»å¤„ç†çš„æ–¹æ³•æ·»åŠ åˆ°æœ¬åœ°æ–¹æ³•è¡¨ä¸­å¹¶è¿”å›ï¼Œåœ¨visitInterfaceMethodæ–¹æ³•ä¸­ä¼šéœ€è¦è¿™ä¸ªä¿¡æ¯ã€‚
         localMethodList.add(name + desc);
         return null;
     }
     //
-    //1.Êä³öPropxyµÄ¹¹Ôì·½·¨
-    //2.Êä³ö¼òµ¥ÊôĞÔ
-    //3.Êä³öÎ¯ÍĞÊôĞÔ
-    //4.Êä³öÎ¯ÍĞ·½·¨
+    //1.è¾“å‡ºPropxyçš„æ„é€ æ–¹æ³•
+    //2.è¾“å‡ºç®€å•å±æ€§
+    //3.è¾“å‡ºå§”æ‰˜å±æ€§
+    //4.è¾“å‡ºå§”æ‰˜æ–¹æ³•
     public void visitEnd() {
         //
-        //1.Êä³öPropxyµÄ¹¹Ôì·½·¨¡£
+        //1.è¾“å‡ºPropxyçš„æ„é€ æ–¹æ³•ã€‚
         if (this.classEngine.getBuilderMode() == BuilderMode.Propxy) {
             String asmSuperName = EngineToos.toAsmType(this.classEngine.getSuperClass());
             String asmSuperName2 = EngineToos.asmTypeToType(asmSuperName);
@@ -218,20 +218,20 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             fv.visitEnd();
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "(" + asmSuperName + ")V", null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
             mv.visitMethodInsn(INVOKESPECIAL, asmSuperName2, "<init>", "()V");
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
-            mv.visitVarInsn(ALOAD, 1);//×°ÔØ²ÎÊı
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
+            mv.visitVarInsn(ALOAD, 1);//è£…è½½å‚æ•°
             mv.visitFieldInsn(PUTFIELD, EngineToos.asmTypeToType(asmClassName), SuperPropxyName, asmSuperName);
             mv.visitInsn(RETURN);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
         //
-        //2.Êä³öÊôĞÔ
+        //2.è¾“å‡ºå±æ€§
         if (this.classBuilder.isAddFields() == true) {
             PropertyStrategy propertyStrategy = this.classEngine.getPropertyStrategy();
-            //¼òµ¥ÊôĞÔ¡£
+            //ç®€å•å±æ€§ã€‚
             String[] simpleFields = this.classBuilder.getSimpleFields();
             if (simpleFields != null)
                 for (String field : simpleFields) {
@@ -242,7 +242,7 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
                     boolean writeOnly = propertyStrategy.isWriteOnly(field, fieldType, false);
                     this.putSimpleProperty(field, fieldType, writeOnly, readOnly);
                 }
-            //Î¯ÍĞÊôĞÔ¡£
+            //å§”æ‰˜å±æ€§ã€‚
             String[] delegateFields = this.classBuilder.getDelegateFields();
             if (delegateFields != null) {
                 super.visitField(ACC_PRIVATE, PropertyArrayName, PropertyDelegateArrayType, null, null);
@@ -261,7 +261,7 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             }
         }
         //PropertyArrayName
-        //3.Êä³öÎ¯ÍĞ·½·¨¡£
+        //3.è¾“å‡ºå§”æ‰˜æ–¹æ³•ã€‚
         if (this.classBuilder.isAddDelegate() == true) {
             //
             super.visitField(ACC_PRIVATE, DelegateArrayName, DelegateArrayType, null, null);
@@ -272,37 +272,37 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
                 final Class<?> type = delegateType[i];
                 final int classIndex = i;
                 try {
-                    ClassReader reader = new ClassReader(EngineToos.getClassInputStream(type));//´´½¨ClassReader
+                    ClassReader reader = new ClassReader(EngineToos.getClassInputStream(type));//åˆ›å»ºClassReader
                     final BuilderClassAdapter adapter = this;
-                    //É¨Ãè¸½¼Ó½Ó¿Ú·½·¨
+                    //æ‰«æé™„åŠ æ¥å£æ–¹æ³•
                     reader.accept(new ClassVisitor(Opcodes.ASM4, new ClassWriter(ClassWriter.COMPUTE_MAXS)) {
                         private int methodIndex = 0;
                         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                             if (adapter.localMethodList.contains(name + desc) == true)
-                                return null;//Èç¹û±¾µØ·½·¨¼¯ºÏÖĞ´æÔÚ¸Ã·½·¨ÔòºöÂÔÊä³ö¡£
+                                return null;//å¦‚æœæœ¬åœ°æ–¹æ³•é›†åˆä¸­å­˜åœ¨è¯¥æ–¹æ³•åˆ™å¿½ç•¥è¾“å‡ºã€‚
                             String fullDesc = name + desc;
                             MethodVisitor mv = adapter.cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
-                            adapter.visitInterfaceMethod(classIndex, methodIndex, adapter, mv, type, name, desc);//Êä³ö´úÀí·½·¨µ÷ÓÃ
-                            adapter.localMethodList.add(fullDesc);//¼ÓÈëÒÔ´¦Àí·½·¨±í
-                            adapter.renderMethodList.add(fullDesc);//¼ÓÈëĞèÒªiocÆäMethodÀàĞÍµÄ·½·¨±í
+                            adapter.visitInterfaceMethod(classIndex, methodIndex, adapter, mv, type, name, desc);//è¾“å‡ºä»£ç†æ–¹æ³•è°ƒç”¨
+                            adapter.localMethodList.add(fullDesc);//åŠ å…¥ä»¥å¤„ç†æ–¹æ³•è¡¨
+                            adapter.renderMethodList.add(fullDesc);//åŠ å…¥éœ€è¦iocå…¶Methodç±»å‹çš„æ–¹æ³•è¡¨
                             methodIndex++;
                             return mv;
                         }
                     }, ClassReader.SKIP_DEBUG);
                     //try end
                 } catch (Exception e) {
-                    throw new InvokeException("ÔÚÉ¨ÃèÊä³öÎ¯ÍĞ[" + type.getName() + "]Ê±ºò·¢ÉúÒì³£¡£");
+                    throw new InvokeException("åœ¨æ‰«æè¾“å‡ºå§”æ‰˜[" + type.getName() + "]æ—¶å€™å‘ç”Ÿå¼‚å¸¸ã€‚");
                 }
             }
             //
         }
-        //4.Êä³öÅäÖÃ±ê¼Ç
-        //Êä³öÊÇ·ñ¾­¹ıÅäÖÃµÄ±ê¼Ç
+        //4.è¾“å‡ºé…ç½®æ ‡è®°
+        //è¾“å‡ºæ˜¯å¦ç»è¿‡é…ç½®çš„æ ‡è®°
         this.putSimpleProperty(ConfigMarkName, Boolean.class, false, false);
         super.visitEnd();
     }
     //
-    //Êä³ö¼òµ¥ÊôĞÔ
+    //è¾“å‡ºç®€å•å±æ€§
     private void putSimpleProperty(String propertyName, Class<?> propertyType, boolean isWriteOnly, boolean isReadOnly) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
         FieldVisitor fv = super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
@@ -313,7 +313,7 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             this.putSetMethod(propertyName, asmFieldType);//set
     }
     //
-    //Êä³öÎ¯ÍĞÊôĞÔ
+    //è¾“å‡ºå§”æ‰˜å±æ€§
     private void putDelegateProperty(int index, String propertyName, PropertyDelegate<?> fieldDelegate, boolean isWriteOnly, boolean isReadOnly) {
         String asmDelegateType2 = EngineToos.replaceClassName(PropertyDelegate.class.getName());
         //
@@ -324,11 +324,11 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             //get
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "get" + EngineToos.toUpperCase(propertyName), "()" + asmFieldType, null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
             mv.visitFieldInsn(GETFIELD, this.asmClassName, PropertyArrayName, PropertyDelegateArrayType);
             mv.visitIntInsn(BIPUSH, index);
             mv.visitInsn(AALOAD);
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
             mv.visitMethodInsn(INVOKEINTERFACE, asmDelegateType2, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
             mv.visitTypeInsn(CHECKCAST, asmFieldType2);
             mv.visitInsn(EngineToos.getReturn(asmFieldType));
@@ -339,12 +339,12 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             //set
             MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
             mv.visitFieldInsn(GETFIELD, this.asmClassName, PropertyArrayName, PropertyDelegateArrayType);
             mv.visitIntInsn(BIPUSH, index);
             mv.visitInsn(AALOAD);
-            mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
-            mv.visitVarInsn(ALOAD, 1);//×°ÔØparam1
+            mv.visitVarInsn(ALOAD, 0);//è£…è½½this
+            mv.visitVarInsn(ALOAD, 1);//è£…è½½param1
             mv.visitTypeInsn(CHECKCAST, asmFieldType2);
             mv.visitMethodInsn(INVOKEINTERFACE, asmDelegateType2, "set", "(Ljava/lang/Object;Ljava/lang/Object;)V");
             mv.visitInsn(RETURN);
@@ -353,7 +353,7 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
         }
     }
     //
-    //ÊµÏÖ½Ó¿Ú¸½¼Ó
+    //å®ç°æ¥å£é™„åŠ 
     private void visitInterfaceMethod(int classIndex, int methodIndex, BuilderClassAdapter adapter, MethodVisitor mv, Class<?> type, String name, String desc) {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
@@ -361,22 +361,22 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = EngineToos.asmTypeToType(m.group(2));
         int paramCount = asmParams.length;
-        int localVarSize = paramCount;//·½·¨±äÁ¿±í´óĞ¡
-        int maxStackSize = 0;//·½·¨×î´ó¶ÑÕ»´óĞ¡
+        int localVarSize = paramCount;//æ–¹æ³•å˜é‡è¡¨å¤§å°
+        int maxStackSize = 0;//æ–¹æ³•æœ€å¤§å †æ ˆå¤§å°
         //-----------------------------------------------------------------------------------------------------------------------
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, this.asmClassName, DelegateArrayName, DelegateArrayType);
         mv.visitIntInsn(BIPUSH, classIndex);
         mv.visitInsn(AALOAD);
-        //²ÎÊı1
+        //å‚æ•°1
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, this.asmClassName, DelegateMethodArrayName, DelegateMethodArrayType);
         mv.visitIntInsn(BIPUSH, methodIndex);
         mv.visitInsn(AALOAD);
-        //²ÎÊı2
+        //å‚æ•°2
         mv.visitVarInsn(ALOAD, 0);
-        //²ÎÊı3
+        //å‚æ•°3
         mv.visitIntInsn(BIPUSH, paramCount);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
         for (int i = 0; i < paramCount; i++) {
@@ -412,7 +412,7 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitInsn(AASTORE);
             maxStackSize = (maxStackSize < 5 + i) ? 5 + i : maxStackSize;
         }
-        //µ÷ÓÃ
+        //è°ƒç”¨
         String delegateType2 = EngineToos.replaceClassName(MethodDelegate.class.getName());
         mv.visitMethodInsn(INVOKEINTERFACE, delegateType2, "invoke", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
         //return
@@ -455,29 +455,29 @@ class BuilderClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, asmReturns);
             mv.visitInsn(ARETURN);
         }
-        /* Êä³ö¶ÑÕ»ÁĞ±í */
+        /* è¾“å‡ºå †æ ˆåˆ—è¡¨ */
         mv.visitMaxs(maxStackSize, localVarSize + 1);
         mv.visitEnd();
     }
     //
-    //¹«¿ªÄ³¸ö×Ö¶ÎµÄset·½·¨
+    //å…¬å¼€æŸä¸ªå­—æ®µçš„setæ–¹æ³•
     private void putSetMethod(String propertyName, String asmFieldType) {
         MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
         mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
-        mv.visitVarInsn(ALOAD, 1);//×°ÔØ²ÎÊı
+        mv.visitVarInsn(ALOAD, 0);//è£…è½½this
+        mv.visitVarInsn(ALOAD, 1);//è£…è½½å‚æ•°
         mv.visitFieldInsn(PUTFIELD, this.asmClassName, propertyName, asmFieldType);
         mv.visitInsn(RETURN);
         mv.visitMaxs(1, 1);
         mv.visitEnd();
     }
     //
-    //¹«¿ªÄ³¸ö×Ö¶ÎµÄget·½·¨
+    //å…¬å¼€æŸä¸ªå­—æ®µçš„getæ–¹æ³•
     private void putGetMethod(String propertyName, String asmFieldType) {
         //get
         MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "get" + EngineToos.toUpperCase(propertyName), "()" + asmFieldType, null, null);
         mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+        mv.visitVarInsn(ALOAD, 0);//è£…è½½this
         mv.visitFieldInsn(GETFIELD, this.asmClassName, propertyName, asmFieldType);
         mv.visitInsn(EngineToos.getReturn(asmFieldType));
         mv.visitMaxs(1, 1);

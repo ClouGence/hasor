@@ -16,13 +16,13 @@
 package net.hasor.core.context.listener;
 import net.hasor.core.context.AbstractAppContext;
 /**
- * ÓÃÓÚÈİÆ÷Æô¶¯ÊÂ¼ş½ÓÊÕ
+ * ç”¨äºå®¹å™¨å¯åŠ¨äº‹ä»¶æ¥æ”¶
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface ContextStartListener {
-    /**¿ªÊ¼½øÈëÈİÆ÷Æô¶¯¹ı³Ì.*/
+    /**å¼€å§‹è¿›å…¥å®¹å™¨å¯åŠ¨è¿‡ç¨‹.*/
     public void doStart(AbstractAppContext appContext);
-    /**ÈİÆ÷Æô¶¯Íê³É*/
+    /**å®¹å™¨å¯åŠ¨å®Œæˆ*/
     public void doStartCompleted(AbstractAppContext appContext);
 }

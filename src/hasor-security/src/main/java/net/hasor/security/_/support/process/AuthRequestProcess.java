@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,25 @@ import net.hasor.security._.AuthSession;
 import net.hasor.security._.SecurityContext;
 import org.hasor.Hasor;
 /**
- * {@link AuthRequestProcess}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link AuthRequestProcess}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class AuthRequestProcess extends AbstractProcess {
-    /**´¦ÀíµÇÈëÇëÇó¡£*/
+    /**å¤„ç†ç™»å…¥è¯·æ±‚ã€‚*/
     public SecurityForward processLogin(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
-        //1.»ñµÃµÇÈëÏà¹ØĞÅÏ¢
+        //1.è·å¾—ç™»å…¥ç›¸å…³ä¿¡æ¯
         String account = request.getParameter(this.settings.getAccountField());
         String password = request.getParameter(this.settings.getPasswordField());
         String formAuth = request.getParameter(this.settings.getAuthField());
-        //3.Ö´ĞĞµÇÈë
+        //3.æ‰§è¡Œç™»å…¥
         AuthSession authSession = secContext.getCurrentBlankAuthSession();
         if (authSession == null)
             authSession = secContext.createAuthSession();
         try {
-            authSession.doLogin(formAuth, account, password);/*µÇÈëĞÂ»á»°*/
+            authSession.doLogin(formAuth, account, password);/*ç™»å…¥æ–°ä¼šè¯*/
             Hasor.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
             return dispatcher.forwardIndex();
         } catch (SecurityException e) {
@@ -52,18 +52,18 @@ public class AuthRequestProcess extends AbstractProcess {
             return dispatcher.forwardFailure(e);
         }
     }
-    /**´¦ÀíµÇ³öÇëÇó*/
+    /**å¤„ç†ç™»å‡ºè¯·æ±‚*/
     public SecurityForward processLogout(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
         AuthSession[] authSessions = secContext.getCurrentAuthSession();
         for (AuthSession authSession : authSessions) {
-            /*½«ËùÓĞÒÑµÇÈëµÄ»á»°È«²¿µÇ³ö*/
+            /*å°†æ‰€æœ‰å·²ç™»å…¥çš„ä¼šè¯å…¨éƒ¨ç™»å‡º*/
             if (authSession.isLogin() == false)
                 continue;
             String userCode = authSession.getUserObject().getUserCode();
             try {
-                authSession.doLogout();/*ÍË³ö»á»°*/
+                authSession.doLogout();/*é€€å‡ºä¼šè¯*/
                 Hasor.info("logout OK. userCode=%s , at SessionID= %s", userCode, authSession.getSessionID());
                 return dispatcher.forwardLogout();
             } catch (SecurityException e) {

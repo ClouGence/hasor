@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ import java.util.Collections;
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
 /**
- * Éú³É×Ö½ÚÂëÊ±ºòÊ¹ÓÃµÄ¹¤¾ßÀà£¬µ±ÖØĞ´{@link ClassEngine}µÄÏà¹Ø·½·¨Ê±ºò»áÓÃÉÏ´ËÀà¡£
+ * ç”Ÿæˆå­—èŠ‚ç æ—¶å€™ä½¿ç”¨çš„å·¥å…·ç±»ï¼Œå½“é‡å†™{@link ClassEngine}çš„ç›¸å…³æ–¹æ³•æ—¶å€™ä¼šç”¨ä¸Šæ­¤ç±»ã€‚
  * @version 2009-10-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class EngineToos implements Opcodes {
-    /**¼ì²âÀàÃûÊÇ·ñºÏ·¨¡£*/
+    /**æ£€æµ‹ç±»åæ˜¯å¦åˆæ³•ã€‚*/
     public static boolean checkClassName(String className) {
         if (className == null || className.equals(""))
             return false;
@@ -45,7 +45,7 @@ public class EngineToos implements Opcodes {
             return false;
         return true;
     }
-    /**¸ù¾İÀàĞÍ»ñÈ¡ÆäReturnÖ¸Áî¡£*/
+    /**æ ¹æ®ç±»å‹è·å–å…¶ReturnæŒ‡ä»¤ã€‚*/
     public static int getReturn(String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -72,10 +72,10 @@ public class EngineToos implements Opcodes {
         case 'V':
             return RETURN;//Void
         default:
-            throw new UnsupportedOperationException("²»Ö§³ÖµÄÀàĞÍ×°ÔØÇëÇó");//
+            throw new UnsupportedOperationException("ä¸æ”¯æŒçš„ç±»å‹è£…è½½è¯·æ±‚");//
         }
     }
-    /**¸ù¾İÀàĞÍ»ñÈ¡ÆäLoadÖ¸Áî¡£*/
+    /**æ ¹æ®ç±»å‹è·å–å…¶LoadæŒ‡ä»¤ã€‚*/
     public static int getLoad(String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -100,10 +100,10 @@ public class EngineToos implements Opcodes {
         case '[':
             return ALOAD;//Array
         default:
-            throw new UnsupportedOperationException("²»Ö§³ÖµÄÀàĞÍ×°ÔØÇëÇó");//
+            throw new UnsupportedOperationException("ä¸æ”¯æŒçš„ç±»å‹è£…è½½è¯·æ±‚");//
         }
     }
-    /**¸ù¾İasmÀàĞÍ»ñÈ¡ÆäASTOREÖ¸Áî¡£*/
+    /**æ ¹æ®asmç±»å‹è·å–å…¶ASTOREæŒ‡ä»¤ã€‚*/
     public static int getAstore(String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
@@ -128,11 +128,11 @@ public class EngineToos implements Opcodes {
         case '[':
             return AASTORE;//Array
         default:
-            throw new UnsupportedOperationException("²»Ö§³ÖµÄÀàĞÍ×°ÔØÇëÇó");//
+            throw new UnsupportedOperationException("ä¸æ”¯æŒçš„ç±»å‹è£…è½½è¯·æ±‚");//
         }
     }
     //=======================================================================================================================
-    /**½«Ä³Ò»¸öÀàĞÍ×ªÎªasmĞÎÊ½µÄ±íÊö£¬ int ×ªÎª I£¬String×ªÎª Ljava/lang/String¡£*/
+    /**å°†æŸä¸€ä¸ªç±»å‹è½¬ä¸ºasmå½¢å¼çš„è¡¨è¿°ï¼Œ int è½¬ä¸º Iï¼ŒStringè½¬ä¸º Ljava/lang/Stringã€‚*/
     public static String toAsmType(Class<?> classType) {
         if (classType == int.class)
             return "I";
@@ -157,14 +157,14 @@ public class EngineToos implements Opcodes {
         else
             return "L" + Type.getInternalName(classType) + ";";
     }
-    /**½«Ä³Ò»¸öÀàĞÍ×ªÎªasmĞÎÊ½µÄ±íÊö£¬ int,int ×ªÎª II£¬String,int×ªÎª Ljava/lang/String;I¡£*/
+    /**å°†æŸä¸€ä¸ªç±»å‹è½¬ä¸ºasmå½¢å¼çš„è¡¨è¿°ï¼Œ int,int è½¬ä¸º IIï¼ŒString,intè½¬ä¸º Ljava/lang/String;Iã€‚*/
     public static String toAsmType(Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType)
             returnString += EngineToos.toAsmType(c);;
         return returnString;
     }
-    /**Ê¹ÓÃÖ¸¶¨µÄClassLoader½«Ò»¸öasmÀàĞÍ×ª»¯ÎªClass¶ÔÏó¡£*/
+    /**ä½¿ç”¨æŒ‡å®šçš„ClassLoaderå°†ä¸€ä¸ªasmç±»å‹è½¬åŒ–ä¸ºClasså¯¹è±¡ã€‚*/
     public static Class<?> toJavaType(String asmClassType, ClassLoader loader) {
         if (asmClassType.equals("I") == true)
             return int.class;
@@ -204,18 +204,18 @@ public class EngineToos implements Opcodes {
             try {
                 return loader.loadClass(cs);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(cs + "Àà²»ÄÜ±»×°ÔØ," + e.getMessage());
+                throw new RuntimeException(cs + "ç±»ä¸èƒ½è¢«è£…è½½," + e.getMessage());
             }
         }
     }
-    /**Ê¹ÓÃÖ¸¶¨µÄClassLoader½«Ò»×éasmÀàĞÍ×ª»¯ÎªÒ»×éClass¶ÔÏó¡£*/
+    /**ä½¿ç”¨æŒ‡å®šçš„ClassLoaderå°†ä¸€ç»„asmç±»å‹è½¬åŒ–ä¸ºä¸€ç»„Classå¯¹è±¡ã€‚*/
     public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) {
         Class<?>[] types = new Class<?>[asmClassType.length];
         for (int i = 0; i < asmClassType.length; i++)
             types[i] = toJavaType(asmClassType[i], loader);
         return types;
     }
-    /**ÔÚÒ»¸öÀàÖĞ²éÕÒÄ³¸ö·½·¨¡£*/
+    /**åœ¨ä¸€ä¸ªç±»ä¸­æŸ¥æ‰¾æŸä¸ªæ–¹æ³•ã€‚*/
     public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) {
         try {
             return atClass.getMethod(name, paramType);
@@ -227,7 +227,7 @@ public class EngineToos implements Opcodes {
             }
         }
     }
-    /**·µ»ØÒ»¸öÀàµÄ¶à¸ö·½·¨£¬ÆäÖĞ°üº¬ÁËÀà¶¨ÒåµÄË½ÓĞ·½·¨ºÍ¸¸ÀàÖĞ¿É¼ûµÄ·½·¨¡£*/
+    /**è¿”å›ä¸€ä¸ªç±»çš„å¤šä¸ªæ–¹æ³•ï¼Œå…¶ä¸­åŒ…å«äº†ç±»å®šä¹‰çš„ç§æœ‰æ–¹æ³•å’Œçˆ¶ç±»ä¸­å¯è§çš„æ–¹æ³•ã€‚*/
     public static ArrayList<Method> findAllMethod(Class<?> atClass) {
         ArrayList<Method> al = new ArrayList<Method>();
         Method[] m1 = atClass.getDeclaredMethods();
@@ -237,7 +237,7 @@ public class EngineToos implements Opcodes {
                 al.add(m);
         return al;
     }
-    /**·µ»ØÒ»¸öÀàµÄ¶à¸ö×Ö¶Î£¬ÆäÖĞ°üº¬ÁËÀà¶¨ÒåµÄË½ÓĞ×Ö¶ÎºÍ¸¸ÀàÖĞ¿É¼ûµÄ×Ö¶Î¡£*/
+    /**è¿”å›ä¸€ä¸ªç±»çš„å¤šä¸ªå­—æ®µï¼Œå…¶ä¸­åŒ…å«äº†ç±»å®šä¹‰çš„ç§æœ‰å­—æ®µå’Œçˆ¶ç±»ä¸­å¯è§çš„å­—æ®µã€‚*/
     public static ArrayList<Field> findAllField(Class<?> atClass) {
         ArrayList<Field> al = new ArrayList<Field>();
         Field[] m1 = atClass.getDeclaredFields();
@@ -247,7 +247,7 @@ public class EngineToos implements Opcodes {
                 al.add(f);
         return al;
     }
-    /**½«Ò»¸öLjava/lang/Object;ĞÎÊ½µÄ×Ö·û´®×ª»¯Îªjava/lang/ObjectĞÎÊ½¡£*/
+    /**å°†ä¸€ä¸ªLjava/lang/Object;å½¢å¼çš„å­—ç¬¦ä¸²è½¬åŒ–ä¸ºjava/lang/Objectå½¢å¼ã€‚*/
     public static String asmTypeToType(String asmType) {
         if (asmType.charAt(0) == 'L')
             return asmType.substring(1, asmType.length() - 1);
@@ -268,7 +268,7 @@ public class EngineToos implements Opcodes {
             str.append(toAsmType(returnType));
         return str.toString();
     }
-    /**»ñÈ¡Ò»¸öÀà¶ÔÏó×Ö½ÚÂëµÄ¶ÁÈ¡Á÷¡£*/
+    /**è·å–ä¸€ä¸ªç±»å¯¹è±¡å­—èŠ‚ç çš„è¯»å–æµã€‚*/
     public static InputStream getClassInputStream(Class<?> type) {
         ClassLoader loader = type.getClassLoader();
         if (loader instanceof RootClassLoader) {
@@ -281,11 +281,11 @@ public class EngineToos implements Opcodes {
         else
             return ClassLoader.getSystemResourceAsStream(classResourceName);
     };
-    /**ÅĞ¶ÏÄ³¸öÀàÊÇ·ñÎªÒ»¸ölang°üµÄÀà¡£*/
+    /**åˆ¤æ–­æŸä¸ªç±»æ˜¯å¦ä¸ºä¸€ä¸ªlangåŒ…çš„ç±»ã€‚*/
     public static boolean isLangClass(Class<?> type) {
         return type.getName().startsWith("java.lang.");
     };
-    /**×ª»»Ê××ÖÄ¸´óĞ´*/
+    /**è½¬æ¢é¦–å­—æ¯å¤§å†™*/
     public static String toUpperCase(String value) {
         StringBuffer sb = new StringBuffer(value);
         char firstChar = sb.charAt(0);
@@ -293,14 +293,14 @@ public class EngineToos implements Opcodes {
         sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
         return sb.toString();
     }
-    /** ½«IIIILjava/lang/Integer;FĞÎÊ½µÄASMÀàĞÍ±íÊö·Ö½âÎªÊı×é¡£²âÊÔ×Ö·û´®IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
+    /** å°†IIIILjava/lang/Integer;Få½¢å¼çš„ASMç±»å‹è¡¨è¿°åˆ†è§£ä¸ºæ•°ç»„ã€‚æµ‹è¯•å­—ç¬¦ä¸²IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
     public static String[] splitAsmType(String asmTypes) {
         class AsmTypeRead {
             StringReader sread = null;
             public AsmTypeRead(String sr) {
                 this.sread = new StringReader(sr);
             }
-            /** ¶ÁÈ¡µ½ÏÂÒ»¸ö·ÖºÅÎªÖ¹»òÕß½áÊøÎªÖ¹¡£*/
+            /** è¯»å–åˆ°ä¸‹ä¸€ä¸ªåˆ†å·ä¸ºæ­¢æˆ–è€…ç»“æŸä¸ºæ­¢ã€‚*/
             private String readToSemicolon() throws IOException {
                 String res = "";
                 while (true) {
@@ -313,7 +313,7 @@ public class EngineToos implements Opcodes {
                         res += (char) strInt;
                 }
             }
-            /** ¶ÁÈ¡Ò»¸öÀàĞÍ */
+            /** è¯»å–ä¸€ä¸ªç±»å‹ */
             private String readType() throws IOException {
                 int strInt = sread.read();
                 if (strInt == -1)
@@ -327,7 +327,7 @@ public class EngineToos implements Opcodes {
                     return String.valueOf((char) strInt);
                 }
             }
-            /** ¶ÁÈ¡ËùÓĞÀàĞÍ */
+            /** è¯»å–æ‰€æœ‰ç±»å‹ */
             public String[] readTypes() throws IOException {
                 ArrayList<String> ss = new ArrayList<String>(0);
                 while (true) {
@@ -345,31 +345,31 @@ public class EngineToos implements Opcodes {
         try {
             return new AsmTypeRead(asmTypes).readTypes();//     IIIILjava/lang/Integer;F[[[Ljava/util/Date;
         } catch (Exception e) {
-            throw new FormatException("²»ºÏ·¨µÄASMÀàĞÍdesc¡£");
+            throw new FormatException("ä¸åˆæ³•çš„ASMç±»å‹descã€‚");
         }
     }
-    /**»ñÈ¡ÀàÍêÕûÏŞ¶¨ÃûµÄÀàÃû²¿·Ö¡£*/
+    /**è·å–ç±»å®Œæ•´é™å®šåçš„ç±»åéƒ¨åˆ†ã€‚*/
     public static String splitSimpleName(String fullName) {
         String[] ns = fullName.split("\\.");
         return ns[ns.length - 1];
     }
-    /**»ñÈ¡ÀàÍêÕûÏŞ¶¨ÃûµÄ°üÃû²¿·Ö¡£*/
+    /**è·å–ç±»å®Œæ•´é™å®šåçš„åŒ…åéƒ¨åˆ†ã€‚*/
     public static String splitPackageName(String fullName) {
         if (fullName.lastIndexOf(".") > 0)
             return fullName.substring(0, fullName.lastIndexOf("."));
         else
             return fullName;
     }
-    /**½«ÀàÃû×ª»»ÎªasmÀàÃû¡£*/
+    /**å°†ç±»åè½¬æ¢ä¸ºasmç±»åã€‚*/
     public static String replaceClassName(String className) {
         return className.replace(".", "/");
     }
-    /**Í¨¹ıÎ»ÔËËã¾ö¶¨checkÊÇ·ñÔÚdataÀï¡£*/
+    /**é€šè¿‡ä½è¿ç®—å†³å®šcheckæ˜¯å¦åœ¨dataé‡Œã€‚*/
     public static boolean checkIn(int data, int check) {
         int or = data | check;
         return or == data;
     };
-    /**»ñÈ¡Ö¸¶¨ÀàĞÍµÄÄ¬ÈÏÖµ¡£*/
+    /**è·å–æŒ‡å®šç±»å‹çš„é»˜è®¤å€¼ã€‚*/
     public static Object getDefaultValue(Class<?> returnType) {
         if (returnType == null)
             return null;
@@ -396,12 +396,12 @@ public class EngineToos implements Opcodes {
         else
             return null;
     };
-    /**¼ì²éÀàĞÍÊÇ·ñÎªÒ»¸ö»ù±¾ÀàĞÍ»òÆä°ü×°ÀàĞÍ£¬»ù±¾ÀàĞÍ°üÀ¨ÁËboolean, byte, char, short, int, long, float, ºÍ double*/
+    /**æ£€æŸ¥ç±»å‹æ˜¯å¦ä¸ºä¸€ä¸ªåŸºæœ¬ç±»å‹æˆ–å…¶åŒ…è£…ç±»å‹ï¼ŒåŸºæœ¬ç±»å‹åŒ…æ‹¬äº†boolean, byte, char, short, int, long, float, å’Œ double*/
     public static boolean isBaseType(Class<?> type) {
-        /*ÅĞ¶ÏÊÇ·ñÎª»ù±¾ÀàĞÍ*/
+        /*åˆ¤æ–­æ˜¯å¦ä¸ºåŸºæœ¬ç±»å‹*/
         if (type.isPrimitive() == true)
             return true;
-        /*ÅĞ¶Ï¸÷ÖÖ°ü×°ÀàĞÍ*/
+        /*åˆ¤æ–­å„ç§åŒ…è£…ç±»å‹*/
         if (type == Boolean.class)
             return true;
         if (type == Byte.class)

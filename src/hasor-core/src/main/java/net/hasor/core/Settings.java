@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,140 +19,140 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
 /**
- * ÅäÖÃÎÄ¼şÉèÖÃ
+ * é…ç½®æ–‡ä»¶è®¾ç½®
  * @version : 2013-4-23
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface Settings {
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇÄ³¸ö×¢½âµÄÀà£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°æŸä¸ªæ³¨è§£çš„ç±»ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages);
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇÄ³¸ö×¢½âµÄÀà£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°æŸä¸ªæ³¨è§£çš„ç±»ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages);
-    /**»ñÈ¡Ö¸ÔÚÄ³¸öÌØ¶¨ÃüÃû¿Õ¼äÏÂµÄSettings½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æŒ‡åœ¨æŸä¸ªç‰¹å®šå‘½åç©ºé—´ä¸‹çš„Settingsæ¥å£å¯¹è±¡ã€‚*/
     public String[] getSettingArray();
-    /**»ñÈ¡Ö¸ÔÚÄ³¸öÌØ¶¨ÃüÃû¿Õ¼äÏÂµÄSettings½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æŒ‡åœ¨æŸä¸ªç‰¹å®šå‘½åç©ºé—´ä¸‹çš„Settingsæ¥å£å¯¹è±¡ã€‚*/
     public Settings getSettings(String namespace);
-    /**Ç¿ÖÆÖØĞÂ×°ÔØÅäÖÃÎÄ¼ş¡£*/
+    /**å¼ºåˆ¶é‡æ–°è£…è½½é…ç½®æ–‡ä»¶ã€‚*/
     public void refresh() throws IOException;
     //
-    /**ÉèÖÃ²ÎÊı¡£*/
+    /**è®¾ç½®å‚æ•°ã€‚*/
     public void setSettings(String key, Object value, String namespace);
     //
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚*/
     public Character getChar(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Character getChar(String name, Character defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚*/
     public String getString(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getString(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚*/
     public Boolean getBoolean(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Boolean getBoolean(String name, Boolean defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚*/
     public Short getShort(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Short getShort(String name, Short defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚*/
     public Integer getInteger(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Integer getInteger(String name, Integer defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚*/
     public Long getLong(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Long getLong(String name, Long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚*/
     public Float getFloat(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Float getFloat(String name, Float defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚*/
     public Double getDouble(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Double getDouble(String name, Double defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date getDate(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, Date defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date getDate(String name, String format);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, String format, Date defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date getDate(String name, String format, long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getFilePath(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getFilePath(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getDirectoryPath(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String getDirectoryPath(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link XmlNode}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link XmlNode}å½¢å¼å¯¹è±¡ã€‚*/
     public XmlNode getXmlNode(String name);
     //
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚*/
     public Character[] getCharArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Character}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Character}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Character[] getCharArray(String name, Character defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚*/
     public String[] getStringArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link String}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link String}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String[] getStringArray(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚*/
     public Boolean[] getBooleanArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Boolean}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Boolean}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Boolean[] getBooleanArray(String name, Boolean defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚*/
     public Short[] getShortArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Short}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Short}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Short[] getShortArray(String name, Short defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚*/
     public Integer[] getIntegerArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Integer}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Integer}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Integer[] getIntegerArray(String name, Integer defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚*/
     public Long[] getLongArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Long}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Long}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Long[] getLongArray(String name, Long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚*/
     public Float[] getFloatArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Float}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Float}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Float[] getFloatArray(String name, Float defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚*/
     public Double[] getDoubleArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Double}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Double}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Double[] getDoubleArray(String name, Double defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date[] getDateArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date[] getDateArray(String name, Date defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date[] getDateArray(String name, long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚*/
     public Date[] getDateArray(String name, String format);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date[] getDateArray(String name, String format, Date defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public Date[] getDateArray(String name, String format, long defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Enum}ĞÎÊ½¶ÔÏó¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Enum}å½¢å¼å¯¹è±¡ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String[] getFilePathArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link Date}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾ÎÄ¼ş£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link Date}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºæ–‡ä»¶ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String[] getFilePathArray(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String[] getDirectoryPathArray(String name);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link File}ĞÎÊ½¶ÔÏó£¨ÓÃÓÚ±íÊ¾Ä¿Â¼£©¡£µÚ¶ş¸ö²ÎÊıÎªÄ¬ÈÏÖµ¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link File}å½¢å¼å¯¹è±¡ï¼ˆç”¨äºè¡¨ç¤ºç›®å½•ï¼‰ã€‚ç¬¬äºŒä¸ªå‚æ•°ä¸ºé»˜è®¤å€¼ã€‚*/
     public String[] getDirectoryPathArray(String name, String defaultValue);
-    /**½âÎöÈ«¾ÖÅäÖÃ²ÎÊı£¬²¢ÇÒ·µ»ØÆä{@link XmlNode}ĞÎÊ½¶ÔÏó¡£*/
+    /**è§£æå…¨å±€é…ç½®å‚æ•°ï¼Œå¹¶ä¸”è¿”å›å…¶{@link XmlNode}å½¢å¼å¯¹è±¡ã€‚*/
     public XmlNode[] getXmlNodeArray(String name);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ½«Ñ¡ÔñÊäÈë×é½¨äÖÈ¾³ÉÒ»¸öselectÊäÈë¿ò¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUISelectOnlySelectInput£¨UISelectOnlySelectInput.js£©
+ * å°†é€‰æ‹©è¾“å…¥ç»„å»ºæ¸²æŸ“æˆä¸€ä¸ªselectè¾“å…¥æ¡†ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUISelectOnlySelectInputï¼ˆUISelectOnlySelectInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SelectOnlySelectInputRender<T extends UISelectInput> extends AbstractSelectInputRender<T> {
     @Override
@@ -57,7 +57,7 @@ public class SelectOnlySelectInputRender<T extends UISelectInput> extends Abstra
                     keyValue = BeanUtils.readPropertyOrField(obj, keyField);
                     varValue = BeanUtils.readPropertyOrField(obj, varField);
                 }
-                //Êä³ö
+                //è¾“å‡º
                 writer.write("  <option value='" + keyValue + "'");
                 if (keyValue.equals(component.getSelectValue()) == true)
                     writer.write("selected='selected'");

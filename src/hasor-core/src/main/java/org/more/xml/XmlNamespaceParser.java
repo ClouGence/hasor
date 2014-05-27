@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- * Level 2£º¼¶±ğµÄÊÂ¼ş½ÓÊÕÕß¡£¾­¹ı{@link XmlParserKitManager}¹¤¾ß½øĞĞÏ¸·ÖµÄxmlÊÂ¼ş·ÖÁ÷Ö®ºó¶¼·¢ËÍµ½ÁË¸Ã½Ó¿ÚÖĞ¡£
+ * Level 2ï¼šçº§åˆ«çš„äº‹ä»¶æ¥æ”¶è€…ã€‚ç»è¿‡{@link XmlParserKitManager}å·¥å…·è¿›è¡Œç»†åˆ†çš„xmläº‹ä»¶åˆ†æµä¹‹åéƒ½å‘é€åˆ°äº†è¯¥æ¥å£ä¸­ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlNamespaceParser {
-    /**µ±ÊÕµ½¿ªÊ¼½âÎöµÄĞÅºÅÊ±£¬¸Ã·½·¨Ö÷ÒªÓÃÓÚ³õÊ¼»¯½âÎöÆ÷¡£*/
+    /**å½“æ”¶åˆ°å¼€å§‹è§£æçš„ä¿¡å·æ—¶ï¼Œè¯¥æ–¹æ³•ä¸»è¦ç”¨äºåˆå§‹åŒ–è§£æå™¨ã€‚*/
     public void beginAccept();
-    /**µ±ÊÕµ½Í£Ö¹½âÎöµÄĞÅºÅÊ±£¬¸Ã·½·¨Ö÷ÒªÓÃÓÚ×ö½âÎöÆ÷µÄºóĞø´¦Àí¹¤×÷¡£*/
+    /**å½“æ”¶åˆ°åœæ­¢è§£æçš„ä¿¡å·æ—¶ï¼Œè¯¥æ–¹æ³•ä¸»è¦ç”¨äºåšè§£æå™¨çš„åç»­å¤„ç†å·¥ä½œã€‚*/
     public void endAccept();
-    /**¸Ã·½·¨ÔÚbeginAcceptºÍendAccept·½·¨µ÷ÓÃÆÚ¼ä·´¸´µ÷ÓÃ£¬Ã¿µ±Level 1·¢ÏÖÒ»¸öÊÂ¼ş¶¼»áÍ¨Öª¸øLevel 2£¬È»ºóÓÉLevel 2½øĞĞ·Ö·¢¡£*/
+    /**è¯¥æ–¹æ³•åœ¨beginAcceptå’ŒendAcceptæ–¹æ³•è°ƒç”¨æœŸé—´åå¤è°ƒç”¨ï¼Œæ¯å½“Level 1å‘ç°ä¸€ä¸ªäº‹ä»¶éƒ½ä¼šé€šçŸ¥ç»™Level 2ï¼Œç„¶åç”±Level 2è¿›è¡Œåˆ†å‘ã€‚*/
     public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws IOException, XMLStreamException;
 }

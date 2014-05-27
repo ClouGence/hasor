@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package org.more.webui.render.inputs;
 import org.more.webui.components.UIInput;
 import org.more.webui.context.ViewContext;
 /**
- * ½«ÊäÈë×é½¨äÖÈ¾³Éinput[type=checkbox]¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUIInput£¨UIInput.js£©
+ * å°†è¾“å…¥ç»„å»ºæ¸²æŸ“æˆinput[type=checkbox]ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUIInputï¼ˆUIInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class CheckboxInputRender<T extends UIInput> extends AbstractInputRender<T> {
     @Override

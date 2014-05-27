@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 /***
- * 以下代码来自JDK1.6_20
+ * 浠ヤ笅浠ｇ爜鏉ヨ嚜JDK1.6_20
  * @version : 2012-2-28
  */
 public class Properties extends HashMap<String, String> {

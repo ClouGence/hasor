@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import org.hasor.icache.CacheDefine;
 import org.hasor.icache.mapcache.MapCache;
 import org.hasor.icache.mapcache.MapCacheSettings;
 /**
- * Ê¹ÓÃMap×÷Îª»º´æ£¬MapCache»º´æ½ö×÷ÎªÄÚÖÃÌá¹©µÄÒ»¸öÄ¬ÈÏÊµÏÖ¡£
+ * ä½¿ç”¨Mapä½œä¸ºç¼“å­˜ï¼ŒMapCacheç¼“å­˜ä»…ä½œä¸ºå†…ç½®æä¾›çš„ä¸€ä¸ªé»˜è®¤å®ç°ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
-@CacheDefine(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "ÄÚÖÃµÄAuthSessionÊı¾İ»º´æ¡£")
+@CacheDefine(value = "AuthSessionCache", displayName = "AuthSessionMapCache", description = "å†…ç½®çš„AuthSessionæ•°æ®ç¼“å­˜ã€‚")
 public class AuthSessionMapCache<T> extends MapCache<T> {
     @Override
     protected MapCacheSettings createSettings(AppContext appContext) {

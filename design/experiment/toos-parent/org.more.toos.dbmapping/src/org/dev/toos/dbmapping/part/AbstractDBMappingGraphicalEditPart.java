@@ -6,12 +6,12 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 /**
  * 
  * @version : 2013-3-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractDBMappingGraphicalEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
     public void activate() {
         if (!isActive()) {
-            //×¢²áµ½Ä£ĞÍµÄÊôĞÔ¼àÌıÆ÷ÉÏ¡£
+            //æ³¨å†Œåˆ°æ¨¡å‹çš„å±æ€§ç›‘å¬å™¨ä¸Šã€‚
             AbstractModel modelObject = (AbstractModel) getModel();
             modelObject.addPropertyChangeListener(this);
         }
@@ -19,7 +19,7 @@ public abstract class AbstractDBMappingGraphicalEditPart extends AbstractGraphic
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
-            //½â³ı×¢²áµ½Ä£ĞÍµÄ¼àÌıÆ÷ÉÏ¡£
+            //è§£é™¤æ³¨å†Œåˆ°æ¨¡å‹çš„ç›‘å¬å™¨ä¸Šã€‚
             AbstractModel modelObject = (AbstractModel) getModel();
             modelObject.removePropertyChangeListener(this);
         }

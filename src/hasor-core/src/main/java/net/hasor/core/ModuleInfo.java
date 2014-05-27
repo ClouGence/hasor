@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,30 @@
 package net.hasor.core;
 import java.util.List;
 /**
- * ¸Ã½Ó¿ÚÖ»ÄÜ»ñÈ¡Ä£¿éĞÅÏ¢£¨×¢Òâ£º¸Ã½Ó¿Ú²»Òª³¢ÊÔÈ¥ÊµÏÖËü£©
+ * è¯¥æ¥å£åªèƒ½è·å–æ¨¡å—ä¿¡æ¯ï¼ˆæ³¨æ„ï¼šè¯¥æ¥å£ä¸è¦å°è¯•å»å®ç°å®ƒï¼‰
  * @version : 2013-7-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface ModuleInfo {
-    /**»ñÈ¡°ó¶¨µÄÅäÖÃÎÄ¼şÃüÃû¿Õ¼ä*/
+    /**è·å–ç»‘å®šçš„é…ç½®æ–‡ä»¶å‘½åç©ºé—´*/
     public String getSettingsNamespace();
-    /**»ñÈ¡ÏÔÊ¾Ãû³Æ*/
+    /**è·å–æ˜¾ç¤ºåç§°*/
     public String getDisplayName();
-    /**»ñÈ¡ÃèÊöĞÅÏ¢*/
+    /**è·å–æè¿°ä¿¡æ¯*/
     public String getDescription();
-    /**ÉèÖÃÏÔÊ¾Ãû³Æ*/
+    /**è®¾ç½®æ˜¾ç¤ºåç§°*/
     public void setDisplayName(String displayName);
-    /**ÉèÖÃÃèÊöĞÅÏ¢*/
+    /**è®¾ç½®æè¿°ä¿¡æ¯*/
     public void setDescription(String description);
-    /**»ñÈ¡Ä£¿éĞÅÏ¢Ëù±íÊöµÄÄ£¿é¶ÔÏó*/
+    /**è·å–æ¨¡å—ä¿¡æ¯æ‰€è¡¨è¿°çš„æ¨¡å—å¯¹è±¡*/
     public Module getTarget();
-    /**»ñÈ¡Ä£¿éµÄÒÀÀµÄ£¿é*/
+    /**è·å–æ¨¡å—çš„ä¾èµ–æ¨¡å—*/
     public List<Dependency> getDependency();
     //
-    /**µ±Ä£¿éÊÇ·ñ×¼±¸ºÃ£¬µ±Ä£¿é¾­¹ıÁËinit¹ı³ÌÊÓÎª×¼±¸ºÃ.*/
+    /**å½“æ¨¡å—æ˜¯å¦å‡†å¤‡å¥½ï¼Œå½“æ¨¡å—ç»è¿‡äº†initè¿‡ç¨‹è§†ä¸ºå‡†å¤‡å¥½.*/
     public boolean isReady();
-    /**µ±Ä£¿éÊÇ·ñ×¼±¸ºÃ£¬µ±Ä£¿é¾­¹ıÁËinit¹ı³ÌÊÓÎª×¼±¸ºÃ.*/
+    /**å½“æ¨¡å—æ˜¯å¦å‡†å¤‡å¥½ï¼Œå½“æ¨¡å—ç»è¿‡äº†initè¿‡ç¨‹è§†ä¸ºå‡†å¤‡å¥½.*/
     public boolean isDependencyReady();
-    /**Ä£¿éÊÇ·ñÆô¶¯.*/
+    /**æ¨¡å—æ˜¯å¦å¯åŠ¨.*/
     public boolean isStart();
 }

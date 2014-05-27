@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 /**
- * xmlÊÂ¼şÁ÷µÄ»ùÀà¡£
+ * xmläº‹ä»¶æµçš„åŸºç±»ã€‚
  * @version 2010-9-7
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class XmlStreamEvent {
-    private String          xpath          = null; //µ±Ç°ÊÂ¼şËù´¦µÄxpath
-    private XMLStreamReader reader         = null; //µ×²ãµÄXMLStreamReader
+    private String          xpath          = null; //å½“å‰äº‹ä»¶æ‰€å¤„çš„xpath
+    private XMLStreamReader reader         = null; //åº•å±‚çš„XMLStreamReader
     private QName           currentElement = null;
     private boolean         skip           = false;
     //-----------------------------------------------------
@@ -34,7 +34,7 @@ public abstract class XmlStreamEvent {
         this.reader = reader;
     }
     //-----------------------------------------------------
-    /**»ñÈ¡µ±Ç°ÊÂ¼ş·¢ÉúÊ±Ëù´¦µÄÔªËØ¡£*/
+    /**è·å–å½“å‰äº‹ä»¶å‘ç”Ÿæ—¶æ‰€å¤„çš„å…ƒç´ ã€‚*/
     public QName getCurrentElement() {
         return this.currentElement;
     }
@@ -42,32 +42,32 @@ public abstract class XmlStreamEvent {
         if (currentElementTree != null)
             this.currentElement = currentElementTree.getQname();
     }
-    /**»ñÈ¡µ±Ç°ÊÂ¼şËù´¦µÄxpath¡£*/
+    /**è·å–å½“å‰äº‹ä»¶æ‰€å¤„çš„xpathã€‚*/
     public String getXpath() {
         return this.xpath;
     }
-    /**»ñÈ¡{@link XMLStreamReader}¶ÔÏó¡£*/
+    /**è·å–{@link XMLStreamReader}å¯¹è±¡ã€‚*/
     public XMLStreamReader getReader() {
         return this.reader;
     }
-    /**Ìá¹©ÓĞ¹ØÊÂ¼şÎ»ÖÃµÄĞÅÏ¢¡£Location Ìá¹©µÄËùÓĞĞÅÏ¢¶¼ÊÇ¿ÉÑ¡µÄ¡£ÀıÈç£¬Ó¦ÓÃ³ÌĞò¿ÉÒÔÖ»±¨¸æĞĞºÅ¡£*/
+    /**æä¾›æœ‰å…³äº‹ä»¶ä½ç½®çš„ä¿¡æ¯ã€‚Location æä¾›çš„æ‰€æœ‰ä¿¡æ¯éƒ½æ˜¯å¯é€‰çš„ã€‚ä¾‹å¦‚ï¼Œåº”ç”¨ç¨‹åºå¯ä»¥åªæŠ¥å‘Šè¡Œå·ã€‚*/
     public Location getLocation() {
         return this.reader.getLocation();
     }
-    /**»ñÈ¡{@link NamespaceContext}¶ÔÏó¡£*/
+    /**è·å–{@link NamespaceContext}å¯¹è±¡ã€‚*/
     public NamespaceContext getNamespaceContext() {
         return this.reader.getNamespaceContext();
     }
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÊÇ·ñÌø¹ı¸ÃÊÂ¼şµÄ´¦Àí£¬Èç¹û±»Ìø¹ıµÄÊÂ¼şÊÇ{@link StartDocumentEvent}»ò{@link StartElementEvent}ÔòÒ²»áÌø¹ıÖĞ¼äµÄËùÓĞÊÂ¼şÁ÷¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºæ˜¯å¦è·³è¿‡è¯¥äº‹ä»¶çš„å¤„ç†ï¼Œå¦‚æœè¢«è·³è¿‡çš„äº‹ä»¶æ˜¯{@link StartDocumentEvent}æˆ–{@link StartElementEvent}åˆ™ä¹Ÿä¼šè·³è¿‡ä¸­é—´çš„æ‰€æœ‰äº‹ä»¶æµã€‚*/
     public boolean isSkip() {
         return this.skip;
     }
-    /**Ìø¹ıµ±Ç°ÊÂ¼ş£¬Èç¹û±»Ìø¹ıµÄÊÂ¼şÊÇ{@link StartDocumentEvent}»ò{@link StartElementEvent}ÔòÒ²»áÌø¹ıÖĞ¼äµÄËùÓĞÊÂ¼şÁ÷¡£*/
+    /**è·³è¿‡å½“å‰äº‹ä»¶ï¼Œå¦‚æœè¢«è·³è¿‡çš„äº‹ä»¶æ˜¯{@link StartDocumentEvent}æˆ–{@link StartElementEvent}åˆ™ä¹Ÿä¼šè·³è¿‡ä¸­é—´çš„æ‰€æœ‰äº‹ä»¶æµã€‚*/
     public void skip() {
         this.skip = true;
     }
-    /**ÊÇ·ñÎªÒ»¸öÈ«¾ÖÊÂ¼ş£¬È«¾ÖÊÂ¼şÊÇÖ¸¸ÃÊÂ¼ş»áÔÚËùÓĞ×¢²áµÄÃüÃû¿Õ¼ä½âÎöÆ÷ÉÏ´«²¥¡£*/
+    /**æ˜¯å¦ä¸ºä¸€ä¸ªå…¨å±€äº‹ä»¶ï¼Œå…¨å±€äº‹ä»¶æ˜¯æŒ‡è¯¥äº‹ä»¶ä¼šåœ¨æ‰€æœ‰æ³¨å†Œçš„å‘½åç©ºé—´è§£æå™¨ä¸Šä¼ æ’­ã€‚*/
     public abstract boolean isPublicEvent();
-    /**ÅĞ¶Ï²ÎÊıÖĞµÄÊÂ¼ş¶ÔÏóÊÇ·ñÊÇÓëµ±Ç°ÊÂ¼ş¶ÔÏóÎªÒ»¸öÅÄµµ¡£ÀıÈç£º{@link StartDocumentEvent}ºÍ{@link EndDocumentEvent}ÊÇÒ»¶ÔÅÄµµ£¬Í¬Ò»XpathµÄ{@link StartElementEvent}ºÍ{@link EndElementEvent}ÊÇÒ»¶ÔÅÄµµ*/
+    /**åˆ¤æ–­å‚æ•°ä¸­çš„äº‹ä»¶å¯¹è±¡æ˜¯å¦æ˜¯ä¸å½“å‰äº‹ä»¶å¯¹è±¡ä¸ºä¸€ä¸ªæ‹æ¡£ã€‚ä¾‹å¦‚ï¼š{@link StartDocumentEvent}å’Œ{@link EndDocumentEvent}æ˜¯ä¸€å¯¹æ‹æ¡£ï¼ŒåŒä¸€Xpathçš„{@link StartElementEvent}å’Œ{@link EndElementEvent}æ˜¯ä¸€å¯¹æ‹æ¡£*/
     public abstract boolean isPartner(XmlStreamEvent e);
 }

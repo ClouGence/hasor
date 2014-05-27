@@ -18,7 +18,7 @@ import org.eclipse.ui.ide.IDE;
 /**
  * 
  * @version : 2013-3-14
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class CreateMappingWizard extends Wizard implements INewWizard {
     private static int   fileCount = 1;

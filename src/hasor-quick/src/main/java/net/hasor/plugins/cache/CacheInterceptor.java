@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.more.json.JSON;
 /**
- * À¹½ØÆ÷
+ * æ‹¦æˆªå™¨
  * @version : 2013-11-8
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 class CacheInterceptor implements MethodInterceptor, AppContextAware {
     private AppContext appContext = null;
     public CacheInterceptor(ApiBinder apiBinder) {
-        /* ×¢²á AppContextAware ½Ó¿Ú£¬ÒÔ±ã»ñÈ¡µ½ AppContext ½Ó¿ÚÀàĞÍ¡£*/
+        /* æ³¨å†Œ AppContextAware æ¥å£ï¼Œä»¥ä¾¿è·å–åˆ° AppContext æ¥å£ç±»å‹ã€‚*/
         apiBinder.registerAware(this);
     }
     public void setAppContext(AppContext appContext) {
@@ -39,26 +39,26 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
     }
     //
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        /*1.×¼±¸±ØÒªµÄ²ÎÊı*/
+        /*1.å‡†å¤‡å¿…è¦çš„å‚æ•°*/
         Method targetMethod = invocation.getMethod();
-        NeedCache cacheAnno = targetMethod.getAnnotation(NeedCache.class);/*·½·¨ÉÏµÄNeedCache*/
+        NeedCache cacheAnno = targetMethod.getAnnotation(NeedCache.class);/*æ–¹æ³•ä¸Šçš„NeedCache*/
         if (cacheAnno == null)
-            cacheAnno = targetMethod.getDeclaringClass().getAnnotation(NeedCache.class);/*·½·¨Ëù´¦ÀàÉÏµÄNeedCache*/
+            cacheAnno = targetMethod.getDeclaringClass().getAnnotation(NeedCache.class);/*æ–¹æ³•æ‰€å¤„ç±»ä¸Šçš„NeedCache*/
         if (cacheAnno == null)
             return invocation.proceed();
-        List<CacheCreator> creatorList = appContext.findBindingBean(CacheCreator.class);/*²éÕÒ CacheCreator ÊµÏÖÀà*/
+        List<CacheCreator> creatorList = appContext.findBindingBean(CacheCreator.class);/*æŸ¥æ‰¾ CacheCreator å®ç°ç±»*/
         if (creatorList == null || creatorList.isEmpty()) {
             Hasor.logWarn("does not define the CacheCreator.");
             return invocation.proceed();
         }
-        //2.»ñÈ¡»º´æ
+        //2.è·å–ç¼“å­˜
         CacheCreator cacheCreator = creatorList.get(0);
         Cache cache = cacheCreator.getCacheByName(appContext, cacheAnno.groupName());
         if (cache == null) {
             Hasor.logWarn("Cache %s is not Defile. at Method %s.", cacheAnno.groupName(), targetMethod);
             return invocation.proceed();
         }
-        //3.»ñÈ¡Key
+        //3.è·å–Key
         StringBuilder cacheKey = new StringBuilder(targetMethod.toString());
         Object[] args = invocation.getArguments();
         if (args != null)
@@ -67,12 +67,12 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
                     cacheKey.append("NULL");
                     continue;
                 }
-                /*±£Ö¤arg²ÎÊı²»Îª¿Õ*/
+                /*ä¿è¯argå‚æ•°ä¸ä¸ºç©º*/
                 cacheKey.append(JSON.toString(arg));
             }
         Hasor.logDebug("MethodInterceptor Method : %s", targetMethod);
         Hasor.logDebug("MethodInterceptor Cache key :%s", cacheKey.toString());
-        //4.²Ù×÷»º´æ
+        //4.æ“ä½œç¼“å­˜
         String key = cacheKey.toString();
         Object returnData = null;
         if (cache.hasCache(key) == true) {

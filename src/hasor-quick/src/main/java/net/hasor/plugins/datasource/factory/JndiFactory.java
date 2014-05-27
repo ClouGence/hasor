@@ -25,7 +25,7 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-9-16
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class JndiFactory implements DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
@@ -33,7 +33,7 @@ public class JndiFactory implements DataSourceFactory {
         if (StringUtils.isBlank(jndi))
             return null;
         //
-        Hasor.logInfo("JNDI ¡®%s¡¯.", jndi);
+        Hasor.logInfo("JNDI â€˜%sâ€™.", jndi);
         Context ctx = new InitialContext();
         DataSource dataSource = (DataSource) ctx.lookup(jndi);
         return dataSource;

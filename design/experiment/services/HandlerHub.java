@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import com.google.inject.Key;
 /**
  * 
  * @version : 2013-10-29
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class HandlerHub implements EventListener {
     private AppContext                                           appContext;
@@ -54,13 +54,13 @@ public class HandlerHub implements EventListener {
     /***/
     public void onEvent(String event, Object[] params) throws Throwable {
         /*  */if (event.equals(ContextEvent_Start)) {
-            /*²¹³ä£¬×¢²á·şÎñ*/
+            /*è¡¥å……ï¼Œæ³¨å†ŒæœåŠ¡*/
         } else if (event.equals(ContextEvent_Stoped)) {
-            /*²¹³ä£¬½â³ı×¢²á*/
+            /*è¡¥å……ï¼Œè§£é™¤æ³¨å†Œ*/
         } else if (event.equals(ModuleEvent_Start)) {
-            /*²¹³ä£¬×¢²á·şÎñ*/
+            /*è¡¥å……ï¼Œæ³¨å†ŒæœåŠ¡*/
         } else if (event.equals(ModuleEvent_Stoped)) {
-            /*²¹³ä£¬½â³ı×¢²á*/
+            /*è¡¥å……ï¼Œè§£é™¤æ³¨å†Œ*/
         }
     }
     //
@@ -77,7 +77,7 @@ public class HandlerHub implements EventListener {
         return e;
     }
     private Map<Object, MappingItem> serviceBeanMapping = new HashMap<Object, MappingItem>();
-    /*×¢²á·şÎñ¡£*/
+    /*æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void registerService(Class<?> type, Class<?> serviceType, Object... objects) {
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceType), "Repeat service registry at : " + serviceType);
         //
@@ -86,7 +86,7 @@ public class HandlerHub implements EventListener {
         this.serviceBeanMapping.put(serviceType, regItem);
         this._registerServiceObject(type, regItem, objects);
     };
-    /*×¢²á·şÎñ¡£*/
+    /*æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void registerService(Class<?> type, Key<?> serviceKey, Object... objects) {
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceKey), "Repeat service registry at : " + serviceKey);
         //
@@ -95,7 +95,7 @@ public class HandlerHub implements EventListener {
         this.serviceBeanMapping.put(serviceKey, regItem);
         this._registerServiceObject(type, regItem, objects);
     };
-    /*×¢²á·şÎñ¡£*/
+    /*æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void registerServiceObject(Class<?> type, Object serviceBean, Object... objects) {
         Hasor.assertIsLegal(!serviceBeanMapping.containsKey(serviceBean), "Repeat service registry at : " + serviceBean);
         //
@@ -103,35 +103,35 @@ public class HandlerHub implements EventListener {
         this.serviceBeanMapping.put(serviceBean, regItem);
         this._registerServiceObject(type, regItem, objects);
     };
-    /*½â³ı×¢²á·şÎñ¡£*/
+    /*è§£é™¤æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void unRegisterService(Class<?> type, Class<?> serviceType) {
         if (!serviceBeanMapping.containsKey(serviceType))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceType));
         serviceBeanMapping.remove(serviceType);
     };
-    /*½â³ı×¢²á·şÎñ¡£*/
+    /*è§£é™¤æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void unRegisterService(Class<?> type, Key<?> serviceKey) {
         if (!serviceBeanMapping.containsKey(serviceKey))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceKey));
         serviceBeanMapping.remove(serviceKey);
     };
-    /*½â³ı×¢²á·şÎñ¡£*/
+    /*è§£é™¤æ³¨å†ŒæœåŠ¡ã€‚*/
     public synchronized void unRegisterServiceObject(Class<?> type, Object serviceBean) {
         if (!serviceBeanMapping.containsKey(serviceBean))
             return;
         this._unRegisterServiceObject(type, serviceBeanMapping.get(serviceBean));
         serviceBeanMapping.remove(serviceBean);
     };
-    /*×¢²á·şÎñ¡£*/
+    /*æ³¨å†ŒæœåŠ¡ã€‚*/
     private void _registerServiceObject(Class<?> type, MappingItem serviceBean, Object... objects) {
         ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);
         if (define == null)
             return;
         define.registerService(serviceBean.target);
     };
-    /*½â³ı×¢²á·şÎñ¡£*/
+    /*è§£é™¤æ³¨å†ŒæœåŠ¡ã€‚*/
     private void _unRegisterServiceObject(Class<?> type, MappingItem serviceBean) {
         ServicesRegisterHandlerDefine define = this.handlerDefine.get(type);
         if (define == null)

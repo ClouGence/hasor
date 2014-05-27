@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.aopalliance.intercept.MethodInterceptor;
 /**
- * ±ê¼ÇÔÚÀà»ò·½·¨ÉÏ£¬ÎªÀà»ò·½·¨Ö¸¶¨À¹½ØÆ÷¡£
+ * æ ‡è®°åœ¨ç±»æˆ–æ–¹æ³•ä¸Šï¼Œä¸ºç±»æˆ–æ–¹æ³•æŒ‡å®šæ‹¦æˆªå™¨ã€‚
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })

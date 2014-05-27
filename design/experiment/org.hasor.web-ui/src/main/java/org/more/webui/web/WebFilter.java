@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import org.more.webui.context.FacesContext;
 import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Lifecycle;
 /**
- * Web»Îø⁄
+ * WebÂÖ•Âè£
  * @version : 2012-5-11
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class WebFilter implements Filter {
     private Lifecycle    lifecycle = null;
@@ -42,13 +42,13 @@ public class WebFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) arg1;
         arg0.setAttribute("_head_startTime", System.currentTimeMillis());
         if (req.getRequestURI().endsWith(this.config.getFacesSuffix()) == true) {
-            /**¥¶¿ÌFaces*/
+            /**Â§ÑÁêÜFaces*/
             ViewContext viewContext = new ViewContext(req, res, this.lifecycle);
             ViewContext.setCurrentViewContext(viewContext);
             this.lifecycle.execute(viewContext);
             ViewContext.setCurrentViewContext(null);
         } else {
-            /**¥¶¿Ì◊ ‘¥*/
+            /**Â§ÑÁêÜËµÑÊ∫ê*/
             arg2.doFilter(arg0, arg1);
             return;
         }

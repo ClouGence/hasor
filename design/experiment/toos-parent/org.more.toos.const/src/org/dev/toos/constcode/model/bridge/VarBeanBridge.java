@@ -6,35 +6,35 @@ import org.dev.toos.constcode.metadata.ConstVarBean;
 import org.dev.toos.constcode.metadata.create.NewConstVarBean;
 import org.dev.toos.constcode.model.ConstGroup;
 /**
- * ÓÃÓÚviewÖĞ±íÊöConstBean¶ÔÏó¡£
+ * ç”¨äºviewä¸­è¡¨è¿°ConstBeanå¯¹è±¡ã€‚
  * @version : 2013-2-16
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class VarBeanBridge extends AbstractBridge<ConstVarBean> {
     private ConstBeanBridge     parentConst  = null;
     private VarBeanBridge       parentVar    = null;
     private List<VarBeanBridge> childrenList = null;
     //
-    /**´´½¨Ò»¸öĞÂ³£Á¿ÖµµÄ´úÀí*/
+    /**åˆ›å»ºä¸€ä¸ªæ–°å¸¸é‡å€¼çš„ä»£ç†*/
     public VarBeanBridge(ConstBeanBridge parentConst, VarBeanBridge parentVar, ConstGroup targetSource) {
         this(parentConst, parentVar, new NewConstVarBean(parentConst.getTarget(), (parentVar == null) ? null : parentVar.getTarget()), targetSource);
     }
-    /**´´½¨Ò»¸öÒÑ¾­´æÔÚµÄ³£Á¿´úÀí*/
+    /**åˆ›å»ºä¸€ä¸ªå·²ç»å­˜åœ¨çš„å¸¸é‡ä»£ç†*/
     public VarBeanBridge(ConstBeanBridge parentConst, VarBeanBridge parentVar, ConstVarBean targetBean, ConstGroup targetSource) {
         super(targetBean, targetSource);
         this.parentConst = parentConst;
         this.parentVar = parentVar;
     }
     /*--------------------------------------------------------------------*/
-    /**»ñÈ¡ËùÊôµÄ³£Á¿*/
+    /**è·å–æ‰€å±çš„å¸¸é‡*/
     public ConstBeanBridge getConst() {
         return this.parentConst;
     }
-    /**»ñÈ¡¸¸*/
+    /**è·å–çˆ¶*/
     public VarBeanBridge getParent() {
         return this.parentVar;
     }
-    /**»ñÈ¡×Ó½Úµã*/
+    /**è·å–å­èŠ‚ç‚¹*/
     public List<VarBeanBridge> getChildren() {
         if (this.childrenList == null) {
             this.childrenList = this.getSource().loadChildrenVar(this);
@@ -43,7 +43,7 @@ public class VarBeanBridge extends AbstractBridge<ConstVarBean> {
         }
         return Collections.unmodifiableList(this.childrenList);
     }
-    /**Ìí¼Ó×ÓÔªËØ*/
+    /**æ·»åŠ å­å…ƒç´ */
     public void addVar(VarBeanBridge newVar) {
         this.childrenList.add(newVar);
         this.getSource().setConstChanged(true);
@@ -56,7 +56,7 @@ public class VarBeanBridge extends AbstractBridge<ConstVarBean> {
         this.getSource().setConstChanged(true);
     }
     /*--------------------------------------------------------------------*/
-    /**ÊôĞÔÊÇ·ñ¸Ä±ä¹ı£¬ÖØĞ´·½·¨°üº¬ÁË¶Ô×Ó¼¯³£Á¿ºÍ³£Á¿ÖµµÄ¼ì²â*/
+    /**å±æ€§æ˜¯å¦æ”¹å˜è¿‡ï¼Œé‡å†™æ–¹æ³•åŒ…å«äº†å¯¹å­é›†å¸¸é‡å’Œå¸¸é‡å€¼çš„æ£€æµ‹*/
     public boolean isPropertyChanged() {
         boolean res = super.isPropertyChanged();
         for (VarBeanBridge childrenVar : this.getChildren())
@@ -98,7 +98,7 @@ public class VarBeanBridge extends AbstractBridge<ConstVarBean> {
         target.setVarVar(this.getVar());
         target.setVarLat(this.getLat());
         target.setVarExtData(this.getExtData());
-        //´¦Àí×ÓÔªËØµÄapplyData
+        //å¤„ç†å­å…ƒç´ çš„applyData
         if (this.childrenList != null)
             for (VarBeanBridge varBean : this.childrenList)
                 varBean.applyData();
@@ -110,7 +110,7 @@ public class VarBeanBridge extends AbstractBridge<ConstVarBean> {
         if (this.getTarget() != target)
             this.setTarget(target);
         this.getTarget().setConst(target.getConst());
-        //¸üĞÂº¢×ÓµÄ¸¸Ç×
+        //æ›´æ–°å­©å­çš„çˆ¶äº²
         if (this.childrenList != null)
             for (VarBeanBridge varBean : this.childrenList) {
                 ConstVarBean _target = varBean.getTarget();

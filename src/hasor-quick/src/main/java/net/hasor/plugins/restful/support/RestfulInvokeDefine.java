@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.more.UndefinedException;
 import org.more.classcode.FormatException;
 import org.more.util.StringUtils;
 /**
- * Ïß³Ì°²È«
+ * çº¿ç¨‹å®‰å…¨
  * @version : 2013-6-5
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class RestfulInvokeDefine /*implements Provider<RestfulInvoke>*/{
     private String[]   httpMethod;
@@ -78,33 +78,33 @@ public class RestfulInvokeDefine /*implements Provider<RestfulInvoke>*/{
     //
     //
     //
-    /**»ñÈ¡AppContext*/
+    /**è·å–AppContext*/
     public AppContext getAppContext() {
         return this.appContext;
     }
-    /**»ñÈ¡Ä¿±ê·½·¨*/
+    /**è·å–ç›®æ ‡æ–¹æ³•*/
     public Method getTargetMethod() {
         return this.targetMethod;
     }
-    /**»ñÈ¡Ä¿±êÀà*/
+    /**è·å–ç›®æ ‡ç±»*/
     public Class<?> getTargetClass() {
         return targetClass;
     }
-    /**»ñÈ¡Ó³Éä×Ö·û´®*/
+    /**è·å–æ˜ å°„å­—ç¬¦ä¸²*/
     public String getRestfulMapping() {
         return this.restfulMapping;
     }
-    /**²úÆ·£¬ÓÃÀ´¶¨ÒåÏìÓ¦ÀàĞÍ*/
+    /**äº§å“ï¼Œç”¨æ¥å®šä¹‰å“åº”ç±»å‹*/
     public String getProduces() {
         return this.produces;
     }
-    /**»ñÈ¡Ó³Éä×Ö·û´®ÓÃÓÚÆ¥ÅäµÄ±í´ïÊ½×Ö·û´®*/
+    /**è·å–æ˜ å°„å­—ç¬¦ä¸²ç”¨äºåŒ¹é…çš„è¡¨è¾¾å¼å­—ç¬¦ä¸²*/
     public String getRestfulMappingMatches() {
         if (this.restfulMappingMatches == null)
             this.restfulMappingMatches = this.restfulMapping.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         return this.restfulMappingMatches;
     }
-    /**ÅĞ¶ÏRestfulÊµÀıÊÇ·ñÖ§³ÖÕâ¸ö ÇëÇó·½·¨¡£*/
+    /**åˆ¤æ–­Restfulå®ä¾‹æ˜¯å¦æ”¯æŒè¿™ä¸ª è¯·æ±‚æ–¹æ³•ã€‚*/
     public boolean matchingMethod(String httpMethod) {
         for (String m : this.httpMethod)
             if (StringUtils.equalsIgnoreCase(httpMethod, m))

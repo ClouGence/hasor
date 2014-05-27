@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * 
  * @version : 2013-2-17
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class TestXmlConstDao {
     public static void main(String[] args) throws IOException, JAXBException {

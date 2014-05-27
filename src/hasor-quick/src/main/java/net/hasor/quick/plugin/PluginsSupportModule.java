@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import net.hasor.core.Module;
 import net.hasor.core.plugin.HasorPlugin;
 import net.hasor.quick.anno.AnnoModule;
 /**
- * ²å¼şÌåÏµÖ§³Ö
+ * æ’ä»¶ä½“ç³»æ”¯æŒ
  * @version : 2013-4-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @AnnoModule()
 public class PluginsSupportModule implements Module {
-    /**³õÊ¼»¯.*/
+    /**åˆå§‹åŒ–.*/
     public void init(ApiBinder apiBinder) {
         Set<Class<?>> pluginSet = apiBinder.findClass(Plugin.class);
         if (pluginSet == null)

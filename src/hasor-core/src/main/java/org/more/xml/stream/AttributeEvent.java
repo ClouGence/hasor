@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package org.more.xml.stream;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 /**
- * µ±Óöµ½Ò»¸öÊôĞÔÉùÃ÷Ê±¡£
+ * å½“é‡åˆ°ä¸€ä¸ªå±æ€§å£°æ˜æ—¶ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class AttributeEvent extends XmlStreamEvent {
     public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XMLStreamReader reader, int index) {
@@ -31,35 +31,35 @@ public class AttributeEvent extends XmlStreamEvent {
     private QName          attQName     = null;
     private int            index        = 0;
     private XmlStreamEvent elementEvent = null;
-    /**»ñÈ¡ÊôĞÔÃû³Æ{@link QName}¶ÔÏó¡£*/
+    /**è·å–å±æ€§åç§°{@link QName}å¯¹è±¡ã€‚*/
     public QName getName() {
         return this.attQName;
     }
-    /**»ñÈ¡ÊôĞÔËùÔÚÔªËØµÄÊÂ¼ş¶ÔÏó¡£*/
+    /**è·å–å±æ€§æ‰€åœ¨å…ƒç´ çš„äº‹ä»¶å¯¹è±¡ã€‚*/
     public XmlStreamEvent getElementEvent() {
         return elementEvent;
     }
-    /**»ñÈ¡ÊôĞÔÃû(²»°üº¬ÃüÃû¿Õ¼äÇ°×º)¡£*/
+    /**è·å–å±æ€§å(ä¸åŒ…å«å‘½åç©ºé—´å‰ç¼€)ã€‚*/
     public String getElementName() {
         return this.getName().getLocalPart();
     }
-    /**»ñÈ¡ÊôĞÔÃüÃû¿Õ¼äÇ°×º¡£*/
+    /**è·å–å±æ€§å‘½åç©ºé—´å‰ç¼€ã€‚*/
     public String getPrefix() {
         return this.getName().getPrefix();
     }
-    /**»ñÈ¡ÊôĞÔÃüÃû¿Õ¼ä¡£*/
+    /**è·å–å±æ€§å‘½åç©ºé—´ã€‚*/
     public String getNamespaceURI() {
         return this.getName().getNamespaceURI();
     }
-    /**»ñÈ¡ÊôĞÔÃüÃû¿Õ¼ä¡£*/
+    /**è·å–å±æ€§å‘½åç©ºé—´ã€‚*/
     public String getValue() {
         return this.getReader().getAttributeValue(this.index);
     }
-    /**¸ÃÊÂ¼şÃ»ÓĞÅÄµµ¡£*/
+    /**è¯¥äº‹ä»¶æ²¡æœ‰æ‹æ¡£ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         return false;
     }
-    /**ÊôĞÔÊÂ¼ş£¬²»ÊÇ¹²ÓĞÊÂ¼ş¡£*/
+    /**å±æ€§äº‹ä»¶ï¼Œä¸æ˜¯å…±æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         return false;
     }

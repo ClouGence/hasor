@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 import freemarker.core.TemplateElement;
 /**
- * freemarkerÄ£°åÔªËØ¿é¹³×Ó¡£
+ * freemarkeræ¨¡æ¿å…ƒç´ å—é’©å­ã€‚
  * @version : 2012-5-14
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface ElementHook {
-    /**¿ªÊ¼´¦ÀíÓöµ½µÄÄ£°å±êÇ©*/
+    /**å¼€å§‹å¤„ç†é‡åˆ°çš„æ¨¡æ¿æ ‡ç­¾*/
     public UIComponent beginAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException;
-    /**´¦ÀíÓöµ½µÄÄ£°å±êÇ©½áÊø*/
+    /**å¤„ç†é‡åˆ°çš„æ¨¡æ¿æ ‡ç­¾ç»“æŸ*/
     public void endAtBlcok(TemplateScanner scanner, TemplateElement e, UIComponent parent, ViewContext viewContext) throws ElementHookException;
 }

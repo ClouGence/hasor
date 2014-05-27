@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ package org.more.webui.resource;
 import java.io.InputStream;
 import java.net.URL;
 /**
- * {@link ClassPathResourceLoader}»áÊ¹ÓÃÒ»¸öclasspathÂ·¾¶×÷ÎªÏà¶ÔÂ·¾¶¡£
- * ¼ÙÉè¸ÃÀà´ú±íÁËÒ»¸öÃûÎª¡°org.more.res¡±µÄ×ÊÔ´°ü£¬
- * {@link #getResourceAsStream(String)}·½·¨²ÎÊıÎª¡°/abc/aa/htm¡±¡£
- * ÄÇÃ´Õâ¸ö×ÊÔ´µÄÊµ¼ÊµØÖ·ÊÇÎ»ÓÚclasspathÏÂµÄ¡°org/more/res/abc/aa/htm¡±¡£
+ * {@link ClassPathResourceLoader}ä¼šä½¿ç”¨ä¸€ä¸ªclasspathè·¯å¾„ä½œä¸ºç›¸å¯¹è·¯å¾„ã€‚
+ * å‡è®¾è¯¥ç±»ä»£è¡¨äº†ä¸€ä¸ªåä¸ºâ€œorg.more.resâ€çš„èµ„æºåŒ…ï¼Œ
+ * {@link #getResourceAsStream(String)}æ–¹æ³•å‚æ•°ä¸ºâ€œ/abc/aa/htmâ€ã€‚
+ * é‚£ä¹ˆè¿™ä¸ªèµ„æºçš„å®é™…åœ°å€æ˜¯ä½äºclasspathä¸‹çš„â€œorg/more/res/abc/aa/htmâ€ã€‚
  * @version : 2011-9-14
- * @author ÕÔÓÀ´º (zyc@byshell.org) 
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org) 
  */
 public class ClassPathResourceLoader implements IResourceLoader {
     private String      packageName = null;
@@ -32,11 +32,11 @@ public class ClassPathResourceLoader implements IResourceLoader {
         this.packageName = packageName;
         this.classLoader = classLoader;
     }
-    /**»ñÈ¡×ÊÔ´»ñÈ¡µÄ°üÂ·¾¶¡£*/
+    /**è·å–èµ„æºè·å–çš„åŒ…è·¯å¾„ã€‚*/
     public String getPackageName() {
         return this.packageName;
     }
-    /**»ñÈ¡×°ÔØ×ÊÔ´Ê¹ÓÃµÄÀà×°ÔØÆ÷¡£*/
+    /**è·å–è£…è½½èµ„æºä½¿ç”¨çš„ç±»è£…è½½å™¨ã€‚*/
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }

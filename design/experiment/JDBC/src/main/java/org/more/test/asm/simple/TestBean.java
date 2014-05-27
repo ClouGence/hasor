@@ -17,7 +17,7 @@ package org.more.test.asm.simple;
 /**
  * 
  * @version : 2013-9-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class TestBean {
     public void halloAop() {

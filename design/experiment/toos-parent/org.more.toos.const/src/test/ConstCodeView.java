@@ -21,7 +21,7 @@ import swing2swt.layout.BorderLayout;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstCodeView extends ViewPart {
     private Composite   parent      = null;
@@ -42,7 +42,7 @@ public class ConstCodeView extends ViewPart {
     }
     //
     //
-    /**¹¹½¨ÊÓÍ¼*/
+    /**æ„å»ºè§†å›¾*/
     public void createPartControl(Composite parent) {
         this.parent = parent;
         parent.setLayout(new BorderLayout(0, 0));
@@ -55,7 +55,7 @@ public class ConstCodeView extends ViewPart {
         TreeViewer treeViewer = new TreeViewer(parent, SWT.BORDER);
         Tree tree = treeViewer.getTree();
         tree.setTouchEnabled(true);
-        tree.setFont(SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 9, SWT.BOLD | SWT.ITALIC));
+        tree.setFont(SWTResourceManager.getFont("å¾®è½¯é›…é»‘", 9, SWT.BOLD | SWT.ITALIC));
         tree.setLayoutData(BorderLayout.CENTER);
         tree.setLinesVisible(true);
         tree.setHeaderVisible(true);
@@ -82,11 +82,11 @@ public class ConstCodeView extends ViewPart {
         this.initMenuBar();
         this.initToolBar();
     }
-    /**´´½¨ÉÏÏÂÎÄ²Ëµ¥*/
+    /**åˆ›å»ºä¸Šä¸‹æ–‡èœå•*/
     protected void initMenuBar() {
         IMenuManager menuManager = this.getViewSite().getActionBars().getMenuManager();
     }
-    /**´´½¨ÊÓÍ¼¹¤¾ßÌõ*/
+    /**åˆ›å»ºè§†å›¾å·¥å…·æ¡*/
     public void initToolBar() {
         IToolBarManager toolBarManager = this.getViewSite().getActionBars().getToolBarManager();
     }

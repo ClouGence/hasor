@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package net.hasor.core.binder.register;
 import net.hasor.core.AppContext;
 import net.hasor.core.builder.BeanBuilder;
 /**
- * µ±¿ª·¢ÕßÓÃ¹ı {@link AppContext#getInstance(Class)}»ñÈ¡µÄBeanÉĞÎ´ÔÚHasorÖĞ×¢²áµÄÊ±ºò¡£
- * ¸ÃÀàĞÍ»á±»·â×°³É{@link FreeTypeRegister}£¬È»ºóÔÚÍ¨¹ı{@link BeanBuilder}½Ó¿Ú´´½¨¡£
+ * å½“å¼€å‘è€…ç”¨è¿‡ {@link AppContext#getInstance(Class)}è·å–çš„Beanå°šæœªåœ¨Hasorä¸­æ³¨å†Œçš„æ—¶å€™ã€‚
+ * è¯¥ç±»å‹ä¼šè¢«å°è£…æˆ{@link FreeTypeRegister}ï¼Œç„¶ååœ¨é€šè¿‡{@link BeanBuilder}æ¥å£åˆ›å»ºã€‚
  * <p>
- * {@link BeanBuilder}½Ó¿Ú»á¸ù¾İ²»Í¬µÄÌá¹©ÕßÀ´´¦ÀíÕâÖÖÇéĞÎ¡£Èç¹ûÌá¹©ÕßÎªSpring¾Í»á·µ»ØÒ»¸önull¡£
- * ÌÈÈôÊÇGuice¾Í»áµÃµ½ÄãÏëÒªµÄBean¡£
+ * {@link BeanBuilder}æ¥å£ä¼šæ ¹æ®ä¸åŒçš„æä¾›è€…æ¥å¤„ç†è¿™ç§æƒ…å½¢ã€‚å¦‚æœæä¾›è€…ä¸ºSpringå°±ä¼šè¿”å›ä¸€ä¸ªnullã€‚
+ * å€˜è‹¥æ˜¯Guiceå°±ä¼šå¾—åˆ°ä½ æƒ³è¦çš„Beanã€‚
  * @version : 2014-3-20
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class FreeTypeRegister<T> extends AbstractTypeRegister<T> {
     public FreeTypeRegister(Class<T> type) {

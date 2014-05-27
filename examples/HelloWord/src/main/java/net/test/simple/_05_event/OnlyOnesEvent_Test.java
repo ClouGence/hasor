@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,31 +20,31 @@ import net.hasor.core.EventListener;
 import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Test;
 /**
- * ½ö»á±»Ö´ÐÐÒ»´ÎµÄÊÂ¼þ
+ * ä»…ä¼šè¢«æ‰§è¡Œä¸€æ¬¡çš„äº‹ä»¶
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class OnlyOnesEvent_Test {
     private static String config = "net/test/simple/_05_event/event-config.xml";
     //
-    /*²âÊÔ£¬Òì²½ÊÂ¼þ*/
+    /*æµ‹è¯•ï¼Œå¼‚æ­¥äº‹ä»¶*/
     @Test
     public void test_OnlyOnesEvent() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>test_OnlyOnesEvent<<--");
         AnnoStandardAppContext appContext = new AnnoStandardAppContext(config);
         appContext.start();
-        //»ñÈ¡ÊÂ¼þ¹ÜÀíÆ÷
-        //push Ò»¸öÊÂ¼þ¼àÌýÆ÷£¬¸Ã¼àÌýÆ÷ÔÚ push Ö®ºóÖ»»áÉúÐ§Ò»´Î¡£
+        //èŽ·å–äº‹ä»¶ç®¡ç†å™¨
+        //push ä¸€ä¸ªäº‹ä»¶ç›‘å¬å™¨ï¼Œè¯¥ç›‘å¬å™¨åœ¨ push ä¹‹åŽåªä¼šç”Ÿæ•ˆä¸€æ¬¡ã€‚
         appContext.pushListener("MyEvent", new MyEventListener());
-        //Òý·¢4´ÎÊÂ¼þ£¬µ«ÊÇÖ»ÓÐÒ»¸öÊÂ¼þ»á±»´¦Àí¡£
+        //å¼•å‘4æ¬¡äº‹ä»¶ï¼Œä½†æ˜¯åªæœ‰ä¸€ä¸ªäº‹ä»¶ä¼šè¢«å¤„ç†ã€‚
         appContext.fireSyncEvent("MyEvent");
         appContext.fireSyncEvent("MyEvent");
         appContext.fireSyncEvent("MyEvent");
         appContext.fireSyncEvent("MyEvent");
         //
-        //ÔÙ´Î×¢²á MyEvent ÊÂ¼þ
+        //å†æ¬¡æ³¨å†Œ MyEvent äº‹ä»¶
         appContext.pushListener("MyEvent", new MyEventListener());
-        //Òý·¢ÊÂ¼þ
+        //å¼•å‘äº‹ä»¶
         appContext.fireSyncEvent("MyEvent");
     }
     private static class MyEventListener implements EventListener {

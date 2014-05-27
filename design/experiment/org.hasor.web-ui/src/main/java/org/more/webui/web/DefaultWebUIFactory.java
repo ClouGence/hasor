@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,16 @@ import org.more.webui.lifestyle.Lifecycle;
 import freemarker.cache.MruCacheStorage;
 import freemarker.template.Configuration;
 /**
- * Ä¬ÈÏÊµÏÖ
+ * é»˜è®¤å®ç°
  * @version : 2012-6-27
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DefaultWebUIFactory implements WebUIFactory {
-    /**´´½¨{@link Lifecycle}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link Lifecycle}å¯¹è±¡ã€‚*/
     public Lifecycle createLifestyle(FacesConfig config, FacesContext context) {
         return Lifecycle.getDefault(config, context);
     }
-    /**´´½¨{@link FacesContext}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link FacesContext}å¯¹è±¡ã€‚*/
     public FacesContext createFacesContext(FacesConfig config) {
         return new DefaultFacesContext(config);
     }
@@ -55,8 +55,8 @@ class DefaultFacesContext extends FacesContext {
             return cfg;
         cfg = new Configuration();
         cfg.setTemplateLoader(new ClassPathTemplateLoader(null));
-        /*ÕâÌõ±ØĞë¼Ó£¬ÒòÎªÃ»ÓĞ»º´æ»áÓĞÄ£°åÖØĞÂÔØÈë¶ªÊ§µÄÎÊÌâ¡£
-         * Òı·¢Õâ¸öÎÊÌâµÄÔ­ÒòÊÇwebuiĞèÒªÏòÄ£°åÖĞµÄ±êÇ©Ğ´ÈëidÎÄ¼ş¡£*/
+        /*è¿™æ¡å¿…é¡»åŠ ï¼Œå› ä¸ºæ²¡æœ‰ç¼“å­˜ä¼šæœ‰æ¨¡æ¿é‡æ–°è½½å…¥ä¸¢å¤±çš„é—®é¢˜ã€‚
+         * å¼•å‘è¿™ä¸ªé—®é¢˜çš„åŸå› æ˜¯webuiéœ€è¦å‘æ¨¡æ¿ä¸­çš„æ ‡ç­¾å†™å…¥idæ–‡ä»¶ã€‚*/
         cfg.setCacheStorage(new MruCacheStorage(0, Integer.MAX_VALUE));
         cfg.setClassicCompatible(true);
         return cfg;

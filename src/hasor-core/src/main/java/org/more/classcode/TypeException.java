@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package org.more.classcode;
 /**
- * ¿‡–Õ“Ï≥£°£
+ * Á±ªÂûãÂºÇÂ∏∏„ÄÇ
  * @version 2009-7-7
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò• (zyc@hasor.net)
  */
 public class TypeException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = -6286611015368846627L;
-    /**¿‡–Õ“Ï≥£*/
+    /**Á±ªÂûãÂºÇÂ∏∏*/
     public TypeException(String string) {
         super(string);
     }
-    /**¿‡–Õ“Ï≥£*/
+    /**Á±ªÂûãÂºÇÂ∏∏*/
     public TypeException(Throwable error) {
         super(error);
     }
-    /**¿‡–Õ“Ï≥£*/
+    /**Á±ªÂûãÂºÇÂ∏∏*/
     public TypeException(String string, Throwable error) {
         super(string, error);
     }

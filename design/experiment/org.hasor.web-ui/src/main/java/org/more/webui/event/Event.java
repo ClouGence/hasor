@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.more.webui.event;
 /**
- * ÊÂ¼şÊÇÒ»ÖÖÍ¨Öª»úÖÆ£¬Ê¹ÓÃÊÂ¼ş²»ÄÜ¿ØÖÆÖ÷¿ØÁ÷³ÌµÄÖ´ĞĞ¡£²»¹ıÈ´¿ÉÒÔÍ¨¹ıÊÂ¼şµÃÖªÄÚ²¿µÄ¹¤×÷×´Ì¬¡£
- * ¸Ã½Ó¿Ú±íÊ¾µÄÊÇÒ»¸ö{@link EventManager}¿ÉÒÔ±»Ê¶±ğ´¦ÀíµÄÊÂ¼ş¡£
+ * äº‹ä»¶æ˜¯ä¸€ç§é€šçŸ¥æœºåˆ¶ï¼Œä½¿ç”¨äº‹ä»¶ä¸èƒ½æ§åˆ¶ä¸»æ§æµç¨‹çš„æ‰§è¡Œã€‚ä¸è¿‡å´å¯ä»¥é€šè¿‡äº‹ä»¶å¾—çŸ¥å†…éƒ¨çš„å·¥ä½œçŠ¶æ€ã€‚
+ * è¯¥æ¥å£è¡¨ç¤ºçš„æ˜¯ä¸€ä¸ª{@link EventManager}å¯ä»¥è¢«è¯†åˆ«å¤„ç†çš„äº‹ä»¶ã€‚
  * @version 2010-10-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Event {
     private String eventType = null;
@@ -43,7 +43,7 @@ public class Event {
         return toString().hashCode();
     }
     //----------------------------------------
-    /**»ñÈ¡Ö¸¶¨ÀàĞÍÊÂ¼ş¶ÔÏó£¬Èç¹û²ÎÊıÎª¿ÕÔòÖ±½Ó·µ»Ø¿ÕÖµ¡£ÊÂ¼ş¶ÔÏóÔÚhyphaÖĞÊÇÈ«³ÌÎ¨Ò»µÄ£¬ÕâÑù×öµÄÄ¿µÄÊÇÎªÁË¼õÉÙnewµÄÊıÁ¿¡£*/
+    /**è·å–æŒ‡å®šç±»å‹äº‹ä»¶å¯¹è±¡ï¼Œå¦‚æœå‚æ•°ä¸ºç©ºåˆ™ç›´æ¥è¿”å›ç©ºå€¼ã€‚äº‹ä»¶å¯¹è±¡åœ¨hyphaä¸­æ˜¯å…¨ç¨‹å”¯ä¸€çš„ï¼Œè¿™æ ·åšçš„ç›®çš„æ˜¯ä¸ºäº†å‡å°‘newçš„æ•°é‡ã€‚*/
     public static Event getEvent(String eventType) {
         if (eventType == null)
             return null;

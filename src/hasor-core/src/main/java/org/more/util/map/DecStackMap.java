@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.more.util.MergeUtils;
 /**
- * Ìá¹©Ò»ÖÖÕ»½á¹¹µÄ²Ù×÷MapĞòÁĞÊôĞÔ¶ÔÏó£¬ÀûÓÃ¸ÃÊôĞÔ×°ÊÎÆ÷¿ÉÒÔÔÚÊôĞÔ¼¯ÉÏÔö¼ÓÁíÒ»¸öÊôĞÔÕ»¡£
+ * æä¾›ä¸€ç§æ ˆç»“æ„çš„æ“ä½œMapåºåˆ—å±æ€§å¯¹è±¡ï¼Œåˆ©ç”¨è¯¥å±æ€§è£…é¥°å™¨å¯ä»¥åœ¨å±æ€§é›†ä¸Šå¢åŠ å¦ä¸€ä¸ªå±æ€§æ ˆã€‚
  * @version 2010-9-11
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
-    /** ´´½¨Ò»¸ö»ù±¾ÊôĞÔ¶ÔÏó¡£ */
+    /** åˆ›å»ºä¸€ä¸ªåŸºæœ¬å±æ€§å¯¹è±¡ã€‚ */
     public DecStackMap() {
-        /*´´½¨Ò»¸öÄ¬ÈÏµÄ³ÉÔ±*/
+        /*åˆ›å»ºä¸€ä¸ªé»˜è®¤çš„æˆå‘˜*/
         super(true);
     };
-    /** ´´½¨Ò»¸ö»ù±¾ÊôĞÔ¶ÔÏó£¬²ÎÊıÊÇµÚÒ»¸öÕ»¶ÔÏó¡£ */
+    /** åˆ›å»ºä¸€ä¸ªåŸºæœ¬å±æ€§å¯¹è±¡ï¼Œå‚æ•°æ˜¯ç¬¬ä¸€ä¸ªæ ˆå¯¹è±¡ã€‚ */
     public DecStackMap(Map<K, T> entryMap) {
         super(entryMap, true);
     };
@@ -46,16 +46,16 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     protected StackSimpleSet<K, T> createSet() {
         return new StackSimpleSet<K, T>();
     };
-    /**»ñÈ¡µ±Ç°¶ÑµÄÉî¶È£¬¸ÃÖµ»áËæ×Åµ÷ÓÃcreateStack·½·¨¶øÔö¼Ó£¬Ëæ×ÅdropStack·½·¨¶ø¼õÉÙ¡£*/
+    /**è·å–å½“å‰å †çš„æ·±åº¦ï¼Œè¯¥å€¼ä¼šéšç€è°ƒç”¨createStackæ–¹æ³•è€Œå¢åŠ ï¼Œéšç€dropStackæ–¹æ³•è€Œå‡å°‘ã€‚*/
     public final int getDepth() {
         return this.entrySet().mapList.size() - 1;
     };
-    /**ÔÚÏÖÓĞÊôĞÔÕ»ÉÏ´´½¨Ò»¸öĞÂµÄÕ»£¬²Ù×÷Ò²»áÇĞ»»µ½Õâ¸öĞÂÕ»ÉÏ¡£*/
+    /**åœ¨ç°æœ‰å±æ€§æ ˆä¸Šåˆ›å»ºä¸€ä¸ªæ–°çš„æ ˆï¼Œæ“ä½œä¹Ÿä¼šåˆ‡æ¢åˆ°è¿™ä¸ªæ–°æ ˆä¸Šã€‚*/
     public synchronized void createStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
         stackList.mapList.addFirst(new HashMap<K, T>());
     };
-    /**Ïú»Ùµ±Ç°²ã´ÎµÄÊôĞÔÕ»£¬Èç¹ûÔÚÕ»¶¥Ö´ĞĞ¸Ã²Ù×÷½«»áÒı·¢{@link IndexOutOfBoundsException}ÀàĞÍÒì³£¡£*/
+    /**é”€æ¯å½“å‰å±‚æ¬¡çš„å±æ€§æ ˆï¼Œå¦‚æœåœ¨æ ˆé¡¶æ‰§è¡Œè¯¥æ“ä½œå°†ä¼šå¼•å‘{@link IndexOutOfBoundsException}ç±»å‹å¼‚å¸¸ã€‚*/
     public synchronized void dropStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
         if (stackList.mapList.size() == 0)
@@ -87,13 +87,13 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
             return count;
         }
     };
-    /** »ñÈ¡Ö¸¶¨Éî¶ÈµÄ¸¸¶Ñ£¨Èç¹û¿ÉÄÜ£©¡£0´ú±íµ±Ç°²ã£¬Êı×ÖÔ½´ó»ñÈ¡µÄÉî¶ÈÔ½Éî¡£ */
+    /** è·å–æŒ‡å®šæ·±åº¦çš„çˆ¶å †ï¼ˆå¦‚æœå¯èƒ½ï¼‰ã€‚0ä»£è¡¨å½“å‰å±‚ï¼Œæ•°å­—è¶Šå¤§è·å–çš„æ·±åº¦è¶Šæ·±ã€‚ */
     public Map<K, T> getParentStack(int depth) {
         if (depth < 0 || depth > this.getDepth())
             throw new IndexOutOfBoundsException();
         return this.entrySet().mapList.get(depth);
     };
-    /** »ñÈ¡µ±Ç°¶ÑµÄ¸¸¶Ñ£¨Èç¹û¿ÉÄÜ£©¡£ */
+    /** è·å–å½“å‰å †çš„çˆ¶å †ï¼ˆå¦‚æœå¯èƒ½ï¼‰ã€‚ */
     public Map<K, T> getParentStack() {
         return this.getParentStack(this.getDepth() - 1);
     };

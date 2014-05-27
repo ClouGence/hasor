@@ -22,7 +22,7 @@ import net.hasor.jdbc.datasource.local.ConnectionHolder;
 /**
  * 
  * @version : 2014-1-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class TransactionObject {
     private ConnectionHolder holder     = null;
@@ -53,6 +53,6 @@ public class TransactionObject {
         Connection conn = this.holder.getConnection();
         boolean autoMark = conn.getAutoCommit();
         if (autoMark == true)
-            conn.setAutoCommit(false);//½«Á¬½ÓautoCommitÉèÖÃÎªfalse£¬ÒâÒåÎªÊÖ¶¯µİ½»ÊÂÎñ¡£
+            conn.setAutoCommit(false);//å°†è¿æ¥autoCommitè®¾ç½®ä¸ºfalseï¼Œæ„ä¹‰ä¸ºæ‰‹åŠ¨é€’äº¤äº‹åŠ¡ã€‚
     }
 }

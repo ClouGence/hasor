@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * 
  * @version : 2013-2-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class CV_CellModifier implements ICellModifier {
     private TreeViewer treeViewer = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,19 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import net.hasor.security.SecurityException;
 /**
- * È¨ÏŞÏµÍ³URLÇëÇó´¦ÀíÖ§³Ö¡£
+ * æƒé™ç³»ç»ŸURLè¯·æ±‚å¤„ç†æ”¯æŒã€‚
  * @version : 2013-4-9  
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityDispatcher {
-    /**Æ¥ÅäµÄÂ·¾¶Ä£Ê½*/
+    /**åŒ¹é…çš„è·¯å¾„æ¨¡å¼*/
     public String getContentPath();
-    /**Ìø×ªµ½µÇÈë³É¹¦ºóµÄµØÖ·¡£*/
+    /**è·³è½¬åˆ°ç™»å…¥æˆåŠŸåçš„åœ°å€ã€‚*/
     public SecurityForward forwardIndex() throws IOException, ServletException;
-    /**Ìø×ªµ½µÇ³öÖ®ºóµÄµØÖ·¡£*/
+    /**è·³è½¬åˆ°ç™»å‡ºä¹‹åçš„åœ°å€ã€‚*/
     public SecurityForward forwardLogout() throws IOException, ServletException;
-    /**Ìø×ªµ½µÇÈëµÇ³öÖ´ĞĞsµÇÈëÊ§°ÜÊ±µÄµØÖ·¡£*/
+    /**è·³è½¬åˆ°ç™»å…¥ç™»å‡ºæ‰§è¡Œsç™»å…¥å¤±è´¥æ—¶çš„åœ°å€ã€‚*/
     public SecurityForward forwardFailure(Throwable e) throws IOException, ServletException;
-    /**Ìø×ªµ½ÅäÖÃµÄÒ³Ãæ¡£*/
+    /**è·³è½¬åˆ°é…ç½®çš„é¡µé¢ã€‚*/
     public SecurityForward forward(String id) throws IOException, ServletException, SecurityException;
 }

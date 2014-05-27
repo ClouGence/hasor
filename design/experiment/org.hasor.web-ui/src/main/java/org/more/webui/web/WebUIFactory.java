@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import org.more.webui.lifestyle.Lifecycle;
 /**
  * 
  * @version : 2012-6-27
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface WebUIFactory {
-    /**´´½¨{@link Lifecycle}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link Lifecycle}å¯¹è±¡ã€‚*/
     public Lifecycle createLifestyle(FacesConfig config, FacesContext context);
-    /**´´½¨{@link FacesContext}¶ÔÏó¡£*/
+    /**åˆ›å»º{@link FacesContext}å¯¹è±¡ã€‚*/
     public FacesContext createFacesContext(FacesConfig config);
 }

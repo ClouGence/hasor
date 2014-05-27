@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import net.hasor.web.WebAppContext;
 /**
  * 
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
@@ -81,30 +81,30 @@ public class ManagedServletPipeline {
     //
     //
     //
-    /**·µ»ØÒ»¸öRequestDispatcher*/
+    /**è¿”å›ä¸€ä¸ªRequestDispatcher*/
     RequestDispatcher getRequestDispatcher(String path) {
         final String newRequestUri = path;
-        // TODO ĞèÒª¼ì²éÏÂÃæ´úÂëÊÇ·ñ·ûºÏServlet¹æ·¶£¨´ørequest²ÎÊıÇé¿öÏÂÒ²ĞèÒª¼ì²é£©
+        // TODO éœ€è¦æ£€æŸ¥ä¸‹é¢ä»£ç æ˜¯å¦ç¬¦åˆServletè§„èŒƒï¼ˆå¸¦requestå‚æ•°æƒ…å†µä¸‹ä¹Ÿéœ€è¦æ£€æŸ¥ï¼‰
         for (final ServletDefinition servletDefinition : servletDefinitions) {
             if (servletDefinition.matchesUri(path)) {
                 return new RequestDispatcher() {
                     public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                         if (servletResponse.isCommitted() == true)
                             throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                        /*ÔÚ×ª·¢Ö®Ç°Çå¿Õ»º³å*/
+                        /*åœ¨è½¬å‘ä¹‹å‰æ¸…ç©ºç¼“å†²*/
                         servletResponse.resetBuffer();
                         ServletRequest requestToProcess;
                         if (servletRequest instanceof HttpServletRequest) {
-                            //Ê¹ÓÃRequestDispatcherRequestWrapperÀà´¦Àírequest.getRequestURI·½·¨µÄ·µ»ØÖµ
+                            //ä½¿ç”¨RequestDispatcherRequestWrapperç±»å¤„ç†request.getRequestURIæ–¹æ³•çš„è¿”å›å€¼
                             String servletPath = ((HttpServletRequest) servletRequest).getContextPath() + "/" + newRequestUri;
                             servletPath = servletPath.replaceAll("/{2,}", "/");
                             requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, servletPath);
                         } else {
-                            //Í¨³£²»»á½øÈëÕâ¶Î´úÂë.
+                            //é€šå¸¸ä¸ä¼šè¿›å…¥è¿™æ®µä»£ç .
                             requestToProcess = servletRequest;
                         }
                         servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                        /*Ö´ĞĞ×ª·¢*/
+                        /*æ‰§è¡Œè½¬å‘*/
                         try {
                             servletDefinition.service(requestToProcess, servletResponse);
                         } finally {
@@ -113,7 +113,7 @@ public class ManagedServletPipeline {
                     }
                     public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                         servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                        /*Ö´ĞĞservlet·½·¨*/
+                        /*æ‰§è¡Œservletæ–¹æ³•*/
                         try {
                             servletDefinition.service(servletRequest, servletResponse);
                         } finally {
@@ -126,7 +126,7 @@ public class ManagedServletPipeline {
         //otherwise, can't process
         return null;
     }
-    /** Ê¹ÓÃRequestDispatcherRequestWrapperÀà´¦Àírequest.getRequestURI·½·¨µÄ·µ»ØÖµ*/
+    /** ä½¿ç”¨RequestDispatcherRequestWrapperç±»å¤„ç†request.getRequestURIæ–¹æ³•çš„è¿”å›å€¼*/
     public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
     private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
         private final String newRequestUri;

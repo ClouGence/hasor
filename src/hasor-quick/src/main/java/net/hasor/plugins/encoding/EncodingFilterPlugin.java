@@ -30,9 +30,9 @@ import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.AbstractWebHasorPlugin;
 /**
- * Ìá¹©ÇëÇóÏàÓ¦±àÂëÉèÖÃ¡£
+ * æä¾›è¯·æ±‚ç›¸åº”ç¼–ç è®¾ç½®ã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class EncodingFilterPlugin extends AbstractWebHasorPlugin {
@@ -54,7 +54,7 @@ class EncodingFilter implements Filter {
     private String requestEncoding  = null;
     private String responseEncoding = null;
     public void init(FilterConfig filterConfig) throws ServletException {
-        /*»ñÈ¡ÇëÇóÏìÓ¦±àÂë*/
+        /*è·å–è¯·æ±‚å“åº”ç¼–ç */
         this.requestEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.RequestEncoding);
         this.responseEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.ResponseEncoding);
     }

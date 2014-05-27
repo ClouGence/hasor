@@ -2,9 +2,9 @@ package org.dev.toos.constcode.metadata;
 /**
  * 
  * @version : 2013-3-1
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface UpdateState<T> {
-    /**ÓÃÓÚÍ¨Öª¸üĞÂ×´Ì¬*/
+    /**ç”¨äºé€šçŸ¥æ›´æ–°çŠ¶æ€*/
     public void updateState(T newState);
 }

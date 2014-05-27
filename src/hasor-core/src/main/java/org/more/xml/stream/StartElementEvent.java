@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,87 +18,87 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 /**
- * µ±Óöµ½Ò»¸ö¿ªÊ¼±êÇ©Ê±¡£
+ * å½“é‡åˆ°ä¸€ä¸ªå¼€å§‹æ ‡ç­¾æ—¶ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class StartElementEvent extends XmlStreamEvent {
     public StartElementEvent(String xpath, XMLStreamReader reader) {
         super(xpath, reader);
     }
-    /**»ñÈ¡ÔªËØÃû³Æ{@link QName}¶ÔÏó¡£*/
+    /**è·å–å…ƒç´ åç§°{@link QName}å¯¹è±¡ã€‚*/
     public QName getName() {
         return this.getReader().getName();
     }
-    /**»ñÈ¡ÔªËØÃû(²»°üº¬ÃüÃû¿Õ¼äÇ°×º)¡£*/
+    /**è·å–å…ƒç´ å(ä¸åŒ…å«å‘½åç©ºé—´å‰ç¼€)ã€‚*/
     public String getElementName() {
         return this.getName().getLocalPart();
     }
-    /**»ñÈ¡ÔªËØÃüÃû¿Õ¼äÇ°×º¡£*/
+    /**è·å–å…ƒç´ å‘½åç©ºé—´å‰ç¼€ã€‚*/
     public String getPrefix() {
         return this.getName().getPrefix();
     }
-    /**»ñÈ¡ÔªËØÃüÃû¿Õ¼ä¡£*/
+    /**è·å–å…ƒç´ å‘½åç©ºé—´ã€‚*/
     public String getNamespaceURI() {
         return this.getName().getNamespaceURI();
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÃüÃû¿Õ¼ä×ÜÊı¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„å‘½åç©ºé—´æ€»æ•°ã€‚*/
     public int getNamespaceCount() {
         return this.getReader().getNamespaceCount();
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨Ë÷ÒıµÄÃüÃû¿Õ¼äÇ°×º¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šç´¢å¼•çš„å‘½åç©ºé—´å‰ç¼€ã€‚*/
     public String getNamespacePrefix(int index) {
         return this.getReader().getNamespacePrefix(index);
     }
-    /**»ñÈ¡ÔÚÕâ¸öÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨Ë÷ÒıµÄÃüÃû¿Õ¼äURI¡£*/
+    /**è·å–åœ¨è¿™ä¸ªå…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šç´¢å¼•çš„å‘½åç©ºé—´URIã€‚*/
     public String getNamespaceURI(int index) {
         return this.getReader().getNamespaceURI(index);
     }
-    /**Ê¹ÓÃÖ¸¶¨µÄÃüÃû¿Õ¼äÇ°×º»ñÈ¡ÃüÃû¿Õ¼äURI¡£*/
+    /**ä½¿ç”¨æŒ‡å®šçš„å‘½åç©ºé—´å‰ç¼€è·å–å‘½åç©ºé—´URIã€‚*/
     public String getNamespaceURI(String prefix) {
         return this.getReader().getNamespaceURI(prefix);
     }
-    /**»ñÈ¡ÔÚ¸ÃÔªËØÉÏ¶¨ÒåµÄÊôĞÔ×ÜÊı¡£*/
+    /**è·å–åœ¨è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„å±æ€§æ€»æ•°ã€‚*/
     public int getAttributeCount() {
         return this.getReader().getAttributeCount();
     }
-    /**»ñÈ¡¸ÃÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨ÊôĞÔÃû¡£*/
+    /**è·å–è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šå±æ€§åã€‚*/
     public QName getAttributeName(int index) {
         if (index > this.getAttributeCount())
             return null;
         return this.getReader().getAttributeName(index);
     }
-    /**»ñÈ¡¸ÃÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨ÊôĞÔÖµ¡£*/
+    /**è·å–è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šå±æ€§å€¼ã€‚*/
     public String getAttributeValue(int index) {
         if (index > this.getAttributeCount())
             return null;
         return this.getReader().getAttributeValue(index);
     }
-    /**»ñÈ¡¸ÃÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨ÊôĞÔÀàĞÍ¡£*/
+    /**è·å–è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šå±æ€§ç±»å‹ã€‚*/
     public String getAttributeType(int index) {
         if (index > this.getAttributeCount())
             return null;
         return this.getReader().getAttributeType(index);
     }
-    /**»ñÈ¡¸ÃÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨ÊôĞÔÀàĞÍ¡£*/
+    /**è·å–è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šå±æ€§ç±»å‹ã€‚*/
     public String getAttributeType(String name) {
         for (int i = 0; i < this.getAttributeCount(); i++)
             if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
                 return this.getAttributeType(i);
         return null;
     }
-    /**»ñÈ¡¸ÃÔªËØÉÏ¶¨ÒåµÄÖ¸¶¨ÊôĞÔÖµ¡£*/
+    /**è·å–è¯¥å…ƒç´ ä¸Šå®šä¹‰çš„æŒ‡å®šå±æ€§å€¼ã€‚*/
     public String getAttributeValue(String name) {
         for (int i = 0; i < this.getAttributeCount(); i++)
             if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
                 return this.getAttributeValue(i);
         return null;
     }
-    /**¶ÁÈ¡´¿ÎÄ±¾ÔªËØµÄÄÚÈİ£¬Èç¹û²»ÊÇ´¿ÎÄ±¾ÔªËØ£¬ÔòÅ×³öÒì³£¡£*/
+    /**è¯»å–çº¯æ–‡æœ¬å…ƒç´ çš„å†…å®¹ï¼Œå¦‚æœä¸æ˜¯çº¯æ–‡æœ¬å…ƒç´ ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸ã€‚*/
     public String getElementText() throws XMLStreamException {
         return this.getReader().getElementText();
     }
-    /**¸ÃÊÂ¼şµÄÅÄµµÊÇ{@link EndElementEvent}ÀàĞÍ¶ÔÏó£¬±»²âÊÔµÄ¶ÔÏóµÄ{@link QName}±ØĞëÓëµ±Ç°¶ÔÏóµÄ{@link QName}ÏàÍ¬£¬²¢ÇÒÒªÔÚÍ¬Ò»¸öxpathÏÂ¡£*/
+    /**è¯¥äº‹ä»¶çš„æ‹æ¡£æ˜¯{@link EndElementEvent}ç±»å‹å¯¹è±¡ï¼Œè¢«æµ‹è¯•çš„å¯¹è±¡çš„{@link QName}å¿…é¡»ä¸å½“å‰å¯¹è±¡çš„{@link QName}ç›¸åŒï¼Œå¹¶ä¸”è¦åœ¨åŒä¸€ä¸ªxpathä¸‹ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         if (e instanceof EndElementEvent == false)
             return false;
@@ -112,7 +112,7 @@ public class StartElementEvent extends XmlStreamEvent {
             return false;
         return true;
     };
-    /**ÔªËØ¿ªÊ¼ÊÂ¼ş£¬²»ÊÇ¹²ÓĞÊÂ¼ş¡£*/
+    /**å…ƒç´ å¼€å§‹äº‹ä»¶ï¼Œä¸æ˜¯å…±æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         return false;
     }

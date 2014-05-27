@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import net.hasor.jdbc.datasource.DataSourceHelper;
 /**
  * 
  * @version : 2013-12-2
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class LocalDataSourceHelper implements DataSourceHelper {
     private static final ThreadLocal<Map<DataSource, ConnectionSequence>> ResourcesLocal;
@@ -34,44 +34,44 @@ public class LocalDataSourceHelper implements DataSourceHelper {
             }
         };
     }
-    /**ÉêÇëÁ¬½Ó£¬Èç¹ûµ±Ç°Á¬½Ó´æÔÚÔò·µ»Øµ±Ç°Á¬½Ó*/
+    /**ç”³è¯·è¿æ¥ï¼Œå¦‚æœå½“å‰è¿æ¥å­˜åœ¨åˆ™è¿”å›å½“å‰è¿æ¥*/
     public Connection getConnection(DataSource dataSource) throws SQLException {
-        ConnectionSequence conSeq = getConnectionSequence(dataSource);/*»ñÈ¡ĞòÁĞ*/
-        ConnectionHolder connHolder = conSeq.currentHolder();/*»ñÈ¡µ±Ç°Holder*/
-        connHolder.requested();/*ÒıÓÃ¼ÆÊı+1*/
-        return connHolder.getConnection();/*·µ»ØÁ¬½Ó*/
+        ConnectionSequence conSeq = getConnectionSequence(dataSource);/*è·å–åºåˆ—*/
+        ConnectionHolder connHolder = conSeq.currentHolder();/*è·å–å½“å‰Holder*/
+        connHolder.requested();/*å¼•ç”¨è®¡æ•°+1*/
+        return connHolder.getConnection();/*è¿”å›è¿æ¥*/
     };
-    /**ÊÍ·ÅÁ¬½Ó*/
+    /**é‡Šæ”¾è¿æ¥*/
     public void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
-        ConnectionSequence conSeq = getConnectionSequence(dataSource);//»ñÈ¡ĞòÁĞ
-        ConnectionHolder holder = conSeq.currentHolder();/*»ñÈ¡µ±Ç°Holder*/
+        ConnectionSequence conSeq = getConnectionSequence(dataSource);//è·å–åºåˆ—
+        ConnectionHolder holder = conSeq.currentHolder();/*è·å–å½“å‰Holder*/
         if (holder != null)
-            holder.released();/*ÒıÓÃ¼ÆÊı-1*/
+            holder.released();/*å¼•ç”¨è®¡æ•°-1*/
     };
     public Connection currentConnection(DataSource dataSource) throws SQLException {
-        ConnectionSequence conSeq = getConnectionSequence(dataSource);//»ñÈ¡ĞòÁĞ
-        ConnectionHolder holder = conSeq.currentHolder();/*»ñÈ¡µ±Ç°Holder*/
-        return holder.getConnection();/*·µ»ØÁ¬½Ó*/
+        ConnectionSequence conSeq = getConnectionSequence(dataSource);//è·å–åºåˆ—
+        ConnectionHolder holder = conSeq.currentHolder();/*è·å–å½“å‰Holder*/
+        return holder.getConnection();/*è¿”å›è¿æ¥*/
     }
-    /**»ñÈ¡ConnectionSequence*/
+    /**è·å–ConnectionSequence*/
     public ConnectionSequence getConnectionSequence(DataSource dataSource) {
         ConnectionSequence conSeq = ResourcesLocal.get().get(dataSource);
-        /*¹¹½¨ĞòÁĞ*/
+        /*æ„å»ºåºåˆ—*/
         if (conSeq == null) {
             conSeq = createConnectionSequence();
             ResourcesLocal.get().put(dataSource, conSeq);
         }
-        /*ĞÂ½¨ConnectionHolder*/
+        /*æ–°å»ºConnectionHolder*/
         if (conSeq.currentHolder() == null) {
             conSeq.push(this.createConnectionHolder(dataSource));
         }
         return conSeq;
     }
-    /**´´½¨ConnectionSequence¶ÔÏó*/
+    /**åˆ›å»ºConnectionSequenceå¯¹è±¡*/
     protected ConnectionSequence createConnectionSequence() {
         return new ConnectionSequence();
     }
-    /**´´½¨ConnectionHolder¶ÔÏó*/
+    /**åˆ›å»ºConnectionHolderå¯¹è±¡*/
     protected ConnectionHolder createConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }

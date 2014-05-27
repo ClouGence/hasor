@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package org.more.classcode;
 /**
-* ÊµÏÖAOPµÄ·½·¨¹ýÂËÆ÷£¬Í¨¹ý¹ýÂËÆ÷ÖÐ{@link AopFilterChain}¶ÔÏóµÄ·½·¨¿ÉÒÔÖ´ÐÐ¹ýÂËÆ÷½ÚµãµÄÏÂÒ»¸ö½Úµã¡£
-* µ±¹ýÂËÆ÷Ö´ÐÐµ½×îºóÒ»¸ö½ÚµãÊ±ÕýÊ½Ö´ÐÐ·½·¨µ÷ÓÃ¡£Èç¹û¹ýÂËÆ÷ÏëÁ¢¼´·µ»Ø·½·¨µ÷ÓÃ½á¹û¿ÉÒÔÖ±½ÓÊ¹ÓÃ
-* callMethod¶ÔÏóµÄinvokeº¯ÊýÖ±½Óµ÷ÓÃÄ¿±ê·½·¨²úÉú·½·¨·µ»ØÖµÈ»ºó½øÐÐÆäËû²Ù×÷¡£
-* ÀûÓÃ¶à¸ö{@link AopInvokeFilter}¿ÉÒÔ×é³É¹ýÂËÆ÷Á´¡£
+* å®žçŽ°AOPçš„æ–¹æ³•è¿‡æ»¤å™¨ï¼Œé€šè¿‡è¿‡æ»¤å™¨ä¸­{@link AopFilterChain}å¯¹è±¡çš„æ–¹æ³•å¯ä»¥æ‰§è¡Œè¿‡æ»¤å™¨èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ã€‚
+* å½“è¿‡æ»¤å™¨æ‰§è¡Œåˆ°æœ€åŽä¸€ä¸ªèŠ‚ç‚¹æ—¶æ­£å¼æ‰§è¡Œæ–¹æ³•è°ƒç”¨ã€‚å¦‚æžœè¿‡æ»¤å™¨æƒ³ç«‹å³è¿”å›žæ–¹æ³•è°ƒç”¨ç»“æžœå¯ä»¥ç›´æŽ¥ä½¿ç”¨
+* callMethodå¯¹è±¡çš„invokeå‡½æ•°ç›´æŽ¥è°ƒç”¨ç›®æ ‡æ–¹æ³•äº§ç”Ÿæ–¹æ³•è¿”å›žå€¼ç„¶åŽè¿›è¡Œå…¶ä»–æ“ä½œã€‚
+* åˆ©ç”¨å¤šä¸ª{@link AopInvokeFilter}å¯ä»¥ç»„æˆè¿‡æ»¤å™¨é“¾ã€‚
 * <br/><img width="400" src="doc-files/classcode_struct.png"/>
 * @version 2010-9-3
-* @author ÕÔÓÀ´º (zyc@hasor.net)
+* @author èµµæ°¸æ˜¥ (zyc@hasor.net)
 */
 public interface AopInvokeFilter {
     /**
-     * µ±µ÷ÓÃÊÜAOPÀ¹½ØµÄ·½·¨Ê±Ö´ÐÐ¸Ã·½·¨£¬chain²ÎÊý¶ÔÏó¿ÉÒÔÓÃÀ´¼ÌÐøÖ´ÐÐ¹ýÂËÆ÷Á´¡£Èç¹ûÖ±½Óµ÷ÓÃ
-     * callMethod¶ÔÏóµÄinvokeº¯ÊýÔò¿ÉÒÔÌø¹ý¹ýÂËÆ÷Á´Ö±½ÓÖ´ÐÐÄ¿±ê·½·¨£¬²¢»ñÈ¡·µ»ØÖµ¡£
-     * @param target Ä¿±ê¶ÔÏó¡£
-     * @param method ±»µ÷ÓÃµÄ·½·¨¸Ã¶ÔÏóÖÐ°üº¬ÁË±»µ÷ÓÃµÄ´úÀí·½·¨ºÍÔ­Ê¼·½·¨¡£
-     * @param args µ÷ÓÃAOPÀ¹½Ø·½·¨Ê±µÄ·½·¨²ÎÊý¡£
-     * @param chain AOP¹ýÂËÆ÷Á´¶ÔÏó¡£
-     * @return ·µ»Ø·½·¨·µ»ØÖµ¡£½»¸¶ÉÏÒ»¸öµ÷ÓÃ¹ýÂËÆ÷»òÕßÖ±½Ó·µ»Ø·½·¨»Øµ÷¡£
-     * @throws Throwable Èç¹ûÔÚÖ´ÐÐÊ±·¢ÉúÒì³£¡£
+     * å½“è°ƒç”¨å—AOPæ‹¦æˆªçš„æ–¹æ³•æ—¶æ‰§è¡Œè¯¥æ–¹æ³•ï¼Œchainå‚æ•°å¯¹è±¡å¯ä»¥ç”¨æ¥ç»§ç»­æ‰§è¡Œè¿‡æ»¤å™¨é“¾ã€‚å¦‚æžœç›´æŽ¥è°ƒç”¨
+     * callMethodå¯¹è±¡çš„invokeå‡½æ•°åˆ™å¯ä»¥è·³è¿‡è¿‡æ»¤å™¨é“¾ç›´æŽ¥æ‰§è¡Œç›®æ ‡æ–¹æ³•ï¼Œå¹¶èŽ·å–è¿”å›žå€¼ã€‚
+     * @param target ç›®æ ‡å¯¹è±¡ã€‚
+     * @param method è¢«è°ƒç”¨çš„æ–¹æ³•è¯¥å¯¹è±¡ä¸­åŒ…å«äº†è¢«è°ƒç”¨çš„ä»£ç†æ–¹æ³•å’ŒåŽŸå§‹æ–¹æ³•ã€‚
+     * @param args è°ƒç”¨AOPæ‹¦æˆªæ–¹æ³•æ—¶çš„æ–¹æ³•å‚æ•°ã€‚
+     * @param chain AOPè¿‡æ»¤å™¨é“¾å¯¹è±¡ã€‚
+     * @return è¿”å›žæ–¹æ³•è¿”å›žå€¼ã€‚äº¤ä»˜ä¸Šä¸€ä¸ªè°ƒç”¨è¿‡æ»¤å™¨æˆ–è€…ç›´æŽ¥è¿”å›žæ–¹æ³•å›žè°ƒã€‚
+     * @throws Throwable å¦‚æžœåœ¨æ‰§è¡Œæ—¶å‘ç”Ÿå¼‚å¸¸ã€‚
      */
     public Object doFilter(Object target, Method method, Object[] args, AopFilterChain chain) throws Throwable;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,18 @@ import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 /**
- * Settings ½Ó¿Ú¹¦ÄÜ²âÊÔ¡£
+ * Settings æŽ¥å£åŠŸèƒ½æµ‹è¯•ã€‚
  * @version : 2013-7-16
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class Simple_Test {
-    /*»ñÈ¡ Xml ÖÐÅäÖÃÐÅÏ¢²âÊÔ*/
+    /*èŽ·å– Xml ä¸­é…ç½®ä¿¡æ¯æµ‹è¯•*/
     @Test
     public void test_Simple() throws IOException, URISyntaxException {
         System.out.println("--->>test_Simple<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/simple-config.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
-        settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼þ
+        settings.loadSettings();//è£…è½½é…ç½®æ–‡ä»¶
         //
         String myName = settings.getString("mySelf.myName");
         Hasor.logInfo("my Name is %s.", myName);
@@ -44,7 +44,7 @@ public class Simple_Test {
         Hasor.logInfo("my Age is %s.", myAge);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday");
-        Hasor.logInfo("my Birthday is %s.", myBirthday);//TODO ÐèÒª½â¾öÍ¨ÓÃ¸ñÊ½×ª»»ÎÊÌâ
+        Hasor.logInfo("my Birthday is %s.", myBirthday);//TODO éœ€è¦è§£å†³é€šç”¨æ ¼å¼è½¬æ¢é—®é¢˜
         //
         String myWork = settings.getString("mySelf.myWork");
         Hasor.logInfo("my Work is %s.", myWork);
@@ -52,13 +52,13 @@ public class Simple_Test {
         String myProjectURL = settings.getString("mySelf.myProjectURL");
         Hasor.logInfo("my Project is %s.", myProjectURL);
     }
-    /*²âÊÔ Xml ÅäÖÃÖÐ´æÔÚ¶à¸öÃüÃû¿Õ¼äÇé¿öÏÂ£¬·Ö±ð»ñÈ¡²»Í¬ÃüÃû¿Õ¼äµÄÏàÍ¬ÅäÖÃ£¨ÔÚÍ¬Ò»¸öXml ÎÄ¼þ£©¡£*/
+    /*æµ‹è¯• Xml é…ç½®ä¸­å­˜åœ¨å¤šä¸ªå‘½åç©ºé—´æƒ…å†µä¸‹ï¼Œåˆ†åˆ«èŽ·å–ä¸åŒå‘½åç©ºé—´çš„ç›¸åŒé…ç½®ï¼ˆåœ¨åŒä¸€ä¸ªXml æ–‡ä»¶ï¼‰ã€‚*/
     @Test
     public void test_all_in_one() throws IOException {
         System.out.println("--->>test_all_in_one<<--");
         InputStream inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns-all-in-one-config.xml");
         InputStreamSettings settings = new InputStreamSettings(inStream);
-        settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼þ
+        settings.loadSettings();//è£…è½½é…ç½®æ–‡ä»¶
         //
         Settings ns1_settings = settings.getSettings("http://mode1.myProject.net");
         Settings ns2_settings = settings.getSettings("http://mode2.myProject.net");
@@ -69,23 +69,23 @@ public class Simple_Test {
         //
         Hasor.logInfo("ns1 is %s.", ns1_local);
         Hasor.logInfo("ns2 is %s.", ns2_local);
-        Hasor.logInfo("ns is %s.", (Object) all_local);//Í¬Ê±È¡µÃÈ«²¿ÃüÃû¿Õ¼äÏÂµÄÏàÍ¬ÅäÖÃ½ÚµãÅäÖÃÐÅÏ¢¡£
+        Hasor.logInfo("ns is %s.", (Object) all_local);//åŒæ—¶å–å¾—å…¨éƒ¨å‘½åç©ºé—´ä¸‹çš„ç›¸åŒé…ç½®èŠ‚ç‚¹é…ç½®ä¿¡æ¯ã€‚
     }
-    /*²âÊÔ Xml ÅäÖÃÖÐ´æÔÚ¶à¸öÃüÃû¿Õ¼äÇé¿öÏÂ£¬·Ö±ð»ñÈ¡²»Í¬ÃüÃû¿Õ¼äµÄÏàÍ¬ÅäÖÃ£¨ÔÚ²»Í¬ Xml ÎÄ¼þ£©¡£*/
+    /*æµ‹è¯• Xml é…ç½®ä¸­å­˜åœ¨å¤šä¸ªå‘½åç©ºé—´æƒ…å†µä¸‹ï¼Œåˆ†åˆ«èŽ·å–ä¸åŒå‘½åç©ºé—´çš„ç›¸åŒé…ç½®ï¼ˆåœ¨ä¸åŒ Xml æ–‡ä»¶ï¼‰ã€‚*/
     @Test
     public void test_mergeNS() throws IOException {
         System.out.println("--->>test_mergeNS<<--");
         InputStream ns1_inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns1-config.xml");
         InputStream ns2_inStream = ResourcesUtils.getResourceAsStream("net/test/simple/_04_settings/ns2-config.xml");
         InputStreamSettings settings = new InputStreamSettings(new InputStream[] { ns1_inStream, ns2_inStream });
-        settings.loadSettings();//×°ÔØÅäÖÃÎÄ¼þ
+        settings.loadSettings();//è£…è½½é…ç½®æ–‡ä»¶
         //
         Settings ns1_settings = settings.getSettings("http://mode1.myProject.net");
         Settings ns2_settings = settings.getSettings("http://mode2.myProject.net");
         //
         String ns1_local = ns1_settings.getString("appSettings.serverLocal.url");
         String ns2_local = ns2_settings.getString("appSettings.serverLocal.url");
-        String[] all_local = settings.getStringArray("appSettings.serverLocal.url");//Í¬Ê±È¡µÃÈ«²¿ÃüÃû¿Õ¼äÏÂµÄÏàÍ¬ÅäÖÃ½ÚµãÅäÖÃÐÅÏ¢¡£
+        String[] all_local = settings.getStringArray("appSettings.serverLocal.url");//åŒæ—¶å–å¾—å…¨éƒ¨å‘½åç©ºé—´ä¸‹çš„ç›¸åŒé…ç½®èŠ‚ç‚¹é…ç½®ä¿¡æ¯ã€‚
         //
         Hasor.logInfo("ns1 is %s.", ns1_local);
         Hasor.logInfo("ns2 is %s.", ns2_local);

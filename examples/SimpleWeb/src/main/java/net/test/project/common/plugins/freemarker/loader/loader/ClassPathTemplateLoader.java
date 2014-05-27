@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import net.test.project.common.plugins.freemarker.loader.FmTemplateLoader;
 import net.test.project.common.plugins.freemarker.loader.IResourceLoader;
 import net.test.project.common.plugins.freemarker.loader.resource.ClassPathResourceLoader;
 /**
-* ¥¶¿ÌClasspath÷–µƒƒ£∞Â°£
+* Â§ÑÁêÜClasspath‰∏≠ÁöÑÊ®°Êùø„ÄÇ
 * @version : 2011-9-14
-* @author ’‘”¿¥∫ (zyc@byshell.org) 
+* @author ËµµÊ∞∏Êò• (zyc@byshell.org) 
 */
 public class ClassPathTemplateLoader extends URLClassLoader implements FmTemplateLoader, IResourceLoader {
     private String                  packageName    = null;

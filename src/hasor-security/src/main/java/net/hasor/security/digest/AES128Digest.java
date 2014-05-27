@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import javax.crypto.spec.SecretKeySpec;
 import net.hasor.security.Digest;
 import org.more.util.CommonCodeUtils.Base64;
 /**
- * AES¼ÓÃÜ£¬ÓÉÓÚÃÀ¹úÈí¼ş³ö¿ÚÏŞÖÆAES¼ÓÃÜËã·¨Ê¹ÓÃµÄÊÇ128Î»¡£
+ * AESåŠ å¯†ï¼Œç”±äºç¾å›½è½¯ä»¶å‡ºå£é™åˆ¶AESåŠ å¯†ç®—æ³•ä½¿ç”¨çš„æ˜¯128ä½ã€‚
  * @version : 2013-4-24
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public final class AES128Digest implements Digest {
     @Override
@@ -34,9 +34,9 @@ public final class AES128Digest implements Digest {
         SecretKey secretKey = kgen.generateKey();
         byte[] enCodeFormat = secretKey.getEncoded();
         SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-        Cipher cipher = Cipher.getInstance("AES");// ´´½¨ÃÜÂëÆ÷   
-        cipher.init(Cipher.ENCRYPT_MODE, key);// ³õÊ¼»¯   
-        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+        Cipher cipher = Cipher.getInstance("AES");// åˆ›å»ºå¯†ç å™¨   
+        cipher.init(Cipher.ENCRYPT_MODE, key);// åˆå§‹åŒ–   
+        byte[] bytesData = cipher.doFinal(strValue.getBytes("utf-8"));// æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
         return Base64.base64EncodeFoArray(bytesData);
     };
     @Override
@@ -46,10 +46,10 @@ public final class AES128Digest implements Digest {
         SecretKey secretKey = kgen.generateKey();
         byte[] enCodeFormat = secretKey.getEncoded();
         SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-        Cipher cipher = Cipher.getInstance("AES");// ´´½¨ÃÜÂëÆ÷   
-        cipher.init(Cipher.DECRYPT_MODE, key);// ³õÊ¼»¯   
+        Cipher cipher = Cipher.getInstance("AES");// åˆ›å»ºå¯†ç å™¨   
+        cipher.init(Cipher.DECRYPT_MODE, key);// åˆå§‹åŒ–   
         byte[] bytesData = Base64.base64DecodeToArray(strValue);
-        bytesData = cipher.doFinal(bytesData);// ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+        bytesData = cipher.doFinal(bytesData);// æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
         return new String(bytesData, "utf-8");
     }
 }

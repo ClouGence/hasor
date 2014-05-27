@@ -17,9 +17,9 @@ package net.hasor.core;
 /**
  * 
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Scope {
-    /**¼ÓÈë×÷ÓÃÓò */
+    /**åŠ å…¥ä½œç”¨åŸŸ */
     public <T> Provider<T> scope(Object key, Provider<T> provider);
 }

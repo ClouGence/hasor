@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import net.hasor.security._.SecurityAuth;
 import org.hasor.Hasor;
 import org.more.util.StringUtils;
 /**
- * ¸ºÔğÈ¨ÏŞÏµÍ³ÖĞµÄÓÃ»§»á»°¡£ÓÃ»§»á»°ÖĞ±£´æÁËÓÃ»§µÇÈëÖ®ºóµÄÈ¨ÏŞÊı¾İ¡£
+ * è´Ÿè´£æƒé™ç³»ç»Ÿä¸­çš„ç”¨æˆ·ä¼šè¯ã€‚ç”¨æˆ·ä¼šè¯ä¸­ä¿å­˜äº†ç”¨æˆ·ç™»å…¥ä¹‹åçš„æƒé™æ•°æ®ã€‚
  * @version : 2013-3-26
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class AbstractAuthSession implements AuthSession {
     private SessionData             authSessionData;
@@ -67,7 +67,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public synchronized void close() throws SecurityException {
         this.checkClose();/*Check*/
-        this.getSecurityContext().throwEvent(SecurityEventDefine.AuthSession_Close, this);/*Å×³öÊÂ¼ş*/
+        this.getSecurityContext().throwEvent(SecurityEventDefine.AuthSession_Close, this);/*æŠ›å‡ºäº‹ä»¶*/
         this.doLogout();
         this.getSecurityContext().inactivationAuthSession(this);
         this.isClose = true;
@@ -81,11 +81,11 @@ class AbstractAuthSession implements AuthSession {
         Token userInfo = authApi.getUserInfo(account, password);
         if (userInfo != null) {
             this.userInfo = userInfo;
-            this.authSessionData.setUserCode(this.userInfo.getUserCode());//ÓÃ»§±êÊ¶Âë
+            this.authSessionData.setUserCode(this.userInfo.getUserCode());//ç”¨æˆ·æ ‡è¯†ç 
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(System.currentTimeMillis());//µÇÂ½Ê±¼ä
+            this.authSessionData.setLoginTime(System.currentTimeMillis());//ç™»é™†æ—¶é—´
             this.authSessionData.setLastTime(System.currentTimeMillis());
-            this.reloadPermission();/*ÖØÔØÈ¨ÏŞ*/
+            this.reloadPermission();/*é‡è½½æƒé™*/
             this.refreshCacheTime();
             Hasor.debug("%s :doLogin authSystem=%s ,account=%s ,password=%s", this.sessionID, authSystem, account, password);
             {
@@ -94,7 +94,7 @@ class AbstractAuthSession implements AuthSession {
                 attr.put("AuthSystem", authSystem);
                 attr.put("Account", account);
                 attr.put("Password", password);
-                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*Å×³öÊÂ¼ş*/
+                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*æŠ›å‡ºäº‹ä»¶*/
             }
             return;
         }
@@ -115,11 +115,11 @@ class AbstractAuthSession implements AuthSession {
         Token userInfo = authApi.getUserInfo(userCode);
         if (userInfo != null) {
             this.userInfo = userInfo;
-            this.authSessionData.setUserCode(this.userInfo.getUserCode());//ÓÃ»§±êÊ¶Âë
+            this.authSessionData.setUserCode(this.userInfo.getUserCode());//ç”¨æˆ·æ ‡è¯†ç 
             this.authSessionData.setAuthSystem(authSystem);
-            this.authSessionData.setLoginTime(System.currentTimeMillis());//µÇÂ½Ê±¼ä
+            this.authSessionData.setLoginTime(System.currentTimeMillis());//ç™»é™†æ—¶é—´
             this.authSessionData.setLastTime(System.currentTimeMillis());
-            this.reloadPermission();/*ÖØÔØÈ¨ÏŞ*/
+            this.reloadPermission();/*é‡è½½æƒé™*/
             this.refreshCacheTime();
             Hasor.debug("%s :doLogin authSystem=%s ,userCode=%s", this.sessionID, authSystem, userCode);
             {
@@ -127,7 +127,7 @@ class AbstractAuthSession implements AuthSession {
                 attr.put("Type", "doLoginCode");
                 attr.put("AuthSystem", authSystem);
                 attr.put("UserCode", userCode);
-                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*Å×³öÊÂ¼ş*/
+                this.getSecurityContext().throwEvent(SecurityEventDefine.Login, attr, this);/*æŠ›å‡ºäº‹ä»¶*/
             }
             return;
         }
@@ -136,7 +136,7 @@ class AbstractAuthSession implements AuthSession {
     @Override
     public synchronized void doLogout() throws SecurityException {
         this.checkClose();/*Check*/
-        this.getSecurityContext().throwEvent(SecurityEventDefine.Logout, this);/*Å×³öÊÂ¼ş*/
+        this.getSecurityContext().throwEvent(SecurityEventDefine.Logout, this);/*æŠ›å‡ºäº‹ä»¶*/
         this.authSessionData = new SessionData();
         this.userInfo = null;
         this.permissionMap.clear();
@@ -170,11 +170,11 @@ class AbstractAuthSession implements AuthSession {
         }
         return pers;
     };
-    /**»ñÈ¡SecurityContext¶ÔÏó*/
+    /**è·å–SecurityContextå¯¹è±¡*/
     protected AbstractSecurityContext getSecurityContext() {
         return this.securityContext;
     }
-    /**»ñÈ¡SessionData*/
+    /**è·å–SessionData*/
     protected SessionData getSessionData() {
         try {
             return this.authSessionData.clone();
@@ -240,7 +240,7 @@ class AbstractAuthSession implements AuthSession {
         Token userInfo = this.getUserObject();
         return userInfo != null;
     };
-    /**×°ÔØÈ¨ÏŞÊı¾İ*/
+    /**è£…è½½æƒé™æ•°æ®*/
     protected void loadSessionData(SessionData sessionData) {
         this.permissionMap.clear();
         String[] perArray = sessionData.getPermissionSet();

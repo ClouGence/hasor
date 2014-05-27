@@ -74,9 +74,9 @@ import freemarker.cache.TemplateLoader;
  * threads concurrently, proper synchronization must be provided by the callers.
  * Note that {@link TemplateCache}, the natural user of this class provides the
  * necessary synchronizations when it uses the class.
- * @author Attila Szegedi, szegedia at freemail dot hu ’‘”¿¥∫
+ * @author Attila Szegedi, szegedia at freemail dot hu ËµµÊ∞∏Êò•
  * @version $Id: MultiTemplateLoader.java,v 1.12.2.2 2007/04/04 07:51:16 szegedia Exp $
- * @version $Id: MultiTemplateLoader.java,v 1.12.2.3 2012/05/14 15:27:32 ’‘”¿¥∫ Exp $
+ * @version $Id: MultiTemplateLoader.java,v 1.12.2.3 2012/05/14 15:27:32 ËµµÊ∞∏Êò• Exp $
  */
 public class MultiTemplateLoader implements FmTemplateLoader, IResourceLoader, StatefulTemplateLoader {
     private final MultiResourceLoader         resourceLoader    = new MultiResourceLoader();
@@ -101,7 +101,7 @@ public class MultiTemplateLoader implements FmTemplateLoader, IResourceLoader, S
     public String getType() {
         return this.getClass().getSimpleName();
     }
-    /**ÃÌº”“ª∏ˆTemplateLoader°£*/
+    /**Ê∑ªÂä†‰∏Ä‰∏™TemplateLoader„ÄÇ*/
     public void addTemplateLoader(TemplateLoader loader) {
         if (loaders.contains(loader) == false)
             this.loaders.add(loader);

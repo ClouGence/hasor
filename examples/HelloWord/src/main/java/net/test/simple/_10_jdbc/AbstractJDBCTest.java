@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import net.hasor.jdbc.template.core.JdbcTemplate;
 import net.hasor.quick.anno.AnnoStandardAppContext;
 import org.junit.Before;
 /***
- * »ù±¾ÔöÉ¾¸Ä²é²âÊÔ
+ * åŸºæœ¬å¢žåˆ æ”¹æŸ¥æµ‹è¯•
  * @version : 2014-1-13
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class AbstractJDBCTest {
     private static String config     = "net/test/simple/_10_jdbc/jdbc-config.xml";
@@ -34,7 +34,7 @@ public class AbstractJDBCTest {
     public void initContext() throws IOException, URISyntaxException, SQLException {
         appContext = new AnnoStandardAppContext(config);
         appContext.start();
-        /*×°ÔØ SQL ½Å±¾ÎÄ¼þ*/
+        /*è£…è½½ SQL è„šæœ¬æ–‡ä»¶*/
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User.sql");
         jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User_Data.sql");

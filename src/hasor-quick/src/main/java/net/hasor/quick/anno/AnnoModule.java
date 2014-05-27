@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.hasor.core.Module;
 /**
- * ±êÖ¾¸ÃÀà×¢²áµ½ÏµÍ³³õÊ¼»¯¹ı³Ì£¬¸ÃÀàÔÚ±ê¼Ç×¢½âÊ±±ØĞëÊµÏÖ{@link Module}½Ó¿Ú¡£
+ * æ ‡å¿—è¯¥ç±»æ³¨å†Œåˆ°ç³»ç»Ÿåˆå§‹åŒ–è¿‡ç¨‹ï¼Œè¯¥ç±»åœ¨æ ‡è®°æ³¨è§£æ—¶å¿…é¡»å®ç°{@link Module}æ¥å£ã€‚
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface AnnoModule {
-    /**Ä¬ÈÏÃû³Æ£¬¸ÃÃû³ÆÔÚÏµÍ³¿ØÖÆÌ¨ÓÃÓÚ¹ÜÀíÏÔÊ¾ÓÃÍ¾¡£*/
+    /**é»˜è®¤åç§°ï¼Œè¯¥åç§°åœ¨ç³»ç»Ÿæ§åˆ¶å°ç”¨äºç®¡ç†æ˜¾ç¤ºç”¨é€”ã€‚*/
     public String displayName() default "";
-    /**¶Ô¸ÃÀàµÄÃèÊöĞÅÏ¢¡£*/
+    /**å¯¹è¯¥ç±»çš„æè¿°ä¿¡æ¯ã€‚*/
     public String description() default "";
 }

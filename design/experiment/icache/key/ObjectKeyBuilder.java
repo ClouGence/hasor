@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package net.hasor.gift.icache.key;
 import net.hasor.gift.icache.KeyBuilder;
 import net.hasor.gift.icache.KeyBuilderDefine;
 /**
- * Ä¬ÈÏÊµÏÖ
+ * é»˜è®¤å®ç°
  * @version : 2013-4-21
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @KeyBuilderDefine(value = Object.class)
 public class ObjectKeyBuilder implements KeyBuilder {
-    /**»ñÈ¡²ÎÊıµÄĞòÁĞ»¯±êÊ¶Âë¡£*/
+    /**è·å–å‚æ•°çš„åºåˆ—åŒ–æ ‡è¯†ç ã€‚*/
     public String serializeKey(Object arg) {
         return (arg == null) ? "NULL" : arg.toString();
     }

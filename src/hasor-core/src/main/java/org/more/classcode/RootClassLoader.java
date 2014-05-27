@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * {@link ClassEngine}ÒıÇæµÄÀà×°ÔØÆ÷£¬¸ÃÀàµÄÖ°ÔğÊÇ¸ºÔğ×°ÔØËùÓĞÒıÇæÉú³ÉµÄClass×Ö½ÚÂë¡£<br/>
- * ³ı´ËÖ®Íâµ±ÒıÇæĞèÒª×°ÔØÄ³Ğ©²ÎÊıµÄÀàĞÍÊ±Ò²ĞèÒªÍ¨¹ı¸ÃÀà×°ÔØÆ÷À´×°ÔØ¡£
+ * {@link ClassEngine}å¼•æ“çš„ç±»è£…è½½å™¨ï¼Œè¯¥ç±»çš„èŒè´£æ˜¯è´Ÿè´£è£…è½½æ‰€æœ‰å¼•æ“ç”Ÿæˆçš„Classå­—èŠ‚ç ã€‚<br/>
+ * é™¤æ­¤ä¹‹å¤–å½“å¼•æ“éœ€è¦è£…è½½æŸäº›å‚æ•°çš„ç±»å‹æ—¶ä¹Ÿéœ€è¦é€šè¿‡è¯¥ç±»è£…è½½å™¨æ¥è£…è½½ã€‚
  * @version 2010-9-5
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class RootClassLoader extends ClassLoader {
     private Map<String, ClassEngine> classMap2 = null; // key is org.more.Test
     private Map<String, ClassEngine> classMap  = null; // key is org/more.Test.class
-    /**´´½¨ÒıÇæÀà×°ÔØÆ÷£¬parentClassLoader²ÎÊıÊÇ¸Ã×°ÔØÆ÷ËùÊ¹ÓÃµÄ¸¸Àà×°ÔØÆ÷¡£*/
+    /**åˆ›å»ºå¼•æ“ç±»è£…è½½å™¨ï¼ŒparentClassLoaderå‚æ•°æ˜¯è¯¥è£…è½½å™¨æ‰€ä½¿ç”¨çš„çˆ¶ç±»è£…è½½å™¨ã€‚*/
     public RootClassLoader(ClassLoader parentClassLoader) {
         super(parentClassLoader);
         this.classMap = new HashMap<String, ClassEngine>();
         this.classMap2 = new HashMap<String, ClassEngine>();
     }
-    /**¸ºÔğ×°ÔØĞÂÀà¡£*/
+    /**è´Ÿè´£è£…è½½æ–°ç±»ã€‚*/
     protected final Class<?> findClass(String name) throws ClassNotFoundException {
         if (this.classMap.containsKey(name) == true) {
             byte[] bs = this.classMap.get(name).toBytes();
@@ -41,14 +41,14 @@ public class RootClassLoader extends ClassLoader {
         }
         return super.findClass(name);
     }
-    /**»ñÈ¡Ä³Ò»¸öÒÑ¾­ÀàĞÍµÄ×Ö½ÚÂë£¬¸Ã×Ö½ÚÂë±ØĞëÊÇÍ¨¹ı{@link ClassEngine}ÒıÇæÉú³ÉµÄ¡£*/
+    /**è·å–æŸä¸€ä¸ªå·²ç»ç±»å‹çš„å­—èŠ‚ç ï¼Œè¯¥å­—èŠ‚ç å¿…é¡»æ˜¯é€šè¿‡{@link ClassEngine}å¼•æ“ç”Ÿæˆçš„ã€‚*/
     public byte[] toBytes(Class<?> type) {
         ClassLoader cl = type.getClassLoader();
         if (cl instanceof RootClassLoader)
             return ((RootClassLoader) cl).getRegeditEngine(type.getName()).toBytes();
         return null;
     }
-    /**×¢²áÒ»¸ö{@link ClassEngine}ÒıÇæµ½Àà×°ÔØÆ÷ÖĞ¡£*/
+    /**æ³¨å†Œä¸€ä¸ª{@link ClassEngine}å¼•æ“åˆ°ç±»è£…è½½å™¨ä¸­ã€‚*/
     public void regeditEngine(ClassEngine classEngine) {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == false) {
@@ -57,7 +57,7 @@ public class RootClassLoader extends ClassLoader {
             this.classMap2.put(cn, classEngine);
         }
     }
-    /**½â³ıÒ»¸ö{@link ClassEngine}ÒıÇæµÄ×¢²á£¬½Ó´¥×¢²áÖ®ºó¸ÃÀà×°ÔØÆ÷½«²»ÄÜÔÙ´Î»ñÈ¡µ½Æä×Ö½ÚÂë¡£*/
+    /**è§£é™¤ä¸€ä¸ª{@link ClassEngine}å¼•æ“çš„æ³¨å†Œï¼Œæ¥è§¦æ³¨å†Œä¹‹åè¯¥ç±»è£…è½½å™¨å°†ä¸èƒ½å†æ¬¡è·å–åˆ°å…¶å­—èŠ‚ç ã€‚*/
     public void unRegeditEngine(ClassEngine classEngine) {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == true) {
@@ -66,7 +66,7 @@ public class RootClassLoader extends ClassLoader {
             this.classMap2.put(cn, classEngine);
         }
     }
-    /**»ñÈ¡Ò»¸öÒÔ×¢²áµÄ{@link ClassEngine}ÒıÇæ¡£*/
+    /**è·å–ä¸€ä¸ªä»¥æ³¨å†Œçš„{@link ClassEngine}å¼•æ“ã€‚*/
     public ClassEngine getRegeditEngine(String className) {
         if (this.classMap.containsKey(className) == true)
             return this.classMap.get(className);

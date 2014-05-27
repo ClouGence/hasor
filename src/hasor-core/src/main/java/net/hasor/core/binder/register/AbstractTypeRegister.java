@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import net.hasor.core.binder.TypeRegister;
 /**
  * 
  * @version : 2014-3-20
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
     private String                   name            = null;
@@ -90,15 +90,15 @@ public abstract class AbstractTypeRegister<T> implements TypeRegister<T> {
         this.metaData.put(key, value);
         return this;
     }
-    /**»ñÈ¡ÊµÏÖÀà*/
+    /**è·å–å®ç°ç±»*/
     public Class<? extends T> getImplType() {
         return implType;
     }
-    /**»ñÈ¡ÓÃÓÚ´´½¨¸ÃÀàµÄ¹¹Ôì·½·¨*/
+    /**è·å–ç”¨äºåˆ›å»ºè¯¥ç±»çš„æ„é€ æ–¹æ³•*/
     public Constructor<? extends T> getImplConstructor() {
         return implConstructor;
     }
-    /**»ñÈ¡Ğ¯´øµÄÔªĞÅÏ¢*/
+    /**è·å–æºå¸¦çš„å…ƒä¿¡æ¯*/
     public Map<String, Object> getMetaData() {
         return metaData;
     }

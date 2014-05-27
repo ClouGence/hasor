@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import org.more.webui.components.UISelectInput;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.select.CheckManySelectInputRender;
 /**
- * <b>×÷ÓÃ</b>£ºÑ¡Ôñ¿ò¶àÑ¡×é½¨¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_ManySelect
- * <br><b>±êÇ©</b>£º@ui_ManySelect
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link CheckManySelectInputRender}
+ * <b>ä½œç”¨</b>ï¼šé€‰æ‹©æ¡†å¤šé€‰ç»„å»ºã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_ManySelect
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_ManySelect
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link CheckManySelectInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_ManySelect", renderType = CheckManySelectInputRender.class)
 public class ManyCheck extends UISelectInput {
@@ -33,13 +33,13 @@ public class ManyCheck extends UISelectInput {
     public String getComponentType() {
         return "ui_ManySelect";
     }
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public static enum Propertys {
-        /** Êı¾İ£¨-£©*/
+        /** æ•°æ®ï¼ˆ-ï¼‰*/
         listData,
-        /**ÏÔÊ¾Ãû³Æ×Ö¶Î£¨R£©*/
+        /**æ˜¾ç¤ºåç§°å­—æ®µï¼ˆRï¼‰*/
         keyField,
-        /**Öµ×Ö¶Î£¨R£©*/
+        /**å€¼å­—æ®µï¼ˆRï¼‰*/
         varField,
     }
     @Override

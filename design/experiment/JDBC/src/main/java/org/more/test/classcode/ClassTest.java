@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.more.classcode.RootClassLoader;
 /**
  *
  * @version 2010-8-25
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ClassTest {
     @Test
@@ -34,7 +34,7 @@ public class ClassTest {
     @Test
     public void test_2() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
-        System.out.println(ce.newInstance(null));//ÅÜ³ö´íÎóÊÇÕıÈ·µÄ½á¹û¡£Ô­ÒòÊÇStringÎªfinal¡£
+        System.out.println(ce.newInstance(null));//è·‘å‡ºé”™è¯¯æ˜¯æ­£ç¡®çš„ç»“æœã€‚åŸå› æ˜¯Stringä¸ºfinalã€‚
     }
     @Test
     public void test_3() throws Exception {
@@ -57,7 +57,7 @@ public class ClassTest {
     public void test_6() throws Exception {
         ClassEngine ce = new ClassEngine(String.class);
         ce.setBuilderMode(BuilderMode.Propxy);
-        System.out.println(ce.newInstance(""));//ÅÜ³ö´íÎóÊÇÕıÈ·µÄ½á¹û¡£Ô­ÒòÊÇStringÎªfinal¡£
+        System.out.println(ce.newInstance(""));//è·‘å‡ºé”™è¯¯æ˜¯æ­£ç¡®çš„ç»“æœã€‚åŸå› æ˜¯Stringä¸ºfinalã€‚
     }
     @Test
     public void test_7() throws Exception {}
@@ -69,7 +69,7 @@ public class ClassTest {
     }
     @Test
     public void test_9() throws Exception {
-        //Éú³ÆÒ»¸öÀà£¬È»ºó»ñÈ¡Õâ¸öÉú³ÉÀàĞÍµÄ×Ö½ÚÂë¡£
+        //ç”Ÿç§°ä¸€ä¸ªç±»ï¼Œç„¶åè·å–è¿™ä¸ªç”Ÿæˆç±»å‹çš„å­—èŠ‚ç ã€‚
         ClassEngine ce = new ClassEngine("org.aaa.Test", ClassTest.class, null);
         Class<?> type = ce.builderClass().toClass();
         InputStream is1 = type.getClassLoader().getResourceAsStream(type.getName().replace(".", "/") + ".class");
@@ -79,7 +79,7 @@ public class ClassTest {
     }
     @Test
     public void test_10() throws Exception {
-        /*´úÀíµÄ´úÀí*/
+        /*ä»£ç†çš„ä»£ç†*/
         RootClassLoader root = new RootClassLoader(ClassLoader.getSystemClassLoader());
         ClassEngine ce_1 = new ClassEngine(ClassTest.class, root);
         ce_1.setBuilderMode(BuilderMode.Propxy);

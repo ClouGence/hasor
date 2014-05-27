@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
 /**
- * ²ÎÕÕ{@link java.util.HashSet}ÊµÏÖµÄWeakHashSet.ÏêÏ¸½éÉÜ²Î¿´{@link java.util.Set}ºÍ{@link java.util.WeakHashMap}¹¦ÄÜ
+ * å‚ç…§{@link java.util.HashSet}å®ç°çš„WeakHashSet.è¯¦ç»†ä»‹ç»å‚çœ‹{@link java.util.Set}å’Œ{@link java.util.WeakHashMap}åŠŸèƒ½
  * @version : 2013-11-8
- * @author (ÍøÂçÊÕ¼¯)
+ * @author (ç½‘ç»œæ”¶é›†)
  */
 public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
     private transient WeakHashMap<E, Object> map;

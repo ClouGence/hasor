@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,25 @@ package net.hasor.plugins.cache;
 import java.io.Serializable;
 import java.util.Set;
 /**
- * »º´æ½Ó¿Ú¡£
+ * ç¼“å­˜æ¥å£ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Cache {
-    /**½«Ò»¸ö¶ÔÏó·ÅÈë»º´æ¡£*/
+    /**å°†ä¸€ä¸ªå¯¹è±¡æ”¾å…¥ç¼“å­˜ã€‚*/
     public boolean toCache(Serializable key, Object value);
-    /**¸ù¾İkey´Ó»º´æÖĞ»ñÈ¡»º´æ¶ÔÏó¡£*/
+    /**æ ¹æ®keyä»ç¼“å­˜ä¸­è·å–ç¼“å­˜å¯¹è±¡ã€‚*/
     public Object fromCache(Serializable key);
-    /**ÅĞ¶Ï»º´æÖĞÊÇ·ñÓĞÒªÇóµÄ¶ÔÏó¡£*/
+    /**åˆ¤æ–­ç¼“å­˜ä¸­æ˜¯å¦æœ‰è¦æ±‚çš„å¯¹è±¡ã€‚*/
     public boolean hasCache(Serializable key);
-    /**É¾³ıÄ³¸ö»º´æµÄÄÚÈİ¡£*/
+    /**åˆ é™¤æŸä¸ªç¼“å­˜çš„å†…å®¹ã€‚*/
     public boolean remove(Serializable key);
-    /**Çå¿Õ»º´æ¡£*/
+    /**æ¸…ç©ºç¼“å­˜ã€‚*/
     public boolean clearCache();
-    /**Ä¿Ç°»º´æ´óĞ¡¡£*/
+    /**ç›®å‰ç¼“å­˜å¤§å°ã€‚*/
     public int size();
-    /**»ñÈ¡»º´æÖĞKeys¡£*/
+    /**è·å–ç¼“å­˜ä¸­Keysã€‚*/
     public Set<Serializable> keys();
-    /**¹Ø±Õ²¢Í£ÓÃ»º´æ*/
+    /**å…³é—­å¹¶åœç”¨ç¼“å­˜*/
     public void close();
 }

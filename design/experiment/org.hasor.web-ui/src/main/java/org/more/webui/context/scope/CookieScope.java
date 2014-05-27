@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import java.util.HashMap;
 import javax.servlet.http.Cookie;
 import org.more.webui.context.ViewContext;
 /**
- * ¸ºÔğÌá¹©Cookie×÷ÓÃÓòµÄ¶ÁÈ¡£¬²»Ö§³ÖÉ¾³ıĞŞ¸Ä²Ù×÷¡£
+ * è´Ÿè´£æä¾›Cookieä½œç”¨åŸŸçš„è¯»å–ï¼Œä¸æ”¯æŒåˆ é™¤ä¿®æ”¹æ“ä½œã€‚
  * @version 2009-12-28
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class CookieScope extends HashMap<String, Object> {
     private static final long serialVersionUID = -3056532859705478664L;

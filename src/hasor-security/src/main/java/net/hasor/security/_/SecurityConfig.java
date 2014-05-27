@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,69 +17,69 @@ package net.hasor.security._;
 /**
  * 
  * @version : 2013-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface SecurityConfig {
-    /**ÊÇ·ñÆôÓÃÈ¨ÏŞÏµÍ³*/
+    /**æ˜¯å¦å¯ç”¨æƒé™ç³»ç»Ÿ*/
     public static final String Security_Enable                             = "security.enable";
-    /**µ±Security_EnableÆôÓÃÖ®ºó£¬¸ÃÖµ¾ö¶¨ÊÇ·ñÆôÓÃÕë¶ÔURL²¿·ÖµÄÈ¨ÏŞ¹ıÂË¡£*/
+    /**å½“Security_Enableå¯ç”¨ä¹‹åï¼Œè¯¥å€¼å†³å®šæ˜¯å¦å¯ç”¨é’ˆå¯¹URLéƒ¨åˆ†çš„æƒé™è¿‡æ»¤ã€‚*/
     public static final String Security_EnableURL                          = "security.enableURL";
-    /**µ±Security_EnableÆôÓÃÖ®ºó£¬¸ÃÖµ¾ö¶¨ÊÇ·ñÆôÓÃÕë¶Ô·½·¨µ÷ÓÃÖĞµÄÈ¨ÏŞ¹ıÂË¡£*/
+    /**å½“Security_Enableå¯ç”¨ä¹‹åï¼Œè¯¥å€¼å†³å®šæ˜¯å¦å¯ç”¨é’ˆå¯¹æ–¹æ³•è°ƒç”¨ä¸­çš„æƒé™è¿‡æ»¤ã€‚*/
     public static final String Security_EnableMethod                       = "security.enableMethod";
-    /**AuthSessionÊı¾İ»º´æ*/
+    /**AuthSessionæ•°æ®ç¼“å­˜*/
     public static final String Security_AuthSessionCache                   = "security.authSessionCacheName";
-    /**AuthSession³¬Ê±Ê±¼ä*/
+    /**AuthSessionè¶…æ—¶æ—¶é—´*/
     public static final String Security_AuthSessionTimeout                 = "security.authSessionTimeout";
-    /**µÇÈëµØÖ·*/
+    /**ç™»å…¥åœ°å€*/
     public static final String Security_LoginURL                           = "security.loginURL";
-    /**µÇ³öµØÖ·*/
+    /**ç™»å‡ºåœ°å€*/
     public static final String Security_LogoutURL                          = "security.logoutURL";
-    /**µÇÈë±íµ¥£¬ÓÃ»§Ãû*/
+    /**ç™»å…¥è¡¨å•ï¼Œç”¨æˆ·å*/
     public static final String Security_LoginFormData_AccountField         = "security.loginFormData.accountField";
-    /**µÇÈë±íµ¥£¬ÃÜÂë*/
+    /**ç™»å…¥è¡¨å•ï¼Œå¯†ç */
     public static final String Security_LoginFormData_PasswordField        = "security.loginFormData.passwordField";
-    /**µÇÈë±íµ¥£¬Ê¹ÓÃµÄÈ¨ÏŞÏµÍ³*/
+    /**ç™»å…¥è¡¨å•ï¼Œä½¿ç”¨çš„æƒé™ç³»ç»Ÿ*/
     public static final String Security_LoginFormData_AuthField            = "security.loginFormData.authField";
-    /**URLÈ¨ÏŞ¼ì²éÄ¬ÈÏ²ßÂÔÅäÖÃ£ºLogin|Logout|Guest|Permission|None*/
+    /**URLæƒé™æ£€æŸ¥é»˜è®¤ç­–ç•¥é…ç½®ï¼šLogin|Logout|Guest|Permission|None*/
     public static final String Security_Rules_DefaultModel                 = "security.rules.defaultRule";
-    /**°üº¬ÔÚÈ¨ÏŞ¼ì²é·¶³ëµÄURL*/
+    /**åŒ…å«åœ¨æƒé™æ£€æŸ¥èŒƒç•´çš„URL*/
     public static final String Security_Rules_Includes                     = "security.rules.includes";
-    /**ÅÅ³ıÈ¨ÏŞ¼ì²é·¶³ëµÄURL*/
+    /**æ’é™¤æƒé™æ£€æŸ¥èŒƒç•´çš„URL*/
     public static final String Security_Rules_Excludes                     = "security.rules.excludes";
-    /**×ª·¢ÅäÖÃ*/
+    /**è½¬å‘é…ç½®*/
     public static final String Security_Forwards                           = "security.forwards";
-    /**ÊÇ·ñÆôÓÃÀ´±öÕÊºÅ£¬ÆôÓÃÀ´±öÕÊºÅÖ®ºóµ±ÓÃ»§ÉĞÎ´µÇÂ½Ê±»ñÈ¡µÄAuthSession»á»ñÈ¡À´±öµÄAuthSession.*/
+    /**æ˜¯å¦å¯ç”¨æ¥å®¾å¸å·ï¼Œå¯ç”¨æ¥å®¾å¸å·ä¹‹åå½“ç”¨æˆ·å°šæœªç™»é™†æ—¶è·å–çš„AuthSessionä¼šè·å–æ¥å®¾çš„AuthSession.*/
     public static final String Security_Guest_Enable                       = "security.guest.enable";
-    /**À´±öÕÊºÅµÄÈÏÖ¤ÏµÍ³ .*/
+    /**æ¥å®¾å¸å·çš„è®¤è¯ç³»ç»Ÿ .*/
     public static final String Security_Guest_AuthSystem                   = "security.guest.authSystem";
-    /**À´±öÕÊºÅ.*/
+    /**æ¥å®¾å¸å·.*/
     public static final String Security_Guest_Account                      = "security.guest.info.account";
-    /**À´±öÕÊºÅµÄÃÜÂë.*/
+    /**æ¥å®¾å¸å·çš„å¯†ç .*/
     public static final String Security_Guest_Password                     = "security.guest.info.password";
-    /**À´±öÕÊºÅµÄCode.*/
+    /**æ¥å®¾å¸å·çš„Code.*/
     public static final String Security_Guest_UserCode                     = "security.guest.info.userCode";
-    /**À´±öÕÊºÅÈ¨ÏŞ*/
+    /**æ¥å®¾å¸å·æƒé™*/
     public static final String Security_Guest_Permissions                  = "security.guest.permissions";
-    /**ÊÇ·ñÆôÓÃ¿Í»§¶ËcookieÀ´Ğ­ÖúÈÏÖ¤¡£*/
+    /**æ˜¯å¦å¯ç”¨å®¢æˆ·ç«¯cookieæ¥ååŠ©è®¤è¯ã€‚*/
     public static final String Security_ClientCookie_Enable                = "security.clientCookie.enable";
-    /**µ±ÏµÍ³Æô¶¯Ê±ÊÇ·ñÇ¿ÖÆËùÓĞ¿Í»§¶ËÒÑ¾­µÇÂ½¹ıµÄCookieĞÅÏ¢Ê§Ğ§*/
+    /**å½“ç³»ç»Ÿå¯åŠ¨æ—¶æ˜¯å¦å¼ºåˆ¶æ‰€æœ‰å®¢æˆ·ç«¯å·²ç»ç™»é™†è¿‡çš„Cookieä¿¡æ¯å¤±æ•ˆ*/
     public static final String Security_ClientCookie_LoseCookieOnStart     = "security.clientCookie.loseCookieOnStart";
-    /**¿Í»§¶ËcookieÃû³Æ*/
+    /**å®¢æˆ·ç«¯cookieåç§°*/
     public static final String Security_ClientCookie_CookieName            = "security.clientCookie.cookieName";
-    /**cookie³¬Ê±Ê±¼ä£¬µ¥Î»£ºÃë*/
+    /**cookieè¶…æ—¶æ—¶é—´ï¼Œå•ä½ï¼šç§’*/
     public static final String Security_ClientCookie_Timeout               = "security.clientCookie.timeout";
-    /**cookieµÄDomainÅäÖÃ£¬ÉèÖÃÕâ¸öÊôĞÔÓÃÀ´Ö§³Ö¿çÓò·ÃÎÊcookie¡££¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©*/
+    /**cookieçš„Domainé…ç½®ï¼Œè®¾ç½®è¿™ä¸ªå±æ€§ç”¨æ¥æ”¯æŒè·¨åŸŸè®¿é—®cookieã€‚ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰*/
     public static final String Security_ClientCookie_Domain                = "security.clientCookie.cookieDomain";
-    /**cookieµÄpathÊôĞÔ£¨Ä¬ÈÏÎª¿Õ²»¶Ô¸ÃÖµ½øĞĞÉèÖÃ£©*/
+    /**cookieçš„pathå±æ€§ï¼ˆé»˜è®¤ä¸ºç©ºä¸å¯¹è¯¥å€¼è¿›è¡Œè®¾ç½®ï¼‰*/
     public static final String Security_ClientCookie_Path                  = "security.clientCookie.cookiePath";
-    /**ÊÇ·ñ¼ÓÃÜcookieÄÚÈİ*/
+    /**æ˜¯å¦åŠ å¯†cookieå†…å®¹*/
     public static final String Security_ClientCookie_Encryption_Enable     = "security.clientCookie.encryption.enable";
-    /**cookieÄÚÈİ¼ÓÃÜ·½Ê½£¬DES,BAS64µÈµÈ.*/
+    /**cookieå†…å®¹åŠ å¯†æ–¹å¼ï¼ŒDES,BAS64ç­‰ç­‰.*/
     public static final String Security_ClientCookie_Encryption_EncodeType = "security.clientCookie.encryption.encodeType";
-    /**cookieÄÚÈİ¼ÓÃÜÊ±Ê¹ÓÃµÄKey*/
+    /**cookieå†…å®¹åŠ å¯†æ—¶ä½¿ç”¨çš„Key*/
     public static final String Security_ClientCookie_Encryption_Key        = "security.clientCookie.encryption.key";
-    /**cookie¼ÓÃÜ·¶Î§£¨ALL,Security£©*/
+    /**cookieåŠ å¯†èŒƒå›´ï¼ˆALL,Securityï¼‰*/
     public static final String Security_ClientCookie_Encryption_Scope      = "security.clientCookie.encryption.scope";
-    /**¼ÓÃÜËã·¨ÅäÖÃ*/
+    /**åŠ å¯†ç®—æ³•é…ç½®*/
     public static final String Security_EncryptionDigestSet                = "security.encryptionDigestSet";
 }

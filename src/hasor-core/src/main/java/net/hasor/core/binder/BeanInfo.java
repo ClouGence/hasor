@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 package net.hasor.core.binder;
 import java.util.Map;
 /**
- * ×¢²áµ½ Hasor ÖĞ Bean µÄÔªĞÅÏ¢¡£
+ * æ³¨å†Œåˆ° Hasor ä¸­ Bean çš„å…ƒä¿¡æ¯ã€‚
  * @version : 2013-5-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface BeanInfo {
-    /**»ñÈ¡beanµÄÃû³Æ*/
+    /**è·å–beançš„åç§°*/
     public String[] getNames();
-    /**µ±Í¬Ò»ÀàĞÍ¶¨ÒåÁË¶à¸öBeanÊ±£¬ÅäºÏ¸ÃIDÓÃÒÔÔÚ°ó¶¨ÏµÍ³ÖĞÕÒµ½Ëü¡£*/
+    /**å½“åŒä¸€ç±»å‹å®šä¹‰äº†å¤šä¸ªBeanæ—¶ï¼Œé…åˆè¯¥IDç”¨ä»¥åœ¨ç»‘å®šç³»ç»Ÿä¸­æ‰¾åˆ°å®ƒã€‚*/
     public String getReferID();
-    /**»ñÈ¡beanµÄÀàĞÍ*/
+    /**è·å–beançš„ç±»å‹*/
     public <T> Class<T> getType();
-    /**°óÔÚBeanÉíÉÏµÄÊôĞÔ¡£*/
+    /**ç»‘åœ¨Beanèº«ä¸Šçš„å±æ€§ã€‚*/
     public Map<String, Object> propertyMap();
 }

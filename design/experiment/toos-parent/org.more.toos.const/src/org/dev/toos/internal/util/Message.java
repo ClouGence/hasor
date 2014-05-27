@@ -3,14 +3,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * 
  * @version : 2013-2-5
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Message {
     public static void errorInfo(String string, Throwable e) {
         e.printStackTrace();
         // TODO Auto-generated method stub
     }
-    /**¸üÐÂÈÎÎñ½ø¶È*/
+    /**æ›´æ–°ä»»åŠ¡è¿›åº¦*/
     public static void updateTask(IProgressMonitor monitor, String title, int countWorke, int worked) {
         monitor.beginTask(title, countWorke);
         monitor.worked(worked);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ import net.hasor.core.Settings;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
- * ±ê×¼ÊÂ¼ş´¦ÀíÆ÷½Ó¿ÚµÄÊµÏÖÀà
+ * æ ‡å‡†äº‹ä»¶å¤„ç†å™¨æ¥å£çš„å®ç°ç±»
  * @version : 2013-5-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class StandardEventManager implements EventContext {
     private static final EmptyEventCallBackHook    EmptyAsyncCallBack = new EmptyEventCallBackHook();
@@ -54,17 +54,17 @@ public class StandardEventManager implements EventContext {
         this.updateSettings();
     }
     private void updateSettings() {
-        //¸üĞÂThreadPoolExecutor
+        //æ›´æ–°ThreadPoolExecutor
         int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
-    /**»ñÈ¡Setting½Ó¿Ú¶ÔÏó*/
+    /**è·å–Settingæ¥å£å¯¹è±¡*/
     public Settings getSettings() {
         return this.settings;
     }
-    /**»ñÈ¡Ö´ĞĞÊÂ¼şÊ¹ÓÃµÄScheduledExecutorService½Ó¿Ú¶ÔÏó¡£*/
+    /**è·å–æ‰§è¡Œäº‹ä»¶ä½¿ç”¨çš„ScheduledExecutorServiceæ¥å£å¯¹è±¡ã€‚*/
     protected ScheduledExecutorService getExecutorService() {
         return this.executorService;
     }
@@ -72,7 +72,7 @@ public class StandardEventManager implements EventContext {
     public void pushListener(String eventType, EventListener eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null)
             return;
-        this.onceListenerLock.lock();//¼ÓËø
+        this.onceListenerLock.lock();//åŠ é”
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList == null) {
             eventList = new LinkedList<EventListener>();
@@ -80,10 +80,10 @@ public class StandardEventManager implements EventContext {
         }
         if (eventList.contains(eventListener) == false)
             eventList.push(eventListener);
-        this.onceListenerLock.unlock();//½âËø
+        this.onceListenerLock.unlock();//è§£é”
     }
     public void addListener(String eventType, EventListener eventListener) {
-        this.listenerRWLock.writeLock().lock();//¼ÓËø(Ğ´)
+        this.listenerRWLock.writeLock().lock();//åŠ é”(å†™)
         //
         Hasor.assertIsNotNull(eventListener, "add EventListener object is null.");
         EventListener[] eventListenerArray = this.listenerMap.get(eventType);
@@ -97,10 +97,10 @@ public class StandardEventManager implements EventContext {
             }
         }
         //
-        this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
+        this.listenerRWLock.writeLock().unlock();//è§£é”(å†™)
     }
     public void removeListener(String eventType, EventListener eventListener) {
-        this.listenerRWLock.writeLock().lock();//¼ÓËø(Ğ´)
+        this.listenerRWLock.writeLock().lock();//åŠ é”(å†™)
         //
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
         Hasor.assertIsNotNull(eventListener, "remove EventListener object is null.");
@@ -111,7 +111,7 @@ public class StandardEventManager implements EventContext {
             this.listenerMap.put(eventType, eventListenerArray);
         }
         //
-        this.listenerRWLock.writeLock().unlock();//½âËø(Ğ´)
+        this.listenerRWLock.writeLock().unlock();//è§£é”(å†™)
     }
     //
     public final void fireSyncEvent(String eventType, Object... objects) {
@@ -132,17 +132,17 @@ public class StandardEventManager implements EventContext {
         event.addParams(objects);
         this.fireEvent(event);
     }
-    /**´´½¨ÊÂ¼ş¶ÔÏó*/
+    /**åˆ›å»ºäº‹ä»¶å¯¹è±¡*/
     protected EventObject createEvent(String eventType, boolean sync) {
         return new EventObject(eventType, sync);
     };
-    /**Òı·¢ÊÂ¼ş*/
+    /**å¼•å‘äº‹ä»¶*/
     protected void fireEvent(final EventObject event) {
         if (event.isSync()) {
-            //Í¬²½µÄ
+            //åŒæ­¥çš„
             executeEvent(event);
         } else {
-            //Òì²½µÄ
+            //å¼‚æ­¥çš„
             this.executorService.submit(new Runnable() {
                 public void run() {
                     executeEvent(event);
@@ -150,7 +150,7 @@ public class StandardEventManager implements EventContext {
             });
         }
     };
-    /**Òı·¢ÊÂ¼ş*/
+    /**å¼•å‘äº‹ä»¶*/
     private void executeEvent(EventObject eventObj) {
         String eventType = eventObj.getEventType();
         Object[] objects = eventObj.getParams();
@@ -159,10 +159,10 @@ public class StandardEventManager implements EventContext {
         if (StringUtils.isBlank(eventType) == true)
             return;
         //
-        //1.Òı·¢ÊÂÎñ.
-        this.listenerRWLock.readLock().lock();//¼ÓËø(¶Á)
+        //1.å¼•å‘äº‹åŠ¡.
+        this.listenerRWLock.readLock().lock();//åŠ é”(è¯»)
         EventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        this.listenerRWLock.readLock().unlock();//½âËø(¶Á)
+        this.listenerRWLock.readLock().unlock();//è§£é”(è¯»)
         if (eventListenerArray != null) {
             for (EventListener listener : eventListenerArray) {
                 try {
@@ -175,8 +175,8 @@ public class StandardEventManager implements EventContext {
             }
         }
         //
-        //2.´¦ÀíOnceÊÂÎñ.
-        this.onceListenerLock.lock();//¼ÓËø
+        //2.å¤„ç†Onceäº‹åŠ¡.
+        this.onceListenerLock.lock();//åŠ é”
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
             EventListener listener = null;
@@ -190,20 +190,20 @@ public class StandardEventManager implements EventContext {
                 }
             }
         }
-        this.onceListenerLock.unlock();//½âËø
+        this.onceListenerLock.unlock();//è§£é”
     };
     //
     public void release() {
-        this.onceListenerLock.lock();//¼ÓËø
+        this.onceListenerLock.lock();//åŠ é”
         this.onceListenerMap.clear();
-        this.onceListenerLock.unlock();//½âËø
+        this.onceListenerLock.unlock();//è§£é”
         //
         this.executorService.shutdownNow();
         this.executorService = Executors.newScheduledThreadPool(1);
         this.updateSettings();
         //
-        this.listenerRWLock.writeLock().lock();//¼ÓËø
+        this.listenerRWLock.writeLock().lock();//åŠ é”
         this.listenerMap.clear();
-        this.listenerRWLock.writeLock().unlock();//½âËø
+        this.listenerRWLock.writeLock().unlock();//è§£é”
     }
 }

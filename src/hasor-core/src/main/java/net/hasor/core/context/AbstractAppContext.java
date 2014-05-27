@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,12 +45,12 @@ import org.more.util.ArrayUtils;
 import org.more.util.MergeUtils;
 import org.more.util.StringUtils;
 /**
- * ³éÏóÀà AbstractAppContext ÊÇ {@link AppContext} ½Ó¿ÚµÄ»ù´¡ÊµÏÖ¡£
- * <p>Ëü°ü×°ÁË´óÁ¿Ï¸½Ú´úÂë£¬¿ÉÒÔ·½±ãµÄÍ¨¹ı×ÓÀàÀ´´´½¨¶ÀÌØµÄÉÏÏÂÎÄÖ§³Ö¡£<p>
+ * æŠ½è±¡ç±» AbstractAppContext æ˜¯ {@link AppContext} æ¥å£çš„åŸºç¡€å®ç°ã€‚
+ * <p>å®ƒåŒ…è£…äº†å¤§é‡ç»†èŠ‚ä»£ç ï¼Œå¯ä»¥æ–¹ä¾¿çš„é€šè¿‡å­ç±»æ¥åˆ›å»ºç‹¬ç‰¹çš„ä¸Šä¸‹æ–‡æ”¯æŒã€‚<p>
  * 
- * ÌáÊ¾£ºinitContext ·½·¨ÊÇÕû¸ö AbstractAppContext µÄÈë¿Ú·½·¨¡£
+ * æç¤ºï¼šinitContext æ–¹æ³•æ˜¯æ•´ä¸ª AbstractAppContext çš„å…¥å£æ–¹æ³•ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
@@ -64,7 +64,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
         if (infoArray == null)
             infoArray = Collections.emptyList();
-        /*²éÕÒ*/
+        /*æŸ¥æ‰¾*/
         ArrayList<String> nameList = new ArrayList<String>();
         for (int i = 0; i < infoArray.size(); i++) {
             BeanInfo info = infoArray.get(i);
@@ -78,7 +78,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
         if (infoArray == null || infoArray.isEmpty())
             return ArrayUtils.EMPTY_STRING_ARRAY;
-        /*²éÕÒ*/
+        /*æŸ¥æ‰¾*/
         List<String> names = new ArrayList<String>();
         for (BeanInfo info : infoArray) {
             String[] aliasNames = info.getNames();
@@ -93,30 +93,30 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             return null;
         return (T) this.getInstance(info.getType());
     }
-    /**´´½¨Bean¡£*/
+    /**åˆ›å»ºBeanã€‚*/
     public <T> T getBean(String name) {
-        /*1.ÔÚHasorÖĞËùÓĞBean¶¨Òå¶¼ÊÇ°ó¶¨µ½BeanInfoÀàĞÍÉÏ£¬Òò´Ë²éÕÒÃû×ÖÎªnameµÄBeanInfo¶ÔÏó¡£*/
+        /*1.åœ¨Hasorä¸­æ‰€æœ‰Beanå®šä¹‰éƒ½æ˜¯ç»‘å®šåˆ°BeanInfoç±»å‹ä¸Šï¼Œå› æ­¤æŸ¥æ‰¾åå­—ä¸ºnameçš„BeanInfoå¯¹è±¡ã€‚*/
         RegisterInfo<BeanInfo> regInfo = this.findRegisterInfo(name, BeanInfo.class);
         if (regInfo == null)
             return null;
-        /*2.µÃµ½BeanInfo¶ÔÏó£¬²¢È¡µÃBeanµÄÆäÕæÊµÀàĞÍºÍreferID*/
+        /*2.å¾—åˆ°BeanInfoå¯¹è±¡ï¼Œå¹¶å–å¾—Beançš„å…¶çœŸå®ç±»å‹å’ŒreferID*/
         BeanInfo beanInfo = regInfo.getProvider().get();
         RegisterInfo<?> targetInfo = this.findRegisterInfo(beanInfo.getReferID(), beanInfo.getType());
         return (T) this.getBeanBuilder().getInstance(targetInfo);
     };
-    /**´´½¨Bean¡£*/
+    /**åˆ›å»ºBeanã€‚*/
     public <T> T getInstance(Class<T> oriType) {
-        /* 1.ÓÉÓÚÍ¬Ò»¸öType¿ÉÄÜ»áÓĞ¶à¸ö×¢²á£¬Ã¿¸ö×¢²á¿ÉÄÜ»áÓ³ÉäÁË²»Í¬µÄÊµÏÖ£¬ÀıÈç:
+        /* 1.ç”±äºåŒä¸€ä¸ªTypeå¯èƒ½ä¼šæœ‰å¤šä¸ªæ³¨å†Œï¼Œæ¯ä¸ªæ³¨å†Œå¯èƒ½ä¼šæ˜ å°„äº†ä¸åŒçš„å®ç°ï¼Œä¾‹å¦‚:
          *     String -> "HelloWord"   > name = "Hi"
          *     String -> "Say goodBy." > name = "By"
-         *     String -> "Body .."     > name = null  (ÄäÃûµÄ)
-         * Òò´Ë²éÕÒÄÇ¸öÃ»ÓĞÃû×ÖµÄType£¬ÌÈÈô´æÔÚÄäÃûµÄType£¬·µ»ØËü£¬·ñÔò·µ»Ønull¡£*/
+         *     String -> "Body .."     > name = null  (åŒ¿åçš„)
+         * å› æ­¤æŸ¥æ‰¾é‚£ä¸ªæ²¡æœ‰åå­—çš„Typeï¼Œå€˜è‹¥å­˜åœ¨åŒ¿åçš„Typeï¼Œè¿”å›å®ƒï¼Œå¦åˆ™è¿”å›nullã€‚*/
         RegisterInfo<T> info = this.findRegisterInfo(null, oriType);
         if (info == null)
             info = new FreeTypeRegister<T>(oriType);
         return this.getBeanBuilder().getInstance(info);
     };
-    /**»ñÈ¡ÓÃÓÚ´´½¨Bean¶ÔÏóµÄBeanBuilder½Ó¿Ú*/
+    /**è·å–ç”¨äºåˆ›å»ºBeanå¯¹è±¡çš„BeanBuilderæ¥å£*/
     protected BeanBuilder getBeanBuilder() {
         return this.getRegisterManager().getBeanBuilder();
     };
@@ -127,7 +127,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         Hasor.assertIsNotNull(bindingType, "bindingType is null.");
         //
         List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
-        /*ÕÒµ½ÄÇ¸öRegisterInfo*/
+        /*æ‰¾åˆ°é‚£ä¸ªRegisterInfo*/
         for (RegisterInfo<T> info : targetRegisterList) {
             String bindName = info.getName();
             boolean nameTest = withName.equals(bindName);
@@ -141,7 +141,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         Hasor.assertIsNotNull(bindingType, "bindingType is null.");
         //F
         List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
-        /*ÕÒµ½ÄÇ¸öRegisterInfo*/
+        /*æ‰¾åˆ°é‚£ä¸ªRegisterInfo*/
         for (RegisterInfo<T> info : targetRegisterList) {
             String bindName = info.getName();
             boolean nameTest = withName.equals(bindName);
@@ -152,7 +152,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     public <T> List<T> findBindingBean(Class<T> bindingType) {
         List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
-        /*½«RegisterInfo<T>ÁĞ±í×ª»»Îª<T>ÁĞ±í*/
+        /*å°†RegisterInfo<T>åˆ—è¡¨è½¬æ¢ä¸º<T>åˆ—è¡¨*/
         List<T> targetList = new ArrayList<T>();
         for (RegisterInfo<T> info : targetInfoList) {
             Provider<T> target = info.getProvider();
@@ -162,7 +162,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
         List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
-        /*½«RegisterInfo<T>ÁĞ±í×ª»»ÎªProvider<T>ÁĞ±í*/
+        /*å°†RegisterInfo<T>åˆ—è¡¨è½¬æ¢ä¸ºProvider<T>åˆ—è¡¨*/
         List<Provider<T>> targetList = new ArrayList<Provider<T>>();
         for (RegisterInfo<T> info : targetInfoList) {
             Provider<T> target = info.getProvider();
@@ -182,7 +182,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         }
         return registerIterator;
     }
-    /**²éÕÒRegisterInfo*/
+    /**æŸ¥æ‰¾RegisterInfo*/
     public <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType) {
         Iterator<RegisterInfo<T>> infoIterator = this.localRegisterIterator(bindType);
         if (infoIterator == null || infoIterator.hasNext() == false)
@@ -193,7 +193,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             infoList.add(infoIterator.next());
         return infoList;
     }
-    /**²éÕÒRegisterInfo*/
+    /**æŸ¥æ‰¾RegisterInfo*/
     public <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType) {
         List<RegisterInfo<T>> infoList = this.findRegisterInfo(bindingType);
         for (RegisterInfo<T> info : infoList) {
@@ -202,15 +202,15 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         }
         return null;
     }
-    /**×¢²áÒ»¸öÀàĞÍ*/
+    /**æ³¨å†Œä¸€ä¸ªç±»å‹*/
     protected <T> TypeRegister<T> registerType(Class<T> type) {
         return this.getRegisterManager().registerType(type);
     }
-    /**ÒÑ×¢²áµÄÀàĞÍÁĞ±í¡£*/
+    /**å·²æ³¨å†Œçš„ç±»å‹åˆ—è¡¨ã€‚*/
     protected Iterator<RegisterInfo<?>> localRegisterIterator() {
         return this.getBeanBuilder().getRegisterIterator();
     }
-    /**ÒÑ×¢²áµÄÀàĞÍÁĞ±í¡£*/
+    /**å·²æ³¨å†Œçš„ç±»å‹åˆ—è¡¨ã€‚*/
     protected <T> Iterator<RegisterInfo<T>> localRegisterIterator(Class<T> type) {
         return this.getBeanBuilder().getRegisterIterator(type);
     }
@@ -241,61 +241,61 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /*------------------------------------------------------------------------------------Context*/
     private AbstractAppContext parent;
     private Object             context;
-    /**»ñÈ¡ÉÏÏÂÎÄ*/
+    /**è·å–ä¸Šä¸‹æ–‡*/
     public AbstractAppContext getParent() {
         return this.parent;
     }
-    /**»ñÈ¡ÉÏÏÂÎÄ*/
+    /**è·å–ä¸Šä¸‹æ–‡*/
     public Object getContext() {
         return this.context;
     }
-    /**ÉèÖÃÉÏÏÂÎÄ*/
+    /**è®¾ç½®ä¸Šä¸‹æ–‡*/
     public void setContext(Object context) {
         this.context = context;
     }
-    /**»ñÈ¡Ó¦ÓÃ³ÌĞòÅäÖÃ¡£*/
+    /**è·å–åº”ç”¨ç¨‹åºé…ç½®ã€‚*/
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     };
     private Environment environment;
-    /**»ñÈ¡»·¾³½Ó¿Ú¡£*/
+    /**è·å–ç¯å¢ƒæ¥å£ã€‚*/
     public Environment getEnvironment() {
         if (this.environment == null)
             this.environment = this.createEnvironment();
         return this.environment;
     }
-    /**´´½¨»·¾³¶ÔÏó*/
+    /**åˆ›å»ºç¯å¢ƒå¯¹è±¡*/
     protected abstract Environment createEnvironment();
-    /**»ñÈ¡RegisterContext¶ÔÏó*/
+    /**è·å–RegisterContextå¯¹è±¡*/
     protected abstract RegisterManager getRegisterManager();
-    /**ÔÚ¿ò¼ÜÉ¨Ãè°üµÄ·¶Î§ÄÚ²éÕÒ¾ßÓĞÌØÕ÷Àà¼¯ºÏ¡££¨ÌØÕ÷¿ÉÒÔÊÇ¼Ì³ĞµÄÀà¡¢±ê¼ÇµÄ×¢½â£©*/
+    /**åœ¨æ¡†æ¶æ‰«æåŒ…çš„èŒƒå›´å†…æŸ¥æ‰¾å…·æœ‰ç‰¹å¾ç±»é›†åˆã€‚ï¼ˆç‰¹å¾å¯ä»¥æ˜¯ç»§æ‰¿çš„ç±»ã€æ ‡è®°çš„æ³¨è§£ï¼‰*/
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getEnvironment().findClass(featureType);
     }
     //
     /*-------------------------------------------------------------------------------------Module*/
     private List<ModuleProxy> tempModuleSet;
-    /**´´½¨»òÕß»ñµÃÓÃÓÚ´æ·ÅËùÓĞModuleInfoµÄ¼¯ºÏ¶ÔÏó*/
+    /**åˆ›å»ºæˆ–è€…è·å¾—ç”¨äºå­˜æ”¾æ‰€æœ‰ModuleInfoçš„é›†åˆå¯¹è±¡*/
     private List<ModuleProxy> getModuleList() {
         if (this.tempModuleSet == null)
             this.tempModuleSet = new ArrayList<ModuleProxy>();
         return tempModuleSet;
     }
-    /**Ìí¼ÓÄ£¿é£¬Èç¹ûÈİÆ÷ÒÑ¾­³õÊ¼»¯ÄÇÃ´»áÒı·¢{@link IllegalStateException}Òì³£¡£*/
+    /**æ·»åŠ æ¨¡å—ï¼Œå¦‚æœå®¹å™¨å·²ç»åˆå§‹åŒ–é‚£ä¹ˆä¼šå¼•å‘{@link IllegalStateException}å¼‚å¸¸ã€‚*/
     public synchronized ModuleInfo addModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
-        /*·ÀÖ¹ÖØ¸´Ìí¼Ó*/
+        /*é˜²æ­¢é‡å¤æ·»åŠ */
         for (ModuleProxy info : this.getModuleList())
             if (info.getTarget() == hasorModule)
                 return info;
-        /*Ìí¼ÓÄ£¿é*/
+        /*æ·»åŠ æ¨¡å—*/
         ModuleProxy propxy = new ContextModulePropxy(hasorModule, this);
         List<ModuleProxy> propxyList = this.getModuleList();
         propxyList.add(propxy);
         return propxy;
     }
-    /**É¾³ıÄ£¿é£¬Èç¹ûÈİÆ÷ÒÑ¾­³õÊ¼»¯ÄÇÃ´»áÒı·¢{@link IllegalStateException}Òì³£¡£*/
+    /**åˆ é™¤æ¨¡å—ï¼Œå¦‚æœå®¹å™¨å·²ç»åˆå§‹åŒ–é‚£ä¹ˆä¼šå¼•å‘{@link IllegalStateException}å¼‚å¸¸ã€‚*/
     public synchronized boolean removeModule(Module hasorModule) {
         if (this.isReady())
             throw new IllegalStateException("context is inited.");
@@ -311,7 +311,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         }
         return false;
     }
-    /**»ñµÃËùÓĞÄ£¿é*/
+    /**è·å¾—æ‰€æœ‰æ¨¡å—*/
     public final ModuleInfo[] getModules() {
         List<ModuleProxy> moduleList = this.getModuleList();
         ModuleInfo[] infoArray = new ModuleInfo[moduleList.size()];
@@ -319,15 +319,15 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             infoArray[i] = moduleList.get(i);
         return infoArray;
     }
-    /**×°ÔØÄ£¿é¶¨Òå*/
+    /**è£…è½½æ¨¡å—å®šä¹‰*/
     protected void initModule() {
         for (ModuleProxy propxy : this.getModuleList()) {
             ApiBinder apiBinder = this.newApiBinder(propxy);
-            apiBinder.bindingType(ModuleInfo.class).nameWith(propxy.getDisplayName()).toInstance(propxy);/*½ö½öÊÇ°ó¶¨*/
+            apiBinder.bindingType(ModuleInfo.class).nameWith(propxy.getDisplayName()).toInstance(propxy);/*ä»…ä»…æ˜¯ç»‘å®š*/
             propxy.init(apiBinder);
         }
     }
-    /**Î»ÓÚÈİÆ÷ÖĞ ModulePropxy ³éÏóÀàµÄÊµÏÖ*/
+    /**ä½äºå®¹å™¨ä¸­ ModulePropxy æŠ½è±¡ç±»çš„å®ç°*/
     protected class ContextModulePropxy extends ModuleProxy {
         public ContextModulePropxy(Module targetModule, AbstractAppContext appContext) {
             super(targetModule, appContext);
@@ -342,18 +342,18 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     //
     /*------------------------------------------------------------------------------------Process*/
-    //    /**Ö´ĞĞ Initialize ¹ı³Ì¡£*/
+    //    /**æ‰§è¡Œ Initialize è¿‡ç¨‹ã€‚*/
     //    protected void doInitialize(final Binder guiceBinder) {
     //        Hasor.logInfo("send init sign...");
     //        List<ModuleProxy> modulePropxyList = this.getModuleList();
-    //        /*Òı·¢Ä£¿éinitÉúÃüÖÜÆÚ*/
+    //        /*å¼•å‘æ¨¡å—initç”Ÿå‘½å‘¨æœŸ*/
     //        for (ModuleProxy forModule : modulePropxyList) {
     //            AbstractBinderContext apiBinder = this.newApiBinder(forModule, guiceBinder);
-    //            forModule.init(apiBinder);//´¥·¢ÉúÃüÖÜÆÚ 
+    //            forModule.init(apiBinder);//è§¦å‘ç”Ÿå‘½å‘¨æœŸ 
     //            apiBinder.configure(guiceBinder);
     //        }
     //        this.doBind(guiceBinder);
-    //        /*Òı·¢ÊÂ¼ş*/
+    //        /*å¼•å‘äº‹ä»¶*/
     //        this.getEventManager().doSync(ContextEvent_Initialized, apiBinder);
     //        Hasor.logInfo("init modules finish.");
     //    }
@@ -395,43 +395,43 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         /*3.Start*/
         Hasor.logInfo("send start sign.");
         this.doStart();
-        /*2.Ö´ĞĞAwareÍ¨Öª*/
+        /*2.æ‰§è¡ŒAwareé€šçŸ¥*/
         List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
         if (awareList.isEmpty() == false) {
             for (AppContextAware weak : awareList)
                 weak.setAppContext(this);
         }
-        /*3.ÖğÒ»Æô¶¯Ä£¿é*/
+        /*3.é€ä¸€å¯åŠ¨æ¨¡å—*/
         List<ModuleProxy> modulePropxyList = this.doReactor();
         for (ModuleProxy mod : modulePropxyList)
             mod.start(this);
-        /*4.·¢ËÍÆô¶¯ÊÂ¼ş*/
+        /*4.å‘é€å¯åŠ¨äº‹ä»¶*/
         this.fireSyncEvent(ContextEvent_Started, this);
-        this.doStartCompleted();/*ÓÃÓÚÀ©Õ¹*/
+        this.doStartCompleted();/*ç”¨äºæ‰©å±•*/
         this.isStart = true;
-        /*5.´òÓ¡Ä£¿é×´Ì¬*/
+        /*5.æ‰“å°æ¨¡å—çŠ¶æ€*/
         printModState(this);
         Hasor.logInfo("hasor started!");
     }
-    /**¿ªÊ¼½øÈë³õÊ¼»¯¹ı³Ì.*/
+    /**å¼€å§‹è¿›å…¥åˆå§‹åŒ–è¿‡ç¨‹.*/
     protected void doInitialize() {
         RegisterManager regContext = this.getRegisterManager();
         if (regContext instanceof ContextInitializeListener)
             ((ContextInitializeListener) regContext).doInitialize(this);
     }
-    /**³õÊ¼»¯¹ı³ÌÍê³É.*/
+    /**åˆå§‹åŒ–è¿‡ç¨‹å®Œæˆ.*/
     protected void doInitializeCompleted() {
         RegisterManager regContext = this.getRegisterManager();
         if (regContext instanceof ContextInitializeListener)
             ((ContextInitializeListener) regContext).doInitializeCompleted(this);
     }
-    /**¿ªÊ¼½øÈëÈİÆ÷Æô¶¯¹ı³Ì.*/
+    /**å¼€å§‹è¿›å…¥å®¹å™¨å¯åŠ¨è¿‡ç¨‹.*/
     protected void doStart() {
         RegisterManager regContext = this.getRegisterManager();
         if (regContext instanceof ContextStartListener)
             ((ContextStartListener) regContext).doStart(this);
     }
-    /**ÈİÆ÷Æô¶¯Íê³É*/
+    /**å®¹å™¨å¯åŠ¨å®Œæˆ*/
     protected void doStartCompleted() {
         RegisterManager regContext = this.getRegisterManager();
         if (regContext instanceof ContextStartListener)
@@ -440,7 +440,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
     //
     /*--------------------------------------------------------------------------------------Utils*/
-    /**ÎªÄ£¿é´´½¨ApiBinder*/
+    /**ä¸ºæ¨¡å—åˆ›å»ºApiBinder*/
     protected ApiBinder newApiBinder(final ModuleProxy forModule) {
         return new AbstractBinder(this.getEnvironment()) {
             public ModuleSettings configModule() {
@@ -451,29 +451,29 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             }
         };
     }
-    /**µ±Íê³ÉËùÓĞ³õÊ¼»¯¹ı³ÌÖ®ºóµ÷ÓÃ£¬¸ºÔğÏò Context °ó¶¨Ò»Ğ©Ô¤ÏÈ¶¨ÒåµÄÀàĞÍ¡£*/
+    /**å½“å®Œæˆæ‰€æœ‰åˆå§‹åŒ–è¿‡ç¨‹ä¹‹åè°ƒç”¨ï¼Œè´Ÿè´£å‘ Context ç»‘å®šä¸€äº›é¢„å…ˆå®šä¹‰çš„ç±»å‹ã€‚*/
     protected void doBind(ApiBinder apiBinder) {
         final AbstractAppContext appContet = this;
-        /*°ó¶¨Environment¶ÔÏóµÄProvider*/
+        /*ç»‘å®šEnvironmentå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(Environment.class).toProvider(new Provider<Environment>() {
             public Environment get() {
                 return appContet.getEnvironment();
             }
         });
-        /*°ó¶¨Settings¶ÔÏóµÄProvider*/
+        /*ç»‘å®šSettingså¯¹è±¡çš„Provider*/
         apiBinder.bindingType(Settings.class).toProvider(new Provider<Settings>() {
             public Settings get() {
                 return appContet.getSettings();
             }
         });
-        /*°ó¶¨AppContext¶ÔÏóµÄProvider*/
+        /*ç»‘å®šAppContextå¯¹è±¡çš„Provider*/
         apiBinder.bindingType(AppContext.class).toProvider(new Provider<AppContext>() {
             public AppContext get() {
                 return appContet;
             }
         });
     }
-    /**´òÓ¡Ä£¿é×´Ì¬*/
+    /**æ‰“å°æ¨¡å—çŠ¶æ€*/
     protected static void printModState(AbstractAppContext appContext) {
         ModuleInfo[] modArray = appContext.getModules();
         StringBuilder sb = new StringBuilder("");
@@ -483,7 +483,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             sb.append(String.format("%0" + size + "d", i));
             sb.append('.');
             sb.append("-->[");
-            //Running:ÔËĞĞÖĞ(start)¡¢Failed:×¼±¸Ê§°Ü¡¢Stopped:Í£Ö¹(stop)
+            //Running:è¿è¡Œä¸­(start)ã€Failed:å‡†å¤‡å¤±è´¥ã€Stopped:åœæ­¢(stop)
             sb.append(!info.isReady() ? "Failed " : info.isStart() ? "Running" : "Stopped");
             sb.append("] ");
             sb.append(info.getDisplayName());
@@ -495,12 +495,12 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             sb.deleteCharAt(sb.length() - 1);
         Hasor.logInfo("Modules State List:\n%s", sb);
     }
-    /**Ê¹ÓÃ·´Ó¦¶Ñ¶ÔÄ£¿é½øĞĞÑ­»·¼ì²éºÍÅÅĞò*/
+    /**ä½¿ç”¨ååº”å †å¯¹æ¨¡å—è¿›è¡Œå¾ªç¯æ£€æŸ¥å’Œæ’åº*/
     private List<ModuleProxy> doReactor() {
         List<ModuleProxy> readOnlyModules = new ArrayList<ModuleProxy>();
         for (ModuleProxy amp : this.getModuleList())
             readOnlyModules.add(amp);
-        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//´´½¨·´Ó¦Æ÷
+        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//åˆ›å»ºååº”å™¨
         List<ModuleProxy> result = reactor.process();
         List<ModuleProxy> propxyList = new ArrayList<ModuleProxy>();
         for (ModuleProxy info : result)

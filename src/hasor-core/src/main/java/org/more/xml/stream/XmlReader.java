@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,168 +31,168 @@ import javax.xml.stream.XMLStreamReader;
 import org.more.util.MatchUtils;
 import org.more.xml.stream.TextEvent.Type;
 /**
- * <b>Level 1</b>£ºÊı¾İ·ÃÎÊ²ßÂÔ¡£¸ÃÀàµÄ¹¦ÄÜÊÇ½«xmlÊı¾İÁ÷×ª»»³ÉÎªxmlÊÂ¼şÁ÷¡£²¢ÇÒ¿ÉÒÔÔÚÉ¨ÃèxmlÊ±Ö´ĞĞxmlµÄºöÂÔ²ßÂÔ¡£
+ * <b>Level 1</b>ï¼šæ•°æ®è®¿é—®ç­–ç•¥ã€‚è¯¥ç±»çš„åŠŸèƒ½æ˜¯å°†xmlæ•°æ®æµè½¬æ¢æˆä¸ºxmläº‹ä»¶æµã€‚å¹¶ä¸”å¯ä»¥åœ¨æ‰«æxmlæ—¶æ‰§è¡Œxmlçš„å¿½ç•¥ç­–ç•¥ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlReader {
-    private Reader  xmlReader     = null; //¶ÁÈ¡XmlÊı¾İµÄÊäÈëÁ÷¡£
-    private boolean ignoreComment = true; //ÊÇ·ñºöÂÔXmlÖĞµÄËùÓĞ×¢ÊÍ½Úµã¡£
-    private boolean ignoreSpace   = true; //ÊÇ·ñºöÂÔXmlÖĞ¿ÉºöÂÔµÄ¿Õ¸ñ¡£
+    private Reader  xmlReader     = null; //è¯»å–Xmlæ•°æ®çš„è¾“å…¥æµã€‚
+    private boolean ignoreComment = true; //æ˜¯å¦å¿½ç•¥Xmlä¸­çš„æ‰€æœ‰æ³¨é‡ŠèŠ‚ç‚¹ã€‚
+    private boolean ignoreSpace   = true; //æ˜¯å¦å¿½ç•¥Xmlä¸­å¯å¿½ç•¥çš„ç©ºæ ¼ã€‚
     //--------------------------------------------------------------------
-    /**´´½¨Ò»¸öXmlReader¶ÔÏóÓÃÓÚÔÄ¶ÁfileName²ÎÊıËù±íÊöµÄXmlÎÄ¼ş¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlReaderå¯¹è±¡ç”¨äºé˜…è¯»fileNameå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶ã€‚*/
     public XmlReader(String fileName) throws FileNotFoundException {
         this.xmlReader = new FileReader(fileName);
     }
-    /**´´½¨Ò»¸öXmlReader¶ÔÏóÓÃÓÚÔÄ¶Áfile²ÎÊıËù±íÊöµÄXmlÎÄ¼ş¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlReaderå¯¹è±¡ç”¨äºé˜…è¯»fileå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶ã€‚*/
     public XmlReader(File file) throws FileNotFoundException {
         this.xmlReader = new FileReader(file);
     }
-    /**´´½¨Ò»¸öXmlReader¶ÔÏóÓÃÓÚÔÄ¶ÁxmlStrema²ÎÊıËù±íÊöµÄXmlÎÄ¼şÁ÷¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlReaderå¯¹è±¡ç”¨äºé˜…è¯»xmlStremaå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶æµã€‚*/
     public XmlReader(InputStream xmlStrema) throws UnsupportedEncodingException {
         if (xmlStrema == null)
-            throw new NullPointerException("InputStreamÀàĞÍ²ÎÊıÎª¿Õ¡£");
+            throw new NullPointerException("InputStreamç±»å‹å‚æ•°ä¸ºç©ºã€‚");
         this.xmlReader = new InputStreamReader(xmlStrema);
     }
-    /**´´½¨Ò»¸öXmlReader¶ÔÏóÓÃÓÚÔÄ¶ÁxmlStrema²ÎÊıËù±íÊöµÄXmlÎÄ¼şÁ÷¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlReaderå¯¹è±¡ç”¨äºé˜…è¯»xmlStremaå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶æµã€‚*/
     public XmlReader(InputStream xmlStrema, String encoding) throws UnsupportedEncodingException {
         if (xmlStrema == null)
-            throw new NullPointerException("InputStreamÀàĞÍ²ÎÊıÎª¿Õ¡£");
+            throw new NullPointerException("InputStreamç±»å‹å‚æ•°ä¸ºç©ºã€‚");
         this.xmlReader = new InputStreamReader(xmlStrema, encoding);
     }
-    /**´´½¨Ò»¸öXmlReader¶ÔÏóÓÃÓÚÔÄ¶ÁxmlStrema²ÎÊıËù±íÊöµÄXmlÎÄ¼şÁ÷¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlReaderå¯¹è±¡ç”¨äºé˜…è¯»xmlStremaå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶æµã€‚*/
     public XmlReader(Reader xmlReader) {
         if (xmlReader == null)
-            throw new NullPointerException("ReaderÀàĞÍ²ÎÊıÎª¿Õ¡£");
+            throw new NullPointerException("Readerç±»å‹å‚æ•°ä¸ºç©ºã€‚");
         this.xmlReader = xmlReader;
     }
     //--------------------------------------------------------------------
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚ¶ÁÈ¡XMLÆÚ¼ä·¢ÏÖµÄÃèÊö½Úµã¡£·µ»Øtrue±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨è¯»å–XMLæœŸé—´å‘ç°çš„æè¿°èŠ‚ç‚¹ã€‚è¿”å›trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public boolean isIgnoreComment() {
         return this.ignoreComment;
     }
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚ¶ÁÈ¡XMLÆÚ¼ä·¢ÏÖµÄÃèÊö½Úµã¡£true±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨è¯»å–XMLæœŸé—´å‘ç°çš„æè¿°èŠ‚ç‚¹ã€‚trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public void setIgnoreComment(boolean ignoreComment) {
         this.ignoreComment = ignoreComment;
     }
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚ¶ÁÈ¡XMLÆÚ¼ä·¢ÏÖµÄ¿ÉºöÂÔµÄ¿Õ¸ñ×Ö·û£¨²ÎÔÄ [XML], 2.10 "White Space Handling"£©¡£·µ»Øtrue±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨è¯»å–XMLæœŸé—´å‘ç°çš„å¯å¿½ç•¥çš„ç©ºæ ¼å­—ç¬¦ï¼ˆå‚é˜… [XML], 2.10 "White Space Handling"ï¼‰ã€‚è¿”å›trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public boolean isIgnoreSpace() {
         return this.ignoreSpace;
     }
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñÔÚ¶ÁÈ¡XMLÆÚ¼äºöÂÔ¿ÉºöÂÔµÄ¿Õ¸ñ×Ö·û£¨²ÎÔÄ [XML], 2.10 "White Space Handling"£©¡£true±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦åœ¨è¯»å–XMLæœŸé—´å¿½ç•¥å¯å¿½ç•¥çš„ç©ºæ ¼å­—ç¬¦ï¼ˆå‚é˜… [XML], 2.10 "White Space Handling"ï¼‰ã€‚trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public void setIgnoreSpace(boolean ignoreSpace) {
         this.ignoreSpace = ignoreSpace;
     }
     //--------------------------------------------------------------------
-    /** »ñÈ¡StaxÔÄ¶ÁÆ÷µÄ¹ıÂËÆ÷£¬×ÓÀà¿ÉÒÔÍ¨¹ı¸Ã·½·¨À´À©Õ¹XmlReaderÔÚ¶ÁÈ¡xmlÆÚ¼ä¿ÉÒÔºöÂÔµÄÏîÄ¿¡£*/
+    /** è·å–Staxé˜…è¯»å™¨çš„è¿‡æ»¤å™¨ï¼Œå­ç±»å¯ä»¥é€šè¿‡è¯¥æ–¹æ³•æ¥æ‰©å±•XmlReaderåœ¨è¯»å–xmlæœŸé—´å¯ä»¥å¿½ç•¥çš„é¡¹ç›®ã€‚*/
     protected StreamFilter getXmlStreamFilter() {
         return null;
     };
     /**
-     * ¸Ã·½·¨ÊÇÓÃÓÚ¾ö¶¨Á½¸öXPathÊÇ·ñÊÇÒ»¸ö°üº¬µÄ¹ØÏµ£¬¸Ã·½·¨µÄ·µ»ØÖµ¾ö¶¨ÁË½âÎöÆ÷ÊÇ·ñºöÂÔÕâ¸öxmlÌõÄ¿¡£Æä×ÓÀà¿ÉÒÔÖØĞ´ËüÒÔÍê³É¸ü¶àµÄ¿ØÖÆ¡£
-     * @param currentXPath µ±Ç°½âÎöÆ÷É¨Ãèµ½µÄXPath¡£
-     * @param testWild ±íÊ¾´òËãºöÂÔµÄXPath¡£
-     * @return ·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ¾ö¶¨ÁËÊÇ·ñºöÂÔµ±Ç°XPathÌõÄ¿¡£
+     * è¯¥æ–¹æ³•æ˜¯ç”¨äºå†³å®šä¸¤ä¸ªXPathæ˜¯å¦æ˜¯ä¸€ä¸ªåŒ…å«çš„å…³ç³»ï¼Œè¯¥æ–¹æ³•çš„è¿”å›å€¼å†³å®šäº†è§£æå™¨æ˜¯å¦å¿½ç•¥è¿™ä¸ªxmlæ¡ç›®ã€‚å…¶å­ç±»å¯ä»¥é‡å†™å®ƒä»¥å®Œæˆæ›´å¤šçš„æ§åˆ¶ã€‚
+     * @param currentXPath å½“å‰è§£æå™¨æ‰«æåˆ°çš„XPathã€‚
+     * @param testWild è¡¨ç¤ºæ‰“ç®—å¿½ç•¥çš„XPathã€‚
+     * @return è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼å†³å®šäº†æ˜¯å¦å¿½ç•¥å½“å‰XPathæ¡ç›®ã€‚
      */
     protected boolean ignoreXPath(String currentXPath, String testWild) {
         if (testWild == null)
             return false;
-        //XXX:XPath±È½ÏËã·¨£¬±È½ÏcurrentXPathÊÇ·ñÊôÓÚtestXPath·¶Î§ÄÚµÄ£¬Ä¿Ç°Ê¹ÓÃµÄÊÇ?ºÍ*Í¨Åä·û¡£
+        //XXX:XPathæ¯”è¾ƒç®—æ³•ï¼Œæ¯”è¾ƒcurrentXPathæ˜¯å¦å±äºtestXPathèŒƒå›´å†…çš„ï¼Œç›®å‰ä½¿ç”¨çš„æ˜¯?å’Œ*é€šé…ç¬¦ã€‚
         return MatchUtils.matchWild(testWild, currentXPath);
     }
     /**
-     * Ö´ĞĞ½âÎöXmlÎÄ¼ş£¬²¢ÇÒĞÎ³ÉxmlÊÂ¼şÁ÷¡£ÕâĞ©ÊÂ¼şÁ÷±»ÊäÈëµ½{@link XmlAccept}ÀàĞÍ¶ÔÏóÖĞ¡£
-     * Èç¹ûÅäÖÃÁËignoreXPath²ÎÊıÔòÔÚĞÎ³ÉÊÂ¼şÁ÷Ê±XmlReader²»»á·¢ËÍÊôÓÚÕâ¸öxpathµÄxmlÊÂ¼şÁ÷¡£
-     * @param accept Ö¸¶¨ÊÂ¼şÁ÷½ÓÊÕ¶ÔÏó¡£
-     * @param ignoreXPath Ö¸¶¨ÒªºöÂÔµÄXPathÂ·¾¶¡£
+     * æ‰§è¡Œè§£æXmlæ–‡ä»¶ï¼Œå¹¶ä¸”å½¢æˆxmläº‹ä»¶æµã€‚è¿™äº›äº‹ä»¶æµè¢«è¾“å…¥åˆ°{@link XmlAccept}ç±»å‹å¯¹è±¡ä¸­ã€‚
+     * å¦‚æœé…ç½®äº†ignoreXPathå‚æ•°åˆ™åœ¨å½¢æˆäº‹ä»¶æµæ—¶XmlReaderä¸ä¼šå‘é€å±äºè¿™ä¸ªxpathçš„xmläº‹ä»¶æµã€‚
+     * @param accept æŒ‡å®šäº‹ä»¶æµæ¥æ”¶å¯¹è±¡ã€‚
+     * @param ignoreXPath æŒ‡å®šè¦å¿½ç•¥çš„XPathè·¯å¾„ã€‚
      * @throws IOException 
      */
     public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException, IOException {
         if (accept == null)
             return;
         accept.beginAccept();
-        //1.×¼±¸É¨ÃèµÄÒıÇæ¡£
+        //1.å‡†å¤‡æ‰«æçš„å¼•æ“ã€‚
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(this.xmlReader);
         StreamFilter filter = new NullStreamFilter(this, this.getXmlStreamFilter());
         reader = factory.createFilteredReader(reader, filter);
-        //2.×¼±¸Êı¾İ
+        //2.å‡†å¤‡æ•°æ®
         StringBuffer currentXPath = new StringBuffer("/");//XPath
-        ElementTree currentElement = null;//ÉèÖÃµ±Ç°ÊÂ¼şËùÊôµÄÔªËØ
+        ElementTree currentElement = null;//è®¾ç½®å½“å‰äº‹ä»¶æ‰€å±çš„å…ƒç´ 
         XmlStreamEvent currentEvent = null;
-        //3.ÂÖÑ¯ÍÆËÍÊÂ¼şÁ÷
+        //3.è½®è¯¢æ¨é€äº‹ä»¶æµ
         while (true) {
-            //(1).À­³öÊÂ¼şÀàĞÍ
-            int xmlEvent = reader.getEventType();//µ±Ç°ÊÂ¼ş¶ÔÏó
-            //(2).Éú³ÉÊÂ¼ş¶ÔÏó
+            //(1).æ‹‰å‡ºäº‹ä»¶ç±»å‹
+            int xmlEvent = reader.getEventType();//å½“å‰äº‹ä»¶å¯¹è±¡
+            //(2).ç”Ÿæˆäº‹ä»¶å¯¹è±¡
             switch (xmlEvent) {
             case XMLStreamConstants.START_DOCUMENT:
-                //¿ªÊ¼ÎÄµµ
+                //å¼€å§‹æ–‡æ¡£
                 currentEvent = new StartDocumentEvent(currentXPath.toString(), reader);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             case XMLStreamConstants.END_DOCUMENT:
-                //½áÊøÎÄµµ
+                //ç»“æŸæ–‡æ¡£
                 currentEvent = new EndDocumentEvent(currentXPath.toString(), reader);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             case XMLStreamConstants.START_ELEMENT:
-                //¿ªÊ¼ÔªËØ
+                //å¼€å§‹å…ƒç´ 
                 if (currentXPath.indexOf("/") != currentXPath.length() - 1)
                     currentXPath.append("/");
                 currentXPath.append(this.getName(reader.getName()));
                 currentEvent = new StartElementEvent(currentXPath.toString(), reader);
                 currentElement = new ElementTree(reader.getName(), currentElement);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             case XMLStreamConstants.END_ELEMENT:
-                //½áÊøÔªËØ
+                //ç»“æŸå…ƒç´ 
                 currentEvent = new EndElementEvent(currentXPath.toString(), reader);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 int index = currentXPath.lastIndexOf("/");
                 index = (index == 0) ? 1 : index;
                 currentXPath = currentXPath.delete(index, currentXPath.length());
                 currentElement = currentElement.getParent();
                 break;
             case XMLStreamConstants.COMMENT:
-                //×¢ÊÍ
+                //æ³¨é‡Š
                 currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Comment);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             case XMLStreamConstants.CDATA:
-                //CDATAÊı¾İ
+                //CDATAæ•°æ®
                 currentEvent = new TextEvent(currentXPath.toString(), reader, Type.CDATA);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             //---------------------------------------------
             case XMLStreamConstants.SPACE:
-                //¿ÉÒÔºöÂÔµÄ¿Õ¸ñ
+                //å¯ä»¥å¿½ç•¥çš„ç©ºæ ¼
                 currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Space);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             case XMLStreamConstants.CHARACTERS:
-                //×Ö·ûÊı¾İ
+                //å­—ç¬¦æ•°æ®
                 currentEvent = new TextEvent(currentXPath.toString(), reader, Type.Chars);
-                currentEvent.setCurrentElement(currentElement);//ÉèÖÃµ±Ç°ÔªËØ
+                currentEvent.setCurrentElement(currentElement);//è®¾ç½®å½“å‰å…ƒç´ 
                 break;
             }
-            //(3).Ö´ĞĞºöÂÔ
+            //(3).æ‰§è¡Œå¿½ç•¥
             if (xmlEvent == XMLStreamConstants.COMMENT && this.ignoreComment == true) {
-                //Ö´ĞĞºöÂÔ
+                //æ‰§è¡Œå¿½ç•¥
                 xmlEvent = this.readEvent(reader);
                 continue;
             } else if (xmlEvent == XMLStreamConstants.SPACE && this.ignoreSpace == true) {
-                //Ö´ĞĞºöÂÔ
+                //æ‰§è¡Œå¿½ç•¥
                 xmlEvent = this.readEvent(reader);
                 continue;
             }
-            //(4).ÍÆËÍÊÂ¼ş
+            //(4).æ¨é€äº‹ä»¶
             this.pushEvent(accept, currentEvent, ignoreXPath);
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 XmlStreamEvent elementEvent = currentEvent;
                 int attCount = reader.getAttributeCount();
                 for (int i = 0; i < attCount; i++) {
-                    //ÍÆËÍÊôĞÔÊÂ¼ş
+                    //æ¨é€å±æ€§äº‹ä»¶
                     String namespace = reader.getAttributeNamespace(i);
                     String localName = reader.getAttributeLocalName(i);
                     String prefix = reader.getAttributePrefix(i);
@@ -207,12 +207,12 @@ public class XmlReader {
                     currentXPathTemp.append(this.getName(qn));
                     currentElement = new ElementTree(qn, currentElement);
                     currentEvent = new AttributeEvent(elementEvent, currentXPathTemp.toString(), reader, i);
-                    currentEvent.setCurrentElement(currentElement.getParent());//½«ÊôĞÔµÄµ±Ç°½ÚµãÉèÖÃ³ÉÆäËùÊôµÄÔªËØ½Úµã¡£
+                    currentEvent.setCurrentElement(currentElement.getParent());//å°†å±æ€§çš„å½“å‰èŠ‚ç‚¹è®¾ç½®æˆå…¶æ‰€å±çš„å…ƒç´ èŠ‚ç‚¹ã€‚
                     currentElement = currentElement.getParent();
                     this.pushEvent(accept, currentEvent, ignoreXPath);
                 }
             }
-            //(5).»ñÈ¡ÏÂÒ»¸öxmlÎÄµµÁ÷ÊÂ¼ş¡£
+            //(5).è·å–ä¸‹ä¸€ä¸ªxmlæ–‡æ¡£æµäº‹ä»¶ã€‚
             xmlEvent = this.readEvent(reader);
             if (xmlEvent == 0)
                 break;
@@ -234,39 +234,39 @@ public class XmlReader {
         }
         return sb.append(qname.getLocalPart()).toString();
     }
-    /**Ö´ĞĞXPathºöÂÔÅĞ¶Ï¡£ */
-    private XmlStreamEvent skipEvent = null; //ÒªÌø¹ıµÄÊÂ¼ş
+    /**æ‰§è¡ŒXPathå¿½ç•¥åˆ¤æ–­ã€‚ */
+    private XmlStreamEvent skipEvent = null; //è¦è·³è¿‡çš„äº‹ä»¶
     private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException, IOException {
-        //(1).XPathºöÂÔ¡°ÅĞ¶Ï¡±
+        //(1).XPathå¿½ç•¥â€œåˆ¤æ–­â€
         boolean ignore = this.ignoreXPath(e.getXpath(), ignoreXPath);
         if (ignore == true)
             return;
-        //(2).ÉÏÒ»¸ö±êÇ©Ìø¹ıÖ®ºó£¬½ÓÏÂÀ´µÄËùÓĞ±êÇ©¶¼Ö´ĞĞÌø¹ı¡°ÅĞ¶Ï¡±
+        //(2).ä¸Šä¸€ä¸ªæ ‡ç­¾è·³è¿‡ä¹‹åï¼Œæ¥ä¸‹æ¥çš„æ‰€æœ‰æ ‡ç­¾éƒ½æ‰§è¡Œè·³è¿‡â€œåˆ¤æ–­â€
         if (this.skipEvent != null) {
             e.skip();
             if (this.skipEvent.isPartner(e) == true)
-                this.skipEvent = null;//Èç¹ûµ±Ç°±êÇ©ºÍÉÏÒ»¸öÌø¹ı±êÇ©ÊÇĞÖµÜ¹ØÏµ£¬ ÄÇÃ´skipEventÖÃ¿Õ¡£
+                this.skipEvent = null;//å¦‚æœå½“å‰æ ‡ç­¾å’Œä¸Šä¸€ä¸ªè·³è¿‡æ ‡ç­¾æ˜¯å…„å¼Ÿå…³ç³»ï¼Œ é‚£ä¹ˆskipEventç½®ç©ºã€‚
         }
-        //(3).Ö´ĞĞÌø¹ı
+        //(3).æ‰§è¡Œè·³è¿‡
         if (e.isSkip() == true)
             return;
-        //(4).Ö´ĞĞÊÂ¼ş
+        //(4).æ‰§è¡Œäº‹ä»¶
         this.pushEvent(accept, e);
-        //(5).½ÓÊÕÌø¹ıÊÂ¼ş
+        //(5).æ¥æ”¶è·³è¿‡äº‹ä»¶
         if (this.skipEvent == null)
             if (e.isSkip() == true)
                 this.skipEvent = e;
     }
-    /**¸ºÔğÍÆËÍÊÂ¼şµÄ·½·¨£¬×ÓÀà¿ÉÒÔÍ¨¹ıÀ©Õ¹¸Ã·½·¨ÔÚÍÆËÍÊÂ¼şÆÚ¼ä´¦ÀíÒ»Ğ©ÆäËû²Ù×÷¡£ ±»ºöÂÔµÄºÍ±»Ìø¹ıµÄÊÂ¼ş½«²»»á½ÓÊÜµ½¸Ã·½·¨µÄµ÷ÓÃ¡£*/
+    /**è´Ÿè´£æ¨é€äº‹ä»¶çš„æ–¹æ³•ï¼Œå­ç±»å¯ä»¥é€šè¿‡æ‰©å±•è¯¥æ–¹æ³•åœ¨æ¨é€äº‹ä»¶æœŸé—´å¤„ç†ä¸€äº›å…¶ä»–æ“ä½œã€‚ è¢«å¿½ç•¥çš„å’Œè¢«è·³è¿‡çš„äº‹ä»¶å°†ä¸ä¼šæ¥å—åˆ°è¯¥æ–¹æ³•çš„è°ƒç”¨ã€‚*/
     protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException, IOException {
         if (accept != null)
             accept.sendEvent(e);
     }
 }
 /**
- * ¸ÃÀàµÄÄ¿µÄÊÇ¿ÉÒÔ²»ÊÜ¿ÕStreamFilterÊôĞÔµÄÓ°Ïì¡£
+ * è¯¥ç±»çš„ç›®çš„æ˜¯å¯ä»¥ä¸å—ç©ºStreamFilterå±æ€§çš„å½±å“ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class NullStreamFilter implements StreamFilter {
     private StreamFilter parentFilter;

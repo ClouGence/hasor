@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ import net.hasor.security._.SecurityContext;
 import net.hasor.security._.support.DefaultSecurityQuery.CheckPermission;
 import org.hasor.context.AppContext;
 /**
- * °²È«ÈÏÖ¤ÏµÍ³·şÎñ£¬×ÓÀàÖ»ĞèÒª½â¾öSessionData´æ´¢¾Í¿ÉÒÔÁË¡£
+ * å®‰å…¨è®¤è¯ç³»ç»ŸæœåŠ¡ï¼Œå­ç±»åªéœ€è¦è§£å†³SessionDataå­˜å‚¨å°±å¯ä»¥äº†ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractSecurityContext implements SecurityContext {
     private AppContext                       appContext               = null;
@@ -67,13 +67,13 @@ public abstract class AbstractSecurityContext implements SecurityContext {
         }
         //
         curSessionList.add(activateAuthSession);
-        this.throwEvent(SecurityEventDefine.AuthSession_Activate, activateAuthSession);/*Å×³öÊÂ¼ş*/
+        this.throwEvent(SecurityEventDefine.AuthSession_Activate, activateAuthSession);/*æŠ›å‡ºäº‹ä»¶*/
         //
         return true;
     }
     @Override
     public synchronized boolean activateAuthSession(String authSessionID) throws SecurityException {
-        AuthSession authSession = this.getAuthSession(authSessionID);/*¸Ã·½·¨»áÒı·¢Ëø×¡authSessionIDµÄ¶¯×÷*/
+        AuthSession authSession = this.getAuthSession(authSessionID);/*è¯¥æ–¹æ³•ä¼šå¼•å‘é”ä½authSessionIDçš„åŠ¨ä½œ*/
         if (authSession != null)
             return this.activateAuthSession(authSession);
         return false;
@@ -172,11 +172,11 @@ public abstract class AbstractSecurityContext implements SecurityContext {
     public SecurityDispatcher getDispatcher(String requestPath) throws ServletException {
         return this.dispatcherManager.getDispatcher(requestPath);
     }
-    /**»ñÈ¡{@link SecurityAccess}½Ó¿Ú¶ÔÏó£¬Èç¹û²»´æÔÚ·µ»Ønull¡£*/
+    /**è·å–{@link SecurityAccess}æ¥å£å¯¹è±¡ï¼Œå¦‚æœä¸å­˜åœ¨è¿”å›nullã€‚*/
     protected SecurityAccess getSecurityAccess(String authName) {
         return securityAccessManager.getSecurityAccess(authName, this.appContext);
     }
-    /**»ñÈ¡{@link SecurityAuth}½Ó¿Ú¶ÔÏó£¬Èç¹û²»´æÔÚ·µ»Ønull¡£*/
+    /**è·å–{@link SecurityAuth}æ¥å£å¯¹è±¡ï¼Œå¦‚æœä¸å­˜åœ¨è¿”å›nullã€‚*/
     protected SecurityAuth getSecurityAuth(String authName) throws SecurityException {
         return securityAuthManager.getSecurityAuth(authName, this.appContext);
     };
@@ -188,7 +188,7 @@ public abstract class AbstractSecurityContext implements SecurityContext {
     public SecurityNode getSecurityCondition(String permissionCode) {
         return new CheckPermission(new Permission(permissionCode));
     };
-    /**Ê¹ÓÃSessionDataµÄÊı¾İ´´½¨AuthSession¡£*/
+    /**ä½¿ç”¨SessionDataçš„æ•°æ®åˆ›å»ºAuthSessionã€‚*/
     protected abstract SessionData getSessionData(String sessionDataID);
     @Override
     public UriPatternMatcher getUriMatcher(String requestPath) {
@@ -215,7 +215,7 @@ public abstract class AbstractSecurityContext implements SecurityContext {
             curSessionList.remove(removeAuthSession);
             if (curSessionList.size() == 0)
                 this.currentAuthSessionList.remove();
-            this.throwEvent(SecurityEventDefine.AuthSession_Inactivation, removeAuthSession);/*Å×³öÊÂ¼ş*/
+            this.throwEvent(SecurityEventDefine.AuthSession_Inactivation, removeAuthSession);/*æŠ›å‡ºäº‹ä»¶*/
             return true;
         }
         //
@@ -243,10 +243,10 @@ public abstract class AbstractSecurityContext implements SecurityContext {
         //
         this.currentAuthSessionList = new ThreadLocal<List<AuthSession>>();
     };
-    /**ĞÂ½¨AuthSession*/
+    /**æ–°å»ºAuthSession*/
     protected AbstractAuthSession newAuthSession(String authSessionID) throws SecurityException {
         AbstractAuthSession newAuthSession = new AbstractAuthSession(authSessionID, this) {};
-        this.throwEvent(SecurityEventDefine.AuthSession_New, newAuthSession);/*Å×³öÊÂ¼ş*/
+        this.throwEvent(SecurityEventDefine.AuthSession_New, newAuthSession);/*æŠ›å‡ºäº‹ä»¶*/
         return newAuthSession;
     }
     @Override
@@ -266,13 +266,13 @@ public abstract class AbstractSecurityContext implements SecurityContext {
         return this.newSecurityQuery().and(permissionCode);
     }
     //
-    /**Í¬²½·½Ê½Å×³öÊÂ¼ş¡£*/
+    /**åŒæ­¥æ–¹å¼æŠ›å‡ºäº‹ä»¶ã€‚*/
     protected abstract void throwEvent(String eventType, Object... objects);
     //
-    /**Ê¹ÓÃSessionDataµÄÊı¾İ´´½¨AuthSession¡£*/
+    /**ä½¿ç”¨SessionDataçš„æ•°æ®åˆ›å»ºAuthSessionã€‚*/
     protected abstract void removeSessionData(String sessionDataID);
-    /**½ö½öË¢ĞÂ»º´æÊı¾İµÄ¹ıÆÚÊ±¼ä*/
+    /**ä»…ä»…åˆ·æ–°ç¼“å­˜æ•°æ®çš„è¿‡æœŸæ—¶é—´*/
     protected abstract void updateSessionData(String sessionID);
-    /**¸üĞÂSessionData*/
+    /**æ›´æ–°SessionData*/
     protected abstract void updateSessionData(String sessionDataID, SessionData newSessionData);
 }

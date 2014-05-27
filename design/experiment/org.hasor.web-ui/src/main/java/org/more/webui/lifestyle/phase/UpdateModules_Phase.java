@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * µÚ5½×¶Î£¬¸Ã½×¶ÎµÄÄ¿µÄÊÇ½«×é¼þÄ£ÐÍÖÐµÄÖµÉèÖÃ¸üÐÂµ½beanÖÐ¡£
+ * ç¬¬5é˜¶æ®µï¼Œè¯¥é˜¶æ®µçš„ç›®çš„æ˜¯å°†ç»„ä»¶æ¨¡åž‹ä¸­çš„å€¼è®¾ç½®æ›´æ–°åˆ°beanä¸­ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class UpdateModules_Phase extends Phase {
     public static class UpdateModules_PhaseID extends PhaseID {
@@ -33,6 +33,6 @@ public class UpdateModules_Phase extends Phase {
         return PhaseID;
     };
     public void execute(ViewContext uiContext) throws Throwable {
-        uiContext.getViewRoot().processUpdate(uiContext); //Ö´ÐÐÄ£ÐÍ¸üÐÂ
+        uiContext.getViewRoot().processUpdate(uiContext); //æ‰§è¡Œæ¨¡åž‹æ›´æ–°
     };
 };

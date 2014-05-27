@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.more.classcode;
 /**
- * ¹ıÂËÆ÷Á´µÄÖĞ¼ä»·½Ú£¬¸ÃÀàµÄÄ¿µÄÊÇ´«µİ¹ıÂËÆ÷µÄµ÷ÓÃ¡£µ«ÊÇÈç¹ûÔÚ´«µİµ÷ÓÃÆÚ¼ä·¢ÉúÎŞ·¨ÕÒµ½ÏÂÒ»¸ö´«µİµãÔò»áÒı·¢aopÁ´¶Ï¿ªµÄÒì³£¡£
+ * è¿‡æ»¤å™¨é“¾çš„ä¸­é—´ç¯èŠ‚ï¼Œè¯¥ç±»çš„ç›®çš„æ˜¯ä¼ é€’è¿‡æ»¤å™¨çš„è°ƒç”¨ã€‚ä½†æ˜¯å¦‚æœåœ¨ä¼ é€’è°ƒç”¨æœŸé—´å‘ç”Ÿæ— æ³•æ‰¾åˆ°ä¸‹ä¸€ä¸ªä¼ é€’ç‚¹åˆ™ä¼šå¼•å‘aopé“¾æ–­å¼€çš„å¼‚å¸¸ã€‚
  * @version 2010-9-2
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class AopFilterChain_Impl implements AopFilterChain {
-    private AopInvokeFilter thisFilter      = null; //±íÊ¾¹ıÂËÆ÷Á´µÄµ±Ç°¹ıÂËÆ÷¡£
-    private AopFilterChain  nextFilterChain = null; //¹ıÂËÆ÷Á´µÄÏÂÒ»¸ö¹ıÂËÆ÷¡£
+    private AopInvokeFilter thisFilter      = null; //è¡¨ç¤ºè¿‡æ»¤å™¨é“¾çš„å½“å‰è¿‡æ»¤å™¨ã€‚
+    private AopFilterChain  nextFilterChain = null; //è¿‡æ»¤å™¨é“¾çš„ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨ã€‚
     /** */
     AopFilterChain_Impl(AopInvokeFilter thisFilter, AopFilterChain nextFilterChain) {
         this.thisFilter = thisFilter;
@@ -31,6 +31,6 @@ class AopFilterChain_Impl implements AopFilterChain {
         if (this.nextFilterChain != null)
             return this.thisFilter.doFilter(target, method, args, this.nextFilterChain);
         else
-            throw new LostException("µ÷ÓÃÊ§°Ü£¬·½·¨AopÁ´¶ªÊ§¡£");
+            throw new LostException("è°ƒç”¨å¤±è´¥ï¼Œæ–¹æ³•Aopé“¾ä¸¢å¤±ã€‚");
     }
 }

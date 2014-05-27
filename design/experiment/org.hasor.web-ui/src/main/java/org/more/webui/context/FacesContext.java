@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 /**
- * ¸ÃÀàÊÇÓÃÓÚÖ§³ÖwebuiµÄ»·¾³¡¢ÔËĞĞ»·¾³
+ * è¯¥ç±»æ˜¯ç”¨äºæ”¯æŒwebuiçš„ç¯å¢ƒã€è¿è¡Œç¯å¢ƒ
  * @version : 2012-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class FacesContext {
     private FacesConfig              facesConfig          = null;
@@ -49,42 +49,42 @@ public abstract class FacesContext {
     public FacesContext(FacesConfig facesConfig) {
         this.facesConfig = facesConfig;
     };
-    /**»ñÈ¡ÅäÖÃ¶ÔÏó¡£*/
+    /**è·å–é…ç½®å¯¹è±¡ã€‚*/
     public FacesConfig getEnvironment() {
         return this.facesConfig;
     }
     /*----------------------------------------------------------------*/
-    /**Ìí¼ÓRenderKit¡£*/
+    /**æ·»åŠ RenderKitã€‚*/
     public void addRenderKit(String scope, RenderKit kit) {
         this.renderKitMap.put(scope, kit);
     }
-    /**»ñÈ¡Ö¸¶¨±êÇ©ÃûËù¹ØÁªµÄäÖÈ¾Æ÷¡£*/
+    /**è·å–æŒ‡å®šæ ‡ç­¾åæ‰€å…³è”çš„æ¸²æŸ“å™¨ã€‚*/
     public RenderKit getRenderKit(String scope) {
         return this.renderKitMap.get(scope);
     }
     /**
-     * Ìí¼ÓÒ»Ìõ×é½¨µÄ×¢²á¡£
-     * @param tagName ×é½¨µÄ±êÇ©Ãû¡£
-     * @param componentBeanType ×é½¨classÀàĞÍ¡£
+     * æ·»åŠ ä¸€æ¡ç»„å»ºçš„æ³¨å†Œã€‚
+     * @param tagName ç»„å»ºçš„æ ‡ç­¾åã€‚
+     * @param componentBeanType ç»„å»ºclassç±»å‹ã€‚
      */
     public void addComponentType(String tagName, Class<?> componentBeanType) {
         this.componentTypeMap.put(tagName, componentBeanType);
         this.componentSet.add(tagName);
     }
     /**
-     * Ìí¼ÓÒ»Ìõ×é½¨µÄ×¢²á¡£
-     * @param tagName ×é½¨µÄ±êÇ©Ãû¡£
-     * @param componentBeanObject ×é½¨¶ÔÏó¡£
+     * æ·»åŠ ä¸€æ¡ç»„å»ºçš„æ³¨å†Œã€‚
+     * @param tagName ç»„å»ºçš„æ ‡ç­¾åã€‚
+     * @param componentBeanObject ç»„å»ºå¯¹è±¡ã€‚
      */
     public void addComponentObject(String tagName, UIComponent componentBeanObject) {
         this.componentObjectMap.put(tagName, componentBeanObject);
         this.componentSet.add(tagName);
     }
-    /**»ñÈ¡ÒÑ¾­×¢²áµÄ×é½¨Ãû*/
+    /**è·å–å·²ç»æ³¨å†Œçš„ç»„å»ºå*/
     public Set<String> getComponentSet() {
         return Collections.unmodifiableSet(this.componentSet);
     }
-    /**¸ù¾İ×é½¨µÄ±êÇ©Ãû»ñÈ¡×é½¨*/
+    /**æ ¹æ®ç»„å»ºçš„æ ‡ç­¾åè·å–ç»„å»º*/
     public UIComponent getComponent(String tagName) {
         if (componentObjectMap.containsKey(tagName) == true)
             return componentObjectMap.get(tagName);
@@ -93,7 +93,7 @@ public abstract class FacesContext {
             return null;
         return this.getBeanContext().getBean(componentBeanType);
     }
-    /**»ñÈ¡ÊôĞÔ¼¯ºÏ¡£*/
+    /**è·å–å±æ€§é›†åˆã€‚*/
     public Map<String, Object> getAttribute() {
         if (this.att == null)
             this.att = new HashMap<String, Object>();
@@ -119,28 +119,28 @@ public abstract class FacesContext {
         return this.cfg;
     }
     public void processTemplateString(String templateString, Writer writer, Map<String, Object> rootMap) throws TemplateException, IOException {
-        //A.È¡µÃÖ¸ÎÆ
+        //A.å–å¾—æŒ‡çº¹
         String hashStr = null;
         try {
-            /*Ê¹ÓÃMD5¼ÓÃÜ*/
+            /*ä½¿ç”¨MD5åŠ å¯†*/
             hashStr = CommonCodeUtils.MD5.getMD5(templateString);
         } catch (NoSuchAlgorithmException e) {
-            /*Ê¹ÓÃhashCode*/
+            /*ä½¿ç”¨hashCode*/
             hashStr = String.valueOf(templateString.hashCode());
         }
         hashStr += ".temp";
-        //B.½«ÄÚÈİ¼ÓÈëµ½Ä£°å¼ÓÔØÆ÷ÖĞ¡£
+        //B.å°†å†…å®¹åŠ å…¥åˆ°æ¨¡æ¿åŠ è½½å™¨ä¸­ã€‚
         this.configTemplateLoader.addTemplateAsString(hashStr, templateString);
-        //C.Ö´ĞĞÖ¸ÎÆÄ£°å
+        //C.æ‰§è¡ŒæŒ‡çº¹æ¨¡æ¿
         this.getFreemarker().getTemplate(hashStr).process(rootMap, writer);
     }
-    /**Ö´ĞĞÄ£°åÎÄ¼ş¡£*/
+    /**æ‰§è¡Œæ¨¡æ¿æ–‡ä»¶ã€‚*/
     public void processTemplateResource(String templateResource, Writer writer, Map<String, Object> rootMap) throws TemplateException, IOException {
         this.getFreemarker().getTemplate(templateResource).process(rootMap, writer);
     };
     /*----------------------------------------------------------------*/
-    /**»ñÈ¡Bean¹ÜÀíÆ÷¡£*/
+    /**è·å–Beanç®¡ç†å™¨ã€‚*/
     public abstract BeanManager getBeanContext();
-    /**»ñÈ¡freemarkerµÄÅäÖÃ¶ÔÏó¡£*/
+    /**è·å–freemarkerçš„é…ç½®å¯¹è±¡ã€‚*/
     public abstract Configuration createFreemarker();
 }

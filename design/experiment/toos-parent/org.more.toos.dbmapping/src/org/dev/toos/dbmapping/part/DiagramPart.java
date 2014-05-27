@@ -15,7 +15,7 @@ import org.eclipse.gef.LayerConstants;
 /**
  * 
  * @version : 2013-3-5
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DiagramPart extends AbstractDBMappingGraphicalEditPart {
     @Override
@@ -32,7 +32,7 @@ public class DiagramPart extends AbstractDBMappingGraphicalEditPart {
     protected List getModelChildren() {
         return ((Diagram) this.getModel()).getElements();
     }
-    /**ÊôĞÔ±ä¸ü¸üĞÂÄ£ĞÍ*/
+    /**å±æ€§å˜æ›´æ›´æ–°æ¨¡å‹*/
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
         if (Diagram.Prop_Element.equals(prop))
@@ -40,7 +40,7 @@ public class DiagramPart extends AbstractDBMappingGraphicalEditPart {
     }
     @Override
     protected void createEditPolicies() {
-        /*ÉÏÃæÑ¡ÓÃµÄÊÇXY×ÔÓÉ²¼¾Ö¹ÜÀíÆ÷£¬ÄÇÃ´ÕâÀïÔÚÉèÖÃ²¼¾ÖÊÂ¼ş½ÓÊÕ¶ÔÏóÊ±¾ÍÒªÊ¹ÓÃXYLayoutEditPolicy*/
+        /*ä¸Šé¢é€‰ç”¨çš„æ˜¯XYè‡ªç”±å¸ƒå±€ç®¡ç†å™¨ï¼Œé‚£ä¹ˆè¿™é‡Œåœ¨è®¾ç½®å¸ƒå±€äº‹ä»¶æ¥æ”¶å¯¹è±¡æ—¶å°±è¦ä½¿ç”¨XYLayoutEditPolicy*/
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new DiagramXYLayoutEditPolicy());
     }
 }

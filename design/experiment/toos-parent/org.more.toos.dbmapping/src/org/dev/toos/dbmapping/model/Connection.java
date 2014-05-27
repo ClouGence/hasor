@@ -1,9 +1,9 @@
 package org.dev.toos.dbmapping.model;
 import org.eclipse.draw2d.Graphics;
 /**
- * ´ú±í½ÚºÍ½ÚµãÖ®¼äµÄÁ¬½Ó
+ * ä»£è¡¨èŠ‚å’ŒèŠ‚ç‚¹ä¹‹é—´çš„è¿æ¥
  * @version : 2013-3-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Connection extends AbstractModel {
     private static final long   serialVersionUID  = 5517578085071368020L;
@@ -27,7 +27,7 @@ public class Connection extends AbstractModel {
     }
     //
     //
-    /**ÖØ¶¨ÏòÁ¬½ÓµÄÊä³ö¶Ëµã¡£*/
+    /**é‡å®šå‘è¿æ¥çš„è¾“å‡ºç«¯ç‚¹ã€‚*/
     public void reConnectOutput(Element newSource) {
         this.firePropertyChange(Prop_reOutput, this.source, newSource);
         this.source = newSource;
@@ -35,7 +35,7 @@ public class Connection extends AbstractModel {
         this.connect();
         this.source.fireStructureChange(Element.Prop_OutputConnection, this);
     }
-    /**ÖØ¶¨ÏòÁ¬½ÓµÄÊäÈë¶Ëµã¡£*/
+    /**é‡å®šå‘è¿æ¥çš„è¾“å…¥ç«¯ç‚¹ã€‚*/
     public void reConnectInput(Element newTarget) {
         this.firePropertyChange(Prop_reInput, this.target, newTarget);
         this.target = newTarget;
@@ -43,14 +43,14 @@ public class Connection extends AbstractModel {
         this.connect();
         this.target.fireStructureChange(Element.Prop_InputConnection, this);
     }
-    /**Ö´ĞĞÁ¬½Ó£¬½«Á¬½ÓÏßÁ¬½Óµ½Á½¸öElementÉÏ¡£*/
+    /**æ‰§è¡Œè¿æ¥ï¼Œå°†è¿æ¥çº¿è¿æ¥åˆ°ä¸¤ä¸ªElementä¸Šã€‚*/
     public void connect() {
         this.source.addOutput(this);
         this.target.addInput(this);
         this.source.fireStructureChange(Element.Prop_OutputConnection, this);
         this.target.fireStructureChange(Element.Prop_InputConnection, this);
     }
-    /**¶Ï¿ªÕâ¸öÁ¬½Ó*/
+    /**æ–­å¼€è¿™ä¸ªè¿æ¥*/
     public void disconnect() {
         this.source.removeOutput(this);
         this.target.removeInput(this);

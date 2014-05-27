@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 /**
- * Ê¹ÓÃOutputStreamÊä³öWriterµÄ¹¤¾ßÀà
+ * ä½¿ç”¨OutputStreamè¾“å‡ºWriterçš„å·¥å…·ç±»
  * @version 2009-5-13
- * @author ÍøÂçÊÕ¼¯
+ * @author ç½‘ç»œæ”¶é›†
  */
 public class WriterOutputStream extends OutputStream {
     private Writer writer   = null;
@@ -28,17 +28,17 @@ public class WriterOutputStream extends OutputStream {
     private byte[] buf      = new byte[1];
     //========================================================================================
     /**
-     * ´øWriterºÍ×Ö·û±àÂë¸ñÊ½²ÎÊıµÄ¹¹Ôìº¯Êı
-     * @param writer   - OutputStreamÊ¹ÓÃµÄReader
-     * @param encoding - OutputStreamÊ¹ÓÃµÄ×Ö·û±àÂë¸ñÊ½¡£
+     * å¸¦Writerå’Œå­—ç¬¦ç¼–ç æ ¼å¼å‚æ•°çš„æ„é€ å‡½æ•°
+     * @param writer   - OutputStreamä½¿ç”¨çš„Reader
+     * @param encoding - OutputStreamä½¿ç”¨çš„å­—ç¬¦ç¼–ç æ ¼å¼ã€‚
      */
     public WriterOutputStream(Writer writer, String encoding) {
         this.writer = writer;
         this.encoding = encoding;
     }
     /**
-     * ´øWriter²ÎÊı¹¹Ôìº¯Êı
-     * @param writer - OutputStreamÊ¹ÓÃµÄWriter
+     * å¸¦Writerå‚æ•°æ„é€ å‡½æ•°
+     * @param writer - OutputStreamä½¿ç”¨çš„Writer
      */
     public WriterOutputStream(Writer writer) {
         this.writer = writer;

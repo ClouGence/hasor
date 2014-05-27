@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ import net.hasor.core.binder.matcher.AopMatchers;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.more.util.StringUtils;
 /**
- * ±ê×¼µÄ {@link ApiBinder} ½Ó¿ÚÊµÏÖ£¬Hasor ÔÚ³õÊ¼»¯Ä£¿éÊ±»áÎªÃ¿¸öÄ£¿é¶ÀÁ¢·ÖÅäÒ»¸ö ApiBinder ½Ó¿ÚÊµÀı¡£
- * <p>³éÏó·½·¨ {@link #configModule()} ,»á·µ»ØÒ»¸ö½Ó¿Ú( {@link net.hasor.core.ApiBinder.ModuleSettings ModuleSettings} )
- * ÓÃÓÚÅäÖÃµ±Ç°Ä£¿éÒÀÀµÇé¿ö¡£
- * <p><b><i>ÌáÊ¾£º</i></b>Ä£¿é´úÀíÀà {@link net.hasor.core.module.ModuleProxy} ¿ÉÒÔÎª {@link #configModule()} ·½·¨Ìá¹©Ö§³Ö¡£
+ * æ ‡å‡†çš„ {@link ApiBinder} æ¥å£å®ç°ï¼ŒHasor åœ¨åˆå§‹åŒ–æ¨¡å—æ—¶ä¼šä¸ºæ¯ä¸ªæ¨¡å—ç‹¬ç«‹åˆ†é…ä¸€ä¸ª ApiBinder æ¥å£å®ä¾‹ã€‚
+ * <p>æŠ½è±¡æ–¹æ³• {@link #configModule()} ,ä¼šè¿”å›ä¸€ä¸ªæ¥å£( {@link net.hasor.core.ApiBinder.ModuleSettings ModuleSettings} )
+ * ç”¨äºé…ç½®å½“å‰æ¨¡å—ä¾èµ–æƒ…å†µã€‚
+ * <p><b><i>æç¤ºï¼š</i></b>æ¨¡å—ä»£ç†ç±» {@link net.hasor.core.module.ModuleProxy} å¯ä»¥ä¸º {@link #configModule()} æ–¹æ³•æä¾›æ”¯æŒã€‚
  * @see net.hasor.core.module.ModuleProxy
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
     private Environment environment = null;
@@ -85,10 +85,10 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
-    /**×¢²áÒ»¸öÀàĞÍ*/
+    /**æ³¨å†Œä¸€ä¸ªç±»å‹*/
     protected abstract <T> TypeRegister<T> registerType(Class<T> type);
     public <T> NamedBindingBuilder<T> bindingType(Class<T> type) {
-        /*ÔÚÈİÆ÷ÉÏ×¢²áÒ»¸öÀàĞÍ*/
+        /*åœ¨å®¹å™¨ä¸Šæ³¨å†Œä¸€ä¸ªç±»å‹*/
         TypeRegister<T> typeRegister = this.registerType(type);
         return new NamedBindingBuilderImpl<T>(typeRegister);
     }
@@ -122,7 +122,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public BeanBindingBuilder defineBean(String beanName) {
         return new BeanBindingBuilderImpl().aliasName(beanName);
     }
-    /** BeanBindingBuilder½Ó¿ÚÊµÏÖ */
+    /** BeanBindingBuilderæ¥å£å®ç° */
     private class BeanBindingBuilderImpl implements BeanBindingBuilder {
         private ArrayList<String>   names    = new ArrayList<String>();
         private Map<String, Object> property = new HashMap<String, Object>();
@@ -138,20 +138,20 @@ public abstract class AbstractBinder implements ApiBinder {
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
             if (this.names.isEmpty() == true)
                 throw new UnsupportedOperationException("the bean name is undefined!");
-            /*½«BeanÀàĞÍ×¢²áµ½HasorÉÏ£¬²¢ÇÒ¸½ÉÏËæ»úID,ÓÃÓÚºÍBeanInfo°ó¶¨¡£*/
+            /*å°†Beanç±»å‹æ³¨å†Œåˆ°Hasorä¸Šï¼Œå¹¶ä¸”é™„ä¸ŠéšæœºID,ç”¨äºå’ŒBeanInfoç»‘å®šã€‚*/
             String referID = beanType.getName() + "#" + String.valueOf(referIndex());
             LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
             //
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
             BeanInfoData beanInfo = new BeanInfoData(aliasNames, referID, beanType, this.property);
-            /*½«Ãû×ÖºÍBeanInfo°óµ½Ò»Æğ*/
+            /*å°†åå­—å’ŒBeanInfoç»‘åˆ°ä¸€èµ·*/
             for (String nameItem : this.names) {
                 bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
             }
             return returnData;
         }
     }
-    /** NamedBindingBuilder½Ó¿ÚÊµÏÖ */
+    /** NamedBindingBuilderæ¥å£å®ç° */
     private class NamedBindingBuilderImpl<T> implements NamedBindingBuilder<T> {
         private TypeRegister<T> typeRegister;
         public NamedBindingBuilderImpl(TypeRegister<T> typeRegister) {
@@ -200,6 +200,6 @@ public abstract class AbstractBinder implements ApiBinder {
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
         AopMatcherRegisterData ard = new AopMatcherRegisterData(matcherClass, matcherMethod, interceptor);
         String referID = AopMatcherRegister.class.getName() + "#" + String.valueOf(referIndex());
-        this.bindingType(AopMatcherRegister.class).nameWith(referID).toInstance(ard).metaData(AopConst.AopAssembly, true);/*±êÉÏÒ»¸öÊôĞÔ*/
+        this.bindingType(AopMatcherRegister.class).nameWith(referID).toInstance(ard).metaData(AopConst.AopAssembly, true);/*æ ‡ä¸Šä¸€ä¸ªå±æ€§*/
     }
 }

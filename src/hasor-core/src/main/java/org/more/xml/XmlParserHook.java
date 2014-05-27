@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.more.xml;
 /**
- * ¸Ã½Ó¿ÚÊÇÒ»¸ö±ê¼Ç½Ó¿Ú£¬Level 3¼¶±ğÖĞÓÃÓÚ´¦ÀíxmlµÄhook½Ó¿ÚÈ«²¿ÊµÏÖÁË¸Ã½Ó¿Ú¡£
+ * è¯¥æ¥å£æ˜¯ä¸€ä¸ªæ ‡è®°æ¥å£ï¼ŒLevel 3çº§åˆ«ä¸­ç”¨äºå¤„ç†xmlçš„hookæ¥å£å…¨éƒ¨å®ç°äº†è¯¥æ¥å£ã€‚
  * @version 2010-9-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlParserHook {}

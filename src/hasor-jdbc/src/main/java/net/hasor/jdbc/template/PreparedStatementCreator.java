@@ -18,13 +18,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
- * ¸Ã½Ó¿ÚÓÃÓÚ´´½¨ PreparedStatement ¶ÔÏó¡£
+ * è¯¥æ¥å£ç”¨äºåˆ›å»º PreparedStatement å¯¹è±¡ã€‚
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface PreparedStatementCreator {
-    /**Ê¹ÓÃ²ÎÊı´«½øÀ´µÄÁ¬½Ó´´½¨ PreparedStatement ¶ÔÏó¡£ */
+    /**ä½¿ç”¨å‚æ•°ä¼ è¿›æ¥çš„è¿æ¥åˆ›å»º PreparedStatement å¯¹è±¡ã€‚ */
     public PreparedStatement createPreparedStatement(Connection con) throws SQLException;
 }

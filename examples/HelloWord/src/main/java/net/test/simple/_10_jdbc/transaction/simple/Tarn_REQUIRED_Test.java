@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import net.hasor.jdbc.transaction.support.DefaultTransactionManager;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /**
- * PROPAGATION_REQUIRED£º¼ÓÈëÒÑÓĞµÄÊÂÎñ
+ * PROPAGATION_REQUIREDï¼šåŠ å…¥å·²æœ‰çš„äº‹åŠ¡
  * @version : 2013-12-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class Tarn_REQUIRED_Test extends AbstractJDBCTest {
-    /*Ìõ¼ş£º»·¾³ÖĞÃ»ÓĞÊÂÎñ¡£*/
+    /*æ¡ä»¶ï¼šç¯å¢ƒä¸­æ²¡æœ‰äº‹åŠ¡ã€‚*/
     @Test
     public void noTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();
@@ -40,26 +40,26 @@ public class Tarn_REQUIRED_Test extends AbstractJDBCTest {
         {
             //begin
             TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_REQUIRED);
-            jdbc.execute("insert into TB_User values('deb4f4c8','°²Äİ.TD.Óê¹û','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//Ö´ĞĞ²åÈëÓï¾ä
+            jdbc.execute("insert into TB_User values('deb4f4c8','å®‰å¦®.TD.é›¨æœ','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//æ‰§è¡Œæ’å…¥è¯­å¥
             System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
             //commit
-            //status.setReadOnly();//ÕâÊÇÕâ¸öÊÂÎñÎªÖ»¶ÁÊÂÎñ£¨ËùÓĞµİ½»²Ù×÷»á±»»Ø¹ö£©
+            //status.setReadOnly();//è¿™æ˜¯è¿™ä¸ªäº‹åŠ¡ä¸ºåªè¯»äº‹åŠ¡ï¼ˆæ‰€æœ‰é€’äº¤æ“ä½œä¼šè¢«å›æ»šï¼‰
             tm.commit(status);
         }
         System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
     }
-    /*Ìõ¼ş£º»·¾³ÖĞ´æÔÚÊÂÎñ¡£*/
+    /*æ¡ä»¶ï¼šç¯å¢ƒä¸­å­˜åœ¨äº‹åŠ¡ã€‚*/
     @Test
     public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();
         TransactionManager tm = new DefaultTransactionManager(jdbc.getDataSource());
-        //1.»ñÈ¡Á¬½Ó²¢´´½¨ÊÂÎñ
+        //1.è·å–è¿æ¥å¹¶åˆ›å»ºäº‹åŠ¡
         Connection con = DataSourceUtils.getConnection(jdbc.getDataSource());
         con.setAutoCommit(false);
         {
             //begin
             TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_REQUIRED);
-            jdbc.execute("insert into TB_User values('deb4f4c8','°²Äİ.TD.Óê¹û','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//Ö´ĞĞ²åÈëÓï¾ä
+            jdbc.execute("insert into TB_User values('deb4f4c8','å®‰å¦®.TD.é›¨æœ','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//æ‰§è¡Œæ’å…¥è¯­å¥
             System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
             //commit
             tm.commit(status);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,10 @@ import freemarker.template.TemplateModelException;
 /**
  * 
  * @version : 2012-6-27
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 class FactoryBuild {
-    private ClassUtils   classUtil    = null; //É¨ÃèµÄÀà°üÂ·¾¶
+    private ClassUtils   classUtil    = null; //æ‰«æçš„ç±»åŒ…è·¯å¾„
     private WebUIFactory webUIFactory = null;
     public FactoryBuild(WebUIFactory webUIFactory) {
         this.webUIFactory = webUIFactory;
@@ -45,7 +45,7 @@ class FactoryBuild {
         String[] scanPackages = scanPackageStr.split(",");
         this.classUtil = ClassUtils.newInstance(scanPackages);
     }
-    /**Éú³É{@link FacesContext} */
+    /**ç”Ÿæˆ{@link FacesContext} */
     public FacesContext buildFacesContext(FacesConfig config) throws TemplateModelException {
         this.setup(config);
         FacesContext fc = this.webUIFactory.createFacesContext(config);
@@ -53,31 +53,31 @@ class FactoryBuild {
         kit.initKit(fc);
         fc.addRenderKit("default", kit);
         Set<Class<?>> classSet = null;
-        //A.É¨Ãè×¢½âÌí¼Ó×é½¨¡£
+        //A.æ‰«ææ³¨è§£æ·»åŠ ç»„å»ºã€‚
         classSet = classUtil.getClassSet(UICom.class);
         for (Class<?> type : classSet) {
             UICom uicom = type.getAnnotation(UICom.class);
             if (UIComponent.class.isAssignableFrom(type) == false)
                 throw new ClassCastException(type + " to UIComponent");
             else {
-                /*Ìí¼Ó×é½¨*/
+                /*æ·»åŠ ç»„å»º*/
                 fc.addComponentType(uicom.tagName(), type);
-                /*Îª×é½¨Ìí¼ÓÄ¬ÈÏ±êÇ©äÖÈ¾Æ÷£¬ÒòÎªÖ»ÓĞÓÃÓÚäÖÈ¾Æ÷µÄ×é½¨²Å»áÉúĞ§¡£*/
+                /*ä¸ºç»„å»ºæ·»åŠ é»˜è®¤æ ‡ç­¾æ¸²æŸ“å™¨ï¼Œå› ä¸ºåªæœ‰ç”¨äºæ¸²æŸ“å™¨çš„ç»„å»ºæ‰ä¼šç”Ÿæ•ˆã€‚*/
                 fc.getRenderKit("default").addRenderType(uicom.tagName(), uicom.renderType());
             }
         }
-        //C.ÏòÈ«¾ÖFreemarker·şÎñÖĞ×¢²á±êÇ©
+        //C.å‘å…¨å±€FreemarkeræœåŠ¡ä¸­æ³¨å†Œæ ‡ç­¾
         kit = fc.getRenderKit("default");
         for (Entry<String, Object> tagEntry : kit.getTags().entrySet())
             fc.getFreemarker().setSharedVariable(tagEntry.getKey(), tagEntry.getValue());
         return fc;
     }
-    /**Éú³É{@link Lifecycle}*/
+    /**ç”Ÿæˆ{@link Lifecycle}*/
     public Lifecycle buildLifestyle(FacesConfig config, FacesContext context) {
         this.setup(config);
-        /*´´½¨ÉúÃüÖÜÆÚ¶ÔÏó*/
+        /*åˆ›å»ºç”Ÿå‘½å‘¨æœŸå¯¹è±¡*/
         Lifecycle lifestyle = this.webUIFactory.createLifestyle(config, context);
-        /*Ìí¼ÓÉúÃüÖÜÆÚ¼àÌıÆ÷*/
+        /*æ·»åŠ ç”Ÿå‘½å‘¨æœŸç›‘å¬å™¨*/
         BeanManager beanManager = context.getBeanContext();
         Set<Class<?>> classSet = classUtil.getClassSet(UIPhaseListener.class);
         for (Class type : classSet)

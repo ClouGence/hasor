@@ -21,11 +21,11 @@ package org.dev.toos.constcode.data.db;
 ///**
 // * 
 // * @version : 2013-2-17
-// * @author ÕÔÓÀ´º (zyc@byshell.org)
+// * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
 // */
 //public class DBConstDao extends ConstDao {
 //    private DBSource xmlSource = null;
-//    /**Ã°ÏÕÖ±½ÓĞŞ¸ÄXmlSourceÊı¾İÔ´ÖĞµÄÊı¾İ»áÒı·¢ÓëDao²ã²»Í¬²½µÄÎÊÌâ¡£*/
+//    /**å†’é™©ç›´æ¥ä¿®æ”¹XmlSourceæ•°æ®æºä¸­çš„æ•°æ®ä¼šå¼•å‘ä¸Daoå±‚ä¸åŒæ­¥çš„é—®é¢˜ã€‚*/
 //    protected DBSource getXmlSource() {
 //        return xmlSource;
 //    }
@@ -39,7 +39,7 @@ package org.dev.toos.constcode.data.db;
 //    }
 //    //
 //    //
-//    //×°ÔØ¹ı³Ì......
+//    //è£…è½½è¿‡ç¨‹......
 //    private List<ConstBean>        constBeanList = new ArrayList<ConstBean>();
 //    private Map<String, ConstBean> constBeanMap  = new HashMap<String, ConstBean>();
 //    protected void initDao() throws IOException, JAXBException {
@@ -60,8 +60,8 @@ package org.dev.toos.constcode.data.db;
 //            constBean.setConstID(vt.getCode());
 //            constBean.setConstName(vt.getName());
 //            constBean.setConstCode(vt.getCode());
-//            constBean.setConstValueType(2);//Ê÷ĞÎ
-//            constBean.setConstGroupType(0);//²»·Ö»ú¹¹
+//            constBean.setConstValueType(2);//æ ‘å½¢
+//            constBean.setConstGroupType(0);//ä¸åˆ†æœºæ„
 //            constBean.setConstFlowID(flowID++);
 //            constBean.setConstPFlowID(0);
 //            constBean.setConstFlowPath(constBean.getConstFlowID() + "@");
@@ -86,7 +86,7 @@ package org.dev.toos.constcode.data.db;
 //        cvb.setVarCode(currentVar.getKey());
 //        cvb.setVarName(currentVar.getValue());
 //        cvb.setVarIndex(index++);
-//        cvb.setVarGroup(null);//ÎŞ»ú¹¹
+//        cvb.setVarGroup(null);//æ— æœºæ„
 //        cvb.setVarFlowID(flowID++);
 //        cvb.setVarPFlowID(pflowID);
 //        cvb.setVarFlowPath(pflowPath + cvb.getVarFlowID() + "@");
@@ -117,7 +117,7 @@ package org.dev.toos.constcode.data.db;
 //            this.constBeanList.remove(constBean);
 //            return true;
 //        } catch (Exception e) {
-//            Message.errorInfo("cant deleteConst ¡®" + constCode + "¡¯.", e);
+//            Message.errorInfo("cant deleteConst â€˜" + constCode + "â€™.", e);
 //            return false;
 //        }
 //    }
@@ -162,7 +162,7 @@ package org.dev.toos.constcode.data.db;
 //            this.constBeanList.add(constBean);
 //            return true;
 //        } catch (Exception e) {
-//            Message.errorInfo("cant addConst ¡®" + constCode + "¡¯.", e);
+//            Message.errorInfo("cant addConst â€˜" + constCode + "â€™.", e);
 //            return false;
 //        }
 //    }

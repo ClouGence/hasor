@@ -2,7 +2,7 @@ package org.dev.toos.constcode.metadata;
 /**
  * 
  * @version : 2012-2-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public abstract class ConstVarBean {
     private ConstBean    targetConst = null;

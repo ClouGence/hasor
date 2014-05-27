@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package org.more.classcode;
 /**
-* ¹ıÂËÆ÷Á´µÄµÚÒ»¸ö£¬¸ºÔğÔÚÉú³ÉµÄaopÀàÖĞµ÷ÓÃ¡£ÒÔ²úÉúaopÁ´µ÷ÓÃ¡£
+* è¿‡æ»¤å™¨é“¾çš„ç¬¬ä¸€ä¸ªï¼Œè´Ÿè´£åœ¨ç”Ÿæˆçš„aopç±»ä¸­è°ƒç”¨ã€‚ä»¥äº§ç”Ÿaopé“¾è°ƒç”¨ã€‚
  * @version 2009-10-30
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class AopFilterChain_Start {
-    private AopFilterChain         nextFilterChain      = null; //¹ıÂËÆ÷Á´µÄÏÂÒ»¸ö¹ıÂËÆ÷¡£
+    private AopFilterChain         nextFilterChain      = null; //è¿‡æ»¤å™¨é“¾çš„ä¸‹ä¸€ä¸ªè¿‡æ»¤å™¨ã€‚
     //
-    private AopBeforeListener[]    aopBeforeListener    = null; //beforeÇĞÃæÊÂ¼ş½ÓÊÜÕß¡£
-    private AopReturningListener[] aopReturningListener = null; //returningÇĞÃæÊÂ¼ş½ÓÊÜÕß¡£
-    private AopThrowingListener[]  aopThrowingListener  = null; //throwingÇĞÃæÊÂ¼ş½ÓÊÜÕß¡£
+    private AopBeforeListener[]    aopBeforeListener    = null; //beforeåˆ‡é¢äº‹ä»¶æ¥å—è€…ã€‚
+    private AopReturningListener[] aopReturningListener = null; //returningåˆ‡é¢äº‹ä»¶æ¥å—è€…ã€‚
+    private AopThrowingListener[]  aopThrowingListener  = null; //throwingåˆ‡é¢äº‹ä»¶æ¥å—è€…ã€‚
     /***/
     AopFilterChain_Start(AopFilterChain nextFilterChain, AopBeforeListener[] aopBeforeListener, AopReturningListener[] aopReturningListener, AopThrowingListener[] aopThrowingListener) {
         this.nextFilterChain = nextFilterChain;
@@ -34,28 +34,28 @@ public class AopFilterChain_Start {
     }
     public Object doInvokeFilter(Object target, Method method, Object[] args) {
         try {
-            //1.ÏÂÒ»»·½Ú¼ì²â£¬³ı·Ç·¢ÉúÄÚ²¿´íÎó·ñÔò²»»á³öÏÖ»·½Ú¶ªÊ§¡£
+            //1.ä¸‹ä¸€ç¯èŠ‚æ£€æµ‹ï¼Œé™¤éå‘ç”Ÿå†…éƒ¨é”™è¯¯å¦åˆ™ä¸ä¼šå‡ºç°ç¯èŠ‚ä¸¢å¤±ã€‚
             if (this.nextFilterChain == null)
-                throw new LostException("¶ªÊ§AopÁ´µÚÒ»»·½Ú¡£");
-            //2.Í¨ÖªbeforeÇĞÃæ¡£
+                throw new LostException("ä¸¢å¤±Aopé“¾ç¬¬ä¸€ç¯èŠ‚ã€‚");
+            //2.é€šçŸ¥beforeåˆ‡é¢ã€‚
             if (this.aopBeforeListener != null)
                 for (int i = 0; i < this.aopBeforeListener.length; i++)
                     this.aopBeforeListener[i].beforeInvoke(target, method, args);
-            //3.Ö´ĞĞµ÷ÓÃ¡£
+            //3.æ‰§è¡Œè°ƒç”¨ã€‚
             Object result = this.nextFilterChain.doInvokeFilter(target, method, args);
-            //4.Í¨ÖªreturningÇĞÃæ¡£
+            //4.é€šçŸ¥returningåˆ‡é¢ã€‚
             if (this.aopReturningListener != null)
                 for (int i = 0; i < this.aopReturningListener.length; i++)
                     this.aopReturningListener[i].returningInvoke(target, method, args, result);
-            //5.·µ»Ø½á¹û¡£
+            //5.è¿”å›ç»“æœã€‚
             return result;
         } catch (Throwable e) {
-            //6.Í¨ÖªthrowingÇĞÃæ¡£
+            //6.é€šçŸ¥throwingåˆ‡é¢ã€‚
             Throwable throwObj = e;
             if (this.aopThrowingListener != null)
                 for (int i = 0; i < this.aopThrowingListener.length; i++)
                     throwObj = this.aopThrowingListener[i].throwsException(target, method, args, throwObj);
-            //7.Èç¹ûÅ×³öµÄÒì³£ÊôÓÚRuntimeExceptionÄÇÃ´Ö±½Ó×ªÀàĞÍÅ×³ö¡£
+            //7.å¦‚æœæŠ›å‡ºçš„å¼‚å¸¸å±äºRuntimeExceptioné‚£ä¹ˆç›´æ¥è½¬ç±»å‹æŠ›å‡ºã€‚
             if (e instanceof RuntimeException == true)
                 throw (RuntimeException) throwObj;
             else

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,18 @@ import org.more.webui.event.Event;
 import org.more.webui.event.EventListener;
 import org.more.webui.render.form.FormRender;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£º±íµ¥×é½¨¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºOnSubmit
- * <br><b>äÖÈ¾Æ÷</b>£º{@link FormRender}
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šè¡¨å•ç»„å»ºã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šOnSubmit
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link FormRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UIForm extends UIComponent {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**±íµ¥µÄµİ½»µØÖ·£¨RW£©*/
+        /**è¡¨å•çš„é€’äº¤åœ°å€ï¼ˆRWï¼‰*/
         submitAction,
-        /**Action¶¯×÷£¬Èç¹ûÅäÖÃÁËsubmitActionÊôĞÔÔò¸ÃÊôĞÔ»áÊ§Ğ§¡££¨-£©*/
+        /**ActionåŠ¨ä½œï¼Œå¦‚æœé…ç½®äº†submitActionå±æ€§åˆ™è¯¥å±æ€§ä¼šå¤±æ•ˆã€‚ï¼ˆ-ï¼‰*/
         submitEL,
     }
     protected void initUIComponent(ViewContext viewContext) {
@@ -45,12 +45,12 @@ public abstract class UIForm extends UIComponent {
         this.setPropertyMetaValue(Propertys.submitEL.name(), null);
         this.addEventListener(AjaxForm_Event_OnSubmit.SubmitEvent, new AjaxForm_Event_OnSubmit());
     }
-    /**»ñÈ¡form EL×Ö·û´®*/
+    /**è·å–form ELå­—ç¬¦ä¸²*/
     @NoState
     public String getSubmitEL() {
         return this.getProperty(Propertys.submitEL.name()).valueTo(String.class);
     }
-    /**ÉèÖÃform EL×Ö·û´®*/
+    /**è®¾ç½®form ELå­—ç¬¦ä¸²*/
     @NoState
     public void setSubmitEL(String submitEL) {
         this.getProperty(Propertys.submitEL.name()).value(submitEL);
@@ -61,7 +61,7 @@ public abstract class UIForm extends UIComponent {
             return new MethodExpression(actionString);
         return null;
     }
-    /**±íµ¥ÖĞµÄÊı¾İ*/
+    /**è¡¨å•ä¸­çš„æ•°æ®*/
     public Map<String, Object> getFormData() {
         Map<String, UIInput> comDataMap = this.getFormDataAsCom();
         Map<String, Object> formData = new HashMap<String, Object>();
@@ -69,7 +69,7 @@ public abstract class UIForm extends UIComponent {
             formData.put(ent.getKey(), ent.getValue().getValue());
         return formData;
     }
-    /**±íµ¥ÖĞµÄÊı¾İ×é½¨¶ÔÏó*/
+    /**è¡¨å•ä¸­çš„æ•°æ®ç»„å»ºå¯¹è±¡*/
     public Map<String, UIInput> getFormDataAsCom() {
         Map<String, UIInput> comDataMap = new HashMap<String, UIInput>();
         for (UIComponent com : this.getChildren())
@@ -81,7 +81,7 @@ public abstract class UIForm extends UIComponent {
         return comDataMap;
     }
 }
-/**¸ºÔğ´¦ÀíOnSubmitÊÂ¼şµÄELµ÷ÓÃ*/
+/**è´Ÿè´£å¤„ç†OnSubmitäº‹ä»¶çš„ELè°ƒç”¨*/
 class AjaxForm_Event_OnSubmit implements EventListener {
     public static Event SubmitEvent = Event.getEvent("OnSubmit");
     public void onEvent(Event event, UIComponent component, ViewContext viewContext) throws Throwable {

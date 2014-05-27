@@ -20,7 +20,7 @@ import org.eclipse.ui.IFileEditorInput;
 /**
  * 
  * @version : 2013-3-5
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DBMappingEditer extends GraphicalEditorWithPalette {
     private PaletteRoot paletteRoot = null;
@@ -28,7 +28,7 @@ public class DBMappingEditer extends GraphicalEditorWithPalette {
     //
     //
     public DBMappingEditer() {
-        /*DefaultEditDomain¸ÃÀàÓÃÓÚ¹ÜÀíÃüÁîÕ»*/
+        /*DefaultEditDomainè¯¥ç±»ç”¨äºç®¡ç†å‘½ä»¤æ ˆ*/
         setEditDomain(new DefaultEditDomain(this));
     }
     private Diagram getModel() {
@@ -37,29 +37,29 @@ public class DBMappingEditer extends GraphicalEditorWithPalette {
     @Override
     protected PaletteRoot getPaletteRoot() {
         if (paletteRoot == null)
-            /*»æÍ¼°å¹¤¾ßÀ¸*/
+            /*ç»˜å›¾æ¿å·¥å…·æ */
             this.paletteRoot = PaletteFactory.createToolBars();
         return this.paletteRoot;
     }
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
         GraphicalViewer viewer = getGraphicalViewer();
-        /*´´½¨¸÷ÖÖPartµÄ¹¤³§Àà¡£*/
+        /*åˆ›å»ºå„ç§Partçš„å·¥å‚ç±»ã€‚*/
         viewer.setEditPartFactory(new PartFactory());
-        /*ÉèÖÃRootEditPart£¬Í¨¹ıÀ©Õ¹RootEditPart¿ÉÒÔÊµÏÖÌí¼Ó¸÷ÖÖ²ã¡£*/
+        /*è®¾ç½®RootEditPartï¼Œé€šè¿‡æ‰©å±•RootEditPartå¯ä»¥å®ç°æ·»åŠ å„ç§å±‚ã€‚*/
         viewer.setRootEditPart(new ScalableFreeformRootEditPart());
         /**/
         //viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
-        //ÅäÖÃÊÓÍ¼ÉÏµÄ²Ëµ¥
+        //é…ç½®è§†å›¾ä¸Šçš„èœå•
         //        ContextMenuProvider cmProvider = new EditorContextMenuProvider(viewer, getActionRegistry());
         //        viewer.setContextMenu(cmProvider);
         //        getSite().registerContextMenu(cmProvider, viewer);
     }
     @Override
     protected void initializeGraphicalViewer() {
-        /**ÉèÖÃ*/
+        /**è®¾ç½®*/
         getGraphicalViewer().setContents(this.getModel());
-        /**ÉèÖÃÍÏ¶¯¼àÌıÆ÷£¬¿ÉÒÔÊµÏÖÍÏ¶¯Ğ§¹û*/
+        /**è®¾ç½®æ‹–åŠ¨ç›‘å¬å™¨ï¼Œå¯ä»¥å®ç°æ‹–åŠ¨æ•ˆæœ*/
         //        getGraphicalViewer().addDropTargetListener(new DiagramTemplateTransferDropTargetListener(getGraphicalViewer()));
     }
     @Override

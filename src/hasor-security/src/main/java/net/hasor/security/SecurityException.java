@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package net.hasor.security;
 import org.more.util.exception.NestableRuntimeException;
 /**
- * »®œﬁœµÕ≥“Ï≥£°£
+ * ÊùÉÈôêÁ≥ªÁªüÂºÇÂ∏∏„ÄÇ
  * @version : 2013-4-17
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class SecurityException extends NestableRuntimeException {
     private static final long serialVersionUID = 2366386850634621969L;

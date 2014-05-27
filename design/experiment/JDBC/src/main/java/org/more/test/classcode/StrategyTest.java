@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.more.classcode.objects.DefaultMethodDelegate;
 /**
  *
  * @version 2010-8-25
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class StrategyTest {
     private ClassEngine getClassEngine() throws ClassNotFoundException {
@@ -85,7 +85,7 @@ public class StrategyTest {
 /**
  *
  * @version 2010-8-25
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class Test_ClassNameStrategy implements ClassNameStrategy {
     private String simpleNS = "org.mypackage.test_";
@@ -97,23 +97,23 @@ class Test_ClassNameStrategy implements ClassNameStrategy {
 /**
  *
  * @version 2010-8-25
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class Test_PropertyStrategy implements PropertyStrategy {
     public boolean isReadOnly(String name, Class<?> type, boolean isDelegate) {
-        return true;//ËùÓĞÊôĞÔ¾ùÖ»¶Á
+        return true;//æ‰€æœ‰å±æ€§å‡åªè¯»
     }
     public boolean isWriteOnly(String name, Class<?> type, boolean isDelegate) {
         return false;
     }
     public boolean isIgnore(String name, Class<?> type, boolean isDelegate) {
-        return name.equals("intValue");//ºöÂÔintValueÊôĞÔ
+        return name.equals("intValue");//å¿½ç•¥intValueå±æ€§
     }
     public void initStrategy(ClassEngine classEngine) {}
 }
 class Test_DelegateStrategy implements DelegateStrategy {
     public boolean isIgnore(Class<?> delegateType) {
-        return Map.class == delegateType;//ºöÂÔMap½Ó¿ÚÊµÏÖ¡£
+        return Map.class == delegateType;//å¿½ç•¥Mapæ¥å£å®ç°ã€‚
     }
     public void initStrategy(ClassEngine classEngine) {}
 }

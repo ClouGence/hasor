@@ -16,11 +16,11 @@
 package net.hasor.jdbc.datasource;
 import java.sql.Connection;
 /**
- * Connection Á¬½Ó´úÀí¡£
+ * Connection è¿æ¥ä»£ç†ã€‚
  * @version : 2013-12-3
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface ConnectionProxy extends Connection {
     /**

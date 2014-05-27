@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,44 +24,44 @@ import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
 /**
- *¸ÃÀàµÄ×÷ÓÃÊÇÔÚÉú³ÉµÄÀàÖĞ¼ÓÈëaopµÄÖ§³Ö¡£
+ *è¯¥ç±»çš„ä½œç”¨æ˜¯åœ¨ç”Ÿæˆçš„ç±»ä¸­åŠ å…¥aopçš„æ”¯æŒã€‚
  * @version 2010-9-2
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class AopClassAdapter extends ClassVisitor implements Opcodes {
     private ClassBuilder        classBuilder        = null;
     private String              asmClassName        = null;
     //
-    /**Éú³ÉµÄAop·½·¨Ç°×º*/
+    /**ç”Ÿæˆçš„Aopæ–¹æ³•å‰ç¼€*/
     public final static String  AopMethodPrefix     = "$aopFun";
-    /**Éú³ÉµÄ×Ö¶ÎÃû*/
+    /**ç”Ÿæˆçš„å­—æ®µå*/
     public final static String  AopMethodArrayName  = "$aopMethods";
     private final static String AopMethodType       = EngineToos.toAsmType(org.more.classcode.Method.class);
     private final static String AopMethodArrayType  = EngineToos.toAsmType(org.more.classcode.Method[].class);
-    /**Éú³ÉµÄ×Ö¶ÎÃû*/
+    /**ç”Ÿæˆçš„å­—æ®µå*/
     public final static String  AopFilterChainName  = "$aopFilterChain";
-    /**¾ßÓĞaopÌØĞÔµÄ·½·¨ÌØ¶¨ÃèÊö*/
+    /**å…·æœ‰aopç‰¹æ€§çš„æ–¹æ³•ç‰¹å®šæè¿°*/
     private ArrayList<String>   renderAopMethodList = new ArrayList<String>();
     //==================================================================================Constructor
     public AopClassAdapter(ClassVisitor visitor, ClassBuilder classBuilder) {
         super(ASM4, visitor);
         this.classBuilder = classBuilder;
     }
-    /**»ñÈ¡¾ßÓĞaopÌØĞÔµÄ·½·¨¼¯ºÏ¡£*/
+    /**è·å–å…·æœ‰aopç‰¹æ€§çš„æ–¹æ³•é›†åˆã€‚*/
     public ArrayList<String> getRenderAopMethodList() {
         return this.renderAopMethodList;
     }
-    /**asm.visit£¬ÓÃÓÚ±£´æÀàÃû¡£*/
+    /**asm.visitï¼Œç”¨äºä¿å­˜ç±»åã€‚*/
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.asmClassName = name;
         super.visit(version, access, name, signature, superName, interfaces);
     }
-    /**asm.visitMethod£¬Óöµ½Ò»¸ö·½·¨¡£*/
+    /**asm.visitMethodï¼Œé‡åˆ°ä¸€ä¸ªæ–¹æ³•ã€‚*/
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         ClassEngine ce = this.classBuilder.getClassEngine();
-        AopStrategy aopStrategy = ce.getAopStrategy();//»ñÈ¡Aop²ßÂÔ¶ÔÏó¡£
+        AopStrategy aopStrategy = ce.getAopStrategy();//è·å–Aopç­–ç•¥å¯¹è±¡ã€‚
         //
-        //1.×¼±¸Êä³ö·½·¨Êı¾İ£¬¸Ã·½·¨µÄÖ÷ÒªÄ¿µÄÊÇ´ÓdescÖĞ²ğ·Ö³ö²ÎÊı±íºÍ·µ»ØÖµ¡£
+        //1.å‡†å¤‡è¾“å‡ºæ–¹æ³•æ•°æ®ï¼Œè¯¥æ–¹æ³•çš„ä¸»è¦ç›®çš„æ˜¯ä»descä¸­æ‹†åˆ†å‡ºå‚æ•°è¡¨å’Œè¿”å›å€¼ã€‚
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
@@ -69,50 +69,50 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         String asmReturns = m.group(2);
         asmReturns = (asmReturns.charAt(0) == 'L') ? asmReturns.substring(1, asmReturns.length() - 1) : asmReturns;
         //
-        //2.ºöÂÔ¹¹Ôì·½·¨£¬aop°ü×°²»»á¿¼ÂÇ¹¹Ôì·½·¨¡£
+        //2.å¿½ç•¥æ„é€ æ–¹æ³•ï¼ŒaopåŒ…è£…ä¸ä¼šè€ƒè™‘æ„é€ æ–¹æ³•ã€‚
         if (name.equals("<init>") == true)
             return super.visitMethod(access, name, desc, signature, exceptions);
         //
-        //3.Ö´ĞĞ·½·¨ºöÂÔ²ßÂÔ£¬¸ù¾İaop²ßÂÔ¶ÔÏóÀ´¾ö¶¨ºöÂÔµÄ·½·¨ÁĞ±í¡£
+        //3.æ‰§è¡Œæ–¹æ³•å¿½ç•¥ç­–ç•¥ï¼Œæ ¹æ®aopç­–ç•¥å¯¹è±¡æ¥å†³å®šå¿½ç•¥çš„æ–¹æ³•åˆ—è¡¨ã€‚
         Class<?> superClass = ce.getSuperClass();
         Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
         Method method = EngineToos.findMethod(superClass, name, paramTypes);
         if (name.contains("$") == true)
-            return super.visitMethod(access, name, desc, signature, exceptions);//ºöÂÔ·½·¨
+            return super.visitMethod(access, name, desc, signature, exceptions);//å¿½ç•¥æ–¹æ³•
         if (method != null)
             if (aopStrategy.isIgnore(superClass, method) == true)
-                return super.visitMethod(access, name, desc, signature, exceptions);//ºöÂÔ·½·¨
+                return super.visitMethod(access, name, desc, signature, exceptions);//å¿½ç•¥æ–¹æ³•
         //
-        //4.Êä³öAop´úÀí·½·¨¡£
+        //4.è¾“å‡ºAopä»£ç†æ–¹æ³•ã€‚
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         mv.visitCode();
-        String aopMethod = AopMethodPrefix + name + desc;//ºÏ³ÉĞÂ·½·¨µÄÍêÕûÃèÊö
+        String aopMethod = AopMethodPrefix + name + desc;//åˆæˆæ–°æ–¹æ³•çš„å®Œæ•´æè¿°
         this.renderAopMethodList.add(aopMethod);
-        int index = this.renderAopMethodList.indexOf(aopMethod);//È·¶¨ĞÂ·½·¨µÄÊä³öË÷ÒıÓÃÓÚÊä³öĞÂ·½·¨¡£
-        this.visitAOPMethod(index, mv, name, desc);//Êä³öĞÂ·½·¨¡£
+        int index = this.renderAopMethodList.indexOf(aopMethod);//ç¡®å®šæ–°æ–¹æ³•çš„è¾“å‡ºç´¢å¼•ç”¨äºè¾“å‡ºæ–°æ–¹æ³•ã€‚
+        this.visitAOPMethod(index, mv, name, desc);//è¾“å‡ºæ–°æ–¹æ³•ã€‚
         mv.visitEnd();
         //
-        //5.¸ü¸ÄÃû³ÆÊä³öÀÏ·½·¨
+        //5.æ›´æ”¹åç§°è¾“å‡ºè€æ–¹æ³•
         String newMethodName = AopMethodPrefix + name;
         return super.visitMethod(access, newMethodName, desc, signature, exceptions);
     }
-    /**asm.visitEnd£¬Êä³öaopĞèÒªµÄÌØ¶¨ÊôĞÔ¡£*/
+    /**asm.visitEndï¼Œè¾“å‡ºaopéœ€è¦çš„ç‰¹å®šå±æ€§ã€‚*/
     public void visitEnd() {
-        //Êä³öFilterChainµÄÊı×é£¬ÊÇ½øÈëAopµÄ¹ıÂËÆ÷Á´¡£
+        //è¾“å‡ºFilterChainçš„æ•°ç»„ï¼Œæ˜¯è¿›å…¥Aopçš„è¿‡æ»¤å™¨é“¾ã€‚
         this.putSimpleProperty(AopFilterChainName, AopFilterChain_Start[].class);
-        //Êä³öMethodµÄÊı×é£¬Method±£´æµÄÊÇAop·½·¨¡£
+        //è¾“å‡ºMethodçš„æ•°ç»„ï¼ŒMethodä¿å­˜çš„æ˜¯Aopæ–¹æ³•ã€‚
         this.putSimpleProperty(AopMethodArrayName, org.more.classcode.Method[].class);
         super.visitEnd();
     }
-    /**Êä³ö¼òµ¥ÊôĞÔ£¬visitEnd·½·¨µ÷ÓÃ£¬ÓÃÓÚÊä³öÄ³Ò»¸öÊôĞÔµÄset·½·¨ºÍÆä×Ö¶Î¡£*/
+    /**è¾“å‡ºç®€å•å±æ€§ï¼ŒvisitEndæ–¹æ³•è°ƒç”¨ï¼Œç”¨äºè¾“å‡ºæŸä¸€ä¸ªå±æ€§çš„setæ–¹æ³•å’Œå…¶å­—æ®µã€‚*/
     private void putSimpleProperty(String propertyName, Class<?> propertyType) {
         String asmFieldType = EngineToos.toAsmType(propertyType);
         FieldVisitor fv = super.visitField(ACC_PRIVATE, propertyName, asmFieldType, null, null);
         fv.visitEnd();
         MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
         mv.visitCode();
-        mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
-        mv.visitVarInsn(ALOAD, 1);//×°ÔØ²ÎÊı
+        mv.visitVarInsn(ALOAD, 0);//è£…è½½this
+        mv.visitVarInsn(ALOAD, 1);//è£…è½½å‚æ•°
         mv.visitFieldInsn(PUTFIELD, this.asmClassName, propertyName, asmFieldType);
         mv.visitInsn(RETURN);
         mv.visitMaxs(1, 1);
@@ -120,17 +120,17 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
     }
     public void visitAOPMethod__(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {
         //
-        //1.×¼±¸Êä³ö·½·¨Êı¾İ
+        //1.å‡†å¤‡è¾“å‡ºæ–¹æ³•æ•°æ®
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
-        int localVarSize = paramCount + 1;//·½·¨±äÁ¿±í´óĞ¡
-        int maxStackSize = 0;//·½·¨×î´ó¶ÑÕ»´óĞ¡
+        int localVarSize = paramCount + 1;//æ–¹æ³•å˜é‡è¡¨å¤§å°
+        int maxStackSize = 0;//æ–¹æ³•æœ€å¤§å †æ ˆå¤§å°
         //
-        //2.Êä³öÊı¾İ
+        //2.è¾“å‡ºæ•°æ®
         //  mv = cw.visitMethod(ACC_PUBLIC, "getP_long", "(IZLjava/lang/Object;IZLjava/lang/Object;)J", null, null);
         //  mv.visitCode();
         Label l0 = new Label();
@@ -200,36 +200,36 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         mv.visitMaxs(4, 8);
         mv.visitEnd();
     }
-    /**ÊµÏÖAOP·½·¨µÄÊä³ö£¬ÆäÖĞÖ¸ÁîÏê¼ûASM3.2µÄ{@link Opcodes}½Ó¿Ú¶¨Òå¡£ */
+    /**å®ç°AOPæ–¹æ³•çš„è¾“å‡ºï¼Œå…¶ä¸­æŒ‡ä»¤è¯¦è§ASM3.2çš„{@link Opcodes}æ¥å£å®šä¹‰ã€‚ */
     public void visitAOPMethod(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {//, final Method method) {
         //
-        //1.×¼±¸Êä³ö·½·¨Êı¾İ
+        //1.å‡†å¤‡è¾“å‡ºæ–¹æ³•æ•°æ®
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
         String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
-        int localVarSize = paramCount + 1;//·½·¨±äÁ¿±í´óĞ¡
-        int maxStackSize = 0;//·½·¨×î´ó¶ÑÕ»´óĞ¡
+        int localVarSize = paramCount + 1;//æ–¹æ³•å˜é‡è¡¨å¤§å°
+        int maxStackSize = 0;//æ–¹æ³•æœ€å¤§å †æ ˆå¤§å°
         //
-        //2.Êä³öÊı¾İ
-        mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+        //2.è¾“å‡ºæ•°æ®
+        mv.visitVarInsn(ALOAD, 0);//è£…è½½this
         mv.visitFieldInsn(GETFIELD, this.asmClassName, AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
         Label ifTag = new Label();
         mv.visitJumpInsn(IFNONNULL, ifTag);
         //return this.$method_passObject(param);
         mv.visitVarInsn(ALOAD, 0);
         for (int i = 0; i < paramCount; i++)
-            mv.visitVarInsn(ALOAD, i + 1);//×°ÔØ²ÎÊı
+            mv.visitVarInsn(ALOAD, i + 1);//è£…è½½å‚æ•°
         mv.visitMethodInsn(INVOKEVIRTUAL, this.asmClassName, AopMethodPrefix + originalMethodName, desc);
         mv.visitInsn(EngineToos.getReturn(asmReturns));
         mv.visitLabel(ifTag);
         //else
-        mv.visitVarInsn(ALOAD, 0);//×°ÔØthis
+        mv.visitVarInsn(ALOAD, 0);//è£…è½½this
         mv.visitFieldInsn(GETFIELD, this.asmClassName, AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
         mv.visitIntInsn(BIPUSH, index);
-        mv.visitInsn(AALOAD);//×°ÔØÊı×éµÄµÚindex¸öÔªËØ
+        mv.visitInsn(AALOAD);//è£…è½½æ•°ç»„çš„ç¬¬indexä¸ªå…ƒç´ 
         //param 1 this
         mv.visitVarInsn(ALOAD, 0);
         //param 2 $aopMethod[6]
@@ -307,7 +307,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, asmReturnsType);
         }
         mv.visitInsn(EngineToos.getReturn(asmReturns));
-        /* Êä³ö¶ÑÕ»ÁĞ±í */
+        /* è¾“å‡ºå †æ ˆåˆ—è¡¨ */
         mv.visitMaxs(maxStackSize, localVarSize + 1);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import org.more.util.ResourcesUtils;
 /**
- * {@link Environment}½Ó¿ÚÊµÏÖÀà¡£
+ * {@link Environment}æ¥å£å®ç°ç±»ã€‚
  * @version : 2013-9-11
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    //×ÓÀàĞèÒª×Ô¼ºµ÷ÓÃinitEnvironment·½·¨³õÊ¼»¯¡£
+    //å­ç±»éœ€è¦è‡ªå·±è°ƒç”¨initEnvironmentæ–¹æ³•åˆå§‹åŒ–ã€‚
     protected StandardEnvironment() {}
     //
     public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.hasor.core.EventListener;
 /**
- * ÉùÃ÷Ò»¸öÊÂ¼ş¼àÌıÆ÷£¬±ê¼ÇÁË¸Ã½Ó¿ÚµÄÀà±ØĞëÒªÇóÊµÏÖ{@link EventListener}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªäº‹ä»¶ç›‘å¬å™¨ï¼Œæ ‡è®°äº†è¯¥æ¥å£çš„ç±»å¿…é¡»è¦æ±‚å®ç°{@link EventListener}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Listener {
-    /**Òª¼àÌıµÄÊÂ¼şÃû£¬Í¬Ãû×¢²á»á±»¸²¸Ç¡£*/
+    /**è¦ç›‘å¬çš„äº‹ä»¶åï¼ŒåŒåæ³¨å†Œä¼šè¢«è¦†ç›–ã€‚*/
     public String[] value();
 }

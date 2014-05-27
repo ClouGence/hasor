@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,20 +26,20 @@ import org.more.webui.render.inputs.ResetInputRender;
 import org.more.webui.render.inputs.SubmitInputRender;
 import org.more.webui.render.inputs.TextInputRender;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£ºÓÃÓÚ±íÊö´øÓĞÊäÈëÊä³ö¹¦ÄÜµÄ×é½¨Ä£ĞÍ£¨±íµ¥ÔªËØ£©¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link ButtonInputRender}¡¢{@link CheckboxInputRender}¡¢{@link FileInputRender}¡¢
- * {@link HideInputRender}¡¢{@link ImageInputRender}¡¢{@link PasswordInputRender}¡¢{@link RadioInputRender}¡¢
- * {@link ResetInputRender}¡¢{@link SubmitInputRender}¡¢{@link TextInputRender}
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šç”¨äºè¡¨è¿°å¸¦æœ‰è¾“å…¥è¾“å‡ºåŠŸèƒ½çš„ç»„å»ºæ¨¡å‹ï¼ˆè¡¨å•å…ƒç´ ï¼‰ã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link ButtonInputRender}ã€{@link CheckboxInputRender}ã€{@link FileInputRender}ã€
+ * {@link HideInputRender}ã€{@link ImageInputRender}ã€{@link PasswordInputRender}ã€{@link RadioInputRender}ã€
+ * {@link ResetInputRender}ã€{@link SubmitInputRender}ã€{@link TextInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UIInput extends UIOutput {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**±íµ¥Ãû£¨RW£©*/
+        /**è¡¨å•åï¼ˆRWï¼‰*/
         name,
-        /**ÑéÖ¤ÊäÈëÊı¾İµÄÕıÔò±í´ïÊ½£¨RW£©*/
+        /**éªŒè¯è¾“å…¥æ•°æ®çš„æ­£åˆ™è¡¨è¾¾å¼ï¼ˆRWï¼‰*/
         verification,
     }
     @Override
@@ -49,19 +49,19 @@ public abstract class UIInput extends UIOutput {
         this.setPropertyMetaValue(Propertys.verification.name(), null);
     }
     /*-------------------------------------------------------------------------------*/
-    /**»ñÈ¡×é½¨±íµ¥Ãû*/
+    /**è·å–ç»„å»ºè¡¨å•å*/
     public String getName() {
         return this.getProperty(Propertys.name.name()).valueTo(String.class);
     }
-    /**ÉèÖÃ×é½¨±íµ¥Ãû*/
+    /**è®¾ç½®ç»„å»ºè¡¨å•å*/
     public void setName(String name) {
         this.getProperty(Propertys.name.name()).value(name);
     }
-    /**ÑéÖ¤,ÕıÔò±í´ïÊ½£¨Èç¹ûÅäÖÃ£©*/
+    /**éªŒè¯,æ­£åˆ™è¡¨è¾¾å¼ï¼ˆå¦‚æœé…ç½®ï¼‰*/
     public String getVerification() {
         return this.getProperty(Propertys.verification.name()).valueTo(String.class);
     }
-    /**ÑéÖ¤,ÕıÔò±í´ïÊ½£¨Èç¹ûÅäÖÃ£©*/
+    /**éªŒè¯,æ­£åˆ™è¡¨è¾¾å¼ï¼ˆå¦‚æœé…ç½®ï¼‰*/
     public void setVerification(String verification) {
         this.getProperty(Propertys.verification.name()).value(verification);
     }

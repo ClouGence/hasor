@@ -5,9 +5,9 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 /**
- * ´ú±í½ÚµãÔªËØ
+ * ä»£è¡¨èŠ‚ç‚¹å…ƒç´ 
  * @version : 2013-3-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Element extends AbstractModel {
     private static final long serialVersionUID      = -6193319926276663305L;
@@ -16,11 +16,11 @@ public class Element extends AbstractModel {
     public static String      Prop_Name             = "Name";
     public static String      Prop_Location         = "Location";
     private Diagram           diagram               = null;
-    private Point             location              = new Point(0, 0);            //Ä£ĞÍÎ»ÖÃ
-    private Dimension         size                  = new Dimension(50, 50);      //Ä£ĞÍ´óĞ¡
+    private Point             location              = new Point(0, 0);            //æ¨¡å‹ä½ç½®
+    private Dimension         size                  = new Dimension(50, 50);      //æ¨¡å‹å¤§å°
     private String            name                  = "New Element";
-    private List<Connection>  outConnection         = new ArrayList<Connection>(); //Á¬³ö½Úµã
-    private List<Connection>  inConnection          = new ArrayList<Connection>(); //Á¬Èë½Úµã
+    private List<Connection>  outConnection         = new ArrayList<Connection>(); //è¿å‡ºèŠ‚ç‚¹
+    private List<Connection>  inConnection          = new ArrayList<Connection>(); //è¿å…¥èŠ‚ç‚¹
     //----------------------------------------------------------------------
     protected Element(Diagram diagram) {
         this.diagram = diagram;
@@ -28,7 +28,7 @@ public class Element extends AbstractModel {
     public Diagram getDiagram() {
         return diagram;
     }
-    /**ÔÚÄ£ĞÍÖĞ´´½¨¸ÃÔªËØ¡£*/
+    /**åœ¨æ¨¡å‹ä¸­åˆ›å»ºè¯¥å…ƒç´ ã€‚*/
     public void create() {
         this.diagram.addEmenemt(this);
         for (Connection out : this.outConnection)
@@ -37,7 +37,7 @@ public class Element extends AbstractModel {
             in.connect();
         this.diagram.fireStructureChange(Diagram.Prop_Element, this);
     }
-    /**´ÓÄ£ĞÍÖĞÉ¾³ı¸ÃÔªËØ¡£*/
+    /**ä»æ¨¡å‹ä¸­åˆ é™¤è¯¥å…ƒç´ ã€‚*/
     public void delete() {
         for (Connection out : this.outConnection)
             out.disconnect();
@@ -46,31 +46,31 @@ public class Element extends AbstractModel {
         this.diagram.removeElement(this);
         this.diagram.fireStructureChange(Diagram.Prop_Element, this);
     }
-    /**´Óµ±Ç°ÔªËØ´´½¨Ò»¸öµ½Ä¿±êÔªËØµÄÁ¬½Ó¡£*/
+    /**ä»å½“å‰å…ƒç´ åˆ›å»ºä¸€ä¸ªåˆ°ç›®æ ‡å…ƒç´ çš„è¿æ¥ã€‚*/
     public Connection createConnection(Element targetElement) {
         return new Connection(this, targetElement);
     }
-    /**»ñÈ¡Á¬ÈëµÄÁ¬½Ó*/
+    /**è·å–è¿å…¥çš„è¿æ¥*/
     public List<Connection> getOutputList() {
         return Collections.unmodifiableList(outConnection);
     }
-    /**»ñÈ¡Á¬³öµÄÁ¬½Ó¡£*/
+    /**è·å–è¿å‡ºçš„è¿æ¥ã€‚*/
     public List<Connection> getInputList() {
         return Collections.unmodifiableList(inConnection);
     }
-    /*µ±¡°Á¬½Ó¡±¶ÔÏóµ÷ÓÃconnect·½·¨Ê±»áÊ¹ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œè¿æ¥â€å¯¹è±¡è°ƒç”¨connectæ–¹æ³•æ—¶ä¼šä½¿ç”¨è¯¥æ–¹æ³•ã€‚*/
     void addOutput(Connection connection) {
         this.outConnection.add(connection);
     }
-    /*µ±¡°Á¬½Ó¡±¶ÔÏóµ÷ÓÃdisconnect·½·¨Ê±»áÊ¹ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œè¿æ¥â€å¯¹è±¡è°ƒç”¨disconnectæ–¹æ³•æ—¶ä¼šä½¿ç”¨è¯¥æ–¹æ³•ã€‚*/
     void removeOutput(Connection connection) {
         this.outConnection.remove(connection);
     }
-    /*µ±¡°Á¬½Ó¡±¶ÔÏóµ÷ÓÃconnect·½·¨Ê±»áÊ¹ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œè¿æ¥â€å¯¹è±¡è°ƒç”¨connectæ–¹æ³•æ—¶ä¼šä½¿ç”¨è¯¥æ–¹æ³•ã€‚*/
     void addInput(Connection connection) {
         this.inConnection.add(connection);
     }
-    /*µ±¡°Á¬½Ó¡±¶ÔÏóµ÷ÓÃdisconnect·½·¨Ê±»áÊ¹ÓÃ¸Ã·½·¨¡£*/
+    /*å½“â€œè¿æ¥â€å¯¹è±¡è°ƒç”¨disconnectæ–¹æ³•æ—¶ä¼šä½¿ç”¨è¯¥æ–¹æ³•ã€‚*/
     void removeInput(Connection connection) {
         this.inConnection.remove(connection);
     }

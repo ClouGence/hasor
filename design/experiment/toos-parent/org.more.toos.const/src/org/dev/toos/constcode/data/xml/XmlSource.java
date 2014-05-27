@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IFile;
 /**
  * 
  * @version : 2013-2-17
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class XmlSource implements Source<ConfigCodes> {
     private ConfigCodes configCodes        = null;
@@ -64,7 +64,7 @@ public class XmlSource implements Source<ConfigCodes> {
         if (this.canModify() == false)
             throw new UnsupportedOperationException();
         if (this.isUpdate() == true)
-            throw new UnsupportedEncodingException(constSource_File.getName() + " Œƒº˛∑¢…˙±‰ªØ..");
+            throw new UnsupportedEncodingException(constSource_File.getName() + " Êñá‰ª∂ÂèëÁîüÂèòÂåñ..");
         JAXBContext jaxbContext = JAXBContext.newInstance(ConfigCodes.class);
         File outputFile = this.constSource_File.getLocation().toFile();
         Marshaller marshaller = jaxbContext.createMarshaller();

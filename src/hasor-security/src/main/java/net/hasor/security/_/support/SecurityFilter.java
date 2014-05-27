@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ import org.more.util.StringUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 /**
- * È¨ÏŞÏµÍ³URLÇëÇó´¦ÀíÖ§³Ö¡£
+ * æƒé™ç³»ç»ŸURLè¯·æ±‚å¤„ç†æ”¯æŒã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Singleton
 public class SecurityFilter implements Filter {
@@ -57,32 +57,32 @@ public class SecurityFilter implements Filter {
     private AuthRequestProcess         loginSecurityProcess = null;
     @Inject
     private TestPermissionProcess      permissionProcess    = null;
-    /**³õÊ¼»¯*/
+    /**åˆå§‹åŒ–*/
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Hasor.info("SecurityFilter started.");
     }
-    /**Ïú»Ù*/
+    /**é”€æ¯*/
     @Override
     public void destroy() {
         Hasor.info("SecurityFilter destroy.");
     }
-    /**Ë¢ĞÂHttpSessionÖĞµÄÈ¨ÏŞÊı¾İ*/
+    /**åˆ·æ–°HttpSessionä¸­çš„æƒé™æ•°æ®*/
     private void refreshHttpSession(HttpServletRequest request) {
         AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
-        //1.Ğ´ÈëHttpSession
+        //1.å†™å…¥HttpSession
         StringBuilder authSessionIDs = new StringBuilder("");
         for (AuthSession authSession : authSessions)
             authSessionIDs.append(authSession.getSessionID() + ",");
         String authStrs = authSessionIDs.toString();
         request.getSession(true).setAttribute(AuthSession.HttpSessionAuthSessionSetName, authStrs);
     }
-    /**½«È¨ÏŞÊı¾İĞ´ÈëCookie*/
+    /**å°†æƒé™æ•°æ®å†™å…¥Cookie*/
     private void writeCookie(HttpServletRequest request, HttpServletResponse response) throws SecurityException {
         SecuritySettings settings = this.secContext.getSettings();
         if (this.secContext.getSettings().isCookieEncryptionEnable() == false)
             return;
-        //2.Ğ´ÈëCookie¶ÔÏó
+        //2.å†™å…¥Cookieå¯¹è±¡
         CookieDataUtil cookieData = CookieDataUtil.create();
         AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
         if (authSessions != null)
@@ -90,12 +90,12 @@ public class SecurityFilter implements Filter {
                 if (authSession.isLogin() == false)
                     continue;
                 CookieUserData cookieUserData = new CookieUserData();
-                cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//ÓÃ»§Code
-                cookieUserData.setAuthSystem(authSession.getAuthSystem());//ÓÃ»§À´Ô´
+                cookieUserData.setUserCode(authSession.getUserObject().getUserCode());//ç”¨æˆ·Code
+                cookieUserData.setAuthSystem(authSession.getAuthSystem());//ç”¨æˆ·æ¥æº
                 cookieUserData.setAppStartTime(this.secContext.getAppContext().getAppStartTime());
                 cookieData.addCookieUserData(cookieUserData);
             }
-        //2.´´½¨Cookie
+        //2.åˆ›å»ºCookie
         String cookieValue = CookieDataUtil.parseString(cookieData);
         Cookie cookie = new Cookie(this.secContext.getSettings().getCookieName(), cookieValue);
         cookie.setMaxAge(settings.getCookieTimeout());
@@ -105,17 +105,17 @@ public class SecurityFilter implements Filter {
             cookie.setPath(cookiePath);
         if (StringUtils.isBlank(cookieDomain) == false)
             cookie.setDomain(cookieDomain);
-        //3.Ğ´ÈëÏìÓ¦Á÷
+        //3.å†™å…¥å“åº”æµ
         response.addCookie(cookie);
     }
     /***/
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        /*½ûÓÃ×´Ì¬*/
+        /*ç¦ç”¨çŠ¶æ€*/
         if (this.secContext.getSettings().isEnableURL() == false) {
             chain.doFilter(request, response);
             return;
         }
-        /*Ö´ĞĞ´¦Àí*/
+        /*æ‰§è¡Œå¤„ç†*/
         SecRequest secReq = new SecRequest((HttpServletRequest) request, secContext);
         SecResponse secRes = new SecResponse((HttpServletResponse) response, secContext);
         try {
@@ -125,56 +125,56 @@ public class SecurityFilter implements Filter {
         } catch (ServletException e) {
             throw e;
         }
-        /*¶Û»¯Ïß³ÌµÄAuthSession£¬²¢ÇÒË¢ĞÂËüÃÇ*/
+        /*é’åŒ–çº¿ç¨‹çš„AuthSessionï¼Œå¹¶ä¸”åˆ·æ–°å®ƒä»¬*/
         finally {
             AuthSession[] authSessions = secContext.getCurrentAuthSession();
             for (AuthSession authSession : authSessions) {
-                secContext.inactivationAuthSession(authSession.getSessionID()); /*¶Û»¯AuthSession*/
-                authSession.refreshCacheTime();/*Ë¢ĞÂ»º´æÖĞµÄÊı¾İ*/
+                secContext.inactivationAuthSession(authSession.getSessionID()); /*é’åŒ–AuthSession*/
+                authSession.refreshCacheTime();/*åˆ·æ–°ç¼“å­˜ä¸­çš„æ•°æ®*/
             }
         }
     }
     /***/
     public void doSecurityFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        //1.»Ö¸´»á»°
+        //1.æ¢å¤ä¼šè¯
         try {
             this.recoverAuth4Cookie.recoverCookie(secContext, request, response);
             this.refreshHttpSession(request);
         } catch (SecurityException e) {
             Hasor.error("recover AuthSession failure!%s", e);
         }
-        //2.ÇëÇó´¦Àí
+        //2.è¯·æ±‚å¤„ç†
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         if (reqPath.endsWith(this.secContext.getSettings().getLoginURL()) == true) {
-            /*A.µÇÈë*/
+            /*A.ç™»å…¥*/
             SecurityForward forward = this.loginSecurityProcess.processLogin(this.secContext, request, response);
             this.refreshHttpSession(request);
             this.writeCookie(request, response);
             if (forward != null)
-                forward.forward(request, response);//Ìø×ªµØÖ·
+                forward.forward(request, response);//è·³è½¬åœ°å€
             return;
         }
         if (reqPath.endsWith(this.secContext.getSettings().getLogoutURL()) == true) {
-            /*B.µÇ³ö*/
+            /*B.ç™»å‡º*/
             SecurityForward forward = this.loginSecurityProcess.processLogout(this.secContext, request, response);
             this.refreshHttpSession(request);
             this.writeCookie(request, response);
             if (forward != null)
-                forward.forward(request, response);//Ìø×ªµØÖ·
+                forward.forward(request, response);//è·³è½¬åœ°å€
             return;
         }
-        //3.·ÃÎÊÇëÇó
+        //3.è®¿é—®è¯·æ±‚
         try {
             AuthSession[] authSessions = this.secContext.getCurrentAuthSession();
             if (this.secContext instanceof AbstractSecurityContext) {
-                ((AbstractSecurityContext) this.secContext).throwEvent(SecurityEventDefine.TestURLPermission, reqPath, authSessions);/*Å×³öÊÂ¼ş*/
+                ((AbstractSecurityContext) this.secContext).throwEvent(SecurityEventDefine.TestURLPermission, reqPath, authSessions);/*æŠ›å‡ºäº‹ä»¶*/
             }
             boolean res = this.permissionProcess.testURL(this.secContext, authSessions, request, response);
             if (res == false)
                 throw new PermissionException(reqPath);
             chain.doFilter(request, response);
         } catch (PermissionException e) {
-            Hasor.debug("testPermission failure! uri=%s%s", reqPath, e);/*Ã»ÓĞÈ¨ÏŞ*/
+            Hasor.debug("testPermission failure! uri=%s%s", reqPath, e);/*æ²¡æœ‰æƒé™*/
             SecurityDispatcher dispatcher = this.secContext.getDispatcher(reqPath);
             if (dispatcher != null)
                 dispatcher.forwardFailure(e).forward(request, response);

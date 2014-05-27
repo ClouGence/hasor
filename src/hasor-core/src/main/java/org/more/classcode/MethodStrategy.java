@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.more.classcode;
 /**
- * ·½·¨ºöÂÔ²ßÂÔ½Ó¿Ú£¬¿ÉÒÔÈ·¶¨Õâ¸ö·½·¨ÊÇ·ñºöÂÔ£¬Èç¹û±»ºöÂÔÔòÉú³ÉµÄĞÂÀàÖĞ²»»á°üº¬¸Ã·½·¨µÄ¶¨Òå¡£
+ * æ–¹æ³•å¿½ç•¥ç­–ç•¥æ¥å£ï¼Œå¯ä»¥ç¡®å®šè¿™ä¸ªæ–¹æ³•æ˜¯å¦å¿½ç•¥ï¼Œå¦‚æœè¢«å¿½ç•¥åˆ™ç”Ÿæˆçš„æ–°ç±»ä¸­ä¸ä¼šåŒ…å«è¯¥æ–¹æ³•çš„å®šä¹‰ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface MethodStrategy extends BaseStrategy {
     /**
-     * ¸Ã·½·¨¿ÉÒÔÈ·¶¨Õâ¸ö·½·¨ÊÇ·ñºöÂÔ£¬Èç¹û±»ºöÂÔÔòÉú³ÉµÄĞÂÀàÖĞ²»»á°üº¬¸Ã·½·¨µÄ¶¨Òå¡£
-     * Í¨¹ı{@link MethodStrategy}½Ó¿Ú¿ÉÒÔºöÂÔ´¦Àí¡£
+     * è¯¥æ–¹æ³•å¯ä»¥ç¡®å®šè¿™ä¸ªæ–¹æ³•æ˜¯å¦å¿½ç•¥ï¼Œå¦‚æœè¢«å¿½ç•¥åˆ™ç”Ÿæˆçš„æ–°ç±»ä¸­ä¸ä¼šåŒ…å«è¯¥æ–¹æ³•çš„å®šä¹‰ã€‚
+     * é€šè¿‡{@link MethodStrategy}æ¥å£å¯ä»¥å¿½ç•¥å¤„ç†ã€‚
      */
     public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor);
 }

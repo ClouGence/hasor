@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import org.more.util.StringConvertUtils;
 import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 /**
- * ÊôĞÔÖµ²Ù×÷Àà£¬¸ÃÀàÊ¹ÓÃÏß³Ì¸ôÀëµÄ·½Ê½²Ù×÷Ã¿Ò»¸öÊôĞÔ¡£
+ * å±æ€§å€¼æ“ä½œç±»ï¼Œè¯¥ç±»ä½¿ç”¨çº¿ç¨‹éš”ç¦»çš„æ–¹å¼æ“ä½œæ¯ä¸€ä¸ªå±æ€§ã€‚
  * @version : 2012-5-11
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractValueHolder {
     private Object metaValue = null;
@@ -28,7 +28,7 @@ public abstract class AbstractValueHolder {
         boolean needUpdate = false;
         Object  newValue   = null;
     }
-    /**¸Ã·½Ê½ÊÇÎªÁË±ÜÃâ²»Í¬Ïß³ÌÖ®¼äµÄ¸ÉÈÅ*/
+    /**è¯¥æ–¹å¼æ˜¯ä¸ºäº†é¿å…ä¸åŒçº¿ç¨‹ä¹‹é—´çš„å¹²æ‰°*/
     private ThreadLocal<Value> newValue = new ThreadLocal<Value>();
     @Override
     public String toString() {
@@ -38,12 +38,12 @@ public abstract class AbstractValueHolder {
     public <T> T valueTo(Class<T> toType) {
         return StringConvertUtils.changeType(this.value(), toType);
     }
-    /**·µ»ØÄ£ĞÍÉÏµÄÊôĞÔÖµ¡£*/
+    /**è¿”å›æ¨¡å‹ä¸Šçš„å±æ€§å€¼ã€‚*/
     public Object value() {
         Value v = this.newValue.get();
         return (v != null) ? v.newValue : null;
     }
-    /**Ğ´ÈëÊôĞÔÖµ£¬±»Ğ´ÈëµÄÊôĞÔÖµ»áÔÚµ÷ÓÃ{@link #updateModule(ViewContext)}±»Ğ´Èëµ½BeanÖĞ¡£*/
+    /**å†™å…¥å±æ€§å€¼ï¼Œè¢«å†™å…¥çš„å±æ€§å€¼ä¼šåœ¨è°ƒç”¨{@link #updateModule(ViewContext)}è¢«å†™å…¥åˆ°Beanä¸­ã€‚*/
     public void value(Object newValue) {
         Value v = this.newValue.get();
         if (v == null) {
@@ -53,17 +53,17 @@ public abstract class AbstractValueHolder {
         v.newValue = newValue;
         v.needUpdate = true;
     }
-    /**·µ»ØÔ­Ê¼ĞÅÏ¢Öµ£¨Ã¿¸öÏß³Ì¶¼ÓĞÒ»¸ö¶ÀÁ¢µÄvalue£¬µ±Ä³Ò»¸öÏß³Ìµ÷ÓÃÁËreset·½·¨Ê±£¬¸ÃÖµ»á±»»Ö¸´µ½ÄÇ¸öÏß³ÌÉÏ¡££©*/
+    /**è¿”å›åŸå§‹ä¿¡æ¯å€¼ï¼ˆæ¯ä¸ªçº¿ç¨‹éƒ½æœ‰ä¸€ä¸ªç‹¬ç«‹çš„valueï¼Œå½“æŸä¸€ä¸ªçº¿ç¨‹è°ƒç”¨äº†resetæ–¹æ³•æ—¶ï¼Œè¯¥å€¼ä¼šè¢«æ¢å¤åˆ°é‚£ä¸ªçº¿ç¨‹ä¸Šã€‚ï¼‰*/
     public Object getMetaValue() {
         return this.metaValue;
     }
-    /**ÉèÖÃÔ­Ê¼ĞÅÏ¢Öµ£¨Ã¿¸öÏß³Ì¶¼ÓĞÒ»¸ö¶ÀÁ¢µÄvalue£¬µ±Ä³Ò»¸öÏß³Ìµ÷ÓÃÁËreset·½·¨Ê±£¬¸ÃÖµ»á±»»Ö¸´µ½ÄÇ¸öÏß³ÌÉÏ¡££©*/
+    /**è®¾ç½®åŸå§‹ä¿¡æ¯å€¼ï¼ˆæ¯ä¸ªçº¿ç¨‹éƒ½æœ‰ä¸€ä¸ªç‹¬ç«‹çš„valueï¼Œå½“æŸä¸€ä¸ªçº¿ç¨‹è°ƒç”¨äº†resetæ–¹æ³•æ—¶ï¼Œè¯¥å€¼ä¼šè¢«æ¢å¤åˆ°é‚£ä¸ªçº¿ç¨‹ä¸Šã€‚ï¼‰*/
     public void setMetaValue(Object metaValue) {
         this.metaValue = metaValue;
     }
-    /**·µ»ØÒ»¸öboolean£¬¸ÃÖµ¾ö¶¨¸ÃÊôĞÔÊÇ·ñÎªÖ»¶ÁÄ£Ê½¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanï¼Œè¯¥å€¼å†³å®šè¯¥å±æ€§æ˜¯å¦ä¸ºåªè¯»æ¨¡å¼ã€‚*/
     public abstract boolean isReadOnly();
-    /**·µ»ØÒ»¸öboolean£¬¸ÃÖµ¾ö¶¨ÊÇ·ñĞèÒªÖ´ĞĞupdateModule¸üĞÂ²Ù×÷¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanï¼Œè¯¥å€¼å†³å®šæ˜¯å¦éœ€è¦æ‰§è¡ŒupdateModuleæ›´æ–°æ“ä½œã€‚*/
     public boolean isUpdate() {
         Value v = this.newValue.get();
         return (v != null) ? v.needUpdate : false;
@@ -71,7 +71,7 @@ public abstract class AbstractValueHolder {
     protected Value getValue() {
         return this.newValue.get();
     };
-    /**½«ÊôĞÔÖØÖÃÎª³õÊ¼»¯×´Ì¬*/
+    /**å°†å±æ€§é‡ç½®ä¸ºåˆå§‹åŒ–çŠ¶æ€*/
     public void reset() {
         Value v = this.newValue.get();
         if (v == null) {
@@ -81,6 +81,6 @@ public abstract class AbstractValueHolder {
         v.newValue = this.metaValue;
         v.needUpdate = false;
     };
-    /**½«Ğ´Èë{@link AbstractValueHolder}µÄÊôĞÔµÄÖµ¸üĞÂµ½Ä£ĞÍÖĞ¡£*/
+    /**å°†å†™å…¥{@link AbstractValueHolder}çš„å±æ€§çš„å€¼æ›´æ–°åˆ°æ¨¡å‹ä¸­ã€‚*/
     public abstract void updateModule(UIComponent component, ViewContext viewContext) throws Throwable;
 }

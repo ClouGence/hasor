@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 package net.hasor.jdbc.transaction;
 import java.sql.SQLException;
 /**
- * Êı¾İÔ´µÄÊÂÎñ¹ÜÀíÆ÷¡£
+ * æ•°æ®æºçš„äº‹åŠ¡ç®¡ç†å™¨ã€‚
  * @version : 2013-10-30
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface TransactionManager {
-    /**¿ªÆôÊÂÎñ£¬Ê¹ÓÃÄ¬ÈÏÊÂÎñ¸ôÀë¼¶±ğ¡£
+    /**å¼€å¯äº‹åŠ¡ï¼Œä½¿ç”¨é»˜è®¤äº‹åŠ¡éš”ç¦»çº§åˆ«ã€‚
      * @see net.hasor.jdbc.transaction.TransactionBehavior
      * @see net.hasor.jdbc.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException;
-    /**¿ªÆôÊÂÎñ
+    /**å¼€å¯äº‹åŠ¡
      * @see net.hasor.jdbc.transaction.TransactionBehavior
      * @see java.sql.Connection#setTransactionIsolation(int)*/
     public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException;
-    /**µİ½»ÊÂÎñ
-     * <p>Èç¹ûµİ½»µÄÊÂÎñ²¢²»´¦ÓÚÊÂÎñ¶ÑÕ»¶¥¶Ë£¬»áÍ¬Ê±µİ½»¸ÃÊÂÎñµÄºóÃæÆäËüÊÂÎñ¡£*/
+    /**é€’äº¤äº‹åŠ¡
+     * <p>å¦‚æœé€’äº¤çš„äº‹åŠ¡å¹¶ä¸å¤„äºäº‹åŠ¡å †æ ˆé¡¶ç«¯ï¼Œä¼šåŒæ—¶é€’äº¤è¯¥äº‹åŠ¡çš„åé¢å…¶å®ƒäº‹åŠ¡ã€‚*/
     public void commit(TransactionStatus status) throws SQLException;
-    /**»Ø¹öÊÂÎñ*/
+    /**å›æ»šäº‹åŠ¡*/
     public void rollBack(TransactionStatus status) throws SQLException;
     //
-    /**ÊÇ·ñ´æÔÚÎ´´¦ÀíÍêµÄÊÂÎñ£¨°üÀ¨±»¹ÒÆğµÄÊÂÎñ£©¡£*/
+    /**æ˜¯å¦å­˜åœ¨æœªå¤„ç†å®Œçš„äº‹åŠ¡ï¼ˆåŒ…æ‹¬è¢«æŒ‚èµ·çš„äº‹åŠ¡ï¼‰ã€‚*/
     public boolean hasTransaction();
-    /**²âÊÔÊÂÎñ×´Ì¬ÊÇ·ñÎ»ÓÚÕ»¶¥¡£*/
+    /**æµ‹è¯•äº‹åŠ¡çŠ¶æ€æ˜¯å¦ä½äºæ ˆé¡¶ã€‚*/
     public boolean isTopTransaction(TransactionStatus status);
 }

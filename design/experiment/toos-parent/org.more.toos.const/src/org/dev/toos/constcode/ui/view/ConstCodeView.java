@@ -18,7 +18,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstCodeView extends ViewPart {
     private Composite                   parent                      = null;
@@ -37,7 +37,7 @@ public class ConstCodeView extends ViewPart {
     public ConstCodeView() {}
     //
     //
-    /**¹¹½¨ÊÓÍ¼*/
+    /**æ„å»ºè§†å›¾*/
     public void createPartControl(Composite parent) {
         this.parent = parent;
         this.stackLayout = new StackLayout();
@@ -50,11 +50,11 @@ public class ConstCodeView extends ViewPart {
         this.initToolBar();
         this.hideViewPage();
     }
-    /**´´½¨ÉÏÏÂÎÄ²Ëµ¥*/
+    /**åˆ›å»ºä¸Šä¸‹æ–‡èœå•*/
     protected void initMenuBar() {
         IMenuManager menuManager = this.getViewSite().getActionBars().getMenuManager();
     }
-    /**´´½¨ÊÓÍ¼¹¤¾ßÌõ*/
+    /**åˆ›å»ºè§†å›¾å·¥å…·æ¡*/
     public void initToolBar() {
         IToolBarManager toolBarManager = this.getViewSite().getActionBars().getToolBarManager();
         refreshActionHandler = new RefreshActionHandler(this);
@@ -68,7 +68,7 @@ public class ConstCodeView extends ViewPart {
         openActionHandler = new OpenActionHandler(this);
         toolBarManager.add(openActionHandler);
     }
-    /**ÇĞ»»ÊÓÍ¼µ½Ö÷Ìå¹¦ÄÜ*/
+    /**åˆ‡æ¢è§†å›¾åˆ°ä¸»ä½“åŠŸèƒ½*/
     public void showViewPage() {
         this.stackLayout.topControl = this.constCodeViewPage;
         this.saveActionHandler.setEnabled(true);
@@ -77,7 +77,7 @@ public class ConstCodeView extends ViewPart {
         this.openActionHandler.setEnabled(true);
         this.parent.layout(true);
     }
-    /**ÇĞ»»ÊÓÍ¼µ½Ö÷Ìå¹¦ÄÜ*/
+    /**åˆ‡æ¢è§†å›¾åˆ°ä¸»ä½“åŠŸèƒ½*/
     public void hideViewPage() {
         this.stackLayout.topControl = this.msgLabel;
         this.saveActionHandler.setEnabled(false);
@@ -112,7 +112,7 @@ public class ConstCodeView extends ViewPart {
         //        else
         //            this.saveActionHandler.setEnabled(false);
     }
-    /**¸üĞÂÊÓÍ¼£¬µ±ConstCodeModelSet.getActivateModel()ÓĞ·µ»ØÖµÊ±ºò²Å»á¸üĞÂUI¡£*/
+    /**æ›´æ–°è§†å›¾ï¼Œå½“ConstCodeModelSet.getActivateModel()æœ‰è¿”å›å€¼æ—¶å€™æ‰ä¼šæ›´æ–°UIã€‚*/
     public void updataView() {
         this.updataToolsBar();
         this.constCodeViewPage.updataView();

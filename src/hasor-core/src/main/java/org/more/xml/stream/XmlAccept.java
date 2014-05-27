@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ package org.more.xml.stream;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 /**
- * ¸Ã½Ó¿ÚµÄ¹¦ÄÜÊÇÓÃÓÚ½ÓÊÕ{@link XmlReader}ÀàÉ¨ÃèµÄxmlÊÂ¼şÁ÷¡£Èç¹ûÔÚ½âÎöÆÚ¼äÓÉsendEvent·½·¨Å×³öÒì³£ÄÇÃ´endAccept·½·¨ºÜ¿ÉÄÜ²»»á±»µ÷ÓÃ¡£
+ * è¯¥æ¥å£çš„åŠŸèƒ½æ˜¯ç”¨äºæ¥æ”¶{@link XmlReader}ç±»æ‰«æçš„xmläº‹ä»¶æµã€‚å¦‚æœåœ¨è§£ææœŸé—´ç”±sendEventæ–¹æ³•æŠ›å‡ºå¼‚å¸¸é‚£ä¹ˆendAcceptæ–¹æ³•å¾ˆå¯èƒ½ä¸ä¼šè¢«è°ƒç”¨ã€‚
  * @version 2010-9-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface XmlAccept {
-    /**¿ªÊ¼{@link XmlAccept}½Ó¿ÚµÄµ÷ÓÃ£¬¸Ã·½·¨Ö÷ÒªÓÃÓÚÖØÖÃ×´Ì¬¡£
+    /**å¼€å§‹{@link XmlAccept}æ¥å£çš„è°ƒç”¨ï¼Œè¯¥æ–¹æ³•ä¸»è¦ç”¨äºé‡ç½®çŠ¶æ€ã€‚
      * @throws XMLStreamException */
     public void beginAccept() throws XMLStreamException;
-    /**½áÊø{@link XmlAccept}½Ó¿ÚµÄµ÷ÓÃ¡£*/
+    /**ç»“æŸ{@link XmlAccept}æ¥å£çš„è°ƒç”¨ã€‚*/
     public void endAccept() throws XMLStreamException;
-    /**¸Ã·½·¨ÊÇÓÃÓÚ½ÓÊÜ{@link XmlReader}ÀàÉ¨ÃèµÄÊÂ¼ş½á¹û¡£Èç¹ûÔÚ½âÎöÆÚ¼äÓÉsendEvent·½·¨Å×³öÒì³£ÄÇÃ´endAccept·½·¨ºÜ¿ÉÄÜ²»»á±»µ÷ÓÃ¡£ */
+    /**è¯¥æ–¹æ³•æ˜¯ç”¨äºæ¥å—{@link XmlReader}ç±»æ‰«æçš„äº‹ä»¶ç»“æœã€‚å¦‚æœåœ¨è§£ææœŸé—´ç”±sendEventæ–¹æ³•æŠ›å‡ºå¼‚å¸¸é‚£ä¹ˆendAcceptæ–¹æ³•å¾ˆå¯èƒ½ä¸ä¼šè¢«è°ƒç”¨ã€‚ */
     public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException;
 }

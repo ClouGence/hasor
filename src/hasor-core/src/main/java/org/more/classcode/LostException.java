@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package org.more.classcode;
 /**
- * ¶ªÊ§Òì³£¡£
+ * ä¸¢å¤±å¼‚å¸¸ã€‚
  * @version 2009-4-29
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class LostException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 3664651649094973500L;
-    /**¶ªÊ§Òì³£*/
+    /**ä¸¢å¤±å¼‚å¸¸*/
     public LostException(String string) {
         super(string);
     }
-    /**¶ªÊ§Òì³£*/
+    /**ä¸¢å¤±å¼‚å¸¸*/
     public LostException(Throwable error) {
         super(error);
     }
-    /**¶ªÊ§Òì³£*/
+    /**ä¸¢å¤±å¼‚å¸¸*/
     public LostException(String string, Throwable error) {
         super(string, error);
     }

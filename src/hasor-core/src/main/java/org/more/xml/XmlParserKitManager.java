@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,16 +30,16 @@ import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- * <b>Level 2</b>£º¸Ã¼¶±ğµÄxml·ÃÎÊ²ßÂÔ¹Ø×¢ÓÚxmlÔªËØ»òÊôĞÔÓëÃüÃû¿Õ¼äµÄ¶ÔÓ¦ĞÔ£¬Ê¹ÓÃXmlParserKitManager
- * ¿ÉÒÔ×¨ÃÅÓÃÓÚ·ÃÎÊÄ³¸öÃüÃû¿Õ¼äÏÂµÄÔªËØ¡£Ã¿¸öÃüÃû¿Õ¼äµÄ½âÎöÆ÷¶¼ÊÇÒ»¸ö{@link XmlParserKit}ÀàĞÍ¶ÔÏó¡£
- * ÔÚÊ¹ÓÃLevel 2¼¶±ğ·ÃÎÊxmlµÄÊ±£¬ĞèÒª½«ÃüÃû¿Õ¼äÓë½âÎöÆ÷¶ÔÓ¦ÆğÀ´¡£²¢ÇÒ½èÖúLevel 1µÄ¹¤¾ß½øĞĞÉ¨Ãèxml¡£
+ * <b>Level 2</b>ï¼šè¯¥çº§åˆ«çš„xmlè®¿é—®ç­–ç•¥å…³æ³¨äºxmlå…ƒç´ æˆ–å±æ€§ä¸å‘½åç©ºé—´çš„å¯¹åº”æ€§ï¼Œä½¿ç”¨XmlParserKitManager
+ * å¯ä»¥ä¸“é—¨ç”¨äºè®¿é—®æŸä¸ªå‘½åç©ºé—´ä¸‹çš„å…ƒç´ ã€‚æ¯ä¸ªå‘½åç©ºé—´çš„è§£æå™¨éƒ½æ˜¯ä¸€ä¸ª{@link XmlParserKit}ç±»å‹å¯¹è±¡ã€‚
+ * åœ¨ä½¿ç”¨Level 2çº§åˆ«è®¿é—®xmlçš„æ—¶ï¼Œéœ€è¦å°†å‘½åç©ºé—´ä¸è§£æå™¨å¯¹åº”èµ·æ¥ã€‚å¹¶ä¸”å€ŸåŠ©Level 1çš„å·¥å…·è¿›è¡Œæ‰«æxmlã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlParserKitManager implements XmlAccept {
-    /**×¢²áµÄÃüÃû¿Õ¼ä½âÎö¹¤¾ß¼¯*/
+    /**æ³¨å†Œçš„å‘½åç©ºé—´è§£æå·¥å…·é›†*/
     private HashMap<String, ArrayList<XmlNamespaceParser>> regeditXmlParserKit = new HashMap<String, ArrayList<XmlNamespaceParser>>();
-    /**»î¶¯µÄÇ°×ºÓëÃüÃû¿Õ¼äÓ³Éä*/
+    /**æ´»åŠ¨çš„å‰ç¼€ä¸å‘½åç©ºé—´æ˜ å°„*/
     private XmlStackDecorator<Object>                      activateStack       = null;
     //
     //
@@ -48,19 +48,19 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack = new XmlStackDecorator<Object>();
         return this.activateStack;
     }
-    //    /**»ñÈ¡»·¾³¶ÔÏó£¬µÄ{@link IAttribute}ÊôĞÔ½Ó¿Ú¡£*/
+    //    /**è·å–ç¯å¢ƒå¯¹è±¡ï¼Œçš„{@link IAttribute}å±æ€§æ¥å£ã€‚*/
     //    public IAttribute<Object> getAttContext() {
     //        return getXmlStack().get.getSource();
     //    }
-    /**ÉèÖÃ°ó¶¨µÄÉÏÏÂÎÄ¶ÔÏó*/
+    /**è®¾ç½®ç»‘å®šçš„ä¸Šä¸‹æ–‡å¯¹è±¡*/
     public void setContext(Object context) {
         getXmlStack().setContext(context);
     }
-    /**»ñÈ¡°ó¶¨µÄÉÏÏÂÎÄ¶ÔÏó*/
+    /**è·å–ç»‘å®šçš„ä¸Šä¸‹æ–‡å¯¹è±¡*/
     public Object getContext() {
         return getXmlStack().getContext();
     }
-    /**¼ì²âÒ»¸öÃüÃû¿Õ¼ä´¦ÀíÆ÷ÊÇ·ñÒÑ¾­°ó¶¨µ½Ä³¸öÃüÃû¿Õ¼äÉÏ¡£*/
+    /**æ£€æµ‹ä¸€ä¸ªå‘½åç©ºé—´å¤„ç†å™¨æ˜¯å¦å·²ç»ç»‘å®šåˆ°æŸä¸ªå‘½åç©ºé—´ä¸Šã€‚*/
     public boolean isRegeditKit(String namespace, XmlNamespaceParser kit) {
         if (this.regeditXmlParserKit.containsKey(namespace) == false)
             return false;
@@ -68,43 +68,43 @@ public class XmlParserKitManager implements XmlAccept {
         return parserList.contains(kit);
     }
     /**
-     * °ó¶¨Ä³¸öÃüÃû¿Õ¼ä´¦ÀíÆ÷µ½Ò»¸ö½âÎöÆ÷ÉÏ¡£°ó¶¨µÄ½âÎöÆ÷¿ÉÒÔÓÃÓÚ¼àÌıµ½xmlÊÂ¼şÁ÷ĞÅÏ¢¡£
-     * Èç¹ûÆóÍ¼ÖØ¸´¹ØÁªÄ³¸ö½âÎöÆ÷ÓëÃüÃû¿Õ¼äµÄ¶ÔÓ¦¹ØÏµÔò»áÒı·¢{@link RepeateException}Òì³£¡£
-     * @param namespace Òª°ó¶¨µÄÃüÃû¿Õ¼ä¡£
-     * @param kit Òª¹ØÁªµÄ½âÎöÆ÷¡£
+     * ç»‘å®šæŸä¸ªå‘½åç©ºé—´å¤„ç†å™¨åˆ°ä¸€ä¸ªè§£æå™¨ä¸Šã€‚ç»‘å®šçš„è§£æå™¨å¯ä»¥ç”¨äºç›‘å¬åˆ°xmläº‹ä»¶æµä¿¡æ¯ã€‚
+     * å¦‚æœä¼å›¾é‡å¤å…³è”æŸä¸ªè§£æå™¨ä¸å‘½åç©ºé—´çš„å¯¹åº”å…³ç³»åˆ™ä¼šå¼•å‘{@link RepeateException}å¼‚å¸¸ã€‚
+     * @param namespace è¦ç»‘å®šçš„å‘½åç©ºé—´ã€‚
+     * @param kit è¦å…³è”çš„è§£æå™¨ã€‚
      */
     public void regeditKit(String namespace, XmlNamespaceParser kit) {
         if (namespace == null || kit == null)
-            throw new NullPointerException("namespace£¬kit²ÎÊı²»ÄÜÎª¿Õ¡£");
+            throw new NullPointerException("namespaceï¼Œkitå‚æ•°ä¸èƒ½ä¸ºç©ºã€‚");
         ArrayList<XmlNamespaceParser> list = null;
         if (this.regeditXmlParserKit.containsKey(namespace) == true)
             list = this.regeditXmlParserKit.get(namespace);
         else
             list = new ArrayList<XmlNamespaceParser>();
         if (list.contains(kit) == true)
-            throw new RepeateException("ÃüÃû¿Õ¼ä[" + namespace + "]Óë½âÎöÆ÷" + kit + "ÖØ¸´×¢²á¡£");
+            throw new RepeateException("å‘½åç©ºé—´[" + namespace + "]ä¸è§£æå™¨" + kit + "é‡å¤æ³¨å†Œã€‚");
         list.add(kit);
         this.regeditXmlParserKit.put(namespace, list);
     }
     /**
-     * ½â³ı×¢²áÊ¹ÓÃregeditKit·½·¨×¢²áµÄnamespaceÓë{@link XmlParserKit}¹ØÁª¹ØÏµ¡£
-     * @param namespace Òª½â³ı°ó¶¨µÄÃüÃû¿Õ¼ä¡£
-     * @param kit Òª½â³ı¹ØÁªµÄ½âÎöÆ÷¡£
+     * è§£é™¤æ³¨å†Œä½¿ç”¨regeditKitæ–¹æ³•æ³¨å†Œçš„namespaceä¸{@link XmlParserKit}å…³è”å…³ç³»ã€‚
+     * @param namespace è¦è§£é™¤ç»‘å®šçš„å‘½åç©ºé—´ã€‚
+     * @param kit è¦è§£é™¤å…³è”çš„è§£æå™¨ã€‚
      */
     public void unRegeditKit(String namespace, XmlNamespaceParser kit) {
         if (namespace == null || kit == null)
-            throw new NullPointerException("namespace£¬kit²ÎÊı²»ÄÜÎª¿Õ¡£");
+            throw new NullPointerException("namespaceï¼Œkitå‚æ•°ä¸èƒ½ä¸ºç©ºã€‚");
         if (this.regeditXmlParserKit.containsKey(namespace) == false)
             return;
         ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
         if (list.contains(kit) == true)
             list.remove(kit);
     }
-    /**»ñÈ¡×¢²áµÄÃüÃû¿Õ¼ä¼¯ºÏ*/
+    /**è·å–æ³¨å†Œçš„å‘½åç©ºé—´é›†åˆ*/
     public Set<String> getNamespace() {
         return Collections.unmodifiableSet(this.regeditXmlParserKit.keySet());
     }
-    /**»ñÈ¡Ö¸¶¨ÃüÃû¿Õ¼äÏÂÒÑ×¢²áµÄ½âÎöÆ÷¼¯ºÏ¡£*/
+    /**è·å–æŒ‡å®šå‘½åç©ºé—´ä¸‹å·²æ³¨å†Œçš„è§£æå™¨é›†åˆã€‚*/
     public List<XmlNamespaceParser> getXmlNamespaceParser(String namespace) {
         List<XmlNamespaceParser> parserList = this.regeditXmlParserKit.get(namespace);
         if (parserList == null)
@@ -112,14 +112,14 @@ public class XmlParserKitManager implements XmlAccept {
         else
             return Collections.unmodifiableList(parserList);
     }
-    /**¿ªÊ¼{@link XmlAccept}½Ó¿ÚµÄµ÷ÓÃ£¬¸Ã·½·¨Ö÷ÒªÓÃÓÚÖØÖÃ×´Ì¬¡£*/
+    /**å¼€å§‹{@link XmlAccept}æ¥å£çš„è°ƒç”¨ï¼Œè¯¥æ–¹æ³•ä¸»è¦ç”¨äºé‡ç½®çŠ¶æ€ã€‚*/
     public void beginAccept() {
         this.getXmlStack();
         for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
             for (XmlNamespaceParser xnp : alList)
                 xnp.beginAccept();
     }
-    /**½áÊø{@link XmlAccept}½Ó¿ÚµÄµ÷ÓÃ¡£*/
+    /**ç»“æŸ{@link XmlAccept}æ¥å£çš„è°ƒç”¨ã€‚*/
     public void endAccept() {
         this.activateStack = null;
         for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
@@ -127,20 +127,20 @@ public class XmlParserKitManager implements XmlAccept {
                 xnp.endAccept();
     }
     /*--------------------------------------------------------------*/
-    /**·Ö·¢ÊÂ¼şµ½{@link XmlParserKit}ÁĞ±í*/
+    /**åˆ†å‘äº‹ä»¶åˆ°{@link XmlParserKit}åˆ—è¡¨*/
     private void issueEvent(XmlStreamEvent e, XmlStackDecorator<Object> activateStack) throws IOException, XMLStreamException {
-        //¹«¹²ÊÂ¼ş
+        //å…¬å…±äº‹ä»¶
         if (e.isPublicEvent() == true)
             for (String namespace : this.regeditXmlParserKit.keySet()) {
                 QName currentElement = e.getCurrentElement();
                 String xpath = null;
                 if (currentElement == null)
-                    xpath = "/";//±Ø¶¨ÊÇ ¿ªÊ¼ÎÄµµ»òÕß½áÊøÎÄµµÊÂ¼ş¡£
+                    xpath = "/";//å¿…å®šæ˜¯ å¼€å§‹æ–‡æ¡£æˆ–è€…ç»“æŸæ–‡æ¡£äº‹ä»¶ã€‚
                 else {
                     String prefix = currentElement.getPrefix();
                     NameSpace ns = (NameSpace) this.activateStack.get(prefix);
                     if (ns == null)
-                        throw new XmlFormatException("½âÎö´íÎó£¬Ç°×º[" + prefix + "]´ú±íµÄÃüÃû¿Õ¼äÃ»ÓĞ±»¼¤»î¡£");
+                        throw new XmlFormatException("è§£æé”™è¯¯ï¼Œå‰ç¼€[" + prefix + "]ä»£è¡¨çš„å‘½åç©ºé—´æ²¡æœ‰è¢«æ¿€æ´»ã€‚");
                     xpath = ns.getXpath();
                 }
                 ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(namespace);
@@ -149,7 +149,7 @@ public class XmlParserKitManager implements XmlAccept {
                         kit.sendEvent(this.getXmlStack(), xpath, e);
             }
         else {
-            //´¦ÀíË½ÓĞÊÂ¼ş
+            //å¤„ç†ç§æœ‰äº‹ä»¶
             String prefix = e.getCurrentElement().getPrefix();
             prefix = (prefix == null) ? "" : prefix;
             NameSpace ns = activateStack.getNameSpace(prefix);
@@ -159,9 +159,9 @@ public class XmlParserKitManager implements XmlAccept {
                     kit.sendEvent(this.getXmlStack(), ns.getXpath(), e);
         }
     }
-    /**ÊµÏÖ{@link XmlAccept}½Ó¿ÚÓÃÓÚ½ÓÊÜÊÂ¼şµÄ·½·¨¡£*/
+    /**å®ç°{@link XmlAccept}æ¥å£ç”¨äºæ¥å—äº‹ä»¶çš„æ–¹æ³•ã€‚*/
     public synchronized void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
-        //1.´¦ÀíStartElementEvent
+        //1.å¤„ç†StartElementEvent
         if (e instanceof StartElementEvent) {
             this.activateStack.createStack();
             StartElementEvent ee = (StartElementEvent) e;
@@ -173,21 +173,21 @@ public class XmlParserKitManager implements XmlAccept {
                 prefix = (prefix == null) ? "" : prefix;
                 NameSpace ns = this.activateStack.getNameSpace(prefix);
                 if (ns == null)
-                    //¼¤»îĞÂµÄÃüÃû¿Õ¼ä
+                    //æ¿€æ´»æ–°çš„å‘½åç©ºé—´
                     this.activateStack.addNameSpace(prefix, new NameSpace(uri, "/"));
             }
-            //Éú³Éµ±Ç°½ÚµãµÄxpath£¨×¨ÊôÃüÃû¿Õ¼äÏÂµÄxpath£©
+            //ç”Ÿæˆå½“å‰èŠ‚ç‚¹çš„xpathï¼ˆä¸“å±å‘½åç©ºé—´ä¸‹çš„xpathï¼‰
             String prefix = ee.getPrefix();
             prefix = (prefix == null) ? "" : prefix;
             NameSpace ns = this.activateStack.getNameSpace(prefix);
             ns.appendXPath(ee.getElementName(), false);
             this.issueEvent(e, this.activateStack);
-            //Èç¹ûÖ´ĞĞµÄÊÇÌø¹ıÔòÉ¾³ıÆä¼ÓÈëµÄxpath£¬ÒòÎªreader²»»áÔÙ·¢ËÍÆäendÊÂ¼ş¡£
+            //å¦‚æœæ‰§è¡Œçš„æ˜¯è·³è¿‡åˆ™åˆ é™¤å…¶åŠ å…¥çš„xpathï¼Œå› ä¸ºreaderä¸ä¼šå†å‘é€å…¶endäº‹ä»¶ã€‚
             if (e.isSkip() == true)
                 ns.removeXPath();
             return;
         } else
-        //2.´¦ÀíEndElementEvent
+        //2.å¤„ç†EndElementEvent
         if (e instanceof EndElementEvent) {
             EndElementEvent ee = (EndElementEvent) e;
             NameSpace ns = this.activateStack.getNameSpace(ee.getPrefix());
@@ -196,7 +196,7 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             return;
         } else
-        //3.´¦ÀíAttributeEvent
+        //3.å¤„ç†AttributeEvent
         if (e instanceof AttributeEvent) {
             this.activateStack.createStack();
             AttributeEvent ee = (AttributeEvent) e;
@@ -213,18 +213,18 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             return;
         } else
-        //4.´¦ÀíStartDocumentEvent
+        //4.å¤„ç†StartDocumentEvent
         if (e instanceof StartDocumentEvent) {
             this.activateStack.createStack();
             this.issueEvent(e, this.activateStack);
             return;
-        }//5.´¦ÀíEndElementEvent
+        }//5.å¤„ç†EndElementEvent
         if (e instanceof EndElementEvent) {
             this.activateStack.dropStack();
             this.issueEvent(e, this.activateStack);
             return;
         } else
-            //5.·Ö·¢ÊÂ¼ş
+            //5.åˆ†å‘äº‹ä»¶
             this.issueEvent(e, this.activateStack);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ÉùÃ÷Ò»¸ö»º´æ·şÎñÌá¹©Õß£¬±ê¼ÇÁË¸Ã½Ó¿ÚµÄÀà±ØĞëÒªÇóÊµÏÖ{@link Cache}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªç¼“å­˜æœåŠ¡æä¾›è€…ï¼Œæ ‡è®°äº†è¯¥æ¥å£çš„ç±»å¿…é¡»è¦æ±‚å®ç°{@link Cache}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface CacheDefine {
-    /**»º´æÃû³Æ£¬²»ÔÊĞí³öÏÖÍ¬Ãû¡£*/
+    /**ç¼“å­˜åç§°ï¼Œä¸å…è®¸å‡ºç°åŒåã€‚*/
     public String[] value();
 }

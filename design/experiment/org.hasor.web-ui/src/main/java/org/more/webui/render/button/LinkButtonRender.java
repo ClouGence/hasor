@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.more.webui.render.AbstractRender;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ½«°´Å¥×é½¨äÖÈ¾³Éa±êÇ©¡£
- * <br><b>¿Í»§¶ËÄ£ĞÍ</b>£ºUILinkButton£¨UILinkButton.js£©
+ * å°†æŒ‰é’®ç»„å»ºæ¸²æŸ“æˆaæ ‡ç­¾ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡å‹</b>ï¼šUILinkButtonï¼ˆUILinkButton.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class LinkButtonRender<T extends UIButton> extends AbstractRender<T> {
     @Override
@@ -39,7 +39,7 @@ public class LinkButtonRender<T extends UIButton> extends AbstractRender<T> {
     }
     @Override
     public Map<String, Object> tagAttributes(ViewContext viewContext, T component) {
-        //----¸²¸Ç¶¨ÒåµÄÊôĞÔ
+        //----è¦†ç›–å®šä¹‰çš„å±æ€§
         Map<String, Object> hashMap = super.tagAttributes(viewContext, component);
         hashMap.put("href", "javascript:void(0);");//writer.write("<a href='javascript:void(0);'");
         if (hashMap.containsKey("onclick") == true)

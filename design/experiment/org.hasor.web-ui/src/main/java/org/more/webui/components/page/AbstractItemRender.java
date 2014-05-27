@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 /**
- * ·ÖÒ³×é½¨.
+ * åˆ†é¡µç»„å»º.
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class AbstractItemRender implements Render<AbstractItem> {
     public void beginRender(ViewContext viewContext, AbstractItem component, TemplateBody arg3, Writer writer) throws IOException, TemplateModelException {}

@@ -19,11 +19,11 @@ import net.hasor.core.builder.BeanBuilder;
 /**
  * 
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface RegisterManager {
-    /**×¢²áBean*/
+    /**æ³¨å†ŒBean*/
     public <T> TypeRegister<T> registerType(Class<T> bindType);
-    /**»ñÈ¡BeanBuilder£¬ÓÃÀ´²éÑ¯ºÍ´´½¨Bean*/
+    /**è·å–BeanBuilderï¼Œç”¨æ¥æŸ¥è¯¢å’Œåˆ›å»ºBean*/
     public BeanBuilder getBeanBuilder();
 }

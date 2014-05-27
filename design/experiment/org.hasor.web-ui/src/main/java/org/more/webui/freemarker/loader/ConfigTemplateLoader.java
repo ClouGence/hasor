@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import org.more.webui.freemarker.loader.mto.String_TemplateObject;
 import org.more.webui.freemarker.loader.mto.URL_TemplateObject;
 import org.more.webui.resource.IResourceLoader;
 /**
- * ´¦ÀíÅäÖÃÎÄ¼şÖĞÌí¼ÓµÄÄ£°å¡£
+ * å¤„ç†é…ç½®æ–‡ä»¶ä¸­æ·»åŠ çš„æ¨¡æ¿ã€‚
  * @version : 2011-9-14
- * @author ÕÔÓÀ´º (zyc@byshell.org) 
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org) 
  */
 public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
     private Map<String, AbstractTemplateObject> objectMap = null;
@@ -41,19 +41,19 @@ public class ConfigTemplateLoader implements ITemplateLoader, IResourceLoader {
     public String getType() {
         return this.getClass().getSimpleName();
     }
-    /**½«classpathÖĞµÄÒ»¸ö×ÊÔ´µØÖ·×÷ÎªÄ£°åÄÚÈİÌí¼Óµ½×°ÔØÆ÷ÖĞ¡£*/
+    /**å°†classpathä¸­çš„ä¸€ä¸ªèµ„æºåœ°å€ä½œä¸ºæ¨¡æ¿å†…å®¹æ·»åŠ åˆ°è£…è½½å™¨ä¸­ã€‚*/
     public void addTemplate(String name, String classPath) {
         this.objectMap.put(name, new ClassPath_TemplateObject(classPath, Thread.currentThread().getContextClassLoader()));
     };
-    /**½«{@link File}µØÖ·×÷ÎªÄ£°åÄÚÈİÌí¼Óµ½×°ÔØÆ÷ÖĞ¡£*/
+    /**å°†{@link File}åœ°å€ä½œä¸ºæ¨¡æ¿å†…å®¹æ·»åŠ åˆ°è£…è½½å™¨ä¸­ã€‚*/
     public void addTemplate(String name, File filePath) {
         this.objectMap.put(name, new File_TemplateObject(filePath));
     };
-    /**½«{@link URL}µØÖ·×÷ÎªÄ£°åÄÚÈİÌí¼Óµ½×°ÔØÆ÷ÖĞ¡£*/
+    /**å°†{@link URL}åœ°å€ä½œä¸ºæ¨¡æ¿å†…å®¹æ·»åŠ åˆ°è£…è½½å™¨ä¸­ã€‚*/
     public void addTemplate(String name, URL urlPath) {
         this.objectMap.put(name, new URL_TemplateObject(urlPath));
     };
-    /**½«×Ö·û´®×÷ÎªÄ£°åÄÚÈİÌí¼Óµ½×°ÔØÆ÷ÖĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²ä½œä¸ºæ¨¡æ¿å†…å®¹æ·»åŠ åˆ°è£…è½½å™¨ä¸­ã€‚*/
     public void addTemplateAsString(String name, String templateString) {
         this.objectMap.put(name, new String_TemplateObject(templateString));
     }

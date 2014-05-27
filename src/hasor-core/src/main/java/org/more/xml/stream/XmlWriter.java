@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,42 +24,42 @@ import javax.xml.stream.XMLStreamWriter;
 /**
  *
  * @version 2010-9-7
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlWriter implements XmlAccept {
-    private OutputStream    xmlStrema     = null; //¶ÁÈ¡XmlÊı¾İµÄÊä³öÁ÷¡£
+    private OutputStream    xmlStrema     = null; //è¯»å–Xmlæ•°æ®çš„è¾“å‡ºæµã€‚
     private XMLStreamWriter writer        = null;
-    private boolean         ignoreComment = true; //ÊÇ·ñºöÂÔXmlÖĞµÄËùÓĞ×¢ÊÍ½Úµã¡£
-    private boolean         ignoreSpace   = true; //ÊÇ·ñºöÂÔXmlÖĞ¿ÉºöÂÔµÄ¿Õ¸ñ¡£
+    private boolean         ignoreComment = true; //æ˜¯å¦å¿½ç•¥Xmlä¸­çš„æ‰€æœ‰æ³¨é‡ŠèŠ‚ç‚¹ã€‚
+    private boolean         ignoreSpace   = true; //æ˜¯å¦å¿½ç•¥Xmlä¸­å¯å¿½ç•¥çš„ç©ºæ ¼ã€‚
     //--------------------------------------------------------------------
-    /**´´½¨Ò»¸öXmlWriter¶ÔÏóÓÃÓÚĞ´ÈëxmlÊÂ¼şÁ÷µ½fileName²ÎÊıËù±íÊöµÄXmlÎÄ¼ş¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlWriterå¯¹è±¡ç”¨äºå†™å…¥xmläº‹ä»¶æµåˆ°fileNameå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶ã€‚*/
     public XmlWriter(String fileName) throws FileNotFoundException {
         this.xmlStrema = new FileOutputStream(fileName);
     }
-    /**´´½¨Ò»¸öXmlWriter¶ÔÏóÓÃÓÚĞ´ÈëxmlÊÂ¼şÁ÷µ½file²ÎÊıËù±íÊöµÄXmlÎÄ¼ş¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlWriterå¯¹è±¡ç”¨äºå†™å…¥xmläº‹ä»¶æµåˆ°fileå‚æ•°æ‰€è¡¨è¿°çš„Xmlæ–‡ä»¶ã€‚*/
     public XmlWriter(File file) throws FileNotFoundException {
         this.xmlStrema = new FileOutputStream(file);
     }
-    /**´´½¨Ò»¸öXmlWriter¶ÔÏóÓÃÓÚĞ´ÈëxmlÊÂ¼şÁ÷µ½xmlStrema²ÎÊıËù±íÊöµÄÁ÷ÖĞ¡£*/
+    /**åˆ›å»ºä¸€ä¸ªXmlWriterå¯¹è±¡ç”¨äºå†™å…¥xmläº‹ä»¶æµåˆ°xmlStremaå‚æ•°æ‰€è¡¨è¿°çš„æµä¸­ã€‚*/
     public XmlWriter(OutputStream xmlStrema) {
         if (xmlStrema == null)
-            throw new NullPointerException("OutputStreamÀàĞÍ²ÎÊıÎª¿Õ¡£");
+            throw new NullPointerException("OutputStreamç±»å‹å‚æ•°ä¸ºç©ºã€‚");
         this.xmlStrema = xmlStrema;
     }
     //--------------------------------------------------------------------
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚĞ´ÈëXMLÆÚ¼ä·¢ÏÖµÄÃèÊö½Úµã¡£·µ»Øtrue±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨å†™å…¥XMLæœŸé—´å‘ç°çš„æè¿°èŠ‚ç‚¹ã€‚è¿”å›trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public boolean isIgnoreComment() {
         return this.ignoreComment;
     }
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚĞ´ÈëXMLÆÚ¼ä·¢ÏÖµÄÃèÊö½Úµã¡£true±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨å†™å…¥XMLæœŸé—´å‘ç°çš„æè¿°èŠ‚ç‚¹ã€‚trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public void setIgnoreComment(boolean ignoreComment) {
         this.ignoreComment = ignoreComment;
     }
-    /**·µ»ØÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñºöÂÔÔÚ¶ÁÈ¡XMLÆÚ¼ä·¢ÏÖµÄ¿ÉºöÂÔµÄ¿Õ¸ñ×Ö·û£¨²ÎÔÄ [XML], 2.10 "White Space Handling"£©¡£·µ»Øtrue±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è¿”å›ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦å¿½ç•¥åœ¨è¯»å–XMLæœŸé—´å‘ç°çš„å¯å¿½ç•¥çš„ç©ºæ ¼å­—ç¬¦ï¼ˆå‚é˜… [XML], 2.10 "White Space Handling"ï¼‰ã€‚è¿”å›trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public boolean isIgnoreSpace() {
         return this.ignoreSpace;
     }
-    /**ÉèÖÃÒ»¸öbooleanÖµ£¬¸ÃÖµ±íÊ¾ÁËÊÇ·ñÔÚĞ´ÈëXMLÆÚ¼äºöÂÔ¿ÉºöÂÔµÄ¿Õ¸ñ×Ö·û£¨²ÎÔÄ [XML], 2.10 "White Space Handling"£©¡£true±íÊ¾ºöÂÔ£¬false±íÊ¾²»ºöÂÔ¡£*/
+    /**è®¾ç½®ä¸€ä¸ªbooleanå€¼ï¼Œè¯¥å€¼è¡¨ç¤ºäº†æ˜¯å¦åœ¨å†™å…¥XMLæœŸé—´å¿½ç•¥å¯å¿½ç•¥çš„ç©ºæ ¼å­—ç¬¦ï¼ˆå‚é˜… [XML], 2.10 "White Space Handling"ï¼‰ã€‚trueè¡¨ç¤ºå¿½ç•¥ï¼Œfalseè¡¨ç¤ºä¸å¿½ç•¥ã€‚*/
     public void setIgnoreSpace(boolean ignoreSpace) {
         this.ignoreSpace = ignoreSpace;
     }
@@ -70,7 +70,7 @@ public class XmlWriter implements XmlAccept {
     }
     public void endAccept() {}
     public void sendEvent(XmlStreamEvent e) throws XMLStreamException {
-        //1.Ö´ĞĞºöÂÔ¡£
+        //1.æ‰§è¡Œå¿½ç•¥ã€‚
         if (e instanceof TextEvent == true) {
             TextEvent textE = (TextEvent) e;
             if (textE.isCommentEvent() == true && this.ignoreComment == true)
@@ -78,7 +78,7 @@ public class XmlWriter implements XmlAccept {
             if (textE.isSpaceEvent() == true && this.ignoreSpace == true)
                 return;
         }
-        //2.´¦ÀíÊÂ¼ş
+        //2.å¤„ç†äº‹ä»¶
         if (e instanceof StartDocumentEvent) {
             StartDocumentEvent ee = (StartDocumentEvent) e;
             this.writer.writeStartDocument(ee.getEncoding(), ee.getVersion());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import org.more.webui.render.AbstractRender;
 import org.more.webui.tag.TemplateBody;
 import freemarker.template.TemplateException;
 /**
- * ½«ÉÏ´«°´Å¥×é½¨äÖÈ¾³öÈ¥¡£
- * <br><b>¿Í»§¶ËÄ£ÐÍ</b>£ºUIUploadInput£¨UIUploadInput.js£©
+ * å°†ä¸Šä¼ æŒ‰é’®ç»„å»ºæ¸²æŸ“å‡ºåŽ»ã€‚
+ * <br><b>å®¢æˆ·ç«¯æ¨¡åž‹</b>ï¼šUIUploadInputï¼ˆUIUploadInput.jsï¼‰
  * @version : 2012-5-18
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class UploadRender extends AbstractRender<Upload> {
     @Override

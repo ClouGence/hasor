@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 /**
- * SecurityAccessπ‹¿Ì∆˜°£
+ * SecurityAccessÁÆ°ÁêÜÂô®„ÄÇ
  * @version : 2013-4-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 class ManagedSecurityAccessManager {
     private Map<String, SecurityAccessDefinition> accessDefinitionMap = null;

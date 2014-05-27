@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import org.eclipse.jdt.internal.core.JarPackageFragmentRoot;
 /**
  * 
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstModel {
     private static final String     ResourceName    = "/META-INF/core-codes.xml";
@@ -55,27 +55,27 @@ public class ConstModel {
     //
     //
     //
-    /**´´½¨ConstCodeModel¶ÔÏó*/
+    /**åˆ›å»ºConstCodeModelå¯¹è±¡*/
     public ConstModel(IJavaProject javaProject) {
         this.javaProject = javaProject;
     }
-    /**»ñÈ¡ÏîÄ¿Ãû*/
+    /**è·å–é¡¹ç›®å*/
     public String getProjectName() {
         return this.javaProject.getElementName();
     }
-    /**»ñÈ¡ÏîÄ¿*/
+    /**è·å–é¡¹ç›®*/
     public IJavaProject getProject() {
         return this.javaProject;
     }
-    /**»ñÈ¡¸ÃÄ£ĞÍÓÃÓÚ±íÊ¾µÄ×Ö·û´®*/
+    /**è·å–è¯¥æ¨¡å‹ç”¨äºè¡¨ç¤ºçš„å­—ç¬¦ä¸²*/
     public String getTitle() {
         return "(" + this.getProjectName() + ")";
     }
-    /**³õÊ¼»¯×°ÔØ*/
+    /**åˆå§‹åŒ–è£…è½½*/
     public void initLoad(IProgressMonitor monitor) throws CoreException {
         IJavaElement[] javaElements = this.javaProject.getChildren();
         if (javaElements != null) {
-            //A.É¨Ãè×ÊÔ´
+            //A.æ‰«æèµ„æº
             Map<String, Object> findRes = new Hashtable<String, Object>();
             for (int j = 0; j < javaElements.length; j++) {
                 IJavaElement element = javaElements[j];
@@ -83,7 +83,7 @@ public class ConstModel {
                     iterateItem(element, ResourceName, findRes);
                 Message.updateTask(monitor, "scanning project ' " + javaProject.getElementName() + " '...", javaElements.length, j);
             }
-            //B.¼ÓÔØ×ÊÔ´
+            //B.åŠ è½½èµ„æº
             for (Entry<String, Object> ent : findRes.entrySet()) {
                 String key = ent.getKey();
                 Object var = ent.getValue();
@@ -94,7 +94,7 @@ public class ConstModel {
             }
         }
     }
-    /**Çå³ıµôËùÓĞ·ÇSourceµÄ·Ö×é*/
+    /**æ¸…é™¤æ‰æ‰€æœ‰éSourceçš„åˆ†ç»„*/
     public void cleanLibraryGroup() {
         this.isLoadedLibrary = false;
         ArrayList<ConstGroup> libGroup = new ArrayList<ConstGroup>();
@@ -104,12 +104,12 @@ public class ConstModel {
         for (ConstGroup group : libGroup)
             constGroupList.remove(constGroupMap.remove(group.getName()));
     }
-    /**Ö´ĞĞÒ»´ÎÍêÈ«µÄÖØĞÂ×°ÔØ*/
+    /**æ‰§è¡Œä¸€æ¬¡å®Œå…¨çš„é‡æ–°è£…è½½*/
     public void initLoadLibrary(IProgressMonitor monitor) throws CoreException {
         //
         IJavaElement[] javaElements = javaProject.getChildren();
         if (javaElements != null) {
-            //A.É¨Ãè×ÊÔ´
+            //A.æ‰«æèµ„æº
             Map<String, Object> findRes = new Hashtable<String, Object>();
             for (int j = 0; j < javaElements.length; j++) {
                 IJavaElement element = javaElements[j];
@@ -117,7 +117,7 @@ public class ConstModel {
                     iterateItem(element, ResourceName, findRes);
                 Message.updateTask(monitor, "scanning project ' " + javaProject.getElementName() + " '...", javaElements.length, j);
             }
-            //B.¼ÓÔØ×ÊÔ´
+            //B.åŠ è½½èµ„æº
             for (Entry<String, Object> ent : findRes.entrySet()) {
                 String key = ent.getKey();
                 Object var = ent.getValue();
@@ -129,23 +129,23 @@ public class ConstModel {
         }
         this.isLoadedLibrary = true;
     }
-    /**Í¨ÖªÄ£ĞÍ½øĞĞË¢ĞÂ£¬µ«ÊÇ·ñÖ´ĞĞË¢ĞÂÒÀÕÕÄ£ĞÍ×ÔÔ¸¾ö¶¨¡£*/
+    /**é€šçŸ¥æ¨¡å‹è¿›è¡Œåˆ·æ–°ï¼Œä½†æ˜¯å¦æ‰§è¡Œåˆ·æ–°ä¾ç…§æ¨¡å‹è‡ªæ„¿å†³å®šã€‚*/
     public void refresh(IProgressMonitor monitor) throws CoreException {
-        //A.°²È«¼ì²é
+        //A.å®‰å…¨æ£€æŸ¥
         IJavaElement[] javaElements = javaProject.getChildren();
         if (javaElements == null) {
             this.constGroupMap = new Hashtable<String, ConstGroup>();
             this.constGroupList = new ArrayList<ConstGroup>();
         }
-        //B.É¨Ãè×ÊÔ´
+        //B.æ‰«æèµ„æº
         Map<String, Object> findRes = new Hashtable<String, Object>();
         for (int j = 0; j < javaElements.length; j++) {
             IJavaElement element = javaElements[j];
             if (this.isLoadedLibrary == true)
-                //ÒıÓÃËùÓĞ
+                //å¼•ç”¨æ‰€æœ‰
                 iterateItem(element, ResourceName, findRes);
             else {
-                //ÒıÓÃSrc
+                //å¼•ç”¨Src
                 if (element instanceof JarPackageFragmentRoot == false)
                     iterateItem(element, ResourceName, findRes);
             }
@@ -154,7 +154,7 @@ public class ConstModel {
         /*----------------------------------------------*/
         List<String> scanRes = null;
         List<String> nowRes = null;
-        //C.´¦ÀíscanRes½á¹ûÖĞĞÂµÄ³ÉÔ±
+        //C.å¤„ç†scanResç»“æœä¸­æ–°çš„æˆå‘˜
         scanRes = new ArrayList<String>(findRes.keySet());
         nowRes = new ArrayList<String>(this.constGroupMap.keySet());
         scanRes.removeAll(nowRes);
@@ -165,7 +165,7 @@ public class ConstModel {
             else
                 this.loadConst4Res(itemStr, (IResource) resObj);
         }
-        //D.´¦ÀínowRes½á¹ûÖĞÒÑ¾­Ê§Ğ§µÄ³ÉÔ±
+        //D.å¤„ç†nowResç»“æœä¸­å·²ç»å¤±æ•ˆçš„æˆå‘˜
         scanRes = new ArrayList<String>(findRes.keySet());
         nowRes = new ArrayList<String>(this.constGroupMap.keySet());
         nowRes.removeAll(scanRes);
@@ -185,11 +185,11 @@ public class ConstModel {
                 groupItem.save();
                 groupItem.finishSave();
             } catch (Throwable e) {
-                Message.errorInfo("save Group error ¡®" + groupItem.getName() + "¡¯.", e);
+                Message.errorInfo("save Group error â€˜" + groupItem.getName() + "â€™.", e);
             }
         }
     }
-    /**ÉèÖÃ³£Á¿·Ö×éĞÅÏ¢¡£*/
+    /**è®¾ç½®å¸¸é‡åˆ†ç»„ä¿¡æ¯ã€‚*/
     public void setGroup(String groupName) {
         if (groupName == null || groupName.equals("")) {
             this.currentGroup = null;
@@ -197,31 +197,31 @@ public class ConstModel {
         }
         this.currentGroup = this.constGroupMap.get(groupName);
     }
-    /**»ñÈ¡Ö¸¶¨µÄ·Ö×é*/
+    /**è·å–æŒ‡å®šçš„åˆ†ç»„*/
     public ConstGroup group(String groupName) {
         if (groupName == null)
             return null;
         return this.constGroupMap.get(groupName);
     }
     //
-    // get/setÊôĞÔ²¿·Ö
+    // get/setå±æ€§éƒ¨åˆ†
     //
-    /**»ñÈ¡ÒÑ¾­×°ÔØµÄXMLÎÄ¼ş·Ö×éĞÅÏ¢¡£*/
+    /**è·å–å·²ç»è£…è½½çš„XMLæ–‡ä»¶åˆ†ç»„ä¿¡æ¯ã€‚*/
     public List<ConstGroup> getGroups() {
         return this.constGroupList;
     }
-    /**ÊÇ·ñÒÑ¾­×°ÔØ¹ı¿â*/
+    /**æ˜¯å¦å·²ç»è£…è½½è¿‡åº“*/
     public boolean isLoadedLibrary() {
         return isLoadedLibrary;
     }
-    /**»ñÈ¡µ±Ç°·Ö×é*/
+    /**è·å–å½“å‰åˆ†ç»„*/
     public ConstGroup getCurrentGroup() {
         return currentGroup;
     }
     //
-    // É¨Ãè²¿·Ö......
+    // æ‰«æéƒ¨åˆ†......
     //
-    /**×ÊÔ´µü´úµÄÈë¿Ú*/
+    /**èµ„æºè¿­ä»£çš„å…¥å£*/
     private void iterateItem(Object atElement, String resourceName, Map<String, Object> findRes) throws CoreException {
         if (atElement instanceof IFolder) {
             this.iterateIFolder((IFolder) atElement, resourceName, findRes);
@@ -233,7 +233,7 @@ public class ConstModel {
             this.iterateIJarEntryResource((IJarEntryResource) atElement, resourceName, findRes);
         }
     }
-    /**ÔÚ°ü¡¢°ü¶ÎÖĞ²éÕÒ*/
+    /**åœ¨åŒ…ã€åŒ…æ®µä¸­æŸ¥æ‰¾*/
     private void iterateIJavaElement(IJavaElement atElement, String resourceName, Map<String, Object> findRes) throws CoreException {
         if (atElement.exists() == false)
             return;
@@ -266,7 +266,7 @@ public class ConstModel {
         }
         }
     }
-    /**ÔÚJarÎÄ¼şÖĞ²éÕÒ*/
+    /**åœ¨Jaræ–‡ä»¶ä¸­æŸ¥æ‰¾*/
     private void iterateIJarEntryResource(IJarEntryResource atElement, final String resourceName, Map<String, Object> findRes) throws CoreException {
         if (atElement.getFullPath().toString().endsWith(resourceName) == true) {
             //System.out.println(atElement.getFullPath().toString());
@@ -279,7 +279,7 @@ public class ConstModel {
             for (IJarEntryResource element : resourcesItem)
                 iterateItem(element, resourceName, findRes);
     }
-    /**ÔÚÎÄ¼ş¼ĞÖĞ²éÕÒ*/
+    /**åœ¨æ–‡ä»¶å¤¹ä¸­æŸ¥æ‰¾*/
     private void iterateIFolder(IFolder atElement, final String resourceName, final Map<String, Object> findRes) throws CoreException {
         if (atElement.exists() == false)
             return;//loadResource
@@ -296,18 +296,18 @@ public class ConstModel {
             }
         });
     }
-    /**ÔÚÎÄ¼şÖĞ²éÕÒ*/
+    /**åœ¨æ–‡ä»¶ä¸­æŸ¥æ‰¾*/
     private void iterateIFile(IFile atElement, String resourceName, Map<String, Object> findRes) throws CoreException {
         if (atElement.exists() == false)
             return;
         // System.out.println(atElement.getType() + "\t" + atElement.getName());
     }
     //
-    // É¨Ãè½á¹û´¦Àí²¿·Ö......
+    // æ‰«æç»“æœå¤„ç†éƒ¨åˆ†......
     //
-    /**×°ÔØÒ»¸ö³£Á¿jar°ü */
+    /**è£…è½½ä¸€ä¸ªå¸¸é‡jaråŒ… */
     private void loadConst4Jar(String name, IJarEntryResource atElement) {
-        //1.Ö´ĞĞ×°ÔØ
+        //1.æ‰§è¡Œè£…è½½
         ConstGroup groupModel = this.constGroupMap.get(name);
         if (groupModel == null) {
             InputStream inStream = null;
@@ -323,7 +323,7 @@ public class ConstModel {
                 if (inStream == null)
                     return;
             } catch (Exception e) {
-                Message.errorInfo("load IJarEntryResource ¡°" + resourceName + "¡±", e);
+                Message.errorInfo("load IJarEntryResource â€œ" + resourceName + "â€", e);
                 return;
             }
             //
@@ -335,9 +335,9 @@ public class ConstModel {
         } else
             groupModel.reloadData();
     }
-    /**×°ÔØÒ»¸ö³£Á¿ÅäÖÃÎÄ¼ş£¨Ö»Òª³É¹¦×°ÔØÒ»´Î¾Í½«Ä£ĞÍÖÃÎªÓĞĞ§£© */
+    /**è£…è½½ä¸€ä¸ªå¸¸é‡é…ç½®æ–‡ä»¶ï¼ˆåªè¦æˆåŠŸè£…è½½ä¸€æ¬¡å°±å°†æ¨¡å‹ç½®ä¸ºæœ‰æ•ˆï¼‰ */
     private void loadConst4Res(String name, IResource resource) {
-        //1.Ö´ĞĞ×°ÔØ
+        //1.æ‰§è¡Œè£…è½½
         ConstGroup groupModel = this.constGroupMap.get(name);
         if (groupModel == null) {
             groupModel = new FileConstCodeGroup(name, (IFile) resource);

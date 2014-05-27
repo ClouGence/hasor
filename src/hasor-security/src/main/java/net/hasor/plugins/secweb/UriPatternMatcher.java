@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package net.hasor.plugins.secweb;
 import net.hasor.security._.AuthSession;
 
 /**
- * ¶ÔURI½øĞĞÈ¨ÏŞÅĞ¶Ï½Ó¿Ú¡£
+ * å¯¹URIè¿›è¡Œæƒé™åˆ¤æ–­æ¥å£ã€‚
  * @version : 2013-4-9
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UriPatternMatcher {
     private String requestURI = null;
@@ -28,13 +28,13 @@ public abstract class UriPatternMatcher {
     protected UriPatternMatcher(String requestURI) {
         this.requestURI = requestURI;
     }
-    /**»ñÈ¡requestURI*/
+    /**è·å–requestURI*/
     public String getRequestURI() {
         return requestURI;
     }
-    /**ÔÚÈ¨ÏŞ»á»°ÖĞ¼ì²âÊÇ·ñ¾ßÓĞÈ¨ÏŞ¡£*/
+    /**åœ¨æƒé™ä¼šè¯ä¸­æ£€æµ‹æ˜¯å¦å…·æœ‰æƒé™ã€‚*/
     public abstract boolean testPermission(AuthSession authSession);
-    /**ÔÚÈ¨ÏŞ»á»°ÖĞ¼ì²âÊÇ·ñ¾ßÓĞÈ¨ÏŞ¡£*/
+    /**åœ¨æƒé™ä¼šè¯ä¸­æ£€æµ‹æ˜¯å¦å…·æœ‰æƒé™ã€‚*/
     public boolean testPermission(AuthSession[] authSessions) {
         if (authSessions == null)
             return false;

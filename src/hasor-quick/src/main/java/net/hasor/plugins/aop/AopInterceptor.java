@@ -24,9 +24,9 @@ import net.hasor.core.AppContextAware;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**
- * AopÀ¹½ØÆ÷
+ * Aopæ‹¦æˆªå™¨
  * @version : 2013-11-8
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
     private AppContext                                                    appContext           = null;
@@ -43,27 +43,27 @@ class AopInterceptor implements MethodInterceptor, AppContextAware {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod();
         List<Class<? extends MethodInterceptor>> list = this.methodInterceptorMap.get(targetMethod);
-        //1.È¡µÃÀ¹½ØÆ÷Á´
+        //1.å–å¾—æ‹¦æˆªå™¨é“¾
         if (list == null) {
             list = new ArrayList<Class<? extends MethodInterceptor>>();
-            //b.Àà¼¶À¹½ØÆ÷
+            //b.ç±»çº§æ‹¦æˆªå™¨
             Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
             if (beforeAnno != null) {
                 for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                     if (interType != null)
                         list.add(interType);
             }
-            //c.·½·¨¼¶À¹½ØÆ÷
+            //c.æ–¹æ³•çº§æ‹¦æˆªå™¨
             beforeAnno = targetMethod.getAnnotation(Aop.class);
             if (beforeAnno != null) {
                 for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
                     if (interType != null)
                         list.add(interType);
             }
-            //d.»º´æ½á¹û
+            //d.ç¼“å­˜ç»“æœ
             this.methodInterceptorMap.put(targetMethod, list);
         }
-        //2.´´½¨¶ÔÏó
+        //2.åˆ›å»ºå¯¹è±¡
         return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
     }
 }

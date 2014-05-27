@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package net.hasor.core.binder;
 import java.util.Map;
 /**
- * ×¢²áµ½ Hasor ÖĞ Bean µÄÔªĞÅÏ¢¡£
+ * æ³¨å†Œåˆ° Hasor ä¸­ Bean çš„å…ƒä¿¡æ¯ã€‚
  * @version : 2013-5-6
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 class BeanInfoData implements BeanInfo {
     private String[]            names     = null;
@@ -32,14 +32,14 @@ class BeanInfoData implements BeanInfo {
         this.beanClass = beanClass;
         this.property = property;
     }
-    /**»ñÈ¡beanµÄÃû³Æ*/
+    /**è·å–beançš„åç§°*/
     public String[] getNames() {
         return this.names;
     }
     public String getReferID() {
         return this.referID;
     }
-    /**»ñÈ¡beanµÄÀàĞÍ*/
+    /**è·å–beançš„ç±»å‹*/
     public Class<?> getType() {
         return this.beanClass;
     }

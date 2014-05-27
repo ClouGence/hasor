@@ -12,7 +12,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 /**
  * 
  * @version : 2013-3-20
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class ElementFigure extends RectangleFigure {
     private RectangleFigure rectangleFigure;

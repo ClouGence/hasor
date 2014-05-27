@@ -26,42 +26,42 @@ import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014-5-10
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class StandardAppContext extends AbstractConfigResourceAppContext {
     private static final RegisterManager NullRegister = null;
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext() throws IOException, URISyntaxException {
         this(NullRegister);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(File mainSettings) {
         this(mainSettings, NullRegister);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(URI mainSettings) {
         this(mainSettings, NullRegister);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
         this(mainSettings, NullRegister);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(RegisterManager registerManager) throws IOException, URISyntaxException {
         super();
         this.setRegisterContext(registerManager);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(File mainSettings, RegisterManager registerManager) {
         super(mainSettings);
         this.setRegisterContext(registerManager);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(URI mainSettings, RegisterManager registerManager) {
         super(mainSettings);
         this.setRegisterContext(registerManager);
     }
-    /**ÉèÖÃÖ÷ÅäÖÃÎÄ¼ş*/
+    /**è®¾ç½®ä¸»é…ç½®æ–‡ä»¶*/
     public StandardAppContext(String mainSettings, RegisterManager registerManager) throws IOException, URISyntaxException {
         super(mainSettings);
         this.setRegisterContext(registerManager);
@@ -76,7 +76,7 @@ public class StandardAppContext extends AbstractConfigResourceAppContext {
     protected RegisterManager getRegisterManager() {
         if (this.registerManager == null) {
             String createrToUse = null;
-            //1.È¡µÃ¼´½«´´½¨µÄManagerCreaterÀàĞÍ
+            //1.å–å¾—å³å°†åˆ›å»ºçš„ManagerCreaterç±»å‹
             Settings setting = this.getSettings();
             String defaultManager = setting.getString("hasor.registerManager.default");
             XmlNode[] managerArray = setting.getXmlNodeArray("hasor.registerManager");
@@ -92,10 +92,10 @@ public class StandardAppContext extends AbstractConfigResourceAppContext {
                 if (createrToUse != null)
                     break;
             }
-            //2.ÅÅ´í
+            //2.æ’é”™
             if (createrToUse == null)
                 throw new UndefinedException(String.format("%s is not define.", defaultManager));
-            //3.´´½¨Creater
+            //3.åˆ›å»ºCreater
             try {
                 Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
                 RegisterManagerCreater creater = (RegisterManagerCreater) createrType.newInstance();

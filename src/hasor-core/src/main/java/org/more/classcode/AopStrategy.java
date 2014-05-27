@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,52 +16,52 @@
 package org.more.classcode;
 import java.lang.reflect.Method;
 /**
- * AopÉú³É²ßÂÔ£¬¿ÉÒÔÍ¨¹ı¸Ã½Ó¿ÚÀ´È·¶¨aop·½ÃæµÄÉú³É²ßÂÔ¡£Ö»ÓĞ{@link ClassEngine}¶ÔÏó±»ÉèÖÃÁË
- * {@link AopBeforeListener}¡¢{@link AopReturningListener}¡¢{@link AopThrowingListener}
- * Èı¸öÇĞÃæ½Ó¿Ú»òÕß{@link AopInvokeFilter}¹ıÂËÆ÷½Ó¿ÚÊ±²Å»áÔÚÉú³ÉÀàµÄÆÚ¼äÆôÓÃaopµÄÖ§³Ö¡£<br/>
- * Í¨¹ı¸Ã½Ó¿ÚÖĞµÄ·½·¨¿ÉÒÔÈ·¶¨Ä³¸ö·½·¨ÊÇ·ñ²ÎÓëaopµÄÉú³É£¬Í¬Ê±»¹¿ÉÒÔ¿ØÖÆÉú³ÉµÄaop·½·¨ÉÏÇĞÃæ¶ÔÏóºÍaop¹ıÂËÆ÷¶ÔÏó¼¯ºÏ¡£
+ * Aopç”Ÿæˆç­–ç•¥ï¼Œå¯ä»¥é€šè¿‡è¯¥æ¥å£æ¥ç¡®å®šaopæ–¹é¢çš„ç”Ÿæˆç­–ç•¥ã€‚åªæœ‰{@link ClassEngine}å¯¹è±¡è¢«è®¾ç½®äº†
+ * {@link AopBeforeListener}ã€{@link AopReturningListener}ã€{@link AopThrowingListener}
+ * ä¸‰ä¸ªåˆ‡é¢æ¥å£æˆ–è€…{@link AopInvokeFilter}è¿‡æ»¤å™¨æ¥å£æ—¶æ‰ä¼šåœ¨ç”Ÿæˆç±»çš„æœŸé—´å¯ç”¨aopçš„æ”¯æŒã€‚<br/>
+ * é€šè¿‡è¯¥æ¥å£ä¸­çš„æ–¹æ³•å¯ä»¥ç¡®å®šæŸä¸ªæ–¹æ³•æ˜¯å¦å‚ä¸aopçš„ç”Ÿæˆï¼ŒåŒæ—¶è¿˜å¯ä»¥æ§åˆ¶ç”Ÿæˆçš„aopæ–¹æ³•ä¸Šåˆ‡é¢å¯¹è±¡å’Œaopè¿‡æ»¤å™¨å¯¹è±¡é›†åˆã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface AopStrategy extends BaseStrategy {
     /**
-     * ÔÚ{@link ClassEngine}É¨ÃèÀàÆÚ¼ä£¬Èç¹ûÅäÖÃÁËaopÏà¹ØÉèÖÃ¿ÉÒÔÍ¨¹ı¸Ã·½·¨À´È·¶¨Óöµ½µÄÕâ¸ö·½·¨ÊÇ·ñºöÂÔaop°ü×°¡£
-     * Èç¹ûÏëÒªºöÂÔ·µ»Øtrue·ñÔò·µ»Øfalse¡£
-     * @param superClass ¸Ã²ÎÊıÓÃÓÚ±íÊ¾£¬±»·¢ÏÖµÄ¸Ã·½·¨ËùÊôµÄÀàĞÍ¡£
-     * @param ignoreMethod ¸Ã²ÎÊıÓÃÓÚ±íÊ¾±»·¢ÏÖµÄ·½·¨¡£
-     * @return ·µ»ØÊÇ·ñºöÂÔÕâ¸ö·½·¨µÄaop°ü×°¡£Èç¹ûÏëÒªºöÂÔ·µ»Øtrue·ñÔò·µ»Øfalse¡£
+     * åœ¨{@link ClassEngine}æ‰«æç±»æœŸé—´ï¼Œå¦‚æœé…ç½®äº†aopç›¸å…³è®¾ç½®å¯ä»¥é€šè¿‡è¯¥æ–¹æ³•æ¥ç¡®å®šé‡åˆ°çš„è¿™ä¸ªæ–¹æ³•æ˜¯å¦å¿½ç•¥aopåŒ…è£…ã€‚
+     * å¦‚æœæƒ³è¦å¿½ç•¥è¿”å›trueå¦åˆ™è¿”å›falseã€‚
+     * @param superClass è¯¥å‚æ•°ç”¨äºè¡¨ç¤ºï¼Œè¢«å‘ç°çš„è¯¥æ–¹æ³•æ‰€å±çš„ç±»å‹ã€‚
+     * @param ignoreMethod è¯¥å‚æ•°ç”¨äºè¡¨ç¤ºè¢«å‘ç°çš„æ–¹æ³•ã€‚
+     * @return è¿”å›æ˜¯å¦å¿½ç•¥è¿™ä¸ªæ–¹æ³•çš„aopåŒ…è£…ã€‚å¦‚æœæƒ³è¦å¿½ç•¥è¿”å›trueå¦åˆ™è¿”å›falseã€‚
      */
     public boolean isIgnore(Class<?> superClass, Method ignoreMethod);
     /**
-     * ¸Ã·½·¨ÔÚÅäÖÃbeanµÄÊ±ºò»á±»µ÷ÓÃ¡£Í¨¹ı¸Ã·½·¨¿ÉÒÔ¾ö¶¨·½·¨µÄ×îÖÕÉúĞ§{@link AopBeforeListener}¼¯ºÏ¡£
-     * @param target ±»×°±¸¶ÔÏó¡£
-     * @param method ĞèÒªaopÇĞÃæµÄ·½·¨¡£
-     * @param beforeListener ¼´½«ÉúĞ§µÄ{@link AopBeforeListener}¼¯ºÏ£¬Í¨¹ı¸Ã·½·¨¿ÉÒÔ½«¸Ä±äÕâ¸ö¼´½«ÉúĞ§µÄ¶ÔÏó¼¯¡£
-     * @return ·µ»Ø×îÖÕÉúĞ§µÄ{@link AopBeforeListener}¶ÔÏó¼¯ºÏ¡£
+     * è¯¥æ–¹æ³•åœ¨é…ç½®beançš„æ—¶å€™ä¼šè¢«è°ƒç”¨ã€‚é€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å†³å®šæ–¹æ³•çš„æœ€ç»ˆç”Ÿæ•ˆ{@link AopBeforeListener}é›†åˆã€‚
+     * @param target è¢«è£…å¤‡å¯¹è±¡ã€‚
+     * @param method éœ€è¦aopåˆ‡é¢çš„æ–¹æ³•ã€‚
+     * @param beforeListener å³å°†ç”Ÿæ•ˆçš„{@link AopBeforeListener}é›†åˆï¼Œé€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å°†æ”¹å˜è¿™ä¸ªå³å°†ç”Ÿæ•ˆçš„å¯¹è±¡é›†ã€‚
+     * @return è¿”å›æœ€ç»ˆç”Ÿæ•ˆçš„{@link AopBeforeListener}å¯¹è±¡é›†åˆã€‚
      */
     public AopBeforeListener[] filterAopBeforeListener(Object target, Method method, AopBeforeListener[] beforeListener);
     /**
-     * ¸Ã·½·¨ÔÚÅäÖÃbeanµÄÊ±ºò»á±»µ÷ÓÃ¡£Í¨¹ı¸Ã·½·¨¿ÉÒÔ¾ö¶¨·½·¨µÄ×îÖÕÉúĞ§{@link AopReturningListener}¼¯ºÏ¡£
-     * @param target ±»×°±¸¶ÔÏó¡£
-     * @param method ĞèÒªaopÇĞÃæµÄ·½·¨¡£
-     * @param returningListener ¼´½«ÉúĞ§µÄ{@link AopReturningListener}¼¯ºÏ£¬Í¨¹ı¸Ã·½·¨¿ÉÒÔ½«¸Ä±äÕâ¸ö¼´½«ÉúĞ§µÄ¶ÔÏó¼¯¡£
-     * @return ·µ»Ø×îÖÕÉúĞ§µÄ{@link AopReturningListener}¶ÔÏó¼¯ºÏ¡£
+     * è¯¥æ–¹æ³•åœ¨é…ç½®beançš„æ—¶å€™ä¼šè¢«è°ƒç”¨ã€‚é€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å†³å®šæ–¹æ³•çš„æœ€ç»ˆç”Ÿæ•ˆ{@link AopReturningListener}é›†åˆã€‚
+     * @param target è¢«è£…å¤‡å¯¹è±¡ã€‚
+     * @param method éœ€è¦aopåˆ‡é¢çš„æ–¹æ³•ã€‚
+     * @param returningListener å³å°†ç”Ÿæ•ˆçš„{@link AopReturningListener}é›†åˆï¼Œé€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å°†æ”¹å˜è¿™ä¸ªå³å°†ç”Ÿæ•ˆçš„å¯¹è±¡é›†ã€‚
+     * @return è¿”å›æœ€ç»ˆç”Ÿæ•ˆçš„{@link AopReturningListener}å¯¹è±¡é›†åˆã€‚
      */
     public AopReturningListener[] filterAopReturningListener(Object target, Method method, AopReturningListener[] returningListener);
     /**
-     * ¸Ã·½·¨ÔÚÅäÖÃbeanµÄÊ±ºò»á±»µ÷ÓÃ¡£Í¨¹ı¸Ã·½·¨¿ÉÒÔ¾ö¶¨·½·¨µÄ×îÖÕÉúĞ§{@link AopThrowingListener}¼¯ºÏ¡£
-     * @param target ±»×°±¸¶ÔÏó¡£
-     * @param method ĞèÒªaopÇĞÃæµÄ·½·¨¡£
-     * @param throwingListener ¼´½«ÉúĞ§µÄ{@link AopThrowingListener}¼¯ºÏ£¬Í¨¹ı¸Ã·½·¨¿ÉÒÔ½«¸Ä±äÕâ¸ö¼´½«ÉúĞ§µÄ¶ÔÏó¼¯¡£
-     * @return ·µ»Ø×îÖÕÉúĞ§µÄ{@link AopThrowingListener}¶ÔÏó¼¯ºÏ¡£
+     * è¯¥æ–¹æ³•åœ¨é…ç½®beançš„æ—¶å€™ä¼šè¢«è°ƒç”¨ã€‚é€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å†³å®šæ–¹æ³•çš„æœ€ç»ˆç”Ÿæ•ˆ{@link AopThrowingListener}é›†åˆã€‚
+     * @param target è¢«è£…å¤‡å¯¹è±¡ã€‚
+     * @param method éœ€è¦aopåˆ‡é¢çš„æ–¹æ³•ã€‚
+     * @param throwingListener å³å°†ç”Ÿæ•ˆçš„{@link AopThrowingListener}é›†åˆï¼Œé€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å°†æ”¹å˜è¿™ä¸ªå³å°†ç”Ÿæ•ˆçš„å¯¹è±¡é›†ã€‚
+     * @return è¿”å›æœ€ç»ˆç”Ÿæ•ˆçš„{@link AopThrowingListener}å¯¹è±¡é›†åˆã€‚
      */
     public AopThrowingListener[] filterAopThrowingListener(Object target, Method method, AopThrowingListener[] throwingListener);
     /**
-     * ¸Ã·½·¨ÔÚÅäÖÃbeanµÄÊ±ºò»á±»µ÷ÓÃ¡£Í¨¹ı¸Ã·½·¨¿ÉÒÔ¾ö¶¨·½·¨µÄ×îÖÕÉúĞ§{@link AopInvokeFilter}¼¯ºÏ¡£
-     * @param target ±»×°±¸¶ÔÏó¡£
-     * @param method ĞèÒªaopÇĞÃæµÄ·½·¨¡£
-     * @param invokeFilter ¼´½«ÉúĞ§µÄ{@link AopInvokeFilter}¼¯ºÏ£¬Í¨¹ı¸Ã·½·¨¿ÉÒÔ½«¸Ä±äÕâ¸ö¼´½«ÉúĞ§µÄ¶ÔÏó¼¯¡£
-     * @return ·µ»Ø×îÖÕÉúĞ§µÄ{@link AopInvokeFilter}¶ÔÏó¼¯ºÏ¡£
+     * è¯¥æ–¹æ³•åœ¨é…ç½®beançš„æ—¶å€™ä¼šè¢«è°ƒç”¨ã€‚é€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å†³å®šæ–¹æ³•çš„æœ€ç»ˆç”Ÿæ•ˆ{@link AopInvokeFilter}é›†åˆã€‚
+     * @param target è¢«è£…å¤‡å¯¹è±¡ã€‚
+     * @param method éœ€è¦aopåˆ‡é¢çš„æ–¹æ³•ã€‚
+     * @param invokeFilter å³å°†ç”Ÿæ•ˆçš„{@link AopInvokeFilter}é›†åˆï¼Œé€šè¿‡è¯¥æ–¹æ³•å¯ä»¥å°†æ”¹å˜è¿™ä¸ªå³å°†ç”Ÿæ•ˆçš„å¯¹è±¡é›†ã€‚
+     * @return è¿”å›æœ€ç»ˆç”Ÿæ•ˆçš„{@link AopInvokeFilter}å¯¹è±¡é›†åˆã€‚
      */
     public AopInvokeFilter[] filterAopInvokeFilter(Object target, Method method, AopInvokeFilter[] invokeFilter);
 }

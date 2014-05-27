@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,38 +24,38 @@ import org.eclipse.swt.widgets.Label;
 /**
  * 
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class AbstractViewField<T> {
-    /*ÆôÓÃ×Ö¶Î£¬Ö»ÓĞÆôÓÃÁËµÄ×Ö¶Î²ÅÄÜÊÕµ½¼àÌıÆ÷µÄÊÂ¼şÍ¨Öª¡£*/
+    /*å¯ç”¨å­—æ®µï¼Œåªæœ‰å¯ç”¨äº†çš„å­—æ®µæ‰èƒ½æ”¶åˆ°ç›‘å¬å™¨çš„äº‹ä»¶é€šçŸ¥ã€‚*/
     private boolean            enable            = true;
-    /*×Ö¶Î¿ÉÒÔÓÃÓÚÏÔÊ¾µÄ±êÇ©¡£*/
+    /*å­—æ®µå¯ä»¥ç”¨äºæ˜¾ç¤ºçš„æ ‡ç­¾ã€‚*/
     private Label              fieldLabel        = null;
-    /*×Ö¶Î±êÇ©ÓÃÓÚÏÔÊ¾µÄÎÄ±¾ÄÚÈİ¡£*/
+    /*å­—æ®µæ ‡ç­¾ç”¨äºæ˜¾ç¤ºçš„æ–‡æœ¬å†…å®¹ã€‚*/
     private String             fieldLabelText    = "";
-    /*×Ö¶Î¼àÌıÆ÷¡£*/
+    /*å­—æ®µç›‘å¬å™¨ã€‚*/
     private IViewFieldListener viewFieldListener = null;
     //
     //
     //
-    /**Ìí¼Ó{@link IViewFieldListener}¼àÌıÆ÷*/
+    /**æ·»åŠ {@link IViewFieldListener}ç›‘å¬å™¨*/
     public void setViewFieldListener(IViewFieldListener listener) {
         this.viewFieldListener = listener;
     }
-    /**É¾³ı{@link IViewFieldListener}¼àÌıÆ÷*/
+    /**åˆ é™¤{@link IViewFieldListener}ç›‘å¬å™¨*/
     public IViewFieldListener getViewFieldListener() {
         return this.viewFieldListener;
     }
-    /**Òı·¢×Ö¶ÎÖµ±ä»¯ÊÂ¼ş¡£*/
+    /**å¼•å‘å­—æ®µå€¼å˜åŒ–äº‹ä»¶ã€‚*/
     protected void fireOnFieldChanged() {
         if (this.viewFieldListener != null)
             this.viewFieldListener.viewFieldChanged(this);
     }
-    /**×Ö¶ÎµÃµ½½¹µã£¬×ÓÀàÔÚÀ©Õ¹¸Ã·½·¨Ê±ºò¿ÉÒÔÈÃÖ¸¶¨µÄ¿Ø¼şµÃµ½½¹µã¡£*/
+    /**å­—æ®µå¾—åˆ°ç„¦ç‚¹ï¼Œå­ç±»åœ¨æ‰©å±•è¯¥æ–¹æ³•æ—¶å€™å¯ä»¥è®©æŒ‡å®šçš„æ§ä»¶å¾—åˆ°ç„¦ç‚¹ã€‚*/
     public boolean setFocus() {
         return false;
     }
-    /**»ñÈ¡ViewFieldËù´ú±íµÄLabel¶ÔÏó¡£*/
+    /**è·å–ViewFieldæ‰€ä»£è¡¨çš„Labelå¯¹è±¡ã€‚*/
     protected Label getLabelControl(Composite parent) {
         if (this.fieldLabel == null) {
             Assert.isNotNull(parent, "uncreated control requested with composite null");
@@ -72,45 +72,45 @@ public abstract class AbstractViewField<T> {
         }
         return this.fieldLabel;
     }
-    /**»ñÈ¡ViewField¶ÔÏóµÄenableÊôĞÔ¡£*/
+    /**è·å–ViewFieldå¯¹è±¡çš„enableå±æ€§ã€‚*/
     public final boolean isEnable() {
         return this.enable;
     }
-    /**ÉèÖÃViewField¶ÔÏóµÄenableÊôĞÔ¡£*/
+    /**è®¾ç½®ViewFieldå¯¹è±¡çš„enableå±æ€§ã€‚*/
     public final void setEnable(boolean enabled) {
         if (enabled != this.enable) {
             this.enable = enabled;
             updateEnableState();
         }
     }
-    /** ÊÕµ½Í¨ÖªViewFieldµÄenable×´Ì¬ÊôĞÔ±»ĞŞ¸Ä¡£ */
+    /** æ”¶åˆ°é€šçŸ¥ViewFieldçš„enableçŠ¶æ€å±æ€§è¢«ä¿®æ”¹ã€‚ */
     protected void updateEnableState() {
         if (this.fieldLabel != null)
             this.fieldLabel.setEnabled(this.enable);
     }
     /*-----------------------------------------------------------------*/
-    /**»ñÈ¡×Ö¶ÎÖµ*/
+    /**è·å–å­—æ®µå€¼*/
     public abstract T getFieldValue();
-    /**»ñÈ¡¸Ã×é½¨»á´´½¨¶àÉÙ¸öControls¶ÔÏó¡£*/
+    /**è·å–è¯¥ç»„å»ºä¼šåˆ›å»ºå¤šå°‘ä¸ªControlså¯¹è±¡ã€‚*/
     public int getNumberOfControls() {
         return 1;
     }
-    /**½«×é½¨Ìî³äµ½Ä¿±êÈİÆ÷ÖĞ¡£*/
+    /**å°†ç»„å»ºå¡«å……åˆ°ç›®æ ‡å®¹å™¨ä¸­ã€‚*/
     public Control[] doFillIntoGrid(Composite parentComposite, int numColumnsCount) {
         assertEnoughColumns(numColumnsCount);
-        Label label = getLabelControl(parentComposite);//»ñÈ¡±êÇ©¶ÔÏó
+        Label label = getLabelControl(parentComposite);//è·å–æ ‡ç­¾å¯¹è±¡
         label.setLayoutData(gridDataForLabel(numColumnsCount));
         return new Control[] { label };
     }
     /*-----------------------------------------------------------------*/
-    /**ÓÃÓÚ¼ì²éÄ¿±êÈİÆ÷×î´óÁĞÊıÄ¿ÊÇ·ñÉÙÓÚĞèÒªµÄÊıÁ¿£¬Èç¹ûÈİÆ÷¹æ¸ñ²»×ã»áÅ×³öÒì³£¡£*/
+    /**ç”¨äºæ£€æŸ¥ç›®æ ‡å®¹å™¨æœ€å¤§åˆ—æ•°ç›®æ˜¯å¦å°‘äºéœ€è¦çš„æ•°é‡ï¼Œå¦‚æœå®¹å™¨è§„æ ¼ä¸è¶³ä¼šæŠ›å‡ºå¼‚å¸¸ã€‚*/
     protected final void assertEnoughColumns(int nColumns) {
         Assert.isTrue(nColumns >= getNumberOfControls(), "given number of columns is too small"); //$NON-NLS-1$
     }
     protected static final boolean isOkToUse(Control control) {
         return (control != null) && (Display.getCurrent() != null) && !control.isDisposed();
     }
-    /**¸ù¾İÒªÇóµÄspan´óĞ¡Éú³ÉGridData²¼¾Ö¹ÜÀíÆ÷¡£*/
+    /**æ ¹æ®è¦æ±‚çš„spanå¤§å°ç”ŸæˆGridDataå¸ƒå±€ç®¡ç†å™¨ã€‚*/
     protected static GridData gridDataForLabel(int span) {
         GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1);
         gd.horizontalSpan = span;

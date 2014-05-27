@@ -4,7 +4,7 @@ import org.dev.toos.constcode.metadata.ConstBean;
 /**
  * 
  * @version : 2013-2-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class XmlConstBean extends ConstBean {
     private ConstType target = null;

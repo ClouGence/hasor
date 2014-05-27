@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ import net.test.project.mgr.user.entity.UserBean;
 /**
  * 
  * @version : 2013-12-25
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Bean("UserService")
 public class UserService {
     @Inject
     private JdbcTemplate jdbcTemplate;
     //
-    /*È¡µÃÓÃ»§ÁĞ±í*/
+    /*å–å¾—ç”¨æˆ·åˆ—è¡¨*/
     public List<UserBean> getUserList() throws SQLException {
         List<UserBean> userList = jdbcTemplate.queryForList("select * from TB_User", UserBean.class);
         return userList;

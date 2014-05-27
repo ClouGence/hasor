@@ -9,7 +9,7 @@
 ///**
 // * 
 // * @version : 2013-8-5
-// * @author ’‘”¿¥∫ (zyc@byshell.org)
+// * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
 // */
 //@CacheDefine
 //public class ECacheFactory implements CacheFactory {

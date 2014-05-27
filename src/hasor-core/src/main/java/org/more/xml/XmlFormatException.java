@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package org.more.xml;
 import javax.xml.stream.XMLStreamException;
 /**
- * ¸ñÊ½´íÎó£¬³öÏÖ¸ÃÒì³£Í¨³£ÊÇÔÚ²Ù×÷Ä³Ğ©Êı¾İÊ±¸ÃÊı¾İ¸ñÊ½Òì³£»òÕß²»±»Ö§³Ö¡£
+ * æ ¼å¼é”™è¯¯ï¼Œå‡ºç°è¯¥å¼‚å¸¸é€šå¸¸æ˜¯åœ¨æ“ä½œæŸäº›æ•°æ®æ—¶è¯¥æ•°æ®æ ¼å¼å¼‚å¸¸æˆ–è€…ä¸è¢«æ”¯æŒã€‚
  * @version 2009-10-17
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class XmlFormatException extends XMLStreamException {
     /**
@@ -26,15 +26,15 @@ public class XmlFormatException extends XMLStreamException {
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 3647389307754446752L;
-    /**¸ñÊ½Òì³£*/
+    /**æ ¼å¼å¼‚å¸¸*/
     public XmlFormatException(String string) {
         super(string);
     }
-    /**¸ñÊ½Òì³£*/
+    /**æ ¼å¼å¼‚å¸¸*/
     public XmlFormatException(Throwable error) {
         super(error);
     }
-    /**¸ñÊ½Òì³£*/
+    /**æ ¼å¼å¼‚å¸¸*/
     public XmlFormatException(String string, Throwable error) {
         super(string, error);
     }

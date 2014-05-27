@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,36 +21,36 @@ import org.more.webui.tag.TagObject;
 /**
  * 
  * @version : 2012-5-22
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class RenderKit {
     private FacesContext          facesContext  = null;
-    /*±êÇ©¶ÔÏó¼¯ºÏ*/
+    /*æ ‡ç­¾å¯¹è±¡é›†åˆ*/
     private Map<String, Object>   tagObjectMap  = new HashMap<String, Object>();
-    /*äÖÈ¾Æ÷Ó³Éä*/
+    /*æ¸²æŸ“å™¨æ˜ å°„*/
     private Map<String, Class<?>> renderMapping = new HashMap<String, Class<?>>();
     /*----------------------------------------------------------------*/
     public void initKit(FacesContext facesContext) {
         this.facesContext = facesContext;
     }
-    /**»ñÈ¡ÒÑ¾­×¢²áµÄ±êÇ©¶ÔÏó¼¯ºÏ¡£*/
+    /**è·å–å·²ç»æ³¨å†Œçš„æ ‡ç­¾å¯¹è±¡é›†åˆã€‚*/
     public Map<String, Object> getTags() {
         return this.tagObjectMap;
     }
-    /**×¢²á±êÇ©Àà£¬Ö»ÄÜ¶ÔÒÑ¾­×¢²árenderµÄ×é½¨½øĞĞ×¢²á¡£*/
+    /**æ³¨å†Œæ ‡ç­¾ç±»ï¼Œåªèƒ½å¯¹å·²ç»æ³¨å†Œrenderçš„ç»„å»ºè¿›è¡Œæ³¨å†Œã€‚*/
     public void addTag(String tagName, TagObject tagObject) {
         if (tagObject == null)
-            throw new NullPointerException("TagObjectÀàĞÍ²ÎÊı²»ÄÜÎª¿Õ¡£");
+            throw new NullPointerException("TagObjectç±»å‹å‚æ•°ä¸èƒ½ä¸ºç©ºã€‚");
         this.tagObjectMap.put(tagName, tagObject);
     }
-    /**»ñÈ¡äÖÈ¾Æ÷¶ÔÏó¡£*/
+    /**è·å–æ¸²æŸ“å™¨å¯¹è±¡ã€‚*/
     public Render<?> getRender(String tagName) {
         Class beanType = this.renderMapping.get(tagName);
         return this.facesContext.getBeanContext().getBean(beanType);
     }
-    /**Ìí¼ÓäÖÈ¾Æ÷Ó³Éä¡£*/
+    /**æ·»åŠ æ¸²æŸ“å™¨æ˜ å°„ã€‚*/
     public void addRenderType(String tagName, Class<?> beanType) {
         this.renderMapping.put(tagName, beanType);
-        this.tagObjectMap.put(tagName, new TagObject());//Êä³öÄ¬ÈÏ±êÇ©
+        this.tagObjectMap.put(tagName, new TagObject());//è¾“å‡ºé»˜è®¤æ ‡ç­¾
     }
 }

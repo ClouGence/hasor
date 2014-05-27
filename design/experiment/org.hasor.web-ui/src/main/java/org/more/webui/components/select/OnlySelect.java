@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import org.more.webui.component.support.UICom;
 import org.more.webui.components.UISelectInput;
 import org.more.webui.render.select.SelectOnlySelectInputRender;
 /**
- * <b>×÷ÓÃ</b>£ºÏÂÀ­ÊäÈë¿ò×é½¨¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_OnlySelect
- * <br><b>±êÇ©</b>£º@ui_OnlySelect
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link SelectOnlySelectInputRender}
+ * <b>ä½œç”¨</b>ï¼šä¸‹æ‹‰è¾“å…¥æ¡†ç»„å»ºã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_OnlySelect
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_OnlySelect
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link SelectOnlySelectInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_OnlySelect", renderType = SelectOnlySelectInputRender.class)
 public class OnlySelect extends UISelectInput {

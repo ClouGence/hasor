@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.more.util.ResourcesUtils.ScanItem;
 /**
  * 
  * @version : 2013-8-13
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ScanClassPath {
     private ClassLoader                  classLoader  = null;
@@ -57,10 +57,10 @@ public class ScanClassPath {
         return new ScanClassPath(new String[] { scanPackages }) {};
     }
     /**
-     * É¨Ãèjar°üÖĞ·²ÊÇÆ¥ÅäcompareType²ÎÊıµÄÀà¾ù±»·µ»Ø¡££¨¶ÔÖ´ĞĞ½á¹û²»»º´æ£©
-     * @param packagePath ÒªÉ¨ÃèµÄ°üÃû¡£
-     * @param compareType Òª²éÕÒµÄÌØÕ÷¡£
-     * @return ·µ»ØÉ¨Ãè½á¹û¡£
+     * æ‰«æjaråŒ…ä¸­å‡¡æ˜¯åŒ¹é…compareTypeå‚æ•°çš„ç±»å‡è¢«è¿”å›ã€‚ï¼ˆå¯¹æ‰§è¡Œç»“æœä¸ç¼“å­˜ï¼‰
+     * @param packagePath è¦æ‰«æçš„åŒ…åã€‚
+     * @param compareType è¦æŸ¥æ‰¾çš„ç‰¹å¾ã€‚
+     * @return è¿”å›æ‰«æç»“æœã€‚
      */
     public static Set<Class<?>> getClassSet(String packagePath, Class<?> compareType) {
         return getClassSet(new String[] { packagePath }, compareType);
@@ -69,20 +69,19 @@ public class ScanClassPath {
         return newInstance(loadPackages).getClassSet(featureType);
     }
     /**
-     * É¨Ãèjar°üÖĞ·²ÊÇÆ¥ÅäcompareType²ÎÊıµÄÀà¾ù±»·µ»Ø¡££¨¶ÔÖ´ĞĞ½á¹û²»»º´æ£©
-     * @param packages ÒªÉ¨ÃèµÄ°üÃû¡£
-     * @param compareType Òª²éÕÒµÄÌØÕ÷¡£
-     * @return ·µ»ØÉ¨Ãè½á¹û¡£
+     * æ‰«æjaråŒ…ä¸­å‡¡æ˜¯åŒ¹é…compareTypeå‚æ•°çš„ç±»å‡è¢«è¿”å›ã€‚ï¼ˆå¯¹æ‰§è¡Œç»“æœä¸ç¼“å­˜ï¼‰
+     * @param compareType è¦æŸ¥æ‰¾çš„ç‰¹å¾ã€‚
+     * @return è¿”å›æ‰«æç»“æœã€‚
      */
     public Set<Class<?>> getClassSet(final Class<?> compareType) {
-        //0.³¢ÊÔ´Ó»º´æÖĞ»ñÈ¡
+        //0.å°è¯•ä»ç¼“å­˜ä¸­è·å–
         Set<Class<?>> returnData = this.cacheMap.get(compareType);
         if (returnData != null)
             return Collections.unmodifiableSet(returnData);
-        //1.×¼±¸²ÎÊı
-        final String compareTypeStr = compareType.getName();//ÒªÆ¥ÅäµÄÀàĞÍ
-        final Set<String> classStrSet = new HashSet<String>();//·ûºÏÌõ¼şµÄClass
-        //2.É¨Ãè
+        //1.å‡†å¤‡å‚æ•°
+        final String compareTypeStr = compareType.getName();//è¦åŒ¹é…çš„ç±»å‹
+        final Set<String> classStrSet = new HashSet<String>();//ç¬¦åˆæ¡ä»¶çš„Class
+        //2.æ‰«æ
         for (String tiem : this.scanPackages) {
             if (StringUtils.isBlank(tiem))
                 continue;
@@ -92,27 +91,27 @@ public class ScanClassPath {
                         String name = event.getName();
                         if (name.endsWith(".class") == false)
                             return;
-                        //1.È¡µÃÀàÃû
+                        //1.å–å¾—ç±»å
                         name = name.substring(0, name.length() - ".class".length());
                         name = name.replace("/", ".");
-                        //2.×°ÔØÀà
+                        //2.è£…è½½ç±»
                         InputStream inStream = event.getStream();
                         ClassInfo info = loadClassInfo(name, inStream, classLoader);
-                        //3.²âÊÔÄ¿±êÀàÊÇ·ñÆ¥Åä
+                        //3.æµ‹è¯•ç›®æ ‡ç±»æ˜¯å¦åŒ¹é…
                         for (String face : info.superLink)
-                            if (face.equals(compareTypeStr))//¸¸Àà
+                            if (face.equals(compareTypeStr))//çˆ¶ç±»
                                 classStrSet.add(name);
                         for (String face : info.interFacesLink)
-                            if (face.equals(compareTypeStr))//½Ó¿Ú
+                            if (face.equals(compareTypeStr))//æ¥å£
                                 classStrSet.add(name);
                         for (String face : info.annos)
-                            if (face.equals(compareTypeStr))//×¢½â
+                            if (face.equals(compareTypeStr))//æ³¨è§£
                                 classStrSet.add(name);
                     }
                 });
             } catch (Exception e) {}
         }
-        //3.»º´æ
+        //3.ç¼“å­˜
         returnData = new HashSet<Class<?>>();
         for (String atClass : classStrSet) {
             try {
@@ -125,31 +124,31 @@ public class ScanClassPath {
     }
     //
     private Map<String, ClassInfo> classInfoMap = new HashMap<String, ClassInfo>();
-    /**·ÖÎöÀàµÄ×Ö½ÚÂë£¬·ÖÎö¹ı³ÌÖĞ»áµİ¹é½âÎö¸¸ÀàºÍÊµÏÖµÄ½Ó¿Ú*/
+    /**åˆ†æç±»çš„å­—èŠ‚ç ï¼Œåˆ†æè¿‡ç¨‹ä¸­ä¼šé€’å½’è§£æçˆ¶ç±»å’Œå®ç°çš„æ¥å£*/
     private ClassInfo loadClassInfo(String className, InputStream inStream, final ClassLoader loader) throws IOException {
-        /*Ò»¡¢¼ì²éÀàÊÇ·ñÒÑ¾­±»¼ÓÔØ¹ı£¬±ÜÃâÖØ¸´É¨ÃèÍ¬Ò»¸öÀà*/
+        /*ä¸€ã€æ£€æŸ¥ç±»æ˜¯å¦å·²ç»è¢«åŠ è½½è¿‡ï¼Œé¿å…é‡å¤æ‰«æåŒä¸€ä¸ªç±»*/
         if (this.classInfoMap.containsKey(className) == true)
             return this.classInfoMap.get(className);
-        /*¶ş¡¢Ê¹ÓÃ ClassReader ¶ÁÈ¡ÀàµÄ»ù±¾ĞÅÏ¢*/
+        /*äºŒã€ä½¿ç”¨ ClassReader è¯»å–ç±»çš„åŸºæœ¬ä¿¡æ¯*/
         ClassReader classReader = new ClassReader(inStream);
         className = classReader.getClassName().replace('/', '.');
-        /*Èı¡¢¶ÁÈ¡ÀàµÄ£¨Ãû³Æ¡¢¸¸Àà¡¢½Ó¿Ú¡¢×¢½â£©ĞÅÏ¢*/
+        /*ä¸‰ã€è¯»å–ç±»çš„ï¼ˆåç§°ã€çˆ¶ç±»ã€æ¥å£ã€æ³¨è§£ï¼‰ä¿¡æ¯*/
         final ClassInfo info = new ClassInfo();
         classReader.accept(new ClassVisitor(Opcodes.ASM4) {
             public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-                //1.¶ÁÈ¡»ù±¾ĞÅÏ¢
+                //1.è¯»å–åŸºæœ¬ä¿¡æ¯
                 info.className = name.replace('/', '.');
                 if (superName != null)
                     info.superName = superName.replace('/', '.');
-                //2.¶ÁÈ¡½Ó¿Ú
+                //2.è¯»å–æ¥å£
                 info.interFaces = interfaces;
                 for (int i = 0; i < info.interFaces.length; i++)
                     info.interFaces[i] = info.interFaces[i].replace('/', '.');
                 super.visit(version, access, name, signature, superName, interfaces);
             }
             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-                //3.É¨ÃèÀàĞÅÏ¢£¬»ñÈ¡±ê¼ÇµÄ×¢½â
-                /**½«Ò»¸öLjava/lang/Object;ĞÎÊ½µÄ×Ö·û´®×ª»¯Îªjava/lang/ObjectĞÎÊ½¡£*/
+                //3.æ‰«æç±»ä¿¡æ¯ï¼Œè·å–æ ‡è®°çš„æ³¨è§£
+                /**å°†ä¸€ä¸ªLjava/lang/Object;å½¢å¼çš„å­—ç¬¦ä¸²è½¬åŒ–ä¸ºjava/lang/Objectå½¢å¼ã€‚*/
                 String[] annoArrays = info.annos == null ? new String[0] : info.annos;
                 //
                 String[] newAnnoArrays = new String[annoArrays.length + 1];
@@ -162,19 +161,19 @@ public class ScanClassPath {
                 return super.visitAnnotation(desc, visible);
             }
         }, ClassReader.SKIP_CODE);
-        //ËÄ¡¢µİ¹é½âÎö¸¸Àà
+        //å››ã€é€’å½’è§£æçˆ¶ç±»
         if (info.superName != null) {
             InputStream superStream = loader.getResourceAsStream(info.superName.replace('.', '/') + ".class");
             if (superStream != null)
-                loadClassInfo(info.superName, superStream, loader);//¼ÓÔØ¸¸Àà
+                loadClassInfo(info.superName, superStream, loader);//åŠ è½½çˆ¶ç±»
         }
-        //Îå¡¢µİ¹é½âÎö½Ó¿Ú
+        //äº”ã€é€’å½’è§£ææ¥å£
         for (String faces : info.interFaces) {
             InputStream superStream = loader.getResourceAsStream(faces.replace('.', '/') + ".class");
             if (superStream != null)
-                loadClassInfo(faces, superStream, loader);//¼ÓÔØ¸¸Àà
+                loadClassInfo(faces, superStream, loader);//åŠ è½½çˆ¶ç±»
         }
-        //Áù¡¢È¡µÃ¸¸ÀàÁ´
+        //å…­ã€å–å¾—çˆ¶ç±»é“¾
         List<String> superLink = new ArrayList<String>();
         String superName = info.superName;
         if (superName != null) {
@@ -187,7 +186,7 @@ public class ScanClassPath {
             }
         }
         info.superLink = superLink.toArray(new String[superLink.size()]);
-        //Æß¡¢È¡µÃ½Ó¿ÚÁ´
+        //ä¸ƒã€å–å¾—æ¥å£é“¾
         Set<String> facesLink = new TreeSet<String>();
         addFaces(info, facesLink);
         info.interFacesLink = facesLink.toArray(new String[facesLink.size()]);
@@ -201,19 +200,19 @@ public class ScanClassPath {
             addFaces(this.classInfoMap.get(atFaces), addTo);
     }
     //
-    /**ÀàĞÅÏ¢½á¹¹*/
+    /**ç±»ä¿¡æ¯ç»“æ„*/
     private static class ClassInfo {
-        /*ÀàÃû*/
+        /*ç±»å*/
         public String   className      = null;
-        /*¼Ì³ĞµÄ¸¸Àà*/
+        /*ç»§æ‰¿çš„çˆ¶ç±»*/
         public String   superName      = null;
-        /*¼Ì³ĞµÄ¸¸ÀàÁ´*/
+        /*ç»§æ‰¿çš„çˆ¶ç±»é“¾*/
         public String[] superLink      = new String[0];
-        /*Ö±½ÓÊµÏÖµÄ½Ó¿Ú*/
+        /*ç›´æ¥å®ç°çš„æ¥å£*/
         public String[] interFaces     = new String[0];
-        /*ÊµÏÖµÄËùÓĞ½Ó¿Ú*/
+        /*å®ç°çš„æ‰€æœ‰æ¥å£*/
         public String[] interFacesLink = new String[0];
-        /*±ê¼ÇµÄ×¢½â*/
+        /*æ ‡è®°çš„æ³¨è§£*/
         public String[] annos          = new String[0];
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package org.more.webui.web;
 /**
- * ³£Á¿±í
+ * å¸¸é‡è¡¨
  * @version : 2012-5-21
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public enum PostFormEnum {
-    /**·¢ÉúÊÂ¼şµÄ×é½¨ID¡£*/
+    /**å‘ç”Ÿäº‹ä»¶çš„ç»„å»ºIDã€‚*/
     PostForm_TargetParamKey("WebUI_PF_Target"),
-    /**·¢ÉúÊÂ¼şµÄ×é½¨Path¡£*/
+    /**å‘ç”Ÿäº‹ä»¶çš„ç»„å»ºPathã€‚*/
     PostForm_TargetPathKey("WebUI_PF_TargetPath"),
-    /**·¢ÉúµÄÊÂ¼ş¡£*/
+    /**å‘ç”Ÿçš„äº‹ä»¶ã€‚*/
     PostForm_EventKey("WebUI_PF_Event"),
-    /**Ö´ĞĞäÖÈ¾µÄÀàĞÍ¡£*/
+    /**æ‰§è¡Œæ¸²æŸ“çš„ç±»å‹ã€‚*/
     PostForm_RenderParamKey("WebUI_PF_Render"),
-    /**»Ø´«×´Ì¬µÄ×´Ì¬Êı¾İ¡£*/
+    /**å›ä¼ çŠ¶æ€çš„çŠ¶æ€æ•°æ®ã€‚*/
     PostForm_StateDataParamKey("WebUI_PF_State"),
-    /**»Ø´«Ò»ÌõĞÅÏ¢±íÊ¾±¾´ÎÇëÇóÀ´×ÔÓÚAjax¡£*/
+    /**å›ä¼ ä¸€æ¡ä¿¡æ¯è¡¨ç¤ºæœ¬æ¬¡è¯·æ±‚æ¥è‡ªäºAjaxã€‚*/
     PostForm_IsAjaxKey("WebUI_PF_Ajax"),
-    /**µ±¿Í»§¶ËÆóÍ¼Ö´ĞĞ·şÎñ¶Ë½Å±¾Ê±²Å»á»Ø´«Ò»ÌõÕâÌõĞÅÏ¢¡£*/
+    /**å½“å®¢æˆ·ç«¯ä¼å›¾æ‰§è¡ŒæœåŠ¡ç«¯è„šæœ¬æ—¶æ‰ä¼šå›ä¼ ä¸€æ¡è¿™æ¡ä¿¡æ¯ã€‚*/
     PostForm_InvokeStringKey("WebUI_PF_Invoke"), ;
     //
     private String value = null;

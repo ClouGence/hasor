@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import org.more.webui.context.ViewContext;
 import org.more.webui.lifestyle.Phase;
 import org.more.webui.lifestyle.PhaseID;
 /**
- * µÚ4½×¶Î£¬¸Ã½×¶ÎµÄÄ¿µÄÊÇ¶Ô×é¼şÄ£ĞÍÖĞµÄÊı¾İ½øĞĞÑéÖ¤¡£
+ * ç¬¬4é˜¶æ®µï¼Œè¯¥é˜¶æ®µçš„ç›®çš„æ˜¯å¯¹ç»„ä»¶æ¨¡å‹ä¸­çš„æ•°æ®è¿›è¡ŒéªŒè¯ã€‚
  * @version : 2011-8-4
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class Validation_Phase extends Phase {
     public static class Validation_PhaseID extends PhaseID {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import org.more.convert.ConverterUtils;
 /**
  * 
  * @version : 2011-6-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class BeanUtils {
-    /**»ñÈ¡Ö¸¶¨ÀàĞÍµÄÄ¬ÈÏÖµ¡£*/
+    /**è·å–æŒ‡å®šç±»å‹çš„é»˜è®¤å€¼ã€‚*/
     public static Object getDefaultValue(Class<?> returnType) {
         if (returnType == null)
             return null;
@@ -58,27 +58,27 @@ public abstract class BeanUtils {
             return null;
     };
     /**
-     * ¸Ã·½·¨µÄ×÷ÓÃÊÇ·´ÉäµÄĞÎÊ½µ÷ÓÃÄ¿±êµÄ·½·¨¡£
-     * @param target ±»µ÷ÓÃµÄ¶ÔÏó
-     * @param methodName Òªµ÷ÓÃµÄ·´Éä·½·¨Ãû¡£
-     * @param objects ²ÎÊıÁĞ±í
+     * è¯¥æ–¹æ³•çš„ä½œç”¨æ˜¯åå°„çš„å½¢å¼è°ƒç”¨ç›®æ ‡çš„æ–¹æ³•ã€‚
+     * @param target è¢«è°ƒç”¨çš„å¯¹è±¡
+     * @param methodName è¦è°ƒç”¨çš„åå°„æ–¹æ³•åã€‚
+     * @param objects å‚æ•°åˆ—è¡¨
      */
     public static Object invokeMethod(Object target, String methodName, Object... objects) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         if (target == null)
             return null;
         Class<?> targetType = target.getClass();
         Method invokeMethod = null;
-        //·´Éäµ÷ÓÃ·½·¨
+        //åå°„è°ƒç”¨æ–¹æ³•
         Method[] ms = targetType.getMethods();
         for (Method m : ms) {
-            //1.Ãû×Ö²»ÏàµÈµÄºöÂÔ
+            //1.åå­—ä¸ç›¸ç­‰çš„å¿½ç•¥
             if (m.getName().equals(methodName) == false)
                 continue;
-            //2.Ä¿±ê·½·¨²ÎÊıÁĞ±í¸öÊıÓëtypes×Ö¶ÎÖĞ´æ·ÅµÄ¸öÊı²»Ò»ÑùµÄºöÂÔ¡£
+            //2.ç›®æ ‡æ–¹æ³•å‚æ•°åˆ—è¡¨ä¸ªæ•°ä¸typeså­—æ®µä¸­å­˜æ”¾çš„ä¸ªæ•°ä¸ä¸€æ ·çš„å¿½ç•¥ã€‚
             Class<?>[] paramTypes = m.getParameterTypes();
             if (paramTypes.length != objects.length)
                 continue;
-            //3.Èç¹ûÓĞ²ÎÊıÀàĞÍ²»Ò»ÑùµÄÒ²ºöÂÔ---1
+            //3.å¦‚æœæœ‰å‚æ•°ç±»å‹ä¸ä¸€æ ·çš„ä¹Ÿå¿½ç•¥---1
             boolean isFind = true;
             for (int i = 0; i < paramTypes.length; i++) {
                 Object param_object = objects[i];
@@ -90,10 +90,10 @@ public abstract class BeanUtils {
                     break;
                 }
             }
-            //5.Èç¹ûÓĞ²ÎÊıÀàĞÍ²»Ò»ÑùµÄÒ²ºöÂÔ---2
+            //5.å¦‚æœæœ‰å‚æ•°ç±»å‹ä¸ä¸€æ ·çš„ä¹Ÿå¿½ç•¥---2
             if (isFind == false)
                 continue;
-            //·ûºÏÌõ¼şÖ´ĞĞµ÷ÓÃ
+            //ç¬¦åˆæ¡ä»¶æ‰§è¡Œè°ƒç”¨
             invokeMethod = m;
         }
         if (invokeMethod == null)
@@ -102,7 +102,7 @@ public abstract class BeanUtils {
             return invokeMethod.invoke(target, objects);
     }
     /*----------------------------------------------------------------------------------------*/
-    /**»ñÈ¡Àà¶¨ÒåµÄ×Ö¶ÎºÍ¼Ì³Ğ¸¸ÀàÖĞ¶¨ÒåµÄ×Ö¶ÎÒÔ¼°¸¸ÀàµÄ¸¸Àà£¨×ÓÀàÖØĞÂ¶¨ÒåÍ¬Ãû×Ö¶ÎÒ²»á±»ÁĞÈë¼¯ºÏ£©¡£*/
+    /**è·å–ç±»å®šä¹‰çš„å­—æ®µå’Œç»§æ‰¿çˆ¶ç±»ä¸­å®šä¹‰çš„å­—æ®µä»¥åŠçˆ¶ç±»çš„çˆ¶ç±»ï¼ˆå­ç±»é‡æ–°å®šä¹‰åŒåå­—æ®µä¹Ÿä¼šè¢«åˆ—å…¥é›†åˆï¼‰ã€‚*/
     public static List<Field> findALLFields(Class<?> target) {
         if (target == null)
             return null;
@@ -124,7 +124,7 @@ public abstract class BeanUtils {
             return;
         findALLFields(superType, fList);
     }
-    /**»ñÈ¡Àà¶¨ÒåµÄ·½·¨ºÍ¼Ì³Ğ¸¸ÀàÖĞ¶¨ÒåµÄ·½·¨ÒÔ¼°¸¸ÀàµÄ¸¸Àà£¨×ÓÀàµÄÖØĞ´·½·¨Ò²»á±»·µ»Ø£©¡£*/
+    /**è·å–ç±»å®šä¹‰çš„æ–¹æ³•å’Œç»§æ‰¿çˆ¶ç±»ä¸­å®šä¹‰çš„æ–¹æ³•ä»¥åŠçˆ¶ç±»çš„çˆ¶ç±»ï¼ˆå­ç±»çš„é‡å†™æ–¹æ³•ä¹Ÿä¼šè¢«è¿”å›ï¼‰ã€‚*/
     public static List<Method> findALLMethods(Class<?> target) {
         if (target == null)
             return null;
@@ -147,15 +147,15 @@ public abstract class BeanUtils {
         findALLMethods(superType, mList);
     }
     /*----------------------------------------------------------------------------------------*/
-    /**²éÕÒÒ»¸ö¿É²Ù×÷µÄ×Ö¶ÎÁĞ±í¡£*/
+    /**æŸ¥æ‰¾ä¸€ä¸ªå¯æ“ä½œçš„å­—æ®µåˆ—è¡¨ã€‚*/
     public static List<Field> getFields(Class<?> type) {
         return Arrays.asList(type.getFields());
     }
-    /**²éÕÒÒ»¸ö¿É²Ù×÷µÄ·½·¨ÁĞ±í¡£*/
+    /**æŸ¥æ‰¾ä¸€ä¸ªå¯æ“ä½œçš„æ–¹æ³•åˆ—è¡¨ã€‚*/
     public static List<Method> getMethods(Class<?> type) {
         return Arrays.asList(type.getMethods());
     }
-    /**²éÕÒÒ»¸ö¿É²Ù×÷µÄ×Ö¶Î¡£*/
+    /**æŸ¥æ‰¾ä¸€ä¸ªå¯æ“ä½œçš„å­—æ®µã€‚*/
     public static Field getField(String fieldName, Class<?> type) {
         if (fieldName == null || type == null)
             return null;
@@ -164,7 +164,7 @@ public abstract class BeanUtils {
                 return f;
         return null;
     }
-    /**²éÕÒÒ»¸ö¿É²Ù×÷µÄ·½·¨¡£*/
+    /**æŸ¥æ‰¾ä¸€ä¸ªå¯æ“ä½œçš„æ–¹æ³•ã€‚*/
     public static Method getMethod(Class<?> atClass, String name, Class<?>[] paramType) {
         try {
             return atClass.getMethod(name, paramType);
@@ -176,7 +176,7 @@ public abstract class BeanUtils {
             }
         }
     }
-    /**»ñÈ¡ÊôĞÔÃû¼¯ºÏ£¬¸Ã·½·¨ÊÇ{@link #getPropertys(Class)}·½·¨µÄÉı¼¶°æ£¬Í¨¹ı¸Ã·½·¨»¹¿ÉÒÔÍ¬Ê±·µ»Ø¿É·ÃÎÊµÄ×Ö¶Î×÷ÎªÊôĞÔ¡£*/
+    /**è·å–å±æ€§åé›†åˆï¼Œè¯¥æ–¹æ³•æ˜¯{@link #getPropertys(Class)}æ–¹æ³•çš„å‡çº§ç‰ˆï¼Œé€šè¿‡è¯¥æ–¹æ³•è¿˜å¯ä»¥åŒæ—¶è¿”å›å¯è®¿é—®çš„å­—æ®µä½œä¸ºå±æ€§ã€‚*/
     public static List<String> getPropertysAndFields(Class<?> target) {
         List<String> mnames = getPropertys(target);
         List<Field> fnames = getFields(target);
@@ -187,7 +187,7 @@ public abstract class BeanUtils {
         }
         return mnames;
     }
-    /**»ñÈ¡ÊôĞÔÃû¼¯ºÏ£¬±»°üº¬µÄÊôĞÔ¿ÉÄÜÓĞĞ©Ö»ÊÇÖ»¶ÁÊôĞÔ£¬ÓĞĞ©ÊÇÖ»Ğ´ÊôĞÔ¡£Ò²ÓĞ¶ÁĞ´ÊôĞÔ¡£*/
+    /**è·å–å±æ€§åé›†åˆï¼Œè¢«åŒ…å«çš„å±æ€§å¯èƒ½æœ‰äº›åªæ˜¯åªè¯»å±æ€§ï¼Œæœ‰äº›æ˜¯åªå†™å±æ€§ã€‚ä¹Ÿæœ‰è¯»å†™å±æ€§ã€‚*/
     public static List<String> getPropertys(Class<?> target) {
         List<String> mnames = new ArrayList<String>();
         List<Method> ms = getMethods(target);
@@ -207,7 +207,7 @@ public abstract class BeanUtils {
         }
         return mnames;
     }
-    /**»ñÈ¡ÊôĞÔÃû¼¯ºÏ£¬±»°üº¬µÄÊôĞÔ¿ÉÄÜÓĞĞ©Ö»ÊÇÖ»¶ÁÊôĞÔ£¬ÓĞĞ©ÊÇÖ»Ğ´ÊôĞÔ¡£Ò²ÓĞ¶ÁĞ´ÊôĞÔ¡£*/
+    /**è·å–å±æ€§åé›†åˆï¼Œè¢«åŒ…å«çš„å±æ€§å¯èƒ½æœ‰äº›åªæ˜¯åªè¯»å±æ€§ï¼Œæœ‰äº›æ˜¯åªå†™å±æ€§ã€‚ä¹Ÿæœ‰è¯»å†™å±æ€§ã€‚*/
     public static PropertyDescriptor[] getPropertyDescriptors(Class<?> defineType) {
         List<PropertyDescriptor> mnames = new ArrayList<PropertyDescriptor>();
         List<String> ms = getPropertys(defineType);
@@ -218,7 +218,7 @@ public abstract class BeanUtils {
         }
         return mnames.toArray(new PropertyDescriptor[mnames.size()]);
     }
-    /**»ñÈ¡Ò»¸öÊôĞÔµÄ¶ÁÈ¡·½·¨¡£*/
+    /**è·å–ä¸€ä¸ªå±æ€§çš„è¯»å–æ–¹æ³•ã€‚*/
     public static Method getReadMethod(String property, Class<?> target) {
         if (property == null || target == null)
             return null;
@@ -230,7 +230,7 @@ public abstract class BeanUtils {
                 String methodName = m.getName();
                 if (methodName.equals(methodName_1) == true)
                     return m;
-                /*ÊÇ·ñÊÇ²¼¶û*/
+                /*æ˜¯å¦æ˜¯å¸ƒå°”*/
                 if (methodName.equals(methodName_2) == true) {
                     Class<?> t = m.getReturnType();
                     if (t == Boolean.class || t == boolean.class)
@@ -239,7 +239,7 @@ public abstract class BeanUtils {
             }
         return null;
     }
-    /**»ñÈ¡Ò»¸öÊôĞÔµÄĞ´Èë·½·¨¡£*/
+    /**è·å–ä¸€ä¸ªå±æ€§çš„å†™å…¥æ–¹æ³•ã€‚*/
     public static Method getWriteMethod(String property, Class<?> target) {
         if (property == null || target == null)
             return null;
@@ -250,29 +250,29 @@ public abstract class BeanUtils {
                     return m;
         return null;
     }
-    /**²âÊÔÊÇ·ñ¾ßÓĞpropertyNameËù±íÊ¾µÄÊôĞÔ£¬ÎŞÂÛÊÇ¶Á»òĞ´·½·¨Ö»Òª´æÔÚÒ»¸ö¾Í±íÊ¾´æÔÚ¸ÃÊôĞÔ¡£*/
+    /**æµ‹è¯•æ˜¯å¦å…·æœ‰propertyNameæ‰€è¡¨ç¤ºçš„å±æ€§ï¼Œæ— è®ºæ˜¯è¯»æˆ–å†™æ–¹æ³•åªè¦å­˜åœ¨ä¸€ä¸ªå°±è¡¨ç¤ºå­˜åœ¨è¯¥å±æ€§ã€‚*/
     public static boolean hasProperty(String propertyName, Class<?> target) {
-        //get¡¢set·½·¨
+        //getã€setæ–¹æ³•
         if (getReadMethod(propertyName, target) == null)
             if (getWriteMethod(propertyName, target) == null)
                 return false;
         return true;
     }
-    /**²âÊÔÊÇ·ñ¾ßÓĞfieldNameËù±íÊ¾µÄ×Ö¶Î£¬ÎŞÂÛÊÇ¶Á»òĞ´·½·¨Ö»Òª´æÔÚÒ»¸ö¾Í±íÊ¾´æÔÚ¸ÃÊôĞÔ¡£*/
+    /**æµ‹è¯•æ˜¯å¦å…·æœ‰fieldNameæ‰€è¡¨ç¤ºçš„å­—æ®µï¼Œæ— è®ºæ˜¯è¯»æˆ–å†™æ–¹æ³•åªè¦å­˜åœ¨ä¸€ä¸ªå°±è¡¨ç¤ºå­˜åœ¨è¯¥å±æ€§ã€‚*/
     public static boolean hasField(String propertyName, Class<?> target) {
         if (getField(propertyName, target) == null)
             return false;
         else
             return true;
     }
-    /**²âÊÔÊÇ·ñ¾ßÓĞnameËù±íÊ¾µÄÊôĞÔ£¬hasProperty»òhasFieldÓĞÒ»¸ö·µ»ØÎªtrueÔò·µ»Øtrue¡£*/
+    /**æµ‹è¯•æ˜¯å¦å…·æœ‰nameæ‰€è¡¨ç¤ºçš„å±æ€§ï¼ŒhasPropertyæˆ–hasFieldæœ‰ä¸€ä¸ªè¿”å›ä¸ºtrueåˆ™è¿”å›trueã€‚*/
     public static boolean hasPropertyOrField(String name, Class<?> target) {
         if (hasProperty(name, target) == false)
             if (hasField(name, target) == false)
                 return false;
         return true;
     }
-    /**²âÊÔÊÇ·ñÖ§³ÖreadProperty·½·¨¡£·µ»Øtrue±íÊ¾¿ÉÒÔ½øĞĞ¶ÁÈ¡²Ù×÷¡£*/
+    /**æµ‹è¯•æ˜¯å¦æ”¯æŒreadPropertyæ–¹æ³•ã€‚è¿”å›trueè¡¨ç¤ºå¯ä»¥è¿›è¡Œè¯»å–æ“ä½œã€‚*/
     public static boolean canReadProperty(String propertyName, Class<?> target) {
         Method readMethod = getReadMethod(propertyName, target);
         if (readMethod != null)
@@ -280,14 +280,14 @@ public abstract class BeanUtils {
         else
             return false;
     }
-    /**²âÊÔÊÇ·ñÖ§³ÖreadPropertyOrField·½·¨¡£*/
+    /**æµ‹è¯•æ˜¯å¦æ”¯æŒreadPropertyOrFieldæ–¹æ³•ã€‚*/
     public static boolean canReadPropertyOrField(String propertyName, Class<?> target) {
         if (canReadProperty(propertyName, target) == false)
             if (hasField(propertyName, target) == false)
                 return false;
         return true;
     }
-    /**²âÊÔÊÇ·ñÖ§³ÖwriteProperty·½·¨¡£·µ»Øtrue±íÊ¾¿ÉÒÔ½øĞĞĞ´Èë²Ù×÷¡£*/
+    /**æµ‹è¯•æ˜¯å¦æ”¯æŒwritePropertyæ–¹æ³•ã€‚è¿”å›trueè¡¨ç¤ºå¯ä»¥è¿›è¡Œå†™å…¥æ“ä½œã€‚*/
     public static boolean canWriteProperty(String propertyName, Class<?> target) {
         Method writeMethod = getWriteMethod(propertyName, target);
         if (writeMethod != null)
@@ -295,7 +295,7 @@ public abstract class BeanUtils {
         else
             return false;
     }
-    /**²âÊÔÊÇ·ñÖ§³ÖwritePropertyOrField·½·¨¡£*/
+    /**æµ‹è¯•æ˜¯å¦æ”¯æŒwritePropertyOrFieldæ–¹æ³•ã€‚*/
     public static boolean canWritePropertyOrField(String propertyName, Class<?> target) {
         if (canWriteProperty(propertyName, target) == false)
             if (hasField(propertyName, target) == false)
@@ -303,19 +303,19 @@ public abstract class BeanUtils {
         return true;
     }
     /*----------------------------------------------------------------------------------------*/
-    /**Ö´ĞĞÊôĞÔ×¢Èë£¬³ıÁË×¢Èëint,short,long,µÈ»ù±¾ÀàĞÍÖ®Íâ¸Ã·½·¨»¹Ö§³Ö×¢ÈëÃ¶¾ÙÀàĞÍ¡£·µ»ØÖµ±íÊ¾Ö´ĞĞÊÇ·ñ³É¹¦¡£×¢Òâ£º¸Ã·½·¨»á¸ù¾İÊôĞÔÀàĞÍ½øĞĞ³¢ÊÔÀàĞÍ×ª»»¡£*/
+    /**æ‰§è¡Œå±æ€§æ³¨å…¥ï¼Œé™¤äº†æ³¨å…¥int,short,long,ç­‰åŸºæœ¬ç±»å‹ä¹‹å¤–è¯¥æ–¹æ³•è¿˜æ”¯æŒæ³¨å…¥æšä¸¾ç±»å‹ã€‚è¿”å›å€¼è¡¨ç¤ºæ‰§è¡Œæ˜¯å¦æˆåŠŸã€‚æ³¨æ„ï¼šè¯¥æ–¹æ³•ä¼šæ ¹æ®å±æ€§ç±»å‹è¿›è¡Œå°è¯•ç±»å‹è½¬æ¢ã€‚*/
     public static boolean writeProperty(Object object, String attName, Object value) {
         if (object == null || attName == null)
             return false;
-        //1.²éÕÒ·½·¨
+        //1.æŸ¥æ‰¾æ–¹æ³•
         Class<?> defineType = object.getClass();
         Method writeMethod = getWriteMethod(attName, defineType);
         if (writeMethod == null)
             return false;
-        //2.Ö´ĞĞÊôĞÔ×ª»»
+        //2.æ‰§è¡Œå±æ€§è½¬æ¢
         Class<?> toType = writeMethod.getParameterTypes()[0];
         Object attValueObject = ConverterUtils.convert(toType, value);
-        //3.Ö´ĞĞÊôĞÔ×¢Èë
+        //3.æ‰§è¡Œå±æ€§æ³¨å…¥
         try {
             writeMethod.invoke(object, attValueObject);
             return true;
@@ -323,19 +323,19 @@ public abstract class BeanUtils {
             return false;
         }
     };
-    /**Ö´ĞĞ×Ö¶Î×¢Èë£¬³ıÁË×¢Èëint,short,long,µÈ»ù±¾ÀàĞÍÖ®Íâ¸Ã·½·¨»¹Ö§³Ö×¢ÈëÃ¶¾ÙÀàĞÍ¡£×¢Òâ£º¸Ã·½·¨»á¸ù¾İÊôĞÔÀàĞÍ½øĞĞ³¢ÊÔÀàĞÍ×ª»»¡£*/
+    /**æ‰§è¡Œå­—æ®µæ³¨å…¥ï¼Œé™¤äº†æ³¨å…¥int,short,long,ç­‰åŸºæœ¬ç±»å‹ä¹‹å¤–è¯¥æ–¹æ³•è¿˜æ”¯æŒæ³¨å…¥æšä¸¾ç±»å‹ã€‚æ³¨æ„ï¼šè¯¥æ–¹æ³•ä¼šæ ¹æ®å±æ€§ç±»å‹è¿›è¡Œå°è¯•ç±»å‹è½¬æ¢ã€‚*/
     public static boolean writeField(Object object, String fieldName, Object value) {
         if (object == null || fieldName == null)
             return false;
-        //1.²éÕÒ·½·¨
+        //1.æŸ¥æ‰¾æ–¹æ³•
         Class<?> defineType = object.getClass();
         Field writeField = getField(fieldName, defineType);
         if (writeField == null)
             return false;
-        //2.Ö´ĞĞÊôĞÔ×ª»»
+        //2.æ‰§è¡Œå±æ€§è½¬æ¢
         Class<?> toType = writeField.getType();
         Object attValueObject = ConverterUtils.convert(toType, value);
-        //3.Ö´ĞĞÊôĞÔ×¢Èë
+        //3.æ‰§è¡Œå±æ€§æ³¨å…¥
         try {
             writeField.set(object, attValueObject);
             return true;
@@ -343,54 +343,54 @@ public abstract class BeanUtils {
             return false;
         }
     }
-    /**Ö´ĞĞ×¢Èë£¬¸Ã·½·¨Ê×ÏÈ»áÊÓÍ¼Ö´ĞĞÊôĞÔ·½·¨×¢Èë¡£Èç¹ûÊ§°ÜÔòÖ´ĞĞ×Ö¶Î×¢Èë¡£×¢Òâ£º¸Ã·½·¨»á¸ù¾İÊôĞÔÀàĞÍ½øĞĞ³¢ÊÔÀàĞÍ×ª»»¡£*/
+    /**æ‰§è¡Œæ³¨å…¥ï¼Œè¯¥æ–¹æ³•é¦–å…ˆä¼šè§†å›¾æ‰§è¡Œå±æ€§æ–¹æ³•æ³¨å…¥ã€‚å¦‚æœå¤±è´¥åˆ™æ‰§è¡Œå­—æ®µæ³¨å…¥ã€‚æ³¨æ„ï¼šè¯¥æ–¹æ³•ä¼šæ ¹æ®å±æ€§ç±»å‹è¿›è¡Œå°è¯•ç±»å‹è½¬æ¢ã€‚*/
     public static boolean writePropertyOrField(Object object, String attName, Object value) {
         Class<?> defineType = object.getClass();
         if (canWriteProperty(attName, defineType) == true)
-            return writeProperty(object, attName, value);//Ö§³Ö·½·¨Ğ´Èë
+            return writeProperty(object, attName, value);//æ”¯æŒæ–¹æ³•å†™å…¥
         if (hasField(attName, defineType) == true)
-            return writeField(object, attName, value);//Ö§³Ö×Ö¶ÎĞ´Èë
+            return writeField(object, attName, value);//æ”¯æŒå­—æ®µå†™å…¥
         return false;
     }
-    /**Ö´ĞĞÊôĞÔ¶ÁÈ¡¡£*/
+    /**æ‰§è¡Œå±æ€§è¯»å–ã€‚*/
     public static Object readProperty(Object object, String attName) {
         if (object == null || attName == null)
             return false;
-        //1.²éÕÒ·½·¨
+        //1.æŸ¥æ‰¾æ–¹æ³•
         Class<?> defineType = object.getClass();
         Method readMethod = getReadMethod(attName, defineType);
         if (readMethod == null)
             return null;
-        //2.Ö´ĞĞÊôĞÔ¶ÁÈ¡
+        //2.æ‰§è¡Œå±æ€§è¯»å–
         try {
             return readMethod.invoke(object);
         } catch (Exception e) {
             return null;
         }
     };
-    /**Ö´ĞĞ×Ö¶Î¶ÁÈ¡¡£*/
+    /**æ‰§è¡Œå­—æ®µè¯»å–ã€‚*/
     public static Object readField(Object object, String fieldName) {
         if (object == null || fieldName == null)
             return null;
-        //1.²éÕÒ·½·¨
+        //1.æŸ¥æ‰¾æ–¹æ³•
         Class<?> defineType = object.getClass();
         Field readField = getField(fieldName, defineType);
         if (readField == null)
             return null;
-        //2.Ö´ĞĞ×Ö¶Î¶ÁÈ¡
+        //2.æ‰§è¡Œå­—æ®µè¯»å–
         try {
             return readField.get(object);
         } catch (Exception e) {
             return null;
         }
     }
-    /**Ö´ĞĞ×¢Èë£¬¸Ã·½·¨Ê×ÏÈ»áÊÓÍ¼Ö´ĞĞÊôĞÔ·½·¨×¢Èë¡£Èç¹ûÊ§°ÜÔòÖ´ĞĞ×Ö¶Î×¢Èë¡£×¢Òâ£º¸Ã·½·¨»á¸ù¾İÊôĞÔÀàĞÍ½øĞĞ³¢ÊÔÀàĞÍ×ª»»¡£*/
+    /**æ‰§è¡Œæ³¨å…¥ï¼Œè¯¥æ–¹æ³•é¦–å…ˆä¼šè§†å›¾æ‰§è¡Œå±æ€§æ–¹æ³•æ³¨å…¥ã€‚å¦‚æœå¤±è´¥åˆ™æ‰§è¡Œå­—æ®µæ³¨å…¥ã€‚æ³¨æ„ï¼šè¯¥æ–¹æ³•ä¼šæ ¹æ®å±æ€§ç±»å‹è¿›è¡Œå°è¯•ç±»å‹è½¬æ¢ã€‚*/
     public static Object readPropertyOrField(Object object, String attName) {
         Class<?> defineType = object.getClass();
         if (canReadProperty(attName, defineType) == true)
-            return readProperty(object, attName);//Ö§³Ö·½·¨¶ÁÈ¡
+            return readProperty(object, attName);//æ”¯æŒæ–¹æ³•è¯»å–
         if (hasField(attName, defineType) == true)
-            return readField(object, attName);//Ö§³Ö×Ö¶Î¶ÁÈ¡
+            return readField(object, attName);//æ”¯æŒå­—æ®µè¯»å–
         return null;
     }
     /***/

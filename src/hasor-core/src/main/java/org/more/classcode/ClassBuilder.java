@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,61 +20,61 @@ import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
 /**
- * ÀàÉú³ÉÆ÷£¬¿ÉÒÔÍ¨¹ı¼Ì³Ğ¸ÃÀàÖØĞ´acceptClass·½·¨À´Ê¹ÓÃclasscode»ùÓÚasm3.2µÄ¸ß¼¶¹¦ÄÜ¡£<br/>
- * ¸ÃÀàÌá¹©ÁËÈı¸öÀ©Õ¹µãÀ´·½±ãÁé»îÀ©Õ¹Éú³É×Ö½ÚÂë·½ÃæµÄ¹¦ÄÜ¡£<br/>
- * <b>À©Õ¹µãÒ»</b>¡¢<br/>
- * µ±{@link ClassBuilder#initBuilder(ClassEngine)}·½·¨±»ClassEngineµ÷ÓÃÖ®ºó£¬ÔÚ½áÊø·½·¨Ö®Ç°¸Ã·½·¨»áµ÷ÓÃ
- * {@link ClassBuilder#init(ClassEngine)}·½·¨¡£ÕâÊ±À©Õ¹Àà¿ÉÒÔ³õÊ¼»¯×Ô¼ºµÄÏà¹ØÊı¾İ´úÂë¡£<br/>
- * <b>À©Õ¹µã¶ş</b>¡¢<br/>
- * µ±{@link ClassBuilder#builderClass()}·½·¨±»ClassEngineµ÷ÓÃÖ®ºó£¬ÔÚ½áÊø·½·¨·µ»Ø{@link CreatedConfiguration}
- * Ö®Ç°¸Ã·½·¨»áµ÷ÓÃ{@link ClassBuilder#builder(byte[], ClassEngine)}·½·¨¡£ÕâÊ±À©Õ¹Àà¿ÉÒÔ¹¹ÔìÆäËüclass»òÕß¸ÄĞ´Ô­ÓĞ×Ö½ÚÂë¡£
- * ´¦ÓÚĞÔÄÜÉÏµÄ¿¼ÂÇÎÒÓÅÏÈÍÆ¼öÏÂÃæÕâÖÖÀ©Õ¹·½Ê½£¬ÒòÎªÏÂÃæµÄÕâÖÖ¸ÄĞ´×Ö½ÚÂëµÄÀ©Õ¹·½Ê½ÊÇ²ÎÓëÔÚ×Ö½ÚÂë¹¹Ôì²ã´ÎÖĞµÄ¡£<br/>
- * <b>À©Õ¹µãÈı</b>¡¢<br/>
- * {@link ClassBuilder#acceptClass(ClassWriter)}·½·¨ÊÇÒ»¸ö½ÏÎªÓÅÑÅµÄÀ©Õ¹·½Ê½¡£¸Ã·½·¨»áÔÚbuilderClass()·½·¨
- * ¹¹Ôìvisitor»·µ÷ÓÃÆÚ¼ä·¢Éú¡£builderClassÔÚÉú³É×Ö½ÚÂëÊ±Ê¹ÓÃµÄÊÇASM3.2Ìá¹©µÄvisitorÄ£Ê½£¬¸Ã·½·¨µÄ²ÎÊıÊÇ×îÖÕÒª
- * Ğ´ÈëµÄvisitor¡£×¢ÒâÊ¹ÓÃ¸ÃÀ©Õ¹·½Ê½±ØĞëÒªÊìÏ¤ASM3.2¿ò¼Ü¡£visitor»·µÄ²ã´Î¹ØÏµÊÇÕâÑùµÄ£º<br/>
- * <b>µÚÒ»»·</b>£¬ASM Write£»<b>µÚ¶ş»·</b>£¬ÓÃ»§À©Õ¹£»<b>µÚÈı»·</b>£¬ClassBuilder£»<b>µÚËÄ»·</b>£¬ASM Read
+ * ç±»ç”Ÿæˆå™¨ï¼Œå¯ä»¥é€šè¿‡ç»§æ‰¿è¯¥ç±»é‡å†™acceptClassæ–¹æ³•æ¥ä½¿ç”¨classcodeåŸºäºasm3.2çš„é«˜çº§åŠŸèƒ½ã€‚<br/>
+ * è¯¥ç±»æä¾›äº†ä¸‰ä¸ªæ‰©å±•ç‚¹æ¥æ–¹ä¾¿çµæ´»æ‰©å±•ç”Ÿæˆå­—èŠ‚ç æ–¹é¢çš„åŠŸèƒ½ã€‚<br/>
+ * <b>æ‰©å±•ç‚¹ä¸€</b>ã€<br/>
+ * å½“{@link ClassBuilder#initBuilder(ClassEngine)}æ–¹æ³•è¢«ClassEngineè°ƒç”¨ä¹‹åï¼Œåœ¨ç»“æŸæ–¹æ³•ä¹‹å‰è¯¥æ–¹æ³•ä¼šè°ƒç”¨
+ * {@link ClassBuilder#init(ClassEngine)}æ–¹æ³•ã€‚è¿™æ—¶æ‰©å±•ç±»å¯ä»¥åˆå§‹åŒ–è‡ªå·±çš„ç›¸å…³æ•°æ®ä»£ç ã€‚<br/>
+ * <b>æ‰©å±•ç‚¹äºŒ</b>ã€<br/>
+ * å½“{@link ClassBuilder#builderClass()}æ–¹æ³•è¢«ClassEngineè°ƒç”¨ä¹‹åï¼Œåœ¨ç»“æŸæ–¹æ³•è¿”å›{@link CreatedConfiguration}
+ * ä¹‹å‰è¯¥æ–¹æ³•ä¼šè°ƒç”¨{@link ClassBuilder#builder(byte[], ClassEngine)}æ–¹æ³•ã€‚è¿™æ—¶æ‰©å±•ç±»å¯ä»¥æ„é€ å…¶å®ƒclassæˆ–è€…æ”¹å†™åŸæœ‰å­—èŠ‚ç ã€‚
+ * å¤„äºæ€§èƒ½ä¸Šçš„è€ƒè™‘æˆ‘ä¼˜å…ˆæ¨èä¸‹é¢è¿™ç§æ‰©å±•æ–¹å¼ï¼Œå› ä¸ºä¸‹é¢çš„è¿™ç§æ”¹å†™å­—èŠ‚ç çš„æ‰©å±•æ–¹å¼æ˜¯å‚ä¸åœ¨å­—èŠ‚ç æ„é€ å±‚æ¬¡ä¸­çš„ã€‚<br/>
+ * <b>æ‰©å±•ç‚¹ä¸‰</b>ã€<br/>
+ * {@link ClassBuilder#acceptClass(ClassWriter)}æ–¹æ³•æ˜¯ä¸€ä¸ªè¾ƒä¸ºä¼˜é›…çš„æ‰©å±•æ–¹å¼ã€‚è¯¥æ–¹æ³•ä¼šåœ¨builderClass()æ–¹æ³•
+ * æ„é€ visitorç¯è°ƒç”¨æœŸé—´å‘ç”Ÿã€‚builderClassåœ¨ç”Ÿæˆå­—èŠ‚ç æ—¶ä½¿ç”¨çš„æ˜¯ASM3.2æä¾›çš„visitoræ¨¡å¼ï¼Œè¯¥æ–¹æ³•çš„å‚æ•°æ˜¯æœ€ç»ˆè¦
+ * å†™å…¥çš„visitorã€‚æ³¨æ„ä½¿ç”¨è¯¥æ‰©å±•æ–¹å¼å¿…é¡»è¦ç†Ÿæ‚‰ASM3.2æ¡†æ¶ã€‚visitorç¯çš„å±‚æ¬¡å…³ç³»æ˜¯è¿™æ ·çš„ï¼š<br/>
+ * <b>ç¬¬ä¸€ç¯</b>ï¼ŒASM Writeï¼›<b>ç¬¬äºŒç¯</b>ï¼Œç”¨æˆ·æ‰©å±•ï¼›<b>ç¬¬ä¸‰ç¯</b>ï¼ŒClassBuilderï¼›<b>ç¬¬å››ç¯</b>ï¼ŒASM Read
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class ClassBuilder {
-    /**¸Ã×Ö¶Î»á±»getClassBytes()·½·¨*/
-    protected byte[]    newClassBytes  = null; //ĞÂÀàµÄ×Ö½ÚÂë¡£
-    private ClassEngine classEngine    = null; //ClassÒıÇæ¡£
+    /**è¯¥å­—æ®µä¼šè¢«getClassBytes()æ–¹æ³•*/
+    protected byte[]    newClassBytes  = null; //æ–°ç±»çš„å­—èŠ‚ç ã€‚
+    private ClassEngine classEngine    = null; //Classå¼•æ“ã€‚
     //property
-    private String[]    delegateString = null; //Î¯ÍĞÀàĞÍBy ASM
-    private Class<?>[]  delegateType   = null; //Î¯ÍĞÀàĞÍBy Class
-    private String[]    simpleFields   = null; //¼òµ¥ÊôĞÔ
-    private String[]    delegateFields = null; //Î¯ÍĞÊôĞÔ
+    private String[]    delegateString = null; //å§”æ‰˜ç±»å‹By ASM
+    private Class<?>[]  delegateType   = null; //å§”æ‰˜ç±»å‹By Class
+    private String[]    simpleFields   = null; //ç®€å•å±æ€§
+    private String[]    delegateFields = null; //å§”æ‰˜å±æ€§
     //======================================================================================Get/Set
-    /**»ñÈ¡Ê¹ÓÃµÄClassÒıÇæ¡£*/
+    /**è·å–ä½¿ç”¨çš„Classå¼•æ“ã€‚*/
     public ClassEngine getClassEngine() {
         return this.classEngine;
     }
-    /**·µ»ØÎ¯ÍĞ½Ó¿ÚÊı×éµÄ×Ö½ÚÂëĞÎÊ½¡£*/
+    /**è¿”å›å§”æ‰˜æ¥å£æ•°ç»„çš„å­—èŠ‚ç å½¢å¼ã€‚*/
     public String[] getDelegateString() {
         return this.delegateString;
     }
-    /**·µ»ØÎ¯ÍĞ½Ó¿ÚÊı×é¡£*/
+    /**è¿”å›å§”æ‰˜æ¥å£æ•°ç»„ã€‚*/
     public Class<?>[] getDelegateType() {
         return this.delegateType;
     }
-    /**·µ»Ø¸½¼ÓµÄÊôĞÔÃûÊı×é¡£*/
+    /**è¿”å›é™„åŠ çš„å±æ€§åæ•°ç»„ã€‚*/
     public String[] getSimpleFields() {
         return this.simpleFields;
     }
-    /**·µ»Ø¸½¼ÓµÄÎ¯ÍĞÊôĞÔµÄÊôĞÔÃûÊı×é¡£*/
+    /**è¿”å›é™„åŠ çš„å§”æ‰˜å±æ€§çš„å±æ€§åæ•°ç»„ã€‚*/
     public String[] getDelegateFields() {
         return this.delegateFields;
     }
     //======================================================================================Is
-    /** ·µ»ØÒ»¸öboolean£¬¸ÃÖµ¾ö¶¨ÁËÊÇ·ñÊä³öÎ¯ÍĞ£¬Î¯ÍĞÊµ¼ÊÉÏ¾ÍÊÇÒ»¸ö½Ó¿ÚÊµÏÖ¡£Èç¹ûgetDelegateString()·µ»ØnullÔò¸Ã·½·¨·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£ */
+    /** è¿”å›ä¸€ä¸ªbooleanï¼Œè¯¥å€¼å†³å®šäº†æ˜¯å¦è¾“å‡ºå§”æ‰˜ï¼Œå§”æ‰˜å®é™…ä¸Šå°±æ˜¯ä¸€ä¸ªæ¥å£å®ç°ã€‚å¦‚æœgetDelegateString()è¿”å›nullåˆ™è¯¥æ–¹æ³•è¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚ */
     public boolean isAddDelegate() {
         return this.getDelegateString() != null;
     }
     /**
-     * ·µ»ØÒ»¸öboolean£¬¸ÃÖµ¾ö¶¨ÁËÊÇ·ñÊä³ö¶îÍâµÄ¸½¼ÓÊôĞÔ£¬ÕâĞ©ÊôĞÔ°üÀ¨ÁË¼òµ¥ÊôĞÔºÍ´úÀíÊôĞÔ¡£
-     * Èç¹ûgetSimpleFields()ºÍgetDelegateFields()Í¬Ê±·µ»ØnullÔò¸Ã·½·¨·µ»Øtrue£¬·ñÔò·µ»Øfalse¡£
+     * è¿”å›ä¸€ä¸ªbooleanï¼Œè¯¥å€¼å†³å®šäº†æ˜¯å¦è¾“å‡ºé¢å¤–çš„é™„åŠ å±æ€§ï¼Œè¿™äº›å±æ€§åŒ…æ‹¬äº†ç®€å•å±æ€§å’Œä»£ç†å±æ€§ã€‚
+     * å¦‚æœgetSimpleFields()å’ŒgetDelegateFields()åŒæ—¶è¿”å›nullåˆ™è¯¥æ–¹æ³•è¿”å›trueï¼Œå¦åˆ™è¿”å›falseã€‚
      */
     public boolean isAddFields() {
         if (this.getSimpleFields() == null && this.getDelegateFields() == null)
@@ -83,8 +83,8 @@ public abstract class ClassBuilder {
             return true;
     }
     /**
-     * ·µ»ØÒ»¸öboolean£¬¸ÃÖµ¿ÉÒÔ¾ö¶¨ÊÇ·ñäÖÈ¾aopµÄ×°Åä¡£builderClass·½·¨µ÷ÓÃÊ±ÊÇ·ñ¸ÄÔìÊä³öaopÖ§³ÖµÄ´úÂë¾ÍÊÇÍ¨¹ı¸Ã·½·¨À´ÅĞ¶¨¡£
-     * Èç¹ûgetAopFilter()¡¢getAopBeforeListeners()¡¢getAopReturningListeners()¡¢getAopThrowingListeners()·µ»ØÖµ¶¼ÊÇnullÊ±£¬¸Ã·½·¨·µ»ØÖµ½«»áÊÇfalse·ñÔòÊÇtrue¡£
+     * è¿”å›ä¸€ä¸ªbooleanï¼Œè¯¥å€¼å¯ä»¥å†³å®šæ˜¯å¦æ¸²æŸ“aopçš„è£…é…ã€‚builderClassæ–¹æ³•è°ƒç”¨æ—¶æ˜¯å¦æ”¹é€ è¾“å‡ºaopæ”¯æŒçš„ä»£ç å°±æ˜¯é€šè¿‡è¯¥æ–¹æ³•æ¥åˆ¤å®šã€‚
+     * å¦‚æœgetAopFilter()ã€getAopBeforeListeners()ã€getAopReturningListeners()ã€getAopThrowingListeners()è¿”å›å€¼éƒ½æ˜¯nullæ—¶ï¼Œè¯¥æ–¹æ³•è¿”å›å€¼å°†ä¼šæ˜¯falseå¦åˆ™æ˜¯trueã€‚
      */
     public boolean isRenderAop() {
         if (this.classEngine.getAopFilters() == null && //
@@ -96,19 +96,19 @@ public abstract class ClassBuilder {
             return true;
     }
     //=======================================================================================Method
-    /**»ñÈ¡ÒÑ¾­Éú³ÉµÄ×Ö½ÚÂëÊı×é¡£*/
+    /**è·å–å·²ç»ç”Ÿæˆçš„å­—èŠ‚ç æ•°ç»„ã€‚*/
     public byte[] getClassBytes() {
         return this.newClassBytes;
     }
     //======================================================================================Builder
-    /**³õÊ¼»¯¹¹ÔìÆ÷¡£*/
+    /**åˆå§‹åŒ–æ„é€ å™¨ã€‚*/
     public final void initBuilder(ClassEngine classEngine) {
-        this.newClassBytes = null; //ĞÂÀàµÄ×Ö½ÚÂë¡£
-        this.classEngine = null; //ClassÒıÇæ¡£
-        this.delegateString = null; //Î¯ÍĞÀàĞÍBy ASM
-        this.delegateType = null; //Î¯ÍĞÀàĞÍBy Class
-        this.simpleFields = null; //¼òµ¥ÊôĞÔ
-        this.delegateFields = null; //Î¯ÍĞÊôĞÔ
+        this.newClassBytes = null; //æ–°ç±»çš„å­—èŠ‚ç ã€‚
+        this.classEngine = null; //Classå¼•æ“ã€‚
+        this.delegateString = null; //å§”æ‰˜ç±»å‹By ASM
+        this.delegateType = null; //å§”æ‰˜ç±»å‹By Class
+        this.simpleFields = null; //ç®€å•å±æ€§
+        this.delegateFields = null; //å§”æ‰˜å±æ€§
         //---------------------------------------------------------
         this.classEngine = classEngine;
         //3.Delegate
@@ -140,27 +140,27 @@ public abstract class ClassBuilder {
         //5.init
         this.init(this.classEngine);
     }
-    /**µ÷ÓÃ¹¹½¨¹ı³Ì¹¹½¨ĞÂµÄ×Ö½ÚÂë¶ÔÏó¡£*/
+    /**è°ƒç”¨æ„å»ºè¿‡ç¨‹æ„å»ºæ–°çš„å­—èŠ‚ç å¯¹è±¡ã€‚*/
     public final CreatedConfiguration builderClass() throws IOException {
-        //1.»ù±¾ĞÅÏ¢
+        //1.åŸºæœ¬ä¿¡æ¯
         ClassEngine engine = this.classEngine;
         Class<?> superClass = engine.getSuperClass();
-        //2.¹¹½¨visitor»·
-        //------µÚÒ»»·£¬Ğ´Èë
+        //2.æ„å»ºvisitorç¯
+        //------ç¬¬ä¸€ç¯ï¼Œå†™å…¥
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        //------µÚ¶ş»·£¬ÓÃ»§À©Õ¹
+        //------ç¬¬äºŒç¯ï¼Œç”¨æˆ·æ‰©å±•
         ClassVisitor visitor = this.acceptClass(writer);
-        //------µÚÈı»·£¬Aop
+        //------ç¬¬ä¸‰ç¯ï¼ŒAop
         AopClassAdapter aopAdapter = null;
         if (this.isRenderAop() == true) {
             aopAdapter = new AopClassAdapter((visitor == null) ? writer : visitor, this);
             visitor = aopAdapter;
         }
-        //------µÚËÄ»·£¬Builder
+        //------ç¬¬å››ç¯ï¼ŒBuilder
         visitor = (visitor != null) ? new BuilderClassAdapter(visitor, this) : new BuilderClassAdapter(writer, this);
         BuilderClassAdapter builderAdapter = (BuilderClassAdapter) visitor;
         //3.Read
-        ClassReader reader = new ClassReader(EngineToos.getClassInputStream(superClass));//´´½¨ClassReader
+        ClassReader reader = new ClassReader(EngineToos.getClassInputStream(superClass));//åˆ›å»ºClassReader
         reader.accept(visitor, ClassReader.SKIP_DEBUG);
         this.newClassBytes = writer.toByteArray();
         this.newClassBytes = this.builder(this.newClassBytes, this.classEngine);
@@ -171,21 +171,21 @@ public abstract class ClassBuilder {
     }
     //======================================================================================Builder
     /**
-     * {@link ClassBuilder#acceptClass(ClassWriter)}·½·¨ÊÇÒ»¸ö½ÏÎªÓÅÑÅµÄÀ©Õ¹·½Ê½¡£¸Ã·½·¨»áÔÚbuilderClass()·½·¨
-     * ¹¹Ôìvisitor»·µ÷ÓÃÆÚ¼ä·¢Éú¡£builderClassÔÚÉú³É×Ö½ÚÂëÊ±Ê¹ÓÃµÄÊÇASM3.2Ìá¹©µÄvisitorÄ£Ê½£¬¸Ã·½·¨µÄ²ÎÊıÊÇ×îÖÕÒª
-     * Ğ´ÈëµÄvisitor¡£×¢ÒâÊ¹ÓÃ¸ÃÀ©Õ¹·½Ê½±ØĞëÒªÊìÏ¤ASM3.2¿ò¼Ü¡£visitor»·µÄ²ã´Î¹ØÏµÊÇÕâÑùµÄ£º<br/>
-     * <b>µÚÒ»»·</b>£¬ASM Write£»<b>µÚ¶ş»·</b>£¬ÓÃ»§À©Õ¹£»<b>µÚÈı»·</b>£¬Aop£»<b>µÚËÄ»·</b>£¬ASM Read
+     * {@link ClassBuilder#acceptClass(ClassWriter)}æ–¹æ³•æ˜¯ä¸€ä¸ªè¾ƒä¸ºä¼˜é›…çš„æ‰©å±•æ–¹å¼ã€‚è¯¥æ–¹æ³•ä¼šåœ¨builderClass()æ–¹æ³•
+     * æ„é€ visitorç¯è°ƒç”¨æœŸé—´å‘ç”Ÿã€‚builderClassåœ¨ç”Ÿæˆå­—èŠ‚ç æ—¶ä½¿ç”¨çš„æ˜¯ASM3.2æä¾›çš„visitoræ¨¡å¼ï¼Œè¯¥æ–¹æ³•çš„å‚æ•°æ˜¯æœ€ç»ˆè¦
+     * å†™å…¥çš„visitorã€‚æ³¨æ„ä½¿ç”¨è¯¥æ‰©å±•æ–¹å¼å¿…é¡»è¦ç†Ÿæ‚‰ASM3.2æ¡†æ¶ã€‚visitorç¯çš„å±‚æ¬¡å…³ç³»æ˜¯è¿™æ ·çš„ï¼š<br/>
+     * <b>ç¬¬ä¸€ç¯</b>ï¼ŒASM Writeï¼›<b>ç¬¬äºŒç¯</b>ï¼Œç”¨æˆ·æ‰©å±•ï¼›<b>ç¬¬ä¸‰ç¯</b>ï¼ŒAopï¼›<b>ç¬¬å››ç¯</b>ï¼ŒASM Read
      */
     protected abstract ClassVisitor acceptClass(final ClassWriter classVisitor);
     /**
-     * µ±{@link ClassBuilder#initBuilder(ClassEngine)}·½·¨±»ClassEngineµ÷ÓÃÖ®ºó£¬ÔÚ½áÊø·½·¨Ö®Ç°¸Ã·½·¨»áµ÷ÓÃ
-     * {@link ClassBuilder#init(ClassEngine)}·½·¨¡£ÕâÊ±×ÓÀà¿ÉÒÔÍ¨¹ıÖØĞ´¸Ã·½·¨À´³õÊ¼»¯×Ô¼ºµÄÏà¹ØÊı¾İ¡£
+     * å½“{@link ClassBuilder#initBuilder(ClassEngine)}æ–¹æ³•è¢«ClassEngineè°ƒç”¨ä¹‹åï¼Œåœ¨ç»“æŸæ–¹æ³•ä¹‹å‰è¯¥æ–¹æ³•ä¼šè°ƒç”¨
+     * {@link ClassBuilder#init(ClassEngine)}æ–¹æ³•ã€‚è¿™æ—¶å­ç±»å¯ä»¥é€šè¿‡é‡å†™è¯¥æ–¹æ³•æ¥åˆå§‹åŒ–è‡ªå·±çš„ç›¸å…³æ•°æ®ã€‚
      */
     protected abstract void init(final ClassEngine classEngine);
     /**
-     * µ±{@link ClassBuilder#builderClass()}·½·¨±»ClassEngineµ÷ÓÃÖ®ºó£¬ÔÚ½áÊø·½·¨·µ»Ø{@link CreatedConfiguration}
-     * Ö®Ç°¸Ã·½·¨»áµ÷ÓÃ{@link ClassBuilder#builder(byte[], ClassEngine)}·½·¨¡£ÕâÊ±×ÓÀà¿ÉÒÔÍ¨¹ıÖØĞ´¸Ã·½·¨À´¹¹ÔìÆäËüclass»òÕß¸ÄĞ´Ô­ÓĞ×Ö½ÚÂë¡£
-     * @param classEngine Ê¹ÓÃµÄ×Ö½ÚÂëÒıÇæ¶ÔÏó¡£
+     * å½“{@link ClassBuilder#builderClass()}æ–¹æ³•è¢«ClassEngineè°ƒç”¨ä¹‹åï¼Œåœ¨ç»“æŸæ–¹æ³•è¿”å›{@link CreatedConfiguration}
+     * ä¹‹å‰è¯¥æ–¹æ³•ä¼šè°ƒç”¨{@link ClassBuilder#builder(byte[], ClassEngine)}æ–¹æ³•ã€‚è¿™æ—¶å­ç±»å¯ä»¥é€šè¿‡é‡å†™è¯¥æ–¹æ³•æ¥æ„é€ å…¶å®ƒclassæˆ–è€…æ”¹å†™åŸæœ‰å­—èŠ‚ç ã€‚
+     * @param classEngine ä½¿ç”¨çš„å­—èŠ‚ç å¼•æ“å¯¹è±¡ã€‚
      */
     protected byte[] builder(final byte[] newClassBytes, final ClassEngine classEngine) {
         return newClassBytes;

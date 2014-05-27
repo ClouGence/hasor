@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,30 +19,30 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * È¨ÏŞÅäÖÃ£¬¿ÉÒÔÅäÖÃµ½Àà¼¶±ğºÍ·½·¨¼¶±ğÉÏ¡£
+ * æƒé™é…ç½®ï¼Œå¯ä»¥é…ç½®åˆ°ç±»çº§åˆ«å’Œæ–¹æ³•çº§åˆ«ä¸Šã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Power {
-    /**È¨ÏŞµã´úÂë£¬Èç¹ûÃ»ÓĞÌîĞ´È¨ÏŞµãcodeÔòÈ¨ÏŞ¼ì²âÒªÇó½ö½ö¼ì²âÊÇ·ñµÇÂ½¡£*/
+    /**æƒé™ç‚¹ä»£ç ï¼Œå¦‚æœæ²¡æœ‰å¡«å†™æƒé™ç‚¹codeåˆ™æƒé™æ£€æµ‹è¦æ±‚ä»…ä»…æ£€æµ‹æ˜¯å¦ç™»é™†ã€‚*/
     public String[] value() default "";
-    /**È¨ÏŞÈÏÖ¤µÈ¼¶£¬*/
+    /**æƒé™è®¤è¯ç­‰çº§ï¼Œ*/
     public Level level() default Level.NeedLogin;
-    /**µ±µ÷ÓÃÊ§°ÜÊ±·µ»ØµÄÒì³£ÄÚÈİ¡£*/
+    /**å½“è°ƒç”¨å¤±è´¥æ—¶è¿”å›çš„å¼‚å¸¸å†…å®¹ã€‚*/
     public String errorMsg() default "";
     /**
-     * ÈÏÖ¤¼¶±ğÃ¶¾Ù
+     * è®¤è¯çº§åˆ«æšä¸¾
      * @version : 2013-3-12
-     * @author ÕÔÓÀ´º (zyc@byshell.org)
+     * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
      */
     public static enum Level {
-        /**×ÔÓÉ·ÃÎÊ¡£Level 0*/
+        /**è‡ªç”±è®¿é—®ã€‚Level 0*/
         Free,
-        /**ĞèÒª¾­¹ıµÇÂ½¡£Level 1*/
+        /**éœ€è¦ç»è¿‡ç™»é™†ã€‚Level 1*/
         NeedLogin,
-        /**ĞèÒª¼ì²éÈ¨ÏŞµã¡£Level 2 */
+        /**éœ€è¦æ£€æŸ¥æƒé™ç‚¹ã€‚Level 2 */
         NeedAccess
     }
 }

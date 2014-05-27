@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 /**
- * ÓÃÓÚ¹ÜÀíÃ¿¸öÏîÄ¿Ä£ĞÍÏÂµÄ×Ü¿ØÀà¡£
+ * ç”¨äºç®¡ç†æ¯ä¸ªé¡¹ç›®æ¨¡å‹ä¸‹çš„æ€»æ§ç±»ã€‚
  * @version : 2013-2-2
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConstModelSet {
     private static Map<String, ConstModel> modeBeanMap   = new LinkedHashMap<String, ConstModel>();
@@ -41,47 +41,47 @@ public class ConstModelSet {
     //
     //
     //
-    /**»ñÈ¡»î¶¯µÄÄ£ĞÍ¡£*/
+    /**è·å–æ´»åŠ¨çš„æ¨¡å‹ã€‚*/
     public static ConstModel getActivateModel() {
         return activateModel;
     }
-    /**³¢ÊÔ¼¤»îÄ³¸öÅäÖÃÎÄ¼ş£¬Èç¹ûÄ¿±êÅäÖÃÎÄ¼ş²»´æÔÚÔò×°ÔØËü*/
+    /**å°è¯•æ¿€æ´»æŸä¸ªé…ç½®æ–‡ä»¶ï¼Œå¦‚æœç›®æ ‡é…ç½®æ–‡ä»¶ä¸å­˜åœ¨åˆ™è£…è½½å®ƒ*/
     public static ConstModel activateModel(String projectName) {
         if (modeBeanMap.containsKey(projectName) == false)
             return null;
         activateModel = modeBeanMap.get(projectName);
         return activateModel;
     }
-    /**ÅĞ¶ÏÊÇ·ñ´æÔÚÕâ¸öÏîÄ¿¡£*/
+    /**åˆ¤æ–­æ˜¯å¦å­˜åœ¨è¿™ä¸ªé¡¹ç›®ã€‚*/
     public static boolean existConstModel(IJavaProject javaProject) {
         String projectName = javaProject.getElementName();
         return modeBeanMap.containsKey(projectName);
     }
-    /**´´½¨Ä£ĞÍ¡£ */
+    /**åˆ›å»ºæ¨¡å‹ã€‚ */
     public static ConstModel newConstModel(IJavaProject javaProject, IProgressMonitor monitor) throws CoreException {
         if (existConstModel(javaProject) == true) {
             ConstModel constModel = getConstModel(javaProject);
-            constModel.refresh(monitor);//Í¨ÖªÄ£ĞÍ½øĞĞË¢ĞÂ¡£
+            constModel.refresh(monitor);//é€šçŸ¥æ¨¡å‹è¿›è¡Œåˆ·æ–°ã€‚
             return constModel;
         }
         ConstModel modelBean = new ConstModel(javaProject);
-        modelBean.initLoad(monitor);//Ö´ĞĞ³õÊ¼»¯×°ÔØ£¬¸Ã²Ù×÷Èç¹û×°ÔØ³É¹¦»á½«Ä£ĞÍÖÃÎªÉúĞ§×´Ì¬
+        modelBean.initLoad(monitor);//æ‰§è¡Œåˆå§‹åŒ–è£…è½½ï¼Œè¯¥æ“ä½œå¦‚æœè£…è½½æˆåŠŸä¼šå°†æ¨¡å‹ç½®ä¸ºç”Ÿæ•ˆçŠ¶æ€
         modeBeanMap.put(modelBean.getProjectName(), modelBean);
         modeBeanList.add(modelBean);
         return modelBean;
     }
-    /**»ñÈ¡Ä£ĞÍ¡£*/
+    /**è·å–æ¨¡å‹ã€‚*/
     public static ConstModel getConstModel(IJavaProject javaProject) {
         String projectName = javaProject.getElementName();
         return modeBeanMap.get(projectName);
     }
-    /**ÖØĞÂÔØÈë¹¤×÷¿Õ¼äÖĞËùÓĞÏîÄ¿¡£*/
+    /**é‡æ–°è½½å…¥å·¥ä½œç©ºé—´ä¸­æ‰€æœ‰é¡¹ç›®ã€‚*/
     public static void refresh(IProgressMonitor monitor) {
         activateModel = null;
-        /* 1.É¨Ãèprojects£¬²¢ÇÒÔØÈëxml
-         *   1.1.ĞÂµÄÔØÈëÇëÇó£¬Ö´ĞĞÔØÈë£¬²¢ÇÒ±ê¼ÇÎªÉúĞ§¡£
-         *   1.2.ÒÑ¾­´æÔÚµÄÏîÄ¿£¬½«Ê§Ğ§±ê¼ÇÎªÉúĞ§¡£
-         * 2.¼¤»îÄ¬ÈÏÏîÄ¿
+        /* 1.æ‰«æprojectsï¼Œå¹¶ä¸”è½½å…¥xml
+         *   1.1.æ–°çš„è½½å…¥è¯·æ±‚ï¼Œæ‰§è¡Œè½½å…¥ï¼Œå¹¶ä¸”æ ‡è®°ä¸ºç”Ÿæ•ˆã€‚
+         *   1.2.å·²ç»å­˜åœ¨çš„é¡¹ç›®ï¼Œå°†å¤±æ•ˆæ ‡è®°ä¸ºç”Ÿæ•ˆã€‚
+         * 2.æ¿€æ´»é»˜è®¤é¡¹ç›®
          */
         //
         HashMap<String, ConstModel> oldModeMap = new HashMap<String, ConstModel>(modeBeanMap);
@@ -91,7 +91,7 @@ public class ConstModelSet {
         if (projects != null) {
             for (int i = 0; i < projects.length; i++) {
                 IProject pro = projects[i];
-                Message.updateTask(monitor, "scanning projects(¡°" + pro.getName() + "¡±)", projects.length, i);
+                Message.updateTask(monitor, "scanning projects(â€œ" + pro.getName() + "â€)", projects.length, i);
                 if (pro.isOpen() == false)
                     continue;
                 if (pro.exists() == false)
@@ -99,16 +99,16 @@ public class ConstModelSet {
                 IJavaProject javaProject = JavaCore.create(pro);
                 if (javaProject == null || javaProject.exists() == false)
                     continue;
-                //×ª»»ÎªJavaÏîÄ¿£¬²¢ÇÒ²éÕÒcore-codes.xmlÅäÖÃÎÄ¼ş¡£
+                //è½¬æ¢ä¸ºJavaé¡¹ç›®ï¼Œå¹¶ä¸”æŸ¥æ‰¾core-codes.xmlé…ç½®æ–‡ä»¶ã€‚
                 try {
                     IJavaElement[] javaElements = javaProject.getChildren();
                     if (javaElements == null)
                         continue;
                     oldModeMap.remove(javaProject.getElementName());
                     if (existConstModel(javaProject) == true)
-                        getConstModel(javaProject).refresh(monitor);//Í¨ÖªË¢ĞÂÏîÄ¿
+                        getConstModel(javaProject).refresh(monitor);//é€šçŸ¥åˆ·æ–°é¡¹ç›®
                     else
-                        newConstModel(javaProject, monitor).refresh(monitor);//Í¨ÖªË¢ĞÂÏîÄ¿
+                        newConstModel(javaProject, monitor).refresh(monitor);//é€šçŸ¥åˆ·æ–°é¡¹ç›®
                 } catch (Exception e) {
                     Message.errorInfo("Refresh Job", e);
                 }
@@ -140,7 +140,7 @@ public class ConstModelSet {
     public static void removeModel(IJavaProject javaProject) {
         modeBeanList.remove(modeBeanMap.remove(javaProject.getElementName()));
     }
-    /**»ñÈ¡ÒÑ¾­×ªÔØµÄÄ£ĞÍÁĞ±í£¬·µ»ØµÄÖ»¶ÁÁĞ±í¡£*/
+    /**è·å–å·²ç»è½¬è½½çš„æ¨¡å‹åˆ—è¡¨ï¼Œè¿”å›çš„åªè¯»åˆ—è¡¨ã€‚*/
     public static List<ConstModel> getModeBeanList() {
         return Collections.unmodifiableList(modeBeanList);
     }

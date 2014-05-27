@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package net.test.simple._02_beans.name;
 import net.hasor.plugins.bean.Bean;
 import net.test.simple._02_beans.pojo.PojoBean;
 /**
- * ÎªÁË¼òµ¥£¬NameBean ¼Ì³ĞÁË PojoBean£¬²¢¾ßÓĞÁË PojoBean µÄËùÓĞÌØÖÊ¡£
- * ²¢Í¨¹ı {@code @Bean} ×¢½âÎª NameBean ÉùÃ÷ÁËÒ»¸öÃû³Æ½Ğ¡°NameBean¡±¡£
+ * ä¸ºäº†ç®€å•ï¼ŒNameBean ç»§æ‰¿äº† PojoBeanï¼Œå¹¶å…·æœ‰äº† PojoBean çš„æ‰€æœ‰ç‰¹è´¨ã€‚
+ * å¹¶é€šè¿‡ {@code @Bean} æ³¨è§£ä¸º NameBean å£°æ˜äº†ä¸€ä¸ªåç§°å«â€œNameBeanâ€ã€‚
  * @version : 2014-1-3
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 @Bean("NameBean")
 public class NameBean extends PojoBean {}

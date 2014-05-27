@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ import net.hasor.core.EventCallBackHook;
 /**
  * 
  * @version : 2014-3-13
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class EventObject {
     private String            eventType = null;
-    private boolean           sync      = true; //Ä¬ÈÏÊÇÍ¬²½µÄ
+    private boolean           sync      = true; //é»˜è®¤æ˜¯åŒæ­¥çš„
     private Object[]          params    = null;
     private EventCallBackHook callBack  = null;
     //

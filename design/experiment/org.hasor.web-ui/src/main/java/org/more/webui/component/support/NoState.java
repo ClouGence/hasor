@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ÔÚÊôĞÔµÄÏàÓ¦get·½·¨ÉÏ±ê¼Ç¸Ã×¢½â±íÃ÷¸ÃÊôĞÔ²»ĞèÒª±»Í¬²½µ½¿Í»§¶Ë¡£
- * Èç¹û±»±ê¼ÇÔÚset·½·¨ÉÏÔò±íÃ÷²»½ÓÊÕ×´Ì¬ÖØËÜ¡£
+ * åœ¨å±æ€§çš„ç›¸åº”getæ–¹æ³•ä¸Šæ ‡è®°è¯¥æ³¨è§£è¡¨æ˜è¯¥å±æ€§ä¸éœ€è¦è¢«åŒæ­¥åˆ°å®¢æˆ·ç«¯ã€‚
+ * å¦‚æœè¢«æ ‡è®°åœ¨setæ–¹æ³•ä¸Šåˆ™è¡¨æ˜ä¸æ¥æ”¶çŠ¶æ€é‡å¡‘ã€‚
  * @version : 2012-7-9
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })

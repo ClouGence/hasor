@@ -4,21 +4,21 @@ import org.dev.toos.constcode.metadata.ConstBean;
 /**
  * 
  * @version : 2013-2-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class ConstDao {
     protected abstract void initDao() throws Throwable;
     public abstract Source getSource();
     //
     //
-    /**É¾³ı³£Á¿*/
+    /**åˆ é™¤å¸¸é‡*/
     public abstract boolean deleteConst(ConstBean constBean);
-    /**»ñÈ¡¸ù²ã¼¶³£Á¿¡£*/
+    /**è·å–æ ¹å±‚çº§å¸¸é‡ã€‚*/
     public abstract List<ConstBean> getRootConst();
-    /**»ñÈ¡³£Á¿µÄËùÓĞ×Ó½Úµã¡£*/
+    /**è·å–å¸¸é‡çš„æ‰€æœ‰å­èŠ‚ç‚¹ã€‚*/
     public abstract List<ConstBean> getConstChildren(ConstBean constPath);
-    /**Ìí¼Ó³£Á¿,·µ»ØÌí¼Ó³É¹¦Ö®ºó³Ö¾Ã»¯µÄ³£Á¿¶ÔÏó¡£Ìí¼ÓÊ§°Ü·µ»Ønull£»*/
+    /**æ·»åŠ å¸¸é‡,è¿”å›æ·»åŠ æˆåŠŸä¹‹åæŒä¹…åŒ–çš„å¸¸é‡å¯¹è±¡ã€‚æ·»åŠ å¤±è´¥è¿”å›nullï¼›*/
     public abstract ConstBean addConst(ConstBean constBean, int newIndex);
-    /**Ìí¼Ó³£Á¿,·µ»ØÌí¼Ó³É¹¦Ö®ºó³Ö¾Ã»¯µÄ³£Á¿¶ÔÏó¡£Ìí¼ÓÊ§°Ü·µ»Ønull£»*/
+    /**æ·»åŠ å¸¸é‡,è¿”å›æ·»åŠ æˆåŠŸä¹‹åæŒä¹…åŒ–çš„å¸¸é‡å¯¹è±¡ã€‚æ·»åŠ å¤±è´¥è¿”å›nullï¼›*/
     public abstract ConstBean updateConst(ConstBean constBean, int newIndex);
 }

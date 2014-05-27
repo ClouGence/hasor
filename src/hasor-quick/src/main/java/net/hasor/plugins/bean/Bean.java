@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.hasor.core.AppContext;
 /**
- * ±ê¼Çµ±Ç°ÀàÎªÒ»¸ö ×¢²áBean£¬±ØĞëÎª¸ÃBeanÆğÒ»¸öÃû×Ö¡£
- * µ±ÈİÆ÷Æô¶¯Ö®ºó¿ÉÒÔÍ¨¹ı{@link AppContext#getBean(String)}·½·¨È¡µÃ¸ÃÀàµÄÊµÀı¡£
+ * æ ‡è®°å½“å‰ç±»ä¸ºä¸€ä¸ª æ³¨å†ŒBeanï¼Œå¿…é¡»ä¸ºè¯¥Beanèµ·ä¸€ä¸ªåå­—ã€‚
+ * å½“å®¹å™¨å¯åŠ¨ä¹‹åå¯ä»¥é€šè¿‡{@link AppContext#getBean(String)}æ–¹æ³•å–å¾—è¯¥ç±»çš„å®ä¾‹ã€‚
  * @version : 2013-3-20
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Bean {
-    /** BeanÃû³Æ¡£*/
+    /** Beanåç§°ã€‚*/
     public String[] value();
 }

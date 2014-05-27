@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@ import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 import org.more.webui.render.output.OutputRender;
 /**
- * <b>×é½¨Ä£ĞÍ</b>£ºÓÃÓÚ±íÊöÊä³ö¹¦ÄÜµÄ×é½¨¡£
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link OutputRender}
+ * <b>ç»„å»ºæ¨¡å‹</b>ï¼šç”¨äºè¡¨è¿°è¾“å‡ºåŠŸèƒ½çš„ç»„å»ºã€‚
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link OutputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public abstract class UIOutput extends UIComponent {
-    /**Í¨ÓÃÊôĞÔ±í*/
+    /**é€šç”¨å±æ€§è¡¨*/
     public enum Propertys {
-        /**Öµ£¨RW£©*/
+        /**å€¼ï¼ˆRWï¼‰*/
         value,
     }
     @Override
@@ -35,11 +35,11 @@ public abstract class UIOutput extends UIComponent {
         super.initUIComponent(viewContext);
         this.setPropertyMetaValue(Propertys.value.name(), null);
     }
-    /**»ñÈ¡×é½¨valueÊôĞÔ*/
+    /**è·å–ç»„å»ºvalueå±æ€§*/
     public Object getValue() {
         return this.getProperty(Propertys.value.name()).valueTo(Object.class);
     }
-    /**ÉèÖÃ×é½¨valueÊôĞÔ*/
+    /**è®¾ç½®ç»„å»ºvalueå±æ€§*/
     public void setValue(Object value) {
         this.getProperty(Propertys.value.name()).value(value);
     }

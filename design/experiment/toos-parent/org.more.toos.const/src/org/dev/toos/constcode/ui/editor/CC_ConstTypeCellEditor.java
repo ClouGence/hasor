@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * 
  * @version : 2013-2-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class CC_ConstTypeCellEditor extends ComboBoxCellEditor {
     public CC_ConstTypeCellEditor(Composite parent) {

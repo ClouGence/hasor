@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,17 +39,17 @@ import com.alibaba.fastjson.JSON;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
- * ÇëÇóµÄÊÓÍ¼»·¾³¶ÔÏó£¬Ã¿´ÎÇëÇóÒ»ÕÅÊÓÍ¼¡£
+ * è¯·æ±‚çš„è§†å›¾ç¯å¢ƒå¯¹è±¡ï¼Œæ¯æ¬¡è¯·æ±‚ä¸€å¼ è§†å›¾ã€‚
  * @version : 2012-4-25
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ViewContext extends HashMap<String, Object> {
     private static final long   serialVersionUID = 994771756771520847L;
     private HttpServletRequest  req              = null;               //req
     private HttpServletResponse res              = null;               //res
-    private String              facePath         = null;               //ÊÓÍ¼Ä£°åÎ»ÖÃ
-    private Lifecycle           lifecycle        = null;               //ÕûÌåÉÏÏÂÎÄ
-    private long                comClientID      = 0;                  //×é½¨µÄ¿Í»§¶ËID
+    private String              facePath         = null;               //è§†å›¾æ¨¡æ¿ä½ç½®
+    private Lifecycle           lifecycle        = null;               //æ•´ä½“ä¸Šä¸‹æ–‡
+    private long                comClientID      = 0;                  //ç»„å»ºçš„å®¢æˆ·ç«¯ID
     //
     public ViewContext(HttpServletRequest req, HttpServletResponse res, Lifecycle lifecycle) {
         this.req = req;
@@ -69,33 +69,33 @@ public class ViewContext extends HashMap<String, Object> {
                 this.put(key, value);
         }
     };
-    /**»ñµÃËù´¦µÄÉúÃüÖÜÆÚ*/
+    /**è·å¾—æ‰€å¤„çš„ç”Ÿå‘½å‘¨æœŸ*/
     public Lifecycle getLifecycle() {
         return this.lifecycle;
     }
-    /**»ñÈ¡ÒªäÖÈ¾µÄÒ³Ãæ¡£*/
+    /**è·å–è¦æ¸²æŸ“çš„é¡µé¢ã€‚*/
     public String getFacePath() {
         return facePath;
     };
-    /**ÉèÖÃäÖÈ¾µÄÒ³Ãæ¡£*/
+    /**è®¾ç½®æ¸²æŸ“çš„é¡µé¢ã€‚*/
     public void setFacePath(String facePath) {
         this.facePath = facePath;
     };
-    /**»ñÈ¡Ò»¸ö±¾´ÎÇëÇóÖĞÎ¨Ò»µÄ¿Í»§¶ËID¡£*/
+    /**è·å–ä¸€ä¸ªæœ¬æ¬¡è¯·æ±‚ä¸­å”¯ä¸€çš„å®¢æˆ·ç«¯IDã€‚*/
     public String getComClientID(UIComponent component) {
         return String.valueOf(comClientID++);
     };
     public String newClientID() {
         return "Com_" + String.valueOf(comClientID++);
     }
-    /**»ñÈ¡µ±Ç°Ëù´¦µÄÉúÃüÖÜÆÚ½×¶Î¡£*/
+    /**è·å–å½“å‰æ‰€å¤„çš„ç”Ÿå‘½å‘¨æœŸé˜¶æ®µã€‚*/
     public PhaseID getPhaseID() {
         Phase phase = this.lifecycle.getCurrentPhase();
         if (phase != null)
             return phase.getPhaseID();
         return null;
     }
-    /**Ö´ĞĞÄ£°å×Ö·û´®¡£*/
+    /**æ‰§è¡Œæ¨¡æ¿å­—ç¬¦ä¸²ã€‚*/
     public String processTemplateString(String templateString) throws TemplateException, IOException {
         Map<String, Object> elContext = this.getViewELContext();
         CharArrayWriter charWrite = new CharArrayWriter();
@@ -103,38 +103,38 @@ public class ViewContext extends HashMap<String, Object> {
         return charWrite.toString();
     };
     private UIViewRoot viewRoot = null;
-    /**»ñÈ¡±íÊ¾¸ÃÊÓÍ¼µÄ{@link UIViewRoot}¶ÔÏó¡£*/
+    /**è·å–è¡¨ç¤ºè¯¥è§†å›¾çš„{@link UIViewRoot}å¯¹è±¡ã€‚*/
     public UIViewRoot getViewRoot() throws IOException {
-        //A.´´½¨UIViewRoot
+        //A.åˆ›å»ºUIViewRoot
         if (this.viewRoot == null) {
             Template tempRoot = this.getTemplate();
             String reqURI = this.req.getRequestURI();
             String templateFile = this.req.getSession().getServletContext().getRealPath(reqURI);
             //
             TemplateScanner scanner = this.getUIContext().getEnvironment().getTemplateScanner();
-            //B.½âÎöÄ£°å»ñÈ¡UIViewRoot
+            //B.è§£ææ¨¡æ¿è·å–UIViewRoot
             this.viewRoot = (UIViewRoot) scanner.parser(tempRoot, new UIViewRoot(), this);
         }
-        //B.·µ»ØUIViewRoot
+        //B.è¿”å›UIViewRoot
         return this.viewRoot;
     };
-    /**»ñÈ¡ÇëÇó¶ÔÏó¡£*/
+    /**è·å–è¯·æ±‚å¯¹è±¡ã€‚*/
     public HttpServletRequest getHttpRequest() {
         return this.req;
     };
-    /**»ñÈ¡ÏìÓ¦¶ÔÏó¡£*/
+    /**è·å–å“åº”å¯¹è±¡ã€‚*/
     public HttpServletResponse getHttpResponse() {
         return this.res;
     };
     private DecSequenceMap<String, Object> seq = null;
-    /**»ñÈ¡Óëµ±Ç°ÊÓÍ¼Ïà¹ØµÄELÉÏÏÂÎÄ¡£*/
+    /**è·å–ä¸å½“å‰è§†å›¾ç›¸å…³çš„ELä¸Šä¸‹æ–‡ã€‚*/
     public Map<String, Object> getViewELContext() {
         if (this.seq == null) {
             this.seq = new DecSequenceMap<String, Object>();
-            /*0.±êÇ©¼¯*/
+            /*0.æ ‡ç­¾é›†*/
             String KitScope = this.getRenderKitScope();
             this.seq.addMap(this.getUIContext().getRenderKit(KitScope).getTags());
-            /*1.ÊÓÍ¼ÊôĞÔ*/
+            /*1.è§†å›¾å±æ€§*/
             this.seq.addMap(this);
             this.seq.put("view", this);
             this.seq.put("req", new HttpRequestParamScope(this));
@@ -142,24 +142,24 @@ public class ViewContext extends HashMap<String, Object> {
             this.seq.put("cookie", new CookieScope(this));
             this.seq.put("session", new HttpSessionScope(this));
             this.seq.put("context", new ServletContextScope(this));
-            /*3.Bean»·¾³ÊôĞÔ*/
+            /*3.Beanç¯å¢ƒå±æ€§*/
             if (this.getUIContext().getBeanContext() instanceof Map)
                 this.seq.addMap((Map) this.getUIContext().getBeanContext());
-            /*4.»·¾³ÊôĞÔ*/
+            /*4.ç¯å¢ƒå±æ€§*/
             this.seq.addMap(this.getUIContext().getAttribute());
         }
         return this.seq;
     };
-    /**»ñÈ¡{@link FacesContext}¶ÔÏó¡£*/
+    /**è·å–{@link FacesContext}å¯¹è±¡ã€‚*/
     public FacesContext getUIContext() {
         return this.lifecycle.getFacesContext();
     };
-    /**»ñÈ¡ÊÓÍ¼Ä£°å¶ÔÏó£¬ÓÃÓÚäÖÈ¾¡£*/
+    /**è·å–è§†å›¾æ¨¡æ¿å¯¹è±¡ï¼Œç”¨äºæ¸²æŸ“ã€‚*/
     public Template getTemplate() throws IOException {
         String pageEncoding = this.getUIContext().getEnvironment().getPageEncoding();
         return this.getUIContext().getFreemarker().getTemplate(this.facePath, pageEncoding);
     };
-    /**»ñÈ¡äÖÈ¾Æ÷KITÃû¡£*/
+    /**è·å–æ¸²æŸ“å™¨KITåã€‚*/
     public String getRenderKitScope() {
         return "default";
     };
@@ -178,25 +178,25 @@ public class ViewContext extends HashMap<String, Object> {
     /*--------------*/
     //   PostForm
     /*--------------*/
-    /**»ñÈ¡±¾´ÎÇëÇóÀ´Ô´ÓëÄÇ¸ö×é½¨¡£*/
+    /**è·å–æœ¬æ¬¡è¯·æ±‚æ¥æºä¸é‚£ä¸ªç»„å»ºã€‚*/
     public String getTarget() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetParamKey.value());
     };
-    /**»ñÈ¡·¢Éú×é½¨µÄÂ·¾¶¡£*/
+    /**è·å–å‘ç”Ÿç»„å»ºçš„è·¯å¾„ã€‚*/
     public String getTargetPath() {
         return this.getHttpRequest().getParameter(PostFormEnum.PostForm_TargetPathKey.value());
     };
-    /**»Ø´«Ò»ÌõĞÅÏ¢±íÊ¾±¾´ÎÇëÇóÀ´×ÔÓÚAjax£¬Èç¹ûÊÇajaxÔò»Ø´«µÄ´íÎó»á±»°ü×°¡£*/
+    /**å›ä¼ ä¸€æ¡ä¿¡æ¯è¡¨ç¤ºæœ¬æ¬¡è¯·æ±‚æ¥è‡ªäºAjaxï¼Œå¦‚æœæ˜¯ajaxåˆ™å›ä¼ çš„é”™è¯¯ä¼šè¢«åŒ…è£…ã€‚*/
     public boolean isAjax() {
         String isAjax = this.getHttpRequest().getParameter(PostFormEnum.PostForm_IsAjaxKey.value());
         return StringConvertUtils.parseBoolean(isAjax, false);
     };
-    /**»ñÈ¡¿Í»§¶ËÒı·¢µÄÊÂ¼ş¡£*/
+    /**è·å–å®¢æˆ·ç«¯å¼•å‘çš„äº‹ä»¶ã€‚*/
     public String getEvent() {
         String event = this.getHttpRequest().getParameter(PostFormEnum.PostForm_EventKey.value());
         return (event == null || event.equals("")) ? null : event;
     };
-    /**»ñÈ¡äÖÈ¾ÀàĞÍ£¬Ä¬ÈÏäÖÈ¾È«²¿¡£*/
+    /**è·å–æ¸²æŸ“ç±»å‹ï¼Œé»˜è®¤æ¸²æŸ“å…¨éƒ¨ã€‚*/
     public RenderType getRenderType() {
         String renderKey = PostFormEnum.PostForm_RenderParamKey.value();
         String renderType = this.getHttpRequest().getParameter(renderKey);
@@ -206,12 +206,12 @@ public class ViewContext extends HashMap<String, Object> {
         else
             return render;
     };
-    /**»ñÈ¡ÇëÇóµÄ×´Ì¬Êı¾İ¡£*/
+    /**è·å–è¯·æ±‚çš„çŠ¶æ€æ•°æ®ã€‚*/
     public String getStateData() {
         String stateDataKey = PostFormEnum.PostForm_StateDataParamKey.value();
         return this.getHttpRequest().getParameter(stateDataKey);
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ¡£*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ã€‚*/
     private void pushClient(int stateNumber, Object returnData) throws IOException {
         if (this.getEvent() != null) {
             String sendDataStr = JSON.toJSONString(returnData);
@@ -220,19 +220,19 @@ public class ViewContext extends HashMap<String, Object> {
             this.getHttpResponse().getWriter().write(sendDataStr);
         }
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ£¬»ØÓ¦×´Ì¬:200.*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ï¼Œå›åº”çŠ¶æ€:200.*/
     public void sendObject(Object returnData) throws IOException {
         this.pushClient(200, returnData);
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ¡£»ØÓ¦×´Ì¬:500.*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ã€‚å›åº”çŠ¶æ€:500.*/
     public void sendError(String returnError) throws IOException {
         this.sendError(500, new Exception(returnError));
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ¡£»ØÓ¦×´Ì¬:500.*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ã€‚å›åº”çŠ¶æ€:500.*/
     public void sendError(Exception returnError) throws IOException {
         this.sendError(500, returnError);
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ¡£»ØÓ¦×´Ì¬ÓÉerrorID²ÎÊıÖ¸¶¨.*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ã€‚å›åº”çŠ¶æ€ç”±errorIDå‚æ•°æŒ‡å®š.*/
     public void sendError(int errorID, String returnError) throws IOException {
         HashMap<String, Object> returnData = new HashMap<String, Object>();
         returnData.put("errorID", errorID);
@@ -240,7 +240,7 @@ public class ViewContext extends HashMap<String, Object> {
         returnData.put("trace", null);
         this.pushClient(20, returnData);
     };
-    /**Ïò¿Í»§¶Ë·¢ËÍÏìÓ¦Êı¾İ¡£»ØÓ¦×´Ì¬ÓÉerrorID²ÎÊıÖ¸¶¨.*/
+    /**å‘å®¢æˆ·ç«¯å‘é€å“åº”æ•°æ®ã€‚å›åº”çŠ¶æ€ç”±errorIDå‚æ•°æŒ‡å®š.*/
     public void sendError(int errorID, Exception returnError) throws IOException {
         if (returnError == null)
             throw new NullPointerException();

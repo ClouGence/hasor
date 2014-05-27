@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import java.lang.annotation.Target;
 /**
  * 
  * @version : 2013-5-9
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface Path {
-    /**restful·ç¸ñÓ³Éä¡£ÌáÊ¾£º¿ÉÊÇÊ¹ÓÃÍ¨Åä·û¡°*¡±±íÊ¾ÈÎÒâ¸ö×Ö·û£¬¡°?¡±±íÊ¾ÈÎÒâÒ»¸ö×Ö·û¡£<p>
-     * <b>ÌáÊ¾£º</b>ÔÚ×öRESTfulµØÖ·Ó³ÉäÊ±ÏµÍ³ÒÑ¾­¶ÔÅäÖÃµØÖ·ÄÚÈİ×öÁË¹éÕû»¯*/
+    /**restfulé£æ ¼æ˜ å°„ã€‚æç¤ºï¼šå¯æ˜¯ä½¿ç”¨é€šé…ç¬¦â€œ*â€è¡¨ç¤ºä»»æ„ä¸ªå­—ç¬¦ï¼Œâ€œ?â€è¡¨ç¤ºä»»æ„ä¸€ä¸ªå­—ç¬¦ã€‚<p>
+     * <b>æç¤ºï¼š</b>åœ¨åšRESTfulåœ°å€æ˜ å°„æ—¶ç³»ç»Ÿå·²ç»å¯¹é…ç½®åœ°å€å†…å®¹åšäº†å½’æ•´åŒ–*/
     public String value();
 }

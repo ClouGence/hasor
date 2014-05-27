@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package net.test.simple._03_aop.method_lv;
 import net.hasor.plugins.aop.Aop;
 import net.test.simple._03_aop.SimpleInterceptor;
 /**
- * ¸ÃÀı×ÓÑİÊ¾ÁËÈçºÎÍ¨¹ı {@code @Aop} ×¢½âÎªÄ³¸ö Bean Ìí¼Ó·½·¨¼¶±ğµÄÀ¹½ØÆ÷¡£ 
+ * è¯¥ä¾‹å­æ¼”ç¤ºäº†å¦‚ä½•é€šè¿‡ {@code @Aop} æ³¨è§£ä¸ºæŸä¸ª Bean æ·»åŠ æ–¹æ³•çº§åˆ«çš„æ‹¦æˆªå™¨ã€‚ 
  * @version : 2014-1-3
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class MethodLv_FooBean {
     @Aop(SimpleInterceptor.class)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,25 @@ import net.hasor.security._.AuthSession;
 import net.hasor.security._.SecurityContext;
 import org.hasor.Hasor;
 /**
- * {@link LoginProcess}½Ó¿ÚÄ¬ÈÏÊµÏÖ¡£
+ * {@link LoginProcess}æ¥å£é»˜è®¤å®ç°ã€‚
  * @version : 2013-5-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class LoginProcess extends AbstractProcess {
-    /**´¦ÀíµÇÈëÇëÇó¡£*/
+    /**å¤„ç†ç™»å…¥è¯·æ±‚ã€‚*/
     public SecurityForward processLogin(SecurityContext secContext, HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
         String reqPath = request.getRequestURI().substring(request.getContextPath().length());
         SecurityDispatcher dispatcher = secContext.getDispatcher(reqPath);
-        //1.»ñµÃµÇÈëÏà¹ØĞÅÏ¢
+        //1.è·å¾—ç™»å…¥ç›¸å…³ä¿¡æ¯
         String account = request.getParameter(this.settings.getAccountField());
         String password = request.getParameter(this.settings.getPasswordField());
         String formAuth = request.getParameter(this.settings.getAuthField());
-        //3.Ö´ĞĞµÇÈë
+        //3.æ‰§è¡Œç™»å…¥
         AuthSession authSession = secContext.getCurrentBlankAuthSession();
         if (authSession == null)
             authSession = secContext.createAuthSession();
         try {
-            authSession.doLogin(formAuth, account, password);/*µÇÈëĞÂ»á»°*/
+            authSession.doLogin(formAuth, account, password);/*ç™»å…¥æ–°ä¼šè¯*/
             Hasor.info("login OK. acc=%s , at SessionID= %s", account, authSession.getSessionID());
             return dispatcher.forwardIndex();
         } catch (SecurityException e) {

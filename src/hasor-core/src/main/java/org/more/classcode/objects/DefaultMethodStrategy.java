@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package org.more.classcode.objects;
 import org.more.classcode.ClassEngine;
 import org.more.classcode.MethodStrategy;
 /**
- * ¸Ã²ßÂÔÔÚÉú³É×Ö½ÚÂëÆÚ¼ä»áµ÷ÓÃ£¬¸Ã²ßÂÔ²»»áºöÂÔÈÎºÎ·½·¨¡£
+ * è¯¥ç­–ç•¥åœ¨ç”Ÿæˆå­—èŠ‚ç æœŸé—´ä¼šè°ƒç”¨ï¼Œè¯¥ç­–ç•¥ä¸ä¼šå¿½ç•¥ä»»ä½•æ–¹æ³•ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DefaultMethodStrategy implements MethodStrategy {
     public void initStrategy(ClassEngine classEngine) {}

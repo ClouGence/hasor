@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,31 @@
 package org.more.xml.stream;
 import javax.xml.stream.XMLStreamReader;
 /**
- * µ±¿ªÊ¼ÔÄ¶ÁxmlÎÄµµÊ±¡£
+ * å½“å¼€å§‹é˜…è¯»xmlæ–‡æ¡£æ—¶ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class StartDocumentEvent extends XmlStreamEvent {
     public StartDocumentEvent(String xpath, XMLStreamReader reader) {
         super(xpath, reader);
     }
-    /**Èç¹ûÊäÈë±àÂëÒÑÖª£¬Ôò·µ»ØÊäÈë±àÂë£»Èç¹ûÎ´Öª£¬Ôò·µ»Ø null¡£*/
+    /**å¦‚æœè¾“å…¥ç¼–ç å·²çŸ¥ï¼Œåˆ™è¿”å›è¾“å…¥ç¼–ç ï¼›å¦‚æœæœªçŸ¥ï¼Œåˆ™è¿”å› nullã€‚*/
     public String getEncoding() {
         return this.getReader().getEncoding();
     }
-    /**»ñÈ¡ÔÚ xml ÉùÃ÷ÖĞÉùÃ÷µÄ xml °æ±¾£¬Èç¹ûÃ»ÓĞÉùÃ÷°æ±¾£¬Ôò·µ»Ø null¡£*/
+    /**è·å–åœ¨ xml å£°æ˜ä¸­å£°æ˜çš„ xml ç‰ˆæœ¬ï¼Œå¦‚æœæ²¡æœ‰å£°æ˜ç‰ˆæœ¬ï¼Œåˆ™è¿”å› nullã€‚*/
     public String getVersion() {
         return this.getReader().getVersion();
     }
-    /**·µ»Ø xml ÉùÃ÷ÖĞÉùÃ÷µÄ×Ö·û±àÂë¡£*/
+    /**è¿”å› xml å£°æ˜ä¸­å£°æ˜çš„å­—ç¬¦ç¼–ç ã€‚*/
     public String getCharacterEncoding() {
         return this.getReader().getCharacterEncodingScheme();
     }
-    /**¸ÃÊÂ¼şµÄÅÄµµÊÇ{@link EndDocumentEvent}ÀàĞÍ¶ÔÏó¡£*/
+    /**è¯¥äº‹ä»¶çš„æ‹æ¡£æ˜¯{@link EndDocumentEvent}ç±»å‹å¯¹è±¡ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         return e instanceof EndDocumentEvent;
     };
-    /**ÎÄµµ½áÊøÊÂ¼ş£¬ÊÇ¹²ÓĞÊÂ¼ş¡£*/
+    /**æ–‡æ¡£ç»“æŸäº‹ä»¶ï¼Œæ˜¯å…±æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         return true;
     }

@@ -15,11 +15,11 @@
  */
 package net.hasor.jdbc.template.core;
 /**
- * ÓÃÓÚ¹Ø±Õ SQL ²ÎÊıµÄ×ÊÔ´·ÖÅä£¬ÀıÈç£º Lob ÀàĞÍ²ÎÊı¡£
+ * ç”¨äºå…³é—­ SQL å‚æ•°çš„èµ„æºåˆ†é…ï¼Œä¾‹å¦‚ï¼š Lob ç±»å‹å‚æ•°ã€‚
  * @version : 2013-10-14
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public interface ParameterDisposer {
-    /** ¹Ø±Õ²ÎÊı·ÖÅäµÄ¿É»ØÊÕ×ÊÔ´£¬ÀıÈç£ºLob ÀàĞÍ²ÎÊı¡£*/
+    /** å…³é—­å‚æ•°åˆ†é…çš„å¯å›æ”¶èµ„æºï¼Œä¾‹å¦‚ï¼šLob ç±»å‹å‚æ•°ã€‚*/
     public void cleanupParameters();
 }

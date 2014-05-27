@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import org.more.webui.resource.DirResourceLoader;
 import org.more.webui.resource.IResourceLoader;
 import freemarker.cache.FileTemplateLoader;
 /**
- * ÊµÏÖÁË{@link IResourceLoader}½Ó¿ÚµÄ{@link FileTemplateLoader}Àà¡£
+ * å®ç°äº†{@link IResourceLoader}æ¥å£çš„{@link FileTemplateLoader}ç±»ã€‚
  * @version : 2011-9-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class DirTemplateLoader extends FileTemplateLoader implements ITemplateLoader, IResourceLoader {
     private DirResourceLoader dirResourceLoader = null;

@@ -3,13 +3,13 @@ import org.more.webui.component.support.UICom;
 import org.more.webui.components.UIInput;
 import org.more.webui.render.inputs.HideInputRender;
 /**
- * <b>×÷ÓÃ</b>£ºÉú³ÉÒ»¸öÒş²Ø±íµ¥Óò¡£
- * <br><b>×é½¨ÀàĞÍ</b>£ºui_HideInput
- * <br><b>±êÇ©</b>£º@ui_HideInput
- * <br><b>·şÎñ¶ËÊÂ¼ş</b>£ºÎŞ
- * <br><b>äÖÈ¾Æ÷</b>£º{@link HideInputRender}
+ * <b>ä½œç”¨</b>ï¼šç”Ÿæˆä¸€ä¸ªéšè—è¡¨å•åŸŸã€‚
+ * <br><b>ç»„å»ºç±»å‹</b>ï¼šui_HideInput
+ * <br><b>æ ‡ç­¾</b>ï¼š@ui_HideInput
+ * <br><b>æœåŠ¡ç«¯äº‹ä»¶</b>ï¼šæ— 
+ * <br><b>æ¸²æŸ“å™¨</b>ï¼š{@link HideInputRender}
  * @version : 2012-5-15
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @UICom(tagName = "ui_HideInput", renderType = HideInputRender.class)
 public class HideInput extends UIInput {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,29 @@ import org.more.classcode.AopStrategy;
 import org.more.classcode.AopThrowingListener;
 import org.more.classcode.ClassEngine;
 /**
- * ½Ó¿Ú{@link AopStrategy}µÄÄ¬ÈÏÊµÏÖ¡£
+ * æ¥å£{@link AopStrategy}çš„é»˜è®¤å®ç°ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DefaultAopStrategy implements AopStrategy {
     public void initStrategy(ClassEngine classEngine) {}
-    /**²»ºöÂÔAop¡£*/
+    /**ä¸å¿½ç•¥Aopã€‚*/
     public boolean isIgnore(Class<?> superClass, Method ignoreMethod) {
         return false;
     }
-    /**½«ÀàĞÍ²ÎÊı{@link AopBeforeListener}ÈçÊı·µ»Ø¡£*/
+    /**å°†ç±»å‹å‚æ•°{@link AopBeforeListener}å¦‚æ•°è¿”å›ã€‚*/
     public AopBeforeListener[] filterAopBeforeListener(Object target, Method method, AopBeforeListener[] beforeListener) {
         return beforeListener;
     }
-    /**½«ÀàĞÍ²ÎÊı{@link AopReturningListener}ÈçÊı·µ»Ø¡£*/
+    /**å°†ç±»å‹å‚æ•°{@link AopReturningListener}å¦‚æ•°è¿”å›ã€‚*/
     public AopReturningListener[] filterAopReturningListener(Object target, Method method, AopReturningListener[] returningListener) {
         return returningListener;
     }
-    /**½«ÀàĞÍ²ÎÊı{@link AopThrowingListener}ÈçÊı·µ»Ø¡£*/
+    /**å°†ç±»å‹å‚æ•°{@link AopThrowingListener}å¦‚æ•°è¿”å›ã€‚*/
     public AopThrowingListener[] filterAopThrowingListener(Object target, Method method, AopThrowingListener[] throwingListener) {
         return throwingListener;
     }
-    /**½«ÀàĞÍ²ÎÊı{@link AopInvokeFilter}ÈçÊı·µ»Ø¡£*/
+    /**å°†ç±»å‹å‚æ•°{@link AopInvokeFilter}å¦‚æ•°è¿”å›ã€‚*/
     public AopInvokeFilter[] filterAopInvokeFilter(Object target, Method method, AopInvokeFilter[] invokeFilter) {
         return invokeFilter;
     }

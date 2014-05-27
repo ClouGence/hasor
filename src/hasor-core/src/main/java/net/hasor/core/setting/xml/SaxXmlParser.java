@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * 
  * @version : 2013-7-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class SaxXmlParser extends DefaultHandler {
     private Map<String, Map<String, Object>> dataContainer     = null;
@@ -99,10 +99,10 @@ public class SaxXmlParser extends DefaultHandler {
             DefaultXmlNode currentXml = ent.getValue();
             if (dataContainer.get(currentXmlns) == null)
                 dataContainer.put(currentXmlns, new HashMap<String, Object>());
-            //1.½«XmlTree×ª»»ÎªmapÓ³Éä
+            //1.å°†XmlTreeè½¬æ¢ä¸ºmapæ˜ å°„
             HashMap<String, Object> dataMap = new HashMap<String, Object>();
             this.convertType(dataMap, currentXml.getChildren(), "");
-            //2.Æúµô×ª»»¹ı³ÌÖĞ¸ù½ÚµãÃû³Æ
+            //2.å¼ƒæ‰è½¬æ¢è¿‡ç¨‹ä¸­æ ¹èŠ‚ç‚¹åç§°
             HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
             for (Entry<String, Object> data : dataMap.entrySet()) {
                 String keyStr = data.getKey();
@@ -116,7 +116,7 @@ public class SaxXmlParser extends DefaultHandler {
                 }
             }
             dataMap = finalReturnData;
-            //3.Êä³öÓ³Éä½á¹û£¬²¢´¦Àí¶àÖµºÏ²¢ÎÊÌâ£¨²ÉÓÃ¸²¸ÇºÍ×·¼ÓµÄ²ßÂÔ£©
+            //3.è¾“å‡ºæ˜ å°„ç»“æœï¼Œå¹¶å¤„ç†å¤šå€¼åˆå¹¶é—®é¢˜ï¼ˆé‡‡ç”¨è¦†ç›–å’Œè¿½åŠ çš„ç­–ç•¥ï¼‰
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();
                 Object $var = dataMap.get(key);
@@ -126,10 +126,10 @@ public class SaxXmlParser extends DefaultHandler {
                     XmlNode $new = (XmlNode) $var;
                     XmlNode $old = (XmlNode) $varConflict;
                     XmlNode $final = ((DefaultXmlNode) $old).clone();
-                    /*¸²¸Ç²ßÂÔ*/
+                    /*è¦†ç›–ç­–ç•¥*/
                     $final.getAttributeMap().putAll($new.getAttributeMap());
                     ((DefaultXmlNode) $final).setText($new.getText());
-                    /*×·¼Ó²ßÂÔ*/
+                    /*è¿½åŠ ç­–ç•¥*/
                     List<XmlNode> $newChildren = new ArrayList<XmlNode>($new.getChildren());
                     List<XmlNode> $oldChildren = new ArrayList<XmlNode>($old.getChildren());
                     Collections.reverse($newChildren);
@@ -147,18 +147,18 @@ public class SaxXmlParser extends DefaultHandler {
             }
         }
     }
-    /**×ª»»³ÉKey ValueĞÎÊ½*/
+    /**è½¬æ¢æˆKey Valueå½¢å¼*/
     protected void convertType(Map<String, Object> returnData, List<XmlNode> xmlPropertyList, String parentAttName) {
         if (xmlPropertyList != null)
             for (XmlNode xmlNode : xmlPropertyList) {
                 DefaultXmlNode impl = (DefaultXmlNode) xmlNode;
-                //1.put±¾¼¶
+                //1.putæœ¬çº§
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);
-                //2.putÊôĞÔ
+                //2.putå±æ€§
                 for (Entry<String, String> ent : impl.getAttributeMap().entrySet())
                     returnData.put(key + "." + ent.getKey(), ent.getValue());
-                //3.putº¢×Ó
+                //3.putå­©å­
                 this.convertType(returnData, xmlNode.getChildren(), key);
             }
     }

@@ -23,7 +23,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * 
  * @version : 2013-9-16
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class C3p0Factory implements DataSourceFactory {
     public DataSource createDataSource(Environment env, XmlNode configElement) throws Throwable {
@@ -35,7 +35,7 @@ public class C3p0Factory implements DataSourceFactory {
         String pwdString = configElement.getOneChildren("password").getText();//<password>abc123!@#</password>
         int poolMaxSize = 200;
         //
-        Hasor.logInfo("C3p0 Pool Info maxSize is ¡®%s¡¯ driver is ¡®%s¡¯ jdbcUrl is¡®%s¡¯", poolMaxSize, driverString, urlString);
+        Hasor.logInfo("C3p0 Pool Info maxSize is â€˜%sâ€™ driver is â€˜%sâ€™ jdbcUrl isâ€˜%sâ€™", poolMaxSize, driverString, urlString);
         //
         dataSource.setDriverClass(driverString);
         dataSource.setJdbcUrl(urlString);

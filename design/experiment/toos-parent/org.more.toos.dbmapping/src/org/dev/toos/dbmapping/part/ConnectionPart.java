@@ -10,29 +10,29 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 /**
  * 
  * @version : 2013-3-5
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ConnectionPart extends AbstractDBMappingGraphicalEditPart {
     protected IFigure createFigure() {
-        /*´´½¨Ò»ÌõÁ¬½ÓÏß*/
+        /*åˆ›å»ºä¸€æ¡è¿æ¥çº¿*/
         PolylineConnection conn = new PolylineConnection();
-        /*´ÓÔ­µã¿ªÊ¼»­Ò»¸ö¿ÕĞÄÈı½ÇĞÎ¡£*/
+        /*ä»åŸç‚¹å¼€å§‹ç”»ä¸€ä¸ªç©ºå¿ƒä¸‰è§’å½¢ã€‚*/
         PolygonDecoration polygon = new PolygonDecoration();
         polygon.setFill(false);
         //polygon.setTemplate(PolygonDecoration.INVERTED_TRIANGLE_TIP);
         conn.setSourceDecoration(polygon);
-        /*ÏòÄ¿±êµã»­Ò»¸öÊµĞÄÈı½ÇĞÎ¡£*/
+        /*å‘ç›®æ ‡ç‚¹ç”»ä¸€ä¸ªå®å¿ƒä¸‰è§’å½¢ã€‚*/
         conn.setTargetDecoration(new PolygonDecoration());
-        /*BendpointConnectionRouterÀàÓÃÓÚÈ·¶¨»­³öµÄÏßÊÇÒ»¸öÔõÑùµÄÂ·¾¶¡£*/
+        /*BendpointConnectionRouterç±»ç”¨äºç¡®å®šç”»å‡ºçš„çº¿æ˜¯ä¸€ä¸ªæ€æ ·çš„è·¯å¾„ã€‚*/
         conn.setConnectionRouter(new BendpointConnectionRouter());
         return conn;
     }
     protected void createEditPolicies() {
-        //        /**ÔÊĞíÑ¡Ôñ¸Ä±äÁ¬½ÓÆğÊ¼¶Ëµã²ßÂÔ¡£*/
+        //        /**å…è®¸é€‰æ‹©æ”¹å˜è¿æ¥èµ·å§‹ç«¯ç‚¹ç­–ç•¥ã€‚*/
         //        installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new ConnectionBendpointEditPolicy((Connection) this.getModel()));
-        /**ÔÊĞíÑ¡Ôñ¸Ä±äÁ¬½ÓÖÕÖ¹¶Ëµã²ßÂÔ¡£*/
+        /**å…è®¸é€‰æ‹©æ”¹å˜è¿æ¥ç»ˆæ­¢ç«¯ç‚¹ç­–ç•¥ã€‚*/
         installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
-        /**ÔÊĞíÁ¬½Ó±»É¾³ı²ßÂÔ*/
+        /**å…è®¸è¿æ¥è¢«åˆ é™¤ç­–ç•¥*/
         installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy());
     }
     @Override

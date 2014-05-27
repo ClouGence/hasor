@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package org.more.webui.context;
 /**
- * äÖÈ¾ÀàĞÍ
+ * æ¸²æŸ“ç±»å‹
  * @version : 2012-5-21
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public enum RenderType {
-    /**²»äÖÈ¾*/
+    /**ä¸æ¸²æŸ“*/
     No,
-    /**äÖÈ¾Ö¸¶¨Ä¿±ê*/
+    /**æ¸²æŸ“æŒ‡å®šç›®æ ‡*/
     Part,
-    /**äÖÈ¾Õû¸öÒ³*/
+    /**æ¸²æŸ“æ•´ä¸ªé¡µ*/
     ALL
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ×Ô¶¨Òåº¯Êı£¬¸Ã×¢½â±ê¼ÇÔÚ·½·¨ÉÏ£¨¹¹Ôì·½·¨³ıÍâ£©¡£
+ * è‡ªå®šä¹‰å‡½æ•°ï¼Œè¯¥æ³¨è§£æ ‡è®°åœ¨æ–¹æ³•ä¸Šï¼ˆæ„é€ æ–¹æ³•é™¤å¤–ï¼‰ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface FmMethod {
-    /**º¯ÊıÃû¡£*/
+    /**å‡½æ•°åã€‚*/
     public String value();
 }

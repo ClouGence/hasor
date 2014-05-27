@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import org.more.ognl.OgnlException;
 import org.more.webui.component.UIComponent;
 import org.more.webui.context.ViewContext;
 /**
- * ±í´ïÊ½¼ÆËãValueHolder
+ * è¡¨è¾¾å¼è®¡ç®—ValueHolder
  * @version : 2012-5-11
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class ExpressionValueHolder extends AbstractValueHolder {
     private String readExpression  = null;
@@ -39,13 +39,13 @@ public class ExpressionValueHolder extends AbstractValueHolder {
         this.readExpression = readExpression;
         this.writeExpression = writeExpression;
     }
-    /**ÊôĞÔ¶ÁÈ¡{@link Node}*/
+    /**å±æ€§è¯»å–{@link Node}*/
     protected Node getReadNode() throws OgnlException {
         if (this.readNodeTree == null)
             this.readNodeTree = (Node) Ognl.parseExpression(this.readExpression);
         return this.readNodeTree;
     }
-    /**ÊôĞÔĞ´Èë{@link Node}*/
+    /**å±æ€§å†™å…¥{@link Node}*/
     protected Node getWriteNode() throws OgnlException {
         if (this.writeExpression == null)
             return null;
@@ -56,7 +56,7 @@ public class ExpressionValueHolder extends AbstractValueHolder {
     @Override
     public void updateModule(UIComponent component, ViewContext viewContext) throws Throwable {
         if (getWriteNode() == null)
-            return;//²»Ö§³ÖĞ´Èë
+            return;//ä¸æ”¯æŒå†™å…¥
         Map<String, Object> elContext = viewContext.getViewELContext();
         try {
             Ognl.setValue(this.getWriteNode(), elContext, this.value());

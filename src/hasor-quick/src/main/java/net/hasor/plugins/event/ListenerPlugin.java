@@ -25,9 +25,9 @@ import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
 import org.more.util.StringUtils;
 /**
- * Ìá¹© <code>@Listener</code>×¢½â ¹¦ÄÜÖ§³Ö¡£
+ * æä¾› <code>@Listener</code>æ³¨è§£ åŠŸèƒ½æ”¯æŒã€‚
  * @version : 2013-9-13
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Plugin
 public class ListenerPlugin extends AbstractHasorPlugin {
@@ -37,7 +37,7 @@ public class ListenerPlugin extends AbstractHasorPlugin {
         if (eventSet == null || eventSet.isEmpty())
             return;
         for (final Class<?> eventClass : eventSet) {
-            /*ÅÅ³ıÃ»ÓĞÊµÏÖ EventListener ½Ó¿ÚµÄÀà¡£*/
+            /*æ’é™¤æ²¡æœ‰å®ç° EventListener æ¥å£çš„ç±»ã€‚*/
             if (EventListener.class.isAssignableFrom(eventClass) == false) {
                 Hasor.logWarn("not implemented EventListener :%s", eventClass);
                 continue;
@@ -49,11 +49,11 @@ public class ListenerPlugin extends AbstractHasorPlugin {
                     continue;
                 //
                 EventListenerPropxy listener = new EventListenerPropxy(eventClass);
-                apiBinder.registerAware(listener);/*×¢²áAppContextAware*/
+                apiBinder.registerAware(listener);/*æ³¨å†ŒAppContextAware*/
                 apiBinder.addListener(eventName, listener);
-                Hasor.logInfo("event ¡®%s¡¯ binding to ¡®%s¡¯", eventName, eventClass);
+                Hasor.logInfo("event â€˜%sâ€™ binding to â€˜%sâ€™", eventName, eventClass);
             }
-            //µ±ContextEvent_StartÊÂ¼şµ½À´Ê±×¢²áËùÓĞÅäÖÃÎÄ¼ş¼àÌıÆ÷¡£
+            //å½“ContextEvent_Startäº‹ä»¶åˆ°æ¥æ—¶æ³¨å†Œæ‰€æœ‰é…ç½®æ–‡ä»¶ç›‘å¬å™¨ã€‚
             Hasor.logInfo("event binding finish.");
         }
     }

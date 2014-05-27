@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import org.hasor.icache.Cache;
 import org.hasor.icache.CacheManager;
 import com.google.inject.Singleton;
 /**
- * ÄÚÖÃSecurityContextÀàÊµÏÖ
+ * å†…ç½®SecurityContextç±»å®žçŽ°
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Singleton
 public class InternalSecurityContext extends AbstractSecurityContext {
@@ -42,7 +42,7 @@ public class InternalSecurityContext extends AbstractSecurityContext {
         CacheManager cacheManager = getAppContext().getInstance(CacheManager.class);
         authSessionCache = cacheManager.getCache(cacheName);
         if (authSessionCache == null)
-            throw new NullPointerException("not load AuthSessionCache ¡®" + cacheName + "¡¯");
+            throw new NullPointerException("not load AuthSessionCache â€˜" + cacheName + "â€™");
         sessionTimeOut = config.getLong(Security_AuthSessionTimeout);
     }
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 /**
- * ¸ø¶¨×ÊÔ´Â·¾¶×°ÔØ¸Ã×ÊÔ´¶ÔÏó¡£
+ * ç»™å®šèµ„æºè·¯å¾„è£…è½½è¯¥èµ„æºå¯¹è±¡ã€‚
  * @version : 2011-9-14
- * @author ÕÔÓÀ´º (zyc@byshell.org) 
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org) 
  */
 public interface IResourceLoader {
     public URL getResource(String resourcePath) throws IOException;
-    /**×°ÔØÖ¸¶¨×ÊÔ´¡£*/
+    /**è£…è½½æŒ‡å®šèµ„æºã€‚*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
 }

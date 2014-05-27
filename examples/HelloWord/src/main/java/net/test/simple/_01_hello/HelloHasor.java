@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@ import net.hasor.core.AppContext;
 import net.hasor.core.context.StandardAppContext;
 import org.junit.Test;
 /**
- * ±¾Ê¾ÁÐÑÝÊ¾ÈçºÎÆô¶¯ Hasor ¿ò¼Ü¡£
+ * æœ¬ç¤ºåˆ—æ¼”ç¤ºå¦‚ä½•å¯åŠ¨ Hasor æ¡†æž¶ã€‚
  * @version : 2013-8-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class HelloHasor {
     @Test
     public void testStartHasor() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testStartHasor<<--");
-        //1.´´½¨Ò»¸ö±ê×¼µÄ Hasor ÈÝÆ÷¡£
+        //1.åˆ›å»ºä¸€ä¸ªæ ‡å‡†çš„ Hasor å®¹å™¨ã€‚
         AppContext appContext = new StandardAppContext();
-        appContext.start();//Æô¶¯ Hasor ÈÝÆ÷£¬Æô¶¯¹ý³Ì»á³õÊ¼»¯ËùÓÐÄ£¿éºÍ²å¼þ¡£
+        appContext.start();//å¯åŠ¨ Hasor å®¹å™¨ï¼Œå¯åŠ¨è¿‡ç¨‹ä¼šåˆå§‹åŒ–æ‰€æœ‰æ¨¡å—å’Œæ’ä»¶ã€‚
         //
         HelloHasor a=appContext.getInstance(HelloHasor.class);
         System.out.println(a);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ import net.hasor.web.startup.RuntimeFilter;
 /**
  * Controller
  * <br>
- * ×òÒ¹Î÷·çµò±ÌÊ÷¡£¶ÀÉÏ¸ßÂ¥£¬Íû¾¡ÌìÑÄÂ·¡£<br>
- * ÒÂ´ø½¥¿íÖÕ²»»Ú£¬ÎªÒÁÏûµÃÈËã¾ã²¡£<br>
- * ÖÚÀïÑ°ËıÇ§°Ù¶È£¬İëÈ»»ØÊ×£¬ÄÇÈËÈ´ÔÚµÆ»ğÀ»Éº´¦¡£
+ * æ˜¨å¤œè¥¿é£å‡‹ç¢§æ ‘ã€‚ç‹¬ä¸Šé«˜æ¥¼ï¼Œæœ›å°½å¤©æ¶¯è·¯ã€‚<br>
+ * è¡£å¸¦æ¸å®½ç»ˆä¸æ‚”ï¼Œä¸ºä¼Šæ¶ˆå¾—äººæ†”æ‚´ã€‚<br>
+ * ä¼—é‡Œå¯»å¥¹åƒç™¾åº¦ï¼Œè“¦ç„¶å›é¦–ï¼Œé‚£äººå´åœ¨ç¯ç«é˜‘çŠå¤„ã€‚
  * @version : 2013-8-14
  * @author JFinal
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractController {
-    //ÎŞÂÛÊÇµ¥Àı»¹ÊÇ¶àÀı,ÀûÓÃThreadLocal½øĞĞÏß³Ì¸ôÀë£¬¶¼»á±£Ö¤ AbstractController ÊÇÏß³Ì°²È«µÄ¡£
+    //æ— è®ºæ˜¯å•ä¾‹è¿˜æ˜¯å¤šä¾‹,åˆ©ç”¨ThreadLocalè¿›è¡Œçº¿ç¨‹éš”ç¦»ï¼Œéƒ½ä¼šä¿è¯ AbstractController æ˜¯çº¿ç¨‹å®‰å…¨çš„ã€‚
     private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
     private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
     //
@@ -80,19 +80,19 @@ public abstract class AbstractController {
         return getRequest().getSession(create);
     }
     // --------
-    /**ÉèÖÃ{@link HttpServletRequest}ÊôĞÔ*/
+    /**è®¾ç½®{@link HttpServletRequest}å±æ€§*/
     @ControllerIgnore
     public AbstractController putAtt(String attKey, Object attValue) {
         this.getRequest().setAttribute(attKey, attValue);
         return this;
     }
-    /**ÉèÖÃ{@link HttpServletResponse}HeaderÊôĞÔ*/
+    /**è®¾ç½®{@link HttpServletResponse}Headerå±æ€§*/
     @ControllerIgnore
     public AbstractController setHeader(String key, String value) {
         this.getResponse().setHeader(key, value);
         return this;
     }
-    /**ÉèÖÃ{@link HttpServletResponse}HeaderÊôĞÔ*/
+    /**è®¾ç½®{@link HttpServletResponse}Headerå±æ€§*/
     @ControllerIgnore
     public AbstractController addHeader(String key, String value) {
         this.getResponse().addHeader(key, value);

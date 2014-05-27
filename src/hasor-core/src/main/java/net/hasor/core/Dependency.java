@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 package net.hasor.core;
 import java.util.List;
 /**
- * ÓÃÓÚ±íÊ¾Ä³¸öÄ£¿éµÄÒÀÀµ¹ØÏµ¡£
+ * ç”¨äºè¡¨ç¤ºæŸä¸ªæ¨¡å—çš„ä¾èµ–å…³ç³»ã€‚
  * @version : 2013-7-26
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface Dependency {
-    /**»ñÈ¡Ä£¿éĞÅÏ¢*/
+    /**è·å–æ¨¡å—ä¿¡æ¯*/
     public ModuleInfo getModuleInfo();
-    /**±íÃ÷¸ÃÒÀÀµÊÇ·ñÎª¿ÉÑ¡µÄÒÀÀµ£¨true±íÊ¾¿ÉÑ¡µÄ£¬false±íÊ¾Ç¿ÖÆµÄ£©*/
+    /**è¡¨æ˜è¯¥ä¾èµ–æ˜¯å¦ä¸ºå¯é€‰çš„ä¾èµ–ï¼ˆtrueè¡¨ç¤ºå¯é€‰çš„ï¼Œfalseè¡¨ç¤ºå¼ºåˆ¶çš„ï¼‰*/
     public boolean isOption();
-    /**»ñÈ¡Ä£¿éµÄÒÀÀµÏîÄ¿*/
+    /**è·å–æ¨¡å—çš„ä¾èµ–é¡¹ç›®*/
     public List<Dependency> getDependency();
 }

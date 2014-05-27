@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import net.hasor.gift.icache.CacheManager;
 import net.hasor.gift.icache.KeyBuilder;
 import com.google.inject.Singleton;
 /**
- * »º´æÊ¹ÓÃÈë¿Ú£¬»º´æµÄÊµÏÖÓÉÏµÍ³×ÔĞĞÌá¹©¡£
+ * ç¼“å­˜ä½¿ç”¨å…¥å£ï¼Œç¼“å­˜çš„å®ç°ç”±ç³»ç»Ÿè‡ªè¡Œæä¾›ã€‚
  * @version : 2013-4-20
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Singleton
 class DefaultCacheManager implements CacheManager {

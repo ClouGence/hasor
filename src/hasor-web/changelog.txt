@@ -1,72 +1,72 @@
 ===== Hasor-Web v0.0.6
-* ÐÞ¸´:
-    01.Òò ModulePropxy ¸üÃûÎª ModuleProxyËù×öµÄÁ¬´ø¸Ä¶¯¡£
-* ¸Ä½ø:
-    01.ËùÓÐPlugins¶¼ÒÆ¶¯µ½Hasor-QuickÏîÄ¿ÖÐ¡£
-    02.ËùÓÐÖ÷Òª½Ó¿Ú50%ÒÔÉÏ½øÐÐ¸Ä½ø£¬¸Ä½øµÄÄ¿µÄÊÇ²»ÔÙÇ¿ÖÆÒÀÀµGuice¡£
+* ä¿®å¤:
+    01.å›  ModulePropxy æ›´åä¸º ModuleProxyæ‰€åšçš„è¿žå¸¦æ”¹åŠ¨ã€‚
+* æ”¹è¿›:
+    01.æ‰€æœ‰Pluginséƒ½ç§»åŠ¨åˆ°Hasor-Quické¡¹ç›®ä¸­ã€‚
+    02.æ‰€æœ‰ä¸»è¦æŽ¥å£50%ä»¥ä¸Šè¿›è¡Œæ”¹è¿›ï¼Œæ”¹è¿›çš„ç›®çš„æ˜¯ä¸å†å¼ºåˆ¶ä¾èµ–Guiceã€‚
 
 ===== Hasor-Web v0.0.5
-* ÐÞ¸´:
-    01.ÐÞ¸´ ControllerInterceptor À¹½ØÆ÷ÔÚµ÷ÓÃ±ê¼ÇÁË @ControllerIgnore ·½·¨Ê±Òý·¢µÝ¹éËÀÑ­»·ÎÊÌâ¡£
-* ¸Ä½ø:
-    01.AnnoWebAppContext ÀàÖÐÔö¼Ó£¬ÏÂÃæ¼¸¸ö½Ó¿ÚµÄ°ó¶¨¡£
-        ServletRequest¡¢HttpServletRequest¡¢ServletResponse¡¢HttpServletResponse¡¢HttpSession¡¢ServletContext
-* ÐÂÔö:
-    01.ÐÂÔö JSP Tag ±êÇ©¿â£¬Í¨¹ý Hasor JSP ±êÇ©¿â¿ÉÒÔ·½±ã»ùÓÚ jsp µÄ Hasor ¿ª·¢¡£
+* ä¿®å¤:
+    01.ä¿®å¤ ControllerInterceptor æ‹¦æˆªå™¨åœ¨è°ƒç”¨æ ‡è®°äº† @ControllerIgnore æ–¹æ³•æ—¶å¼•å‘é€’å½’æ­»å¾ªçŽ¯é—®é¢˜ã€‚
+* æ”¹è¿›:
+    01.AnnoWebAppContext ç±»ä¸­å¢žåŠ ï¼Œä¸‹é¢å‡ ä¸ªæŽ¥å£çš„ç»‘å®šã€‚
+        ServletRequestã€HttpServletRequestã€ServletResponseã€HttpServletResponseã€HttpSessionã€ServletContext
+* æ–°å¢ž:
+    01.æ–°å¢ž JSP Tag æ ‡ç­¾åº“ï¼Œé€šè¿‡ Hasor JSP æ ‡ç­¾åº“å¯ä»¥æ–¹ä¾¿åŸºäºŽ jsp çš„ Hasor å¼€å‘ã€‚
 
 ===== Hasor-Web v0.0.4
-* ¸Ä½ø:
-    01.ÉÙÁ¿´úÂëÓÅ»¯¡£
-    02.ÐÞ¸´ @Json ÎÞ·¨´¦Àí³ý£¨List¡¢Map¡¢»ù±¾ÀàÐÍ£©ÒâÍâÆäËüÀàÐÍÊý¾ÝÐòÁÐ»¯µÄÎÊÌâ¡£
-    03.´¦Àí @Json ×¢½âÊ±ÔÚ·µ»ØµÄ json Êý¾ÝÇ°ºóÔö¼Ó Ò»¶ÔÔ²À¨ºÅ¡£
-    04.´¦Àí Hasor Core 0.0.6 °æ±¾ÉÏ±ä¶¯¡£
-    05.j2ee Èí¼þ°ü ¸üÃûÎª servlet3
+* æ”¹è¿›:
+    01.å°‘é‡ä»£ç ä¼˜åŒ–ã€‚
+    02.ä¿®å¤ @Json æ— æ³•å¤„ç†é™¤ï¼ˆListã€Mapã€åŸºæœ¬ç±»åž‹ï¼‰æ„å¤–å…¶å®ƒç±»åž‹æ•°æ®åºåˆ—åŒ–çš„é—®é¢˜ã€‚
+    03.å¤„ç† @Json æ³¨è§£æ—¶åœ¨è¿”å›žçš„ json æ•°æ®å‰åŽå¢žåŠ  ä¸€å¯¹åœ†æ‹¬å·ã€‚
+    04.å¤„ç† Hasor Core 0.0.6 ç‰ˆæœ¬ä¸Šå˜åŠ¨ã€‚
+    05.j2ee è½¯ä»¶åŒ… æ›´åä¸º servlet3
 
 ===== Hasor-Web v0.0.3
-* ÐÞ¸´:
-    01.ÐÞ¸´ #4 ÔÚ debug Ä£Ê½ÏÂ Resources Ä£¿éÔÚ´¦ÀíÎ»ÓÚ Classpath ÖÐ×ÊÔ´Ê±»á·´¸´µÄ¸²¸Ç»º´æ½á¹û¡£
-        -ÕâÑùÉè¼ÆµÄÄ¿µÄÊÇÎªÁË·½±ã¿ª·¢µ÷ÊÔÓ¦ÓÃ³ÌÐò¡£
-    02.ÐÞ¸´ #9 ÔÚ¸ºÔð¼ÓÔØ×ÊÔ´µÄ HttpServlet ÖÐÔö¼ÓÁË 404 Çé¿öµÄÏìÓ¦¡£
-    03.ÐÞ¸´ #6 ZipResourceLoader ÔÚ¹¹Ôì·½·¨ÖÐ new Ò»¸ö Set ÓÃÓÚ´æ·ÅÑ¹ËõÎÄ¼þÖÐµÄÃû³Æ¼¯ºÏ¡£
-        Set ÖÐ´æ·ÅµÄÄÚÈÝÓÃÓÚ¼õÉÙ Zip Ñ¹Ëõ°ü´ò¿ªµÄ´ÎÊý¡£
-* ÐÂÔö:
-    01.ResourceLoader ½Ó¿ÚÐÂÔö exist¡¢canModify¡¢close ·½·¨¡£ÓÃÓÚÅÐ¶Ï×ÊÔ´ÊÇ·ñ´æÔÚÒÔ¼°ÊÇ·ñ¿ÉÄÜ±»¸ü¸Ä¡£
-        ClassPathResourceLoader¡¢PathResourceLoader¡¢ZipResourceLoader ·Ö±ðÊµÏÖÁËËüÃÇ¡£
-    02.ÐÂÔöÁË Resources Ä£¿éÔÚÃ¿´ÎÆô¶¯Ê±¶¼»áÇåÀíÖ®Ç°µÄ»º´æÎÄ¼þ¡£
-    03.ÐÂÔö WebEnvironment ½Ó¿Ú£¬¸Ã½Ó¿Ú¿ÉÒÔÔÚÆô¶¯Ê±Í¨¹ý WebApiBinder ½Ó¿Ú»ñÈ¡µ½¡£
-    04.WebApiBinder ½Ó¿ÚÖÐÐÂÔö  getServletContext ·½·¨ÓÃÒÔ»ñÈ¡ ServletContext ¶ÔÏó¡£
-* ¸Ä½ø:
-    01.Resource ×é½¨µÄÊ¹ÓÃ²»ÔÚÍ¨¹ýÅäÖÃÎÄ¼þ£¬¶ø¸ÄÎªÐèÒªÍ¨¹ý´úÂë½øÐÐÉÙÁ¿ÅäÖÃ¡£ÕâÑùÒÔ¼õÉÙÑ§Ï°³É±¾£¬Ôö¼ÓÁé»îÐÔ¡£
-    02.RuntimeFilter Í¬Ò»¸öÓ¦ÓÃ³ÌÐòÖ»ÄÜÊµÀý»¯Ò»¸ö RuntimeFilter ¶ÔÏó¡£
-    03.´úÂë´óÃæ»ýÓÅ»¯¡£
+* ä¿®å¤:
+    01.ä¿®å¤ #4 åœ¨ debug æ¨¡å¼ä¸‹ Resources æ¨¡å—åœ¨å¤„ç†ä½äºŽ Classpath ä¸­èµ„æºæ—¶ä¼šåå¤çš„è¦†ç›–ç¼“å­˜ç»“æžœã€‚
+        -è¿™æ ·è®¾è®¡çš„ç›®çš„æ˜¯ä¸ºäº†æ–¹ä¾¿å¼€å‘è°ƒè¯•åº”ç”¨ç¨‹åºã€‚
+    02.ä¿®å¤ #9 åœ¨è´Ÿè´£åŠ è½½èµ„æºçš„ HttpServlet ä¸­å¢žåŠ äº† 404 æƒ…å†µçš„å“åº”ã€‚
+    03.ä¿®å¤ #6 ZipResourceLoader åœ¨æž„é€ æ–¹æ³•ä¸­ new ä¸€ä¸ª Set ç”¨äºŽå­˜æ”¾åŽ‹ç¼©æ–‡ä»¶ä¸­çš„åç§°é›†åˆã€‚
+        Set ä¸­å­˜æ”¾çš„å†…å®¹ç”¨äºŽå‡å°‘ Zip åŽ‹ç¼©åŒ…æ‰“å¼€çš„æ¬¡æ•°ã€‚
+* æ–°å¢ž:
+    01.ResourceLoader æŽ¥å£æ–°å¢ž existã€canModifyã€close æ–¹æ³•ã€‚ç”¨äºŽåˆ¤æ–­èµ„æºæ˜¯å¦å­˜åœ¨ä»¥åŠæ˜¯å¦å¯èƒ½è¢«æ›´æ”¹ã€‚
+        ClassPathResourceLoaderã€PathResourceLoaderã€ZipResourceLoader åˆ†åˆ«å®žçŽ°äº†å®ƒä»¬ã€‚
+    02.æ–°å¢žäº† Resources æ¨¡å—åœ¨æ¯æ¬¡å¯åŠ¨æ—¶éƒ½ä¼šæ¸…ç†ä¹‹å‰çš„ç¼“å­˜æ–‡ä»¶ã€‚
+    03.æ–°å¢ž WebEnvironment æŽ¥å£ï¼Œè¯¥æŽ¥å£å¯ä»¥åœ¨å¯åŠ¨æ—¶é€šè¿‡ WebApiBinder æŽ¥å£èŽ·å–åˆ°ã€‚
+    04.WebApiBinder æŽ¥å£ä¸­æ–°å¢ž  getServletContext æ–¹æ³•ç”¨ä»¥èŽ·å– ServletContext å¯¹è±¡ã€‚
+* æ”¹è¿›:
+    01.Resource ç»„å»ºçš„ä½¿ç”¨ä¸åœ¨é€šè¿‡é…ç½®æ–‡ä»¶ï¼Œè€Œæ”¹ä¸ºéœ€è¦é€šè¿‡ä»£ç è¿›è¡Œå°‘é‡é…ç½®ã€‚è¿™æ ·ä»¥å‡å°‘å­¦ä¹ æˆæœ¬ï¼Œå¢žåŠ çµæ´»æ€§ã€‚
+    02.RuntimeFilter åŒä¸€ä¸ªåº”ç”¨ç¨‹åºåªèƒ½å®žä¾‹åŒ–ä¸€ä¸ª RuntimeFilter å¯¹è±¡ã€‚
+    03.ä»£ç å¤§é¢ç§¯ä¼˜åŒ–ã€‚
 
 ===== Hasor-Web v0.0.2
-* ÐÞ¸´:
-    01.ÐÞ¸´#1 Hasor-Web v0.0.1- Restful ·þÎñÎÞ·¨Õý³£·¢²¼µÄÎÊÌâ¡£
-    02.ÐÞ¸´#2 ´Ó WebApiBinder ½Ó¿ÚÖÐ×¢²áµÄ Filter Æô¶¯Ë³Ðò²»¿É¿ØµÄÎÊÌâ¡£
-* ¸Ä½ø:
-    01.ÓÅ»¯£ºÅ×³öµÄÒì³£¡£
-    02.ÐÞ¸Ä£º¸ùPOM¸ÄÎª 0.0.2 ¸Ã°æ±¾¿ÉÒÔ´¦Àí GBK ±àÂëÏÂ Javadocs Éú³É¡£
-    03.É¾³ý£ºmime Ïà¹Ø´úÂë¡£
-* ÐÂÔö:
-    01.½Ó¿ÚWebApiBinderÐÂÔö·½·¨£¬¿ÉÒÔÍ¨¹ý´úÂëÐÎÊ½×¢²á Servlet/FilterÊ±Ö¸¶¨Ë³Ðò¡£
-    02.ÐÂÔö Restful À¹½ØÆ÷µÄÖ§³Ö¡£
-    03.ÐÂÔö Restful ·þÎñ¿ÉÒÔÊ¹ÓÃ @Forword¡¢@Include¡¢@Json¡¢@Redirect ×¢½â¡£
+* ä¿®å¤:
+    01.ä¿®å¤#1 Hasor-Web v0.0.1- Restful æœåŠ¡æ— æ³•æ­£å¸¸å‘å¸ƒçš„é—®é¢˜ã€‚
+    02.ä¿®å¤#2 ä»Ž WebApiBinder æŽ¥å£ä¸­æ³¨å†Œçš„ Filter å¯åŠ¨é¡ºåºä¸å¯æŽ§çš„é—®é¢˜ã€‚
+* æ”¹è¿›:
+    01.ä¼˜åŒ–ï¼šæŠ›å‡ºçš„å¼‚å¸¸ã€‚
+    02.ä¿®æ”¹ï¼šæ ¹POMæ”¹ä¸º 0.0.2 è¯¥ç‰ˆæœ¬å¯ä»¥å¤„ç† GBK ç¼–ç ä¸‹ Javadocs ç”Ÿæˆã€‚
+    03.åˆ é™¤ï¼šmime ç›¸å…³ä»£ç ã€‚
+* æ–°å¢ž:
+    01.æŽ¥å£WebApiBinderæ–°å¢žæ–¹æ³•ï¼Œå¯ä»¥é€šè¿‡ä»£ç å½¢å¼æ³¨å†Œ Servlet/Filteræ—¶æŒ‡å®šé¡ºåºã€‚
+    02.æ–°å¢ž Restful æ‹¦æˆªå™¨çš„æ”¯æŒã€‚
+    03.æ–°å¢ž Restful æœåŠ¡å¯ä»¥ä½¿ç”¨ @Forwordã€@Includeã€@Jsonã€@Redirect æ³¨è§£ã€‚
 
 ===== Hasor-Web v0.0.1
-* ÐÂÔö:
-    01.Ö§³Ö @WebServlet ×¢½â¶¨Òå HttpServlet¡£
-    02.Ö§³Ö @WebFilter ×¢½â¶¨Òå Filter
-    03.Ö§³Ö @Controller ×¢½â¶¨Òå Web MVC Ä£Ê½ÏÂµÄ¿ØÖÆÆ÷£¨Action£©¡£
-    04.Ö§³Ö Í¨¹ý @Aop ×¢½âÉùÃ÷ ControllerInterceptor ÀàÐÍµÄ Controller À¹½ØÆ÷¡£
-    05.Ö§³Ö Controller À¹½ØÆ÷²»Í¬¼¶±ð£º·½·¨¼¶¡¢Àà¼¶¡¢È«¾Ö
-    06.Ö§³Ö Controller ¿ØÖÆÆ÷¹¤×÷ÔÚ ¡°µ¥ÊµÀý¡± »ò ¡°¶àÊµÀý¡± Ä£Ê½ÏÂ¡£
-    07.Ö§³Ö Í¨¹ý @ResultDefine À©Õ¹ Controller ¿ØÖÆÆ÷·µ»ØÖµ´¦Àí£¬ÒÑÓÐµÄ¿ØÖÆÆ÷·µ»ØÖµ´¦ÀíÆ÷ÈçÏÂ£º 
-        @Forword¡¢@Include¡¢@Json¡¢@Redirect
-    08.Ö§³Ö @RestfulService ×¢½â¶¨Òå Restful ·þÎñ¡£
-    09.Ö§³Ö Restful ·þÎñÀà¹¤×÷ÔÚ ¡°µ¥ÊµÀý¡± »ò ¡°¶àÊµÀý¡± Ä£Ê½ÏÂ¡£
-    10.²ÉÓÃÀàËÆ JSR-311 Restful Api µÄ×¢½âÉùÃ÷£º
+* æ–°å¢ž:
+    01.æ”¯æŒ @WebServlet æ³¨è§£å®šä¹‰ HttpServletã€‚
+    02.æ”¯æŒ @WebFilter æ³¨è§£å®šä¹‰ Filter
+    03.æ”¯æŒ @Controller æ³¨è§£å®šä¹‰ Web MVC æ¨¡å¼ä¸‹çš„æŽ§åˆ¶å™¨ï¼ˆActionï¼‰ã€‚
+    04.æ”¯æŒ é€šè¿‡ @Aop æ³¨è§£å£°æ˜Ž ControllerInterceptor ç±»åž‹çš„ Controller æ‹¦æˆªå™¨ã€‚
+    05.æ”¯æŒ Controller æ‹¦æˆªå™¨ä¸åŒçº§åˆ«ï¼šæ–¹æ³•çº§ã€ç±»çº§ã€å…¨å±€
+    06.æ”¯æŒ Controller æŽ§åˆ¶å™¨å·¥ä½œåœ¨ â€œå•å®žä¾‹â€ æˆ– â€œå¤šå®žä¾‹â€ æ¨¡å¼ä¸‹ã€‚
+    07.æ”¯æŒ é€šè¿‡ @ResultDefine æ‰©å±• Controller æŽ§åˆ¶å™¨è¿”å›žå€¼å¤„ç†ï¼Œå·²æœ‰çš„æŽ§åˆ¶å™¨è¿”å›žå€¼å¤„ç†å™¨å¦‚ä¸‹ï¼š 
+        @Forwordã€@Includeã€@Jsonã€@Redirect
+    08.æ”¯æŒ @RestfulService æ³¨è§£å®šä¹‰ Restful æœåŠ¡ã€‚
+    09.æ”¯æŒ Restful æœåŠ¡ç±»å·¥ä½œåœ¨ â€œå•å®žä¾‹â€ æˆ– â€œå¤šå®žä¾‹â€ æ¨¡å¼ä¸‹ã€‚
+    10.é‡‡ç”¨ç±»ä¼¼ JSR-311 Restful Api çš„æ³¨è§£å£°æ˜Žï¼š
         @Any @AttributeParam @CookieParam @Get @Head @HeaderParam @Put
         @HttpMethod @Options @Path @PathParam @Post @Produces @QueryParam
-    11.Ö§³Ö Xml ÅäÖÃÎÄ¼þÅäÖÃ Web ×ÊÔ´¼ÓÔØÂ·¾¶¡£Ä¿Ç°ÒÑ¾­Ö§³Ö£º
-        Jar\Zip\ÎÄ¼þÄ¿Â¼\ClassPath
+    11.æ”¯æŒ Xml é…ç½®æ–‡ä»¶é…ç½® Web èµ„æºåŠ è½½è·¯å¾„ã€‚ç›®å‰å·²ç»æ”¯æŒï¼š
+        Jar\Zip\æ–‡ä»¶ç›®å½•\ClassPath

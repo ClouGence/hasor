@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package net.hasor.core;
 /**
- * Ó¦ÓÃ³ÌĞòÊÂ¼ş¼àÌıÆ÷
+ * åº”ç”¨ç¨‹åºäº‹ä»¶ç›‘å¬å™¨
  * @version : 2013-7-10
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface EventListener extends java.util.EventListener {
-    /**´¦ÀíÊÂ¼şµÄ´¦Àí·½·¨£¬²ÎÊıÊÇÒª´¦ÀíµÄÊÂ¼ş¡£*/
+    /**å¤„ç†äº‹ä»¶çš„å¤„ç†æ–¹æ³•ï¼Œå‚æ•°æ˜¯è¦å¤„ç†çš„äº‹ä»¶ã€‚*/
     public void onEvent(String event, Object[] params) throws Throwable;
 };

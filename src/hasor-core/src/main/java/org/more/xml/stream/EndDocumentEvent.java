@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 package org.more.xml.stream;
 import javax.xml.stream.XMLStreamReader;
 /**
- * µ±ÔÄ¶Áxml½áÊøÊ±¡£
+ * å½“é˜…è¯»xmlç»“æŸæ—¶ã€‚
  * @version 2010-9-8
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class EndDocumentEvent extends XmlStreamEvent {
     public EndDocumentEvent(String xpath, XMLStreamReader reader) {
         super(xpath, reader);
     }
-    /**¸ÃÊÂ¼şµÄÅÄµµÊÇ{@link StartDocumentEvent}ÀàĞÍ¶ÔÏó¡£*/
+    /**è¯¥äº‹ä»¶çš„æ‹æ¡£æ˜¯{@link StartDocumentEvent}ç±»å‹å¯¹è±¡ã€‚*/
     public boolean isPartner(XmlStreamEvent e) {
         return e instanceof StartDocumentEvent;
     };
-    /**ÎÄµµ½áÊøÊÂ¼ş£¬ÊÇ¹²ÓĞÊÂ¼ş¡£*/
+    /**æ–‡æ¡£ç»“æŸäº‹ä»¶ï¼Œæ˜¯å…±æœ‰äº‹ä»¶ã€‚*/
     public boolean isPublicEvent() {
         return true;
     }

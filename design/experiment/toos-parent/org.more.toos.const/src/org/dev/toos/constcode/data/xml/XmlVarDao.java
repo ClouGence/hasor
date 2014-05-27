@@ -12,7 +12,7 @@ import org.dev.toos.internal.util.Message;
 /**
  * 
  * @version : 2013-2-17
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class XmlVarDao extends VarDao {
     private XmlConstDao xmlConstDao = null;
@@ -79,15 +79,15 @@ public class XmlVarDao extends VarDao {
     public XmlConstVarBean addVar(ConstVarBean newVar, int newIndex) {
         ConstVarBean parentVar = newVar.getParent();
         ConstBean parentConst = newVar.getConst();
-        //1.ËùÊô³£Á¿ÀàĞÍÅĞ¶Ï¡£
+        //1.æ‰€å±å¸¸é‡ç±»å‹åˆ¤æ–­ã€‚
         if (parentConst instanceof XmlConstBean == false)
-            throw new RuntimeException("parent const did not create.");//¸¸¶ÔÏóÉĞÎ´Ìí¼Ó¡£
+            throw new RuntimeException("parent const did not create.");//çˆ¶å¯¹è±¡å°šæœªæ·»åŠ ã€‚
         //
         List<VarType> varList = null;
         if (parentVar != null) {
             //children add
             if (parentVar instanceof XmlConstVarBean == false)
-                throw new RuntimeException("parent object did not create.");//¸¸¶ÔÏóÉĞÎ´Ìí¼Ó¡£
+                throw new RuntimeException("parent object did not create.");//çˆ¶å¯¹è±¡å°šæœªæ·»åŠ ã€‚
             VarType vt = ((XmlConstVarBean) parentVar).getTarget();
             varList = vt.getVar();
         } else {
@@ -120,7 +120,7 @@ public class XmlVarDao extends VarDao {
         vt.setValue(targetVar.getVarVar());
         vt.setExtendsData(targetVar.getVarExtData());
         if (varList.indexOf(vt) != newVarIndex) {
-            //Ë÷ÒıÎ»ÖÃ±ä¸ü
+            //ç´¢å¼•ä½ç½®å˜æ›´
             varList.remove(vt);
             if (newVarIndex >= varList.size())
                 varList.add(vt);
@@ -132,7 +132,7 @@ public class XmlVarDao extends VarDao {
     //
     //
     //
-    /*È·¶¨Ä¿±êËùÔÚµÄ¼¯ºÏ*/
+    /*ç¡®å®šç›®æ ‡æ‰€åœ¨çš„é›†åˆ*/
     private List<VarType> asVarList(VarType vt) {
         List<ConstType> constList = null;
         try {

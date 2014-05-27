@@ -8,7 +8,7 @@ import org.more.util.StringConvertUtil;
 /**
  * 
  * @version : 2013-2-16
- * @author ’‘”¿¥∫ (zyc@byshell.org)
+ * @author ËµµÊ∞∏Êò• (zyc@byshell.org)
  */
 public class CC_CellModifier implements ICellModifier {
     private TreeViewer treeViewer = null;

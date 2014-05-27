@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,21 +39,21 @@ import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.name.Names;
 /**
- * »º´æ·şÎñ¡£Æô¶¯¼¶±ğ£ºLv_0
+ * ç¼“å­˜æœåŠ¡ã€‚å¯åŠ¨çº§åˆ«ï¼šLv_0
  * @version : 2013-4-8
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 //@AnnoModule()
 public class CacheSupportModule implements Module {
     private CacheManager cacheManager = null;
-    /**³õÊ¼»¯.*/
+    /**åˆå§‹åŒ–.*/
     public void init(ApiBinder apiBinder) {
-        //1.¹ÒÔØAop
+        //1.æŒ‚è½½Aop
         apiBinder.getGuiceBinder().bindInterceptor(new ClassNeedCacheMatcher(), new MethodPowerMatcher(), new CacheInterceptor());
-        //2.ÔØÈë»º´æÅäÖÃ
+        //2.è½½å…¥ç¼“å­˜é…ç½®
         this.loadCache(apiBinder);
         this.loadKeyBuilder(apiBinder);
-        //3.×¢²áManager
+        //3.æ³¨å†ŒManager
         apiBinder.getGuiceBinder().bind(CacheManager.class).to(DefaultCacheManager.class).asEagerSingleton();
     }
     public void start(AppContext appContext) {
@@ -64,9 +64,9 @@ public class CacheSupportModule implements Module {
         // TODO Auto-generated method stub
     }
     //
-    /*×°ÔØKeyBuilder*/
+    /*è£…è½½KeyBuilder*/
     protected void loadKeyBuilder(ApiBinder event) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> iKeyBuilderSet = event.getClassSet(KeyBuilderDefine.class);
         if (iKeyBuilderSet == null)
             return;
@@ -77,7 +77,7 @@ public class CacheSupportModule implements Module {
             } else
                 iKeyBuilderList.add((Class<? extends KeyBuilder>) cls);
         }
-        //3.×¢²á·şÎñ
+        //3.æ³¨å†ŒæœåŠ¡
         long defaultKeyBuilderIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         for (Class<? extends KeyBuilder> keyBuildertype : iKeyBuilderList) {
@@ -86,11 +86,11 @@ public class CacheSupportModule implements Module {
             KeyBuilderDefinition keyBuilderDefine = new KeyBuilderDefinition(keyBuilderAnno.value(), keyBuilderKey);
             binder.bind(KeyBuilderDefinition.class).annotatedWith(UniqueAnnotations.create()).toInstance(keyBuilderDefine);
             Hasor.info("KeyBuilder type:" + Hasor.logString(keyBuildertype) + " mapping " + Hasor.logString(keyBuilderAnno.value()));
-            //            //È·¶¨ÊÇ·ñÎªdefaut
+            //            //ç¡®å®šæ˜¯å¦ä¸ºdefaut
             //            if (keyBuildertype.isAnnotationPresent(DefaultKeyBuilder.class) == true) {
             //                Hasor.warning("KeyBuilder type:" + Hasor.logString(keyBuildertype) + " is DefaultKeyBuilder on " + Hasor.logString(keyBuilderAnno.value()));
             //                DefaultKeyBuilder defaultKeyBuilder = keyBuildertype.getAnnotation(DefaultKeyBuilder.class);
-            //                if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*ÊıÔ½Ğ¡Ô½ÓÅÏÈ*/) {
+            //                if (defaultKeyBuilder.value() <= defaultKeyBuilderIndex/*æ•°è¶Šå°è¶Šä¼˜å…ˆ*/) {
             //                    defaultKeyBuilderIndex = defaultKeyBuilder.value();
             //                    binder.bind(KeyBuilder.class).toProvider(keyBuilderDefine);
             //                }
@@ -98,9 +98,9 @@ public class CacheSupportModule implements Module {
         }
     }
     //
-    /*×°ÔØCache*/
+    /*è£…è½½Cache*/
     protected void loadCache(ApiBinder event) {
-        //1.»ñÈ¡
+        //1.è·å–
         Set<Class<?>> cacheSet = event.getClassSet(CacheDefine.class);
         if (cacheSet == null)
             return;
@@ -112,7 +112,7 @@ public class CacheSupportModule implements Module {
                 } else
                     cacheList.add((Class<Cache<?>>) cls);
             }
-        //3.×¢²á·şÎñ
+        //3.æ³¨å†ŒæœåŠ¡
         long defaultCacheIndex = Long.MAX_VALUE;
         Binder binder = event.getGuiceBinder();
         Map<String, Integer> cacheIndex = new HashMap<String, Integer>();
@@ -122,17 +122,17 @@ public class CacheSupportModule implements Module {
                 Hasor.info(cacheName + " at Cache of type " + Hasor.logString(cacheType));
                 //
                 int maxIndex = (cacheIndex.containsKey(cacheName) == false) ? Integer.MAX_VALUE : cacheIndex.get(cacheName);
-                // if (cacheAnno.sort() <= maxIndex/*ÊıÔ½Ğ¡Ô½ÓÅÏÈ*/) {
+                // if (cacheAnno.sort() <= maxIndex/*æ•°è¶Šå°è¶Šä¼˜å…ˆ*/) {
                 // cacheIndex.put(cacheName, cacheAnno.sort());
                 //
                 CacheDefinition cacheDefine = new CacheDefinition(cacheName, cacheType);
                 binder.bind(CacheDefinition.class).annotatedWith(Names.named(cacheName)).toInstance(cacheDefine);
                 binder.bind(Cache.class).annotatedWith(Names.named(cacheName)).toProvider(cacheDefine);
-                //                    //È·¶¨ÊÇ·ñÎªdefaut
+                //                    //ç¡®å®šæ˜¯å¦ä¸ºdefaut
                 //                    if (cacheType.isAnnotationPresent(DefaultCache.class) == true) {
                 //                        Hasor.warning(cacheName + " is DefaultCache!");
                 //                        DefaultCache defaultCache = cacheType.getAnnotation(DefaultCache.class);
-                //                        if (defaultCache.value() <= defaultCacheIndex/*ÊıÔ½Ğ¡Ô½ÓÅÏÈ*/) {
+                //                        if (defaultCache.value() <= defaultCacheIndex/*æ•°è¶Šå°è¶Šä¼˜å…ˆ*/) {
                 //                            defaultCacheIndex = defaultCache.value();
                 //                            binder.bind(Cache.class).toProvider(cacheDefine);
                 //                        }
@@ -142,7 +142,7 @@ public class CacheSupportModule implements Module {
         }
     }
     /*-------------------------------------------------------------------------------------*/
-    /*¸ºÔğ¼ì²âÀàÊÇ·ñÆ¥Åä¡£¹æÔò£ºÖ»ÒªÀàĞÍ»ò·½·¨ÉÏ±ê¼ÇÁË@NeedCache¡£*/
+    /*è´Ÿè´£æ£€æµ‹ç±»æ˜¯å¦åŒ¹é…ã€‚è§„åˆ™ï¼šåªè¦ç±»å‹æˆ–æ–¹æ³•ä¸Šæ ‡è®°äº†@NeedCacheã€‚*/
     private class ClassNeedCacheMatcher extends AbstractMatcher<Class<?>> {
         public boolean matches(Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
@@ -160,7 +160,7 @@ public class CacheSupportModule implements Module {
             return false;
         }
     }
-    /*¸ºÔğ¼ì²â·½·¨ÊÇ·ñÆ¥Åä¡£¹æÔò£º·½·¨»ò·½·¨Ëù´¦ÀàÉÏ±ê¼ÇÁË@NeedCache¡£*/
+    /*è´Ÿè´£æ£€æµ‹æ–¹æ³•æ˜¯å¦åŒ¹é…ã€‚è§„åˆ™ï¼šæ–¹æ³•æˆ–æ–¹æ³•æ‰€å¤„ç±»ä¸Šæ ‡è®°äº†@NeedCacheã€‚*/
     private class MethodPowerMatcher extends AbstractMatcher<Method> {
         public boolean matches(Method matcherType) {
             if (matcherType.isAnnotationPresent(NeedCache.class) == true)
@@ -170,17 +170,17 @@ public class CacheSupportModule implements Module {
             return false;
         }
     }
-    /*À¹½ØÆ÷*/
+    /*æ‹¦æˆªå™¨*/
     private class CacheInterceptor implements MethodInterceptor {
         public Object invoke(MethodInvocation invocation) throws Throwable {
-            //1.»ñÈ¡»º´æÊı¾İ
+            //1.è·å–ç¼“å­˜æ•°æ®
             Method targetMethod = invocation.getMethod();
             NeedCache cacheAnno = targetMethod.getAnnotation(NeedCache.class);
             if (cacheAnno == null)
                 cacheAnno = targetMethod.getDeclaringClass().getAnnotation(NeedCache.class);
             if (cacheAnno == null)
                 return invocation.proceed();
-            //2.»ñÈ¡Key
+            //2.è·å–Key
             StringBuilder cacheKey = new StringBuilder(targetMethod.toString());
             Object[] args = invocation.getArguments();
             if (args != null)
@@ -189,19 +189,19 @@ public class CacheSupportModule implements Module {
                         cacheKey.append("NULL");
                         continue;
                     }
-                    /*±£Ö¤arg²ÎÊı²»Îª¿Õ*/
+                    /*ä¿è¯argå‚æ•°ä¸ä¸ºç©º*/
                     KeyBuilder keyBuilder = cacheManager.getKeyBuilder(arg.getClass());
                     cacheKey.append(keyBuilder.serializeKey(arg));
                 }
             Hasor.debug("MethodInterceptor Method : %s", targetMethod);
             Hasor.debug("MethodInterceptor Cache key :%s", cacheKey.toString());
-            //3.»ñÈ¡»º´æ
+            //3.è·å–ç¼“å­˜
             Cache<Object> cacheObject = null;
             if (StringUtils.isBlank(cacheAnno.cacheName()) == true)
                 cacheObject = cacheManager.getDefaultCache();
             else
                 cacheObject = cacheManager.getCache(cacheAnno.cacheName());
-            //4.²Ù×÷»º´æ
+            //4.æ“ä½œç¼“å­˜
             String key = cacheKey.toString();
             Object returnData = null;
             if (cacheObject.hasCache(key) == true) {

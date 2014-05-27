@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,50 +29,50 @@ import net.hasor.jdbc.transaction.support.DefaultTransactionManager;
 import net.test.simple._10_jdbc.AbstractJDBCTest;
 import org.junit.Test;
 /**
- * RROPAGATION_NESTED£ºÇ¶Ì×ÊÂÎñ
+ * RROPAGATION_NESTEDï¼šåµŒå¥—äº‹åŠ¡
  * @version : 2013-12-10
- * @author ÕÔÓÀ´º(zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥(zyc@hasor.net)
  */
 public class Tarn_NESTED_Test extends AbstractJDBCTest {
-    /*Ìõ¼ş£º»·¾³ÖĞÃ»ÓĞÊÂÎñ¡£*/
+    /*æ¡ä»¶ï¼šç¯å¢ƒä¸­æ²¡æœ‰äº‹åŠ¡ã€‚*/
     @Test
     public void noTarn_Test() throws IOException, URISyntaxException, SQLException {
         DataSource jdbcDS = this.getDataSource();
         TransactionManager tm = new DefaultTransactionManager(jdbcDS);
         {
-            /*Begin£¬¿ªÊ¼ÊÂÎñ*/
+            /*Beginï¼Œå¼€å§‹äº‹åŠ¡*/
             TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
-            /*ÉêÇëÁ¬½Ó*/
+            /*ç”³è¯·è¿æ¥*/
             Connection con = DataSourceUtils.getConnection(jdbcDS);
             //
             //
-            con.createStatement().executeUpdate("insert into TB_User values('deb4f4c8','°²Äİ.TD.Óê¹û','belon','123','belon@hasor.net','2011-06-08 20:08:08');");
+            con.createStatement().executeUpdate("insert into TB_User values('deb4f4c8','å®‰å¦®.TD.é›¨æœ','belon','123','belon@hasor.net','2011-06-08 20:08:08');");
             ResultSet res = con.createStatement().executeQuery("select count(*) from TB_User where userUUID='deb4f4c8'");
             res.next();
             System.out.println(res.getInt(1));
             //
             //
-            /*ÊÍ·ÅÁ¬½Ó*/
+            /*é‡Šæ”¾è¿æ¥*/
             DataSourceUtils.releaseConnection(con, jdbcDS);
-            /*commit£¬µİ½»ÊÂÎñ*/
+            /*commitï¼Œé€’äº¤äº‹åŠ¡*/
             tm.commit(status);
         }
         System.out.println(this.getJdbcTemplate().queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
     }
-    /*Ìõ¼ş£º»·¾³ÖĞ´æÔÚÊÂÎñ¡£*/
+    /*æ¡ä»¶ï¼šç¯å¢ƒä¸­å­˜åœ¨äº‹åŠ¡ã€‚*/
     @Test
     public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();
         TransactionManager tm = new DefaultTransactionManager(jdbc.getDataSource());
-        //1.»ñÈ¡Á¬½Ó²¢´´½¨ÊÂÎñ
+        //1.è·å–è¿æ¥å¹¶åˆ›å»ºäº‹åŠ¡
         Connection con = DataSourceUtils.getConnection(jdbc.getDataSource());
         con.setAutoCommit(false);
         System.out.println(jdbc.queryForInt("select count(*) from TB_User "));
-        jdbc.execute("insert into TB_User values('18c48158','ÃÉÆæ.TD.Óê¹û','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//Ö´ĞĞ²åÈëÓï¾ä
+        jdbc.execute("insert into TB_User values('18c48158','è’™å¥‡.TD.é›¨æœ','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//æ‰§è¡Œæ’å…¥è¯­å¥
         {
             //begin
             TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
-            jdbc.execute("insert into TB_User values('deb4f4c8','°²Äİ.TD.Óê¹û','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//Ö´ĞĞ²åÈëÓï¾ä
+            jdbc.execute("insert into TB_User values('deb4f4c8','å®‰å¦®.TD.é›¨æœ','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//æ‰§è¡Œæ’å…¥è¯­å¥
             System.out.println(jdbc.queryForInt("select count(*) from TB_User"));
             //rollBack
             tm.rollBack(status);

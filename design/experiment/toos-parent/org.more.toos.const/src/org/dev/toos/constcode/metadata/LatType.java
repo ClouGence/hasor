@@ -1,14 +1,14 @@
 package org.dev.toos.constcode.metadata;
 /**
- * ³£Á¿Çø·ÖÀàĞÍ
+ * å¸¸é‡åŒºåˆ†ç±»å‹
  * @version : 2012-2-21
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public enum LatType {
-    /**ÎŞ»ú¹¹*/
+    /**æ— æœºæ„*/
     No,
-    /**¼¯ÍÅ*/
+    /**é›†å›¢*/
     Group,
-    /**·ÖĞ£*/
+    /**åˆ†æ ¡*/
     School
 }

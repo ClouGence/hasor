@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import net.hasor.web.binder.FilterPipeline;
 /**
  *  
  * @version : 2013-4-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
@@ -71,7 +71,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
         if (!initialized) {
             initPipeline(this.appContext);
         }
-        /*Ö´ÐÐ¹ýÂËÆ÷Á´*/
+        /*æ‰§è¡Œè¿‡æ»¤å™¨é“¾*/
         ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
         new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
     }

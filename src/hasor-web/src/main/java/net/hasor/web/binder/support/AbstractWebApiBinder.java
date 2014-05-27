@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import net.hasor.core.binder.AbstractBinder;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
 /**
- * ¸ÃÀàÊÇ{@link WebApiBinder}½Ó¿ÚÊµÏÖ¡£
+ * è¯¥ç±»æ˜¯{@link WebApiBinder}æ¥å£å®ç°ã€‚
  * @version : 2013-4-10
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public abstract class AbstractWebApiBinder extends AbstractBinder implements WebApiBinder {
     //
@@ -57,7 +57,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             list.add(object);
         return list;
     }
-    /**ÊµÌåÀàĞÍµÄProvider´úÀí */
+    /**å®ä½“ç±»å‹çš„Providerä»£ç† */
     class InstanceProvider<T> implements Provider<T> {
         private T instance = null;
         public InstanceProvider(T instance) {
@@ -67,13 +67,13 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             return this.instance;
         }
     }
-    /**ClassÀàĞÍµÄProvider´úÀí */
+    /**Classç±»å‹çš„Providerä»£ç† */
     class ClassProvider<T> implements Provider<T>, AppContextAware {
         private Class<? extends T> instanceType = null;
         private AppContext         appContext   = null;
         public ClassProvider(Class<? extends T> instanceType) {
-            bindingType(instanceType);/*°ó¶¨ÀàĞÍ*/
-            registerAware(this);/*×¢²áAppContextAware*/
+            bindingType(instanceType);/*ç»‘å®šç±»å‹*/
+            registerAware(this);/*æ³¨å†ŒAppContextAware*/
             this.instanceType = instanceType;
         }
         public void setAppContext(AppContext appContext) {
@@ -139,7 +139,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
-                bindingType(FilterDefinition.class, define).asEagerSingleton();/*µ¥ÁĞ*/
+                bindingType(FilterDefinition.class, define).asEagerSingleton();/*å•åˆ—*/
             }
         }
     }

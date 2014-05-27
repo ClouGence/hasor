@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,28 @@ import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Provider;
 /**
- * Ìá¹©ÁË×¢²áServletºÍFilterµÄ·½·¨¡£
+ * æä¾›äº†æ³¨å†ŒServletå’ŒFilterçš„æ–¹æ³•ã€‚
  * @version : 2013-4-10
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder {
-    /**»ñÈ¡ServletContext¶ÔÏó¡£*/
+    /**è·å–ServletContextå¯¹è±¡ã€‚*/
     public ServletContext getServletContext();
     //
-    /**Ê¹ÓÃ´«Í³±í´ïÊ½£¬´´½¨Ò»¸ö{@link FilterBindingBuilder}¡£*/
+    /**ä½¿ç”¨ä¼ ç»Ÿè¡¨è¾¾å¼ï¼Œåˆ›å»ºä¸€ä¸ª{@link FilterBindingBuilder}ã€‚*/
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns);
-    /**Ê¹ÓÃÕıÔò±í´ïÊ½£¬´´½¨Ò»¸ö{@link FilterBindingBuilder}¡£*/
+    /**ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼ï¼Œåˆ›å»ºä¸€ä¸ª{@link FilterBindingBuilder}ã€‚*/
     public FilterBindingBuilder filterRegex(String regex, String... regexes);
-    /**Ê¹ÓÃ´«Í³±í´ïÊ½£¬´´½¨Ò»¸ö{@link ServletBindingBuilder}¡£*/
+    /**ä½¿ç”¨ä¼ ç»Ÿè¡¨è¾¾å¼ï¼Œåˆ›å»ºä¸€ä¸ª{@link ServletBindingBuilder}ã€‚*/
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns);
-    /**Ê¹ÓÃÕıÔò±í´ïÊ½£¬´´½¨Ò»¸ö{@link ServletBindingBuilder}¡£*/
+    /**ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼ï¼Œåˆ›å»ºä¸€ä¸ª{@link ServletBindingBuilder}ã€‚*/
     public ServletBindingBuilder serveRegex(String regex, String... regexes);
-    /**×¢²áÒ»¸öSession¼àÌıÆ÷¡£*/
+    /**æ³¨å†Œä¸€ä¸ªSessionç›‘å¬å™¨ã€‚*/
     public SessionListenerBindingBuilder sessionListener();
-    /**×¢²áÒ»¸öServletContextListener¼àÌıÆ÷¡£*/
+    /**æ³¨å†Œä¸€ä¸ªServletContextListenerç›‘å¬å™¨ã€‚*/
     public ServletContextListenerBindingBuilder contextListener();
     //
-    /**¸ºÔğÅäÖÃFilter£¬²Î¿¼Guice 3.0½Ó¿ÚÉè¼Æ¡£*/
+    /**è´Ÿè´£é…ç½®Filterï¼Œå‚è€ƒGuice 3.0æ¥å£è®¾è®¡ã€‚*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);
         public void through(Filter filter);
@@ -60,7 +60,7 @@ public interface WebApiBinder extends ApiBinder {
         public void through(int index, Filter filter, Map<String, String> initParams);
         public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams);
     }
-    /**¸ºÔğÅäÖÃServlet£¬²Î¿¼Guice 3.0½Ó¿ÚÉè¼Æ¡£*/
+    /**è´Ÿè´£é…ç½®Servletï¼Œå‚è€ƒGuice 3.0æ¥å£è®¾è®¡ã€‚*/
     public static interface ServletBindingBuilder {
         public void with(Class<? extends HttpServlet> servletKey);
         public void with(HttpServlet servlet);
@@ -76,13 +76,13 @@ public interface WebApiBinder extends ApiBinder {
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
         public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams);
     }
-    /**¸ºÔğÅäÖÃSessionListener¡£*/
+    /**è´Ÿè´£é…ç½®SessionListenerã€‚*/
     public static interface SessionListenerBindingBuilder {
         public void bind(Class<? extends HttpSessionListener> listenerKey);
         public void bind(HttpSessionListener sessionListener);
         public void bind(Provider<HttpSessionListener> listenerProvider);
     }
-    /**¸ºÔğÅäÖÃServletContextListener¡£*/
+    /**è´Ÿè´£é…ç½®ServletContextListenerã€‚*/
     public static interface ServletContextListenerBindingBuilder {
         public void bind(Class<? extends ServletContextListener> listenerKey);
         public void bind(ServletContextListener sessionListener);

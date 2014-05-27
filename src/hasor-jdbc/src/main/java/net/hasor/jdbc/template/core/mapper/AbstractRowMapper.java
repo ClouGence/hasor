@@ -25,10 +25,10 @@ import net.hasor.jdbc.template.RowMapper;
 import org.more.util.StringUtils;
 /**
  * 
- * @version : 2014Äê5ÔÂ23ÈÕ
+ * @version : 2014å¹´5æœˆ23æ—¥
  */
 public abstract class AbstractRowMapper<T> implements RowMapper<T> {
-    /**»ñÈ¡ÁĞµÄÖµ*/
+    /**è·å–åˆ—çš„å€¼*/
     protected static Object getResultSetValue(ResultSet rs, int index) throws SQLException {
         Object obj = rs.getObject(index);
         String className = null;
@@ -36,29 +36,29 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             className = obj.getClass().getName();
         }
         if (obj instanceof Blob) {
-            /*Blob ×ª»»Îª Bytes*/
+            /*Blob è½¬æ¢ä¸º Bytes*/
             obj = rs.getBytes(index);
         } else if (obj instanceof Clob) {
-            /*Clob ×ª»»Îª String*/
+            /*Clob è½¬æ¢ä¸º String*/
             obj = rs.getString(index);
         } else if (className != null && ("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
-            /*oracle TIMESTAMP ×ª»»Îª Timestamp*/
+            /*oracle TIMESTAMP è½¬æ¢ä¸º Timestamp*/
             obj = rs.getTimestamp(index);
         } else if (className != null && className.startsWith("oracle.sql.DATE")) {
-            /*oracle DATE ×ª»»Îª Date*/
+            /*oracle DATE è½¬æ¢ä¸º Date*/
             String metaDataClassName = rs.getMetaData().getColumnClassName(index);
             if ("java.sql.Timestamp".equals(metaDataClassName) || "oracle.sql.TIMESTAMP".equals(metaDataClassName))
                 obj = rs.getTimestamp(index);
             else
                 obj = rs.getDate(index);
         } else if (obj != null && obj instanceof java.sql.Date) {
-            /*DATE ×ª»» Date*/
+            /*DATE è½¬æ¢ Date*/
             if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index)))
                 obj = rs.getTimestamp(index);
         }
         return obj;
     }
-    /**×ª»»Îªµ¥ÖµµÄÀàĞÍ*/
+    /**è½¬æ¢ä¸ºå•å€¼çš„ç±»å‹*/
     protected static Object convertValueToRequiredType(Object value, Class<?> requiredType) {
         if (String.class.equals(requiredType)) {
             return value.toString();

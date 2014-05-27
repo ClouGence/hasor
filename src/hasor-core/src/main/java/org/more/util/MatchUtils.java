@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.more.util;
 public class MatchUtils {
-    /**½«Í¨Åä·û×ª»»³ÉÕıÔò±í´ïÊ½¡£*/
+    /**å°†é€šé…ç¬¦è½¬æ¢æˆæ­£åˆ™è¡¨è¾¾å¼ã€‚*/
     public static String wildToRegex(String wild) {
         if (wild == null)
             throw new NullPointerException("wild param is null");
@@ -36,7 +36,7 @@ public class MatchUtils {
         result.append("$");
         return result.toString();
     }
-    /**½«×Ö·û´®×ª»»³É³ÉÕıÔò±í´ïÊ½¡£*/
+    /**å°†å­—ç¬¦ä¸²è½¬æ¢æˆæˆæ­£åˆ™è¡¨è¾¾å¼ã€‚*/
     public static String stringToRegex(String wild) {
         if (wild == null)
             throw new NullPointerException("wild param is null");
@@ -51,7 +51,7 @@ public class MatchUtils {
         }
         return result.toString();
     }
-    /**Ê¹ÓÃÍ¨Åä·ûÆ¥Åä×Ö·û´®¡£*/
+    /**ä½¿ç”¨é€šé…ç¬¦åŒ¹é…å­—ç¬¦ä¸²ã€‚*/
     public static boolean matchWild(String pattern, String str) {
         if (str == null)
             return false;

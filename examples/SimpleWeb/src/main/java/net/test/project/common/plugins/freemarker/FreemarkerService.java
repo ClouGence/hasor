@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,30 +20,30 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 /**
- * FreemarkerÄ£°å¹¦ÄÜÌá¹©Àà¡£
+ * Freemarkeræ¨¡æ¿åŠŸèƒ½æä¾›ç±»ã€‚
  * @version : 2013-5-6
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface FreemarkerService {
-    /**»ñÈ¡ÓÃÓÚÖ´ĞĞÄ£°åµÄFreemarker*/
+    /**è·å–ç”¨äºæ‰§è¡Œæ¨¡æ¿çš„Freemarker*/
     public Configuration getFreemarker();
-    /**»ñÈ¡Ä£°å¡£*/
+    /**è·å–æ¨¡æ¿ã€‚*/
     public Template getTemplate(String templateName) throws TemplateException, IOException;
     //
-    /**»ñÈ¡²¢Ö´ĞĞÄ£°å¡£*/
+    /**è·å–å¹¶æ‰§è¡Œæ¨¡æ¿ã€‚*/
     public void processTemplate(String templateName) throws TemplateException, IOException;
-    /**»ñÈ¡²¢Ö´ĞĞÄ£°å¡£*/
+    /**è·å–å¹¶æ‰§è¡Œæ¨¡æ¿ã€‚*/
     public void processTemplate(String templateName, Object rootMap) throws TemplateException, IOException;
-    /**»ñÈ¡²¢Ö´ĞĞÄ£°å¡£*/
+    /**è·å–å¹¶æ‰§è¡Œæ¨¡æ¿ã€‚*/
     public void processTemplate(String templateName, Object rootMap, Writer writer) throws TemplateException, IOException;
     //
-    /**½«×Ö·û´®µÄÄÚÈİ×÷ÎªÄ£°åÖ´ĞĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²çš„å†…å®¹ä½œä¸ºæ¨¡æ¿æ‰§è¡Œã€‚*/
     public String processString(String templateString) throws TemplateException, IOException;
-    /**½«×Ö·û´®µÄÄÚÈİ×÷ÎªÄ£°åÖ´ĞĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²çš„å†…å®¹ä½œä¸ºæ¨¡æ¿æ‰§è¡Œã€‚*/
     public String processString(String templateString, Object rootMap) throws TemplateException, IOException;
     //
-    /**½«×Ö·û´®µÄÄÚÈİ×÷ÎªÄ£°åÖ´ĞĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²çš„å†…å®¹ä½œä¸ºæ¨¡æ¿æ‰§è¡Œã€‚*/
     public void processString(String templateString, Writer writer) throws TemplateException, IOException;
-    /**½«×Ö·û´®µÄÄÚÈİ×÷ÎªÄ£°åÖ´ĞĞ¡£*/
+    /**å°†å­—ç¬¦ä¸²çš„å†…å®¹ä½œä¸ºæ¨¡æ¿æ‰§è¡Œã€‚*/
     public void processString(String templateString, Object rootMap, Writer writer) throws TemplateException, IOException;
 }

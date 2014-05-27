@@ -4,9 +4,9 @@ import org.dev.toos.dbmapping.model.Element;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
 /**
- * ´´½¨²Ù×÷
+ * åˆ›å»ºæ“ä½œ
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public class CreateElement extends Command {
     private Diagram diagram  = null;

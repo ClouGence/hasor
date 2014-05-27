@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.servlet.Filter;
 /**
- * ÉùÃ÷Ò»¸öFilter£¬¸ÃFilterĞèÒªÊµÏÖ{@link Filter}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªFilterï¼Œè¯¥Filteréœ€è¦å®ç°{@link Filter}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface WebFilter {
-    /**filterÃû³Æ*/
+    /**filteråç§°*/
     public String filterName() default "";
-    /**FilterÔÚ¹ıÂËÆ÷Á´ÉÏµÄË³Ğò¡£Ä¬ÈÏ£º0£¬Êı×ÖÔ½´óÆô¶¯Ô½ÑÓ³Ù¡£
-     * <br/><b>×¢£º</b><i>¸ÃÖµ¿ÉÒÔÍ¨¹ı¹ÜÀí¿ØÖÆÌ¨ÖĞÖØĞÂÉèÖÃ¡£</i>*/
+    /**Filteråœ¨è¿‡æ»¤å™¨é“¾ä¸Šçš„é¡ºåºã€‚é»˜è®¤ï¼š0ï¼Œæ•°å­—è¶Šå¤§å¯åŠ¨è¶Šå»¶è¿Ÿã€‚
+     * <br/><b>æ³¨ï¼š</b><i>è¯¥å€¼å¯ä»¥é€šè¿‡ç®¡ç†æ§åˆ¶å°ä¸­é‡æ–°è®¾ç½®ã€‚</i>*/
     public int sort() default 0;
-    /** ·şÎñµÄÆô¶¯²ÎÊı¡£
-     * <br/><b>×¢£º</b><i>¸ÃÖµ¿ÉÒÔÍ¨¹ı¹ÜÀí¿ØÖÆÌ¨ÖĞÖØĞÂÉèÖÃ¡£</i>*/
+    /** æœåŠ¡çš„å¯åŠ¨å‚æ•°ã€‚
+     * <br/><b>æ³¨ï¼š</b><i>è¯¥å€¼å¯ä»¥é€šè¿‡ç®¡ç†æ§åˆ¶å°ä¸­é‡æ–°è®¾ç½®ã€‚</i>*/
     public WebInitParam[] initParams() default {};
-    /**URLÆ¥Åä¹æÔò¡£*/
+    /**URLåŒ¹é…è§„åˆ™ã€‚*/
     public String[] value();
-    /**URL¹æÔòÊÇ·ñÊ¹ÓÃÕıÔò±í´ïÊ½¸ñÊ½ÊéĞ´µÄ*/
+    /**URLè§„åˆ™æ˜¯å¦ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼æ ¼å¼ä¹¦å†™çš„*/
     public boolean regex() default false;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 package org.more.classcode;
 /**
- * classcodeÊ¹ÓÃµÄMethod¶ÔÏó£¬¸ÃÀàÖĞ·â×°ÁËaop´úÀí·½·¨ºÍÕæÊµµÄÄ¿±ê·½·¨¡£
+ * classcodeä½¿ç”¨çš„Methodå¯¹è±¡ï¼Œè¯¥ç±»ä¸­å°è£…äº†aopä»£ç†æ–¹æ³•å’ŒçœŸå®çš„ç›®æ ‡æ–¹æ³•ã€‚
  * @version 2010-9-11
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class Method {
     private java.lang.reflect.Method proxyMethod  = null;
     private java.lang.reflect.Method targetMeyhod = null;
-    /**´´½¨MethodÀàĞÍ¶ÔÏó¡£*/
+    /**åˆ›å»ºMethodç±»å‹å¯¹è±¡ã€‚*/
     Method(java.lang.reflect.Method proxyMethod, java.lang.reflect.Method targetMeyhod) {
         this.proxyMethod = proxyMethod;
         this.targetMeyhod = targetMeyhod;
     }
-    /**»ñÈ¡aop´úÀí·½·¨£¬Èç¹ûÔÚaopÆÚ¼äÔÙ´Îµ÷ÓÃ¸Ã·½·¨½«»áÒı·¢ËÀÑ­»·¡£*/
+    /**è·å–aopä»£ç†æ–¹æ³•ï¼Œå¦‚æœåœ¨aopæœŸé—´å†æ¬¡è°ƒç”¨è¯¥æ–¹æ³•å°†ä¼šå¼•å‘æ­»å¾ªç¯ã€‚*/
     public java.lang.reflect.Method getProxyMethod() {
         return this.proxyMethod;
     }
-    /**»ñÈ¡aop´úÀíµÄ·½·¨µÄÄ¿±ê·½·¨¡£*/
+    /**è·å–aopä»£ç†çš„æ–¹æ³•çš„ç›®æ ‡æ–¹æ³•ã€‚*/
     public java.lang.reflect.Method getTargetMeyhod() {
         return this.targetMeyhod;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ’‘”¿¥∫(zyc@hasor.net).
+ * Copyright 2008-2009 the original ËµµÊ∞∏Êò•(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.more.xml.stream.XmlStreamEvent;
 /**
  *
  * @version 2010-9-8
- * @author ’‘”¿¥∫ (zyc@hasor.net)
+ * @author ËµµÊ∞∏Êò• (zyc@hasor.net)
  */
 public class Level2_Test {
     @Test

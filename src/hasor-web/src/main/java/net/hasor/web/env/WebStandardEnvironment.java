@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import javax.servlet.ServletContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.web.WebEnvironment;
 /**
- * ¸ºÔğ×¢²áMORE_WEB_ROOT»·¾³±äÁ¿ÒÔ¼°Web»·¾³±äÁ¿µÄÎ¬»¤¡£
+ * è´Ÿè´£æ³¨å†ŒMORE_WEB_ROOTç¯å¢ƒå˜é‡ä»¥åŠWebç¯å¢ƒå˜é‡çš„ç»´æŠ¤ã€‚
  * @version : 2013-7-17
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
     private ServletContext servletContext;
@@ -49,7 +49,7 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
                 String webContextDir = servletContext.getRealPath("/");
                 hasorEnv.put("HASOR_WEBROOT", webContextDir);
                 //
-                /*µ¥¶À´¦Àíwork_home*/
+                /*å•ç‹¬å¤„ç†work_home*/
                 String workDir = $this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
                 workDir = workDir.replace("/", File.separator);
                 if (workDir.startsWith("." + File.separatorChar))

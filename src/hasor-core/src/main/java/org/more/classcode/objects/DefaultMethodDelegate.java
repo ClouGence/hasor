@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import org.more.classcode.EngineToos;
 import org.more.classcode.InvokeException;
 import org.more.classcode.MethodDelegate;
 /**
- * ´úÀí·½·¨µÄ¿ÕÊµÏÖ¡£
+ * ä»£ç†æ–¹æ³•çš„ç©ºå®ç°ã€‚
  * @version 2010-9-3
- * @author ÕÔÓÀ´º (zyc@hasor.net)
+ * @author èµµæ°¸æ˜¥ (zyc@hasor.net)
  */
 public class DefaultMethodDelegate implements MethodDelegate {
     public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {

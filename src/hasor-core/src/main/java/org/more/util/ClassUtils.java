@@ -35,7 +35,7 @@ import org.more.util.text.StrBuilder;
  * non-canonical method variants work with the JVM names, such as
  * <code>[I</code>. </p>
  *
- * @author ÕÔÓÀ´º
+ * @author èµµæ°¸æ˜¥
  * @author Apache Software Foundation
  * @author Gary Gregory
  * @author Norm Deane
@@ -979,11 +979,11 @@ public class ClassUtils {
             }
         }
     }
-    /**ÅĞ¶ÏÄ³¸öÀàÊÇ·ñÎªÒ»¸ölang°üµÄÀà¡£*/
+    /**åˆ¤æ–­æŸä¸ªç±»æ˜¯å¦ä¸ºä¸€ä¸ªlangåŒ…çš„ç±»ã€‚*/
     public static boolean isLangClass(Class<?> target) {
         return target.getName().startsWith("java.lang.");
     };
-    /**»ñÈ¡·½·¨µÄ±êÊ¶´úÂë£¬ÔÚ²»¿¼ÂÇÆäËùÊôÀàµÄÇé¿öÏÂ¡£*/
+    /**è·å–æ–¹æ³•çš„æ ‡è¯†ä»£ç ï¼Œåœ¨ä¸è€ƒè™‘å…¶æ‰€å±ç±»çš„æƒ…å†µä¸‹ã€‚*/
     public static String getCodeWithoutClass(Method method) {
         //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
         StringBuffer str = new StringBuffer(method.toString());

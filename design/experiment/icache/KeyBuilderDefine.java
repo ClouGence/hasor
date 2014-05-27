@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * ÉùÃ÷Ò»¸ö»º´æÖĞÓÃÓÚÉú³ÉkeyµÄ·şÎñÌá¹©Õß£¬±ê¼ÇÁË¸Ã½Ó¿ÚµÄÀà±ØĞëÒªÇóÊµÏÖ{@link KeyBuilder}½Ó¿Ú¡£
+ * å£°æ˜ä¸€ä¸ªç¼“å­˜ä¸­ç”¨äºç”Ÿæˆkeyçš„æœåŠ¡æä¾›è€…ï¼Œæ ‡è®°äº†è¯¥æ¥å£çš„ç±»å¿…é¡»è¦æ±‚å®ç°{@link KeyBuilder}æ¥å£ã€‚
  * @version : 2013-3-12
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface KeyBuilderDefine {
-    /**¸ÃÉú³ÆÆ÷¿ÉÒÔ×÷ÓÃµÄÊı¾İÀàĞÍ£¬Ò»¸öÀàĞÍÖ»ÄÜ×¢²á²»ÔÊĞí³öÏÖÍ¬Ãû*/
+    /**è¯¥ç”Ÿç§°å™¨å¯ä»¥ä½œç”¨çš„æ•°æ®ç±»å‹ï¼Œä¸€ä¸ªç±»å‹åªèƒ½æ³¨å†Œä¸å…è®¸å‡ºç°åŒå*/
     public Class<?> value();
 }

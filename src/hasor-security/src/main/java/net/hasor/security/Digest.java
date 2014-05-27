@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original ÕÔÓÀ´º(zyc@hasor.net).
+ * Copyright 2008-2009 the original èµµæ°¸æ˜¥(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package net.hasor.security;
 /**
- * cookieÖµ±àÂë½âÂë¡£
+ * cookieå€¼ç¼–ç è§£ç ã€‚
  * @version : 2013-4-24
- * @author ÕÔÓÀ´º (zyc@byshell.org)
+ * @author èµµæ°¸æ˜¥ (zyc@byshell.org)
  */
 public interface Digest {
-    /**±àÂë */
+    /**ç¼–ç  */
     public String encrypt(String strValue, String generateKey) throws Throwable;
-    /**½âÂë*/
+    /**è§£ç */
     public String decrypt(String strValue, String generateKey) throws Throwable;
 }
