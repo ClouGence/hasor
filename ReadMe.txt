@@ -1,18 +1,31 @@
 Hasor
 
-    Hasor 是一款开源的 Java 应用开发框架。它是以 Guice 为核心，围绕它创建的一系列模块组合而成。使用 Hasor 会加速软件开发，并提升发效率降低开发成本。目前 Hasor 由 Hasor-Core 、 Hasor-Web 、 Hasor-JDBC 三个主要模块以及若干插件组合而成。开发者通过 Hasor 插件提供的帮助，可以快速的进行开发工作。
+    Hasor 是一款开源的轻量级Java应用程序基础框架体系，它的核心目标是提供一个以统一、高效的、友好的方式构造整个应用程序。它由多个不同功能的软件包组合而成。您可以根据需要去选择它们。
 
-    Hasor 的本质与 Struts,Hibernate 等单层框架不同，它是由一个及其微小的核心和强有力的外围插件扩展组合而成。通过这种微内核加扩展的方式，可以提供统一的、高效的、友好的方式去构造整个应用程序。并且可以将诸多技术整合起来，建立起一个连贯的体系，可以说Hasor是一个搭建开发环境的框架。
+    Hasor 的本质与 Struts,Hibernate 等单层框架不同，它是由一个及其微小的核心和强有力的外围插件扩展组合而成。Hasor 将应用程序的启动分为 init、start 两个阶段。通过插件丰富 Hasor 功能，而作为插件是可以随时被剔除的。通过这种微内核加扩展的方式，可以提供统一的、高效的、友好的方式去构造整个应用程序。并且可以将诸多技术整合起来，建立起一个连贯的体系，可以说Hasor是一个搭建开发环境的框。
 
-    Hasor 与 Spring 的比较，可以说 Hasor 本质上和 Spring 极其相似，无论是从分包结构还是功能的提供。与 Spring 不同的是 Hasor 具有一个比 Spring 更加轻的内核它只有40多个类，扩展 Hasor 比扩展 Spring 简单的多得多。Guice 是 Hasor 的内核，官网上说它的运行效率要比 Spring 快1000倍！如果真有其事那么无疑 Hasor 的性能也会比 Spring 强出很多。
+Hasor-Core
 
+    作为整个Hasor 体系的基石，Hasor-Core 通过 Module 提供了统一的扩展接口。对于Module的启动顺序还支持了基于依赖的排序检测。它内置了事件机制，应用程序可以根据需要引发“同步事件”和“异步事件”。
 
+    Hasor-Core 提供了一套独特的类型绑定机制以方便应用程序声明Bean等信息，并且它还支持Scope、单例概念。
+
+    Hasor 的配置文件使用的是Xml，但是您无需编写Xml解析器就可以方便的读取自定义配置信息。同时 Hasor 还会实时检测配置文件是否更改已通知应用程序做更新。尽管如此您依然可以不需要任何配置文件，真正的零配置。
+
+Hasor-Web
+
+    Hasor 为支持 Web 的扩展软件包，使用 Hasor-Web 可以以编码形式声明 Servlet/Filter/Listener 从而省去了配置 web.xml 的麻烦。Hasor-Web为它们建立了统一的 Dispatcher。下面是基于它的插件列表：
+
+Hasor-JDBC
+    该部件是参考 Spring JDBC 接口设计做的轻量化实现，它支持复杂嵌套事务、支持多数据源。
+
+----------------------------------------------
 
 源码说明：源码文件编码格式为 GBK。
 
 项目首页：http://www.oschina.net/p/hasor
 
-参考手册：http://www.hasor.net/Hasor-Guide-v0.0.1.pdf
+参考手册：http://www.hasor.net/Hasor-Guide-v0.0.1.pdf (旧版)
 
 API文档：
 
