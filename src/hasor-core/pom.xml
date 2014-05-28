@@ -43,7 +43,6 @@
 			<artifactId>aopalliance</artifactId>
 			<version>1.0</version>
 		</dependency>
-
 		<!-- Guice3 -->
 		<dependency>
 			<groupId>com.google.inject</groupId>

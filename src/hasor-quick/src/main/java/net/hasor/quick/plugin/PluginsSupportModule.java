@@ -23,7 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.plugin.HasorPlugin;
-import net.hasor.quick.anno.AnnoModule;
+import net.hasor.quick.AnnoModule;
 /**
  * 插件体系支持
  * @version : 2013-4-8

@@ -31,44 +31,43 @@
 			<artifactId>hasor-core</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-Web -->
+		<!-- Hasor-MVC -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-web</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
-			<scope>provided</scope>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Hasor-JDBC -->
+		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-jdbc</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-			<scope>provided</scope>
+			<artifactId>hasor-db</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-Remote -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-remote</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!-- DB Pool -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>0.2.25</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>commons-dbcp</groupId> -->
+		<!-- <artifactId>commons-dbcp</artifactId> -->
+		<!-- <version>1.4</version> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>c3p0</groupId> -->
+		<!-- <artifactId>c3p0</artifactId> -->
+		<!-- <version>0.9.1.2</version> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.alibaba</groupId> -->
+		<!-- <artifactId>druid</artifactId> -->
+		<!-- <version>0.2.25</version> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
 	</dependencies>
 </project>

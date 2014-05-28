@@ -6,29 +6,4 @@
 		<loadPackages>net.hasor.quick.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
 
-	<!-- http://project.hasor.net/hasor/schema/hasor-quick 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
-	<hasor-web requestEncoding="utf-8" responseEncoding="utf-8">
-		<!-- Controller配置，defaultProduces 默认响应类型 ; -->
-		<controller enable="true" intercept="*.do">
-			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
-			<globalIgnore>equals,hashCode,toString,getClass,wait,notify,notifyAll</globalIgnore>
-		</controller>
-
-		<!-- restful 服务配置，onPath是服务基础路径，这个Filter的排序很低 -->
-		<restfulServices enable="true" onPath="/*" sortBy="10000" />
-	</hasor-web>
-
-	<hasor-jdbc>
-		<dataSourceSet default="">
-			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.C3p0Factory"> -->
-			<!-- <driver>...</driver> -->
-			<!-- <url>...</url> -->
-			<!-- <user>...</user> -->
-			<!-- <password>...</password> -->
-			<!-- </dataSource> -->
-			<!-- <dataSource name="" dsFactory="net.hasor.jdbc.datasource.factory.JndiFactory"> -->
-			<!-- <jndi>java:comp/env/jdbc/DBPool</jndi> -->
-			<!-- </dataSource> -->
-		</dataSourceSet>
-	</hasor-jdbc>
 </config>

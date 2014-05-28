@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-db">
+	<!-- 框架配置 -->
+	<hasor>
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>net.hasor.db.*</loadPackages>
+	</hasor>
+	<!-- http://project.hasor.net/hasor/schema/hasor-db 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
+	<hasor-jdbc />
+</config>
