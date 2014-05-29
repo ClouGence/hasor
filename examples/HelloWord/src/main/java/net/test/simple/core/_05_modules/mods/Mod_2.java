@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
-import net.test.simple.core._03_beans.pojo.PojoBean;
+package net.test.simple.core._05_modules.mods;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * 模块2
+ * @version : 2013-9-14
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+public class Mod_2 implements Module {
+    public void init(ApiBinder apiBinder) {
+        apiBinder.bindingType(String.class).uniqueName().toInstance("say form Mod_2.");
+    }
+    public void start(AppContext appContext) {
+        System.out.println("start->Mod_1");
+    }
+}

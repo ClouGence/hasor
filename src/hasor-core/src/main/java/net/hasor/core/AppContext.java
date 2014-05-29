@@ -46,6 +46,10 @@ public interface AppContext extends EventContext {
     public boolean removeModule(Module hasorModule);
     /**获得所有模块*/
     public ModuleInfo[] getModules();
+    /**获取某个ID的模块。*/
+    public ModuleInfo getModuleByID(String moduleID);
+    /**判断是否具有某个ID的模块。*/
+    public boolean hasModuleByID(String moduleID);
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/

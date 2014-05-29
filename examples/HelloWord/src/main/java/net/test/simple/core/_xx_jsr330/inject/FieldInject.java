@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
+package net.test.simple.core._xx_jsr330.inject;
+import javax.inject.Inject;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
- */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+* 该例子演示了如何通过 JSR-330 标准给予字段依赖注入（字段注入）。
+* 被注入的字段不需要生成其 get/set 方法。
+* @version : 2014-1-3
+* @author 赵永春(zyc@hasor.net)
+*/
+public class FieldInject {
+    @Inject
+    private PojoBean userBean; //被注入的字段
+    //
+    public String getUserName() {
+        return this.userBean.getName();
+    }
+}

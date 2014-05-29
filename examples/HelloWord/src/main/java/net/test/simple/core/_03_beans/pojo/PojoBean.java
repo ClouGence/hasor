@@ -13,14 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
-import net.test.simple.core._03_beans.pojo.PojoBean;
+package net.test.simple.core._03_beans.pojo;
+import java.util.UUID;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
+ * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+public class PojoBean implements PojoInfo {
+    private String uuid    = UUID.randomUUID().toString();
+    private String name    = "马三";
+    private String address = "北京马连洼街道办...";
+    public String getUuid() {
+        return uuid;
+    }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+}

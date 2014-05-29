@@ -52,7 +52,9 @@ public interface ApiBinder extends EventContext {
     public ModuleSettings configModule();
     /**该接口可以配置模块信息。*/
     public interface ModuleSettings extends ModuleInfo {
-        /**依赖反制：强制目标模块依赖当前模块(弱依赖)。*/
+        /**设置模块ID*/
+        public void setModuleID(String moduleID);
+        /**依赖反转：强制目标模块依赖当前模块(弱依赖)。*/
         public void reverse(Class<? extends Module> targetModule);
         /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/> 
          * 注意：该方法要求在目标模块启动之后在启动。*/
@@ -101,6 +103,7 @@ public interface ApiBinder extends EventContext {
     }
     public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
         public LinkedBindingBuilder<T> nameWith(String name);
+        public LinkedBindingBuilder<T> uniqueName();
     }
     public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder {
         /**为绑定设置一个实现类*/

@@ -21,6 +21,8 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ModuleInfo {
+    /**模块在容器中的唯一标识*/
+    public String getModuleID();
     /**获取绑定的配置文件命名空间*/
     public String getSettingsNamespace();
     /**获取显示名称*/

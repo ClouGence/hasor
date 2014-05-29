@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
-import net.test.simple.core._03_beans.pojo.PojoBean;
+package net.test.simple._07_event.listener;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.plugins.event.Listener;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * 事件监听器A
+ * @version : 2014-1-11
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+@Listener("Event_A")
+public class A_EventListener implements EventListener {
+    public void onEvent(String event, Object[] params) {
+        System.out.println("Event_A onEvent :" + event + " \t" + Hasor.logString(params));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+    }
+};

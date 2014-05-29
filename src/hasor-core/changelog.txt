@@ -11,6 +11,8 @@
     06.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
     07.添加Provider接口、EventContext接口。
     08.支持重复绑定检测。
+    09.对日志输出做了优化。
+    10.为每个模块增加唯一的ID可以绑定。
 * 修复:
     01.更名 ModulePropxy 类名为 ModuleProxy。
 

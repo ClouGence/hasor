@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
-import net.test.simple.core._03_beans.pojo.PojoBean;
+package net.test.simple.core._06_dependency.weak;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Module;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * 弱依赖演示，依赖关系：
+ * Mode1
+ *    Mode2
+ *       Mode4
+ *          Mode3
+ *    Mode3
+ * @version : 2013-7-27
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+public class WeakMode3 implements Module {
+    public void init(ApiBinder apiBinder) throws Exception {
+        throw new Exception();//抛出异常，由于是弱依赖因此不会影响整个依赖链
+    }
+    public void start(AppContext appContext) {
+        System.out.println("Mode3 start!");
+    }
+}

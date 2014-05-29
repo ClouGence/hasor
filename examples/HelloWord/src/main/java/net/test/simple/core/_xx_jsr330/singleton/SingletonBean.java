@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple._02_beans.name;
-import net.hasor.plugins.bean.Bean;
-import net.test.simple.core._03_beans.pojo.PojoBean;
+package net.test.simple.core._xx_jsr330.singleton;
+import javax.inject.Singleton;
 /**
- * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
- * 并通过 {@code @Bean} 注解为 NameBean 声明了一个名称叫“NameBean”。
- * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * 该例子演示了如何通过 JSR-330 标准声明一个 Bean 的单实例状态（单例）。
+ * @version : 2013-8-11
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Bean("NameBean")
-public class NameBean extends PojoBean {}
+@Singleton
+public class SingletonBean {
+    private long time = 0;
+    //
+    public SingletonBean() {
+        time = System.currentTimeMillis();
+    }
+    //
+    public void foo() {
+        System.out.println("create at time:" + time);
+    }
+}

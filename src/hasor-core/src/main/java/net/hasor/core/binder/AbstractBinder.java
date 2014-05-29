@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
@@ -179,6 +180,10 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         public LinkedBindingBuilder<T> nameWith(String name) {
             this.typeRegister.setName(name);
+            return this;
+        }
+        public LinkedBindingBuilder<T> uniqueName() {
+            this.typeRegister.setName(UUID.randomUUID().toString());
             return this;
         }
         public MetaDataBindingBuilder toScope(Scope scope) {

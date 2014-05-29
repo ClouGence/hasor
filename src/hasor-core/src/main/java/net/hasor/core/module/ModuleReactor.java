@@ -79,7 +79,7 @@ public class ModuleReactor {
         List<ReactorModuleProxyElement> tree = new ArrayList<ReactorModuleProxyElement>();
         this.getDependenceTree(tree);
         String treeInfo = getTreeInfo(tree, null);
-        Hasor.logInfo("dependence Tree\n%s", treeInfo);
+        Hasor.logInfo("dependence Tree %s", treeInfo);
         /*4.确定启动顺序*/
         List<ModuleProxy> finalList = this.getStartModule(tree);
         //
@@ -95,9 +95,12 @@ public class ModuleReactor {
             sb.append(info.getDescription());
             sb.append(")\n");
         }
-        if (sb.length() > 1)
+        if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);
-        Hasor.logInfo("startup sequence.\n%s", sb);
+            sb.insert(0, "\n");
+        } else
+            sb.append(" -> nothing.");
+        Hasor.logInfo("startup sequence %s", sb);
         return finalList;
     }
     //
@@ -140,6 +143,11 @@ public class ModuleReactor {
             if (sb.length() > 1)
                 sb.deleteCharAt(sb.length() - 1);
         }
+        //
+        if (sb.length() == 0)
+            sb.append(" -> nothing.");
+        else
+            sb.insert(0, "\n");
         return sb.toString();
     }
     //

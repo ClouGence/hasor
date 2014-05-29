@@ -15,7 +15,7 @@
  */
 package net.test.simple._02_beans.name;
 import net.hasor.plugins.bean.Bean;
-import net.test.simple._02_beans.pojo.PojoBean;
+import net.test.simple.core._03_beans.pojo.PojoBean;
 /**
  * 为了简单，NameBean 继承了 PojoBean，并具有了 PojoBean 的所有特质。
  * 并通过 {@code @Bean} 注解为 NameBean 声明了两个名称叫“NameBean1”和“NameBean2”。

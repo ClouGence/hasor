@@ -27,13 +27,16 @@ import net.hasor.core.Dependency;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.ModuleInfo;
+import org.more.RepeateException;
 import org.more.UnhandledException;
+import org.more.util.ClassUtils;
 /**
  * 
  * @version : 2013-7-26
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信息*/, ModuleSettings, Module {
+    private String           moduleID;
     private String           displayName;
     private String           description;
     private Module           targetModule;
@@ -43,12 +46,13 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
     private boolean          isReady;
     private boolean          isStart;
     //
-    public ModuleProxy(Module targetModule, AppContext appContext) {
+    public ModuleProxy(String moduleID, Module targetModule, AppContext appContext) {
         this.targetModule = Hasor.assertIsNotNull(targetModule);
         this.appContext = Hasor.assertIsNotNull(appContext);
+        this.moduleID = moduleID;
+        this.description = this.getModuleID();
+        this.displayName = ClassUtils.getShortClassName(targetModule.getClass());
         //
-        this.description = targetModule.getClass().getName();
-        this.displayName = targetModule.getClass().getSimpleName();
         this.dependency = new ArrayList<Dependency>();
         this.isReady = false;
     }
@@ -56,6 +60,16 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
     //----------------------------------------------------------------------------------Base Method
     public String getSettingsNamespace() {
         return this.namespace;
+    }
+    public String getModuleID() {
+        return moduleID;
+    }
+    public void setModuleID(String moduleID) {
+        ModuleInfo[] infos = this.appContext.getModules();
+        for (ModuleInfo info : infos)
+            if (info.equals(moduleID))
+                throw new RepeateException(String.format("moduleID ‘%s’ already exists.", moduleID));
+        this.moduleID = moduleID;
     }
     public void bindingSettingsNamespace(String settingsNamespace) {
         if (isReady())
@@ -98,8 +112,7 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
         return this.isStart;
     }
     public String toString() {
-        return String.format("displayName is %s, class is %s",//
-                this.displayName, this.targetModule.getClass());
+        return String.format("ID=%s", this.moduleID);
     }
     //
     //----------------------------------------------------------------------------Dependency Method
@@ -152,11 +165,11 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
         try {
             Module forModule = this.getTarget();
             this.onInit(forModule, apiBinder);
-            Hasor.logInfo("init Event on : %s", this.getDisplayName());
+            Hasor.logInfo("init Event on : %s[ID=%s]", this.getDisplayName(), this.getModuleID());
             this.isReady = true;
         } catch (Throwable e) {
             this.isReady = false;
-            Hasor.logError("%s is not init! %s", this.getDisplayName(), e);
+            Hasor.logError("%s[ID=%s] is not init! %s", this.getDisplayName(), this.getModuleID(), e);
             if (isFullStart())
                 this.proForceModule(e);
         }
@@ -168,11 +181,11 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
         try {
             Module forModule = this.getTarget();
             this.onStart(forModule, appContext);
-            Hasor.logInfo("start Event on : %s", this.getDisplayName());
+            Hasor.logInfo("start Event on : %s[ID=%s]", this.getDisplayName(), this.getModuleID());
             this.isStart = true;
         } catch (Throwable e) {
             this.isStart = false;
-            Hasor.logError("%s in the start phase encounters an error.\n%s", this.getDisplayName(), e);
+            Hasor.logError("%s[ID=%s] in the start phase encounters an error.\n%s", this.getDisplayName(), this.getModuleID(), e);
             if (isFullStart())
                 this.proForceModule(e);
         }
