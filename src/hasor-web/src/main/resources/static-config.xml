@@ -6,5 +6,5 @@
 		<loadPackages>net.hasor.web.*</loadPackages>
 	</hasor>
 	<!-- http://project.hasor.net/hasor/schema/hasor-web 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
-	<hasor-web requestEncoding="UTF-8" responseEncoding="UTF-8" />
+	<hasor-web />
 </config>

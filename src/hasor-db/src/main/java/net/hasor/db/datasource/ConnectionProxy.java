@@ -15,6 +15,7 @@
  */
 package net.hasor.db.datasource;
 import java.sql.Connection;
+import javax.sql.DataSource;
 /**
  * Connection 连接代理。
  * @version : 2013-12-3
@@ -24,9 +25,10 @@ import java.sql.Connection;
  */
 public interface ConnectionProxy extends Connection {
     /**
-     * Return the target Connection of this proxy.
-     * <p>This will typically be the native driver Connection or a wrapper from a connection pool.
+     * Return the target Connection of this proxy. <p>This will typically be the native driver Connection or a wrapper from a connection pool.
      * @return the underlying Connection (never <code>null</code>)
      */
     public Connection getTargetConnection();
+    /**获取目标使用的数据源*/
+    public DataSource getTargetSource();
 }

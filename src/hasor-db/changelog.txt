@@ -5,6 +5,10 @@
     03.瘦身 50% 以上。
     04.对 SQL 异常不在封装。
     05.Hasor-Jdbc v0.0.3 项目更名为 Hasor-DB v0.0.1。
+* 修复:
+    01.修复部分接口方法传入的参数不支持 ParameterDisposer 清理过程的问题。
+    02.修复批量SQL操作，因参数不同而导致的一些问题。
+        -例如:"select count(*) form XX where id in :ids"。传入的ids参数分别为 Object和 List两种类型。
 
 ===== Hasor-Jdbc v0.0.2
 * 修复:

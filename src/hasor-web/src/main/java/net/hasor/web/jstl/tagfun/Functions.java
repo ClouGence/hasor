@@ -40,7 +40,7 @@ public class Functions {
         Class<?> defineType = Class.forName(className);
         return getAppContext().getInstance(defineType);
     }
-    public static Object defineBinding(String name, String bindingType) throws ClassNotFoundException {
+    public static Object defineBind(String name, String bindingType) throws ClassNotFoundException {
         if (StringUtils.isBlank(name))
             return null;
         if (StringUtils.isBlank(bindingType))
@@ -61,7 +61,7 @@ public class Functions {
                 return true;
         return false;
     }
-    public static boolean hasBinding(String name, String className) throws ClassNotFoundException {
+    public static boolean hasBind(String name, String className) throws ClassNotFoundException {
         if (StringUtils.isBlank(name))
             return false;
         Class<?> defineType = Class.forName(className);

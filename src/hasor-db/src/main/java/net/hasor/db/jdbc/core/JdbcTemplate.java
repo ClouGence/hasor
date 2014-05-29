@@ -32,15 +32,10 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.sql.DataSource;
-
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.datasource.DataSourceUtils;
@@ -60,10 +55,10 @@ import net.hasor.db.jdbc.StatementCallback;
 import net.hasor.db.jdbc.core.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
-
 import org.more.util.ArrayUtils;
 import org.more.util.IOUtils;
 import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
@@ -99,7 +94,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
      * @param dataSource the JDBC DataSource to obtain connections from
      */
     public JdbcTemplate(DataSource dataSource) {
-        this();
         setDataSource(dataSource);
     }
     //
@@ -177,30 +171,27 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
         }
     }
-    public <T> T execute(StatementCallback<T> action) throws SQLException {
+    public <T> T execute(final StatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
-        DataSource ds = this.getDataSource();//获取数据源
-        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
-        con = this.newProxyConnection(con, ds);//代理连接
-        //
-        Statement stmt = null;
-        try {
-            stmt = con.createStatement();
-            applyStatementSettings(stmt);
-            T result = action.doInStatement(stmt);
-            handleWarnings(stmt);
-            return result;
-        } catch (SQLException ex) {
-            throw ex;
-        } finally {
-            try {
-                stmt.close();
-            } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
-        }
+        return this.execute(new ConnectionCallback<T>() {
+            public T doInConnection(Connection con) throws SQLException {
+                Statement stmt = null;
+                try {
+                    stmt = con.createStatement();
+                    applyStatementSettings(stmt);
+                    T result = action.doInStatement(stmt);
+                    handleWarnings(stmt);
+                    return result;
+                } catch (SQLException ex) {
+                    throw ex;
+                } finally {
+                    stmt.close();
+                }
+            }
+        });
     }
-    public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action) throws SQLException {
+    public <T> T execute(final PreparedStatementCreator psc, final PreparedStatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(psc, "PreparedStatementCreator must not be null");
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         if (Hasor.isDebugLogger()) {
@@ -208,29 +199,26 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             Hasor.logDebug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
         //
-        DataSource ds = this.getDataSource();//获取数据源
-        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
-        con = this.newProxyConnection(con, ds);//代理连接
-        //
-        PreparedStatement ps = null;
-        try {
-            ps = psc.createPreparedStatement(con);
-            applyStatementSettings(ps);
-            T result = action.doInPreparedStatement(ps);
-            handleWarnings(ps);
-            return result;
-        } catch (SQLException ex) {
-            throw ex;
-        } finally {
-            if (psc instanceof ParameterDisposer)
-                ((ParameterDisposer) psc).cleanupParameters();
-            try {
-                ps.close();
-            } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
-        }
+        return this.execute(new ConnectionCallback<T>() {
+            public T doInConnection(Connection con) throws SQLException {
+                PreparedStatement ps = null;
+                try {
+                    ps = psc.createPreparedStatement(con);
+                    applyStatementSettings(ps);
+                    T result = action.doInPreparedStatement(ps);
+                    handleWarnings(ps);
+                    return result;
+                } catch (SQLException ex) {
+                    throw ex;
+                } finally {
+                    if (psc instanceof ParameterDisposer)
+                        ((ParameterDisposer) psc).cleanupParameters();
+                    ps.close();
+                }
+            }
+        });
     }
-    public <T> T execute(CallableStatementCreator csc, CallableStatementCallback<T> action) throws SQLException {
+    public <T> T execute(final CallableStatementCreator csc, final CallableStatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(csc, "CallableStatementCreator must not be null");
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         if (Hasor.isDebugLogger()) {
@@ -238,27 +226,24 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             Hasor.logDebug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
         //
-        DataSource ds = this.getDataSource();//获取数据源
-        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
-        con = this.newProxyConnection(con, ds);//代理连接
-        //
-        CallableStatement cs = null;
-        try {
-            cs = csc.createCallableStatement(con);
-            applyStatementSettings(cs);
-            T result = action.doInCallableStatement(cs);
-            handleWarnings(cs);
-            return result;
-        } catch (SQLException ex) {
-            throw new SQLException("CallableStatementCallback SQL :" + getSql(action), ex);
-        } finally {
-            if (csc instanceof ParameterDisposer)
-                ((ParameterDisposer) csc).cleanupParameters();
-            try {
-                cs.close();
-            } finally {}
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
-        }
+        return this.execute(new ConnectionCallback<T>() {
+            public T doInConnection(Connection con) throws SQLException {
+                CallableStatement cs = null;
+                try {
+                    cs = csc.createCallableStatement(con);
+                    applyStatementSettings(cs);
+                    T result = action.doInCallableStatement(cs);
+                    handleWarnings(cs);
+                    return result;
+                } catch (SQLException ex) {
+                    throw new SQLException("CallableStatementCallback SQL :" + getSql(action), ex);
+                } finally {
+                    if (csc instanceof ParameterDisposer)
+                        ((ParameterDisposer) csc).cleanupParameters();
+                    cs.close();
+                }
+            }
+        });
     }
     public <T> T execute(String sql, PreparedStatementCallback<T> action) throws SQLException {
         return execute(new SimplePreparedStatementCreator(sql), action);
@@ -274,7 +259,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public void execute(final String sql) throws SQLException {
         Hasor.logDebug("Executing SQL statement [%s].", sql);
         class ExecuteStatementCallback implements StatementCallback<Object>, SqlProvider {
@@ -288,7 +272,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
         this.execute(new ExecuteStatementCallback());
     }
-    //
     //
     //
     /***/
@@ -352,7 +335,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public void query(PreparedStatementCreator psc, RowCallbackHandler rch) throws SQLException {
         query(psc, new RowCallbackHandlerResultSetExtractor(rch));
     }
@@ -374,7 +356,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch) throws SQLException {
         query(sql, new InnerMapSqlParameterSource(paramMap), rch);
     }
-    //
     //
     //
     public <T> List<T> query(PreparedStatementCreator psc, RowMapper<T> rowMapper) throws SQLException {
@@ -400,7 +381,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public <T> List<T> queryForList(String sql, Class<T> elementType) throws SQLException {
         return query(sql, getBeanPropertyRowMapper(elementType));
     }
@@ -416,7 +396,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType) throws SQLException {
         return queryForList(sql, new InnerMapSqlParameterSource(paramMap), elementType);
     }
-    //
     //
     //
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper) throws SQLException {
@@ -455,7 +434,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public long queryForLong(String sql) throws SQLException {
         Number number = queryForObject(sql, getSingleColumnRowMapper(Long.class));
         return (number != null ? number.longValue() : 0);
@@ -488,7 +466,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public Map<String, Object> queryForMap(String sql) throws SQLException {
         return queryForObject(sql, getColumnMapRowMapper());
     }
@@ -515,7 +492,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     //    public SqlRowSet queryForRowSet(String sql) throws DataAccessException {
     //        return query(sql, new SqlRowSetResultSetExtractor());
     //    }
@@ -531,7 +507,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //    public SqlRowSet queryForRowSet(String sql, Map<String, ?> paramMap) throws DataAccessException {
     //        return queryForRowSet(sql, new MapSqlParameterSource(paramMap));
     //    }
-    //
     //
     //
     /***/
@@ -585,7 +560,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
     public int[] batchUpdate(final String[] sql) throws SQLException {
         if (ArrayUtils.isEmpty(sql))
             throw new NullPointerException(sql + "SQL array must not be empty");
@@ -621,6 +595,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
         return execute(new BatchUpdateStatementCallback());
     }
+    public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) throws SQLException {
+        SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
+        int i = 0;
+        for (Map<String, ?> values : batchValues) {
+            batchArgs[i] = new InnerMapSqlParameterSource(values);
+            i++;
+        }
+        return batchUpdate(sql, batchArgs);
+    }
+    public int[] batchUpdate(String sql, final SqlParameterSource[] batchArgs) throws SQLException {
+        if (batchArgs.length <= 0)
+            return new int[] { 0 };
+        return this.batchUpdate(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
+    }
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
         Hasor.logDebug("Executing SQL batch update [%s].", sql);
         return execute(sql, new PreparedStatementCallback<int[]>() {
@@ -631,10 +619,14 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     DatabaseMetaData dbMetaData = ps.getConnection().getMetaData();
                     if (dbMetaData.supportsBatchUpdates()) {
                         for (int i = 0; i < batchSize; i++) {
-                            pss.setValues(ps, i);
+                            String useSQL = pss.setValues(ps, i);
                             if (ipss != null && ipss.isBatchExhausted(i))
                                 break;
-                            ps.addBatch();
+                            //
+                            if (StringUtils.isBlank(useSQL) == false)
+                                ps.addBatch(useSQL);
+                            else
+                                ps.addBatch();
                         }
                         return ps.executeBatch();
                     } else {
@@ -657,21 +649,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             }
         });
     }
-    public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) {
-        SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
-        int i = 0;
-        for (Map<String, ?> values : batchValues) {
-            batchArgs[i] = new InnerMapSqlParameterSource(values);
-            i++;
-        }
-        return batchUpdate(sql, batchArgs);
-    }
-    public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) {
-        //        ParsedSql parsedSql = this.getParsedSql(sql);
-        //        return NamedBatchUpdateUtils.executeBatchUpdateWithNamedParameters(parsedSql, batchArgs, this);
-        return null;
-    }
-    //
     //
     //
     /** Create a new RowMapper for reading columns as key-value pairs. */
@@ -701,7 +678,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     protected <T> RowMapper<T> getSingleColumnRowMapper(Class<T> requiredType) {
         return new SingleColumnRowMapper<T>(requiredType);
     }
-    //
     //
     //
     /**创建用于保存结果集的数据Map。*/
@@ -751,6 +727,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 throw new SQLException("Warning not ignored", warning);
         }
     }
+    /**获取SQL文本*/
     private static String getSql(Object sqlProvider) {
         if (sqlProvider instanceof SqlProvider)
             return ((SqlProvider) sqlProvider).getSql();
@@ -775,7 +752,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
-    //
+    /**获取SQL*/
     protected static interface SqlProvider {
         public String getSql();
     }
@@ -817,7 +794,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link PreparedStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link PreparedStatement}对象。*/
-    private static class SimplePreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
+    private static class SimplePreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
         private final String sql;
         public SimplePreparedStatementCreator(String sql) {
             Hasor.assertIsNotNull(sql, "SQL must not be null");
@@ -831,7 +808,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
-    private static class SimpleCallableStatementCreator implements CallableStatementCreator, SqlProvider {
+    private static class SimpleCallableStatementCreator implements CallableStatementCreator, JdbcTemplate.SqlProvider {
         private final String callString;
         public SimpleCallableStatementCreator(String callString) {
             Hasor.assertIsNotNull(callString, "Call string must not be null");
@@ -856,196 +833,64 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             return null;
         }
     }
-}
-//
-//
-//
-/**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
-class MapPreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
-    private String             originalSql = null;
-    private SqlParameterSource paramSource = null;
-    //
-    public MapPreparedStatementCreator(String originalSql, SqlParameterSource paramSource) {
-        Hasor.assertIsNotNull(originalSql, "SQL must not be null");
-        this.originalSql = originalSql;
-        this.paramSource = paramSource;
-    }
-    //
-    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
+    private static class MapPreparedStatementCreator implements PreparedStatementCreator, ParameterDisposer, JdbcTemplate.SqlProvider {
+        private ParsedSql          parsedSql   = null;
+        private SqlParameterSource paramSource = null;
         //
-        //1.关键参数定义
-        List<String> parameterNames = new ArrayList<String>();
-        List<int[]> parameterIndexes = new ArrayList<int[]>();
-        int namedParameterCount = 0;//带有名字参数的总数
-        int unnamedParameterCount = 0;//无名字参数总数
-        int totalParameterCount = 0;//参数总数
-        //
-        //2.分析SQL，提取出SQL中参数信息
-        {
-            Hasor.assertIsNotNull(this.originalSql, "SQL must not be null");
-            Set<String> namedParameters = new HashSet<String>();
-            char[] statement = this.originalSql.toCharArray();
-            int i = 0;
-            while (i < statement.length) {
-                int skipToPosition = skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
-                if (i != skipToPosition) {
-                    if (skipToPosition >= statement.length)
-                        break;
-                    i = skipToPosition;
-                }
-                char c = statement[i];
-                if (c == ':' || c == '&') {
-                    int j = i + 1;
-                    if (j < statement.length && statement[j] == ':' && c == ':') {
-                        i = i + 2;// Postgres-style "::" casting operator - to be skipped.
-                        continue;
-                    }
-                    while (j < statement.length && !isParameterSeparator(statement[j])) {
-                        j++;
-                    }
-                    if (j - i > 1) {
-                        String parameter = this.originalSql.substring(i + 1, j);
-                        if (!namedParameters.contains(parameter)) {
-                            namedParameters.add(parameter);
-                            namedParameterCount++;
-                        }
-                        parameterNames.add(parameter);
-                        parameterIndexes.add(new int[] { i, j });//startIndex, endIndex
-                        totalParameterCount++;
-                    }
-                    i = j - 1;
-                } else {
-                    if (c == '?') {
-                        unnamedParameterCount++;
-                        totalParameterCount++;
-                    }
-                }
-                i++;
-            }
-            //this.namedParameterCount = namedParameterCount;/*带有名字参数的总数*/
-            //this.unnamedParameterCount = unnamedParameterCount;/*匿名参数的总数*/
-            //this.totalParameterCount = totalParameterCount;/*总共参数个数*/
+        public MapPreparedStatementCreator(String originalSql, SqlParameterSource paramSource) {
+            Hasor.assertIsNotNull(originalSql, "SQL must not be null");
+            this.parsedSql = ParsedSql.getParsedSql(originalSql);
+            this.paramSource = paramSource;
         }
         //
-        //3.根据参数信息生成最终会执行的SQL语句.
-        StringBuilder sqlToUse = new StringBuilder();
-        {
-            int lastIndex = 0;
-            for (int i = 0; i < parameterNames.size(); i++) {
-                String paramName = (String) parameterNames.get(i);
-                int[] indexes = parameterIndexes.get(i);
-                int startIndex = indexes[0];
-                int endIndex = indexes[1];
-                sqlToUse.append(this.originalSql.substring(lastIndex, startIndex));
-                if (this.paramSource != null && this.paramSource.hasValue(paramName)) {
-                    Object value = this.paramSource.getValue(paramName);
-                    if (value instanceof Collection) {
-                        Iterator<?> entryIter = ((Collection<?>) value).iterator();
-                        int k = 0;
-                        while (entryIter.hasNext()) {
-                            if (k > 0)
-                                sqlToUse.append(", ");
-                            k++;
-                            Object entryItem = entryIter.next();
-                            if (entryItem instanceof Object[]) {
-                                Object[] expressionList = (Object[]) entryItem;
-                                sqlToUse.append("(");
-                                for (int m = 0; m < expressionList.length; m++) {
-                                    if (m > 0)
-                                        sqlToUse.append(", ");
-                                    sqlToUse.append("?");
-                                }
-                                sqlToUse.append(")");
-                            } else {
-                                sqlToUse.append("?");
-                            }
-                        }
-                    } else {
-                        sqlToUse.append("?");
-                    }
-                } else {
-                    sqlToUse.append("?");
-                }
-                lastIndex = endIndex;
-            }
-            sqlToUse.append(this.originalSql.substring(lastIndex, this.originalSql.length()));
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            //1.根据参数信息生成最终会执行的SQL语句.
+            String sqlToUse = ParsedSql.buildSql(parsedSql, paramSource);
+            //2.确定参数对象
+            Object[] paramArray = ParsedSql.buildSqlValues(parsedSql, paramSource);
+            //3.创建PreparedStatement对象，并设置参数
+            PreparedStatement statement = con.prepareStatement(sqlToUse);
+            for (int i = 0; i < paramArray.length; i++)
+                InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
+            InnerStatementSetterUtils.cleanupParameters(paramArray);
+            return statement;
         }
-        //
-        //4.确定参数对象        
-        Object[] paramArray = new Object[totalParameterCount];
-        if (namedParameterCount > 0 && unnamedParameterCount > 0)
-            throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + this.originalSql + "]");
-        for (int i = 0; i < parameterNames.size(); i++) {
-            String paramName = parameterNames.get(i);
-            paramArray[i] = this.paramSource.getValue(paramName);
+        public String getSql() {
+            return this.parsedSql.getOriginalSql();
         }
-        //
-        //5.创建PreparedStatement对象，并设置参数
-        PreparedStatement statement = con.prepareStatement(sqlToUse.toString());
-        for (int i = 0; i < paramArray.length; i++)
-            InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
-        InnerStatementSetterUtils.cleanupParameters(paramArray);
-        return statement;
-    }
-    public String getSql() {
-        return this.originalSql;
-    }
-    //
-    //
-    //
-    /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
-    private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
-    /** Set of characters that qualify as comment or quotes starting characters.*/
-    private static final String[] START_SKIP           = new String[] { "'", "\"", "--", "/*" };
-    /**Set of characters that at are the corresponding comment or quotes ending characters. */
-    private static final String[] STOP_SKIP            = new String[] { "'", "\"", "\n", "*/" };
-    //-------------------------------------------------------------------------
-    // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
-    //-------------------------------------------------------------------------
-    /** Skip over comments and quoted names present in an SQL statement */
-    private int skipCommentsAndQuotes(char[] statement, int position) {
-        for (int i = 0; i < START_SKIP.length; i++) {
-            if (statement[position] == START_SKIP[i].charAt(0)) {
-                boolean match = true;
-                for (int j = 1; j < START_SKIP[i].length(); j++) {
-                    if (!(statement[position + j] == START_SKIP[i].charAt(j))) {
-                        match = false;
-                        break;
-                    }
-                }
-                if (match) {
-                    int offset = START_SKIP[i].length();
-                    for (int m = position + offset; m < statement.length; m++) {
-                        if (statement[m] == STOP_SKIP[i].charAt(0)) {
-                            boolean endMatch = true;
-                            int endPos = m;
-                            for (int n = 1; n < STOP_SKIP[i].length(); n++) {
-                                if (m + n >= statement.length)
-                                    return statement.length;// last comment not closed properly
-                                if (!(statement[m + n] == STOP_SKIP[i].charAt(n))) {
-                                    endMatch = false;
-                                    break;
-                                }
-                                endPos = m + n;
-                            }
-                            if (endMatch)
-                                return endPos + 1;// found character sequence ending comment or quote
-                        }
-                    }
-                    // character sequence ending comment or quote not found
-                    return statement.length;
-                }
-            }
+        public void cleanupParameters() {
+            if (paramSource instanceof ParameterDisposer)
+                ((ParameterDisposer) paramSource).cleanupParameters();
         }
-        return position;
     }
-    /** Determine whether a parameter name ends at the current position, that is, whether the given character qualifies as a separator. */
-    private boolean isParameterSeparator(char c) {
-        if (Character.isWhitespace(c))
-            return true;
-        for (char separator : PARAMETER_SEPARATORS)
-            if (c == separator)
-                return true;
-        return false;
+    /**接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作*/
+    private static class SqlParameterSourceBatchPreparedStatementSetter implements BatchPreparedStatementSetter, ParameterDisposer {
+        private ParsedSql            parsedSql = null;
+        private SqlParameterSource[] batchArgs = null;
+        public SqlParameterSourceBatchPreparedStatementSetter(String sql, SqlParameterSource[] batchArgs) {
+            this.parsedSql = ParsedSql.getParsedSql(sql);
+            this.batchArgs = batchArgs;
+        }
+        public String setValues(PreparedStatement ps, int index) throws SQLException {
+            SqlParameterSource paramSource = this.batchArgs[index];
+            //1.根据参数信息生成最终会执行的SQL语句.
+            String sqlText = ParsedSql.buildSql(this.parsedSql, paramSource);
+            //2.确定参数对象
+            Object[] sqlValue = ParsedSql.buildSqlValues(this.parsedSql, paramSource);
+            int sqlColIndx = 1;
+            for (int i = 0; i < sqlValue.length; i++)
+                InnerStatementSetterUtils.setParameterValue(ps, sqlColIndx++, sqlValue[i]);
+            //3.返回由参数因素决定的最终执行SQL
+            return sqlText;
+        }
+        public int getBatchSize() {
+            return this.batchArgs.length;
+        }
+        public void cleanupParameters() {
+            for (SqlParameterSource batchItem : this.batchArgs)
+                if (batchItem instanceof ParameterDisposer)
+                    ((ParameterDisposer) batchItem).cleanupParameters();
+        }
     }
 }

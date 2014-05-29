@@ -15,14 +15,14 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
-import org.more.util.StringUtils;
 import net.hasor.web.jstl.tagfun.Functions;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefineBinding_Tag extends AbstractHasorTag {
+public class DefineBind_Tag extends AbstractHasorTag {
     private static final long serialVersionUID = -7899624524135156746L;
     private String            var              = null;
     private String            name             = null;
@@ -62,7 +62,7 @@ public class DefineBinding_Tag extends AbstractHasorTag {
             throw new NullPointerException("tag param bindingType is null.");
         //
         try {
-            Object targetBean = Functions.defineBinding(name, bindingType);
+            Object targetBean = Functions.defineBind(name, bindingType);
             this.pageContext.setAttribute(var, targetBean);
             return SKIP_BODY;
         } catch (ClassNotFoundException e) {

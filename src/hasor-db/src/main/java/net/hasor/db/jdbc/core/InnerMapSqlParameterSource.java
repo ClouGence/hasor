@@ -15,14 +15,13 @@
  */
 package net.hasor.db.jdbc.core;
 import java.util.Map;
-
 import net.hasor.db.jdbc.SqlParameterSource;
 /**
  * 
  * @version : 2014-3-31
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerMapSqlParameterSource implements SqlParameterSource {
+class InnerMapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Map<String, ?> values;
     public InnerMapSqlParameterSource(Map<String, ?> values) {
         this.values = values;
@@ -32,5 +31,10 @@ class InnerMapSqlParameterSource implements SqlParameterSource {
     }
     public Object getValue(String paramName) throws IllegalArgumentException {
         return this.values.get(paramName);
+    }
+    public void cleanupParameters() {
+        for (Object val : this.values.values())
+            if (val instanceof ParameterDisposer)
+                ((ParameterDisposer) val).cleanupParameters();
     }
 }

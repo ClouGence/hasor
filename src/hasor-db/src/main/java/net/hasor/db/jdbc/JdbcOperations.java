@@ -330,13 +330,4 @@ public interface JdbcOperations {
     public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) throws SQLException;
     /**批量执行 SQL 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
     public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) throws SQLException;
-    //-------------------------------------------------------------------------
-    // Methods dealing with prepared statements
-    //-------------------------------------------------------------------------
-    //    /** 批量增加 数据类型为map */
-    //    public int[] insertBatchMap(String tableName, List<Map<String, Object>> list);
-    //    /** 批量增加 数据类型为map   Map<String, Object>[] batch */
-    //    public int[] insertBatchMap(String tableName, Map<String, Object>[] batch);
-    //    /** 通过map方式新增数据 */
-    //    public int insertMap(String tableName, Map<String, Object> map);
 }

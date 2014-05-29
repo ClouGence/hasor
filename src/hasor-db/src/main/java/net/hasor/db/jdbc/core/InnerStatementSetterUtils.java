@@ -63,9 +63,7 @@ class InnerStatementSetterUtils {
     public static void setParameterValue(PreparedStatement ps, int parameterPosition, Object inValue) throws SQLException {
         if (inValue == null)
             ps.setObject(parameterPosition, null);
-        else if (inValue instanceof SqlValue) {
-            ((SqlValue) inValue).setValue(ps, parameterPosition);
-        } else
+        else
             setValue(ps, parameterPosition, inValue);
     }
     private static void setValue(PreparedStatement ps, int paramIndex, Object inValue) throws SQLException {
@@ -162,12 +160,16 @@ class InnerStatementSetterUtils {
      * @see org.noe.lib.jdbcorm.jdbc.core.support.SqlLobValue#cleanup()
      */
     public static void cleanupParameters(Collection<Object> paramValues) {
-        if (paramValues != null) {
-            for (Object inValue : paramValues) {
-                if (inValue instanceof SqlValue)
-                    ((SqlValue) inValue).cleanup();
-            }
-        }
+        if (paramValues == null)
+            return;
+        for (Object inValue : paramValues)
+            cleanupParameter(inValue);
+    }
+    public static void cleanupParameter(Object paramValue) {
+        if (paramValue == null)
+            return;
+        if (paramValue instanceof ParameterDisposer)
+            ((ParameterDisposer) paramValue).cleanupParameters();
     }
     /**Check whether the given value can be treated as a String value.*/
     private static boolean isStringValue(Class<?> inValueType) {

@@ -34,10 +34,8 @@ import net.hasor.web.binder.FilterPipeline;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
-    private WebAppContext  appContext       = null;
-    private FilterPipeline filterPipeline   = null;
-    private String         requestEncoding  = null;
-    private String         responseEncoding = null;
+    private WebAppContext  appContext     = null;
+    private FilterPipeline filterPipeline = null;
     //
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
@@ -48,9 +46,6 @@ public class RuntimeFilter implements Filter {
             Hasor.assertIsNotNull(appContext, "AppContext is null.");
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
-        /*获取请求响应编码*/
-        this.requestEncoding = appContext.getSettings().getString("hasor-web.requestEncoding");
-        this.responseEncoding = appContext.getSettings().getString("hasor-web.responseEncoding");
         /*1.初始化执行周期管理器。*/
         this.filterPipeline.initPipeline(appContext);
         Hasor.logInfo("PlatformFilter started.");
@@ -67,12 +62,6 @@ public class RuntimeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
-        if (this.requestEncoding != null)
-            httpReq.setCharacterEncoding(this.requestEncoding);
-        if (this.requestEncoding != null)
-            httpRes.setCharacterEncoding(this.responseEncoding);
-        //
-        Hasor.logDebug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         //
         try {
             //执行.
