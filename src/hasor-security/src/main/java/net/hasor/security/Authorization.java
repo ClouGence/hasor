@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.security;
+import java.util.List;
 /**
- * cookie值编码解码。
- * @version : 2013-4-24
+ * 负责授权操作，通过该接口可以将权限控制框架连接到不同的权限模型。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface Digest {
-    /**编码 */
-    public Object encrypt(Object strValue) throws Throwable;
-    /**解码*/
-    public Object decrypt(Object strValue) throws Throwable;
+public interface Authorization {
+    /**装载用户的权限。*/
+    public List<Permission> loadPermission(Token userInfo);
 }

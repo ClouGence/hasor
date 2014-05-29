@@ -31,7 +31,6 @@ public class Permission {
     public String getPermissionCode() {
         return this.perCode;
     }
-    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
@@ -43,7 +42,6 @@ public class Permission {
         }
         return super.equals(obj);
     }
-    @Override
     public int hashCode() {
         return this.perCode.hashCode();
     }

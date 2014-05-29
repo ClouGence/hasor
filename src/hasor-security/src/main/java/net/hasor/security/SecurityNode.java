@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.security;
-import net.hasor.security._.AuthSession;
 /**
  * 用来判断权限的节点。
  * @version : 2013-4-20

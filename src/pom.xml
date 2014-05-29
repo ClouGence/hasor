@@ -37,7 +37,7 @@
 		<profile>
 			<activation>
 				<property>
-					<name>HasorDeveloper</name>
+					<name>devMode</name>
 					<value>true</value>
 				</property>
 			</activation>

@@ -15,13 +15,11 @@
  */
 package net.hasor.security;
 /**
- * cookie值编码解码。
- * @version : 2013-4-24
+ * 负责登录认证操作，通过该接口可以验证用户身份正确性。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface Digest {
-    /**编码 */
-    public Object encrypt(Object strValue) throws Throwable;
-    /**解码*/
-    public Object decrypt(Object strValue) throws Throwable;
+public interface Authentication {
+    /**通过userCode登陆系统*/
+    public Token getUserInfo(String userCode);
 }
