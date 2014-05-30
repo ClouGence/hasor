@@ -46,7 +46,6 @@
 				<module>hasor-web</module>
 				<module>hasor-mvc</module>
 				<module>hasor-db</module>
-				<module>hasor-remote</module>
 				<module>hasor-jetty</module>
 				<module>hasor-security</module>
 				<module>hasor-quick</module>
