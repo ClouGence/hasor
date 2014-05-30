@@ -95,6 +95,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public JdbcTemplate(DataSource dataSource) {
         setDataSource(dataSource);
     }
+    public JdbcTemplate(Connection conn) {
+        this.setConnection(conn);
+    }
     //
     //
     //
@@ -160,16 +163,24 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T execute(ConnectionCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
-        DataSource ds = this.getDataSource();//获取数据源
-        Connection con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
-        con = this.newProxyConnection(con, ds);//代理连接
+        Connection con = this.getConnection();
+        boolean useLocal = false;
+        if (con == null) {
+            DataSource ds = this.getDataSource();//获取数据源
+            con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+            useLocal = true;
+            con = this.newProxyConnection(con, ds);//代理连接
+        } else {
+            con = this.newProxyConnection(con, null);//代理连接
+        }
         //
         try {
             return action.doInConnection(con);
         } catch (SQLException ex) {
             throw ex;
         } finally {
-            DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
+            if (useLocal)
+                DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
         }
     }
     public <T> T execute(final StatementCallback<T> action) throws SQLException {

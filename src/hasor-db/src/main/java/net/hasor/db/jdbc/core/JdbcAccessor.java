@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import java.sql.Connection;
 import javax.sql.DataSource;
 /**
  * 
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
  */
 public class JdbcAccessor {
     private DataSource dataSource;
+    private Connection connection;
     /**Set the JDBC DataSource to obtain connections from.*/
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -29,5 +31,13 @@ public class JdbcAccessor {
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
         return this.dataSource;
+    }
+    /**Return the Connection used by this template.*/
+    public Connection getConnection() {
+        return connection;
+    }
+    /**Set the JDBC Connection to obtain connection from.*/
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

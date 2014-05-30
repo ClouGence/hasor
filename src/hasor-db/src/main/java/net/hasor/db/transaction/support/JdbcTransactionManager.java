@@ -20,12 +20,9 @@ import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_NEVER;
 import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_NOT_SUPPORTED;
 import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_REQUIRED;
 import static net.hasor.db.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
-
 import java.sql.SQLException;
 import java.util.LinkedList;
-
 import javax.sql.DataSource;
-
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.datasource.local.ConnectionHolder;
@@ -46,10 +43,10 @@ import net.hasor.db.transaction.TransactionStatus;
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultTransactionManager implements TransactionManager {
-    private LinkedList<DefaultTransactionStatus> tStatusStack = new LinkedList<DefaultTransactionStatus>();
-    private DataSource                           dataSource   = null;
-    public DefaultTransactionManager(DataSource dataSource) {
+public class JdbcTransactionManager implements TransactionManager {
+    private LinkedList<JdbcTransactionStatus> tStatusStack = new LinkedList<JdbcTransactionStatus>();
+    private DataSource                        dataSource   = null;
+    protected JdbcTransactionManager(DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;
     }
@@ -80,7 +77,7 @@ public class DefaultTransactionManager implements TransactionManager {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
         //1.获取连接
-        DefaultTransactionStatus defStatus = new DefaultTransactionStatus(behavior, level);
+        JdbcTransactionStatus defStatus = new JdbcTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
         this.tStatusStack.push(defStatus);/*入栈*/
         /*-------------------------------------------------------------
@@ -142,11 +139,11 @@ public class DefaultTransactionManager implements TransactionManager {
         return defStatus;
     }
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
-    private boolean isExistingTransaction(DefaultTransactionStatus defStatus) throws SQLException {
+    private boolean isExistingTransaction(JdbcTransactionStatus defStatus) throws SQLException {
         return defStatus.getTranConn().hasTransaction();
     };
     /**初始化一个新的连接，并开启事务。*/
-    protected void doBegin(DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doBegin(JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
         tranConn.begin();
     }
@@ -154,7 +151,7 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     /**递交事务*/
     public final void commit(TransactionStatus status) throws SQLException {
-        DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
+        JdbcTransactionStatus defStatus = (JdbcTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
             throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
@@ -186,7 +183,7 @@ public class DefaultTransactionManager implements TransactionManager {
         }
     }
     /**递交前的预处理*/
-    private void prepareCommit(DefaultTransactionStatus defStatus) throws SQLException {
+    private void prepareCommit(JdbcTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new SQLException("This transaction is not derived from this Manager.");
@@ -207,7 +204,7 @@ public class DefaultTransactionManager implements TransactionManager {
             this.commit(inStackStatus);
     }
     /**处理当前底层数据库连接的事务递交操作。*/
-    protected void doCommit(DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doCommit(JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.commit();
     };
@@ -215,7 +212,7 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     /**回滚事务*/
     public final void rollBack(TransactionStatus status) throws SQLException {
-        DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
+        JdbcTransactionStatus defStatus = (JdbcTransactionStatus) status;
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
             throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
@@ -240,7 +237,7 @@ public class DefaultTransactionManager implements TransactionManager {
         }
     }
     /**回滚前的预处理*/
-    private void prepareRollback(DefaultTransactionStatus defStatus) throws SQLException {
+    private void prepareRollback(JdbcTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
         if (this.tStatusStack.contains(defStatus) == false)
             throw new SQLException("This transaction is not derived from this Manager.");
@@ -261,14 +258,14 @@ public class DefaultTransactionManager implements TransactionManager {
             this.rollBack(inStackStatus);
     }
     /**处理当前底层数据库连接的事务回滚操作。*/
-    protected void doRollback(DefaultTransactionStatus defStatus) throws SQLException {
+    protected void doRollback(JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.rollback();
     };
     //
     //
     /**挂起事务。*/
-    protected final void suspend(DefaultTransactionStatus defStatus) throws SQLException {
+    protected final void suspend(JdbcTransactionStatus defStatus) throws SQLException {
         /*事务已经被挂起*/
         if (defStatus.isSuspend() == true)
             throw new SQLException("the Transaction has Suspend.");
@@ -282,7 +279,7 @@ public class DefaultTransactionManager implements TransactionManager {
         defStatus.setTranConn(doGetConnection(defStatus));/*重新申请数据库连接*/
     }
     /**恢复被挂起的事务。*/
-    protected final void resume(DefaultTransactionStatus defStatus) throws SQLException {
+    protected final void resume(JdbcTransactionStatus defStatus) throws SQLException {
         if (defStatus.isCompleted() == false)
             throw new SQLException("the Transaction has not completed.");
         if (defStatus.isSuspend() == false)
@@ -302,23 +299,27 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**检查正在处理的事务状态是否位于栈顶，否则抛出异常*/
-    private void prepareCheckStack(DefaultTransactionStatus defStatus) throws SQLException {
+    private void prepareCheckStack(JdbcTransactionStatus defStatus) throws SQLException {
         if (!this.isTopTransaction(defStatus))
             throw new SQLException("the Transaction Status is not top in stack.");
     }
     /**commit,rollback。之后的清理工作，同时也负责恢复事务和操作事务堆栈。*/
-    private void cleanupAfterCompletion(DefaultTransactionStatus defStatus) throws SQLException {
+    private void cleanupAfterCompletion(JdbcTransactionStatus defStatus) throws SQLException {
         /*清理的事务必须是位于栈顶*/
         prepareCheckStack(defStatus);
         /*标记完成*/
         defStatus.setCompleted();
         /*释放资源*/
+        /*恢复当时的隔离级别*/
+        int transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
+        defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation);
         defStatus.getTranConn().getHolder().released();//ref--
         /*恢复挂起的事务*/
         if (defStatus.isSuspend())
             this.resume(defStatus);
         /*清理defStatus*/
         this.tStatusStack.pop();
+        //
         defStatus.setTranConn(null);
         defStatus.setSuspendConn(null);
     }
@@ -326,14 +327,18 @@ public class DefaultTransactionManager implements TransactionManager {
     //
     //
     /**获取数据库连接（线程绑定的）*/
-    protected TransactionObject doGetConnection(DefaultTransactionStatus defStatus) {
+    protected TransactionObject doGetConnection(JdbcTransactionStatus defStatus) throws SQLException {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(getDataSource());
         ConnectionHolder holder = connSeq.currentHolder();
         if (holder.isOpen() == false)
             defStatus.markNewConnection();/*新事物，新连接*/
         holder.requested();
-        return new TransactionObject(holder, getDataSource());
+        //下面两行代码用于保存当前Connection的隔离级别，并且设置新的隔离级别。
+        int isolationLevel = holder.getConnection().getTransactionIsolation();
+        holder.getConnection().setTransactionIsolation(defStatus.getIsolationLevel().ordinal());
+        //
+        return new TransactionObject(holder, isolationLevel, getDataSource());
     };
 }
 /** */

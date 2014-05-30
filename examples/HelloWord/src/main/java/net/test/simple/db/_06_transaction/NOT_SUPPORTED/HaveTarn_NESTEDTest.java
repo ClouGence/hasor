@@ -13,53 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db.transaction.simple;
+package net.test.simple.db._06_transaction.NOT_SUPPORTED;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.support.DefaultTransactionManager;
 import net.test.simple.db.AbstractJDBCTest;
 import org.junit.Test;
 /**
  * RROPAGATION_NESTED：嵌套事务
+ *      条件：环境中没有事务。
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Tarn_NESTED_Test extends AbstractJDBCTest {
-    /*条件：环境中没有事务。*/
-    @Test
-    public void noTarn_Test() throws IOException, URISyntaxException, SQLException {
-        DataSource jdbcDS = this.getDataSource();
-        TransactionManager tm = new DefaultTransactionManager(jdbcDS);
-        {
-            /*Begin，开始事务*/
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
-            /*申请连接*/
-            Connection con = DataSourceUtils.getConnection(jdbcDS);
-            //
-            //
-            con.createStatement().executeUpdate("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");
-            ResultSet res = con.createStatement().executeQuery("select count(*) from TB_User where userUUID='deb4f4c8'");
-            res.next();
-            System.out.println(res.getInt(1));
-            //
-            //
-            /*释放连接*/
-            DataSourceUtils.releaseConnection(con, jdbcDS);
-            /*commit，递交事务*/
-            tm.commit(status);
-        }
-        System.out.println(this.getJdbcTemplate().queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
-    }
-    /*条件：环境中存在事务。*/
+public class HaveTarn_NESTEDTest extends AbstractJDBCTest {
     @Test
     public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();

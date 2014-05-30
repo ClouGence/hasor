@@ -16,6 +16,7 @@
 package net.test.simple.db;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class AbstractJDBCTest {
+public abstract class AbstractJDBCTest {
     private AppContext appContext = null;
     @Before
     public void initContext() throws IOException, URISyntaxException, SQLException {
@@ -56,7 +57,14 @@ public class AbstractJDBCTest {
     protected JdbcTemplate getJdbcTemplate() {
         return appContext.getInstance(JdbcTemplate.class);
     }
-    //-------------------------------------------------------------
+    protected Connection getConnection() {
+        try {
+            return appContext.getInstance(DataSource.class).getConnection();
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+    //-------------------------------------------------------------Utils
     private int stringLength(String str) {
         int length = 0;
         for (char c : str.toCharArray())
@@ -73,7 +81,13 @@ public class AbstractJDBCTest {
                 length--;
         return length;
     }
-    protected <T> void printObjectList(List<T> dataList) {
+    protected <T> String printObjectList(List<T> dataList) {
+        return printObjectList(dataList, true);
+    }
+    protected String printMapList(List<Map<String, Object>> dataList) {
+        return printMapList(dataList, true);
+    }
+    protected <T> String printObjectList(List<T> dataList, boolean print) {
         List<Map<String, Object>> newDataList = new ArrayList<Map<String, Object>>();
         for (T obj : dataList) {
             List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
@@ -83,9 +97,9 @@ public class AbstractJDBCTest {
             //
             newDataList.add(newObj);
         }
-        this.printMapList(newDataList);
+        return this.printMapList(newDataList, print);
     }
-    protected void printMapList(List<Map<String, Object>> dataList) {
+    protected String printMapList(List<Map<String, Object>> dataList, boolean print) {
         ArrayList<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
         Map<String, Integer> titleConfig = new LinkedHashMap<String, Integer>();
         //1.转换
@@ -110,6 +124,7 @@ public class AbstractJDBCTest {
             newValues.add(newVal);
         }
         //2.输出
+        StringBuffer output = new StringBuffer();
         boolean first = true;
         int titleLength = 0;
         for (Map<String, String> row : newValues) {
@@ -124,8 +139,8 @@ public class AbstractJDBCTest {
                 titleLength = sb.length();
                 sb.insert(0, String.format("/%s\\\n", StringUtils.center("", titleLength - 2, "-")));
                 first = false;
-                System.out.println(sb.toString());
-                System.out.println(String.format("|%s|", StringUtils.center("", titleLength - 2, "-")));
+                output.append(sb + "\n");
+                output.append(String.format("|%s|\n", StringUtils.center("", titleLength - 2, "-")));
             }
             //2.Body
             StringBuffer sb = new StringBuffer("");
@@ -135,9 +150,12 @@ public class AbstractJDBCTest {
                 sb.append(String.format("| %s ", valueStr));
             }
             sb.append("|");
-            System.out.println(sb.toString());
+            output.append(sb.toString() + "\n");
         }
-        System.out.println(String.format("\\%s/", StringUtils.center("", titleLength - 2, "-")));
+        output.append(String.format("\\%s/", StringUtils.center("", titleLength - 2, "-")));
+        if (print)
+            System.out.println(output);
+        return output.toString();
     }
 }
 class JDBCWarp implements Module {

@@ -26,7 +26,7 @@ import net.hasor.db.transaction.TransactionStatus;
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultTransactionStatus implements TransactionStatus {
+public class JdbcTransactionStatus implements TransactionStatus {
     private Savepoint           savepoint     = null; //事务保存点
     private TransactionObject   tranConn      = null; //当前事务使用的数据库连接
     private TransactionObject   suspendConn   = null; //当前事务之前挂起的上一个数据库事务
@@ -37,7 +37,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
     private boolean             newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
     private boolean             readOnly      = false; //只读模式（true表示只读）
     //
-    public DefaultTransactionStatus(TransactionBehavior behavior, TransactionLevel level) {
+    public JdbcTransactionStatus(TransactionBehavior behavior, TransactionLevel level) {
         this.behavior = behavior;
         this.level = level;
     }

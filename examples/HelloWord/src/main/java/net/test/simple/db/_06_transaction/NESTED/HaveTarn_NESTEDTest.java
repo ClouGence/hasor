@@ -13,42 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db.transaction.simple;
+package net.test.simple.db._06_transaction.NESTED;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.support.DefaultTransactionManager;
 import net.test.simple.db.AbstractJDBCTest;
 import org.junit.Test;
 /**
- * RROPAGATION_REQUIRES_NEW：独立事务
+ * RROPAGATION_NESTED：嵌套事务
+ *      条件：环境中没有事务。
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Tarn_REQUIRED_New_Test extends AbstractJDBCTest {
-    /*条件：环境中没有事务。*/
-    @Test
-    public void noTarn_Test() throws IOException, URISyntaxException, SQLException {
-        JdbcTemplate jdbc = this.getJdbcTemplate();
-        TransactionManager tm = new DefaultTransactionManager(jdbc.getDataSource());
-        {
-            //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.RROPAGATION_REQUIRES_NEW);
-            jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
-            //commit
-            //status.setReadOnly();//这是这个事务为只读事务（所有递交操作会被回滚）
-            tm.commit(status);
-        }
-        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
-    }
-    /*条件：环境中存在事务。*/
+public class HaveTarn_NESTEDTest extends AbstractJDBCTest {
     @Test
     public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();
@@ -56,14 +40,16 @@ public class Tarn_REQUIRED_New_Test extends AbstractJDBCTest {
         //1.获取连接并创建事务
         Connection con = DataSourceUtils.getConnection(jdbc.getDataSource());
         con.setAutoCommit(false);
+        System.out.println(jdbc.queryForInt("select count(*) from TB_User "));
+        jdbc.execute("insert into TB_User values('18c48158','蒙奇.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
         {
             //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.RROPAGATION_REQUIRES_NEW);
+            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
             jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
-            //commit
-            tm.commit(status);
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
+            System.out.println(jdbc.queryForInt("select count(*) from TB_User"));
+            //rollBack
+            tm.rollBack(status);
+            System.out.println(jdbc.queryForInt("select count(*) from TB_User "));
         }
         DataSourceUtils.releaseConnection(con, jdbc.getDataSource());
     }
