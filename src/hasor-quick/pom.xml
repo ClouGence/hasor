@@ -49,12 +49,6 @@
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-Remote -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-remote</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 		<!-- DB Pool -->
 		<!-- <dependency> -->

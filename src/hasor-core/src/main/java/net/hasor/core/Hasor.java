@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import net.hasor.core.context.StandardAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -234,32 +237,22 @@ public abstract class Hasor {
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
         return object;
     }
-    //    //
-    //    //
-    //    /** Asserts that an argument is legal. If the given boolean is
-    //     * not <code>true</code>, an <code>IllegalArgumentException</code>
-    //     * is thrown.
-    //     *
-    //     * @param expression the outcome of the check
-    //     * @return <code>true</code> if the check passes (does not return if the check fails)
-    //     * @exception IllegalArgumentException if the legality test failed
-    //     */
-    //    public static boolean assertIsLegal(boolean expression) {
-    //        return assertIsLegal(expression, ""); //$NON-NLS-1$
-    //    }
-    //    /** Asserts that an argument is legal. If the given boolean is
-    //     * not <code>true</code>, an <code>IllegalArgumentException</code>
-    //     * is thrown.
-    //     * The given message is included in that exception, to aid debugging.
-    //     *
-    //     * @param expression the outcome of the check
-    //     * @param message the message to include in the exception
-    //     * @return <code>true</code> if the check passes (does not return if the check fails)
-    //     * @exception IllegalArgumentException if the legality test failed
-    //     */
-    //    public static boolean assertIsLegal(boolean expression, String message) {
-    //        if (!expression)
-    //            throw new IllegalArgumentException(message);
-    //        return expression;
-    //    }
+    //
+    //
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext() throws IOException, URISyntaxException {
+        return createAppContext(new Module[0]);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(Module... modules) throws IOException, URISyntaxException {
+        return createAppContext(StandardAppContext.DefaultSettings, modules);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(String config, Module... modules) throws IOException, URISyntaxException {
+        StandardAppContext app = new StandardAppContext(config);
+        for (Module mod : modules)
+            app.addModule(mod);
+        app.start();
+        return app;
+    }
 }

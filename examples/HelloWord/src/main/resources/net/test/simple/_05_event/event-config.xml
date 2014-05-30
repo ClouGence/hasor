@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/main">
-	<hasor>
-		<loadPackages>net.test.simple._05_event.*</loadPackages>
-		<!-- 执行事件的线程池大小 -->
-		<eventThreadPoolSize>3</eventThreadPoolSize>
-	</hasor>
-</config>

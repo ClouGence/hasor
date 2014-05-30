@@ -31,7 +31,7 @@ public interface BatchPreparedStatementSetter {
      * @return 
      * @throws SQLException if a SQLException is encountered (i.e. there is no need to catch SQLException)
      */
-    public String setValues(PreparedStatement ps, int i) throws SQLException;
+    public void setValues(PreparedStatement ps, int i) throws SQLException;
     /** 
      * Return the size of the batch.
      * @return the number of statements in the batch

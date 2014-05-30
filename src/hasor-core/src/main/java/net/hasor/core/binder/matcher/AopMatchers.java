@@ -59,67 +59,14 @@ public class AopMatchers {
     }
     /**将表达式解析为<code>Matcher&lt;Class&gt;</code>。*/
     public static Matcher<Class<?>> expressionClass(String matcherExpression) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();//TODO　暂不支持
     }
     /**将表达式解析为<code>Matcher&lt;Method&gt;</code>。*/
     public static Matcher<Method> expressionMethod(String matcherExpression) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //    /**
-    //    * Returns a matcher which matches elements (methods, classes, etc.)
-    //    * with a given annotation.
-    //    */
-    //    public static Matcher<AnnotatedElement> annotatedWith(final Annotation annotation) {
-    //        return Matchers.annotatedWith(annotation);
-    //    }
-    //    /** Returns a matcher which matches objects equal to the given object. */
-    //    public static Matcher<Object> only(Object value) {
-    //        return Matchers.only(value);
-    //    }
-    //    /**
-    //    * Returns a matcher which matches only the given object.
-    //    */
-    //    public static Matcher<Object> identicalTo(final Object value) {
-    //        return Matchers.identicalTo(value);
-    //    }
-    //    /**
-    //    * Returns a matcher which matches classes in the given package. Packages are specific to their
-    //    * classloader, so classes with the same package name may not have the same package at runtime.
-    //    */
-    //    public static Matcher<Class> inPackage(final Package targetPackage) {
-    //        return Matchers.inPackage(targetPackage);
-    //    }
-    //    /**
-    //    * Returns a matcher which matches classes in the given package and its subpackages. Unlike
-    //    * {@link #inPackage(Package) inPackage()}, this matches classes from any classloader.
-    //    * @since 2.0
-    //    */
-    //    public static Matcher<Class> inSubpackage(final String targetPackageName) {
-    //        return Matchers.inSubpackage(targetPackageName);
-    //    }
-    //    /** Returns a matcher which matches methods with matching return types. */
-    //    public static Matcher<Method> returns(final Matcher<? super Class<?>> returnType) {
-    //        return Matchers.returns(returnType);
-    //    }
+        throw new UnsupportedOperationException();//TODO　暂不支持
+    }//
+     //
+     //
     /**匹配子类*/
     private static class SubclassesOf implements Matcher<Class<?>> {
         private final Class<?> superclass;

@@ -17,8 +17,8 @@ package net.test.simple.core._05_modules;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.StandardAppContext;
 import net.test.simple.core._05_modules.mods.Mod_1;
 import net.test.simple.core._05_modules.mods.Mod_2;
 import net.test.simple.core._05_modules.mods.Mod_3;
@@ -32,12 +32,7 @@ public class ModuleTest {
     @Test
     public void moduleTest() throws IOException, URISyntaxException {
         System.out.println("--->>moduleTest<<--");
-        StandardAppContext appContext = new StandardAppContext();
-        appContext.addModule(new Mod_1());//模块1
-        appContext.addModule(new Mod_2());//模块2
-        appContext.addModule(new Mod_3());//模块3
-        //
-        appContext.start();
+        AppContext appContext = Hasor.createAppContext(new Mod_1(), new Mod_2(), new Mod_3());
         //
         List<String> says = appContext.findBindingBean(String.class);
         Hasor.logInfo("all modules say:%s.", says);

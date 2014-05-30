@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.context.StandardAppContext;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
@@ -33,11 +33,10 @@ import org.junit.Test;
  */
 public class ScopeTest {
     @Test
-    public void testScopeHasor() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testBeanHasor<<--");
+    public void scopeTest() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>scopeTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = new StandardAppContext();
-        appContext.addModule(new Module() {
+        AppContext appContext = Hasor.createAppContext(new Module() {
             public void init(ApiBinder apiBinder) throws Throwable {
                 MyScope myScope1 = new MyScope();
                 //
@@ -47,7 +46,6 @@ public class ScopeTest {
                 // TODO Auto-generated method stub
             }
         });
-        appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
         //
         PojoBean myBean = null;
         myBean = appContext.getBean("myBean1");

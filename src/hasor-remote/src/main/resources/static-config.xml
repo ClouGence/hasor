@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-remote">
-	<!-- 框架配置 -->
-	<hasor>
-		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>org.hasor.remote.*</loadPackages>
-	</hasor>
-</root:config>

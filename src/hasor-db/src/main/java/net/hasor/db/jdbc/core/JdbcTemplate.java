@@ -58,7 +58,6 @@ import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
 import org.more.util.ArrayUtils;
 import org.more.util.IOUtils;
 import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
@@ -131,6 +130,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
+    //
     public void loadSQL(String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
         if (inStream == null)
@@ -156,6 +156,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
+    //
     public <T> T execute(ConnectionCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
@@ -173,7 +174,6 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     public <T> T execute(final StatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        //
         return this.execute(new ConnectionCallback<T>() {
             public T doInConnection(Connection con) throws SQLException {
                 Statement stmt = null;
@@ -255,8 +255,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return execute(getPreparedStatementCreator(sql, paramSource), action);
     }
     public <T> T execute(String sql, Map<String, ?> paramMap, PreparedStatementCallback<T> action) throws SQLException {
-        return execute(sql, new InnerMapSqlParameterSource(paramMap), action);
+        return execute(getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), action);
     }
+    //
     //
     //
     public void execute(final String sql) throws SQLException {
@@ -272,6 +273,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
         this.execute(new ExecuteStatementCallback());
     }
+    //
     //
     //
     /***/
@@ -331,8 +333,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return query(getPreparedStatementCreator(sql, paramSource), rse);
     }
     public <T> T query(String sql, Map<String, ?> paramMap, ResultSetExtractor<T> rse) throws SQLException {
-        return query(sql, new InnerMapSqlParameterSource(paramMap), rse);
+        return query(getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rse);
     }
+    //
     //
     //
     public void query(PreparedStatementCreator psc, RowCallbackHandler rch) throws SQLException {
@@ -354,8 +357,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         query(getPreparedStatementCreator(sql, paramSource), rch);
     }
     public void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch) throws SQLException {
-        query(sql, new InnerMapSqlParameterSource(paramMap), rch);
+        query(getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rch);
     }
+    //
     //
     //
     public <T> List<T> query(PreparedStatementCreator psc, RowMapper<T> rowMapper) throws SQLException {
@@ -377,8 +381,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return query(getPreparedStatementCreator(sql, paramSource), rowMapper);
     }
     public <T> List<T> query(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper) throws SQLException {
-        return query(sql, new InnerMapSqlParameterSource(paramMap), rowMapper);
+        return query(getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rowMapper);
     }
+    //
     //
     //
     public <T> List<T> queryForList(String sql, Class<T> elementType) throws SQLException {
@@ -394,8 +399,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return query(sql, paramSource, getBeanPropertyRowMapper(elementType));
     }
     public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType) throws SQLException {
-        return queryForList(sql, new InnerMapSqlParameterSource(paramMap), elementType);
+        return query(sql, paramMap, getBeanPropertyRowMapper(elementType));
     }
+    //
     //
     //
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper) throws SQLException {
@@ -434,6 +440,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
+    //
     public long queryForLong(String sql) throws SQLException {
         Number number = queryForObject(sql, getSingleColumnRowMapper(Long.class));
         return (number != null ? number.longValue() : 0);
@@ -466,6 +473,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
+    //
     public Map<String, Object> queryForMap(String sql) throws SQLException {
         return queryForObject(sql, getColumnMapRowMapper());
     }
@@ -492,6 +500,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     //
     //
+    //
     //    public SqlRowSet queryForRowSet(String sql) throws DataAccessException {
     //        return query(sql, new SqlRowSetResultSetExtractor());
     //    }
@@ -507,6 +516,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //    public SqlRowSet queryForRowSet(String sql, Map<String, ?> paramMap) throws DataAccessException {
     //        return queryForRowSet(sql, new MapSqlParameterSource(paramMap));
     //    }
+    //
     //
     //
     /***/
@@ -556,8 +566,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         return update(getPreparedStatementCreator(sql, paramSource));
     }
     public int update(String sql, Map<String, ?> paramMap) throws SQLException {
-        return update(sql, new InnerMapSqlParameterSource(paramMap));
+        return update(getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)));
     }
+    //
     //
     //
     public int[] batchUpdate(final String[] sql) throws SQLException {
@@ -611,6 +622,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
         Hasor.logDebug("Executing SQL batch update [%s].", sql);
+        final ParsedSql parsedSql = ParsedSql.getParsedSql(sql);
+        sql = ParsedSql.buildSql(parsedSql, null);
+        //
         return execute(sql, new PreparedStatementCallback<int[]>() {
             public int[] doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 try {
@@ -619,14 +633,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     DatabaseMetaData dbMetaData = ps.getConnection().getMetaData();
                     if (dbMetaData.supportsBatchUpdates()) {
                         for (int i = 0; i < batchSize; i++) {
-                            String useSQL = pss.setValues(ps, i);
+                            pss.setValues(ps, i);
                             if (ipss != null && ipss.isBatchExhausted(i))
                                 break;
-                            //
-                            if (StringUtils.isBlank(useSQL) == false)
-                                ps.addBatch(useSQL);
-                            else
-                                ps.addBatch();
+                            ps.addBatch();
                         }
                         return ps.executeBatch();
                     } else {
@@ -649,6 +659,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             }
         });
     }
+    //
     //
     //
     /** Create a new RowMapper for reading columns as key-value pairs. */
@@ -872,17 +883,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             this.parsedSql = ParsedSql.getParsedSql(sql);
             this.batchArgs = batchArgs;
         }
-        public String setValues(PreparedStatement ps, int index) throws SQLException {
+        //        public String preparedSQL(int i) throws SQLException {
+        //            SqlParameterSource paramSource = this.batchArgs[i];
+        //            //1.根据参数信息生成最终会执行的SQL语句.
+        //            String sqlText = ParsedSql.buildSql(this.parsedSql, paramSource);
+        //            return sqlText;
+        //        }
+        public void setValues(PreparedStatement ps, int index) throws SQLException {
             SqlParameterSource paramSource = this.batchArgs[index];
-            //1.根据参数信息生成最终会执行的SQL语句.
-            String sqlText = ParsedSql.buildSql(this.parsedSql, paramSource);
-            //2.确定参数对象
+            //1.确定参数对象
             Object[] sqlValue = ParsedSql.buildSqlValues(this.parsedSql, paramSource);
+            //2.设置参数
             int sqlColIndx = 1;
             for (int i = 0; i < sqlValue.length; i++)
                 InnerStatementSetterUtils.setParameterValue(ps, sqlColIndx++, sqlValue[i]);
-            //3.返回由参数因素决定的最终执行SQL
-            return sqlText;
         }
         public int getBatchSize() {
             return this.batchArgs.length;

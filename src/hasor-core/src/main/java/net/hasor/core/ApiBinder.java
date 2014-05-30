@@ -102,7 +102,9 @@ public interface ApiBinder extends EventContext {
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
     }
     public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
+        /**绑定一个名称*/
         public LinkedBindingBuilder<T> nameWith(String name);
+        /**随机取一个不重复的名字*/
         public LinkedBindingBuilder<T> uniqueName();
     }
     public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder {

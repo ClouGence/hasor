@@ -68,4 +68,6 @@ public interface Environment extends EventContext {
     public void addEnvVar(String varName, String value);
     /**删除环境变量，该方法从内部Map删除所保存的环境变量，这样做的目的是为了避免影响JVM正常运行。*/
     public void remoteEnvVar(String varName);
+    /**刷新加载的环境变量*/
+    public void refreshVariables();
 }

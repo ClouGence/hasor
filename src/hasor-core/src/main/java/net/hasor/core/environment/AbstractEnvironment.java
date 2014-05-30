@@ -266,6 +266,9 @@ public abstract class AbstractEnvironment implements Environment {
     public void remoteEnvVar(String varName) {
         this.envVars.remoteEnvVar(varName);
     }
+    public void refreshVariables() {
+        this.envVars.reload(this.getSettings());
+    }
     public Map<String, String> getEnv() {
         return this.envVars.getEnv();
     }

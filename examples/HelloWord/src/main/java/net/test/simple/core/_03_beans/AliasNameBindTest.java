@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.StandardAppContext;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
@@ -32,8 +32,7 @@ public class AliasNameBindTest {
     public void aliasNameTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>aliasNameTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = new StandardAppContext();
-        appContext.addModule(new Module() {
+        AppContext appContext = Hasor.createAppContext(new Module() {
             public void init(ApiBinder apiBinder) throws Throwable {
                 apiBinder.defineBean("myBean1").aliasName("myBean2").bindType(PojoBean.class);
             }
@@ -41,7 +40,6 @@ public class AliasNameBindTest {
                 // TODO Auto-generated method stub
             }
         });
-        appContext.start();//启动 Hasor 容器，启动过程会初始化所有模块和插件。
         //
         PojoBean myBean1 = appContext.getBean("myBean1");
         System.out.println(myBean1.getName() + "\t" + myBean1);

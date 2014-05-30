@@ -31,7 +31,7 @@ import net.hasor.core.setting.xml.SaxXmlParser;
 public class InputStreamSettings extends AbstractBaseSettings implements IOSettings {
     private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
     /**子类决定如何添加资源*/
-    protected InputStreamSettings() {}
+    public InputStreamSettings() {}
     //
     /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream inStream) throws IOException {
@@ -47,7 +47,6 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
             this.addStream(ins);
         }
     }
-    //
     //
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/

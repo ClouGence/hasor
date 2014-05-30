@@ -30,7 +30,7 @@ public class ReverseDependencyTest {
     /*测试依赖反转*/
     @Test
     public void reverseDependencyTest() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>testDep_Reverse<<--");
+        System.out.println("--->>reverseDependencyTest<<--");
         StandardAppContext appContext = new StandardAppContext();
         appContext.addModule(new ReverseMode1());
         appContext.addModule(new ReverseMode2());
