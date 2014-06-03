@@ -17,14 +17,14 @@ package net.test.simple.db._05_callable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /**
  * 存储过程调用
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Callable_Test extends AbstractJDBCTest {
+public class Callable_Test extends AbstractSimpleJDBCTest {
     @Test
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testCallable<<--");

@@ -14,57 +14,78 @@
  * limitations under the License.
  */
 package net.test.simple.db;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import javax.sql.DataSource;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.Provider;
-import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.junit.Before;
+import net.hasor.db.transaction.TransactionLevel;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.CharUtils;
+import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
  * 数据库测试程序基类
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractJDBCTest {
-    private AppContext appContext = null;
-    @Before
-    public void initContext() throws IOException, URISyntaxException, SQLException {
-        this.appContext = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new JDBCWarp());
-        /*装载 SQL 脚本文件*/
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
-        jdbc.loadSQL("net/test/simple/db/Table.sql");
-        jdbc.loadSQL("net/test/simple/db/Table_Data.sql");
+    protected abstract DataSource getWatchThreadDataSource();
+    protected abstract TransactionLevel getWatchThreadTransactionLevel();
+    //
+    private Thread watchThread = null;
+    /**监视一张表的变化，当表的内容发生变化打印全表的内容。*/
+    protected void watchTable(final String tableName) {
+        this.watchThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    _run();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            private void _run() throws Throwable {
+                String hashValue = "";
+                DataSource dataSource = getWatchThreadDataSource();
+                Connection conn = dataSource.getConnection();
+                //设置隔离级别读取未提交的数据是不允许的。
+                conn.setTransactionIsolation(getWatchThreadTransactionLevel().ordinal());
+                while (true) {
+                    String selectSQL = "select * from " + tableName;
+                    String selectCountSQL = "select count(*) from " + tableName;
+                    //
+                    JdbcTemplate jdbc = new JdbcTemplate(conn);
+                    List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
+                    int rowCount = jdbc.queryForInt(selectCountSQL);
+                    String logData = printMapList(dataList, false);
+                    String localHashValue = CommonCodeUtils.MD5.getMD5(logData);
+                    if (!StringUtils.equals(hashValue, localHashValue)) {
+                        System.out.println(String.format("watch : -->Table ‘%s’ rowCount = %s.", tableName, rowCount));
+                        System.out.println(logData);
+                        hashValue = localHashValue;
+                    } else {
+                        System.out.println("watch : table no change.");
+                    }
+                    //
+                    Thread.sleep(1000);
+                }
+            }
+        });
+        this.watchThread.setDaemon(true);
+        this.watchThread.start();
     }
-    protected JdbcTemplate getJdbcTemplate() {
-        return appContext.getInstance(JdbcTemplate.class);
+    //
+    //
+    //
+    protected String newID() {
+        return UUID.randomUUID().toString();
     }
-    protected Connection getConnection() {
-        try {
-            return appContext.getInstance(DataSource.class).getConnection();
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-    //-------------------------------------------------------------Utils
     private int stringLength(String str) {
         int length = 0;
         for (char c : str.toCharArray())
@@ -156,55 +177,5 @@ public abstract class AbstractJDBCTest {
         if (print)
             System.out.println(output);
         return output.toString();
-    }
-}
-class JDBCWarp implements Module {
-    public void init(ApiBinder apiBinder) throws Throwable {
-        //1.获取数据库连接配置信息
-        Settings settings = apiBinder.getSettings();
-        String driverString = settings.getString("hasor-jdbc.driver");
-        String urlString = settings.getString("hasor-jdbc.url");
-        String userString = settings.getString("hasor-jdbc.user");
-        String pwdString = settings.getString("hasor-jdbc.password");
-        int poolMaxSize = 200;
-        Hasor.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
-        //
-        //2.创建数据库连接池
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(driverString);
-        dataSource.setJdbcUrl(urlString);
-        dataSource.setUser(userString);
-        dataSource.setPassword(pwdString);
-        dataSource.setMaxPoolSize(poolMaxSize);
-        dataSource.setInitialPoolSize(1);
-        dataSource.setAutomaticTestTable("DB_TEST_ATest001");
-        dataSource.setIdleConnectionTestPeriod(18000);
-        dataSource.setCheckoutTimeout(3000);
-        dataSource.setTestConnectionOnCheckin(true);
-        dataSource.setAcquireRetryDelay(1000);
-        dataSource.setAcquireRetryAttempts(30);
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxIdleTime(25000);
-        //
-        //3.绑定DataSource接口实现
-        apiBinder.bindingType(DataSource.class).toInstance(dataSource);
-        //
-        //4.绑定JdbcTemplate接口实现、
-        JdbcTemplateProvider jdbcProvider = new JdbcTemplateProvider();
-        apiBinder.bindingType(JdbcTemplate.class).toProvider(jdbcProvider);
-        apiBinder.registerAware(jdbcProvider);
-    }
-    public void start(AppContext appContext) throws Throwable {
-        Hasor.logInfo("JDBCWarp started!");
-    }
-}
-class JdbcTemplateProvider implements Provider<JdbcTemplate>, AppContextAware {
-    private DataSource dataSource;
-    public void setAppContext(AppContext appContext) {
-        //当AppContext被注入进来之后立刻获取DataSource接口对象，用于创建JdbcTemplate使用。
-        this.dataSource = appContext.getInstance(DataSource.class);
-    }
-    public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
     }
 }

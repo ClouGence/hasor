@@ -16,12 +16,14 @@
 package net.hasor.db.jdbc.core;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.Charset;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -135,12 +137,14 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     public void loadSQL(String sqlResource) throws IOException, SQLException {
+        this.loadSQL("UTF-8", sqlResource);
+    }
+    public void loadSQL(String charsetName, String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
         if (inStream == null)
             throw new IOException("can't find :" + sqlResource);
-        StringWriter outWriter = new StringWriter();
-        IOUtils.copy(inStream, outWriter);
-        this.execute(outWriter.toString());
+        InputStreamReader reader = new InputStreamReader(inStream, Charset.forName(charsetName));
+        this.loadSQL(reader);
     }
     public void loadSQL(Reader sqlReader) throws IOException, SQLException {
         StringWriter outWriter = new StringWriter();

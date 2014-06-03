@@ -20,13 +20,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionLevel;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Before;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
@@ -35,14 +36,14 @@ import org.more.util.StringUtils;
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractTransactionManagerJDBCTest extends AbstractJDBCTest {
+public abstract class AbstractMultipleTransactionManagerTest extends AbstractSimpleJDBCTest {
     private TransactionManager transactionManager = null;
     @Before
     public void initContext() throws IOException, URISyntaxException, SQLException {
         super.initContext();
         JdbcTemplate jdbc = this.getJdbcTemplate();
         this.transactionManager = Manager.getTransactionManager(jdbc.getDataSource());
-    }
+    }d
     /**开始事物*/
     protected TransactionStatus begin(TransactionBehavior behavior) throws SQLException {
         return this.transactionManager.getTransaction(behavior, TransactionLevel.ISOLATION_READ_UNCOMMITTED);
@@ -62,29 +63,36 @@ public abstract class AbstractTransactionManagerJDBCTest extends AbstractJDBCTes
         this.watchThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    String hashValue = "";
-                    Connection conn = getConnection();
-                    conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-                    while (true) {
-                        String selectSQL = "select * from " + tableName;
-                        String selectCountSQL = "select count(*) from " + tableName;
-                        //
-                        JdbcTemplate jdbc = new JdbcTemplate(conn);
-                        List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
-                        int rowCount = jdbc.queryForInt(selectCountSQL);
-                        String logData = printMapList(dataList, false);
-                        String localHashValue = CommonCodeUtils.MD5.getMD5(logData);
-                        if (!StringUtils.equals(hashValue, localHashValue)) {
-                            System.out.println(String.format("-->Table ‘%s’ rowCount = %s.", tableName, rowCount));
-                            System.out.println(logData);
-                            hashValue = localHashValue;
-                        } else {
-                            System.out.println("table no change.");
-                        }
-                        //
-                        Thread.sleep(500);
+                    _run();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            private void _run() throws Throwable {
+                String hashValue = "";
+                DataSource dataSource = getDataSource();
+                Connection conn = dataSource.getConnection();
+                //设置隔离级别读取未提交的数据是不允许的。
+                conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+                while (true) {
+                    String selectSQL = "select * from " + tableName;
+                    String selectCountSQL = "select count(*) from " + tableName;
+                    //
+                    JdbcTemplate jdbc = new JdbcTemplate(conn);
+                    List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
+                    int rowCount = jdbc.queryForInt(selectCountSQL);
+                    String logData = printMapList(dataList, false);
+                    String localHashValue = CommonCodeUtils.MD5.getMD5(logData);
+                    if (!StringUtils.equals(hashValue, localHashValue)) {
+                        System.out.println(String.format("watch : -->Table ‘%s’ rowCount = %s.", tableName, rowCount));
+                        System.out.println(logData);
+                        hashValue = localHashValue;
+                    } else {
+                        System.out.println("watch : table no change.");
                     }
-                } catch (Exception e) {}
+                    //
+                    Thread.sleep(1000);
+                }
             }
         });
         this.watchThread.setDaemon(true);

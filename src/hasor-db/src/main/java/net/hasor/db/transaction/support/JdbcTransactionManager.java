@@ -311,8 +311,9 @@ public class JdbcTransactionManager implements TransactionManager {
         defStatus.setCompleted();
         /*释放资源*/
         /*恢复当时的隔离级别*/
-        int transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
-        defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation);
+        TransactionLevel transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
+        if (transactionIsolation != null)
+            defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
         defStatus.getTranConn().getHolder().released();//ref--
         /*恢复挂起的事务*/
         if (defStatus.isSuspend())
@@ -336,10 +337,14 @@ public class JdbcTransactionManager implements TransactionManager {
         holder.requested();
         //下面两行代码用于保存当前Connection的隔离级别，并且设置新的隔离级别。
         int isolationLevel = holder.getConnection().getTransactionIsolation();
-        holder.getConnection().setTransactionIsolation(defStatus.getIsolationLevel().ordinal());
+        TransactionLevel level = null;
+        if (defStatus.getIsolationLevel() != TransactionLevel.ISOLATION_DEFAULT) {
+            holder.getConnection().setTransactionIsolation(defStatus.getIsolationLevel().ordinal());
+            level = TransactionLevel.valueOf(isolationLevel);
+        }
         //
-        return new TransactionObject(holder, isolationLevel, getDataSource());
-    };
+        return new TransactionObject(holder, level, getDataSource());
+    }
 }
 /** */
 class SyncTransactionManager {

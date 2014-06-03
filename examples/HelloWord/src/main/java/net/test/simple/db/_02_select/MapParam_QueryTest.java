@@ -21,14 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class MapParam_QueryTest extends AbstractJDBCTest {
+public class MapParam_QueryTest extends AbstractSimpleJDBCTest {
     @Test
     public void mapParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");

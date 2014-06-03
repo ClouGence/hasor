@@ -24,14 +24,14 @@ import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.support.JdbcTransactionManager;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /**
  * RROPAGATION_REQUIRES_NEW：独立事务
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Tarn_REQUIRED_New_Test extends AbstractJDBCTest {
+public class Tarn_REQUIRED_New_Test extends AbstractSimpleJDBCTest {
     /*条件：环境中没有事务。*/
     @Test
     public void noTarn_Test() throws IOException, URISyntaxException, SQLException {

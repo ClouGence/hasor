@@ -14,43 +14,79 @@
  * limitations under the License.
  */
 package net.test.simple.db._06_transaction.NESTED;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.TransactionBehavior;
-import net.hasor.db.transaction.TransactionManager;
+import net.hasor.db.transaction.TransactionLevel;
 import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db._06_transaction.AbstractSimpleTransactionManagerTest;
 import org.junit.Test;
 /**
  * RROPAGATION_NESTED：嵌套事务
- *      条件：环境中没有事务。
+ *   -条件：环境中有事务，事务管理器使用保存点管理嵌套事务。
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class HaveTarn_NESTEDTest extends AbstractJDBCTest {
+public class HaveTarn_NESTEDTest extends AbstractSimpleTransactionManagerTest {
+    protected TransactionLevel getWatchThreadTransactionLevel() {
+        /*监控线程的事务隔离级别修改为，允许读未递交的数据*/
+        return TransactionLevel.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED);
+    }
     @Test
-    public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
-        JdbcTemplate jdbc = this.getJdbcTemplate();
-        TransactionManager tm = new DefaultTransactionManager(jdbc.getDataSource());
-        //1.获取连接并创建事务
-        Connection con = DataSourceUtils.getConnection(jdbc.getDataSource());
-        con.setAutoCommit(false);
-        System.out.println(jdbc.queryForInt("select count(*) from TB_User "));
-        jdbc.execute("insert into TB_User values('18c48158','蒙奇.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
+    public void haveTarn_NESTEDTest() throws SQLException, InterruptedException {
+        System.out.println("--->>haveTarn_NESTEDTest<<--");
+        watchTable("TB_User");
+        Thread.sleep(3000);
+        /* 预期执行结果为：
+         *   0.暂停3秒，监控线程打印全表数据.
+         *   1.开启事务..            (T1)
+         *   2.新建‘默罕默德’用户..
+         *   3.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’).
+         *   4.开启事务..            (T2)
+         *   5.新建‘安妮.贝隆’用户..
+         *   6.暂停3秒，监控线程打印全表数据.(包含‘安妮.贝隆’).
+         *   7.回滚事务..            (T2)
+         *   8.暂停3秒，监控线程打印变更之后的全表数据(‘安妮.贝隆’数据不再存在).
+         *   9.新建‘赵飞燕’用户..
+         *   a.递交事务..            (T1)
+         *   b.暂停3秒，监控线程打印变更之后的全表数据(仅包含‘默罕默德’、‘赵飞燕’).
+         */
+        Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
+        /*T1-Begin*/
         {
-            //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
-            jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User"));
-            //rollBack
-            tm.rollBack(status);
-            System.out.println(jdbc.queryForInt("select count(*) from TB_User "));
+            conn.setAutoCommit(false);//----begin T1
+            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘默罕默德’...");
+            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
+            Thread.sleep(3000);
         }
-        DataSourceUtils.releaseConnection(con, jdbc.getDataSource());
+        /*T2-Begin*/
+        TransactionStatus tranStatus = begin(TransactionBehavior.PROPAGATION_NESTED);
+        {
+            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘安妮.贝隆’...");
+            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
+            Thread.sleep(3000);
+        }
+        /*T2-Commit*/
+        {
+            System.out.println("commit Transaction!");
+            rollBack(tranStatus);
+            Thread.sleep(3000);
+        }
+        /*T1-Commit*/
+        {
+            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘赵飞燕’...");
+            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
+            Thread.sleep(3000);
+            //
+            conn.commit();
+            conn.setAutoCommit(true);
+        }
+        Thread.sleep(3000);
+        DataSourceUtils.releaseConnection(conn, getDataSource());//释放连接
     }
 }

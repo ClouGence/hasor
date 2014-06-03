@@ -15,6 +15,7 @@
  */
 package net.hasor.db.transaction;
 import java.sql.Connection;
+import org.more.classcode.FormatException;
 /**
  * 事务隔离级别
  * @version : 2013-10-30
@@ -58,5 +59,20 @@ public enum TransactionLevel {
     }
     protected int value() {
         return this.value;
+    }
+    public static TransactionLevel valueOf(int value) {
+        switch (value) {
+        case -1:
+            return TransactionLevel.ISOLATION_DEFAULT;
+        case Connection.TRANSACTION_READ_UNCOMMITTED:
+            return TransactionLevel.ISOLATION_READ_UNCOMMITTED;
+        case Connection.TRANSACTION_READ_COMMITTED:
+            return TransactionLevel.ISOLATION_READ_COMMITTED;
+        case Connection.TRANSACTION_REPEATABLE_READ:
+            return TransactionLevel.ISOLATION_REPEATABLE_READ;
+        case Connection.TRANSACTION_SERIALIZABLE:
+            return TransactionLevel.ISOLATION_SERIALIZABLE;
+        }
+        throw new FormatException(String.format("Connection ISOLATION error level %s.", value));
     }
 }

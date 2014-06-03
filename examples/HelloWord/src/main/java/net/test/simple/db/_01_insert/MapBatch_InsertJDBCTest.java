@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /***
  * 批量Insert语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class MapBatch_InsertJDBCTest extends AbstractJDBCTest {
+public class MapBatch_InsertJDBCTest extends AbstractSimpleJDBCTest {
     @Test
     public void baseInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");

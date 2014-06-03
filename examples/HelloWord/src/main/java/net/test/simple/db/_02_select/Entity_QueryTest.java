@@ -17,7 +17,7 @@ package net.test.simple.db._02_select;
 import java.sql.SQLException;
 import java.util.List;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import net.test.simple.db._02_select.entity.TB_User;
 import org.junit.Test;
 /**
@@ -25,7 +25,7 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Entity_QueryTest extends AbstractJDBCTest {
+public class Entity_QueryTest extends AbstractSimpleJDBCTest {
     @Test
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");

@@ -20,14 +20,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class SimpleParam_QueryTest extends AbstractJDBCTest {
+public class SimpleParam_QueryTest extends AbstractSimpleJDBCTest {
     @Test
     public void simpleParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");

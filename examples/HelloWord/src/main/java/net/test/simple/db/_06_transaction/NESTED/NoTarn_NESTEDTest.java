@@ -17,7 +17,7 @@ package net.test.simple.db._06_transaction.NESTED;
 import java.sql.SQLException;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db._06_transaction.AbstractTransactionManagerJDBCTest;
+import net.test.simple.db._06_transaction.AbstractSimpleTransactionManagerTest;
 import org.junit.Test;
 /**
  * RROPAGATION_NESTED：嵌套事务
@@ -25,32 +25,26 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class NoTarn_NESTEDTest extends AbstractTransactionManagerJDBCTest {
+public class NoTarn_NESTEDTest extends AbstractSimpleTransactionManagerTest {
     @Test
-    public void noTarn_Test() throws SQLException, InterruptedException {
-        /* 预期执行结果为：
-         *   1.打印 TB_User表内容。
-         *   2.打印“table no change.”  <-- 输出2~3次
-         *   3.打印“insert new User ‘安妮.贝隆’...”
-         *   4.打印“insert complete!”
-         *   5.打印“table no change.”  <-- 继续打印若干次
-         *   6.打印“commit Transaction”
-         *   7.打印 TB_User表内容。
-         *   ...
-         */
+    public void noTarn_NESTEDTest() throws SQLException, InterruptedException {
+        System.out.println("--->>noTarn_NESTEDTest<<--");
         watchTable("TB_User");
         Thread.sleep(3000);
+        /* 预期执行结果为：
+         *   0.暂停3秒，监控线程打印全表数据.
+         *   1.开启事务..
+         *   2.新建‘安妮.贝隆’用户..
+         *   3.暂停3秒，监控线程一直打印“table no change.”（数据已经插入但是没有递交事务因此监控线程得不到最新改动，因而继续打印“table no change.”）
+         *   4.递交事务..
+         *   5.暂停3秒，监控线程打印变更之后的全表数据.
+         */
         /*Begin*/
         TransactionStatus tranStatus = begin(TransactionBehavior.PROPAGATION_NESTED);
         {
-            /*
-             * 1.监视线程每隔1秒就会打印一次数据是否发生变化。
-             * 2.当插入数据之后不马上递交事务，暂停执行三秒，监视线程应该是监视不到改变才对。
-             */
-            String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser);//执行插入语句
-            System.out.println("insert complete!");
+            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
         }
         //

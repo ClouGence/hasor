@@ -24,7 +24,7 @@ import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db.AbstractJDBCTest;
+import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Test;
 /**
  * RROPAGATION_NESTED：嵌套事务
@@ -32,7 +32,7 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class HaveTarn_NESTEDTest extends AbstractJDBCTest {
+public class HaveTarn_NESTEDTest extends AbstractSimpleJDBCTest {
     @Test
     public void hasTarn_Test() throws IOException, URISyntaxException, SQLException {
         JdbcTemplate jdbc = this.getJdbcTemplate();
