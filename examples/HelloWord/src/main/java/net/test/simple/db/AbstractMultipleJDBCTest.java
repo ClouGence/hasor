@@ -28,7 +28,7 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Before;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
- * 数据库测试程序基类
+ * 用于多数据源测试
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */

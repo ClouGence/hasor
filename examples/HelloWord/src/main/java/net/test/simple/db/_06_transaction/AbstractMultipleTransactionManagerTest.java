@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
 /***
- * 数据库测试程序基类
+ * 多数据源的事务测试
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */

@@ -25,7 +25,7 @@ import net.hasor.db.transaction.TransactionStatus;
 import net.test.simple.db.AbstractSimpleJDBCTest;
 import org.junit.Before;
 /***
- * 数据库测试程序基类
+ * 单数据源的事务测试
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
