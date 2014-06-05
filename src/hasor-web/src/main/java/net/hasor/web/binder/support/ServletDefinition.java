@@ -18,6 +18,7 @@ import static net.hasor.web.binder.support.ManagedServletPipeline.REQUEST_DISPAT
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -76,7 +77,16 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final WebAppContext appContext) throws ServletException {
+    public void init(final WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
+        if (filterConfig != null) {
+            Map<String, String> thisConfig = this.getInitParams();
+            for (Entry<String, String> ent : filterConfig.entrySet()) {
+                String key = ent.getKey();
+                if (!thisConfig.containsKey(key))
+                    thisConfig.put(key, ent.getValue());
+            }
+        }
+        //
         this.appContext = appContext;
         this.getTarget();
     }

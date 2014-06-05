@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -43,16 +44,16 @@ public class ManagedFilterPipeline implements FilterPipeline {
         this.servletPipeline = servletPipeline;
     }
     //
-    public synchronized void initPipeline(WebAppContext appContext) throws ServletException {
+    public synchronized void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
         if (initialized)
             return;
         this.appContext = appContext;
         this.filterDefinitions = collectFilterDefinitions(appContext);
         for (FilterDefinition filterDefinition : this.filterDefinitions) {
-            filterDefinition.init(appContext);
+            filterDefinition.init(appContext, filterConfig);
         }
         //next, initialize servlets...
-        this.servletPipeline.initPipeline(appContext);
+        this.servletPipeline.initPipeline(appContext, filterConfig);
         //everything was ok...
         this.initialized = true;
     }
@@ -69,7 +70,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
     }
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
         if (!initialized) {
-            initPipeline(this.appContext);
+            initPipeline(this.appContext, null);
         }
         /*执行过滤器链*/
         ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);

@@ -15,6 +15,9 @@
  */
 package net.hasor.web.startup;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -47,7 +50,15 @@ public class RuntimeFilter implements Filter {
             this.filterPipeline = appContext.getInstance(FilterPipeline.class);
         }
         /*1.初始化执行周期管理器。*/
-        this.filterPipeline.initPipeline(appContext);
+        Map<String, String> filterConfigMap = new HashMap<String, String>();
+        Enumeration<String> names = filterConfig.getInitParameterNames();
+        if (names != null) {
+            while (names.hasMoreElements()) {
+                String name = names.nextElement();
+                filterConfigMap.put(name, filterConfig.getInitParameter(name));
+            }
+        }
+        this.filterPipeline.initPipeline(appContext, filterConfigMap);
         Hasor.logInfo("PlatformFilter started.");
     }
     //

@@ -72,7 +72,7 @@ public class HaveTarn_NESTEDTest extends AbstractSimpleTransactionManagerTest {
         }
         /*T2-Commit*/
         {
-            System.out.println("commit Transaction!");
+            System.out.println("rollBack Transaction!");
             rollBack(tranStatus);
             Thread.sleep(3000);
         }

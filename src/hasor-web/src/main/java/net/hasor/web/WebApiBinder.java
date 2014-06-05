@@ -33,12 +33,21 @@ public interface WebApiBinder extends ApiBinder {
     //
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns);
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder filter(String[] morePatterns);
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder filterRegex(String regex, String... regexes);
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder filterRegex(String[] regexes);
     /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns);
+    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
+    public ServletBindingBuilder serve(String[] morePatterns);
     /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serveRegex(String regex, String... regexes);
+    /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
+    public ServletBindingBuilder serveRegex(String[] regexes);
+    //
     /**注册一个Session监听器。*/
     public SessionListenerBindingBuilder sessionListener();
     /**注册一个ServletContextListener监听器。*/

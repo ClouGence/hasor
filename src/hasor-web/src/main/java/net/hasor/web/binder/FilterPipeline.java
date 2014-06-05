@@ -15,6 +15,7 @@
  */
 package net.hasor.web.binder;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +35,8 @@ import net.hasor.web.WebAppContext;
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
 public interface FilterPipeline {
-    /**初始化管道 */
-    public void initPipeline(WebAppContext appContext) throws ServletException;
+    /**初始化管道 F*/
+    public void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException;
     /**执行请求操作*/
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
     /**销毁管道*/

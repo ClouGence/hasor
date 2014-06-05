@@ -30,7 +30,7 @@ import net.hasor.core.Module;
 public class ForcedMode4 implements Module {
     public void init(ApiBinder apiBinder) throws Throwable {
         /*强依赖，当前模块的启动必须依靠目标模块*/
-        apiBinder.configModule().forced(ForcedMode3.class);
+        apiBinder.configModule().mandatory(ForcedMode3.class);
         throw new Exception();//模拟init失败抛出异常
     }
     public void start(AppContext appContext) {

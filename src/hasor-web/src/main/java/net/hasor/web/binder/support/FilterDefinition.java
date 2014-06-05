@@ -17,6 +17,7 @@ package net.hasor.web.binder.support;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -74,7 +75,16 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final WebAppContext appContext) throws ServletException {
+    public void init(final WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
+        if (filterConfig != null) {
+            Map<String, String> thisConfig = this.getInitParams();
+            for (Entry<String, String> ent : filterConfig.entrySet()) {
+                String key = ent.getKey();
+                if (!thisConfig.containsKey(key))
+                    thisConfig.put(key, ent.getValue());
+            }
+        }
+        //
         this.appContext = appContext;
         this.getTarget();
     }

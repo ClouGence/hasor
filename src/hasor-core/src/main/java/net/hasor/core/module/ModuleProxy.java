@@ -130,7 +130,7 @@ public abstract class ModuleProxy implements ModuleInfo/*提供模块基本信�
     public void weak(Class<? extends Module> targetModule) {
         this._addDep(targetModule, true);
     }
-    public void forced(Class<? extends Module> targetModule) {
+    public void mandatory(Class<? extends Module> targetModule) {
         this._addDep(targetModule, false);
     }
     private void _addDep(Class<? extends Module> targetModule, boolean forced) {

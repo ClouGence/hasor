@@ -58,7 +58,7 @@ public interface ApiBinder extends EventContext {
         public void reverse(Class<? extends Module> targetModule);
         /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/> 
          * 注意：该方法要求在目标模块启动之后在启动。*/
-        public void forced(Class<? extends Module> targetModule);
+        public void mandatory(Class<? extends Module> targetModule);
         /**弱依赖：要求目标模块的启动在当前模块之前进行启动。<br/>
          * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
         public void weak(Class<? extends Module> targetModule);

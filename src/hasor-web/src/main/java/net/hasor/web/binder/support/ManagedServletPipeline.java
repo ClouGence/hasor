@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -35,12 +36,12 @@ public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
     private volatile boolean    initialized = false;
     //
-    public synchronized void initPipeline(WebAppContext appContext) throws ServletException {
+    public synchronized void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
         if (initialized)
             return;
         this.servletDefinitions = collectServletDefinitions(appContext);
         for (ServletDefinition servletDefinition : servletDefinitions) {
-            servletDefinition.init(appContext);
+            servletDefinition.init(appContext, filterConfig);
         }
         //everything was ok...
         this.initialized = true;

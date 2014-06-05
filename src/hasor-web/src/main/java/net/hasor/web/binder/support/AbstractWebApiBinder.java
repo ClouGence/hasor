@@ -29,6 +29,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
+import org.more.util.ArrayUtils;
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2013-4-10
@@ -88,9 +89,19 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
         return new FiltersModuleBinder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
     };
+    public FilterBindingBuilder filter(String[] morePatterns) throws NullPointerException {
+        if (ArrayUtils.isEmpty(morePatterns))
+            throw new NullPointerException("Filter patterns is empty.");
+        return filter(null, morePatterns);
+    }
     public FilterBindingBuilder filterRegex(String regex, String... regexes) {
         return new FiltersModuleBinder(UriPatternType.REGEX, newArrayList(regexes, regex));
     };
+    public FilterBindingBuilder filterRegex(String[] regexes) throws NullPointerException {
+        if (ArrayUtils.isEmpty(regexes))
+            throw new NullPointerException("Filter regexes is empty.");
+        return filterRegex(null, regexes);
+    }
     class FiltersModuleBinder implements FilterBindingBuilder {
         private final UriPatternType uriPatternType;
         private final List<String>   uriPatterns;
@@ -148,9 +159,19 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
         return new ServletsModuleBuilder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
     };
+    public ServletBindingBuilder serve(String[] morePatterns) {
+        if (ArrayUtils.isEmpty(morePatterns))
+            throw new NullPointerException("Servlet patterns is empty.");
+        return serve(null, morePatterns);
+    }
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
         return new ServletsModuleBuilder(UriPatternType.REGEX, newArrayList(regexes, regex));
     };
+    public ServletBindingBuilder serveRegex(String[] regexes) {
+        if (ArrayUtils.isEmpty(regexes))
+            throw new NullPointerException("Servlet regexes is empty.");
+        return serveRegex(null, regexes);
+    }
     class ServletsModuleBuilder implements ServletBindingBuilder {
         private final List<String>   uriPatterns;
         private final UriPatternType uriPatternType;

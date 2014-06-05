@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import java.util.HashMap;
 import java.util.Map;
 /**
  * Abstract implementation for all servlet module bindings
@@ -27,7 +28,7 @@ class AbstractServletModuleBinding {
     private final UriPatternMatcher   patternMatcher;
     public AbstractServletModuleBinding(int index, Map<String, String> initParams, String pattern, UriPatternMatcher patternMatcher) {
         this.index = index;
-        this.initParams = initParams;
+        this.initParams = new HashMap<String, String>(initParams);
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
     }

@@ -2,4 +2,6 @@
 target
 .classpath
 .project
+*.iml
+.idea
 test-work

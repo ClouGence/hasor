@@ -30,7 +30,7 @@ import net.hasor.core.Module;
 public class LoopMode1 implements Module {
     public void init(ApiBinder apiBinder) {
         /*强依赖，当前模块的启动必须依靠目标模块*/
-        apiBinder.configModule().forced(LoopMode2.class);//强依赖，模块2.
+        apiBinder.configModule().mandatory(LoopMode2.class);//强依赖，模块2.
     }
     public void start(AppContext appContext) {
         System.out.println("Mode1 start!");

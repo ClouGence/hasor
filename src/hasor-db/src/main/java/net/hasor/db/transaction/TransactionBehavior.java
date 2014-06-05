@@ -48,7 +48,7 @@ public enum TransactionBehavior {
      * <p><i><b>释意</b></i>：如果当前没有事务存在，就以非事务方式执行；如果有，就抛出异常。*/
     PROPAGATION_NEVER,
     /**
-     * 要求环境中存在事务
+     * 要求环境中存在事务（不参与实际事务）
      * <p><i><b>释意</b></i>：如果当前没有事务存在，就抛出异常；如果有，就使用当前事务。*/
     PROPAGATION_MANDATORY,
 }
