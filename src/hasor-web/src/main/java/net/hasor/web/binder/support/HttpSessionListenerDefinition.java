@@ -22,7 +22,7 @@ import net.hasor.core.Provider;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class HttpSessionListenerDefinition implements Provider<HttpSessionListenerDefinition> {
+class HttpSessionListenerDefinition {
     private Provider<HttpSessionListener> listenerProvider = null;
     private HttpSessionListener           listenerInstance = null;
     //
@@ -30,9 +30,6 @@ class HttpSessionListenerDefinition implements Provider<HttpSessionListenerDefin
         this.listenerProvider = listenerProvider;
     }
     //
-    public HttpSessionListenerDefinition get() {
-        return this;
-    }
     protected HttpSessionListener getTarget() {
         if (this.listenerInstance == null)
             this.listenerInstance = listenerProvider.get();

@@ -22,7 +22,7 @@ import net.hasor.core.Provider;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ContextListenerDefinition implements Provider<ContextListenerDefinition> {
+class ContextListenerDefinition {
     private Provider<ServletContextListener> listenerProvider = null;
     private ServletContextListener           listenerInstance = null;
     //
@@ -31,9 +31,6 @@ class ContextListenerDefinition implements Provider<ContextListenerDefinition> {
         this.listenerProvider = listenerProvider;
     }
     //
-    public ContextListenerDefinition get() {
-        return this;
-    }
     protected ServletContextListener getTarget() {
         if (this.listenerInstance == null)
             this.listenerInstance = listenerProvider.get();

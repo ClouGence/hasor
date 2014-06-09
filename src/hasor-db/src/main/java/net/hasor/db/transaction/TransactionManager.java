@@ -24,7 +24,7 @@ public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。
      * @see net.hasor.db.transaction.TransactionBehavior
      * @see net.hasor.db.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
-    public TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException;
+    public TransactionStatus getTransaction() throws SQLException;
     /**开启事务
      * @see net.hasor.db.transaction.TransactionBehavior
      * @see java.sql.Connection#setTransactionIsolation(int)*/

@@ -150,7 +150,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
-                bindingType(FilterDefinition.class, define).asEagerSingleton();/*单列*/
+                bindingType(FilterDefinition.class, define);/*单列*/
             }
         }
     }
@@ -219,7 +219,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletProvider, initParams);
-                bindingType(ServletDefinition.class, define).asEagerSingleton();
+                bindingType(ServletDefinition.class, define);/*单列*/
             }
         }
     }
@@ -236,7 +236,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.bind(new InstanceProvider<ServletContextListener>(sessionListener));
         }
         public void bind(Provider<ServletContextListener> listenerProvider) {
-            bindingType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerProvider)).asEagerSingleton();
+            bindingType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerProvider));/*单列*/
         }
     }
     //
@@ -252,7 +252,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.bind(new InstanceProvider<HttpSessionListener>(sessionListener));
         }
         public void bind(Provider<HttpSessionListener> listenerProvider) {
-            bindingType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerProvider)).asEagerSingleton();
+            bindingType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerProvider));/*单列*/
         }
     }
 }

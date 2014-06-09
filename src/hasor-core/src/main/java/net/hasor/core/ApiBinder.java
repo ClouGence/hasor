@@ -20,7 +20,7 @@ import java.util.Set;
 import org.aopalliance.intercept.MethodInterceptor;
 /**
  * Hasor的核心接口，主要用于收集绑定配置信息。<p>
- * 
+ *
  * Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>方法 {@link ApiBinder#configModule()} ,会返回一个接口用于配置当前模块依赖情况。
  * @version : 2013-4-10
@@ -56,7 +56,7 @@ public interface ApiBinder extends EventContext {
         public void setModuleID(String moduleID);
         /**依赖反转：强制目标模块依赖当前模块(弱依赖)。*/
         public void reverse(Class<? extends Module> targetModule);
-        /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/> 
+        /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/>
          * 注意：该方法要求在目标模块启动之后在启动。*/
         public void mandatory(Class<? extends Module> targetModule);
         /**弱依赖：要求目标模块的启动在当前模块之前进行启动。<br/>
@@ -117,11 +117,15 @@ public interface ApiBinder extends EventContext {
         /**为绑定设置一个构造方法*/
         public ScopedBindingBuilder toConstructor(Constructor<? extends T> constructor);
     }
-    public interface ScopedBindingBuilder extends MetaDataBindingBuilder {
+    public interface ScopedBindingBuilder extends LifeBindingBuilder {
         /**注册为单例*/
-        public MetaDataBindingBuilder asEagerSingleton();
+        public LifeBindingBuilder asEagerSingleton();
         /**在容器上公开这个绑定*/
-        public MetaDataBindingBuilder toScope(Scope scope);
+        public LifeBindingBuilder toScope(Scope scope);
+    }
+    public interface LifeBindingBuilder extends MetaDataBindingBuilder{
+        /* *当容器启动时调用的方法*/
+        /*public LifeBindingBuilder initMethod(String methodName);*/
     }
     public interface MetaDataBindingBuilder {
         /**获取元信息。*/

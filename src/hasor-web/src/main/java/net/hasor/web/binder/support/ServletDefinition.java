@@ -35,7 +35,7 @@ import org.more.util.Iterators;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ServletDefinition extends AbstractServletModuleBinding implements Provider<ServletDefinition> {
+class ServletDefinition extends AbstractServletModuleBinding{
     private Provider<HttpServlet> servletProvider = null;
     private HttpServlet           servletInstance = null;
     private UriPatternMatcher     patternMatcher  = null;
@@ -45,9 +45,6 @@ class ServletDefinition extends AbstractServletModuleBinding implements Provider
         super(index, initParams, pattern, uriPatternMatcher);
         this.servletProvider = servletProvider;
         this.patternMatcher = uriPatternMatcher;
-    }
-    public ServletDefinition get() {
-        return this;
     }
     protected HttpServlet getTarget() throws ServletException {
         if (this.servletInstance != null)

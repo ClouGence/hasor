@@ -174,7 +174,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.toConstructor(constructor);
             return this;
         }
-        public MetaDataBindingBuilder asEagerSingleton() {
+        public LifeBindingBuilder asEagerSingleton() {
             this.typeRegister.setSingleton();
             return this;
         }
@@ -186,7 +186,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeRegister.setName(UUID.randomUUID().toString());
             return this;
         }
-        public MetaDataBindingBuilder toScope(Scope scope) {
+        public LifeBindingBuilder toScope(Scope scope) {
             this.typeRegister.setScope(scope);
             return this;
         }

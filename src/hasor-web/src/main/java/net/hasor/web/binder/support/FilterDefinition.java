@@ -35,7 +35,7 @@ import org.more.util.Iterators;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class FilterDefinition extends AbstractServletModuleBinding implements Provider<FilterDefinition> {
+class FilterDefinition extends AbstractServletModuleBinding{
     private Provider<Filter> filterProvider = null;
     private Filter           filterInstance = null;
     private WebAppContext    appContext     = null;
@@ -43,9 +43,6 @@ class FilterDefinition extends AbstractServletModuleBinding implements Provider<
     public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher, Provider<Filter> filterProvider, Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.filterProvider = filterProvider;
-    }
-    public FilterDefinition get() {
-        return this;
     }
     protected Filter getTarget() throws ServletException {
         if (this.filterInstance != null)
