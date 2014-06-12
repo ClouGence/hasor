@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.interceptor;
+import java.lang.reflect.Method;
+import javax.sql.DataSource;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.AopMatcherRegister;
+import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import javax.sql.DataSource;
-import java.lang.reflect.Method;
 /**
  * 某一个数据源的事务管理器
  * @author 赵永春(zyc@hasor.net)
@@ -29,43 +30,42 @@ import java.lang.reflect.Method;
  */
 public class TransactionInterceptor implements MethodInterceptor {
     private Provider<DataSource> dataSourceProvider;
-    private TransactionManager transactionManager;
-    private AopMatcherRegister interceptorMatcher;
+    private TransactionBehavior  behavior;
+    private TransactionManager   transactionManager;
+    private AopMatcherRegister   interceptorMatcher;
     //
     //
     public final Object invoke(MethodInvocation invocation) throws Throwable {
+        //1.是否排除不实用事务管理器
         Class<?> targetC = invocation.getThis().getClass();
         if (!this.matcherClass(targetC))
-            return call(invocation);
+            return invocation.proceed();
         Method targetM = invocation.getMethod();
         if (!this.matcherMethod(targetM))
-            return call(invocation);
-        return callInvocation(invocation);
-    }
-    private Object call(MethodInvocation invocation) throws Throwable{
-        return invocation.proceed();
-    }
-    private Object callInvocation(MethodInvocation invocation) throws Throwable{
-        TransactionStatus tranStatus=null;
-        try{
-            tranStatus=this.transactionManager.getTransaction();
             return invocation.proceed();
-        }catch (Throwable e){
+        //2.在事务管理器的控制下进行方法调用
+        TransactionStatus tranStatus = null;
+        try {
+            tranStatus = this.transactionManager.getTransaction(this.behavior);
+            return invocation.proceed();
+        } catch (Throwable e) {
             this.transactionManager.rollBack(tranStatus);
             throw e;
-        }finally {
+        } finally {
             if (!tranStatus.isCompleted())
                 this.transactionManager.commit(tranStatus);
         }
     }
+    /**匹配拦截的类*/
     protected boolean matcherClass(Class<?> targetClass) {
-        if (this.interceptorMatcher!=null)
+        if (this.interceptorMatcher != null)
             return this.interceptorMatcher.matcher(targetClass);
         return true;
     }
+    /**匹配拦截的类方法*/
     protected boolean matcherMethod(Method targetMethod) {
-        if (this.interceptorMatcher!=null)
+        if (this.interceptorMatcher != null)
             return this.interceptorMatcher.matcher(targetMethod);
         return true;
     }
-}
+}s

@@ -17,9 +17,7 @@ package net.hasor.db.datasource.local;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-
 import javax.sql.DataSource;
-
 import net.hasor.db.datasource.SavepointManager;
 /**
  * 

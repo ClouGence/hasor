@@ -123,7 +123,7 @@ public interface ApiBinder extends EventContext {
         /**在容器上公开这个绑定*/
         public LifeBindingBuilder toScope(Scope scope);
     }
-    public interface LifeBindingBuilder extends MetaDataBindingBuilder{
+    public interface LifeBindingBuilder extends MetaDataBindingBuilder {
         /* *当容器启动时调用的方法*/
         /*public LifeBindingBuilder initMethod(String methodName);*/
     }

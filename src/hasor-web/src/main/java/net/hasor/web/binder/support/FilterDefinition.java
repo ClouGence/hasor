@@ -35,7 +35,7 @@ import org.more.util.Iterators;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class FilterDefinition extends AbstractServletModuleBinding{
+class FilterDefinition extends AbstractServletModuleBinding {
     private Provider<Filter> filterProvider = null;
     private Filter           filterInstance = null;
     private WebAppContext    appContext     = null;

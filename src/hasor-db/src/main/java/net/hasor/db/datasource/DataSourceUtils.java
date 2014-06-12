@@ -16,11 +16,8 @@
 package net.hasor.db.datasource;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import net.hasor.db.datasource.local.LocalDataSourceHelper;
-
 import org.more.util.ContextClassLoaderLocal;
 /**
  * 

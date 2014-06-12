@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Map;
-
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.LinkedCaseInsensitiveMap;
