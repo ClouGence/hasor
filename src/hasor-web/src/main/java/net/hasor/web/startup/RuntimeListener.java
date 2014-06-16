@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.Plugin;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebStandardAppContext;
@@ -50,7 +50,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             if (StringUtils.isBlank(startModule)) {
                 Hasor.logWarn("startModule is undefinition.");
             } else {
-                Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
+                Class<Plugin> startModuleType = (Class<Plugin>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
                 this.appContext.addModule(startModuleType.newInstance());
                 Hasor.logInfo("startModule is %s.", startModuleType);
             }

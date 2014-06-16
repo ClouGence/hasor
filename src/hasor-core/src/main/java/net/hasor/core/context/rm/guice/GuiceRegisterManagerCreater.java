@@ -22,9 +22,9 @@ import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.AopConst;
-import net.hasor.core.binder.AopMatcherRegister;
 import net.hasor.core.binder.TypeRegister;
+import net.hasor.core.binder.aop.AopConst;
+import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
 import net.hasor.core.binder.register.AbstractTypeRegister;
 import net.hasor.core.binder.register.FreeTypeRegister;
 import net.hasor.core.builder.BeanBuilder;
@@ -77,9 +77,9 @@ class GuiceRegisterManager extends AbstractRegisterManager {
                     //1.处理绑定
                     configRegister(register, binder);
                     //2.处理Aop
-                    if (register.getType().isAssignableFrom(AopMatcherRegister.class)) {
+                    if (register.getType().isAssignableFrom(AopMatcherMethodInterceptor.class)) {
                         if (register.getMetaData().containsKey(AopConst.AopAssembly)) {
-                            final AopMatcherRegister amr = (AopMatcherRegister) register.getProvider().get();
+                            final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
                             binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
                                 public boolean matches(Class<?> targetClass) {
                                     return amr.matcher(targetClass);

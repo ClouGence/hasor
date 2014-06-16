@@ -241,16 +241,16 @@ public abstract class Hasor {
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() throws IOException, URISyntaxException {
-        return createAppContext(new Module[0]);
+        return createAppContext(new Plugin[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(Module... modules) throws IOException, URISyntaxException {
+    public static AppContext createAppContext(Plugin... modules) throws IOException, URISyntaxException {
         return createAppContext(StandardAppContext.DefaultSettings, modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, Module... modules) throws IOException, URISyntaxException {
+    public static AppContext createAppContext(String config, Plugin... modules) throws IOException, URISyntaxException {
         StandardAppContext app = new StandardAppContext(config);
-        for (Module mod : modules)
+        for (Plugin mod : modules)
             app.addModule(mod);
         app.start();
         return app;

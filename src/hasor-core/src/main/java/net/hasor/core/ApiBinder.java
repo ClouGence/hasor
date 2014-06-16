@@ -35,6 +35,8 @@ public interface ApiBinder extends EventContext {
     public Set<Class<?>> findClass(Class<?> featureType);
     /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
     public void registerAware(AppContextAware aware);
+    /**安装其它插件*/
+    public void installPlugin(Plugin plugin) throws Throwable;
     //
     /*----------------------------------------------------------------------------------------Aop*/
     /**配置Aop，表达式格式为*/
@@ -45,23 +47,6 @@ public interface ApiBinder extends EventContext {
     public static interface Matcher<T> {
         /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
         public boolean matches(T t);
-    }
-    //
-    /*-------------------------------------------------------------------------------------Module*/
-    /**配置模块依赖关系。*/
-    public ModuleSettings configModule();
-    /**该接口可以配置模块信息。*/
-    public interface ModuleSettings extends ModuleInfo {
-        /**设置模块ID*/
-        public void setModuleID(String moduleID);
-        /**依赖反转：强制目标模块依赖当前模块(弱依赖)。*/
-        public void reverse(Class<? extends Module> targetModule);
-        /**强制依赖：跟随目标模块启动而启动。如果依赖的模块没有成功启动，则该模块不会启动。<br/>
-         * 注意：该方法要求在目标模块启动之后在启动。*/
-        public void mandatory(Class<? extends Module> targetModule);
-        /**弱依赖：要求目标模块的启动在当前模块之前进行启动。<br/>
-         * 注意：该方法仅仅要求在目标模块之后启动。但目标模块是否启动并无强制要求。*/
-        public void weak(Class<? extends Module> targetModule);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

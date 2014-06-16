@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Plugin;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.context.StandardAppContext;
-import net.hasor.core.module.ModuleProxy;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
@@ -73,11 +73,8 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
     }
     /**为模块创建ApiBinder*/
-    protected AbstractWebApiBinder newApiBinder(final ModuleProxy forModule) {
+    protected AbstractWebApiBinder newApiBinder(final Plugin forModule) {
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
-            public ModuleSettings configModule() {
-                return forModule;
-            }
             protected <T> TypeRegister<T> registerType(Class<T> type) {
                 return WebStandardAppContext.this.registerType(type);
             }

@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.Plugin;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.TransactionLevel;
@@ -59,8 +59,8 @@ public abstract class AbstractSimpleJDBCTest extends AbstractJDBCTest {
         return appContext.getInstance(DataSource.class);
     }
 }
-class SimpleJDBCWarp implements Module {
-    public void init(ApiBinder apiBinder) throws Throwable {
+class SimpleJDBCWarp implements Plugin {
+    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
         //1.获取数据库连接配置信息
         Settings settings = apiBinder.getSettings();
         String driverString = settings.getString("hasor-jdbc.driver");
@@ -91,8 +91,5 @@ class SimpleJDBCWarp implements Module {
         apiBinder.bindingType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindingType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
-    }
-    public void start(AppContext appContext) throws Throwable {
-        Hasor.logInfo("JDBCWarp started!");
     }
 }

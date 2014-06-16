@@ -26,9 +26,6 @@ public interface EventContext {
     /**容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.AbstractAppContext*/
     public static final String ContextEvent_Started     = "ContextEvent_Started";
-    /**模块事件。当模块收到 start 调用信号之后引发。
-     * @see net.hasor.core.module.ModuleProxy*/
-    public static final String ModuleEvent_Started      = "ModuleEvent_Started";
     //
     /**pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。*/
     public void pushListener(String eventType, EventListener eventListener);

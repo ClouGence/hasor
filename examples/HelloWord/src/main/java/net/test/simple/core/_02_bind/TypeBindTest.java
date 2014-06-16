@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.Plugin;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
@@ -32,13 +32,10 @@ public class TypeBindTest {
     public void typeBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>typeBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext(new Module() {
-            public void init(ApiBinder apiBinder) throws Throwable {
+        AppContext appContext = Hasor.createAppContext(new Plugin() {
+            public void loadPlugin(ApiBinder apiBinder) throws Throwable {
                 /*绑定类型到Hasor*/
                 apiBinder.bindingType(PojoBean.class);
-            }
-            public void start(AppContext appContext) throws Throwable {
-                // TODO Auto-generated method stub
             }
         });
         //

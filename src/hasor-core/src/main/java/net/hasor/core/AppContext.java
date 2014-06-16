@@ -32,24 +32,6 @@ public interface AppContext extends EventContext {
     public Environment getEnvironment();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
-    /**表示AppContext是否准备好。*/
-    public boolean isReady();
-    /**启动。向所有模块发送启动信号，并将容器的状态置为Start。（该方法会尝试init所有模块）*/
-    public void start();
-    /**判断容器是否处于运行状态*/
-    public boolean isStart();
-    //
-    /*-------------------------------------------------------------------------------------Module*/
-    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public ModuleInfo addModule(Module hasorModule);
-    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public boolean removeModule(Module hasorModule);
-    /**获得所有模块*/
-    public ModuleInfo[] getModules();
-    /**获取某个ID的模块。*/
-    public ModuleInfo getModuleByID(String moduleID);
-    /**判断是否具有某个ID的模块。*/
-    public boolean hasModuleByID(String moduleID);
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/

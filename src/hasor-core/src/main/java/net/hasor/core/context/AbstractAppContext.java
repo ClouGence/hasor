@@ -26,8 +26,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.ModuleInfo;
+import net.hasor.core.Plugin;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
@@ -38,9 +37,6 @@ import net.hasor.core.binder.register.FreeTypeRegister;
 import net.hasor.core.builder.BeanBuilder;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
-import net.hasor.core.module.ModuleProxy;
-import net.hasor.core.module.ModuleReactor;
-import org.more.UndefinedException;
 import org.more.util.ArrayUtils;
 import org.more.util.MergeUtils;
 import org.more.util.StringUtils;
@@ -273,172 +269,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return this.getEnvironment().findClass(featureType);
     }
     //
-    /*-------------------------------------------------------------------------------------Module*/
-    private static long referIndex = 0;
-    private static long referIndex() {
-        return referIndex++;
-    }
-    private List<ModuleProxy> tempModuleSet;
-    /**创建或者获得用于存放所有ModuleInfo的集合对象*/
-    private List<ModuleProxy> getModuleList() {
-        if (this.tempModuleSet == null)
-            this.tempModuleSet = new ArrayList<ModuleProxy>();
-        return tempModuleSet;
-    }
-    /**判断是否具有某个ID的模块。*/
-    public boolean hasModuleByID(String moduleID) {
-        ModuleInfo[] infos = this.getModules();
-        for (ModuleInfo info : infos)
-            if (info.getModuleID().equals(moduleID))
-                return true;;
-        return false;
-    }
-    /**获取某个ID的模块。*/
-    public ModuleInfo getModuleByID(String moduleID) {
-        ModuleInfo[] infos = this.getModules();
-        for (ModuleInfo info : infos)
-            if (info.getModuleID().equals(moduleID))
-                return info;;
-        return null;
-    }
-    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public synchronized ModuleInfo addModule(Module hasorModule) {
-        if (this.isReady())
-            throw new IllegalStateException("context is inited.");
-        /*防止重复添加同一个对象*/
-        for (ModuleProxy info : this.getModuleList())
-            if (info.getTarget() == hasorModule)
-                return info;
-        /*确定模块ID*/
-        String moduleID = hasorModule.getClass().getName();
-        if (hasModuleByID(moduleID))
-            moduleID = moduleID + "#" + referIndex();
-        /*添加模块*/
-        ModuleProxy propxy = new ContextModulePropxy(moduleID, hasorModule, this);
-        List<ModuleProxy> propxyList = this.getModuleList();
-        propxyList.add(propxy);
-        return propxy;
-    }
-    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
-    public synchronized boolean removeModule(Module hasorModule) {
-        if (this.isReady())
-            throw new IllegalStateException("context is inited.");
-        ModuleProxy targetInfo = null;
-        for (ModuleProxy info : this.getModuleList())
-            if (info.getTarget() == hasorModule) {
-                targetInfo = info;
-                break;
-            }
-        if (targetInfo != null) {
-            this.getModuleList().remove(targetInfo);
-            return true;
-        }
-        return false;
-    }
-    /**获得所有模块*/
-    public final ModuleInfo[] getModules() {
-        List<ModuleProxy> moduleList = this.getModuleList();
-        ModuleInfo[] infoArray = new ModuleInfo[moduleList.size()];
-        for (int i = 0; i < moduleList.size(); i++)
-            infoArray[i] = moduleList.get(i);
-        return infoArray;
-    }
-    /**装载模块定义*/
-    protected void initModule() {
-        for (ModuleProxy propxy : this.getModuleList()) {
-            ApiBinder apiBinder = this.newApiBinder(propxy);
-            apiBinder.bindingType(ModuleInfo.class).nameWith(propxy.getModuleID()).toInstance(propxy);/*仅仅是绑定*/
-            propxy.init(apiBinder);
-        }
-    }
-    /**位于容器中 ModulePropxy 抽象类的实现*/
-    protected class ContextModulePropxy extends ModuleProxy {
-        public ContextModulePropxy(String moduleID, Module targetModule, AbstractAppContext appContext) {
-            super(moduleID, targetModule, appContext);
-        }
-        protected ModuleProxy getInfo(Class<? extends Module> targetModule, AppContext appContext) {
-            List<ModuleProxy> modulePropxyList = ((AbstractAppContext) appContext).getModuleList();
-            for (ModuleProxy moduleProxy : modulePropxyList)
-                if (targetModule == moduleProxy.getTarget().getClass())
-                    return moduleProxy;
-            throw new UndefinedException(targetModule.getName() + " module is Undefined!");
-        }
-    }
-    //
     /*------------------------------------------------------------------------------------Process*/
-    //    /**执行 Initialize 过程。*/
-    //    protected void doInitialize(final Binder guiceBinder) {
-    //        Hasor.logInfo("send init sign...");
-    //        List<ModuleProxy> modulePropxyList = this.getModuleList();
-    //        /*引发模块init生命周期*/
-    //        for (ModuleProxy forModule : modulePropxyList) {
-    //            AbstractBinderContext apiBinder = this.newApiBinder(forModule, guiceBinder);
-    //            forModule.init(apiBinder);//触发生命周期 
-    //            apiBinder.configure(guiceBinder);
-    //        }
-    //        this.doBind(guiceBinder);
-    //        /*引发事件*/
-    //        this.getEventManager().doSync(ContextEvent_Initialized, apiBinder);
-    //        Hasor.logInfo("init modules finish.");
-    //    }
-    //
-    //
-    private boolean isStart = false;
-    private boolean isReady = false;
-    public boolean isStart() {
-        return this.isStart;
-    }
-    public boolean isReady() {
-        return this.isReady;
-    }
-    public synchronized final void start() {
-        if (this.isStart() == true)
-            return;
-        /*1.Init*/
-        if (!this.isReady()) {
-            Hasor.logInfo("send init sign...");
-            this.doInitialize();
-            this.initModule();
-            /*2.Bind*/
-            AbstractBinder apiBinder = new AbstractBinder(this.getEnvironment()) {
-                public ModuleSettings configModule() {
-                    return null;
-                }
-                protected <T> TypeRegister<T> registerType(Class<T> type) {
-                    return AbstractAppContext.this.registerType(type);
-                }
-            };
-            this.doBind(apiBinder);
-            /*3.引发事件*/
-            this.fireSyncEvent(ContextEvent_Initialized, apiBinder);
-            this.doInitializeCompleted();
-            Hasor.logInfo("the init is completed!");
-            this.isReady = true;
-        }
-        //
-        //
-        //
-        /*3.Start*/
-        Hasor.logInfo("send start sign...");
-        this.doStart();
-        /*2.执行Aware通知*/
-        List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
-        if (awareList.isEmpty() == false) {
-            for (AppContextAware weak : awareList)
-                weak.setAppContext(this);
-        }
-        /*3.逐一启动模块*/
-        List<ModuleProxy> modulePropxyList = this.doReactor();
-        for (ModuleProxy mod : modulePropxyList)
-            mod.start(this);
-        /*4.发送启动事件*/
-        this.fireSyncEvent(ContextEvent_Started, this);
-        this.doStartCompleted();/*用于扩展*/
-        this.isStart = true;
-        /*5.打印模块状态*/
-        printModState(this);
-        Hasor.logInfo("Hasor Started now!");
-    }
     /**开始进入初始化过程.*/
     protected void doInitialize() {
         RegisterManager regContext = this.getRegisterManager();
@@ -467,11 +298,8 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder*/
-    protected ApiBinder newApiBinder(final ModuleProxy forModule) {
+    protected ApiBinder newApiBinder(final Plugin forModule) {
         return new AbstractBinder(this.getEnvironment()) {
-            public ModuleSettings configModule() {
-                return forModule;
-            }
             protected <T> TypeRegister<T> registerType(Class<T> type) {
                 return AbstractAppContext.this.registerType(type);
             }
@@ -499,43 +327,40 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             }
         });
     }
-    /**打印模块状态*/
-    protected static void printModState(AbstractAppContext appContext) {
-        ModuleInfo[] modArray = appContext.getModules();
-        StringBuilder sb = new StringBuilder("");
-        int size = String.valueOf(modArray.length).length();
-        for (int i = 0; i < modArray.length; i++) {
-            ModuleInfo info = modArray[i];
-            sb.append(String.format("%0" + size + "d", i));
-            sb.append('.');
-            sb.append("-->[");
-            //Running:运行中(start)、Failed:准备失败、Stopped:停止(stop)
-            sb.append(!info.isReady() ? "Failed " : info.isStart() ? "Running" : "Stopped");
-            sb.append("] ");
-            sb.append(info.getDisplayName());
-            sb.append(" (");
-            sb.append(info.getDescription());
-            sb.append(")\n");
-        }
-        if (sb.length() > 1) {
-            sb.deleteCharAt(sb.length() - 1);
-            sb.insert(0, "\n");
-        } else
-            sb.append(" -> nothing.");
-        Hasor.logInfo("Modules State : %s", sb);
-    }
-    /**使用反应堆对模块进行循环检查和排序*/
-    private List<ModuleProxy> doReactor() {
-        List<ModuleProxy> targetProxyList = this.getModuleList();
+    //
+    //
+    /*------------------------------------------------------------------------------------Creater*/
+    synchronized final void installPlugin(Plugin... plugins) throws Throwable {
+        /*1.Init*/
+        Hasor.logInfo("send init sign...");
+        this.doInitialize();
+        /*2.Bind*/
+        AbstractBinder apiBinder = new AbstractBinder(this.getEnvironment()) {
+            protected <T> TypeRegister<T> registerType(Class<T> type) {
+                return AbstractAppContext.this.registerType(type);
+            }
+        };
+        for (Plugin plugin : plugins)
+            plugin.loadPlugin(apiBinder);
+        this.doBind(apiBinder);
+        /*3.引发事件*/
+        this.fireSyncEvent(ContextEvent_Initialized, apiBinder);
+        this.doInitializeCompleted();
+        Hasor.logInfo("the init is completed!");
         //
-        List<ModuleProxy> readOnlyModules = new ArrayList<ModuleProxy>();
-        for (ModuleProxy amp : targetProxyList)
-            readOnlyModules.add(amp);
-        ModuleReactor reactor = new ModuleReactor(readOnlyModules);//创建反应器
-        List<ModuleProxy> result = reactor.process();
-        List<ModuleProxy> propxyList = new ArrayList<ModuleProxy>();
-        for (ModuleProxy info : result)
-            propxyList.add(info);
-        return propxyList;
+        /*3.Start*/
+        Hasor.logInfo("send start sign...");
+        this.doStart();
+        /*2.执行Aware通知*/
+        List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
+        if (awareList.isEmpty() == false) {
+            for (AppContextAware weak : awareList)
+                weak.setAppContext(this);
+        }
+        /*3.发送启动事件*/
+        this.fireSyncEvent(ContextEvent_Started, this);
+        this.doStartCompleted();/*用于扩展*/
+        /*3.打印状态*/
+        Hasor.logInfo("Hasor Started now!");
     }
 }

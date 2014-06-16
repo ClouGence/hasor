@@ -13,35 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._02_bind;
+package net.test.simple.core._06_aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Plugin;
-import net.test.simple.core._03_beans.pojo.PojoBean;
-import net.test.simple.core._03_beans.pojo.PojoInfo;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
+import net.test.simple.core._06_aop.objs.FooBean;
+import net.test.simple.core._06_aop.objs.SimpleInterceptor;
 import org.junit.Test;
 /**
- * 本示列演示如何通过接口绑定Bean。
+ * 测试 Aop
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InterfaceBindTest {
+public class AopTest {
     @Test
-    public void faceBindTest() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>faceBindTest<<--");
-        //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext(new Plugin() {
-            public void loadPlugin(ApiBinder apiBinder) throws Throwable {
-                /*绑定一个接口的实现类*/
-                apiBinder.bindingType(PojoInfo.class).to(PojoBean.class);
-            }
-        });
+    public void aopTest() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>aopTest<<--");
+        AppContext appContext = Hasor.createAppContext(new WarpAop());
         //
-        //通过接口获取绑定的Bean
-        PojoInfo myBean2 = appContext.getInstance(PojoInfo.class);
-        System.out.println(myBean2.getName() + "\t" + myBean2);
+        FooBean fooBean = appContext.getInstance(FooBean.class);
+        fooBean.fooCall();
+    }
+}
+class WarpAop implements Plugin {
+    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+        /*绑定类型*/
+        apiBinder.bindingType(FooBean.class);
+        /*任意类任意方法*/
+        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new SimpleInterceptor());
     }
 }

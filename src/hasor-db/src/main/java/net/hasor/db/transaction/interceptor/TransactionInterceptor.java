@@ -17,7 +17,7 @@ package net.hasor.db.transaction.interceptor;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.AopMatcherRegister;
+import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
 import net.hasor.db.transaction.TransactionBehavior;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
@@ -29,10 +29,10 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2013-10-30
  */
 public class TransactionInterceptor implements MethodInterceptor {
-    private Provider<DataSource> dataSourceProvider;
-    private TransactionBehavior  behavior;
-    private TransactionManager   transactionManager;
-    private AopMatcherRegister   interceptorMatcher;
+    private Provider<DataSource>        dataSourceProvider;
+    private TransactionBehavior         behavior;
+    private TransactionManager          transactionManager;
+    private AopMatcherMethodInterceptor interceptorMatcher;
     //
     //
     public final Object invoke(MethodInvocation invocation) throws Throwable {

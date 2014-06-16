@@ -20,8 +20,7 @@ import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.context.StandardAppContext;
+import net.hasor.core.Plugin;
 import org.junit.Test;
 /**
  * 本示列演示带有名字的绑定。
@@ -33,10 +32,7 @@ public class NameBindTest {
     public void nameBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>nameBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = new StandardAppContext();
-        appContext.addModule(new TestModule("ModuleA"));
-        appContext.addModule(new TestModule("ModuleB"));
-        appContext.start();//启动 Hasor 容器。
+        AppContext appContext = Hasor.createAppContext(new TestModule("ModuleA"), new TestModule("ModuleB"));
         //
         System.out.println();
         String modeSay = null;
@@ -49,16 +45,13 @@ public class NameBindTest {
         Hasor.logInfo("say %s.", says);
     }
 }
-class TestModule implements Module {
+class TestModule implements Plugin {
     private String moduleMark;
     public TestModule(String moduleMark) {
         this.moduleMark = moduleMark;
     }
-    public void init(ApiBinder apiBinder) throws Throwable {
+    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
         //利用 moduleMark 为 Key，绑定一段特殊字符串内容到容器中。
         apiBinder.bindingType(String.class).nameWith(moduleMark).toInstance("this String form " + moduleMark);
-    }
-    public void start(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
     }
 }
