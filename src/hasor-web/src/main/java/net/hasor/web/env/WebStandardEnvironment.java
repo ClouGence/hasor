@@ -30,12 +30,14 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
     public WebStandardEnvironment(ServletContext servletContext) {
         super();
         this.servletContext = servletContext;
+        this.setContext(servletContext);
         this.initEnvironment();
     }
     public WebStandardEnvironment(URI settingURI, ServletContext servletContext) {
         super();
         this.settingURI = settingURI;
         this.servletContext = servletContext;
+        this.setContext(servletContext);
         this.initEnvironment();
     }
     public ServletContext getServletContext() {

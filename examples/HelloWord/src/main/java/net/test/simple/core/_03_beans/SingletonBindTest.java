@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
@@ -32,8 +32,8 @@ public class SingletonBindTest {
     public void singletonBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>singletonBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext(new Plugin() {
-            public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
                 PojoBean pojo = new PojoBean();
                 pojo.setName("马大帅");
                 apiBinder.defineBean("myBean1").bindType(PojoBean.class).toInstance(pojo);

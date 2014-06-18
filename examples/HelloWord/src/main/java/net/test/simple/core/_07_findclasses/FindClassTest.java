@@ -20,7 +20,7 @@ import java.util.Set;
 import javax.inject.Singleton;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.core.context.AbstractAppContext;
 import org.junit.Test;
 /**
@@ -40,7 +40,7 @@ public class FindClassTest {
         //         2.通过 ((AbstractEnvironment)appContext.getEnvironment()).setSpanPackage(...); 方法修改
         //
         //1.查找所有Hasor模块（实现了Module接口的类）。
-        Set<Class<?>> facesFeature = appContext.findClass(Plugin.class);
+        Set<Class<?>> facesFeature = appContext.findClass(Module.class);
         Hasor.logInfo("find %s.", facesFeature);
         //2.查找标记了Singleton注解的类型（JSR-330中约定单列的类）
         Set<Class<?>> annoFeature = appContext.findClass(Singleton.class);

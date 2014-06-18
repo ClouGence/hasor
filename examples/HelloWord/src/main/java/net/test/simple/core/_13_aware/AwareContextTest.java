@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import org.junit.Test;
 /**
  * 本示列演示如何让 Hasor在启动时自动将AppContext注入到需要的地方。
@@ -30,8 +30,8 @@ public class AwareContextTest {
     @Test
     public void awareContextTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>awareContextTest<<--");
-        AppContext appContext = Hasor.createAppContext(new Plugin() {
-            public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
                 //由于init过程中无法取得 appContext对象，因此让Hasor在适当的时机将自身注入进去。
                 AwareBean aware = new AwareBean();
                 apiBinder.registerAware(aware);

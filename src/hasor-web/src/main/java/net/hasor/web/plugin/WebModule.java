@@ -16,14 +16,14 @@
 package net.hasor.web.plugin;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class WebPlugin implements Plugin {
+public abstract class WebModule implements Module {
     public final void loadPlugin(ApiBinder apiBinder) {
         if (apiBinder instanceof WebApiBinder == false) {
             Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());

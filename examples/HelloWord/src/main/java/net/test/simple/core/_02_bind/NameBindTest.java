@@ -20,7 +20,7 @@ import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import org.junit.Test;
 /**
  * 本示列演示带有名字的绑定。
@@ -45,12 +45,12 @@ public class NameBindTest {
         Hasor.logInfo("say %s.", says);
     }
 }
-class TestModule implements Plugin {
+class TestModule implements Module {
     private String moduleMark;
     public TestModule(String moduleMark) {
         this.moduleMark = moduleMark;
     }
-    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         //利用 moduleMark 为 Key，绑定一段特殊字符串内容到容器中。
         apiBinder.bindingType(String.class).nameWith(moduleMark).toInstance("this String form " + moduleMark);
     }

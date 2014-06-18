@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Hasor {
     //
+    /*----------------------------------------------------------------------------------------Log*/
     private static StackTraceElement onTrace() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
         StackTraceElement onCode = stackElements[4];
@@ -226,7 +225,7 @@ public abstract class Hasor {
         return log.isInfoEnabled();
     }
     //
-    //
+    /*---------------------------------------------------------------------------------------Util*/
     /**如果参数为空会抛出 NullPointerException 异常。*/
     public static <T> T assertIsNotNull(T object) {
         return assertIsNotNull(object, ""); //$NON-NLS-1$
@@ -238,19 +237,19 @@ public abstract class Hasor {
         return object;
     }
     //
-    //
+    /*------------------------------------------------------------------------------------Creater*/
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext() throws IOException, URISyntaxException {
-        return createAppContext(new Plugin[0]);
+    public static AppContext createAppContext() {
+        return createAppContext(new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(Plugin... modules) throws IOException, URISyntaxException {
+    public static AppContext createAppContext(Module... modules) {
         return createAppContext(StandardAppContext.DefaultSettings, modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, Plugin... modules) throws IOException, URISyntaxException {
+    public static AppContext createAppContext(String config, Module... modules) {
         StandardAppContext app = new StandardAppContext(config);
-        for (Plugin mod : modules)
+        for (Module mod : modules)
             app.addModule(mod);
         app.start();
         return app;

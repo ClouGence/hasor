@@ -22,16 +22,24 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext extends EventContext {
-    /**获取父亲*/
-    public AppContext getParent();
     /**获取上下文*/
     public Object getContext();
+    /**获取父层级*/
+    public AppContext getParent();
     /**获取应用程序配置。*/
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
+    //
+    /*-------------------------------------------------------------------------------------Module*/
+    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public Module addModule(Module hasorModule);
+    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public boolean removeModule(Module hasorModule);
+    /**获得所有模块*/
+    public Module[] getModules();
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/

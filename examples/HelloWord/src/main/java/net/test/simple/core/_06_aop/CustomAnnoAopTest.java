@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.test.simple.core._06_aop.objs.CustomAnnoFooBean;
 import net.test.simple.core._06_aop.objs.FooBean;
@@ -46,8 +46,8 @@ public class CustomAnnoAopTest {
         fooBean2.fooCall();
     }
 }
-class WarpAnnoAop implements Plugin {
-    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+class WarpAnnoAop implements Module {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         /*绑定类型*/
         apiBinder.bindingType(FooBean.class);
         apiBinder.bindingType(CustomAnnoFooBean.class);

@@ -29,7 +29,7 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractConfigResourceAppContext extends AbstractAppContext {
+public abstract class AbstractConfigResourceAppContext extends AbstractStateAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     private URI                mainSettings    = null;
     //

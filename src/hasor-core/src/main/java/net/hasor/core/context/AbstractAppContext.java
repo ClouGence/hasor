@@ -26,7 +26,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
@@ -235,33 +235,16 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     //
     /*------------------------------------------------------------------------------------Context*/
-    private AbstractAppContext parent;
-    private Object             context;
-    /**获取上下文*/
-    public AbstractAppContext getParent() {
-        return this.parent;
-    }
     /**获取上下文*/
     public Object getContext() {
-        return this.context;
+        return this.getEnvironment().getContext();
     }
-    /**设置上下文*/
-    public void setContext(Object context) {
-        this.context = context;
-    }
+    /**获取父层级*/
+    public abstract AbstractAppContext getParent();
     /**获取应用程序配置。*/
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     };
-    private Environment environment;
-    /**获取环境接口。*/
-    public Environment getEnvironment() {
-        if (this.environment == null)
-            this.environment = this.createEnvironment();
-        return this.environment;
-    }
-    /**创建环境对象*/
-    protected abstract Environment createEnvironment();
     /**获取RegisterContext对象*/
     protected abstract RegisterManager getRegisterManager();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
@@ -295,10 +278,9 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             ((ContextStartListener) regContext).doStartCompleted(this);
     }
     //
-    //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder*/
-    protected ApiBinder newApiBinder(final Plugin forModule) {
+    protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
             protected <T> TypeRegister<T> registerType(Class<T> type) {
                 return AbstractAppContext.this.registerType(type);
@@ -328,38 +310,37 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         });
     }
     //
-    //
     /*------------------------------------------------------------------------------------Creater*/
-    synchronized final void installPlugin(Plugin... plugins) throws Throwable {
+    public synchronized final void start() throws Throwable {
+        final AbstractAppContext appContext = this;
+        final Module[] modules = this.getModules();
         /*1.Init*/
         Hasor.logInfo("send init sign...");
-        this.doInitialize();
+        appContext.doInitialize();
         /*2.Bind*/
-        AbstractBinder apiBinder = new AbstractBinder(this.getEnvironment()) {
-            protected <T> TypeRegister<T> registerType(Class<T> type) {
-                return AbstractAppContext.this.registerType(type);
-            }
-        };
-        for (Plugin plugin : plugins)
-            plugin.loadPlugin(apiBinder);
-        this.doBind(apiBinder);
+        for (Module module : modules) {
+            ApiBinder apiBinder = appContext.newApiBinder(module);
+            module.loadModule(apiBinder);
+        }
+        ApiBinder apiBinder = appContext.newApiBinder(null);
+        appContext.doBind(apiBinder);
         /*3.引发事件*/
-        this.fireSyncEvent(ContextEvent_Initialized, apiBinder);
-        this.doInitializeCompleted();
+        appContext.fireSyncEvent(ContextEvent_Initialized, apiBinder);
+        appContext.doInitializeCompleted();
         Hasor.logInfo("the init is completed!");
         //
         /*3.Start*/
         Hasor.logInfo("send start sign...");
-        this.doStart();
+        appContext.doStart();
         /*2.执行Aware通知*/
-        List<AppContextAware> awareList = this.findBindingBean(AppContextAware.class);
+        List<AppContextAware> awareList = appContext.findBindingBean(AppContextAware.class);
         if (awareList.isEmpty() == false) {
             for (AppContextAware weak : awareList)
-                weak.setAppContext(this);
+                weak.setAppContext(appContext);
         }
         /*3.发送启动事件*/
-        this.fireSyncEvent(ContextEvent_Started, this);
-        this.doStartCompleted();/*用于扩展*/
+        appContext.fireSyncEvent(ContextEvent_Started, appContext);
+        appContext.doStartCompleted();/*用于扩展*/
         /*3.打印状态*/
         Hasor.logInfo("Hasor Started now!");
     }

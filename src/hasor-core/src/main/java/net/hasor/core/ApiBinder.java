@@ -36,7 +36,7 @@ public interface ApiBinder extends EventContext {
     /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
     public void registerAware(AppContextAware aware);
     /**安装其它插件*/
-    public void installPlugin(Plugin plugin) throws Throwable;
+    public void installModule(Module module) throws Throwable;
     //
     /*----------------------------------------------------------------------------------------Aop*/
     /**配置Aop，表达式格式为*/

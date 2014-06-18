@@ -49,7 +49,14 @@ import org.more.util.map.DecSequenceMap;
 public abstract class AbstractEnvironment implements Environment {
     private String[] spanPackage;
     private Settings settings;
+    private Object   context;
     //---------------------------------------------------------------------------------Basic Method
+    public Object getContext() {
+        return this.context;
+    }
+    public void setContext(Object context) {
+        this.context = context;
+    }
     public boolean isDebug() {
         return this.settings.getBoolean("hasor.debug", false);
     }

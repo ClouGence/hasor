@@ -15,14 +15,14 @@
  */
 package net.test.simple.core._05_plugins.mods;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 /**
  * 模块2
  * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Mod_2 implements Plugin {
-    public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+public class Mod_2 implements Module {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.bindingType(String.class).uniqueName().toInstance("say form Mod_2.");
     }
 }

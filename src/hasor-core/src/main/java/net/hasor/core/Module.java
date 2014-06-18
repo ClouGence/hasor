@@ -19,7 +19,7 @@ package net.hasor.core;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Plugin {
-    /**初始化过程，注意：apiBinder 参数只能在 loadPlugin 阶段中使用。*/
-    public void loadPlugin(ApiBinder apiBinder) throws Throwable;
+public interface Module {
+    /**初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。*/
+    public void loadModule(ApiBinder apiBinder) throws Throwable;
 }

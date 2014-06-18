@@ -26,7 +26,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.Settings;
@@ -65,8 +65,8 @@ public abstract class AbstractBinder implements ApiBinder {
             return null;
         return this.getEnvironment().findClass(featureType);
     }
-    public void installPlugin(Plugin plugin) throws Throwable {
-        plugin.loadPlugin(this);
+    public void installModule(Module module) throws Throwable {
+        module.loadModule(this);
     }
     //
     /*--------------------------------------------------------------------------------------Event*/

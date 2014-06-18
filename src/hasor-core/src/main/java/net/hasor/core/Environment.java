@@ -30,6 +30,8 @@ public interface Environment extends EventContext {
     public Set<Class<?>> findClass(Class<?> featureType);
     /**判断是否为调试模式。*/
     public boolean isDebug();
+    /**获取上下文*/
+    public Object getContext();
     //
     /*-----------------------------------------------------------------------------------Settings*/
     /**获取应用程序配置。*/

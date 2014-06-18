@@ -21,7 +21,7 @@ import java.util.Map;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Plugin;
+import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.test.simple.core._03_beans.pojo.PojoBean;
@@ -36,8 +36,8 @@ public class ScopeTest {
     public void scopeTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>scopeTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext(new Plugin() {
-            public void loadPlugin(ApiBinder apiBinder) throws Throwable {
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
                 MyScope myScope1 = new MyScope();
                 //
                 apiBinder.defineBean("myBean1").bindType(PojoBean.class).toScope(myScope1);
