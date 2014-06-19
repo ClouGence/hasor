@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import java.util.ArrayList;
+import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Module;
@@ -38,19 +40,27 @@ public abstract class AbstractStateAppContext extends AbstractAppContext {
     /**创建环境对象*/
     protected abstract Environment createEnvironment();
     //
-    @Override
-    public Module addModule(Module hasorModule) {
-        // TODO Auto-generated method stub
-        return null;
+    /*-------------------------------------------------------------------------------------Module*/
+    private List<Module> tempModuleSet = new ArrayList<Module>();
+    /**获得所有模块*/
+    public final Module[] getModules() {
+        List<Module> moduleList = this.tempModuleSet;
+        Module[] infoArray = new Module[moduleList.size()];
+        for (int i = 0; i < moduleList.size(); i++)
+            infoArray[i] = moduleList.get(i);
+        return infoArray;
     }
-    @Override
-    public boolean removeModule(Module hasorModule) {
-        // TODO Auto-generated method stub
-        return false;
+    /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public synchronized Module addModule(Module module) {
+        if (this.isStart())
+            throw new IllegalStateException("context is started.");
+        this.tempModuleSet.add(module);
+        return module;
     }
-    @Override
-    public Module[] getModules() {
-        // TODO Auto-generated method stub
-        return null;
-    }s
+    /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
+    public synchronized boolean removeModule(Module hasorModule) {
+        if (this.isStart())
+            throw new IllegalStateException("context is started.");
+        return this.tempModuleSet.remove(hasorModule);
+    }
 }

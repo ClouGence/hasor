@@ -311,7 +311,13 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     //
     /*------------------------------------------------------------------------------------Creater*/
+    private boolean startState = false;
+    public boolean isStart() {
+        return this.startState;
+    }
     public synchronized final void start() throws Throwable {
+        if (this.isStart())
+            return;
         final AbstractAppContext appContext = this;
         final Module[] modules = this.getModules();
         /*1.Init*/
@@ -342,6 +348,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         appContext.fireSyncEvent(ContextEvent_Started, appContext);
         appContext.doStartCompleted();/*用于扩展*/
         /*3.打印状态*/
+        this.startState = true;
         Hasor.logInfo("Hasor Started now!");
     }
 }

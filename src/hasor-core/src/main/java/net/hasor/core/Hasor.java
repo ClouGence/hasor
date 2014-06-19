@@ -248,10 +248,17 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(String config, Module... modules) {
-        StandardAppContext app = new StandardAppContext(config);
-        for (Module mod : modules)
-            app.addModule(mod);
-        app.start();
-        return app;
+        try {
+            StandardAppContext app = new StandardAppContext(config);
+            for (Module mod : modules)
+                app.addModule(mod);
+            app.start();
+            return app;
+        } catch (Throwable e) {
+            if (e instanceof RuntimeException)
+                throw (RuntimeException) e;
+            else
+                throw new RuntimeException(e);
+        }
     }
 }

@@ -45,32 +45,33 @@ import net.hasor.web.startup.RuntimeFilter;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebStandardAppContext extends StandardAppContext implements WebAppContext {
+    private ServletContext servletContext = null;
     public WebStandardAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
         super();
-        this.setContext(servletContext);
+        this.servletContext = servletContext;
     }
     /***/
     public WebStandardAppContext(String mainSettings, ServletContext servletContext) throws IOException, URISyntaxException {
         super(mainSettings);
-        this.setContext(servletContext);
+        this.servletContext = servletContext;
     }
     /***/
     public WebStandardAppContext(File mainSettings, ServletContext servletContext) {
         super(mainSettings);
-        this.setContext(servletContext);
+        this.servletContext = servletContext;
     }
     /***/
     public WebStandardAppContext(URI mainSettings, ServletContext servletContext) {
         super(mainSettings);
-        this.setContext(servletContext);
+        this.servletContext = servletContext;
     }
     //
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
-        return ((WebEnvironment) this.getEnvironment()).getServletContext();
+        return this.servletContext;
     }
     protected WebEnvironment createEnvironment() {
-        return new WebStandardEnvironment(this.getMainSettings(), (ServletContext) this.getContext());
+        return new WebStandardEnvironment(this.getMainSettings(), this.servletContext);
     }
     /**为模块创建ApiBinder*/
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {

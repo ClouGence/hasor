@@ -32,6 +32,10 @@ public interface AppContext extends EventContext {
     public Environment getEnvironment();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
+    /**模块启动*/
+    public void start() throws Throwable;
+    /**是否启动*/
+    public boolean isStart();
     //
     /*-------------------------------------------------------------------------------------Module*/
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
