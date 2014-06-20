@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Manager;
-import net.hasor.db.transaction.TransactionBehavior;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.test.simple.db.AbstractSimpleJDBCTest;
@@ -44,7 +44,7 @@ public class HaveTarn_NESTEDTest extends AbstractSimpleJDBCTest {
         jdbc.execute("insert into TB_User values('18c48158','蒙奇.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
         {
             //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_NESTED);
+            TransactionStatus status = tm.getTransaction(Propagation.PROPAGATION_NESTED);
             jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
             System.out.println(jdbc.queryForInt("select count(*) from TB_User"));
             //rollBack

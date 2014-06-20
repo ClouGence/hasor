@@ -15,7 +15,7 @@
  */
 package net.test.simple.db._06_transaction.MANDATORY;
 import java.sql.SQLException;
-import net.hasor.db.transaction.TransactionBehavior;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
 import net.test.simple.db._06_transaction.AbstractSimpleTransactionManagerTest;
 import org.junit.Test;
@@ -36,6 +36,6 @@ public class NoTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest {
          *   1.开启事务..  (引发异常，因为环境中不存在事务)
          */
         /*Begin*/
-        TransactionStatus tranStatus = begin(TransactionBehavior.PROPAGATION_MANDATORY);
+        TransactionStatus tranStatus = begin(Propagation.MANDATORY);
     }
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.support;
-import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_MANDATORY;
-import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_NESTED;
-import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_NEVER;
-import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_NOT_SUPPORTED;
-import static net.hasor.db.transaction.TransactionBehavior.PROPAGATION_REQUIRED;
-import static net.hasor.db.transaction.TransactionBehavior.RROPAGATION_REQUIRES_NEW;
+import static net.hasor.db.transaction.Propagation.MANDATORY;
+import static net.hasor.db.transaction.Propagation.NESTED;
+import static net.hasor.db.transaction.Propagation.NEVER;
+import static net.hasor.db.transaction.Propagation.NOT_SUPPORTED;
+import static net.hasor.db.transaction.Propagation.REQUIRED;
+import static net.hasor.db.transaction.Propagation.REQUIRES_NEW;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import javax.sql.DataSource;
@@ -28,8 +28,8 @@ import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.datasource.local.ConnectionHolder;
 import net.hasor.db.datasource.local.ConnectionSequence;
 import net.hasor.db.datasource.local.LocalDataSourceHelper;
-import net.hasor.db.transaction.TransactionBehavior;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 /**
@@ -69,11 +69,11 @@ public class JdbcTransactionManager implements TransactionManager {
     //
     //
     /**开启事务*/
-    public final TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException {
-        return getTransaction(behavior, TransactionLevel.ISOLATION_DEFAULT);
+    public final TransactionStatus getTransaction(Propagation behavior) throws SQLException {
+        return getTransaction(behavior, Isolation.DEFAULT);
     };
     /**开启事务*/
-    public final TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException {
+    public final TransactionStatus getTransaction(Propagation behavior, Isolation level) throws SQLException {
         Hasor.assertIsNotNull(behavior);
         Hasor.assertIsNotNull(level);
         //1.获取连接
@@ -83,30 +83,30 @@ public class JdbcTransactionManager implements TransactionManager {
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
-        | PROPAGATION_REQUIRED     ：加入已有事务（不处理）
-        | RROPAGATION_REQUIRES_NEW ：独立事务（挂起当前事务，开启新事务）
-        | PROPAGATION_NESTED       ：嵌套事务（设置保存点）
-        | PROPAGATION_SUPPORTS     ：跟随环境（不处理）
-        | PROPAGATION_NOT_SUPPORTED：非事务方式（仅挂起当前事务）
-        | PROPAGATION_NEVER        ：排除事务（异常）
-        | PROPAGATION_MANDATORY    ：强制要求事务（不处理）
+        | REQUIRED     ：加入已有事务（不处理）
+        | REQUIRES_NEW ：独立事务（挂起当前事务，开启新事务）
+        | NESTED       ：嵌套事务（设置保存点）
+        | SUPPORTS     ：跟随环境（不处理）
+        | NOT_SUPPORTED：非事务方式（仅挂起当前事务）
+        | NEVER        ：排除事务（异常）
+        | MANDATORY    ：强制要求事务（不处理）
         ===============================================================*/
         if (this.isExistingTransaction(defStatus) == true) {
-            /*RROPAGATION_REQUIRES_NEW：独立事务*/
-            if (behavior == RROPAGATION_REQUIRES_NEW) {
+            /*REQUIRES_NEW：独立事务*/
+            if (behavior == REQUIRES_NEW) {
                 this.suspend(defStatus);/*挂起当前事务*/
                 this.doBegin(defStatus);/*开启新事务*/
             }
-            /*PROPAGATION_NESTED：嵌套事务*/
-            if (behavior == PROPAGATION_NESTED) {
+            /*NESTED：嵌套事务*/
+            if (behavior == NESTED) {
                 defStatus.markHeldSavepoint();/*设置保存点*/
             }
-            /*PROPAGATION_NOT_SUPPORTED：非事务方式*/
-            if (behavior == PROPAGATION_NOT_SUPPORTED) {
+            /*NOT_SUPPORTED：非事务方式*/
+            if (behavior == NOT_SUPPORTED) {
                 this.suspend(defStatus);/*挂起事务*/
             }
-            /*PROPAGATION_NEVER：排除事务*/
-            if (behavior == PROPAGATION_NEVER) {
+            /*NEVER：排除事务*/
+            if (behavior == NEVER) {
                 this.cleanupAfterCompletion(defStatus);
                 throw new SQLException("Existing transaction found for transaction marked with propagation 'never'");
             }
@@ -115,24 +115,24 @@ public class JdbcTransactionManager implements TransactionManager {
         /*-------------------------------------------------------------
         |                      环境不经存在事务
         |
-        | PROPAGATION_REQUIRED     ：加入已有事务（开启新事务）
-        | RROPAGATION_REQUIRES_NEW ：独立事务（开启新事务）
-        | PROPAGATION_NESTED       ：嵌套事务（开启新事务）
-        | PROPAGATION_SUPPORTS     ：跟随环境（不处理）
-        | PROPAGATION_NOT_SUPPORTED：非事务方式（不处理）
-        | PROPAGATION_NEVER        ：排除事务（不处理）
-        | PROPAGATION_MANDATORY    ：强制要求事务（异常）
+        | REQUIRED     ：加入已有事务（开启新事务）
+        | REQUIRES_NEW ：独立事务（开启新事务）
+        | NESTED       ：嵌套事务（开启新事务）
+        | SUPPORTS     ：跟随环境（不处理）
+        | NOT_SUPPORTED：非事务方式（不处理）
+        | NEVER        ：排除事务（不处理）
+        | MANDATORY    ：强制要求事务（异常）
         ===============================================================*/
-        /*PROPAGATION_REQUIRED：加入已有事务*/
-        if (behavior == PROPAGATION_REQUIRED ||
-        /*RROPAGATION_REQUIRES_NEW：独立事务*/
-        behavior == RROPAGATION_REQUIRES_NEW ||
-        /*PROPAGATION_NESTED：嵌套事务*/
-        behavior == PROPAGATION_NESTED) {
+        /*REQUIRED：加入已有事务*/
+        if (behavior == REQUIRED ||
+        /*REQUIRES_NEW：独立事务*/
+        behavior == REQUIRES_NEW ||
+        /*NESTED：嵌套事务*/
+        behavior == NESTED) {
             this.doBegin(defStatus);/*开启新事务*/
         }
-        /*PROPAGATION_MANDATORY：强制要求事务*/
-        if (behavior == PROPAGATION_MANDATORY) {
+        /*MANDATORY：强制要求事务*/
+        if (behavior == MANDATORY) {
             this.cleanupAfterCompletion(defStatus);
             throw new SQLException("No existing transaction found for transaction marked with propagation 'mandatory'");
         }
@@ -311,7 +311,7 @@ public class JdbcTransactionManager implements TransactionManager {
         defStatus.setCompleted();
         /*释放资源*/
         /*恢复当时的隔离级别*/
-        TransactionLevel transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
+        Isolation transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
         if (transactionIsolation != null)
             defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
         defStatus.getTranConn().getHolder().released();//ref--
@@ -337,10 +337,10 @@ public class JdbcTransactionManager implements TransactionManager {
         holder.requested();
         //下面两行代码用于保存当前Connection的隔离级别，并且设置新的隔离级别。
         int isolationLevel = holder.getConnection().getTransactionIsolation();
-        TransactionLevel level = null;
-        if (defStatus.getIsolationLevel() != TransactionLevel.ISOLATION_DEFAULT) {
+        Isolation level = null;
+        if (defStatus.getIsolationLevel() != Isolation.DEFAULT) {
             holder.getConnection().setTransactionIsolation(defStatus.getIsolationLevel().ordinal());
-            level = TransactionLevel.valueOf(isolationLevel);
+            level = Isolation.valueOf(isolationLevel);
         }
         //
         return new TransactionObject(holder, level, getDataSource());

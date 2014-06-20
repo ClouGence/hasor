@@ -17,8 +17,8 @@ package net.hasor.db.transaction.support;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import net.hasor.db.datasource.SavepointManager;
-import net.hasor.db.transaction.TransactionBehavior;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.TransactionStatus;
 /**
  * 表示一个用于管理事务的状态点
@@ -29,14 +29,14 @@ public class JdbcTransactionStatus implements TransactionStatus {
     private Savepoint           savepoint     = null; //事务保存点
     private TransactionObject   tranConn      = null; //当前事务使用的数据库连接
     private TransactionObject   suspendConn   = null; //当前事务之前挂起的上一个数据库事务
-    private TransactionBehavior behavior      = null; //传播属性
-    private TransactionLevel    level         = null; //隔离级别
+    private Propagation behavior      = null; //传播属性
+    private Isolation    level         = null; //隔离级别
     private boolean             completed     = false; //完成（true表示完成）
     private boolean             rollbackOnly  = false; //要求回滚（true表示回滚）
     private boolean             newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
     private boolean             readOnly      = false; //只读模式（true表示只读）
     //
-    public JdbcTransactionStatus(TransactionBehavior behavior, TransactionLevel level) {
+    public JdbcTransactionStatus(Propagation behavior, Isolation level) {
         this.behavior = behavior;
         this.level = level;
     }
@@ -93,10 +93,10 @@ public class JdbcTransactionStatus implements TransactionStatus {
     //
     //
     //
-    public TransactionBehavior getTransactionBehavior() {
+    public Propagation getTransactionBehavior() {
         return this.behavior;
     }
-    public TransactionLevel getIsolationLevel() {
+    public Isolation getIsolationLevel() {
         return this.level;
     }
     public boolean isCompleted() {

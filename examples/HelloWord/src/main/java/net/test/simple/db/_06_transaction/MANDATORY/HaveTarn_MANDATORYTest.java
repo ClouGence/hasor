@@ -18,8 +18,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.TransactionBehavior;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.TransactionStatus;
 import net.test.simple.db._06_transaction.AbstractSimpleTransactionManagerTest;
 import org.junit.Test;
@@ -30,9 +30,9 @@ import org.junit.Test;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HaveTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest {
-    protected TransactionLevel getWatchThreadTransactionLevel() {
+    protected Isolation getWatchThreadTransactionLevel() {
         /*监控线程的事务隔离级别修改为，允许读未递交的数据*/
-        return TransactionLevel.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED);
+        return Isolation.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED);
     }
     @Test
     public void haveTarn_MANDATORYTest() throws SQLException, InterruptedException {
@@ -63,7 +63,7 @@ public class HaveTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest
             Thread.sleep(3000);
         }
         /*T2-Begin*/
-        TransactionStatus tranStatus = begin(TransactionBehavior.PROPAGATION_MANDATORY);
+        TransactionStatus tranStatus = begin(Propagation.MANDATORY);
         {
             String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘安妮.贝隆’...");

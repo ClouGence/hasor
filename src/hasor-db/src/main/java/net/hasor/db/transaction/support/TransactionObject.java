@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.db.datasource.SavepointManager;
 import net.hasor.db.datasource.local.ConnectionHolder;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Isolation;
 /**
  * 
  * @version : 2014-1-18
@@ -28,13 +28,13 @@ import net.hasor.db.transaction.TransactionLevel;
 public class TransactionObject {
     private ConnectionHolder holder     = null;
     private DataSource       dataSource = null;
-    private TransactionLevel oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
-    public TransactionObject(ConnectionHolder holder, TransactionLevel oriIsolationLevel, DataSource dataSource) {
+    private Isolation oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
+    public TransactionObject(ConnectionHolder holder, Isolation oriIsolationLevel, DataSource dataSource) {
         this.holder = holder;
         this.dataSource = dataSource;
         this.oriIsolationLevel = oriIsolationLevel;
     }
-    public TransactionLevel getOriIsolationLevel() {
+    public Isolation getOriIsolationLevel() {
         return oriIsolationLevel;
     }
     public ConnectionHolder getHolder() {

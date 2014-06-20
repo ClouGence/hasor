@@ -22,13 +22,13 @@ import java.sql.SQLException;
  */
 public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。
-     * @see net.hasor.db.transaction.TransactionBehavior
-     * @see net.hasor.db.transaction.TransactionManager#getTransaction(TransactionBehavior, TransactionLevel)*/
-    public TransactionStatus getTransaction(TransactionBehavior behavior) throws SQLException;
+     * @see net.hasor.db.transaction.Propagation
+     * @see net.hasor.db.transaction.TransactionManager#getTransaction(Propagation, Isolation)*/
+    public TransactionStatus getTransaction(Propagation behavior) throws SQLException;
     /**开启事务
-     * @see net.hasor.db.transaction.TransactionBehavior
+     * @see net.hasor.db.transaction.Propagation
      * @see java.sql.Connection#setTransactionIsolation(int)*/
-    public TransactionStatus getTransaction(TransactionBehavior behavior, TransactionLevel level) throws SQLException;
+    public TransactionStatus getTransaction(Propagation behavior, Isolation level) throws SQLException;
     /**递交事务
      * <p>如果递交的事务并不处于事务堆栈顶端，会同时递交该事务的后面其它事务。*/
     public void commit(TransactionStatus status) throws SQLException;

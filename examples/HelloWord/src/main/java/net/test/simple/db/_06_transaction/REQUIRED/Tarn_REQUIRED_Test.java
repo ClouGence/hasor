@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.TransactionBehavior;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.support.JdbcTransactionManager;
@@ -39,7 +39,7 @@ public class Tarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
         TransactionManager tm = new JdbcTransactionManager(jdbc.getDataSource());
         {
             //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_REQUIRED);
+            TransactionStatus status = tm.getTransaction(Propagation.PROPAGATION_REQUIRED);
             jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
             System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
             //commit
@@ -58,7 +58,7 @@ public class Tarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
         con.setAutoCommit(false);
         {
             //begin
-            TransactionStatus status = tm.getTransaction(TransactionBehavior.PROPAGATION_REQUIRED);
+            TransactionStatus status = tm.getTransaction(Propagation.PROPAGATION_REQUIRED);
             jdbc.execute("insert into TB_User values('deb4f4c8','安妮.TD.雨果','belon','123','belon@hasor.net','2011-06-08 20:08:08');");//执行插入语句
             System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8'"));
             //commit

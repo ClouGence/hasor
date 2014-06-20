@@ -22,9 +22,9 @@ import java.sql.SQLException;
  */
 public interface TransactionStatus {
     /**获取事务使用的传播行为*/
-    public TransactionBehavior getTransactionBehavior();
+    public Propagation getTransactionBehavior();
     /**获取事务的隔离级别*/
-    public TransactionLevel getIsolationLevel();
+    public Isolation getIsolationLevel();
     //
     /**事务是否已经完成。
      * <p>当事务已经递交或者被回滚就标志着已完成。*/

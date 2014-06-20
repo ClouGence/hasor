@@ -25,7 +25,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Isolation;
 import org.junit.Before;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
@@ -38,8 +38,8 @@ public abstract class AbstractSimpleJDBCTest extends AbstractJDBCTest {
     protected DataSource getWatchThreadDataSource() {
         return getDataSource();
     }
-    protected TransactionLevel getWatchThreadTransactionLevel() {
-        return TransactionLevel.valueOf(Connection.TRANSACTION_READ_COMMITTED);
+    protected Isolation getWatchThreadTransactionLevel() {
+        return Isolation.valueOf(Connection.TRANSACTION_READ_COMMITTED);
     }
     @Before
     public void initContext() throws IOException, URISyntaxException, SQLException {

@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Manager;
-import net.hasor.db.transaction.TransactionBehavior;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.test.simple.db.AbstractSimpleJDBCTest;
@@ -38,7 +38,7 @@ public abstract class AbstractSimpleTransactionManagerTest extends AbstractSimpl
         this.transactionManager = Manager.getTransactionManager(jdbc.getDataSource());
     }
     /**开始事物*/
-    protected TransactionStatus begin(TransactionBehavior behavior) throws SQLException {
+    protected TransactionStatus begin(Propagation behavior) throws SQLException {
         return this.transactionManager.getTransaction(behavior);
     }
     /**递交事物*/

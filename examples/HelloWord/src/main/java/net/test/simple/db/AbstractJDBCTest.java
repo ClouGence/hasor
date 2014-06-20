@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import javax.sql.DataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.TransactionLevel;
+import net.hasor.db.transaction.Isolation;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.CharUtils;
@@ -37,7 +37,7 @@ import org.more.util.StringUtils;
  */
 public abstract class AbstractJDBCTest {
     protected abstract DataSource getWatchThreadDataSource();
-    protected abstract TransactionLevel getWatchThreadTransactionLevel();
+    protected abstract Isolation getWatchThreadTransactionLevel();
     //
     private Thread watchThread = null;
     /**监视一张表的变化，当表的内容发生变化打印全表的内容。*/
