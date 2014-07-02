@@ -21,6 +21,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.core.context._.RegisterManager;
+import net.hasor.core.context._.RegisterManagerCreater;
 import org.more.UndefinedException;
 import org.more.util.StringUtils;
 /**

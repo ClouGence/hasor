@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.binder.TypeRegister;
-import net.hasor.core.builder.BeanBuilder;
+package net.hasor.core.context._.rm.simple.schema;
 /**
- * 
- * @version : 2014-5-10
+ * ClassPathBeanDefine类用于定义一个常规的bean，这个bean有一个具体的class类对象。
+ * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface RegisterManager {
-    /**注册Bean*/
-    public <T> TypeRegister<T> registerType(Class<T> bindType);
-    /**获取BeanBuilder，用来查询和创建Bean*/
-    public BeanBuilder getBeanBuilder();
+public class ClassPathBeanDefine extends BeanDefine {
+    private String source = null; //class类
+    /**返回“ClassBean”。*/
+    public String getBeanType() {
+        return "ClassPathBean";
+    }
+    /**获取类的class完整限定名。*/
+    public String getSource() {
+        return source;
+    }
+    /**设置类完整限定名。*/
+    public void setSource(String source) {
+        this.source = source;
+    }
 }

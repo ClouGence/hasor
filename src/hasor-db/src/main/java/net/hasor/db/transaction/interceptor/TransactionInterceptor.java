@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
-import net.hasor.db.transaction.TransactionBehavior;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -30,7 +30,7 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class TransactionInterceptor implements MethodInterceptor {
     private Provider<DataSource>        dataSourceProvider;
-    private TransactionBehavior         behavior;
+    private Propagation                 propagation;
     private TransactionManager          transactionManager;
     private AopMatcherMethodInterceptor interceptorMatcher;
     //
@@ -46,7 +46,7 @@ public class TransactionInterceptor implements MethodInterceptor {
         //2.在事务管理器的控制下进行方法调用
         TransactionStatus tranStatus = null;
         try {
-            tranStatus = this.transactionManager.getTransaction(this.behavior);
+            tranStatus = this.transactionManager.getTransaction(this.propagation);s
             return invocation.proceed();
         } catch (Throwable e) {
             this.transactionManager.rollBack(tranStatus);
@@ -67,5 +67,5 @@ public class TransactionInterceptor implements MethodInterceptor {
         if (this.interceptorMatcher != null)
             return this.interceptorMatcher.matcher(targetMethod);
         return true;
-    }s
+    }
 }

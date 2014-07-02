@@ -32,9 +32,9 @@ import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
-import net.hasor.core.binder.TypeRegister;
-import net.hasor.core.binder.register.FreeTypeRegister;
-import net.hasor.core.builder.BeanBuilder;
+import net.hasor.core.binder.TypeBuilder;
+import net.hasor.core.context._.BeanFactory;
+import net.hasor.core.context._.RegisterManager;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
@@ -113,7 +113,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return this.getBeanBuilder().getInstance(info);
     };
     /**获取用于创建Bean对象的BeanBuilder接口*/
-    protected BeanBuilder getBeanBuilder() {
+    protected BeanFactory getBeanBuilder() {
         return this.getRegisterManager().getBeanBuilder();
     };
     //
@@ -199,7 +199,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return null;
     }
     /**注册一个类型*/
-    protected <T> TypeRegister<T> registerType(Class<T> type) {
+    protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
         return this.getRegisterManager().registerType(type);
     }
     /**已注册的类型列表。*/
@@ -282,8 +282,8 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /**为模块创建ApiBinder*/
     protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
-            protected <T> TypeRegister<T> registerType(Class<T> type) {
-                return AbstractAppContext.this.registerType(type);
+            protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
+                return AbstractAppContext.this.createTypeBuilder(type);
             }
         };
     }

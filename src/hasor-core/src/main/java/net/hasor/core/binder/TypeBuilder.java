@@ -14,30 +14,34 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.lang.reflect.Constructor;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
 /**
  * 
- * @version : 2014-3-13
+ * @version : 2014年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TypeRegister<T> extends RegisterInfo<T> {
-    /**获取注册的类型*/
-    public Class<T> getType();
-    /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
-    public void toImpl(Class<? extends T> implementation);
-    /**为类型绑定一个实现对象。*/
-    public void toInstance(T instance);
-    /**为类型绑定一个Provider。*/
-    public void toProvider(Provider<T> provider);
-    /**为类型绑定一个初始构造方法。*/
-    public void toConstructor(Constructor<? extends T> constructor);
+public interface TypeBuilder<T> extends RegisterInfo<T> {
     /**为类型绑定一个名称。*/
     public void setName(String name);
-    /**将类型发布为单例模式。*/
-    public void setSingleton();
+    /**获取注册的类型*/
+    public Class<T> getType();
+    //
+    /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
+    public void setSourceType(Class<? extends T> implementation);
+    /**设置元信息*/
+    public void setMetaData(String key, Object value);
+    /**标记为单例*/
+    public void setSingleton(boolean singleton);
+    /**为类型绑定一个Provider。*/
+    public void setProvider(Provider<T> provider);
     /**将类型发布到一个固定的命名空间内。*/
-    public void setScope(Scope scope);
+    public void setScope(Provider<Scope> scope);
+    //
+    public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider);
+    public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo);
+    //
+    public void addInject(String property, Provider<?> valueProvider);
+    public void addInject(String property, RegisterInfo<?> valueInfo);
 }

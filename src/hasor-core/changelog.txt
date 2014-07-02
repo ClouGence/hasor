@@ -6,13 +6,10 @@
     02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
         --使其接近ApiBinder接口中bindingType方法的命名以便于开发者理解。
     03.所有Plugins都移动到Hasor-Quick项目中。
-    04.将Hasor中stop生命周期，相关的支持全部删除不再支持。
+    04.将Hasor中start、stop生命周期，相关的支持全部删除，不再支持插件生命周期。
     05.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
     06.添加Provider接口、EventContext接口。
-    07.支持重复绑定检测。
-    08.对日志输出做了优化。
-* 修复:
-    01.更名 ModulePropxy 类名为 ModuleProxy。
+    07.删除ModulePropxy类、删除启动依赖检查功能。
 
 ===== Hasor-Core v0.0.7
 * 修复:

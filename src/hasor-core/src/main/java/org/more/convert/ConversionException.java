@@ -24,10 +24,10 @@ package org.more.convert;
  * @since 1.3
  */
 public class ConversionException extends RuntimeException {
+    private static final long serialVersionUID = -5424284266801419535L;
     // ----------------------------------------------------------- Constructors
     /**
      * Construct a new exception with the specified message.
-     *
      * @param message The message describing this exception
      */
     public ConversionException(String message) {
@@ -35,7 +35,6 @@ public class ConversionException extends RuntimeException {
     }
     /**
      * Construct a new exception with the specified message and root cause.
-     *
      * @param message The message describing this exception
      * @param cause The root cause of this exception
      */
@@ -45,7 +44,6 @@ public class ConversionException extends RuntimeException {
     }
     /**
      * Construct a new exception with the specified root cause.
-     *
      * @param cause The root cause of this exception
      */
     public ConversionException(Throwable cause) {

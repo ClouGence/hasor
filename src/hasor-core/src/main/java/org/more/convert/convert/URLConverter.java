@@ -27,28 +27,23 @@ import org.more.convert.Converter;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
+@SuppressWarnings({ "rawtypes" })
 public final class URLConverter extends AbstractConverter {
     /**
-     * Construct a <b>java.net.URL</b> <i>Converter</i> that throws
-     * a <code>ConversionException</code> if an error occurs.
+     * Construct a <b>java.net.URL</b> <i>Converter</i> that throws a <code>ConversionException</code> if an error occurs.
      */
     public URLConverter() {
         super();
     }
     /**
-     * Construct a <b>java.net.URL</b> <i>Converter</i> that returns
-     * a default value if an error occurs.
-     *
-     * @param defaultValue The default value to be returned
-     * if the value to be converted is missing or an error
-     * occurs converting the value.
+     * Construct a <b>java.net.URL</b> <i>Converter</i> that returns a default value if an error occurs.
+     * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
     public URLConverter(Object defaultValue) {
         super(defaultValue);
     }
     /**
      * Return the default type this <code>Converter</code> handles.
-     *
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */

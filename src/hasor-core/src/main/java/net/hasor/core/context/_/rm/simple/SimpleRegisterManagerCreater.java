@@ -1,3 +1,4 @@
+package net.hasor.core.context._.rm.simple;
 ///*
 // * Copyright 2008-2009 the original author or authors.
 // *

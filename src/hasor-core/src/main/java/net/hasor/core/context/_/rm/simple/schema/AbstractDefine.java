@@ -13,13 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.Environment;
+package net.hasor.core.context._.rm.simple.schema;
+import java.util.HashMap;
 /**
- * 
- * @version : 2014-5-10
+ * 所有定义的基类。
+ * @version 2010-9-15
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface RegisterManagerCreater {
-    public RegisterManager create(Environment env);
+public abstract class AbstractDefine {
+    /*携带的附加信息描述*/
+    private HashMap<String, Object> metaData = null;
+    /*------------------------------------------------------------------*/
+    //
+    /**获取携带的附加信息描述*/
+    public HashMap<String, Object> getMetaData() {
+        return metaData;
+    }
+    /**设置携带的附加信息描述*/
+    public void setMetaData(HashMap<String, Object> metaData) {
+        this.metaData = metaData;
+    }
 }

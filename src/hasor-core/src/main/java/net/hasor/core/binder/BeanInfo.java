@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.util.Map;
 /**
  * 注册到 Hasor 中 Bean 的元信息。
  * @version : 2013-5-6
@@ -27,6 +26,4 @@ public interface BeanInfo {
     public String getReferID();
     /**获取bean的类型*/
     public <T> Class<T> getType();
-    /**绑在Bean身上的属性。*/
-    public Map<String, Object> propertyMap();
 }

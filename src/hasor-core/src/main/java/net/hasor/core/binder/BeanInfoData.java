@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.util.Map;
 /**
  * 注册到 Hasor 中 Bean 的元信息。
  * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
 class BeanInfoData implements BeanInfo {
-    private String[]            names     = null;
-    private String              referID   = null;
-    private Class<?>            beanClass = null;
-    private Map<String, Object> property  = null;
+    private String[] names     = null;
+    private String   referID   = null;
+    private Class<?> beanClass = null;
     //
-    public BeanInfoData(String[] names, String referID, Class<?> beanClass, Map<String, Object> property) {
+    public BeanInfoData(String[] names, String referID, Class<?> beanClass) {
         this.names = names;
         this.referID = referID;
         this.beanClass = beanClass;
-        this.property = property;
     }
     /**获取bean的名称*/
     public String[] getNames() {
@@ -42,8 +39,5 @@ class BeanInfoData implements BeanInfo {
     /**获取bean的类型*/
     public Class<?> getType() {
         return this.beanClass;
-    }
-    public Map<String, Object> propertyMap() {
-        return this.property;
     }
 }

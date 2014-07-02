@@ -42,6 +42,7 @@ import org.more.convert.Converter;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
+@SuppressWarnings({ "rawtypes" })
 public abstract class AbstractConverter implements Converter {
     /** 当转换出错时是否返回默认值。*/
     private boolean useDefault   = false;
@@ -237,7 +238,8 @@ public abstract class AbstractConverter implements Converter {
         } else {
             typeName = type.getName();
         }
-        final String PACKAGE = "org.more.convert.convert.";
+        /* org.more.convert.convert. */
+        final String PACKAGE = AbstractConverter.class.getPackage().getName() + ".";
         if (typeName.startsWith("java.lang.") || typeName.startsWith("java.util.") || typeName.startsWith("java.math.")) {
             typeName = typeName.substring("java.lang.".length());
         } else if (typeName.startsWith(PACKAGE)) {

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.context._;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import net.hasor.core.binder.TypeRegister;
+import net.hasor.core.binder.builder.TypeRegister;
+import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import org.more.RepeateException;
 import org.more.util.StringUtils;

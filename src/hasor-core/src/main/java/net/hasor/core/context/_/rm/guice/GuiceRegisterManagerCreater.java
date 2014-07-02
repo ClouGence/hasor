@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.rm.guice;
+package net.hasor.core.context._.rm.guice;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,16 +22,16 @@ import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.TypeRegister;
 import net.hasor.core.binder.aop.AopConst;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
+import net.hasor.core.binder.builder.TypeRegister;
 import net.hasor.core.binder.register.AbstractTypeRegister;
 import net.hasor.core.binder.register.FreeTypeRegister;
-import net.hasor.core.builder.BeanBuilder;
 import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.AbstractRegisterManager;
-import net.hasor.core.context.RegisterManager;
-import net.hasor.core.context.RegisterManagerCreater;
+import net.hasor.core.context._.AbstractRegisterManager;
+import net.hasor.core.context._.BeanFactory;
+import net.hasor.core.context._.RegisterManager;
+import net.hasor.core.context._.RegisterManagerCreater;
 import org.more.util.Iterators;
 import org.more.util.Iterators.Converter;
 import org.more.util.StringUtils;
@@ -133,12 +133,12 @@ class GuiceRegisterManager extends AbstractRegisterManager {
         //
     }
     private GuiceBeanBuilder guiceBeanBuilder = null;
-    public BeanBuilder getBeanBuilder() {
+    public BeanFactory getBeanBuilder() {
         return this.guiceBeanBuilder;
     }
 }
 /**用来创建Bean、查找Bean*/
-class GuiceBeanBuilder implements BeanBuilder {
+class GuiceBeanBuilder implements BeanFactory {
     private Injector injector;
     //
     public GuiceBeanBuilder(Injector injector) {

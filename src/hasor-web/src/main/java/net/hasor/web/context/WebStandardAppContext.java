@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.TypeRegister;
+import net.hasor.core.binder.TypeBuilder;
 import net.hasor.core.context.StandardAppContext;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
@@ -76,8 +76,8 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
     /**为模块创建ApiBinder*/
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
-            protected <T> TypeRegister<T> registerType(Class<T> type) {
-                return WebStandardAppContext.this.registerType(type);
+            protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
+                return WebStandardAppContext.this.createTypeBuilder(type);
             }
         };
     }

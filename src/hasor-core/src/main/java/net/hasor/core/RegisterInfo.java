@@ -24,10 +24,6 @@ public interface RegisterInfo<T> {
     public String getName();
     /**获取注册的类型*/
     public Class<T> getType();
-    /**是否为单例模式。*/
-    public boolean isSingleton();
-    /**获取Provider*/
-    public Provider<T> getProvider();
     /**获取元信息。*/
-    public RegisterInfo<T> setMetaData(String key, Object value);
+    public Object getMetaData(String key);
 }

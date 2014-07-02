@@ -32,6 +32,7 @@ import java.math.BigInteger;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
+@SuppressWarnings("rawtypes")
 public final class BigIntegerConverter extends NumberConverter {
     /**
      * Construct a <b>java.math.BigInteger</b> <i>Converter</i> that throws
