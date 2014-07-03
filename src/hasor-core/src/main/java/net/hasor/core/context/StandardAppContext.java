@@ -18,20 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
-import net.hasor.core.context._.RegisterManager;
-import net.hasor.core.context._.RegisterManagerCreater;
-import org.more.UndefinedException;
-import org.more.util.StringUtils;
+import net.hasor.core.context.adapter.RegisterFactory;
 /**
  * 
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class StandardAppContext extends AbstractConfigResourceAppContext {
-    private static final RegisterManager NullRegister = null;
+    private static final RegisterFactory NullRegister = null;
     /**设置主配置文件*/
     public StandardAppContext() throws IOException, URISyntaxException {
         this(NullRegister);
@@ -49,67 +43,23 @@ public class StandardAppContext extends AbstractConfigResourceAppContext {
         this(mainSettings, NullRegister);
     }
     /**设置主配置文件*/
-    public StandardAppContext(RegisterManager registerManager) throws IOException, URISyntaxException {
+    public StandardAppContext(RegisterFactory registerManager) throws IOException, URISyntaxException {
         super();
         this.setRegisterContext(registerManager);
     }
     /**设置主配置文件*/
-    public StandardAppContext(File mainSettings, RegisterManager registerManager) {
+    public StandardAppContext(File mainSettings, RegisterFactory registerManager) {
         super(mainSettings);
         this.setRegisterContext(registerManager);
     }
     /**设置主配置文件*/
-    public StandardAppContext(URI mainSettings, RegisterManager registerManager) {
+    public StandardAppContext(URI mainSettings, RegisterFactory registerManager) {
         super(mainSettings);
         this.setRegisterContext(registerManager);
     }
     /**设置主配置文件*/
-    public StandardAppContext(String mainSettings, RegisterManager registerManager) throws IOException, URISyntaxException {
+    public StandardAppContext(String mainSettings, RegisterFactory registerManager) throws IOException, URISyntaxException {
         super(mainSettings);
         this.setRegisterContext(registerManager);
-    }
-    //
-    //
-    //
-    private RegisterManager registerManager = null;
-    private void setRegisterContext(RegisterManager registerManager) {
-        this.registerManager = registerManager;
-    }
-    protected RegisterManager getRegisterManager() {
-        if (this.registerManager == null) {
-            String createrToUse = null;
-            //1.取得即将创建的ManagerCreater类型
-            Settings setting = this.getSettings();
-            String defaultManager = setting.getString("hasor.registerManager.default");
-            XmlNode[] managerArray = setting.getXmlNodeArray("hasor.registerManager");
-            for (XmlNode manager : managerArray) {
-                List<XmlNode> createrList = manager.getChildren("creater");
-                for (XmlNode creater : createrList) {
-                    String createrName = creater.getAttribute("name");
-                    if (StringUtils.equalsIgnoreCase(createrName, defaultManager)) {
-                        createrToUse = creater.getAttribute("class");
-                        break;
-                    }
-                }
-                if (createrToUse != null)
-                    break;
-            }
-            //2.排错
-            if (createrToUse == null)
-                throw new UndefinedException(String.format("%s is not define.", defaultManager));
-            //3.创建Creater
-            try {
-                Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
-                RegisterManagerCreater creater = (RegisterManagerCreater) createrType.newInstance();
-                this.registerManager = creater.create(this.getEnvironment());
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (this.registerManager == null)
-            throw new NullPointerException("registerManager is null.");
-        return this.registerManager;
     }
 }

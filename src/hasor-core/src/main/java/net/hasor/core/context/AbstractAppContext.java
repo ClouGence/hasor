@@ -15,7 +15,7 @@
  */
 package net.hasor.core.context;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -28,13 +28,13 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
 import net.hasor.core.binder.TypeBuilder;
-import net.hasor.core.context._.BeanFactory;
-import net.hasor.core.context._.RegisterManager;
+import net.hasor.core.context.adapter.RegisterInfoAdapter;
+import net.hasor.core.context.adapter.RegisterFactory;
+import net.hasor.core.context.adapter.RegisterScope;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
@@ -49,56 +49,118 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext, RegisterScope {
+    /*------------------------------------------------------------------------------RegisterScope*/
+    /**父级*/
+    public RegisterScope getParentScope() {
+        return this.getParent();
+    }
+    /**查找RegisterInfo*/
+    public final <T> RegisterInfoAdapter<T> getRegister(String withName, Class<T> bindingType) {
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //
+        Iterator<RegisterInfoAdapter<T>> registerIterator = this.getRegisterIterator(bindingType);
+        if (registerIterator == null)
+            return null;
+        while (registerIterator.hasNext()) {
+            RegisterInfoAdapter<T> register = registerIterator.next();
+            if (StringUtils.equals(withName, register.getName()))
+                return register;
+        }
+        return null;
+    };
+    /**根据Type查找RegisterInfo迭代器*/
+    public final <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindingType) {
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //
+        Iterator<RegisterInfoAdapter<T>> registerIterator = this.localRegisterIterator(bindingType);
+        RegisterScope parentScope = this.getParentScope();
+        if (parentScope != null) {
+            Iterator<RegisterInfoAdapter<T>> parentIterator = parentScope.getRegisterIterator(bindingType);
+            registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
+        }
+        return registerIterator;
+    }
+    /**查找所有RegisterInfo迭代器*/
+    public final Iterator<RegisterInfoAdapter<?>> getRegisterIterator() {
+        Iterator<RegisterInfoAdapter<?>> registerIterator = this.localRegisterIterator();
+        RegisterScope parentScope = this.getParentScope();
+        if (parentScope != null) {
+            Iterator<RegisterInfoAdapter<?>> parentIterator = parentScope.getRegisterIterator();
+            registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
+        }
+        return registerIterator;
+    }
+    /**已注册的类型列表。*/
+    protected Iterator<RegisterInfoAdapter<?>> localRegisterIterator() {
+        return this.getRegisterFactory().getRegisterIterator();
+    }
+    /**已注册的类型列表。*/
+    protected <T> Iterator<RegisterInfoAdapter<T>> localRegisterIterator(Class<T> bindingType) {
+        return this.getRegisterFactory().getRegisterIterator(bindingType);
+    }
     //
     /*---------------------------------------------------------------------------------------Bean*/
-    public <T> Class<T> getBeanType(String name) {
-        BeanInfo info = this.findBindingBean(name, BeanInfo.class);
-        return info == null ? null : (Class<T>) info.getType();
+    /**通过名获取Bean的类型。*/
+    public Class<?> getBeanType(String name) {
+        Hasor.assertIsNotNull(name, "name is null.");
+        //
+        RegisterInfoAdapter<BeanInfo> infoRegister = this.getRegister(name, BeanInfo.class);
+        if (infoRegister == null)
+            return null;
+        BeanInfo<?> info = infoRegister.getProvider().get();
+        RegisterInfoAdapter<?> typeRegister = this.getRegister(info.getReferID(), info.getType());
+        if (typeRegister != null)
+            return typeRegister.getType();
+        return null;
     }
+    /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getBeanNames(Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
-        if (infoArray == null)
-            infoArray = Collections.emptyList();
-        /*查找*/
-        ArrayList<String> nameList = new ArrayList<String>();
-        for (int i = 0; i < infoArray.size(); i++) {
-            BeanInfo info = infoArray.get(i);
-            String[] names = info.getNames();
-            for (String nameItem : names)
-                nameList.add(nameItem);
-        }
-        return nameList.toArray(new String[nameList.size()]);
-    }
-    public String[] getBeanNames() {
-        List<BeanInfo> infoArray = this.findBindingBean(BeanInfo.class);
-        if (infoArray == null || infoArray.isEmpty())
+        //
+        Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getRegisterIterator(BeanInfo.class);
+        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
             return ArrayUtils.EMPTY_STRING_ARRAY;
-        /*查找*/
-        List<String> names = new ArrayList<String>();
-        for (BeanInfo info : infoArray) {
-            String[] aliasNames = info.getNames();
-            for (String aliasName : aliasNames)
-                names.add(aliasName);
+        //
+        Set<String> nameSet = new HashSet<String>();
+        while (infoRegisterIterator.hasNext()) {
+            RegisterInfoAdapter<BeanInfo> infoRegister = infoRegisterIterator.next();
+            BeanInfo<?> info = infoRegister.getProvider().get();
+            if (targetClass == info.getType()) {
+                String[] names = info.getNames();
+                for (String n : names)
+                    nameSet.add(n);
+            }
         }
-        return names.toArray(new String[names.size()]);
+        return nameSet.toArray(new String[nameSet.size()]);
     }
-    public <T> T getInstance(String name) {
-        BeanInfo info = this.findBindingBean(name, BeanInfo.class);
-        if (info == null)
-            return null;
-        return (T) this.getInstance(info.getType());
+    /**获取已经注册的Bean名称。*/
+    public String[] getBeanNames() {
+        Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getRegisterIterator(BeanInfo.class);
+        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        //
+        Set<String> nameSet = new HashSet<String>();
+        while (infoRegisterIterator.hasNext()) {
+            RegisterInfoAdapter<BeanInfo> infoRegister = infoRegisterIterator.next();
+            BeanInfo<?> info = infoRegister.getProvider().get();
+            String[] names = info.getNames();
+            for (String n : names)
+                nameSet.add(n);
+        }
+        return nameSet.toArray(new String[nameSet.size()]);
     }
     /**创建Bean。*/
     public <T> T getBean(String name) {
-        /*1.在Hasor中所有Bean定义都是绑定到BeanInfo类型上，因此查找名字为name的BeanInfo对象。*/
-        RegisterInfo<BeanInfo> regInfo = this.findRegisterInfo(name, BeanInfo.class);
-        if (regInfo == null)
+        Hasor.assertIsNotNull(name, "name is null.");
+        //
+        RegisterInfoAdapter<BeanInfo> infoRegister = this.getRegister(name, BeanInfo.class);
+        if (infoRegister == null)
             return null;
-        /*2.得到BeanInfo对象，并取得Bean的其真实类型和referID*/
-        BeanInfo beanInfo = regInfo.getProvider().get();
-        RegisterInfo<?> targetInfo = this.findRegisterInfo(beanInfo.getReferID(), beanInfo.getType());
-        return (T) this.getBeanBuilder().getInstance(targetInfo);
+        BeanInfo<?> info = infoRegister.getProvider().get();
+        RegisterInfoAdapter<?> typeRegister = this.getRegister(info.getReferID(), info.getType());
+        if (typeRegister != null)
+            return (T) typeRegister.getProvider().get();
+        return null;
     };
     /**创建Bean。*/
     public <T> T getInstance(Class<T> oriType) {
@@ -107,109 +169,65 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
          *     String -> "Say goodBy." > name = "By"
          *     String -> "Body .."     > name = null  (匿名的)
          * 因此查找那个没有名字的Type，倘若存在匿名的Type，返回它，否则返回null。*/
-        RegisterInfo<T> info = this.findRegisterInfo(null, oriType);
-        if (info == null)
-            info = new FreeTypeRegister<T>(oriType);
-        return this.getBeanBuilder().getInstance(info);
+        RegisterInfoAdapter<T> info = this.getRegister(null, oriType);
+        if (info != null)
+            return info.getProvider().get();
+        return this.getRegisterFactory().getDefaultInstance(oriType);
     };
     /**获取用于创建Bean对象的BeanBuilder接口*/
-    protected BeanFactory getBeanBuilder() {
-        return this.getRegisterManager().getBeanBuilder();
-    };
+    protected abstract RegisterFactory getRegisterFactory();
     //
     /*------------------------------------------------------------------------------------Binding*/
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<T> findBindingBean(Class<T> bindingType) {
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //
+        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindingType);
+        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
+            return new ArrayList<T>(0);
+        ArrayList<T> returnData = new ArrayList<T>();
+        while (infoRegisterIterator.hasNext()) {
+            RegisterInfoAdapter<T> typeRegister = infoRegisterIterator.next();
+            Object obj = typeRegister.getProvider().get();
+            if (obj != null)
+                returnData.add((T) obj);
+        }
+        return returnData;
+    };
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
+        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        //
+        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindingType);
+        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
+            return new ArrayList<Provider<T>>(0);
+        ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>();
+        while (infoRegisterIterator.hasNext()) {
+            RegisterInfoAdapter<T> typeRegister = infoRegisterIterator.next();
+            returnData.add(typeRegister.getProvider());
+        }
+        return returnData;
+    };
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> T findBindingBean(String withName, Class<T> bindingType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindingType, "bindingType is null.");
         //
-        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
-        /*找到那个RegisterInfo*/
-        for (RegisterInfo<T> info : targetRegisterList) {
-            String bindName = info.getName();
-            boolean nameTest = withName.equals(bindName);
-            if (nameTest)
-                return info.getProvider().get();
-        }
+        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindingType);
+        if (typeRegister != null)
+            return typeRegister.getProvider().get();
         return null;
-    }
+    };
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindingType, "bindingType is null.");
-        //F
-        List<RegisterInfo<T>> targetRegisterList = this.findRegisterInfo(bindingType);
-        /*找到那个RegisterInfo*/
-        for (RegisterInfo<T> info : targetRegisterList) {
-            String bindName = info.getName();
-            boolean nameTest = withName.equals(bindName);
-            if (nameTest)
-                return info.getProvider();
-        }
-        return null;
-    }
-    public <T> List<T> findBindingBean(Class<T> bindingType) {
-        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
-        /*将RegisterInfo<T>列表转换为<T>列表*/
-        List<T> targetList = new ArrayList<T>();
-        for (RegisterInfo<T> info : targetInfoList) {
-            Provider<T> target = info.getProvider();
-            targetList.add(target.get());
-        }
-        return targetList;
-    }
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
-        List<RegisterInfo<T>> targetInfoList = this.findRegisterInfo(bindingType);
-        /*将RegisterInfo<T>列表转换为Provider<T>列表*/
-        List<Provider<T>> targetList = new ArrayList<Provider<T>>();
-        for (RegisterInfo<T> info : targetInfoList) {
-            Provider<T> target = info.getProvider();
-            targetList.add(target);
-        }
-        return targetList;
-    }
-    public RegisterScope getParentScope() {
-        return this.getParent();
-    }
-    public final Iterator<RegisterInfo<?>> getRegisterIterator() {
-        Iterator<RegisterInfo<?>> registerIterator = this.localRegisterIterator();
-        RegisterScope scope = this.getParentScope();
-        if (scope != null) {
-            Iterator<RegisterInfo<?>> parentIterator = scope.getRegisterIterator();
-            registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
-        }
-        return registerIterator;
-    }
-    /**查找RegisterInfo*/
-    public <T> List<RegisterInfo<T>> findRegisterInfo(Class<T> bindType) {
-        Iterator<RegisterInfo<T>> infoIterator = this.localRegisterIterator(bindType);
-        if (infoIterator == null || infoIterator.hasNext() == false)
-            return Collections.emptyList();
         //
-        List<RegisterInfo<T>> infoList = new ArrayList<RegisterInfo<T>>();
-        while (infoIterator.hasNext())
-            infoList.add(infoIterator.next());
-        return infoList;
-    }
-    /**查找RegisterInfo*/
-    public <T> RegisterInfo<T> findRegisterInfo(String withName, Class<T> bindingType) {
-        List<RegisterInfo<T>> infoList = this.findRegisterInfo(bindingType);
-        for (RegisterInfo<T> info : infoList) {
-            if (StringUtils.equals(withName, info.getName()))
-                return info;
-        }
+        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindingType);
+        if (typeRegister != null)
+            return typeRegister.getProvider();
         return null;
-    }
-    /**注册一个类型*/
-    protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
-        return this.getRegisterManager().registerType(type);
-    }
-    /**已注册的类型列表。*/
-    protected Iterator<RegisterInfo<?>> localRegisterIterator() {
-        return this.getBeanBuilder().getRegisterIterator();
-    }
-    /**已注册的类型列表。*/
-    protected <T> Iterator<RegisterInfo<T>> localRegisterIterator(Class<T> type) {
-        return this.getBeanBuilder().getRegisterIterator(type);
-    }
+    };
     //
     /*--------------------------------------------------------------------------------------Event*/
     public void pushListener(String eventType, EventListener eventListener) {
@@ -245,8 +263,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     };
-    /**获取RegisterContext对象*/
-    protected abstract RegisterManager getRegisterManager();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getEnvironment().findClass(featureType);
@@ -255,35 +271,35 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /*------------------------------------------------------------------------------------Process*/
     /**开始进入初始化过程.*/
     protected void doInitialize() {
-        RegisterManager regContext = this.getRegisterManager();
-        if (regContext instanceof ContextInitializeListener)
-            ((ContextInitializeListener) regContext).doInitialize(this);
+        RegisterFactory registerFactory = this.getRegisterFactory();
+        if (registerFactory instanceof ContextInitializeListener)
+            ((ContextInitializeListener) registerFactory).doInitialize(this);
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        RegisterManager regContext = this.getRegisterManager();
-        if (regContext instanceof ContextInitializeListener)
-            ((ContextInitializeListener) regContext).doInitializeCompleted(this);
+        RegisterFactory registerFactory = this.getRegisterFactory();
+        if (registerFactory instanceof ContextInitializeListener)
+            ((ContextInitializeListener) registerFactory).doInitializeCompleted(this);
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
-        RegisterManager regContext = this.getRegisterManager();
-        if (regContext instanceof ContextStartListener)
-            ((ContextStartListener) regContext).doStart(this);
+        RegisterFactory registerFactory = this.getRegisterFactory();
+        if (registerFactory instanceof ContextStartListener)
+            ((ContextStartListener) registerFactory).doStart(this);
     }
-    /**容器启动完成*/
+    /**容器启动完成。*/
     protected void doStartCompleted() {
-        RegisterManager regContext = this.getRegisterManager();
-        if (regContext instanceof ContextStartListener)
-            ((ContextStartListener) regContext).doStartCompleted(this);
+        RegisterFactory registerFactory = this.getRegisterFactory();
+        if (registerFactory instanceof ContextStartListener)
+            ((ContextStartListener) registerFactory).doStartCompleted(this);
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
-    /**为模块创建ApiBinder*/
+    /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
             protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
-                return AbstractAppContext.this.createTypeBuilder(type);
+                return AbstractAppContext.this.getRegisterFactory().createTypeBuilder(type);
             }
         };
     }

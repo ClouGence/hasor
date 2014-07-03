@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.core.context.factorys.hasor.schema;
 /**
- * 注册到 Hasor 中 Bean 的元信息。
- * @version : 2013-5-6
- * @author 赵永春 (zyc@hasor.net)
+ * TemplateBeanDefine类用于定义一个bean的模板。
+ * @version 2010-9-15
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanInfo<T> {
-    /**获取bean的名称*/
-    public String[] getNames();
-    /**当同一类型定义了多个Bean时，配合该ID用以在绑定系统中找到它。*/
-    public String getReferID();
-    /**获取bean的类型*/
-    public Class<T> getType();
+public class TemplateBeanDefine extends BeanDefine {
+    //-------------------------------------------------------------
+    /**返回“TemplateBean”。*/
+    public String getBeanType() {
+        return "TemplateBean";
+    }
 }

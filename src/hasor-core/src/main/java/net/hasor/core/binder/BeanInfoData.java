@@ -19,12 +19,12 @@ package net.hasor.core.binder;
  * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
-class BeanInfoData implements BeanInfo {
+class BeanInfoData<T> implements BeanInfo<T> {
     private String[] names     = null;
     private String   referID   = null;
-    private Class<?> beanClass = null;
+    private Class<T> beanClass = null;
     //
-    public BeanInfoData(String[] names, String referID, Class<?> beanClass) {
+    public BeanInfoData(String[] names, String referID, Class<T> beanClass) {
         this.names = names;
         this.referID = referID;
         this.beanClass = beanClass;
@@ -37,7 +37,7 @@ class BeanInfoData implements BeanInfo {
         return this.referID;
     }
     /**获取bean的类型*/
-    public Class<?> getType() {
+    public Class<T> getType() {
         return this.beanClass;
     }
 }

@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.core.context.adapter;
+import java.util.Iterator;
 /**
- * 注册到 Hasor 中 Bean 的元信息。
- * @version : 2013-5-6
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014-4-4
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface BeanInfo<T> {
-    /**获取bean的名称*/
-    public String[] getNames();
-    /**当同一类型定义了多个Bean时，配合该ID用以在绑定系统中找到它。*/
-    public String getReferID();
-    /**获取bean的类型*/
-    public Class<T> getType();
+public interface RegisterScope {
+    /**父级*/
+    public RegisterScope getParentScope();
+    /**查找RegisterInfo*/
+    public <T> RegisterInfoAdapter<T> getRegister(String withName, Class<T> bindingType);
+    /**根据Type查找RegisterInfo迭代器*/
+    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindingType);
+    /**查找所有RegisterInfo迭代器*/
+    public Iterator<RegisterInfoAdapter<?>> getRegisterIterator();
 }

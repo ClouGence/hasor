@@ -19,11 +19,18 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
+import net.hasor.core.context.adapter.RegisterFactory;
+import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import net.hasor.core.environment.StandardEnvironment;
+import org.more.UndefinedException;
 import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
 /**
  * {@link AppContext}接口默认实现。
  * @version : 2013-4-9
@@ -60,5 +67,49 @@ public abstract class AbstractConfigResourceAppContext extends AbstractStateAppC
     //
     protected Environment createEnvironment() {
         return new StandardEnvironment(this.mainSettings);
+    }
+    //
+    private RegisterFactory registerFactory = null;
+    protected void setRegisterContext(RegisterFactory registerManager) {
+        if (this.isStart() == true)
+            throw new IllegalStateException("context is started.");
+        this.registerFactory = registerManager;
+    }
+    protected RegisterFactory getRegisterFactory() {
+        if (this.registerFactory == null) {
+            String createrToUse = null;
+            //1.取得即将创建的ManagerCreater类型
+            Settings setting = this.getSettings();
+            String defaultManager = setting.getString("hasor.registerFactory.default");
+            XmlNode[] managerArray = setting.getXmlNodeArray("hasor.registerFactory");
+            for (XmlNode manager : managerArray) {
+                List<XmlNode> createrList = manager.getChildren("creater");
+                for (XmlNode creater : createrList) {
+                    String createrName = creater.getAttribute("name");
+                    if (StringUtils.equalsIgnoreCase(createrName, defaultManager)) {
+                        createrToUse = creater.getAttribute("class");
+                        break;
+                    }
+                }
+                if (createrToUse != null)
+                    break;
+            }
+            //2.排错
+            if (createrToUse == null)
+                throw new UndefinedException(String.format("%s is not define.", defaultManager));
+            //3.创建Creater
+            try {
+                Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
+                RegisterFactoryCreater creater = (RegisterFactoryCreater) createrType.newInstance();
+                this.registerFactory = creater.create(this.getEnvironment());
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (this.registerFactory == null)
+            throw new NullPointerException("registerFactory is null.");
+        return this.registerFactory;
     }
 }

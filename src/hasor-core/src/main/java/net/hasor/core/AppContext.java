@@ -47,7 +47,7 @@ public interface AppContext extends EventContext {
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/
-    public <T> Class<T> getBeanType(String name);
+    public Class<?> getBeanType(String name);
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getBeanNames(Class<?> targetClass);
     /**获取已经注册的Bean名称。*/

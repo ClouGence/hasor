@@ -114,7 +114,7 @@ public abstract class AbstractBinder implements ApiBinder {
             LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
             //
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
-            BeanInfoData beanInfo = new BeanInfoData(aliasNames, referID, beanType);
+            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, referID, beanType);
             /*将名字和BeanInfo绑到一起*/
             for (String nameItem : this.names) {
                 bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
@@ -230,7 +230,8 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         public LifeBindingBuilder<T> toProvider(Provider<T> provider) {
-            this.typeBuilder.setProvider(provider);
+            if (provider != null)
+                this.typeBuilder.setProvider(provider);
             return this;
         }
         //

@@ -45,12 +45,12 @@
 		</dependency>
 
 		<!-- Guice3 -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.google.inject</groupId> -->
-		<!-- <artifactId>guice</artifactId> -->
-		<!-- <version>3.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- Spring -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.springframework</groupId> -->

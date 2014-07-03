@@ -17,11 +17,11 @@
 		<!-- 配置文件改变监视线程检查时间间隔(毫秒) -->
 		<settingsMonitor interval="15000" />
 		<!-- RegisterManager 接口注册 -->
-		<registerManager default="guice">
-			<!-- <creater name="Simple" class="net.hasor.core.context.rm.simple.SimpleRegisterManagerCreater" /> -->
-			<!-- <creater name="Spring" class="net.hasor.core.context.rm.spring.SpringRegisterManagerCreater" /> -->
-			<creater name="Guice" class="net.hasor.core.context.rm.guice.GuiceRegisterManagerCreater" />
-		</registerManager>
+		<registerFactory default="guice">
+			<!-- <creater name="Hasor" class="net.hasor.core.context.factorys.hasor.HasorRegisterFactoryCreater" /> -->
+			<!-- <creater name="Spring" class="net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater" /> -->
+			<creater name="Guice" class="net.hasor.core.context.factorys.guice.GuiceRegisterFactoryCreater" />
+		</registerFactory>
 		<!-- 工作空间设置 -->
 		<environmentVar>
 			<!-- 程序工作空间基础目录 -->
