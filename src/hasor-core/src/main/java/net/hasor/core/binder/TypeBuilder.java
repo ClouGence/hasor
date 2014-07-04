@@ -24,20 +24,20 @@ import net.hasor.core.Scope;
  */
 public interface TypeBuilder<T> extends RegisterInfo<T> {
     /**为类型绑定一个名称。*/
-    public void setName(String name);
+    public void setBindName(String bindName);
     /**获取注册的类型*/
-    public Class<T> getType();
+    public Class<T> getBindType();
     //
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
-    public void setSourceType(Class<? extends T> implementation);
+    public void setSourceType(Class<? extends T> sourceType);
     /**设置元信息*/
     public void setMetaData(String key, Object value);
     /**标记为单例*/
     public void setSingleton(boolean singleton);
     /**为类型绑定一个Provider。*/
-    public void setProvider(Provider<T> sourceProvider);
+    public void setProvider(Provider<T> instanceProvider);
     /**将类型发布到一个固定的命名空间内。*/
-    public void setScope(Provider<Scope> scope);
+    public void setScopeProvider(Provider<Scope> scopeProvider);
     //
     public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider);
     public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo);

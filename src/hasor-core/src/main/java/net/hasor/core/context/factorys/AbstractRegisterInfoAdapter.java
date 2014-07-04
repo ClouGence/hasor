@@ -16,6 +16,8 @@
 package net.hasor.core.context.factorys;
 import java.util.HashMap;
 import java.util.Map;
+import net.hasor.core.Provider;
+import net.hasor.core.Scope;
 import net.hasor.core.binder.TypeBuilder;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 /**
@@ -24,21 +26,39 @@ import net.hasor.core.context.adapter.RegisterInfoAdapter;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdapter<T>, TypeBuilder<T> {
-    private String              bindName = null;
-    private Class<T>            bindType = null;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    //1.基本属性
+    private String              bindName         = null;
+    private Class<T>            bindType         = null;
+    private Class<? extends T>  sourceType       = null;
+    private boolean             singleton        = false;
+    //2.系统属性
+    private Provider<T>         instanceProvider = null;
+    private Provider<Scope>     scopeProvider    = null;
+    private Map<String, Object> metaData         = new HashMap<String, Object>();
     //
-    public AbstractRegisterInfoAdapter(Class<T> bindType) {
-        this.bindType = bindType;
-    }
-    public void setName(String bindName) {
+    public void setBindName(String bindName) {
         this.bindName = bindName;
     }
-    public String getName() {
+    public String getBindName() {
         return this.bindName;
     }
-    public Class<T> getType() {
+    public Class<T> getBindType() {
         return this.bindType;
+    }
+    public void setBindType(Class<T> bindType) {
+        this.bindType = bindType;
+    }
+    public void setSourceType(Class<? extends T> sourceType) {
+        this.sourceType = sourceType;
+    }
+    public Class<? extends T> getSourceType() {
+        return this.sourceType;
+    }
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
+    public boolean isSingleton() {
+        return this.singleton;
     }
     public void setMetaData(String key, Object value) {
         this.metaData.put(key, value);
@@ -46,30 +66,16 @@ public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdap
     public Object getMetaData(String key) {
         return this.metaData.get(key);
     }
-    //
-    //
-    //    public void setSourceType(Class<? extends T> implementation) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void setSingleton(boolean singleton) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void setProvider(Provider<T> provider) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void setScope(Provider<Scope> scope) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void addInject(String property, Provider<?> valueProvider) {
-    //        // TODO Auto-generated method stub
-    //    }
-    //    public void addInject(String property, RegisterInfo<?> valueInfo) {
-    //        // TODO Auto-generated method stub
-    //    }
+    public void setProvider(Provider<T> instanceProvider) {
+        this.instanceProvider = instanceProvider;
+    }
+    public Provider<T> getProvider() {
+        return this.instanceProvider;
+    }
+    public void setScopeProvider(Provider<Scope> scopeProvider) {
+        this.scopeProvider = scopeProvider;
+    }
+    public Provider<Scope> getScopeProvider() {
+        return this.scopeProvider;
+    }
 }

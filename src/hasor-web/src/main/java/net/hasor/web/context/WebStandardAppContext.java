@@ -77,7 +77,7 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
             protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
-                return WebStandardAppContext.this.createTypeBuilder(type);
+                return WebStandardAppContext.this.getRegisterFactory().createTypeBuilder(type);
             }
         };
     }

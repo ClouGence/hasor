@@ -59,11 +59,11 @@ public interface AppContext extends EventContext {
     //
     /*-------------------------------------------------------------------------------------Binder*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> findBindingBean(Class<T> bindingType);
+    public <T> List<T> findBindingBean(Class<T> bindType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType);
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T findBindingBean(String withName, Class<T> bindingType);
+    public <T> T findBindingBean(String withName, Class<T> bindType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType);
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType);
 }

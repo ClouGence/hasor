@@ -32,8 +32,8 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
 import net.hasor.core.binder.TypeBuilder;
-import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.adapter.RegisterFactory;
+import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.adapter.RegisterScope;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
@@ -55,27 +55,27 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return this.getParent();
     }
     /**查找RegisterInfo*/
-    public final <T> RegisterInfoAdapter<T> getRegister(String withName, Class<T> bindingType) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+    public final <T> RegisterInfoAdapter<T> getRegister(String withName, Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        Iterator<RegisterInfoAdapter<T>> registerIterator = this.getRegisterIterator(bindingType);
+        Iterator<RegisterInfoAdapter<T>> registerIterator = this.getRegisterIterator(bindType);
         if (registerIterator == null)
             return null;
         while (registerIterator.hasNext()) {
             RegisterInfoAdapter<T> register = registerIterator.next();
-            if (StringUtils.equals(withName, register.getName()))
+            if (StringUtils.equals(withName, register.getBindName()))
                 return register;
         }
         return null;
     };
     /**根据Type查找RegisterInfo迭代器*/
-    public final <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindingType) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+    public final <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        Iterator<RegisterInfoAdapter<T>> registerIterator = this.localRegisterIterator(bindingType);
+        Iterator<RegisterInfoAdapter<T>> registerIterator = this.localRegisterIterator(bindType);
         RegisterScope parentScope = this.getParentScope();
         if (parentScope != null) {
-            Iterator<RegisterInfoAdapter<T>> parentIterator = parentScope.getRegisterIterator(bindingType);
+            Iterator<RegisterInfoAdapter<T>> parentIterator = parentScope.getRegisterIterator(bindType);
             registerIterator = MergeUtils.mergeIterator(registerIterator, parentIterator);
         }
         return registerIterator;
@@ -95,8 +95,8 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return this.getRegisterFactory().getRegisterIterator();
     }
     /**已注册的类型列表。*/
-    protected <T> Iterator<RegisterInfoAdapter<T>> localRegisterIterator(Class<T> bindingType) {
-        return this.getRegisterFactory().getRegisterIterator(bindingType);
+    protected <T> Iterator<RegisterInfoAdapter<T>> localRegisterIterator(Class<T> bindType) {
+        return this.getRegisterFactory().getRegisterIterator(bindType);
     }
     //
     /*---------------------------------------------------------------------------------------Bean*/
@@ -110,7 +110,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         BeanInfo<?> info = infoRegister.getProvider().get();
         RegisterInfoAdapter<?> typeRegister = this.getRegister(info.getReferID(), info.getType());
         if (typeRegister != null)
-            return typeRegister.getType();
+            return typeRegister.getBindType();
         return null;
     }
     /**如果存在目标类型的Bean则返回Bean的名称。*/
@@ -179,10 +179,10 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<T> findBindingBean(Class<T> bindingType) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+    public <T> List<T> findBindingBean(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindingType);
+        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindType);
         if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
             return new ArrayList<T>(0);
         ArrayList<T> returnData = new ArrayList<T>();
@@ -195,10 +195,10 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return returnData;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindingType) {
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+    public <T> List<Provider<T>> findBindingProvider(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindingType);
+        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindType);
         if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false)
             return new ArrayList<Provider<T>>(0);
         ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>();
@@ -209,21 +209,21 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return returnData;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> T findBindingBean(String withName, Class<T> bindingType) {
+    public <T> T findBindingBean(String withName, Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindingType);
+        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindType);
         if (typeRegister != null)
             return typeRegister.getProvider().get();
         return null;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindingType) {
+    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindingType, "bindingType is null.");
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindingType);
+        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindType);
         if (typeRegister != null)
             return typeRegister.getProvider();
         return null;

@@ -28,10 +28,10 @@ public interface RegisterFactory {
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(Class<T> oriType);
     /**注册一个类型*/
-    public <T> TypeBuilder<T> createTypeBuilder(Class<T> bindingType);
+    public <T> TypeBuilder<T> createTypeBuilder(Class<T> bindType);
     //
     /**根据Type查找RegisterInfo迭代器*/
-    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindingType);
+    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindType);
     /**查找所有RegisterInfo迭代器*/
     public Iterator<RegisterInfoAdapter<?>> getRegisterIterator();
 }

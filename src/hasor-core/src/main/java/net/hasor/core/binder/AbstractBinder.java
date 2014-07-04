@@ -91,36 +91,8 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*---------------------------------------------------------------------------------------Bean*/
-    private static long referIndex = 0;
-    private static long referIndex() {
-        return referIndex++;
-    }
     public BeanBindingBuilder defineBean(String beanName) {
         return new BeanBindingBuilderImpl().aliasName(beanName);
-    }
-    /** BeanBindingBuilder接口实现 */
-    private class BeanBindingBuilderImpl implements BeanBindingBuilder {
-        private ArrayList<String> names = new ArrayList<String>();
-        public BeanBindingBuilder aliasName(String aliasName) {
-            if (!StringUtils.isBlank(aliasName))
-                this.names.add(aliasName);
-            return this;
-        }
-        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
-            if (this.names.isEmpty() == true)
-                throw new UnsupportedOperationException("the bean name is undefined!");
-            /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
-            String referID = beanType.getName() + "#" + String.valueOf(referIndex());
-            LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
-            //
-            String[] aliasNames = this.names.toArray(new String[this.names.size()]);
-            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, referID, beanType);
-            /*将名字和BeanInfo绑到一起*/
-            for (String nameItem : this.names) {
-                bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
-            }
-            return returnData;
-        }
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -129,7 +101,8 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     public <T> NamedBindingBuilder<T> bindingType(Class<T> type) {
         TypeBuilder<T> typeBuilder = this.createTypeBuilder(type);
-        return new NamedBindingBuilderImpl<T>(typeBuilder);
+        typeBuilder.setSourceType(type);/*实现类型默认设置为绑定类型*/
+        return new BindingBuilderImpl<T>(typeBuilder);
     }
     public <T> MetaDataBindingBuilder<T> bindingType(Class<T> type, T instance) {
         return this.bindingType(type).toInstance(instance);
@@ -165,7 +138,35 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
-    /**实体类型的Provider代理 */
+    private static long referIndex = 0;
+    private static long referIndex() {
+        return referIndex++;
+    }
+    /**BeanBindingBuilder接口实现*/
+    private class BeanBindingBuilderImpl implements BeanBindingBuilder {
+        private ArrayList<String> names = new ArrayList<String>();
+        public BeanBindingBuilder aliasName(String aliasName) {
+            if (!StringUtils.isBlank(aliasName))
+                this.names.add(aliasName);
+            return this;
+        }
+        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
+            if (this.names.isEmpty() == true)
+                throw new UnsupportedOperationException("the bean name is undefined!");
+            /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
+            String referID = beanType.getName() + "#" + String.valueOf(referIndex());
+            LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
+            //
+            String[] aliasNames = this.names.toArray(new String[this.names.size()]);
+            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, referID, beanType);
+            /*将名字和BeanInfo绑到一起*/
+            for (String nameItem : this.names) {
+                bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
+            }
+            return returnData;
+        }
+    }
+    /**对象到Provider代理 */
     private static class InstanceProvider<T> implements Provider<T> {
         private T instance = null;
         public InstanceProvider(T instance) {
@@ -176,13 +177,13 @@ public abstract class AbstractBinder implements ApiBinder {
         }
     }
     /** 一堆接口的实现 */
-    private static class NamedBindingBuilderImpl<T> implements //
+    private static class BindingBuilderImpl<T> implements //
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>,//
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
         private TypeBuilder<T> typeBuilder = null;
         private Class<?>[]     initParams  = new Class<?>[0];
         //
-        public NamedBindingBuilderImpl(TypeBuilder<T> typeBuilder) {
+        public BindingBuilderImpl(TypeBuilder<T> typeBuilder) {
             this.typeBuilder = typeBuilder;
         }
         public MetaDataBindingBuilder<T> metaData(String key, Object value) {
@@ -194,11 +195,11 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         public LinkedBindingBuilder<T> nameWith(String name) {
-            this.typeBuilder.setName(name);
+            this.typeBuilder.setBindName(name);
             return this;
         }
         public LinkedBindingBuilder<T> uniqueName() {
-            this.typeBuilder.setName(UUID.randomUUID().toString());
+            this.typeBuilder.setBindName(UUID.randomUUID().toString());
             return this;
         }
         public MetaDataBindingBuilder<T> toScope(Scope scope) {
@@ -213,6 +214,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor) {
             Class<? extends T> targetType = constructor.getDeclaringClass();
+            //因为设置了构造方法因此重新设置SourceTypeF
             this.typeBuilder.setSourceType(targetType);
             //
             Class<?>[] params = constructor.getParameterTypes();
@@ -226,7 +228,7 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         public MetaDataBindingBuilder<T> toScope(Provider<Scope> scope) {
-            this.typeBuilder.setScope(scope);
+            this.typeBuilder.setScopeProvider(scope);
             return this;
         }
         public LifeBindingBuilder<T> toProvider(Provider<T> provider) {

@@ -44,19 +44,20 @@ import org.more.util.StringUtils;
 public abstract class AbstractRegisterFactory implements RegisterFactory, ContextInitializeListener, ContextStartListener {
     private Map<Class<?>, List<AbstractRegisterInfoAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractRegisterInfoAdapter<?>>>();
     //
-    public <T> AbstractRegisterInfoAdapter<T> createTypeBuilder(Class<T> bindingType) {
-        List<AbstractRegisterInfoAdapter<?>> registerList = this.registerDataSource.get(bindingType);
+    public <T> AbstractRegisterInfoAdapter<T> createTypeBuilder(Class<T> bindType) {
+        List<AbstractRegisterInfoAdapter<?>> registerList = this.registerDataSource.get(bindType);
         if (registerList == null) {
             registerList = new ArrayList<AbstractRegisterInfoAdapter<?>>();
-            this.registerDataSource.put(bindingType, registerList);
+            this.registerDataSource.put(bindType, registerList);
         }
-        AbstractRegisterInfoAdapter<T> adapter = this.createRegisterInfoAdapter(bindingType);
-        registerList.add(adapter);
+        AbstractRegisterInfoAdapter<T> adapter = this.createRegisterInfoAdapter(bindType);
+        adapter.setBindType(bindType);
         adapter.setProvider(new FactoryProvider<T>(adapter, this));//设置默认Provider
+        registerList.add(adapter);
         return adapter;
     }
     /**为类型创建AbstractRegisterInfoAdapter适配器。*/
-    protected abstract <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindingType);
+    protected abstract <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindType);
     //
     public <T> T getDefaultInstance(Class<T> oriType) {
         try {
@@ -76,10 +77,10 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     //
     public abstract <T> T getInstance(RegisterInfo<T> oriType);
     //
-    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindingType) {
+    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindType) {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。
         //
-        List<AbstractRegisterInfoAdapter<?>> bindingTypeAdapterList = this.registerDataSource.get(bindingType);
+        List<AbstractRegisterInfoAdapter<?>> bindingTypeAdapterList = this.registerDataSource.get(bindType);
         if (bindingTypeAdapterList == null)
             return new ArrayList<RegisterInfoAdapter<T>>(0).iterator();
         Iterator<AbstractRegisterInfoAdapter<?>> iterator = bindingTypeAdapterList.iterator();
@@ -138,7 +139,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     //
     /*测试register是否为匿名的*/
     private boolean ifAnonymity(RegisterInfo<?> register) {
-        return StringUtils.isBlank(register.getName());
+        return StringUtils.isBlank(register.getBindName());
     }
     public void doInitialize(AbstractAppContext appContext) {
         // TODO Auto-generated method stub
@@ -166,7 +167,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
                     anonymityTypes.add(nowType);
                 //
                 //2.同类型绑定的重名检查
-                String name = e.getName();
+                String name = e.getBindName();
                 if (nowSet.contains(name) == true)
                     throw new RepeateException(String.format("repeate name bind ,name = %s. type is %s", name, nowType));
                 nowSet.add(name);
@@ -181,16 +182,16 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     public void doStartCompleted(AbstractAppContext appContext) {
         // TODO Auto-generated method stub
     }
-}
-/**AbstractRegisterInfoAdapter的默认的Provider，作用是通过RegisterFactory的getInstance方法来创建对象*/
-class FactoryProvider<T> implements Provider<T> {
-    private AbstractRegisterInfoAdapter<T> adapter = null;
-    private AbstractRegisterFactory        factory = null;
-    public FactoryProvider(AbstractRegisterInfoAdapter<T> adapter, AbstractRegisterFactory factory) {
-        this.adapter = adapter;
-        this.factory = factory;
-    }
-    public T get() {
-        return this.factory.getInstance(this.adapter);
+    /** RegisterInfo的默认的Provider，作用是通过RegisterFactory的getInstance方法来创建对象 */
+    private static class FactoryProvider<T> implements Provider<T> {
+        private RegisterInfo<T>         adapter = null;
+        private AbstractRegisterFactory factory = null;
+        public FactoryProvider(RegisterInfo<T> adapter, AbstractRegisterFactory factory) {
+            this.adapter = adapter;
+            this.factory = factory;
+        }
+        public T get() {
+            return this.factory.getInstance(this.adapter);
+        }
     }
 }

@@ -21,9 +21,9 @@ package net.hasor.core;
  */
 public interface RegisterInfo<T> {
     /**为类型绑定的名称。*/
-    public String getName();
+    public String getBindName();
     /**获取注册的类型*/
-    public Class<T> getType();
+    public Class<T> getBindType();
     /**获取元信息。*/
     public Object getMetaData(String key);
 }
