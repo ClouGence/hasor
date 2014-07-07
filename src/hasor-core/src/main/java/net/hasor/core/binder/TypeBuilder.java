@@ -35,7 +35,7 @@ public interface TypeBuilder<T> extends RegisterInfo<T> {
     /**标记为单例*/
     public void setSingleton(boolean singleton);
     /**为类型绑定一个Provider。*/
-    public void setProvider(Provider<T> instanceProvider);
+    public void setCustomerProvider(Provider<T> customerProvider);
     /**将类型发布到一个固定的命名空间内。*/
     public void setScopeProvider(Provider<Scope> scopeProvider);
     //

@@ -101,7 +101,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     public <T> NamedBindingBuilder<T> bindingType(Class<T> type) {
         TypeBuilder<T> typeBuilder = this.createTypeBuilder(type);
-        typeBuilder.setSourceType(type);/*实现类型默认设置为绑定类型*/
+        typeBuilder.setSourceType(type);
         return new BindingBuilderImpl<T>(typeBuilder);
     }
     public <T> MetaDataBindingBuilder<T> bindingType(Class<T> type, T instance) {
@@ -233,7 +233,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         public LifeBindingBuilder<T> toProvider(Provider<T> provider) {
             if (provider != null)
-                this.typeBuilder.setProvider(provider);
+                this.typeBuilder.setCustomerProvider(provider);
             return this;
         }
         //

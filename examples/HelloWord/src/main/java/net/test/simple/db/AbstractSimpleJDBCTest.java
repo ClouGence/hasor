@@ -24,6 +24,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public abstract class AbstractSimpleJDBCTest extends AbstractJDBCTest {
     }
     @Before
     public void initContext() throws IOException, URISyntaxException, SQLException {
-        this.appContext = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        this.appContext = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
         /*装载 SQL 脚本文件*/
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         if (jdbc.tableExist("TB_User") == false) {

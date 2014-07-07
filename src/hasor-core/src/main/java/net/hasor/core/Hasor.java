@@ -23,7 +23,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import net.hasor.core.context.StandardAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -235,30 +234,5 @@ public abstract class Hasor {
         if (object == null)
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
         return object;
-    }
-    //
-    /*------------------------------------------------------------------------------------Creater*/
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext() {
-        return createAppContext(new Module[0]);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(Module... modules) {
-        return createAppContext(StandardAppContext.DefaultSettings, modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, Module... modules) {
-        try {
-            StandardAppContext app = new StandardAppContext(config);
-            for (Module mod : modules)
-                app.addModule(mod);
-            app.start();
-            return app;
-        } catch (Throwable e) {
-            if (e instanceof RuntimeException)
-                throw (RuntimeException) e;
-            else
-                throw new RuntimeException(e);
-        }
     }
 }

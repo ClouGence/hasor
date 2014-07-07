@@ -17,7 +17,7 @@ package net.test.simple.core._08_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
+import net.hasor.core.context.HasorFactory;
 import net.test.simple.core._08_event.listener.MyListener;
 import org.junit.Test;
 /**
@@ -29,7 +29,7 @@ public class SyncEventTest {
     @Test
     public void syncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>syncEventTest<<--");
-        AppContext appContext = Hasor.createAppContext();
+        AppContext appContext = HasorFactory.createAppContext();
         //
         String EventName = "MyEvent";
         //1.添加事件监听器

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterFactory;
@@ -51,8 +50,8 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
             this.registerDataSource.put(bindType, registerList);
         }
         AbstractRegisterInfoAdapter<T> adapter = this.createRegisterInfoAdapter(bindType);
+        adapter.setFactory(this);
         adapter.setBindType(bindType);
-        adapter.setProvider(new FactoryProvider<T>(adapter, this));//设置默认Provider
         registerList.add(adapter);
         return adapter;
     }
@@ -181,17 +180,5 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     }
     public void doStartCompleted(AbstractAppContext appContext) {
         // TODO Auto-generated method stub
-    }
-    /** RegisterInfo的默认的Provider，作用是通过RegisterFactory的getInstance方法来创建对象 */
-    private static class FactoryProvider<T> implements Provider<T> {
-        private RegisterInfo<T>         adapter = null;
-        private AbstractRegisterFactory factory = null;
-        public FactoryProvider(RegisterInfo<T> adapter, AbstractRegisterFactory factory) {
-            this.adapter = adapter;
-            this.factory = factory;
-        }
-        public T get() {
-            return this.factory.getInstance(this.adapter);
-        }
     }
 }

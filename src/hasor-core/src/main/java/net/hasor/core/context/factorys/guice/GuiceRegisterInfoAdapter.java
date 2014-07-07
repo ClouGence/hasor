@@ -17,22 +17,30 @@ package net.hasor.core.context.factorys.guice;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import org.more.util.StringUtils;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class GuiceRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
+    public Key<T> getKey() {
+        if (StringUtils.isBlank(getBindName()))
+            return Key.get(this.getBindType());
+        return Key.get(this.getBindType(), Names.named(getBindName()));
+    }
     public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider) {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
     public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo) {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
     public void addInject(String property, Provider<?> valueProvider) {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
     public void addInject(String property, RegisterInfo<?> valueInfo) {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
 }
