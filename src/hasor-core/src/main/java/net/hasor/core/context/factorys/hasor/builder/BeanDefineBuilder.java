@@ -1,4 +1,5 @@
-/* Copyright 2008-2009 the original author or authors.
+/*
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.hasor;
-import net.hasor.core.Environment;
-import net.hasor.core.context.adapter.RegisterFactory;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
+package net.hasor.core.context.factorys.hasor.builder;
+import net.hasor.core.context.factorys.hasor.schema.BeanDefine;
 /**
  * 
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2014年7月7日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class HasorRegisterFactoryCreater implements RegisterFactoryCreater {
-    public RegisterFactory create(Environment env) {
-        return new HasorRegisterFactory();
+public class BeanDefineBuilder {
+    public BeanDefine builder() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

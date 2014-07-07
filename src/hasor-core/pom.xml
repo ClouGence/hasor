@@ -52,11 +52,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- Spring -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework</groupId> -->
-		<!-- <artifactId>spring</artifactId> -->
-		<!-- <version>2.5.6.SEC03</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6.SEC03</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
