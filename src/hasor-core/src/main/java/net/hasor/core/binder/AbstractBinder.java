@@ -56,7 +56,7 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.getEnvironment().getSettings();
     }
     public void registerAware(AppContextAware aware) {
-        this.bindingType(AppContextAware.class).uniqueName().toInstance(aware);
+        this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
     }
     public Set<Class<?>> findClass(Class<?> featureType) {
         if (featureType == null)
@@ -99,31 +99,31 @@ public abstract class AbstractBinder implements ApiBinder {
     /**注册一个类型*/
     protected abstract <T> TypeBuilder<T> createTypeBuilder(Class<T> type);
     //
-    public <T> NamedBindingBuilder<T> bindingType(Class<T> type) {
+    public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         TypeBuilder<T> typeBuilder = this.createTypeBuilder(type);
-        typeBuilder.setSourceType(type);
+        //typeBuilder.setID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }
-    public <T> MetaDataBindingBuilder<T> bindingType(Class<T> type, T instance) {
-        return this.bindingType(type).toInstance(instance);
+    public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance) {
+        return this.bindType(type).toInstance(instance);
     }
-    public <T> InjectPropertyBindingBuilder<T> bindingType(Class<T> type, Class<? extends T> implementation) {
-        return this.bindingType(type).to(implementation);
+    public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation) {
+        return this.bindType(type).to(implementation);
     }
-    public <T> ScopedBindingBuilder<T> bindingType(Class<T> type, Provider<T> provider) {
-        return this.bindingType(type).toProvider(provider);
+    public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider) {
+        return this.bindType(type).toProvider(provider);
     }
-    public <T> InjectPropertyBindingBuilder<T> bindingType(String withName, Class<T> type) {
-        return this.bindingType(type).nameWith(withName).to(type);
+    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type) {
+        return this.bindType(type).nameWith(withName).to(type);
     }
-    public <T> MetaDataBindingBuilder<T> bindingType(String withName, Class<T> type, T instance) {
-        return this.bindingType(type).nameWith(withName).toInstance(instance);
+    public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
+        return this.bindType(type).nameWith(withName).toInstance(instance);
     }
-    public <T> InjectPropertyBindingBuilder<T> bindingType(String withName, Class<T> type, Class<? extends T> implementation) {
-        return this.bindingType(type).nameWith(withName).to(type);
+    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation) {
+        return this.bindType(type).nameWith(withName).to(type);
     }
-    public <T> LifeBindingBuilder<T> bindingType(String withName, Class<T> type, Provider<T> provider) {
-        return this.bindingType(type).nameWith(withName).toProvider(provider);
+    public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider) {
+        return this.bindType(type).nameWith(withName).toProvider(provider);
     }
     //
     /*----------------------------------------------------------------------------------------Aop*/
@@ -134,7 +134,7 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
         AopMatcherMethodInterceptorData ard = new AopMatcherMethodInterceptorData(matcherClass, matcherMethod, interceptor);
-        this.bindingType(AopMatcherMethodInterceptorData.class).uniqueName().toInstance(ard);
+        this.bindType(AopMatcherMethodInterceptorData.class).uniqueName().toInstance(ard);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -155,13 +155,13 @@ public abstract class AbstractBinder implements ApiBinder {
                 throw new UnsupportedOperationException("the bean name is undefined!");
             /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
             String referID = beanType.getName() + "#" + String.valueOf(referIndex());
-            LinkedBindingBuilder<T> returnData = bindingType(beanType).nameWith(referID);
+            LinkedBindingBuilder<T> returnData = AbstractBinder.this.bindType(beanType).nameWith(referID);
             //
             String[] aliasNames = this.names.toArray(new String[this.names.size()]);
-            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, referID, beanType);
+            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, returnData.toInfo());
             /*将名字和BeanInfo绑到一起*/
             for (String nameItem : this.names) {
-                bindingType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
+                AbstractBinder.this.bindType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
             }
             return returnData;
         }
@@ -194,6 +194,10 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.setSingleton(true);
             return this;
         }
+        //        public NamedBindingBuilder<T> idWith(String newID) {
+        //            this.typeBuilder.setID(newID);
+        //            return this;
+        //        }
         public LinkedBindingBuilder<T> nameWith(String name) {
             this.typeBuilder.setBindName(name);
             return this;

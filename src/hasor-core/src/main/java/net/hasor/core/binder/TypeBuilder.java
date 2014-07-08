@@ -23,6 +23,8 @@ import net.hasor.core.Scope;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TypeBuilder<T> extends RegisterInfo<T> {
+    //    /**为绑定设置ID*/
+    //    public void setID(String newID);
     /**为类型绑定一个名称。*/
     public void setBindName(String bindName);
     /**获取注册的类型*/

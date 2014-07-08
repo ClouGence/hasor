@@ -36,7 +36,7 @@ public class AwareContextTest {
                 AwareBean aware = new AwareBean();
                 apiBinder.registerAware(aware);
                 //
-                apiBinder.bindingType(AwareBean.class).toInstance(aware);
+                apiBinder.bindType(AwareBean.class).toInstance(aware);
                 apiBinder.defineBean("say").bindType(String.class).toInstance("Say Hello.");
             }
         });

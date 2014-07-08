@@ -28,6 +28,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
@@ -108,7 +109,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         if (infoRegister == null)
             return null;
         BeanInfo<?> info = infoRegister.getProvider().get();
-        RegisterInfoAdapter<?> typeRegister = this.getRegister(info.getReferID(), info.getType());
+        RegisterInfo<?> typeRegister = info.getReferInfo();;
         if (typeRegister != null)
             return typeRegister.getBindType();
         return null;
@@ -157,9 +158,9 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         if (infoRegister == null)
             return null;
         BeanInfo<?> info = infoRegister.getProvider().get();
-        RegisterInfoAdapter<?> typeRegister = this.getRegister(info.getReferID(), info.getType());
+        RegisterInfo<?> typeRegister = info.getReferInfo();
         if (typeRegister != null)
-            return (T) typeRegister.getProvider().get();
+            return (T) this.getRegisterFactory().getInstance(typeRegister);
         return null;
     };
     /**创建Bean。*/
@@ -307,19 +308,19 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     protected void doBind(ApiBinder apiBinder) {
         final AbstractAppContext appContet = this;
         /*绑定Environment对象的Provider*/
-        apiBinder.bindingType(Environment.class).toProvider(new Provider<Environment>() {
+        apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
             public Environment get() {
                 return appContet.getEnvironment();
             }
         });
         /*绑定Settings对象的Provider*/
-        apiBinder.bindingType(Settings.class).toProvider(new Provider<Settings>() {
+        apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
             public Settings get() {
                 return appContet.getSettings();
             }
         });
         /*绑定AppContext对象的Provider*/
-        apiBinder.bindingType(AppContext.class).toProvider(new Provider<AppContext>() {
+        apiBinder.bindType(AppContext.class).toProvider(new Provider<AppContext>() {
             public AppContext get() {
                 return appContet;
             }

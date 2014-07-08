@@ -89,8 +89,8 @@ class SimpleJDBCWarp implements Module {
         dataSource.setMaxIdleTime(25000);
         //
         //3.绑定DataSource接口实现
-        apiBinder.bindingType(DataSource.class).toInstance(dataSource);
+        apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
-        apiBinder.bindingType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
+        apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
     }
 }

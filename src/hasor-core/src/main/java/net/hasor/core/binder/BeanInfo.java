@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.core.RegisterInfo;
 /**
  * 注册到 Hasor 中 Bean 的元信息。
  * @version : 2013-5-6
@@ -23,7 +24,7 @@ public interface BeanInfo<T> {
     /**获取bean的名称*/
     public String[] getNames();
     /**当同一类型定义了多个Bean时，配合该ID用以在绑定系统中找到它。*/
-    public String getReferID();
+    public RegisterInfo<T> getReferInfo();
     /**获取bean的类型*/
     public Class<T> getType();
 }

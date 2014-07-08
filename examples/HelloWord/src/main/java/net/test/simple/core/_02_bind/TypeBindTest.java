@@ -35,7 +35,7 @@ public class TypeBindTest {
         AppContext appContext = HasorFactory.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /*绑定类型到Hasor*/
-                apiBinder.bindingType(PojoBean.class);
+                apiBinder.bindType(PojoBean.class);
             }
         });
         //

@@ -26,7 +26,7 @@ public class DefineBind_Tag extends AbstractHasorTag {
     private static final long serialVersionUID = -7899624524135156746L;
     private String            var              = null;
     private String            name             = null;
-    private String            bindingType      = null;
+    private String            bindType         = null;
     public String getVar() {
         return this.var;
     }
@@ -39,11 +39,11 @@ public class DefineBind_Tag extends AbstractHasorTag {
     public void setName(String name) {
         this.name = name;
     }
-    public String getBindingType() {
-        return bindingType;
+    public String getBindType() {
+        return bindType;
     }
-    public void setBindingType(String bindingType) {
-        this.bindingType = bindingType;
+    public void setBindType(String bindType) {
+        this.bindType = bindType;
     }
     //
     //
@@ -51,18 +51,18 @@ public class DefineBind_Tag extends AbstractHasorTag {
     public void release() {
         this.var = null;
         this.name = null;
-        this.bindingType = null;
+        this.bindType = null;
     }
     public int doStartTag() throws JspException {
         if (StringUtils.isBlank(this.var))
             throw new NullPointerException("tag param var is null.");
         if (StringUtils.isBlank(this.name))
             throw new NullPointerException("tag param name is null.");
-        if (StringUtils.isBlank(this.bindingType))
-            throw new NullPointerException("tag param bindingType is null.");
+        if (StringUtils.isBlank(this.bindType))
+            throw new NullPointerException("tag param bindType is null.");
         //
         try {
-            Object targetBean = Functions.defineBind(name, bindingType);
+            Object targetBean = Functions.defineBind(name, bindType);
             this.pageContext.setAttribute(var, targetBean);
             return SKIP_BODY;
         } catch (ClassNotFoundException e) {

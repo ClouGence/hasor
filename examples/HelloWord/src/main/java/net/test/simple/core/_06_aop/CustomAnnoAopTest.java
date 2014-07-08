@@ -49,8 +49,8 @@ public class CustomAnnoAopTest {
 class WarpAnnoAop implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         /*绑定类型*/
-        apiBinder.bindingType(FooBean.class);
-        apiBinder.bindingType(CustomAnnoFooBean.class);
+        apiBinder.bindType(FooBean.class);
+        apiBinder.bindType(CustomAnnoFooBean.class);
         /*当类配置了MyAop注解时，该类的任意方法使用Aop拦截*/
         apiBinder.bindInterceptor(AopMatchers.annotatedWithClass(MyAop.class),//
                 AopMatchers.anyMethod(), new SimpleInterceptor());

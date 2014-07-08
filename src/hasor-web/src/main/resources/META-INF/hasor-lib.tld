@@ -48,7 +48,7 @@
 	<tag>
 		<description>获取 Bean 对象，通过 AppContext.findBindingBean 方法获取 Bean 绑定对象。</description>
 		<name>defineBind</name>
-		<tag-class>net.hasor.web.jstl.taglib.DefineBinding_Tag</tag-class>
+		<tag-class>net.hasor.web.jstl.taglib.DefineBind_Tag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>获取到的 bean 在 page 中保存的名称.</description>
@@ -64,7 +64,7 @@
 		</attribute>
 		<attribute>
 			<description>绑定的类型.</description>
-			<name>bindingType</name>
+			<name>bindType</name>
 			<required>yes</required>
 			<rtexprvalue>yes</rtexprvalue>
 		</attribute>

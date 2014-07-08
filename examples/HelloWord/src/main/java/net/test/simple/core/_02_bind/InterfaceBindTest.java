@@ -36,7 +36,7 @@ public class InterfaceBindTest {
         AppContext appContext = HasorFactory.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /*绑定一个接口的实现类*/
-                apiBinder.bindingType(PojoInfo.class).to(PojoBean.class);
+                apiBinder.bindType(PojoInfo.class).to(PojoBean.class);
             }
         });
         //

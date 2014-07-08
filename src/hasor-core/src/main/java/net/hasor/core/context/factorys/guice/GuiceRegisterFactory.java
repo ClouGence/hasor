@@ -20,19 +20,23 @@ import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
+import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.name.Names;
 /**
  * 
  * @version : 2014年7月4日
@@ -53,7 +57,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         adapter.setBindType(bindingType);
         return adapter;
     }
-    public <T> T getInstance(RegisterInfo<T> oriType) {
+    protected <T> T newInstance(RegisterInfo<T> oriType) {
         if (oriType == null)
             return null;
         if (this.guiceInjector == null)
@@ -64,6 +68,11 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             return this.guiceInjector.getInstance(key);
         }
         return this.guiceInjector.getInstance(oriType.getBindType());
+    }
+    public <T> T getDefaultInstance(Class<T> oriType) {
+        if (this.guiceInjector == null)
+            return super.getDefaultInstance(oriType);
+        return this.guiceInjector.getInstance(oriType);
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
@@ -79,7 +88,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
                     //1.处理绑定
                     configRegister(register, binder);
                     //2.处理Aop
-                    if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class)) {
+                    if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptorData.class)) {
                         final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
                         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
                             public boolean matches(Class<?> targetClass) {
@@ -91,7 +100,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
                             }
                         }, amr);
                     }
-                    //                    GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
+                    //GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
                 }
             }
         });
@@ -99,13 +108,26 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     private void configRegister(GuiceRegisterInfoAdapter<Object> register, Binder binder) {
         binder.bind(RegisterInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
         //1.绑定类型
-        LinkedBindingBuilder<Object> linkedBinding = binder.bind(register.getKey());
-        ScopedBindingBuilder scopeBinding = linkedBinding;
-        //2.绑定实现
+        AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getBindType());
+        LinkedBindingBuilder<Object> linkedBinding = annoBinding;
+        ScopedBindingBuilder scopeBinding = annoBinding;
+        //2.绑定名称
+        boolean haveName = false;
+        String name = register.getBindName();
+        if (!StringUtils.isBlank(name)) {
+            linkedBinding = annoBinding.annotatedWith(Names.named(name));
+            haveName = true;
+        }
+        //3.绑定实现
         if (register.getCustomerProvider() != null)
-            scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getCustomerProvider()));
+            scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getProvider()));
         else if (register.getSourceType() != null)
             scopeBinding = linkedBinding.to(register.getSourceType());
+        else {
+            if (haveName == true)
+                /*有了BindName一定要，有impl绑定，所以只能自己绑定自己*/
+                scopeBinding = linkedBinding.to(register.getBindType());
+        }
         //3.处理单例
         if (register.isSingleton()) {
             scopeBinding.asEagerSingleton();

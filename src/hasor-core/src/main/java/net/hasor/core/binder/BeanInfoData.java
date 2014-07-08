@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.core.RegisterInfo;
 /**
  * 注册到 Hasor 中 Bean 的元信息。
  * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
 class BeanInfoData<T> implements BeanInfo<T> {
-    private String[] names     = null;
-    private String   referID   = null;
-    private Class<T> beanClass = null;
+    private String[]        names = null;
+    private RegisterInfo<T> info  = null;
     //
-    public BeanInfoData(String[] names, String referID, Class<T> beanClass) {
-        this.names = names;
-        this.referID = referID;
-        this.beanClass = beanClass;
+    public BeanInfoData(String[] aliasNames, RegisterInfo<T> info) {
+        this.names = aliasNames;
+        this.info = info;
     }
     /**获取bean的名称*/
     public String[] getNames() {
         return this.names;
     }
-    public String getReferID() {
-        return this.referID;
+    public RegisterInfo<T> getReferInfo() {
+        return this.info;
     }
     /**获取bean的类型*/
     public Class<T> getType() {
-        return this.beanClass;
+        return this.info.getBindType();
     }
 }

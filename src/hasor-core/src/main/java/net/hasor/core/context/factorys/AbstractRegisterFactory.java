@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterFactory;
@@ -74,7 +75,16 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         }
     }
     //
-    public abstract <T> T getInstance(RegisterInfo<T> oriType);
+    public final <T> T getInstance(RegisterInfo<T> oriType) {
+        if (oriType instanceof AbstractRegisterInfoAdapter) {
+            AbstractRegisterInfoAdapter<T> adapter = (AbstractRegisterInfoAdapter<T>) oriType;
+            Provider<T> provider = adapter.getCustomerProvider();
+            if (provider != null)
+                return provider.get();
+        }
+        return this.newInstance(oriType);
+    };
+    protected abstract <T> T newInstance(RegisterInfo<T> oriType);
     //
     public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(Class<T> bindType) {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。

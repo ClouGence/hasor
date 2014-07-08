@@ -62,28 +62,28 @@ public interface ApiBinder extends EventContext {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /** */
-    public <T> NamedBindingBuilder<T> bindingType(Class<T> type);
+    public <T> NamedBindingBuilder<T> bindType(Class<T> type);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see #bindingType(Class) */
-    public <T> MetaDataBindingBuilder<T> bindingType(Class<T> type, T instance);
+    public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see #bindingType(Class) */
-    public <T> InjectPropertyBindingBuilder<T> bindingType(Class<T> type, Class<? extends T> implementation);
+    public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
      * @see #bindingType(Class) */
-    public <T> ScopedBindingBuilder<T> bindingType(Class<T> type, Provider<T> provider);
+    public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(Class)*/
-    public <T> InjectPropertyBindingBuilder<T> bindingType(String withName, Class<T> type);
+    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(String, Class)*/
-    public <T> MetaDataBindingBuilder<T> bindingType(String withName, Class<T> type, T instance);
+    public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(String, Class)*/
-    public <T> InjectPropertyBindingBuilder<T> bindingType(String withName, Class<T> type, Class<? extends T> implementation);
+    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #bindingType(String, Class)*/
-    public <T> LifeBindingBuilder<T> bindingType(String withName, Class<T> type, Provider<T> provider);
+    public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider);
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字*/

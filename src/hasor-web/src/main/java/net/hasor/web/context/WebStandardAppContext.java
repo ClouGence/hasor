@@ -88,43 +88,43 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
         ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
         //
-        apiBinder.bindingType(ManagedServletPipeline.class).toInstance(sPipline);
-        apiBinder.bindingType(FilterPipeline.class).toInstance(fPipline);
-        apiBinder.bindingType(ListenerPipeline.class).toInstance(lPipline);
+        apiBinder.bindType(ManagedServletPipeline.class).toInstance(sPipline);
+        apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
+        apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
         /*绑定ServletRequest对象的Provider*/
-        apiBinder.bindingType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
+        apiBinder.bindType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
             public ServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定HttpServletRequest对象的Provider*/
-        apiBinder.bindingType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+        apiBinder.bindType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
             public HttpServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定ServletResponse对象的Provider*/
-        apiBinder.bindingType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
+        apiBinder.bindType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
             public ServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpServletResponse对象的Provider*/
-        apiBinder.bindingType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
+        apiBinder.bindType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
             public HttpServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpSession对象的Provider*/
-        apiBinder.bindingType(HttpSession.class).toProvider(new Provider<HttpSession>() {
+        apiBinder.bindType(HttpSession.class).toProvider(new Provider<HttpSession>() {
             public HttpSession get() {
                 HttpServletRequest req = RuntimeFilter.getLocalRequest();
                 return (req != null) ? req.getSession(true) : null;
             }
         });
         /*绑定ServletContext对象的Provider*/
-        apiBinder.bindingType(ServletContext.class).toProvider(new Provider<ServletContext>() {
+        apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             public ServletContext get() {
                 return getServletContext();
             }

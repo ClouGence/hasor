@@ -42,7 +42,7 @@ public class AopTest {
 class WarpAop implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         /*绑定类型*/
-        apiBinder.bindingType(FooBean.class);
+        apiBinder.bindType(FooBean.class);
         /*任意类任意方法*/
         apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new SimpleInterceptor());
     }

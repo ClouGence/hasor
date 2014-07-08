@@ -23,6 +23,6 @@ import net.hasor.core.Module;
  */
 public class Mod_2 implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindingType(String.class).uniqueName().toInstance("say form Mod_2.");
+        apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_2.");
     }
 }
