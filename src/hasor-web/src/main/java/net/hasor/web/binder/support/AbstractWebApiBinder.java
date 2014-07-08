@@ -27,6 +27,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.binder.InstanceProvider;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
 import org.more.util.ArrayUtils;
@@ -57,16 +58,6 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         if (object != null)
             list.add(object);
         return list;
-    }
-    /**实体类型的Provider代理 */
-    class InstanceProvider<T> implements Provider<T> {
-        private T instance = null;
-        public InstanceProvider(T instance) {
-            this.instance = instance;
-        }
-        public T get() {
-            return this.instance;
-        }
     }
     /**Class类型的Provider代理 */
     class ClassProvider<T> implements Provider<T>, AppContextAware {

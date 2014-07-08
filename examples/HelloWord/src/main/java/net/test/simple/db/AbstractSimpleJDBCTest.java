@@ -24,24 +24,28 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.interceptor.TranInterceptor;
 import org.junit.Before;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
- * 用于单一数据源测试
+ * 用于单一数据源测试基类
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractSimpleJDBCTest extends AbstractJDBCTest {
     private AppContext appContext = null;
+    //1.监控线程设置
     protected DataSource getWatchThreadDataSource() {
         return getDataSource();
     }
     protected Isolation getWatchThreadTransactionLevel() {
         return Isolation.valueOf(Connection.TRANSACTION_READ_COMMITTED);
     }
+    //2.基类配置
     @Before
     public void initContext() throws IOException, URISyntaxException, SQLException {
         this.appContext = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
@@ -60,6 +64,7 @@ public abstract class AbstractSimpleJDBCTest extends AbstractJDBCTest {
         return appContext.getInstance(DataSource.class);
     }
 }
+/**创建JDBC环境*/
 class SimpleJDBCWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.获取数据库连接配置信息
@@ -92,5 +97,7 @@ class SimpleJDBCWarp implements Module {
         apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
+        //5.绑定Aop
+        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new TranInterceptor(dataSource));
     }
 }

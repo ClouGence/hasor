@@ -16,7 +16,6 @@
  */
 package org.more.util.text;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -83,7 +82,7 @@ import java.util.NoSuchElementException;
  * @since 2.2
  * @version $Id: StrTokenizer.java 907631 2010-02-08 12:22:48Z sebb $
  */
-public class StrTokenizer implements ListIterator, Cloneable {
+public class StrTokenizer implements ListIterator<String>, Cloneable {
     private static final StrTokenizer CSV_TOKENIZER_PROTOTYPE;
     private static final StrTokenizer TSV_TOKENIZER_PROTOTYPE;
     static {
@@ -422,9 +421,9 @@ public class StrTokenizer implements ListIterator, Cloneable {
      *
      * @return the tokens as a String array
      */
-    public List getTokenList() {
+    public List<String> getTokenList() {
         checkTokenized();
-        List list = new ArrayList(tokens.length);
+        List<String> list = new ArrayList<String>(tokens.length);
         for (int i = 0; i < tokens.length; i++) {
             list.add(tokens[i]);
         }
@@ -492,7 +491,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @return the next String token
      * @throws NoSuchElementException if there are no more elements
      */
-    public Object next() {
+    public String next() {
         if (hasNext()) {
             return tokens[tokenPos++];
         }
@@ -520,7 +519,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      *
      * @return the previous token
      */
-    public Object previous() {
+    public String previous() {
         if (hasPrevious()) {
             return tokens[--tokenPos];
         }
@@ -547,7 +546,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @param obj this parameter ignored.
      * @throws UnsupportedOperationException always
      */
-    public void set(Object obj) {
+    public void set(String obj) {
         throw new UnsupportedOperationException("set() is unsupported");
     }
     /**
@@ -555,7 +554,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @param obj this parameter ignored.
      * @throws UnsupportedOperationException always
      */
-    public void add(Object obj) {
+    public void add(String obj) {
         throw new UnsupportedOperationException("add() is unsupported");
     }
     // Implementation
@@ -567,10 +566,10 @@ public class StrTokenizer implements ListIterator, Cloneable {
         if (tokens == null) {
             if (chars == null) {
                 // still call tokenize as subclass may do some work
-                List split = tokenize(null, 0, 0);
+                List<String> split = tokenize(null, 0, 0);
                 tokens = (String[]) split.toArray(new String[split.size()]);
             } else {
-                List split = tokenize(chars, 0, chars.length);
+                List<String> split = tokenize(chars, 0, chars.length);
                 tokens = (String[]) split.toArray(new String[split.size()]);
             }
         }
@@ -595,12 +594,12 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @param count  the number of characters to tokenize, must be valid
      * @return the modifiable list of String tokens, unmodifiable if null array or zero count
      */
-    protected List tokenize(char[] chars, int offset, int count) {
+    protected List<String> tokenize(char[] chars, int offset, int count) {
         if (chars == null || count == 0) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<String>(0);
         }
         StrBuilder buf = new StrBuilder();
-        List tokens = new ArrayList();
+        List<String> tokens = new ArrayList<String>();
         int pos = offset;
         // loop around the entire buffer
         while (pos >= 0 && pos < count) {
@@ -619,7 +618,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @param list  the list to add to
      * @param tok  the token to add
      */
-    private void addToken(List list, String tok) {
+    private void addToken(List<String> list, String tok) {
         if (tok == null || tok.length() == 0) {
             if (isIgnoreEmptyTokens()) {
                 return;
@@ -641,7 +640,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      * @return the starting position of the next field (the character
      *  immediately after the delimiter), or -1 if end of string found
      */
-    private int readNextToken(char[] chars, int start, int len, StrBuilder workArea, List tokens) {
+    private int readNextToken(char[] chars, int start, int len, StrBuilder workArea, List<String> tokens) {
         // skip all leading whitespace, unless it is the
         // field delimiter or the quote character
         while (start < len) {
@@ -683,7 +682,7 @@ public class StrTokenizer implements ListIterator, Cloneable {
      *  immediately after the delimiter, or if end of string found,
      *  then the length of string
      */
-    private int readWithQuotes(char[] chars, int start, int len, StrBuilder workArea, List tokens, int quoteStart, int quoteLen) {
+    private int readWithQuotes(char[] chars, int start, int len, StrBuilder workArea, List<String> tokens, int quoteStart, int quoteLen) {
         // Loop until we've found the end of the quoted
         // string or the end of the input
         workArea.clear();

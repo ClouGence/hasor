@@ -61,12 +61,11 @@ public class WeakArrayList<T> extends AbstractList<T> {
             ++i;
         }
     }
-    @SuppressWarnings("unchecked")
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < this.size; ++i) {
             Object obj;
-            Reference<T> ref = (Reference<T>) this.data[i];
+            Reference<?> ref = (Reference<?>) this.data[i];
             if (this.data[i] == null) {
                 obj = null;
             } else {
@@ -78,9 +77,8 @@ public class WeakArrayList<T> extends AbstractList<T> {
         }
         return buffer.toString();
     }
-    @SuppressWarnings("unchecked")
     private Reference<T> createRef(T obj) {
-        return new WeakReference(WeakArrayList.maskNull(obj), this.queue);
+        return new WeakReference<T>(WeakArrayList.maskNull(obj), this.queue);
     }
     public void ensureCapacity(int minCapacity) {
         this.modCount += 1;

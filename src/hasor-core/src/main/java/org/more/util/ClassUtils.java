@@ -984,12 +984,51 @@ public class ClassUtils {
         return target.getName().startsWith("java.lang.");
     };
     /**获取方法的标识代码，在不考虑其所属类的情况下。*/
-    public static String getCodeWithoutClass(Method method) {
+    public static String getDescName(Class<?> type) {
+        if (type == Void.class)
+            return "void ";
+        else if (type.isPrimitive()) {
+            return getShortCanonicalName(type);
+        } else {
+            return type.getName();
+        }
+    }
+    /**获取方法的标识代码，在不考虑其所属类的情况下。
+     * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
+    public static String getDescName(Method method) {
         //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
-        StringBuffer str = new StringBuffer(method.toString());
-        String declaringClass = method.getDeclaringClass().getName();
-        int indexStart = str.indexOf(declaringClass);
-        str.delete(indexStart, indexStart + declaringClass.length() + 1);
+        StringBuffer str = new StringBuffer("");
+        //1.访问修饰符
+        int modifiers = method.getModifiers();
+        if (Modifier.isPublic(modifiers)) {
+            str.append("public ");
+        } else if (Modifier.isPrivate(modifiers)) {
+            str.append("private ");
+        } else if (Modifier.isProtected(modifiers)) {
+            str.append("protected ");
+        } else {
+            str.append("friendly ");
+        }
+        //2.返回值
+        Class<?> returnType = method.getReturnType();
+        str.append(getDescName(returnType) + " ");
+        //3.方法名
+        Class<?> decType = method.getDeclaringClass();
+        str.append(decType.getName());
+        str.append(".");
+        str.append(method.getName());
+        //4.方法签名
+        Class<?>[] paramTypes = method.getParameterTypes();
+        str.append("(");
+        if (paramTypes != null) {
+            for (int j = 0; j < paramTypes.length; j++) {
+                str.append(getDescName(paramTypes[j]));
+                if (j < (paramTypes.length - 1))
+                    str.append(",");
+            }
+        }
+        str.append(")");
+        //
         return str.toString();
     }
 }

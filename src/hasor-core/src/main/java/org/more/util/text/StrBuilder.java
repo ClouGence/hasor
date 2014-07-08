@@ -878,9 +878,9 @@ public class StrBuilder implements Cloneable {
      * @return this, to enable chaining
      * @since 2.3
      */
-    public StrBuilder appendAll(Collection coll) {
+    public StrBuilder appendAll(Collection<?> coll) {
         if (coll != null && coll.size() > 0) {
-            Iterator it = coll.iterator();
+            Iterator<?> it = coll.iterator();
             while (it.hasNext()) {
                 append(it.next());
             }
@@ -896,7 +896,7 @@ public class StrBuilder implements Cloneable {
      * @return this, to enable chaining
      * @since 2.3
      */
-    public StrBuilder appendAll(Iterator it) {
+    public StrBuilder appendAll(Iterator<?> it) {
         if (it != null) {
             while (it.hasNext()) {
                 append(it.next());
@@ -936,10 +936,10 @@ public class StrBuilder implements Cloneable {
      * @param separator  the separator to use, null means no separator
      * @return this, to enable chaining
      */
-    public StrBuilder appendWithSeparators(Collection coll, String separator) {
+    public StrBuilder appendWithSeparators(Collection<?> coll, String separator) {
         if (coll != null && coll.size() > 0) {
             separator = (separator == null ? "" : separator);
-            Iterator it = coll.iterator();
+            Iterator<?> it = coll.iterator();
             while (it.hasNext()) {
                 append(it.next());
                 if (it.hasNext()) {
@@ -959,7 +959,7 @@ public class StrBuilder implements Cloneable {
      * @param separator  the separator to use, null means no separator
      * @return this, to enable chaining
      */
-    public StrBuilder appendWithSeparators(Iterator it, String separator) {
+    public StrBuilder appendWithSeparators(Iterator<?> it, String separator) {
         if (it != null) {
             separator = (separator == null ? "" : separator);
             while (it.hasNext()) {
@@ -2480,7 +2480,7 @@ public class StrBuilder implements Cloneable {
             super();
         }
         /** {@inheritDoc} */
-        protected List tokenize(char[] chars, int offset, int count) {
+        protected List<String> tokenize(char[] chars, int offset, int count) {
             if (chars == null) {
                 return super.tokenize(StrBuilder.this.buffer, 0, StrBuilder.this.size());
             } else {

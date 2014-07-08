@@ -35,8 +35,8 @@ import org.more.util.SystemUtils;
  */
 abstract class MemberUtils {
     // TODO extract an interface to implement compareParameterSets(...)?
-    private static final int     ACCESS_TEST             = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
-    private static final Method  IS_SYNTHETIC;
+    private static final int        ACCESS_TEST             = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+    private static final Method     IS_SYNTHETIC;
     static {
         Method isSynthetic = null;
         if (SystemUtils.isJavaVersionAtLeast(1.5f)) {
@@ -48,7 +48,7 @@ abstract class MemberUtils {
         IS_SYNTHETIC = isSynthetic;
     }
     /** Array of primitive number types ordered by "promotability" */
-    private static final Class[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
+    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
     /**
      * XXX Default access superclass workaround
      *
@@ -98,7 +98,7 @@ abstract class MemberUtils {
     static boolean isSynthetic(Member m) {
         if (IS_SYNTHETIC != null) {
             try {
-                return ((Boolean) IS_SYNTHETIC.invoke(m, null)).booleanValue();
+                return ((Boolean) IS_SYNTHETIC.invoke(m)).booleanValue();
             } catch (Exception e) {}
         }
         return false;
@@ -115,7 +115,7 @@ abstract class MemberUtils {
      * <code>left</code>/<code>right</code>
      * @return int consistent with <code>compare</code> semantics
      */
-    static int compareParameterTypes(Class[] left, Class[] right, Class[] actual) {
+    static int compareParameterTypes(Class<?>[] left, Class<?>[] right, Class<?>[] actual) {
         float leftCost = getTotalTransformationCost(actual, left);
         float rightCost = getTotalTransformationCost(actual, right);
         return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
@@ -127,10 +127,10 @@ abstract class MemberUtils {
      * @param destArgs The destination arguments
      * @return The total transformation cost
      */
-    private static float getTotalTransformationCost(Class[] srcArgs, Class[] destArgs) {
+    private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
         float totalCost = 0.0f;
         for (int i = 0; i < srcArgs.length; i++) {
-            Class srcClass, destClass;
+            Class<?> srcClass, destClass;
             srcClass = srcArgs[i];
             destClass = destArgs[i];
             totalCost += getObjectTransformationCost(srcClass, destClass);
@@ -145,7 +145,7 @@ abstract class MemberUtils {
      * @param destClass The destination class
      * @return The cost of transforming an object
      */
-    private static float getObjectTransformationCost(Class srcClass, Class destClass) {
+    private static float getObjectTransformationCost(Class<?> srcClass, Class<?> destClass) {
         if (destClass.isPrimitive()) {
             return getPrimitivePromotionCost(srcClass, destClass);
         }
@@ -179,9 +179,9 @@ abstract class MemberUtils {
      * @param destClass the (primitive) destination class
      * @return The cost of promoting the primitive
      */
-    private static float getPrimitivePromotionCost(final Class srcClass, final Class destClass) {
+    private static float getPrimitivePromotionCost(final Class<?> srcClass, final Class<?> destClass) {
         float cost = 0.0f;
-        Class cls = srcClass;
+        Class<?> cls = srcClass;
         if (!cls.isPrimitive()) {
             // slight unwrapping penalty
             cost += 0.1f;

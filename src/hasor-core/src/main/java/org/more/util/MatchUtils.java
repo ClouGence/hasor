@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package org.more.util;
+/**
+ * 
+ * @version : 2014年7月8日
+ * @author 赵永春(zyc@hasor.net)
+ */
 public class MatchUtils {
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(String wild) {

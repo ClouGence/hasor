@@ -31,10 +31,11 @@ import org.more.util.CharUtils;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
 /***
- * 数据库测试程序基类
+ * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
+//@RunWith(MyTestRunner.class)
 public abstract class AbstractJDBCTest {
     protected abstract DataSource getWatchThreadDataSource();
     protected abstract Isolation getWatchThreadTransactionLevel();

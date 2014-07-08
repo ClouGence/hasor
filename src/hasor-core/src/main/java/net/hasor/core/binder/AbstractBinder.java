@@ -166,16 +166,6 @@ public abstract class AbstractBinder implements ApiBinder {
             return returnData;
         }
     }
-    /**对象到Provider代理 */
-    private static class InstanceProvider<T> implements Provider<T> {
-        private T instance = null;
-        public InstanceProvider(T instance) {
-            this.instance = instance;
-        }
-        public T get() {
-            return this.instance;
-        }
-    }
     /** 一堆接口的实现 */
     private static class BindingBuilderImpl<T> implements //
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>,//

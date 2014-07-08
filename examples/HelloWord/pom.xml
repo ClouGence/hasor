@@ -66,6 +66,12 @@
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-Test -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-test</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

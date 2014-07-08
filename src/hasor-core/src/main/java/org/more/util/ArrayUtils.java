@@ -43,81 +43,43 @@ import java.util.Map;
  * @version $Id: ArrayUtils.java 1056988 2011-01-09 17:58:53Z niallp $
  */
 public class ArrayUtils {
-    /**
-     * An empty immutable <code>Object</code> array.
-     */
+    /** An empty immutable <code>Object</code> array. */
     public static final Object[]    EMPTY_OBJECT_ARRAY           = new Object[0];
-    /**
-     * An empty immutable <code>Class</code> array.
-     */
-    public static final Class[]     EMPTY_CLASS_ARRAY            = new Class[0];
-    /**
-     * An empty immutable <code>String</code> array.
-     */
+    /** An empty immutable <code>Class</code> array. */
+    public static final Class<?>[]  EMPTY_CLASS_ARRAY            = new Class[0];
+    /** An empty immutable <code>String</code> array. */
     public static final String[]    EMPTY_STRING_ARRAY           = new String[0];
-    /**
-     * An empty immutable <code>long</code> array.
-     */
+    /** An empty immutable <code>long</code> array. */
     public static final long[]      EMPTY_LONG_ARRAY             = new long[0];
-    /**
-     * An empty immutable <code>Long</code> array.
-     */
+    /** An empty immutable <code>Long</code> array. */
     public static final Long[]      EMPTY_LONG_OBJECT_ARRAY      = new Long[0];
-    /**
-     * An empty immutable <code>int</code> array.
-     */
+    /** An empty immutable <code>int</code> array. */
     public static final int[]       EMPTY_INT_ARRAY              = new int[0];
-    /**
-     * An empty immutable <code>Integer</code> array.
-     */
+    /** An empty immutable <code>Integer</code> array. */
     public static final Integer[]   EMPTY_INTEGER_OBJECT_ARRAY   = new Integer[0];
-    /**
-     * An empty immutable <code>short</code> array.
-     */
+    /** An empty immutable <code>short</code> array. */
     public static final short[]     EMPTY_SHORT_ARRAY            = new short[0];
-    /**
-     * An empty immutable <code>Short</code> array.
-     */
+    /** An empty immutable <code>Short</code> array. */
     public static final Short[]     EMPTY_SHORT_OBJECT_ARRAY     = new Short[0];
-    /**
-     * An empty immutable <code>byte</code> array.
-     */
+    /** An empty immutable <code>byte</code> array. */
     public static final byte[]      EMPTY_BYTE_ARRAY             = new byte[0];
-    /**
-     * An empty immutable <code>Byte</code> array.
-     */
+    /** An empty immutable <code>Byte</code> array. */
     public static final Byte[]      EMPTY_BYTE_OBJECT_ARRAY      = new Byte[0];
-    /**
-     * An empty immutable <code>double</code> array.
-     */
+    /** An empty immutable <code>double</code> array. */
     public static final double[]    EMPTY_DOUBLE_ARRAY           = new double[0];
-    /**
-     * An empty immutable <code>Double</code> array.
-     */
+    /** An empty immutable <code>Double</code> array. */
     public static final Double[]    EMPTY_DOUBLE_OBJECT_ARRAY    = new Double[0];
-    /**
-     * An empty immutable <code>float</code> array.
-     */
+    /** An empty immutable <code>float</code> array. */
     public static final float[]     EMPTY_FLOAT_ARRAY            = new float[0];
-    /**
-     * An empty immutable <code>Float</code> array.
-     */
+    /** An empty immutable <code>Float</code> array. */
     public static final Float[]     EMPTY_FLOAT_OBJECT_ARRAY     = new Float[0];
-    /**
-     * An empty immutable <code>boolean</code> array.
-     */
+    /** An empty immutable <code>boolean</code> array. */
     public static final boolean[]   EMPTY_BOOLEAN_ARRAY          = new boolean[0];
-    /**
-     * An empty immutable <code>Boolean</code> array.
-     */
+    /** An empty immutable <code>Boolean</code> array. */
     public static final Boolean[]   EMPTY_BOOLEAN_OBJECT_ARRAY   = new Boolean[0];
-    /**
-     * An empty immutable <code>char</code> array.
-     */
+    /** An empty immutable <code>char</code> array. */
     public static final char[]      EMPTY_CHAR_ARRAY             = new char[0];
-    /**
-     * An empty immutable <code>Character</code> array.
-     */
+    /** An empty immutable <code>Character</code> array. */
     public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
     /**
      * The index value when an element is not found in a list or array: <code>-1</code>.
@@ -766,7 +728,7 @@ public class ArrayUtils {
             endIndexExclusive = array.length;
         }
         int newSize = endIndexExclusive - startIndexInclusive;
-        Class type = array.getClass().getComponentType();
+        Class<?> type = array.getClass().getComponentType();
         if (newSize <= 0) {
             return (Object[]) Array.newInstance(type, 0);
         }
@@ -3220,8 +3182,8 @@ public class ArrayUtils {
              * - it would be a wasted check most of the time
              * - safer, in case check turns out to be too strict
              */
-            final Class type1 = array1.getClass().getComponentType();
-            final Class type2 = array2.getClass().getComponentType();
+            final Class<?> type1 = array1.getClass().getComponentType();
+            final Class<?> type2 = array2.getClass().getComponentType();
             if (!type1.isAssignableFrom(type2)) {
                 throw new IllegalArgumentException("Cannot store " + type2.getName() + " in an array of " + type1.getName());
             }
@@ -3480,7 +3442,7 @@ public class ArrayUtils {
      * @since 2.1
      */
     public static Object[] add(Object[] array, Object element) {
-        Class type;
+        Class<?> type;
         if (array != null) {
             type = array.getClass();
         } else if (element != null) {
@@ -3709,7 +3671,7 @@ public class ArrayUtils {
      * size 1 array of this type.
      * @return A new copy of the array of size 1 greater than the input.
      */
-    private static Object copyArrayGrow1(Object array, Class newArrayComponentType) {
+    private static Object copyArrayGrow1(Object array, Class<?> newArrayComponentType) {
         if (array != null) {
             int arrayLength = Array.getLength(array);
             Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
@@ -3747,7 +3709,7 @@ public class ArrayUtils {
      * (index < 0 || index > array.length).
      */
     public static Object[] add(Object[] array, int index, Object element) {
-        Class clss = null;
+        Class<?> clss = null;
         if (array != null) {
             clss = array.getClass().getComponentType();
         } else if (element != null) {
@@ -4009,7 +3971,7 @@ public class ArrayUtils {
      * @param clss the type of the element being added
      * @return A new array containing the existing elements and the new element
      */
-    private static Object add(Object array, int index, Object element, Class clss) {
+    private static Object add(Object array, int index, Object element, Class<?> clss) {
         if (array == null) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException("Index: " + index + ", Length: 0");
