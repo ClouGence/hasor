@@ -17,8 +17,8 @@ package net.hasor.plugins.anno.aop;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
-import net.hasor.core.binder.matcher.AopMatchers;
-import net.hasor.core.plugin.AbstractHasorPlugin;
+import net.hasor.core.Module;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
@@ -26,8 +26,8 @@ import net.hasor.quick.plugin.Plugin;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class AopPlugin extends AbstractHasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
+public class AopPlugin implements Module {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         //2.@Aop拦截器
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//

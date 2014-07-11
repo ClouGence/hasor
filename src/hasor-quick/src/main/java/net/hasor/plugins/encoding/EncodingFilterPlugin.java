@@ -28,21 +28,21 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebHasorPlugin;
+import net.hasor.web.plugin.WebModule;
 /**
  * 提供请求相应编码设置。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class EncodingFilterPlugin extends AbstractWebHasorPlugin {
-    public static final String RequestEncoding  = "hasor-web.requestEncoding";
-    public static final String ResponseEncoding = "hasor-web.responseEncoding";
+public class EncodingFilterPlugin extends WebModule {
+    public static final String RequestEncoding  = "hasor-quick.requestEncoding";
+    public static final String ResponseEncoding = "hasor-quick.responseEncoding";
     //
-    public void loadPlugin(WebApiBinder apiBinder) {
+    public void loadModule(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
-        String requestEncoding = settings.getString("hasor-web.requestEncoding");
-        String responseEncoding = settings.getString("hasor-web.responseEncoding");
+        String requestEncoding = settings.getString(RequestEncoding);
+        String responseEncoding = settings.getString(ResponseEncoding);
         HashMap<String, String> initParams = new HashMap<String, String>();
         initParams.put(RequestEncoding, requestEncoding);
         initParams.put(ResponseEncoding, responseEncoding);

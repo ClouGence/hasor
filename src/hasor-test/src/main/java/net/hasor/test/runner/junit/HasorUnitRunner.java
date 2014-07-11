@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.junit.annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.test.runner.junit;
+import net.hasor.test.script.Hi;
+import org.junit.runner.JUnitCore;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 /**
- * 当测试用例启动之后，Hasor测试框架会独立线程启动该方法，作为陪伴。
+ * 
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Documented
-public @interface FollowThread {}
+public class HasorUnitRunner extends BlockJUnit4ClassRunner {
+    public HasorUnitRunner(Class<?> klass) throws InitializationError {
+        super(klass);
+    }
+    public static void main(String[] args) {
+        JUnitCore.runClasses(Hi.class);
+    }
+}

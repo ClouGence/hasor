@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.junit;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+package net.hasor.test;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
+ * 用于配置测试用例的启动顺序。
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorUnitRunner extends BlockJUnit4ClassRunner {
-    public HasorUnitRunner(Class<?> klass) throws InitializationError {
-        super(klass);
-    }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TestOrder {
+    /**启动顺序，值越小约靠前。*/
+    public int onStart() default 0;
 }

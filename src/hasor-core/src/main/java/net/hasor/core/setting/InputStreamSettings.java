@@ -72,7 +72,7 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
                 factory.setFeature("http://xml.org/sax/features/namespaces", true);
                 SAXParser parser = factory.newSAXParser();
                 SaxXmlParser handler = new SaxXmlParser(loadTo);
-                while ((inStream = this.pendingStream.pollFirst()) != null) {
+                while ((inStream = this.pendingStream.removeFirst()) != null) {
                     parser.parse(inStream, handler);
                     inStream.close();
                 }

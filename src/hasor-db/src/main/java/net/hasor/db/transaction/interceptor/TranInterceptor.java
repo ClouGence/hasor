@@ -61,7 +61,7 @@ public class TranInterceptor implements MethodInterceptor {
     }
     /**获取用于目标方法的传播属性。*/
     protected Propagation getPropagation(Method method) {
-        String descName = ClassUtils.getDescName(method);
+        String descName = ClassUtils.getDescName(method);s
         //
         //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
         for (TranStrategy strategy : this.strategyArrays) {

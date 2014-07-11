@@ -15,7 +15,6 @@
  */
 package net.hasor.core.setting;
 import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
 import net.hasor.core.Settings;
 /**
  * 需要经过解析读取配置文件资源的Settings
@@ -24,5 +23,5 @@ import net.hasor.core.Settings;
  */
 public interface IOSettings extends Settings {
     /**装载配置文件*/
-    public void loadSettings() throws IOException, XMLStreamException;
+    public void loadSettings() throws IOException;
 }

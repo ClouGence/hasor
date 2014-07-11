@@ -21,7 +21,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.hasor.core.plugin.AbstractHasorPlugin;
+import net.hasor.core.Module;
 import net.hasor.quick.plugin.Plugin;
 import org.more.util.StringUtils;
 /**
@@ -30,8 +30,8 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class ListenerPlugin extends AbstractHasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
+public class ListenerPlugin implements Module  {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
         final Set<Class<?>> eventSet = env.findClass(Listener.class);
         if (eventSet == null || eventSet.isEmpty())

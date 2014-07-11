@@ -24,14 +24,14 @@ import net.hasor.mvc.controller.AbstractController;
 import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.restful.RestfulService;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebHasorPlugin;
+import net.hasor.web.plugin.WebModule;
 /**
  * 
  * @version : 2013-9-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ResultPlugin extends AbstractWebHasorPlugin {
-    public void loadPlugin(WebApiBinder apiBinder) {
+public class ResultPlugin extends WebModule {
+    public void loadModule(WebApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取
         Set<Class<?>> resultDefineSet = apiBinder.findClass(ResultDefine.class);

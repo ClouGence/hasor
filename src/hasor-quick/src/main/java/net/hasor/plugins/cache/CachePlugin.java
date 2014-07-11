@@ -19,8 +19,8 @@ import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
-import net.hasor.core.binder.matcher.AopMatchers;
-import net.hasor.core.plugin.AbstractHasorPlugin;
+import net.hasor.core.Module;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
 import org.more.RepeateException;
 /**
@@ -29,9 +29,9 @@ import org.more.RepeateException;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin()
-public class CachePlugin extends AbstractHasorPlugin {
+public class CachePlugin implements Module {
     /**初始化.*/
-    public void loadPlugin(ApiBinder apiBinder) {
+    public void loadModule(ApiBinder apiBinder) {
         //1.挂载Aop
         Matcher<Class<?>> matcherCass = AopMatchers.annotatedWithClass(NeedCache.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(NeedCache.class);//
@@ -46,6 +46,6 @@ public class CachePlugin extends AbstractHasorPlugin {
         if (CacheCreator.class.isAssignableFrom(cacheCreator) == false)
             throw new ClassCastException("cannot be cast to " + CacheCreator.class.getName());
         //2.注册服务
-        apiBinder.bindingType(CacheCreator.class, (Class<CacheCreator>) cacheCreator).asEagerSingleton();
+        apiBinder.bindType(CacheCreator.class, (Class<CacheCreator>) cacheCreator).asEagerSingleton();
     }
 }

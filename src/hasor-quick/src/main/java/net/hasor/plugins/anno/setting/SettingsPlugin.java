@@ -22,9 +22,9 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.plugin.AbstractHasorPlugin;
 import net.hasor.quick.plugin.Plugin;
 /**
  * 提供 <code>@Settings</code>注解 功能支持。
@@ -32,8 +32,8 @@ import net.hasor.quick.plugin.Plugin;
  * @author 赵永春 (zyc@byshell.org)
  */
 @Plugin
-public class SettingsPlugin extends AbstractHasorPlugin {
-    public void loadPlugin(ApiBinder apiBinder) {
+public class SettingsPlugin implements Module {
+    public void loadModule(ApiBinder apiBinder) {
         this.loadAnnoSettings(apiBinder);
         //
         final Environment env = apiBinder.getEnvironment();
@@ -63,7 +63,7 @@ public class SettingsPlugin extends AbstractHasorPlugin {
                 Hasor.logWarn("not implemented SettingsListener :%s", settingClass);
                 continue;
             }
-            apiBinder.bindingType(SettingsListener.class, (Class<SettingsListener>) settingClass).asEagerSingleton();
+            apiBinder.bindType(SettingsListener.class, (Class<SettingsListener>) settingClass).asEagerSingleton();
             Hasor.logInfo("%s bind SettingsListener.", settingClass);
         }
     }

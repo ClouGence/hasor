@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick;
+package net.hasor.test;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.core.Module;
 /**
- * 标志该类注册到系统初始化过程，该类在标记注解时必须实现{@link Module}接口。
- * @version : 2013-3-20
- * @author 赵永春 (zyc@hasor.net)
+ * 当测试用例启动之后，Hasor测试框架会独立线程启动该方法，作为陪伴直到测试结束。
+ * @version : 2014年7月8日
+ * @author 赵永春(zyc@hasor.net)
  */
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface AnnoModule {
-    /**默认名称，该名称在系统控制台用于管理显示用途。*/
-    public String displayName() default "";
-    /**对该类的描述信息。*/
-    public String description() default "";
-}
+public @interface DaemonThread {}

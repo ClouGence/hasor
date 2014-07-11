@@ -24,13 +24,13 @@ import net.hasor.web.WebApiBinder;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class WebModule implements Module {
-    public final void loadPlugin(ApiBinder apiBinder) {
+    public final void loadModule(ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
             Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
             return;
         }
-        this.loadPlugin((WebApiBinder) apiBinder);
+        this.loadModule((WebApiBinder) apiBinder);
         Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
-    public abstract void loadPlugin(WebApiBinder apiBinder);
+    public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

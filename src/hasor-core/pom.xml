@@ -43,6 +43,14 @@
 			<artifactId>aopalliance</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<!-- JSR-173 -->
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jsr173</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- Guice3 -->
 		<dependency>

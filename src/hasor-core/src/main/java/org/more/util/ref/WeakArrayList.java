@@ -31,7 +31,6 @@ public class WeakArrayList<T> extends AbstractList<T> {
     private Object[]                          data;
     private int                               size;
     private boolean                           enquedElement;
-    @SuppressWarnings("unchecked")
     private static <T> T maskNull(T value) {
         return (T) (value == null ? WeakArrayList.NULL_VALUE : value);
     }
@@ -193,19 +192,5 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.size -= 1;
         this.modCount += 1;
         return (T) WeakArrayList.unmaskNull(oldValue);
-    }
-    public static void main(String[] args) {
-        Object a = new Object();
-        WeakArrayList<Object> list = new WeakArrayList<Object>();
-        for (int i = 0; i < 100000; i++) {
-            list.add(a);
-        }
-        int size = list.size();
-        System.out.println(size);
-        a = null;
-        while (list.size() == size) {
-            System.gc();
-        }
-        System.out.println(list.size());
     }
 }

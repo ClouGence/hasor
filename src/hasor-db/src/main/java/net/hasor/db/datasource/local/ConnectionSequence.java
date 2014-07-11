@@ -33,12 +33,12 @@ public class ConnectionSequence {
     /**压入*/
     public void push(ConnectionHolder newHolder) {
         this.currentHolder = newHolder;
-        this.holderList.add(newHolder);
+        this.holderList.addFirst(newHolder);
     }
     /**弹出*/
     public void pop() {
         if (this.holderList.isEmpty() == true)
             this.currentHolder = null;
-        this.currentHolder = this.holderList.pop();
+        this.currentHolder = this.holderList.removeFirst();
     }
 }

@@ -6,5 +6,5 @@
 		<loadPackages>net.hasor.quick.*,net.hasor.plugins.*</loadPackages>
 	</hasor>
 
-	<hasor-web requestEncoding="UTF-8" responseEncoding="UTF-8" />
+	<hasor-quick requestEncoding="UTF-8" responseEncoding="UTF-8" />
 </config>

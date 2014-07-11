@@ -79,7 +79,7 @@ public class JdbcTransactionManager implements TransactionManager {
         //1.获取连接
         JdbcTransactionStatus defStatus = new JdbcTransactionStatus(behavior, level);
         defStatus.setTranConn(doGetConnection(defStatus));
-        this.tStatusStack.push(defStatus);/*入栈*/
+        this.tStatusStack.addFirst(defStatus);/*入栈*/
         /*-------------------------------------------------------------
         |                      环境已经存在事务
         |
@@ -319,7 +319,7 @@ public class JdbcTransactionManager implements TransactionManager {
         if (defStatus.isSuspend())
             this.resume(defStatus);
         /*清理defStatus*/
-        this.tStatusStack.pop();
+        this.tStatusStack.removeFirst();
         //
         defStatus.setTranConn(null);
         defStatus.setSuspendConn(null);

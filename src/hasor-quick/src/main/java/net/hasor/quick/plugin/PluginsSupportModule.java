@@ -19,20 +19,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.plugin.HasorPlugin;
-import net.hasor.quick.AnnoModule;
 /**
  * 插件体系支持
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@AnnoModule()
 public class PluginsSupportModule implements Module {
     /**初始化.*/
-    public void init(ApiBinder apiBinder) {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         Set<Class<?>> pluginSet = apiBinder.findClass(Plugin.class);
         if (pluginSet == null)
             return;
@@ -65,6 +61,4 @@ public class PluginsSupportModule implements Module {
             Hasor.logInfo("find Plugin : " + outData);
         }
     }
-    /***/
-    public void start(AppContext appContext) {}
 }

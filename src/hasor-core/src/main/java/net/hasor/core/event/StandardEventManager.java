@@ -79,7 +79,7 @@ public class StandardEventManager implements EventContext {
             this.onceListenerMap.put(eventType, eventList);
         }
         if (eventList.contains(eventListener) == false)
-            eventList.push(eventListener);
+            eventList.addLast(eventListener);
         this.onceListenerLock.unlock();//解锁
     }
     public void addListener(String eventType, EventListener eventListener) {
@@ -180,7 +180,7 @@ public class StandardEventManager implements EventContext {
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
             EventListener listener = null;
-            while ((listener = eventList.pollLast()) != null) {
+            while ((listener = eventList.removeFirst()) != null) {
                 try {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {

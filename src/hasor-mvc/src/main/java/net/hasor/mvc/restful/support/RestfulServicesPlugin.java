@@ -17,20 +17,15 @@ package net.hasor.mvc.restful.support;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebHasorPlugin;
+import net.hasor.web.plugin.WebModule;
 /**
  * Restful服务启动类.
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RestfulServicesPlugin extends AbstractWebHasorPlugin {
-    public void loadPlugin(WebApiBinder apiBinder) {
+public class RestfulServicesPlugin extends WebModule {
+    public void loadModule(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
-        boolean enable = settings.getBoolean("hasor-web.restfulServices.enable");
-        if (enable == false) {
-            Hasor.logInfo("RestfulServices Module is disable.");
-            return;
-        }
         String onPath = settings.getString("hasor-web.restfulServices.onPath");
         int sortBy = settings.getInteger("hasor-web.restfulServices.sortBy", 0);
         Hasor.logInfo("%s Bind to RestfulServices, filter sort is %s.", onPath, sortBy);

@@ -18,15 +18,15 @@ import java.io.File;
 import net.hasor.core.Environment;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebHasorPlugin;
+import net.hasor.web.plugin.WebModule;
 /**
  * 负责装载jar包中的资源。
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 @Plugin()
-public class ResourcePlugin extends AbstractWebHasorPlugin {
-    public void loadPlugin(WebApiBinder apiBinder) {
+public class ResourcePlugin extends WebModule {
+    public void loadModule(WebApiBinder apiBinder) {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();
         //3.缓存路径

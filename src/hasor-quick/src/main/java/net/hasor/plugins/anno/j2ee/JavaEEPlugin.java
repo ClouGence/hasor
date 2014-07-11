@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServlet;
 import net.hasor.core.Hasor;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.AbstractWebHasorPlugin;
+import net.hasor.web.plugin.WebModule;
 import org.more.util.StringUtils;
 /**
  * 
@@ -32,14 +32,14 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 @Plugin
-public class JavaEEPlugin extends AbstractWebHasorPlugin {
-    public void loadPlugin(WebApiBinder webBinder) {
-        if (webBinder instanceof WebApiBinder == false)
+public class JavaEEPlugin extends WebModule {
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        if (apiBinder instanceof WebApiBinder == false)
             return;
         //1.LoadFilter.
-        this.loadFilter(webBinder);
+        this.loadFilter(apiBinder);
         //2.LoadServlet.
-        this.loadServlet(webBinder);
+        this.loadServlet(apiBinder);
     }
     //
     /**装载Filter*/

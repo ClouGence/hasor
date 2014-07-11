@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-quick">
-	<!-- 框架配置 -->
-	<hasor>
-		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
-		<loadPackages>net.hasor.mvc.*</loadPackages>
-	</hasor>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc">
+	<!-- 框架配置,包扫描覆盖范围 -->
+	<hasor.loadPackages>net.hasor.mvc.*</hasor.loadPackages>
 
-	<!-- http://project.hasor.net/hasor/schema/hasor-quick 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
+	<!-- http://project.hasor.net/hasor/schema/hasor-mvc 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
 	<hasor-mvc>
 		<!-- Controller配置，defaultProduces 默认响应类型 ; -->
 		<controller intercept="*.do">
@@ -15,6 +12,6 @@
 		</controller>
 
 		<!-- restful 服务配置，onPath是服务基础路径，这个Filter的排序很低 -->
-		<restfulServices enable="true" onPath="/*" sortBy="10000" />
+		<restfulServices onPath="/*" sortBy="10000" />
 	</hasor-mvc>
 </config>
