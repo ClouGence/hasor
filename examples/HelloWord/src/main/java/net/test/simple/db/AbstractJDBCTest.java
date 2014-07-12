@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.sql.DataSource;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
-import net.hasor.test.unit.AbstractHasorUnit;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
 /***

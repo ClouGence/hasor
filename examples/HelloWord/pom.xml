@@ -95,6 +95,12 @@
 			<version>0.9.1.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- JSR-330 -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

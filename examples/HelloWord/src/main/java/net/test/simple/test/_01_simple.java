@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db._06_transaction.simple;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+package net.test.simple.test;
+import net.hasor.test.runner.HasorUnitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
  * 
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2014-7-12
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class HasorTest extends BlockJUnit4ClassRunner {
-    public HasorTest(Class<?> klass) throws InitializationError {
-        super(klass);
+@RunWith(HasorUnitRunner.class)
+public class _01_simple {
+    @Test()
+    public void hello1() {
+        System.out.println("Hello1");
+    }
+    @Test()
+    public void hello2() {
+        System.out.println("Hello2");
     }
 }
