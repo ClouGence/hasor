@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.runner;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +32,7 @@ import net.hasor.test.junit.TestOrder;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
+import org.more.util.BeanUtils;
 /**
  * 
  * @version : 2014年7月8日
@@ -65,6 +66,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             throw new InitializationError(e);
         }
     }
+    //
     private List<FrameworkMethod> toRunMethodList = null;
     protected List<FrameworkMethod> computeTestMethods() {
         if (this.toRunMethodList != null)
@@ -89,15 +91,41 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
         });
         return this.toRunMethodList;
     }
+    //
     protected Object createTest() throws Exception {
+        //1.创建对象
         Object testUnit = this.appContext.getInstance(this.typeRegister);
         if (testUnit != null && testUnit instanceof AppContextAware)
             ((AppContextAware) testUnit).setAppContext(this.appContext);
+        //2.启动守护线程
+        List<FrameworkMethod> methodList = getTestClass().getAnnotatedMethods(DaemonThread.class);s//有单例问题，每个Test都会调用该方法。
+        for (FrameworkMethod method : methodList) {
+            Thread t = new TestThread(testUnit, method);
+            t.setDaemon(true);
+            t.start();
+        }
+        //
         return testUnit;
     }
-    //
-    protected Statement withBeforeClasses(Statement statement) {
-        // TODO Auto-generated method stub
-        return super.withBeforeClasses(statement);
+    private static class TestThread extends Thread {
+        private Object          targetObject = null;
+        private FrameworkMethod method       = null;
+        public TestThread(Object targetObject, FrameworkMethod method) {
+            this.targetObject = targetObject;
+            this.method = method;
+        }
+        public void run() {
+            ArrayList<Object> args = new ArrayList<Object>();
+            Class<?>[] params = this.method.getMethod().getParameterTypes();
+            if (params != null) {
+                for (Class<?> param : params)
+                    args.add(BeanUtils.getDefaultValue(param));
+            }
+            try {
+                this.method.invokeExplosively(this.targetObject, args.toArray());
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
