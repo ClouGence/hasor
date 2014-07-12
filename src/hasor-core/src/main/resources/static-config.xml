@@ -21,6 +21,10 @@
 			<creater name="Spring" class="net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater" />
 			<creater name="Guice" class="net.hasor.core.context.factorys.guice.GuiceRegisterFactoryCreater" />
 		</registerFactory>
+		<!-- 默认要装载的模块 -->
+		<modules loadModule="true">
+			<!-- <module class="" /> -->
+		</modules>
 		<!-- 工作空间设置 -->
 		<environmentVar>
 			<!-- 程序工作空间基础目录 -->

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
-import net.hasor.core.context.factorys.spring.SpringRegisterFactory;
+import net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater;
 import org.junit.Test;
 /**
  * 本示列演示如何启动 Hasor 框架。
@@ -30,7 +30,7 @@ public class SpringStartTest {
     public void springStartTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>springStartTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new SpringRegisterFactory());
+        AppContext appContext = HasorFactory.createAppContext(new SpringRegisterFactoryCreater());
         //
         SpringStartTest a = appContext.getInstance(SpringStartTest.class);
         System.out.println(a);

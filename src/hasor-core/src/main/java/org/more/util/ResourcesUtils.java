@@ -95,7 +95,7 @@ public abstract class ResourcesUtils {
     };
     /*------------------------------------------------------------------------------*/
     private static String formatResource(String resourcePath) {
-        if (resourcePath.length() > 1)
+        if (resourcePath != null && resourcePath.length() > 1)
             if (resourcePath.charAt(0) == '/')
                 resourcePath = resourcePath.substring(1);
         return resourcePath;
@@ -131,14 +131,18 @@ public abstract class ResourcesUtils {
     }
     /**获取classpath中可能存在的资源。*/
     public static URL getResource(String resourcePath) throws IOException {
+        if (resourcePath == null)
+            return null;
         resourcePath = formatResource(resourcePath);
         URL url = getCurrentLoader().getResource(resourcePath);
         return url;
     }
     /**获取classpath中可能存在的资源列表。*/
     public static List<URL> getResources(String resourcePath) throws IOException {
-        resourcePath = formatResource(resourcePath);
+        if (resourcePath == null)
+            return new ArrayList<URL>(0);
         //
+        resourcePath = formatResource(resourcePath);
         ArrayList<URL> urls = new ArrayList<URL>();
         Enumeration<URL> eurls = getCurrentLoader().getResources(resourcePath);
         while (eurls.hasMoreElements() == true) {

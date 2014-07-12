@@ -72,6 +72,8 @@
 			<artifactId>hasor-test</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -100,12 +102,6 @@
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
-		</dependency>
-		<!-- JUnit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -18,13 +18,18 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.context.adapter.RegisterFactoryCreater;
+import net.hasor.core.context.factorys.DefaultRegisterFactoryCreater;
 /**
  * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ContextConfiguration {
+    /**Hasor的主配置文件.*/
     public String value() default "";
+    /***/
+    public Class<? extends RegisterFactoryCreater> factoryCreater() default DefaultRegisterFactoryCreater.class;
 }

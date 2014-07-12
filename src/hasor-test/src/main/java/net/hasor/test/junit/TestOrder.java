@@ -27,5 +27,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestOrder {
     /**启动顺序，值越小约靠前。*/
-    public int onStart() default 0;
+    public int value() default 0;
 }

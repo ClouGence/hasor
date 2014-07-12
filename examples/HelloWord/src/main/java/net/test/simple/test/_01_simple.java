@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.test.simple.test;
+import net.hasor.test.junit.DaemonThread;
+import net.hasor.test.junit.TestOrder;
 import net.hasor.test.runner.HasorUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +26,18 @@ import org.junit.runner.RunWith;
  */
 @RunWith(HasorUnitRunner.class)
 public class _01_simple {
+    @DaemonThread
+    public void daemonThread() {
+        System.out.println("daemonThread");
+    }
+    //
     @Test()
+    @TestOrder(0)
     public void hello1() {
         System.out.println("Hello1");
     }
     @Test()
+    @TestOrder(2)
     public void hello2() {
         System.out.println("Hello2");
     }

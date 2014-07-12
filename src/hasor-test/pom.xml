@@ -31,26 +31,27 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 		</dependency>
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-jetty</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-
 		<!-- Hasor-Core -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
+
+
+
 		<!-- Hasor-Web -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-web</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
-		</dependency>
-		
-		<!--  mockito -->
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-web</artifactId> -->
+		<!-- <version>0.0.6-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-jetty</artifactId> -->
+		<!-- <version>0.0.1</version> -->
+		<!-- </dependency> -->
+		<!-- mockito -->
 
 	</dependencies>
 </project>

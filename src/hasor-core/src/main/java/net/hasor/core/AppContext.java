@@ -56,6 +56,8 @@ public interface AppContext extends EventContext {
     public <T> T getBean(String name);
     /**创建Bean。*/
     public <T> T getInstance(Class<T> targetClass);
+    /**创建Bean。*/
+    public <T> T getInstance(RegisterInfo<T> typeRegister);
     //
     /*-------------------------------------------------------------------------------------Binder*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/

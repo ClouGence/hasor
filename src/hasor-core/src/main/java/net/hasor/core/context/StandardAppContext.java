@@ -18,48 +18,47 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import net.hasor.core.context.adapter.RegisterFactory;
+import net.hasor.core.context.adapter.RegisterFactoryCreater;
 /**
  * 
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class StandardAppContext extends AbstractConfigResourceAppContext {
-    private static final RegisterFactory NullRegister = null;
+public class StandardAppContext extends AbstractResourceAppContext {
     /**设置主配置文件*/
     public StandardAppContext() throws IOException, URISyntaxException {
-        this(NullRegister);
+        super();
     }
     /**设置主配置文件*/
     public StandardAppContext(File mainSettings) {
-        this(mainSettings, NullRegister);
+        super(mainSettings);
     }
     /**设置主配置文件*/
     public StandardAppContext(URI mainSettings) {
-        this(mainSettings, NullRegister);
+        super(mainSettings);
     }
     /**设置主配置文件*/
     public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
-        this(mainSettings, NullRegister);
+        super(mainSettings);
     }
     /**设置主配置文件*/
-    public StandardAppContext(RegisterFactory registerManager) throws IOException, URISyntaxException {
+    public StandardAppContext(RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super();
-        this.setRegisterContext(registerManager);
+        this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(File mainSettings, RegisterFactory registerManager) {
+    public StandardAppContext(File mainSettings, RegisterFactoryCreater registerFactoryCreate) {
         super(mainSettings);
-        this.setRegisterContext(registerManager);
+        this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(URI mainSettings, RegisterFactory registerManager) {
+    public StandardAppContext(URI mainSettings, RegisterFactoryCreater registerFactoryCreate) {
         super(mainSettings);
-        this.setRegisterContext(registerManager);
+        this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(String mainSettings, RegisterFactory registerManager) throws IOException, URISyntaxException {
+    public StandardAppContext(String mainSettings, RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super(mainSettings);
-        this.setRegisterContext(registerManager);
+        this.setRegisterFactoryCreater(registerFactoryCreate);
     }
 }

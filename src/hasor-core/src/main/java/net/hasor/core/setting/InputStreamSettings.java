@@ -75,6 +75,8 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
                 while ((inStream = this.pendingStream.removeFirst()) != null) {
                     parser.parse(inStream, handler);
                     inStream.close();
+                    if (this.pendingStream.isEmpty())
+                        break;
                 }
             } catch (Exception e) {
                 throw new IOException(e);

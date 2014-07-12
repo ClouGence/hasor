@@ -175,7 +175,11 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             return info.getProvider().get();
         return this.getRegisterFactory().getDefaultInstance(oriType);
     };
-    /**获取用于创建Bean对象的BeanBuilder接口*/
+    /**创建Bean。*/
+    public <T> T getInstance(RegisterInfo<T> typeRegister) {
+        return this.getRegisterFactory().getInstance(typeRegister);
+    }
+    /**获取用于创建Bean对象的{@link RegisterFactory}接口*/
     protected abstract RegisterFactory getRegisterFactory();
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -336,11 +340,11 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         if (this.isStart())
             return;
         final AbstractAppContext appContext = this;
-        final Module[] modules = this.getModules();
         /*1.Init*/
         Hasor.logInfo("send init sign...");
         appContext.doInitialize();
         /*2.Bind*/
+        final Module[] modules = this.getModules();
         for (Module module : modules) {
             ApiBinder apiBinder = appContext.newApiBinder(module);
             module.loadModule(apiBinder);

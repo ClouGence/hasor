@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
-import net.hasor.core.context.factorys.guice.GuiceRegisterFactory;
+import net.hasor.core.context.factorys.guice.GuiceRegisterFactoryCreater;
 import org.junit.Test;
 /**
  * 本示列演示如何启动 Hasor 框架。
@@ -30,7 +30,7 @@ public class GuiceStartTest {
     public void guiceStartTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>guiceStartTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new GuiceRegisterFactory());
+        AppContext appContext = HasorFactory.createAppContext(new GuiceRegisterFactoryCreater());
         //
         GuiceStartTest a = appContext.getInstance(GuiceStartTest.class);
         System.out.println(a);

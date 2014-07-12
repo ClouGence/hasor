@@ -16,7 +16,7 @@
 package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.context.adapter.RegisterFactory;
+import net.hasor.core.context.adapter.RegisterFactoryCreater;
 /**
  * 
  * @version : 2014年7月7日
@@ -28,11 +28,11 @@ public final class HasorFactory {
         return createAppContext(StandardAppContext.DefaultSettings, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(RegisterFactory factory) {
+    public static AppContext createAppContext(RegisterFactoryCreater factory) {
         return createAppContext(StandardAppContext.DefaultSettings, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(RegisterFactory factory, Module... modules) {
+    public static AppContext createAppContext(RegisterFactoryCreater factory, Module... modules) {
         return createAppContext(StandardAppContext.DefaultSettings, factory, new Module[0]);
     }
     //
@@ -41,11 +41,11 @@ public final class HasorFactory {
         return createAppContext(config, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, RegisterFactory factory) {
+    public static AppContext createAppContext(String config, RegisterFactoryCreater factory) {
         return createAppContext(config, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, RegisterFactory factory, Module... modules) {
+    public static AppContext createAppContext(String config, RegisterFactoryCreater factory, Module... modules) {
         try {
             StandardAppContext app = new StandardAppContext(config, factory);
             for (Module mod : modules)
