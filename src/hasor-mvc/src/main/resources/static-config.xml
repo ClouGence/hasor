@@ -2,6 +2,12 @@
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc">
 	<!-- 框架配置,包扫描覆盖范围 -->
 	<hasor.loadPackages>net.hasor.mvc.*</hasor.loadPackages>
+	<!-- 默认要装载的模块 -->
+	<hasor.modules>
+		<module class="net.hasor.mvc.controller.support.WebControllerPlugin" />
+		<module class="net.hasor.mvc.restful.support.RestfulServicesPlugin" />
+		<module class="net.hasor.mvc.result.ResultPlugin" />
+	</hasor.modules>
 
 	<!-- http://project.hasor.net/hasor/schema/hasor-mvc 命名空间的配置，不支持跟随配置文件动态更新配置。 -->
 	<hasor-mvc>
