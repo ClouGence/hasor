@@ -48,8 +48,9 @@ public final class HasorFactory {
     public static AppContext createAppContext(String config, RegisterFactoryCreater factory, Module... modules) {
         try {
             StandardAppContext app = new StandardAppContext(config, factory);
-            for (Module mod : modules)
+            for (Module mod : modules) {
                 app.addModule(mod);
+            }
             app.start();
             return app;
         } catch (Throwable e) {

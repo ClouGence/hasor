@@ -38,7 +38,7 @@ public abstract class AbstractPropertyDefine extends AbstractDefine {
     /**返回属性的描述信息。*/
     public String getDescription() {
         return this.description;
-    };
+    }
     /**设置属性描述*/
     public void setDescription(String description) {
         this.description = description;

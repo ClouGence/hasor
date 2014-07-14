@@ -70,16 +70,18 @@ public class StandardEventManager implements EventContext {
     }
     //
     public void pushListener(String eventType, EventListener eventListener) {
-        if (StringUtils.isBlank(eventType) || eventListener == null)
+        if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
+        }
         this.onceListenerLock.lock();//加锁
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList == null) {
             eventList = new LinkedList<EventListener>();
             this.onceListenerMap.put(eventType, eventList);
         }
-        if (eventList.contains(eventListener) == false)
+        if (eventList.contains(eventListener) == false) {
             eventList.addLast(eventListener);
+        }
         this.onceListenerLock.unlock();//解锁
     }
     public void addListener(String eventType, EventListener eventListener) {
@@ -156,8 +158,9 @@ public class StandardEventManager implements EventContext {
         Object[] objects = eventObj.getParams();
         EventCallBackHook callBack = eventObj.getCallBack();
         callBack = (callBack != null ? callBack : EmptyAsyncCallBack);
-        if (StringUtils.isBlank(eventType) == true)
+        if (StringUtils.isBlank(eventType) == true) {
             return;
+        }
         //
         //1.引发事务.
         this.listenerRWLock.readLock().lock();//加锁(读)

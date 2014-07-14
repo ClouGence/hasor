@@ -31,8 +31,9 @@ class HttpSessionListenerDefinition {
     }
     //
     protected HttpSessionListener getTarget() {
-        if (this.listenerInstance == null)
+        if (this.listenerInstance == null) {
             this.listenerInstance = listenerProvider.get();
+        }
         return this.listenerInstance;
     }
     public String toString() {
@@ -43,13 +44,15 @@ class HttpSessionListenerDefinition {
     /**/
     public void sessionCreated(HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null)
+        if (httpSessionListener != null) {
             httpSessionListener.sessionCreated(event);
+        }
     }
     /**/
     public void sessionDestroyed(HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null)
+        if (httpSessionListener != null) {
             httpSessionListener.sessionDestroyed(event);
+        }
     }
 }

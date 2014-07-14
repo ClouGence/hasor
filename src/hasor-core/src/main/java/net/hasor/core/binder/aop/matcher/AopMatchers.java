@@ -94,17 +94,20 @@ public class AopMatchers {
             this.annotationType = annotationType;
         }
         public boolean matches(Class<?> matcherType) {
-            if (matcherType.isAnnotationPresent(this.annotationType) == true)
+            if (matcherType.isAnnotationPresent(this.annotationType) == true) {
                 return true;
+            }
             Method[] m1s = matcherType.getMethods();
             Method[] m2s = matcherType.getDeclaredMethods();
             for (Method m1 : m1s) {
-                if (m1.isAnnotationPresent(this.annotationType) == true)
+                if (m1.isAnnotationPresent(this.annotationType) == true) {
                     return true;
+                }
             }
             for (Method m2 : m2s) {
-                if (m2.isAnnotationPresent(this.annotationType) == true)
+                if (m2.isAnnotationPresent(this.annotationType) == true) {
                     return true;
+                }
             }
             return false;
         }
@@ -116,10 +119,12 @@ public class AopMatchers {
             this.annotationType = annotationType;
         }
         public boolean matches(Method matcherType) {
-            if (matcherType.isAnnotationPresent(this.annotationType) == true)
+            if (matcherType.isAnnotationPresent(this.annotationType) == true) {
                 return true;
-            if (matcherType.getDeclaringClass().isAnnotationPresent(this.annotationType) == true)
+            }
+            if (matcherType.getDeclaringClass().isAnnotationPresent(this.annotationType) == true) {
                 return true;
+            }
             return false;
         }
     }

@@ -65,8 +65,9 @@ public class RuntimeFilter implements Filter {
     /** 销毁 */
     public void destroy() {
         Hasor.logInfo("executeCycle destroyCycle.");
-        if (this.filterPipeline != null)
+        if (this.filterPipeline != null) {
             this.filterPipeline.destroyPipeline(appContext);
+        }
     }
     //
     /** 处理request，响应response */

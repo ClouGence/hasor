@@ -40,7 +40,7 @@ public class ParamDefine extends AbstractPropertyDefine {
     /**设置属性名*/
     public void setName(String name) {
         this.name = name;
-    };
+    }
     /**返回具有特征的字符串。*/
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();

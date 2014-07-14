@@ -25,7 +25,6 @@ public class MapEntity_ValueMetaData extends ValueMetaData {
     private ValueMetaData value = null; //Value
     /*------------------------------------------------------------------*/
     /**返回{@link PropertyType#MapEntity}*/
-    @Override
     public String getType() {
         return PropertyType.MapEntity.value();
     }

@@ -33,8 +33,9 @@ public abstract class AbstractStateAppContext extends AbstractAppContext {
     }
     /**获取环境接口。*/
     public Environment getEnvironment() {
-        if (this.environment == null)
+        if (this.environment == null) {
             this.environment = this.createEnvironment();
+        }
         return this.environment;
     }
     /**创建环境对象*/
@@ -46,21 +47,24 @@ public abstract class AbstractStateAppContext extends AbstractAppContext {
     public final Module[] getModules() {
         List<Module> moduleList = this.tempModuleSet;
         Module[] infoArray = new Module[moduleList.size()];
-        for (int i = 0; i < moduleList.size(); i++)
+        for (int i = 0; i < moduleList.size(); i++) {
             infoArray[i] = moduleList.get(i);
+        }
         return infoArray;
     }
     /**添加模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized Module addModule(Module module) {
-        if (this.isStart())
+        if (this.isStart()) {
             throw new IllegalStateException("context is started.");
+        }
         this.tempModuleSet.add(module);
         return module;
     }
     /**删除模块，如果容器已经初始化那么会引发{@link IllegalStateException}异常。*/
     public synchronized boolean removeModule(Module hasorModule) {
-        if (this.isStart())
+        if (this.isStart()) {
             throw new IllegalStateException("context is started.");
+        }
         return this.tempModuleSet.remove(hasorModule);
     }
 }

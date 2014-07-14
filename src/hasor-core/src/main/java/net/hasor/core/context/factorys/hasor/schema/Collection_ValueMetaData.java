@@ -38,9 +38,9 @@ public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends 
     /**获取属性集合。*/
     public List<T> getValues() {
         return this.values;
-    };
+    }
     /**设置属性集合。*/
     public void setValues(List<T> values) {
         this.values = values;
-    };
+    }
 }

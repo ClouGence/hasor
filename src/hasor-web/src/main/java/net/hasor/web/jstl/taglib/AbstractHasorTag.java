@@ -30,8 +30,9 @@ public abstract class AbstractHasorTag extends TagSupport {
     protected AppContext getAppContext() {
         ServletContext sc = this.pageContext.getServletContext();
         AppContext appContext = (AppContext) sc.getAttribute(RuntimeListener.AppContextName);
-        if (appContext != null)
+        if (appContext != null) {
             return appContext;
+        }
         throw new NullPointerException("AppContext is undefined.");
     }
     //

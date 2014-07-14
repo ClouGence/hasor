@@ -38,8 +38,9 @@ public class SaxXmlParser extends DefaultHandler {
         this.dataContainer = dataContainer;
     }
     private StringBuffer getText(String xmlns) {
-        if (xmlText.containsKey(xmlns) == false)
+        if (xmlText.containsKey(xmlns) == false) {
             xmlText.put(xmlns, new StringBuffer(""));
+        }
         return xmlText.get(xmlns);
     }
     private void cleanText(String xmlns) {
@@ -86,8 +87,9 @@ public class SaxXmlParser extends DefaultHandler {
     }
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (this.curXmlns == null)
+        if (this.curXmlns == null) {
             return;
+        }
         String content = new String(ch, start, length);
         StringBuffer strBuffer = this.getText(this.curXmlns);
         strBuffer.append(content);
@@ -97,8 +99,9 @@ public class SaxXmlParser extends DefaultHandler {
         for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
             DefaultXmlNode currentXml = ent.getValue();
-            if (dataContainer.get(currentXmlns) == null)
+            if (dataContainer.get(currentXmlns) == null) {
                 dataContainer.put(currentXmlns, new HashMap<String, Object>());
+            }
             //1.将XmlTree转换为map映射
             HashMap<String, Object> dataMap = new HashMap<String, Object>();
             this.convertType(dataMap, currentXml.getChildren(), "");
@@ -156,8 +159,9 @@ public class SaxXmlParser extends DefaultHandler {
                 String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
                 returnData.put(key, impl);
                 //2.put属性
-                for (Entry<String, String> ent : impl.getAttributeMap().entrySet())
+                for (Entry<String, String> ent : impl.getAttributeMap().entrySet()) {
                     returnData.put(key + "." + ent.getKey(), ent.getValue());
+                }
                 //3.put孩子
                 this.convertType(returnData, xmlNode.getChildren(), key);
             }

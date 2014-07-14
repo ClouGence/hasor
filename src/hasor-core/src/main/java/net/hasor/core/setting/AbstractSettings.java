@@ -40,16 +40,19 @@ public abstract class AbstractSettings implements Settings {
     //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
-        if (featureType == null)
+        if (featureType == null) {
             return null;
-        if (loadPackages == null)
+        }
+        if (loadPackages == null) {
             loadPackages = new String[] { "" };
+        }
         return ScanClassPath.getClassSet(loadPackages, featureType);
     }
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
-        if (featureType == null)
+        if (featureType == null) {
             return null;
+        }
         loadPackages = (loadPackages == null) ? "" : loadPackages;
         String[] spanPackage = loadPackages.split(",");
         return this.findClass(featureType, spanPackage);
@@ -57,19 +60,21 @@ public abstract class AbstractSettings implements Settings {
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
     public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
         Object oriObject = this.getSettingsMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());
-        if (oriObject == null)
+        if (oriObject == null) {
             return defaultValue;
+        }
         //
         T var = null;
-        if (oriObject instanceof String)
+        if (oriObject instanceof String) {
             //原始数据是字符串经过Eval过程
             var = (T) ConverterUtils.convert(toType, oriObject);
-        else if (oriObject instanceof FieldProperty)
+        } else if (oriObject instanceof FieldProperty) {
             //原始数据是GlobalProperty直接get
             var = ((FieldProperty) oriObject).getValue(toType, defaultValue);
-        else
+        } else {
             //其他类型不予处理（数据就是要的值）
             var = (T) oriObject;
+        }
         return var == null ? defaultValue : var;
     };
     public <T> T[] getToTypeArray(String name, Class<T> toType) {
@@ -79,9 +84,9 @@ public abstract class AbstractSettings implements Settings {
         ArrayList<T> targetObjects = new ArrayList<T>();
         for (String url : this.getSettingArray()) {
             T targetObject = this.getSettings(url).getToType(name, toType, defaultValue);
-            if (targetObject == null)
+            if (targetObject == null) {
                 continue;//空
-            //
+            } //
             targetObjects.add(targetObject);
         }
         if (targetObjects.isEmpty() && defaultValue != null) {
@@ -232,17 +237,19 @@ public abstract class AbstractSettings implements Settings {
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
     public Date getDate(String name, String format, Date defaultValue) {
         String oriData = this.getToType(name, String.class);
-        if (oriData == null || oriData.length() == 0)
+        if (oriData == null || oriData.length() == 0) {
             return defaultValue;
+        }
         //
         DateFormat dateFormat = new SimpleDateFormat(format);
         ParsePosition pos = new ParsePosition(0);
         dateFormat.setLenient(false);
         Date parsedDate = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
-        if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate == null)
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate == null) {
             return defaultValue;
-        else
+        } else {
             return parsedDate;
+        }
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
     public Date getDate(String name, String format, long defaultValue) {
@@ -252,10 +259,11 @@ public abstract class AbstractSettings implements Settings {
         return this.getDateArray(name, null, (Date) null);
     }
     public Date[] getDateArray(String name, Date defaultValue) {
-        if (defaultValue == null)
+        if (defaultValue == null) {
             return this.getDateArray(name, null, (Date) null);
-        else
+        } else {
             return this.getDateArray(name, null, defaultValue);
+        }
     }
     public Date[] getDateArray(String name, long defaultValue) {
         return this.getDateArray(name, null, defaultValue);
@@ -265,8 +273,9 @@ public abstract class AbstractSettings implements Settings {
     }
     public Date[] getDateArray(String name, String format, Date defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
-        if (oriDataArray == null || oriDataArray.length == 0)
+        if (oriDataArray == null || oriDataArray.length == 0) {
             return null;
+        }
         //
         DateFormat dateFormat = new SimpleDateFormat(format);
         dateFormat.setLenient(false);
@@ -275,15 +284,17 @@ public abstract class AbstractSettings implements Settings {
             String oriData = oriDataArray[i];
             ParsePosition pos = new ParsePosition(0);
             parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
-            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null)
+            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null) {
                 parsedDate[i] = (defaultValue == null) ? null : new Date(defaultValue.getTime());
+            }
         }
         return parsedDate;
     }
     public Date[] getDateArray(String name, String format, long defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
-        if (oriDataArray == null || oriDataArray.length == 0)
+        if (oriDataArray == null || oriDataArray.length == 0) {
             return null;
+        }
         //
         DateFormat dateFormat = new SimpleDateFormat(format);
         dateFormat.setLenient(false);
@@ -292,8 +303,9 @@ public abstract class AbstractSettings implements Settings {
             String oriData = oriDataArray[i];
             ParsePosition pos = new ParsePosition(0);
             parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
-            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null)
+            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null) {
                 parsedDate[i] = new Date(defaultValue);
+            }
         }
         return parsedDate;
     }
@@ -318,14 +330,15 @@ public abstract class AbstractSettings implements Settings {
     /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
     public String getFilePath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0)
+        if (filePath == null || filePath.length() == 0) {
             return defaultValue;//空
-        //
+        } //
         int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar)
+        if (filePath.charAt(length - 1) == File.separatorChar) {
             return filePath.substring(0, length - 1);
-        else
+        } else {
             return filePath;
+        }
     };
     public String[] getFilePathArray(String name) {
         return this.getFilePathArray(name, null);
@@ -334,14 +347,15 @@ public abstract class AbstractSettings implements Settings {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getFilePath(name, defaultValue);
-            if (filePath == null || filePath.length() == 0)
+            if (filePath == null || filePath.length() == 0) {
                 continue;//空
-            //
+            }//
             int length = filePath.length();
-            if (filePath.charAt(length - 1) == File.separatorChar)
+            if (filePath.charAt(length - 1) == File.separatorChar) {
                 filePaths.add(filePath.substring(0, length - 1));
-            else
+            } else {
                 filePaths.add(filePath);
+            }
         }
         return filePaths.toArray(new String[filePaths.size()]);
     }
@@ -352,14 +366,15 @@ public abstract class AbstractSettings implements Settings {
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
     public String getDirectoryPath(String name, String defaultValue) {
         String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0)
+        if (filePath == null || filePath.length() == 0) {
             return defaultValue;//空
-        //
+        }//
         int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar)
+        if (filePath.charAt(length - 1) == File.separatorChar) {
             return filePath;
-        else
+        } else {
             return filePath + File.separatorChar;
+        }
     }
     public String[] getDirectoryPathArray(String name) {
         return this.getDirectoryPathArray(name, null);
@@ -368,14 +383,15 @@ public abstract class AbstractSettings implements Settings {
         ArrayList<String> directoryPaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getDirectoryPath(name, defaultValue);
-            if (filePath == null || filePath.length() == 0)
+            if (filePath == null || filePath.length() == 0) {
                 continue;//空
-            //
+            } //
             int length = filePath.length();
-            if (filePath.charAt(length - 1) == File.separatorChar)
+            if (filePath.charAt(length - 1) == File.separatorChar) {
                 directoryPaths.add(filePath.substring(0, length - 1));
-            else
+            } else {
                 directoryPaths.add(filePath);
+            }
         }
         return directoryPaths.toArray(new String[directoryPaths.size()]);
     }

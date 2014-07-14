@@ -70,12 +70,15 @@ public class StandardContextSettings extends InputStreamSettings {
             public int compare(URL o1, URL o2) {
                 String o1p = o1.getProtocol();
                 String o2p = o2.getProtocol();
-                if (o1p.equals(o2p))
+                if (o1p.equals(o2p)) {
                     return 0;
-                if (o1p.equals("jar"))
+                }
+                if (o1p.equals("jar")) {
                     return -1;
-                if (o2p.equals("jar"))
+                }
+                if (o2p.equals("jar")) {
                     return 1;
+                }
                 return 0;
             }
         });

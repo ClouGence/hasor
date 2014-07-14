@@ -61,8 +61,9 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
     public List<XmlNode> getChildren(String elementName) {
         List<XmlNode> children = new ArrayList<XmlNode>();
         for (XmlNode xmlItem : this.children) {
-            if (StringUtils.equalsIgnoreCase(xmlItem.getName(), elementName))
+            if (StringUtils.equalsIgnoreCase(xmlItem.getName(), elementName)) {
                 children.add(xmlItem);
+            }
         }
         return children;
     }
@@ -98,10 +99,12 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
         return newData;
     }
     public <T> T getValue(Class<T> toType, T defaultValue) {
-        if (XmlNode.class.isAssignableFrom(toType) == true)
+        if (XmlNode.class.isAssignableFrom(toType) == true) {
             return (T) this;
-        if (FieldProperty.class.isAssignableFrom(toType) == true)
+        }
+        if (FieldProperty.class.isAssignableFrom(toType) == true) {
             return (T) this;
+        }
         try {
             T returnData = (T) ConverterUtils.convert(toType, this.getText());
             return returnData == null ? defaultValue : returnData;
@@ -136,8 +139,9 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
             strBuilder.append(xmlText);
         }
         //
-        if (this.textString != null)
+        if (this.textString != null) {
             strBuilder.append(this.getText());
+        }
         //
         strBuilder.append("</" + this.elementName + ">");
         return strBuilder.toString();

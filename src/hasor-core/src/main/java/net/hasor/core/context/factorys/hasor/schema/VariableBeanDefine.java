@@ -67,11 +67,11 @@ public class VariableBeanDefine extends BeanDefine {
         Char,
         /**字符串类型。*/
         String,
-    };
+    }
     /**将字符串描述转换为{@link VariableType}枚举。*/
     public static VariableType getVariableType(String value) {
         return (VariableType) ConverterUtils.convert(VariableType.class, value);
-    };
+    }
     /**根据枚举获取其基本类型Class。*/
     @SuppressWarnings("rawtypes")
     public static Class getType(VariableType typeEnum) {

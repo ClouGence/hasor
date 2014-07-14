@@ -55,13 +55,15 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
                 Hasor.logInfo("startModule is %s.", startModuleType);
             }
             //
-            if (this.appContext.isStart() == false)
+            if (this.appContext.isStart() == false) {
                 this.appContext.start();
+            }
             LocalServletContext.set(servletContextEvent.getServletContext());
             LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            if (e instanceof RuntimeException)
+            if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
+            }
             throw new RuntimeException(e);
         }
         //2.获取SessionListenerPipeline

@@ -49,8 +49,9 @@ public abstract class HasorUnit {
         for (T obj : dataList) {
             List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
             Map<String, Object> newObj = new HashMap<String, Object>();
-            for (String key : keys)
+            for (String key : keys) {
                 newObj.put(key, BeanUtils.readPropertyOrField(obj, key));
+            }
             //
             newDataList.add(newObj);
         }
@@ -70,10 +71,12 @@ public abstract class HasorUnit {
                 String val = ConverterUtils.convert(ent.getValue());
                 val = (val == null) ? "" : val;
                 Integer maxTitleLength = titleConfig.get(key);
-                if (maxTitleLength == null)
+                if (maxTitleLength == null) {
                     maxTitleLength = stringLength(key);
-                if (val.length() > maxTitleLength)
+                }
+                if (val.length() > maxTitleLength) {
                     maxTitleLength = stringLength(val);
+                }
                 titleConfig.put(key, maxTitleLength);
                 //2.Value
                 newVal.put(key, val);
@@ -111,8 +114,9 @@ public abstract class HasorUnit {
             output.append(sb.toString() + "\n");
         }
         output.append(String.format("\\%s/", StringUtils.center("", titleLength - 2, "-")));
-        if (print)
+        if (print) {
             System.out.println(output);
+        }
         return output.toString();
     }
     //
@@ -120,18 +124,22 @@ public abstract class HasorUnit {
     //
     private static int stringLength(String str) {
         int length = 0;
-        for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c))
+        for (char c : str.toCharArray()) {
+            if (CharUtils.isAscii(c)) {
                 length++;
-            else
+            } else {
                 length = length + 2;
+            }
+        }
         return length;
     }
     /*修正长度*/
     private static int fixLength(String str, int length) {
-        for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c) == false)
+        for (char c : str.toCharArray()) {
+            if (CharUtils.isAscii(c) == false) {
                 length--;
+            }
+        }
         return length;
     }
 }

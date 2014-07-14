@@ -52,11 +52,14 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     /***/
     private static List<String> newArrayList(String[] arr, String object) {
         ArrayList<String> list = new ArrayList<String>();
-        if (arr != null)
-            for (String item : arr)
+        if (arr != null) {
+            for (String item : arr) {
                 list.add(item);
-        if (object != null)
+            }
+        }
+        if (object != null) {
             list.add(object);
+        }
         return list;
     }
     /**Class类型的Provider代理 */
@@ -81,16 +84,18 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         return new FiltersModuleBinder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
     };
     public FilterBindingBuilder filter(String[] morePatterns) throws NullPointerException {
-        if (ArrayUtils.isEmpty(morePatterns))
+        if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
+        }
         return filter(null, morePatterns);
     }
     public FilterBindingBuilder filterRegex(String regex, String... regexes) {
         return new FiltersModuleBinder(UriPatternType.REGEX, newArrayList(regexes, regex));
     };
     public FilterBindingBuilder filterRegex(String[] regexes) throws NullPointerException {
-        if (ArrayUtils.isEmpty(regexes))
+        if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
+        }
         return filterRegex(null, regexes);
     }
     class FiltersModuleBinder implements FilterBindingBuilder {
@@ -136,8 +141,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.through(index, new InstanceProvider<Filter>(filter), initParams);
         }
         public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams) {
-            if (initParams == null)
+            if (initParams == null) {
                 initParams = new HashMap<String, String>();
+            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
@@ -151,16 +157,18 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         return new ServletsModuleBuilder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
     };
     public ServletBindingBuilder serve(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns))
+        if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Servlet patterns is empty.");
+        }
         return serve(null, morePatterns);
     }
     public ServletBindingBuilder serveRegex(String regex, String... regexes) {
         return new ServletsModuleBuilder(UriPatternType.REGEX, newArrayList(regexes, regex));
     };
     public ServletBindingBuilder serveRegex(String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes))
+        if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Servlet regexes is empty.");
+        }
         return serveRegex(null, regexes);
     }
     class ServletsModuleBuilder implements ServletBindingBuilder {
@@ -205,8 +213,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.with(index, new InstanceProvider<HttpServlet>(servlet), initParams);
         }
         public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
-            if (initParams == null)
+            if (initParams == null) {
                 initParams = new HashMap<String, String>();
+            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletProvider, initParams);

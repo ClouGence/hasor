@@ -24,7 +24,6 @@ public class Array_ValueMetaData extends Collection_ValueMetaData<ValueMetaData>
     private int initSize = 0;
     /*------------------------------------------------------------------*/
     /**返回{@link PropertyType#Array}*/
-    @Override
     public String getType() {
         return PropertyType.Array.value();
     }

@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class List_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
     /**返回{@link PropertyType#List}*/
-    @Override
     public String getType() {
         return PropertyType.List.value();
     }

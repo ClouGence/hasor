@@ -70,8 +70,9 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
     protected <T> T newInstance(RegisterInfo<T> oriType) {
         String name = oriType.getBindName();
         Class<T> type = oriType.getBindType();
-        if (name == null)
+        if (name == null) {
             name = type.getName();
+        }
         return (T) this.spring.getBean(name, type);
     }
 }

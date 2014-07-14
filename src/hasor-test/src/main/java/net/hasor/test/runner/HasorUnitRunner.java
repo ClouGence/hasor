@@ -54,8 +54,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             if (config != null) {
                 configResource = config.value();
                 factoryCreater = config.factoryCreater().newInstance();
-                for (Class<? extends Module> mod : config.loadModules())
+                for (Class<? extends Module> mod : config.loadModules()) {
                     loadModule.add(mod.newInstance());
+                }
             }
             //2.初始化绑定Test
             loadModule.add(new Module() {
@@ -65,8 +66,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             });
             this.appContext = HasorFactory.createAppContext(configResource, factoryCreater, loadModule.toArray(new Module[loadModule.size()]));
             //3.
-            if (this.appContext == null)
+            if (this.appContext == null) {
                 throw new NullPointerException("HasorFactory.createAppContext return null.");
+            }
         } catch (Exception e) {
             throw new InitializationError(e);
         }
@@ -77,8 +79,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
         List<FrameworkMethod> toRunMethodList = super.computeTestMethods();
         //2.检查是否Test方法中同时带有DaemonThread注解的方法。
         for (FrameworkMethod method : toRunMethodList) {
-            if (method.getAnnotation(DaemonThread.class) != null)
+            if (method.getAnnotation(DaemonThread.class) != null) {
                 throw new IllegalStateException("test method cannot be used at the same time, @Test, @DaemonThread");
+            }
         }
         //3.获取测试方法上的 @Order 注解，并对所有的测试方法重新排序
         Collections.sort(toRunMethodList, new Comparator<FrameworkMethod>() {
@@ -109,8 +112,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             public void evaluate() throws Throwable {
                 try {
                     /*A.启动监控线程*/
-                    for (Thread thread : daemonThreads)
+                    for (Thread thread : daemonThreads) {
                         thread.start();
+                    }
                     invokerStatement.evaluate();
                 } finally {
                     /*b.终止监控线程*/

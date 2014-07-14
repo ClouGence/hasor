@@ -22,7 +22,6 @@ import java.util.Set;
  */
 public class Set_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
     /**返回{@link PropertyType#Array}*/
-    @Override
     public String getType() {
         return PropertyType.Set.value();
     }

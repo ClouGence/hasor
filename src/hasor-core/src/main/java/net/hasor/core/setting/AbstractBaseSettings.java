@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.hasor.core.Hasor;
-import net.hasor.core.SettingsListener;
 import org.more.util.map.DecSequenceMap;
 /***
  * 基本支持。
@@ -66,8 +65,9 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     public final AbstractSettings getSettings(final String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
-        if (data == null)
+        if (data == null) {
             return null;
+        }
         return new AbstractSettings() {
             public void refresh() throws IOException {/**/}
             public AbstractSettings getSettings(String namespace) {

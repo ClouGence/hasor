@@ -27,8 +27,9 @@ import com.google.inject.name.Names;
  */
 public class GuiceRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
     public Key<T> getKey() {
-        if (StringUtils.isBlank(getBindName()))
+        if (StringUtils.isBlank(getBindName())) {
             return Key.get(this.getBindType());
+        }
         return Key.get(this.getBindType(), Names.named(getBindName()));
     }
     public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider) {

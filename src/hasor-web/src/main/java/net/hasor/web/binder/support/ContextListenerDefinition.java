@@ -32,8 +32,9 @@ class ContextListenerDefinition {
     }
     //
     protected ServletContextListener getTarget() {
-        if (this.listenerInstance == null)
+        if (this.listenerInstance == null) {
             this.listenerInstance = listenerProvider.get();
+        }
         return this.listenerInstance;
     }
     public String toString() {
@@ -44,13 +45,15 @@ class ContextListenerDefinition {
     /**/
     public void contextInitialized(ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null)
+        if (servletContextListener != null) {
             servletContextListener.contextInitialized(event);
+        }
     }
     /**/
     public void contextDestroyed(ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null)
+        if (servletContextListener != null) {
             servletContextListener.contextDestroyed(event);
+        }
     }
 }

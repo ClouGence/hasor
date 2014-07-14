@@ -58,10 +58,12 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         return adapter;
     }
     protected <T> T newInstance(RegisterInfo<T> oriType) {
-        if (oriType == null)
+        if (oriType == null) {
             return null;
-        if (this.guiceInjector == null)
+        }
+        if (this.guiceInjector == null) {
             throw new IllegalStateException("Guice is not ready.");
+        }
         //
         if (oriType instanceof GuiceRegisterInfoAdapter) {
             Key<T> key = ((GuiceRegisterInfoAdapter<T>) oriType).getKey();
@@ -70,8 +72,9 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         return this.guiceInjector.getInstance(oriType.getBindType());
     }
     public <T> T getDefaultInstance(Class<T> oriType) {
-        if (this.guiceInjector == null)
+        if (this.guiceInjector == null) {
             return super.getDefaultInstance(oriType);
+        }
         return this.guiceInjector.getInstance(oriType);
     }
     //
@@ -119,11 +122,11 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             haveName = true;
         }
         //3.绑定实现
-        if (register.getCustomerProvider() != null)
+        if (register.getCustomerProvider() != null) {
             scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getProvider()));
-        else if (register.getSourceType() != null)
+        } else if (register.getSourceType() != null) {
             scopeBinding = linkedBinding.to(register.getSourceType());
-        else {
+        } else {
             if (haveName == true)
                 /*有了BindName一定要，有impl绑定，所以只能自己绑定自己*/
                 scopeBinding = linkedBinding.to(register.getBindType());
@@ -137,8 +140,9 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         Provider<Scope> scopeProvider = register.getScopeProvider();
         if (scopeProvider != null) {
             Scope scope = scopeProvider.get();
-            if (scope != null)
+            if (scope != null) {
                 scopeBinding.in(new GuiceScope(scope));
+            }
         }
         //
     }
@@ -156,12 +160,13 @@ class GuiceScope implements com.google.inject.Scope {
     };
     public <T> com.google.inject.Provider<T> scope(Key<T> key, com.google.inject.Provider<T> unscoped) {
         Provider<T> returnData = this.scope.scope(key, new ToHasorProvider<T>(unscoped));
-        if (returnData instanceof com.google.inject.Provider)
+        if (returnData instanceof com.google.inject.Provider) {
             return (com.google.inject.Provider<T>) returnData;
-        else if (returnData instanceof ToHasorProvider)
+        } else if (returnData instanceof ToHasorProvider) {
             return ((ToHasorProvider) returnData).getProvider();
-        else
+        } else {
             return new ToGuiceProvider(returnData);
+        }
     }
 }
 /** 负责com.google.inject.Provider到net.hasor.core.Provider的对接转换*/

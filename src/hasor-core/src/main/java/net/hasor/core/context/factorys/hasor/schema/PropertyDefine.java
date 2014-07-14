@@ -26,21 +26,21 @@ public class PropertyDefine extends AbstractPropertyDefine {
     /**返回属性名。*/
     public String getName() {
         return this.name;
-    };
+    }
     /**设置属性名*/
     public void setName(String name) {
         this.name = name;
-    };
+    }
     /**返回一个boolean值，表示这个bean是否为延迟注入的。*/
     public boolean isLazyMark() {
         return lazyMark;
-    };
+    }
     /**设置是否延迟初始化该属性*/
     public void setLazyMark(boolean lazyMark) {
         this.lazyMark = lazyMark;
-    };
+    }
     /**返回具有特征的字符串。*/
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " name=" + this.getName();
-    };
+    }
 }

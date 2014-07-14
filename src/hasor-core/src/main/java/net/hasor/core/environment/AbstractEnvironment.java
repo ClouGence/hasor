@@ -84,6 +84,8 @@ public abstract class AbstractEnvironment implements Environment {
             this.settings = this.createSettings();
             this.settings.refresh();
         } catch (Exception e) {
+            if (e instanceof RuntimeException)
+                throw (RuntimeException) e;
             throw new UnhandledException(e);
         }
         this.envVars = this.createEnvVars();
@@ -92,12 +94,14 @@ public abstract class AbstractEnvironment implements Environment {
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
         for (String packs : spanPackages) {
-            if (StringUtils.isBlank(packs) == true)
+            if (StringUtils.isBlank(packs) == true) {
                 continue;
+            }
             String[] packArray = packs.split(",");
             for (String pack : packArray) {
-                if (StringUtils.isBlank(packs) == true)
+                if (StringUtils.isBlank(packs) == true) {
                     continue;
+                }
                 allPack.add(pack.trim());
             }
         }
@@ -180,18 +184,21 @@ public abstract class AbstractEnvironment implements Environment {
     private List<SettingsListener> settingListenerList = null;
     /**触发配置文件重载事件。*/
     protected void onSettingChangeEvent() {
-        for (SettingsListener listener : this.settingListenerList)
+        for (SettingsListener listener : this.settingListenerList) {
             listener.reload(this.getSettings());
+        }
     }
     /**添加配置文件变更监听器。*/
     public void addSettingsListener(SettingsListener settingsListener) {
-        if (this.settingListenerList.contains(settingsListener) == false)
+        if (this.settingListenerList.contains(settingsListener) == false) {
             this.settingListenerList.add(settingsListener);
+        }
     }
     /**删除配置文件监听器。*/
     public void removeSettingsListener(SettingsListener settingsListener) {
-        if (this.settingListenerList.contains(settingsListener) == true)
+        if (this.settingListenerList.contains(settingsListener) == true) {
             this.settingListenerList.remove(settingsListener);
+        }
     }
     /**获得所有配置文件改变事件监听器。*/
     public SettingsListener[] getSettingListeners() {
@@ -232,8 +239,9 @@ public abstract class AbstractEnvironment implements Environment {
         }
         /**检测主配置文件是否被修改*/
         public long lastModify(URI resourceURI) throws IOException {
-            if ("file".equals(resourceURI.getScheme()) == true)
+            if ("file".equals(resourceURI.getScheme()) == true) {
                 return new File(resourceURI).lastModified();
+            }
             return 0;
         }
         public synchronized void start() {
@@ -323,8 +331,9 @@ public abstract class AbstractEnvironment implements Environment {
             return this.getEnv().get(envName);
         }
         public Map<String, String> getEnv() {
-            if (this.finalEnvMap == null)
+            if (this.finalEnvMap == null) {
                 this.finalEnvMap = new HashMap<String, String>();
+            }
             return Collections.unmodifiableMap(this.finalEnvMap);
         }
         //
@@ -334,19 +343,22 @@ public abstract class AbstractEnvironment implements Environment {
             XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
             List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
             for (XmlNode xmlProp : xmlPropArray) {
-                for (XmlNode envItem : xmlProp.getChildren())
+                for (XmlNode envItem : xmlProp.getChildren()) {
                     envNames.add(envItem.getName().toUpperCase());
+                }
             }
             Map<String, String> hasorEnv = new HashMap<String, String>();
-            for (String envItem : envNames)
+            for (String envItem : envNames) {
                 hasorEnv.put(envItem, settings.getString("hasor.environmentVar." + envItem));
+            }
             /*单独处理work_home*/
             String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
             workDir = workDir.replace("/", File.separator);
-            if (workDir.startsWith("." + File.separatorChar))
+            if (workDir.startsWith("." + File.separatorChar)) {
                 hasorEnv.put("HASOR_WORK_HOME", new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath());
-            else
+            } else {
                 hasorEnv.put("HASOR_WORK_HOME", workDir);
+            }
             return hasorEnv;
         }
         /*
@@ -363,8 +375,9 @@ public abstract class AbstractEnvironment implements Environment {
             for (Object propKey : prop.keySet()) {
                 String k = propKey.toString();
                 Object v = prop.get(propKey);
-                if (v != null)
+                if (v != null) {
                     javaProp.put(k, v.toString());
+                }
             }
             //3.Hasor 特有变量
             Map<String, String> hasorEnv = this.configEnvironment();
@@ -390,8 +403,9 @@ public abstract class AbstractEnvironment implements Environment {
             /*日志输出*/
             if (Hasor.isInfoLogger()) {
                 int keyMaxSize = 0;
-                for (String key : finalMap.keySet())
+                for (String key : finalMap.keySet()) {
                     keyMaxSize = (key.length() >= keyMaxSize) ? key.length() : keyMaxSize;
+                }
                 keyMaxSize = keyMaxSize + 2;
                 StringBuffer sb = new StringBuffer();
                 sb.append("EnvVars:");
@@ -426,12 +440,11 @@ public abstract class AbstractEnvironment implements Environment {
                 outLog.append(String.format(" %s : %s", key, var));
                 outLog.append('\n');
             }
-            if (outLog.length() > 1)
+            if (outLog.length() > 1) {
                 outLog.deleteCharAt(outLog.length() - 1);
+            }
             return outLog.toString();
         }
-        //
-        //
         //
         public String evalEnvVar(String varName) {
             return this.evalEnvVar(varName, new HashMap<String, String>());
@@ -440,21 +453,24 @@ public abstract class AbstractEnvironment implements Environment {
             return this.evalString(evalString, new HashMap<String, String>());
         }
         private String evalEnvVar(String varName, Map<String, String> paramMap) {
-            if (paramMap.containsKey(varName))
+            if (paramMap.containsKey(varName)) {
                 return paramMap.get(varName);
+            }
             paramMap.put(varName, "");/*预处理值*/
             //
             String varValue = this.getEnv().get(varName);
-            if (StringUtils.isBlank(varValue))
+            if (StringUtils.isBlank(varValue)) {
                 varValue = "";
-            else
+            } else {
                 varValue = this.evalString(varValue, paramMap);
+            }
             paramMap.put(varName, varValue);/*覆盖预处理值*/
             return varValue;
         }
         private String evalString(String evalString, Map<String, String> paramMap) {
-            if (StringUtils.isBlank(evalString))
+            if (StringUtils.isBlank(evalString)) {
                 return "";
+            }
             Pattern keyPattern = Pattern.compile("(?:%(\\w+)%){1,1}");//  (?:%(\w+)%)
             Matcher keyM = keyPattern.matcher(evalString);
             ArrayList<String> data = new ArrayList<String>();
@@ -468,8 +484,9 @@ public abstract class AbstractEnvironment implements Environment {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < splitArr.length; i++) {
                 sb.append(splitArr[i]);
-                if (data.size() > i)
+                if (data.size() > i) {
                     sb.append(data.get(i));
+                }
             }
             String returnData = sb.toString();
             Hasor.logDebug("evalString '%s' eval to '%s'.", evalString, returnData);

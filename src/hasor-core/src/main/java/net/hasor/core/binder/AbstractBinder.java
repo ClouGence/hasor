@@ -59,8 +59,9 @@ public abstract class AbstractBinder implements ApiBinder {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
     }
     public Set<Class<?>> findClass(Class<?> featureType) {
-        if (featureType == null)
+        if (featureType == null) {
             return null;
+        }
         return this.getEnvironment().findClass(featureType);
     }
     public void installModule(Module module) throws Throwable {
@@ -146,13 +147,15 @@ public abstract class AbstractBinder implements ApiBinder {
     private class BeanBindingBuilderImpl implements BeanBindingBuilder {
         private ArrayList<String> names = new ArrayList<String>();
         public BeanBindingBuilder aliasName(String aliasName) {
-            if (!StringUtils.isBlank(aliasName))
+            if (!StringUtils.isBlank(aliasName)) {
                 this.names.add(aliasName);
+            }
             return this;
         }
         public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType) {
-            if (this.names.isEmpty() == true)
+            if (this.names.isEmpty() == true) {
                 throw new UnsupportedOperationException("the bean name is undefined!");
+            }
             /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
             String referID = beanType.getName() + "#" + String.valueOf(referIndex());
             LinkedBindingBuilder<T> returnData = AbstractBinder.this.bindType(beanType).nameWith(referID);
@@ -226,8 +229,9 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         public LifeBindingBuilder<T> toProvider(Provider<T> provider) {
-            if (provider != null)
+            if (provider != null) {
                 this.typeBuilder.setCustomerProvider(provider);
+            }
             return this;
         }
         //
@@ -246,14 +250,16 @@ public abstract class AbstractBinder implements ApiBinder {
             return this.inject(index, new InstanceProvider<Object>(value));
         }
         public InjectConstructorBindingBuilder<T> inject(int index, RegisterInfo<?> valueInfo) {
-            if (index >= this.initParams.length)
+            if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
+            }
             this.typeBuilder.setInitParam(index, this.initParams[index], valueInfo);
             return this;
         }
         public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider) {
-            if (index >= this.initParams.length)
+            if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
+            }
             this.typeBuilder.setInitParam(index, this.initParams[index], valueProvider);
             return this;
         }

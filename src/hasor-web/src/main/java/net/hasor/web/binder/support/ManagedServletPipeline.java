@@ -37,8 +37,9 @@ public class ManagedServletPipeline {
     private volatile boolean    initialized = false;
     //
     public synchronized void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
-        if (initialized)
+        if (initialized) {
             return;
+        }
         this.servletDefinitions = collectServletDefinitions(appContext);
         for (ServletDefinition servletDefinition : servletDefinitions) {
             servletDefinition.init(appContext, filterConfig);
@@ -90,9 +91,9 @@ public class ManagedServletPipeline {
             if (servletDefinition.matchesUri(path)) {
                 return new RequestDispatcher() {
                     public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                        if (servletResponse.isCommitted() == true)
+                        if (servletResponse.isCommitted() == true) {
                             throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                        /*在转发之前清空缓冲*/
+                        }/*在转发之前清空缓冲*/
                         servletResponse.resetBuffer();
                         ServletRequest requestToProcess;
                         if (servletRequest instanceof HttpServletRequest) {

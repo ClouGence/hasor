@@ -75,11 +75,12 @@ public abstract class BeanDefine extends AbstractDefine {
         String _scope = StringUtils.trimToNull(this.getScope());
         //
         String fullName = _id;
-        if (_id == null)
+        if (_id == null) {
             fullName = (_scope != null) ? _scope + "." + _name : _name;
+        }
         //
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " ID=" + fullName;
-    };
+    }
     //
     /**获取Bean唯一的ID值。*/
     public String getId() {

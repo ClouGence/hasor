@@ -46,10 +46,12 @@ public class DefineType_Tag extends AbstractHasorTag {
         this.type = null;
     }
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var))
+        if (StringUtils.isBlank(this.var)) {
             throw new NullPointerException("tag param var is null.");
-        if (StringUtils.isBlank(this.type))
+        }
+        if (StringUtils.isBlank(this.type)) {
             throw new NullPointerException("tag param type is null.");
+        }
         //
         try {
             Object targetBean = Functions.defineType(type);

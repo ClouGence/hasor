@@ -45,8 +45,9 @@ public class ManagedFilterPipeline implements FilterPipeline {
     }
     //
     public synchronized void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
-        if (initialized)
+        if (initialized) {
             return;
+        }
         this.appContext = appContext;
         this.filterDefinitions = collectFilterDefinitions(appContext);
         for (FilterDefinition filterDefinition : this.filterDefinitions) {

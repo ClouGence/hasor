@@ -47,8 +47,9 @@ class ServletDefinition extends AbstractServletModuleBinding {
         this.patternMatcher = uriPatternMatcher;
     }
     protected HttpServlet getTarget() throws ServletException {
-        if (this.servletInstance != null)
+        if (this.servletInstance != null) {
             return this.servletInstance;
+        }
         //
         final Map<String, String> initParams = this.getInitParams();
         this.servletInstance = this.servletProvider.get();
@@ -79,8 +80,9 @@ class ServletDefinition extends AbstractServletModuleBinding {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
                 String key = ent.getKey();
-                if (!thisConfig.containsKey(key))
+                if (!thisConfig.containsKey(key)) {
                     thisConfig.put(key, ent.getValue());
+                }
             }
         }
         //
@@ -93,8 +95,9 @@ class ServletDefinition extends AbstractServletModuleBinding {
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         // 
-        if (serve)
+        if (serve) {
             doService(request, response);
+        }
         return serve;
     }
     /**/
@@ -149,14 +152,16 @@ class ServletDefinition extends AbstractServletModuleBinding {
         };
         //
         HttpServlet servlet = this.getTarget();
-        if (servlet == null)
+        if (servlet == null) {
             return;
+        }
         servlet.service(request, servletResponse);
     }
     /**/
     public void destroy() {
-        if (this.servletInstance == null)
+        if (this.servletInstance == null) {
             return;
+        }
         this.servletInstance.destroy();
     }
 }

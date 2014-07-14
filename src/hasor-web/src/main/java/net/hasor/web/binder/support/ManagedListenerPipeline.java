@@ -31,8 +31,9 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     //
     //
     public void init(WebAppContext appContext) {
-        if (initialized)
+        if (initialized) {
             return;
+        }
         //1.收集HttpSessionListenerDefinition
         List<HttpSessionListenerDefinition> sessionListeners = appContext.findBindingBean(HttpSessionListenerDefinition.class);
         this.sessionListeners = sessionListeners.toArray(new HttpSessionListenerDefinition[sessionListeners.size()]);
@@ -43,29 +44,33 @@ public class ManagedListenerPipeline implements ListenerPipeline {
         this.initialized = true;
     }
     public void sessionCreated(HttpSessionEvent event) {
-        if (initialized == false)
+        if (initialized == false) {
             return;
+        }
         for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
             httpSessionListenerDefinition.sessionCreated(event);
         }
     }
     public void sessionDestroyed(HttpSessionEvent event) {
-        if (initialized == false)
+        if (initialized == false) {
             return;
+        }
         for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
             httpSessionListenerDefinition.sessionDestroyed(event);
         }
     }
     public void contextInitialized(ServletContextEvent event) {
-        if (initialized == false)
+        if (initialized == false) {
             return;
+        }
         for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
             contextListenerDefinition.contextInitialized(event);
         }
     }
     public void contextDestroyed(ServletContextEvent event) {
-        if (initialized == false)
+        if (initialized == false) {
             return;
+        }
         for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
             contextListenerDefinition.contextDestroyed(event);
         }

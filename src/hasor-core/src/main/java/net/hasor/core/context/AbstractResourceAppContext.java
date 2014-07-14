@@ -56,10 +56,11 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     /**设置主配置文件*/
     protected AbstractResourceAppContext(String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL == null)
+        if (resURL == null) {
             Hasor.logWarn("can't find %s.", mainSettings);
-        else
+        } else {
             this.mainSettings = resURL.toURI();
+        }
     }
     /**获取设置的主配置文件*/
     public final URI getMainSettings() {
@@ -81,8 +82,9 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
             if (xmlNodes != null) {
                 for (XmlNode node : xmlNodes) {
                     String moduleTypeString = node.getAttribute("class");
-                    if (StringUtils.isBlank(moduleTypeString))
+                    if (StringUtils.isBlank(moduleTypeString)) {
                         continue;
+                    }
                     try {
                         ClassLoader loader = Thread.currentThread().getContextClassLoader();
                         Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
@@ -103,14 +105,16 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     private Provider<RegisterFactory> registerFactoryProvider = null;
     /**设置一个RegisterFactory实例对象*/
     protected void setRegisterFactory(Provider<RegisterFactory> registerFactoryProvider) {
-        if (this.isStart() == true)
+        if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
+        }
         this.registerFactoryProvider = registerFactoryProvider;
     }
     /**设置一个RegisterFactory实例对象*/
     protected void setRegisterFactory(final RegisterFactory registerFactory) {
-        if (this.isStart() == true)
+        if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
+        }
         //
         if (registerFactory == null) {
             this.registerFactoryProvider = null;
@@ -124,8 +128,9 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     }
     /**设置一个RegisterFactoryCreater实例对象*/
     protected void setRegisterFactoryCreater(final RegisterFactoryCreater registerFactoryCreate) {
-        if (this.isStart() == true)
+        if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
+        }
         //
         if (registerFactoryCreate == null) {
             this.registerFactoryProvider = null;
@@ -147,15 +152,17 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
             };
         }
         RegisterFactory factory = this.registerFactoryProvider.get();
-        if (factory == null)
+        if (factory == null) {
             throw new NullPointerException("registerFactory is null.");
+        }
         return factory;
     }
     private static abstract class AbstractRegisterFactoryProvider implements Provider<RegisterFactory> {
         private RegisterFactory registerFactory = null;
         public RegisterFactory get() {
-            if (this.registerFactory == null)
+            if (this.registerFactory == null) {
                 this.registerFactory = this.getRegisterFactory();
+            }
             return this.registerFactory;
         }
         protected abstract RegisterFactory getRegisterFactory();

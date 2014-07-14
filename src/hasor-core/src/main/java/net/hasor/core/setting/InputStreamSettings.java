@@ -40,8 +40,9 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     /**创建{@link InputStreamSettings}对象。*/
     public InputStreamSettings(InputStream[] inStreams) throws IOException {
         Hasor.assertIsNotNull(inStreams);
-        if (inStreams.length == 0)
+        if (inStreams.length == 0) {
             return;
+        }
         for (InputStream ins : inStreams) {
             Hasor.assertIsNotNull(ins);
             this.addStream(ins);
@@ -51,17 +52,20 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
     public void addStream(InputStream stream) {
-        if (stream != null)
-            if (this.pendingStream.contains(stream) == false)
+        if (stream != null) {
+            if (this.pendingStream.contains(stream) == false) {
                 this.pendingStream.add(stream);
+            }
+        }
     }
     //
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
     public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
         {
-            if (this.pendingStream.isEmpty() == true)
+            if (this.pendingStream.isEmpty() == true) {
                 return;
+            }
             //构建装载环境
             Map<String, Map<String, Object>> loadTo = new HashMap<String, Map<String, Object>>();
             InputStream inStream = null;
@@ -75,8 +79,9 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
                 while ((inStream = this.pendingStream.removeFirst()) != null) {
                     parser.parse(inStream, handler);
                     inStream.close();
-                    if (this.pendingStream.isEmpty())
+                    if (this.pendingStream.isEmpty()) {
                         break;
+                    }
                 }
             } catch (Exception e) {
                 throw new IOException(e);
@@ -84,8 +89,9 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
             //
             this.cleanData();
             this.getNamespaceSettingMap().putAll(loadTo);
-            for (Map<String, Object> ent : loadTo.values())
+            for (Map<String, Object> ent : loadTo.values()) {
                 this.getSettingsMap().addMap(ent);
+            }
         }
         this.loadFinish();//完成装载
     }
