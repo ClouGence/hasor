@@ -15,18 +15,23 @@
  */
 package net.test.simple.db._03_update;
 import java.sql.SQLException;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.test.simple.db.SimpleJDBCWarp;
 import org.junit.Test;
 /***
  * 基本的update操作语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class Simple_UpdateJDBCTest extends AbstractSimpleJDBCTest {
+public class Simple_UpdateJDBCTest {
     @Test
     public void simple_UpdateJDBCTest() throws SQLException {
         System.out.println("--->>simple_UpdateJDBCTest<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
+        //
     }
 }

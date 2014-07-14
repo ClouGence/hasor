@@ -19,21 +19,26 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.hasor.test.utils.HasorUnit;
+import net.test.simple.db.SimpleJDBCWarp;
 import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class SimpleParam_QueryTest extends AbstractSimpleJDBCTest {
+public class SimpleParam_QueryTest {
     @Test
     public void simpleParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like ?", "76%");
-        this.printMapList(userList);
+        HasorUnit.printMapList(userList);
     }
 }

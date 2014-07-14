@@ -50,16 +50,20 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             RegisterFactoryCreater factoryCreater = null;
             //1.获取配置信息
             ContextConfiguration config = klass.getAnnotation(ContextConfiguration.class);
+            List<Module> loadModule = new ArrayList<Module>();
             if (config != null) {
                 configResource = config.value();
                 factoryCreater = config.factoryCreater().newInstance();
+                for (Class<? extends Module> mod : config.loadModules())
+                    loadModule.add(mod.newInstance());
             }
             //2.初始化绑定Test
-            this.appContext = HasorFactory.createAppContext(configResource, factoryCreater, new Module() {
+            loadModule.add(new Module() {
                 public void loadModule(ApiBinder apiBinder) throws Throwable {
                     typeRegister = apiBinder.bindType(klass).uniqueName().toInfo();
                 }
             });
+            this.appContext = HasorFactory.createAppContext(configResource, factoryCreater, loadModule.toArray(new Module[loadModule.size()]));
             //3.
             if (this.appContext == null)
                 throw new NullPointerException("HasorFactory.createAppContext return null.");

@@ -16,8 +16,11 @@
 package net.test.simple.db._02_select;
 import java.sql.SQLException;
 import java.util.List;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.hasor.test.utils.HasorUnit;
+import net.test.simple.db.SimpleJDBCWarp;
 import net.test.simple.db._02_select.entity.TB_User;
 import org.junit.Test;
 /**
@@ -25,13 +28,15 @@ import org.junit.Test;
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Entity_QueryTest extends AbstractSimpleJDBCTest {
+public class Entity_QueryTest {
     @Test
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
-        this.printObjectList(userList);
+        HasorUnit.printObjectList(userList);
     }
 }

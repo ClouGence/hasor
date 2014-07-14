@@ -19,19 +19,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.hasor.test.utils.HasorUnit;
+import net.test.simple.db.SimpleJDBCWarp;
 import org.junit.Test;
 /***
  * 批量Insert语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class MapBatch_InsertJDBCTest extends AbstractSimpleJDBCTest {
+public class MapBatch_InsertJDBCTest {
     @Test
     public void baseInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String batchInsert = "insert into TB_User values(:ID,:Name,:Account,:Pwd,:Email,:RegTime);";
         //
@@ -48,9 +53,11 @@ public class MapBatch_InsertJDBCTest extends AbstractSimpleJDBCTest {
             batchValues[i].put("RegTime", new Date());
         }
         jdbc.batchUpdate(batchInsert, batchValues);//批量执行执行插入语句
-        this.printMapList(jdbc.queryForList("select * from TB_User"));
+        HasorUnit.printMapList(jdbc.queryForList("select * from TB_User"));
+        //
+        showUserCount(jdbc);//显示当前用户总数
     }
     private void showUserCount(JdbcTemplate jdbc) throws SQLException {
-        System.out.println("userCount :" + jdbc.queryForInt("select count(*) from TB_User"));
+        System.out.println(">>>>>  userCount :" + jdbc.queryForInt("select count(*) from TB_User"));
     }
 }

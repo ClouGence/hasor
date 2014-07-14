@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db;
+package net.hasor.test.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.CharUtils;
@@ -30,36 +30,21 @@ import org.more.util.StringUtils;
  * @version : 2014年7月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractHasorUnit {
-    //
-    //
-    //
-    protected String newID() {
+public abstract class HasorUnit {
+    /**代码相当于：<code>UUID.randomUUID().toString()</code>*/
+    public static String newID() {
         return UUID.randomUUID().toString();
     }
-    private int stringLength(String str) {
-        int length = 0;
-        for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c))
-                length++;
-            else
-                length = length + 2;
-        return length;
-    }
-    /*修正长度*/
-    private int fixLength(String str, int length) {
-        for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c) == false)
-                length--;
-        return length;
-    }
-    protected <T> String printObjectList(List<T> dataList) {
+    /**打印列表内容*/
+    public static <T> String printObjectList(List<T> dataList) {
         return printObjectList(dataList, true);
     }
-    protected String printMapList(List<Map<String, Object>> dataList) {
+    /**打印列表内容*/
+    public static String printMapList(List<Map<String, Object>> dataList) {
         return printMapList(dataList, true);
     }
-    protected <T> String printObjectList(List<T> dataList, boolean print) {
+    /**打印列表内容*/
+    public static <T> String printObjectList(List<T> dataList, boolean print) {
         List<Map<String, Object>> newDataList = new ArrayList<Map<String, Object>>();
         for (T obj : dataList) {
             List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
@@ -69,9 +54,10 @@ public abstract class AbstractHasorUnit {
             //
             newDataList.add(newObj);
         }
-        return this.printMapList(newDataList, print);
+        return printMapList(newDataList, print);
     }
-    protected String printMapList(List<Map<String, Object>> dataList, boolean print) {
+    /**打印列表内容*/
+    public static String printMapList(List<Map<String, Object>> dataList, boolean print) {
         ArrayList<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
         Map<String, Integer> titleConfig = new LinkedHashMap<String, Integer>();
         //1.转换
@@ -128,5 +114,24 @@ public abstract class AbstractHasorUnit {
         if (print)
             System.out.println(output);
         return output.toString();
+    }
+    //
+    //
+    //
+    private static int stringLength(String str) {
+        int length = 0;
+        for (char c : str.toCharArray())
+            if (CharUtils.isAscii(c))
+                length++;
+            else
+                length = length + 2;
+        return length;
+    }
+    /*修正长度*/
+    private static int fixLength(String str, int length) {
+        for (char c : str.toCharArray())
+            if (CharUtils.isAscii(c) == false)
+                length--;
+        return length;
     }
 }

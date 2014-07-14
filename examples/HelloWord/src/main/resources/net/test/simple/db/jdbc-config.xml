@@ -4,9 +4,8 @@
 	<hasor-jdbc>
 		<driver>com.mysql.jdbc.Driver</driver>
 		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</url>
-		
-		<user>zyc</user>
-		<password>fubing220106</password>
+		<user>htest</user>
+		<password>htest_1234</password>
 		<!-- <driver>org.hsqldb.jdbcDriver</driver> -->
 		<!-- <url>jdbc:hsqldb:mem:aname</url> -->
 		<!-- <user>sa</user> -->

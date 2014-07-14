@@ -15,19 +15,23 @@
  */
 package net.test.simple.db._01_insert;
 import java.sql.SQLException;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.test.simple.db.SimpleJDBCWarp;
 import org.junit.Test;
 /***
  * 基本的SQL插入操作语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class Simple_InsertJDBCTest extends AbstractSimpleJDBCTest {
+public class Simple_InsertJDBCTest {
     @Test
     public void simple_InsertJDBCTest() throws SQLException {
         System.out.println("--->>simple_InsertJDBCTest<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
         //

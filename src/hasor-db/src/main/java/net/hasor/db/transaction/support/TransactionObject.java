@@ -28,7 +28,7 @@ import net.hasor.db.transaction.Isolation;
 public class TransactionObject {
     private ConnectionHolder holder     = null;
     private DataSource       dataSource = null;
-    private Isolation oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
+    private Isolation        oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
     public TransactionObject(ConnectionHolder holder, Isolation oriIsolationLevel, DataSource dataSource) {
         this.holder = holder;
         this.dataSource = dataSource;
@@ -47,10 +47,12 @@ public class TransactionObject {
         return this.getHolder();
     };
     public void rollback() throws SQLException {
-        this.holder.getConnection().rollback();
+        if (this.holder.hasTransaction() == true)
+            this.holder.getConnection().rollback();//在AutoCommit情况下不执行事务操作（MYSQL强制在auto下执行该方法会引发异常）。
     }
     public void commit() throws SQLException {
-        this.holder.getConnection().commit();
+        if (this.holder.hasTransaction() == true)
+            this.holder.getConnection().commit();//在AutoCommit情况下不执行事务操作（MYSQL强制在auto下执行该方法会引发异常）。
     }
     public boolean hasTransaction() throws SQLException {
         return this.holder.hasTransaction();

@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db._06_transaction.simple.NESTED;
+package net.test.simple.db._06_transaction.natives.NESTED;
+import static net.hasor.test.utils.HasorUnit.newID;
 import java.sql.SQLException;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db._06_transaction.natives.AbstractSimpleTransactionManagerTest;
+import net.hasor.test.junit.ContextConfiguration;
+import net.hasor.test.runner.HasorUnitRunner;
+import net.test.simple.db.SimpleJDBCWarp;
+import net.test.simple.db._06_transaction.natives.AbstractNativesJDBCTest;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
  * RROPAGATION_NESTED：嵌套事务
  *   -条件：环境中没有事务，开始的事务是一个新事务
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class NoTarn_NESTEDTest extends AbstractSimpleTransactionManagerTest {
+@RunWith(HasorUnitRunner.class)
+@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
+public class NoTarn_NESTED_Test extends AbstractNativesJDBCTest {
+    protected String watchTable() {
+        return "TB_User";
+    }
     @Test
-    public void noTarn_NESTEDTest() throws SQLException, InterruptedException {
-        System.out.println("--->>noTarn_NESTEDTest<<--");
-        watchTable("TB_User");
+    public void noTarn_NESTED_Test() throws SQLException, InterruptedException {
+        System.out.println("--->>noTarn_NESTED_Test<<--");
         Thread.sleep(3000);
         /* 预期执行结果为：
          *   0.暂停3秒，监控线程打印全表数据.

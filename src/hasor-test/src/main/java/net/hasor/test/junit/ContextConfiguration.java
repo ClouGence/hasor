@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.Module;
 import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import net.hasor.core.context.factorys.DefaultRegisterFactoryCreater;
 /**
@@ -30,6 +31,8 @@ import net.hasor.core.context.factorys.DefaultRegisterFactoryCreater;
 public @interface ContextConfiguration {
     /**Hasor的主配置文件.*/
     public String value() default "";
-    /***/
+    /**使用的{@link RegisterFactoryCreater}*/
     public Class<? extends RegisterFactoryCreater> factoryCreater() default DefaultRegisterFactoryCreater.class;
+    /**要装载的{@link Module}*/
+    public Class<? extends Module>[] loadModules() default {};
 }

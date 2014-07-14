@@ -16,19 +16,24 @@
 package net.test.simple.db._05_callable;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.AppContext;
+import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.AbstractSimpleJDBCTest;
+import net.test.simple.db.SimpleJDBCWarp;
 import org.junit.Test;
 /**
  * 存储过程调用
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class Callable_Test extends AbstractSimpleJDBCTest {
+public class Callable_Test {
     @Test
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testCallable<<--");
-        JdbcTemplate jdbc = getJdbcTemplate();
+        //
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
+        //
         //
         //        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
         //            public Integer doInConnection(Connection con) throws SQLException, DataAccessException {
