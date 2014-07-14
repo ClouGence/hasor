@@ -49,7 +49,7 @@ public class HaveTarn_NEVER_Test extends AbstractNativesJDBCTest {
          *   2.新建‘默罕默德’用户..
          *   3.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’).
          *   4.开启事务..            (T2)
-         *   5.打印异常信息，因为环境中不存在事务
+         *   5.打印异常信息，因为环境中存在事务
          */
         Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
         /*T1-Begin*/
