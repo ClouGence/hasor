@@ -32,6 +32,7 @@ import net.hasor.test.junit.TestOrder;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 import org.more.util.BeanUtils;
 /**
  * 
@@ -67,19 +68,16 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
         }
     }
     //
-    private List<FrameworkMethod> toRunMethodList = null;
     protected List<FrameworkMethod> computeTestMethods() {
-        if (this.toRunMethodList != null)
-            return this.toRunMethodList;
         //1.获取带有 @Test 注解的方法
-        this.toRunMethodList = super.computeTestMethods();
+        List<FrameworkMethod> toRunMethodList = super.computeTestMethods();
         //2.检查是否Test方法中同时带有DaemonThread注解的方法。
-        for (FrameworkMethod method : this.toRunMethodList) {
+        for (FrameworkMethod method : toRunMethodList) {
             if (method.getAnnotation(DaemonThread.class) != null)
                 throw new IllegalStateException("test method cannot be used at the same time, @Test, @DaemonThread");
         }
         //3.获取测试方法上的 @Order 注解，并对所有的测试方法重新排序
-        Collections.sort(this.toRunMethodList, new Comparator<FrameworkMethod>() {
+        Collections.sort(toRunMethodList, new Comparator<FrameworkMethod>() {
             public int compare(FrameworkMethod m1, FrameworkMethod m2) {
                 TestOrder o1 = m1.getAnnotation(TestOrder.class);
                 TestOrder o2 = m2.getAnnotation(TestOrder.class);
@@ -89,28 +87,50 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
                 return o1.value() - o2.value();
             }
         });
-        return this.toRunMethodList;
+        return toRunMethodList;
+    }
+    //
+    protected Statement methodInvoker(FrameworkMethod method, Object test) {
+        //1.准备要执行的线程
+        List<FrameworkMethod> methodList = getTestClass().getAnnotatedMethods(DaemonThread.class);//有单例问题，每个Test都会调用该方法。
+        final ArrayList<Thread> daemonThreads = new ArrayList<Thread>();
+        for (FrameworkMethod threadMethod : methodList) {
+            Thread daemonThread = new TestThread(test, threadMethod);
+            daemonThread.setDaemon(true);
+            daemonThreads.add(daemonThread);
+        }
+        //2.Return Statement
+        final Statement invokerStatement = super.methodInvoker(method, test);
+        return new Statement() {
+            public void evaluate() throws Throwable {
+                try {
+                    /*A.启动监控线程*/
+                    for (Thread thread : daemonThreads)
+                        thread.start();
+                    invokerStatement.evaluate();
+                } finally {
+                    /*b.终止监控线程*/
+                    for (Thread thread : daemonThreads) {
+                        thread.suspend();
+                        thread.interrupt();
+                    }
+                }
+            }
+        };
     }
     //
     protected Object createTest() throws Exception {
-        //1.创建对象
         Object testUnit = this.appContext.getInstance(this.typeRegister);
         if (testUnit != null && testUnit instanceof AppContextAware)
             ((AppContextAware) testUnit).setAppContext(this.appContext);
-        //2.启动守护线程
-        List<FrameworkMethod> methodList = getTestClass().getAnnotatedMethods(DaemonThread.class);s//有单例问题，每个Test都会调用该方法。
-        for (FrameworkMethod method : methodList) {
-            Thread t = new TestThread(testUnit, method);
-            t.setDaemon(true);
-            t.start();
-        }
-        //
         return testUnit;
     }
+    //
     private static class TestThread extends Thread {
         private Object          targetObject = null;
         private FrameworkMethod method       = null;
         public TestThread(Object targetObject, FrameworkMethod method) {
+            super("daemonThread:" + method.getName());
             this.targetObject = targetObject;
             this.method = method;
         }
