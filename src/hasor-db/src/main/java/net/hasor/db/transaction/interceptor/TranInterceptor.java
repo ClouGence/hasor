@@ -35,6 +35,7 @@ public class TranInterceptor implements MethodInterceptor {
     private TransactionManager   transactionManager = null; //事务管理器
     private TranStrategy[]       strategyArrays     = null; //事务策略
     private Propagation          defaultStrategy    = null; //默认事务策略
+    private MatcherInterceptor   matcherInterceptor = null;
     //
     public static void main(String[] args) {
         System.out.println(TransactionManager.class.getMethods()[1]);
@@ -61,7 +62,7 @@ public class TranInterceptor implements MethodInterceptor {
     }
     /**获取用于目标方法的传播属性。*/
     protected Propagation getPropagation(Method method) {
-        String descName = ClassUtils.getDescName(method);s
+        String descName = ClassUtils.getDescName(method);
         //
         //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
         for (TranStrategy strategy : this.strategyArrays) {
@@ -73,11 +74,8 @@ public class TranInterceptor implements MethodInterceptor {
     public final Object invoke(MethodInvocation invocation) throws Throwable {
         //1.是否排除不实用事务管理器
         Method targetMethod = invocation.getMethod();
-        Class<?> targetClass = targetMethod.getDeclaringClass();
         //
-        if (!this.matcherClass(targetClass))
-            return invocation.proceed();
-        if (!this.matcherMethod(targetMethod))
+        if (this.matcherInterceptor.matcherMethod(targetMethod))
             return invocation.proceed();
         //2.在事务管理器的控制下进行方法调用
         TransactionStatus tranStatus = null;
@@ -86,6 +84,9 @@ public class TranInterceptor implements MethodInterceptor {
             Propagation propagation = getPropagation(targetMethod);
             tranStatus = tranManager.getTransaction(propagation);
             return invocation.proceed();
+        } catch (RollBackSQLException e) {
+            /*回滚事务*/
+            tranStatus.setRollbackOnly();
         } catch (Throwable e) {
             tranManager.rollBack(tranStatus);
             throw e;
@@ -93,14 +94,6 @@ public class TranInterceptor implements MethodInterceptor {
             if (!tranStatus.isCompleted())
                 tranManager.commit(tranStatus);
         }
-    }
-    /**匹配拦截的类*/
-    protected boolean matcherClass(Class<?> targetClass) {
-        return true;
-    }
-    /**匹配拦截的类方法*/
-    protected boolean matcherMethod(Method targetMethod) {
-        return true;
     }
     //
     private static class TranStrategy {

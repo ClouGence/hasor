@@ -14,30 +14,41 @@
  * limitations under the License.
  */
 package net.test.simple.db._06_transaction.simple.MANDATORY;
+import static net.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
-import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.TransactionStatus;
-import net.test.simple.db._06_transaction.natives.AbstractSimpleTransactionManagerTest;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.RollBackSQLException;
+import net.hasor.db.transaction.interceptor.simple.Transactional;
+import net.hasor.test.junit.ContextConfiguration;
+import net.hasor.test.runner.HasorUnitRunner;
+import net.test.simple.db.SimpleJDBCWarp;
+import net.test.simple.db._06_transaction.simple.AbstractSimpleJDBCTest;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
- * PROPAGATION_MANDATORY：要求环境中存在事务
- *   -条件：环境中有事务，事务管理器正常运行。
- * @version : 2013-12-10
- * @author 赵永春(zyc@hasor.net)
- */
-public class HaveTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest {
+* PROPAGATION_MANDATORY：要求环境中存在事务
+*   -条件：环境中有事务，事务管理器正常运行。
+* @version : 2013-12-10
+* @author 赵永春(zyc@hasor.net)
+*/
+@RunWith(HasorUnitRunner.class)
+@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
+public class HaveTarn_MANDATORY_Test extends AbstractSimpleJDBCTest {
     protected Isolation getWatchThreadTransactionLevel() {
         /*监控线程的事务隔离级别修改为，允许读未递交的数据*/
         return Isolation.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED);
     }
+    protected String watchTable() {
+        return "TB_User";
+    }
+    //
+    //
     @Test
-    public void haveTarn_MANDATORYTest() throws SQLException, InterruptedException {
-        System.out.println("--->>haveTarn_MANDATORYTest<<--");
-        watchTable("TB_User");
+    public void haveTarn_MANDATORY_Test() throws Exception {
+        System.out.println("--->>haveTarn_MANDATORY_Test<<--");
         Thread.sleep(3000);
         /* 预期执行结果为：
          *   0.暂停3秒，监控线程打印全表数据.
@@ -62,18 +73,8 @@ public class HaveTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest
             new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
         }
-        /*T2-Begin*/
-        TransactionStatus tranStatus = begin(Propagation.MANDATORY);
         {
-            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
-        /*T2-Commit*/
-        {
-            System.out.println("rollBack Transaction!");
-            rollBack(tranStatus);//MANDATORY 类型事务不参与实际的 commit、roback。
+            this.executeTransactional();
             Thread.sleep(3000);
         }
         /*T1-Commit*/
@@ -88,5 +89,23 @@ public class HaveTarn_MANDATORYTest extends AbstractSimpleTransactionManagerTest
         }
         Thread.sleep(3000);
         DataSourceUtils.releaseConnection(conn, getDataSource());//释放连接
+    }
+    //
+    //
+    //在调用该方法之前环境中已经存在事务。
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void executeTransactional() throws Exception {
+        /*T2-Begin*/
+        {
+            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘安妮.贝隆’...");
+            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
+            Thread.sleep(3000);
+        }
+        /*T2-rollBack*/
+        {
+            System.out.println("rollBack Transaction!");
+            throw new RollBackSQLException();//MANDATORY 类型事务不参与实际的 commit、roback。
+        }
     }
 }

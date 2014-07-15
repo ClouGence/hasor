@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db._06_transaction.simple;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+package net.hasor.db.transaction.interceptor;
+import java.lang.reflect.Method;
 /**
- * 
- * @version : 2014年7月8日
+ * 用于协助拦截器判断，方法的事务传播属性。
  * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-10-30
  */
-public class HasorTest extends BlockJUnit4ClassRunner {
-    public HasorTest(Class<?> klass) throws InitializationError {
-        super(klass);
-    }
+public interface MatcherInterceptor {
+    /**匹配拦截的类方法*/
+    public boolean matcherMethod(Method targetMethod);
+    //    /**获取所使用的事务传播属性*/
+    //    public Propagation matcherMethod(Method targetMethod);
 }

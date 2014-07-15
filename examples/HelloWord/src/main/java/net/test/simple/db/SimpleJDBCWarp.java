@@ -59,8 +59,6 @@ public class SimpleJDBCWarp implements Module {
         apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
-        //5.绑定Aop
-        //        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new TranInterceptor(dataSource));
     }
 }
 class JdbcTemplateProvider implements Provider<JdbcTemplate> {

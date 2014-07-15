@@ -33,26 +33,22 @@ public class NameBindTest {
     public void nameBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>nameBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new TestModule("ModuleA"), new TestModule("ModuleB"));
+        AppContext appContext = HasorFactory.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                //绑定一个接口和实现类
+                apiBinder.bindType(CharSequence.class).nameWith("ModuleA").toInstance("this String form A");
+                apiBinder.bindType(CharSequence.class).nameWith("ModuleB").toInstance("this String form B");
+            }
+        });
         //
         System.out.println();
-        String modeSay = null;
-        modeSay = appContext.findBindingBean("ModuleA", String.class);//获取ModuleA绑定的特殊字符串内容
-        Hasor.logInfo(modeSay);
-        modeSay = appContext.findBindingBean("ModuleB", String.class);//获取ModuleB绑定的特殊字符串内容
-        Hasor.logInfo(modeSay);
+        CharSequence modeSay = null;
+        modeSay = appContext.findBindingBean("ModuleA", CharSequence.class);
+        Hasor.logInfo(modeSay.toString());
+        modeSay = appContext.findBindingBean("ModuleB", CharSequence.class);
+        Hasor.logInfo(modeSay.toString());
         //
-        List<String> says = appContext.findBindingBean(String.class);//查找绑定
+        List<CharSequence> says = appContext.findBindingBean(CharSequence.class);//查找绑定
         Hasor.logInfo("say %s.", says);
-    }
-}
-class TestModule implements Module {
-    private String moduleMark;
-    public TestModule(String moduleMark) {
-        this.moduleMark = moduleMark;
-    }
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //利用 moduleMark 为 Key，绑定一段特殊字符串内容到容器中。
-        apiBinder.bindType(String.class).nameWith(moduleMark).toInstance("this String form " + moduleMark);
     }
 }
