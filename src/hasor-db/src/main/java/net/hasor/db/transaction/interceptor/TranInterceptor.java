@@ -15,69 +15,70 @@
  */
 package net.hasor.db.transaction.interceptor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.sql.DataSource;
-import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
 import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.interceptor._.DataSourceInfo;
+import net.hasor.db.transaction.interceptor._.DataSourceSource;
+import net.hasor.db.transaction.interceptor._.MatcherInterceptor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.util.ClassUtils;
+import org.more.RepeateException;
 /**
  * 某一个数据源的事务管理器
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
 public class TranInterceptor implements MethodInterceptor {
-    private Provider<DataSource> dataSourceProvider = null; //数据源
-    private TransactionManager   transactionManager = null; //事务管理器
-    private TranStrategy[]       strategyArrays     = null; //事务策略
-    private Propagation          defaultStrategy    = null; //默认事务策略
-    private MatcherInterceptor   matcherInterceptor = null;
+    private DataSourceSource                dataSource  = null; //数据源
+    private Map<String, TransactionManager> tranManager = null; //事务管理器
+    private MatcherInterceptor              matcher     = null; //事务拦截匹配
     //
-    public static void main(String[] args) {
-        System.out.println(TransactionManager.class.getMethods()[1]);
-    }
-    //
-    /**创建TranInterceptor对象。*/
-    public TranInterceptor(DataSource dataSource) {
-        this(new InstanceProvider<DataSource>(dataSource));
-    }
-    /**创建TranInterceptor对象。*/
-    public TranInterceptor(Provider<DataSource> dataSourceProvider) {
-        this.dataSourceProvider = dataSourceProvider;
-        this.strategyArrays = new TranStrategy[0];
-        this.defaultStrategy = Propagation.REQUIRED;/*默认策略，加入已有事务*/
-    }
-    //
-    /**获取当前的数据源*/
-    protected TransactionManager getTransactionManager() {
-        if (this.transactionManager == null) {
-            DataSource ds = this.dataSourceProvider.get();
-            this.transactionManager = Manager.getTransactionManager(ds);
-        }
-        return this.transactionManager;
-    }
-    /**获取用于目标方法的传播属性。*/
-    protected Propagation getPropagation(Method method) {
-        String descName = ClassUtils.getDescName(method);
+    /**初始化事务管理器*/
+    public void initManager() {
+        if (this.tranManager != null)
+            return;
         //
-        //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
-        for (TranStrategy strategy : this.strategyArrays) {
+        this.tranManager = new HashMap<String, TransactionManager>();
+        int dsCount = this.dataSource.getDataSourceCount();
+        for (int i = 0; i < dsCount; i++) {
+            DataSourceInfo dsInfo = this.dataSource.getDataSource(i);
+            String dsName = dsInfo.getName();
+            DataSource dsObject = dsInfo.getDataSource();
             //
+            if (this.tranManager.containsKey(dsName) == true)
+                throw new RepeateException(String.format("the name ‘%s’ already exists", dsName));
+            if (this.tranManager.containsValue(dsObject) == true)
+                throw new RepeateException(String.format("the DataSource ‘%s’ already exists", dsObject.toString()));
+            //
+            TransactionManager manager = Manager.getTransactionManager(dsObject);
+            this.tranManager.put(dsName, manager);
         }
-        return this.defaultStrategy;
     }
+    //
     //
     public final Object invoke(MethodInvocation invocation) throws Throwable {
         //1.是否排除不实用事务管理器
         Method targetMethod = invocation.getMethod();
-        //
-        if (this.matcherInterceptor.matcherMethod(targetMethod))
+        if (this.matcher == null || this.matcher.matcherMethod(targetMethod) == false)
             return invocation.proceed();
+        //2.初始化事务管理器
+        this.initManager();
+        //
         //2.在事务管理器的控制下进行方法调用
+        Map<String, TransactionStatus> tranStatus = new HashMap<String, TransactionStatus>();
+        for (Entry<String, TransactionManager> tranEntry : this.tranManager.entrySet()) {
+            String dsName = tranEntry.getKey();
+            
+             
+            
+            
+        }
         TransactionStatus tranStatus = null;
         TransactionManager tranManager = this.getTransactionManager();
         try {
@@ -93,23 +94,6 @@ public class TranInterceptor implements MethodInterceptor {
         } finally {
             if (!tranStatus.isCompleted())
                 tranManager.commit(tranStatus);
-        }
-    }
-    //
-    private static class TranStrategy {
-        private String      key         = null;
-        private Propagation propagation = null;
-        public String getKey() {
-            return key;
-        }
-        public void setKey(String key) {
-            this.key = key;
-        }
-        public Propagation getPropagation() {
-            return propagation;
-        }
-        public void setPropagation(Propagation propagation) {
-            this.propagation = propagation;
         }
     }
 }
