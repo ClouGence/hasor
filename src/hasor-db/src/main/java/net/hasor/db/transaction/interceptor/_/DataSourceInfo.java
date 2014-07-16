@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
-import java.sql.Connection;
-import java.sql.SQLException;
+package net.hasor.db.transaction.interceptor._;
+import javax.sql.DataSource;
 /**
- * 
+ * 可用的事务数据源。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface TranCallback {
-    public Object execute(Connection connection) throws SQLException;
+public interface DataSourceInfo {
+    /**获取数据源名称*/
+    public String getName();
+    /**获取数据源*/
+    public DataSource getDataSource();
 }

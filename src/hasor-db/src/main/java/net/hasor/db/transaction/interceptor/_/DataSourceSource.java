@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
-import java.lang.reflect.Method;
+package net.hasor.db.transaction.interceptor._;
 /**
- * 用于协助拦截器判断，方法的事务传播属性。
+ * 可用的事务数据源。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface MatcherInterceptor {
-    /**匹配拦截的类方法*/
-    public boolean matcherMethod(Method targetMethod);
-    //    /**获取所使用的事务传播属性*/
-    //    public Propagation matcherMethod(Method targetMethod);
+public interface DataSourceSource {
+    /**获取数据源总数。*/
+    public int getDataSourceCount();
+    /**获取指定编号的数据源。*/
+    public DataSourceInfo getDataSource(int index);
 }
