@@ -551,22 +551,6 @@ public class IOUtils {
         return toByteArray(input, Charsets.toCharset(encoding));
     }
     /**
-     * Get the contents of a <code>String</code> as a <code>byte[]</code>
-     * using the default character encoding of the platform.
-     * <p>
-     * This is the same as {@link String#getBytes()}.
-     * 
-     * @param input  the <code>String</code> to convert
-     * @return the requested byte array
-     * @throws NullPointerException if the input is null
-     * @throws IOException if an I/O error occurs (never occurs)
-     * @deprecated Use {@link String#getBytes()}
-     */
-    @Deprecated
-    public static byte[] toByteArray(String input) throws IOException {
-        return input.getBytes();
-    }
-    /**
      * Get the contents of a <code>URI</code> as a <code>byte[]</code>.
      * 
      * @param uri
@@ -862,20 +846,6 @@ public class IOUtils {
      */
     public static String toString(URL url, String encoding) throws IOException {
         return toString(url, Charsets.toCharset(encoding));
-    }
-    /**
-     * Get the contents of a <code>byte[]</code> as a String
-     * using the default character encoding of the platform.
-     * 
-     * @param input the byte array to read from
-     * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException if an I/O error occurs (never occurs)
-     * @deprecated Use {@link String#String(byte[])}
-     */
-    @Deprecated
-    public static String toString(byte[] input) throws IOException {
-        return new String(input);
     }
     /**
      * Get the contents of a <code>byte[]</code> as a String
@@ -1460,68 +1430,6 @@ public class IOUtils {
      */
     public static void write(String data, OutputStream output, String encoding) throws IOException {
         write(data, output, Charsets.toCharset(encoding));
-    }
-    // write StringBuffer
-    //-----------------------------------------------------------------------
-    /**
-     * Writes chars from a <code>StringBuffer</code> to a <code>Writer</code>.
-     * 
-     * @param data  the <code>StringBuffer</code> to write, null ignored
-     * @param output  the <code>Writer</code> to write to
-     * @throws NullPointerException if output is null
-     * @throws IOException if an I/O error occurs
-     * @since 1.1
-     * @deprecated replaced by write(CharSequence, Writer)
-     */
-    @Deprecated
-    public static void write(StringBuffer data, Writer output) throws IOException {
-        if (data != null) {
-            output.write(data.toString());
-        }
-    }
-    /**
-     * Writes chars from a <code>StringBuffer</code> to bytes on an
-     * <code>OutputStream</code> using the default character encoding of the
-     * platform.
-     * <p>
-     * This method uses {@link String#getBytes()}.
-     * 
-     * @param data  the <code>StringBuffer</code> to write, null ignored
-     * @param output  the <code>OutputStream</code> to write to
-     * @throws NullPointerException if output is null
-     * @throws IOException if an I/O error occurs
-     * @since 1.1
-     * @deprecated replaced by write(CharSequence, OutputStream)
-     */
-    @Deprecated
-    public static void write(StringBuffer data, OutputStream output) throws IOException {
-        write(data, output, (String) null);
-    }
-    /**
-     * Writes chars from a <code>StringBuffer</code> to bytes on an
-     * <code>OutputStream</code> using the specified character encoding.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-     * <p>
-     * This method uses {@link String#getBytes(String)}.
-     * 
-     * @param data  the <code>StringBuffer</code> to write, null ignored
-     * @param output  the <code>OutputStream</code> to write to
-     * @param encoding  the encoding to use, null means platform default
-     * @throws NullPointerException if output is null
-     * @throws IOException if an I/O error occurs
-     * @throws UnsupportedCharsetException
-     *             thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
-     *             supported.
-     * @since 1.1
-     * @deprecated replaced by write(CharSequence, OutputStream, String)
-     */
-    @Deprecated
-    public static void write(StringBuffer data, OutputStream output, String encoding) throws IOException {
-        if (data != null) {
-            output.write(data.toString().getBytes(Charsets.toCharset(encoding)));
-        }
     }
     // writeLines
     //-----------------------------------------------------------------------
