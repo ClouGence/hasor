@@ -3747,7 +3747,8 @@ public class ArrayUtils {
      * (index < 0 || index > array.length).
      */
     public static boolean[] add(boolean[] array, int index, boolean element) {
-        return (boolean[]) add(array, index, BooleanUtils.toBooleanObject(element), Boolean.TYPE);
+        Boolean booElement = element ? Boolean.TRUE : Boolean.FALSE;
+        return (boolean[]) add(array, index, booElement, Boolean.TYPE);
     }
     /**
      * <p>Inserts the specified element at the specified position in the array.

@@ -17,19 +17,14 @@
 package org.more.util;
 import java.io.File;
 /**
- * <p>
- * Helpers for <code>java.lang.System</code>.
- * </p>
- * 
+ * <p> Helpers for <code>java.lang.System</code>. </p>
  * <p>
  * If a system property cannot be read due to security restrictions,
  * the corresponding field in this class will be set to <code>null</code>
  * and a message will be written to <code>System.err</code>.
  * </p>
  * 
- * <p>
- * #ThreadSafe#
- * </p>
+ * <p> #ThreadSafe# </p>
  * 
  * @author Apache Software Foundation
  * @author Based on code from Avalon Excalibur
@@ -1068,211 +1063,110 @@ public class SystemUtils {
      */
     public static final boolean IS_OS_IRIX                          = getOSMatchesName("Irix");
     /**
-     * <p>
-     * Is <code>true</code> if this is Linux.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Linux. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_LINUX                         = getOSMatchesName("Linux") || getOSMatchesName("LINUX");
     /**
-     * <p>
-     * Is <code>true</code> if this is Mac.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Mac. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_MAC                           = getOSMatchesName("Mac");
     /**
-     * <p>
-     * Is <code>true</code> if this is Mac.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Mac. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_MAC_OSX                       = getOSMatchesName("Mac OS X");
     /**
-     * <p>
-     * Is <code>true</code> if this is OS/2.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is OS/2. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_OS2                           = getOSMatchesName("OS/2");
     /**
-     * <p>
-     * Is <code>true</code> if this is Solaris.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Solaris. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_SOLARIS                       = getOSMatchesName("Solaris");
     /**
-     * <p>
-     * Is <code>true</code> if this is SunOS.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is SunOS. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_SUN_OS                        = getOSMatchesName("SunOS");
     /**
-     * <p>
-     * Is <code>true</code> if this is a UNIX like system,
-     * as in any of AIX, HP-UX, Irix, Linux, MacOSX, Solaris or SUN OS.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is a UNIX like system, as in any of AIX, HP-UX, Irix, Linux, MacOSX, Solaris or SUN OS. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.1
      */
     public static final boolean IS_OS_UNIX                          = IS_OS_AIX || IS_OS_HP_UX || IS_OS_IRIX || IS_OS_LINUX || IS_OS_MAC_OSX || IS_OS_SOLARIS || IS_OS_SUN_OS;
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS                       = getOSMatchesName(OS_NAME_WINDOWS_PREFIX);
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows 2000.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows 2000. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_2000                  = getOSMatches(OS_NAME_WINDOWS_PREFIX, "5.0");
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows 95.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows 95. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_95                    = getOSMatches(OS_NAME_WINDOWS_PREFIX + " 9", "4.0");
     // Java 1.2 running on Windows98 returns 'Windows 95', hence the above
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows 98.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows 98. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_98                    = getOSMatches(OS_NAME_WINDOWS_PREFIX + " 9", "4.1");
     // Java 1.2 running on Windows98 returns 'Windows 95', hence the above
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows ME.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows ME. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_ME                    = getOSMatches(OS_NAME_WINDOWS_PREFIX, "4.9");
     // Java 1.2 running on WindowsME may return 'Windows 95', hence the above
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows NT.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows NT. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_NT                    = getOSMatchesName(OS_NAME_WINDOWS_PREFIX + " NT");
     // Windows 2000 returns 'Windows 2000' but may suffer from same Java1.2 problem
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows XP.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows XP. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.0
      */
     public static final boolean IS_OS_WINDOWS_XP                    = getOSMatches(OS_NAME_WINDOWS_PREFIX, "5.1");
     // -----------------------------------------------------------------------
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows Vista.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows Vista. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.4
      */
     public static final boolean IS_OS_WINDOWS_VISTA                 = getOSMatches(OS_NAME_WINDOWS_PREFIX, "6.0");
     /**
-     * <p>
-     * Is <code>true</code> if this is Windows 7.
-     * </p>
-     * 
-     * <p>
-     * The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>.
-     * </p>
-     * 
+     * <p> Is <code>true</code> if this is Windows 7. </p>
+     * <p> The field will return <code>false</code> if <code>OS_NAME</code> is <code>null</code>. </p>
      * @since 2.5
      */
     public static final boolean IS_OS_WINDOWS_7                     = getOSMatches(OS_NAME_WINDOWS_PREFIX, "6.1");
     /**
-     * <p>
-     * Gets the Java home directory as a <code>File</code>.
-     * </p>
-     * 
+     * <p> Gets the Java home directory as a <code>File</code>. </p>
      * @return a directory
-     * @throws SecurityException if a security manager exists and its
-     * <code>checkPropertyAccess</code> method doesn't allow access to the specified system property.
+     * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to the specified system property.
      * @see System#getProperty(String)
      * @since 2.1
      */
@@ -1280,14 +1174,9 @@ public class SystemUtils {
         return new File(System.getProperty(JAVA_HOME_KEY));
     }
     /**
-     * <p>
-     * Gets the Java IO temporary directory as a <code>File</code>.
-     * </p>
-     * 
+     * <p> Gets the Java IO temporary directory as a <code>File</code>. </p>
      * @return a directory
-     * @throws SecurityException if a security manager exists and its
-     * <code>checkPropertyAccess</code> method doesn't allow access to the specified system
-     *             property.
+     * @throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to the specified system property.
      * @see System#getProperty(String)
      * @since 2.1
      */
@@ -1295,58 +1184,38 @@ public class SystemUtils {
         return new File(System.getProperty(JAVA_IO_TMPDIR_KEY));
     }
     /**
-     * <p>
-     * Gets the Java version number as a <code>float</code>.
-     * </p>
-     * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Gets the Java version number as a <code>float</code>. </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>1.2f</code> for Java 1.2</li>
      * <li><code>1.31f</code> for Java 1.3.1</li>
      * <li><code>1.6f</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
-     * 
+     * <p> Patch releases are not reported. </p>
      * @return the version, for example 1.31f for Java 1.3.1
      */
     private static float getJavaVersionAsFloat() {
         return toVersionFloat(toJavaVersionIntArray(SystemUtils.JAVA_VERSION, JAVA_VERSION_TRIM_SIZE));
     }
     /**
-     * <p>
-     * Gets the Java version number as an <code>int</code>.
-     * </p>
-     * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Gets the Java version number as an <code>int</code>. </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>120</code> for Java 1.2</li>
      * <li><code>131</code> for Java 1.3.1</li>
      * <li><code>160</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
-     * 
+     * <p> Patch releases are not reported. </p>
      * @return the version, for example 131 for Java 1.3.1
      */
     private static int getJavaVersionAsInt() {
         return toVersionInt(toJavaVersionIntArray(SystemUtils.JAVA_VERSION, JAVA_VERSION_TRIM_SIZE));
     }
     /**
-     * <p>
-     * Decides if the Java version matches.
-     * </p>
-     * 
-     * @param versionPrefix
-     *            the prefix for the java version
+     * <p> Decides if the Java version matches. </p>
+     * @param versionPrefix the prefix for the java version
      * @return true if matches, or false if not or can't determine
      */
     private static boolean getJavaVersionMatches(String versionPrefix) {
@@ -1354,7 +1223,6 @@ public class SystemUtils {
     }
     /**
      * Trims the text of the java version to start with numbers.
-     * 
      * @return the trimmed java version
      */
     private static String getJavaVersionTrimmed() {
@@ -1370,11 +1238,8 @@ public class SystemUtils {
     }
     /**
      * Decides if the operating system matches.
-     * 
-     * @param osNamePrefix
-     *            the prefix for the os name
-     * @param osVersionPrefix
-     *            the prefix for the version
+     * @param osNamePrefix the prefix for the os name
+     * @param osVersionPrefix the prefix for the version
      * @return true if matches, or false if not or can't determine
      */
     private static boolean getOSMatches(String osNamePrefix, String osVersionPrefix) {
@@ -1382,9 +1247,7 @@ public class SystemUtils {
     }
     /**
      * Decides if the operating system matches.
-     * 
-     * @param osNamePrefix
-     *            the prefix for the os name
+     * @param osNamePrefix the prefix for the os name
      * @return true if matches, or false if not or can't determine
      */
     private static boolean getOSMatchesName(String osNamePrefix) {
@@ -1392,17 +1255,14 @@ public class SystemUtils {
     }
     // -----------------------------------------------------------------------
     /**
-     * <p>
-     * Gets a System property, defaulting to <code>null</code> if the property cannot be read.
-     * </p>
+     * <p> Gets a System property, defaulting to <code>null</code> if the property cannot be read. </p>
      * 
      * <p>
      * If a <code>SecurityException</code> is caught, the return value is <code>null</code> and a message is written to
      * <code>System.err</code>.
      * </p>
      * 
-     * @param property
-     *            the system property name
+     * @param property the system property name
      * @return the system property value or <code>null</code> if a security problem occurs
      */
     private static String getSystemProperty(String property) {
@@ -1415,9 +1275,7 @@ public class SystemUtils {
         }
     }
     /**
-     * <p>
-     * Gets the user directory as a <code>File</code>.
-     * </p>
+     * <p> Gets the user directory as a <code>File</code>. </p>
      * 
      * @return a directory
      * @throws SecurityException if a security manager exists and its
@@ -1429,9 +1287,7 @@ public class SystemUtils {
         return new File(System.getProperty(USER_DIR_KEY));
     }
     /**
-     * <p>
-     * Gets the user home directory as a <code>File</code>.
-     * </p>
+     * <p> Gets the user home directory as a <code>File</code>. </p>
      * 
      * @return a directory
      * @throws SecurityException if a security manager exists and its
@@ -1444,9 +1300,7 @@ public class SystemUtils {
     }
     /**
      * Returns whether the {@link #JAVA_AWT_HEADLESS} value is <code>true</code>.
-     * 
      * @return <code>true</code> if <code>JAVA_AWT_HEADLESS</code> is <code>"true"</code>, <code>false</code> otherwise.
-     * 
      * @see #JAVA_AWT_HEADLESS
      * @since 2.1
      * @since Java 1.4
@@ -1455,13 +1309,9 @@ public class SystemUtils {
         return JAVA_AWT_HEADLESS != null ? JAVA_AWT_HEADLESS.equals(Boolean.TRUE.toString()) : false;
     }
     /**
-     * <p>
-     * Is the Java version at least the requested version.
-     * </p>
+     * <p> Is the Java version at least the requested version. </p>
      * 
-     * <p>
-     * Example input:
-     * </p>
+     * <p> Example input: </p>
      * <ul>
      * <li><code>1.2f</code> to test for Java 1.2</li>
      * <li><code>1.31f</code> to test for Java 1.3.1</li>
@@ -1475,20 +1325,15 @@ public class SystemUtils {
         return JAVA_VERSION_FLOAT >= requiredVersion;
     }
     /**
-     * <p>
-     * Is the Java version at least the requested version.
-     * </p>
+     * <p> Is the Java version at least the requested version. </p>
      * 
-     * <p>
-     * Example input:
-     * </p>
+     * <p> Example input: </p>
      * <ul>
      * <li><code>120</code> to test for Java 1.2 or greater</li>
      * <li><code>131</code> to test for Java 1.3.1 or greater</li>
      * </ul>
      * 
-     * @param requiredVersion
-     *            the required version, for example 131
+     * @param requiredVersion the required version, for example 131
      * @return <code>true</code> if the actual version is equal or greater than the required version
      * @since 2.0
      */
@@ -1496,17 +1341,11 @@ public class SystemUtils {
         return JAVA_VERSION_INT >= requiredVersion;
     }
     /**
-     * <p>
-     * Decides if the Java version matches.
-     * </p>
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> Decides if the Java version matches. </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
-     * @param version
-     *            the actual Java version
-     * @param versionPrefix
-     *            the prefix for the expected Java version
+     * @param version the actual Java version
+     * @param versionPrefix the prefix for the expected Java version
      * @return true if matches, or false if not or can't determine
      */
     static boolean isJavaVersionMatch(String version, String versionPrefix) {
@@ -1517,18 +1356,12 @@ public class SystemUtils {
     }
     /**
      * Decides if the operating system matches.
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
-     * @param osName
-     *            the actual OS name
-     * @param osVersion
-     *            the actual OS version
-     * @param osNamePrefix
-     *            the prefix for the expected OS name
-     * @param osVersionPrefix
-     *            the prefix for the expected OS version
+     * @param osName the actual OS name
+     * @param osVersion the actual OS version
+     * @param osNamePrefix the prefix for the expected OS name
+     * @param osVersionPrefix the prefix for the expected OS version
      * @return true if matches, or false if not or can't determine
      */
     static boolean isOSMatch(String osName, String osVersion, String osNamePrefix, String osVersionPrefix) {
@@ -1539,14 +1372,10 @@ public class SystemUtils {
     }
     /**
      * Decides if the operating system matches.
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
-     * @param osName
-     *            the actual OS name
-     * @param osNamePrefix
-     *            the prefix for the expected OS name
+     * @param osName the actual OS name
+     * @param osNamePrefix the prefix for the expected OS name
      * @return true if matches, or false if not or can't determine
      */
     static boolean isOSNameMatch(String osName, String osNamePrefix) {
@@ -1556,25 +1385,17 @@ public class SystemUtils {
         return osName.startsWith(osNamePrefix);
     }
     /**
-     * <p>
-     * Converts the given Java version string to a <code>float</code>.
-     * </p>
+     * <p> Converts the given Java version string to a <code>float</code>. </p>
      * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>1.2f</code> for Java 1.2</li>
      * <li><code>1.31f</code> for Java 1.3.1</li>
      * <li><code>1.6f</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> Patch releases are not reported. </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
      * @param version The string version
      * @return the version, for example 1.31f for Java 1.3.1
@@ -1583,25 +1404,17 @@ public class SystemUtils {
         return toVersionFloat(toJavaVersionIntArray(version, JAVA_VERSION_TRIM_SIZE));
     }
     /**
-     * <p>
-     * Converts the given Java version string to an <code>int</code>.
-     * </p>
+     * <p> Converts the given Java version string to an <code>int</code>. </p>
      * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>120</code> for Java 1.2</li>
      * <li><code>131</code> for Java 1.3.1</li>
      * <li><code>160</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> Patch releases are not reported. </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
      * @param version The string version
      * @return the version, for example 131 for Java 1.3.1
@@ -1610,21 +1423,15 @@ public class SystemUtils {
         return toVersionInt(toJavaVersionIntArray(version, JAVA_VERSION_TRIM_SIZE));
     }
     /**
-     * <p>
-     * Converts the given Java version string to an <code>int[]</code> of maximum size <code>3</code>.
-     * </p>
+     * <p> Converts the given Java version string to an <code>int[]</code> of maximum size <code>3</code>. </p>
      * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>[1, 2, 0]</code> for Java 1.2</li>
      * <li><code>[1, 3, 1]</code> for Java 1.3.1</li>
      * <li><code>[1, 5, 0]</code> for Java 1.5.0_21</li>
      * </ul>
-     * <p>
-     * This method is package private instead of private to support unit test invocation.
-     * </p>
+     * <p> This method is package private instead of private to support unit test invocation. </p>
      * 
      * @param version The string version
      * @return the version, for example [1, 5, 0] for Java 1.5.0_21
@@ -1633,13 +1440,9 @@ public class SystemUtils {
         return toJavaVersionIntArray(version, Integer.MAX_VALUE);
     }
     /**
-     * <p>
-     * Converts the given Java version string to an <code>int[]</code> of maximum size <code>limit</code>.
-     * </p>
+     * <p> Converts the given Java version string to an <code>int[]</code> of maximum size <code>limit</code>. </p>
      * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>[1, 2, 0]</code> for Java 1.2</li>
      * <li><code>[1, 3, 1]</code> for Java 1.3.1</li>
@@ -1674,22 +1477,15 @@ public class SystemUtils {
         return ints;
     }
     /**
-     * <p>
-     * Converts given the Java version array to a <code>float</code>.
-     * </p>
-     * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Converts given the Java version array to a <code>float</code>. </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>1.2f</code> for Java 1.2</li>
      * <li><code>1.31f</code> for Java 1.3.1</li>
      * <li><code>1.6f</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
+     * <p> Patch releases are not reported. </p>
      * 
      * @param javaVersions The version numbers
      * @return the version, for example 1.31f for Java 1.3.1
@@ -1714,22 +1510,16 @@ public class SystemUtils {
         }
     }
     /**
-     * <p>
-     * Converts given the Java version array to an <code>int</code>.
-     * </p>
+     * <p> Converts given the Java version array to an <code>int</code>. </p>
      * 
-     * <p>
-     * Example return values:
-     * </p>
+     * <p> Example return values: </p>
      * <ul>
      * <li><code>120</code> for Java 1.2</li>
      * <li><code>131</code> for Java 1.3.1</li>
      * <li><code>160</code> for Java 1.6.0_20</li>
      * </ul>
      * 
-     * <p>
-     * Patch releases are not reported.
-     * </p>
+     * <p> Patch releases are not reported. </p>
      * 
      * @param javaVersions The version numbers
      * @return the version, for example 1.31f for Java 1.3.1
@@ -1757,10 +1547,7 @@ public class SystemUtils {
      * SystemUtils instances should NOT be constructed in standard programming. Instead, the class should be used as
      * <code>SystemUtils.FILE_SEPARATOR</code>.
      * </p>
-     * 
-     * <p>
-     * This constructor is public to permit tools that require a JavaBean instance to operate.
-     * </p>
+     * <p> This constructor is public to permit tools that require a JavaBean instance to operate. </p>
      */
     public SystemUtils() {
         super();

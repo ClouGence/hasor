@@ -40,25 +40,15 @@ import java.io.InputStream;
  * @author Eugene Kuleshov
  */
 public class ClassReader {
-    /**
-     * True to enable signatures support.
-     */
+    /** True to enable signatures support. */
     static final boolean    SIGNATURES    = true;
-    /**
-     * True to enable annotations support.
-     */
+    /** True to enable annotations support. */
     static final boolean    ANNOTATIONS   = true;
-    /**
-     * True to enable stack map frames support.
-     */
+    /** True to enable stack map frames support. */
     static final boolean    FRAMES        = true;
-    /**
-     * True to enable bytecode writing support.
-     */
+    /** True to enable bytecode writing support. */
     static final boolean    WRITER        = true;
-    /**
-     * True to enable JSR_W and GOTO_W support.
-     */
+    /** True to enable JSR_W and GOTO_W support. */
     static final boolean    RESIZE        = true;
     /**
      * Flag to skip method code. If this class is set <code>CODE</code>
@@ -136,13 +126,9 @@ public class ClassReader {
     }
     /**
      * Constructs a new {@link ClassReader} object.
-     * 
-     * @param b
-     *            the bytecode of the class to be read.
-     * @param off
-     *            the start offset of the class data.
-     * @param len
-     *            the length of the class data.
+     * @param b the bytecode of the class to be read.
+     * @param off the start offset of the class data.
+     * @param len the length of the class data.
      */
     public ClassReader(final byte[] b, final int off, final int len) {
         this.b = b;
@@ -200,20 +186,15 @@ public class ClassReader {
      * Returns the class's access flags (see {@link Opcodes}). This value may
      * not reflect Deprecated and Synthetic flags when bytecode is before 1.5
      * and those flags are represented by attributes.
-     * 
      * @return the class access flags
-     * 
      * @see ClassVisitor#visit(int, int, String, String, String, String[])
      */
     public int getAccess() {
         return readUnsignedShort(header);
     }
     /**
-     * Returns the internal name of the class (see
-     * {@link Type#getInternalName() getInternalName}).
-     * 
+     * Returns the internal name of the class (see {@link Type#getInternalName() getInternalName}).
      * @return the internal class name
-     * 
      * @see ClassVisitor#visit(int, int, String, String, String, String[])
      */
     public String getClassName() {
@@ -223,10 +204,7 @@ public class ClassReader {
      * Returns the internal of name of the super class (see
      * {@link Type#getInternalName() getInternalName}). For interfaces, the
      * super class is {@link Object}.
-     * 
-     * @return the internal name of super class, or <tt>null</tt> for
-     *         {@link Object} class.
-     * 
+     * @return the internal name of super class, or <tt>null</tt> for {@link Object} class.
      * @see ClassVisitor#visit(int, int, String, String, String, String[])
      */
     public String getSuperName() {
@@ -235,10 +213,7 @@ public class ClassReader {
     /**
      * Returns the internal names of the class's interfaces (see
      * {@link Type#getInternalName() getInternalName}).
-     * 
-     * @return the array of internal names for all implemented interfaces or
-     *         <tt>null</tt>.
-     * 
+     * @return the array of internal names for all implemented interfaces or <tt>null</tt>.
      * @see ClassVisitor#visit(int, int, String, String, String, String[])
      */
     public String[] getInterfaces() {
@@ -257,9 +232,7 @@ public class ClassReader {
     /**
      * Copies the constant pool data into the given {@link ClassWriter}. Should
      * be called before the {@link #accept(ClassVisitor,int)} method.
-     * 
-     * @param classWriter
-     *            the {@link ClassWriter} to copy constant pool into.
+     * @param classWriter the {@link ClassWriter} to copy constant pool into.
      */
     void copyPool(final ClassWriter classWriter) {
         char[] buf = new char[maxStringLength];
