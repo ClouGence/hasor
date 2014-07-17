@@ -17,6 +17,7 @@ package net.hasor.db.transaction.interceptor.simple;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.MethodInvocation;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
@@ -25,7 +26,6 @@ import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.interceptor.TranInterceptorBinder;
 import net.hasor.db.transaction.interceptor.TranOperations;
 import net.hasor.db.transaction.interceptor.TranStrategy;
-import org.aopalliance.intercept.MethodInvocation;
 /**
  * 事务策略：用于决定数据源的事务策略。
  * @author 赵永春(zyc@hasor.net)
@@ -62,7 +62,7 @@ class TransactionOperation implements TranOperations {
         } catch (Throwable e) {
             // TODO: handle exception
         }
-        return returnObj;
+        return returnObj;s
     }
 }
 /**决定传播属性*/

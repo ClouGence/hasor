@@ -16,8 +16,8 @@
 package net.hasor.core.binder.aop;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder.Matcher;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
 /**
  * 
  * @version : 2014年5月22日

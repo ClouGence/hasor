@@ -21,7 +21,7 @@ import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 /**
- * 格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
+ * 
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -29,6 +29,7 @@ public class TranInterceptorBinder {
     private ApiBinder apiBinder = null;
     public TranInterceptorBinder(ApiBinder apiBinder) {
         this.apiBinder = apiBinder;
+        //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
     }
     public StrategyBind matcher(String matcher) {};
     public StrategyBind matcher(Matcher<Method> matcher) {};

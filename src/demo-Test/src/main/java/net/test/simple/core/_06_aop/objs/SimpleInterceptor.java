@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.test.simple.core._06_aop.objs;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
 /**
  * 一个 Aop 拦截器
  * @version : 2013-8-11

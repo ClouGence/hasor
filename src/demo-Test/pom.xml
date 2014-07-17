@@ -48,11 +48,11 @@
 			<artifactId>hasor-core</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-MVC -->
+		<!-- Hasor-Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>hasor-web</artifactId>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

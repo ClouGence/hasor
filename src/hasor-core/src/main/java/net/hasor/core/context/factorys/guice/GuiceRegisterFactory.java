@@ -25,6 +25,8 @@ import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -101,7 +103,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
                             public boolean matches(Method targetMethod) {
                                 return amr.matcher(targetMethod);
                             }
-                        }, amr);
+                        }, new MethodInterceptorAdapter(amr));
                     }
                     //GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
                 }
@@ -149,6 +151,29 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
 }
 //
 /*---------------------------------------------------------------------------------------Util*/
+/**Aop桥*/
+class MethodInterceptorAdapter implements MethodInterceptor {
+    private AopMatcherMethodInterceptor aopInterceptor = null;
+    public MethodInterceptorAdapter(AopMatcherMethodInterceptor aopInterceptor) {
+        this.aopInterceptor = aopInterceptor;
+    }
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
+        return this.aopInterceptor.invoke(new net.hasor.core.MethodInvocation() {
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+            public Object getThis() {
+                return invocation.getThis();
+            }
+            public Method getMethod() {
+                return invocation.getMethod();
+            }
+            public Object[] getArguments() {
+                return invocation.getArguments();
+            }
+        });
+    }
+}
 /**负责net.hasor.core.Scope与com.google.inject.Scope的对接转换*/
 class GuiceScope implements com.google.inject.Scope {
     private Scope scope = null;

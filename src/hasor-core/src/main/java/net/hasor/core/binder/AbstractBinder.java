@@ -24,6 +24,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
+import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
@@ -31,7 +32,6 @@ import net.hasor.core.Scope;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**

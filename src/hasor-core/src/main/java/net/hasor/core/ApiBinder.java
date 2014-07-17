@@ -17,7 +17,6 @@ package net.hasor.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;
-import org.aopalliance.intercept.MethodInterceptor;
 /**
  * Hasor的核心接口，主要用于收集绑定配置信息。<p>
  *

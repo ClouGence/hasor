@@ -37,12 +37,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-		<!-- Aop -->
-		<dependency>
-			<groupId>aopalliance</groupId>
-			<artifactId>aopalliance</artifactId>
-			<version>1.0</version>
-		</dependency>
 		<!-- JSR-173 -->
 		<dependency>
 			<groupId>javax.xml</groupId>

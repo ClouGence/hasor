@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.interceptor;
+import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.TransactionStatus;
-import org.aopalliance.intercept.MethodInvocation;
 /**
  * 
  * @author 赵永春(zyc@hasor.net)
