@@ -17,16 +17,13 @@ package net.hasor.db.transaction.interceptor;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.interceptor.support.MatcherInterceptor;
-import net.hasor.db.transaction.interceptor.support.PropagationStrategy;
-import net.hasor.db.transaction.interceptor.support.TranDo;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 /**
  * 某一个数据源的事务管理器
  * @author 赵永春(zyc@hasor.net)

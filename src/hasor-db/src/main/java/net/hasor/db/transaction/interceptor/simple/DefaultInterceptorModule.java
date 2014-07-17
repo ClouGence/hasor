@@ -23,9 +23,9 @@ import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.interceptor.TranInterceptorBinder;
 import net.hasor.db.transaction.interceptor.TranOperations;
 import net.hasor.db.transaction.interceptor.TranStrategy;
+import net.hasor.db.transaction.interceptor.TransactionBinder;
 /**
  * 事务策略：用于决定数据源的事务策略。
  * @author 赵永春(zyc@hasor.net)
@@ -35,12 +35,12 @@ public class DefaultInterceptorModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         DataSource ds = null;
         //
-        TranInterceptorBinder it = new TranInterceptorBinder(apiBinder);
-        it.matcher(AopMatchers.annotatedWithMethod(Transactional.class))//所有标记 @Transactional 注解的方法
-                .withPropagation(new PropagationStrategy())//传播属性
-                .withIsolation(new IsolationStrategy())//隔离级别
-                .onAround(new TransactionOperation())//事务执行行为
-                .done(ds);//设置到数据源
+        TransactionBinder it = new TransactionBinder(apiBinder);
+        it.bind(ds)/*设置到数据源*/
+        .aroundOperation(new TransactionOperation())/*事务执行行为*/
+        .matcher(AopMatchers.annotatedWithMethod(Transactional.class))/*所有标记 @Transactional 注解的方法*/
+        .withPropagation(new PropagationStrategy())/*传播属性*/
+        .withIsolation(new IsolationStrategy());/*隔离级别*/
     }
 }
 class TransactionOperation implements TranOperations {
@@ -62,7 +62,7 @@ class TransactionOperation implements TranOperations {
         } catch (Throwable e) {
             // TODO: handle exception
         }
-        return returnObj;s
+        return returnObj;
     }
 }
 /**决定传播属性*/
