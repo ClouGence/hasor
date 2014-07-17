@@ -21,8 +21,11 @@ import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.interceptor.TranInterceptorBinder;
+import net.hasor.db.transaction.interceptor.TranOperations;
 import net.hasor.db.transaction.interceptor.TranStrategy;
+import org.aopalliance.intercept.MethodInvocation;
 /**
  * 事务策略：用于决定数据源的事务策略。
  * @author 赵永春(zyc@hasor.net)
@@ -36,7 +39,30 @@ public class DefaultInterceptorModule implements Module {
         it.matcher(AopMatchers.annotatedWithMethod(Transactional.class))//所有标记 @Transactional 注解的方法
                 .withPropagation(new PropagationStrategy())//传播属性
                 .withIsolation(new IsolationStrategy())//隔离级别
+                .onAround(new TransactionOperation())//事务执行行为
                 .done(ds);//设置到数据源
+    }
+}
+class TransactionOperation implements TranOperations {
+    public Object execute(TransactionStatus tranStatus, MethodInvocation invocation) throws Throwable {
+        Method targetMethod = invocation.getMethod();
+        Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
+        //0.忽略
+        if (tranAnno == null)
+            return invocation.proceed();
+        //1.只读事务
+        if (tranAnno.readOnly()) {
+            tranStatus.setReadOnly();
+            return invocation.proceed();
+        }
+        //2.事务行为控制
+        Object returnObj = null;
+        try {
+            returnObj = invocation.proceed();
+        } catch (Throwable e) {
+            // TODO: handle exception
+        }
+        return returnObj;
     }
 }
 /**决定传播属性*/

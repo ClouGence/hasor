@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor.support;
-import java.lang.reflect.Method;
+package net.hasor.db.transaction.interceptor;
+import net.hasor.db.transaction.TransactionStatus;
+import org.aopalliance.intercept.MethodInvocation;
 /**
  * 
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface TranDo {
-    /**获取参数*/
-    public Method getMethod();
-    /**获取参数*/
-    public Object[] getArgs();
-    /** 执行事务调用*/
-    public Object proceed() throws Throwable;
+public interface TranOperations {
+    /** 事务执行拦截器*/
+    public Object execute(TransactionStatus tranStatus, MethodInvocation invocation) throws Throwable;
 }

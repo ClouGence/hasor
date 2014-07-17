@@ -21,7 +21,7 @@ import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 /**
- * 
+ * 格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,6 +38,8 @@ public class TranInterceptorBinder {
         public StrategyBind withPropagation(TranStrategy<Propagation> propagation);
         public StrategyBind withIsolation(Isolation isolation);
         public StrategyBind withIsolation(TranStrategy<Isolation> isolation);
+        //
+        public StrategyBind onAround(TranOperations around);
         //
         public void done(DataSource dataSource);
     }
