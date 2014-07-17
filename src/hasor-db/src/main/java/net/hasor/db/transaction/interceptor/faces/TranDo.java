@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor._;
-import javax.sql.DataSource;
+package net.hasor.db.transaction.interceptor.faces;
+import java.lang.reflect.Method;
 /**
- * 可用的事务数据源。
+ * 
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface DataSourceInfo {
-    /**获取数据源名称*/
-    public String getName();
-    /**获取数据源*/
-    public DataSource getDataSource();
+public interface TranDo {
+    /**获取参数*/
+    public Method getMethod();
+    /**获取参数*/
+    public Object[] getArgs();
+    /** 执行事务调用*/
+    public Object proceed() throws Throwable;
 }

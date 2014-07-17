@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.interceptor;
+import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
-import net.hasor.core.binder.aop.matcher.AopMatchers;
+import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.Propagation;
 /**
- * 数据库事务拦截器模块
- * @version : 2014年7月15日
+ * 
+ * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InterceptorModule implements Module {
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        DataSource dataSource = null;;
-        //1.绑定Aop
-        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(),//
-                new TranInterceptor(dataSource));
-        // TODO Auto-generated method stub
+public class TranInterceptorBinder {
+    public TranInterceptorBinder(ApiBinder apiBinder) {
+        // TODO Auto-generated constructor stub
+    }
+    public StrategyBind matcher(String matcher) {};
+    public StrategyBind matcher(Matcher<Method> matcher) {};
+    // 
+    public static interface StrategyBind {
+        public StrategyBind withPropagation(Propagation propagation);
+        public StrategyBind withIsolation(Isolation isolation);
+        //
+        public void done(DataSource dataSource);
     }
 }

@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor._;
+package net.hasor.db.transaction.interceptor.faces;
 import java.lang.reflect.Method;
+import net.hasor.db.transaction.TransactionManager;
+import net.hasor.db.transaction.TransactionStatus;
 /**
- * 
+ * 事务策略：用于决定数据源的事务策略。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface TranDo {
-    /**获取参数*/
-    public Method getMethod();
-    /**获取参数*/
-    public Object[] getArgs();
-    /** 执行事务调用*/
-    public Object proceed() throws Throwable;
+public interface PropagationStrategy {
+    /**启动事务 */
+    public TransactionStatus getTransaction(Method targetMethod, TransactionManager manager);
 }

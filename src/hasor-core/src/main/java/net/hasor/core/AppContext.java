@@ -58,6 +58,8 @@ public interface AppContext extends EventContext {
     public <T> T getInstance(Class<T> targetClass);
     /**创建Bean。*/
     public <T> T getInstance(RegisterInfo<T> typeRegister);
+    /**创建Bean。*/
+    public <T> Provider<T> getProvider(RegisterInfo<T> typeRegister);
     //
     /*-------------------------------------------------------------------------------------Binder*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
@@ -68,4 +70,8 @@ public interface AppContext extends EventContext {
     public <T> T findBindingBean(String withName, Class<T> bindType);
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<RegisterInfo<T>> findBindingRegister(Class<T> bindType);
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> RegisterInfo<T> findBindingRegister(String withName, Class<T> bindType);
 }

@@ -190,6 +190,18 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     public <T> T getInstance(RegisterInfo<T> typeRegister) {
         return this.getRegisterFactory().getInstance(typeRegister);
     }
+    /**创建Bean。*/
+    public <T> Provider<T> getProvider(final RegisterInfo<T> typeRegister) {
+        if (typeRegister instanceof RegisterInfoAdapter) {
+            return ((RegisterInfoAdapter<T>) typeRegister).getProvider();
+        }
+        final AppContext app = this;
+        return new Provider<T>() {
+            public T get() {
+                return app.getInstance(typeRegister);
+            }
+        };
+    };
     /**获取用于创建Bean对象的{@link RegisterFactory}接口*/
     protected abstract RegisterFactory getRegisterFactory();
     //
@@ -246,6 +258,32 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindType);
         if (typeRegister != null) {
             return typeRegister.getProvider();
+        }
+        return null;
+    };
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<RegisterInfo<T>> findBindingRegister(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        //
+        Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindType);
+        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
+            return new ArrayList<RegisterInfo<T>>(0);
+        }
+        ArrayList<RegisterInfo<T>> returnData = new ArrayList<RegisterInfo<T>>();
+        while (infoRegisterIterator.hasNext()) {
+            RegisterInfoAdapter<T> typeRegister = infoRegisterIterator.next();
+            returnData.add(typeRegister);
+        }
+        return returnData;
+    };
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> RegisterInfo<T> findBindingRegister(String withName, Class<T> bindType) {
+        Hasor.assertIsNotNull(withName, "withName is null.");
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        //
+        RegisterInfoAdapter<T> typeRegister = this.getRegister(withName, bindType);
+        if (typeRegister != null) {
+            return typeRegister;
         }
         return null;
     };

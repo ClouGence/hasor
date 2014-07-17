@@ -18,9 +18,12 @@ import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.Provider;
 import net.hasor.core.Settings;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.core.JdbcTemplateProvider;
+import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.TranInterceptorBinder;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
  * 创建JDBC环境
@@ -37,7 +40,6 @@ public class SimpleJDBCWarp implements Module {
         String pwdString = settings.getString("hasor-jdbc.password");
         int poolMaxSize = 200;
         Hasor.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
-        //
         //2.创建数据库连接池
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setDriverClass(driverString);
@@ -54,19 +56,12 @@ public class SimpleJDBCWarp implements Module {
         dataSource.setAcquireRetryAttempts(30);
         dataSource.setAcquireIncrement(1);
         dataSource.setMaxIdleTime(25000);
-        //
         //3.绑定DataSource接口实现
         apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
-    }
-}
-class JdbcTemplateProvider implements Provider<JdbcTemplate> {
-    private DataSource dataSource;
-    public JdbcTemplateProvider(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
+        //5.启用事务拦截器
+        TranInterceptorBinder it = new TranInterceptorBinder(apiBinder);
+        it.matcher(AopMatchers.anyMethod()).withPropagation(Propagation.REQUIRED).done(dataSource);
     }
 }

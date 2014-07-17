@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor._;
-import net.hasor.db.transaction.TransactionStatus;
+package net.hasor.db.jdbc.core;
+import javax.sql.DataSource;
+import net.hasor.core.Provider;
 /**
  * 
+ * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
- * @version : 2013-10-30
  */
-public interface TranOperations {
-    /** 事务执行拦截器*/
-    public Object execute(TransactionStatus action, TranDo forDo) throws Throwable;
+public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
+    private DataSource dataSource;
+    public JdbcTemplateProvider(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    public JdbcTemplate get() {
+        return new JdbcTemplate(this.dataSource);
+    }
 }

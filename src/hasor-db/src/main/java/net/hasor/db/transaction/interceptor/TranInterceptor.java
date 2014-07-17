@@ -15,85 +15,85 @@
  */
 package net.hasor.db.transaction.interceptor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import javax.sql.DataSource;
+import net.hasor.core.AppContext;
+import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.interceptor._.DataSourceInfo;
-import net.hasor.db.transaction.interceptor._.DataSourceSource;
-import net.hasor.db.transaction.interceptor._.MatcherInterceptor;
+import net.hasor.db.transaction.interceptor.faces.MatcherInterceptor;
+import net.hasor.db.transaction.interceptor.faces.PropagationStrategy;
+import net.hasor.db.transaction.interceptor.faces.TranDo;
+import net.hasor.db.transaction.interceptor.faces.TranOperations;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.more.RepeateException;
 /**
  * 某一个数据源的事务管理器
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public class TranInterceptor implements MethodInterceptor {
-    private DataSourceSource                dataSource  = null; //数据源
-    private Map<String, TransactionManager> tranManager = null; //事务管理器
-    private MatcherInterceptor              matcher     = null; //事务拦截匹配
+class TranInterceptor implements MethodInterceptor {
+    private TransactionManager  tranManager = null; //事务管理器
+    private MatcherInterceptor  matcher     = null; //事务拦截匹配
+    private PropagationStrategy strategy    = null; //策略
+    private TranOperations      tranOper    = null;
     //
-    /**初始化事务管理器*/
-    public void initManager() {
-        if (this.tranManager != null)
-            return;
+    /**初始化拦截器*/
+    public void initInterceptor(AppContext appContext, DataSource dataSource) {
+        TranOperations tranOper = appContext.findBindingBean(null, TranOperations.class);
+        PropagationStrategy strategy = appContext.findBindingBean(null, PropagationStrategy.class);
+        if (tranOper != null)
+            this.tranOper = tranOper;
+        if (strategy != null)
+            this.strategy = strategy;
         //
-        this.tranManager = new HashMap<String, TransactionManager>();
-        int dsCount = this.dataSource.getDataSourceCount();
-        for (int i = 0; i < dsCount; i++) {
-            DataSourceInfo dsInfo = this.dataSource.getDataSource(i);
-            String dsName = dsInfo.getName();
-            DataSource dsObject = dsInfo.getDataSource();
-            //
-            if (this.tranManager.containsKey(dsName) == true)
-                throw new RepeateException(String.format("the name ‘%s’ already exists", dsName));
-            if (this.tranManager.containsValue(dsObject) == true)
-                throw new RepeateException(String.format("the DataSource ‘%s’ already exists", dsObject.toString()));
-            //
-            TransactionManager manager = Manager.getTransactionManager(dsObject);
-            this.tranManager.put(dsName, manager);
-        }
+        //3.装载事务管理器
+        this.tranManager = Manager.getTransactionManager(dataSource);
     }
     //
     //
-    public final Object invoke(MethodInvocation invocation) throws Throwable {
+    public final Object invoke(final MethodInvocation invocation) throws Throwable {
         //1.是否排除不实用事务管理器
         Method targetMethod = invocation.getMethod();
         if (this.matcher == null || this.matcher.matcherMethod(targetMethod) == false)
             return invocation.proceed();
-        //2.初始化事务管理器
-        this.initManager();
         //
-        //2.在事务管理器的控制下进行方法调用
-        Map<String, TransactionStatus> tranStatus = new HashMap<String, TransactionStatus>();
-        for (Entry<String, TransactionManager> tranEntry : this.tranManager.entrySet()) {
-            String dsName = tranEntry.getKey();
-            
-             
-            
-            
-        }
-        TransactionStatus tranStatus = null;
-        TransactionManager tranManager = this.getTransactionManager();
-        try {
-            Propagation propagation = getPropagation(targetMethod);
-            tranStatus = tranManager.getTransaction(propagation);
+        //3.在事务管理器的控制下进行方法调用
+        String useDataSourceName = this.strategy.useDataSource(targetMethod);
+        TransactionManager manager = this.tranManager.get(useDataSourceName);
+        if (manager == null)
             return invocation.proceed();
+        //
+        TransactionStatus tranStatus = null;
+        try {
+            Propagation propagation = this.strategy.getPropagation(targetMethod);
+            Isolation isolation = this.strategy.getIsolation(targetMethod);
+            if (isolation == null)
+                isolation = Isolation.DEFAULT;
+            tranStatus = manager.getTransaction(propagation, isolation);
+            TranDo tdo = new TranDo() {
+                public Object proceed() throws Throwable {
+                    return invocation.proceed();
+                }
+                public Method getMethod() {
+                    return invocation.getMethod();
+                }
+                public Object[] getArgs() {
+                    return invocation.getArguments();
+                }
+            };
+            //
+            return this.tranOper.execute(tranStatus, tdo);
         } catch (RollBackSQLException e) {
-            /*回滚事务*/
-            tranStatus.setRollbackOnly();
+            tranStatus.setRollbackOnly(); /*回滚事务*/
         } catch (Throwable e) {
-            tranManager.rollBack(tranStatus);
+            manager.rollBack(tranStatus);
             throw e;
         } finally {
             if (!tranStatus.isCompleted())
-                tranManager.commit(tranStatus);
+                manager.commit(tranStatus);
         }
+        return null;
     }
 }

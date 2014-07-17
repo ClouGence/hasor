@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor._;
+package net.hasor.db.transaction.interceptor.faces;
+import net.hasor.db.transaction.TransactionStatus;
 /**
- * 可用的事务数据源。
+ * 
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface DataSourceSource {
-    /**获取数据源总数。*/
-    public int getDataSourceCount();
-    /**获取指定编号的数据源。*/
-    public DataSourceInfo getDataSource(int index);
+public interface TranOperations {
+    /** 事务执行拦截器*/
+    public Object execute(TransactionStatus tranStatus, TranDo forDo) throws Throwable;
 }

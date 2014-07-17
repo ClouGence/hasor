@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor._;
+package net.hasor.db.transaction.interceptor.simple;
 import java.lang.reflect.Method;
-import javax.sql.DataSource;
-import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.faces.MatcherInterceptor;
 /**
- * 事务策略：用于决定数据源的事务策略。
+ * 匹配器：用于协助拦截器判断哪些方法会被事务拦截器拦截。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public interface PropagationStrategy {
-    /**方法在这个数据源上所使用的事务类型*/
-    public Propagation doStrategy(Method targetMethod, DataSource dataSource);
+public class SimpleMatcherInterceptor implements MatcherInterceptor {
+    /**匹配拦截的类方法*/
+    public boolean matcherMethod(Method targetMethod) {
+        return true;
+    };
 }
