@@ -19,11 +19,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.TranInterceptorBinder;
+import net.hasor.db.transaction.interceptor.simple.DefaultInterceptorModule;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
  * 创建JDBC环境
@@ -60,8 +58,7 @@ public class SimpleJDBCWarp implements Module {
         apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
-        //5.启用事务拦截器
-        TranInterceptorBinder it = new TranInterceptorBinder(apiBinder);
-        it.matcher(AopMatchers.anyMethod()).withPropagation(Propagation.REQUIRED).done(dataSource);
+        //5.启用默认事务拦截器
+        apiBinder.installModule(new DefaultInterceptorModule());
     }
 }

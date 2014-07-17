@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor.simple;
+package net.hasor.db.transaction.interceptor.support;
 import java.lang.reflect.Method;
-import net.hasor.db.transaction.interceptor.faces.MatcherInterceptor;
 /**
  * 匹配器：用于协助拦截器判断哪些方法会被事务拦截器拦截。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public class SimpleMatcherInterceptor implements MatcherInterceptor {
+public interface MatcherInterceptor {
+    /**获取用于目标方法的传播属性。*/
+    protected Propagation getPropagation(Method method) {
+        String descName = ClassUtils.getDescName(method);s
+        //
+        //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
+        for (TranStrategy strategy : this.strategyArrays) {
+            //
+        }
+        return this.defaultStrategy;
+    }
     /**匹配拦截的类方法*/
-    public boolean matcherMethod(Method targetMethod) {
-        return true;
-    };
+    public boolean matcherMethod(Method targetMethod);
 }

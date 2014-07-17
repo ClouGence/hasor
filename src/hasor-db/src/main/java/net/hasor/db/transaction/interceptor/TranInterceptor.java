@@ -22,10 +22,10 @@ import net.hasor.db.transaction.Manager;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.interceptor.faces.MatcherInterceptor;
-import net.hasor.db.transaction.interceptor.faces.PropagationStrategy;
-import net.hasor.db.transaction.interceptor.faces.TranDo;
-import net.hasor.db.transaction.interceptor.faces.TranOperations;
+import net.hasor.db.transaction.interceptor.support.MatcherInterceptor;
+import net.hasor.db.transaction.interceptor.support.PropagationStrategy;
+import net.hasor.db.transaction.interceptor.support.TranDo;
+import net.hasor.db.transaction.interceptor.support.TranOperations;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 /**

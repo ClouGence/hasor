@@ -26,15 +26,18 @@ import net.hasor.db.transaction.Propagation;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TranInterceptorBinder {
+    private ApiBinder apiBinder = null;
     public TranInterceptorBinder(ApiBinder apiBinder) {
-        // TODO Auto-generated constructor stub
+        this.apiBinder = apiBinder;
     }
     public StrategyBind matcher(String matcher) {};
     public StrategyBind matcher(Matcher<Method> matcher) {};
     // 
-    public static interface StrategyBind {
+    public static class StrategyBind {
         public StrategyBind withPropagation(Propagation propagation);
+        public StrategyBind withPropagation(TranStrategy<Propagation> propagation);
         public StrategyBind withIsolation(Isolation isolation);
+        public StrategyBind withIsolation(TranStrategy<Isolation> isolation);
         //
         public void done(DataSource dataSource);
     }

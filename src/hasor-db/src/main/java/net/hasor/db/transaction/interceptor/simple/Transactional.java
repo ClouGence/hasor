@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.interceptor.simple;
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -27,10 +25,8 @@ import net.hasor.db.transaction.Propagation;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Documented
 public @interface Transactional {
     /**传播属性*/
     public Propagation propagation() default Propagation.REQUIRED;
