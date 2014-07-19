@@ -17,7 +17,7 @@ package net.test.simple.db._06_transaction.simple.MANDATORY;
 import static net.hasor.test.utils.HasorUnit.newID;
 import java.sql.SQLException;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.RollBackSQLException;
+import net.hasor.db.transaction.interceptor.simple.RollBackSQLException;
 import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;

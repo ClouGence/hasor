@@ -45,7 +45,7 @@ public interface ApiBinder extends EventContext {
     /***/
     public static interface Matcher<T> {
         /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
-        public boolean matches(T t);
+        public boolean matches(T target);
     }
     //
     /*---------------------------------------------------------------------------------------Bean*/

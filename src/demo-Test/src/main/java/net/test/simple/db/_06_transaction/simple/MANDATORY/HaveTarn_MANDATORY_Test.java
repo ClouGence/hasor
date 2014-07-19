@@ -20,7 +20,6 @@ import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.interceptor.RollBackSQLException;
 import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
@@ -101,11 +100,6 @@ public class HaveTarn_MANDATORY_Test extends AbstractSimpleJDBCTest {
             System.out.println("insert new User ‘安妮.贝隆’...");
             this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
-        }
-        /*T2-rollBack*/
-        {
-            System.out.println("rollBack Transaction!");
-            throw new RollBackSQLException();//MANDATORY 类型事务不参与实际的 commit、roback。
         }
     }
 }

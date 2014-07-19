@@ -21,7 +21,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.transaction.interceptor.simple.DefaultInterceptorModule;
+import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
  * 创建JDBC环境
@@ -59,6 +59,6 @@ public class SimpleJDBCWarp implements Module {
         //4.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
         //5.启用默认事务拦截器
-        apiBinder.installModule(new DefaultInterceptorModule());
+        apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
     }
 }

@@ -19,10 +19,13 @@ import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 /**
- * 
+ * 一个被事务拦截器拦截的方法，当有多个数据源可以选择时，只能控制一个数据源的事务。
+ * 一个方法当调用多个小方法时，每个小方法可以有自己独立的事务。
+ * 一个带有事务的方法可以调用另外一个不同数据源的事务方法。
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -30,51 +33,68 @@ public class TransactionBinder {
     private ApiBinder apiBinder = null;
     public TransactionBinder(ApiBinder apiBinder) {
         this.apiBinder = apiBinder;
-        //格式：  <修饰符> <返回值> <类名>.<方法名>(<参数签名>)
     }
     //
-    public TranBind bind(DataSource dataSource) {
-        
-    };
+    /*---------------------------------------------------------------------------------------Bind*/
+    public TranInterceptorBindBuilder bind(DataSource dataSource) {
+        TranInterceptor tranInterceptor = new TranInterceptor();
+        this.apiBinder.registerAware(tranInterceptor);
+        this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
+        return new TranInterceptorBindBuilder(dataSource);
+    }
     //
-    public static class TranBind {
-        public TranBind aroundOperation(TranOperations around);
-        public StrategyBind matcher(String matcher) {};
-        public StrategyBind matcher(Matcher<Method> matcher) {};
-    }
-    /*策略绑定*/
-    public static class StrategyBind {
-        private Matcher<Method>           matcher             = null;
-        private TranStrategy<Isolation>   isolationStrategy   = new FixedTranStrategy<Isolation>(Isolation.DEFAULT);
-        private TranStrategy<Propagation> propagationStrategy = new FixedTranStrategy<Propagation>(Propagation.REQUIRED);
-        //
-        public StrategyBind withPropagation(Propagation propagation) {
-            Hasor.assertIsNotNull(propagation, "param propagation is null.");
-            return this.withPropagation(new FixedTranStrategy<Propagation>(propagation));
-        };
-        public StrategyBind withPropagation(TranStrategy<Propagation> propagation) {
-            Hasor.assertIsNotNull(propagation, "param propagation is null.");
-            this.propagationStrategy = propagation;
+    /*---------------------------------------------------------------------------------------Bind*/
+    /**拦截器配置*/
+    public class TranInterceptorBindBuilder {
+        private DataSource     dataSource = null;
+        private TranOperations around     = null;
+        public TranInterceptorBindBuilder(DataSource dataSource) {
+            this.dataSource = dataSource;
+        }
+        public TranInterceptorBindBuilder aroundOperation(TranOperations around) {
+            this.around = around;
             return this;
         };
-        public StrategyBind withIsolation(Isolation isolation) {
-            Hasor.assertIsNotNull(isolation, "param isolation is null.");
-            return this.withIsolation(new FixedTranStrategy<Isolation>(isolation));
+        public TranPropagationBindBuilder matcher(String matcherExpression) {
+            return this.matcher(AopMatchers.expressionMethod(matcherExpression));
         };
-        public StrategyBind withIsolation(TranStrategy<Isolation> isolation) {
-            Hasor.assertIsNotNull(isolation, "param isolation is null.");
-            this.isolationStrategy = isolation;
-            return this;
-        };
-    }
-    /*策略固定值*/
-    private static class FixedTranStrategy<T> implements TranStrategy<T> {
-        private T value = null;
-        public FixedTranStrategy(T value) {
-            this.value = value;
-        }
-        public T getStrategy(Method targetMethod) {
-            return this.value;
+        public TranPropagationBindBuilder matcher(Matcher<Method> matcher) {
+            StrategyDefinition strategyDefine = new StrategyDefinition(this.dataSource, matcher);
+            strategyDefine.setTranOperations(this.around);
+            return new TranPropagationBindBuilder(strategyDefine);
         }
     }
+    /**拦截策略配置*/
+    public class TranPropagationBindBuilder {
+        private StrategyDefinition strategyDefine = null;
+        public TranPropagationBindBuilder(StrategyDefinition strategyDefine) {
+            this.strategyDefine = strategyDefine;
+        }
+        public TranIsolationBindBuilder withPropagation(Propagation propagation) {
+            Hasor.assertIsNotNull(propagation, "param propagation is null.");
+            return this.withPropagation(new FixedValueStrategy<Propagation>(propagation));
+        };
+        public TranIsolationBindBuilder withPropagation(TranStrategy<Propagation> propagation) {
+            Hasor.assertIsNotNull(propagation, "param propagation is null.");
+            this.strategyDefine.setPropagation(propagation);
+            apiBinder.bindType(StrategyDefinition.class).uniqueName().toInstance(this.strategyDefine);
+            return new TranIsolationBindBuilder(this.strategyDefine);
+        };
+    }
+    /**隔离级别设置*/
+    public static class TranIsolationBindBuilder {
+        private StrategyDefinition strategyDefine = null;
+        public TranIsolationBindBuilder(StrategyDefinition strategyDefine) {
+            this.strategyDefine = strategyDefine;
+        }
+        public void withIsolation(Isolation isolation) {
+            Hasor.assertIsNotNull(isolation, "param isolation is null.");
+            this.withIsolation(new FixedValueStrategy<Isolation>(isolation));
+        };
+        public void withIsolation(TranStrategy<Isolation> isolation) {
+            Hasor.assertIsNotNull(isolation, "param isolation is null.");
+            this.strategyDefine.setIsolation(isolation);
+        };
+    }
+    //end
 }
