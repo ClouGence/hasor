@@ -155,6 +155,13 @@ public class JdbcTransactionManager implements TransactionManager {
         /*已完毕，不需要处理*/
         if (defStatus.isCompleted())
             throw new SQLException("Transaction is already completed - do not call commit or rollback more than once per transaction");
+        /*回滚情况*/
+        if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
+            if (Hasor.isDebugLogger())
+                Hasor.logDebug("Transactional code has requested rollback");
+            this.rollBack(defStatus);
+            return;
+        }
         /*-------------------------------------------------------------
         | 1.无论何种传播形式，递交事务操作都会将 isCompleted 属性置为 true。
         | 2.如果事务状态中包含一个未处理的保存点。仅递交保存点，而非递交整个事务。
@@ -162,18 +169,11 @@ public class JdbcTransactionManager implements TransactionManager {
         ===============================================================*/
         try {
             prepareCommit(defStatus);
-            if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
-                /*回滚情况*/
-                if (Hasor.isDebugLogger())
-                    Hasor.logDebug("Transactional code has requested rollback");
-                doRollback(defStatus);
-            } else {
-                /*如果包含保存点，在递交事务时只处理保存点*/
-                if (defStatus.hasSavepoint())
-                    defStatus.releaseHeldSavepoint();
-                else if (defStatus.isNewConnection())
-                    doCommit(defStatus);
-            }
+            /*如果包含保存点，在递交事务时只处理保存点*/
+            if (defStatus.hasSavepoint())
+                defStatus.releaseHeldSavepoint();
+            else if (defStatus.isNewConnection())
+                doCommit(defStatus);
             //
         } catch (SQLException ex) {
             doRollback(defStatus);/*递交失败，回滚*/

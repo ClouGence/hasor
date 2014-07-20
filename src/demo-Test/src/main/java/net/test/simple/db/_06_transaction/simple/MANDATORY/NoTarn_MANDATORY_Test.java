@@ -57,17 +57,11 @@ public class NoTarn_MANDATORY_Test extends AbstractSimpleJDBCTest {
     //在调用该方法之前环境中不存在存在事务，因此该方法根本不会进入。
     @Transactional(propagation = Propagation.MANDATORY)
     public void executeTransactional() throws Exception {
-        /*T2-Begin*/
-        {
-            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
-        /*T2-rollBack*/
-        {
-            System.out.println("rollBack Transaction!");
-            throw new RollBackSQLException();//MANDATORY 类型事务不参与实际的 commit、roback。
-        }
+        String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        System.out.println("insert new User ‘安妮.贝隆’...");
+        this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
+        Thread.sleep(3000);
+        System.out.println("rollBack Transaction!");
+        throw new RollBackSQLException();//MANDATORY 类型事务不参与实际的 commit、roback。
     }
 }

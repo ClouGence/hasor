@@ -94,12 +94,9 @@ public class HaveTarn_MANDATORY_Test extends AbstractSimpleJDBCTest {
     //在调用该方法之前环境中已经存在事务。
     @Transactional(propagation = Propagation.MANDATORY)
     public void executeTransactional() throws Exception {
-        /*T2-Begin*/
-        {
-            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
+        String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        System.out.println("insert new User ‘安妮.贝隆’...");
+        this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
+        Thread.sleep(3000);
     }
 }
