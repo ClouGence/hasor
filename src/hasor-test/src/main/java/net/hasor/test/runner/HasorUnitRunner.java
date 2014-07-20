@@ -21,6 +21,7 @@ import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractResourceAppContext;
@@ -100,7 +101,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         //1.准备要执行的线程
         List<FrameworkMethod> methodList = getTestClass().getAnnotatedMethods(DaemonThread.class);//有单例问题，每个Test都会调用该方法。
-        final ArrayList<Thread> daemonThreads = new ArrayList<Thread>();
+        final List<Thread> daemonThreads = new ArrayList<Thread>();
         for (FrameworkMethod threadMethod : methodList) {
             Thread daemonThread = new TestThread(test, threadMethod);
             daemonThread.setDaemon(true);
@@ -143,7 +144,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             this.method = method;
         }
         public void run() {
-            ArrayList<Object> args = new ArrayList<Object>();
+            List<Object> args = new ArrayList<Object>();
             Class<?>[] params = this.method.getMethod().getParameterTypes();
             if (params != null) {
                 for (Class<?> param : params)
@@ -152,7 +153,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             try {
                 this.method.invokeExplosively(this.targetObject, args.toArray());
             } catch (Throwable e) {
-                e.printStackTrace();
+                Hasor.logError(e);
             }
         }
     }

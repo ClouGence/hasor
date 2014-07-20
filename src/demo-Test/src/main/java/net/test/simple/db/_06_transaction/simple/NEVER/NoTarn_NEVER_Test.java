@@ -16,11 +16,11 @@
 package net.test.simple.db._06_transaction.simple.NEVER;
 import static net.hasor.test.utils.HasorUnit.newID;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.simple.db.SimpleJDBCWarp;
-import net.test.simple.db._06_transaction.natives.AbstractNativesJDBCTest;
+import net.test.simple.db._06_transaction.simple.AbstractSimpleJDBCTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
@@ -48,12 +48,12 @@ public class NoTarn_NEVER_Test extends AbstractSimpleJDBCTest {
          *   5.暂停3秒，监控线程打印全表数据.(包含‘赵飞燕’).
          *   6.回滚事务..
          *   7.暂停3秒，监控线程打印变更之后的全表数据(包含‘安妮.贝隆’、‘赵飞燕’).
-         *   6.新建‘默罕默德’用户..
-         *   7.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’).
          */
-        TransactionStatus tranStatus = begin(Propagation.NEVER);
-        System.out.println("begin Transaction!");
-        //T1
+        this.executeTransactional();
+    }
+    //在调用该方法之前环境中已经存在事务。
+    @Transactional(propagation = Propagation.NEVER)
+    public void executeTransactional() throws Exception {
         {
             String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘安妮.贝隆’...");
@@ -63,14 +63,6 @@ public class NoTarn_NEVER_Test extends AbstractSimpleJDBCTest {
         {
             String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘赵飞燕’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
-        System.out.println("rollBack Transaction!");
-        rollBack(tranStatus);
-        {
-            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘默罕默德’...");
             this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
         }

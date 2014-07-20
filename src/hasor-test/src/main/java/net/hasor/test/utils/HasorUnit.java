@@ -59,7 +59,7 @@ public abstract class HasorUnit {
     }
     /**打印列表内容*/
     public static String printMapList(List<Map<String, Object>> dataList, boolean print) {
-        ArrayList<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
         Map<String, Integer> titleConfig = new LinkedHashMap<String, Integer>();
         //1.转换
         for (Map<String, Object> mapItem : dataList) {

@@ -20,7 +20,7 @@ import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.simple.db.SimpleJDBCWarp;
@@ -36,10 +36,6 @@ import org.junit.runner.RunWith;
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
 public class HaveTarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
-    protected Isolation getWatchThreadTransactionLevel() {
-        /*监控线程的事务隔离级别修改为，允许读未递交的数据*/
-        return Isolation.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED);
-    }
     protected String watchTable() {
         return "TB_User";
     }
@@ -47,22 +43,15 @@ public class HaveTarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
     public void haveTarn_REQUIRED_Test() throws Exception {
         System.out.println("--->>haveTarn_REQUIRED_Test<<--");
         Thread.sleep(3000);
-        /* 预期执行结果为：
-         *   0.暂停3秒，监控线程打印全表数据.
-         *   1.开启事务..                     (T1)
-         *   2.新建‘默罕默德’用户..
-         *   3.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’).
-         *   4.开启事务..                     (T2)
-         *   5.新建‘安妮.贝隆’用户..
-         *   6.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’、‘安妮.贝隆’).
-         *   7.新建‘赵飞燕’用户..
-         *   8.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’、‘安妮.贝隆’、‘赵飞燕’).
-         *   9.回滚事务..                     (T2)
-         *   a.暂停3秒，监控线程数据未改变一直打印：“watch : table no change.”
-         *   b.新建‘吴广’用户..
-         *   c.暂停3秒，监控线程打印全表数据.(包含‘默罕默德’、‘安妮.贝隆’、‘赵飞燕’、‘吴广’).
-         *   d.回滚事务..                     (T1)
-         *   e.暂停3秒，监控线程数据未改变一直打印一张空表。
+        /* ----执行顺序为：
+         * 1. T1   ，新建‘默罕默德’用户..
+         * 2.    T2，新建‘安妮.贝隆’用户..
+         * 3.    T2，新建‘赵飞燕’用户..
+         * 4.    T2，commit.
+         * 1. T1   ，新建‘吴广’用户..(不真正执行commit.)
+         * 5. T1   ，commit.
+         * ----监控结果：
+         * 等到T1 commit 打印全部数据.
          */
         Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
         /*T1-Begin*/
@@ -71,26 +60,10 @@ public class HaveTarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
             String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘默罕默德’...");
             new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
-        TransactionStatus tranStatus = begin(Propagation.REQUIRED);
-        System.out.println("begin Transaction!");
-        //T1
-        {
-            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
         }
         {
-            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘赵飞燕’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
-        }
-        {
-            System.out.println("rollBack Transaction!");
-            rollBack(tranStatus);//不生效
+            this.executeTransactional();
             Thread.sleep(3000);
         }
         {
@@ -99,12 +72,23 @@ public class HaveTarn_REQUIRED_Test extends AbstractSimpleJDBCTest {
             this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(3000);
         }
-        /*T1-RollBack*/
+        /*T1-Commit*/
         {
-            conn.rollback();
+            conn.commit();
             conn.setAutoCommit(true);
             Thread.sleep(3000);
             DataSourceUtils.releaseConnection(conn, getDataSource());//释放连接
         }
+    }
+    //
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void executeTransactional() throws Exception {
+        String insertUser1 = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        System.out.println("insert new User ‘安妮.贝隆’...");
+        this.getJdbcTemplate().update(insertUser1, newID());//执行插入语句
+        //
+        String insertUser2 = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+        System.out.println("insert new User ‘赵飞燕’...");
+        this.getJdbcTemplate().update(insertUser2, newID());//执行插入语句
     }
 }

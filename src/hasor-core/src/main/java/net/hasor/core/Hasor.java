@@ -88,6 +88,12 @@ public abstract class Hasor {
         Object[] paramsStr = getStringArray(params);
         log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
+    public static void logDebug(Object e) {
+        logDebug("%s", e);
+    }
+    /**
+    
+    
     /**
      * 输出 <i><b>错误</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
@@ -99,6 +105,9 @@ public abstract class Hasor {
             return;
         Object[] paramsStr = getStringArray(params);
         log.error(callerErr() + " ->> " + String.format(string, paramsStr));
+    }
+    public static void logError(Object e) {
+        logError("%s", e);
     }
     /**
      * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -112,6 +121,9 @@ public abstract class Hasor {
         Object[] paramsStr = getStringArray(params);
         log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
     }
+    public static void logWarn(Object e) {
+        logWarn("%s", e);
+    }
     /**
      * 输出 <i><b>消息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
@@ -124,6 +136,9 @@ public abstract class Hasor {
         Object[] paramsStr = getStringArray(params);
         log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
     }
+    public static void logInfo(Object e) {
+        logInfo("%s", e);
+    }
     /**
      * 输出 <i><b>Trace</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
@@ -135,6 +150,9 @@ public abstract class Hasor {
             return;
         Object[] paramsStr = getStringArray(params);
         log.info(callerTrace() + " ->> " + String.format(string, paramsStr));
+    }
+    public static void logTrace(Object e) {
+        logTrace("%s", e);
     }
     /**使用日志的方式格式化。*/
     public static String formatString(String formatString, Object... args) {

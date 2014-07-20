@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.simple.db.SimpleJDBCWarp;
@@ -61,10 +61,14 @@ public class HaveTarn_NEVER_Test extends AbstractSimpleJDBCTest {
             Thread.sleep(3000);
         }
         try {
-            TransactionStatus tranStatus = begin(Propagation.NEVER);
-            throw new Exception("执行逻辑出错，不该出现此类问题。");
+            this.executeTransactional();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+    //在调用该方法之前环境中已经存在事务。
+    @Transactional(propagation = Propagation.NEVER)
+    public void executeTransactional() throws Exception {
+        throw new Exception("执行逻辑出错，不该出现此类问题。");
     }
 }

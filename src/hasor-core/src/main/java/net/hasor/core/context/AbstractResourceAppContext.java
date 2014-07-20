@@ -91,7 +91,7 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
                         Module mod = (Module) moduleType.newInstance();
                         this.addModule(mod);
                     } catch (Exception e) {
-                        Hasor.logError("loadModule Error: ", e.getMessage());
+                        Hasor.logError("loadModule Error: %s.", e.getMessage());
                     }
                 }
             }
