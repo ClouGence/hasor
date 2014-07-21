@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.more.NullArgumentException;
-import org.more.util.text.StrBuilder;
 /**
  * <p>Operates on classes without using reflection.</p>
  *
@@ -173,7 +172,7 @@ public class ClassUtils {
         if (className.length() == 0) {
             return StringUtils.EMPTY;
         }
-        StrBuilder arrayPrefix = new StrBuilder();
+        StringBuilder arrayPrefix = new StringBuilder();
         // Handle array encoding
         if (className.startsWith("[")) {
             while (className.charAt(0) == '[') {
@@ -815,7 +814,7 @@ public class ClassUtils {
         if (className == null) {
             throw new NullArgumentException("className");
         } else if (className.endsWith("[]")) {
-            StrBuilder classNameBuffer = new StrBuilder();
+            StringBuilder classNameBuffer = new StringBuilder();
             while (className.endsWith("[]")) {
                 className = className.substring(0, className.length() - 2);
                 classNameBuffer.append("[");
@@ -971,7 +970,7 @@ public class ClassUtils {
                         className = (String) reverseAbbreviationMap.get(className.substring(0, 1));
                     }
                 }
-                StrBuilder canonicalClassNameBuffer = new StrBuilder(className);
+                StringBuilder canonicalClassNameBuffer = new StringBuilder(className);
                 for (int i = 0; i < dim; i++) {
                     canonicalClassNameBuffer.append("[]");
                 }

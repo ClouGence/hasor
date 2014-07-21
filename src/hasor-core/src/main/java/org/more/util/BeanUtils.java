@@ -32,30 +32,30 @@ import org.more.convert.ConverterUtils;
 public abstract class BeanUtils {
     /**获取指定类型的默认值。*/
     public static Object getDefaultValue(Class<?> returnType) {
-        if (returnType == null)
+        if (returnType == null) {
             return null;
-        else if (returnType == int.class || returnType == Integer.class)
+        } else if (returnType == int.class || returnType == Integer.class) {
             return 0;
-        else if (returnType == byte.class || returnType == Byte.class)
+        } else if (returnType == byte.class || returnType == Byte.class) {
             return 0;
-        else if (returnType == char.class || returnType == Character.class)
+        } else if (returnType == char.class || returnType == Character.class) {
             return ' ';
-        else if (returnType == double.class || returnType == Double.class)
+        } else if (returnType == double.class || returnType == Double.class) {
             return 0d;
-        else if (returnType == float.class || returnType == Float.class)
+        } else if (returnType == float.class || returnType == Float.class) {
             return 0f;
-        else if (returnType == long.class || returnType == Long.class)
+        } else if (returnType == long.class || returnType == Long.class) {
             return 0l;
-        else if (returnType == short.class || returnType == Short.class)
+        } else if (returnType == short.class || returnType == Short.class) {
             return 0;
-        else if (returnType == boolean.class || returnType == Boolean.class)
+        } else if (returnType == boolean.class || returnType == Boolean.class) {
             return false;
-        else if (returnType == void.class || returnType == Void.class)
+        } else if (returnType == void.class || returnType == Void.class) {
             return null;
-        else if (returnType.isArray() == true)
+        } else if (returnType.isArray() == true) {
             return null;
-        else
-            return null;
+        }
+        return null;
     };
     /**
      * 该方法的作用是反射的形式调用目标的方法。
@@ -64,26 +64,30 @@ public abstract class BeanUtils {
      * @param objects 参数列表
      */
     public static Object invokeMethod(Object target, String methodName, Object... objects) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        if (target == null)
+        if (target == null) {
             return null;
+        }
         Class<?> targetType = target.getClass();
         Method invokeMethod = null;
         //反射调用方法
         Method[] ms = targetType.getMethods();
         for (Method m : ms) {
             //1.名字不相等的忽略
-            if (m.getName().equals(methodName) == false)
+            if (m.getName().equals(methodName) == false) {
                 continue;
+            }
             //2.目标方法参数列表个数与types字段中存放的个数不一样的忽略。
             Class<?>[] paramTypes = m.getParameterTypes();
-            if (paramTypes.length != objects.length)
+            if (paramTypes.length != objects.length) {
                 continue;
+            }
             //3.如果有参数类型不一样的也忽略---1
             boolean isFind = true;
             for (int i = 0; i < paramTypes.length; i++) {
                 Object param_object = objects[i];
-                if (param_object == null)
+                if (param_object == null) {
                     continue;
+                }
                 //
                 if (paramTypes[i].isAssignableFrom(param_object.getClass()) == false) {
                     isFind = false;
@@ -91,59 +95,75 @@ public abstract class BeanUtils {
                 }
             }
             //5.如果有参数类型不一样的也忽略---2
-            if (isFind == false)
+            if (isFind == false) {
                 continue;
+            }
             //符合条件执行调用
             invokeMethod = m;
         }
-        if (invokeMethod == null)
+        if (invokeMethod == null) {
             throw new NullPointerException(methodName + " invokeMethod is null.");
-        else
+        } else {
             return invokeMethod.invoke(target, objects);
+        }
     }
     /*----------------------------------------------------------------------------------------*/
     /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
     public static List<Field> findALLFields(Class<?> target) {
-        if (target == null)
+        if (target == null) {
             return null;
+        }
         ArrayList<Field> fList = new ArrayList<Field>();
         findALLFields(target, fList);
         return fList;
     }
     private static void findALLFields(Class<?> target, ArrayList<Field> fList) {
-        if (target == null)
+        if (target == null) {
             return;
-        for (Field field : target.getDeclaredFields())
-            if (fList.contains(field) == false)
+        }
+        for (Field field : target.getDeclaredFields()) {
+            if (fList.contains(field) == false) {
                 fList.add(field);
-        for (Field field : target.getFields())
-            if (fList.contains(field) == false)
+            }
+        }
+        for (Field field : target.getFields()) {
+            if (fList.contains(field) == false) {
                 fList.add(field);
+            }
+        }
         Class<?> superType = target.getDeclaringClass();
-        if (superType == null || superType == target)
+        if (superType == null || superType == target) {
             return;
+        }
         findALLFields(superType, fList);
     }
     /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也会被返回）。*/
     public static List<Method> findALLMethods(Class<?> target) {
-        if (target == null)
+        if (target == null) {
             return null;
+        }
         ArrayList<Method> mList = new ArrayList<Method>();
         findALLMethods(target, mList);
         return mList;
     }
     private static void findALLMethods(Class<?> target, ArrayList<Method> mList) {
-        if (target == null)
+        if (target == null) {
             return;
-        for (Method method : target.getDeclaredMethods())
-            if (mList.contains(method) == false)
+        }
+        for (Method method : target.getDeclaredMethods()) {
+            if (mList.contains(method) == false) {
                 mList.add(method);
-        for (Method method : target.getMethods())
-            if (mList.contains(method) == false)
+            }
+        }
+        for (Method method : target.getMethods()) {
+            if (mList.contains(method) == false) {
                 mList.add(method);
+            }
+        }
         Class<?> superType = target.getDeclaringClass();
-        if (superType == null || superType == target)
+        if (superType == null || superType == target) {
             return;
+        }
         findALLMethods(superType, mList);
     }
     /*----------------------------------------------------------------------------------------*/
@@ -157,11 +177,14 @@ public abstract class BeanUtils {
     }
     /**查找一个可操作的字段。*/
     public static Field getField(String fieldName, Class<?> type) {
-        if (fieldName == null || type == null)
+        if (fieldName == null || type == null) {
             return null;
-        for (Field f : type.getFields())
-            if (f.getName().equals(fieldName) == true)
+        }
+        for (Field f : type.getFields()) {
+            if (f.getName().equals(fieldName) == true) {
                 return f;
+            }
+        }
         return null;
     }
     /**查找一个可操作的方法。*/
@@ -182,8 +205,9 @@ public abstract class BeanUtils {
         List<Field> fnames = getFields(target);
         for (Field f : fnames) {
             String fName = f.getName();
-            if (mnames.contains(fName) == false)
+            if (mnames.contains(fName) == false) {
                 mnames.add(fName);
+            }
         }
         return mnames;
     }
@@ -193,16 +217,18 @@ public abstract class BeanUtils {
         List<Method> ms = getMethods(target);
         for (Method m : ms) {
             String name = m.getName();
-            if (name.startsWith("get") == true || name.startsWith("set") == true)
+            if (name.startsWith("get") == true || name.startsWith("set") == true) {
                 name = name.substring(3);
-            else if (name.startsWith("is") == true)
+            } else if (name.startsWith("is") == true) {
                 name = name.substring(2);
-            else
+            } else {
                 continue;
+            }
             if (name.equals("") == false) {
                 name = StringUtils.firstCharToLowerCase(name);
-                if (mnames.contains(name) == false)
+                if (mnames.contains(name) == false) {
                     mnames.add(name);
+                }
             }
         }
         return mnames;
@@ -220,34 +246,42 @@ public abstract class BeanUtils {
     }
     /**获取一个属性的读取方法。*/
     public static Method getReadMethod(String property, Class<?> target) {
-        if (property == null || target == null)
+        if (property == null || target == null) {
             return null;
+        }
         String methodName_1 = "get" + StringUtils.firstCharToUpperCase(property);
         String methodName_2 = "is" + StringUtils.firstCharToUpperCase(property);
         //
-        for (Method m : target.getMethods())
+        for (Method m : target.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 String methodName = m.getName();
-                if (methodName.equals(methodName_1) == true)
+                if (methodName.equals(methodName_1) == true) {
                     return m;
+                }
                 /*是否是布尔*/
                 if (methodName.equals(methodName_2) == true) {
                     Class<?> t = m.getReturnType();
-                    if (t == Boolean.class || t == boolean.class)
+                    if (t == Boolean.class || t == boolean.class) {
                         return m;
+                    }
                 }
             }
+        }
         return null;
     }
     /**获取一个属性的写入方法。*/
     public static Method getWriteMethod(String property, Class<?> target) {
-        if (property == null || target == null)
+        if (property == null || target == null) {
             return null;
+        }
         String methodName = "set" + StringUtils.firstCharToUpperCase(property);
-        for (Method m : target.getMethods())
-            if (m.getName().equals(methodName) == true)
-                if (m.getParameterTypes().length == 1)
+        for (Method m : target.getMethods()) {
+            if (m.getName().equals(methodName) == true) {
+                if (m.getParameterTypes().length == 1) {
                     return m;
+                }
+            }
+        }
         return null;
     }
     /**测试是否具有propertyName所表示的属性，无论是读或写方法只要存在一个就表示存在该属性。*/
@@ -441,29 +475,38 @@ public abstract class BeanUtils {
     }
     /***/
     public static void copyProperty(Object dest, Object orig, String propertyName) {
-        if (dest == null)
+        if (dest == null) {
             throw new NullArgumentException("dest");
-        if (orig == null)
+        }
+        if (orig == null) {
             throw new NullArgumentException("orig");
-        if (StringUtils.isBlank(propertyName))
+        }
+        if (StringUtils.isBlank(propertyName)) {
             throw new NullArgumentException("propertyName");
+        }
         //
-        if (orig instanceof Map == false)
-            if (!canReadPropertyOrField(propertyName, orig.getClass()))
+        if (orig instanceof Map == false) {
+            if (!canReadPropertyOrField(propertyName, orig.getClass())) {
                 return;
-        if (dest instanceof Map == false)
-            if (!canWritePropertyOrField(propertyName, dest.getClass()))
+            }
+        }
+        if (dest instanceof Map == false) {
+            if (!canWritePropertyOrField(propertyName, dest.getClass())) {
                 return;
+            }
+        }
         //
         Object val = null;
-        if (orig instanceof Map == false)
+        if (orig instanceof Map == false) {
             val = BeanUtils.readPropertyOrField(orig, propertyName);
-        else
+        } else {
             val = ((Map) orig).get(propertyName);
+        }
         //
-        if (dest instanceof Map == false)
+        if (dest instanceof Map == false) {
             BeanUtils.writePropertyOrField(dest, propertyName, val);
-        else
+        } else {
             ((Map) orig).put(propertyName, val);
+        }
     }
 };

@@ -16,11 +16,9 @@
  */
 package org.more.util;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import org.more.util.text.StrBuilder;
+import org.springframework.util.ObjectUtils;
 /**
  * <p>Operations on {@link java.lang.String} that are
  * <code>null</code> safe.</p>
@@ -2988,7 +2986,7 @@ public class StringUtils {
             return EMPTY;
         }
         bufSize *= ((array[startIndex] == null ? 16 : array[startIndex].toString().length()) + 1);
-        StrBuilder buf = new StrBuilder(bufSize);
+        StringBuilder buf = new StringBuilder(bufSize);
         for (int i = startIndex; i < endIndex; i++) {
             if (i > startIndex) {
                 buf.append(separator);
@@ -3069,7 +3067,7 @@ public class StringUtils {
             return EMPTY;
         }
         bufSize *= ((array[startIndex] == null ? 16 : array[startIndex].toString().length()) + separator.length());
-        StrBuilder buf = new StrBuilder(bufSize);
+        StringBuilder buf = new StringBuilder(bufSize);
         for (int i = startIndex; i < endIndex; i++) {
             if (i > startIndex) {
                 buf.append(separator);
@@ -3406,7 +3404,7 @@ public class StringUtils {
         int increase = replacement.length() - replLength;
         increase = (increase < 0 ? 0 : increase);
         increase *= (max < 0 ? 16 : (max > 64 ? 64 : max));
-        StrBuilder buf = new StrBuilder(text.length() + increase);
+        StringBuilder buf = new StringBuilder(text.length() + increase);
         while (end != INDEX_NOT_FOUND) {
             buf.append(text.substring(start, end)).append(replacement);
             start = end + replLength;
@@ -3618,7 +3616,7 @@ public class StringUtils {
         }
         // have upper-bound at 20% increase, then let Java take over
         increase = Math.min(increase, text.length() / 5);
-        StrBuilder buf = new StrBuilder(text.length() + increase);
+        StringBuilder buf = new StringBuilder(text.length() + increase);
         while (textIndex != -1) {
             for (int i = start; i < textIndex; i++) {
                 buf.append(text.charAt(i));
@@ -3731,7 +3729,7 @@ public class StringUtils {
         boolean modified = false;
         int replaceCharsLength = replaceChars.length();
         int strLength = str.length();
-        StrBuilder buf = new StrBuilder(strLength);
+        StringBuilder buf = new StringBuilder(strLength);
         for (int i = 0; i < strLength; i++) {
             char ch = str.charAt(i);
             int index = searchChars.indexOf(ch);
@@ -3805,7 +3803,7 @@ public class StringUtils {
             start = end;
             end = temp;
         }
-        return new StrBuilder(len + start - end + overlay.length() + 1).append(str.substring(0, start)).append(overlay).append(str.substring(end)).toString();
+        return new StringBuilder(len + start - end + overlay.length() + 1).append(str.substring(0, start)).append(overlay).append(str.substring(end)).toString();
     }
     // Chomping
     //-----------------------------------------------------------------------
@@ -3988,7 +3986,7 @@ public class StringUtils {
             }
             return new String(output2);
         default:
-            StrBuilder buf = new StrBuilder(outputLength);
+            StringBuilder buf = new StringBuilder(outputLength);
             for (int i = 0; i < repeat; i++) {
                 buf.append(str);
             }
@@ -4512,7 +4510,7 @@ public class StringUtils {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StrBuilder(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1)).toString();
+        return new StringBuilder(strLen).append(Character.toTitleCase(str.charAt(0))).append(str.substring(1)).toString();
     }
     /**
      * <p>Uncapitalizes a String changing the first letter to title case as
@@ -4539,7 +4537,7 @@ public class StringUtils {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        return new StrBuilder(strLen).append(Character.toLowerCase(str.charAt(0))).append(str.substring(1)).toString();
+        return new StringBuilder(strLen).append(Character.toLowerCase(str.charAt(0))).append(str.substring(1)).toString();
     }
     /**
      * <p>Swaps the case of a String changing upper and title case to
@@ -4573,7 +4571,7 @@ public class StringUtils {
         if (str == null || (strLen = str.length()) == 0) {
             return str;
         }
-        StrBuilder buffer = new StrBuilder(strLen);
+        StringBuilder buffer = new StringBuilder(strLen);
         char ch = 0;
         for (int i = 0; i < strLen; i++) {
             ch = str.charAt(i);
@@ -5032,7 +5030,7 @@ public class StringUtils {
     // Reversing
     //-----------------------------------------------------------------------
     /**
-     * <p>Reverses a String as per {@link StrBuilder#reverse()}.</p>
+     * <p>Reverses a String as per {@link StringBuilder#reverse()}.</p>
      *
      * <p>A <code>null</code> String returns <code>null</code>.</p>
      *
@@ -5049,7 +5047,7 @@ public class StringUtils {
         if (str == null) {
             return null;
         }
-        return new StrBuilder(str).reverse().toString();
+        return new StringBuilder(str).reverse().toString();
     }
     /**
      * <p>Reverses a String that is delimited by a specific character.</p>
@@ -5218,7 +5216,7 @@ public class StringUtils {
         int targetSting = length - middle.length();
         int startOffset = targetSting / 2 + targetSting % 2;
         int endOffset = str.length() - targetSting / 2;
-        StrBuilder builder = new StrBuilder(length);
+        StringBuilder builder = new StringBuilder(length);
         builder.append(str.substring(0, startOffset));
         builder.append(middle);
         builder.append(str.substring(endOffset));
@@ -5748,7 +5746,7 @@ public class StringUtils {
         if (str == null || str.length() <= 2) {
             return str;
         }
-        StrBuilder b = new StrBuilder(str.length());
+        StringBuilder b = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (Character.isWhitespace(c)) {
