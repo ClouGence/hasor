@@ -42,50 +42,51 @@ public class RuntimeFilter implements Filter {
     //
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
-    public synchronized void init(FilterConfig filterConfig) throws ServletException {
-        if (appContext == null) {
+    @Override
+    public synchronized void init(final FilterConfig filterConfig) throws ServletException {
+        if (this.appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
-            appContext = (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
-            Hasor.assertIsNotNull(appContext, "AppContext is null.");
-            this.filterPipeline = appContext.getInstance(FilterPipeline.class);
+            this.appContext = (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            Hasor.assertIsNotNull(this.appContext, "AppContext is null.");
+            this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         }
         /*1.初始化执行周期管理器。*/
         Map<String, String> filterConfigMap = new HashMap<String, String>();
         Enumeration<String> names = filterConfig.getInitParameterNames();
-        if (names != null) {
+        if (names != null)
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
                 filterConfigMap.put(name, filterConfig.getInitParameter(name));
             }
-        }
-        this.filterPipeline.initPipeline(appContext, filterConfigMap);
+        this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         Hasor.logInfo("PlatformFilter started.");
     }
     //
     /** 销毁 */
+    @Override
     public void destroy() {
         Hasor.logInfo("executeCycle destroyCycle.");
-        if (this.filterPipeline != null) {
-            this.filterPipeline.destroyPipeline(appContext);
-        }
+        if (this.filterPipeline != null)
+            this.filterPipeline.destroyPipeline(this.appContext);
     }
     //
     /** 处理request，响应response */
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         //
         try {
             //执行.
-            this.beforeRequest(appContext, httpReq, httpRes);
+            this.beforeRequest(this.appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } finally {
-            this.afterResponse(appContext, httpReq, httpRes);
+            this.afterResponse(this.appContext, httpReq, httpRes);
         }
     }
     //
     /**执行FilterPipeline*/
-    private void processFilterPipeline(HttpServletRequest httpReq, HttpServletResponse httpRes, FilterChain chain) throws IOException, ServletException {
+    private void processFilterPipeline(final HttpServletRequest httpReq, final HttpServletResponse httpRes, final FilterChain chain) throws IOException, ServletException {
         this.filterPipeline.dispatch(httpReq, httpRes, chain);
     }
     //
@@ -95,15 +96,15 @@ public class RuntimeFilter implements Filter {
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
-    protected void beforeRequest(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
-        LocalRequest.set(httpReq);
-        LocalResponse.set(httpRes);
+    protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        RuntimeFilter.LocalRequest.set(httpReq);
+        RuntimeFilter.LocalResponse.set(httpRes);
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
-    protected void afterResponse(AppContext appContext, HttpServletRequest httpReq, HttpServletResponse httpRes) {
-        LocalRequest.remove();
-        LocalResponse.remove();
+    protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        RuntimeFilter.LocalRequest.remove();
+        RuntimeFilter.LocalResponse.remove();
     }
     //
     //
@@ -112,12 +113,12 @@ public class RuntimeFilter implements Filter {
     //
     /**获取{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
-        return LocalRequest.get();
+        return RuntimeFilter.LocalRequest.get();
     }
     //
     /**获取{@link HttpServletResponse}*/
     public static HttpServletResponse getLocalResponse() {
-        return LocalResponse.get();
+        return RuntimeFilter.LocalResponse.get();
     }
     //
     /**获取{@link ServletContext}*/

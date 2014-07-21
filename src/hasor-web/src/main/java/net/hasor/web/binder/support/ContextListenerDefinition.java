@@ -27,33 +27,31 @@ class ContextListenerDefinition {
     private ServletContextListener           listenerInstance = null;
     //
     //
-    public ContextListenerDefinition(Provider<ServletContextListener> listenerProvider) {
+    public ContextListenerDefinition(final Provider<ServletContextListener> listenerProvider) {
         this.listenerProvider = listenerProvider;
     }
     //
     protected ServletContextListener getTarget() {
-        if (this.listenerInstance == null) {
-            this.listenerInstance = listenerProvider.get();
-        }
+        if (this.listenerInstance == null)
+            this.listenerInstance = this.listenerProvider.get();
         return this.listenerInstance;
     }
+    @Override
     public String toString() {
         return String.format("type %s listenerKey=%s",//
                 ContextListenerDefinition.class, this.listenerInstance);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void contextInitialized(ServletContextEvent event) {
+    public void contextInitialized(final ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null) {
+        if (servletContextListener != null)
             servletContextListener.contextInitialized(event);
-        }
     }
     /**/
-    public void contextDestroyed(ServletContextEvent event) {
+    public void contextDestroyed(final ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null) {
+        if (servletContextListener != null)
             servletContextListener.contextDestroyed(event);
-        }
     }
 }

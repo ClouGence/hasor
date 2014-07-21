@@ -36,12 +36,14 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
     protected AbstractApplicationContext createSpring() {
         return new ClassPathXmlApplicationContext();
     }
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindingType) {
+    @Override
+    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
         SpringRegisterInfoAdapter<T> adapter = new SpringRegisterInfoAdapter<T>();
         adapter.setBindType(bindingType);
         return adapter;
     }
-    public void doInitializeCompleted(AbstractAppContext appContext) {
+    @Override
+    public void doInitializeCompleted(final AbstractAppContext appContext) {
         //1.检查
         super.doInitializeCompleted(appContext);
         //2.绑定
@@ -67,7 +69,8 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
         //          BeanDefinition define = this.paserBeanDefinition(name, register);
         //          reg.registerBeanDefinition(name, define);
     }
-    protected <T> T newInstance(RegisterInfo<T> oriType) {
+    @Override
+    protected <T> T newInstance(final RegisterInfo<T> oriType) {
         String name = oriType.getBindName();
         Class<T> type = oriType.getBindType();
         if (name == null) {

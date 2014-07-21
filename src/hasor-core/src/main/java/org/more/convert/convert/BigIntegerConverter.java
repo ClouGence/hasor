@@ -49,7 +49,7 @@ public final class BigIntegerConverter extends NumberConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public BigIntegerConverter(Object defaultValue) {
+    public BigIntegerConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
     /**
@@ -58,6 +58,7 @@ public final class BigIntegerConverter extends NumberConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return BigInteger.class;
     }

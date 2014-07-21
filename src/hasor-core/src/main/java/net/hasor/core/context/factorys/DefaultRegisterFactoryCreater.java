@@ -28,7 +28,8 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DefaultRegisterFactoryCreater implements RegisterFactoryCreater {
-    public RegisterFactory create(Environment env) {
+    @Override
+    public RegisterFactory create(final Environment env) {
         String createrToUse = null;
         //1.取得即将创建的ManagerCreater类型
         Settings setting = env.getSettings();
@@ -43,20 +44,23 @@ public class DefaultRegisterFactoryCreater implements RegisterFactoryCreater {
                     break;
                 }
             }
-            if (createrToUse != null)
+            if (createrToUse != null) {
                 break;
+            }
         }
         //2.排错
-        if (createrToUse == null)
+        if (createrToUse == null) {
             throw new UndefinedException(String.format("%s is not define.", defaultManager));
+        }
         //3.创建Creater
         try {
             Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
             RegisterFactoryCreater creater = (RegisterFactoryCreater) createrType.newInstance();
             return creater.create(env);
         } catch (Throwable e) {
-            if (e instanceof RuntimeException)
+            if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
+            }
             throw new RuntimeException(e);
         }
     }

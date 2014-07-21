@@ -41,7 +41,7 @@ public final class LongConverter extends NumberConverter {
      * Construct a <b>java.lang.Long</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
-    public LongConverter(Object defaultValue) {
+    public LongConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
     /**
@@ -49,6 +49,7 @@ public final class LongConverter extends NumberConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Long.class;
     }

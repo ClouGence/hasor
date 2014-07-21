@@ -22,15 +22,15 @@ package org.more.classcode;
 public class InitializationException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 6489409968925378968L;
     /**初始化异常*/
-    public InitializationException(String string) {
+    public InitializationException(final String string) {
         super(string);
     }
     /**初始化异常*/
-    public InitializationException(Throwable error) {
+    public InitializationException(final Throwable error) {
         super(error);
     }
     /**初始化异常*/
-    public InitializationException(String string, Throwable error) {
+    public InitializationException(final String string, final Throwable error) {
         super(string, error);
     }
 }

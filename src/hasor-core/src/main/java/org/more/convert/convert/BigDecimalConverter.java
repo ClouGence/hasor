@@ -49,7 +49,7 @@ public final class BigDecimalConverter extends NumberConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public BigDecimalConverter(Object defaultValue) {
+    public BigDecimalConverter(final Object defaultValue) {
         super(true, defaultValue);
     }
     /**
@@ -58,6 +58,7 @@ public final class BigDecimalConverter extends NumberConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return BigDecimal.class;
     }

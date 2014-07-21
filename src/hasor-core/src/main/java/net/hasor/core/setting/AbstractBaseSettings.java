@@ -31,10 +31,11 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     //
     /**分别保存每个命名空间下的配置信息Map*/
     protected final Map<String, Map<String, Object>> getNamespaceSettingMap() {
-        return namespaceSettingsMap;
+        return this.namespaceSettingsMap;
     }
+    @Override
     protected final DecSequenceMap<String, Object> getSettingsMap() {
-        return mergeSettingsMap;
+        return this.mergeSettingsMap;
     }
     /**清空已经装载的所有数据。*/
     protected void cleanData() {
@@ -43,12 +44,14 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
+    @Override
     public String[] getSettingArray() {
         Set<String> nsSet = this.getNamespaceSettingMap().keySet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
     /**设置参数。*/
-    public void setSettings(String key, Object value, String namespace) {
+    @Override
+    public void setSettings(final String key, final Object value, final String namespace) {
         Map<String, Map<String, Object>> nsMap = this.getNamespaceSettingMap();//所有命名空间的数据
         Map<String, Object> atMap = nsMap.get(namespace);//要 put 的命名空间数据
         //
@@ -62,6 +65,7 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
     }
     //
     /**获取指在某个特定命名空间下的Settings接口对象。*/
+    @Override
     public final AbstractSettings getSettings(final String namespace) {
         final AbstractSettings setting = this;
         final Map<String, Object> data = this.getNamespaceSettingMap().get(namespace);
@@ -69,22 +73,29 @@ public abstract class AbstractBaseSettings extends AbstractSettings {
             return null;
         }
         return new AbstractSettings() {
+            @Override
             public void refresh() throws IOException {/**/}
-            public AbstractSettings getSettings(String namespace) {
+            @Override
+            public AbstractSettings getSettings(final String namespace) {
                 return setting.getSettings(namespace);
             }
+            @Override
             public String[] getSettingArray() {
                 return setting.getSettingArray();
             }
+            @Override
             public Map<String, Object> getSettingsMap() {
                 return data;
             }
-            public void setSettings(String key, Object value, String namespace2) {
-                if (namespace.equals(namespace2) == false)
+            @Override
+            public void setSettings(final String key, final Object value, final String namespace2) {
+                if (namespace.equals(namespace2) == false) {
                     throw new UnsupportedOperationException();
+                }
                 data.put(key, value);
             }
         };
     }
+    @Override
     public void refresh() throws IOException {}
 }

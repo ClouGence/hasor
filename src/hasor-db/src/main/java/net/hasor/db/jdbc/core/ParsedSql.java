@@ -36,26 +36,26 @@ public class ParsedSql {
     private List<String> parameterNames;
     private List<int[]>  parameterIndexes;
     //
-    private ParsedSql(String originalSql) {
+    private ParsedSql(final String originalSql) {
         this.originalSql = originalSql;
     }
     public String getOriginalSql() {
-        return originalSql;
+        return this.originalSql;
     }
     public int getNamedParameterCount() {
-        return namedParameterCount;
+        return this.namedParameterCount;
     }
     public int getUnnamedParameterCount() {
-        return unnamedParameterCount;
+        return this.unnamedParameterCount;
     }
     public int getTotalParameterCount() {
-        return totalParameterCount;
+        return this.totalParameterCount;
     }
     public List<String> getParameterNames() {
-        return parameterNames;
+        return this.parameterNames;
     }
     public List<int[]> getParameterIndexes() {
-        return parameterIndexes;
+        return this.parameterIndexes;
     }
     //
     //
@@ -70,7 +70,7 @@ public class ParsedSql {
     //-------------------------------------------------------------------------
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
     //-------------------------------------------------------------------------
-    public static ParsedSql getParsedSql(String originalSql) {
+    public static ParsedSql getParsedSql(final String originalSql) {
         ParsedSql parSQL = new ParsedSql(originalSql);
         //
         //1.关键参数定义
@@ -86,7 +86,7 @@ public class ParsedSql {
         char[] statement = originalSql.toCharArray();
         int i = 0;
         while (i < statement.length) {
-            int skipToPosition = skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
+            int skipToPosition = ParsedSql.skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
             if (i != skipToPosition) {
                 if (skipToPosition >= statement.length)
                     break;
@@ -99,9 +99,8 @@ public class ParsedSql {
                     i = i + 2;// Postgres-style "::" casting operator - to be skipped.
                     continue;
                 }
-                while (j < statement.length && !isParameterSeparator(statement[j])) {
+                while (j < statement.length && !ParsedSql.isParameterSeparator(statement[j]))
                     j++;
-                }
                 if (j - i > 1) {
                     String parameter = originalSql.substring(i + 1, j);
                     if (!namedParameters.contains(parameter)) {
@@ -113,11 +112,9 @@ public class ParsedSql {
                     totalParameterCount++;
                 }
                 i = j - 1;
-            } else {
-                if (c == '?') {
-                    unnamedParameterCount++;
-                    totalParameterCount++;
-                }
+            } else if (c == '?') {
+                unnamedParameterCount++;
+                totalParameterCount++;
             }
             i++;
         }
@@ -129,26 +126,25 @@ public class ParsedSql {
         return parSQL;
     }
     /** Skip over comments and quoted names present in an SQL statement */
-    private static int skipCommentsAndQuotes(char[] statement, int position) {
-        for (int i = 0; i < START_SKIP.length; i++) {
-            if (statement[position] == START_SKIP[i].charAt(0)) {
+    private static int skipCommentsAndQuotes(final char[] statement, final int position) {
+        for (int i = 0; i < ParsedSql.START_SKIP.length; i++)
+            if (statement[position] == ParsedSql.START_SKIP[i].charAt(0)) {
                 boolean match = true;
-                for (int j = 1; j < START_SKIP[i].length(); j++) {
-                    if (!(statement[position + j] == START_SKIP[i].charAt(j))) {
+                for (int j = 1; j < ParsedSql.START_SKIP[i].length(); j++)
+                    if (!(statement[position + j] == ParsedSql.START_SKIP[i].charAt(j))) {
                         match = false;
                         break;
                     }
-                }
                 if (match) {
-                    int offset = START_SKIP[i].length();
-                    for (int m = position + offset; m < statement.length; m++) {
-                        if (statement[m] == STOP_SKIP[i].charAt(0)) {
+                    int offset = ParsedSql.START_SKIP[i].length();
+                    for (int m = position + offset; m < statement.length; m++)
+                        if (statement[m] == ParsedSql.STOP_SKIP[i].charAt(0)) {
                             boolean endMatch = true;
                             int endPos = m;
-                            for (int n = 1; n < STOP_SKIP[i].length(); n++) {
+                            for (int n = 1; n < ParsedSql.STOP_SKIP[i].length(); n++) {
                                 if (m + n >= statement.length)
                                     return statement.length;// last comment not closed properly
-                                if (!(statement[m + n] == STOP_SKIP[i].charAt(n))) {
+                                if (!(statement[m + n] == ParsedSql.STOP_SKIP[i].charAt(n))) {
                                     endMatch = false;
                                     break;
                                 }
@@ -157,19 +153,17 @@ public class ParsedSql {
                             if (endMatch)
                                 return endPos + 1;// found character sequence ending comment or quote
                         }
-                    }
                     // character sequence ending comment or quote not found
                     return statement.length;
                 }
             }
-        }
         return position;
     }
     /** Determine whether a parameter name ends at the current position, that is, whether the given character qualifies as a separator. */
-    private static boolean isParameterSeparator(char c) {
+    private static boolean isParameterSeparator(final char c) {
         if (Character.isWhitespace(c))
             return true;
-        for (char separator : PARAMETER_SEPARATORS)
+        for (char separator : ParsedSql.PARAMETER_SEPARATORS)
             if (c == separator)
                 return true;
         return false;
@@ -178,7 +172,7 @@ public class ParsedSql {
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
     //-------------------------------------------------------------------------
     /**生成SQL*/
-    public static String buildSql(ParsedSql parsedSql, SqlParameterSource paramSource) {
+    public static String buildSql(final ParsedSql parsedSql, final SqlParameterSource paramSource) {
         String originalSql = parsedSql.getOriginalSql();
         List<String> parameterNames = parsedSql.getParameterNames();
         List<int[]> parameterIndexes = parsedSql.getParameterIndexes();
@@ -186,7 +180,7 @@ public class ParsedSql {
         StringBuilder sqlToUse = new StringBuilder();
         int lastIndex = 0;
         for (int i = 0; i < parameterNames.size(); i++) {
-            String paramName = (String) parameterNames.get(i);
+            String paramName = parameterNames.get(i);
             int[] indexes = parameterIndexes.get(i);
             int startIndex = indexes[0];
             int endIndex = indexes[1];
@@ -210,23 +204,20 @@ public class ParsedSql {
                                 sqlToUse.append("?");
                             }
                             sqlToUse.append(")");
-                        } else {
+                        } else
                             sqlToUse.append("?");
-                        }
                     }
-                } else {
+                } else
                     sqlToUse.append("?");
-                }
-            } else {
+            } else
                 sqlToUse.append("?");
-            }
             lastIndex = endIndex;
         }
         sqlToUse.append(originalSql.substring(lastIndex, originalSql.length()));
         return sqlToUse.toString();
     }
     /**生成Values*/
-    public static Object[] buildSqlValues(ParsedSql parsedSql, SqlParameterSource paramSource) throws SQLException {
+    public static Object[] buildSqlValues(final ParsedSql parsedSql, final SqlParameterSource paramSource) throws SQLException {
         String originalSql = parsedSql.getOriginalSql();
         List<String> parameterNames = parsedSql.getParameterNames();
         int namedParameterCount = parsedSql.getNamedParameterCount();//带有名字参数的总数

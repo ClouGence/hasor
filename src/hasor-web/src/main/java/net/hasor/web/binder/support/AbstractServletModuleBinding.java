@@ -26,14 +26,14 @@ class AbstractServletModuleBinding {
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    public AbstractServletModuleBinding(int index, Map<String, String> initParams, String pattern, UriPatternMatcher patternMatcher) {
+    public AbstractServletModuleBinding(final int index, final Map<String, String> initParams, final String pattern, final UriPatternMatcher patternMatcher) {
         this.index = index;
         this.initParams = new HashMap<String, String>(initParams);
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
     }
     public int getIndex() {
-        return index;
+        return this.index;
     }
     /** Returns any context params supplied when creating the binding. */
     public Map<String, String> getInitParams() {
@@ -41,14 +41,14 @@ class AbstractServletModuleBinding {
     }
     /** Returns the pattern used to match against the binding. */
     public String getPattern() {
-        return pattern;
+        return this.pattern;
     }
     /** Returns the pattern type that this binding was created with. */
     public UriPatternType getUriPatternType() {
-        return patternMatcher.getPatternType();
+        return this.patternMatcher.getPatternType();
     }
     /** Returns true if the given URI will match this binding. */
-    public boolean matchesUri(String uri) {
-        return patternMatcher.matches(uri);
+    public boolean matchesUri(final String uri) {
+        return this.patternMatcher.matches(uri);
     }
 }

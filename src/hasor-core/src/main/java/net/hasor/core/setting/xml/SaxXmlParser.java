@@ -34,30 +34,30 @@ public class SaxXmlParser extends DefaultHandler {
     private Map<String, StringBuffer>        xmlText           = new HashMap<String, StringBuffer>();
     private Map<String, DefaultXmlNode>      currentXmlPropert = new HashMap<String, DefaultXmlNode>();
     //
-    public SaxXmlParser(Map<String, Map<String, Object>> dataContainer) {
+    public SaxXmlParser(final Map<String, Map<String, Object>> dataContainer) {
         this.dataContainer = dataContainer;
     }
-    private StringBuffer getText(String xmlns) {
-        if (xmlText.containsKey(xmlns) == false) {
-            xmlText.put(xmlns, new StringBuffer(""));
+    private StringBuffer getText(final String xmlns) {
+        if (this.xmlText.containsKey(xmlns) == false) {
+            this.xmlText.put(xmlns, new StringBuffer(""));
         }
-        return xmlText.get(xmlns);
+        return this.xmlText.get(xmlns);
     }
-    private void cleanText(String xmlns) {
-        xmlText.remove(xmlns);
+    private void cleanText(final String xmlns) {
+        this.xmlText.remove(xmlns);
     }
-    private DefaultXmlNode getCurrentXmlPropert(String xmlns) {
-        return currentXmlPropert.get(xmlns);
+    private DefaultXmlNode getCurrentXmlPropert(final String xmlns) {
+        return this.currentXmlPropert.get(xmlns);
     }
-    private void setCurrentXmlPropert(String xmlns, DefaultXmlNode xmlProperty) {
-        currentXmlPropert.put(xmlns, xmlProperty);
+    private void setCurrentXmlPropert(final String xmlns, final DefaultXmlNode xmlProperty) {
+        this.currentXmlPropert.put(xmlns, xmlProperty);
     }
     //
     //
     //
     private String curXmlns = null;
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
         DefaultXmlNode xmlProperty = this.getCurrentXmlPropert(uri);
         if (xmlProperty == null) {
             xmlProperty = new DefaultXmlNode(null, "root");
@@ -75,7 +75,7 @@ public class SaxXmlParser extends DefaultHandler {
         this.curXmlns = uri;
     }
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         StringBuffer strBuffer = this.getText(uri);
         //
         DefaultXmlNode currentNode = this.getCurrentXmlPropert(uri);
@@ -86,7 +86,7 @@ public class SaxXmlParser extends DefaultHandler {
         this.curXmlns = uri;
     }
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(final char[] ch, final int start, final int length) throws SAXException {
         if (this.curXmlns == null) {
             return;
         }
@@ -99,8 +99,8 @@ public class SaxXmlParser extends DefaultHandler {
         for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
             DefaultXmlNode currentXml = ent.getValue();
-            if (dataContainer.get(currentXmlns) == null) {
-                dataContainer.put(currentXmlns, new HashMap<String, Object>());
+            if (this.dataContainer.get(currentXmlns) == null) {
+                this.dataContainer.put(currentXmlns, new HashMap<String, Object>());
             }
             //1.将XmlTree转换为map映射
             HashMap<String, Object> dataMap = new HashMap<String, Object>();
@@ -124,7 +124,7 @@ public class SaxXmlParser extends DefaultHandler {
                 String $key = key.toLowerCase();
                 Object $var = dataMap.get(key);
                 Object $varConflict = null;
-                $varConflict = dataContainer.get(currentXmlns).get($key);
+                $varConflict = this.dataContainer.get(currentXmlns).get($key);
                 if ($varConflict != null && $varConflict instanceof XmlNode && $var instanceof XmlNode) {
                     XmlNode $new = (XmlNode) $var;
                     XmlNode $old = (XmlNode) $varConflict;
@@ -141,9 +141,9 @@ public class SaxXmlParser extends DefaultHandler {
                     $final.getChildren().addAll($oldChildren);
                     $final.getChildren().addAll($newChildren);
                     Collections.reverse($final.getChildren());
-                    dataContainer.get(currentXmlns).put($key, $final);
+                    this.dataContainer.get(currentXmlns).put($key, $final);
                 } else {
-                    dataContainer.get(currentXmlns).put($key, $var);
+                    this.dataContainer.get(currentXmlns).put($key, $var);
                 }
                 //
                 //
@@ -151,12 +151,12 @@ public class SaxXmlParser extends DefaultHandler {
         }
     }
     /**转换成Key Value形式*/
-    protected void convertType(Map<String, Object> returnData, List<XmlNode> xmlPropertyList, String parentAttName) {
-        if (xmlPropertyList != null)
+    protected void convertType(final Map<String, Object> returnData, final List<XmlNode> xmlPropertyList, final String parentAttName) {
+        if (xmlPropertyList != null) {
             for (XmlNode xmlNode : xmlPropertyList) {
                 DefaultXmlNode impl = (DefaultXmlNode) xmlNode;
                 //1.put本级
-                String key = ("".equals(parentAttName)) ? impl.getName() : (parentAttName + "." + impl.getName());
+                String key = "".equals(parentAttName) ? impl.getName() : parentAttName + "." + impl.getName();
                 returnData.put(key, impl);
                 //2.put属性
                 for (Entry<String, String> ent : impl.getAttributeMap().entrySet()) {
@@ -165,5 +165,6 @@ public class SaxXmlParser extends DefaultHandler {
                 //3.put孩子
                 this.convertType(returnData, xmlNode.getChildren(), key);
             }
+        }
     }
 }

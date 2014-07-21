@@ -29,19 +29,19 @@ public class TransactionObject {
     private ConnectionHolder holder     = null;
     private DataSource       dataSource = null;
     private Isolation        oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
-    public TransactionObject(ConnectionHolder holder, Isolation oriIsolationLevel, DataSource dataSource) {
+    public TransactionObject(final ConnectionHolder holder, final Isolation oriIsolationLevel, final DataSource dataSource) {
         this.holder = holder;
         this.dataSource = dataSource;
         this.oriIsolationLevel = oriIsolationLevel;
     }
     public Isolation getOriIsolationLevel() {
-        return oriIsolationLevel;
+        return this.oriIsolationLevel;
     }
     public ConnectionHolder getHolder() {
         return this.holder;
     }
     public DataSource getDataSource() {
-        return dataSource;
+        return this.dataSource;
     }
     public SavepointManager getSavepointManager() {
         return this.getHolder();

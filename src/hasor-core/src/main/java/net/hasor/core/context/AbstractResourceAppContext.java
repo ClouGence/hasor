@@ -43,18 +43,18 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     //
     /**设置主配置文件*/
     protected AbstractResourceAppContext() throws IOException, URISyntaxException {
-        this(DefaultSettings);
+        this(AbstractResourceAppContext.DefaultSettings);
     }
     /**设置主配置文件*/
-    protected AbstractResourceAppContext(File mainSettings) {
+    protected AbstractResourceAppContext(final File mainSettings) {
         this.mainSettings = mainSettings.toURI();
     }
     /**设置主配置文件*/
-    protected AbstractResourceAppContext(URI mainSettings) {
+    protected AbstractResourceAppContext(final URI mainSettings) {
         this.mainSettings = mainSettings;
     }
     /**设置主配置文件*/
-    protected AbstractResourceAppContext(String mainSettings) throws IOException, URISyntaxException {
+    protected AbstractResourceAppContext(final String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
         if (resURL == null) {
             Hasor.logWarn("can't find %s.", mainSettings);
@@ -64,15 +64,17 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     }
     /**获取设置的主配置文件*/
     public final URI getMainSettings() {
-        return mainSettings;
+        return this.mainSettings;
     }
     //
+    @Override
     protected Environment createEnvironment() {
         return new StandardEnvironment(this.mainSettings);
     }
     //
     //
     //
+    @Override
     protected void doInitialize() {
         //1.预先加载Module
         Environment env = this.getEnvironment();
@@ -104,7 +106,7 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     //
     private Provider<RegisterFactory> registerFactoryProvider = null;
     /**设置一个RegisterFactory实例对象*/
-    protected void setRegisterFactory(Provider<RegisterFactory> registerFactoryProvider) {
+    protected void setRegisterFactory(final Provider<RegisterFactory> registerFactoryProvider) {
         if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
         }
@@ -120,6 +122,7 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
             this.registerFactoryProvider = null;
         } else {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
+                @Override
                 protected RegisterFactory getRegisterFactory() {
                     return registerFactory;
                 }
@@ -136,18 +139,21 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
             this.registerFactoryProvider = null;
         } else {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
+                @Override
                 protected RegisterFactory getRegisterFactory() {
-                    return registerFactoryCreate.create(getEnvironment());
+                    return registerFactoryCreate.create(AbstractResourceAppContext.this.getEnvironment());
                 }
             };
         }
     }
+    @Override
     protected RegisterFactory getRegisterFactory() {
         //
         if (this.registerFactoryProvider == null) {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
+                @Override
                 protected RegisterFactory getRegisterFactory() {
-                    return new DefaultRegisterFactoryCreater().create(getEnvironment());
+                    return new DefaultRegisterFactoryCreater().create(AbstractResourceAppContext.this.getEnvironment());
                 }
             };
         }
@@ -159,6 +165,7 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     }
     private static abstract class AbstractRegisterFactoryProvider implements Provider<RegisterFactory> {
         private RegisterFactory registerFactory = null;
+        @Override
         public RegisterFactory get() {
             if (this.registerFactory == null) {
                 this.registerFactory = this.getRegisterFactory();

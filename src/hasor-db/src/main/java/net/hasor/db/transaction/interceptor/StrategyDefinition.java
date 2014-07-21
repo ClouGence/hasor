@@ -31,32 +31,33 @@ class StrategyDefinition implements Matcher<Method> {
     private TranStrategy<Isolation>   isolationStrategy   = new FixedValueStrategy<Isolation>(Isolation.DEFAULT);
     private TranStrategy<Propagation> propagationStrategy = new FixedValueStrategy<Propagation>(Propagation.REQUIRED);
     //
-    public StrategyDefinition(DataSource dataSource, Matcher<Method> matcher) {
+    public StrategyDefinition(final DataSource dataSource, final Matcher<Method> matcher) {
         this.dataSource = dataSource;
         this.matcher = matcher;
     }
-    public void setTranOperations(TranOperations around) {
+    public void setTranOperations(final TranOperations around) {
         this.around = around;
     }
-    public void setPropagation(TranStrategy<Propagation> propagation) {
+    public void setPropagation(final TranStrategy<Propagation> propagation) {
         this.propagationStrategy = propagation;
     }
-    public void setIsolation(TranStrategy<Isolation> isolation) {
+    public void setIsolation(final TranStrategy<Isolation> isolation) {
         this.isolationStrategy = isolation;
     }
     public DataSource getDataSource() {
-        return dataSource;
+        return this.dataSource;
     }
     public TranOperations getAround() {
-        return around;
+        return this.around;
     }
     public TranStrategy<Isolation> getIsolationStrategy() {
-        return isolationStrategy;
+        return this.isolationStrategy;
     }
     public TranStrategy<Propagation> getPropagationStrategy() {
-        return propagationStrategy;
+        return this.propagationStrategy;
     }
-    public boolean matches(Method method) {
+    @Override
+    public boolean matches(final Method method) {
         return this.matcher.matches(method);
     }
 }

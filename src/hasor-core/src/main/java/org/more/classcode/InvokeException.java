@@ -22,11 +22,11 @@ package org.more.classcode;
 public class InvokeException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = -7774988512856603877L;
     /**调用异常*/
-    public InvokeException(String string) {
+    public InvokeException(final String string) {
         super(string);
     }
     /**调用异常*/
-    public InvokeException(Throwable error) {
+    public InvokeException(final Throwable error) {
         super(error);
     }
 }

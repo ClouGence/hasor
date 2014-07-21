@@ -21,45 +21,53 @@ package org.more.util;
  */
 public class MatchUtils {
     /**将通配符转换成正则表达式。*/
-    public static String wildToRegex(String wild) {
-        if (wild == null)
+    public static String wildToRegex(final String wild) {
+        if (wild == null) {
             throw new NullPointerException("wild param is null");
+        }
         StringBuffer result = new StringBuffer("");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
-            for (int j = 0; j < metachar.length; j++)
-                if (ch == metachar[j])
+            for (char element : metachar) {
+                if (ch == element) {
                     result.append("\\");
-            if (ch == '*')
+                }
+            }
+            if (ch == '*') {
                 result.append(".*");
-            else if (ch == '?')
+            } else if (ch == '?') {
                 result.append(".");
-            else
+            } else {
                 result.append(ch);
+            }
         }
         result.append("$");
         return result.toString();
     }
     /**将字符串转换成成正则表达式。*/
-    public static String stringToRegex(String wild) {
-        if (wild == null)
+    public static String stringToRegex(final String wild) {
+        if (wild == null) {
             throw new NullPointerException("wild param is null");
+        }
         StringBuffer result = new StringBuffer("");
         char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
-            for (int j = 0; j < metachar.length; j++)
-                if (ch == metachar[j])
+            for (char element : metachar) {
+                if (ch == element) {
                     result.append("\\");
+                }
+            }
             result.append(ch);
         }
         return result.toString();
     }
     /**使用通配符匹配字符串。*/
-    public static boolean matchWild(String pattern, String str) {
-        if (str == null)
+    public static boolean matchWild(final String pattern, final String str) {
+        if (str == null) {
             return false;
-        return str.matches(wildToRegex(pattern));
+        }
+        return str.matches(MatchUtils.wildToRegex(pattern));
     }
 }

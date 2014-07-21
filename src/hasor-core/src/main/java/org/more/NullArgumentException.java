@@ -54,7 +54,7 @@ public class NullArgumentException extends IllegalArgumentException {
      *
      * @param argName  the name of the argument that was <code>null</code>.
      */
-    public NullArgumentException(String argName) {
+    public NullArgumentException(final String argName) {
         super((argName == null ? "Argument" : argName) + " must not be null.");
     }
 }

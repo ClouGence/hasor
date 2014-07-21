@@ -22,9 +22,10 @@ import net.hasor.core.Provider;
  */
 public class InstanceProvider<T> implements Provider<T> {
     private T instance = null;
-    public InstanceProvider(T instance) {
+    public InstanceProvider(final T instance) {
         this.instance = instance;
     }
+    @Override
     public T get() {
         return this.instance;
     }

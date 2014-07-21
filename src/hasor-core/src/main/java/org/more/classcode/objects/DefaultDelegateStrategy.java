@@ -22,8 +22,10 @@ import org.more.classcode.DelegateStrategy;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultDelegateStrategy implements DelegateStrategy {
-    public void initStrategy(ClassEngine classEngine) {}
-    public boolean isIgnore(Class<?> delegateType) {
+    @Override
+    public void initStrategy(final ClassEngine classEngine) {}
+    @Override
+    public boolean isIgnore(final Class<?> delegateType) {
         return false;
     }
 }

@@ -47,7 +47,7 @@ public final class SqlTimestampConverter extends DateTimeConverter {
      * Construct a <b>java.sql.Timestamp</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
-    public SqlTimestampConverter(Object defaultValue) {
+    public SqlTimestampConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -55,6 +55,7 @@ public final class SqlTimestampConverter extends DateTimeConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Timestamp.class;
     }
@@ -65,7 +66,8 @@ public final class SqlTimestampConverter extends DateTimeConverter {
      * @return The DateFormat.
      * @since 1.8.0
      */
-    protected DateFormat getFormat(Locale locale, TimeZone timeZone) {
+    @Override
+    protected DateFormat getFormat(final Locale locale, final TimeZone timeZone) {
         DateFormat format = null;
         if (locale == null) {
             format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);

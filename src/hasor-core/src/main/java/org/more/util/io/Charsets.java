@@ -60,7 +60,7 @@ public class Charsets {
      *            A charset or null.
      * @return the given Charset or the default Charset if the given Charset is null
      */
-    public static Charset toCharset(Charset charset) {
+    public static Charset toCharset(final Charset charset) {
         return charset == null ? Charset.defaultCharset() : charset;
     }
     /**
@@ -72,7 +72,7 @@ public class Charsets {
      * @throws UnsupportedCharsetException
      *             If the named charset is unavailable
      */
-    public static Charset toCharset(String charset) {
+    public static Charset toCharset(final String charset) {
         return charset == null ? Charset.defaultCharset() : Charset.forName(charset);
     }
     /**

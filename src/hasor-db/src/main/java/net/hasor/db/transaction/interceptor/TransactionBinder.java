@@ -31,12 +31,12 @@ import net.hasor.db.transaction.Propagation;
  */
 public class TransactionBinder {
     private ApiBinder apiBinder = null;
-    public TransactionBinder(ApiBinder apiBinder) {
+    public TransactionBinder(final ApiBinder apiBinder) {
         this.apiBinder = apiBinder;
     }
     //
     /*---------------------------------------------------------------------------------------Bind*/
-    public TranInterceptorBindBuilder bind(DataSource dataSource) {
+    public TranInterceptorBindBuilder bind(final DataSource dataSource) {
         TranInterceptor tranInterceptor = new TranInterceptor();
         this.apiBinder.registerAware(tranInterceptor);
         this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
@@ -48,17 +48,17 @@ public class TransactionBinder {
     public class TranInterceptorBindBuilder {
         private DataSource     dataSource = null;
         private TranOperations around     = null;
-        public TranInterceptorBindBuilder(DataSource dataSource) {
+        public TranInterceptorBindBuilder(final DataSource dataSource) {
             this.dataSource = dataSource;
         }
-        public TranInterceptorBindBuilder aroundOperation(TranOperations around) {
+        public TranInterceptorBindBuilder aroundOperation(final TranOperations around) {
             this.around = around;
             return this;
         };
-        public TranPropagationBindBuilder matcher(String matcherExpression) {
+        public TranPropagationBindBuilder matcher(final String matcherExpression) {
             return this.matcher(AopMatchers.expressionMethod(matcherExpression));
         };
-        public TranPropagationBindBuilder matcher(Matcher<Method> matcher) {
+        public TranPropagationBindBuilder matcher(final Matcher<Method> matcher) {
             StrategyDefinition strategyDefine = new StrategyDefinition(this.dataSource, matcher);
             strategyDefine.setTranOperations(this.around);
             return new TranPropagationBindBuilder(strategyDefine);
@@ -67,31 +67,31 @@ public class TransactionBinder {
     /**拦截策略配置*/
     public class TranPropagationBindBuilder {
         private StrategyDefinition strategyDefine = null;
-        public TranPropagationBindBuilder(StrategyDefinition strategyDefine) {
+        public TranPropagationBindBuilder(final StrategyDefinition strategyDefine) {
             this.strategyDefine = strategyDefine;
         }
-        public TranIsolationBindBuilder withPropagation(Propagation propagation) {
+        public TranIsolationBindBuilder withPropagation(final Propagation propagation) {
             Hasor.assertIsNotNull(propagation, "param propagation is null.");
             return this.withPropagation(new FixedValueStrategy<Propagation>(propagation));
         };
-        public TranIsolationBindBuilder withPropagation(TranStrategy<Propagation> propagation) {
+        public TranIsolationBindBuilder withPropagation(final TranStrategy<Propagation> propagation) {
             Hasor.assertIsNotNull(propagation, "param propagation is null.");
             this.strategyDefine.setPropagation(propagation);
-            apiBinder.bindType(StrategyDefinition.class).uniqueName().toInstance(this.strategyDefine);
+            TransactionBinder.this.apiBinder.bindType(StrategyDefinition.class).uniqueName().toInstance(this.strategyDefine);
             return new TranIsolationBindBuilder(this.strategyDefine);
         };
     }
     /**隔离级别设置*/
     public static class TranIsolationBindBuilder {
         private StrategyDefinition strategyDefine = null;
-        public TranIsolationBindBuilder(StrategyDefinition strategyDefine) {
+        public TranIsolationBindBuilder(final StrategyDefinition strategyDefine) {
             this.strategyDefine = strategyDefine;
         }
-        public void withIsolation(Isolation isolation) {
+        public void withIsolation(final Isolation isolation) {
             Hasor.assertIsNotNull(isolation, "param isolation is null.");
             this.withIsolation(new FixedValueStrategy<Isolation>(isolation));
         };
-        public void withIsolation(TranStrategy<Isolation> isolation) {
+        public void withIsolation(final TranStrategy<Isolation> isolation) {
             Hasor.assertIsNotNull(isolation, "param isolation is null.");
             this.strategyDefine.setIsolation(isolation);
         };

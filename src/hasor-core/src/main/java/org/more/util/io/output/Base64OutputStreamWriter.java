@@ -84,13 +84,13 @@ public class Base64OutputStreamWriter extends OutputStream {
      *
      * @throws IllegalArgumentException if size is negative.
      */
-    public Base64OutputStreamWriter(int size, Writer writer) {
+    public Base64OutputStreamWriter(final int size, final Writer writer) {
         if (size < 0) {
             throw new IllegalArgumentException("Negative initial size: " + size);
         }
-        buf = new byte[size];
-        chars = new char[size];
-        totalCharsWritten = 0;
+        this.buf = new byte[size];
+        this.chars = new char[size];
+        this.totalCharsWritten = 0;
         this.writer = writer;
     }
     /**
@@ -98,7 +98,8 @@ public class Base64OutputStreamWriter extends OutputStream {
      *
      * @param b the byte to be written.
      */
-    public void write(int b) throws IOException {
+    @Override
+    public void write(final int b) throws IOException {
         throw new UnsupportedOperationException();
     }
     /**
@@ -109,27 +110,30 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @param off the start offset in the data.
      * @param len the number of bytes to write.
      */
-    public void write(byte b[], int off, int len) throws IOException {
-        if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
+    @Override
+    public void write(final byte b[], final int off, final int len) throws IOException {
+        if (off < 0 || off > b.length || len < 0 || off + len > b.length || off + len < 0) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
         }
-        if ((count + len) > buf.length) {
-            encodePendingBytes(false);
+        if (this.count + len > this.buf.length) {
+            this.encodePendingBytes(false);
         }
-        System.arraycopy(b, off, buf, count, len);
-        count += len;
+        System.arraycopy(b, off, this.buf, this.count, len);
+        this.count += len;
     }
     /**
      * <p>Calls through to {@link #write(byte[], int, int)}/</p> 
      * @param b the bytes to write
      * @throws IOException if an error occurs
      */
-    public void write(byte b[]) throws IOException {
-        write(b, 0, b.length);
+    @Override
+    public void write(final byte b[]) throws IOException {
+        this.write(b, 0, b.length);
     }
     /** Closing <tt>Base64OutputStreamWriter</tt> does nothing. */
+    @Override
     public void close() throws IOException {}
     /**
      * <p>Encodes the remaining bytes and flushes the <code>char[]</code>
@@ -138,13 +142,13 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @throws IOException if an error occurs writing the remaining bytes
      */
     public void finish() throws IOException {
-        encodePendingBytes(true);
+        this.encodePendingBytes(true);
     }
     /**
      * @return the total number of characters written
      */
     public int getTotalCharsWritten() {
-        return totalCharsWritten;
+        return this.totalCharsWritten;
     }
     /**
      * <p>Base64 encode any bytes found in <code>buf</code> and 
@@ -154,39 +158,39 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @param pad flag to signal we're finalizing the encoding processes.
      * @throws IOException if an error occurs 
      */
-    private void encodePendingBytes(boolean pad) throws IOException {
-        int eLen = (count / 3) * 3; // Length of even 24-bits.
+    private void encodePendingBytes(final boolean pad) throws IOException {
+        int eLen = this.count / 3 * 3; // Length of even 24-bits.
         for (int s = 0; s < eLen;) {
             // Copy next three bytes into lower 24 bits of int, paying attension to sign.
-            int i = (buf[s++] & 0xff) << 16 | (buf[s++] & 0xff) << 8 | (buf[s++] & 0xff);
-            if ((encCount + 4) > chars.length) {
+            int i = (this.buf[s++] & 0xff) << 16 | (this.buf[s++] & 0xff) << 8 | this.buf[s++] & 0xff;
+            if (this.encCount + 4 > this.chars.length) {
                 // we're full, so write the encoded chars
                 // and reset the pointer
-                drainCharBuffer();
+                this.drainCharBuffer();
             }
             // Encode the int into four chars               
-            chars[encCount++] = CA[(i >>> 18) & 0x3f];
-            chars[encCount++] = CA[(i >>> 12) & 0x3f];
-            chars[encCount++] = CA[(i >>> 6) & 0x3f];
-            chars[encCount++] = CA[i & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 18 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 12 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i >>> 6 & 0x3f];
+            this.chars[this.encCount++] = Base64OutputStreamWriter.CA[i & 0x3f];
         }
-        int left = (count - eLen);
+        int left = this.count - eLen;
         if (!pad) {
             // push the non-encoded bytes to the beginning of the byte array
             // and set count to the end of those bytes
-            System.arraycopy(buf, eLen, buf, 0, left);
-            count = left;
+            System.arraycopy(this.buf, eLen, this.buf, 0, left);
+            this.count = left;
         } else {
-            drainCharBuffer();
+            this.drainCharBuffer();
             // pad if necessary
             if (left > 0) {
                 // Prepare the int
-                int i = ((buf[eLen] & 0xff) << 10) | (left == 2 ? ((buf[count - 1] & 0xff) << 2) : 0);
+                int i = (this.buf[eLen] & 0xff) << 10 | (left == 2 ? (this.buf[this.count - 1] & 0xff) << 2 : 0);
                 // write last four chars
-                writer.write(CA[i >> 12]);
-                writer.write(CA[(i >>> 6) & 0x3f]);
-                writer.write(left == 2 ? CA[i & 0x3f] : '=');
-                writer.write('=');
+                this.writer.write(Base64OutputStreamWriter.CA[i >> 12]);
+                this.writer.write(Base64OutputStreamWriter.CA[i >>> 6 & 0x3f]);
+                this.writer.write(left == 2 ? Base64OutputStreamWriter.CA[i & 0x3f] : '=');
+                this.writer.write('=');
             }
         }
     }
@@ -197,9 +201,9 @@ public class Base64OutputStreamWriter extends OutputStream {
      * @throws IOException if an error occurs
      */
     private void drainCharBuffer() throws IOException {
-        writer.write(chars, 0, encCount);
-        totalCharsWritten += encCount;
-        encCount = 0;
+        this.writer.write(this.chars, 0, this.encCount);
+        this.totalCharsWritten += this.encCount;
+        this.encCount = 0;
     }
     // Test Case: com.sun.faces.io.TestIO
 } // END Base64OutputStreamWriter

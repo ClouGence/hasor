@@ -29,7 +29,7 @@ public abstract class XmlStreamEvent {
     private QName           currentElement = null;
     private boolean         skip           = false;
     //-----------------------------------------------------
-    public XmlStreamEvent(String xpath, XMLStreamReader reader) {
+    public XmlStreamEvent(final String xpath, final XMLStreamReader reader) {
         this.xpath = xpath;
         this.reader = reader;
     }
@@ -38,9 +38,10 @@ public abstract class XmlStreamEvent {
     public QName getCurrentElement() {
         return this.currentElement;
     }
-    void setCurrentElement(ElementTree currentElementTree) {
-        if (currentElementTree != null)
+    void setCurrentElement(final ElementTree currentElementTree) {
+        if (currentElementTree != null) {
             this.currentElement = currentElementTree.getQname();
+        }
     }
     /**获取当前事件所处的xpath。*/
     public String getXpath() {

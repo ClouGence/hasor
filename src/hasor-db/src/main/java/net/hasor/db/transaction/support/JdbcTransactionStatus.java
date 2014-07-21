@@ -17,8 +17,8 @@ package net.hasor.db.transaction.support;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import net.hasor.db.datasource.SavepointManager;
-import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
 /**
  * 表示一个用于管理事务的状态点
@@ -26,17 +26,17 @@ import net.hasor.db.transaction.TransactionStatus;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTransactionStatus implements TransactionStatus {
-    private Savepoint           savepoint     = null; //事务保存点
-    private TransactionObject   tranConn      = null; //当前事务使用的数据库连接
-    private TransactionObject   suspendConn   = null; //当前事务之前挂起的上一个数据库事务
-    private Propagation behavior      = null; //传播属性
-    private Isolation    level         = null; //隔离级别
-    private boolean             completed     = false; //完成（true表示完成）
-    private boolean             rollbackOnly  = false; //要求回滚（true表示回滚）
-    private boolean             newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
-    private boolean             readOnly      = false; //只读模式（true表示只读）
+    private Savepoint         savepoint     = null; //事务保存点
+    private TransactionObject tranConn      = null; //当前事务使用的数据库连接
+    private TransactionObject suspendConn   = null; //当前事务之前挂起的上一个数据库事务
+    private Propagation       behavior      = null; //传播属性
+    private Isolation         level         = null; //隔离级别
+    private boolean           completed     = false; //完成（true表示完成）
+    private boolean           rollbackOnly  = false; //要求回滚（true表示回滚）
+    private boolean           newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
+    private boolean           readOnly      = false; //只读模式（true表示只读）
     //
-    public JdbcTransactionStatus(Propagation behavior, Isolation level) {
+    public JdbcTransactionStatus(final Propagation behavior, final Isolation level) {
         this.behavior = behavior;
         this.level = level;
     }
@@ -79,49 +79,59 @@ public class JdbcTransactionStatus implements TransactionStatus {
         this.newConnection = true;
     }
     TransactionObject getTranConn() {
-        return tranConn;
+        return this.tranConn;
     }
-    void setTranConn(TransactionObject tranConn) {
+    void setTranConn(final TransactionObject tranConn) {
         this.tranConn = tranConn;
     }
     TransactionObject getSuspendConn() {
-        return suspendConn;
+        return this.suspendConn;
     }
-    void setSuspendConn(TransactionObject suspendConn) {
+    void setSuspendConn(final TransactionObject suspendConn) {
         this.suspendConn = suspendConn;
     }
     //
     //
     //
+    @Override
     public Propagation getTransactionBehavior() {
         return this.behavior;
     }
+    @Override
     public Isolation getIsolationLevel() {
         return this.level;
     }
+    @Override
     public boolean isCompleted() {
         return this.completed;
     }
+    @Override
     public boolean isRollbackOnly() {
         return this.rollbackOnly;
     }
+    @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
+    @Override
     public boolean isNewConnection() {
         return this.newConnection;
     }
+    @Override
     public boolean isSuspend() {
-        return (this.suspendConn != null) ? true : false;
+        return this.suspendConn != null ? true : false;
     }
+    @Override
     public boolean hasSavepoint() {
-        return (this.savepoint != null) ? true : false;
+        return this.savepoint != null ? true : false;
     }
+    @Override
     public void setRollbackOnly() throws SQLException {
         if (this.isCompleted())
             throw new SQLException("Transaction is already completed.");
         this.rollbackOnly = true;
     }
+    @Override
     public void setReadOnly() throws SQLException {
         if (this.isCompleted())
             throw new SQLException("Transaction is already completed.");

@@ -30,28 +30,29 @@ public class CreatedConfiguration {
     private ArrayList<String> renderAopMethodList      = null; //具有Aop特性的方法数组，是具有顺序的。
     //
     /**创建ClassConfiguration对象。*/
-    CreatedConfiguration(ClassBuilder classBuilder, BuilderClassAdapter builderAdapter, AopClassAdapter aopAdapter) {
+    CreatedConfiguration(final ClassBuilder classBuilder, final BuilderClassAdapter builderAdapter, final AopClassAdapter aopAdapter) {
         this.classBuilder = classBuilder;
         //获取当执行生成新类时候的产出信息。
         this.renderMethodList = builderAdapter.getRenderMethodList();
         this.renderDelegateList = builderAdapter.getRenderDelegateList();
         this.renderDelegatePropxyList = builderAdapter.getRenderDelegatePropxyList();
         //获取aop产出信息。
-        if (aopAdapter != null)
+        if (aopAdapter != null) {
             this.renderAopMethodList = aopAdapter.getRenderAopMethodList();
+        }
     }
     /**配置Bean对象。*/
-    public Object configBean(Object obj) throws InitializationException {
-        ClassEngine classEngine = classBuilder.getClassEngine();
+    public Object configBean(final Object obj) throws InitializationException {
+        ClassEngine classEngine = this.classBuilder.getClassEngine();
         Class<?> beanClass = obj.getClass();
         //
         //1.注入DelegateArrayName和DelegateMethodArrayName
         if (this.classBuilder.isAddDelegate() == true) {
             //1.获取MethodDelegate，delegateTypes数组对象，其顺序由renderDelegateList决定。
-            Class<?>[] delegateTypes = new Class<?>[renderDelegateList.size()];//根据实际渲染的接口实现数目来创建要注入的代理数组。
+            Class<?>[] delegateTypes = new Class<?>[this.renderDelegateList.size()];//根据实际渲染的接口实现数目来创建要注入的代理数组。
             MethodDelegate[] methodDelegates = new MethodDelegate[delegateTypes.length];
             for (Class<?> delType : this.classBuilder.getDelegateType()) {
-                int index = renderDelegateList.indexOf(EngineToos.replaceClassName(delType.getName()));
+                int index = this.renderDelegateList.indexOf(EngineToos.replaceClassName(delType.getName()));
                 if (index != -1) {
                     delegateTypes[index] = delType;
                     methodDelegates[index] = classEngine.getDelegate(delType);
@@ -67,8 +68,9 @@ public class CreatedConfiguration {
                     String m_return = EngineToos.toAsmType(method.getReturnType());
                     String fullDesc = m_name + "(" + m_desc + ")" + m_return;
                     int index = this.renderMethodList.indexOf(fullDesc);
-                    if (index != -1)
+                    if (index != -1) {
                         methods[index] = method;
+                    }
                 }
             }
             //3.执行注入
@@ -88,8 +90,9 @@ public class CreatedConfiguration {
                 PropertyDelegate<?>[] delegateProperty = new PropertyDelegate<?>[this.renderDelegatePropxyList.size()];
                 for (String field : delegateFields) {
                     int index = this.renderDelegatePropxyList.indexOf(field);
-                    if (index != -1)
+                    if (index != -1) {
                         delegateProperty[index] = classEngine.getDelegateProperty(field);
+                    }
                 }
                 try {
                     Method method = beanClass.getMethod("set" + BuilderClassAdapter.PropertyArrayName, PropertyDelegate[].class);
@@ -122,8 +125,9 @@ public class CreatedConfiguration {
                     if (index != -1) {
                         final int nameStart = AopClassAdapter.AopMethodPrefix.length();
                         Method proxyMethod = EngineToos.findMethod(beanClass, m.getName().substring(nameStart), m.getParameterTypes());
-                        if (proxyMethod == null)
+                        if (proxyMethod == null) {
                             throw new InitializationException("配置aop链错误，目标方法无效...");
+                        }
                         org.more.classcode.Method method = new org.more.classcode.Method(proxyMethod, m);
                         aopMethodArray[index] = method;
                         //执行方法的aop策略。
@@ -133,9 +137,11 @@ public class CreatedConfiguration {
                         AopInvokeFilter[] _aopInvokeFilter = aopStrategy.filterAopInvokeFilter(obj, m, aopInvokeFilter);
                         //构造过滤器链
                         AopFilterChain nextFilterChain = new AopFilterChain_End() {};
-                        if (_aopInvokeFilter != null)
-                            for (int j = 0; j < _aopInvokeFilter.length; j++)
-                                nextFilterChain = new AopFilterChain_Impl(_aopInvokeFilter[j], nextFilterChain);
+                        if (_aopInvokeFilter != null) {
+                            for (AopInvokeFilter element : _aopInvokeFilter) {
+                                nextFilterChain = new AopFilterChain_Impl(element, nextFilterChain);
+                            }
+                        }
                         //构造过滤器链最后环节。
                         aopFilterChain[i] = new AopFilterChain_Start(nextFilterChain, _aopBeforeListener, _aopReturningListener, _aopThrowingListener);
                     }

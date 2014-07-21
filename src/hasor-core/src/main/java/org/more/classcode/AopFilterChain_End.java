@@ -20,9 +20,11 @@ package org.more.classcode;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AopFilterChain_End implements AopFilterChain {
-    public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
-        if (method == null)
+    @Override
+    public Object doInvokeFilter(final Object target, final Method method, final Object[] args) throws Throwable {
+        if (method == null) {
             throw new LostException("在Aop链最终环节丢失方法。");
+        }
         return method.getTargetMeyhod().invoke(target, args);
     }
 }

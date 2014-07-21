@@ -23,15 +23,18 @@ import net.hasor.db.jdbc.SqlParameterSource;
  */
 class InnerMapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Map<String, ?> values;
-    public InnerMapSqlParameterSource(Map<String, ?> values) {
+    public InnerMapSqlParameterSource(final Map<String, ?> values) {
         this.values = values;
     }
-    public boolean hasValue(String paramName) {
+    @Override
+    public boolean hasValue(final String paramName) {
         return this.values.containsKey(paramName);
     }
-    public Object getValue(String paramName) throws IllegalArgumentException {
+    @Override
+    public Object getValue(final String paramName) throws IllegalArgumentException {
         return this.values.get(paramName);
     }
+    @Override
     public void cleanupParameters() {
         for (Object val : this.values.values())
             if (val instanceof ParameterDisposer)

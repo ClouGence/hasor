@@ -26,6 +26,7 @@ import org.more.util.ContextClassLoaderLocal;
  */
 public class DataSourceUtils {
     private static class ServiceLocal extends ContextClassLoaderLocal<DataSourceHelper> {
+        @Override
         protected DataSourceHelper initialValue() {
             return new LocalDataSourceHelper();
         }
@@ -33,29 +34,29 @@ public class DataSourceUtils {
     private static ServiceLocal utilServiceLocal = new ServiceLocal();
     //
     /**申请连接*/
-    public static Connection getConnection(DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = utilServiceLocal.get();
+    public static Connection getConnection(final DataSource dataSource) throws SQLException {
+        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
         Connection conn = utilService.getConnection(dataSource);
         if (conn == null)
             throw new SQLException("getConnection. return null.");
         return conn;
     };
     /**释放连接*/
-    public static void releaseConnection(Connection con, DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = utilServiceLocal.get();
+    public static void releaseConnection(final Connection con, final DataSource dataSource) throws SQLException {
+        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
         utilService.releaseConnection(con, dataSource);
     };
     /**获得某个数据源的当前连接*/
-    public static Connection currentConnection(DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = utilServiceLocal.get();
+    public static Connection currentConnection(final DataSource dataSource) throws SQLException {
+        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
         return utilService.currentConnection(dataSource);
     };
     /**获取DataSourceHelper*/
     public static DataSourceHelper getDataSourceHelper() {
-        return utilServiceLocal.get();
+        return DataSourceUtils.utilServiceLocal.get();
     }
     /**更换默认DataSourceHelper*/
-    protected static void changeDataSourceUtilService(DataSourceHelper utilService) {
-        utilServiceLocal.set(utilService);
+    protected static void changeDataSourceUtilService(final DataSourceHelper utilService) {
+        DataSourceUtils.utilServiceLocal.set(utilService);
     }
 }

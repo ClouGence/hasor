@@ -25,13 +25,13 @@ public class ConnectionSequence {
     private LinkedList<ConnectionHolder> holderList    = new LinkedList<ConnectionHolder>();
     //
     public boolean isEmpty() {
-        return (currentHolder == null || holderList.isEmpty());
+        return this.currentHolder == null || this.holderList.isEmpty();
     }
     public ConnectionHolder currentHolder() {
         return this.currentHolder;
     }
     /**压入*/
-    public void push(ConnectionHolder newHolder) {
+    public void push(final ConnectionHolder newHolder) {
         this.currentHolder = newHolder;
         this.holderList.addFirst(newHolder);
     }

@@ -54,13 +54,13 @@ public enum Isolation {
     SERIALIZABLE(Connection.TRANSACTION_SERIALIZABLE);
     //
     private int value;
-    Isolation(int value) {
+    Isolation(final int value) {
         this.value = value;
     }
     protected int value() {
         return this.value;
     }
-    public static Isolation valueOf(int value) {
+    public static Isolation valueOf(final int value) {
         switch (value) {
         case -1:
             return Isolation.DEFAULT;

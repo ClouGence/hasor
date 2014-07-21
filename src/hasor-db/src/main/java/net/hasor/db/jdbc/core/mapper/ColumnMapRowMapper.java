@@ -43,18 +43,19 @@ import net.hasor.db.jdbc.core.LinkedCaseInsensitiveMap;
  * @see JdbcTemplate#queryForMap(String)
  */
 public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
-    public final Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+    @Override
+    public final Map<String, Object> mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnCount = rsmd.getColumnCount();
-        Map<String, Object> mapOfColValues = createColumnMap(columnCount);
+        Map<String, Object> mapOfColValues = this.createColumnMap(columnCount);
         for (int i = 1; i <= columnCount; i++) {
-            String key = getColumnKey(lookupColumnName(rsmd, i));
-            Object obj = getColumnValue(rs, i);
+            String key = this.getColumnKey(ColumnMapRowMapper.lookupColumnName(rsmd, i));
+            Object obj = this.getColumnValue(rs, i);
             mapOfColValues.put(key, obj);
         }
         return mapOfColValues;
     }
-    private static String lookupColumnName(ResultSetMetaData resultSetMetaData, int columnIndex) throws SQLException {
+    private static String lookupColumnName(final ResultSetMetaData resultSetMetaData, final int columnIndex) throws SQLException {
         String name = resultSetMetaData.getColumnLabel(columnIndex);
         if (name == null || name.length() < 1)
             name = resultSetMetaData.getColumnName(columnIndex);
@@ -63,15 +64,15 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     //
     //
     /**取得指定列的值*/
-    protected Object getColumnValue(ResultSet rs, int index) throws SQLException {
-        return getResultSetValue(rs, index);
+    protected Object getColumnValue(final ResultSet rs, final int index) throws SQLException {
+        return AbstractRowMapper.getResultSetValue(rs, index);
     }
     /**讲列名转换为合理的格式。*/
-    protected String getColumnKey(String columnName) {
+    protected String getColumnKey(final String columnName) {
         return columnName;
     }
     /**创建一个 Map 用于存放数据*/
-    protected Map<String, Object> createColumnMap(int columnCount) {
+    protected Map<String, Object> createColumnMap(final int columnCount) {
         return new LinkedCaseInsensitiveMap<Object>(columnCount);
     }
 }

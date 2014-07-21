@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AttributeEvent extends XmlStreamEvent {
-    public AttributeEvent(XmlStreamEvent elementEvent, String xpath, XMLStreamReader reader, int index) {
+    public AttributeEvent(final XmlStreamEvent elementEvent, final String xpath, final XMLStreamReader reader, final int index) {
         super(xpath, reader);
         this.attQName = reader.getAttributeName(index);
         this.elementEvent = elementEvent;
@@ -37,7 +37,7 @@ public class AttributeEvent extends XmlStreamEvent {
     }
     /**获取属性所在元素的事件对象。*/
     public XmlStreamEvent getElementEvent() {
-        return elementEvent;
+        return this.elementEvent;
     }
     /**获取属性名(不包含命名空间前缀)。*/
     public String getElementName() {
@@ -56,10 +56,12 @@ public class AttributeEvent extends XmlStreamEvent {
         return this.getReader().getAttributeValue(this.index);
     }
     /**该事件没有拍档。*/
-    public boolean isPartner(XmlStreamEvent e) {
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
         return false;
     }
     /**属性事件，不是共有事件。*/
+    @Override
     public boolean isPublicEvent() {
         return false;
     }

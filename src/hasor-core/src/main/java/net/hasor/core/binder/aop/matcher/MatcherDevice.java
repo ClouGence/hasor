@@ -23,20 +23,21 @@ import net.hasor.core.Hasor;
  */
 public class MatcherDevice<T> implements Matcher<T> {
     private Matcher<T> matcherNode = null;
-    protected MatcherDevice(Matcher<T> matcherNode) {
+    protected MatcherDevice(final Matcher<T> matcherNode) {
         this.matcherNode = matcherNode;
     }
     //
-    public final boolean matches(T t) {
-        return matcherNode.matches(t);
+    @Override
+    public final boolean matches(final T t) {
+        return this.matcherNode.matches(t);
     }
     /**与*/
-    public MatcherDevice<T> and(Matcher<T> other) {
+    public MatcherDevice<T> and(final Matcher<T> other) {
         this.matcherNode = new And<T>(this.matcherNode, other);
         return this;
     }
     /**或*/
-    public MatcherDevice<T> or(Matcher<T> other) {
+    public MatcherDevice<T> or(final Matcher<T> other) {
         this.matcherNode = new Or<T>(this.matcherNode, other);
         return this;
     }
@@ -49,35 +50,39 @@ public class MatcherDevice<T> implements Matcher<T> {
     private static class And<T> implements Matcher<T> {
         private final Matcher<T> node1;
         private final Matcher<T> node2;
-        private And(Matcher<T> node1, Matcher<T> node2) {
+        private And(final Matcher<T> node1, final Matcher<T> node2) {
             this.node1 = Hasor.assertIsNotNull(node1, "delegate1");
             this.node2 = Hasor.assertIsNotNull(node2, "delegate2");
         }
-        public boolean matches(T t) {
+        @Override
+        public boolean matches(final T t) {
             return this.node1.matches(t) && this.node2.matches(t);
         }
     }
     private static class Or<T> implements Matcher<T> {
         private final Matcher<T> node1;
         private final Matcher<T> node2;
-        private Or(Matcher<T> node1, Matcher<T> node2) {
+        private Or(final Matcher<T> node1, final Matcher<T> node2) {
             this.node1 = Hasor.assertIsNotNull(node1, "delegate1");
             this.node2 = Hasor.assertIsNotNull(node2, "delegate2");
         }
-        public boolean matches(T t) {
+        @Override
+        public boolean matches(final T t) {
             return this.node1.matches(t) || this.node2.matches(t);
         }
     }
     private static class Not<T> implements Matcher<T> {
         private final Matcher<T> delegate;
-        private Not(Matcher<T> delegate) {
+        private Not(final Matcher<T> delegate) {
             this.delegate = Hasor.assertIsNotNull(delegate, "delegate");
         }
-        public boolean matches(T t) {
-            return !delegate.matches(t);
+        @Override
+        public boolean matches(final T t) {
+            return !this.delegate.matches(t);
         }
+        @Override
         public String toString() {
-            return "not(" + delegate + ")";
+            return "not(" + this.delegate + ")";
         }
     }
 }

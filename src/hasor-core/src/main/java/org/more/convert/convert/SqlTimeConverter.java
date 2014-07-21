@@ -48,7 +48,7 @@ public final class SqlTimeConverter extends DateTimeConverter {
      *
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
-    public SqlTimeConverter(Object defaultValue) {
+    public SqlTimeConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -56,6 +56,7 @@ public final class SqlTimeConverter extends DateTimeConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Time.class;
     }
@@ -66,7 +67,8 @@ public final class SqlTimeConverter extends DateTimeConverter {
      * @return The DateFormat.
      * @since 1.8.0
      */
-    protected DateFormat getFormat(Locale locale, TimeZone timeZone) {
+    @Override
+    protected DateFormat getFormat(final Locale locale, final TimeZone timeZone) {
         DateFormat format = null;
         if (locale == null) {
             format = DateFormat.getTimeInstance(DateFormat.SHORT);

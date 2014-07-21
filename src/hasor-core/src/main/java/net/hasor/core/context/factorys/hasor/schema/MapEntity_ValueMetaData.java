@@ -25,6 +25,7 @@ public class MapEntity_ValueMetaData extends ValueMetaData {
     private ValueMetaData value = null; //Value
     /*------------------------------------------------------------------*/
     /**返回{@link PropertyType#MapEntity}*/
+    @Override
     public String getType() {
         return PropertyType.MapEntity.value();
     }
@@ -33,7 +34,7 @@ public class MapEntity_ValueMetaData extends ValueMetaData {
         return this.key;
     }
     /**设置key*/
-    public void setKey(ValueMetaData key) {
+    public void setKey(final ValueMetaData key) {
         this.key = key;
     }
     /**获取value*/
@@ -41,7 +42,7 @@ public class MapEntity_ValueMetaData extends ValueMetaData {
         return this.value;
     }
     /**设置value*/
-    public void setValue(ValueMetaData value) {
+    public void setValue(final ValueMetaData value) {
         this.value = value;
     }
 }

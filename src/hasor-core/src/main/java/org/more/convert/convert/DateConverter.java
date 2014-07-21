@@ -48,13 +48,14 @@ public final class DateConverter extends DateTimeConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public DateConverter(Object defaultValue) {
+    public DateConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
      * Return the default type this <code>Converter</code> handles.
      * @return The default type this <code>Converter</code> handles.
      */
+    @Override
     protected Class getDefaultType() {
         return Date.class;
     }

@@ -49,7 +49,7 @@ public class UnhandledException extends RuntimeException {
      * Constructs the exception using a cause.
      * @param cause  the underlying cause
      */
-    public UnhandledException(Throwable cause) {
+    public UnhandledException(final Throwable cause) {
         super(cause);
     }
     /**
@@ -57,7 +57,7 @@ public class UnhandledException extends RuntimeException {
      * @param message  the message to use
      * @param cause  the underlying cause
      */
-    public UnhandledException(String message, Throwable cause) {
+    public UnhandledException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

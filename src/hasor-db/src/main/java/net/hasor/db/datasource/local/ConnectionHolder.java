@@ -28,7 +28,7 @@ public class ConnectionHolder implements SavepointManager {
     private int        referenceCount;
     private DataSource dataSource;
     private Connection connection;
-    public ConnectionHolder(DataSource dataSource) {
+    public ConnectionHolder(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
     /**增加引用计数,一个因为持有人已被请求。*/
@@ -38,7 +38,7 @@ public class ConnectionHolder implements SavepointManager {
     /**减少引用计数,一个因为持有人已被释放。 */
     public synchronized void released() throws SQLException {
         this.referenceCount--;
-        if (!isOpen() && this.connection != null) {
+        if (!this.isOpen() && this.connection != null)
             try {
                 this.savepointCounter = 0;
                 this.savepointsSupported = null;
@@ -48,10 +48,9 @@ public class ConnectionHolder implements SavepointManager {
             } finally {
                 this.connection = null;
             }
-        }
     }
     public boolean isOpen() {
-        if (referenceCount == 0)
+        if (this.referenceCount == 0)
             return false;
         return true;
     }
@@ -59,14 +58,13 @@ public class ConnectionHolder implements SavepointManager {
     public synchronized Connection getConnection() throws SQLException {
         if (this.isOpen() == false)
             return null;
-        if (this.connection == null) {
+        if (this.connection == null)
             this.connection = this.dataSource.getConnection();
-        }
         return this.connection;
     }
     /**是否存在事务*/
     public boolean hasTransaction() throws SQLException {
-        Connection conn = getConnection();
+        Connection conn = this.getConnection();
         if (conn == null)
             return false;
         //AutoCommit被标记为 false 表示开启了事务。
@@ -76,7 +74,7 @@ public class ConnectionHolder implements SavepointManager {
     //
     //
     //---------------------------------------------------------------------------Savepoint
-    private void checkConn(Connection conn) throws SQLException {
+    private void checkConn(final Connection conn) throws SQLException {
         if (conn == null)
             throw new SQLException("Connection is null.");
     }
@@ -86,35 +84,39 @@ public class ConnectionHolder implements SavepointManager {
     /**返回 JDBC 驱动是否支持保存点。*/
     public boolean supportsSavepoints() throws SQLException {
         Connection conn = this.getConnection();
-        checkConn(conn);
+        this.checkConn(conn);
         //
         if (this.savepointsSupported == null)
             this.savepointsSupported = conn.getMetaData().supportsSavepoints();
         return this.savepointsSupported;
     }
     /**使用一个全新的名称创建一个保存点。*/
+    @Override
     public Savepoint createSavepoint() throws SQLException {
         Connection conn = this.getConnection();
-        checkConn(conn);
+        this.checkConn(conn);
         //
         this.savepointCounter++;
-        return conn.setSavepoint(SAVEPOINT_NAME_PREFIX + this.savepointCounter);
+        return conn.setSavepoint(ConnectionHolder.SAVEPOINT_NAME_PREFIX + this.savepointCounter);
     }
-    public void rollbackToSavepoint(Savepoint savepoint) throws SQLException {
+    @Override
+    public void rollbackToSavepoint(final Savepoint savepoint) throws SQLException {
         Connection conn = this.getConnection();
-        checkConn(conn);
+        this.checkConn(conn);
         //
         conn.rollback(savepoint);
     }
-    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+    @Override
+    public void releaseSavepoint(final Savepoint savepoint) throws SQLException {
         Connection conn = this.getConnection();
-        checkConn(conn);
+        this.checkConn(conn);
         //
         conn.releaseSavepoint(savepoint);
     }
+    @Override
     public boolean supportSavepoint() throws SQLException {
         Connection conn = this.getConnection();
-        checkConn(conn);
+        this.checkConn(conn);
         return conn.getMetaData().supportsSavepoints();
     };
 }

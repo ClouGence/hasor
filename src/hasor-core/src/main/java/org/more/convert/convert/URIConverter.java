@@ -44,7 +44,7 @@ public final class URIConverter extends AbstractConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public URIConverter(Object defaultValue) {
+    public URIConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -53,6 +53,7 @@ public final class URIConverter extends AbstractConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return URI.class;
     }
@@ -65,7 +66,8 @@ public final class URIConverter extends AbstractConverter {
      * @throws Throwable if an error occurs converting to the specified type
      * @since 1.8.0
      */
-    protected Object convertToType(Class type, Object value) throws Throwable {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Throwable {
         return new URI(value.toString());
     }
 }

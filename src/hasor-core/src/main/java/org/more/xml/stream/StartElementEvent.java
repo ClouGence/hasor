@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StartElementEvent extends XmlStreamEvent {
-    public StartElementEvent(String xpath, XMLStreamReader reader) {
+    public StartElementEvent(final String xpath, final XMLStreamReader reader) {
         super(xpath, reader);
     }
     /**获取元素名称{@link QName}对象。*/
@@ -47,15 +47,15 @@ public class StartElementEvent extends XmlStreamEvent {
         return this.getReader().getNamespaceCount();
     }
     /**获取在这个元素上定义的指定索引的命名空间前缀。*/
-    public String getNamespacePrefix(int index) {
+    public String getNamespacePrefix(final int index) {
         return this.getReader().getNamespacePrefix(index);
     }
     /**获取在这个元素上定义的指定索引的命名空间URI。*/
-    public String getNamespaceURI(int index) {
+    public String getNamespaceURI(final int index) {
         return this.getReader().getNamespaceURI(index);
     }
     /**使用指定的命名空间前缀获取命名空间URI。*/
-    public String getNamespaceURI(String prefix) {
+    public String getNamespaceURI(final String prefix) {
         return this.getReader().getNamespaceURI(prefix);
     }
     /**获取在该元素上定义的属性总数。*/
@@ -63,35 +63,42 @@ public class StartElementEvent extends XmlStreamEvent {
         return this.getReader().getAttributeCount();
     }
     /**获取该元素上定义的指定属性名。*/
-    public QName getAttributeName(int index) {
-        if (index > this.getAttributeCount())
+    public QName getAttributeName(final int index) {
+        if (index > this.getAttributeCount()) {
             return null;
+        }
         return this.getReader().getAttributeName(index);
     }
     /**获取该元素上定义的指定属性值。*/
-    public String getAttributeValue(int index) {
-        if (index > this.getAttributeCount())
+    public String getAttributeValue(final int index) {
+        if (index > this.getAttributeCount()) {
             return null;
+        }
         return this.getReader().getAttributeValue(index);
     }
     /**获取该元素上定义的指定属性类型。*/
-    public String getAttributeType(int index) {
-        if (index > this.getAttributeCount())
+    public String getAttributeType(final int index) {
+        if (index > this.getAttributeCount()) {
             return null;
+        }
         return this.getReader().getAttributeType(index);
     }
     /**获取该元素上定义的指定属性类型。*/
-    public String getAttributeType(String name) {
-        for (int i = 0; i < this.getAttributeCount(); i++)
-            if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
+    public String getAttributeType(final String name) {
+        for (int i = 0; i < this.getAttributeCount(); i++) {
+            if (name.equals(this.getAttributeName(i).getLocalPart()) == true) {
                 return this.getAttributeType(i);
+            }
+        }
         return null;
     }
     /**获取该元素上定义的指定属性值。*/
-    public String getAttributeValue(String name) {
-        for (int i = 0; i < this.getAttributeCount(); i++)
-            if (name.equals(this.getAttributeName(i).getLocalPart()) == true)
+    public String getAttributeValue(final String name) {
+        for (int i = 0; i < this.getAttributeCount(); i++) {
+            if (name.equals(this.getAttributeName(i).getLocalPart()) == true) {
                 return this.getAttributeValue(i);
+            }
+        }
         return null;
     }
     /**读取纯文本元素的内容，如果不是纯文本元素，则抛出异常。*/
@@ -99,20 +106,25 @@ public class StartElementEvent extends XmlStreamEvent {
         return this.getReader().getElementText();
     }
     /**该事件的拍档是{@link EndElementEvent}类型对象，被测试的对象的{@link QName}必须与当前对象的{@link QName}相同，并且要在同一个xpath下。*/
-    public boolean isPartner(XmlStreamEvent e) {
-        if (e instanceof EndElementEvent == false)
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
+        if (e instanceof EndElementEvent == false) {
             return false;
+        }
         //
         EndElementEvent ende = (EndElementEvent) e;
         QName qnameA = this.getName();
         QName qnameB = ende.getName();
-        if (qnameA.equals(qnameB) == false)
+        if (qnameA.equals(qnameB) == false) {
             return false;
-        if (this.getXpath().equals(ende.getXpath()) == false)
+        }
+        if (this.getXpath().equals(ende.getXpath()) == false) {
             return false;
+        }
         return true;
     };
     /**元素开始事件，不是共有事件。*/
+    @Override
     public boolean isPublicEvent() {
         return false;
     }

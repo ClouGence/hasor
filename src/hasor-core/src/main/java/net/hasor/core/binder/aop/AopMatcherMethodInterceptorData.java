@@ -28,18 +28,21 @@ public class AopMatcherMethodInterceptorData implements AopMatcherMethodIntercep
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;
     //
-    public AopMatcherMethodInterceptorData(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+    public AopMatcherMethodInterceptorData(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
         this.matcherClass = matcherClass;
         this.matcherMethod = matcherMethod;
         this.interceptor = interceptor;
     }
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    @Override
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
         return this.interceptor.invoke(invocation);
     }
-    public boolean matcher(Class<?> targetClass) {
+    @Override
+    public boolean matcher(final Class<?> targetClass) {
         return this.matcherClass.matches(targetClass);
     }
-    public boolean matcher(Method targetMethod) {
+    @Override
+    public boolean matcher(final Method targetMethod) {
         return this.matcherMethod.matches(targetMethod);
     }
 }

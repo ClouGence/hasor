@@ -34,10 +34,11 @@ import net.hasor.db.transaction.interceptor.TransactionBinder;
 public class SimpleTranInterceptorModule implements Module {
     private DataSource dataSource = null;
     //
-    public SimpleTranInterceptorModule(DataSource dataSource) {
+    public SimpleTranInterceptorModule(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+    @Override
+    public void loadModule(final ApiBinder apiBinder) throws Throwable {
         TransactionBinder it = new TransactionBinder(apiBinder);
         it.bind(this.dataSource)/*设置到数据源*/
         .aroundOperation(new TransactionOperation())/*事务执行行为*/
@@ -47,7 +48,8 @@ public class SimpleTranInterceptorModule implements Module {
     }
 }
 class TransactionOperation implements TranOperations {
-    public Object execute(TransactionStatus tranStatus, MethodInvocation invocation) throws Throwable {
+    @Override
+    public Object execute(final TransactionStatus tranStatus, final MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod();
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         //0.忽略
@@ -73,7 +75,8 @@ class TransactionOperation implements TranOperations {
 }
 /**决定传播属性*/
 class PropagationStrategy implements TranStrategy<Propagation> {
-    public Propagation getStrategy(Method targetMethod) {
+    @Override
+    public Propagation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         if (tranAnno == null)
             return Propagation.REQUIRED;//默认设置
@@ -82,7 +85,8 @@ class PropagationStrategy implements TranStrategy<Propagation> {
 }
 /**决定隔离级别*/
 class IsolationStrategy implements TranStrategy<Isolation> {
-    public Isolation getStrategy(Method targetMethod) {
+    @Override
+    public Isolation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         if (tranAnno == null)
             return Isolation.DEFAULT;//默认设置

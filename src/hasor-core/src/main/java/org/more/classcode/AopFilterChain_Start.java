@@ -26,40 +26,48 @@ public class AopFilterChain_Start {
     private AopReturningListener[] aopReturningListener = null; //returning切面事件接受者。
     private AopThrowingListener[]  aopThrowingListener  = null; //throwing切面事件接受者。
     /***/
-    AopFilterChain_Start(AopFilterChain nextFilterChain, AopBeforeListener[] aopBeforeListener, AopReturningListener[] aopReturningListener, AopThrowingListener[] aopThrowingListener) {
+    AopFilterChain_Start(final AopFilterChain nextFilterChain, final AopBeforeListener[] aopBeforeListener, final AopReturningListener[] aopReturningListener, final AopThrowingListener[] aopThrowingListener) {
         this.nextFilterChain = nextFilterChain;
         this.aopBeforeListener = aopBeforeListener;
         this.aopReturningListener = aopReturningListener;
         this.aopThrowingListener = aopThrowingListener;
     }
-    public Object doInvokeFilter(Object target, Method method, Object[] args) {
+    public Object doInvokeFilter(final Object target, final Method method, final Object[] args) {
         try {
             //1.下一环节检测，除非发生内部错误否则不会出现环节丢失。
-            if (this.nextFilterChain == null)
+            if (this.nextFilterChain == null) {
                 throw new LostException("丢失Aop链第一环节。");
+            }
             //2.通知before切面。
-            if (this.aopBeforeListener != null)
-                for (int i = 0; i < this.aopBeforeListener.length; i++)
-                    this.aopBeforeListener[i].beforeInvoke(target, method, args);
+            if (this.aopBeforeListener != null) {
+                for (AopBeforeListener element : this.aopBeforeListener) {
+                    element.beforeInvoke(target, method, args);
+                }
+            }
             //3.执行调用。
             Object result = this.nextFilterChain.doInvokeFilter(target, method, args);
             //4.通知returning切面。
-            if (this.aopReturningListener != null)
-                for (int i = 0; i < this.aopReturningListener.length; i++)
-                    this.aopReturningListener[i].returningInvoke(target, method, args, result);
+            if (this.aopReturningListener != null) {
+                for (AopReturningListener element : this.aopReturningListener) {
+                    element.returningInvoke(target, method, args, result);
+                }
+            }
             //5.返回结果。
             return result;
         } catch (Throwable e) {
             //6.通知throwing切面。
             Throwable throwObj = e;
-            if (this.aopThrowingListener != null)
-                for (int i = 0; i < this.aopThrowingListener.length; i++)
-                    throwObj = this.aopThrowingListener[i].throwsException(target, method, args, throwObj);
+            if (this.aopThrowingListener != null) {
+                for (AopThrowingListener element : this.aopThrowingListener) {
+                    throwObj = element.throwsException(target, method, args, throwObj);
+                }
+            }
             //7.如果抛出的异常属于RuntimeException那么直接转类型抛出。
-            if (e instanceof RuntimeException == true)
+            if (e instanceof RuntimeException == true) {
                 throw (RuntimeException) throwObj;
-            else
+            } else {
                 throw new InvokeException(throwObj);
+            }
         }
     }
 }

@@ -22,15 +22,15 @@ package org.more.classcode;
 public class FormatException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 7219173260772984152L;
     /**格式异常*/
-    public FormatException(String string) {
+    public FormatException(final String string) {
         super(string);
     }
     /**格式异常*/
-    public FormatException(Throwable error) {
+    public FormatException(final Throwable error) {
         super(error);
     }
     /**格式异常*/
-    public FormatException(String string, Throwable error) {
+    public FormatException(final String string, final Throwable error) {
         super(string, error);
     }
 }

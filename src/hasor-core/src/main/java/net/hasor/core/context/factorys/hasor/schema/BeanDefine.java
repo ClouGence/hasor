@@ -68,6 +68,7 @@ public abstract class BeanDefine extends AbstractDefine {
     private Map<String, MethodDefine>   methods       = new HashMap<String, MethodDefine>();
     /*------------------------------------------------------------------*/
     /**返回具有特征的字符串。*/
+    @Override
     public String toString() {
         //
         String _id = StringUtils.trimToNull(this.getId());
@@ -76,7 +77,7 @@ public abstract class BeanDefine extends AbstractDefine {
         //
         String fullName = _id;
         if (_id == null) {
-            fullName = (_scope != null) ? _scope + "." + _name : _name;
+            fullName = _scope != null ? _scope + "." + _name : _name;
         }
         //
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " ID=" + fullName;
@@ -84,122 +85,122 @@ public abstract class BeanDefine extends AbstractDefine {
     //
     /**获取Bean唯一的ID值。*/
     public String getId() {
-        return id;
+        return this.id;
     }
     /**设置Bean唯一的ID值。*/
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
     /**获取名称,名称在不同的scope下可以重复定义。*/
     public String getName() {
-        return name;
+        return this.name;
     }
     /**设置名称,名称在不同的scope下可以重复定义。*/
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     /**获取所属的作用域。*/
     public String getScope() {
-        return scope;
+        return this.scope;
     }
     /**设置所属的作用域。*/
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
     /**获取初始化参数&构造方法参数*/
     public List<ParamDefine> getInitParams() {
-        return initParams;
+        return this.initParams;
     }
     /**设置初始化参数&构造方法参数*/
-    public void setInitParams(List<ParamDefine> initParams) {
+    public void setInitParams(final List<ParamDefine> initParams) {
         this.initParams = initParams;
     }
     /**获取应用的模板*/
     public String getUseTemplate() {
-        return useTemplate;
+        return this.useTemplate;
     }
     /**设置应用的模板*/
-    public void setUseTemplate(String useTemplate) {
+    public void setUseTemplate(final String useTemplate) {
         this.useTemplate = useTemplate;
     }
     /**获取抽象标志*/
     public boolean isAbstractMark() {
-        return abstractMark;
+        return this.abstractMark;
     }
     /**设置抽象标志*/
-    public void setAbstractMark(boolean abstractMark) {
+    public void setAbstractMark(final boolean abstractMark) {
         this.abstractMark = abstractMark;
     }
     /**获取单态标志*/
     public boolean isSingletonMark() {
-        return singletonMark;
+        return this.singletonMark;
     }
     /**设置单态标志*/
-    public void setSingletonMark(boolean singletonMark) {
+    public void setSingletonMark(final boolean singletonMark) {
         this.singletonMark = singletonMark;
     }
     /**获取延迟装载标志*/
     public boolean isLazyMark() {
-        return lazyMark;
+        return this.lazyMark;
     }
     /**设置延迟装载标志*/
-    public void setLazyMark(boolean lazyMark) {
+    public void setLazyMark(final boolean lazyMark) {
         this.lazyMark = lazyMark;
     }
     /**获取描述信息*/
     public String getDescription() {
-        return description;
+        return this.description;
     }
     /**设置描述信息*/
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
     /**获取工厂Bean名称或ID。*/
     public String getFactoryBean() {
-        return factoryBean;
+        return this.factoryBean;
     }
     /**设置工厂Bean名称或ID。*/
-    public void setFactoryBean(String factoryBean) {
+    public void setFactoryBean(final String factoryBean) {
         this.factoryBean = factoryBean;
     }
     /**获取工厂Bean,下用于创建该bean的方法名。*/
     public String getFactoryMethod() {
-        return factoryMethod;
+        return this.factoryMethod;
     }
     /**设置工厂Bean,下用于创建该bean的方法名。*/
-    public void setFactoryMethod(String factoryMethod) {
+    public void setFactoryMethod(final String factoryMethod) {
         this.factoryMethod = factoryMethod;
     }
     /**获取初始化方法（生命周期：阶段-出生）*/
     public String getInitMethod() {
-        return initMethod;
+        return this.initMethod;
     }
     /**设置初始化方法（生命周期：阶段-出生）*/
-    public void setInitMethod(String initMethod) {
+    public void setInitMethod(final String initMethod) {
         this.initMethod = initMethod;
     }
     /**获取销毁方法（生命周期：阶段-死亡）*/
     public String getDestroyMethod() {
-        return destroyMethod;
+        return this.destroyMethod;
     }
     /**设置销毁方法（生命周期：阶段-死亡）*/
-    public void setDestroyMethod(String destroyMethod) {
+    public void setDestroyMethod(final String destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
     /**获取属性成员*/
     public Map<String, PropertyDefine> getPropertys() {
-        return propertys;
+        return this.propertys;
     }
     /**设置属性成员*/
-    public void setPropertys(Map<String, PropertyDefine> propertys) {
+    public void setPropertys(final Map<String, PropertyDefine> propertys) {
         this.propertys = propertys;
     }
     /**获取方法成员*/
     public Map<String, MethodDefine> getMethods() {
-        return methods;
+        return this.methods;
     }
     /**设置方法成员*/
-    public void setMethods(Map<String, MethodDefine> methods) {
+    public void setMethods(final Map<String, MethodDefine> methods) {
         this.methods = methods;
     }
 }

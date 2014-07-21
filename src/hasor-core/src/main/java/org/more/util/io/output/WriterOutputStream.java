@@ -32,7 +32,7 @@ public class WriterOutputStream extends OutputStream {
      * @param writer   - OutputStream使用的Reader
      * @param encoding - OutputStream使用的字符编码格式。
      */
-    public WriterOutputStream(Writer writer, String encoding) {
+    public WriterOutputStream(final Writer writer, final String encoding) {
         this.writer = writer;
         this.encoding = encoding;
     }
@@ -40,37 +40,44 @@ public class WriterOutputStream extends OutputStream {
      * 带Writer参数构造函数
      * @param writer - OutputStream使用的Writer
      */
-    public WriterOutputStream(Writer writer) {
+    public WriterOutputStream(final Writer writer) {
         this.writer = writer;
     }
     //========================================================================================
     /** @see java.io.OutputStream#close() */
+    @Override
     public void close() throws IOException {
         this.writer.close();
         this.writer = null;
         this.encoding = null;
     }
     /** @see java.io.OutputStream#flush() */
+    @Override
     public void flush() throws IOException {
         this.writer.flush();
     }
     /** @see java.io.OutputStream#write(byte[]) */
-    public void write(byte[] b) throws IOException {
-        if (this.encoding == null)
+    @Override
+    public void write(final byte[] b) throws IOException {
+        if (this.encoding == null) {
             this.writer.write(new String(b));
-        else
+        } else {
             this.writer.write(new String(b, this.encoding));
+        }
     }
     /** @see java.io.OutputStream#write(byte[],int,int) */
-    public void write(byte[] b, int off, int len) throws IOException {
-        if (this.encoding == null)
+    @Override
+    public void write(final byte[] b, final int off, final int len) throws IOException {
+        if (this.encoding == null) {
             this.writer.write(new String(b, off, len));
-        else
+        } else {
             this.writer.write(new String(b, off, len, this.encoding));
+        }
     }
     /** @see java.io.OutputStream#write(int) */
-    public synchronized void write(int b) throws IOException {
+    @Override
+    public synchronized void write(final int b) throws IOException {
         this.buf[0] = (byte) b;
-        write(this.buf);
+        this.write(this.buf);
     }
 }

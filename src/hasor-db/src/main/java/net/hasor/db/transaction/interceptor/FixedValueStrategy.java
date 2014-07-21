@@ -22,10 +22,11 @@ import java.lang.reflect.Method;
  */
 class FixedValueStrategy<T> implements TranStrategy<T> {
     private T value = null;
-    public FixedValueStrategy(T value) {
+    public FixedValueStrategy(final T value) {
         this.value = value;
     }
-    public T getStrategy(Method targetMethod) {
+    @Override
+    public T getStrategy(final Method targetMethod) {
         return this.value;
     }
 }

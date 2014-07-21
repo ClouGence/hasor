@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import static net.hasor.web.binder.support.ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -41,48 +40,51 @@ class ServletDefinition extends AbstractServletModuleBinding {
     private UriPatternMatcher     patternMatcher  = null;
     private WebAppContext         appContext      = null;
     //
-    public ServletDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher, Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
+    public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final Provider<HttpServlet> servletProvider, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.servletProvider = servletProvider;
         this.patternMatcher = uriPatternMatcher;
     }
     protected HttpServlet getTarget() throws ServletException {
-        if (this.servletInstance != null) {
+        if (this.servletInstance != null)
             return this.servletInstance;
-        }
         //
         final Map<String, String> initParams = this.getInitParams();
         this.servletInstance = this.servletProvider.get();
         this.servletInstance.init(new ServletConfig() {
+            @Override
             public String getServletName() {
-                return ((servletInstance == null) ? servletProvider : servletInstance).toString();
+                return (ServletDefinition.this.servletInstance == null ? ServletDefinition.this.servletProvider : ServletDefinition.this.servletInstance).toString();
             }
+            @Override
             public ServletContext getServletContext() {
-                return appContext.getServletContext();
+                return ServletDefinition.this.appContext.getServletContext();
             }
-            public String getInitParameter(String s) {
+            @Override
+            public String getInitParameter(final String s) {
                 return initParams.get(s);
             }
+            @Override
             public Enumeration<String> getInitParameterNames() {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
         });
         return this.servletInstance;
     }
+    @Override
     public String toString() {
         return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
-                ServletDefinition.class, getPattern(), getInitParams(), getUriPatternType());
+                ServletDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
+    public void init(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         if (filterConfig != null) {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
                 String key = ent.getKey();
-                if (!thisConfig.containsKey(key)) {
+                if (!thisConfig.containsKey(key))
                     thisConfig.put(key, ent.getValue());
-                }
             }
         }
         //
@@ -90,78 +92,76 @@ class ServletDefinition extends AbstractServletModuleBinding {
         this.getTarget();
     }
     /**/
-    public boolean service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+    public boolean service(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         // 
-        if (serve) {
-            doService(request, response);
-        }
+        if (serve)
+            this.doService(request, response);
         return serve;
     }
     /**/
-    private void doService(final ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doService(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         HttpServletRequest request = new HttpServletRequestWrapper((HttpServletRequest) servletRequest) {
             private String  path;
             private boolean pathComputed     = false;
             //must use a boolean on the memo field, because null is a legal value (TODO no, it's not)
             private boolean pathInfoComputed = false;
             private String  pathInfo;
+            @Override
             public String getPathInfo() {
-                if (!isPathInfoComputed()) {
-                    int servletPathLength = getServletPath().length();
-                    pathInfo = getRequestURI().substring(getContextPath().length()).replaceAll("[/]{2,}", "/");
-                    pathInfo = pathInfo.length() > servletPathLength ? pathInfo.substring(servletPathLength) : null;
+                if (!this.isPathInfoComputed()) {
+                    int servletPathLength = this.getServletPath().length();
+                    this.pathInfo = this.getRequestURI().substring(this.getContextPath().length()).replaceAll("[/]{2,}", "/");
+                    this.pathInfo = this.pathInfo.length() > servletPathLength ? this.pathInfo.substring(servletPathLength) : null;
                     // Corner case: when servlet path and request path match exactly (without trailing '/'),
                     // then pathinfo is null
-                    if ("".equals(pathInfo) && servletPathLength != 0) {
-                        pathInfo = null;
-                    }
-                    pathInfoComputed = true;
+                    if ("".equals(this.pathInfo) && servletPathLength != 0)
+                        this.pathInfo = null;
+                    this.pathInfoComputed = true;
                 }
-                return pathInfo;
+                return this.pathInfo;
             }
             // NOTE(dhanji): These two are a bit of a hack to help ensure that request dipatcher-sent
             // requests don't use the same path info that was memoized for the original request.
             private boolean isPathInfoComputed() {
-                return pathInfoComputed && !(null != servletRequest.getAttribute(REQUEST_DISPATCHER_REQUEST));
+                return this.pathInfoComputed && !(null != servletRequest.getAttribute(ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST));
             }
             private boolean isPathComputed() {
-                return pathComputed && !(null != servletRequest.getAttribute(REQUEST_DISPATCHER_REQUEST));
+                return this.pathComputed && !(null != servletRequest.getAttribute(ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST));
             }
+            @Override
             public String getServletPath() {
-                return computePath();
+                return this.computePath();
             }
+            @Override
             public String getPathTranslated() {
-                final String info = getPathInfo();
-                return (null == info) ? null : getRealPath(info);
+                final String info = this.getPathInfo();
+                return null == info ? null : this.getRealPath(info);
             }
             // Memoizer pattern.
             private String computePath() {
-                if (!isPathComputed()) {
+                if (!this.isPathComputed()) {
                     String servletPath = super.getServletPath();
-                    path = patternMatcher.extractPath(servletPath);
-                    pathComputed = true;
-                    if (null == path) {
-                        path = servletPath;
-                    }
+                    this.path = ServletDefinition.this.patternMatcher.extractPath(servletPath);
+                    this.pathComputed = true;
+                    if (null == this.path)
+                        this.path = servletPath;
                 }
-                return path;
+                return this.path;
             }
         };
         //
         HttpServlet servlet = this.getTarget();
-        if (servlet == null) {
+        if (servlet == null)
             return;
-        }
         servlet.service(request, servletResponse);
     }
     /**/
     public void destroy() {
-        if (this.servletInstance == null) {
+        if (this.servletInstance == null)
             return;
-        }
         this.servletInstance.destroy();
     }
 }

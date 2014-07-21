@@ -22,8 +22,10 @@ import net.hasor.core.Hasor;
  * @author 赵永春 (zyc@hasor.net)
  */
 class EmptyEventCallBackHook implements EventCallBackHook {
-    public void handleException(String eventType, Object[] objects, Throwable e) {
+    @Override
+    public void handleException(final String eventType, final Object[] objects, final Throwable e) {
         Hasor.logWarn("During the execution of Event ‘%s’ throw an error.%s", eventType, e);
     }
-    public void handleComplete(String eventType, Object[] objects) {}
+    @Override
+    public void handleComplete(final String eventType, final Object[] objects) {}
 }

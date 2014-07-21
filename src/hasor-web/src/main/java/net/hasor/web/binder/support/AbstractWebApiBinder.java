@@ -38,221 +38,256 @@ import org.more.util.ArrayUtils;
  */
 public abstract class AbstractWebApiBinder extends AbstractBinder implements WebApiBinder {
     //
-    protected AbstractWebApiBinder(WebEnvironment envContext) {
+    protected AbstractWebApiBinder(final WebEnvironment envContext) {
         super(envContext);
     }
+    @Override
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();
     }
+    @Override
     public WebEnvironment getEnvironment() {
         return (WebEnvironment) super.getEnvironment();
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /***/
-    private static List<String> newArrayList(String[] arr, String object) {
+    private static List<String> newArrayList(final String[] arr, final String object) {
         ArrayList<String> list = new ArrayList<String>();
-        if (arr != null) {
-            for (String item : arr) {
+        if (arr != null)
+            for (String item : arr)
                 list.add(item);
-            }
-        }
-        if (object != null) {
+        if (object != null)
             list.add(object);
-        }
         return list;
     }
     /**Class类型的Provider代理 */
     class ClassProvider<T> implements Provider<T>, AppContextAware {
         private Class<? extends T> instanceType = null;
         private AppContext         appContext   = null;
-        public ClassProvider(Class<? extends T> instanceType) {
-            bindType(instanceType);/*绑定类型*/
-            registerAware(this);/*注册AppContextAware*/
+        public ClassProvider(final Class<? extends T> instanceType) {
+            AbstractWebApiBinder.this.bindType(instanceType);/*绑定类型*/
+            AbstractWebApiBinder.this.registerAware(this);/*注册AppContextAware*/
             this.instanceType = instanceType;
         }
-        public void setAppContext(AppContext appContext) {
+        @Override
+        public void setAppContext(final AppContext appContext) {
             this.appContext = appContext;
         }
+        @Override
         public T get() {
             return this.appContext.getInstance(this.instanceType);
         }
     }
     //
     /*-------------------------------------------------------------------------------------Filter*/
-    public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
-        return new FiltersModuleBinder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
+    @Override
+    public FilterBindingBuilder filter(final String urlPattern, final String... morePatterns) {
+        return new FiltersModuleBinder(UriPatternType.SERVLET, AbstractWebApiBinder.newArrayList(morePatterns, urlPattern));
     };
-    public FilterBindingBuilder filter(String[] morePatterns) throws NullPointerException {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+    @Override
+    public FilterBindingBuilder filter(final String[] morePatterns) throws NullPointerException {
+        if (ArrayUtils.isEmpty(morePatterns))
             throw new NullPointerException("Filter patterns is empty.");
-        }
-        return filter(null, morePatterns);
+        return this.filter(null, morePatterns);
     }
-    public FilterBindingBuilder filterRegex(String regex, String... regexes) {
-        return new FiltersModuleBinder(UriPatternType.REGEX, newArrayList(regexes, regex));
+    @Override
+    public FilterBindingBuilder filterRegex(final String regex, final String... regexes) {
+        return new FiltersModuleBinder(UriPatternType.REGEX, AbstractWebApiBinder.newArrayList(regexes, regex));
     };
-    public FilterBindingBuilder filterRegex(String[] regexes) throws NullPointerException {
-        if (ArrayUtils.isEmpty(regexes)) {
+    @Override
+    public FilterBindingBuilder filterRegex(final String[] regexes) throws NullPointerException {
+        if (ArrayUtils.isEmpty(regexes))
             throw new NullPointerException("Filter regexes is empty.");
-        }
-        return filterRegex(null, regexes);
+        return this.filterRegex(null, regexes);
     }
     class FiltersModuleBinder implements FilterBindingBuilder {
         private final UriPatternType uriPatternType;
         private final List<String>   uriPatterns;
         //
-        public FiltersModuleBinder(UriPatternType uriPatternType, List<String> uriPatterns) {
+        public FiltersModuleBinder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
             this.uriPatternType = uriPatternType;
             this.uriPatterns = uriPatterns;
         }
-        public void through(Class<? extends Filter> filterKey) {
+        @Override
+        public void through(final Class<? extends Filter> filterKey) {
             this.through(0, filterKey, null);
         }
-        public void through(Filter filter) {
+        @Override
+        public void through(final Filter filter) {
             this.through(0, filter, null);
         }
-        public void through(Provider<Filter> filterProvider) {
+        @Override
+        public void through(final Provider<Filter> filterProvider) {
             this.through(0, filterProvider, null);
         }
-        public void through(Class<? extends Filter> filterKey, Map<String, String> initParams) {
+        @Override
+        public void through(final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
             this.through(0, filterKey, initParams);
         }
-        public void through(Filter filter, Map<String, String> initParams) {
+        @Override
+        public void through(final Filter filter, final Map<String, String> initParams) {
             this.through(0, filter, initParams);
         }
-        public void through(Provider<Filter> filterProvider, Map<String, String> initParams) {
+        @Override
+        public void through(final Provider<Filter> filterProvider, final Map<String, String> initParams) {
             this.through(0, filterProvider, initParams);
         }
         //
-        public void through(int index, Class<? extends Filter> filterKey) {
+        @Override
+        public void through(final int index, final Class<? extends Filter> filterKey) {
             this.through(index, filterKey, null);
         }
-        public void through(int index, Filter filter) {
+        @Override
+        public void through(final int index, final Filter filter) {
             this.through(index, filter, null);
         }
-        public void through(int index, Provider<Filter> filterProvider) {
+        @Override
+        public void through(final int index, final Provider<Filter> filterProvider) {
             this.through(index, filterProvider, null);
         }
-        public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams) {
+        @Override
+        public void through(final int index, final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
             this.through(index, new ClassProvider<Filter>(filterKey), initParams);
         }
-        public void through(int index, Filter filter, Map<String, String> initParams) {
+        @Override
+        public void through(final int index, final Filter filter, final Map<String, String> initParams) {
             this.through(index, new InstanceProvider<Filter>(filter), initParams);
         }
-        public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams) {
-            if (initParams == null) {
+        @Override
+        public void through(final int index, final Provider<Filter> filterProvider, Map<String, String> initParams) {
+            if (initParams == null)
                 initParams = new HashMap<String, String>();
-            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
-                bindType(FilterDefinition.class, define);/*单列*/
+                AbstractWebApiBinder.this.bindType(FilterDefinition.class, define);/*单列*/
             }
         }
     }
     //
     /*------------------------------------------------------------------------------------Servlet*/
-    public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
-        return new ServletsModuleBuilder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
+    @Override
+    public ServletBindingBuilder serve(final String urlPattern, final String... morePatterns) {
+        return new ServletsModuleBuilder(UriPatternType.SERVLET, AbstractWebApiBinder.newArrayList(morePatterns, urlPattern));
     };
-    public ServletBindingBuilder serve(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+    @Override
+    public ServletBindingBuilder serve(final String[] morePatterns) {
+        if (ArrayUtils.isEmpty(morePatterns))
             throw new NullPointerException("Servlet patterns is empty.");
-        }
-        return serve(null, morePatterns);
+        return this.serve(null, morePatterns);
     }
-    public ServletBindingBuilder serveRegex(String regex, String... regexes) {
-        return new ServletsModuleBuilder(UriPatternType.REGEX, newArrayList(regexes, regex));
+    @Override
+    public ServletBindingBuilder serveRegex(final String regex, final String... regexes) {
+        return new ServletsModuleBuilder(UriPatternType.REGEX, AbstractWebApiBinder.newArrayList(regexes, regex));
     };
-    public ServletBindingBuilder serveRegex(String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes)) {
+    @Override
+    public ServletBindingBuilder serveRegex(final String[] regexes) {
+        if (ArrayUtils.isEmpty(regexes))
             throw new NullPointerException("Servlet regexes is empty.");
-        }
-        return serveRegex(null, regexes);
+        return this.serveRegex(null, regexes);
     }
     class ServletsModuleBuilder implements ServletBindingBuilder {
         private final List<String>   uriPatterns;
         private final UriPatternType uriPatternType;
-        public ServletsModuleBuilder(UriPatternType uriPatternType, List<String> uriPatterns) {
+        public ServletsModuleBuilder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
             this.uriPatterns = uriPatterns;
             this.uriPatternType = uriPatternType;
         }
-        public void with(Class<? extends HttpServlet> servletKey) {
+        @Override
+        public void with(final Class<? extends HttpServlet> servletKey) {
             this.with(0, servletKey, null);
         }
-        public void with(HttpServlet servlet) {
+        @Override
+        public void with(final HttpServlet servlet) {
             this.with(0, servlet, null);
         }
-        public void with(Provider<HttpServlet> servletProvider) {
+        @Override
+        public void with(final Provider<HttpServlet> servletProvider) {
             this.with(0, servletProvider, null);
         }
-        public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
+        @Override
+        public void with(final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
             this.with(0, servletKey, initParams);
         }
-        public void with(HttpServlet servlet, Map<String, String> initParams) {
+        @Override
+        public void with(final HttpServlet servlet, final Map<String, String> initParams) {
             this.with(0, servlet, initParams);
         }
-        public void with(Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
+        @Override
+        public void with(final Provider<HttpServlet> servletProvider, final Map<String, String> initParams) {
             this.with(0, servletProvider, initParams);
         }
         //
-        public void with(int index, Class<? extends HttpServlet> servletKey) {
+        @Override
+        public void with(final int index, final Class<? extends HttpServlet> servletKey) {
             this.with(index, servletKey, null);
         }
-        public void with(int index, HttpServlet servlet) {
+        @Override
+        public void with(final int index, final HttpServlet servlet) {
             this.with(index, servlet, null);
         }
-        public void with(int index, Provider<HttpServlet> servletProvider) {
+        @Override
+        public void with(final int index, final Provider<HttpServlet> servletProvider) {
             this.with(index, servletProvider, null);
         }
-        public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
+        @Override
+        public void with(final int index, final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
             this.with(index, new ClassProvider<HttpServlet>(servletKey), initParams);
         }
-        public void with(int index, HttpServlet servlet, Map<String, String> initParams) {
+        @Override
+        public void with(final int index, final HttpServlet servlet, final Map<String, String> initParams) {
             this.with(index, new InstanceProvider<HttpServlet>(servlet), initParams);
         }
-        public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
-            if (initParams == null) {
+        @Override
+        public void with(final int index, final Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
+            if (initParams == null)
                 initParams = new HashMap<String, String>();
-            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletProvider, initParams);
-                bindType(ServletDefinition.class, define);/*单列*/
+                AbstractWebApiBinder.this.bindType(ServletDefinition.class, define);/*单列*/
             }
         }
     }
     //
     /*---------------------------------------------------------------------ServletContextListener*/
+    @Override
     public ServletContextListenerBindingBuilder contextListener() {
         return new ServletContextListenerBuilder();
     }
     class ServletContextListenerBuilder implements ServletContextListenerBindingBuilder {
-        public void bind(Class<? extends ServletContextListener> listenerKey) {
+        @Override
+        public void bind(final Class<? extends ServletContextListener> listenerKey) {
             this.bind(new ClassProvider<ServletContextListener>(listenerKey));
         }
-        public void bind(ServletContextListener sessionListener) {
+        @Override
+        public void bind(final ServletContextListener sessionListener) {
             this.bind(new InstanceProvider<ServletContextListener>(sessionListener));
         }
-        public void bind(Provider<ServletContextListener> listenerProvider) {
-            bindType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerProvider));/*单列*/
+        @Override
+        public void bind(final Provider<ServletContextListener> listenerProvider) {
+            AbstractWebApiBinder.this.bindType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerProvider));/*单列*/
         }
     }
     //
     /*------------------------------------------------------------------------HttpSessionListener*/
+    @Override
     public SessionListenerBindingBuilder sessionListener() {
         return new SessionListenerBuilder();
     }
     class SessionListenerBuilder implements SessionListenerBindingBuilder {
-        public void bind(Class<? extends HttpSessionListener> listenerKey) {
+        @Override
+        public void bind(final Class<? extends HttpSessionListener> listenerKey) {
             this.bind(new ClassProvider<HttpSessionListener>(listenerKey));
         }
-        public void bind(HttpSessionListener sessionListener) {
+        @Override
+        public void bind(final HttpSessionListener sessionListener) {
             this.bind(new InstanceProvider<HttpSessionListener>(sessionListener));
         }
-        public void bind(Provider<HttpSessionListener> listenerProvider) {
-            bindType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerProvider));/*单列*/
+        @Override
+        public void bind(final Provider<HttpSessionListener> listenerProvider) {
+            AbstractWebApiBinder.this.bindType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerProvider));/*单列*/
         }
     }
 }

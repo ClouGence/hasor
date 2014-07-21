@@ -27,15 +27,15 @@ public class XmlFormatException extends XMLStreamException {
      */
     private static final long serialVersionUID = 3647389307754446752L;
     /**格式异常*/
-    public XmlFormatException(String string) {
+    public XmlFormatException(final String string) {
         super(string);
     }
     /**格式异常*/
-    public XmlFormatException(Throwable error) {
+    public XmlFormatException(final Throwable error) {
         super(error);
     }
     /**格式异常*/
-    public XmlFormatException(String string, Throwable error) {
+    public XmlFormatException(final String string, final Throwable error) {
         super(string, error);
     }
 }

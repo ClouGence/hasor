@@ -23,30 +23,32 @@ public class NameSpace {
     private String       uri   = null; //命名空间
     private StringBuffer xpath = null; //xpath
     /***/
-    public NameSpace(String uri, String xpath) {
+    public NameSpace(final String uri, final String xpath) {
         this.uri = uri;
         this.xpath = new StringBuffer(xpath);
     }
     /**获取命名空间。*/
     public String getUri() {
-        return uri;
+        return this.uri;
     }
     /**获取xpath。*/
     public String getXpath() {
         return this.xpath.toString();
     }
     /**追加xpath一个节点。*/
-    void appendXPath(String name, boolean isAttribute) {
-        if (this.xpath.indexOf("/") != this.xpath.length() - 1)
+    void appendXPath(final String name, final boolean isAttribute) {
+        if (this.xpath.indexOf("/") != this.xpath.length() - 1) {
             this.xpath.append("/");
-        if (isAttribute == true)
+        }
+        if (isAttribute == true) {
             this.xpath.append("@");
+        }
         this.xpath.append(name);
     }
     /**删除xpath的最后一个节点。*/
     void removeXPath() {
         int index = this.xpath.lastIndexOf("/");
-        index = (index == 0) ? 1 : index;
+        index = index == 0 ? 1 : index;
         this.xpath = this.xpath.delete(index, this.xpath.length());
     }
 }

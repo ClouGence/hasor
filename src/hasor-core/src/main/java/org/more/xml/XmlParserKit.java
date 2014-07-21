@@ -37,82 +37,106 @@ public class XmlParserKit implements XmlNamespaceParser {
     private HashMap<String, ArrayList<XmlParserHook>> hooks = new HashMap<String, ArrayList<XmlParserHook>>();
     //----------------------------------------------------
     /**注册一组{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
-    public void regeditHook(String[] xpath, XmlParserHook hook) {
-        if (xpath != null && hook != null)
-            for (String s : xpath)
+    public void regeditHook(final String[] xpath, final XmlParserHook hook) {
+        if (xpath != null && hook != null) {
+            for (String s : xpath) {
                 this.regeditHook(s, hook);
+            }
+        }
     }
     /**注册一个{@link XmlParserHook}接口对象到一个指定的Xpath上，如果注册的是{@link XmlDocumentHook}接口对象则务必将xpath填写为"/"否则可能导致接收不到事件的现象。*/
-    public void regeditHook(String xpath, XmlParserHook hook) {
+    public void regeditHook(final String xpath, final XmlParserHook hook) {
         //2.检查是否已经存在的注册。
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
-        if (arrayList == null)
+        if (arrayList == null) {
             arrayList = new ArrayList<XmlParserHook>();
-        if (arrayList.contains(hook) == true)
+        }
+        if (arrayList.contains(hook) == true) {
             throw new RepeateException(xpath + "：路径上重复绑定同一个XmlParserHook。");
+        }
         arrayList.add(hook);
         this.hooks.put(xpath, arrayList);
     };
     /**该方法是解除使用regeditHook()方法注册的一组关联。*/
-    public void unRegeditHook(String[] xpath, XmlParserHook hook) {
-        for (String s : xpath)
+    public void unRegeditHook(final String[] xpath, final XmlParserHook hook) {
+        for (String s : xpath) {
             this.unRegeditHook(s, hook);
+        }
     }
     /**该方法是解除使用regeditHook()方法注册的关联。*/
-    public void unRegeditHook(String xpath, XmlParserHook hook) {
+    public void unRegeditHook(final String xpath, final XmlParserHook hook) {
         ArrayList<XmlParserHook> arrayList = this.hooks.get(xpath);
-        if (arrayList == null)
+        if (arrayList == null) {
             return;
-        if (arrayList.contains(hook) == true)
+        }
+        if (arrayList.contains(hook) == true) {
             arrayList.remove(hook);
+        }
     }
     //----------------------------------------------------
+    @Override
     public void beginAccept() {}
+    @Override
     public void endAccept() {}
-    private ArrayList<XmlParserHook> getHooks(String xpath) {
+    private ArrayList<XmlParserHook> getHooks(final String xpath) {
         String xpath2 = xpath;
-        for (String xp : this.hooks.keySet())
+        for (String xp : this.hooks.keySet()) {
             if (MatchUtils.matchWild(xp, xpath2) == true) {
                 xpath2 = xp;
                 break;
             }
+        }
         return this.hooks.get(xpath2);
     };
-    public void sendEvent(XmlStackDecorator<Object> context, String xpath, XmlStreamEvent event) throws XMLStreamException, IOException {
+    @Override
+    public void sendEvent(final XmlStackDecorator<Object> context, final String xpath, final XmlStreamEvent event) throws XMLStreamException, IOException {
         ArrayList<XmlParserHook> hooks = this.getHooks(xpath);
-        if (hooks == null)
+        if (hooks == null) {
             return;
+        }
         //-----------
         if (event instanceof StartDocumentEvent) {
             //分发文档开始事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlDocumentHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlDocumentHook) {
                     ((XmlDocumentHook) hook).beginDocument(context, (StartDocumentEvent) event);
+                }
+            }
         } else if (event instanceof EndDocumentEvent) {
             //分发文档结束事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlDocumentHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlDocumentHook) {
                     ((XmlDocumentHook) hook).endDocument(context, (EndDocumentEvent) event);
+                }
+            }
         } else if (event instanceof StartElementEvent) {
             //分发元素开始事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlElementHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlElementHook) {
                     ((XmlElementHook) hook).beginElement(context, xpath, (StartElementEvent) event);
+                }
+            }
         } else if (event instanceof EndElementEvent) {
             //分发元素结束事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlElementHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlElementHook) {
                     ((XmlElementHook) hook).endElement(context, xpath, (EndElementEvent) event);
+                }
+            }
         } else if (event instanceof TextEvent) {
             //分发文本事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlTextHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlTextHook) {
                     ((XmlTextHook) hook).text(context, xpath, (TextEvent) event);
+                }
+            }
         } else if (event instanceof AttributeEvent) {
             //分发属性事件
-            for (XmlParserHook hook : hooks)
-                if (hook instanceof XmlAttributeHook)
+            for (XmlParserHook hook : hooks) {
+                if (hook instanceof XmlAttributeHook) {
                     ((XmlAttributeHook) hook).attribute(context, xpath, (AttributeEvent) event);
+                }
+            }
         }
     }
 }

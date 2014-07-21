@@ -61,12 +61,12 @@ abstract class MemberUtils {
      * accepted.
      * @param o the AccessibleObject to set as accessible
      */
-    static void setAccessibleWorkaround(AccessibleObject o) {
+    static void setAccessibleWorkaround(final AccessibleObject o) {
         if (o == null || o.isAccessible()) {
             return;
         }
         Member m = (Member) o;
-        if (Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+        if (Modifier.isPublic(m.getModifiers()) && MemberUtils.isPackageAccess(m.getDeclaringClass().getModifiers())) {
             try {
                 o.setAccessible(true);
             } catch (SecurityException e) {
@@ -79,26 +79,26 @@ abstract class MemberUtils {
      * @param modifiers to test
      * @return true unless package/protected/private modifier detected
      */
-    static boolean isPackageAccess(int modifiers) {
-        return (modifiers & ACCESS_TEST) == 0;
+    static boolean isPackageAccess(final int modifiers) {
+        return (modifiers & MemberUtils.ACCESS_TEST) == 0;
     }
     /**
      * Check a Member for basic accessibility.
      * @param m Member to check
      * @return true if <code>m</code> is accessible
      */
-    static boolean isAccessible(Member m) {
-        return m != null && Modifier.isPublic(m.getModifiers()) && !isSynthetic(m);
+    static boolean isAccessible(final Member m) {
+        return m != null && Modifier.isPublic(m.getModifiers()) && !MemberUtils.isSynthetic(m);
     }
     /**
      * Try to learn whether a given member, on JDK >= 1.5, is synthetic.
      * @param m Member to check
      * @return true if <code>m</code> was introduced by the compiler.
      */
-    static boolean isSynthetic(Member m) {
-        if (IS_SYNTHETIC != null) {
+    static boolean isSynthetic(final Member m) {
+        if (MemberUtils.IS_SYNTHETIC != null) {
             try {
-                return ((Boolean) IS_SYNTHETIC.invoke(m)).booleanValue();
+                return ((Boolean) MemberUtils.IS_SYNTHETIC.invoke(m)).booleanValue();
             } catch (Exception e) {}
         }
         return false;
@@ -115,9 +115,9 @@ abstract class MemberUtils {
      * <code>left</code>/<code>right</code>
      * @return int consistent with <code>compare</code> semantics
      */
-    static int compareParameterTypes(Class<?>[] left, Class<?>[] right, Class<?>[] actual) {
-        float leftCost = getTotalTransformationCost(actual, left);
-        float rightCost = getTotalTransformationCost(actual, right);
+    static int compareParameterTypes(final Class<?>[] left, final Class<?>[] right, final Class<?>[] actual) {
+        float leftCost = MemberUtils.getTotalTransformationCost(actual, left);
+        float rightCost = MemberUtils.getTotalTransformationCost(actual, right);
         return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
     }
     /**
@@ -127,13 +127,13 @@ abstract class MemberUtils {
      * @param destArgs The destination arguments
      * @return The total transformation cost
      */
-    private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
+    private static float getTotalTransformationCost(final Class<?>[] srcArgs, final Class<?>[] destArgs) {
         float totalCost = 0.0f;
         for (int i = 0; i < srcArgs.length; i++) {
             Class<?> srcClass, destClass;
             srcClass = srcArgs[i];
             destClass = destArgs[i];
-            totalCost += getObjectTransformationCost(srcClass, destClass);
+            totalCost += MemberUtils.getObjectTransformationCost(srcClass, destClass);
         }
         return totalCost;
     }
@@ -145,9 +145,9 @@ abstract class MemberUtils {
      * @param destClass The destination class
      * @return The cost of transforming an object
      */
-    private static float getObjectTransformationCost(Class<?> srcClass, Class<?> destClass) {
+    private static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
         if (destClass.isPrimitive()) {
-            return getPrimitivePromotionCost(srcClass, destClass);
+            return MemberUtils.getPrimitivePromotionCost(srcClass, destClass);
         }
         float cost = 0.0f;
         while (srcClass != null && !destClass.equals(srcClass)) {
@@ -187,11 +187,11 @@ abstract class MemberUtils {
             cost += 0.1f;
             cls = ClassUtils.wrapperToPrimitive(cls);
         }
-        for (int i = 0; cls != destClass && i < ORDERED_PRIMITIVE_TYPES.length; i++) {
-            if (cls == ORDERED_PRIMITIVE_TYPES[i]) {
+        for (int i = 0; cls != destClass && i < MemberUtils.ORDERED_PRIMITIVE_TYPES.length; i++) {
+            if (cls == MemberUtils.ORDERED_PRIMITIVE_TYPES[i]) {
                 cost += 0.1f;
-                if (i < ORDERED_PRIMITIVE_TYPES.length - 1) {
-                    cls = ORDERED_PRIMITIVE_TYPES[i + 1];
+                if (i < MemberUtils.ORDERED_PRIMITIVE_TYPES.length - 1) {
+                    cls = MemberUtils.ORDERED_PRIMITIVE_TYPES[i + 1];
                 }
             }
         }

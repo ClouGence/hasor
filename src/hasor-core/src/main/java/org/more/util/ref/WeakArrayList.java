@@ -31,13 +31,13 @@ public class WeakArrayList<T> extends AbstractList<T> {
     private Object[]                          data;
     private int                               size;
     private boolean                           enquedElement;
-    private static <T> T maskNull(T value) {
+    private static <T> T maskNull(final T value) {
         return (T) (value == null ? WeakArrayList.NULL_VALUE : value);
     }
-    private static <T> T unmaskNull(T value) {
-        return (value == WeakArrayList.NULL_VALUE ? null : value);
+    private static <T> T unmaskNull(final T value) {
+        return value == WeakArrayList.NULL_VALUE ? null : value;
     }
-    public WeakArrayList(int initialCapacity) {
+    public WeakArrayList(final int initialCapacity) {
         this.queue = new ReferenceQueue<T>();
         this.enquedElement = false;
         if (initialCapacity < 0) {
@@ -49,7 +49,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
     public WeakArrayList() {
         this(10);
     }
-    public WeakArrayList(Collection<? extends T> c) {
+    public WeakArrayList(final Collection<? extends T> c) {
         this.queue = new ReferenceQueue<T>();
         this.enquedElement = false;
         this.data = new Object[c.size()];
@@ -60,6 +60,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
             ++i;
         }
     }
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < this.size; ++i) {
@@ -76,10 +77,10 @@ public class WeakArrayList<T> extends AbstractList<T> {
         }
         return buffer.toString();
     }
-    private Reference<T> createRef(T obj) {
+    private Reference<T> createRef(final T obj) {
         return new WeakReference<T>(WeakArrayList.maskNull(obj), this.queue);
     }
-    public void ensureCapacity(int minCapacity) {
+    public void ensureCapacity(final int minCapacity) {
         this.modCount += 1;
         int oldCapacity = this.data.length;
         if (minCapacity > oldCapacity) {
@@ -131,7 +132,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.size = j;
         return this.size;
     }
-    protected void assertRange(int index, boolean allowLast) {
+    protected void assertRange(final int index, final boolean allowLast) {
         int csize = this.expurge();
         if (index < 0) {
             throw new IndexOutOfBoundsException("invalid negative value: " + Integer.toString(index));
@@ -143,11 +144,13 @@ public class WeakArrayList<T> extends AbstractList<T> {
             throw new IndexOutOfBoundsException("index>=" + csize + ": " + Integer.toString(index));
         }
     }
+    @Override
     public int size() {
         return this.expurge();
     }
+    @Override
     @SuppressWarnings("unchecked")
-    public T get(int index) {
+    public T get(final int index) {
         Object value;
         do {
             this.assertRange(index, false);
@@ -155,8 +158,9 @@ public class WeakArrayList<T> extends AbstractList<T> {
         } while (value == null);
         return (T) WeakArrayList.unmaskNull(value);
     }
+    @Override
     @SuppressWarnings("unchecked")
-    public T set(int index, T element) {
+    public T set(final int index, final T element) {
         Object oldValue;
         Reference<T> ref;
         do {
@@ -169,7 +173,8 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.modCount += 1;
         return (T) WeakArrayList.unmaskNull(oldValue);
     }
-    public void add(int index, T element) {
+    @Override
+    public void add(final int index, final T element) {
         this.assertRange(index, true);
         this.ensureCapacity(this.size + 1);
         System.arraycopy(this.data, index, this.data, index + 1, this.size - index);
@@ -177,8 +182,9 @@ public class WeakArrayList<T> extends AbstractList<T> {
         this.size += 1;
         this.modCount += 1;
     }
+    @Override
     @SuppressWarnings("unchecked")
-    public T remove(int index) {
+    public T remove(final int index) {
         Object oldValue;
         Reference<T> ref;
         do {
@@ -188,7 +194,7 @@ public class WeakArrayList<T> extends AbstractList<T> {
         } while (oldValue == null);
         ref.clear();
         System.arraycopy(this.data, index + 1, this.data, index, this.size - index - 1);
-        this.data[(this.size - 1)] = null;
+        this.data[this.size - 1] = null;
         this.size -= 1;
         this.modCount += 1;
         return (T) WeakArrayList.unmaskNull(oldValue);

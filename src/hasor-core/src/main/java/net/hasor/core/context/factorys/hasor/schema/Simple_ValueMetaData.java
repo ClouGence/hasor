@@ -26,19 +26,20 @@ public class Simple_ValueMetaData extends ValueMetaData {
     private String value = null;
     /*------------------------------------------------------------------*/
     /**值类型*/
+    @Override
     public String getType() {
-        return type;
+        return this.type;
     }
     /**值类型*/
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
     /**获取值*/
     public String getValue() {
-        return value;
+        return this.value;
     }
     /**设置值*/
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

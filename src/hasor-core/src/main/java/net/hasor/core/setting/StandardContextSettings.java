@@ -40,34 +40,36 @@ public class StandardContextSettings extends InputStreamSettings {
     //
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings() throws IOException, URISyntaxException {
-        this(MainSettingName);
+        this(StandardContextSettings.MainSettingName);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(String mainSettings) throws IOException, URISyntaxException {
+    public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
         this.settingURI = url.toURI();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(File mainSettings) throws IOException {
+    public StandardContextSettings(final File mainSettings) throws IOException {
         this.settingURI = mainSettings.toURI();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(URI mainSettings) throws IOException {
+    public StandardContextSettings(final URI mainSettings) throws IOException {
         this.settingURI = mainSettings;
     }
     /**获取配置文件URI*/
     public URI getSettingURI() {
-        return settingURI;
+        return this.settingURI;
     }
     //
+    @Override
     protected void readyLoad() throws IOException {
         super.readyLoad();
         //1.装载所有static-config.xml
-        List<URL> streamList = ResourcesUtils.getResources(StaticSettingName);
+        List<URL> streamList = ResourcesUtils.getResources(StandardContextSettings.StaticSettingName);
         //2.排序，确保位于jar包中的资源排序优先级靠后。
         //因为覆盖加载是顺序的，因此先加载位于jar中的资源。然后覆盖它们。
         Collections.sort(streamList, new Comparator<URL>() {
-            public int compare(URL o1, URL o2) {
+            @Override
+            public int compare(final URL o1, final URL o2) {
                 String o1p = o1.getProtocol();
                 String o2p = o2.getProtocol();
                 if (o1p.equals(o2p)) {
@@ -96,6 +98,7 @@ public class StandardContextSettings extends InputStreamSettings {
             this.addStream(stream);
         }
     }
+    @Override
     public void refresh() throws IOException {
         Hasor.logInfo("reload configuration.");
         this.cleanData();

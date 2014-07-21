@@ -27,10 +27,10 @@ public abstract class AbstractDefine {
     //
     /**获取携带的附加信息描述*/
     public HashMap<String, Object> getMetaData() {
-        return metaData;
+        return this.metaData;
     }
     /**设置携带的附加信息描述*/
-    public void setMetaData(HashMap<String, Object> metaData) {
+    public void setMetaData(final HashMap<String, Object> metaData) {
         this.metaData = metaData;
     }
 }

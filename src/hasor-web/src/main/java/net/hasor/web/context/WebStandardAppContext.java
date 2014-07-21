@@ -46,42 +46,47 @@ import net.hasor.web.startup.RuntimeFilter;
  */
 public class WebStandardAppContext extends StandardAppContext implements WebAppContext {
     private ServletContext servletContext = null;
-    public WebStandardAppContext(ServletContext servletContext) throws IOException, URISyntaxException {
+    public WebStandardAppContext(final ServletContext servletContext) throws IOException, URISyntaxException {
         super();
         this.servletContext = servletContext;
     }
     /***/
-    public WebStandardAppContext(String mainSettings, ServletContext servletContext) throws IOException, URISyntaxException {
+    public WebStandardAppContext(final String mainSettings, final ServletContext servletContext) throws IOException, URISyntaxException {
         super(mainSettings);
         this.servletContext = servletContext;
     }
     /***/
-    public WebStandardAppContext(File mainSettings, ServletContext servletContext) {
+    public WebStandardAppContext(final File mainSettings, final ServletContext servletContext) {
         super(mainSettings);
         this.servletContext = servletContext;
     }
     /***/
-    public WebStandardAppContext(URI mainSettings, ServletContext servletContext) {
+    public WebStandardAppContext(final URI mainSettings, final ServletContext servletContext) {
         super(mainSettings);
         this.servletContext = servletContext;
     }
     //
     /**获取{@link ServletContext}*/
+    @Override
     public ServletContext getServletContext() {
         return this.servletContext;
     }
+    @Override
     protected WebEnvironment createEnvironment() {
         return new WebStandardEnvironment(this.getMainSettings(), this.servletContext);
     }
     /**为模块创建ApiBinder*/
+    @Override
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
-            protected <T> TypeBuilder<T> createTypeBuilder(Class<T> type) {
+            @Override
+            protected <T> TypeBuilder<T> createTypeBuilder(final Class<T> type) {
                 return WebStandardAppContext.this.getRegisterFactory().createTypeBuilder(type);
             }
         };
     }
-    protected void doBind(ApiBinder apiBinder) {
+    @Override
+    protected void doBind(final ApiBinder apiBinder) {
         super.doBind(apiBinder);
         //
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
@@ -94,39 +99,45 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         //
         /*绑定ServletRequest对象的Provider*/
         apiBinder.bindType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
+            @Override
             public ServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定HttpServletRequest对象的Provider*/
         apiBinder.bindType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
+            @Override
             public HttpServletRequest get() {
                 return RuntimeFilter.getLocalRequest();
             }
         });
         /*绑定ServletResponse对象的Provider*/
         apiBinder.bindType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
+            @Override
             public ServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpServletResponse对象的Provider*/
         apiBinder.bindType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
+            @Override
             public HttpServletResponse get() {
                 return RuntimeFilter.getLocalResponse();
             }
         });
         /*绑定HttpSession对象的Provider*/
         apiBinder.bindType(HttpSession.class).toProvider(new Provider<HttpSession>() {
+            @Override
             public HttpSession get() {
                 HttpServletRequest req = RuntimeFilter.getLocalRequest();
-                return (req != null) ? req.getSession(true) : null;
+                return req != null ? req.getSession(true) : null;
             }
         });
         /*绑定ServletContext对象的Provider*/
         apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
+            @Override
             public ServletContext get() {
-                return getServletContext();
+                return WebStandardAppContext.this.getServletContext();
             }
         });
     }

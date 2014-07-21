@@ -128,6 +128,7 @@ public class ConverterBean {
     /** Contains <code>ConverterBean</code> instances indexed by context classloader. */
     private static final ConverterBeanContextClassLoaderLocal BEANS_BY_CLASSLOADER = new ConverterBeanContextClassLoaderLocal();
     private static class ConverterBeanContextClassLoaderLocal extends ContextClassLoaderLocal<ConverterBean> {
+        @Override
         protected ConverterBean initialValue() {
             return new ConverterBean();
         }
@@ -138,7 +139,7 @@ public class ConverterBean {
      * @return The singleton instance
      */
     protected static ConverterBean getInstance() {
-        return (ConverterBean) BEANS_BY_CLASSLOADER.get();
+        return ConverterBean.BEANS_BY_CLASSLOADER.get();
     }
     // ------------------------------------------------------- Variables
     /**
@@ -149,9 +150,9 @@ public class ConverterBean {
     // ------------------------------------------------------- Constructors
     /** Construct a bean with standard converters registered */
     public ConverterBean() {
-        converters.setFast(false);
-        deregister();
-        converters.setFast(true);
+        this.converters.setFast(false);
+        this.deregister();
+        this.converters.setFast(true);
     }
     // --------------------------------------------------------- Public Methods
     /**
@@ -170,18 +171,18 @@ public class ConverterBean {
             return null;
         } else if (value.getClass().isArray()) {
             if (Array.getLength(value) < 1) {
-                return (null);
+                return null;
             }
             value = Array.get(value, 0);
             if (value == null) {
                 return null;
             } else {
-                Converter converter = lookup(String.class);
-                return ((String) converter.convert(String.class, value));
+                Converter converter = this.lookup(String.class);
+                return (String) converter.convert(String.class, value);
             }
         } else {
-            Converter converter = lookup(String.class);
-            return ((String) converter.convert(String.class, value));
+            Converter converter = this.lookup(String.class);
+            return (String) converter.convert(String.class, value);
         }
     }
     /**
@@ -194,11 +195,12 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(String value, Class<?> clazz) {
-        Converter converter = lookup(clazz);
-        if (converter == null)
-            converter = lookup(String.class);
-        return (converter.convert(clazz, value));
+    public Object convert(final String value, final Class<?> clazz) {
+        Converter converter = this.lookup(clazz);
+        if (converter == null) {
+            converter = this.lookup(String.class);
+        }
+        return converter.convert(clazz, value);
     }
     /**
      * Convert an array of specified values to an array of objects of the
@@ -213,17 +215,20 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(String[] values, Class<?> clazz) {
+    public Object convert(final String[] values, final Class<?> clazz) {
         Class<?> type = clazz;
-        if (clazz.isArray())
+        if (clazz.isArray()) {
             type = clazz.getComponentType();
-        Converter converter = lookup(type);
-        if (converter == null)
-            converter = lookup(String.class);
+        }
+        Converter converter = this.lookup(type);
+        if (converter == null) {
+            converter = this.lookup(String.class);
+        }
         Object array = Array.newInstance(type, values.length);
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             Array.set(array, i, converter.convert(type, values[i]));
-        return (array);
+        }
+        return array;
     }
     /**
      * <p>Convert the value to an object of the specified class (if
@@ -235,10 +240,10 @@ public class ConverterBean {
      *
      * @exception ConversionException if thrown by an underlying Converter
      */
-    public Object convert(Object value, Class<?> targetType) {
+    public Object convert(final Object value, final Class<?> targetType) {
         Class<?> sourceType = value == null ? null : value.getClass();
         Object converted = value;
-        Converter converter = lookup(sourceType, targetType);
+        Converter converter = this.lookup(sourceType, targetType);
         if (converter != null) {
             converted = converter.convert(targetType, value);
         }
@@ -246,7 +251,7 @@ public class ConverterBean {
             // NOTE: For backwards compatibility, if the Converter
             //       doesn't handle  conversion-->String then
             //       use the registered String Converter
-            converter = lookup(String.class);
+            converter = this.lookup(String.class);
             if (converter != null) {
                 converted = converter.convert(String.class, converted);
             }
@@ -262,13 +267,13 @@ public class ConverterBean {
      * standard Converters.
      */
     public void deregister() {
-        converters.clear();
-        registerPrimitives(false);
-        registerStandard(false, false);
-        registerOther(true);
-        registerArrays(false, 0);
-        register(BigDecimal.class, new BigDecimalConverter());
-        register(BigInteger.class, new BigIntegerConverter());
+        this.converters.clear();
+        this.registerPrimitives(false);
+        this.registerStandard(false, false);
+        this.registerOther(true);
+        this.registerArrays(false, 0);
+        this.register(BigDecimal.class, new BigDecimalConverter());
+        this.register(BigInteger.class, new BigIntegerConverter());
     }
     /**
      * Register the provided converters with the specified defaults.
@@ -285,11 +290,11 @@ public class ConverterBean {
      * Specifying a value less than zero causes a <code>null<code> value to be used for
      * the default.
      */
-    public void register(boolean throwException, boolean defaultNull, int defaultArraySize) {
-        registerPrimitives(throwException);
-        registerStandard(throwException, defaultNull);
-        registerOther(throwException);
-        registerArrays(throwException, defaultArraySize);
+    public void register(final boolean throwException, final boolean defaultNull, final int defaultArraySize) {
+        this.registerPrimitives(throwException);
+        this.registerStandard(throwException, defaultNull);
+        this.registerOther(throwException);
+        this.registerArrays(throwException, defaultArraySize);
     }
     /**
      * Register the converters for primitive types.
@@ -309,15 +314,15 @@ public class ConverterBean {
      * throw an exception when a conversion error occurs, otherwise <code>
      * <code>false</code> if a default value should be used.
      */
-    private void registerPrimitives(boolean throwException) {
-        register(Boolean.TYPE, throwException ? new BooleanConverter() : new BooleanConverter(Boolean.FALSE));
-        register(Byte.TYPE, throwException ? new ByteConverter() : new ByteConverter(ZERO));
-        register(Character.TYPE, throwException ? new CharacterConverter() : new CharacterConverter(SPACE));
-        register(Double.TYPE, throwException ? new DoubleConverter() : new DoubleConverter(ZERO));
-        register(Float.TYPE, throwException ? new FloatConverter() : new FloatConverter(ZERO));
-        register(Integer.TYPE, throwException ? new IntegerConverter() : new IntegerConverter(ZERO));
-        register(Long.TYPE, throwException ? new LongConverter() : new LongConverter(ZERO));
-        register(Short.TYPE, throwException ? new ShortConverter() : new ShortConverter(ZERO));
+    private void registerPrimitives(final boolean throwException) {
+        this.register(Boolean.TYPE, throwException ? new BooleanConverter() : new BooleanConverter(Boolean.FALSE));
+        this.register(Byte.TYPE, throwException ? new ByteConverter() : new ByteConverter(ConverterBean.ZERO));
+        this.register(Character.TYPE, throwException ? new CharacterConverter() : new CharacterConverter(ConverterBean.SPACE));
+        this.register(Double.TYPE, throwException ? new DoubleConverter() : new DoubleConverter(ConverterBean.ZERO));
+        this.register(Float.TYPE, throwException ? new FloatConverter() : new FloatConverter(ConverterBean.ZERO));
+        this.register(Integer.TYPE, throwException ? new IntegerConverter() : new IntegerConverter(ConverterBean.ZERO));
+        this.register(Long.TYPE, throwException ? new LongConverter() : new LongConverter(ConverterBean.ZERO));
+        this.register(Short.TYPE, throwException ? new ShortConverter() : new ShortConverter(ConverterBean.ZERO));
     }
     /**
      * Register the converters for standard types.
@@ -344,24 +349,24 @@ public class ConverterBean {
      * should use a default value of <code>null</code>, otherwise <code>false</code>.
      * N.B. This values is ignored if <code>throwException</code> is <code>true</code>
      */
-    private void registerStandard(boolean throwException, boolean defaultNull) {
-        Number defaultNumber = defaultNull ? null : ZERO;
+    private void registerStandard(final boolean throwException, final boolean defaultNull) {
+        Number defaultNumber = defaultNull ? null : ConverterBean.ZERO;
         BigDecimal bigDecDeflt = defaultNull ? null : new BigDecimal("0.0");
         BigInteger bigIntDeflt = defaultNull ? null : new BigInteger("0");
         Boolean booleanDefault = defaultNull ? null : Boolean.FALSE;
-        Character charDefault = defaultNull ? null : SPACE;
+        Character charDefault = defaultNull ? null : ConverterBean.SPACE;
         String stringDefault = defaultNull ? null : "";
-        register(BigDecimal.class, throwException ? new BigDecimalConverter() : new BigDecimalConverter(bigDecDeflt));
-        register(BigInteger.class, throwException ? new BigIntegerConverter() : new BigIntegerConverter(bigIntDeflt));
-        register(Boolean.class, throwException ? new BooleanConverter() : new BooleanConverter(booleanDefault));
-        register(Byte.class, throwException ? new ByteConverter() : new ByteConverter(defaultNumber));
-        register(Character.class, throwException ? new CharacterConverter() : new CharacterConverter(charDefault));
-        register(Double.class, throwException ? new DoubleConverter() : new DoubleConverter(defaultNumber));
-        register(Float.class, throwException ? new FloatConverter() : new FloatConverter(defaultNumber));
-        register(Integer.class, throwException ? new IntegerConverter() : new IntegerConverter(defaultNumber));
-        register(Long.class, throwException ? new LongConverter() : new LongConverter(defaultNumber));
-        register(Short.class, throwException ? new ShortConverter() : new ShortConverter(defaultNumber));
-        register(String.class, throwException ? new StringConverter() : new StringConverter(stringDefault));
+        this.register(BigDecimal.class, throwException ? new BigDecimalConverter() : new BigDecimalConverter(bigDecDeflt));
+        this.register(BigInteger.class, throwException ? new BigIntegerConverter() : new BigIntegerConverter(bigIntDeflt));
+        this.register(Boolean.class, throwException ? new BooleanConverter() : new BooleanConverter(booleanDefault));
+        this.register(Byte.class, throwException ? new ByteConverter() : new ByteConverter(defaultNumber));
+        this.register(Character.class, throwException ? new CharacterConverter() : new CharacterConverter(charDefault));
+        this.register(Double.class, throwException ? new DoubleConverter() : new DoubleConverter(defaultNumber));
+        this.register(Float.class, throwException ? new FloatConverter() : new FloatConverter(defaultNumber));
+        this.register(Integer.class, throwException ? new IntegerConverter() : new IntegerConverter(defaultNumber));
+        this.register(Long.class, throwException ? new LongConverter() : new LongConverter(defaultNumber));
+        this.register(Short.class, throwException ? new ShortConverter() : new ShortConverter(defaultNumber));
+        this.register(String.class, throwException ? new StringConverter() : new StringConverter(stringDefault));
     }
     /**
      * Register the converters for other types.
@@ -381,17 +386,17 @@ public class ConverterBean {
      * throw an exception when a conversion error occurs, otherwise <code>
      * <code>false</code> if a default value should be used.
      */
-    private void registerOther(boolean throwException) {
-        register(Class.class, throwException ? new ClassConverter() : new ClassConverter(null));
-        register(java.util.Date.class, throwException ? new DateConverter() : new DateConverter(null));
-        register(Calendar.class, throwException ? new CalendarConverter() : new CalendarConverter(null));
-        register(File.class, throwException ? new FileConverter() : new FileConverter(null));
-        register(java.sql.Date.class, throwException ? new SqlDateConverter() : new SqlDateConverter(null));
-        register(java.sql.Time.class, throwException ? new SqlTimeConverter() : new SqlTimeConverter(null));
-        register(Timestamp.class, throwException ? new SqlTimestampConverter() : new SqlTimestampConverter(null));
-        register(URL.class, throwException ? new URLConverter() : new URLConverter(null));
-        register(URI.class, throwException ? new URIConverter() : new URIConverter(null));
-        register(Enum.class, throwException ? new EnumConverter() : new EnumConverter(null));
+    private void registerOther(final boolean throwException) {
+        this.register(Class.class, throwException ? new ClassConverter() : new ClassConverter(null));
+        this.register(java.util.Date.class, throwException ? new DateConverter() : new DateConverter(null));
+        this.register(Calendar.class, throwException ? new CalendarConverter() : new CalendarConverter(null));
+        this.register(File.class, throwException ? new FileConverter() : new FileConverter(null));
+        this.register(java.sql.Date.class, throwException ? new SqlDateConverter() : new SqlDateConverter(null));
+        this.register(java.sql.Time.class, throwException ? new SqlTimeConverter() : new SqlTimeConverter(null));
+        this.register(Timestamp.class, throwException ? new SqlTimestampConverter() : new SqlTimestampConverter(null));
+        this.register(URL.class, throwException ? new URLConverter() : new URLConverter(null));
+        this.register(URI.class, throwException ? new URIConverter() : new URIConverter(null));
+        this.register(Enum.class, throwException ? new EnumConverter() : new EnumConverter(null));
     }
     /**
      * Register array converters.
@@ -404,37 +409,37 @@ public class ConverterBean {
      * Specifying a value less than zero causes a <code>null<code> value to be used for
      * the default.
      */
-    private void registerArrays(boolean throwException, int defaultArraySize) {
+    private void registerArrays(final boolean throwException, final int defaultArraySize) {
         // Primitives
-        registerArrayConverter(Boolean.TYPE, new BooleanConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Byte.TYPE, new ByteConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Character.TYPE, new CharacterConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Double.TYPE, new DoubleConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Float.TYPE, new FloatConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Integer.TYPE, new IntegerConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Long.TYPE, new LongConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Short.TYPE, new ShortConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Boolean.TYPE, new BooleanConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Byte.TYPE, new ByteConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Character.TYPE, new CharacterConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Double.TYPE, new DoubleConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Float.TYPE, new FloatConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Integer.TYPE, new IntegerConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Long.TYPE, new LongConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Short.TYPE, new ShortConverter(), throwException, defaultArraySize);
         // Standard
-        registerArrayConverter(BigDecimal.class, new BigDecimalConverter(), throwException, defaultArraySize);
-        registerArrayConverter(BigInteger.class, new BigIntegerConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Boolean.class, new BooleanConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Byte.class, new ByteConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Character.class, new CharacterConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Double.class, new DoubleConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Float.class, new FloatConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Integer.class, new IntegerConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Long.class, new LongConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Short.class, new ShortConverter(), throwException, defaultArraySize);
-        registerArrayConverter(String.class, new StringConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(BigDecimal.class, new BigDecimalConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(BigInteger.class, new BigIntegerConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Boolean.class, new BooleanConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Byte.class, new ByteConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Character.class, new CharacterConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Double.class, new DoubleConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Float.class, new FloatConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Integer.class, new IntegerConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Long.class, new LongConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Short.class, new ShortConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(String.class, new StringConverter(), throwException, defaultArraySize);
         // Other
-        registerArrayConverter(Class.class, new ClassConverter(), throwException, defaultArraySize);
-        registerArrayConverter(java.util.Date.class, new DateConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Calendar.class, new DateConverter(), throwException, defaultArraySize);
-        registerArrayConverter(File.class, new FileConverter(), throwException, defaultArraySize);
-        registerArrayConverter(java.sql.Date.class, new SqlDateConverter(), throwException, defaultArraySize);
-        registerArrayConverter(java.sql.Time.class, new SqlTimeConverter(), throwException, defaultArraySize);
-        registerArrayConverter(Timestamp.class, new SqlTimestampConverter(), throwException, defaultArraySize);
-        registerArrayConverter(URL.class, new URLConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Class.class, new ClassConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(java.util.Date.class, new DateConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Calendar.class, new DateConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(File.class, new FileConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(java.sql.Date.class, new SqlDateConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(java.sql.Time.class, new SqlTimeConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(Timestamp.class, new SqlTimestampConverter(), throwException, defaultArraySize);
+        this.registerArrayConverter(URL.class, new URLConverter(), throwException, defaultArraySize);
     }
     /**
      * Register a new ArrayConverter with the specified element delegate converter
@@ -446,7 +451,7 @@ public class ConverterBean {
      * value used in the event of a conversion error
      * @param defaultArraySize The size of the default array
      */
-    private void registerArrayConverter(Class<?> componentType, Converter componentConverter, boolean throwException, int defaultArraySize) {
+    private void registerArrayConverter(final Class<?> componentType, final Converter componentConverter, final boolean throwException, final int defaultArraySize) {
         Class<?> arrayType = Array.newInstance(componentType, 0).getClass();
         Converter arrayConverter = null;
         if (throwException) {
@@ -454,11 +459,11 @@ public class ConverterBean {
         } else {
             arrayConverter = new ArrayConverter(arrayType, componentConverter, defaultArraySize);
         }
-        register(arrayType, arrayConverter);
+        this.register(arrayType, arrayConverter);
     }
     /** strictly for convenience since it has same parameter order as Map.put */
-    private void register(Class<?> clazz, Converter converter) {
-        register(new ConverterFacade(converter), clazz);
+    private void register(final Class<?> clazz, final Converter converter) {
+        this.register(new ConverterFacade(converter), clazz);
     }
     /**
      * Remove any registered {@link Converter} for the specified destination
@@ -466,8 +471,8 @@ public class ConverterBean {
      *
      * @param clazz Class for which to remove a registered Converter
      */
-    public void deregister(Class<?> clazz) {
-        converters.remove(clazz);
+    public void deregister(final Class<?> clazz) {
+        this.converters.remove(clazz);
     }
     /**
      * Look up and return any registered {@link Converter} for the specified
@@ -477,13 +482,15 @@ public class ConverterBean {
      * @param clazz Class for which to return a registered Converter
      * @return The registered {@link Converter} or <code>null</code> if not found
      */
-    public Converter lookup(Class<?> clazz) {
-        Converter conv = ((Converter) converters.get(clazz));
-        if (conv != null)
+    public Converter lookup(final Class<?> clazz) {
+        Converter conv = (Converter) this.converters.get(clazz);
+        if (conv != null) {
             return conv;
-        for (Object regType : converters.keySet()) {
-            if (((Class<?>) regType).isAssignableFrom(clazz))
-                return ((Converter) converters.get(regType));
+        }
+        for (Object regType : this.converters.keySet()) {
+            if (((Class<?>) regType).isAssignableFrom(clazz)) {
+                return (Converter) this.converters.get(regType);
+            }
         }
         return null;
     }
@@ -496,36 +503,36 @@ public class ConverterBean {
      * @param targetType Class of the value to be converted to
      * @return The registered {@link Converter} or <code>null</code> if not found
      */
-    public Converter lookup(Class<?> sourceType, Class<?> targetType) {
+    public Converter lookup(final Class<?> sourceType, final Class<?> targetType) {
         if (targetType == null) {
             throw new IllegalArgumentException("Target type is missing");
         }
         if (sourceType == null) {
-            return lookup(targetType);
+            return this.lookup(targetType);
         }
         Converter converter = null;
         // Convert --> String 
         if (targetType == String.class) {
-            converter = lookup(sourceType);
+            converter = this.lookup(sourceType);
             if (converter == null && (sourceType.isArray() || Collection.class.isAssignableFrom(sourceType))) {
-                converter = lookup(String[].class);
+                converter = this.lookup(String[].class);
             }
             if (converter == null) {
-                converter = lookup(String.class);
+                converter = this.lookup(String.class);
             }
             return converter;
         }
         // Convert --> String array 
         if (targetType == String[].class) {
             if (sourceType.isArray() || Collection.class.isAssignableFrom(sourceType)) {
-                converter = lookup(sourceType);
+                converter = this.lookup(sourceType);
             }
             if (converter == null) {
-                converter = lookup(String[].class);
+                converter = this.lookup(String[].class);
             }
             return converter;
         }
-        return lookup(targetType);
+        return this.lookup(targetType);
     }
     /**
      * Register a custom {@link Converter} for the specified destination
@@ -535,7 +542,7 @@ public class ConverterBean {
      * @param clazz Destination class for conversions performed by this
      *  Converter
      */
-    public void register(Converter converter, Class<?> clazz) {
-        converters.put(clazz, converter);
+    public void register(final Converter converter, final Class<?> clazz) {
+        this.converters.put(clazz, converter);
     }
 }

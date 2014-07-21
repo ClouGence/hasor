@@ -48,7 +48,7 @@ public final class ClassConverter extends AbstractConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public ClassConverter(Object defaultValue) {
+    public ClassConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -57,6 +57,7 @@ public final class ClassConverter extends AbstractConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Class.class;
     }
@@ -67,8 +68,9 @@ public final class ClassConverter extends AbstractConverter {
      * @return the converted String value.
      * @since 1.8.0
      */
-    protected String convertToString(Object value) {
-        return (value instanceof Class) ? ((Class) value).getName() : value.toString();
+    @Override
+    protected String convertToString(final Object value) {
+        return value instanceof Class ? ((Class) value).getName() : value.toString();
     }
     /**
      * <p>Convert the input object into a java.lang.Class.</p>
@@ -79,11 +81,12 @@ public final class ClassConverter extends AbstractConverter {
      * @throws Throwable if an error occurs converting to the specified type
      * @since 1.8.0
      */
-    protected Object convertToType(Class type, Object value) throws Throwable {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Throwable {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
             try {
-                return (classLoader.loadClass(value.toString()));
+                return classLoader.loadClass(value.toString());
             } catch (ClassNotFoundException ex) {
                 // Don't fail, carry on and try this class's class loader
                 // (see issue# BEANUTILS-263)
@@ -91,6 +94,6 @@ public final class ClassConverter extends AbstractConverter {
         }
         // Try this class's class loader
         classLoader = ClassConverter.class.getClassLoader();
-        return (classLoader.loadClass(value.toString()));
+        return classLoader.loadClass(value.toString());
     }
 }

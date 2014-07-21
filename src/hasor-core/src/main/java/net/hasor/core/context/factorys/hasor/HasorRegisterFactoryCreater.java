@@ -22,7 +22,8 @@ import net.hasor.core.context.adapter.RegisterFactoryCreater;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HasorRegisterFactoryCreater implements RegisterFactoryCreater {
-    public RegisterFactory create(Environment env) {
+    @Override
+    public RegisterFactory create(final Environment env) {
         return new HasorRegisterFactory();
     }
 }

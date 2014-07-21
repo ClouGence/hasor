@@ -47,10 +47,10 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * @param locale the Locale to use for lower-case conversion
      * @see java.lang.String#toLowerCase(java.util.Locale)
      */
-    public LinkedCaseInsensitiveMap(Locale locale) {
+    public LinkedCaseInsensitiveMap(final Locale locale) {
         super();
         this.caseInsensitiveKeys = new HashMap<String, String>();
-        this.locale = (locale != null ? locale : Locale.getDefault());
+        this.locale = locale != null ? locale : Locale.getDefault();
     }
     /**
      * Create a new LinkedCaseInsensitiveMap that wraps a {@link LinkedHashMap}
@@ -59,7 +59,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * @param initialCapacity the initial capacity
      * @see java.lang.String#toLowerCase()
      */
-    public LinkedCaseInsensitiveMap(int initialCapacity) {
+    public LinkedCaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, null);
     }
     /**
@@ -70,32 +70,35 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * @param locale the Locale to use for lower-case conversion
      * @see java.lang.String#toLowerCase(java.util.Locale)
      */
-    public LinkedCaseInsensitiveMap(int initialCapacity, Locale locale) {
+    public LinkedCaseInsensitiveMap(final int initialCapacity, final Locale locale) {
         super(initialCapacity);
         this.caseInsensitiveKeys = new HashMap<String, String>(initialCapacity);
-        this.locale = (locale != null ? locale : Locale.getDefault());
+        this.locale = locale != null ? locale : Locale.getDefault();
     }
-    public V put(String key, V value) {
-        this.caseInsensitiveKeys.put(convertKey(key), key);
+    @Override
+    public V put(final String key, final V value) {
+        this.caseInsensitiveKeys.put(this.convertKey(key), key);
         return super.put(key, value);
     }
-    public boolean containsKey(Object key) {
-        return (key instanceof String && this.caseInsensitiveKeys.containsKey(convertKey((String) key)));
+    @Override
+    public boolean containsKey(final Object key) {
+        return key instanceof String && this.caseInsensitiveKeys.containsKey(this.convertKey((String) key));
     }
-    public V get(Object key) {
-        if (key instanceof String) {
-            return super.get(this.caseInsensitiveKeys.get(convertKey((String) key)));
-        } else {
+    @Override
+    public V get(final Object key) {
+        if (key instanceof String)
+            return super.get(this.caseInsensitiveKeys.get(this.convertKey((String) key)));
+        else
             return null;
-        }
     }
-    public V remove(Object key) {
-        if (key instanceof String) {
-            return super.remove(this.caseInsensitiveKeys.remove(convertKey((String) key)));
-        } else {
+    @Override
+    public V remove(final Object key) {
+        if (key instanceof String)
+            return super.remove(this.caseInsensitiveKeys.remove(this.convertKey((String) key)));
+        else
             return null;
-        }
     }
+    @Override
     public void clear() {
         this.caseInsensitiveKeys.clear();
         super.clear();
@@ -108,7 +111,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * @return the key to use for storing
      * @see java.lang.String#toLowerCase(java.util.Locale)
      */
-    protected String convertKey(String key) {
+    protected String convertKey(final String key) {
         return key.toLowerCase(this.locale);
     }
 }

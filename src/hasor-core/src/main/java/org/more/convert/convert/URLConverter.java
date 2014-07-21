@@ -39,7 +39,7 @@ public final class URLConverter extends AbstractConverter {
      * Construct a <b>java.net.URL</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
-    public URLConverter(Object defaultValue) {
+    public URLConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -47,6 +47,7 @@ public final class URLConverter extends AbstractConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return URL.class;
     }
@@ -59,7 +60,8 @@ public final class URLConverter extends AbstractConverter {
      * @throws Throwable if an error occurs converting to the specified type
      * @since 1.8.0
      */
-    protected Object convertToType(Class type, Object value) throws Throwable {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Throwable {
         return new URL(value.toString());
     }
 }

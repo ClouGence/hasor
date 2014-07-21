@@ -32,24 +32,26 @@ public class StandardEnvironment extends AbstractEnvironment {
     //子类需要自己调用initEnvironment方法初始化。
     protected StandardEnvironment() {}
     //
-    public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
+    public StandardEnvironment(final String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
         this.settingURI = resURL.toURI();
         this.initEnvironment();
     }
-    public StandardEnvironment(File mainSettings) {
+    public StandardEnvironment(final File mainSettings) {
         this.settingURI = mainSettings.toURI();
         this.initEnvironment();
     }
-    public StandardEnvironment(URI mainSettings) {
+    public StandardEnvironment(final URI mainSettings) {
         this.settingURI = mainSettings;
         this.initEnvironment();
     }
     //---------------------------------------------------------------------------------Basic Method
     protected URI settingURI = null;
+    @Override
     public URI getSettingURI() {
         return this.settingURI;
     }
+    @Override
     protected Settings createSettings() throws IOException {
         return new StandardContextSettings(this.getSettingURI());
     }

@@ -26,13 +26,14 @@ import net.hasor.core.Hasor;
 public class AopMatchers {
     private AopMatchers() {}
     //
-    public static <T> MatcherDevice<T> createDevice(Matcher<T> matcher) {
+    public static <T> MatcherDevice<T> createDevice(final Matcher<T> matcher) {
         return new MatcherDevice<T>(matcher);
     }
     /** 匹配任意类型*/
     public static Matcher<Class<?>> anyClass() {
         return new Matcher<Class<?>>() {
-            public boolean matches(Class<?> t) {
+            @Override
+            public boolean matches(final Class<?> t) {
                 return true;
             }
         };
@@ -40,30 +41,31 @@ public class AopMatchers {
     /** 匹配任意方法*/
     public static Matcher<Method> anyMethod() {
         return new Matcher<Method>() {
-            public boolean matches(Method t) {
+            @Override
+            public boolean matches(final Method t) {
                 return true;
             }
         };
     }
     /** 在类型中匹配注解 */
-    public static Matcher<Class<?>> annotatedWithClass(Class<? extends Annotation> annotationType) {
+    public static Matcher<Class<?>> annotatedWithClass(final Class<? extends Annotation> annotationType) {
         return new ClassMatcherAnnotationType(annotationType);
     }
     /** 在方法中匹配注解 */
-    public static Matcher<Method> annotatedWithMethod(Class<? extends Annotation> annotationType) {
+    public static Matcher<Method> annotatedWithMethod(final Class<? extends Annotation> annotationType) {
         return new MethodMatcherAnnotationType(annotationType);
     }
     /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
-    public static Matcher<Class<?>> subClassesOf(Class<?> superclass) {
+    public static Matcher<Class<?>> subClassesOf(final Class<?> superclass) {
         return new SubclassesOf(superclass);
     }
     /**将表达式解析为<code>Matcher&lt;Class&gt;</code>。*/
-    public static Matcher<Class<?>> expressionClass(String matcherExpression) {
+    public static Matcher<Class<?>> expressionClass(final String matcherExpression) {
         throw new UnsupportedOperationException();//TODO　暂不支持
     }
     /**将表达式解析为<code>Matcher&lt;Method&gt;</code>。
      * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
-    public static Matcher<Method> expressionMethod(String matcherExpression) {
+    public static Matcher<Method> expressionMethod(final String matcherExpression) {
         throw new UnsupportedOperationException();//TODO　暂不支持
     }//
      //
@@ -71,29 +73,34 @@ public class AopMatchers {
     /**匹配子类*/
     private static class SubclassesOf implements Matcher<Class<?>> {
         private final Class<?> superclass;
-        public SubclassesOf(Class<?> superclass) {
+        public SubclassesOf(final Class<?> superclass) {
             this.superclass = Hasor.assertIsNotNull(superclass, "superclass");
         }
-        public boolean matches(Class<?> subclass) {
-            return superclass.isAssignableFrom(subclass);
+        @Override
+        public boolean matches(final Class<?> subclass) {
+            return this.superclass.isAssignableFrom(subclass);
         }
-        public boolean equals(Object other) {
-            return other instanceof SubclassesOf && ((SubclassesOf) other).superclass.equals(superclass);
+        @Override
+        public boolean equals(final Object other) {
+            return other instanceof SubclassesOf && ((SubclassesOf) other).superclass.equals(this.superclass);
         }
+        @Override
         public int hashCode() {
-            return 37 * superclass.hashCode();
+            return 37 * this.superclass.hashCode();
         }
+        @Override
         public String toString() {
-            return "subclassesOf(" + superclass.getSimpleName() + ".class)";
+            return "subclassesOf(" + this.superclass.getSimpleName() + ".class)";
         }
     }
     /**负责检测匹配。规则：只要类型上标记了某个注解。*/
     private static class ClassMatcherAnnotationType implements Matcher<Class<?>> {
         private Class<? extends Annotation> annotationType = null;
-        public ClassMatcherAnnotationType(Class<? extends Annotation> annotationType) {
+        public ClassMatcherAnnotationType(final Class<? extends Annotation> annotationType) {
             this.annotationType = annotationType;
         }
-        public boolean matches(Class<?> matcherType) {
+        @Override
+        public boolean matches(final Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(this.annotationType) == true) {
                 return true;
             }
@@ -115,10 +122,11 @@ public class AopMatchers {
     /**负责检测匹配。规则：只要方法上标记了某个注解。*/
     private static class MethodMatcherAnnotationType implements Matcher<Method> {
         private Class<? extends Annotation> annotationType = null;
-        public MethodMatcherAnnotationType(Class<? extends Annotation> annotationType) {
+        public MethodMatcherAnnotationType(final Class<? extends Annotation> annotationType) {
             this.annotationType = annotationType;
         }
-        public boolean matches(Method matcherType) {
+        @Override
+        public boolean matches(final Method matcherType) {
             if (matcherType.isAnnotationPresent(this.annotationType) == true) {
                 return true;
             }

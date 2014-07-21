@@ -28,6 +28,7 @@ public interface TypeBuilder<T> extends RegisterInfo<T> {
     /**为类型绑定一个名称。*/
     public void setBindName(String bindName);
     /**获取注册的类型*/
+    @Override
     public Class<T> getBindType();
     //
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/

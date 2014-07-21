@@ -33,7 +33,7 @@ public class VariableBeanDefine extends BeanDefine {
         return this.type;
     }
     /**设置值类型。*/
-    public void setType(VariableType type) {
+    public void setType(final VariableType type) {
         this.type = type;
     }
     /**获取值*/
@@ -41,7 +41,7 @@ public class VariableBeanDefine extends BeanDefine {
         return this.value;
     }
     /**设置值*/
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
     //------------------------------------------------------------------
@@ -69,33 +69,34 @@ public class VariableBeanDefine extends BeanDefine {
         String,
     }
     /**将字符串描述转换为{@link VariableType}枚举。*/
-    public static VariableType getVariableType(String value) {
+    public static VariableType getVariableType(final String value) {
         return (VariableType) ConverterUtils.convert(VariableType.class, value);
     }
     /**根据枚举获取其基本类型Class。*/
     @SuppressWarnings("rawtypes")
-    public static Class getType(VariableType typeEnum) {
-        if (typeEnum == null)
+    public static Class getType(final VariableType typeEnum) {
+        if (typeEnum == null) {
             return null;
-        else if (typeEnum == VariableType.Boolean)
+        } else if (typeEnum == VariableType.Boolean) {
             return boolean.class;
-        else if (typeEnum == VariableType.Byte)
+        } else if (typeEnum == VariableType.Byte) {
             return byte.class;
-        else if (typeEnum == VariableType.Short)
+        } else if (typeEnum == VariableType.Short) {
             return short.class;
-        else if (typeEnum == VariableType.Int)
+        } else if (typeEnum == VariableType.Int) {
             return int.class;
-        else if (typeEnum == VariableType.Long)
+        } else if (typeEnum == VariableType.Long) {
             return long.class;
-        else if (typeEnum == VariableType.Float)
+        } else if (typeEnum == VariableType.Float) {
             return float.class;
-        else if (typeEnum == VariableType.Double)
+        } else if (typeEnum == VariableType.Double) {
             return double.class;
-        else if (typeEnum == VariableType.Char)
+        } else if (typeEnum == VariableType.Char) {
             return char.class;
-        else if (typeEnum == VariableType.String)
+        } else if (typeEnum == VariableType.String) {
             return String.class;
-        else
+        } else {
             return null;
+        }
     }
 }

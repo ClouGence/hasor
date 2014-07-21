@@ -41,11 +41,12 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
      * @param initMap true表示自动加入一个初始Map作为第一个元素，否则DecSequenceMap中没有任何成员。
      *      初始Map的创建是通过受保护的方法{@link #initMap()}方法创建。
      */
-    public DecSequenceMap(boolean initMap) {
+    public DecSequenceMap(final boolean initMap) {
         if (initMap) {
             Map<K, T> initializationMap = this.initMap();
-            if (initializationMap == null)
+            if (initializationMap == null) {
                 throw new NullPointerException("initMap has null.");
+            }
             this.entrySet().addMap(initializationMap);
         }
     }
@@ -54,7 +55,7 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
      * @param entryMap 参数表示在初始化时候，将参数表示的Map对象作为默认初始Map。
      *      如果参数为空则根据{@link #DecSequenceMap(boolean) DecSequenceMap(true)}规则进行初始化。
      */
-    public DecSequenceMap(Map<K, T> entryMap) {
+    public DecSequenceMap(final Map<K, T> entryMap) {
         this(entryMap, true);
     }
     /**
@@ -63,19 +64,22 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
      *      如果参数为空则根据initMap参数值来决定初始化规则。
      * @param initMap 该值为true表示使用{@link #initMap()}方法创建一个Map作为第一个元素，否则DecSequenceMap中没有任何成员。
      */
-    public DecSequenceMap(Map<K, T> entryMap, boolean initMap) {
+    public DecSequenceMap(final Map<K, T> entryMap, final boolean initMap) {
         this(initMap);
-        if (entryMap != null)
+        if (entryMap != null) {
             this.entrySet().addMap(entryMap);
+        }
     }
     /***/
     protected Map<K, T> initMap() {
         return new HashMap<K, T>();
     }
     //
+    @Override
     public final SimpleSet<K, T> entrySet() {
-        if (this.entrySet == null)
+        if (this.entrySet == null) {
             this.entrySet = this.createSet();
+        }
         return this.entrySet;
     }
     /**创建{@link SimpleSet}对象。*/
@@ -83,81 +87,89 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         return new SimpleSet<K, T>();
     }
     /**按照顺序加入一个Map到序列中。*/
-    public void addMap(Map<K, T> newMap) {
-        entrySet().addMap(newMap);
+    public void addMap(final Map<K, T> newMap) {
+        this.entrySet().addMap(newMap);
     }
     /**按照指定顺序插入一个Map到序列中。*/
-    public void addMap(int index, Map<K, T> newMap) {
-        entrySet().addMap(index, newMap);
+    public void addMap(final int index, final Map<K, T> newMap) {
+        this.entrySet().addMap(index, newMap);
     }
     /**删除一个map*/
-    public void removeMap(int index) {
-        entrySet().removeMap(index);
+    public void removeMap(final int index) {
+        this.entrySet().removeMap(index);
     }
     /**删除一个map*/
-    public void removeMap(Map<K, T> newMap) {
-        entrySet().removeMap(newMap);
+    public void removeMap(final Map<K, T> newMap) {
+        this.entrySet().removeMap(newMap);
     }
     /**删除所有已经添加的map*/
     public void removeAllMap() {
-        if (entrySet().isEmpty() == false)
-            entrySet().clear();
+        if (this.entrySet().isEmpty() == false) {
+            this.entrySet().clear();
+        }
     }
     public List<Map<K, T>> elementMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     };
     /**确认K所在的Map*/
-    public Map<K, T> keyAt(K key) {
-        for (Map<K, T> e : this.elementMapList())
-            if (e.containsKey(key))
+    public Map<K, T> keyAt(final K key) {
+        for (Map<K, T> e : this.elementMapList()) {
+            if (e.containsKey(key)) {
                 return e;
+            }
+        }
         return null;
     }
     /**确认T所在的Map*/
-    public Map<K, T> valueAt(T value) {
-        for (Map<K, T> e : this.elementMapList())
-            if (e.containsValue(value))
+    public Map<K, T> valueAt(final T value) {
+        for (Map<K, T> e : this.elementMapList()) {
+            if (e.containsValue(value)) {
                 return e;
+            }
+        }
         return null;
     }
     @Override
-    public T put(K key, T value) {
+    public T put(final K key, final T value) {
         return this.entrySet().mapList.get(0).put(key, value);
     }
     @Override
-    public T remove(Object key) {
+    public T remove(final Object key) {
         return this.entrySet().mapList.get(0).remove(key);
     }
     /*----------------------------------------------------------------------*/
     public static class SimpleSet<K, T> extends AbstractSet<Entry<K, T>> {
         protected List<Map<K, T>> mapList = new ArrayList<Map<K, T>>();
-        public void addMap(Map<K, T> newMap) {
+        public void addMap(final Map<K, T> newMap) {
             this.mapList.add(newMap);
         }
-        public void addMap(int index, Map<K, T> newMap) {
+        public void addMap(final int index, final Map<K, T> newMap) {
             this.mapList.add(index, newMap);
         }
-        public void removeMap(int index) {
+        public void removeMap(final int index) {
             this.mapList.remove(index);
         }
-        public void removeMap(Map<K, T> newMap) {
+        public void removeMap(final Map<K, T> newMap) {
             this.mapList.remove(newMap);
         }
+        @Override
         public void clear() {
             this.mapList.clear();
         }
         @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
-            for (Map<K, T> mapItem : this.mapList)
+            for (Map<K, T> mapItem : this.mapList) {
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
+            }
             return seqIter;
         }
         @Override
         public int size() {
             int count = 0;
-            for (Map<K, T> map : mapList)
+            for (Map<K, T> map : this.mapList) {
                 count += map.size();
+            }
             return count;
         }
     }

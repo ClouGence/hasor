@@ -73,32 +73,32 @@ class WeakFastHashMap extends HashMap {
     /** Construct an empty map. */
     public WeakFastHashMap() {
         super();
-        this.map = createMap();
+        this.map = this.createMap();
     }
     /**
      * Construct an empty map with the specified capacity.
      * @param capacity  the initial capacity of the empty map
      */
-    public WeakFastHashMap(int capacity) {
+    public WeakFastHashMap(final int capacity) {
         super();
-        this.map = createMap(capacity);
+        this.map = this.createMap(capacity);
     }
     /**
      * Construct an empty map with the specified capacity and load factor.
      * @param capacity  the initial capacity of the empty map
      * @param factor  the load factor of the new map
      */
-    public WeakFastHashMap(int capacity, float factor) {
+    public WeakFastHashMap(final int capacity, final float factor) {
         super();
-        this.map = createMap(capacity, factor);
+        this.map = this.createMap(capacity, factor);
     }
     /**
      * Construct a new map with the same mappings as the specified map.
      * @param map  the map whose mappings are to be copied
      */
-    public WeakFastHashMap(Map map) {
+    public WeakFastHashMap(final Map map) {
         super();
-        this.map = createMap(map);
+        this.map = this.createMap(map);
     }
     // Property access
     // ----------------------------------------------------------------------
@@ -107,13 +107,13 @@ class WeakFastHashMap extends HashMap {
      *  @return true if this map is operating in fast mode
      */
     public boolean getFast() {
-        return (this.fast);
+        return this.fast;
     }
     /**
      *  Sets whether this map is operating in fast mode.
      *  @param fast true if this map should operate in fast mode
      */
-    public void setFast(boolean fast) {
+    public void setFast(final boolean fast) {
         this.fast = fast;
     }
     // Map access
@@ -129,12 +129,13 @@ class WeakFastHashMap extends HashMap {
      * @param key  the key whose value is to be returned
      * @return the value mapped to that key, or null
      */
-    public Object get(Object key) {
-        if (fast) {
-            return (map.get(key));
+    @Override
+    public Object get(final Object key) {
+        if (this.fast) {
+            return this.map.get(key);
         } else {
-            synchronized (map) {
-                return (map.get(key));
+            synchronized (this.map) {
+                return this.map.get(key);
             }
         }
     }
@@ -143,12 +144,13 @@ class WeakFastHashMap extends HashMap {
      * 
      * @return the current size of the map
      */
+    @Override
     public int size() {
-        if (fast) {
-            return (map.size());
+        if (this.fast) {
+            return this.map.size();
         } else {
-            synchronized (map) {
-                return (map.size());
+            synchronized (this.map) {
+                return this.map.size();
             }
         }
     }
@@ -157,12 +159,13 @@ class WeakFastHashMap extends HashMap {
      * 
      * @return is the map currently empty
      */
+    @Override
     public boolean isEmpty() {
-        if (fast) {
-            return (map.isEmpty());
+        if (this.fast) {
+            return this.map.isEmpty();
         } else {
-            synchronized (map) {
-                return (map.isEmpty());
+            synchronized (this.map) {
+                return this.map.isEmpty();
             }
         }
     }
@@ -173,12 +176,13 @@ class WeakFastHashMap extends HashMap {
      * @param key  the key to be searched for
      * @return true if the map contains the key
      */
-    public boolean containsKey(Object key) {
-        if (fast) {
-            return (map.containsKey(key));
+    @Override
+    public boolean containsKey(final Object key) {
+        if (this.fast) {
+            return this.map.containsKey(key);
         } else {
-            synchronized (map) {
-                return (map.containsKey(key));
+            synchronized (this.map) {
+                return this.map.containsKey(key);
             }
         }
     }
@@ -189,12 +193,13 @@ class WeakFastHashMap extends HashMap {
      * @param value  the value to be searched for
      * @return true if the map contains the value
      */
-    public boolean containsValue(Object value) {
-        if (fast) {
-            return (map.containsValue(value));
+    @Override
+    public boolean containsValue(final Object value) {
+        if (this.fast) {
+            return this.map.containsValue(value);
         } else {
-            synchronized (map) {
-                return (map.containsValue(value));
+            synchronized (this.map) {
+                return this.map.containsValue(value);
             }
         }
     }
@@ -212,17 +217,18 @@ class WeakFastHashMap extends HashMap {
      * @param value  the value to be associated with this key
      * @return the value previously mapped to the key, or null
      */
-    public Object put(Object key, Object value) {
-        if (fast) {
+    @Override
+    public Object put(final Object key, final Object value) {
+        if (this.fast) {
             synchronized (this) {
-                Map temp = cloneMap(map);
+                Map temp = this.cloneMap(this.map);
                 Object result = temp.put(key, value);
-                map = temp;
-                return (result);
+                this.map = temp;
+                return result;
             }
         } else {
-            synchronized (map) {
-                return (map.put(key, value));
+            synchronized (this.map) {
+                return this.map.put(key, value);
             }
         }
     }
@@ -232,16 +238,17 @@ class WeakFastHashMap extends HashMap {
      *
      * @param in  the map whose mappings are to be copied
      */
-    public void putAll(Map in) {
-        if (fast) {
+    @Override
+    public void putAll(final Map in) {
+        if (this.fast) {
             synchronized (this) {
-                Map temp = cloneMap(map);
+                Map temp = this.cloneMap(this.map);
                 temp.putAll(in);
-                map = temp;
+                this.map = temp;
             }
         } else {
-            synchronized (map) {
-                map.putAll(in);
+            synchronized (this.map) {
+                this.map.putAll(in);
             }
         }
     }
@@ -252,31 +259,33 @@ class WeakFastHashMap extends HashMap {
      * @param key  the key whose mapping is to be removed
      * @return the value removed, or null
      */
-    public Object remove(Object key) {
-        if (fast) {
+    @Override
+    public Object remove(final Object key) {
+        if (this.fast) {
             synchronized (this) {
-                Map temp = cloneMap(map);
+                Map temp = this.cloneMap(this.map);
                 Object result = temp.remove(key);
-                map = temp;
-                return (result);
+                this.map = temp;
+                return result;
             }
         } else {
-            synchronized (map) {
-                return (map.remove(key));
+            synchronized (this.map) {
+                return this.map.remove(key);
             }
         }
     }
     /**
      * Remove all mappings from this map.
      */
+    @Override
     public void clear() {
-        if (fast) {
+        if (this.fast) {
             synchronized (this) {
-                map = createMap();
+                this.map = this.createMap();
             }
         } else {
-            synchronized (map) {
-                map.clear();
+            synchronized (this.map) {
+                this.map.clear();
             }
         }
     }
@@ -291,56 +300,57 @@ class WeakFastHashMap extends HashMap {
      * @param o  the object to be compared to this list
      * @return true if the two maps are equal
      */
-    public boolean equals(Object o) {
+    @Override
+    public boolean equals(final Object o) {
         // Simple tests that require no synchronization
         if (o == this) {
-            return (true);
+            return true;
         } else if (!(o instanceof Map)) {
-            return (false);
+            return false;
         }
         Map mo = (Map) o;
         // Compare the two maps for equality
-        if (fast) {
-            if (mo.size() != map.size()) {
-                return (false);
+        if (this.fast) {
+            if (mo.size() != this.map.size()) {
+                return false;
             }
-            Iterator i = map.entrySet().iterator();
+            Iterator i = this.map.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
                 Object key = e.getKey();
                 Object value = e.getValue();
                 if (value == null) {
                     if (!(mo.get(key) == null && mo.containsKey(key))) {
-                        return (false);
+                        return false;
                     }
                 } else {
                     if (!value.equals(mo.get(key))) {
-                        return (false);
+                        return false;
                     }
                 }
             }
-            return (true);
+            return true;
         } else {
-            synchronized (map) {
-                if (mo.size() != map.size()) {
-                    return (false);
+            synchronized (this.map) {
+                if (mo.size() != this.map.size()) {
+                    return false;
                 }
-                Iterator i = map.entrySet().iterator();
+                Iterator i = this.map.entrySet().iterator();
                 while (i.hasNext()) {
                     Map.Entry e = (Map.Entry) i.next();
                     Object key = e.getKey();
                     Object value = e.getValue();
                     if (value == null) {
                         if (!(mo.get(key) == null && mo.containsKey(key))) {
-                            return (false);
+                            return false;
                         }
                     } else {
                         if (!value.equals(mo.get(key))) {
-                            return (false);
+                            return false;
                         }
                     }
                 }
-                return (true);
+                return true;
             }
         }
     }
@@ -351,22 +361,23 @@ class WeakFastHashMap extends HashMap {
      * 
      * @return suitable integer hash code
      */
+    @Override
     public int hashCode() {
-        if (fast) {
+        if (this.fast) {
             int h = 0;
-            Iterator i = map.entrySet().iterator();
+            Iterator i = this.map.entrySet().iterator();
             while (i.hasNext()) {
                 h += i.next().hashCode();
             }
-            return (h);
+            return h;
         } else {
-            synchronized (map) {
+            synchronized (this.map) {
                 int h = 0;
-                Iterator i = map.entrySet().iterator();
+                Iterator i = this.map.entrySet().iterator();
                 while (i.hasNext()) {
                     h += i.next().hashCode();
                 }
-                return (h);
+                return h;
             }
         }
     }
@@ -376,17 +387,18 @@ class WeakFastHashMap extends HashMap {
      * 
      * @return a clone of this map
      */
+    @Override
     public Object clone() {
         WeakFastHashMap results = null;
-        if (fast) {
-            results = new WeakFastHashMap(map);
+        if (this.fast) {
+            results = new WeakFastHashMap(this.map);
         } else {
-            synchronized (map) {
-                results = new WeakFastHashMap(map);
+            synchronized (this.map) {
+                results = new WeakFastHashMap(this.map);
             }
         }
-        results.setFast(getFast());
-        return (results);
+        results.setFast(this.getFast());
+        return results;
     }
     // Map views
     // ----------------------------------------------------------------------
@@ -395,6 +407,7 @@ class WeakFastHashMap extends HashMap {
      * element in the returned collection is a <code>Map.Entry</code>.
      * @return the set of map Map entries
      */
+    @Override
     public Set entrySet() {
         return new EntrySet();
     }
@@ -402,6 +415,7 @@ class WeakFastHashMap extends HashMap {
      * Return a set view of the keys contained in this map.
      * @return the set of the Map's keys
      */
+    @Override
     public Set keySet() {
         return new KeySet();
     }
@@ -409,6 +423,7 @@ class WeakFastHashMap extends HashMap {
      * Return a collection view of the values contained in this map.
      * @return the set of the Map's values
      */
+    @Override
     public Collection values() {
         return new Values();
     }
@@ -417,17 +432,17 @@ class WeakFastHashMap extends HashMap {
     protected Map createMap() {
         return new WeakHashMap();
     }
-    protected Map createMap(int capacity) {
+    protected Map createMap(final int capacity) {
         return new WeakHashMap(capacity);
     }
-    protected Map createMap(int capacity, float factor) {
+    protected Map createMap(final int capacity, final float factor) {
         return new WeakHashMap(capacity, factor);
     }
-    protected Map createMap(Map map) {
+    protected Map createMap(final Map map) {
         return new WeakHashMap(map);
     }
-    protected Map cloneMap(Map map) {
-        return createMap(map);
+    protected Map cloneMap(final Map map) {
+        return this.createMap(map);
     }
     // Map view inner classes
     // ----------------------------------------------------------------------
@@ -438,140 +453,155 @@ class WeakFastHashMap extends HashMap {
         public CollectionView() {}
         protected abstract Collection get(Map map);
         protected abstract Object iteratorNext(Map.Entry entry);
+        @Override
         public void clear() {
-            if (fast) {
+            if (WeakFastHashMap.this.fast) {
                 synchronized (WeakFastHashMap.this) {
-                    map = createMap();
+                    WeakFastHashMap.this.map = WeakFastHashMap.this.createMap();
                 }
             } else {
-                synchronized (map) {
-                    get(map).clear();
+                synchronized (WeakFastHashMap.this.map) {
+                    this.get(WeakFastHashMap.this.map).clear();
                 }
             }
         }
-        public boolean remove(Object o) {
-            if (fast) {
+        @Override
+        public boolean remove(final Object o) {
+            if (WeakFastHashMap.this.fast) {
                 synchronized (WeakFastHashMap.this) {
-                    Map temp = cloneMap(map);
-                    boolean r = get(temp).remove(o);
-                    map = temp;
+                    Map temp = WeakFastHashMap.this.cloneMap(WeakFastHashMap.this.map);
+                    boolean r = this.get(temp).remove(o);
+                    WeakFastHashMap.this.map = temp;
                     return r;
                 }
             } else {
-                synchronized (map) {
-                    return get(map).remove(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).remove(o);
                 }
             }
         }
-        public boolean removeAll(Collection o) {
-            if (fast) {
+        @Override
+        public boolean removeAll(final Collection o) {
+            if (WeakFastHashMap.this.fast) {
                 synchronized (WeakFastHashMap.this) {
-                    Map temp = cloneMap(map);
-                    boolean r = get(temp).removeAll(o);
-                    map = temp;
+                    Map temp = WeakFastHashMap.this.cloneMap(WeakFastHashMap.this.map);
+                    boolean r = this.get(temp).removeAll(o);
+                    WeakFastHashMap.this.map = temp;
                     return r;
                 }
             } else {
-                synchronized (map) {
-                    return get(map).removeAll(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).removeAll(o);
                 }
             }
         }
-        public boolean retainAll(Collection o) {
-            if (fast) {
+        @Override
+        public boolean retainAll(final Collection o) {
+            if (WeakFastHashMap.this.fast) {
                 synchronized (WeakFastHashMap.this) {
-                    Map temp = cloneMap(map);
-                    boolean r = get(temp).retainAll(o);
-                    map = temp;
+                    Map temp = WeakFastHashMap.this.cloneMap(WeakFastHashMap.this.map);
+                    boolean r = this.get(temp).retainAll(o);
+                    WeakFastHashMap.this.map = temp;
                     return r;
                 }
             } else {
-                synchronized (map) {
-                    return get(map).retainAll(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).retainAll(o);
                 }
             }
         }
+        @Override
         public int size() {
-            if (fast) {
-                return get(map).size();
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).size();
             } else {
-                synchronized (map) {
-                    return get(map).size();
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).size();
                 }
             }
         }
+        @Override
         public boolean isEmpty() {
-            if (fast) {
-                return get(map).isEmpty();
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).isEmpty();
             } else {
-                synchronized (map) {
-                    return get(map).isEmpty();
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).isEmpty();
                 }
             }
         }
-        public boolean contains(Object o) {
-            if (fast) {
-                return get(map).contains(o);
+        @Override
+        public boolean contains(final Object o) {
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).contains(o);
             } else {
-                synchronized (map) {
-                    return get(map).contains(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).contains(o);
                 }
             }
         }
-        public boolean containsAll(Collection o) {
-            if (fast) {
-                return get(map).containsAll(o);
+        @Override
+        public boolean containsAll(final Collection o) {
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).containsAll(o);
             } else {
-                synchronized (map) {
-                    return get(map).containsAll(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).containsAll(o);
                 }
             }
         }
-        public Object[] toArray(Object[] o) {
-            if (fast) {
-                return get(map).toArray(o);
+        @Override
+        public Object[] toArray(final Object[] o) {
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).toArray(o);
             } else {
-                synchronized (map) {
-                    return get(map).toArray(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).toArray(o);
                 }
             }
         }
+        @Override
         public Object[] toArray() {
-            if (fast) {
-                return get(map).toArray();
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).toArray();
             } else {
-                synchronized (map) {
-                    return get(map).toArray();
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).toArray();
                 }
             }
         }
-        public boolean equals(Object o) {
+        @Override
+        public boolean equals(final Object o) {
             if (o == this) {
                 return true;
             }
-            if (fast) {
-                return get(map).equals(o);
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).equals(o);
             } else {
-                synchronized (map) {
-                    return get(map).equals(o);
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).equals(o);
                 }
             }
         }
+        @Override
         public int hashCode() {
-            if (fast) {
-                return get(map).hashCode();
+            if (WeakFastHashMap.this.fast) {
+                return this.get(WeakFastHashMap.this.map).hashCode();
             } else {
-                synchronized (map) {
-                    return get(map).hashCode();
+                synchronized (WeakFastHashMap.this.map) {
+                    return this.get(WeakFastHashMap.this.map).hashCode();
                 }
             }
         }
-        public boolean add(Object o) {
+        @Override
+        public boolean add(final Object o) {
             throw new UnsupportedOperationException();
         }
-        public boolean addAll(Collection c) {
+        @Override
+        public boolean addAll(final Collection c) {
             throw new UnsupportedOperationException();
         }
+        @Override
         public Iterator iterator() {
             return new CollectionViewIterator();
         }
@@ -580,38 +610,41 @@ class WeakFastHashMap extends HashMap {
             private Map.Entry lastReturned = null;
             private Iterator  iterator;
             public CollectionViewIterator() {
-                this.expected = map;
-                this.iterator = expected.entrySet().iterator();
+                this.expected = WeakFastHashMap.this.map;
+                this.iterator = this.expected.entrySet().iterator();
             }
+            @Override
             public boolean hasNext() {
-                if (expected != map) {
+                if (this.expected != WeakFastHashMap.this.map) {
                     throw new ConcurrentModificationException();
                 }
-                return iterator.hasNext();
+                return this.iterator.hasNext();
             }
+            @Override
             public Object next() {
-                if (expected != map) {
+                if (this.expected != WeakFastHashMap.this.map) {
                     throw new ConcurrentModificationException();
                 }
-                lastReturned = (Map.Entry) iterator.next();
-                return iteratorNext(lastReturned);
+                this.lastReturned = (Map.Entry) this.iterator.next();
+                return CollectionView.this.iteratorNext(this.lastReturned);
             }
+            @Override
             public void remove() {
-                if (lastReturned == null) {
+                if (this.lastReturned == null) {
                     throw new IllegalStateException();
                 }
-                if (fast) {
+                if (WeakFastHashMap.this.fast) {
                     synchronized (WeakFastHashMap.this) {
-                        if (expected != map) {
+                        if (this.expected != WeakFastHashMap.this.map) {
                             throw new ConcurrentModificationException();
                         }
-                        WeakFastHashMap.this.remove(lastReturned.getKey());
-                        lastReturned = null;
-                        expected = map;
+                        WeakFastHashMap.this.remove(this.lastReturned.getKey());
+                        this.lastReturned = null;
+                        this.expected = WeakFastHashMap.this.map;
                     }
                 } else {
-                    iterator.remove();
-                    lastReturned = null;
+                    this.iterator.remove();
+                    this.lastReturned = null;
                 }
             }
         }
@@ -620,10 +653,12 @@ class WeakFastHashMap extends HashMap {
      * Set implementation over the keys of the FastHashMap
      */
     private class KeySet extends CollectionView implements Set {
-        protected Collection get(Map map) {
+        @Override
+        protected Collection get(final Map map) {
             return map.keySet();
         }
-        protected Object iteratorNext(Map.Entry entry) {
+        @Override
+        protected Object iteratorNext(final Map.Entry entry) {
             return entry.getKey();
         }
     }
@@ -631,10 +666,12 @@ class WeakFastHashMap extends HashMap {
      * Collection implementation over the values of the FastHashMap
      */
     private class Values extends CollectionView {
-        protected Collection get(Map map) {
+        @Override
+        protected Collection get(final Map map) {
             return map.values();
         }
-        protected Object iteratorNext(Map.Entry entry) {
+        @Override
+        protected Object iteratorNext(final Map.Entry entry) {
             return entry.getValue();
         }
     }
@@ -642,10 +679,12 @@ class WeakFastHashMap extends HashMap {
      * Set implementation over the entries of the FastHashMap
      */
     private class EntrySet extends CollectionView implements Set {
-        protected Collection get(Map map) {
+        @Override
+        protected Collection get(final Map map) {
             return map.entrySet();
         }
-        protected Object iteratorNext(Map.Entry entry) {
+        @Override
+        protected Object iteratorNext(final Map.Entry entry) {
             return entry;
         }
     }

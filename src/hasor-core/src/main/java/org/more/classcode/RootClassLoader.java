@@ -28,13 +28,14 @@ public class RootClassLoader extends ClassLoader {
     private Map<String, ClassEngine> classMap2 = null; // key is org.more.Test
     private Map<String, ClassEngine> classMap  = null; // key is org/more.Test.class
     /**创建引擎类装载器，parentClassLoader参数是该装载器所使用的父类装载器。*/
-    public RootClassLoader(ClassLoader parentClassLoader) {
+    public RootClassLoader(final ClassLoader parentClassLoader) {
         super(parentClassLoader);
         this.classMap = new HashMap<String, ClassEngine>();
         this.classMap2 = new HashMap<String, ClassEngine>();
     }
     /**负责装载新类。*/
-    protected final Class<?> findClass(String name) throws ClassNotFoundException {
+    @Override
+    protected final Class<?> findClass(final String name) throws ClassNotFoundException {
         if (this.classMap.containsKey(name) == true) {
             byte[] bs = this.classMap.get(name).toBytes();
             return this.defineClass(name, bs, 0, bs.length);
@@ -42,14 +43,15 @@ public class RootClassLoader extends ClassLoader {
         return super.findClass(name);
     }
     /**获取某一个已经类型的字节码，该字节码必须是通过{@link ClassEngine}引擎生成的。*/
-    public byte[] toBytes(Class<?> type) {
+    public byte[] toBytes(final Class<?> type) {
         ClassLoader cl = type.getClassLoader();
-        if (cl instanceof RootClassLoader)
+        if (cl instanceof RootClassLoader) {
             return ((RootClassLoader) cl).getRegeditEngine(type.getName()).toBytes();
+        }
         return null;
     }
     /**注册一个{@link ClassEngine}引擎到类装载器中。*/
-    public void regeditEngine(ClassEngine classEngine) {
+    public void regeditEngine(final ClassEngine classEngine) {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == false) {
             this.classMap.put(cn, classEngine);
@@ -58,7 +60,7 @@ public class RootClassLoader extends ClassLoader {
         }
     }
     /**解除一个{@link ClassEngine}引擎的注册，接触注册之后该类装载器将不能再次获取到其字节码。*/
-    public void unRegeditEngine(ClassEngine classEngine) {
+    public void unRegeditEngine(final ClassEngine classEngine) {
         String cn = classEngine.getClassName();
         if (this.classMap.containsKey(cn) == true) {
             this.classMap.remove(cn);
@@ -67,12 +69,14 @@ public class RootClassLoader extends ClassLoader {
         }
     }
     /**获取一个以注册的{@link ClassEngine}引擎。*/
-    public ClassEngine getRegeditEngine(String className) {
-        if (this.classMap.containsKey(className) == true)
+    public ClassEngine getRegeditEngine(final String className) {
+        if (this.classMap.containsKey(className) == true) {
             return this.classMap.get(className);
+        }
         return null;
     }
-    public InputStream getResourceAsStream(String name) {
+    @Override
+    public InputStream getResourceAsStream(final String name) {
         if (this.classMap.containsKey(name) == true) {
             ClassEngine ce = this.classMap.get(name);
             return new ByteArrayInputStream(ce.toBytes());

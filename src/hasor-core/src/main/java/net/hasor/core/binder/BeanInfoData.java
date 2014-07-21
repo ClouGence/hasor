@@ -24,18 +24,21 @@ class BeanInfoData<T> implements BeanInfo<T> {
     private String[]        names = null;
     private RegisterInfo<T> info  = null;
     //
-    public BeanInfoData(String[] aliasNames, RegisterInfo<T> info) {
+    public BeanInfoData(final String[] aliasNames, final RegisterInfo<T> info) {
         this.names = aliasNames;
         this.info = info;
     }
     /**获取bean的名称*/
+    @Override
     public String[] getNames() {
         return this.names;
     }
+    @Override
     public RegisterInfo<T> getReferInfo() {
         return this.info;
     }
     /**获取bean的类型*/
+    @Override
     public Class<T> getType() {
         return this.info.getBindType();
     }

@@ -26,24 +26,24 @@ public class EventObject {
     private Object[]          params    = null;
     private EventCallBackHook callBack  = null;
     //
-    public EventObject(String eventType, boolean sync) {
+    public EventObject(final String eventType, final boolean sync) {
         this.eventType = eventType;
         this.sync = sync;
     }
     //
     public String getEventType() {
-        return eventType;
+        return this.eventType;
     }
     public Object[] getParams() {
-        return params;
+        return this.params;
     }
     public boolean isSync() {
-        return sync;
+        return this.sync;
     }
-    public void addParams(Object[] params) {
+    public void addParams(final Object[] params) {
         this.params = params;
     }
-    public void setCallBack(EventCallBackHook callBack) {
+    public void setCallBack(final EventCallBackHook callBack) {
         this.callBack = callBack;
     }
     public EventCallBackHook getCallBack() {

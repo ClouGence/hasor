@@ -22,14 +22,18 @@ import org.more.classcode.PropertyStrategy;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultPropertyStrategy implements PropertyStrategy {
-    public void initStrategy(ClassEngine classEngine) {}
-    public boolean isIgnore(String name, Class<?> type, boolean isDelegate) {
+    @Override
+    public void initStrategy(final ClassEngine classEngine) {}
+    @Override
+    public boolean isIgnore(final String name, final Class<?> type, final boolean isDelegate) {
         return false;
     }
-    public boolean isReadOnly(String name, Class<?> type, boolean isDelegate) {
+    @Override
+    public boolean isReadOnly(final String name, final Class<?> type, final boolean isDelegate) {
         return false;
     }
-    public boolean isWriteOnly(String name, Class<?> type, boolean isDelegate) {
+    @Override
+    public boolean isWriteOnly(final String name, final Class<?> type, final boolean isDelegate) {
         return false;
     }
 }

@@ -31,15 +31,15 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
         super(true);
     };
     /** 创建一个基本属性对象，参数是第一个栈对象。 */
-    public DecStackMap(Map<K, T> entryMap) {
+    public DecStackMap(final Map<K, T> entryMap) {
         super(entryMap, true);
     };
     @Override
-    public T put(K key, T value) {
+    public T put(final K key, final T value) {
         return this.elementMapList().get(0).put(key, value);
     }
     @Override
-    public T remove(Object key) {
+    public T remove(final Object key) {
         return this.elementMapList().get(0).remove(key);
     }
     @Override
@@ -58,8 +58,9 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     /**销毁当前层次的属性栈，如果在栈顶执行该操作将会引发{@link IndexOutOfBoundsException}类型异常。*/
     public synchronized void dropStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
-        if (stackList.mapList.size() == 0)
+        if (stackList.mapList.size() == 0) {
             throw new IndexOutOfBoundsException();
+        }
         stackList.removeFirst();
     };
     /*----------------------------------------------------------------------*/
@@ -75,22 +76,25 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
         @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
             Iterator<java.util.Map.Entry<K, T>> seqIter = null;
-            for (Map<K, T> mapItem : this.mapList)
+            for (Map<K, T> mapItem : this.mapList) {
                 seqIter = MergeUtils.mergeIterator(seqIter, mapItem.entrySet().iterator());
+            }
             return seqIter;
         }
         @Override
         public int size() {
             int count = 0;
-            for (Map<K, T> map : mapList)
+            for (Map<K, T> map : this.mapList) {
                 count += map.size();
+            }
             return count;
         }
     };
     /** 获取指定深度的父堆（如果可能）。0代表当前层，数字越大获取的深度越深。 */
-    public Map<K, T> getParentStack(int depth) {
-        if (depth < 0 || depth > this.getDepth())
+    public Map<K, T> getParentStack(final int depth) {
+        if (depth < 0 || depth > this.getDepth()) {
             throw new IndexOutOfBoundsException();
+        }
         return this.entrySet().mapList.get(depth);
     };
     /** 获取当前堆的父堆（如果可能）。 */

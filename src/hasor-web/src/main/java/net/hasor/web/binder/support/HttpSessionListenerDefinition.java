@@ -26,33 +26,31 @@ class HttpSessionListenerDefinition {
     private Provider<HttpSessionListener> listenerProvider = null;
     private HttpSessionListener           listenerInstance = null;
     //
-    public HttpSessionListenerDefinition(Provider<HttpSessionListener> listenerProvider) {
+    public HttpSessionListenerDefinition(final Provider<HttpSessionListener> listenerProvider) {
         this.listenerProvider = listenerProvider;
     }
     //
     protected HttpSessionListener getTarget() {
-        if (this.listenerInstance == null) {
-            this.listenerInstance = listenerProvider.get();
-        }
+        if (this.listenerInstance == null)
+            this.listenerInstance = this.listenerProvider.get();
         return this.listenerInstance;
     }
+    @Override
     public String toString() {
         return String.format("type %s listenerKey=%s",//
                 HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void sessionCreated(HttpSessionEvent event) {
+    public void sessionCreated(final HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null) {
+        if (httpSessionListener != null)
             httpSessionListener.sessionCreated(event);
-        }
     }
     /**/
-    public void sessionDestroyed(HttpSessionEvent event) {
+    public void sessionDestroyed(final HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null) {
+        if (httpSessionListener != null)
             httpSessionListener.sessionDestroyed(event);
-        }
     }
 }

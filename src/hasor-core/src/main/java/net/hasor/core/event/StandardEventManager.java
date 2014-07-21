@@ -56,7 +56,7 @@ public class StandardEventManager implements EventContext {
     private void updateSettings() {
         //更新ThreadPoolExecutor
         int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
-        ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executorService;
+        ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
@@ -69,7 +69,8 @@ public class StandardEventManager implements EventContext {
         return this.executorService;
     }
     //
-    public void pushListener(String eventType, EventListener eventListener) {
+    @Override
+    public void pushListener(final String eventType, final EventListener eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
         }
@@ -84,7 +85,8 @@ public class StandardEventManager implements EventContext {
         }
         this.onceListenerLock.unlock();//解锁
     }
-    public void addListener(String eventType, EventListener eventListener) {
+    @Override
+    public void addListener(final String eventType, final EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
         Hasor.assertIsNotNull(eventListener, "add EventListener object is null.");
@@ -101,7 +103,8 @@ public class StandardEventManager implements EventContext {
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
-    public void removeListener(String eventType, EventListener eventListener) {
+    @Override
+    public void removeListener(final String eventType, final EventListener eventListener) {
         this.listenerRWLock.writeLock().lock();//加锁(写)
         //
         Hasor.assertIsNotNull(eventType, "remove eventType is null.");
@@ -109,55 +112,60 @@ public class StandardEventManager implements EventContext {
         EventListener[] eventListenerArray = this.listenerMap.get(eventType);
         if (!ArrayUtils.isEmpty(eventListenerArray)) {
             int index = ArrayUtils.indexOf(eventListenerArray, eventListener);
-            eventListenerArray = (EventListener[]) ((index == ArrayUtils.INDEX_NOT_FOUND) ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
+            eventListenerArray = (EventListener[]) (index == ArrayUtils.INDEX_NOT_FOUND ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
             this.listenerMap.put(eventType, eventListenerArray);
         }
         //
         this.listenerRWLock.writeLock().unlock();//解锁(写)
     }
     //
-    public final void fireSyncEvent(String eventType, Object... objects) {
+    @Override
+    public final void fireSyncEvent(final String eventType, final Object... objects) {
         this.fireSyncEvent(eventType, null, objects);
     }
-    public final void fireSyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+    @Override
+    public final void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
         this.fireEvent(eventType, true, callBack, objects);
     }
-    public final void fireAsyncEvent(String eventType, Object... objects) {
+    @Override
+    public final void fireAsyncEvent(final String eventType, final Object... objects) {
         this.fireAsyncEvent(eventType, null, objects);
     }
-    public final void fireAsyncEvent(String eventType, EventCallBackHook callBack, Object... objects) {
+    @Override
+    public final void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
         this.fireEvent(eventType, false, callBack, objects);
     }
-    private final void fireEvent(String eventType, boolean sync, EventCallBackHook callBack, Object... objects) {
-        EventObject event = createEvent(eventType, sync);
+    private final void fireEvent(final String eventType, final boolean sync, final EventCallBackHook callBack, final Object... objects) {
+        EventObject event = this.createEvent(eventType, sync);
         event.setCallBack(callBack);
         event.addParams(objects);
         this.fireEvent(event);
     }
     /**创建事件对象*/
-    protected EventObject createEvent(String eventType, boolean sync) {
+    protected EventObject createEvent(final String eventType, final boolean sync) {
         return new EventObject(eventType, sync);
     };
     /**引发事件*/
     protected void fireEvent(final EventObject event) {
         if (event.isSync()) {
             //同步的
-            executeEvent(event);
+            this.executeEvent(event);
         } else {
             //异步的
             this.executorService.submit(new Runnable() {
+                @Override
                 public void run() {
-                    executeEvent(event);
+                    StandardEventManager.this.executeEvent(event);
                 }
             });
         }
     };
     /**引发事件*/
-    private void executeEvent(EventObject eventObj) {
+    private void executeEvent(final EventObject eventObj) {
         String eventType = eventObj.getEventType();
         Object[] objects = eventObj.getParams();
         EventCallBackHook callBack = eventObj.getCallBack();
-        callBack = (callBack != null ? callBack : EmptyAsyncCallBack);
+        callBack = callBack != null ? callBack : StandardEventManager.EmptyAsyncCallBack;
         if (StringUtils.isBlank(eventType) == true) {
             return;
         }

@@ -163,8 +163,8 @@ public class Properties extends HashMap<String, String> {
      *          appears in the input.
      * @since   1.6
      */
-    public synchronized void load(Reader reader) throws IOException {
-        load0(new LineReader(reader));
+    public synchronized void load(final Reader reader) throws IOException {
+        this.load0(new LineReader(reader));
     }
     /**
      * Reads a property list (key and element pairs) from the input
@@ -185,10 +185,10 @@ public class Properties extends HashMap<String, String> {
      *         malformed Unicode escape sequence.
      * @since 1.2
      */
-    public synchronized void load(InputStream inStream) throws IOException {
-        load0(new LineReader(inStream));
+    public synchronized void load(final InputStream inStream) throws IOException {
+        this.load0(new LineReader(inStream));
     }
-    private void load0(LineReader lr) throws IOException {
+    private void load0(final LineReader lr) throws IOException {
         char[] convtBuf = new char[1024];
         int limit;
         int keyLen;
@@ -232,16 +232,16 @@ public class Properties extends HashMap<String, String> {
                 }
                 valueStart++;
             }
-            String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
-            String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
-            put(key, value);
+            String key = this.loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
+            String value = this.loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
+            this.put(key, value);
         }
     }
     /*
      * Converts encoded &#92;uxxxx to unicode chars
      * and changes special saved chars to their original forms
      */
-    private String loadConvert(char[] in, int off, int len, char[] convtBuf) {
+    private String loadConvert(final char[] in, int off, final int len, char[] convtBuf) {
         if (convtBuf.length < len) {
             int newLen = len * 2;
             if (newLen < 0) {
@@ -297,18 +297,19 @@ public class Properties extends HashMap<String, String> {
                     }
                     out[outLen++] = (char) value;
                 } else {
-                    if (aChar == 't')
+                    if (aChar == 't') {
                         aChar = '\t';
-                    else if (aChar == 'r')
+                    } else if (aChar == 'r') {
                         aChar = '\r';
-                    else if (aChar == 'n')
+                    } else if (aChar == 'n') {
                         aChar = '\n';
-                    else if (aChar == 'f')
+                    } else if (aChar == 'f') {
                         aChar = '\f';
+                    }
                     out[outLen++] = aChar;
                 }
             } else {
-                out[outLen++] = (char) aChar;
+                out[outLen++] = aChar;
             }
         }
         return new String(out, 0, outLen);
@@ -320,13 +321,13 @@ public class Properties extends HashMap<String, String> {
      * the line in "lineBuf". 
      */
     class LineReader {
-        public LineReader(InputStream inStream) {
+        public LineReader(final InputStream inStream) {
             this.inStream = inStream;
-            inByteBuf = new byte[8192];
+            this.inByteBuf = new byte[8192];
         }
-        public LineReader(Reader reader) {
+        public LineReader(final Reader reader) {
             this.reader = reader;
-            inCharBuf = new char[8192];
+            this.inCharBuf = new char[8192];
         }
         byte[]      inByteBuf;
         char[]      inCharBuf;
@@ -345,22 +346,22 @@ public class Properties extends HashMap<String, String> {
             boolean precedingBackslash = false;
             boolean skipLF = false;
             while (true) {
-                if (inOff >= inLimit) {
-                    inLimit = (inStream == null) ? reader.read(inCharBuf) : inStream.read(inByteBuf);
-                    inOff = 0;
-                    if (inLimit <= 0) {
+                if (this.inOff >= this.inLimit) {
+                    this.inLimit = this.inStream == null ? this.reader.read(this.inCharBuf) : this.inStream.read(this.inByteBuf);
+                    this.inOff = 0;
+                    if (this.inLimit <= 0) {
                         if (len == 0 || isCommentLine) {
                             return -1;
                         }
                         return len;
                     }
                 }
-                if (inStream != null) {
+                if (this.inStream != null) {
                     //The line below is equivalent to calling a 
                     //ISO8859-1 decoder.
-                    c = (char) (0xff & inByteBuf[inOff++]);
+                    c = (char) (0xff & this.inByteBuf[this.inOff++]);
                 } else {
-                    c = inCharBuf[inOff++];
+                    c = this.inCharBuf[this.inOff++];
                 }
                 if (skipLF) {
                     skipLF = false;
@@ -386,15 +387,15 @@ public class Properties extends HashMap<String, String> {
                     }
                 }
                 if (c != '\n' && c != '\r') {
-                    lineBuf[len++] = c;
-                    if (len == lineBuf.length) {
-                        int newLength = lineBuf.length * 2;
+                    this.lineBuf[len++] = c;
+                    if (len == this.lineBuf.length) {
+                        int newLength = this.lineBuf.length * 2;
                         if (newLength < 0) {
                             newLength = Integer.MAX_VALUE;
                         }
                         char[] buf = new char[newLength];
-                        System.arraycopy(lineBuf, 0, buf, 0, lineBuf.length);
-                        lineBuf = buf;
+                        System.arraycopy(this.lineBuf, 0, buf, 0, this.lineBuf.length);
+                        this.lineBuf = buf;
                     }
                     //flip the preceding backslash flag
                     if (c == '\\') {
@@ -411,10 +412,10 @@ public class Properties extends HashMap<String, String> {
                         len = 0;
                         continue;
                     }
-                    if (inOff >= inLimit) {
-                        inLimit = (inStream == null) ? reader.read(inCharBuf) : inStream.read(inByteBuf);
-                        inOff = 0;
-                        if (inLimit <= 0) {
+                    if (this.inOff >= this.inLimit) {
+                        this.inLimit = this.inStream == null ? this.reader.read(this.inCharBuf) : this.inStream.read(this.inByteBuf);
+                        this.inOff = 0;
+                        if (this.inLimit <= 0) {
                             return len;
                         }
                     }

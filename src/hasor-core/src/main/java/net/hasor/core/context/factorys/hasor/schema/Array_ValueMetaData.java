@@ -24,15 +24,16 @@ public class Array_ValueMetaData extends Collection_ValueMetaData<ValueMetaData>
     private int initSize = 0;
     /*------------------------------------------------------------------*/
     /**返回{@link PropertyType#Array}*/
+    @Override
     public String getType() {
         return PropertyType.Array.value();
     }
     /**获取集合初始化大小*/
     public int getInitSize() {
-        return initSize;
+        return this.initSize;
     }
     /**设置集合初始化大小*/
-    public void setInitSize(int initSize) {
+    public void setInitSize(final int initSize) {
         this.initSize = initSize;
     }
 }

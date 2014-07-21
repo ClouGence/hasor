@@ -68,7 +68,7 @@ public enum PropertyType {
     File("file"), ;
     /*------------------------------------------------------------------*/
     private String value = null;
-    PropertyType(String value) {
+    PropertyType(final String value) {
         this.value = value;
     }
     public String value() {

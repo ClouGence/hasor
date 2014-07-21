@@ -32,7 +32,7 @@ public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends 
         return this.collectionType;
     }
     /**设置集合对象类型，如果是数组则该值与属性collectionValueType一致。*/
-    public void setCollectionType(String collectionType) {
+    public void setCollectionType(final String collectionType) {
         this.collectionType = collectionType;
     }
     /**获取属性集合。*/
@@ -40,7 +40,7 @@ public abstract class Collection_ValueMetaData<T extends ValueMetaData> extends 
         return this.values;
     }
     /**设置属性集合。*/
-    public void setValues(List<T> values) {
+    public void setValues(final List<T> values) {
         this.values = values;
     }
 }

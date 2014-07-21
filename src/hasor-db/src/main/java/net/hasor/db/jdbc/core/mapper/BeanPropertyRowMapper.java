@@ -36,13 +36,13 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper() {}
     /** Create a new BeanPropertyRowMapper.*/
-    public BeanPropertyRowMapper(Class<T> requiredType) {
+    public BeanPropertyRowMapper(final Class<T> requiredType) {
         Hasor.assertIsNotNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
     }
     /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver.*/
-    public void setRequiredType(Class<T> requiredType) {
+    public void setRequiredType(final Class<T> requiredType) {
         Hasor.assertIsNotNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
@@ -55,12 +55,13 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             this.columnMapping.put(pName.toUpperCase(), pName);
     }
     public boolean isCaseInsensitive() {
-        return caseInsensitive;
+        return this.caseInsensitive;
     }
-    public void setCaseInsensitive(boolean caseInsensitive) {
+    public void setCaseInsensitive(final boolean caseInsensitive) {
         this.caseInsensitive = caseInsensitive;
     }
-    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+    @Override
+    public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         T targetObject;
         try {
             targetObject = this.requiredType.newInstance();
@@ -71,27 +72,27 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             throw new UnhandledException(e);
         }
     }
-    private T tranResultSet(ResultSet rs, T targetObject) throws SQLException {
+    private T tranResultSet(final ResultSet rs, final T targetObject) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         for (int i = 1; i < nrOfColumns; i++) {
             String colName = rsmd.getColumnName(i);
             /*处理属性*/
-            if (!caseInsensitive)
+            if (!this.caseInsensitive)
                 colName = this.columnMapping.get(colName.toUpperCase());
             Class<?> paramType = BeanUtils.getPropertyOrFieldType(this.requiredType, colName);
             if (paramType == null)
                 continue;
-            Object colValue = getColumnValue(rs, i, paramType);
+            Object colValue = this.getColumnValue(rs, i, paramType);
             BeanUtils.writePropertyOrField(targetObject, colName, colValue);
         }
         return targetObject;
     }
     /**取得指定列的值*/
-    protected Object getColumnValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
-        Object resultData = getResultSetValue(rs, index);
+    protected Object getColumnValue(final ResultSet rs, final int index, final Class<?> requiredType) throws SQLException {
+        Object resultData = AbstractRowMapper.getResultSetValue(rs, index);
         if (requiredType != null)
-            return convertValueToRequiredType(resultData, requiredType);
+            return AbstractRowMapper.convertValueToRequiredType(resultData, requiredType);
         else
             return resultData;
     }
@@ -99,7 +100,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to
      */
-    public static <T> BeanPropertyRowMapper<T> newInstance(Class<T> mappedClass) {
+    public static <T> BeanPropertyRowMapper<T> newInstance(final Class<T> mappedClass) {
         BeanPropertyRowMapper<T> newInstance = new BeanPropertyRowMapper<T>();
         newInstance.setRequiredType(mappedClass);
         return newInstance;

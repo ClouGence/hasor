@@ -31,7 +31,7 @@ public class RelationBeanDefine extends BeanDefine {
         return this.ref;
     }
     /**设置引用的Bean名。*/
-    public void setRef(String ref) {
+    public void setRef(final String ref) {
         this.ref = ref;
     }
     /**获取引用的Bean所属作用域。*/
@@ -39,7 +39,7 @@ public class RelationBeanDefine extends BeanDefine {
         return this.refScope;
     }
     /**设置引用的Bean所属作用域。*/
-    public void setRefScope(String refScope) {
+    public void setRefScope(final String refScope) {
         this.refScope = refScope;
     }
 }

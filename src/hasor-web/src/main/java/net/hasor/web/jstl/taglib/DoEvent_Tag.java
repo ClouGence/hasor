@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 /**
  * 
  * @version : 2013-12-24
@@ -26,53 +27,50 @@ public class DoEvent_Tag extends AbstractHasorTag {
     private boolean           async            = false;
     private Object            params           = null;
     public String getEvent() {
-        return event;
+        return this.event;
     }
-    public void setEvent(String event) {
+    public void setEvent(final String event) {
         this.event = event;
     }
     public boolean isAsync() {
-        return async;
+        return this.async;
     }
-    public void setAsync(boolean async) {
+    public void setAsync(final boolean async) {
         this.async = async;
     }
     public Object getParams() {
-        return params;
+        return this.params;
     }
-    public void setParams(Object params) {
+    public void setParams(final Object params) {
         this.params = params;
     }
     //
+    @Override
     public void release() {
         this.event = null;
         this.async = false;
         this.params = null;
     }
     private Object[] params() {
-        if (this.params == null) {
+        if (this.params == null)
             return null;
-        }
-        if (this.params.getClass().isArray()) {
+        if (this.params.getClass().isArray())
             return (Object[]) this.params;
-        }
         return new Object[] { this.params };
     }
+    @Override
     public int doStartTag() throws JspException {
         try {
-            if (async == true) {
-                getAppContext().fireAsyncEvent(event, params());
-            } else {
-                getAppContext().fireSyncEvent(event, params());
-            }
-            return SKIP_BODY;
+            if (this.async == true)
+                this.getAppContext().fireAsyncEvent(this.event, this.params());
+            else
+                this.getAppContext().fireSyncEvent(this.event, this.params());
+            return Tag.SKIP_BODY;
         } catch (Throwable e) {
-            if (e instanceof RuntimeException) {
+            if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
-            }
-            if (e instanceof JspException) {
+            if (e instanceof JspException)
                 throw (JspException) e;
-            }
             throw new JspException(e);
         }
     }

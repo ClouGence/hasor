@@ -30,27 +30,27 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
      * Create a new SingleColumnRowMapper.
      * @param requiredType the type that each result object is expected to match
      */
-    public SingleColumnRowMapper(Class<T> requiredType) {
+    public SingleColumnRowMapper(final Class<T> requiredType) {
         this.requiredType = requiredType;
     }
     /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver. */
-    public void setRequiredType(Class<T> requiredType) {
+    public void setRequiredType(final Class<T> requiredType) {
         this.requiredType = requiredType;
     }
     //
     /**将当前行的第一列的值转换为指定的类型。*/
-    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+    @Override
+    public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         //1.Validate column count.
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
         if (nrOfColumns != 1)
             throw new SQLException("Incorrect column count: expected 1, actual " + nrOfColumns);
         //2.Extract column value from JDBC ResultSet.
-        Object result = getResultSetValue(rs, 1);
-        if (requiredType != null) {
+        Object result = AbstractRowMapper.getResultSetValue(rs, 1);
+        if (this.requiredType != null)
             if (result != null && this.requiredType != null && !this.requiredType.isInstance(result))
-                result = (T) convertValueToRequiredType(result, requiredType);
-        }
+                result = AbstractRowMapper.convertValueToRequiredType(result, this.requiredType);
         //3.Return
         return (T) result;
     }

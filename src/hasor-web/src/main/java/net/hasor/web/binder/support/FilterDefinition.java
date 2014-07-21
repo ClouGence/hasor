@@ -40,47 +40,50 @@ class FilterDefinition extends AbstractServletModuleBinding {
     private Filter           filterInstance = null;
     private WebAppContext    appContext     = null;
     //
-    public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher, Provider<Filter> filterProvider, Map<String, String> initParams) {
+    public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final Provider<Filter> filterProvider, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.filterProvider = filterProvider;
     }
     protected Filter getTarget() throws ServletException {
-        if (this.filterInstance != null) {
+        if (this.filterInstance != null)
             return this.filterInstance;
-        }
         //
         final Map<String, String> initParams = this.getInitParams();
         this.filterInstance = this.filterProvider.get();
         this.filterInstance.init(new FilterConfig() {
+            @Override
             public String getFilterName() {
-                return ((filterInstance == null) ? filterProvider : filterInstance).toString();
+                return (FilterDefinition.this.filterInstance == null ? FilterDefinition.this.filterProvider : FilterDefinition.this.filterInstance).toString();
             }
+            @Override
             public ServletContext getServletContext() {
-                return appContext.getServletContext();
+                return FilterDefinition.this.appContext.getServletContext();
             }
-            public String getInitParameter(String s) {
+            @Override
+            public String getInitParameter(final String s) {
                 return initParams.get(s);
             }
+            @Override
             public Enumeration<String> getInitParameterNames() {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
         });
         return this.filterInstance;
     }
+    @Override
     public String toString() {
         return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
-                FilterDefinition.class, getPattern(), getInitParams(), getUriPatternType());
+                FilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
+    public void init(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         if (filterConfig != null) {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
                 String key = ent.getKey();
-                if (!thisConfig.containsKey(key)) {
+                if (!thisConfig.containsKey(key))
                     thisConfig.put(key, ent.getValue());
-                }
             }
         }
         //
@@ -88,23 +91,21 @@ class FilterDefinition extends AbstractServletModuleBinding {
         this.getTarget();
     }
     /**/
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         //
         Filter filter = this.getTarget();
-        if (serve == true && filter != null) {
+        if (serve == true && filter != null)
             filter.doFilter(request, response, chain);
-        } else {
+        else
             chain.doFilter(httpRequest, response);
-        }
     }
     /**/
-    public void destroy(AppContext appContext) {
-        if (this.filterInstance == null) {
+    public void destroy(final AppContext appContext) {
+        if (this.filterInstance == null)
             return;
-        }
         this.filterInstance.destroy();
     }
 }

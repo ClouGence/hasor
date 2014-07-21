@@ -51,7 +51,7 @@ public class ClassUtils {
     /**
      * <p>The package separator String: <code>"&#x2e;"</code>.</p>
      */
-    public static final String PACKAGE_SEPARATOR          = String.valueOf(PACKAGE_SEPARATOR_CHAR);
+    public static final String PACKAGE_SEPARATOR          = String.valueOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
     /**
      * <p>The inner class separator character: <code>'$' == {@value}</code>.</p>
      */
@@ -59,32 +59,32 @@ public class ClassUtils {
     /**
      * <p>The inner class separator String: <code>"$"</code>.</p>
      */
-    public static final String INNER_CLASS_SEPARATOR      = String.valueOf(INNER_CLASS_SEPARATOR_CHAR);
+    public static final String INNER_CLASS_SEPARATOR      = String.valueOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR);
     /**
      * Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>.
      */
     private static final Map   primitiveWrapperMap        = new HashMap();
     static {
-        primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
-        primitiveWrapperMap.put(Byte.TYPE, Byte.class);
-        primitiveWrapperMap.put(Character.TYPE, Character.class);
-        primitiveWrapperMap.put(Short.TYPE, Short.class);
-        primitiveWrapperMap.put(Integer.TYPE, Integer.class);
-        primitiveWrapperMap.put(Long.TYPE, Long.class);
-        primitiveWrapperMap.put(Double.TYPE, Double.class);
-        primitiveWrapperMap.put(Float.TYPE, Float.class);
-        primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
+        ClassUtils.primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
+        ClassUtils.primitiveWrapperMap.put(Byte.TYPE, Byte.class);
+        ClassUtils.primitiveWrapperMap.put(Character.TYPE, Character.class);
+        ClassUtils.primitiveWrapperMap.put(Short.TYPE, Short.class);
+        ClassUtils.primitiveWrapperMap.put(Integer.TYPE, Integer.class);
+        ClassUtils.primitiveWrapperMap.put(Long.TYPE, Long.class);
+        ClassUtils.primitiveWrapperMap.put(Double.TYPE, Double.class);
+        ClassUtils.primitiveWrapperMap.put(Float.TYPE, Float.class);
+        ClassUtils.primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
     }
     /**
      * Maps wrapper <code>Class</code>es to their corresponding primitive types.
      */
     private static final Map   wrapperPrimitiveMap        = new HashMap();
     static {
-        for (Iterator it = primitiveWrapperMap.keySet().iterator(); it.hasNext();) {
+        for (Iterator it = ClassUtils.primitiveWrapperMap.keySet().iterator(); it.hasNext();) {
             Class primitiveClass = (Class) it.next();
-            Class wrapperClass = (Class) primitiveWrapperMap.get(primitiveClass);
+            Class wrapperClass = (Class) ClassUtils.primitiveWrapperMap.get(primitiveClass);
             if (!primitiveClass.equals(wrapperClass)) {
-                wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
+                ClassUtils.wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
             }
         }
     }
@@ -102,22 +102,22 @@ public class ClassUtils {
      * @param primitive Canonical name of primitive type
      * @param abbreviation Corresponding abbreviation of primitive type
      */
-    private static void addAbbreviation(String primitive, String abbreviation) {
-        abbreviationMap.put(primitive, abbreviation);
-        reverseAbbreviationMap.put(abbreviation, primitive);
+    private static void addAbbreviation(final String primitive, final String abbreviation) {
+        ClassUtils.abbreviationMap.put(primitive, abbreviation);
+        ClassUtils.reverseAbbreviationMap.put(abbreviation, primitive);
     }
     /**
      * Feed abbreviation maps
      */
     static {
-        addAbbreviation("int", "I");
-        addAbbreviation("boolean", "Z");
-        addAbbreviation("float", "F");
-        addAbbreviation("long", "J");
-        addAbbreviation("short", "S");
-        addAbbreviation("byte", "B");
-        addAbbreviation("double", "D");
-        addAbbreviation("char", "C");
+        ClassUtils.addAbbreviation("int", "I");
+        ClassUtils.addAbbreviation("boolean", "Z");
+        ClassUtils.addAbbreviation("float", "F");
+        ClassUtils.addAbbreviation("long", "J");
+        ClassUtils.addAbbreviation("short", "S");
+        ClassUtils.addAbbreviation("byte", "B");
+        ClassUtils.addAbbreviation("double", "D");
+        ClassUtils.addAbbreviation("char", "C");
     }
     /**
      * <p>ClassUtils instances should NOT be constructed in standard programming.
@@ -139,11 +139,11 @@ public class ClassUtils {
      * @param valueIfNull  the value to return if null
      * @return the class name of the object without the package name, or the null value
      */
-    public static String getShortClassName(Object object, String valueIfNull) {
+    public static String getShortClassName(final Object object, final String valueIfNull) {
         if (object == null) {
             return valueIfNull;
         }
-        return getShortClassName(object.getClass());
+        return ClassUtils.getShortClassName(object.getClass());
     }
     /**
      * <p>Gets the class name minus the package name from a <code>Class</code>.</p>
@@ -151,11 +151,11 @@ public class ClassUtils {
      * @param cls  the class to get the short name for.
      * @return the class name without the package name or an empty string
      */
-    public static String getShortClassName(Class cls) {
+    public static String getShortClassName(final Class cls) {
         if (cls == null) {
             return StringUtils.EMPTY;
         }
-        return getShortClassName(cls.getName());
+        return ClassUtils.getShortClassName(cls.getName());
     }
     /**
      * <p>Gets the class name minus the package name from a String.</p>
@@ -184,14 +184,14 @@ public class ClassUtils {
                 className = className.substring(1, className.length() - 1);
             }
         }
-        if (reverseAbbreviationMap.containsKey(className)) {
-            className = (String) reverseAbbreviationMap.get(className);
+        if (ClassUtils.reverseAbbreviationMap.containsKey(className)) {
+            className = (String) ClassUtils.reverseAbbreviationMap.get(className);
         }
-        int lastDotIdx = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
-        int innerIdx = className.indexOf(INNER_CLASS_SEPARATOR_CHAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
+        int lastDotIdx = className.lastIndexOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
+        int innerIdx = className.indexOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
         String out = className.substring(lastDotIdx + 1);
         if (innerIdx != -1) {
-            out = out.replace(INNER_CLASS_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
+            out = out.replace(ClassUtils.INNER_CLASS_SEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
         }
         return out + arrayPrefix;
     }
@@ -204,11 +204,11 @@ public class ClassUtils {
      * @param valueIfNull  the value to return if null
      * @return the package name of the object, or the null value
      */
-    public static String getPackageName(Object object, String valueIfNull) {
+    public static String getPackageName(final Object object, final String valueIfNull) {
         if (object == null) {
             return valueIfNull;
         }
-        return getPackageName(object.getClass());
+        return ClassUtils.getPackageName(object.getClass());
     }
     /**
      * <p>Gets the package name of a <code>Class</code>.</p>
@@ -216,11 +216,11 @@ public class ClassUtils {
      * @param cls  the class to get the package name for, may be <code>null</code>.
      * @return the package name or an empty string
      */
-    public static String getPackageName(Class cls) {
+    public static String getPackageName(final Class cls) {
         if (cls == null) {
             return StringUtils.EMPTY;
         }
-        return getPackageName(cls.getName());
+        return ClassUtils.getPackageName(cls.getName());
     }
     /**
      * <p>Gets the package name from a <code>String</code>.</p>
@@ -243,7 +243,7 @@ public class ClassUtils {
         if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {
             className = className.substring(1);
         }
-        int i = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
+        int i = className.lastIndexOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
         if (i == -1) {
             return StringUtils.EMPTY;
         }
@@ -258,7 +258,7 @@ public class ClassUtils {
      * @return the <code>List</code> of superclasses in order going up from this one
      *  <code>null</code> if null input
      */
-    public static List getAllSuperclasses(Class cls) {
+    public static List getAllSuperclasses(final Class cls) {
         if (cls == null) {
             return null;
         }
@@ -283,12 +283,12 @@ public class ClassUtils {
      * @return the <code>List</code> of interfaces in order,
      *  <code>null</code> if null input
      */
-    public static List getAllInterfaces(Class cls) {
+    public static List getAllInterfaces(final Class cls) {
         if (cls == null) {
             return null;
         }
         List interfacesFound = new ArrayList();
-        getAllInterfaces(cls, interfacesFound);
+        ClassUtils.getAllInterfaces(cls, interfacesFound);
         return interfacesFound;
     }
     /**
@@ -297,13 +297,13 @@ public class ClassUtils {
      * @param cls  the class to look up, may be <code>null</code>
      * @param interfacesFound the <code>Set</code> of interfaces for the class
      */
-    private static void getAllInterfaces(Class cls, List interfacesFound) {
+    private static void getAllInterfaces(Class cls, final List interfacesFound) {
         while (cls != null) {
             Class[] interfaces = cls.getInterfaces();
             for (int i = 0; i < interfaces.length; i++) {
                 if (!interfacesFound.contains(interfaces[i])) {
                     interfacesFound.add(interfaces[i]);
-                    getAllInterfaces(interfaces[i], interfacesFound);
+                    ClassUtils.getAllInterfaces(interfaces[i], interfacesFound);
                 }
             }
             cls = cls.getSuperclass();
@@ -323,7 +323,7 @@ public class ClassUtils {
      *  <code>null</code> if null input
      * @throws ClassCastException if classNames contains a non String entry
      */
-    public static List convertClassNamesToClasses(List classNames) {
+    public static List convertClassNamesToClasses(final List classNames) {
         if (classNames == null) {
             return null;
         }
@@ -350,7 +350,7 @@ public class ClassUtils {
      *  <code>null</code> if null input
      * @throws ClassCastException if <code>classes</code> contains a non-<code>Class</code> entry
      */
-    public static List convertClassesToClassNames(List classes) {
+    public static List convertClassesToClassNames(final List classes) {
         if (classes == null) {
             return null;
         }
@@ -398,8 +398,8 @@ public class ClassUtils {
      * @param toClassArray  the array of Classes to try to assign into, may be <code>null</code>
      * @return <code>true</code> if assignment possible
      */
-    public static boolean isAssignable(Class[] classArray, Class[] toClassArray) {
-        return isAssignable(classArray, toClassArray, false);
+    public static boolean isAssignable(final Class[] classArray, final Class[] toClassArray) {
+        return ClassUtils.isAssignable(classArray, toClassArray, false);
     }
     /**
      * <p>Checks if an array of Classes can be assigned to another array of Classes.</p>
@@ -434,7 +434,7 @@ public class ClassUtils {
      * @return <code>true</code> if assignment possible
      * @since 2.5
      */
-    public static boolean isAssignable(Class[] classArray, Class[] toClassArray, boolean autoboxing) {
+    public static boolean isAssignable(Class[] classArray, Class[] toClassArray, final boolean autoboxing) {
         if (ArrayUtils.isSameLength(classArray, toClassArray) == false) {
             return false;
         }
@@ -445,7 +445,7 @@ public class ClassUtils {
             toClassArray = ArrayUtils.EMPTY_CLASS_ARRAY;
         }
         for (int i = 0; i < classArray.length; i++) {
-            if (isAssignable(classArray[i], toClassArray[i], autoboxing) == false) {
+            if (ClassUtils.isAssignable(classArray[i], toClassArray[i], autoboxing) == false) {
                 return false;
             }
         }
@@ -477,8 +477,8 @@ public class ClassUtils {
      * @param toClass  the Class to try to assign into, returns false if null
      * @return <code>true</code> if assignment possible
      */
-    public static boolean isAssignable(Class cls, Class toClass) {
-        return isAssignable(cls, toClass, false);
+    public static boolean isAssignable(final Class cls, final Class toClass) {
+        return ClassUtils.isAssignable(cls, toClass, false);
     }
     /**
      * <p>Checks if one <code>Class</code> can be assigned to a variable of
@@ -508,24 +508,24 @@ public class ClassUtils {
      * @return <code>true</code> if assignment possible
      * @since 2.5
      */
-    public static boolean isAssignable(Class cls, Class toClass, boolean autoboxing) {
+    public static boolean isAssignable(Class cls, final Class toClass, final boolean autoboxing) {
         if (toClass == null) {
             return false;
         }
         // have to check for null, as isAssignableFrom doesn't
         if (cls == null) {
-            return !(toClass.isPrimitive());
+            return !toClass.isPrimitive();
         }
         //autoboxing:
         if (autoboxing) {
             if (cls.isPrimitive() && !toClass.isPrimitive()) {
-                cls = primitiveToWrapper(cls);
+                cls = ClassUtils.primitiveToWrapper(cls);
                 if (cls == null) {
                     return false;
                 }
             }
             if (toClass.isPrimitive() && !cls.isPrimitive()) {
-                cls = wrapperToPrimitive(cls);
+                cls = ClassUtils.wrapperToPrimitive(cls);
                 if (cls == null) {
                     return false;
                 }
@@ -579,10 +579,10 @@ public class ClassUtils {
      * <code>cls</code> is not a primitive. <code>null</code> if null input.
      * @since 2.1
      */
-    public static Class primitiveToWrapper(Class cls) {
+    public static Class primitiveToWrapper(final Class cls) {
         Class convertedClass = cls;
         if (cls != null && cls.isPrimitive()) {
-            convertedClass = (Class) primitiveWrapperMap.get(cls);
+            convertedClass = (Class) ClassUtils.primitiveWrapperMap.get(cls);
         }
         return convertedClass;
     }
@@ -596,7 +596,7 @@ public class ClassUtils {
      * Empty array if an empty array passed in.
      * @since 2.1
      */
-    public static Class[] primitivesToWrappers(Class[] classes) {
+    public static Class[] primitivesToWrappers(final Class[] classes) {
         if (classes == null) {
             return null;
         }
@@ -605,7 +605,7 @@ public class ClassUtils {
         }
         Class[] convertedClasses = new Class[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            convertedClasses[i] = primitiveToWrapper(classes[i]);
+            convertedClasses[i] = ClassUtils.primitiveToWrapper(classes[i]);
         }
         return convertedClasses;
     }
@@ -625,8 +625,8 @@ public class ClassUtils {
      * @see #primitiveToWrapper(Class)
      * @since 2.4
      */
-    public static Class wrapperToPrimitive(Class cls) {
-        return (Class) wrapperPrimitiveMap.get(cls);
+    public static Class wrapperToPrimitive(final Class cls) {
+        return (Class) ClassUtils.wrapperPrimitiveMap.get(cls);
     }
     /**
      * <p>Converts the specified array of wrapper Class objects to an array of
@@ -642,7 +642,7 @@ public class ClassUtils {
      * @see #wrapperToPrimitive(Class)
      * @since 2.4
      */
-    public static Class[] wrappersToPrimitives(Class[] classes) {
+    public static Class[] wrappersToPrimitives(final Class[] classes) {
         if (classes == null) {
             return null;
         }
@@ -651,7 +651,7 @@ public class ClassUtils {
         }
         Class[] convertedClasses = new Class[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            convertedClasses[i] = wrapperToPrimitive(classes[i]);
+            convertedClasses[i] = ClassUtils.wrapperToPrimitive(classes[i]);
         }
         return convertedClasses;
     }
@@ -664,11 +664,11 @@ public class ClassUtils {
      * @return <code>true</code> if the class is an inner or static nested class,
      *  false if not or <code>null</code>
      */
-    public static boolean isInnerClass(Class cls) {
+    public static boolean isInnerClass(final Class cls) {
         if (cls == null) {
             return false;
         }
-        return cls.getName().indexOf(INNER_CLASS_SEPARATOR_CHAR) >= 0;
+        return cls.getName().indexOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR) >= 0;
     }
     // Class loading
     // ----------------------------------------------------------------------
@@ -684,22 +684,22 @@ public class ClassUtils {
      * @return the class represented by <code>className</code> using the <code>classLoader</code>
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(ClassLoader classLoader, String className, boolean initialize) throws ClassNotFoundException {
+    public static Class getClass(final ClassLoader classLoader, final String className, final boolean initialize) throws ClassNotFoundException {
         try {
             Class clazz;
-            if (abbreviationMap.containsKey(className)) {
-                String clsName = "[" + abbreviationMap.get(className);
+            if (ClassUtils.abbreviationMap.containsKey(className)) {
+                String clsName = "[" + ClassUtils.abbreviationMap.get(className);
                 clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
             } else {
-                clazz = Class.forName(toCanonicalName(className), initialize, classLoader);
+                clazz = Class.forName(ClassUtils.toCanonicalName(className), initialize, classLoader);
             }
             return clazz;
         } catch (ClassNotFoundException ex) {
             // allow path separators (.) as inner class name separators
-            int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
+            int lastDotIndex = className.lastIndexOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
             if (lastDotIndex != -1) {
                 try {
-                    return getClass(classLoader, className.substring(0, lastDotIndex) + INNER_CLASS_SEPARATOR_CHAR + className.substring(lastDotIndex + 1), initialize);
+                    return ClassUtils.getClass(classLoader, className.substring(0, lastDotIndex) + ClassUtils.INNER_CLASS_SEPARATOR_CHAR + className.substring(lastDotIndex + 1), initialize);
                 } catch (ClassNotFoundException ex2) {}
             }
             throw ex;
@@ -717,8 +717,8 @@ public class ClassUtils {
      * @return the class represented by <code>className</code> using the <code>classLoader</code>
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
-        return getClass(classLoader, className, true);
+    public static Class getClass(final ClassLoader classLoader, final String className) throws ClassNotFoundException {
+        return ClassUtils.getClass(classLoader, className, true);
     }
     /**
      * Returns the (initialized) class represented by <code>className</code>
@@ -731,8 +731,8 @@ public class ClassUtils {
      * @return the class represented by <code>className</code> using the current thread's context class loader
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(String className) throws ClassNotFoundException {
-        return getClass(className, true);
+    public static Class getClass(final String className) throws ClassNotFoundException {
+        return ClassUtils.getClass(className, true);
     }
     /**
      * Returns the class represented by <code>className</code> using the
@@ -745,10 +745,10 @@ public class ClassUtils {
      * @return the class represented by <code>className</code> using the current thread's context class loader
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(String className, boolean initialize) throws ClassNotFoundException {
+    public static Class getClass(final String className, final boolean initialize) throws ClassNotFoundException {
         ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
         ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
-        return getClass(loader, className, initialize);
+        return ClassUtils.getClass(loader, className, initialize);
     }
     // Public method
     // ----------------------------------------------------------------------
@@ -773,14 +773,14 @@ public class ClassUtils {
      * @throws NoSuchMethodException if the method is not found in the given class
      *  or if the metothod doen't conform with the requirements
      */
-    public static Method getPublicMethod(Class cls, String methodName, Class parameterTypes[]) throws SecurityException, NoSuchMethodException {
+    public static Method getPublicMethod(final Class cls, final String methodName, final Class parameterTypes[]) throws SecurityException, NoSuchMethodException {
         Method declaredMethod = cls.getMethod(methodName, parameterTypes);
         if (Modifier.isPublic(declaredMethod.getDeclaringClass().getModifiers())) {
             return declaredMethod;
         }
         List candidateClasses = new ArrayList();
-        candidateClasses.addAll(getAllInterfaces(cls));
-        candidateClasses.addAll(getAllSuperclasses(cls));
+        candidateClasses.addAll(ClassUtils.getAllInterfaces(cls));
+        candidateClasses.addAll(ClassUtils.getAllSuperclasses(cls));
         for (Iterator it = candidateClasses.iterator(); it.hasNext();) {
             Class candidateClass = (Class) it.next();
             if (!Modifier.isPublic(candidateClass.getModifiers())) {
@@ -797,9 +797,11 @@ public class ClassUtils {
             }
         }
         StringBuffer sb = new StringBuffer();
-        if (parameterTypes != null)
-            for (Class pt : parameterTypes)
+        if (parameterTypes != null) {
+            for (Class pt : parameterTypes) {
                 sb.append(pt.getName() + ",");
+            }
+        }
         throw new NoSuchMethodException("Can't find a public method for " + methodName + " " + sb.toString());
     }
     // ----------------------------------------------------------------------
@@ -819,7 +821,7 @@ public class ClassUtils {
                 className = className.substring(0, className.length() - 2);
                 classNameBuffer.append("[");
             }
-            String abbreviation = (String) abbreviationMap.get(className);
+            String abbreviation = (String) ClassUtils.abbreviationMap.get(className);
             if (abbreviation != null) {
                 classNameBuffer.append(abbreviation);
             } else {
@@ -839,7 +841,7 @@ public class ClassUtils {
      * @return a <code>Class</code> array, <code>null</code> if null array input
      * @since 2.4
      */
-    public static Class[] toClass(Object[] array) {
+    public static Class[] toClass(final Object[] array) {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
@@ -861,11 +863,11 @@ public class ClassUtils {
      * @return the canonical name of the object without the package name, or the null value
      * @since 2.4
      */
-    public static String getShortCanonicalName(Object object, String valueIfNull) {
+    public static String getShortCanonicalName(final Object object, final String valueIfNull) {
         if (object == null) {
             return valueIfNull;
         }
-        return getShortCanonicalName(object.getClass().getName());
+        return ClassUtils.getShortCanonicalName(object.getClass().getName());
     }
     /**
      * <p>Gets the canonical name minus the package name from a <code>Class</code>.</p>
@@ -874,11 +876,11 @@ public class ClassUtils {
      * @return the canonical name without the package name or an empty string
      * @since 2.4
      */
-    public static String getShortCanonicalName(Class cls) {
+    public static String getShortCanonicalName(final Class cls) {
         if (cls == null) {
             return StringUtils.EMPTY;
         }
-        return getShortCanonicalName(cls.getName());
+        return ClassUtils.getShortCanonicalName(cls.getName());
     }
     /**
      * <p>Gets the canonical name minus the package name from a String.</p>
@@ -889,8 +891,8 @@ public class ClassUtils {
      * @return the canonical name of the class without the package name or an empty string
      * @since 2.4
      */
-    public static String getShortCanonicalName(String canonicalName) {
-        return ClassUtils.getShortClassName(getCanonicalName(canonicalName));
+    public static String getShortCanonicalName(final String canonicalName) {
+        return ClassUtils.getShortClassName(ClassUtils.getCanonicalName(canonicalName));
     }
     // Package name
     // ----------------------------------------------------------------------
@@ -902,11 +904,11 @@ public class ClassUtils {
      * @return the package name of the object, or the null value
      * @since 2.4
      */
-    public static String getPackageCanonicalName(Object object, String valueIfNull) {
+    public static String getPackageCanonicalName(final Object object, final String valueIfNull) {
         if (object == null) {
             return valueIfNull;
         }
-        return getPackageCanonicalName(object.getClass().getName());
+        return ClassUtils.getPackageCanonicalName(object.getClass().getName());
     }
     /**
      * <p>Gets the package name from the canonical name of a <code>Class</code>.</p>
@@ -915,11 +917,11 @@ public class ClassUtils {
      * @return the package name or an empty string
      * @since 2.4
      */
-    public static String getPackageCanonicalName(Class cls) {
+    public static String getPackageCanonicalName(final Class cls) {
         if (cls == null) {
             return StringUtils.EMPTY;
         }
-        return getPackageCanonicalName(cls.getName());
+        return ClassUtils.getPackageCanonicalName(cls.getName());
     }
     /**
      * <p>Gets the package name from the canonical name. </p>
@@ -931,8 +933,8 @@ public class ClassUtils {
      * @return the package name or an empty string
      * @since 2.4
      */
-    public static String getPackageCanonicalName(String canonicalName) {
-        return ClassUtils.getPackageName(getCanonicalName(canonicalName));
+    public static String getPackageCanonicalName(final String canonicalName) {
+        return ClassUtils.getPackageName(ClassUtils.getCanonicalName(canonicalName));
     }
     /**
      * <p>Converts a given name of class into canonical format.
@@ -967,7 +969,7 @@ public class ClassUtils {
                     className = className.substring(1, className.endsWith(";") ? className.length() - 1 : className.length());
                 } else {
                     if (className.length() > 0) {
-                        className = (String) reverseAbbreviationMap.get(className.substring(0, 1));
+                        className = (String) ClassUtils.reverseAbbreviationMap.get(className.substring(0, 1));
                     }
                 }
                 StringBuilder canonicalClassNameBuffer = new StringBuilder(className);
@@ -979,22 +981,22 @@ public class ClassUtils {
         }
     }
     /**判断某个类是否为一个lang包的类。*/
-    public static boolean isLangClass(Class<?> target) {
+    public static boolean isLangClass(final Class<?> target) {
         return target.getName().startsWith("java.lang.");
     };
     /**获取方法的标识代码，在不考虑其所属类的情况下。*/
-    public static String getDescName(Class<?> type) {
-        if (type == Void.class)
+    public static String getDescName(final Class<?> type) {
+        if (type == Void.class) {
             return "void ";
-        else if (type.isPrimitive()) {
-            return getShortCanonicalName(type);
+        } else if (type.isPrimitive()) {
+            return ClassUtils.getShortCanonicalName(type);
         } else {
             return type.getName();
         }
     }
     /**获取方法的标识代码，在不考虑其所属类的情况下。
      * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
-    public static String getDescName(Method method) {
+    public static String getDescName(final Method method) {
         //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
         StringBuffer str = new StringBuffer("");
         //1.访问修饰符
@@ -1010,7 +1012,7 @@ public class ClassUtils {
         }
         //2.返回值
         Class<?> returnType = method.getReturnType();
-        str.append(getDescName(returnType) + " ");
+        str.append(ClassUtils.getDescName(returnType) + " ");
         //3.方法名
         Class<?> decType = method.getDeclaringClass();
         str.append(decType.getName());
@@ -1021,9 +1023,10 @@ public class ClassUtils {
         str.append("(");
         if (paramTypes != null) {
             for (int j = 0; j < paramTypes.length; j++) {
-                str.append(getDescName(paramTypes[j]));
-                if (j < (paramTypes.length - 1))
+                str.append(ClassUtils.getDescName(paramTypes[j]));
+                if (j < paramTypes.length - 1) {
                     str.append(",");
+                }
             }
         }
         str.append(")");

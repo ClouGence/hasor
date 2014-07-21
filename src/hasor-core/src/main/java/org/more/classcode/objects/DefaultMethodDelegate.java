@@ -24,7 +24,8 @@ import org.more.classcode.MethodDelegate;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(Method callMethod, Object target, Object[] params) throws InvokeException {
+    @Override
+    public Object invoke(final Method callMethod, final Object target, final Object[] params) throws InvokeException {
         Class<?> returnType = callMethod.getReturnType();
         return EngineToos.getDefaultValue(returnType);
     }

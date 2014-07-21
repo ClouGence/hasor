@@ -26,15 +26,15 @@ public class UndefinedException extends RuntimeException {
      */
     private static final long serialVersionUID = 2377606123252842745L;
     /**未定义。*/
-    public UndefinedException(String string) {
+    public UndefinedException(final String string) {
         super(string);
     }
     /**未定义。*/
-    public UndefinedException(Throwable error) {
+    public UndefinedException(final Throwable error) {
         super(error);
     }
     /**未定义。*/
-    public UndefinedException(String string, Throwable error) {
+    public UndefinedException(final String string, final Throwable error) {
         super(string, error);
     }
 }

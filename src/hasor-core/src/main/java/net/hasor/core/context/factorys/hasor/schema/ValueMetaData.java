@@ -29,10 +29,10 @@ public abstract class ValueMetaData extends AbstractDefine {
     public abstract String getType();
     /**获取配置的其他属性（这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息）*/
     public Map<String, String> getExtParams() {
-        return extParams;
+        return this.extParams;
     }
     /**设置配置的其他属性（这些扩展配置属性的目的是当解析它的时候会使用。或用于携带信息）*/
-    public void setExtParams(Map<String, String> extParams) {
+    public void setExtParams(final Map<String, String> extParams) {
         this.extParams = extParams;
     }
 }

@@ -27,10 +27,10 @@ public class ClassPathBeanDefine extends BeanDefine {
     }
     /**获取类的class完整限定名。*/
     public String getSource() {
-        return source;
+        return this.source;
     }
     /**设置类完整限定名。*/
-    public void setSource(String source) {
+    public void setSource(final String source) {
         this.source = source;
     }
 }

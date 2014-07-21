@@ -36,29 +36,33 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
     private XmlNode             parentXmlProperty = null;
     //
     //
-    public DefaultXmlNode(XmlNode parentXmlProperty, String elementName) {
+    public DefaultXmlNode(final XmlNode parentXmlProperty, final String elementName) {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
-    public void addAttribute(String attName, String attValue) {
-        arrMap.put(attName, attValue);
+    public void addAttribute(final String attName, final String attValue) {
+        this.arrMap.put(attName, attValue);
     }
-    public void addChildren(DefaultXmlNode xmlProperty) {
+    public void addChildren(final DefaultXmlNode xmlProperty) {
         this.children.add(xmlProperty);
     }
-    public void setText(String textString) {
+    public void setText(final String textString) {
         this.textString = textString;
     }
+    @Override
     public String getName() {
-        return elementName;
+        return this.elementName;
     }
+    @Override
     public String getText() {
-        return textString;
+        return this.textString;
     }
+    @Override
     public List<XmlNode> getChildren() {
-        return children;
+        return this.children;
     }
-    public List<XmlNode> getChildren(String elementName) {
+    @Override
+    public List<XmlNode> getChildren(final String elementName) {
         List<XmlNode> children = new ArrayList<XmlNode>();
         for (XmlNode xmlItem : this.children) {
             if (StringUtils.equalsIgnoreCase(xmlItem.getName(), elementName)) {
@@ -67,38 +71,45 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
         }
         return children;
     }
+    @Override
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
     }
-    public String getAttribute(String attName) {
+    @Override
+    public String getAttribute(final String attName) {
         return this.getAttributeMap().get(attName);
     }
     public XmlNode getParent() {
-        return parentXmlProperty;
+        return this.parentXmlProperty;
     }
-    public void setParent(XmlNode parentXmlProperty) {
+    public void setParent(final XmlNode parentXmlProperty) {
         this.parentXmlProperty = parentXmlProperty;
     }
-    public XmlNode getOneChildren(String elementName) {
+    @Override
+    public XmlNode getOneChildren(final String elementName) {
         List<XmlNode> subItems = this.getChildren(elementName);
         return subItems.isEmpty() ? null : subItems.get(0);
     }
+    @Override
     public String toString() {
         return this.getXmlText();
     }
+    @Override
     public DefaultXmlNode clone() {
         DefaultXmlNode newData = new DefaultXmlNode(this.parentXmlProperty, this.elementName);
         newData.arrMap.putAll(this.arrMap);
         newData.textString = this.textString;
-        if (children != null)
+        if (this.children != null) {
             for (XmlNode xmlProp : this.children) {
                 DefaultXmlNode newClone = ((DefaultXmlNode) xmlProp).clone();
                 newClone.setParent(newData);
                 newData.children.add(newClone);
             }
+        }
         return newData;
     }
-    public <T> T getValue(Class<T> toType, T defaultValue) {
+    @Override
+    public <T> T getValue(final Class<T> toType, final T defaultValue) {
         if (XmlNode.class.isAssignableFrom(toType) == true) {
             return (T) this;
         }
@@ -112,10 +123,11 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
             return defaultValue;
         }
     }
+    @Override
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("<" + this.elementName);
-        if (arrMap.size() > 0) {
+        if (this.arrMap.size() > 0) {
             strBuilder.append(" ");
             for (Entry<String, String> attEnt : this.arrMap.entrySet()) {
                 strBuilder.append(attEnt.getKey() + "=" + "\"");

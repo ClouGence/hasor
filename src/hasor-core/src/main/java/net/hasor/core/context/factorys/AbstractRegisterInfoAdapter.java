@@ -38,52 +38,63 @@ public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdap
     private AbstractRegisterFactory factory          = null;
     private Map<String, Object>     metaData         = new HashMap<String, Object>();
     //
-    void setFactory(AbstractRegisterFactory factory) {
+    void setFactory(final AbstractRegisterFactory factory) {
         this.factory = factory;
     }
-    public void setBindName(String bindName) {
+    @Override
+    public void setBindName(final String bindName) {
         this.bindName = bindName;
     }
+    @Override
     public String getBindName() {
         return this.bindName;
     }
+    @Override
     public Class<T> getBindType() {
         return this.bindType;
     }
-    public void setBindType(Class<T> bindType) {
+    public void setBindType(final Class<T> bindType) {
         this.bindType = bindType;
     }
-    public void setSourceType(Class<? extends T> sourceType) {
+    @Override
+    public void setSourceType(final Class<? extends T> sourceType) {
         this.sourceType = sourceType;
     }
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
-    public void setSingleton(boolean singleton) {
+    @Override
+    public void setSingleton(final boolean singleton) {
         this.singleton = singleton;
     }
     public boolean isSingleton() {
         return this.singleton;
     }
-    public void setMetaData(String key, Object value) {
+    @Override
+    public void setMetaData(final String key, final Object value) {
         this.metaData.put(key, value);
     }
-    public Object getMetaData(String key) {
+    @Override
+    public Object getMetaData(final String key) {
         return this.metaData.get(key);
     }
-    public void setCustomerProvider(Provider<T> customerProvider) {
+    @Override
+    public void setCustomerProvider(final Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
     }
     /***/
     public Provider<T> getCustomerProvider() {
         return this.customerProvider;
     }
+    @Override
     public Provider<T> getProvider() {
-        if (this.customerProvider == null)
+        if (this.customerProvider == null) {
             return new FactoryProvider<T>(this, this.factory);
+        }
         return this.customerProvider;
     }
-    public void setScopeProvider(Provider<Scope> scopeProvider) {
+    @Override
+    public void setScopeProvider(final Provider<Scope> scopeProvider) {
         this.scopeProvider = scopeProvider;
     }
     public Provider<Scope> getScopeProvider() {
@@ -94,10 +105,11 @@ public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdap
 class FactoryProvider<T> implements Provider<T> {
     private RegisterInfo<T>         adapter = null;
     private AbstractRegisterFactory factory = null;
-    public FactoryProvider(RegisterInfo<T> adapter, AbstractRegisterFactory factory) {
+    public FactoryProvider(final RegisterInfo<T> adapter, final AbstractRegisterFactory factory) {
         this.adapter = adapter;
         this.factory = factory;
     }
+    @Override
     public T get() {
         return this.factory.getInstance(this.adapter);
     }

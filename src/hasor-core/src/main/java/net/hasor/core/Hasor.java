@@ -39,40 +39,41 @@ public abstract class Hasor {
         return onCode;
     }
     private static String callerTrace() {
-        StackTraceElement onCode = onTrace();
+        StackTraceElement onCode = Hasor.onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerInfo() {
-        StackTraceElement onCode = onTrace();
+        StackTraceElement onCode = Hasor.onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerWarn() {
-        StackTraceElement onCode = onTrace();
+        StackTraceElement onCode = Hasor.onTrace();
         String callerClass = onCode.getClassName();
         return callerClass.substring(callerClass.lastIndexOf(".") + 1) + ":" + onCode.getMethodName();
     }
     private static String callerErr() {
-        StackTraceElement onCode = onTrace();
+        StackTraceElement onCode = Hasor.onTrace();
         //String callerClass = onCode.getClassName();
         return onCode.getFileName() + ":" + onCode.getLineNumber() + " - " + onCode.getMethodName();
     }
     private static Class<?> callerClass() {
-        StackTraceElement onCode = onTrace();
+        StackTraceElement onCode = Hasor.onTrace();
         try {
             return Class.forName(onCode.getClassName());
         } catch (Exception e) {
             return Hasor.class;
         }
     }
-    private static String[] getStringArray(Object... objects) {
+    private static String[] getStringArray(final Object... objects) {
         ArrayList<String> returnData = new ArrayList<String>();
         for (Object obj : objects) {
-            if (obj == null)
+            if (obj == null) {
                 returnData.add("null");
-            else
-                returnData.add(logString(obj));
+            } else {
+                returnData.add(Hasor.logString(obj));
+            }
         }
         return returnData.toArray(new String[returnData.size()]);
     }
@@ -81,15 +82,16 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logDebug(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        if (!log.isDebugEnabled())
+    public static void logDebug(final String string, final Object... params) {
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
+        if (!log.isDebugEnabled()) {
             return;
-        Object[] paramsStr = getStringArray(params);
-        log.debug(callerInfo() + " ->> " + String.format(string, paramsStr));
+        }
+        Object[] paramsStr = Hasor.getStringArray(params);
+        log.debug(Hasor.callerInfo() + " ->> " + String.format(string, paramsStr));
     }
-    public static void logDebug(Object e) {
-        logDebug("%s", e);
+    public static void logDebug(final Object e) {
+        Hasor.logDebug("%s", e);
     }
     /**
     
@@ -99,82 +101,89 @@ public abstract class Hasor {
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logError(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        if (!log.isErrorEnabled())
+    public static void logError(final String string, final Object... params) {
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
+        if (!log.isErrorEnabled()) {
             return;
-        Object[] paramsStr = getStringArray(params);
-        log.error(callerErr() + " ->> " + String.format(string, paramsStr));
+        }
+        Object[] paramsStr = Hasor.getStringArray(params);
+        log.error(Hasor.callerErr() + " ->> " + String.format(string, paramsStr));
     }
-    public static void logError(Object e) {
-        logError("%s", e);
+    public static void logError(final Object e) {
+        Hasor.logError("%s", e);
     }
     /**
      * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logWarn(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        if (!log.isWarnEnabled())
+    public static void logWarn(final String string, final Object... params) {
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
+        if (!log.isWarnEnabled()) {
             return;
-        Object[] paramsStr = getStringArray(params);
-        log.warn(callerWarn() + " ->> " + String.format(string, paramsStr));
+        }
+        Object[] paramsStr = Hasor.getStringArray(params);
+        log.warn(Hasor.callerWarn() + " ->> " + String.format(string, paramsStr));
     }
-    public static void logWarn(Object e) {
-        logWarn("%s", e);
+    public static void logWarn(final Object e) {
+        Hasor.logWarn("%s", e);
     }
     /**
      * 输出 <i><b>消息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logInfo(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        if (!log.isInfoEnabled())
+    public static void logInfo(final String string, final Object... params) {
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
+        if (!log.isInfoEnabled()) {
             return;
-        Object[] paramsStr = getStringArray(params);
-        log.info(callerInfo() + " ->> " + String.format(string, paramsStr));
+        }
+        Object[] paramsStr = Hasor.getStringArray(params);
+        log.info(Hasor.callerInfo() + " ->> " + String.format(string, paramsStr));
     }
-    public static void logInfo(Object e) {
-        logInfo("%s", e);
+    public static void logInfo(final Object e) {
+        Hasor.logInfo("%s", e);
     }
     /**
      * 输出 <i><b>Trace</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logTrace(String string, Object... params) {
-        Logger log = LoggerFactory.getLogger(callerClass());
-        if (!log.isTraceEnabled())
+    public static void logTrace(final String string, final Object... params) {
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
+        if (!log.isTraceEnabled()) {
             return;
-        Object[] paramsStr = getStringArray(params);
-        log.info(callerTrace() + " ->> " + String.format(string, paramsStr));
+        }
+        Object[] paramsStr = Hasor.getStringArray(params);
+        log.info(Hasor.callerTrace() + " ->> " + String.format(string, paramsStr));
     }
-    public static void logTrace(Object e) {
-        logTrace("%s", e);
+    public static void logTrace(final Object e) {
+        Hasor.logTrace("%s", e);
     }
     /**使用日志的方式格式化。*/
-    public static String formatString(String formatString, Object... args) {
-        Object[] paramsStr = getStringArray(args);
+    public static String formatString(final String formatString, final Object... args) {
+        Object[] paramsStr = Hasor.getStringArray(args);
         return String.format(formatString, paramsStr);
     }
     /**
      * 转换对象为字符串内容，用以打印目的。
      * @param object 将参数对象转换为可以作为日志输出的字符串内容。
      */
-    public static String logString(Object object) {
-        if (object == null)
+    public static String logString(final Object object) {
+        if (object == null) {
             return "null";
+        }
         //
         StringBuilder logString = new StringBuilder("");
         if (object instanceof Collection) {
             //
             Collection<?> coll = (Collection<?>) object;
-            for (Object obj : coll)
-                logString.append(logString(obj) + " , ");
-            if (logString.length() > 1)
+            for (Object obj : coll) {
+                logString.append(Hasor.logString(obj) + " , ");
+            }
+            if (logString.length() > 1) {
                 logString.delete(logString.length() - 3, logString.length() - 1);
+            }
             logString.insert(0, "[ ");
             logString.append("]");
         } else if (object.getClass().isEnum() == true) {
@@ -184,12 +193,12 @@ public abstract class Hasor {
         } else if (object.getClass().isArray() == true) {
             //
             Object[] array = (Object[]) object;
-            logString.append(logString(Arrays.asList(array)));
+            logString.append(Hasor.logString(Arrays.asList(array)));
         } else {
             //
-            if (object instanceof Class)
+            if (object instanceof Class) {
                 logString.append(((Class<?>) object).getName());
-            else if (object instanceof Throwable) {
+            } else if (object instanceof Throwable) {
                 Throwable err = (Throwable) object;
                 StringWriter sw = new StringWriter();
                 sw.append('\n');
@@ -218,39 +227,40 @@ public abstract class Hasor {
     //
     /**是否输出 Trace 级日志。*/
     public static boolean isTraceLogger() {
-        Logger log = LoggerFactory.getLogger(callerClass());
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
         return log.isTraceEnabled();
     }
     /**是否输出 Debug 级日志。*/
     public static boolean isDebugLogger() {
-        Logger log = LoggerFactory.getLogger(callerClass());
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
         return log.isDebugEnabled();
     }
     /**是否输出 Error 级日志。*/
     public static boolean isErrorLogger() {
-        Logger log = LoggerFactory.getLogger(callerClass());
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
         return log.isErrorEnabled();
     }
     /**是否输出 Warning 级日志。*/
     public static boolean isWarningLogger() {
-        Logger log = LoggerFactory.getLogger(callerClass());
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
         return log.isWarnEnabled();
     }
     /**是否输出 Info 级日志。*/
     public static boolean isInfoLogger() {
-        Logger log = LoggerFactory.getLogger(callerClass());
+        Logger log = LoggerFactory.getLogger(Hasor.callerClass());
         return log.isInfoEnabled();
     }
     //
     /*---------------------------------------------------------------------------------------Util*/
     /**如果参数为空会抛出 NullPointerException 异常。*/
-    public static <T> T assertIsNotNull(T object) {
-        return assertIsNotNull(object, ""); //$NON-NLS-1$
+    public static <T> T assertIsNotNull(final T object) {
+        return Hasor.assertIsNotNull(object, ""); //$NON-NLS-1$
     }
     /**如果参数为空会抛出 NullPointerException 异常。*/
-    public static <T> T assertIsNotNull(T object, String message) {
-        if (object == null)
+    public static <T> T assertIsNotNull(final T object, final String message) {
+        if (object == null) {
             throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
+        }
         return object;
     }
 }

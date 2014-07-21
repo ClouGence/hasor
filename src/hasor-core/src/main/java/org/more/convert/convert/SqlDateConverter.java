@@ -44,7 +44,7 @@ public final class SqlDateConverter extends DateTimeConverter {
      * Construct a <b>java.sql.Date</b> <i>Converter</i> that returns a default value if an error occurs.
      * @param defaultValue The default value to be returned if the value to be converted is missing or an error occurs converting the value.
      */
-    public SqlDateConverter(Object defaultValue) {
+    public SqlDateConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -52,6 +52,7 @@ public final class SqlDateConverter extends DateTimeConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Date.class;
     }

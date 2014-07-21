@@ -21,12 +21,12 @@ import java.io.File;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class FileUtils {
-    public static boolean deleteDir(File dir) {
+    public static boolean deleteDir(final File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //递归删除目录中的子目录下
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
+            for (String element : children) {
+                boolean success = FileUtils.deleteDir(new File(dir, element));
                 if (!success) {
                     return false;
                 }

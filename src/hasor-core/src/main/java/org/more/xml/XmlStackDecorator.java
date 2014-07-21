@@ -25,18 +25,18 @@ public class XmlStackDecorator<T> extends DecStackMap<String, Object> {
     private T context = null;
     /**获取Context*/
     public T getContext() {
-        return context;
+        return this.context;
     }
     /**设置Context*/
-    public void setContext(T context) {
+    public void setContext(final T context) {
         this.context = context;
     }
     //---------------
     private HashMap<String, NameSpace> nameSpaceMap = new HashMap<String, NameSpace>();
-    public NameSpace getNameSpace(String prefix) {
+    public NameSpace getNameSpace(final String prefix) {
         return this.nameSpaceMap.get(prefix);
     }
-    void addNameSpace(String prefix, NameSpace nameSpace) {
+    void addNameSpace(final String prefix, final NameSpace nameSpace) {
         this.nameSpaceMap.put(prefix, nameSpace);
     }
 }

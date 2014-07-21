@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 import net.hasor.web.jstl.tagfun.Functions;
 import org.more.util.StringUtils;
 /**
@@ -29,34 +30,34 @@ public class DefineType_Tag extends AbstractHasorTag {
     public String getVar() {
         return this.var;
     }
-    public void setVar(String var) {
+    public void setVar(final String var) {
         this.var = var;
     }
     public String getType() {
-        return type;
+        return this.type;
     }
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
     //
     //
     //
+    @Override
     public void release() {
         this.var = null;
         this.type = null;
     }
+    @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var)) {
+        if (StringUtils.isBlank(this.var))
             throw new NullPointerException("tag param var is null.");
-        }
-        if (StringUtils.isBlank(this.type)) {
+        if (StringUtils.isBlank(this.type))
             throw new NullPointerException("tag param type is null.");
-        }
         //
         try {
-            Object targetBean = Functions.defineType(type);
-            this.pageContext.setAttribute(var, targetBean);
-            return SKIP_BODY;
+            Object targetBean = Functions.defineType(this.type);
+            this.pageContext.setAttribute(this.var, targetBean);
+            return Tag.SKIP_BODY;
         } catch (ClassNotFoundException e) {
             throw new JspException(e);
         }

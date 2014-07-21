@@ -36,10 +36,12 @@ import org.more.util.StringUtils;
 public abstract class AbstractSettings implements Settings {
     protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
+    @Override
     public abstract AbstractSettings getSettings(String namespace);
     //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
+    @Override
+    public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {
         if (featureType == null) {
             return null;
         }
@@ -49,16 +51,17 @@ public abstract class AbstractSettings implements Settings {
         return ScanClassPath.getClassSet(loadPackages, featureType);
     }
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
-    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
+    @Override
+    public Set<Class<?>> findClass(final Class<?> featureType, String loadPackages) {
         if (featureType == null) {
             return null;
         }
-        loadPackages = (loadPackages == null) ? "" : loadPackages;
+        loadPackages = loadPackages == null ? "" : loadPackages;
         String[] spanPackage = loadPackages.split(",");
         return this.findClass(featureType, spanPackage);
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public final <T> T getToType(String name, Class<T> toType, T defaultValue) {
+    public final <T> T getToType(final String name, final Class<T> toType, final T defaultValue) {
         Object oriObject = this.getSettingsMap().get(StringUtils.isBlank(name) ? "" : name.toLowerCase());
         if (oriObject == null) {
             return defaultValue;
@@ -77,10 +80,10 @@ public abstract class AbstractSettings implements Settings {
         }
         return var == null ? defaultValue : var;
     };
-    public <T> T[] getToTypeArray(String name, Class<T> toType) {
+    public <T> T[] getToTypeArray(final String name, final Class<T> toType) {
         return this.getToTypeArray(name, toType, null);
     }
-    public <T> T[] getToTypeArray(String name, Class<T> toType, T defaultValue) {
+    public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {
         ArrayList<T> targetObjects = new ArrayList<T>();
         for (String url : this.getSettingArray()) {
             T targetObject = this.getSettings(url).getToType(name, toType, defaultValue);
@@ -95,147 +98,184 @@ public abstract class AbstractSettings implements Settings {
         return targetObjects.toArray((T[]) Array.newInstance(toType, targetObjects.size()));
     }
     /**解析全局配置参数，并且返回toType参数指定的类型。*/
-    public final <T> T getToType(String name, Class<T> toType) {
+    public final <T> T getToType(final String name, final Class<T> toType) {
         return this.getToType(name, toType, null);
     };
     /**解析全局配置参数，并且返回其{@link Object}形式对象。*/
-    public Object getObject(String name) {
+    public Object getObject(final String name) {
         return this.getToType(name, Object.class);
     };
     /**解析全局配置参数，并且返回其{@link Object}形式对象。第二个参数为默认值。*/
-    public Object getObject(String name, Object defaultValue) {
+    public Object getObject(final String name, final Object defaultValue) {
         return this.getToType(name, Object.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link Character}形式对象。*/
-    public Character getChar(String name) {
+    @Override
+    public Character getChar(final String name) {
         return this.getToType(name, Character.class);
     };
     /**解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。*/
-    public Character getChar(String name, Character defaultValue) {
+    @Override
+    public Character getChar(final String name, final Character defaultValue) {
         return this.getToType(name, Character.class, defaultValue);
     };
-    public Character[] getCharArray(String name) {
+    @Override
+    public Character[] getCharArray(final String name) {
         return this.getToTypeArray(name, Character.class);
     }
-    public Character[] getCharArray(String name, Character defaultValue) {
+    @Override
+    public Character[] getCharArray(final String name, final Character defaultValue) {
         return this.getToTypeArray(name, Character.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link String}形式对象。*/
-    public String getString(String name) {
+    @Override
+    public String getString(final String name) {
         return this.getToType(name, String.class);
     };
     /**解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。*/
-    public String getString(String name, String defaultValue) {
+    @Override
+    public String getString(final String name, final String defaultValue) {
         return this.getToType(name, String.class, defaultValue);
     };
-    public String[] getStringArray(String name) {
+    @Override
+    public String[] getStringArray(final String name) {
         return this.getToTypeArray(name, String.class);
     }
-    public String[] getStringArray(String name, String defaultValue) {
+    @Override
+    public String[] getStringArray(final String name, final String defaultValue) {
         return this.getToTypeArray(name, String.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Boolean}形式对象。*/
-    public Boolean getBoolean(String name) {
+    @Override
+    public Boolean getBoolean(final String name) {
         return this.getToType(name, Boolean.class);
     };
     /**解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。*/
-    public Boolean getBoolean(String name, Boolean defaultValue) {
+    @Override
+    public Boolean getBoolean(final String name, final Boolean defaultValue) {
         return this.getToType(name, Boolean.class, defaultValue);
     };
-    public Boolean[] getBooleanArray(String name) {
+    @Override
+    public Boolean[] getBooleanArray(final String name) {
         return this.getToTypeArray(name, Boolean.class);
     }
-    public Boolean[] getBooleanArray(String name, Boolean defaultValue) {
+    @Override
+    public Boolean[] getBooleanArray(final String name, final Boolean defaultValue) {
         return this.getToTypeArray(name, Boolean.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Short}形式对象。*/
-    public Short getShort(String name) {
+    @Override
+    public Short getShort(final String name) {
         return this.getToType(name, Short.class);
     };
     /**解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。*/
-    public Short getShort(String name, Short defaultValue) {
+    @Override
+    public Short getShort(final String name, final Short defaultValue) {
         return this.getToType(name, Short.class, defaultValue);
     };
-    public Short[] getShortArray(String name) {
+    @Override
+    public Short[] getShortArray(final String name) {
         return this.getToTypeArray(name, Short.class);
     }
-    public Short[] getShortArray(String name, Short defaultValue) {
+    @Override
+    public Short[] getShortArray(final String name, final Short defaultValue) {
         return this.getToTypeArray(name, Short.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Integer}形式对象。*/
-    public Integer getInteger(String name) {
+    @Override
+    public Integer getInteger(final String name) {
         return this.getToType(name, Integer.class);
     };
     /**解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。*/
-    public Integer getInteger(String name, Integer defaultValue) {
+    @Override
+    public Integer getInteger(final String name, final Integer defaultValue) {
         return this.getToType(name, Integer.class, defaultValue);
     };
-    public Integer[] getIntegerArray(String name) {
+    @Override
+    public Integer[] getIntegerArray(final String name) {
         return this.getToTypeArray(name, Integer.class);
     }
-    public Integer[] getIntegerArray(String name, Integer defaultValue) {
+    @Override
+    public Integer[] getIntegerArray(final String name, final Integer defaultValue) {
         return this.getToTypeArray(name, Integer.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Long}形式对象。*/
-    public Long getLong(String name) {
+    @Override
+    public Long getLong(final String name) {
         return this.getToType(name, Long.class);
     };
     /**解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。*/
-    public Long getLong(String name, Long defaultValue) {
+    @Override
+    public Long getLong(final String name, final Long defaultValue) {
         return this.getToType(name, Long.class, defaultValue);
     };
-    public Long[] getLongArray(String name) {
+    @Override
+    public Long[] getLongArray(final String name) {
         return this.getToTypeArray(name, Long.class);
     }
-    public Long[] getLongArray(String name, Long defaultValue) {
+    @Override
+    public Long[] getLongArray(final String name, final Long defaultValue) {
         return this.getToTypeArray(name, Long.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Float}形式对象。*/
-    public Float getFloat(String name) {
+    @Override
+    public Float getFloat(final String name) {
         return this.getToType(name, Float.class);
     };
     /**解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。*/
-    public Float getFloat(String name, Float defaultValue) {
+    @Override
+    public Float getFloat(final String name, final Float defaultValue) {
         return this.getToType(name, Float.class, defaultValue);
     };
-    public Float[] getFloatArray(String name) {
+    @Override
+    public Float[] getFloatArray(final String name) {
         return this.getToTypeArray(name, Float.class);
     }
-    public Float[] getFloatArray(String name, Float defaultValue) {
+    @Override
+    public Float[] getFloatArray(final String name, final Float defaultValue) {
         return this.getToTypeArray(name, Float.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Double}形式对象。*/
-    public Double getDouble(String name) {
+    @Override
+    public Double getDouble(final String name) {
         return this.getToType(name, Double.class);
     };
     /**解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。*/
-    public Double getDouble(String name, Double defaultValue) {
+    @Override
+    public Double getDouble(final String name, final Double defaultValue) {
         return this.getToType(name, Double.class, defaultValue);
     };
-    public Double[] getDoubleArray(String name) {
+    @Override
+    public Double[] getDoubleArray(final String name) {
         return this.getToTypeArray(name, Double.class);
     }
-    public Double[] getDoubleArray(String name, Double defaultValue) {
+    @Override
+    public Double[] getDoubleArray(final String name, final Double defaultValue) {
         return this.getToTypeArray(name, Double.class, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
-    public Date getDate(String name) {
+    @Override
+    public Date getDate(final String name) {
         return this.getToType(name, Date.class);
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, Date defaultValue) {
+    @Override
+    public Date getDate(final String name, final Date defaultValue) {
         return this.getToType(name, Date.class, defaultValue);
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, long defaultValue) {
+    @Override
+    public Date getDate(final String name, final long defaultValue) {
         return this.getToType(name, Date.class, new Date(defaultValue));
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。*/
-    public Date getDate(String name, String format) {
+    @Override
+    public Date getDate(final String name, final String format) {
         return this.getDate(name, format, null);
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, String format, Date defaultValue) {
+    @Override
+    public Date getDate(final String name, final String format, final Date defaultValue) {
         String oriData = this.getToType(name, String.class);
         if (oriData == null || oriData.length() == 0) {
             return defaultValue;
@@ -252,26 +292,32 @@ public abstract class AbstractSettings implements Settings {
         }
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。*/
-    public Date getDate(String name, String format, long defaultValue) {
+    @Override
+    public Date getDate(final String name, final String format, final long defaultValue) {
         return this.getDate(name, format, new Date(defaultValue));
     };
-    public Date[] getDateArray(String name) {
+    @Override
+    public Date[] getDateArray(final String name) {
         return this.getDateArray(name, null, (Date) null);
     }
-    public Date[] getDateArray(String name, Date defaultValue) {
+    @Override
+    public Date[] getDateArray(final String name, final Date defaultValue) {
         if (defaultValue == null) {
             return this.getDateArray(name, null, (Date) null);
         } else {
             return this.getDateArray(name, null, defaultValue);
         }
     }
-    public Date[] getDateArray(String name, long defaultValue) {
+    @Override
+    public Date[] getDateArray(final String name, final long defaultValue) {
         return this.getDateArray(name, null, defaultValue);
     }
-    public Date[] getDateArray(String name, String format) {
+    @Override
+    public Date[] getDateArray(final String name, final String format) {
         return this.getDateArray(name, format, null);
     }
-    public Date[] getDateArray(String name, String format, Date defaultValue) {
+    @Override
+    public Date[] getDateArray(final String name, final String format, final Date defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
         if (oriDataArray == null || oriDataArray.length == 0) {
             return null;
@@ -285,12 +331,13 @@ public abstract class AbstractSettings implements Settings {
             ParsePosition pos = new ParsePosition(0);
             parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
             if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null) {
-                parsedDate[i] = (defaultValue == null) ? null : new Date(defaultValue.getTime());
+                parsedDate[i] = defaultValue == null ? null : new Date(defaultValue.getTime());
             }
         }
         return parsedDate;
     }
-    public Date[] getDateArray(String name, String format, long defaultValue) {
+    @Override
+    public Date[] getDateArray(final String name, final String format, final long defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
         if (oriDataArray == null || oriDataArray.length == 0) {
             return null;
@@ -310,25 +357,31 @@ public abstract class AbstractSettings implements Settings {
         return parsedDate;
     }
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
-    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType) {
+    @Override
+    public <T extends Enum<?>> T getEnum(final String name, final Class<T> enmType) {
         return this.getToType(name, enmType, null);
     };
     /**解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。*/
-    public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue) {
+    @Override
+    public <T extends Enum<?>> T getEnum(final String name, final Class<T> enmType, final T defaultValue) {
         return this.getToType(name, enmType, defaultValue);
     };
-    public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType) {
+    @Override
+    public <T extends Enum<?>> T[] getEnumArray(final String name, final Class<T> enmType) {
         return this.getToTypeArray(name, enmType, null);
     }
-    public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue) {
+    @Override
+    public <T extends Enum<?>> T[] getEnumArray(final String name, final Class<T> enmType, final T defaultValue) {
         return this.getToTypeArray(name, enmType, defaultValue);
     }
     /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
-    public String getFilePath(String name) {
+    @Override
+    public String getFilePath(final String name) {
         return this.getFilePath(name, null);
     };
     /**解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。*/
-    public String getFilePath(String name, String defaultValue) {
+    @Override
+    public String getFilePath(final String name, final String defaultValue) {
         String filePath = this.getToType(name, String.class);
         if (filePath == null || filePath.length() == 0) {
             return defaultValue;//空
@@ -340,10 +393,12 @@ public abstract class AbstractSettings implements Settings {
             return filePath;
         }
     };
-    public String[] getFilePathArray(String name) {
+    @Override
+    public String[] getFilePathArray(final String name) {
         return this.getFilePathArray(name, null);
     }
-    public String[] getFilePathArray(String name, String defaultValue) {
+    @Override
+    public String[] getFilePathArray(final String name, final String defaultValue) {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getFilePath(name, defaultValue);
@@ -360,11 +415,13 @@ public abstract class AbstractSettings implements Settings {
         return filePaths.toArray(new String[filePaths.size()]);
     }
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
-    public String getDirectoryPath(String name) {
+    @Override
+    public String getDirectoryPath(final String name) {
         return this.getDirectoryPath(name, null);
     };
     /**解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。*/
-    public String getDirectoryPath(String name, String defaultValue) {
+    @Override
+    public String getDirectoryPath(final String name, final String defaultValue) {
         String filePath = this.getToType(name, String.class);
         if (filePath == null || filePath.length() == 0) {
             return defaultValue;//空
@@ -376,10 +433,12 @@ public abstract class AbstractSettings implements Settings {
             return filePath + File.separatorChar;
         }
     }
-    public String[] getDirectoryPathArray(String name) {
+    @Override
+    public String[] getDirectoryPathArray(final String name) {
         return this.getDirectoryPathArray(name, null);
     }
-    public String[] getDirectoryPathArray(String name, String defaultValue) {
+    @Override
+    public String[] getDirectoryPathArray(final String name, final String defaultValue) {
         ArrayList<String> directoryPaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
             String filePath = this.getSettings(url).getDirectoryPath(name, defaultValue);
@@ -396,10 +455,12 @@ public abstract class AbstractSettings implements Settings {
         return directoryPaths.toArray(new String[directoryPaths.size()]);
     }
     /**解析全局配置参数，并且返回其{@link XmlNode}形式对象。*/
-    public XmlNode getXmlNode(String name) {
+    @Override
+    public XmlNode getXmlNode(final String name) {
         return this.getToType(name, XmlNode.class, null);
     }
-    public XmlNode[] getXmlNodeArray(String name) {
+    @Override
+    public XmlNode[] getXmlNodeArray(final String name) {
         return this.getToTypeArray(name, XmlNode.class, null);
     }
 }

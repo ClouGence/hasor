@@ -30,7 +30,7 @@ public class ParamDefine extends AbstractPropertyDefine {
         return this.index;
     }
     /**设置属性索引，负数为自动分配*/
-    public void setIndex(int index) {
+    public void setIndex(final int index) {
         this.index = index;
     }
     /**返回属性名。*/
@@ -38,10 +38,11 @@ public class ParamDefine extends AbstractPropertyDefine {
         return this.name;
     }
     /**设置属性名*/
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     /**返回具有特征的字符串。*/
+    @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + this.hashCode() + " index=" + this.getIndex();
     }

@@ -48,7 +48,7 @@ public final class CalendarConverter extends DateTimeConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public CalendarConverter(Object defaultValue) {
+    public CalendarConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -56,6 +56,7 @@ public final class CalendarConverter extends DateTimeConverter {
      *
      * @return The default type this <code>Converter</code> handles.
      */
+    @Override
     protected Class getDefaultType() {
         return Calendar.class;
     }

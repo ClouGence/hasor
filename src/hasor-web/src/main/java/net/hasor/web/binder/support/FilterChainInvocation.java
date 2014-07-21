@@ -29,23 +29,23 @@ class FilterChainInvocation implements FilterChain {
     private final FilterChain            proceedingChain;
     private final ManagedServletPipeline servletPipeline;
     private int                          index = -1;
-    public FilterChainInvocation(FilterDefinition[] filterDefinitions, ManagedServletPipeline servletPipeline, FilterChain proceedingChain) {
+    public FilterChainInvocation(final FilterDefinition[] filterDefinitions, final ManagedServletPipeline servletPipeline, final FilterChain proceedingChain) {
         this.filterDefinitions = filterDefinitions;
         this.servletPipeline = servletPipeline;
         this.proceedingChain = proceedingChain;
     }
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse) throws IOException, ServletException {
-        index++;
+    @Override
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse) throws IOException, ServletException {
+        this.index++;
         //dispatch down the chain while there are more filters
-        if (index < filterDefinitions.length) {
-            filterDefinitions[index].doFilter(servletRequest, servletResponse, this);
-        } else {
+        if (this.index < this.filterDefinitions.length)
+            this.filterDefinitions[this.index].doFilter(servletRequest, servletResponse, this);
+        else {
             //we've reached the end of the filterchain, let's try to dispatch to a servlet
-            final boolean serviced = servletPipeline.service(servletRequest, servletResponse);
+            final boolean serviced = this.servletPipeline.service(servletRequest, servletResponse);
             //dispatch to the normal filter chain only if one of our servlets did not match
-            if (!serviced) {
-                proceedingChain.doFilter(servletRequest, servletResponse);
-            }
+            if (!serviced)
+                this.proceedingChain.doFilter(servletRequest, servletResponse);
         }
     }
 }

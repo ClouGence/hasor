@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StartDocumentEvent extends XmlStreamEvent {
-    public StartDocumentEvent(String xpath, XMLStreamReader reader) {
+    public StartDocumentEvent(final String xpath, final XMLStreamReader reader) {
         super(xpath, reader);
     }
     /**如果输入编码已知，则返回输入编码；如果未知，则返回 null。*/
@@ -37,10 +37,12 @@ public class StartDocumentEvent extends XmlStreamEvent {
         return this.getReader().getCharacterEncodingScheme();
     }
     /**该事件的拍档是{@link EndDocumentEvent}类型对象。*/
-    public boolean isPartner(XmlStreamEvent e) {
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
         return e instanceof EndDocumentEvent;
     };
     /**文档结束事件，是共有事件。*/
+    @Override
     public boolean isPublicEvent() {
         return true;
     }

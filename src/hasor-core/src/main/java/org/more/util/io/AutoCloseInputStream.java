@@ -31,7 +31,7 @@ public class AutoCloseInputStream extends InputStream {
      * 创建自动关闭的输入流
      * @param in 读取的目标流
      */
-    public AutoCloseInputStream(InputStream in) {
+    public AutoCloseInputStream(final InputStream in) {
         this.in = in;
     }
     //========================================================================================
@@ -39,37 +39,48 @@ public class AutoCloseInputStream extends InputStream {
      * 如果读取的目标流已经读取到末尾则自动关闭该流，并且对于已经关闭的流调用该方法将始终返回-1。
      * @return 如果读取的目标流已经读取到末尾则自动关闭该流，并且对于已经关闭的流调用该方法将始终返回-1。
      */
+    @Override
     public int read() throws IOException {
-        if (this.close == true)
+        if (this.close == true) {
             return -1;
+        }
         int read = this.in.read();
-        if (read == -1)
+        if (read == -1) {
             this.close();
+        }
         return read;
     }
+    @Override
     public int available() throws IOException {
         return this.in.available();
     }
+    @Override
     public void close() throws IOException {
         this.in.close();
         this.close = true;
     }
-    public synchronized void mark(int readlimit) {
+    @Override
+    public synchronized void mark(final int readlimit) {
         this.in.mark(readlimit);
     }
+    @Override
     public boolean markSupported() {
         return this.in.markSupported();
     }
-    public int read(byte[] b, int off, int len) throws IOException {
+    @Override
+    public int read(final byte[] b, final int off, final int len) throws IOException {
         return this.in.read(b, off, len);
     }
-    public int read(byte[] b) throws IOException {
+    @Override
+    public int read(final byte[] b) throws IOException {
         return this.in.read(b);
     }
+    @Override
     public synchronized void reset() throws IOException {
         this.in.reset();
     }
-    public long skip(long n) throws IOException {
+    @Override
+    public long skip(final long n) throws IOException {
         return this.in.skip(n);
     }
 }

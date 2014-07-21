@@ -22,6 +22,7 @@ import java.util.Map;
  */
 public class Map_ValueMetaData extends Collection_ValueMetaData<MapEntity_ValueMetaData> {
     /**返回{@link PropertyType#Map}*/
+    @Override
     public String getType() {
         return PropertyType.Map.value();
     }

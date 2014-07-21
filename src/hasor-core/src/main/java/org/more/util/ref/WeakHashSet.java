@@ -30,19 +30,21 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
     public WeakHashSet() {
         this.map = new WeakHashMap<E, Object>();
     }
-    public WeakHashSet(Collection<? extends E> c) {
+    public WeakHashSet(final Collection<? extends E> c) {
         this.map = new WeakHashMap<E, Object>(Math.max((int) (c.size() / .75f) + 1, 16));
         this.addAll(c);
     }
-    public WeakHashSet(int initialCapacity, float loadFactor) {
+    public WeakHashSet(final int initialCapacity, final float loadFactor) {
         this.map = new WeakHashMap<E, Object>(initialCapacity, loadFactor);
     }
-    public WeakHashSet(int initialCapacity) {
+    public WeakHashSet(final int initialCapacity) {
         this.map = new WeakHashMap<E, Object>(initialCapacity);
     }
+    @Override
     public Iterator<E> iterator() {
         return this.map.keySet().iterator();
     }
+    @Override
     public int size() {
         return this.map.size();
     }
@@ -51,15 +53,15 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
         return this.map.isEmpty();
     }
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(final Object o) {
         return this.map.containsKey(o);
     }
     @Override
-    public boolean add(E o) {
+    public boolean add(final E o) {
         return this.map.put(o, WeakHashSet.PRESENT) == null;
     }
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return this.map.remove(o) == WeakHashSet.PRESENT;
     }
     @Override

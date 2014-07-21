@@ -22,15 +22,15 @@ package org.more.classcode;
 public class TypeException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = -6286611015368846627L;
     /**类型异常*/
-    public TypeException(String string) {
+    public TypeException(final String string) {
         super(string);
     }
     /**类型异常*/
-    public TypeException(Throwable error) {
+    public TypeException(final Throwable error) {
         super(error);
     }
     /**类型异常*/
-    public TypeException(String string, Throwable error) {
+    public TypeException(final String string, final Throwable error) {
         super(string, error);
     }
 }

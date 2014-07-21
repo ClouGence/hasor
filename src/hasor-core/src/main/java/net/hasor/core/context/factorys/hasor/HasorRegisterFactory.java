@@ -23,11 +23,13 @@ import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorRegisterFactory extends AbstractRegisterFactory {
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindType) {
+    @Override
+    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindType) {
         // TODO Auto-generated method stub
         return null;
     }
-    protected <T> T newInstance(RegisterInfo<T> oriType) {
+    @Override
+    protected <T> T newInstance(final RegisterInfo<T> oriType) {
         // TODO Auto-generated method stub
         return null;
     }

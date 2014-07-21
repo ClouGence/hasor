@@ -26,15 +26,15 @@ public class RepeateException extends RuntimeException {
      */
     private static final long serialVersionUID = 2377606123252842745L;
     /**重复定义*/
-    public RepeateException(String string) {
+    public RepeateException(final String string) {
         super(string);
     }
     /**重复定义*/
-    public RepeateException(Throwable error) {
+    public RepeateException(final Throwable error) {
         super(error);
     }
     /**重复定义*/
-    public RepeateException(String string, Throwable error) {
+    public RepeateException(final String string, final Throwable error) {
         super(string, error);
     }
 }

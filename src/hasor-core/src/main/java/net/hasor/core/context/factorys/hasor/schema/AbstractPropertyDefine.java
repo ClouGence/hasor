@@ -32,7 +32,7 @@ public abstract class AbstractPropertyDefine extends AbstractDefine {
         return this.classType;
     };
     /**设置属性类型*/
-    public void setClassType(String classType) {
+    public void setClassType(final String classType) {
         this.classType = classType;
     }
     /**返回属性的描述信息。*/
@@ -40,15 +40,15 @@ public abstract class AbstractPropertyDefine extends AbstractDefine {
         return this.description;
     }
     /**设置属性描述*/
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
     /**获取对该属性的值信息描述。*/
     public ValueMetaData getValueMetaData() {
-        return valueMetaData;
+        return this.valueMetaData;
     }
     /**设置属性值的描述信息*/
-    public void setValueMetaData(ValueMetaData valueMetaData) {
+    public void setValueMetaData(final ValueMetaData valueMetaData) {
         this.valueMetaData = valueMetaData;
     }
 }

@@ -25,16 +25,20 @@ import net.hasor.core.context.factorys.hasor.schema.BeanDefine;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
-    public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider) {
+    @Override
+    public void setInitParam(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
         throw new UnsupportedOperationException();
     }
-    public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo) {
+    @Override
+    public void setInitParam(final int index, final Class<?> paramType, final RegisterInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
-    public void addInject(String property, Provider<?> valueProvider) {
+    @Override
+    public void addInject(final String property, final Provider<?> valueProvider) {
         throw new UnsupportedOperationException();
     }
-    public void addInject(String property, RegisterInfo<?> valueInfo) {
+    @Override
+    public void addInject(final String property, final RegisterInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
     public BeanDefine builderDefine() {

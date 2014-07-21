@@ -22,15 +22,15 @@ package org.more.classcode;
 public class PropertyException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = -7774988512856603877L;
     /**属性异常*/
-    public PropertyException(String string) {
+    public PropertyException(final String string) {
         super(string);
     }
     /**属性异常*/
-    public PropertyException(Throwable error) {
+    public PropertyException(final Throwable error) {
         super(error);
     }
     /**属性异常*/
-    public PropertyException(String string, Throwable error) {
+    public PropertyException(final String string, final Throwable error) {
         super(string, error);
     }
 }

@@ -44,8 +44,9 @@ public class XmlParserKitManager implements XmlAccept {
     //
     //
     private XmlStackDecorator<Object> getXmlStack() {
-        if (this.activateStack == null)
+        if (this.activateStack == null) {
             this.activateStack = new XmlStackDecorator<Object>();
+        }
         return this.activateStack;
     }
     //    /**获取环境对象，的{@link IAttribute}属性接口。*/
@@ -53,17 +54,18 @@ public class XmlParserKitManager implements XmlAccept {
     //        return getXmlStack().get.getSource();
     //    }
     /**设置绑定的上下文对象*/
-    public void setContext(Object context) {
-        getXmlStack().setContext(context);
+    public void setContext(final Object context) {
+        this.getXmlStack().setContext(context);
     }
     /**获取绑定的上下文对象*/
     public Object getContext() {
-        return getXmlStack().getContext();
+        return this.getXmlStack().getContext();
     }
     /**检测一个命名空间处理器是否已经绑定到某个命名空间上。*/
-    public boolean isRegeditKit(String namespace, XmlNamespaceParser kit) {
-        if (this.regeditXmlParserKit.containsKey(namespace) == false)
+    public boolean isRegeditKit(final String namespace, final XmlNamespaceParser kit) {
+        if (this.regeditXmlParserKit.containsKey(namespace) == false) {
             return false;
+        }
         ArrayList<XmlNamespaceParser> parserList = this.regeditXmlParserKit.get(namespace);
         return parserList.contains(kit);
     }
@@ -73,16 +75,19 @@ public class XmlParserKitManager implements XmlAccept {
      * @param namespace 要绑定的命名空间。
      * @param kit 要关联的解析器。
      */
-    public void regeditKit(String namespace, XmlNamespaceParser kit) {
-        if (namespace == null || kit == null)
+    public void regeditKit(final String namespace, final XmlNamespaceParser kit) {
+        if (namespace == null || kit == null) {
             throw new NullPointerException("namespace，kit参数不能为空。");
+        }
         ArrayList<XmlNamespaceParser> list = null;
-        if (this.regeditXmlParserKit.containsKey(namespace) == true)
+        if (this.regeditXmlParserKit.containsKey(namespace) == true) {
             list = this.regeditXmlParserKit.get(namespace);
-        else
+        } else {
             list = new ArrayList<XmlNamespaceParser>();
-        if (list.contains(kit) == true)
+        }
+        if (list.contains(kit) == true) {
             throw new RepeateException("命名空间[" + namespace + "]与解析器" + kit + "重复注册。");
+        }
         list.add(kit);
         this.regeditXmlParserKit.put(namespace, list);
     }
@@ -91,76 +96,92 @@ public class XmlParserKitManager implements XmlAccept {
      * @param namespace 要解除绑定的命名空间。
      * @param kit 要解除关联的解析器。
      */
-    public void unRegeditKit(String namespace, XmlNamespaceParser kit) {
-        if (namespace == null || kit == null)
+    public void unRegeditKit(final String namespace, final XmlNamespaceParser kit) {
+        if (namespace == null || kit == null) {
             throw new NullPointerException("namespace，kit参数不能为空。");
-        if (this.regeditXmlParserKit.containsKey(namespace) == false)
+        }
+        if (this.regeditXmlParserKit.containsKey(namespace) == false) {
             return;
+        }
         ArrayList<XmlNamespaceParser> list = this.regeditXmlParserKit.get(namespace);
-        if (list.contains(kit) == true)
+        if (list.contains(kit) == true) {
             list.remove(kit);
+        }
     }
     /**获取注册的命名空间集合*/
     public Set<String> getNamespace() {
         return Collections.unmodifiableSet(this.regeditXmlParserKit.keySet());
     }
     /**获取指定命名空间下已注册的解析器集合。*/
-    public List<XmlNamespaceParser> getXmlNamespaceParser(String namespace) {
+    public List<XmlNamespaceParser> getXmlNamespaceParser(final String namespace) {
         List<XmlNamespaceParser> parserList = this.regeditXmlParserKit.get(namespace);
-        if (parserList == null)
+        if (parserList == null) {
             return Collections.unmodifiableList(new ArrayList<XmlNamespaceParser>());
-        else
+        } else {
             return Collections.unmodifiableList(parserList);
+        }
     }
     /**开始{@link XmlAccept}接口的调用，该方法主要用于重置状态。*/
+    @Override
     public void beginAccept() {
         this.getXmlStack();
-        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
-            for (XmlNamespaceParser xnp : alList)
+        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values()) {
+            for (XmlNamespaceParser xnp : alList) {
                 xnp.beginAccept();
+            }
+        }
     }
     /**结束{@link XmlAccept}接口的调用。*/
+    @Override
     public void endAccept() {
         this.activateStack = null;
-        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values())
-            for (XmlNamespaceParser xnp : alList)
+        for (ArrayList<XmlNamespaceParser> alList : this.regeditXmlParserKit.values()) {
+            for (XmlNamespaceParser xnp : alList) {
                 xnp.endAccept();
+            }
+        }
     }
     /*--------------------------------------------------------------*/
     /**分发事件到{@link XmlParserKit}列表*/
-    private void issueEvent(XmlStreamEvent e, XmlStackDecorator<Object> activateStack) throws IOException, XMLStreamException {
+    private void issueEvent(final XmlStreamEvent e, final XmlStackDecorator<Object> activateStack) throws IOException, XMLStreamException {
         //公共事件
-        if (e.isPublicEvent() == true)
+        if (e.isPublicEvent() == true) {
             for (String namespace : this.regeditXmlParserKit.keySet()) {
                 QName currentElement = e.getCurrentElement();
                 String xpath = null;
-                if (currentElement == null)
+                if (currentElement == null) {
                     xpath = "/";//必定是 开始文档或者结束文档事件。
-                else {
+                } else {
                     String prefix = currentElement.getPrefix();
                     NameSpace ns = (NameSpace) this.activateStack.get(prefix);
-                    if (ns == null)
+                    if (ns == null) {
                         throw new XmlFormatException("解析错误，前缀[" + prefix + "]代表的命名空间没有被激活。");
+                    }
                     xpath = ns.getXpath();
                 }
                 ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(namespace);
-                if (alList != null)
-                    for (XmlNamespaceParser kit : alList)
+                if (alList != null) {
+                    for (XmlNamespaceParser kit : alList) {
                         kit.sendEvent(this.getXmlStack(), xpath, e);
+                    }
+                }
             }
-        else {
+        } else {
             //处理私有事件
             String prefix = e.getCurrentElement().getPrefix();
-            prefix = (prefix == null) ? "" : prefix;
+            prefix = prefix == null ? "" : prefix;
             NameSpace ns = activateStack.getNameSpace(prefix);
             ArrayList<XmlNamespaceParser> alList = this.regeditXmlParserKit.get(ns.getUri());
-            if (alList != null)
-                for (XmlNamespaceParser kit : alList)
+            if (alList != null) {
+                for (XmlNamespaceParser kit : alList) {
                     kit.sendEvent(this.getXmlStack(), ns.getXpath(), e);
+                }
+            }
         }
     }
     /**实现{@link XmlAccept}接口用于接受事件的方法。*/
-    public synchronized void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
+    @Override
+    public synchronized void sendEvent(final XmlStreamEvent e) throws XMLStreamException, IOException {
         //1.处理StartElementEvent
         if (e instanceof StartElementEvent) {
             this.activateStack.createStack();
@@ -170,21 +191,23 @@ public class XmlParserKitManager implements XmlAccept {
             for (int i = 0; i < nsCount; i++) {
                 String prefix = ee.getNamespacePrefix(i);
                 String uri = ee.getNamespaceURI(i);
-                prefix = (prefix == null) ? "" : prefix;
+                prefix = prefix == null ? "" : prefix;
                 NameSpace ns = this.activateStack.getNameSpace(prefix);
-                if (ns == null)
+                if (ns == null) {
                     //激活新的命名空间
                     this.activateStack.addNameSpace(prefix, new NameSpace(uri, "/"));
+                }
             }
             //生成当前节点的xpath（专属命名空间下的xpath）
             String prefix = ee.getPrefix();
-            prefix = (prefix == null) ? "" : prefix;
+            prefix = prefix == null ? "" : prefix;
             NameSpace ns = this.activateStack.getNameSpace(prefix);
             ns.appendXPath(ee.getElementName(), false);
             this.issueEvent(e, this.activateStack);
             //如果执行的是跳过则删除其加入的xpath，因为reader不会再发送其end事件。
-            if (e.isSkip() == true)
+            if (e.isSkip() == true) {
                 ns.removeXPath();
+            }
             return;
         } else
         //2.处理EndElementEvent
@@ -201,10 +224,11 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.createStack();
             AttributeEvent ee = (AttributeEvent) e;
             String prefix = ee.getName().getPrefix();
-            prefix = (prefix == null) ? "" : prefix;
-            if (prefix.equals("") == true)
+            prefix = prefix == null ? "" : prefix;
+            if (prefix.equals("") == true) {
                 prefix = ee.getCurrentElement().getPrefix();
-            prefix = (prefix == null) ? "" : prefix;
+            }
+            prefix = prefix == null ? "" : prefix;
             //
             NameSpace ns = this.activateStack.getNameSpace(prefix);
             ns.appendXPath(ee.getElementName(), true);
@@ -223,8 +247,9 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             this.issueEvent(e, this.activateStack);
             return;
-        } else
+        } else {
             //5.分发事件
             this.issueEvent(e, this.activateStack);
+        }
     }
 }

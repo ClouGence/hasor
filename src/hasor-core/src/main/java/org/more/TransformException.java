@@ -26,15 +26,15 @@ public class TransformException extends Exception {
      */
     private static final long serialVersionUID = 5032345759263916241L;
     /**转换异常。*/
-    public TransformException(String string) {
+    public TransformException(final String string) {
         super(string);
     }
     /**转换异常。*/
-    public TransformException(Throwable error) {
+    public TransformException(final Throwable error) {
         super(error);
     }
     /**转换异常。*/
-    public TransformException(String string, Throwable error) {
+    public TransformException(final String string, final Throwable error) {
         super(string, error);
     }
 }

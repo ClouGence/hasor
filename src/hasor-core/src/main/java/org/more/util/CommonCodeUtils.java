@@ -39,8 +39,9 @@ public abstract class CommonCodeUtils {
          * @return 返回编码之后的字符串。
          */
         public static String base64Encode(final String s) {
-            if (s == null || s.length() == 0)
+            if (s == null || s.length() == 0) {
                 return s;
+            }
             byte[] b = null;
             try {
                 b = s.getBytes("UTF-8");
@@ -48,14 +49,16 @@ public abstract class CommonCodeUtils {
                 e.printStackTrace();
                 return s;
             }
-            return base64EncodeFoArray(b);
+            return Base64.base64EncodeFoArray(b);
         }
         /** Encoding a byte array to a string follow the Base64 regular. */
         public static String base64EncodeFoArray(final byte[] s) {
-            if (s == null)
+            if (s == null) {
                 return null;
-            if (s.length == 0)
+            }
+            if (s.length == 0) {
                 return "";
+            }
             StringBuffer buf = new StringBuffer();
             int b0, b1, b2, b3;
             int len = s.length;
@@ -72,24 +75,28 @@ public abstract class CommonCodeUtils {
                         tmp = s[i++];
                         b2 |= (tmp & 0xc0) >> 6;
                         b3 = tmp & 0x3f;
-                    } else
+                    } else {
                         b3 = 64; // 1 byte "-" is supplement
-                } else
+                    }
+                } else {
                     b2 = b3 = 64;// 2 bytes "-" are supplement
-                buf.append(Base64Chars.charAt(b0));
-                buf.append(Base64Chars.charAt(b1));
-                buf.append(Base64Chars.charAt(b2));
-                buf.append(Base64Chars.charAt(b3));
+                }
+                buf.append(Base64.Base64Chars.charAt(b0));
+                buf.append(Base64.Base64Chars.charAt(b1));
+                buf.append(Base64.Base64Chars.charAt(b2));
+                buf.append(Base64.Base64Chars.charAt(b3));
             }
             return buf.toString();
         }
         /** Decoding a string to a string follow the Base64 regular. */
         public static String base64Decode(final String s) {
-            byte[] b = base64DecodeToArray(s);
-            if (b == null)
+            byte[] b = Base64.base64DecodeToArray(s);
+            if (b == null) {
                 return null;
-            if (b.length == 0)
+            }
+            if (b.length == 0) {
                 return "";
+            }
             try {
                 return new String(b, "UTF-8");
             } catch (java.io.UnsupportedEncodingException e) {
@@ -99,28 +106,32 @@ public abstract class CommonCodeUtils {
         }
         /** Decoding a string to a byte array follow the Base64 regular */
         public static byte[] base64DecodeToArray(final String s) {
-            if (s == null)
+            if (s == null) {
                 return null;
+            }
             int len = s.length();
-            if (len == 0)
+            if (len == 0) {
                 return new byte[0];
-            if (len % 4 != 0)
+            }
+            if (len % 4 != 0) {
                 throw new java.lang.IllegalArgumentException(s);
-            byte[] b = new byte[(len / 4) * 3];
+            }
+            byte[] b = new byte[len / 4 * 3];
             int i = 0, j = 0, e = 0, c, tmp;
             while (i < len) {
-                c = Base64Chars.indexOf((int) s.charAt(i++));
+                c = Base64.Base64Chars.indexOf(s.charAt(i++));
                 tmp = c << 18;
-                c = Base64Chars.indexOf((int) s.charAt(i++));
+                c = Base64.Base64Chars.indexOf(s.charAt(i++));
                 tmp |= c << 12;
-                c = Base64Chars.indexOf((int) s.charAt(i++));
+                c = Base64.Base64Chars.indexOf(s.charAt(i++));
                 if (c < 64) {
                     tmp |= c << 6;
-                    c = Base64Chars.indexOf((int) s.charAt(i++));
-                    if (c < 64)
+                    c = Base64.Base64Chars.indexOf(s.charAt(i++));
+                    if (c < 64) {
                         tmp |= c;
-                    else
+                    } else {
                         e = 1;
+                    }
                 } else {
                     e = 2;
                     i++;
@@ -147,7 +158,7 @@ public abstract class CommonCodeUtils {
      * @author 赵永春 (zyc@hasor.net)
      */
     public static abstract class MD5 {
-        public static String encodeMD5(byte[] source) throws NoSuchAlgorithmException {
+        public static String encodeMD5(final byte[] source) throws NoSuchAlgorithmException {
             String s = null;
             // 用来将字节转换成 16 进制表示的字符
             char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -164,10 +175,10 @@ public abstract class CommonCodeUtils {
             s = new String(str); // 换后的结果转换为字符串
             return s;
         }
-        public static String getMD5(String source) throws NoSuchAlgorithmException {
-            return getMD5(source.getBytes());
+        public static String getMD5(final String source) throws NoSuchAlgorithmException {
+            return MD5.getMD5(source.getBytes());
         }
-        public static String getMD5(byte[] source) throws NoSuchAlgorithmException {
+        public static String getMD5(final byte[] source) throws NoSuchAlgorithmException {
             String s = null;
             // 用来将字节转换成 16 进制表示的字符
             char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -192,21 +203,21 @@ public abstract class CommonCodeUtils {
      */
     public static abstract class HexConversion {
         /** 字符串转换成十六进制字符串 */
-        public static String str2HexStr(String str) {
+        public static String str2HexStr(final String str) {
             char[] chars = "0123456789ABCDEF".toCharArray();
             StringBuilder sb = new StringBuilder("");
             byte[] bs = str.getBytes();
             int bit;
-            for (int i = 0; i < bs.length; i++) {
-                bit = (bs[i] & 0x0f0) >> 4;
+            for (byte element : bs) {
+                bit = (element & 0x0f0) >> 4;
                 sb.append(chars[bit]);
-                bit = bs[i] & 0x0f;
+                bit = element & 0x0f;
                 sb.append(chars[bit]);
             }
             return sb.toString();
         }
         /** 十六进制转换字符串 */
-        public static String hexStr2Str(String hexStr) {
+        public static String hexStr2Str(final String hexStr) {
             String str = "0123456789ABCDEF";
             char[] hexs = hexStr.toCharArray();
             byte[] bytes = new byte[hexStr.length() / 2];
@@ -219,21 +230,22 @@ public abstract class CommonCodeUtils {
             return new String(bytes);
         }
         /** bytes转换成十六进制字符串 */
-        public static String byte2HexStr(byte[] b) {
+        public static String byte2HexStr(final byte[] b) {
             String hs = "";
             String stmp = "";
-            for (int n = 0; n < b.length; n++) {
-                stmp = (Integer.toHexString(b[n] & 0XFF));
-                if (stmp.length() == 1)
+            for (byte element : b) {
+                stmp = Integer.toHexString(element & 0XFF);
+                if (stmp.length() == 1) {
                     hs = hs + "0" + stmp;
-                else
+                } else {
                     hs = hs + stmp;
-                //if (n<b.length-1) hs=hs+":";
+                    //if (n<b.length-1) hs=hs+":";
+                }
             }
             return hs.toUpperCase();
         }
         /** bytes转换成十六进制字符串 */
-        public static byte[] hexStr2Bytes(String src) {
+        public static byte[] hexStr2Bytes(final String src) {
             int m = 0, n = 0;
             int l = src.length() / 2;
             //System.out.println(l);
@@ -241,19 +253,19 @@ public abstract class CommonCodeUtils {
             for (int i = 0; i < l; i++) {
                 m = i * 2 + 1;
                 n = m + 1;
-                ret[i] = uniteBytes(src.substring(i * 2, m), src.substring(m, n));
+                ret[i] = HexConversion.uniteBytes(src.substring(i * 2, m), src.substring(m, n));
             }
             return ret;
         }
         /** String的字符串转换成unicode的String */
-        public static String stringToUnicode(String strText) throws Exception {
+        public static String stringToUnicode(final String strText) throws Exception {
             char c;
             String strRet = "";
             int intAsc;
             String strHex;
             for (int i = 0; i < strText.length(); i++) {
                 c = strText.charAt(i);
-                intAsc = (int) c;
+                intAsc = c;
                 strHex = Integer.toHexString(intAsc);
                 if (intAsc > 128) {
                     strRet += "\\u" + strHex;
@@ -265,7 +277,7 @@ public abstract class CommonCodeUtils {
             return strRet;
         }
         /** unicode的String转换成String的字符串 */
-        public static String unicodeToString(String hex) {
+        public static String unicodeToString(final String hex) {
             int t = hex.length() / 6;
             StringBuilder str = new StringBuilder();
             for (int i = 0; i < t; i++) {
@@ -282,7 +294,7 @@ public abstract class CommonCodeUtils {
             }
             return str.toString();
         }
-        private static byte uniteBytes(String src0, String src1) {
+        private static byte uniteBytes(final String src0, final String src1) {
             byte b0 = Byte.decode("0x" + src0).byteValue();
             b0 = (byte) (b0 << 4);
             byte b1 = Byte.decode("0x" + src1).byteValue();

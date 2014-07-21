@@ -51,11 +51,11 @@ public class Base64InputStream extends InputStream {
     private static final int[]  IA   = new int[256];
     private static final char[] CA   = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
     static {
-        Arrays.fill(IA, -1);
-        for (int i = 0, iS = CA.length; i < iS; i++) {
-            IA[CA[i]] = i;
+        Arrays.fill(Base64InputStream.IA, -1);
+        for (int i = 0, iS = Base64InputStream.CA.length; i < iS; i++) {
+            Base64InputStream.IA[Base64InputStream.CA[i]] = i;
         }
-        IA['='] = 0;
+        Base64InputStream.IA['='] = 0;
     }
     /**
      * An array of bytes that was provided
@@ -103,10 +103,10 @@ public class Base64InputStream extends InputStream {
      *
      * @param encodedString the Base64 encoded String
      */
-    public Base64InputStream(String encodedString) {
-        this.buf = decode(encodedString);
+    public Base64InputStream(final String encodedString) {
+        this.buf = this.decode(encodedString);
         this.pos = 0;
-        this.count = buf.length;
+        this.count = this.buf.length;
     }
     /**
      * Reads the next byte of data from this input stream. The value
@@ -121,8 +121,9 @@ public class Base64InputStream extends InputStream {
      * @return the next byte of data, or <code>-1</code> if the end of the
      *         stream has been reached.
      */
+    @Override
     public int read() {
-        return (pos < count) ? (buf[pos++] & 0xff) : -1;
+        return this.pos < this.count ? this.buf[this.pos++] & 0xff : -1;
     }
     /**
      * Reads up to <code>len</code> bytes of data into an array of bytes
@@ -150,23 +151,24 @@ public class Base64InputStream extends InputStream {
      *         <code>-1</code> if there is no more data because the end of
      *         the stream has been reached.
      */
-    public int read(byte b[], int off, int len) {
+    @Override
+    public int read(final byte b[], final int off, int len) {
         if (b == null) {
             throw new NullPointerException();
-        } else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
+        } else if (off < 0 || off > b.length || len < 0 || off + len > b.length || off + len < 0) {
             throw new IndexOutOfBoundsException();
         }
-        if (pos >= count) {
+        if (this.pos >= this.count) {
             return -1;
         }
-        if (pos + len > count) {
-            len = count - pos;
+        if (this.pos + len > this.count) {
+            len = this.count - this.pos;
         }
         if (len <= 0) {
             return 0;
         }
-        System.arraycopy(buf, pos, b, off, len);
-        pos += len;
+        System.arraycopy(this.buf, this.pos, b, off, len);
+        this.pos += len;
         return len;
     }
     /**
@@ -182,14 +184,15 @@ public class Base64InputStream extends InputStream {
      *
      * @return the actual number of bytes skipped.
      */
+    @Override
     public long skip(long n) {
-        if (pos + n > count) {
-            n = count - pos;
+        if (this.pos + n > this.count) {
+            n = this.count - this.pos;
         }
         if (n < 0) {
             return 0;
         }
-        pos += n;
+        this.pos += n;
         return n;
     }
     /**
@@ -202,8 +205,9 @@ public class Base64InputStream extends InputStream {
      * @return the number of bytes that can be read from the input stream
      *         without blocking.
      */
+    @Override
     public int available() {
-        return count - pos;
+        return this.count - this.pos;
     }
     /**
      * Tests if this <code>InputStream</code> supports mark/reset. The
@@ -212,6 +216,7 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
+    @Override
     public boolean markSupported() {
         return true;
     }
@@ -230,16 +235,18 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    public void mark(int readAheadLimit) {
-        mark = pos;
+    @Override
+    public void mark(final int readAheadLimit) {
+        this.mark = this.pos;
     }
     /**
      * Resets the buffer to the marked position.  The marked position
      * is 0 unless another position was marked or an offset was specified
      * in the constructor.
      */
+    @Override
     public void reset() {
-        pos = mark;
+        this.pos = this.mark;
     }
     /**
      * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
@@ -247,6 +254,7 @@ public class Base64InputStream extends InputStream {
      * generating an <tt>IOException</tt>.
      * <p/>
      */
+    @Override
     public void close() throws IOException {}
     /**
      * <p>Base64 decodes the source string.  NOTE:  This method doesn't
@@ -254,7 +262,7 @@ public class Base64InputStream extends InputStream {
      * @param source a Base64 encoded string
      * @return the bytes of the decode process
      */
-    private byte[] decode(String source) {
+    private byte[] decode(final String source) {
         // Check special case
         int sLen = source.length();
         if (sLen == 0) {
@@ -262,23 +270,24 @@ public class Base64InputStream extends InputStream {
         }
         int sIx = 0, eIx = sLen - 1; // Start and end index after trimming.
         // Trim illegal chars from start
-        while (sIx < eIx && IA[source.charAt(sIx) & 0xff] < 0) {
+        while (sIx < eIx && Base64InputStream.IA[source.charAt(sIx) & 0xff] < 0) {
             sIx++;
         }
         // Trim illegal chars from end
-        while (eIx > 0 && IA[source.charAt(eIx) & 0xff] < 0)
+        while (eIx > 0 && Base64InputStream.IA[source.charAt(eIx) & 0xff] < 0) {
             eIx--;
+        }
         // get the padding count (=) (0, 1 or 2)
-        int pad = source.charAt(eIx) == '=' ? (source.charAt(eIx - 1) == '=' ? 2 : 1) : 0; // Count '=' at end.
+        int pad = source.charAt(eIx) == '=' ? source.charAt(eIx - 1) == '=' ? 2 : 1 : 0; // Count '=' at end.
         int cCnt = eIx - sIx + 1; // Content count including possible separators
         int sepCnt = sLen > 76 ? (source.charAt(76) == '\r' ? cCnt / 78 : 0) << 1 : 0;
         int len = ((cCnt - sepCnt) * 6 >> 3) - pad; // The number of decoded bytes
         byte[] dArr = new byte[len]; // Preallocate byte[] of exact length
         // Decode all but the last 0 - 2 bytes.
         int d = 0;
-        for (int eLen = (len / 3) * 3; d < eLen;) {
+        for (int eLen = len / 3 * 3; d < eLen;) {
             // Assemble three bytes into an int from four "valid" characters.
-            int i = IA[source.charAt(sIx++)] << 18 | IA[source.charAt(sIx++)] << 12 | IA[source.charAt(sIx++)] << 6 | IA[source.charAt(sIx++)];
+            int i = Base64InputStream.IA[source.charAt(sIx++)] << 18 | Base64InputStream.IA[source.charAt(sIx++)] << 12 | Base64InputStream.IA[source.charAt(sIx++)] << 6 | Base64InputStream.IA[source.charAt(sIx++)];
             // Add the bytes
             dArr[d++] = (byte) (i >> 16);
             dArr[d++] = (byte) (i >> 8);
@@ -287,10 +296,12 @@ public class Base64InputStream extends InputStream {
         if (d < len) {
             // Decode last 1-3 bytes (incl '=') into 1-3 bytes
             int i = 0;
-            for (int j = 0; sIx <= eIx - pad; j++)
-                i |= IA[source.charAt(sIx++)] << (18 - j * 6);
-            for (int r = 16; d < len; r -= 8)
+            for (int j = 0; sIx <= eIx - pad; j++) {
+                i |= Base64InputStream.IA[source.charAt(sIx++)] << 18 - j * 6;
+            }
+            for (int r = 16; d < len; r -= 8) {
                 dArr[d++] = (byte) (i >> r);
+            }
         }
         return dArr;
     }

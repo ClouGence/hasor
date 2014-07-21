@@ -25,27 +25,27 @@ import net.hasor.core.context.adapter.RegisterFactoryCreater;
 public final class HasorFactory {
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return createAppContext(StandardAppContext.DefaultSettings, null, new Module[0]);
+        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(RegisterFactoryCreater factory) {
-        return createAppContext(StandardAppContext.DefaultSettings, factory, new Module[0]);
+    public static AppContext createAppContext(final RegisterFactoryCreater factory) {
+        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(RegisterFactoryCreater factory, Module... modules) {
-        return createAppContext(StandardAppContext.DefaultSettings, factory, new Module[0]);
+    public static AppContext createAppContext(final RegisterFactoryCreater factory, final Module... modules) {
+        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, new Module[0]);
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config) {
-        return createAppContext(config, null, new Module[0]);
+    public static AppContext createAppContext(final String config) {
+        return HasorFactory.createAppContext(config, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, RegisterFactoryCreater factory) {
-        return createAppContext(config, factory, new Module[0]);
+    public static AppContext createAppContext(final String config, final RegisterFactoryCreater factory) {
+        return HasorFactory.createAppContext(config, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, RegisterFactoryCreater factory, Module... modules) {
+    public static AppContext createAppContext(final String config, final RegisterFactoryCreater factory, final Module... modules) {
         try {
             StandardAppContext app = new StandardAppContext(config, factory);
             for (Module mod : modules) {
@@ -54,21 +54,22 @@ public final class HasorFactory {
             app.start();
             return app;
         } catch (Throwable e) {
-            if (e instanceof RuntimeException)
+            if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
-            else
+            } else {
                 throw new RuntimeException(e);
+            }
         }
     }
     //
     //
     //
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String config, Module... modules) {
-        return createAppContext(config, null, modules);
+    public static AppContext createAppContext(final String config, final Module... modules) {
+        return HasorFactory.createAppContext(config, null, modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(Module... modules) {
-        return createAppContext(StandardAppContext.DefaultSettings, null, modules);
+    public static AppContext createAppContext(final Module... modules) {
+        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, null, modules);
     }
 }

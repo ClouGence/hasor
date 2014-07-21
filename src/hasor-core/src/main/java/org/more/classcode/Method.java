@@ -23,7 +23,7 @@ public class Method {
     private java.lang.reflect.Method proxyMethod  = null;
     private java.lang.reflect.Method targetMeyhod = null;
     /**创建Method类型对象。*/
-    Method(java.lang.reflect.Method proxyMethod, java.lang.reflect.Method targetMeyhod) {
+    Method(final java.lang.reflect.Method proxyMethod, final java.lang.reflect.Method targetMeyhod) {
         this.proxyMethod = proxyMethod;
         this.targetMeyhod = targetMeyhod;
     }

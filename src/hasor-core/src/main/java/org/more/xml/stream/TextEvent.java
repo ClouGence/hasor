@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class TextEvent extends XmlStreamEvent {
     private Type type = null;
-    public TextEvent(String xpath, XMLStreamReader reader, Type type) {
+    public TextEvent(final String xpath, final XMLStreamReader reader, final Type type) {
         super(xpath, reader);
         this.type = type;
     }
@@ -64,21 +64,22 @@ public class TextEvent extends XmlStreamEvent {
     }
     /**以字符串的形式返回去掉前后空格和回车的getText()值。 */
     public String getTrimText() {
-        String value = getText();
-        if (value != null)
+        String value = this.getText();
+        if (value != null) {
             return value.trim();
-        else
+        } else {
             return null;
+        }
     }
     private String textData = null;
     /**以字符串的形式返回解析事件的当前值，此方法返回 CHARACTERS 事件的字符串值，返回 COMMENT 的值、CDATA 节的字符串值、SPACE 事件的字符串值。 */
     public String getText() {
-        if (textData == null) {
+        if (this.textData == null) {
             char[] data = new char[this.getReader().getTextLength()];
             System.arraycopy(this.getReader().getTextCharacters(), this.getReader().getTextStart(), data, 0, this.getReader().getTextLength());
-            textData = new String(data);
+            this.textData = new String(data);
         }
-        return textData;
+        return this.textData;
     };
     public String getOriginalText() {
         String originalText = this.getText();
@@ -96,7 +97,7 @@ public class TextEvent extends XmlStreamEvent {
         return this.getReader().getTextCharacters();
     };
     /**获取与 CHARACTERS、SPACE 或 CDATA 事件关联的文本。 */
-    public int getTextCharacters(int sourceStart, char[] target, int targetStart, int length) throws XMLStreamException {
+    public int getTextCharacters(final int sourceStart, final char[] target, final int targetStart, final int length) throws XMLStreamException {
         return this.getReader().getTextCharacters(sourceStart, target, targetStart, length);
     };
     /**返回文本字符数组中此文本事件的字符序列长度。*/
@@ -108,17 +109,21 @@ public class TextEvent extends XmlStreamEvent {
         return this.getReader().getTextStart();
     }
     /**该事件的拍档是它自己。*/
-    public boolean isPartner(XmlStreamEvent e) {
-        if (e instanceof TextEvent)
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
+        if (e instanceof TextEvent) {
             return true;
-        else
+        } else {
             return false;
+        }
     };
     /**文本事件，如果文本类型是Comment，则是共有事件。其他为私有事件。*/
+    @Override
     public boolean isPublicEvent() {
-        if (this.isCommentEvent() == true)
+        if (this.isCommentEvent() == true) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 }

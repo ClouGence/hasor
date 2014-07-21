@@ -22,15 +22,15 @@ package org.more.classcode;
 public class LostException extends ClassCodeRuntimeException {
     private static final long serialVersionUID = 3664651649094973500L;
     /**丢失异常*/
-    public LostException(String string) {
+    public LostException(final String string) {
         super(string);
     }
     /**丢失异常*/
-    public LostException(Throwable error) {
+    public LostException(final Throwable error) {
         super(error);
     }
     /**丢失异常*/
-    public LostException(String string, Throwable error) {
+    public LostException(final String string, final Throwable error) {
         super(string, error);
     }
 }

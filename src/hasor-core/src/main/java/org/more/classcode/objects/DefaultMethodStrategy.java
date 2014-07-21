@@ -22,8 +22,10 @@ import org.more.classcode.MethodStrategy;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultMethodStrategy implements MethodStrategy {
-    public void initStrategy(ClassEngine classEngine) {}
-    public boolean isIgnore(Class<?> superClass, Object ignoreMethod, boolean isConstructor) {
+    @Override
+    public void initStrategy(final ClassEngine classEngine) {}
+    @Override
+    public boolean isIgnore(final Class<?> superClass, final Object ignoreMethod, final boolean isConstructor) {
         return false;
     }
 }

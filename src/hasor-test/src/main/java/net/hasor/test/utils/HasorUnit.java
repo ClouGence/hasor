@@ -36,29 +36,28 @@ public abstract class HasorUnit {
         return UUID.randomUUID().toString();
     }
     /**打印列表内容*/
-    public static <T> String printObjectList(List<T> dataList) {
-        return printObjectList(dataList, true);
+    public static <T> String printObjectList(final List<T> dataList) {
+        return HasorUnit.printObjectList(dataList, true);
     }
     /**打印列表内容*/
-    public static String printMapList(List<Map<String, Object>> dataList) {
-        return printMapList(dataList, true);
+    public static String printMapList(final List<Map<String, Object>> dataList) {
+        return HasorUnit.printMapList(dataList, true);
     }
     /**打印列表内容*/
-    public static <T> String printObjectList(List<T> dataList, boolean print) {
+    public static <T> String printObjectList(final List<T> dataList, final boolean print) {
         List<Map<String, Object>> newDataList = new ArrayList<Map<String, Object>>();
         for (T obj : dataList) {
             List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
             Map<String, Object> newObj = new HashMap<String, Object>();
-            for (String key : keys) {
+            for (String key : keys)
                 newObj.put(key, BeanUtils.readPropertyOrField(obj, key));
-            }
             //
             newDataList.add(newObj);
         }
-        return printMapList(newDataList, print);
+        return HasorUnit.printMapList(newDataList, print);
     }
     /**打印列表内容*/
-    public static String printMapList(List<Map<String, Object>> dataList, boolean print) {
+    public static String printMapList(final List<Map<String, Object>> dataList, final boolean print) {
         List<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
         Map<String, Integer> titleConfig = new LinkedHashMap<String, Integer>();
         //1.转换
@@ -69,14 +68,12 @@ public abstract class HasorUnit {
                 //1.Title
                 String key = ent.getKey();
                 String val = ConverterUtils.convert(ent.getValue());
-                val = (val == null) ? "" : val;
+                val = val == null ? "" : val;
                 Integer maxTitleLength = titleConfig.get(key);
-                if (maxTitleLength == null) {
-                    maxTitleLength = stringLength(key);
-                }
-                if (val.length() > maxTitleLength) {
-                    maxTitleLength = stringLength(val);
-                }
+                if (maxTitleLength == null)
+                    maxTitleLength = HasorUnit.stringLength(key);
+                if (val.length() > maxTitleLength)
+                    maxTitleLength = HasorUnit.stringLength(val);
                 titleConfig.put(key, maxTitleLength);
                 //2.Value
                 newVal.put(key, val);
@@ -107,39 +104,34 @@ public abstract class HasorUnit {
             StringBuffer sb = new StringBuffer("");
             for (String colKey : titleConfig.keySet()) {
                 String val = row.get(colKey);
-                String valueStr = StringUtils.rightPad(val, fixLength(val, titleConfig.get(colKey)), ' ');
+                String valueStr = StringUtils.rightPad(val, HasorUnit.fixLength(val, titleConfig.get(colKey)), ' ');
                 sb.append(String.format("| %s ", valueStr));
             }
             sb.append("|");
             output.append(sb.toString() + "\n");
         }
         output.append(String.format("\\%s/", StringUtils.center("", titleLength - 2, "-")));
-        if (print) {
+        if (print)
             System.out.println(output);
-        }
         return output.toString();
     }
     //
     //
     //
-    private static int stringLength(String str) {
+    private static int stringLength(final String str) {
         int length = 0;
-        for (char c : str.toCharArray()) {
-            if (CharUtils.isAscii(c)) {
+        for (char c : str.toCharArray())
+            if (CharUtils.isAscii(c))
                 length++;
-            } else {
+            else
                 length = length + 2;
-            }
-        }
         return length;
     }
     /*修正长度*/
-    private static int fixLength(String str, int length) {
-        for (char c : str.toCharArray()) {
-            if (CharUtils.isAscii(c) == false) {
+    private static int fixLength(final String str, int length) {
+        for (char c : str.toCharArray())
+            if (CharUtils.isAscii(c) == false)
                 length--;
-            }
-        }
         return length;
     }
 }

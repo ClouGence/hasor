@@ -29,12 +29,15 @@ public final class Iterators {
     /**迭代器类型转换*/
     public static <T, O> Iterator<O> converIterator(final Iterator<T> oriIterator, final Converter<T, O> converter) {
         return new Iterator<O>() {
+            @Override
             public void remove() {
                 oriIterator.remove();
             }
+            @Override
             public O next() {
                 return converter.converter(oriIterator.next());
             }
+            @Override
             public boolean hasNext() {
                 return oriIterator.hasNext();
             }
@@ -42,9 +45,11 @@ public final class Iterators {
     }
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
+            @Override
             public boolean hasMoreElements() {
                 return iterator.hasNext();
             }
+            @Override
             public T nextElement() {
                 return iterator.next();
             }

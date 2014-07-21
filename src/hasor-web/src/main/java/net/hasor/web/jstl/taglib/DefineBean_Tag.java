@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 import net.hasor.web.jstl.tagfun.Functions;
 import org.more.util.StringUtils;
 /**
@@ -29,32 +30,32 @@ public class DefineBean_Tag extends AbstractHasorTag {
     public String getVar() {
         return this.var;
     }
-    public void setVar(String var) {
+    public void setVar(final String var) {
         this.var = var;
     }
     public String getBean() {
         return this.bean;
     }
-    public void setBean(String bean) {
+    public void setBean(final String bean) {
         this.bean = bean;
     }
     //
     //
     //
+    @Override
     public void release() {
         this.var = null;
         this.bean = null;
     }
+    @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var)) {
+        if (StringUtils.isBlank(this.var))
             throw new NullPointerException("tag param var is null.");
-        }
-        if (StringUtils.isBlank(this.bean)) {
+        if (StringUtils.isBlank(this.bean))
             throw new NullPointerException("tag param bean is null.");
-        }
         //
         Object targetBean = Functions.defineBean(this.bean);
-        this.pageContext.setAttribute(var, targetBean);
-        return SKIP_BODY;
+        this.pageContext.setAttribute(this.var, targetBean);
+        return Tag.SKIP_BODY;
     }
 }

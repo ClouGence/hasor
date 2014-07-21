@@ -39,21 +39,21 @@ public class ReaderInputStream extends InputStream {
      * 带Reader参数构造函数
      * @param readerString - 要阅读的字符串。
      */
-    public ReaderInputStream(String readerString) {
+    public ReaderInputStream(final String readerString) {
         this.reader = new StringReader(readerString);
-        byteArrayOut = new ByteArrayOutputStream();
-        writer = new OutputStreamWriter(byteArrayOut);
-        chars = new char[1024];
+        this.byteArrayOut = new ByteArrayOutputStream();
+        this.writer = new OutputStreamWriter(this.byteArrayOut);
+        this.chars = new char[1024];
     }
     /**
      * 带Reader参数构造函数
      * @param reader - InputStream使用的Reader
      */
-    public ReaderInputStream(Reader reader) {
+    public ReaderInputStream(final Reader reader) {
         this.reader = reader;
-        byteArrayOut = new ByteArrayOutputStream();
-        writer = new OutputStreamWriter(byteArrayOut);
-        chars = new char[1024];
+        this.byteArrayOut = new ByteArrayOutputStream();
+        this.writer = new OutputStreamWriter(this.byteArrayOut);
+        this.chars = new char[1024];
     }
     /**
      * 带Reader和字符编码格式参数的构造函数
@@ -61,53 +61,62 @@ public class ReaderInputStream extends InputStream {
      * @param encoding - InputStream使用的字符编码格式.
      * @throws 如果字符编码格式不支持,则抛UnsupportedEncodingException异常
      */
-    public ReaderInputStream(Reader reader, String encoding) throws UnsupportedEncodingException {
+    public ReaderInputStream(final Reader reader, final String encoding) throws UnsupportedEncodingException {
         this.reader = reader;
-        byteArrayOut = new ByteArrayOutputStream();
-        writer = new OutputStreamWriter(byteArrayOut, encoding);
-        chars = new char[1024];
+        this.byteArrayOut = new ByteArrayOutputStream();
+        this.writer = new OutputStreamWriter(this.byteArrayOut, encoding);
+        this.chars = new char[1024];
     }
     //========================================================================================
     /** @see java.io.InputStream#read() */
+    @Override
     public int read() throws IOException {
-        if (index >= length)
-            fillBuffer();
-        if (index >= length)
+        if (this.index >= this.length) {
+            this.fillBuffer();
+        }
+        if (this.index >= this.length) {
             return -1;
-        return 0xff & buffer[index++];
+        }
+        return 0xff & this.buffer[this.index++];
     }
     private void fillBuffer() throws IOException {
-        if (length < 0)
+        if (this.length < 0) {
             return;
-        int numChars = reader.read(chars);
+        }
+        int numChars = this.reader.read(this.chars);
         if (numChars < 0) {
-            length = -1;
+            this.length = -1;
         } else {
-            byteArrayOut.reset();
-            writer.write(chars, 0, numChars);
-            writer.flush();
-            buffer = byteArrayOut.toByteArray();
-            length = buffer.length;
-            index = 0;
+            this.byteArrayOut.reset();
+            this.writer.write(this.chars, 0, numChars);
+            this.writer.flush();
+            this.buffer = this.byteArrayOut.toByteArray();
+            this.length = this.buffer.length;
+            this.index = 0;
         }
     }
     /** @see java.io.InputStream#read(byte[], int, int) */
-    public int read(byte[] data, int off, int len) throws IOException {
-        if (index >= length)
-            fillBuffer();
-        if (index >= length)
+    @Override
+    public int read(final byte[] data, final int off, final int len) throws IOException {
+        if (this.index >= this.length) {
+            this.fillBuffer();
+        }
+        if (this.index >= this.length) {
             return -1;
-        int amount = Math.min(len, length - index);
-        System.arraycopy(buffer, index, data, off, amount);
-        index += amount;
+        }
+        int amount = Math.min(len, this.length - this.index);
+        System.arraycopy(this.buffer, this.index, data, off, amount);
+        this.index += amount;
         return amount;
     }
     /** @see java.io.InputStream#available() */
+    @Override
     public int available() throws IOException {
-        return (index < length) ? length - index : ((length >= 0) && reader.ready()) ? 1 : 0;
+        return this.index < this.length ? this.length - this.index : this.length >= 0 && this.reader.ready() ? 1 : 0;
     }
     /** @see java.io.InputStream#close() */
+    @Override
     public void close() throws IOException {
-        reader.close();
+        this.reader.close();
     }
 }

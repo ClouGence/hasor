@@ -21,14 +21,16 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class EndDocumentEvent extends XmlStreamEvent {
-    public EndDocumentEvent(String xpath, XMLStreamReader reader) {
+    public EndDocumentEvent(final String xpath, final XMLStreamReader reader) {
         super(xpath, reader);
     }
     /**该事件的拍档是{@link StartDocumentEvent}类型对象。*/
-    public boolean isPartner(XmlStreamEvent e) {
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
         return e instanceof StartDocumentEvent;
     };
     /**文档结束事件，是共有事件。*/
+    @Override
     public boolean isPublicEvent() {
         return true;
     }

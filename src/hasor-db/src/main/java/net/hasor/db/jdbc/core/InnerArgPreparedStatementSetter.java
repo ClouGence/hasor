@@ -23,20 +23,21 @@ import net.hasor.db.jdbc.PreparedStatementSetter;
  */
 class InnerArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
-    public InnerArgPreparedStatementSetter(Object[] args) {
+    public InnerArgPreparedStatementSetter(final Object[] args) {
         this.args = args;
     }
-    public void setValues(PreparedStatement ps) throws SQLException {
-        if (this.args != null) {
+    @Override
+    public void setValues(final PreparedStatement ps) throws SQLException {
+        if (this.args != null)
             for (int i = 0; i < this.args.length; i++) {
                 Object arg = this.args[i];
-                doSetValue(ps, i + 1, arg);
+                this.doSetValue(ps, i + 1, arg);
             }
-        }
     }
-    protected void doSetValue(PreparedStatement ps, int parameterPosition, Object argValue) throws SQLException {
+    protected void doSetValue(final PreparedStatement ps, final int parameterPosition, final Object argValue) throws SQLException {
         InnerStatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
     }
+    @Override
     public void cleanupParameters() {
         InnerStatementSetterUtils.cleanupParameters(this.args);
     }

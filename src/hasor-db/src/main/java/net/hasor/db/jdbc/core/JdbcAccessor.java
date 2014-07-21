@@ -25,7 +25,7 @@ public class JdbcAccessor {
     private DataSource dataSource;
     private Connection connection;
     /**Set the JDBC DataSource to obtain connections from.*/
-    public void setDataSource(DataSource dataSource) {
+    public void setDataSource(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
     /**Return the DataSource used by this template.*/
@@ -34,10 +34,10 @@ public class JdbcAccessor {
     }
     /**Return the Connection used by this template.*/
     public Connection getConnection() {
-        return connection;
+        return this.connection;
     }
     /**Set the JDBC Connection to obtain connection from.*/
-    public void setConnection(Connection connection) {
+    public void setConnection(final Connection connection) {
         this.connection = connection;
     }
 }

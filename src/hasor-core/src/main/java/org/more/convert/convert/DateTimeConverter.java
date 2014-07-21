@@ -98,7 +98,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public DateTimeConverter(Object defaultValue) {
+    public DateTimeConverter(final Object defaultValue) {
         super(defaultValue);
     }
     // --------------------------------------------------------- Public Methods
@@ -108,7 +108,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param useLocaleFormat <code>true</code> if the format
      * for the locale should be used, otherwise <code>false</code>
      */
-    public void setUseLocaleFormat(boolean useLocaleFormat) {
+    public void setUseLocaleFormat(final boolean useLocaleFormat) {
         this.useLocaleFormat = useLocaleFormat;
     }
     /**
@@ -118,14 +118,14 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The Time Zone.
      */
     public TimeZone getTimeZone() {
-        return timeZone;
+        return this.timeZone;
     }
     /**
      * Set the Time Zone to use when converting dates.
      *
      * @param timeZone The Time Zone.
      */
-    public void setTimeZone(TimeZone timeZone) {
+    public void setTimeZone(final TimeZone timeZone) {
         this.timeZone = timeZone;
     }
     /**
@@ -135,16 +135,16 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The locale to use for conversion
      */
     public Locale getLocale() {
-        return locale;
+        return this.locale;
     }
     /**
      * Set the Locale for the <i>Converter</i>.
      *
      * @param locale The Locale.
      */
-    public void setLocale(Locale locale) {
+    public void setLocale(final Locale locale) {
         this.locale = locale;
-        setUseLocaleFormat(true);
+        this.setUseLocaleFormat(true);
     }
     /**
      * Set a date format pattern to use to convert
@@ -153,8 +153,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @see SimpleDateFormat
      * @param pattern The format pattern.
      */
-    public void setPattern(String pattern) {
-        setPatterns(new String[] { pattern });
+    public void setPattern(final String pattern) {
+        this.setPatterns(new String[] { pattern });
     }
     /**
      * Return the date format patterns used to convert
@@ -165,7 +165,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return Array of format patterns.
      */
     public String[] getPatterns() {
-        return patterns;
+        return this.patterns;
     }
     /**
      * Set the date format patterns to use to convert
@@ -174,7 +174,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @see SimpleDateFormat
      * @param patterns Array of format patterns.
      */
-    public void setPatterns(String[] patterns) {
+    public void setPatterns(final String[] patterns) {
         this.patterns = patterns;
         if (patterns != null && patterns.length > 1) {
             StringBuffer buffer = new StringBuffer();
@@ -184,13 +184,15 @@ public abstract class DateTimeConverter extends AbstractConverter {
                 }
                 buffer.append(patterns[i]);
             }
-            displayPatterns = buffer.toString();
+            this.displayPatterns = buffer.toString();
         }
-        setUseLocaleFormat(true);
+        this.setUseLocaleFormat(true);
     }
-    public Object convert(Class type, Object value) {
-        if (value == null)
+    @Override
+    public Object convert(final Class type, final Object value) {
+        if (value == null) {
             return null;
+        }
         return super.convert(type, value);
     }
     // ------------------------------------------------------ Protected Methods
@@ -207,7 +209,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return the converted String value.
      * @throws Throwable if an error occurs converting to a String
      */
-    protected String convertToString(Object value) throws Throwable {
+    @Override
+    protected String convertToString(final Object value) throws Throwable {
         Date date = null;
         if (value instanceof Date) {
             date = (Date) value;
@@ -217,12 +220,12 @@ public abstract class DateTimeConverter extends AbstractConverter {
             date = new Date(((Long) value).longValue());
         }
         String result = null;
-        if (useLocaleFormat && date != null) {
+        if (this.useLocaleFormat && date != null) {
             DateFormat format = null;
-            if (patterns != null && patterns.length > 0) {
-                format = getFormat(patterns[0]);
+            if (this.patterns != null && this.patterns.length > 0) {
+                format = this.getFormat(this.patterns[0]);
             } else {
-                format = getFormat(locale, timeZone);
+                format = this.getFormat(this.locale, this.timeZone);
             }
             result = format.format(date);
         } else {
@@ -259,7 +262,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The converted value.
      * @throws Exception if conversion cannot be performed successfully
      */
-    protected Object convertToType(Class targetType, Object value) throws Exception {
+    @Override
+    protected Object convertToType(final Class targetType, final Object value) throws Exception {
         Class sourceType = value.getClass();
         // Handle java.sql.Timestamp
         if (value instanceof java.sql.Timestamp) {
@@ -268,48 +272,48 @@ public abstract class DateTimeConverter extends AbstractConverter {
             //      didn't include the milliseconds. The following code
             //      ensures it works consistently accross JDK versions
             java.sql.Timestamp timestamp = (java.sql.Timestamp) value;
-            long timeInMillis = ((timestamp.getTime() / 1000) * 1000);
+            long timeInMillis = timestamp.getTime() / 1000 * 1000;
             timeInMillis += timestamp.getNanos() / 1000000;
             // ---------------------- JDK 1.3 Fix ----------------------
-            return toDate(targetType, timeInMillis);
+            return this.toDate(targetType, timeInMillis);
         }
         // Handle Date (includes java.sql.Date & java.sql.Time)
         if (value instanceof Date) {
             Date date = (Date) value;
-            return toDate(targetType, date.getTime());
+            return this.toDate(targetType, date.getTime());
         }
         // Handle Calendar
         if (value instanceof Calendar) {
             Calendar calendar = (Calendar) value;
-            return toDate(targetType, calendar.getTime().getTime());
+            return this.toDate(targetType, calendar.getTime().getTime());
         }
         // Handle Long
         if (value instanceof Long) {
             Long longObj = (Long) value;
-            return toDate(targetType, longObj.longValue());
+            return this.toDate(targetType, longObj.longValue());
         }
         // Convert all other types to String & handle
         String stringValue = value.toString().trim();
         if (stringValue.length() == 0) {
-            return handleMissing(targetType);
+            return this.handleMissing(targetType);
         }
         // Parse the Date/Time
-        if (useLocaleFormat) {
+        if (this.useLocaleFormat) {
             Calendar calendar = null;
-            if (patterns != null && patterns.length > 0) {
-                calendar = parse(sourceType, targetType, stringValue);
+            if (this.patterns != null && this.patterns.length > 0) {
+                calendar = this.parse(sourceType, targetType, stringValue);
             } else {
-                DateFormat format = getFormat(locale, timeZone);
-                calendar = parse(sourceType, targetType, stringValue, format);
+                DateFormat format = this.getFormat(this.locale, this.timeZone);
+                calendar = this.parse(sourceType, targetType, stringValue, format);
             }
             if (Calendar.class.isAssignableFrom(targetType)) {
                 return calendar;
             } else {
-                return toDate(targetType, calendar.getTime().getTime());
+                return this.toDate(targetType, calendar.getTime().getTime());
             }
         }
         // Default String conversion
-        return toDate(targetType, stringValue);
+        return this.toDate(targetType, stringValue);
     }
     /**
      * Convert a long value to the specified Date type for this
@@ -329,7 +333,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param value The long value to convert.
      * @return The converted date value.
      */
-    private Object toDate(Class type, long value) {
+    private Object toDate(final Class type, final long value) {
         // java.util.Date
         if (type.equals(Date.class)) {
             return new Date(value);
@@ -349,20 +353,20 @@ public abstract class DateTimeConverter extends AbstractConverter {
         // java.util.Calendar
         if (type.equals(Calendar.class)) {
             Calendar calendar = null;
-            if (locale == null && timeZone == null) {
+            if (this.locale == null && this.timeZone == null) {
                 calendar = Calendar.getInstance();
-            } else if (locale == null) {
-                calendar = Calendar.getInstance(timeZone);
-            } else if (timeZone == null) {
-                calendar = Calendar.getInstance(locale);
+            } else if (this.locale == null) {
+                calendar = Calendar.getInstance(this.timeZone);
+            } else if (this.timeZone == null) {
+                calendar = Calendar.getInstance(this.locale);
             } else {
-                calendar = Calendar.getInstance(timeZone, locale);
+                calendar = Calendar.getInstance(this.timeZone, this.locale);
             }
             calendar.setTime(new Date(value));
             calendar.setLenient(false);
             return calendar;
         }
-        String msg = toString(getClass()) + " cannot handle conversion to '" + toString(type) + "'";
+        String msg = this.toString(this.getClass()) + " cannot handle conversion to '" + this.toString(type) + "'";
         throw new ConversionException(msg);
     }
     /**
@@ -383,7 +387,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param value The String value to convert.
      * @return The converted Number value.
      */
-    private Object toDate(Class type, String value) {
+    private Object toDate(final Class type, final String value) {
         // java.sql.Date
         if (type.equals(java.sql.Date.class)) {
             try {
@@ -408,7 +412,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
                 throw new ConversionException("String must be in JDBC format [yyyy-MM-dd HH:mm:ss.fffffffff] " + "to create a java.sql.Timestamp");
             }
         }
-        String msg = toString(getClass()) + " does not support default String to '" + toString(type) + "' conversion.";
+        String msg = this.toString(this.getClass()) + " does not support default String to '" + this.toString(type) + "' conversion.";
         throw new ConversionException(msg);
     }
     /**
@@ -418,7 +422,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      *
      * @return A Date Format.
      */
-    protected DateFormat getFormat(Locale locale, TimeZone timeZone) {
+    protected DateFormat getFormat(final Locale locale, final TimeZone timeZone) {
         DateFormat format = null;
         if (locale == null) {
             format = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -436,10 +440,10 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param pattern The date pattern
      * @return The DateFormat
      */
-    private DateFormat getFormat(String pattern) {
+    private DateFormat getFormat(final String pattern) {
         DateFormat format = new SimpleDateFormat(pattern);
-        if (timeZone != null) {
-            format.setTimeZone(timeZone);
+        if (this.timeZone != null) {
+            format.setTimeZone(this.timeZone);
         }
         return format;
     }
@@ -453,12 +457,12 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The converted Date object.
      * @throws Exception if an error occurs parsing the date.
      */
-    private Calendar parse(Class sourceType, Class targetType, String value) throws Exception {
+    private Calendar parse(final Class sourceType, final Class targetType, final String value) throws Exception {
         Exception firstEx = null;
-        for (int i = 0; i < patterns.length; i++) {
+        for (String pattern : this.patterns) {
             try {
-                DateFormat format = getFormat(patterns[i]);
-                Calendar calendar = parse(sourceType, targetType, value, format);
+                DateFormat format = this.getFormat(pattern);
+                Calendar calendar = this.parse(sourceType, targetType, value, format);
                 return calendar;
             } catch (Exception ex) {
                 if (firstEx == null) {
@@ -466,8 +470,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
                 }
             }
         }
-        if (patterns.length > 1) {
-            throw new ConversionException("Error converting '" + toString(sourceType) + "' to '" + toString(targetType) + "' using  patterns '" + displayPatterns + "'");
+        if (this.patterns.length > 1) {
+            throw new ConversionException("Error converting '" + this.toString(sourceType) + "' to '" + this.toString(targetType) + "' using  patterns '" + this.displayPatterns + "'");
         } else {
             throw firstEx;
         }
@@ -484,12 +488,12 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @return The converted Calendar object.
      * @throws ConversionException if the String cannot be converted.
      */
-    private Calendar parse(Class sourceType, Class targetType, String value, DateFormat format) {
+    private Calendar parse(final Class sourceType, final Class targetType, final String value, final DateFormat format) {
         format.setLenient(false);
         ParsePosition pos = new ParsePosition(0);
         Date parsedDate = format.parse(value, pos); // ignore the result (use the Calendar)
         if (pos.getErrorIndex() >= 0 || pos.getIndex() != value.length() || parsedDate == null) {
-            String msg = "Error converting '" + toString(sourceType) + "' to '" + toString(targetType) + "'";
+            String msg = "Error converting '" + this.toString(sourceType) + "' to '" + this.toString(targetType) + "'";
             if (format instanceof SimpleDateFormat) {
                 msg += " using pattern '" + ((SimpleDateFormat) format).toPattern() + "'";
             }
@@ -503,25 +507,26 @@ public abstract class DateTimeConverter extends AbstractConverter {
      *
      * @return A String representation of this date/time converter
      */
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(toString(getClass()));
+        buffer.append(this.toString(this.getClass()));
         buffer.append("[UseDefault=");
-        buffer.append(isUseDefault());
+        buffer.append(this.isUseDefault());
         buffer.append(", UseLocaleFormat=");
-        buffer.append(useLocaleFormat);
-        if (displayPatterns != null) {
+        buffer.append(this.useLocaleFormat);
+        if (this.displayPatterns != null) {
             buffer.append(", Patterns={");
-            buffer.append(displayPatterns);
+            buffer.append(this.displayPatterns);
             buffer.append('}');
         }
-        if (locale != null) {
+        if (this.locale != null) {
             buffer.append(", Locale=");
-            buffer.append(locale);
+            buffer.append(this.locale);
         }
-        if (timeZone != null) {
+        if (this.timeZone != null) {
             buffer.append(", TimeZone=");
-            buffer.append(timeZone);
+            buffer.append(this.timeZone);
         }
         buffer.append(']');
         return buffer.toString();

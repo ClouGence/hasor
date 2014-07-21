@@ -39,31 +39,30 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
-    protected WebAppContext createAppContext(ServletContext sc) throws Throwable {
+    protected WebAppContext createAppContext(final ServletContext sc) throws Throwable {
         return new WebStandardAppContext("hasor-config.xml", sc);
     }
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
+    @Override
+    public void contextInitialized(final ServletContextEvent servletContextEvent) {
         //1.创建AppContext
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
             String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
-            if (StringUtils.isBlank(startModule)) {
+            if (StringUtils.isBlank(startModule))
                 Hasor.logWarn("startModule is undefinition.");
-            } else {
+            else {
                 Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
                 this.appContext.addModule(startModuleType.newInstance());
                 Hasor.logInfo("startModule is %s.", startModuleType);
             }
             //
-            if (this.appContext.isStart() == false) {
+            if (this.appContext.isStart() == false)
                 this.appContext.start();
-            }
-            LocalServletContext.set(servletContextEvent.getServletContext());
-            LocalAppContext.set(this.appContext);
+            RuntimeListener.LocalServletContext.set(servletContextEvent.getServletContext());
+            RuntimeListener.LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            if (e instanceof RuntimeException) {
+            if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
-            }
             throw new RuntimeException(e);
         }
         //2.获取SessionListenerPipeline
@@ -71,27 +70,30 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         this.sessionListenerPipeline.init(this.appContext);
         Hasor.logInfo("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
-        Hasor.logInfo("ServletContext Attribut : " + AppContextName + " -->> " + Hasor.logString(this.appContext));
-        servletContextEvent.getServletContext().setAttribute(AppContextName, this.appContext);
+        Hasor.logInfo("ServletContext Attribut : " + RuntimeListener.AppContextName + " -->> " + Hasor.logString(this.appContext));
+        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
         this.sessionListenerPipeline.contextInitialized(servletContextEvent);
     }
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    @Override
+    public void contextDestroyed(final ServletContextEvent servletContextEvent) {
         this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
     }
-    public void sessionCreated(HttpSessionEvent se) {
+    @Override
+    public void sessionCreated(final HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionCreated(se);
     }
-    public void sessionDestroyed(HttpSessionEvent se) {
+    @Override
+    public void sessionDestroyed(final HttpSessionEvent se) {
         this.sessionListenerPipeline.sessionDestroyed(se);
     }
     //
     /**获取{@link ServletContext}*/
     public static ServletContext getLocalServletContext() {
-        return LocalServletContext.get();
+        return RuntimeListener.LocalServletContext.get();
     }
     //
     /**获取{@link AppContext}*/
     public static AppContext getLocalAppContext() {
-        return LocalAppContext.get();
+        return RuntimeListener.LocalAppContext.get();
     }
 }

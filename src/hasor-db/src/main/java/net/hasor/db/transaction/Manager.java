@@ -29,21 +29,22 @@ public class Manager {
     private final static ContextClassLoaderLocal<Map<DataSource, TransactionManager>> managerMap;
     static {
         managerMap = new ContextClassLoaderLocal<Map<DataSource, TransactionManager>>() {
+            @Override
             protected Map<DataSource, TransactionManager> initialValue() {
                 return new HashMap<DataSource, TransactionManager>();
             }
         };
     }
-    public static synchronized TransactionManager getTransactionManager(DataSource dataSource) {
+    public static synchronized TransactionManager getTransactionManager(final DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
-        TransactionManager manager = managerMap.get().get(dataSource);
+        TransactionManager manager = Manager.managerMap.get().get(dataSource);
         manager = new DefaultTransactionManager(dataSource);
-        managerMap.get().put(dataSource, manager);
+        Manager.managerMap.get().put(dataSource, manager);
         return manager;
     }
 }
 class DefaultTransactionManager extends JdbcTransactionManager {
-    public DefaultTransactionManager(DataSource dataSource) {
+    public DefaultTransactionManager(final DataSource dataSource) {
         super(dataSource);
     }
 }

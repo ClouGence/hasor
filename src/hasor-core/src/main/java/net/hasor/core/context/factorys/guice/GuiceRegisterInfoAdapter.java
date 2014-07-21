@@ -27,21 +27,25 @@ import com.google.inject.name.Names;
  */
 public class GuiceRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
     public Key<T> getKey() {
-        if (StringUtils.isBlank(getBindName())) {
+        if (StringUtils.isBlank(this.getBindName())) {
             return Key.get(this.getBindType());
         }
-        return Key.get(this.getBindType(), Names.named(getBindName()));
+        return Key.get(this.getBindType(), Names.named(this.getBindName()));
     }
-    public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider) {
+    @Override
+    public void setInitParam(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
         throw new UnsupportedOperationException();
     }
-    public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo) {
+    @Override
+    public void setInitParam(final int index, final Class<?> paramType, final RegisterInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
-    public void addInject(String property, Provider<?> valueProvider) {
+    @Override
+    public void addInject(final String property, final Provider<?> valueProvider) {
         throw new UnsupportedOperationException();
     }
-    public void addInject(String property, RegisterInfo<?> valueInfo) {
+    @Override
+    public void addInject(final String property, final RegisterInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
 }

@@ -27,36 +27,38 @@ import net.hasor.web.WebEnvironment;
  */
 public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
     private ServletContext servletContext;
-    public WebStandardEnvironment(ServletContext servletContext) {
+    public WebStandardEnvironment(final ServletContext servletContext) {
         super();
         this.servletContext = servletContext;
         this.setContext(servletContext);
         this.initEnvironment();
     }
-    public WebStandardEnvironment(URI settingURI, ServletContext servletContext) {
+    public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) {
         super();
         this.settingURI = settingURI;
         this.servletContext = servletContext;
         this.setContext(servletContext);
         this.initEnvironment();
     }
+    @Override
     public ServletContext getServletContext() {
         return this.servletContext;
     }
+    @Override
     protected EnvVars createEnvVars() {
         final WebStandardEnvironment $this = this;
         return new EnvVars(this) {
+            @Override
             protected Map<String, String> configEnvironment() {
                 Map<String, String> hasorEnv = super.configEnvironment();
-                String webContextDir = servletContext.getRealPath("/");
+                String webContextDir = WebStandardEnvironment.this.servletContext.getRealPath("/");
                 hasorEnv.put("HASOR_WEBROOT", webContextDir);
                 //
                 /*单独处理work_home*/
                 String workDir = $this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
                 workDir = workDir.replace("/", File.separator);
-                if (workDir.startsWith("." + File.separatorChar)) {
+                if (workDir.startsWith("." + File.separatorChar))
                     hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
-                }
                 return hasorEnv;
             }
         };

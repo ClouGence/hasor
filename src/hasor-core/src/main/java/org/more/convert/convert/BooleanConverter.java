@@ -74,9 +74,9 @@ public final class BooleanConverter extends AbstractConverter {
      *  The special value BooleanConverter.NO_DEFAULT can also be passed here,
      *  in which case this constructor acts like the no-argument one.
      */
-    public BooleanConverter(Object defaultValue) {
+    public BooleanConverter(final Object defaultValue) {
         super();
-        setDefaultValue(defaultValue);
+        this.setDefaultValue(defaultValue);
     }
     /**
      * Create a {@link org.more.convert.Converter} that will throw a {@link ConversionException}
@@ -95,10 +95,10 @@ public final class BooleanConverter extends AbstractConverter {
      *  ignored.
      * @since 1.8.0
      */
-    public BooleanConverter(String[] trueStrings, String[] falseStrings) {
+    public BooleanConverter(final String[] trueStrings, final String[] falseStrings) {
         super();
-        this.trueStrings = copyStrings(trueStrings);
-        this.falseStrings = copyStrings(falseStrings);
+        this.trueStrings = BooleanConverter.copyStrings(trueStrings);
+        this.falseStrings = BooleanConverter.copyStrings(falseStrings);
     }
     /**
      * Create a {@link org.more.convert.Converter} that will return
@@ -123,11 +123,11 @@ public final class BooleanConverter extends AbstractConverter {
      *  in which case an exception will be thrown on conversion failure.
      * @since 1.8.0
      */
-    public BooleanConverter(String[] trueStrings, String[] falseStrings, Object defaultValue) {
+    public BooleanConverter(final String[] trueStrings, final String[] falseStrings, final Object defaultValue) {
         super();
-        this.trueStrings = copyStrings(trueStrings);
-        this.falseStrings = copyStrings(falseStrings);
-        setDefaultValue(defaultValue);
+        this.trueStrings = BooleanConverter.copyStrings(trueStrings);
+        this.falseStrings = BooleanConverter.copyStrings(falseStrings);
+        this.setDefaultValue(defaultValue);
     }
     // ----------------------------------------------------- Instance Variables
     /**
@@ -145,6 +145,7 @@ public final class BooleanConverter extends AbstractConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Boolean.class;
     }
@@ -167,19 +168,20 @@ public final class BooleanConverter extends AbstractConverter {
      * @throws Throwable if an error occurs converting to the specified type
      * @since 1.8.0
      */
-    protected Object convertToType(Class type, Object value) throws Throwable {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Throwable {
         // All the values in the trueStrings and falseStrings arrays are
         // guaranteed to be lower-case. By converting the input value
         // to lowercase too, we can use the efficient String.equals method
         // instead of the less-efficient String.equalsIgnoreCase method.
         String stringValue = value.toString().toLowerCase();
-        for (int i = 0; i < trueStrings.length; ++i) {
-            if (trueStrings[i].equals(stringValue)) {
+        for (String trueString : this.trueStrings) {
+            if (trueString.equals(stringValue)) {
                 return Boolean.TRUE;
             }
         }
-        for (int i = 0; i < falseStrings.length; ++i) {
-            if (falseStrings[i].equals(stringValue)) {
+        for (String falseString : this.falseStrings) {
+            if (falseString.equals(stringValue)) {
                 return Boolean.FALSE;
             }
         }
@@ -193,7 +195,7 @@ public final class BooleanConverter extends AbstractConverter {
      * Using this method to copy string arrays means that changes to the
      * src array do not modify the dst array.
      */
-    private static String[] copyStrings(String[] src) {
+    private static String[] copyStrings(final String[] src) {
         String[] dst = new String[src.length];
         for (int i = 0; i < src.length; ++i) {
             dst[i] = src[i].toLowerCase();

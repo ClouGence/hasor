@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 import net.hasor.web.jstl.tagfun.Functions;
 import org.more.util.StringUtils;
 /**
@@ -30,44 +31,43 @@ public class DefineBind_Tag extends AbstractHasorTag {
     public String getVar() {
         return this.var;
     }
-    public void setVar(String var) {
+    public void setVar(final String var) {
         this.var = var;
     }
     public String getName() {
-        return name;
+        return this.name;
     }
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     public String getBindType() {
-        return bindType;
+        return this.bindType;
     }
-    public void setBindType(String bindType) {
+    public void setBindType(final String bindType) {
         this.bindType = bindType;
     }
     //
     //
     //
+    @Override
     public void release() {
         this.var = null;
         this.name = null;
         this.bindType = null;
     }
+    @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var)) {
+        if (StringUtils.isBlank(this.var))
             throw new NullPointerException("tag param var is null.");
-        }
-        if (StringUtils.isBlank(this.name)) {
+        if (StringUtils.isBlank(this.name))
             throw new NullPointerException("tag param name is null.");
-        }
-        if (StringUtils.isBlank(this.bindType)) {
+        if (StringUtils.isBlank(this.bindType))
             throw new NullPointerException("tag param bindType is null.");
-        }
         //
         try {
-            Object targetBean = Functions.defineBind(name, bindType);
-            this.pageContext.setAttribute(var, targetBean);
-            return SKIP_BODY;
+            Object targetBean = Functions.defineBind(this.name, this.bindType);
+            this.pageContext.setAttribute(this.var, targetBean);
+            return Tag.SKIP_BODY;
         } catch (ClassNotFoundException e) {
             throw new JspException(e);
         }

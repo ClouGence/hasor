@@ -77,10 +77,11 @@ public abstract class ClassBuilder {
      * 如果getSimpleFields()和getDelegateFields()同时返回null则该方法返回true，否则返回false。
      */
     public boolean isAddFields() {
-        if (this.getSimpleFields() == null && this.getDelegateFields() == null)
+        if (this.getSimpleFields() == null && this.getDelegateFields() == null) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
     /**
      * 返回一个boolean，该值可以决定是否渲染aop的装配。builderClass方法调用时是否改造输出aop支持的代码就是通过该方法来判定。
@@ -90,10 +91,11 @@ public abstract class ClassBuilder {
         if (this.classEngine.getAopFilters() == null && //
                 this.classEngine.getAopBeforeListeners() == null && //
                 this.classEngine.getAopReturningListeners() == null && //
-                this.classEngine.getAopThrowingListeners() == null)
+                this.classEngine.getAopThrowingListeners() == null) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
     //=======================================================================================Method
     /**获取已经生成的字节码数组。*/
@@ -102,7 +104,7 @@ public abstract class ClassBuilder {
     }
     //======================================================================================Builder
     /**初始化构造器。*/
-    public final void initBuilder(ClassEngine classEngine) {
+    public final void initBuilder(final ClassEngine classEngine) {
         this.newClassBytes = null; //新类的字节码。
         this.classEngine = null; //Class引擎。
         this.delegateString = null; //委托类型By ASM
@@ -117,10 +119,11 @@ public abstract class ClassBuilder {
             //1
             DelegateStrategy delegateStrategy = this.classEngine.getDelegateStrategy();
             ArrayList<Class<?>> delegateTypeList = new ArrayList<Class<?>>();
-            for (int i = 0; i < delegateType.length; i++) {
-                if (delegateStrategy.isIgnore(delegateType[i]) == true)
+            for (Class<?> element : delegateType) {
+                if (delegateStrategy.isIgnore(element) == true) {
                     continue;
-                delegateTypeList.add(delegateType[i]);
+                }
+                delegateTypeList.add(element);
             }
             //2
             int size = delegateTypeList.size();
@@ -153,21 +156,22 @@ public abstract class ClassBuilder {
         //------第三环，Aop
         AopClassAdapter aopAdapter = null;
         if (this.isRenderAop() == true) {
-            aopAdapter = new AopClassAdapter((visitor == null) ? writer : visitor, this);
+            aopAdapter = new AopClassAdapter(visitor == null ? writer : visitor, this);
             visitor = aopAdapter;
         }
         //------第四环，Builder
-        visitor = (visitor != null) ? new BuilderClassAdapter(visitor, this) : new BuilderClassAdapter(writer, this);
+        visitor = visitor != null ? new BuilderClassAdapter(visitor, this) : new BuilderClassAdapter(writer, this);
         BuilderClassAdapter builderAdapter = (BuilderClassAdapter) visitor;
         //3.Read
         ClassReader reader = new ClassReader(EngineToos.getClassInputStream(superClass));//创建ClassReader
         reader.accept(visitor, ClassReader.SKIP_DEBUG);
         this.newClassBytes = writer.toByteArray();
         this.newClassBytes = this.builder(this.newClassBytes, this.classEngine);
-        if (this.newClassBytes == null)
+        if (this.newClassBytes == null) {
             return null;
-        else
+        } else {
             return new CreatedConfiguration(this, builderAdapter, aopAdapter);
+        }
     }
     //======================================================================================Builder
     /**

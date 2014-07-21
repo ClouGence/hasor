@@ -25,20 +25,23 @@ public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {
         super();
     }
-    public EnumConverter(Object defaultValue) {
+    public EnumConverter(final Object defaultValue) {
         super(defaultValue);
     }
+    @Override
     protected Class getDefaultType() {
         return Enum.class;
     }
-    protected Object convertToType(Class type, Object value) throws Throwable {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Throwable {
         Class<Enum> forEnum = type;
         String strValue = value.toString();
         //
         for (Enum<?> item : forEnum.getEnumConstants()) {
             String enumValue = item.name().toLowerCase();
-            if (enumValue.equals(strValue.toLowerCase()) == true)
+            if (enumValue.equals(strValue.toLowerCase()) == true) {
                 return item;
+            }
         }
         return null;
     }

@@ -134,24 +134,24 @@ public class ContextClassLoaderLocal<T> {
         // but guarantees no subtle threading problems, and there's no 
         // need to synchronize valueByClassLoader
         // make sure that the map is given a change to purge itself
-        valueByClassLoader.isEmpty();
+        this.valueByClassLoader.isEmpty();
         try {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             if (contextClassLoader != null) {
-                T value = valueByClassLoader.get(contextClassLoader);
-                if ((value == null) && !valueByClassLoader.containsKey(contextClassLoader)) {
-                    value = initialValue();
-                    valueByClassLoader.put(contextClassLoader, value);
+                T value = this.valueByClassLoader.get(contextClassLoader);
+                if (value == null && !this.valueByClassLoader.containsKey(contextClassLoader)) {
+                    value = this.initialValue();
+                    this.valueByClassLoader.put(contextClassLoader, value);
                 }
                 return value;
             }
         } catch (SecurityException e) { /* SWALLOW - should we log this? */}
         // if none or exception, return the globalValue 
-        if (!globalValueInitialized) {
-            globalValue = initialValue();
-            globalValueInitialized = true;
+        if (!this.globalValueInitialized) {
+            this.globalValue = this.initialValue();
+            this.globalValueInitialized = true;
         }//else already set
-        return globalValue;
+        return this.globalValue;
     }
     /** 
      * Sets the value - a value is provided per (thread) context classloader.
@@ -159,21 +159,21 @@ public class ContextClassLoaderLocal<T> {
      * 
      * @param value the object to be associated with the entrant thread's context classloader
      */
-    public synchronized void set(T value) {
+    public synchronized void set(final T value) {
         // synchronizing the whole method is a bit slower 
         // but guarentees no subtle threading problems
         // make sure that the map is given a change to purge itself
-        valueByClassLoader.isEmpty();
+        this.valueByClassLoader.isEmpty();
         try {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             if (contextClassLoader != null) {
-                valueByClassLoader.put(contextClassLoader, value);
+                this.valueByClassLoader.put(contextClassLoader, value);
                 return;
             }
         } catch (SecurityException e) { /* SWALLOW - should we log this? */}
         // if in doubt, set the global value
-        globalValue = value;
-        globalValueInitialized = true;
+        this.globalValue = value;
+        this.globalValueInitialized = true;
     }
     /** 
      * Unsets the value associated with the current thread's context classloader
@@ -181,14 +181,14 @@ public class ContextClassLoaderLocal<T> {
     public synchronized void unset() {
         try {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            unset(contextClassLoader);
+            this.unset(contextClassLoader);
         } catch (SecurityException e) { /* SWALLOW - should we log this? */}
     }
     /** 
      * Unsets the value associated with the given classloader
      * @param classLoader The classloader to <i>unset</i> for
      */
-    public synchronized void unset(ClassLoader classLoader) {
-        valueByClassLoader.remove(classLoader);
+    public synchronized void unset(final ClassLoader classLoader) {
+        this.valueByClassLoader.remove(classLoader);
     }
 }

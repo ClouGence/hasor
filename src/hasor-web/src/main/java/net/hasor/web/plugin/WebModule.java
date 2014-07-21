@@ -24,7 +24,8 @@ import net.hasor.web.WebApiBinder;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class WebModule implements Module {
-    public final void loadModule(ApiBinder apiBinder) throws Throwable {
+    @Override
+    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
             Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
             return;

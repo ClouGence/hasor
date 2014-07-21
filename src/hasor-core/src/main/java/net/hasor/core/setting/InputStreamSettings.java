@@ -34,11 +34,11 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     public InputStreamSettings() {}
     //
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream inStream) throws IOException {
+    public InputStreamSettings(final InputStream inStream) throws IOException {
         this(new InputStream[] { inStream });
     }
     /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(InputStream[] inStreams) throws IOException {
+    public InputStreamSettings(final InputStream[] inStreams) throws IOException {
         Hasor.assertIsNotNull(inStreams);
         if (inStreams.length == 0) {
             return;
@@ -51,7 +51,7 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     //
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
-    public void addStream(InputStream stream) {
+    public void addStream(final InputStream stream) {
         if (stream != null) {
             if (this.pendingStream.contains(stream) == false) {
                 this.pendingStream.add(stream);
@@ -60,6 +60,7 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     }
     //
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
+    @Override
     public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
         {
@@ -100,5 +101,6 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     /**完成装载*/
     protected void loadFinish() throws IOException {}
     /**{@link InputStreamSettings}类型不支持该方法，调用该方法不会起到任何作用。*/
+    @Override
     public void refresh() throws IOException {}
 }

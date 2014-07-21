@@ -23,14 +23,16 @@ class AopFilterChain_Impl implements AopFilterChain {
     private AopInvokeFilter thisFilter      = null; //表示过滤器链的当前过滤器。
     private AopFilterChain  nextFilterChain = null; //过滤器链的下一个过滤器。
     /** */
-    AopFilterChain_Impl(AopInvokeFilter thisFilter, AopFilterChain nextFilterChain) {
+    AopFilterChain_Impl(final AopInvokeFilter thisFilter, final AopFilterChain nextFilterChain) {
         this.thisFilter = thisFilter;
         this.nextFilterChain = nextFilterChain;
     }
-    public Object doInvokeFilter(Object target, Method method, Object[] args) throws Throwable {
-        if (this.nextFilterChain != null)
+    @Override
+    public Object doInvokeFilter(final Object target, final Method method, final Object[] args) throws Throwable {
+        if (this.nextFilterChain != null) {
             return this.thisFilter.doFilter(target, method, args, this.nextFilterChain);
-        else
+        } else {
             throw new LostException("调用失败，方法Aop链丢失。");
+        }
     }
 }

@@ -26,6 +26,7 @@ public class Relation_ValueMetaData extends ValueMetaData {
     private String refScope = null;
     /*------------------------------------------------------------------*/
     /**值类型*/
+    @Override
     public String getType() {
         return PropertyType.Ref.value();
     }
@@ -34,7 +35,7 @@ public class Relation_ValueMetaData extends ValueMetaData {
         return this.refBean;
     }
     /**设置引用的bean*/
-    public void setRefBean(String refBean) {
+    public void setRefBean(final String refBean) {
         this.refBean = refBean;
     }
     /**获取引用的Bean所处包。*/
@@ -42,7 +43,7 @@ public class Relation_ValueMetaData extends ValueMetaData {
         return this.refScope;
     }
     /**设置引用的Bean所处包。*/
-    public void setRefScope(String refScope) {
+    public void setRefScope(final String refScope) {
         this.refScope = refScope;
     }
 }

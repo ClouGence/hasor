@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 enum UriPatternType {
     SERVLET, REGEX;
-    static UriPatternMatcher get(UriPatternType type, String pattern) {
+    static UriPatternMatcher get(final UriPatternType type, final String pattern) {
         switch (type) {
         case SERVLET:
             return new ServletStyleUriPatternMatcher(pattern);
@@ -42,7 +42,7 @@ enum UriPatternType {
         private static enum Kind {
             PREFIX, SUFFIX, LITERAL, WITHROOT,
         }
-        public ServletStyleUriPatternMatcher(String pattern) {
+        public ServletStyleUriPatternMatcher(final String pattern) {
             if (pattern.startsWith("*")) {
                 this.pattern = pattern.substring(1);
                 this.patternKind = Kind.PREFIX;
@@ -57,34 +57,34 @@ enum UriPatternType {
                 this.patternKind = Kind.LITERAL;
             }
         }
-        public boolean matches(String uri) {
-            if (null == uri) {
+        @Override
+        public boolean matches(final String uri) {
+            if (null == uri)
                 return false;
-            }
-            if (patternKind == Kind.PREFIX) {
-                return uri.endsWith(pattern);
-            } else if (patternKind == Kind.SUFFIX) {
-                return uri.startsWith(pattern);
-            } else if (patternKind == Kind.WITHROOT) {
-                return pattern.equals(uri);
-            }
+            if (this.patternKind == Kind.PREFIX)
+                return uri.endsWith(this.pattern);
+            else if (this.patternKind == Kind.SUFFIX)
+                return uri.startsWith(this.pattern);
+            else if (this.patternKind == Kind.WITHROOT)
+                return this.pattern.equals(uri);
             //else treat as a literal
-            return pattern.equals(uri.substring(1));
+            return this.pattern.equals(uri.substring(1));
         }
-        public String extractPath(String path) {
-            if (patternKind == Kind.PREFIX) {
+        @Override
+        public String extractPath(final String path) {
+            if (this.patternKind == Kind.PREFIX)
                 return null;
-            } else if (patternKind == Kind.SUFFIX) {
-                String extract = pattern;
+            else if (this.patternKind == Kind.SUFFIX) {
+                String extract = this.pattern;
                 //trim the trailing '/'
-                if (extract.endsWith("/")) {
+                if (extract.endsWith("/"))
                     extract = extract.substring(0, extract.length() - 1);
-                }
                 return extract;
             }
             //else treat as literal
             return path;
         }
+        @Override
         public UriPatternType getPatternType() {
             return UriPatternType.SERVLET;
         }
@@ -95,26 +95,28 @@ enum UriPatternType {
      */
     private static class RegexUriPatternMatcher implements UriPatternMatcher {
         private final Pattern pattern;
-        public RegexUriPatternMatcher(String pattern) {
+        public RegexUriPatternMatcher(final String pattern) {
             this.pattern = Pattern.compile(pattern);
         }
-        public boolean matches(String uri) {
+        @Override
+        public boolean matches(final String uri) {
             return null != uri && this.pattern.matcher(uri).matches();
         }
-        public String extractPath(String path) {
-            Matcher matcher = pattern.matcher(path);
+        @Override
+        public String extractPath(final String path) {
+            Matcher matcher = this.pattern.matcher(path);
             if (matcher.matches() && matcher.groupCount() >= 1) {
                 // Try to capture the everything before the regex begins to match
                 // the path. This is a rough approximation to try and get parity
                 // with the servlet style mapping where the path is a capture of
                 // the URI before the wildcard.
                 int end = matcher.start(1);
-                if (end < path.length()) {
+                if (end < path.length())
                     return path.substring(0, end);
-                }
             }
             return null;
         }
+        @Override
         public UriPatternType getPatternType() {
             return UriPatternType.REGEX;
         }

@@ -51,8 +51,8 @@ public class FieldUtils {
      * @return the Field object
      * @throws IllegalArgumentException if the class or field name is null
      */
-    public static Field getField(Class<?> cls, String fieldName) {
-        Field field = getField(cls, fieldName, false);
+    public static Field getField(final Class<?> cls, final String fieldName) {
+        Field field = FieldUtils.getField(cls, fieldName, false);
         MemberUtils.setAccessibleWorkaround(field);
         return field;
     }
@@ -68,7 +68,7 @@ public class FieldUtils {
      * @return the Field object
      * @throws IllegalArgumentException if the class or field name is null
      */
-    public static Field getField(final Class<?> cls, String fieldName, boolean forceAccess) {
+    public static Field getField(final Class<?> cls, final String fieldName, final boolean forceAccess) {
         if (cls == null) {
             throw new IllegalArgumentException("The class must not be null");
         }
@@ -130,8 +130,8 @@ public class FieldUtils {
      * @return the Field object
      * @throws IllegalArgumentException if the class or field name is null
      */
-    public static Field getDeclaredField(Class<?> cls, String fieldName) {
-        return getDeclaredField(cls, fieldName, false);
+    public static Field getDeclaredField(final Class<?> cls, final String fieldName) {
+        return FieldUtils.getDeclaredField(cls, fieldName, false);
     }
     /**
      * Gets an accessible <code>Field</code> by name breaking scope
@@ -144,7 +144,7 @@ public class FieldUtils {
      * @return the Field object
      * @throws IllegalArgumentException if the class or field name is null
      */
-    public static Field getDeclaredField(Class<?> cls, String fieldName, boolean forceAccess) {
+    public static Field getDeclaredField(final Class<?> cls, final String fieldName, final boolean forceAccess) {
         if (cls == null) {
             throw new IllegalArgumentException("The class must not be null");
         }
@@ -172,8 +172,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null or not static
      * @throws IllegalAccessException if the field is not accessible
      */
-    public static Object readStaticField(Field field) throws IllegalAccessException {
-        return readStaticField(field, false);
+    public static Object readStaticField(final Field field) throws IllegalAccessException {
+        return FieldUtils.readStaticField(field, false);
     }
     /**
      * Read a static Field.
@@ -184,14 +184,14 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null or not static
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static Object readStaticField(Field field, boolean forceAccess) throws IllegalAccessException {
+    public static Object readStaticField(final Field field, final boolean forceAccess) throws IllegalAccessException {
         if (field == null) {
             throw new IllegalArgumentException("The field must not be null");
         }
         if (!Modifier.isStatic(field.getModifiers())) {
             throw new IllegalArgumentException("The field '" + field.getName() + "' is not static");
         }
-        return readField(field, (Object) null, forceAccess);
+        return FieldUtils.readField(field, (Object) null, forceAccess);
     }
     /**
      * Read the named public static field. Superclasses will be considered.
@@ -201,8 +201,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the field is not accessible
      */
-    public static Object readStaticField(Class<?> cls, String fieldName) throws IllegalAccessException {
-        return readStaticField(cls, fieldName, false);
+    public static Object readStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
+        return FieldUtils.readStaticField(cls, fieldName, false);
     }
     /**
      * Read the named static field. Superclasses will be considered.
@@ -215,13 +215,13 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static Object readStaticField(Class<?> cls, String fieldName, boolean forceAccess) throws IllegalAccessException {
-        Field field = getField(cls, fieldName, forceAccess);
+    public static Object readStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
+        Field field = FieldUtils.getField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate field " + fieldName + " on " + cls);
         }
         //already forced access above, don't repeat it here:
-        return readStaticField(field, false);
+        return FieldUtils.readStaticField(field, false);
     }
     /**
      * Gets a static Field value by name. The field must be public.
@@ -233,8 +233,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the field is not accessible
      */
-    public static Object readDeclaredStaticField(Class<?> cls, String fieldName) throws IllegalAccessException {
-        return readDeclaredStaticField(cls, fieldName, false);
+    public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
+        return FieldUtils.readDeclaredStaticField(cls, fieldName, false);
     }
     /**
      * Gets a static Field value by name. Only the specified class will
@@ -249,13 +249,13 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static Object readDeclaredStaticField(Class<?> cls, String fieldName, boolean forceAccess) throws IllegalAccessException {
-        Field field = getDeclaredField(cls, fieldName, forceAccess);
+    public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
+        Field field = FieldUtils.getDeclaredField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate declared field " + cls.getName() + "." + fieldName);
         }
         //already forced access above, don't repeat it here:
-        return readStaticField(field, false);
+        return FieldUtils.readStaticField(field, false);
     }
     /**
      * Read an accessible Field.
@@ -265,8 +265,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null
      * @throws IllegalAccessException if the field is not accessible
      */
-    public static Object readField(Field field, Object target) throws IllegalAccessException {
-        return readField(field, target, false);
+    public static Object readField(final Field field, final Object target) throws IllegalAccessException {
+        return FieldUtils.readField(field, target, false);
     }
     /**
      * Read a Field.
@@ -278,7 +278,7 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static Object readField(Field field, Object target, boolean forceAccess) throws IllegalAccessException {
+    public static Object readField(final Field field, final Object target, final boolean forceAccess) throws IllegalAccessException {
         if (field == null) {
             throw new IllegalArgumentException("The field must not be null");
         }
@@ -297,8 +297,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the named field is not public
      */
-    public static Object readField(Object target, String fieldName) throws IllegalAccessException {
-        return readField(target, fieldName, false);
+    public static Object readField(final Object target, final String fieldName) throws IllegalAccessException {
+        return FieldUtils.readField(target, fieldName, false);
     }
     /**
      * Read the named field. Superclasses will be considered.
@@ -311,17 +311,17 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the named field is not made accessible
      */
-    public static Object readField(Object target, String fieldName, boolean forceAccess) throws IllegalAccessException {
+    public static Object readField(final Object target, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
         if (target == null) {
             throw new IllegalArgumentException("target object must not be null");
         }
         Class<?> cls = target.getClass();
-        Field field = getField(cls, fieldName, forceAccess);
+        Field field = FieldUtils.getField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate field " + fieldName + " on " + cls);
         }
         //already forced access above, don't repeat it here:
-        return readField(field, target);
+        return FieldUtils.readField(field, target);
     }
     /**
      * Read the named public field. Only the class of the specified object will be considered.
@@ -331,8 +331,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the class or field name is null
      * @throws IllegalAccessException if the named field is not public
      */
-    public static Object readDeclaredField(Object target, String fieldName) throws IllegalAccessException {
-        return readDeclaredField(target, fieldName, false);
+    public static Object readDeclaredField(final Object target, final String fieldName) throws IllegalAccessException {
+        return FieldUtils.readDeclaredField(target, fieldName, false);
     }
     /**
      * <p<>Gets a Field value by name. Only the class of the specified
@@ -347,17 +347,17 @@ public class FieldUtils {
      * @throws IllegalArgumentException if <code>target</code> or <code>fieldName</code> is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static Object readDeclaredField(Object target, String fieldName, boolean forceAccess) throws IllegalAccessException {
+    public static Object readDeclaredField(final Object target, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
         if (target == null) {
             throw new IllegalArgumentException("target object must not be null");
         }
         Class<?> cls = target.getClass();
-        Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Field field = FieldUtils.getDeclaredField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate declared field " + cls.getName() + "." + fieldName);
         }
         //already forced access above, don't repeat it here:
-        return readField(field, target);
+        return FieldUtils.readField(field, target);
     }
     /**
      * Write a public static Field.
@@ -366,8 +366,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null or not static
      * @throws IllegalAccessException if the field is not public or is final
      */
-    public static void writeStaticField(Field field, Object value) throws IllegalAccessException {
-        writeStaticField(field, value, false);
+    public static void writeStaticField(final Field field, final Object value) throws IllegalAccessException {
+        FieldUtils.writeStaticField(field, value, false);
     }
     /**
      * Write a static Field.
@@ -379,14 +379,14 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null or not static
      * @throws IllegalAccessException if the field is not made accessible or is final
      */
-    public static void writeStaticField(Field field, Object value, boolean forceAccess) throws IllegalAccessException {
+    public static void writeStaticField(final Field field, final Object value, final boolean forceAccess) throws IllegalAccessException {
         if (field == null) {
             throw new IllegalArgumentException("The field must not be null");
         }
         if (!Modifier.isStatic(field.getModifiers())) {
             throw new IllegalArgumentException("The field '" + field.getName() + "' is not static");
         }
-        writeField(field, (Object) null, value, forceAccess);
+        FieldUtils.writeField(field, (Object) null, value, forceAccess);
     }
     /**
      * Write a named public static Field. Superclasses will be considered.
@@ -396,8 +396,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field cannot be located or is not static
      * @throws IllegalAccessException if the field is not public or is final
      */
-    public static void writeStaticField(Class<?> cls, String fieldName, Object value) throws IllegalAccessException {
-        writeStaticField(cls, fieldName, value, false);
+    public static void writeStaticField(final Class<?> cls, final String fieldName, final Object value) throws IllegalAccessException {
+        FieldUtils.writeStaticField(cls, fieldName, value, false);
     }
     /**
      * Write a named static Field. Superclasses will be considered.
@@ -410,13 +410,13 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field cannot be located or is not static
      * @throws IllegalAccessException if the field is not made accessible or is final
      */
-    public static void writeStaticField(Class<?> cls, String fieldName, Object value, boolean forceAccess) throws IllegalAccessException {
-        Field field = getField(cls, fieldName, forceAccess);
+    public static void writeStaticField(final Class<?> cls, final String fieldName, final Object value, final boolean forceAccess) throws IllegalAccessException {
+        Field field = FieldUtils.getField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate field " + fieldName + " on " + cls);
         }
         //already forced access above, don't repeat it here:
-        writeStaticField(field, value);
+        FieldUtils.writeStaticField(field, value);
     }
     /**
      * Write a named public static Field. Only the specified class will be considered.
@@ -426,8 +426,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field cannot be located or is not static
      * @throws IllegalAccessException if the field is not public or is final
      */
-    public static void writeDeclaredStaticField(Class<?> cls, String fieldName, Object value) throws IllegalAccessException {
-        writeDeclaredStaticField(cls, fieldName, value, false);
+    public static void writeDeclaredStaticField(final Class<?> cls, final String fieldName, final Object value) throws IllegalAccessException {
+        FieldUtils.writeDeclaredStaticField(cls, fieldName, value, false);
     }
     /**
      * Write a named static Field. Only the specified class will be considered.
@@ -440,13 +440,13 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field cannot be located or is not static
      * @throws IllegalAccessException if the field is not made accessible or is final
       */
-    public static void writeDeclaredStaticField(Class<?> cls, String fieldName, Object value, boolean forceAccess) throws IllegalAccessException {
-        Field field = getDeclaredField(cls, fieldName, forceAccess);
+    public static void writeDeclaredStaticField(final Class<?> cls, final String fieldName, final Object value, final boolean forceAccess) throws IllegalAccessException {
+        Field field = FieldUtils.getDeclaredField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate declared field " + cls.getName() + "." + fieldName);
         }
         //already forced access above, don't repeat it here:
-        writeField(field, (Object) null, value);
+        FieldUtils.writeField(field, (Object) null, value);
     }
     /**
      * Write an accessible field.
@@ -456,8 +456,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null
      * @throws IllegalAccessException if the field is not accessible or is final
      */
-    public static void writeField(Field field, Object target, Object value) throws IllegalAccessException {
-        writeField(field, target, value, false);
+    public static void writeField(final Field field, final Object target, final Object value) throws IllegalAccessException {
+        FieldUtils.writeField(field, target, value, false);
     }
     /**
      * Write a field.
@@ -470,7 +470,7 @@ public class FieldUtils {
      * @throws IllegalArgumentException if the field is null
      * @throws IllegalAccessException if the field is not made accessible or is final
      */
-    public static void writeField(Field field, Object target, Object value, boolean forceAccess) throws IllegalAccessException {
+    public static void writeField(final Field field, final Object target, final Object value, final boolean forceAccess) throws IllegalAccessException {
         if (field == null) {
             throw new IllegalArgumentException("The field must not be null");
         }
@@ -489,8 +489,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if <code>target</code> or <code>fieldName</code> is null
      * @throws IllegalAccessException if the field is not accessible
      */
-    public static void writeField(Object target, String fieldName, Object value) throws IllegalAccessException {
-        writeField(target, fieldName, value, false);
+    public static void writeField(final Object target, final String fieldName, final Object value) throws IllegalAccessException {
+        FieldUtils.writeField(target, fieldName, value, false);
     }
     /**
      * Write a field. Superclasses will be considered.
@@ -503,17 +503,17 @@ public class FieldUtils {
      * @throws IllegalArgumentException if <code>target</code> or <code>fieldName</code> is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static void writeField(Object target, String fieldName, Object value, boolean forceAccess) throws IllegalAccessException {
+    public static void writeField(final Object target, final String fieldName, final Object value, final boolean forceAccess) throws IllegalAccessException {
         if (target == null) {
             throw new IllegalArgumentException("target object must not be null");
         }
         Class<?> cls = target.getClass();
-        Field field = getField(cls, fieldName, forceAccess);
+        Field field = FieldUtils.getField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate declared field " + cls.getName() + "." + fieldName);
         }
         //already forced access above, don't repeat it here:
-        writeField(field, target, value);
+        FieldUtils.writeField(field, target, value);
     }
     /**
      * Write a public field. Only the specified class will be considered.
@@ -523,8 +523,8 @@ public class FieldUtils {
      * @throws IllegalArgumentException if <code>target</code> or <code>fieldName</code> is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static void writeDeclaredField(Object target, String fieldName, Object value) throws IllegalAccessException {
-        writeDeclaredField(target, fieldName, value, false);
+    public static void writeDeclaredField(final Object target, final String fieldName, final Object value) throws IllegalAccessException {
+        FieldUtils.writeDeclaredField(target, fieldName, value, false);
     }
     /**
      * Write a public field. Only the specified class will be considered.
@@ -537,16 +537,16 @@ public class FieldUtils {
      * @throws IllegalArgumentException if <code>target</code> or <code>fieldName</code> is null
      * @throws IllegalAccessException if the field is not made accessible
      */
-    public static void writeDeclaredField(Object target, String fieldName, Object value, boolean forceAccess) throws IllegalAccessException {
+    public static void writeDeclaredField(final Object target, final String fieldName, final Object value, final boolean forceAccess) throws IllegalAccessException {
         if (target == null) {
             throw new IllegalArgumentException("target object must not be null");
         }
         Class<?> cls = target.getClass();
-        Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Field field = FieldUtils.getDeclaredField(cls, fieldName, forceAccess);
         if (field == null) {
             throw new IllegalArgumentException("Cannot locate declared field " + cls.getName() + "." + fieldName);
         }
         //already forced access above, don't repeat it here:
-        writeField(field, target, value);
+        FieldUtils.writeField(field, target, value);
     }
 }

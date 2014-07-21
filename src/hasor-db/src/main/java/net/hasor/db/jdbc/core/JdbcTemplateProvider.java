@@ -23,9 +23,10 @@ import net.hasor.core.Provider;
  */
 public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
     private DataSource dataSource;
-    public JdbcTemplateProvider(DataSource dataSource) {
+    public JdbcTemplateProvider(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
+    @Override
     public JdbcTemplate get() {
         return new JdbcTemplate(this.dataSource);
     }

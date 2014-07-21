@@ -35,42 +35,42 @@ public class MethodDefine extends AbstractDefine {
     /*------------------------------------------------------------------*/
     /**获取静态方法标记*/
     public boolean isStaticMark() {
-        return staticMark;
+        return this.staticMark;
     }
     /**设置静态方法标记*/
-    public void setStaticMark(boolean staticMark) {
+    public void setStaticMark(final boolean staticMark) {
         this.staticMark = staticMark;
     }
     /**获取定义的方法名（内部名称）.*/
     public String getName() {
-        return name;
+        return this.name;
     }
     /**设置定义的方法名（内部名称）.*/
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     /**获取方法的真实名称.*/
     public String getCodeName() {
-        return codeName;
+        return this.codeName;
     }
     /**设置方法的真实名称.*/
-    public void setCodeName(String codeName) {
+    public void setCodeName(final String codeName) {
         this.codeName = codeName;
     }
     /**获取方法的返回值.*/
     public String getReturnType() {
-        return returnType;
+        return this.returnType;
     }
     /**设置方法的返回值.*/
-    public void setReturnType(String returnType) {
+    public void setReturnType(final String returnType) {
         this.returnType = returnType;
     }
     /**获取方法参数定义列表 */
     public List<ParamDefine> getParams() {
-        return params;
+        return this.params;
     }
     /**设置方法参数定义列表 */
-    public void setParams(List<ParamDefine> params) {
+    public void setParams(final List<ParamDefine> params) {
         this.params = params;
     }
 }

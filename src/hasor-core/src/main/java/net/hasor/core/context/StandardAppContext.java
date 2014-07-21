@@ -30,34 +30,34 @@ public class StandardAppContext extends AbstractResourceAppContext {
         super();
     }
     /**设置主配置文件*/
-    public StandardAppContext(File mainSettings) {
+    public StandardAppContext(final File mainSettings) {
         super(mainSettings);
     }
     /**设置主配置文件*/
-    public StandardAppContext(URI mainSettings) {
+    public StandardAppContext(final URI mainSettings) {
         super(mainSettings);
     }
     /**设置主配置文件*/
-    public StandardAppContext(String mainSettings) throws IOException, URISyntaxException {
+    public StandardAppContext(final String mainSettings) throws IOException, URISyntaxException {
         super(mainSettings);
     }
     /**设置主配置文件*/
-    public StandardAppContext(RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
+    public StandardAppContext(final RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super();
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(File mainSettings, RegisterFactoryCreater registerFactoryCreate) {
+    public StandardAppContext(final File mainSettings, final RegisterFactoryCreater registerFactoryCreate) {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(URI mainSettings, RegisterFactoryCreater registerFactoryCreate) {
+    public StandardAppContext(final URI mainSettings, final RegisterFactoryCreater registerFactoryCreate) {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(String mainSettings, RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
+    public StandardAppContext(final String mainSettings, final RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }

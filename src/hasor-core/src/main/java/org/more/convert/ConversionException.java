@@ -30,7 +30,7 @@ public class ConversionException extends RuntimeException {
      * Construct a new exception with the specified message.
      * @param message The message describing this exception
      */
-    public ConversionException(String message) {
+    public ConversionException(final String message) {
         super(message);
     }
     /**
@@ -38,7 +38,7 @@ public class ConversionException extends RuntimeException {
      * @param message The message describing this exception
      * @param cause The root cause of this exception
      */
-    public ConversionException(String message, Throwable cause) {
+    public ConversionException(final String message, final Throwable cause) {
         super(message);
         this.cause = cause;
     }
@@ -46,7 +46,7 @@ public class ConversionException extends RuntimeException {
      * Construct a new exception with the specified root cause.
      * @param cause The root cause of this exception
      */
-    public ConversionException(Throwable cause) {
+    public ConversionException(final Throwable cause) {
         super(cause.getMessage());
         this.cause = cause;
     }
@@ -60,7 +60,8 @@ public class ConversionException extends RuntimeException {
      * Return the root cause of this conversion exception.
      * @return the root cause of this conversion exception
      */
+    @Override
     public Throwable getCause() {
-        return (this.cause);
+        return this.cause;
     }
 }

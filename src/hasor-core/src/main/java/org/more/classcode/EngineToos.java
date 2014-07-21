@@ -32,175 +32,183 @@ import org.more.asm.Type;
  */
 public class EngineToos implements Opcodes {
     /**检测类名是否合法。*/
-    public static boolean checkClassName(String className) {
-        if (className == null || className.equals(""))
+    public static boolean checkClassName(final String className) {
+        if (className == null || className.equals("")) {
             return false;
+        }
         String item[] = { "..", "!", "@", "#", "%", "^", "&", "*", "(", ")", "-", "=", "+", "{", "}", ";", ";", "\"", "'", "<", ">", ",", "?", "/", "`", "~", " ", "\\", "|" };
-        for (int i = 0; i <= item.length - 1; i++)
-            if (className.indexOf(item[i]) >= 0)
+        for (int i = 0; i <= item.length - 1; i++) {
+            if (className.indexOf(item[i]) >= 0) {
                 return false;
-        if (className.indexOf(".") == 0)
+            }
+        }
+        if (className.indexOf(".") == 0) {
             return false;
-        if (className.indexOf(".", className.length()) == className.length())
+        }
+        if (className.indexOf(".", className.length()) == className.length()) {
             return false;
+        }
         return true;
     }
     /**根据类型获取其Return指令。*/
-    public static int getReturn(String asmType) {
+    public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
         case 'B':
-            return IRETURN;//Byte
+            return Opcodes.IRETURN;//Byte
         case 'C':
-            return IRETURN;//Char
+            return Opcodes.IRETURN;//Char
         case 'D':
-            return DRETURN;//Double
+            return Opcodes.DRETURN;//Double
         case 'F':
-            return FRETURN;//Float
+            return Opcodes.FRETURN;//Float
         case 'I':
-            return IRETURN;//Integer
+            return Opcodes.IRETURN;//Integer
         case 'J':
-            return LRETURN;//Long
+            return Opcodes.LRETURN;//Long
         case 'L':
-            return ARETURN;//Ref
+            return Opcodes.ARETURN;//Ref
         case 'S':
-            return IRETURN;//Short
+            return Opcodes.IRETURN;//Short
         case 'Z':
-            return IRETURN;//Boolean
+            return Opcodes.IRETURN;//Boolean
         case '[':
-            return ARETURN;//Array
+            return Opcodes.ARETURN;//Array
         case 'V':
-            return RETURN;//Void
+            return Opcodes.RETURN;//Void
         default:
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     /**根据类型获取其Load指令。*/
-    public static int getLoad(String asmType) {
+    public static int getLoad(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
         case 'B':
-            return ILOAD;//Byte
+            return Opcodes.ILOAD;//Byte
         case 'C':
-            return ILOAD;//Char
+            return Opcodes.ILOAD;//Char
         case 'D':
-            return DLOAD;//Double
+            return Opcodes.DLOAD;//Double
         case 'F':
-            return FLOAD;//Float
+            return Opcodes.FLOAD;//Float
         case 'I':
-            return ILOAD;//Integer
+            return Opcodes.ILOAD;//Integer
         case 'J':
-            return LLOAD;//Long
+            return Opcodes.LLOAD;//Long
         case 'L':
-            return ALOAD;//Ref
+            return Opcodes.ALOAD;//Ref
         case 'S':
-            return ILOAD;//Short
+            return Opcodes.ILOAD;//Short
         case 'Z':
-            return ILOAD;//Boolean
+            return Opcodes.ILOAD;//Boolean
         case '[':
-            return ALOAD;//Array
+            return Opcodes.ALOAD;//Array
         default:
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     /**根据asm类型获取其ASTORE指令。*/
-    public static int getAstore(String asmType) {
+    public static int getAstore(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
         case 'B':
-            return IASTORE;//Byte
+            return Opcodes.IASTORE;//Byte
         case 'C':
-            return IASTORE;//Char
+            return Opcodes.IASTORE;//Char
         case 'D':
-            return DASTORE;//Double
+            return Opcodes.DASTORE;//Double
         case 'F':
-            return FASTORE;//Float
+            return Opcodes.FASTORE;//Float
         case 'I':
-            return IASTORE;//Integer
+            return Opcodes.IASTORE;//Integer
         case 'J':
-            return LASTORE;//Long
+            return Opcodes.LASTORE;//Long
         case 'L':
-            return AASTORE;//Ref
+            return Opcodes.AASTORE;//Ref
         case 'S':
-            return IASTORE;//Short
+            return Opcodes.IASTORE;//Short
         case 'Z':
-            return IASTORE;//Boolean
+            return Opcodes.IASTORE;//Boolean
         case '[':
-            return AASTORE;//Array
+            return Opcodes.AASTORE;//Array
         default:
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
     //=======================================================================================================================
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
-    public static String toAsmType(Class<?> classType) {
-        if (classType == int.class)
+    public static String toAsmType(final Class<?> classType) {
+        if (classType == int.class) {
             return "I";
-        else if (classType == byte.class)
+        } else if (classType == byte.class) {
             return "B";
-        else if (classType == char.class)
+        } else if (classType == char.class) {
             return "C";
-        else if (classType == double.class)
+        } else if (classType == double.class) {
             return "D";
-        else if (classType == float.class)
+        } else if (classType == float.class) {
             return "F";
-        else if (classType == long.class)
+        } else if (classType == long.class) {
             return "J";
-        else if (classType == short.class)
+        } else if (classType == short.class) {
             return "S";
-        else if (classType == boolean.class)
+        } else if (classType == boolean.class) {
             return "Z";
-        else if (classType == void.class)
+        } else if (classType == void.class) {
             return "V";
-        else if (classType.isArray() == true)
+        } else if (classType.isArray() == true) {
             return "[" + EngineToos.toAsmType(classType.getComponentType());
-        else
+        } else {
             return "L" + Type.getInternalName(classType) + ";";
+        }
     }
     /**将某一个类型转为asm形式的表述， int,int 转为 II，String,int转为 Ljava/lang/String;I。*/
-    public static String toAsmType(Class<?>[] classType) {
+    public static String toAsmType(final Class<?>[] classType) {
         String returnString = "";
-        for (Class<?> c : classType)
-            returnString += EngineToos.toAsmType(c);;
+        for (Class<?> c : classType) {
+            returnString += EngineToos.toAsmType(c);
+        };
         return returnString;
     }
     /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
-    public static Class<?> toJavaType(String asmClassType, ClassLoader loader) {
-        if (asmClassType.equals("I") == true)
+    public static Class<?> toJavaType(final String asmClassType, final ClassLoader loader) {
+        if (asmClassType.equals("I") == true) {
             return int.class;
-        else if (asmClassType.equals("B") == true)
+        } else if (asmClassType.equals("B") == true) {
             return byte.class;
-        else if (asmClassType.equals("C") == true)
+        } else if (asmClassType.equals("C") == true) {
             return char.class;
-        else if (asmClassType.equals("D") == true)
+        } else if (asmClassType.equals("D") == true) {
             return double.class;
-        else if (asmClassType.equals("F") == true)
+        } else if (asmClassType.equals("F") == true) {
             return float.class;
-        else if (asmClassType.equals("J") == true)
+        } else if (asmClassType.equals("J") == true) {
             return long.class;
-        else if (asmClassType.equals("S") == true)
+        } else if (asmClassType.equals("S") == true) {
             return short.class;
-        else if (asmClassType.equals("Z") == true)
+        } else if (asmClassType.equals("Z") == true) {
             return boolean.class;
-        else if (asmClassType.equals("V") == true)
+        } else if (asmClassType.equals("V") == true) {
             return void.class;
-        else if (asmClassType.charAt(0) == '[') {
+        } else if (asmClassType.charAt(0) == '[') {
             int length = 0;
             while (true) {
-                if (asmClassType.charAt(length) != '[')
+                if (asmClassType.charAt(length) != '[') {
                     break;
+                }
                 length++;
             }
             String arrayType = asmClassType.substring(length, asmClassType.length());
             arrayType = arrayType.replace("/", ".");
-            Class<?> returnType = toJavaType(arrayType, loader);
+            Class<?> returnType = EngineToos.toJavaType(arrayType, loader);
             for (int i = 0; i < length; i++) {
                 Object obj = Array.newInstance(returnType, length);
                 returnType = obj.getClass();
             }
             return returnType;
         } else {
-            String cs = asmTypeToType(asmClassType).replace("/", ".");
+            String cs = EngineToos.asmTypeToType(asmClassType).replace("/", ".");
             try {
                 return loader.loadClass(cs);
             } catch (ClassNotFoundException e) {
@@ -209,14 +217,15 @@ public class EngineToos implements Opcodes {
         }
     }
     /**使用指定的ClassLoader将一组asm类型转化为一组Class对象。*/
-    public static Class<?>[] toJavaType(String[] asmClassType, ClassLoader loader) {
+    public static Class<?>[] toJavaType(final String[] asmClassType, final ClassLoader loader) {
         Class<?>[] types = new Class<?>[asmClassType.length];
-        for (int i = 0; i < asmClassType.length; i++)
-            types[i] = toJavaType(asmClassType[i], loader);
+        for (int i = 0; i < asmClassType.length; i++) {
+            types[i] = EngineToos.toJavaType(asmClassType[i], loader);
+        }
         return types;
     }
     /**在一个类中查找某个方法。*/
-    public static Method findMethod(Class<?> atClass, String name, Class<?>[] paramType) {
+    public static Method findMethod(final Class<?> atClass, final String name, final Class<?>[] paramType) {
         try {
             return atClass.getMethod(name, paramType);
         } catch (Exception e) {
@@ -228,96 +237,105 @@ public class EngineToos implements Opcodes {
         }
     }
     /**返回一个类的多个方法，其中包含了类定义的私有方法和父类中可见的方法。*/
-    public static ArrayList<Method> findAllMethod(Class<?> atClass) {
+    public static ArrayList<Method> findAllMethod(final Class<?> atClass) {
         ArrayList<Method> al = new ArrayList<Method>();
         Method[] m1 = atClass.getDeclaredMethods();
         Collections.addAll(al, m1);
-        for (Method m : atClass.getMethods())
-            if (al.contains(m) == false)
+        for (Method m : atClass.getMethods()) {
+            if (al.contains(m) == false) {
                 al.add(m);
+            }
+        }
         return al;
     }
     /**返回一个类的多个字段，其中包含了类定义的私有字段和父类中可见的字段。*/
-    public static ArrayList<Field> findAllField(Class<?> atClass) {
+    public static ArrayList<Field> findAllField(final Class<?> atClass) {
         ArrayList<Field> al = new ArrayList<Field>();
         Field[] m1 = atClass.getDeclaredFields();
         Collections.addAll(al, m1);
-        for (Field f : atClass.getFields())
-            if (al.contains(f) == false)
+        for (Field f : atClass.getFields()) {
+            if (al.contains(f) == false) {
                 al.add(f);
+            }
+        }
         return al;
     }
     /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
-    public static String asmTypeToType(String asmType) {
-        if (asmType.charAt(0) == 'L')
+    public static String asmTypeToType(final String asmType) {
+        if (asmType.charAt(0) == 'L') {
             return asmType.substring(1, asmType.length() - 1);
-        else
+        } else {
             return asmType;
+        }
     }
     //=======================================================================================================================
-    public static String methodToAsmMethod(Method method) {
+    public static String methodToAsmMethod(final Method method) {
         StringBuffer str = new StringBuffer();
         str.append(method.getName());
         str.append("(");
-        str.append(toAsmType(method.getParameterTypes()));
+        str.append(EngineToos.toAsmType(method.getParameterTypes()));
         str.append(")");
         Class<?> returnType = method.getReturnType();
-        if (returnType == void.class)
+        if (returnType == void.class) {
             str.append("V");
-        else
-            str.append(toAsmType(returnType));
+        } else {
+            str.append(EngineToos.toAsmType(returnType));
+        }
         return str.toString();
     }
     /**获取一个类对象字节码的读取流。*/
-    public static InputStream getClassInputStream(Class<?> type) {
+    public static InputStream getClassInputStream(final Class<?> type) {
         ClassLoader loader = type.getClassLoader();
         if (loader instanceof RootClassLoader) {
             byte[] data = ((RootClassLoader) loader).toBytes(type);
             return new ByteArrayInputStream(data);
         }
         String classResourceName = type.getName().replace(".", "/") + ".class";
-        if (loader != null)
+        if (loader != null) {
             return loader.getResourceAsStream(classResourceName);
-        else
+        } else {
             return ClassLoader.getSystemResourceAsStream(classResourceName);
+        }
     };
     /**判断某个类是否为一个lang包的类。*/
-    public static boolean isLangClass(Class<?> type) {
+    public static boolean isLangClass(final Class<?> type) {
         return type.getName().startsWith("java.lang.");
     };
     /**转换首字母大写*/
-    public static String toUpperCase(String value) {
+    public static String toUpperCase(final String value) {
         StringBuffer sb = new StringBuffer(value);
         char firstChar = sb.charAt(0);
         sb.delete(0, 1);
-        sb.insert(0, (char) ((firstChar >= 97) ? firstChar - 32 : firstChar));
+        sb.insert(0, (char) (firstChar >= 97 ? firstChar - 32 : firstChar));
         return sb.toString();
     }
     /** 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
-    public static String[] splitAsmType(String asmTypes) {
+    public static String[] splitAsmType(final String asmTypes) {
         class AsmTypeRead {
             StringReader sread = null;
-            public AsmTypeRead(String sr) {
+            public AsmTypeRead(final String sr) {
                 this.sread = new StringReader(sr);
             }
             /** 读取到下一个分号为止或者结束为止。*/
             private String readToSemicolon() throws IOException {
                 String res = "";
                 while (true) {
-                    int strInt = sread.read();
-                    if (strInt == -1)
+                    int strInt = this.sread.read();
+                    if (strInt == -1) {
                         return res;
-                    else if ((char) strInt == ';')
+                    } else if ((char) strInt == ';') {
                         return res + ';';
-                    else
+                    } else {
                         res += (char) strInt;
+                    }
                 }
             }
             /** 读取一个类型 */
             private String readType() throws IOException {
-                int strInt = sread.read();
-                if (strInt == -1)
+                int strInt = this.sread.read();
+                if (strInt == -1) {
                     return "";
+                }
                 switch ((char) strInt) {
                 case '['://array
                     return '[' + this.readType();
@@ -332,10 +350,11 @@ public class EngineToos implements Opcodes {
                 ArrayList<String> ss = new ArrayList<String>(0);
                 while (true) {
                     String s = this.readType();
-                    if (s.equals("") == true)
+                    if (s.equals("") == true) {
                         break;
-                    else
+                    } else {
                         ss.add(s);
+                    }
                 }
                 String[] res = new String[ss.size()];
                 ss.toArray(res);
@@ -349,75 +368,86 @@ public class EngineToos implements Opcodes {
         }
     }
     /**获取类完整限定名的类名部分。*/
-    public static String splitSimpleName(String fullName) {
+    public static String splitSimpleName(final String fullName) {
         String[] ns = fullName.split("\\.");
         return ns[ns.length - 1];
     }
     /**获取类完整限定名的包名部分。*/
-    public static String splitPackageName(String fullName) {
-        if (fullName.lastIndexOf(".") > 0)
+    public static String splitPackageName(final String fullName) {
+        if (fullName.lastIndexOf(".") > 0) {
             return fullName.substring(0, fullName.lastIndexOf("."));
-        else
+        } else {
             return fullName;
+        }
     }
     /**将类名转换为asm类名。*/
-    public static String replaceClassName(String className) {
+    public static String replaceClassName(final String className) {
         return className.replace(".", "/");
     }
     /**通过位运算决定check是否在data里。*/
-    public static boolean checkIn(int data, int check) {
+    public static boolean checkIn(final int data, final int check) {
         int or = data | check;
         return or == data;
     };
     /**获取指定类型的默认值。*/
-    public static Object getDefaultValue(Class<?> returnType) {
-        if (returnType == null)
+    public static Object getDefaultValue(final Class<?> returnType) {
+        if (returnType == null) {
             return null;
-        else if (returnType == int.class)
+        } else if (returnType == int.class) {
             return 0;
-        else if (returnType == byte.class)
+        } else if (returnType == byte.class) {
             return 0;
-        else if (returnType == char.class)
+        } else if (returnType == char.class) {
             return ' ';
-        else if (returnType == double.class)
+        } else if (returnType == double.class) {
             return 0d;
-        else if (returnType == float.class)
+        } else if (returnType == float.class) {
             return 0f;
-        else if (returnType == long.class)
+        } else if (returnType == long.class) {
             return 0l;
-        else if (returnType == short.class)
+        } else if (returnType == short.class) {
             return 0;
-        else if (returnType == boolean.class)
+        } else if (returnType == boolean.class) {
             return false;
-        else if (returnType == void.class)
+        } else if (returnType == void.class) {
             return null;
-        else if (returnType.isArray() == true)
+        } else if (returnType.isArray() == true) {
             return null;
-        else
+        } else {
             return null;
+        }
     };
     /**检查类型是否为一个基本类型或其包装类型，基本类型包括了boolean, byte, char, short, int, long, float, 和 double*/
-    public static boolean isBaseType(Class<?> type) {
+    public static boolean isBaseType(final Class<?> type) {
         /*判断是否为基本类型*/
-        if (type.isPrimitive() == true)
+        if (type.isPrimitive() == true) {
             return true;
+        }
         /*判断各种包装类型*/
-        if (type == Boolean.class)
+        if (type == Boolean.class) {
             return true;
-        if (type == Byte.class)
+        }
+        if (type == Byte.class) {
             return true;
-        if (type == Character.class)
+        }
+        if (type == Character.class) {
             return true;
-        if (type == Short.class)
+        }
+        if (type == Short.class) {
             return true;
-        if (type == Integer.class)
+        }
+        if (type == Integer.class) {
             return true;
-        if (type == Long.class)
+        }
+        if (type == Long.class) {
             return true;
-        if (type == Float.class)
+        }
+        if (type == Float.class) {
             return true;
-        if (type == Double.class)
+        }
+        if (type == Double.class) {
             return true;
+        }
         return false;
     }
 }

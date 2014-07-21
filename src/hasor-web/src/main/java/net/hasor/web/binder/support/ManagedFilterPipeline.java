@@ -40,50 +40,50 @@ public class ManagedFilterPipeline implements FilterPipeline {
     private WebAppContext                appContext  = null;
     //
     //
-    public ManagedFilterPipeline(ManagedServletPipeline servletPipeline) {
+    public ManagedFilterPipeline(final ManagedServletPipeline servletPipeline) {
         this.servletPipeline = servletPipeline;
     }
     //
-    public synchronized void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException {
-        if (initialized) {
+    @Override
+    public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+        if (this.initialized)
             return;
-        }
         this.appContext = appContext;
-        this.filterDefinitions = collectFilterDefinitions(appContext);
-        for (FilterDefinition filterDefinition : this.filterDefinitions) {
+        this.filterDefinitions = this.collectFilterDefinitions(appContext);
+        for (FilterDefinition filterDefinition : this.filterDefinitions)
             filterDefinition.init(appContext, filterConfig);
-        }
         //next, initialize servlets...
         this.servletPipeline.initPipeline(appContext, filterConfig);
         //everything was ok...
         this.initialized = true;
     }
-    private FilterDefinition[] collectFilterDefinitions(WebAppContext appContext) {
+    private FilterDefinition[] collectFilterDefinitions(final WebAppContext appContext) {
         List<FilterDefinition> filterDefinitions = appContext.findBindingBean(FilterDefinition.class);
         Collections.sort(filterDefinitions, new Comparator<FilterDefinition>() {
-            public int compare(FilterDefinition o1, FilterDefinition o2) {
+            @Override
+            public int compare(final FilterDefinition o1, final FilterDefinition o2) {
                 int o1Index = o1.getIndex();
                 int o2Index = o2.getIndex();
-                return (o1Index < o2Index ? -1 : (o1Index == o2Index ? 0 : 1));
+                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
         return filterDefinitions.toArray(new FilterDefinition[filterDefinitions.size()]);
     }
-    public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException {
-        if (!initialized) {
-            initPipeline(this.appContext, null);
-        }
+    @Override
+    public void dispatch(final HttpServletRequest request, final HttpServletResponse response, final FilterChain defaultFilterChain) throws IOException, ServletException {
+        if (!this.initialized)
+            this.initPipeline(this.appContext, null);
         /*执行过滤器链*/
-        ServletRequest dispatcherRequest = withDispatcher(request, this.servletPipeline);
+        ServletRequest dispatcherRequest = this.withDispatcher(request, this.servletPipeline);
         new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
     }
-    public void destroyPipeline(WebAppContext appContext) {
+    @Override
+    public void destroyPipeline(final WebAppContext appContext) {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
         //go down chain and destroy all our filters
-        for (FilterDefinition filterDefinition : filterDefinitions) {
+        for (FilterDefinition filterDefinition : this.filterDefinitions)
             filterDefinition.destroy(appContext);
-        }
     }
     /**
      * Used to create an proxy that dispatches either to the guice-servlet pipeline or the regular
@@ -96,19 +96,19 @@ public class ManagedFilterPipeline implements FilterPipeline {
      * This is not a problem cuz we intend for people to migrate from web.xml to guice-servlet,
      * incrementally, but not the other way around (which, we should actively discourage).
      */
-    private ServletRequest withDispatcher(ServletRequest servletRequest, final ManagedServletPipeline servletPipeline) {
+    private ServletRequest withDispatcher(final ServletRequest servletRequest, final ManagedServletPipeline servletPipeline) {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         // don't wrap the request if there are no servlets mapped. This prevents us from inserting our
         // wrapper unless it's actually going to be used. This is necessary for compatibility for apps
         // that downcast their HttpServletRequests to a concrete implementation.
-        if (!servletPipeline.hasServletsMapped()) {
+        if (!servletPipeline.hasServletsMapped())
             return servletRequest;
-        }
         //noinspection OverlyComplexAnonymousInnerClass
         return new HttpServletRequestWrapper(request) {
-            public RequestDispatcher getRequestDispatcher(String path) {
+            @Override
+            public RequestDispatcher getRequestDispatcher(final String path) {
                 final RequestDispatcher dispatcher = servletPipeline.getRequestDispatcher(path);
-                return (null != dispatcher) ? dispatcher : super.getRequestDispatcher(path);
+                return null != dispatcher ? dispatcher : super.getRequestDispatcher(path);
             }
         };
     }

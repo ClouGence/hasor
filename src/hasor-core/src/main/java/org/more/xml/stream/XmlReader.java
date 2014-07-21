@@ -41,29 +41,32 @@ public class XmlReader {
     private boolean ignoreSpace   = true; //是否忽略Xml中可忽略的空格。
     //--------------------------------------------------------------------
     /**创建一个XmlReader对象用于阅读fileName参数所表述的Xml文件。*/
-    public XmlReader(String fileName) throws FileNotFoundException {
+    public XmlReader(final String fileName) throws FileNotFoundException {
         this.xmlReader = new FileReader(fileName);
     }
     /**创建一个XmlReader对象用于阅读file参数所表述的Xml文件。*/
-    public XmlReader(File file) throws FileNotFoundException {
+    public XmlReader(final File file) throws FileNotFoundException {
         this.xmlReader = new FileReader(file);
     }
     /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
-    public XmlReader(InputStream xmlStrema) throws UnsupportedEncodingException {
-        if (xmlStrema == null)
+    public XmlReader(final InputStream xmlStrema) throws UnsupportedEncodingException {
+        if (xmlStrema == null) {
             throw new NullPointerException("InputStream类型参数为空。");
+        }
         this.xmlReader = new InputStreamReader(xmlStrema);
     }
     /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
-    public XmlReader(InputStream xmlStrema, String encoding) throws UnsupportedEncodingException {
-        if (xmlStrema == null)
+    public XmlReader(final InputStream xmlStrema, final String encoding) throws UnsupportedEncodingException {
+        if (xmlStrema == null) {
             throw new NullPointerException("InputStream类型参数为空。");
+        }
         this.xmlReader = new InputStreamReader(xmlStrema, encoding);
     }
     /**创建一个XmlReader对象用于阅读xmlStrema参数所表述的Xml文件流。*/
-    public XmlReader(Reader xmlReader) {
-        if (xmlReader == null)
+    public XmlReader(final Reader xmlReader) {
+        if (xmlReader == null) {
             throw new NullPointerException("Reader类型参数为空。");
+        }
         this.xmlReader = xmlReader;
     }
     //--------------------------------------------------------------------
@@ -72,7 +75,7 @@ public class XmlReader {
         return this.ignoreComment;
     }
     /**设置一个boolean值，该值表示了是否忽略在读取XML期间发现的描述节点。true表示忽略，false表示不忽略。*/
-    public void setIgnoreComment(boolean ignoreComment) {
+    public void setIgnoreComment(final boolean ignoreComment) {
         this.ignoreComment = ignoreComment;
     }
     /**返回一个boolean值，该值表示了是否忽略在读取XML期间发现的可忽略的空格字符（参阅 [XML], 2.10 "White Space Handling"）。返回true表示忽略，false表示不忽略。*/
@@ -80,7 +83,7 @@ public class XmlReader {
         return this.ignoreSpace;
     }
     /**设置一个boolean值，该值表示了是否在读取XML期间忽略可忽略的空格字符（参阅 [XML], 2.10 "White Space Handling"）。true表示忽略，false表示不忽略。*/
-    public void setIgnoreSpace(boolean ignoreSpace) {
+    public void setIgnoreSpace(final boolean ignoreSpace) {
         this.ignoreSpace = ignoreSpace;
     }
     //--------------------------------------------------------------------
@@ -94,9 +97,10 @@ public class XmlReader {
      * @param testWild 表示打算忽略的XPath。
      * @return 返回一个boolean值，该值决定了是否忽略当前XPath条目。
      */
-    protected boolean ignoreXPath(String currentXPath, String testWild) {
-        if (testWild == null)
+    protected boolean ignoreXPath(final String currentXPath, final String testWild) {
+        if (testWild == null) {
             return false;
+        }
         //XXX:XPath比较算法，比较currentXPath是否属于testXPath范围内的，目前使用的是?和*通配符。
         return MatchUtils.matchWild(testWild, currentXPath);
     }
@@ -107,9 +111,10 @@ public class XmlReader {
      * @param ignoreXPath 指定要忽略的XPath路径。
      * @throws IOException 
      */
-    public synchronized void reader(XmlAccept accept, String ignoreXPath) throws XMLStreamException, IOException {
-        if (accept == null)
+    public synchronized void reader(final XmlAccept accept, final String ignoreXPath) throws XMLStreamException, IOException {
+        if (accept == null) {
             return;
+        }
         accept.beginAccept();
         //1.准备扫描的引擎。
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -138,8 +143,9 @@ public class XmlReader {
                 break;
             case XMLStreamConstants.START_ELEMENT:
                 //开始元素
-                if (currentXPath.indexOf("/") != currentXPath.length() - 1)
+                if (currentXPath.indexOf("/") != currentXPath.length() - 1) {
                     currentXPath.append("/");
+                }
                 currentXPath.append(this.getName(reader.getName()));
                 currentEvent = new StartElementEvent(currentXPath.toString(), reader);
                 currentElement = new ElementTree(reader.getName(), currentElement);
@@ -150,7 +156,7 @@ public class XmlReader {
                 currentEvent = new EndElementEvent(currentXPath.toString(), reader);
                 currentEvent.setCurrentElement(currentElement);//设置当前元素
                 int index = currentXPath.lastIndexOf("/");
-                index = (index == 0) ? 1 : index;
+                index = index == 0 ? 1 : index;
                 currentXPath = currentXPath.delete(index, currentXPath.length());
                 currentElement = currentElement.getParent();
                 break;
@@ -197,9 +203,9 @@ public class XmlReader {
                     String localName = reader.getAttributeLocalName(i);
                     String prefix = reader.getAttributePrefix(i);
                     //
-                    namespace = (namespace == null) ? "" : namespace;
-                    localName = (localName == null) ? "" : localName;
-                    prefix = (prefix == null) ? "" : prefix;
+                    namespace = namespace == null ? "" : namespace;
+                    localName = localName == null ? "" : localName;
+                    prefix = prefix == null ? "" : prefix;
                     //
                     QName qn = new QName(namespace, localName, prefix);
                     StringBuffer currentXPathTemp = new StringBuffer(currentXPath.toString());
@@ -214,18 +220,20 @@ public class XmlReader {
             }
             //(5).获取下一个xml文档流事件。
             xmlEvent = this.readEvent(reader);
-            if (xmlEvent == 0)
+            if (xmlEvent == 0) {
                 break;
+            }
         }
         //
         accept.endAccept();
     }
-    private int readEvent(XMLStreamReader reader) throws XMLStreamException {
-        if (reader.hasNext() == false)
+    private int readEvent(final XMLStreamReader reader) throws XMLStreamException {
+        if (reader.hasNext() == false) {
             return 0;
+        }
         return reader.next();
     }
-    private String getName(QName qname) {
+    private String getName(final QName qname) {
         String prefix = qname.getPrefix();
         StringBuffer sb = new StringBuffer();
         if (prefix == null || prefix.equals("") == true) {} else {
@@ -236,31 +244,37 @@ public class XmlReader {
     }
     /**执行XPath忽略判断。 */
     private XmlStreamEvent skipEvent = null; //要跳过的事件
-    private void pushEvent(XmlAccept accept, XmlStreamEvent e, String ignoreXPath) throws XMLStreamException, IOException {
+    private void pushEvent(final XmlAccept accept, final XmlStreamEvent e, final String ignoreXPath) throws XMLStreamException, IOException {
         //(1).XPath忽略“判断”
         boolean ignore = this.ignoreXPath(e.getXpath(), ignoreXPath);
-        if (ignore == true)
+        if (ignore == true) {
             return;
+        }
         //(2).上一个标签跳过之后，接下来的所有标签都执行跳过“判断”
         if (this.skipEvent != null) {
             e.skip();
-            if (this.skipEvent.isPartner(e) == true)
+            if (this.skipEvent.isPartner(e) == true) {
                 this.skipEvent = null;//如果当前标签和上一个跳过标签是兄弟关系， 那么skipEvent置空。
+            }
         }
         //(3).执行跳过
-        if (e.isSkip() == true)
+        if (e.isSkip() == true) {
             return;
+        }
         //(4).执行事件
         this.pushEvent(accept, e);
         //(5).接收跳过事件
-        if (this.skipEvent == null)
-            if (e.isSkip() == true)
+        if (this.skipEvent == null) {
+            if (e.isSkip() == true) {
                 this.skipEvent = e;
+            }
+        }
     }
     /**负责推送事件的方法，子类可以通过扩展该方法在推送事件期间处理一些其他操作。 被忽略的和被跳过的事件将不会接受到该方法的调用。*/
-    protected void pushEvent(XmlAccept accept, XmlStreamEvent e) throws XMLStreamException, IOException {
-        if (accept != null)
+    protected void pushEvent(final XmlAccept accept, final XmlStreamEvent e) throws XMLStreamException, IOException {
+        if (accept != null) {
             accept.sendEvent(e);
+        }
     }
 }
 /**
@@ -270,27 +284,29 @@ public class XmlReader {
  */
 class NullStreamFilter implements StreamFilter {
     private StreamFilter parentFilter;
-    public NullStreamFilter(XmlReader reader, StreamFilter parentFilter) {
+    public NullStreamFilter(final XmlReader reader, final StreamFilter parentFilter) {
         this.parentFilter = parentFilter;
     }
-    public boolean accept(XMLStreamReader reader) {
+    @Override
+    public boolean accept(final XMLStreamReader reader) {
         boolean accept = true;
-        if (this.parentFilter != null)
+        if (this.parentFilter != null) {
             accept = this.parentFilter.accept(reader);
+        }
         return accept;
     }
 }
 class ElementTree {
     private QName       qname  = null;
     private ElementTree parent = null;
-    public ElementTree(QName qname, ElementTree parent) {
+    public ElementTree(final QName qname, final ElementTree parent) {
         this.qname = qname;
         this.parent = parent;
     }
     public QName getQname() {
-        return qname;
+        return this.qname;
     }
     public ElementTree getParent() {
-        return parent;
+        return this.parent;
     }
 }

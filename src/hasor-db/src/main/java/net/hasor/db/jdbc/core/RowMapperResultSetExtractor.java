@@ -49,7 +49,7 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
      * 创建 {@link RowMapperResultSetExtractor} 对象
      * @param rowMapper 行映射器。
      */
-    public RowMapperResultSetExtractor(RowMapper<T> rowMapper) {
+    public RowMapperResultSetExtractor(final RowMapper<T> rowMapper) {
         this(rowMapper, 0);
     }
     /**
@@ -57,17 +57,17 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
      * @param rowMapper 行映射器。
      * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
-    public RowMapperResultSetExtractor(RowMapper<T> rowMapper, int rowsExpected) {
+    public RowMapperResultSetExtractor(final RowMapper<T> rowMapper, final int rowsExpected) {
         Hasor.assertIsNotNull(rowMapper, "RowMapper is required");
         this.rowMapper = rowMapper;
         this.rowsExpected = rowsExpected;
     }
-    public List<T> extractData(ResultSet rs) throws SQLException {
-        List<T> results = (this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>());
+    @Override
+    public List<T> extractData(final ResultSet rs) throws SQLException {
+        List<T> results = this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>();
         int rowNum = 0;
-        while (rs.next()) {
+        while (rs.next())
             results.add(this.rowMapper.mapRow(rs, rowNum++));
-        }
         return results;
     }
 }

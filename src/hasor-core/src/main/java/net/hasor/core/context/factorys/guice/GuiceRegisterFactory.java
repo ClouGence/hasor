@@ -51,15 +51,17 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         return this.guiceInjector;
     }
     /**创建Guice*/
-    protected Injector createInjector(Module rootModule) {
+    protected Injector createInjector(final Module rootModule) {
         return Guice.createInjector(rootModule);
     }
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindingType) {
+    @Override
+    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
         GuiceRegisterInfoAdapter<T> adapter = new GuiceRegisterInfoAdapter<T>();
         adapter.setBindType(bindingType);
         return adapter;
     }
-    protected <T> T newInstance(RegisterInfo<T> oriType) {
+    @Override
+    protected <T> T newInstance(final RegisterInfo<T> oriType) {
         if (oriType == null) {
             return null;
         }
@@ -73,7 +75,8 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         }
         return this.guiceInjector.getInstance(oriType.getBindType());
     }
-    public <T> T getDefaultInstance(Class<T> oriType) {
+    @Override
+    public <T> T getDefaultInstance(final Class<T> oriType) {
         if (this.guiceInjector == null) {
             return super.getDefaultInstance(oriType);
         }
@@ -81,26 +84,30 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
-    public void doInitializeCompleted(AbstractAppContext appContext) {
+    @Override
+    public void doInitializeCompleted(final AbstractAppContext appContext) {
         //1.系统自检
         super.doInitializeCompleted(appContext);
         //2.执行绑定
         this.guiceInjector = this.createInjector(new Module() {
-            public void configure(Binder binder) {
-                Iterator<RegisterInfoAdapter<?>> registerIterator = getRegisterIterator();
+            @Override
+            public void configure(final Binder binder) {
+                Iterator<RegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
                 while (registerIterator.hasNext()) {
                     GuiceRegisterInfoAdapter<Object> register = (GuiceRegisterInfoAdapter<Object>) registerIterator.next();
                     //1.处理绑定
-                    configRegister(register, binder);
+                    GuiceRegisterFactory.this.configRegister(register, binder);
                     //2.处理Aop
                     if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptorData.class)) {
                         final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
                         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
-                            public boolean matches(Class<?> targetClass) {
+                            @Override
+                            public boolean matches(final Class<?> targetClass) {
                                 return amr.matcher(targetClass);
                             }
                         }, new AbstractMatcher<Method>() {
-                            public boolean matches(Method targetMethod) {
+                            @Override
+                            public boolean matches(final Method targetMethod) {
                                 return amr.matcher(targetMethod);
                             }
                         }, new MethodInterceptorAdapter(amr));
@@ -110,7 +117,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             }
         });
     }
-    private void configRegister(GuiceRegisterInfoAdapter<Object> register, Binder binder) {
+    private void configRegister(final GuiceRegisterInfoAdapter<Object> register, final Binder binder) {
         binder.bind(RegisterInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
         //1.绑定类型
         AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getBindType());
@@ -129,9 +136,10 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         } else if (register.getSourceType() != null) {
             scopeBinding = linkedBinding.to(register.getSourceType());
         } else {
-            if (haveName == true)
+            if (haveName == true) {
                 /*有了BindName一定要，有impl绑定，所以只能自己绑定自己*/
                 scopeBinding = linkedBinding.to(register.getBindType());
+            }
         }
         //3.处理单例
         if (register.isSingleton()) {
@@ -154,20 +162,25 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
 /**Aop桥*/
 class MethodInterceptorAdapter implements MethodInterceptor {
     private AopMatcherMethodInterceptor aopInterceptor = null;
-    public MethodInterceptorAdapter(AopMatcherMethodInterceptor aopInterceptor) {
+    public MethodInterceptorAdapter(final AopMatcherMethodInterceptor aopInterceptor) {
         this.aopInterceptor = aopInterceptor;
     }
+    @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         return this.aopInterceptor.invoke(new net.hasor.core.MethodInvocation() {
+            @Override
             public Object proceed() throws Throwable {
                 return invocation.proceed();
             }
+            @Override
             public Object getThis() {
                 return invocation.getThis();
             }
+            @Override
             public Method getMethod() {
                 return invocation.getMethod();
             }
+            @Override
             public Object[] getArguments() {
                 return invocation.getArguments();
             }
@@ -177,13 +190,15 @@ class MethodInterceptorAdapter implements MethodInterceptor {
 /**负责net.hasor.core.Scope与com.google.inject.Scope的对接转换*/
 class GuiceScope implements com.google.inject.Scope {
     private Scope scope = null;
-    public GuiceScope(Scope scope) {
+    public GuiceScope(final Scope scope) {
         this.scope = scope;
     }
+    @Override
     public String toString() {
         return this.scope.toString();
     };
-    public <T> com.google.inject.Provider<T> scope(Key<T> key, com.google.inject.Provider<T> unscoped) {
+    @Override
+    public <T> com.google.inject.Provider<T> scope(final Key<T> key, final com.google.inject.Provider<T> unscoped) {
         Provider<T> returnData = this.scope.scope(key, new ToHasorProvider<T>(unscoped));
         if (returnData instanceof com.google.inject.Provider) {
             return (com.google.inject.Provider<T>) returnData;
@@ -197,25 +212,27 @@ class GuiceScope implements com.google.inject.Scope {
 /** 负责com.google.inject.Provider到net.hasor.core.Provider的对接转换*/
 class ToHasorProvider<T> implements net.hasor.core.Provider<T> {
     private com.google.inject.Provider<T> provider;
-    public ToHasorProvider(com.google.inject.Provider<T> provider) {
+    public ToHasorProvider(final com.google.inject.Provider<T> provider) {
         this.provider = provider;
     }
+    @Override
     public T get() {
         return this.provider.get();
     }
     public com.google.inject.Provider<T> getProvider() {
-        return provider;
+        return this.provider;
     }
 }
 class ToGuiceProvider<T> implements com.google.inject.Provider<T> {
     private Provider<T> provider;
-    public ToGuiceProvider(Provider<T> provider) {
+    public ToGuiceProvider(final Provider<T> provider) {
         this.provider = provider;
     }
+    @Override
     public T get() {
         return this.provider.get();
     }
     public Provider<T> getProvider() {
-        return provider;
+        return this.provider;
     }
 }

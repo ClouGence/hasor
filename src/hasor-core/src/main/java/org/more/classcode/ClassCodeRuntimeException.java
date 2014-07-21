@@ -21,13 +21,13 @@ package org.more.classcode;
  */
 public class ClassCodeRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 2163944328191987917L;
-    public ClassCodeRuntimeException(String string, Throwable error) {
+    public ClassCodeRuntimeException(final String string, final Throwable error) {
         super(string);
     }
-    public ClassCodeRuntimeException(String string) {
+    public ClassCodeRuntimeException(final String string) {
         super(string);
     }
-    public ClassCodeRuntimeException(Throwable error) {
+    public ClassCodeRuntimeException(final Throwable error) {
         super(error);
     }
 }

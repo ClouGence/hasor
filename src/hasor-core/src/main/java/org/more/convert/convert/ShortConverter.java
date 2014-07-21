@@ -47,7 +47,7 @@ public final class ShortConverter extends NumberConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public ShortConverter(Object defaultValue) {
+    public ShortConverter(final Object defaultValue) {
         super(false, defaultValue);
     }
     /**
@@ -55,6 +55,7 @@ public final class ShortConverter extends NumberConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Short.class;
     }

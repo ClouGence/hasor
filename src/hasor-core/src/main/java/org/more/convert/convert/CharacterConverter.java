@@ -44,7 +44,7 @@ public final class CharacterConverter extends AbstractConverter {
      * if the value to be converted is missing or an error
      * occurs converting the value.
      */
-    public CharacterConverter(Object defaultValue) {
+    public CharacterConverter(final Object defaultValue) {
         super(defaultValue);
     }
     /**
@@ -53,6 +53,7 @@ public final class CharacterConverter extends AbstractConverter {
      * @return The default type this <code>Converter</code> handles.
      * @since 1.8.0
      */
+    @Override
     protected Class getDefaultType() {
         return Character.class;
     }
@@ -63,7 +64,8 @@ public final class CharacterConverter extends AbstractConverter {
      * @return the converted String value.
      * @since 1.8.0
      */
-    protected String convertToString(Object value) {
+    @Override
+    protected String convertToString(final Object value) {
         String strValue = value.toString();
         return strValue.length() == 0 ? "" : strValue.substring(0, 1);
     }
@@ -76,7 +78,8 @@ public final class CharacterConverter extends AbstractConverter {
      * @throws Exception if conversion cannot be performed successfully
      * @since 1.8.0
      */
-    protected Object convertToType(Class type, Object value) throws Exception {
+    @Override
+    protected Object convertToType(final Class type, final Object value) throws Exception {
         return new Character(value.toString().charAt(0));
     }
 }

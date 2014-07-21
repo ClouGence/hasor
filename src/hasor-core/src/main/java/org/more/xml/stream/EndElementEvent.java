@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class EndElementEvent extends XmlStreamEvent {
-    public EndElementEvent(String xpath, XMLStreamReader reader) {
+    public EndElementEvent(final String xpath, final XMLStreamReader reader) {
         super(xpath, reader);
     }
     /**获取元素名称{@link QName}对象。*/
@@ -46,32 +46,37 @@ public class EndElementEvent extends XmlStreamEvent {
         return this.getReader().getNamespaceCount();
     }
     /**获取在这个元素上定义的指定索引的命名空间前缀。*/
-    public String getNamespacePrefix(int index) {
+    public String getNamespacePrefix(final int index) {
         return this.getReader().getNamespacePrefix(index);
     }
     /**获取在这个元素上定义的指定索引的命名空间URI。*/
-    public String getNamespaceURI(int index) {
+    public String getNamespaceURI(final int index) {
         return this.getReader().getNamespaceURI(index);
     }
     /**使用指定的命名空间前缀获取命名空间URI。*/
-    public String getNamespaceURI(String prefix) {
+    public String getNamespaceURI(final String prefix) {
         return this.getReader().getNamespaceURI(prefix);
     }
     /**该事件的拍档是{@link StartElementEvent}类型对象，被测试的对象的{@link QName}必须与当前对象的{@link QName}相同，并且要在同一个xpath下。*/
-    public boolean isPartner(XmlStreamEvent e) {
-        if (e instanceof StartElementEvent == false)
+    @Override
+    public boolean isPartner(final XmlStreamEvent e) {
+        if (e instanceof StartElementEvent == false) {
             return false;
+        }
         //
         StartElementEvent ende = (StartElementEvent) e;
         QName qnameA = this.getName();
         QName qnameB = ende.getName();
-        if (qnameA.equals(qnameB) == false)
+        if (qnameA.equals(qnameB) == false) {
             return false;
-        if (this.getXpath().equals(ende.getXpath()) == false)
+        }
+        if (this.getXpath().equals(ende.getXpath()) == false) {
             return false;
+        }
         return true;
     };
     /**元素结束事件，不是共有事件。*/
+    @Override
     public boolean isPublicEvent() {
         return false;
     }

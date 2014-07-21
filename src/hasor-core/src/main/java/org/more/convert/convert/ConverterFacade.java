@@ -37,7 +37,7 @@ public final class ConverterFacade implements Converter {
      *
      * @param converter The converter to delegate to
      */
-    public ConverterFacade(Converter converter) {
+    public ConverterFacade(final Converter converter) {
         if (converter == null) {
             throw new IllegalArgumentException("Converter is missing");
         }
@@ -52,8 +52,9 @@ public final class ConverterFacade implements Converter {
      * @param value The input value to be converted
      * @return The converted value.
      */
-    public Object convert(Class type, Object value) {
-        return converter.convert(type, value);
+    @Override
+    public Object convert(final Class type, final Object value) {
+        return this.converter.convert(type, value);
     }
     /**
      * Provide a String representation of this facade implementation
@@ -62,7 +63,8 @@ public final class ConverterFacade implements Converter {
      * @return A String representation of this facade implementation
      * sand the underlying {@link Converter} it delegates to
      */
+    @Override
     public String toString() {
-        return "ConverterFacade[" + converter.toString() + "]";
+        return "ConverterFacade[" + this.converter.toString() + "]";
     }
 }
