@@ -57,12 +57,15 @@ public class DefineBind_Tag extends AbstractHasorTag {
     }
     @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var))
+        if (StringUtils.isBlank(this.var)) {
             throw new NullPointerException("tag param var is null.");
-        if (StringUtils.isBlank(this.name))
+        }
+        if (StringUtils.isBlank(this.name)) {
             throw new NullPointerException("tag param name is null.");
-        if (StringUtils.isBlank(this.bindType))
+        }
+        if (StringUtils.isBlank(this.bindType)) {
             throw new NullPointerException("tag param bindType is null.");
+        }
         //
         try {
             Object targetBean = Functions.defineBind(this.name, this.bindType);

@@ -31,8 +31,9 @@ class HttpSessionListenerDefinition {
     }
     //
     protected HttpSessionListener getTarget() {
-        if (this.listenerInstance == null)
+        if (this.listenerInstance == null) {
             this.listenerInstance = this.listenerProvider.get();
+        }
         return this.listenerInstance;
     }
     @Override
@@ -44,13 +45,15 @@ class HttpSessionListenerDefinition {
     /**/
     public void sessionCreated(final HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null)
+        if (httpSessionListener != null) {
             httpSessionListener.sessionCreated(event);
+        }
     }
     /**/
     public void sessionDestroyed(final HttpSessionEvent event) {
         HttpSessionListener httpSessionListener = this.getTarget();
-        if (httpSessionListener != null)
+        if (httpSessionListener != null) {
             httpSessionListener.sessionDestroyed(event);
+        }
     }
 }

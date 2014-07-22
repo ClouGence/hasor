@@ -36,8 +36,10 @@ class InnerMapSqlParameterSource implements SqlParameterSource, ParameterDispose
     }
     @Override
     public void cleanupParameters() {
-        for (Object val : this.values.values())
-            if (val instanceof ParameterDisposer)
+        for (Object val : this.values.values()) {
+            if (val instanceof ParameterDisposer) {
                 ((ParameterDisposer) val).cleanupParameters();
+            }
+        }
     }
 }

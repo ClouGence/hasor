@@ -88,8 +88,9 @@ public class ParsedSql {
         while (i < statement.length) {
             int skipToPosition = ParsedSql.skipCommentsAndQuotes(statement, i);//从当前为止掠过的长度
             if (i != skipToPosition) {
-                if (skipToPosition >= statement.length)
+                if (skipToPosition >= statement.length) {
                     break;
+                }
                 i = skipToPosition;
             }
             char c = statement[i];
@@ -99,8 +100,9 @@ public class ParsedSql {
                     i = i + 2;// Postgres-style "::" casting operator - to be skipped.
                     continue;
                 }
-                while (j < statement.length && !ParsedSql.isParameterSeparator(statement[j]))
+                while (j < statement.length && !ParsedSql.isParameterSeparator(statement[j])) {
                     j++;
+                }
                 if (j - i > 1) {
                     String parameter = originalSql.substring(i + 1, j);
                     if (!namedParameters.contains(parameter)) {
@@ -127,17 +129,18 @@ public class ParsedSql {
     }
     /** Skip over comments and quoted names present in an SQL statement */
     private static int skipCommentsAndQuotes(final char[] statement, final int position) {
-        for (int i = 0; i < ParsedSql.START_SKIP.length; i++)
+        for (int i = 0; i < ParsedSql.START_SKIP.length; i++) {
             if (statement[position] == ParsedSql.START_SKIP[i].charAt(0)) {
                 boolean match = true;
-                for (int j = 1; j < ParsedSql.START_SKIP[i].length(); j++)
+                for (int j = 1; j < ParsedSql.START_SKIP[i].length(); j++) {
                     if (!(statement[position + j] == ParsedSql.START_SKIP[i].charAt(j))) {
                         match = false;
                         break;
                     }
+                }
                 if (match) {
                     int offset = ParsedSql.START_SKIP[i].length();
-                    for (int m = position + offset; m < statement.length; m++)
+                    for (int m = position + offset; m < statement.length; m++) {
                         if (statement[m] == ParsedSql.STOP_SKIP[i].charAt(0)) {
                             boolean endMatch = true;
                             int endPos = m;
@@ -150,22 +153,28 @@ public class ParsedSql {
                                 }
                                 endPos = m + n;
                             }
-                            if (endMatch)
+                            if (endMatch) {
                                 return endPos + 1;// found character sequence ending comment or quote
+                            }
                         }
+                    }
                     // character sequence ending comment or quote not found
                     return statement.length;
                 }
             }
+        }
         return position;
     }
     /** Determine whether a parameter name ends at the current position, that is, whether the given character qualifies as a separator. */
     private static boolean isParameterSeparator(final char c) {
-        if (Character.isWhitespace(c))
+        if (Character.isWhitespace(c)) {
             return true;
-        for (char separator : ParsedSql.PARAMETER_SEPARATORS)
-            if (c == separator)
+        }
+        for (char separator : ParsedSql.PARAMETER_SEPARATORS) {
+            if (c == separator) {
                 return true;
+            }
+        }
         return false;
     }
     //-------------------------------------------------------------------------
@@ -191,26 +200,31 @@ public class ParsedSql {
                     Iterator<?> entryIter = ((Collection<?>) value).iterator();
                     int k = 0;
                     while (entryIter.hasNext()) {
-                        if (k > 0)
+                        if (k > 0) {
                             sqlToUse.append(", ");
+                        }
                         k++;
                         Object entryItem = entryIter.next();
                         if (entryItem instanceof Object[]) {
                             Object[] expressionList = (Object[]) entryItem;
                             sqlToUse.append("(");
                             for (int m = 0; m < expressionList.length; m++) {
-                                if (m > 0)
+                                if (m > 0) {
                                     sqlToUse.append(", ");
+                                }
                                 sqlToUse.append("?");
                             }
                             sqlToUse.append(")");
-                        } else
+                        } else {
                             sqlToUse.append("?");
+                        }
                     }
-                } else
+                } else {
                     sqlToUse.append("?");
-            } else
+                }
+            } else {
                 sqlToUse.append("?");
+            }
             lastIndex = endIndex;
         }
         sqlToUse.append(originalSql.substring(lastIndex, originalSql.length()));
@@ -225,8 +239,9 @@ public class ParsedSql {
         int totalParameterCount = parsedSql.getTotalParameterCount();//参数总数
         //
         Object[] paramArray = new Object[totalParameterCount];
-        if (namedParameterCount > 0 && unnamedParameterCount > 0)
+        if (namedParameterCount > 0 && unnamedParameterCount > 0) {
             throw new SQLException("You can't mix named and traditional ? placeholders. You have " + namedParameterCount + " named parameter(s) and " + unnamedParameterCount + " traditonal placeholder(s) in [" + originalSql + "]");
+        }
         for (int i = 0; i < parameterNames.size(); i++) {
             String paramName = parameterNames.get(i);
             paramArray[i] = paramSource.getValue(paramName);

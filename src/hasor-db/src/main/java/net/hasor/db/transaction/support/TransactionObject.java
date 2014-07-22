@@ -46,12 +46,14 @@ public class TransactionObject {
         return this.getHolder();
     };
     public void rollback() throws SQLException {
-        if (this.holder.hasTransaction() == true)
+        if (this.holder.hasTransaction() == true) {
             this.holder.getConnection().rollback();//在AutoCommit情况下不执行事务操作（MYSQL强制在auto下执行该方法会引发异常）。
+        }
     }
     public void commit() throws SQLException {
-        if (this.holder.hasTransaction() == true)
+        if (this.holder.hasTransaction() == true) {
             this.holder.getConnection().commit();//在AutoCommit情况下不执行事务操作（MYSQL强制在auto下执行该方法会引发异常）。
+        }
     }
     public boolean hasTransaction() throws SQLException {
         return this.holder.hasTransaction();
@@ -59,13 +61,15 @@ public class TransactionObject {
     //
     private boolean recoverMark = false;
     public void beginTransaction() throws SQLException {
-        if (this.holder.hasTransaction() == false)
+        if (this.holder.hasTransaction() == false) {
             this.recoverMark = true;
+        }
         this.holder.setTransaction();
     }
     public void stopTransaction() throws SQLException {
-        if (this.recoverMark == false)
+        if (this.recoverMark == false) {
             return;
+        }
         this.recoverMark = false;
         this.holder.cancelTransaction();
     }

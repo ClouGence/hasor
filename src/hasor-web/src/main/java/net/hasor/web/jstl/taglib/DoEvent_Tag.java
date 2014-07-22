@@ -52,25 +52,30 @@ public class DoEvent_Tag extends AbstractHasorTag {
         this.params = null;
     }
     private Object[] params() {
-        if (this.params == null)
+        if (this.params == null) {
             return null;
-        if (this.params.getClass().isArray())
+        }
+        if (this.params.getClass().isArray()) {
             return (Object[]) this.params;
+        }
         return new Object[] { this.params };
     }
     @Override
     public int doStartTag() throws JspException {
         try {
-            if (this.async == true)
+            if (this.async == true) {
                 this.getAppContext().fireAsyncEvent(this.event, this.params());
-            else
+            } else {
                 this.getAppContext().fireSyncEvent(this.event, this.params());
+            }
             return Tag.SKIP_BODY;
         } catch (Throwable e) {
-            if (e instanceof RuntimeException)
+            if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
-            if (e instanceof JspException)
+            }
+            if (e instanceof JspException) {
                 throw (JspException) e;
+            }
             throw new JspException(e);
         }
     }

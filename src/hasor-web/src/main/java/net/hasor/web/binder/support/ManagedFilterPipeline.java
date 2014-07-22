@@ -46,12 +46,14 @@ public class ManagedFilterPipeline implements FilterPipeline {
     //
     @Override
     public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
-        if (this.initialized)
+        if (this.initialized) {
             return;
+        }
         this.appContext = appContext;
         this.filterDefinitions = this.collectFilterDefinitions(appContext);
-        for (FilterDefinition filterDefinition : this.filterDefinitions)
+        for (FilterDefinition filterDefinition : this.filterDefinitions) {
             filterDefinition.init(appContext, filterConfig);
+        }
         //next, initialize servlets...
         this.servletPipeline.initPipeline(appContext, filterConfig);
         //everything was ok...
@@ -71,8 +73,9 @@ public class ManagedFilterPipeline implements FilterPipeline {
     }
     @Override
     public void dispatch(final HttpServletRequest request, final HttpServletResponse response, final FilterChain defaultFilterChain) throws IOException, ServletException {
-        if (!this.initialized)
+        if (!this.initialized) {
             this.initPipeline(this.appContext, null);
+        }
         /*执行过滤器链*/
         ServletRequest dispatcherRequest = this.withDispatcher(request, this.servletPipeline);
         new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
@@ -82,8 +85,9 @@ public class ManagedFilterPipeline implements FilterPipeline {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
         //go down chain and destroy all our filters
-        for (FilterDefinition filterDefinition : this.filterDefinitions)
+        for (FilterDefinition filterDefinition : this.filterDefinitions) {
             filterDefinition.destroy(appContext);
+        }
     }
     /**
      * Used to create an proxy that dispatches either to the guice-servlet pipeline or the regular
@@ -101,8 +105,9 @@ public class ManagedFilterPipeline implements FilterPipeline {
         // don't wrap the request if there are no servlets mapped. This prevents us from inserting our
         // wrapper unless it's actually going to be used. This is necessary for compatibility for apps
         // that downcast their HttpServletRequests to a concrete implementation.
-        if (!servletPipeline.hasServletsMapped())
+        if (!servletPipeline.hasServletsMapped()) {
             return servletRequest;
+        }
         //noinspection OverlyComplexAnonymousInnerClass
         return new HttpServletRequestWrapper(request) {
             @Override

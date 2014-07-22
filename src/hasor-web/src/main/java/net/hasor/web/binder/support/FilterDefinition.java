@@ -45,8 +45,9 @@ class FilterDefinition extends AbstractServletModuleBinding {
         this.filterProvider = filterProvider;
     }
     protected Filter getTarget() throws ServletException {
-        if (this.filterInstance != null)
+        if (this.filterInstance != null) {
             return this.filterInstance;
+        }
         //
         final Map<String, String> initParams = this.getInitParams();
         this.filterInstance = this.filterProvider.get();
@@ -82,8 +83,9 @@ class FilterDefinition extends AbstractServletModuleBinding {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
                 String key = ent.getKey();
-                if (!thisConfig.containsKey(key))
+                if (!thisConfig.containsKey(key)) {
                     thisConfig.put(key, ent.getValue());
+                }
             }
         }
         //
@@ -97,15 +99,17 @@ class FilterDefinition extends AbstractServletModuleBinding {
         boolean serve = this.matchesUri(path);
         //
         Filter filter = this.getTarget();
-        if (serve == true && filter != null)
+        if (serve == true && filter != null) {
             filter.doFilter(request, response, chain);
-        else
+        } else {
             chain.doFilter(httpRequest, response);
+        }
     }
     /**/
     public void destroy(final AppContext appContext) {
-        if (this.filterInstance == null)
+        if (this.filterInstance == null) {
             return;
+        }
         this.filterInstance.destroy();
     }
 }

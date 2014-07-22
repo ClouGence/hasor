@@ -54,11 +54,14 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     /***/
     private static List<String> newArrayList(final String[] arr, final String object) {
         ArrayList<String> list = new ArrayList<String>();
-        if (arr != null)
-            for (String item : arr)
+        if (arr != null) {
+            for (String item : arr) {
                 list.add(item);
-        if (object != null)
+            }
+        }
+        if (object != null) {
             list.add(object);
+        }
         return list;
     }
     /**Class类型的Provider代理 */
@@ -87,8 +90,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     };
     @Override
     public FilterBindingBuilder filter(final String[] morePatterns) throws NullPointerException {
-        if (ArrayUtils.isEmpty(morePatterns))
+        if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
+        }
         return this.filter(null, morePatterns);
     }
     @Override
@@ -97,8 +101,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     };
     @Override
     public FilterBindingBuilder filterRegex(final String[] regexes) throws NullPointerException {
-        if (ArrayUtils.isEmpty(regexes))
+        if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
+        }
         return this.filterRegex(null, regexes);
     }
     class FiltersModuleBinder implements FilterBindingBuilder {
@@ -156,8 +161,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         }
         @Override
         public void through(final int index, final Provider<Filter> filterProvider, Map<String, String> initParams) {
-            if (initParams == null)
+            if (initParams == null) {
                 initParams = new HashMap<String, String>();
+            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
@@ -173,8 +179,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     };
     @Override
     public ServletBindingBuilder serve(final String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns))
+        if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Servlet patterns is empty.");
+        }
         return this.serve(null, morePatterns);
     }
     @Override
@@ -183,8 +190,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     };
     @Override
     public ServletBindingBuilder serveRegex(final String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes))
+        if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Servlet regexes is empty.");
+        }
         return this.serveRegex(null, regexes);
     }
     class ServletsModuleBuilder implements ServletBindingBuilder {
@@ -241,8 +249,9 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         }
         @Override
         public void with(final int index, final Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
-            if (initParams == null)
+            if (initParams == null) {
                 initParams = new HashMap<String, String>();
+            }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletProvider, initParams);

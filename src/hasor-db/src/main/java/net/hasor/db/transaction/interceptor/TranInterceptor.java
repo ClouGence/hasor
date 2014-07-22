@@ -35,26 +35,30 @@ class TranInterceptor implements MethodInterceptor, AppContextAware {
     @Override
     public void setAppContext(final AppContext appContext) {
         List<StrategyDefinition> defineList = appContext.findBindingBean(StrategyDefinition.class);
-        if (defineList != null && defineList.isEmpty() == false)
+        if (defineList != null && defineList.isEmpty() == false) {
             this.definitionArray = defineList.toArray(new StrategyDefinition[defineList.size()]);
+        }
     }
     //
     private StrategyDefinition[] definitionArray = null;
     @Override
     public final Object invoke(final MethodInvocation invocation) throws Throwable {
         //1.排除的情况
-        if (this.definitionArray == null || this.definitionArray.length == 0)
+        if (this.definitionArray == null || this.definitionArray.length == 0) {
             return invocation.proceed();
+        }
         //2.找到匹配的策略
         Method targetMethod = invocation.getMethod();
         StrategyDefinition atDefine = null;
-        for (StrategyDefinition define : this.definitionArray)
+        for (StrategyDefinition define : this.definitionArray) {
             if (define.matches(targetMethod) == true) {
                 atDefine = define;
                 break;
             }
-        if (atDefine == null)
+        }
+        if (atDefine == null) {
             return invocation.proceed();
+        }
         //3.准备事务
         DataSource dataSource = atDefine.getDataSource();
         Propagation propagation = atDefine.getPropagationStrategy().getStrategy(targetMethod);
@@ -67,12 +71,14 @@ class TranInterceptor implements MethodInterceptor, AppContextAware {
             tranStatus = manager.getTransaction(propagation, isolation);
             return around.execute(tranStatus, invocation);
         } catch (Throwable e) {
-            if (tranStatus != null)
+            if (tranStatus != null) {
                 tranStatus.setRollbackOnly();
+            }
             throw e;
         } finally {
-            if (tranStatus != null && !tranStatus.isCompleted())
+            if (tranStatus != null && !tranStatus.isCompleted()) {
                 manager.commit(tranStatus);
+            }
         }
     }
 }

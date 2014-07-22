@@ -48,21 +48,23 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             this.appContext = this.createAppContext(servletContextEvent.getServletContext());
             String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
-            if (StringUtils.isBlank(startModule))
+            if (StringUtils.isBlank(startModule)) {
                 Hasor.logWarn("startModule is undefinition.");
-            else {
+            } else {
                 Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
                 this.appContext.addModule(startModuleType.newInstance());
                 Hasor.logInfo("startModule is %s.", startModuleType);
             }
             //
-            if (this.appContext.isStart() == false)
+            if (this.appContext.isStart() == false) {
                 this.appContext.start();
+            }
             RuntimeListener.LocalServletContext.set(servletContextEvent.getServletContext());
             RuntimeListener.LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            if (e instanceof RuntimeException)
+            if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
+            }
             throw new RuntimeException(e);
         }
         //2.获取SessionListenerPipeline

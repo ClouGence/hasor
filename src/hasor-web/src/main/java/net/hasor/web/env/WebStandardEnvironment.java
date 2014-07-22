@@ -57,8 +57,9 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
                 /*单独处理work_home*/
                 String workDir = $this.getSettings().getString("environmentVar.HASOR_WORK_HOME", "./");
                 workDir = workDir.replace("/", File.separator);
-                if (workDir.startsWith("." + File.separatorChar))
+                if (workDir.startsWith("." + File.separatorChar)) {
                     hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
+                }
                 return hasorEnv;
             }
         };

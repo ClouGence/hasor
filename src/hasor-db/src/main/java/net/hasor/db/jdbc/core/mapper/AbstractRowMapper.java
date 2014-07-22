@@ -32,43 +32,49 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     protected static Object getResultSetValue(final ResultSet rs, final int index) throws SQLException {
         Object obj = rs.getObject(index);
         String className = null;
-        if (obj != null)
+        if (obj != null) {
             className = obj.getClass().getName();
-        if (obj instanceof Blob)
+        }
+        if (obj instanceof Blob) {
             /*Blob 转换为 Bytes*/
             obj = rs.getBytes(index);
-        else if (obj instanceof Clob)
+        } else if (obj instanceof Clob) {
             /*Clob 转换为 String*/
             obj = rs.getString(index);
-        else if (className != null && ("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className)))
+        } else if (className != null && ("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
             /*oracle TIMESTAMP 转换为 Timestamp*/
             obj = rs.getTimestamp(index);
-        else if (className != null && className.startsWith("oracle.sql.DATE")) {
+        } else if (className != null && className.startsWith("oracle.sql.DATE")) {
             /*oracle DATE 转换为 Date*/
             String metaDataClassName = rs.getMetaData().getColumnClassName(index);
-            if ("java.sql.Timestamp".equals(metaDataClassName) || "oracle.sql.TIMESTAMP".equals(metaDataClassName))
+            if ("java.sql.Timestamp".equals(metaDataClassName) || "oracle.sql.TIMESTAMP".equals(metaDataClassName)) {
                 obj = rs.getTimestamp(index);
-            else
+            } else {
                 obj = rs.getDate(index);
-        } else if (obj != null && obj instanceof java.sql.Date)
+            }
+        } else if (obj != null && obj instanceof java.sql.Date) {
             /*DATE 转换 Date*/
-            if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index)))
+            if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
                 obj = rs.getTimestamp(index);
+            }
+        }
         return obj;
     }
     /**转换为单值的类型*/
     protected static Object convertValueToRequiredType(final Object value, final Class<?> requiredType) {
-        if (String.class.equals(requiredType))
+        if (String.class.equals(requiredType)) {
             return value.toString();
-        else if (Number.class.isAssignableFrom(requiredType)) {
-            if (value instanceof Number)
+        } else if (Number.class.isAssignableFrom(requiredType)) {
+            if (value instanceof Number) {
                 // Convert original Number to target Number class.
                 return AbstractRowMapper.convertNumberToTargetClass((Number) value, requiredType);
-            else
+            } else {
                 // Convert stringified value to target Number class.
                 return AbstractRowMapper.parseNumber(value.toString(), requiredType);
-        } else
+            }
+        } else {
             throw new IllegalArgumentException("Value [" + value + "] is of type [" + value.getClass().getName() + "] and cannot be converted to required type [" + requiredType.getName() + "]");
+        }
     }
     /**
      * Parse the given text into a number instance of the given target class, using the corresponding <code>decode</code> / <code>valueOf</code> methods.
@@ -90,24 +96,25 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         Hasor.assertIsNotNull(text, "Text must not be null");
         Hasor.assertIsNotNull(targetClass, "Target class must not be null");
         String trimmed = StringUtils.trimToEmpty(text);
-        if (targetClass.equals(Byte.class))
+        if (targetClass.equals(Byte.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Byte.decode(trimmed) : Byte.valueOf(trimmed);
-        else if (targetClass.equals(Short.class))
+        } else if (targetClass.equals(Short.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Short.decode(trimmed) : Short.valueOf(trimmed);
-        else if (targetClass.equals(Integer.class))
+        } else if (targetClass.equals(Integer.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Integer.decode(trimmed) : Integer.valueOf(trimmed);
-        else if (targetClass.equals(Long.class))
+        } else if (targetClass.equals(Long.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Long.decode(trimmed) : Long.valueOf(trimmed);
-        else if (targetClass.equals(BigInteger.class))
+        } else if (targetClass.equals(BigInteger.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? AbstractRowMapper.decodeBigInteger(trimmed) : new BigInteger(trimmed);
-        else if (targetClass.equals(Float.class))
+        } else if (targetClass.equals(Float.class)) {
             return Float.valueOf(trimmed);
-        else if (targetClass.equals(Double.class))
+        } else if (targetClass.equals(Double.class)) {
             return Double.valueOf(trimmed);
-        else if (targetClass.equals(BigDecimal.class) || targetClass.equals(Number.class))
+        } else if (targetClass.equals(BigDecimal.class) || targetClass.equals(Number.class)) {
             return new BigDecimal(trimmed);
-        else
+        } else {
             throw new IllegalArgumentException("Cannot convert String [" + text + "] to target class [" + targetClass.getName() + "]");
+        }
     }
     /**
      * Convert the given number into an instance of the given target class.
@@ -127,42 +134,48 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     private static Number convertNumberToTargetClass(final Number number, final Class<?> targetClass) throws IllegalArgumentException {
         Hasor.assertIsNotNull(number, "Number must not be null");
         Hasor.assertIsNotNull(targetClass, "Target class must not be null");
-        if (targetClass.isInstance(number))
+        if (targetClass.isInstance(number)) {
             return number;
-        else if (targetClass.equals(Byte.class)) {
+        } else if (targetClass.equals(Byte.class)) {
             long value = number.longValue();
-            if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE)
+            if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
+            }
             return new Byte(number.byteValue());
         } else if (targetClass.equals(Short.class)) {
             long value = number.longValue();
-            if (value < Short.MIN_VALUE || value > Short.MAX_VALUE)
+            if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
+            }
             return new Short(number.shortValue());
         } else if (targetClass.equals(Integer.class)) {
             long value = number.longValue();
-            if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE)
+            if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
+            }
             return new Integer(number.intValue());
         } else if (targetClass.equals(Long.class))
             return new Long(number.longValue());
         else if (targetClass.equals(BigInteger.class)) {
-            if (number instanceof BigDecimal)
+            if (number instanceof BigDecimal) {
                 // do not lose precision - use BigDecimal's own conversion
                 return ((BigDecimal) number).toBigInteger();
-            else
+            } else {
                 // original value is not a Big* number - use standard long conversion
                 return BigInteger.valueOf(number.longValue());
-        } else if (targetClass.equals(Float.class))
+            }
+        } else if (targetClass.equals(Float.class)) {
             return new Float(number.floatValue());
-        else if (targetClass.equals(Double.class))
+        } else if (targetClass.equals(Double.class)) {
             return new Double(number.doubleValue());
-        else if (targetClass.equals(BigDecimal.class))
+        } else if (targetClass.equals(BigDecimal.class)) {
             // always use BigDecimal(String) here to avoid unpredictability of BigDecimal(double)
             // (see BigDecimal javadoc for details)
             return new BigDecimal(number.toString());
-        else
-            throw new IllegalArgumentException("Could not convert number [" + number + "] of type [" + number.getClass().getName() + "] to unknown target class [" + targetClass.getName() + "]");
+        } else {
+            throw new IllegalArgumentException("Could not convert number [" + number + "] of type [" + //
+                    number.getClass().getName() + "] to unknown target class [" + targetClass.getName() + "]");
+        }
     }
     /**
      * Determine whether the given value String indicates a hex number, i.e. needs to be passed into 

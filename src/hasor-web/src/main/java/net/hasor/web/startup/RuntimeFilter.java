@@ -53,11 +53,12 @@ public class RuntimeFilter implements Filter {
         /*1.初始化执行周期管理器。*/
         Map<String, String> filterConfigMap = new HashMap<String, String>();
         Enumeration<String> names = filterConfig.getInitParameterNames();
-        if (names != null)
+        if (names != null) {
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
                 filterConfigMap.put(name, filterConfig.getInitParameter(name));
             }
+        }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         Hasor.logInfo("PlatformFilter started.");
     }
@@ -66,8 +67,9 @@ public class RuntimeFilter implements Filter {
     @Override
     public void destroy() {
         Hasor.logInfo("executeCycle destroyCycle.");
-        if (this.filterPipeline != null)
+        if (this.filterPipeline != null) {
             this.filterPipeline.destroyPipeline(this.appContext);
+        }
     }
     //
     /** 处理request，响应response */

@@ -141,8 +141,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     public void loadSQL(final String charsetName, final String sqlResource) throws IOException, SQLException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(sqlResource);
-        if (inStream == null)
+        if (inStream == null) {
             throw new IOException("can't find :" + sqlResource);
+        }
         InputStreamReader reader = new InputStreamReader(inStream, Charset.forName(charsetName));
         this.loadSQL(reader);
     }
@@ -176,8 +177,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
             useLocal = true;
             con = this.newProxyConnection(con, ds);//代理连接
-        } else
+        } else {
             con = this.newProxyConnection(con, null);//代理连接
+        }
         //
         try {
             return action.doInConnection(con);
@@ -231,8 +233,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 } catch (SQLException ex) {
                     throw ex;
                 } finally {
-                    if (psc instanceof ParameterDisposer)
+                    if (psc instanceof ParameterDisposer) {
                         ((ParameterDisposer) psc).cleanupParameters();
+                    }
                     ps.close();
                 }
             }
@@ -260,8 +263,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 } catch (SQLException ex) {
                     throw new SQLException("CallableStatementCallback SQL :" + JdbcTemplate.getSql(action), ex);
                 } finally {
-                    if (csc instanceof ParameterDisposer)
+                    if (csc instanceof ParameterDisposer) {
                         ((ParameterDisposer) csc).cleanupParameters();
+                    }
                     cs.close();
                 }
             }
@@ -314,14 +318,16 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             public T doInPreparedStatement(final PreparedStatement ps) throws SQLException {
                 ResultSet rs = null;
                 try {
-                    if (pss != null)
+                    if (pss != null) {
                         pss.setValues(ps);
+                    }
                     rs = ps.executeQuery();
                     return rse.extractData(rs);
                 } finally {
                     rs.close();
-                    if (pss instanceof ParameterDisposer)
+                    if (pss instanceof ParameterDisposer) {
                         ((ParameterDisposer) pss).cleanupParameters();
+                    }
                 }
             }
         });
@@ -610,14 +616,16 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
             @Override
             public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
                 try {
-                    if (pss != null)
+                    if (pss != null) {
                         pss.setValues(ps);
+                    }
                     int rows = ps.executeUpdate();
                     Hasor.logDebug("SQL update affected " + rows + " rows");
                     return rows;
                 } finally {
-                    if (pss instanceof ParameterDisposer)
+                    if (pss instanceof ParameterDisposer) {
                         ((ParameterDisposer) pss).cleanupParameters();
+                    }
                 }
             }
         });
@@ -666,8 +674,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     @Override
     public int[] batchUpdate(final String[] sql) throws SQLException {
-        if (ArrayUtils.isEmpty(sql))
+        if (ArrayUtils.isEmpty(sql)) {
             throw new NullPointerException(sql + "SQL array must not be empty");
+        }
         Hasor.logDebug("Executing SQL batch update of %s statements", sql.length);
         //
         class BatchUpdateStatementCallback implements StatementCallback<int[]>, SqlProvider {
@@ -687,10 +696,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     /*连接不支持批处理*/
                     for (int i = 0; i < sql.length; i++) {
                         this.currSql = sql[i];
-                        if (!stmt.execute(sql[i]))
+                        if (!stmt.execute(sql[i])) {
                             rowsAffected[i] = stmt.getUpdateCount();
-                        else
+                        } else {
                             throw new SQLException("Invalid batch SQL statement: " + sql[i]);
+                        }
                     }
                 return rowsAffected;
             }
@@ -713,8 +723,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     @Override
     public int[] batchUpdate(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
-        if (batchArgs.length <= 0)
+        if (batchArgs.length <= 0) {
             return new int[] { 0 };
+        }
         return this.batchUpdate(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
     }
     @Override
@@ -733,8 +744,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     if (dbMetaData.supportsBatchUpdates()) {
                         for (int i = 0; i < batchSize; i++) {
                             pss.setValues(ps, i);
-                            if (ipss != null && ipss.isBatchExhausted(i))
+                            if (ipss != null && ipss.isBatchExhausted(i)) {
                                 break;
+                            }
                             ps.addBatch();
                         }
                         return ps.executeBatch();
@@ -742,18 +754,21 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                         List<Integer> rowsAffected = new ArrayList<Integer>();
                         for (int i = 0; i < batchSize; i++) {
                             pss.setValues(ps, i);
-                            if (ipss != null && ipss.isBatchExhausted(i))
+                            if (ipss != null && ipss.isBatchExhausted(i)) {
                                 break;
+                            }
                             rowsAffected.add(ps.executeUpdate());
                         }
                         int[] rowsAffectedArray = new int[rowsAffected.size()];
-                        for (int i = 0; i < rowsAffectedArray.length; i++)
+                        for (int i = 0; i < rowsAffectedArray.length; i++) {
                             rowsAffectedArray[i] = rowsAffected.get(i);
+                        }
                         return rowsAffectedArray;
                     }
                 } finally {
-                    if (pss instanceof ParameterDisposer)
+                    if (pss instanceof ParameterDisposer) {
                         ((ParameterDisposer) pss).cleanupParameters();
+                    }
                 }
             }
         });

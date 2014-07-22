@@ -38,14 +38,15 @@ class FilterChainInvocation implements FilterChain {
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse) throws IOException, ServletException {
         this.index++;
         //dispatch down the chain while there are more filters
-        if (this.index < this.filterDefinitions.length)
+        if (this.index < this.filterDefinitions.length) {
             this.filterDefinitions[this.index].doFilter(servletRequest, servletResponse, this);
-        else {
+        } else {
             //we've reached the end of the filterchain, let's try to dispatch to a servlet
             final boolean serviced = this.servletPipeline.service(servletRequest, servletResponse);
             //dispatch to the normal filter chain only if one of our servlets did not match
-            if (!serviced)
+            if (!serviced) {
                 this.proceedingChain.doFilter(servletRequest, servletResponse);
+            }
         }
     }
 }

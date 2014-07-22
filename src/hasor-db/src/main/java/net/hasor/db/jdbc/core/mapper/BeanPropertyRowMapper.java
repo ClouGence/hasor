@@ -51,8 +51,9 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         /*借助用属性名统一大写，来实现属性感性。*/
         this.columnMapping.clear();
         List<String> prop = BeanUtils.getPropertysAndFields(this.requiredType);
-        for (String pName : prop)
+        for (String pName : prop) {
             this.columnMapping.put(pName.toUpperCase(), pName);
+        }
     }
     public boolean isCaseInsensitive() {
         return this.caseInsensitive;
@@ -78,11 +79,13 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         for (int i = 1; i < nrOfColumns; i++) {
             String colName = rsmd.getColumnName(i);
             /*处理属性*/
-            if (!this.caseInsensitive)
+            if (!this.caseInsensitive) {
                 colName = this.columnMapping.get(colName.toUpperCase());
+            }
             Class<?> paramType = BeanUtils.getPropertyOrFieldType(this.requiredType, colName);
-            if (paramType == null)
+            if (paramType == null) {
                 continue;
+            }
             Object colValue = this.getColumnValue(rs, i, paramType);
             BeanUtils.writePropertyOrField(targetObject, colName, colValue);
         }
@@ -91,10 +94,11 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index, final Class<?> requiredType) throws SQLException {
         Object resultData = AbstractRowMapper.getResultSetValue(rs, index);
-        if (requiredType != null)
+        if (requiredType != null) {
             return AbstractRowMapper.convertValueToRequiredType(resultData, requiredType);
-        else
+        } else {
             return resultData;
+        }
     }
     /**
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).

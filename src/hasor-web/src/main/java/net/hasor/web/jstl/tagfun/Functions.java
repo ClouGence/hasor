@@ -26,14 +26,16 @@ import org.more.util.StringUtils;
 public class Functions {
     protected static AppContext getAppContext() {
         AppContext appContext = RuntimeListener.getLocalAppContext();
-        if (appContext != null)
+        if (appContext != null) {
             return appContext;
+        }
         throw new NullPointerException("AppContext is undefined.");
     }
     //
     public static Object defineBean(final String defineBean) {
-        if (StringUtils.isBlank(defineBean))
+        if (StringUtils.isBlank(defineBean)) {
             return null;
+        }
         return Functions.getAppContext().getBean(defineBean);
     }
     public static Object defineType(final String className) throws ClassNotFoundException {
@@ -41,29 +43,36 @@ public class Functions {
         return Functions.getAppContext().getInstance(defineType);
     }
     public static Object defineBind(final String name, final String bindingType) throws ClassNotFoundException {
-        if (StringUtils.isBlank(name))
+        if (StringUtils.isBlank(name)) {
             return null;
-        if (StringUtils.isBlank(bindingType))
+        }
+        if (StringUtils.isBlank(bindingType)) {
             return null;
+        }
         Class<?> defineType = Class.forName(bindingType);
         //
         Provider<?> provider = Functions.getAppContext().findBindingProvider(name, defineType);
-        if (provider != null)
+        if (provider != null) {
             return provider.get();
+        }
         return null;
     }
     public static boolean hasBean(final String defineBean) {
-        if (StringUtils.isBlank(defineBean))
+        if (StringUtils.isBlank(defineBean)) {
             return false;
+        }
         String[] names = Functions.getAppContext().getBeanNames();
-        for (String ns : names)
-            if (ns.equals(defineBean))
+        for (String ns : names) {
+            if (ns.equals(defineBean)) {
                 return true;
+            }
+        }
         return false;
     }
     public static boolean hasBind(final String name, final String className) throws ClassNotFoundException {
-        if (StringUtils.isBlank(name))
+        if (StringUtils.isBlank(name)) {
             return false;
+        }
         Class<?> defineType = Class.forName(className);
         //
         Provider<?> provider = Functions.getAppContext().findBindingProvider(name, defineType);

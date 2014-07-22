@@ -86,17 +86,19 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
     }
     @Override
     public V get(final Object key) {
-        if (key instanceof String)
+        if (key instanceof String) {
             return super.get(this.caseInsensitiveKeys.get(this.convertKey((String) key)));
-        else
+        } else {
             return null;
+        }
     }
     @Override
     public V remove(final Object key) {
-        if (key instanceof String)
+        if (key instanceof String) {
             return super.remove(this.caseInsensitiveKeys.remove(this.convertKey((String) key)));
-        else
+        } else {
             return null;
+        }
     }
     @Override
     public void clear() {

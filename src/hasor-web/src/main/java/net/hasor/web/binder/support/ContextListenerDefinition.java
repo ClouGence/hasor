@@ -32,8 +32,9 @@ class ContextListenerDefinition {
     }
     //
     protected ServletContextListener getTarget() {
-        if (this.listenerInstance == null)
+        if (this.listenerInstance == null) {
             this.listenerInstance = this.listenerProvider.get();
+        }
         return this.listenerInstance;
     }
     @Override
@@ -45,13 +46,15 @@ class ContextListenerDefinition {
     /**/
     public void contextInitialized(final ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null)
+        if (servletContextListener != null) {
             servletContextListener.contextInitialized(event);
+        }
     }
     /**/
     public void contextDestroyed(final ServletContextEvent event) {
         ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null)
+        if (servletContextListener != null) {
             servletContextListener.contextDestroyed(event);
+        }
     }
 }

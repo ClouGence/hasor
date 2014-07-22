@@ -53,8 +53,9 @@ class TransactionOperation implements TranOperations {
         Method targetMethod = invocation.getMethod();
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         //0.忽略
-        if (tranAnno == null)
+        if (tranAnno == null) {
             return invocation.proceed();
+        }
         //1.只读事务
         if (tranAnno.readOnly()) {
             tranStatus.setReadOnly();
@@ -78,8 +79,9 @@ class PropagationStrategy implements TranStrategy<Propagation> {
     @Override
     public Propagation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
-        if (tranAnno == null)
+        if (tranAnno == null) {
             return Propagation.REQUIRED;//默认设置
+        }
         return tranAnno.propagation();
     }
 }
@@ -88,8 +90,9 @@ class IsolationStrategy implements TranStrategy<Isolation> {
     @Override
     public Isolation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
-        if (tranAnno == null)
+        if (tranAnno == null) {
             return Isolation.DEFAULT;//默认设置
+        }
         return tranAnno.isolation();
     }
 }

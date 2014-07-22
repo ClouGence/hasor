@@ -44,13 +44,16 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
         //1.Validate column count.
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
-        if (nrOfColumns != 1)
+        if (nrOfColumns != 1) {
             throw new SQLException("Incorrect column count: expected 1, actual " + nrOfColumns);
+        }
         //2.Extract column value from JDBC ResultSet.
         Object result = AbstractRowMapper.getResultSetValue(rs, 1);
-        if (this.requiredType != null)
-            if (result != null && this.requiredType != null && !this.requiredType.isInstance(result))
+        if (this.requiredType != null) {
+            if (result != null && this.requiredType != null && !this.requiredType.isInstance(result)) {
                 result = AbstractRowMapper.convertValueToRequiredType(result, this.requiredType);
+            }
+        }
         //3.Return
         return (T) result;
     }

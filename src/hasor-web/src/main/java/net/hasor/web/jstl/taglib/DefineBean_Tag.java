@@ -49,10 +49,12 @@ public class DefineBean_Tag extends AbstractHasorTag {
     }
     @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var))
+        if (StringUtils.isBlank(this.var)) {
             throw new NullPointerException("tag param var is null.");
-        if (StringUtils.isBlank(this.bean))
+        }
+        if (StringUtils.isBlank(this.bean)) {
             throw new NullPointerException("tag param bean is null.");
+        }
         //
         Object targetBean = Functions.defineBean(this.bean);
         this.pageContext.setAttribute(this.var, targetBean);

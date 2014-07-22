@@ -57,8 +57,9 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     }
     private static String lookupColumnName(final ResultSetMetaData resultSetMetaData, final int columnIndex) throws SQLException {
         String name = resultSetMetaData.getColumnLabel(columnIndex);
-        if (name == null || name.length() < 1)
+        if (name == null || name.length() < 1) {
             name = resultSetMetaData.getColumnName(columnIndex);
+        }
         return name;
     }
     //

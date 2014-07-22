@@ -32,8 +32,9 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     //
     @Override
     public void init(final WebAppContext appContext) {
-        if (this.initialized)
+        if (this.initialized) {
             return;
+        }
         //1.收集HttpSessionListenerDefinition
         List<HttpSessionListenerDefinition> sessionListeners = appContext.findBindingBean(HttpSessionListenerDefinition.class);
         this.sessionListeners = sessionListeners.toArray(new HttpSessionListenerDefinition[sessionListeners.size()]);
@@ -45,30 +46,38 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     }
     @Override
     public void sessionCreated(final HttpSessionEvent event) {
-        if (this.initialized == false)
+        if (this.initialized == false) {
             return;
-        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners)
+        }
+        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
             httpSessionListenerDefinition.sessionCreated(event);
+        }
     }
     @Override
     public void sessionDestroyed(final HttpSessionEvent event) {
-        if (this.initialized == false)
+        if (this.initialized == false) {
             return;
-        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners)
+        }
+        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
             httpSessionListenerDefinition.sessionDestroyed(event);
+        }
     }
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        if (this.initialized == false)
+        if (this.initialized == false) {
             return;
-        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners)
+        }
+        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
             contextListenerDefinition.contextInitialized(event);
+        }
     }
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
-        if (this.initialized == false)
+        if (this.initialized == false) {
             return;
-        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners)
+        }
+        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
             contextListenerDefinition.contextDestroyed(event);
+        }
     }
 }

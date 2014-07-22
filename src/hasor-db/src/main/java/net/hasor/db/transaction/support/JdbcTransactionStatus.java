@@ -47,26 +47,32 @@ public class JdbcTransactionStatus implements TransactionStatus {
         return this.tranConn.getSavepointManager();
     }
     public void markHeldSavepoint() throws SQLException {
-        if (this.hasSavepoint())
+        if (this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has Savepoint");
-        if (this.getSavepointManager().supportSavepoint() == false)
+        }
+        if (this.getSavepointManager().supportSavepoint() == false) {
             throw new SQLException("SavepointManager does not support Savepoint.");
+        }
         //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
     public void releaseHeldSavepoint() throws SQLException {
-        if (this.hasSavepoint() == false)
+        if (this.hasSavepoint() == false) {
             throw new SQLException("TransactionStatus has not Savepoint");
-        if (this.getSavepointManager().supportSavepoint() == false)
+        }
+        if (this.getSavepointManager().supportSavepoint() == false) {
             throw new SQLException("SavepointManager does not support Savepoint.");
+        }
         //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
     public void rollbackToHeldSavepoint() throws SQLException {
-        if (this.hasSavepoint() == false)
+        if (this.hasSavepoint() == false) {
             throw new SQLException("TransactionStatus has not Savepoint");
-        if (this.getSavepointManager().supportSavepoint() == false)
+        }
+        if (this.getSavepointManager().supportSavepoint() == false) {
             throw new SQLException("SavepointManager does not support Savepoint.");
+        }
         //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
@@ -127,14 +133,16 @@ public class JdbcTransactionStatus implements TransactionStatus {
     }
     @Override
     public void setRollbackOnly() throws SQLException {
-        if (this.isCompleted())
+        if (this.isCompleted()) {
             throw new SQLException("Transaction is already completed.");
+        }
         this.rollbackOnly = true;
     }
     @Override
     public void setReadOnly() throws SQLException {
-        if (this.isCompleted())
+        if (this.isCompleted()) {
             throw new SQLException("Transaction is already completed.");
+        }
         this.readOnly = true;
     }
 }

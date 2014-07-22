@@ -28,11 +28,12 @@ class InnerArgPreparedStatementSetter implements PreparedStatementSetter, Parame
     }
     @Override
     public void setValues(final PreparedStatement ps) throws SQLException {
-        if (this.args != null)
+        if (this.args != null) {
             for (int i = 0; i < this.args.length; i++) {
                 Object arg = this.args[i];
                 this.doSetValue(ps, i + 1, arg);
             }
+        }
     }
     protected void doSetValue(final PreparedStatement ps, final int parameterPosition, final Object argValue) throws SQLException {
         InnerStatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
@@ -42,48 +43,3 @@ class InnerArgPreparedStatementSetter implements PreparedStatementSetter, Parame
         InnerStatementSetterUtils.cleanupParameters(this.args);
     }
 }
-//class ArgTypePreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
-//    private final Object[] args;
-//    private final int[]    argTypes;
-//    public ArgTypePreparedStatementSetter(Object[] args, int[] argTypes) throws SQLException {
-//        if ((args != null && argTypes == null) || //
-//                (args == null && argTypes != null) || //
-//                (args != null && args.length != argTypes.length))
-//            throw new SQLException("args and argTypes parameters must match");
-//        this.args = args;
-//        this.argTypes = argTypes;
-//    }
-//    public void setValues(PreparedStatement ps) throws SQLException {
-//        int parameterPosition = 1;
-//        if (this.args != null) {
-//            for (int i = 0; i < this.args.length; i++) {
-//                Object arg = this.args[i];
-//                if (arg instanceof Collection && this.argTypes[i] != Types.ARRAY) {
-//                    Collection entries = (Collection) arg;
-//                    for (Object entry : entries) {
-//                        if (entry instanceof Object[]) {
-//                            Object[] valueArray = ((Object[]) entry);
-//                            for (int k = 0; k < valueArray.length; k++) {
-//                                Object argValue = valueArray[k];
-//                                doSetValue(ps, parameterPosition, this.argTypes[i], argValue);
-//                                parameterPosition++;
-//                            }
-//                        } else {
-//                            doSetValue(ps, parameterPosition, this.argTypes[i], entry);
-//                            parameterPosition++;
-//                        }
-//                    }
-//                } else {
-//                    doSetValue(ps, parameterPosition, this.argTypes[i], arg);
-//                    parameterPosition++;
-//                }
-//            }
-//        }
-//    }
-//    protected void doSetValue(PreparedStatement ps, int parameterPosition, int argType, Object argValue) throws SQLException {
-//        StatementSetterUtils.setValue(ps, parameterPosition, argValue);
-//    }
-//    public void cleanupParameters() {
-//        StatementSetterUtils.cleanupParameters(this.args);
-//    }
-//}

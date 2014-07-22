@@ -37,11 +37,13 @@ public class ManagedServletPipeline {
     private volatile boolean    initialized = false;
     //
     public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
-        if (this.initialized)
+        if (this.initialized) {
             return;
+        }
         this.servletDefinitions = this.collectServletDefinitions(appContext);
-        for (ServletDefinition servletDefinition : this.servletDefinitions)
+        for (ServletDefinition servletDefinition : this.servletDefinitions) {
             servletDefinition.init(appContext, filterConfig);
+        }
         //everything was ok...
         this.initialized = true;
     }
@@ -64,15 +66,18 @@ public class ManagedServletPipeline {
     //
     public boolean service(final ServletRequest servletRequest, final ServletResponse servletResponse) throws IOException, ServletException {
         //stop at the first matching servlet and service
-        for (ServletDefinition servletDefinition : this.servletDefinitions)
-            if (servletDefinition.service(servletRequest, servletResponse))
+        for (ServletDefinition servletDefinition : this.servletDefinitions) {
+            if (servletDefinition.service(servletRequest, servletResponse)) {
                 return true;
+            }
+        }
         //there was no match...
         return false;
     }
     public void destroyPipeline(final AppContext appContext) {
-        for (ServletDefinition servletDefinition : this.servletDefinitions)
+        for (ServletDefinition servletDefinition : this.servletDefinitions) {
             servletDefinition.destroy();
+        }
     }
     //
     //
@@ -83,13 +88,14 @@ public class ManagedServletPipeline {
     RequestDispatcher getRequestDispatcher(final String path) {
         final String newRequestUri = path;
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
-        for (final ServletDefinition servletDefinition : this.servletDefinitions)
-            if (servletDefinition.matchesUri(path))
+        for (final ServletDefinition servletDefinition : this.servletDefinitions) {
+            if (servletDefinition.matchesUri(path)) {
                 return new RequestDispatcher() {
                     @Override
                     public void forward(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
-                        if (servletResponse.isCommitted() == true)
+                        if (servletResponse.isCommitted() == true) {
                             throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
+                        }
                         servletResponse.resetBuffer();
                         ServletRequest requestToProcess;
                         if (servletRequest instanceof HttpServletRequest) {
@@ -97,9 +103,10 @@ public class ManagedServletPipeline {
                             String servletPath = ((HttpServletRequest) servletRequest).getContextPath() + "/" + newRequestUri;
                             servletPath = servletPath.replaceAll("/{2,}", "/");
                             requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, servletPath);
-                        } else
+                        } else {
                             //通常不会进入这段代码.
                             requestToProcess = servletRequest;
+                        }
                         servletRequest.setAttribute(ManagedServletPipeline.REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                         /*执行转发*/
                         try {
@@ -119,6 +126,8 @@ public class ManagedServletPipeline {
                         }
                     }
                 };
+            }
+        }
         //otherwise, can't process
         return null;
     }
