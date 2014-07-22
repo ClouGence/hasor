@@ -42,7 +42,7 @@ public abstract class AbstractSimpleJDBCTest implements AppContextAware {
     }
     /**要监控的表名*/
     protected String watchTable() {
-        return null;
+        return "TB_User";
     }
     /**监视一张表的变化，当表的内容发生变化打印全表的内容。*/
     @DaemonThread
@@ -73,7 +73,7 @@ public abstract class AbstractSimpleJDBCTest implements AppContextAware {
                 System.out.println("watch : table no change.");
             }
             //
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }
     }
     /*--------------------------------------------------------------------------------------Utils*/

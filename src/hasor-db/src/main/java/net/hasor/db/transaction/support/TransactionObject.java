@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.support;
-import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import net.hasor.db.datasource.SavepointManager;
@@ -29,7 +28,7 @@ public class TransactionObject {
     private ConnectionHolder holder     = null;
     private DataSource       dataSource = null;
     private Isolation        oriIsolationLevel; //创建事务对象时的隔离级别，当事物结束之后用以恢复隔离级别
-    public TransactionObject(final ConnectionHolder holder, final Isolation oriIsolationLevel, final DataSource dataSource) {
+    public TransactionObject(final ConnectionHolder holder, final Isolation oriIsolationLevel, final DataSource dataSource) throws SQLException {
         this.holder = holder;
         this.dataSource = dataSource;
         this.oriIsolationLevel = oriIsolationLevel;
@@ -57,10 +56,17 @@ public class TransactionObject {
     public boolean hasTransaction() throws SQLException {
         return this.holder.hasTransaction();
     };
-    public void begin() throws SQLException {
-        Connection conn = this.holder.getConnection();
-        boolean autoMark = conn.getAutoCommit();
-        if (autoMark == true)
-            conn.setAutoCommit(false);//将连接autoCommit设置为false，意义为手动递交事务。
+    //
+    private boolean recoverMark = false;
+    public void beginTransaction() throws SQLException {
+        if (this.holder.hasTransaction() == false)
+            this.recoverMark = true;
+        this.holder.setTransaction();
+    }
+    public void stopTransaction() throws SQLException {
+        if (this.recoverMark == false)
+            return;
+        this.recoverMark = false;
+        this.holder.cancelTransaction();
     }
 }

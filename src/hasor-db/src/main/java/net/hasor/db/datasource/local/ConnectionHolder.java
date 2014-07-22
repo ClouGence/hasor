@@ -49,6 +49,7 @@ public class ConnectionHolder implements SavepointManager {
                 this.connection = null;
             }
     }
+    //
     public boolean isOpen() {
         if (this.referenceCount == 0)
             return false;
@@ -69,6 +70,18 @@ public class ConnectionHolder implements SavepointManager {
             return false;
         //AutoCommit被标记为 false 表示开启了事务。
         return conn.getAutoCommit() == false ? true : false;
+    }
+    /**设置事务状态*/
+    public void setTransaction() throws SQLException {
+        Connection conn = this.getConnection();
+        if (conn != null && conn.getAutoCommit() == true)
+            conn.setAutoCommit(false);
+    }
+    /**取消事务状态*/
+    public void cancelTransaction() throws SQLException {
+        Connection conn = this.getConnection();
+        if (conn != null && conn.getAutoCommit() == false)
+            conn.setAutoCommit(true);
     }
     //
     //

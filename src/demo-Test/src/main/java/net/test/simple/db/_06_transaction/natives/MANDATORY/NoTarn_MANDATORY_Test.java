@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.test.simple.db._06_transaction.natives.MANDATORY;
-import java.sql.Connection;
 import java.sql.SQLException;
-import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.test.junit.ContextConfiguration;
@@ -34,19 +32,11 @@ import org.junit.runner.RunWith;
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
 public class NoTarn_MANDATORY_Test extends AbstractNativesJDBCTest {
-    protected String watchTable() {
-        return "TB_User";
-    }
     @Test
     public void noTarn_MANDATORY_Test() throws Exception {
         System.out.println("--->>NoTarn_MANDATORY_Test<<--");
-        Thread.sleep(3000);
-        /* 预期执行结果为：
-         *   0.暂停3秒，监控线程打印全表数据.
-         *   1.开启事务..  (打印异常信息，因为环境中不存在事务)
-         */
-        /*Begin*/
-        Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
+        Thread.sleep(1000);
+        /* 在开启事务时引发异常，因为环境中不存在事务。 */
         try {
             TransactionStatus tranStatus = begin(Propagation.MANDATORY);
             throw new Exception("执行逻辑出错，不该出现此类问题。");

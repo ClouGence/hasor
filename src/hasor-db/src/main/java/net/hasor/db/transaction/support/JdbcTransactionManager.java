@@ -146,7 +146,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**初始化一个新的连接，并开启事务。*/
     protected void doBegin(final JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
-        tranConn.begin();
+        tranConn.beginTransaction();
     }
     //
     //
@@ -318,6 +318,7 @@ public class JdbcTransactionManager implements TransactionManager {
         if (transactionIsolation != null)
             defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
         defStatus.getTranConn().getHolder().released();//ref--
+        defStatus.getTranConn().getHolder().cancelTransaction();
         /*恢复挂起的事务*/
         if (defStatus.isSuspend())
             this.resume(defStatus);
@@ -335,7 +336,7 @@ public class JdbcTransactionManager implements TransactionManager {
         LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(this.getDataSource());
         ConnectionHolder holder = connSeq.currentHolder();
-        if (holder.isOpen() == false)
+        if (holder.isOpen() == false || holder.hasTransaction() == false)
             defStatus.markNewConnection();/*新事物，新连接*/
         holder.requested();
         //下面两行代码用于保存当前Connection的隔离级别，并且设置新的隔离级别。
