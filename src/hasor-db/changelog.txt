@@ -2,9 +2,14 @@
 * 改进:
     01.DefaultDataSourceHelper 更名为 LocalDataSourceHelper。
     02.LocalDataSourceHelper 支持每个线程绑定多个数据库连接。
-    03.瘦身 50% 以上。
+    03.瘦身 80% 以上。
     04.对 SQL 异常不在封装。
     05.Hasor-Jdbc v0.0.3 项目更名为 Hasor-DB v0.0.1。
+    06.增加事务管理器、事务拦截器
+    07.支持7种事务传播属性。
+    08.支持隔离级别设置。
+    09.支持多数据源。
+    10.支持多数据源事务控制（非JPA）
 * 修复:
     01.修复部分接口方法传入的参数不支持 ParameterDisposer 清理过程的问题。
     02.修复批量SQL操作，因参数不同而导致的一些问题。
