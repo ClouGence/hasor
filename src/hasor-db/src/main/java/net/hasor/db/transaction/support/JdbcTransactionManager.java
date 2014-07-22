@@ -318,7 +318,7 @@ public class JdbcTransactionManager implements TransactionManager {
         if (transactionIsolation != null)
             defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
         defStatus.getTranConn().getHolder().released();//ref--
-        defStatus.getTranConn().getHolder().cancelTransaction();
+        defStatus.getTranConn().stopTransaction();
         /*恢复挂起的事务*/
         if (defStatus.isSuspend())
             this.resume(defStatus);

@@ -15,7 +15,11 @@
  */
 package net.test.simple.db._06_transaction.simple.NEVER;
 import static net.hasor.test.utils.HasorUnit.newID;
+import java.sql.Connection;
+import net.hasor.db.datasource.DataSourceUtils;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.interceptor.simple.RollBackSQLException;
 import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
@@ -32,39 +36,50 @@ import org.junit.runner.RunWith;
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
 public class NoTarn_NEVER_Test extends AbstractSimpleJDBCTest {
-    protected String watchTable() {
-        return "TB_User";
-    }
     @Test
-    public void haveTarn_NEVER_Test() throws Exception {
-        System.out.println("--->>haveTarn_NEVER_Test<<--");
-        Thread.sleep(3000);
-        /* 预期执行结果为：
-         *   0.暂停3秒，监控线程打印全表数据.
-         *   1.开启事务..
-         *   2.新建‘安妮.贝隆’用户..
-         *   3.暂停3秒，监控线程打印全表数据.(包含‘安妮.贝隆’).
-         *   4.新建‘赵飞燕’用户..
-         *   5.暂停3秒，监控线程打印全表数据.(包含‘赵飞燕’).
-         *   6.回滚事务..
-         *   7.暂停3秒，监控线程打印变更之后的全表数据(包含‘安妮.贝隆’、‘赵飞燕’).
+    public void noTarn_NEVER_Test() throws Exception {
+        System.out.println("--->>noTarn_NEVER_Test<<--");
+        Thread.sleep(1000);
+        /* 执行步骤：
+         *   T1   ，新建‘默罕默德’用户           (打印：默罕默德).
+         *      T2，开启事务                                (不打印).
+         *      T2，新建‘安妮.贝隆’用户        (打印：默罕默德、安妮.贝隆).
+         *      T2，回滚事务                                 (不打印).
+         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、赵飞燕).
          */
-        this.executeTransactional();
+        Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
+        {
+            /*T1*/
+            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘默罕默德’...");
+            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        {
+            /*T2*/
+            System.out.println("begin T2!");
+            this.executeTransactional();
+            System.out.println("rollBack T2!");
+            Thread.sleep(1000);
+        }
+        { /*T1*/
+            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘赵飞燕’...");
+            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        DataSourceUtils.releaseConnection(conn, getDataSource());//释放连接
     }
-    //在调用该方法之前环境中已经存在事务。
+    //
+    //
     @Transactional(propagation = Propagation.NEVER)
     public void executeTransactional() throws Exception {
         {
             String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘安妮.贝隆’...");
             this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         }
-        {
-            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘赵飞燕’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(3000);
-        }
+        throw new RollBackSQLException();
     }
 }
