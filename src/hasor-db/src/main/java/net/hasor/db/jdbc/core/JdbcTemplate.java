@@ -186,8 +186,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         } catch (SQLException ex) {
             throw ex;
         } finally {
-            if (useLocal)
+            if (useLocal) {
                 DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
+            }
         }
     }
     @Override
@@ -349,7 +350,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     rs = stmt.executeQuery(sql);
                     return rse.extractData(rs);
                 } finally {
-                    rs.close();
+                    if (rs != null) {
+                        rs.close();
+                    }
                     rs = null;
                 }
             }

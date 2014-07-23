@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.simple.db._06_transaction.simple;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -94,7 +95,13 @@ public abstract class AbstractSimpleJDBCTest implements AppContextAware {
     /*-----------------------------------------------------------------------------------InitData*/
     //
     @Before
-    public void initData() throws SQLException {
-        this.getJdbcTemplate().execute("delete from TB_User;");
+    public void initData() throws SQLException, IOException {
+        JdbcTemplate jdbc = this.getJdbcTemplate();
+        boolean hasTab = jdbc.tableExist("TB_User");
+        /*装载 SQL 脚本文件*/
+        if (hasTab == false) {
+            jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User.sql");
+        }
+        jdbc.execute("delete from TB_User;");
     }
 }

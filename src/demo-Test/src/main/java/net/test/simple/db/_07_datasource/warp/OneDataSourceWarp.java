@@ -13,47 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db;
+package net.test.simple.db._07_datasource.warp;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class SimpleJDBCWarp implements Module {
+public class OneDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.获取数据库连接配置信息
         Settings settings = apiBinder.getSettings();
-        String driverString = settings.getString("hasor-jdbc.driver");
-        String urlString = settings.getString("hasor-jdbc.url");
-        String userString = settings.getString("hasor-jdbc.user");
-        String pwdString = settings.getString("hasor-jdbc.password");
-        int poolMaxSize = 200;
-        Hasor.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
+        String driverString = settings.getString("hasor-jdbc-mysql.driver");
+        String urlString = settings.getString("hasor-jdbc-mysql.url");
+        String userString = settings.getString("hasor-jdbc-mysql.user");
+        String pwdString = settings.getString("hasor-jdbc-mysql.password");
         //2.创建数据库连接池
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(driverString);
-        dataSource.setJdbcUrl(urlString);
-        dataSource.setUser(userString);
-        dataSource.setPassword(pwdString);
-        dataSource.setMaxPoolSize(poolMaxSize);
-        dataSource.setInitialPoolSize(1);
-        //dataSource.setAutomaticTestTable("DB_TEST_ATest001");
-        dataSource.setIdleConnectionTestPeriod(18000);
-        dataSource.setCheckoutTimeout(3000);
-        dataSource.setTestConnectionOnCheckin(true);
-        dataSource.setAcquireRetryDelay(1000);
-        dataSource.setAcquireRetryAttempts(30);
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxIdleTime(25000);
+        DataSource dataSource = C3p0DataSourceFactory.createDataSource(driverString, urlString, userString, pwdString);
         //3.绑定DataSource接口实现
         apiBinder.bindType(DataSource.class).toInstance(dataSource);
         //4.绑定JdbcTemplate接口实现

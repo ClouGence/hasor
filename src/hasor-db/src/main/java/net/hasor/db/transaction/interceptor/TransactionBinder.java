@@ -22,6 +22,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
+import org.more.util.ContextClassLoaderLocal;
 /**
  * 一个被事务拦截器拦截的方法，当有多个数据源可以选择时，只能控制一个数据源的事务。
  * 一个方法当调用多个小方法时，每个小方法可以有自己独立的事务。
@@ -30,16 +31,21 @@ import net.hasor.db.transaction.Propagation;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TransactionBinder {
-    private ApiBinder apiBinder = null;
+    private static ContextClassLoaderLocal<Boolean> initInterceptor = new ContextClassLoaderLocal<Boolean>(false);
+    private ApiBinder                               apiBinder       = null;
     public TransactionBinder(final ApiBinder apiBinder) {
         this.apiBinder = apiBinder;
+        /*下面代码只初始化一次，因为它是通用的。*/
+        if (initInterceptor.get() == false) {
+            TranInterceptor tranInterceptor = new TranInterceptor();
+            this.apiBinder.registerAware(tranInterceptor);
+            this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
+            initInterceptor.set(true);
+        }
     }
     //
     /*---------------------------------------------------------------------------------------Bind*/
     public TranInterceptorBindBuilder bind(final DataSource dataSource) {
-        TranInterceptor tranInterceptor = new TranInterceptor();
-        this.apiBinder.registerAware(tranInterceptor);
-        this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
         return new TranInterceptorBindBuilder(dataSource);
     }
     //

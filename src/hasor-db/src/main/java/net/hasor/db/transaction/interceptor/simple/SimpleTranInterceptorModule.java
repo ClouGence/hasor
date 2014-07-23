@@ -59,7 +59,6 @@ class TransactionOperation implements TranOperations {
         //1.只读事务
         if (tranAnno.readOnly()) {
             tranStatus.setReadOnly();
-            return invocation.proceed();
         }
         //2.事务行为控制
         Object returnObj = null;
@@ -69,9 +68,51 @@ class TransactionOperation implements TranOperations {
             tranStatus.setRollbackOnly();
             return returnObj;
         } catch (Throwable e) {
-            throw e;
+            if (this.testRollBackFor(tranAnno, e) == true) {
+                tranStatus.setRollbackOnly();
+            } else if (this.testNoRollBackFor(tranAnno, e) == true) {
+                //
+            } else {
+                throw e;
+            }
         }
         return returnObj;
+    }
+    private boolean testNoRollBackFor(Transactional tranAnno, Throwable e) {
+        //1.test Class
+        Class<? extends Throwable>[] noRollBackType = tranAnno.noRollbackFor();
+        for (Class<? extends Throwable> cls : noRollBackType) {
+            if (cls.isInstance(e) == true) {
+                return true;
+            }
+        }
+        //2.test Name
+        String[] noRollBackName = tranAnno.noRollbackForClassName();
+        String errorType = e.getClass().getName();
+        for (String name : noRollBackName) {
+            if (errorType.equals(name) == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean testRollBackFor(Transactional tranAnno, Throwable e) {
+        //1.test Class
+        Class<? extends Throwable>[] rollBackType = tranAnno.rollbackFor();
+        for (Class<? extends Throwable> cls : rollBackType) {
+            if (cls.isInstance(e) == true) {
+                return true;
+            }
+        }
+        //2.test Name
+        String[] rollBackName = tranAnno.rollbackForClassName();
+        String errorType = e.getClass().getName();
+        for (String name : rollBackName) {
+            if (errorType.equals(name) == true) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 /**决定传播属性*/

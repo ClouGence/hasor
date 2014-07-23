@@ -20,8 +20,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.utils.HasorUnit;
-import net.test.simple.db.SimpleJDBCWarp;
 import net.test.simple.db._02_select.entity.TB_User;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 /**
  * 
@@ -33,7 +33,7 @@ public class Entity_QueryTest {
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);

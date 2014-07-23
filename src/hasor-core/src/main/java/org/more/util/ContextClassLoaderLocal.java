@@ -101,11 +101,16 @@ public class ContextClassLoaderLocal<T> {
     private Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<ClassLoader, T>();
     private boolean             globalValueInitialized = false;
     private T                   globalValue;
-    /**
-     * Construct a context classloader instance
-     */
+    /** Construct a context classloader instance */
     public ContextClassLoaderLocal() {
         super();
+    }
+    /** Construct a context classloader instance */
+    public ContextClassLoaderLocal(T globalValue) {
+        super();
+        if (globalValue != null) {
+            this.set(globalValue);
+        }
     }
     /**
      * Returns the initial value for this ContextClassLoaderLocal

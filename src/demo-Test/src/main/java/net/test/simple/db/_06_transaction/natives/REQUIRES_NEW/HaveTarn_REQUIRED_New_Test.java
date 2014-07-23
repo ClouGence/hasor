@@ -22,8 +22,8 @@ import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
-import net.test.simple.db.SimpleJDBCWarp;
 import net.test.simple.db._06_transaction.natives.AbstractNativesJDBCTest;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
+@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = OneDataSourceWarp.class)
 public class HaveTarn_REQUIRED_New_Test extends AbstractNativesJDBCTest {
     @Test
     public void haveTarn_REQUIRED_New_Test() throws Exception {

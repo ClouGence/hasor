@@ -24,7 +24,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.utils.HasorUnit;
-import net.test.simple.db.SimpleJDBCWarp;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 /**
  * 
@@ -36,7 +36,7 @@ public class MapParam_QueryTest {
     public void mapParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         Map<String, String> paramMap = new HashMap<String, String>();

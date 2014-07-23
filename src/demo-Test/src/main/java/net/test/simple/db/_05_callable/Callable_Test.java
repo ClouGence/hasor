@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.SimpleJDBCWarp;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 /**
  * 存储过程调用
@@ -31,7 +31,7 @@ public class Callable_Test {
     public void testCallable() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>testCallable<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         //

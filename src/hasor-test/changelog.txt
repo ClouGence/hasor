@@ -1,3 +1,5 @@
 ﻿===== Hasor-Test v0.0.1
 * 新增:
-    1.
+    01.支持测试方法通过@TestOrder注解排序。
+    02.支持@DaemonThread 注解将一个方法作为后台线程启动。
+    03.支持@ContextConfiguration 注解配置AppContext。

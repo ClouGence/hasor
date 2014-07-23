@@ -1,6 +1,11 @@
 ===== Hasor-Core v0.0.8
 * 新增:
-    01.AopMatchers类型新增subClassesOf方法。匹配给定类型的子类（或实现了的接口），迁移至Hasor-Quick项目。
+    01.确立类型绑定机制。
+    02.确立Bean机制。
+    03.内置Aop接口，不再直接依赖Aop联盟的包。
+    04.支持Scope。
+    05.支持Provider。
+    06.AopMatchers类型新增subClassesOf方法。匹配给定类型的子类（或实现了的接口），迁移至Hasor-Quick项目。
 * 改进:
     01.Settings接口的 getNameSpace 方法改名为 getSetting。
     02.AppContext接口的 findBean、findProvider 方法更名 findBindingBean、findBindingProvider
@@ -10,6 +15,7 @@
     05.所有主要接口50%以上进行改进，改进的目的是不再强制依赖Guice。
     06.添加Provider接口、EventContext接口。
     07.删除ModulePropxy类、删除启动依赖检查功能。
+    08.瘦身（去掉JSON包、Ognl包、其它一些工具包）。
 
 ===== Hasor-Core v0.0.7
 * 修复:

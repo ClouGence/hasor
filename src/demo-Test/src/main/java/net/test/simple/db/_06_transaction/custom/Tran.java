@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.junit;
+package net.test.simple.db._06_transaction.custom;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.Propagation;
 /**
- * 当测试用例启动之后，Hasor测试框架会独立线程启动该方法，作为陪伴直到测试结束。
- * 注意该方法不能同时与@Test在一个方法上使用。
- * @version : 2014年7月8日
+ * 
  * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-10-30
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DaemonThread {}
+public @interface Tran {
+    /**传播属性*/
+    public Propagation propagation() default Propagation.REQUIRED;
+    /**隔离级别*/
+    public Isolation isolation() default Isolation.DEFAULT;
+}

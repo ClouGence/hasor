@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import net.hasor.core.AppContext;
 import net.hasor.core.context.HasorFactory;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.simple.db.SimpleJDBCWarp;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 /***
  * 基本的delete操作语句执行
@@ -30,7 +30,7 @@ public class Simple_DeleteJDBCTest {
     public void simple_DeleteJDBCTest() throws SQLException {
         System.out.println("--->>simple_DeleteJDBCTest<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new SimpleJDBCWarp());
+        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
     }

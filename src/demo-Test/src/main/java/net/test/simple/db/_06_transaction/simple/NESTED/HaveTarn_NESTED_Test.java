@@ -23,8 +23,8 @@ import net.hasor.db.transaction.interceptor.simple.RollBackSQLException;
 import net.hasor.db.transaction.interceptor.simple.Transactional;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
-import net.test.simple.db.SimpleJDBCWarp;
 import net.test.simple.db._06_transaction.simple.AbstractSimpleJDBCTest;
+import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = SimpleJDBCWarp.class)
+@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = OneDataSourceWarp.class)
 public class HaveTarn_NESTED_Test extends AbstractSimpleJDBCTest {
     @Test
     public void haveTarn_NESTED_Test() throws Exception {
