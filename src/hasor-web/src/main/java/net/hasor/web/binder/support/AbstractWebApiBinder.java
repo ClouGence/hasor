@@ -23,11 +23,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
 import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.binder.InstanceProvider;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
 import org.more.util.ArrayUtils;
@@ -63,24 +61,6 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             list.add(object);
         }
         return list;
-    }
-    /**Class类型的Provider代理 */
-    class ClassProvider<T> implements Provider<T>, AppContextAware {
-        private Class<? extends T> instanceType = null;
-        private AppContext         appContext   = null;
-        public ClassProvider(final Class<? extends T> instanceType) {
-            AbstractWebApiBinder.this.bindType(instanceType);/*绑定类型*/
-            AbstractWebApiBinder.this.registerAware(this);/*注册AppContextAware*/
-            this.instanceType = instanceType;
-        }
-        @Override
-        public void setAppContext(final AppContext appContext) {
-            this.appContext = appContext;
-        }
-        @Override
-        public T get() {
-            return this.appContext.getInstance(this.instanceType);
-        }
     }
     //
     /*-------------------------------------------------------------------------------------Filter*/
@@ -127,6 +107,10 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.through(0, filterProvider, null);
         }
         @Override
+        public void through(RegisterInfo<Filter> filterRegister) {
+            this.through(0, filterRegister, null);
+        }
+        @Override
         public void through(final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
             this.through(0, filterKey, initParams);
         }
@@ -138,7 +122,10 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         public void through(final Provider<Filter> filterProvider, final Map<String, String> initParams) {
             this.through(0, filterProvider, initParams);
         }
-        //
+        @Override
+        public void through(RegisterInfo<Filter> filterRegister, Map<String, String> initParams) {
+            this.through(0, filterRegister, initParams);
+        }
         @Override
         public void through(final int index, final Class<? extends Filter> filterKey) {
             this.through(index, filterKey, null);
@@ -152,22 +139,34 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.through(index, filterProvider, null);
         }
         @Override
+        public void through(int index, RegisterInfo<Filter> filterRegister) {
+            this.through(index, filterRegister, null);
+        }
+        //
+        @Override
         public void through(final int index, final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
-            this.through(index, new ClassProvider<Filter>(filterKey), initParams);
+            RegisterInfo<Filter> filterRegister = bindType(Filter.class).to(filterKey).toInfo();
+            this.through(index, filterRegister, initParams);
         }
         @Override
         public void through(final int index, final Filter filter, final Map<String, String> initParams) {
-            this.through(index, new InstanceProvider<Filter>(filter), initParams);
+            RegisterInfo<Filter> filterRegister = bindType(Filter.class).toInstance(filter).toInfo();
+            this.through(index, filterRegister, initParams);
         }
         @Override
         public void through(final int index, final Provider<Filter> filterProvider, Map<String, String> initParams) {
+            RegisterInfo<Filter> filterRegister = bindType(Filter.class).toProvider(filterProvider).toInfo();
+            this.through(index, filterRegister, initParams);
+        }
+        @Override
+        public void through(int index, RegisterInfo<Filter> filterRegister, Map<String, String> initParams) {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterProvider, initParams);
-                AbstractWebApiBinder.this.bindType(FilterDefinition.class, define);/*单列*/
+                FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
+                bindType(FilterDefinition.class, define);
             }
         }
     }
@@ -215,6 +214,10 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.with(0, servletProvider, null);
         }
         @Override
+        public void with(RegisterInfo<HttpServlet> servletRegister) {
+            this.with(0, servletRegister, null);
+        }
+        @Override
         public void with(final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
             this.with(0, servletKey, initParams);
         }
@@ -226,7 +229,10 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         public void with(final Provider<HttpServlet> servletProvider, final Map<String, String> initParams) {
             this.with(0, servletProvider, initParams);
         }
-        //
+        @Override
+        public void with(RegisterInfo<HttpServlet> servletRegister, Map<String, String> initParams) {
+            this.with(0, servletRegister, initParams);
+        }
         @Override
         public void with(final int index, final Class<? extends HttpServlet> servletKey) {
             this.with(index, servletKey, null);
@@ -240,22 +246,34 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             this.with(index, servletProvider, null);
         }
         @Override
+        public void with(int index, RegisterInfo<HttpServlet> servletRegister) {
+            this.with(index, servletRegister, null);
+        }
+        //
+        @Override
         public void with(final int index, final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
-            this.with(index, new ClassProvider<HttpServlet>(servletKey), initParams);
+            RegisterInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).to(servletKey).toInfo();
+            this.with(index, servletRegister, initParams);
         }
         @Override
         public void with(final int index, final HttpServlet servlet, final Map<String, String> initParams) {
-            this.with(index, new InstanceProvider<HttpServlet>(servlet), initParams);
+            RegisterInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).toInstance(servlet).toInfo();
+            this.with(index, servletRegister, initParams);
         }
         @Override
         public void with(final int index, final Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
+            RegisterInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).toProvider(servletProvider).toInfo();
+            this.with(index, servletRegister, initParams);
+        }
+        @Override
+        public void with(int index, RegisterInfo<HttpServlet> servletRegister, Map<String, String> initParams) {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletProvider, initParams);
-                AbstractWebApiBinder.this.bindType(ServletDefinition.class, define);/*单列*/
+                ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletRegister, initParams);
+                bindType(ServletDefinition.class, define);/*单列*/
             }
         }
     }
@@ -268,15 +286,22 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     class ServletContextListenerBuilder implements ServletContextListenerBindingBuilder {
         @Override
         public void bind(final Class<? extends ServletContextListener> listenerKey) {
-            this.bind(new ClassProvider<ServletContextListener>(listenerKey));
+            RegisterInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).to(listenerKey).toInfo();
+            this.bind(listenerRegister);
         }
         @Override
         public void bind(final ServletContextListener sessionListener) {
-            this.bind(new InstanceProvider<ServletContextListener>(sessionListener));
+            RegisterInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toInstance(sessionListener).toInfo();
+            this.bind(listenerRegister);
         }
         @Override
         public void bind(final Provider<ServletContextListener> listenerProvider) {
-            AbstractWebApiBinder.this.bindType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerProvider));/*单列*/
+            RegisterInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toProvider(listenerProvider).toInfo();
+            this.bind(listenerRegister);
+        }
+        @Override
+        public void bind(RegisterInfo<ServletContextListener> listenerRegister) {
+            bindType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerRegister));
         }
     }
     //
@@ -288,15 +313,22 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     class SessionListenerBuilder implements SessionListenerBindingBuilder {
         @Override
         public void bind(final Class<? extends HttpSessionListener> listenerKey) {
-            this.bind(new ClassProvider<HttpSessionListener>(listenerKey));
+            RegisterInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).to(listenerKey).toInfo();
+            this.bind(listenerRegister);
         }
         @Override
         public void bind(final HttpSessionListener sessionListener) {
-            this.bind(new InstanceProvider<HttpSessionListener>(sessionListener));
+            RegisterInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toInstance(sessionListener).toInfo();
+            this.bind(listenerRegister);
         }
         @Override
         public void bind(final Provider<HttpSessionListener> listenerProvider) {
-            AbstractWebApiBinder.this.bindType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerProvider));/*单列*/
+            RegisterInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toProvider(listenerProvider).toInfo();
+            this.bind(listenerRegister);
+        }
+        @Override
+        public void bind(RegisterInfo<HttpSessionListener> listenerRegister) {
+            bindType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerRegister));
         }
     }
 }

@@ -16,23 +16,25 @@
 package net.hasor.web.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
+import net.hasor.web.WebAppContext;
 /**
  * 
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
 class HttpSessionListenerDefinition {
-    private Provider<HttpSessionListener> listenerProvider = null;
-    private HttpSessionListener           listenerInstance = null;
+    private RegisterInfo<HttpSessionListener> listenerRegister = null;
+    private HttpSessionListener               listenerInstance = null;
+    private WebAppContext                     appContext       = null;
     //
-    public HttpSessionListenerDefinition(final Provider<HttpSessionListener> listenerProvider) {
-        this.listenerProvider = listenerProvider;
+    public HttpSessionListenerDefinition(final RegisterInfo<HttpSessionListener> listenerRegister) {
+        this.listenerRegister = listenerRegister;
     }
     //
     protected HttpSessionListener getTarget() {
         if (this.listenerInstance == null) {
-            this.listenerInstance = this.listenerProvider.get();
+            this.listenerInstance = this.appContext.getInstance(this.listenerRegister);
         }
         return this.listenerInstance;
     }
@@ -40,6 +42,11 @@ class HttpSessionListenerDefinition {
     public String toString() {
         return String.format("type %s listenerKey=%s",//
                 HttpSessionListenerDefinition.class, this.listenerInstance);
+    }
+    /**/
+    public void init(final WebAppContext appContext) {
+        this.appContext = appContext;
+        this.getTarget();
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/

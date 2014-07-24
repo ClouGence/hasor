@@ -26,7 +26,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import net.hasor.core.Provider;
+import net.hasor.core.RegisterInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**
@@ -35,14 +35,14 @@ import org.more.util.Iterators;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ServletDefinition extends AbstractServletModuleBinding {
-    private Provider<HttpServlet> servletProvider = null;
-    private HttpServlet           servletInstance = null;
-    private UriPatternMatcher     patternMatcher  = null;
-    private WebAppContext         appContext      = null;
+    private RegisterInfo<HttpServlet> servletRegister = null;
+    private HttpServlet               servletInstance = null;
+    private UriPatternMatcher         patternMatcher  = null;
+    private WebAppContext             appContext      = null;
     //
-    public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final Provider<HttpServlet> servletProvider, final Map<String, String> initParams) {
+    public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final RegisterInfo<HttpServlet> servletRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
-        this.servletProvider = servletProvider;
+        this.servletRegister = servletRegister;
         this.patternMatcher = uriPatternMatcher;
     }
     protected HttpServlet getTarget() throws ServletException {
@@ -51,15 +51,15 @@ class ServletDefinition extends AbstractServletModuleBinding {
         }
         //
         final Map<String, String> initParams = this.getInitParams();
-        this.servletInstance = this.servletProvider.get();
+        this.servletInstance = this.appContext.getInstance(this.servletRegister);
         this.servletInstance.init(new ServletConfig() {
             @Override
             public String getServletName() {
-                return (ServletDefinition.this.servletInstance == null ? ServletDefinition.this.servletProvider : ServletDefinition.this.servletInstance).toString();
+                return (servletInstance == null ? servletRegister : servletInstance).toString();
             }
             @Override
             public ServletContext getServletContext() {
-                return ServletDefinition.this.appContext.getServletContext();
+                return appContext.getServletContext();
             }
             @Override
             public String getInitParameter(final String s) {

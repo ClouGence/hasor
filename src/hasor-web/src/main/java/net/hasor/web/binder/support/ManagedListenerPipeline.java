@@ -38,9 +38,15 @@ public class ManagedListenerPipeline implements ListenerPipeline {
         //1.收集HttpSessionListenerDefinition
         List<HttpSessionListenerDefinition> sessionListeners = appContext.findBindingBean(HttpSessionListenerDefinition.class);
         this.sessionListeners = sessionListeners.toArray(new HttpSessionListenerDefinition[sessionListeners.size()]);
+        for (HttpSessionListenerDefinition def : this.sessionListeners) {
+            def.init(appContext);
+        }
         //2.收集ContextListenerDefinition
         List<ContextListenerDefinition> contextListeners = appContext.findBindingBean(ContextListenerDefinition.class);
         this.contextListeners = contextListeners.toArray(new ContextListenerDefinition[contextListeners.size()]);
+        for (ContextListenerDefinition def : this.contextListeners) {
+            def.init(appContext);
+        }
         //everything was ok...
         this.initialized = true;
     }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="info" class="org.apache.log4j.ConsoleAppender">
+		<param name="threshold" value="info" />
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{MM/dd HH:mm:ss} [%t] %p: %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="levelMin" value="info" />
+			<param name="levelMax" value="info" />
+		</filter>
+	</appender>
+	<appender name="warn" class="org.apache.log4j.ConsoleAppender">
+		<param name="threshold" value="warn" />
+		<param name="Target" value="System.err" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{MM/dd HH:mm:ss} [%t] %p: %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="levelMin" value="warn" />
+			<param name="levelMax" value="warn" />
+		</filter>
+	</appender>
+	<appender name="error" class="org.apache.log4j.ConsoleAppender">
+		<param name="threshold" value="error" />
+		<param name="Target" value="System.err" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{MM/dd HH:mm:ss} [%t] %p: %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="levelMin" value="error" />
+			<param name="levelMax" value="error" />
+		</filter>
+	</appender>
+
+	<root>
+		<!-- 设置接收所有输出的通道 -->
+		<priority value="info" />
+		<appender-ref ref="error" />
+		<appender-ref ref="warn" />
+		<appender-ref ref="info" />
+	</root>
+</log4j:configuration>

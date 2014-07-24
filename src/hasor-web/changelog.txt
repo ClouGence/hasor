@@ -1,4 +1,6 @@
 ===== Hasor-Web v0.0.6
+* 新增:
+    01.新增WebApiBinder接口支持RegisterInfo方式绑定。
 * 修复:
     01.因 ModulePropxy 更名为 ModuleProxy所做的连带改动。
     02.修复了JSTL 标签fireEvent无法正常工作的问题。

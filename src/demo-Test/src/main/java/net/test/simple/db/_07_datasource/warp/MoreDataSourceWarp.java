@@ -31,10 +31,10 @@ public class MoreDataSourceWarp implements Module {
         {
             //MySQL
             Settings settings = apiBinder.getSettings();
-            String driverString = settings.getString("hasor-jdbc-mysql.driver");
-            String urlString = settings.getString("hasor-jdbc-mysql.url");
-            String userString = settings.getString("hasor-jdbc-mysql.user");
-            String pwdString = settings.getString("hasor-jdbc-mysql.password");
+            String driverString = settings.getString("demo-jdbc-mysql.driver");
+            String urlString = settings.getString("demo-jdbc-mysql.url");
+            String userString = settings.getString("demo-jdbc-mysql.user");
+            String pwdString = settings.getString("demo-jdbc-mysql.password");
             //配置数据源
             DataSource dataSource = C3p0DataSourceFactory.createDataSource(driverString, urlString, userString, pwdString);
             this.configDataSource(apiBinder, dataSource, "mysql");
@@ -42,10 +42,10 @@ public class MoreDataSourceWarp implements Module {
         {
             //HSQL
             Settings settings = apiBinder.getSettings();
-            String driverString = settings.getString("hasor-jdbc-hsql.driver");
-            String urlString = settings.getString("hasor-jdbc-hsql.url");
-            String userString = settings.getString("hasor-jdbc-hsql.user");
-            String pwdString = settings.getString("hasor-jdbc-hsql.password");
+            String driverString = settings.getString("demo-jdbc-hsql.driver");
+            String urlString = settings.getString("demo-jdbc-hsql.url");
+            String userString = settings.getString("demo-jdbc-hsql.user");
+            String pwdString = settings.getString("demo-jdbc-hsql.password");
             //配置数据源
             DataSource dataSource = C3p0DataSourceFactory.createDataSource(driverString, urlString, userString, pwdString);
             this.configDataSource(apiBinder, dataSource, "hsql");
