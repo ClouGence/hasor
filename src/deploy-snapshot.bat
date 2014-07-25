@@ -1,2 +1,2 @@
-call mvn deploy -DdevMode=true
+call mvn clean deploy
 pause

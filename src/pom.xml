@@ -1,4 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -15,105 +15,67 @@
 	<name>Hasor</name>
 	<description>master POM</description>
 	<url>http://www.hasor.net/</url>
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2014</inceptionYear>
 
 	<!-- 授权协议 -->
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
+	<!-- SCM -->
 	<scm>
-		<connection>scm:git:git@github.com:zycgit/hasor.git</connection>
-		<developerConnection>scm:git:git@github.com:zycgit/hasor.git</developerConnection>
-		<url>git@github.com:zycgit/hasor.git</url>
+		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
+		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
+		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
 	</scm>
-
-	<!-- 便于开发的配置 -->
-	<profiles>
-		<profile>
-			<activation>
-				<property>
-					<name>devMode</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<modules>
-				<module>hasor-core</module>
-				<module>hasor-web</module>
-				<module>hasor-db</module>
-				<module>hasor-test</module>
-
-				<!-- module>hasor-mvc</module -->
-				<!-- module>hasor-security</module -->
-				<!-- module>hasor-quick</module -->
-			</modules>
-		</profile>
-	</profiles>
 
 	<!-- 构建描述 -->
 	<build>
 		<plugins>
-			<!-- skip test -->
+			<!-- Compile -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<!-- compiler use JDK 1.5 -->
-			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<compilerVersion>1.6</compilerVersion>
-					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<!-- Test -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.3</version>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
 				<configuration>
-					<encoding>UTF-8</encoding>
+					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
-			<!-- package sources to jar -->
+			<!-- Source -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<attach>true</attach>
-				</configuration>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- package javadocs to jar -->
+			<!-- Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
-				<configuration>
-					<aggregate>true</aggregate>
-					<charset>UTF-8</charset><!-- -->
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding><!-- -->
-				</configuration>
 				<executions>
 					<execution>
-						<id>attach-javadocs</id>
+						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
@@ -123,6 +85,56 @@
 		</plugins>
 	</build>
 
+	<!-- 发布使用的版本库 -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+	<!-- 使用“-P release”启用下面配置 -->
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<!-- Hasor 模块 -->
+	<modules>
+		<module>hasor-core</module>
+		<module>hasor-web</module>
+		<module>hasor-db</module>
+		<module>hasor-test</module>
+		<!-- module>hasor-mvc</module -->
+		<!-- module>hasor-security</module -->
+		<!-- module>hasor-quick</module -->
+	</modules>
+
+	<!-- 公共依赖 -->
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
