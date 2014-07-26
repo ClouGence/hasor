@@ -1,2 +1,2 @@
-call mvn eclipse:eclipse -DdevMode=true -DdownloadSources -DdownloadJavadocs
+call mvn install eclipse:eclipse -DdownloadSources -DdownloadJavadocs
 pause

@@ -1,3 +1,6 @@
+﻿===== Hasor-Web v0.0.7
+* 新增:
+
 ===== Hasor-Web v0.0.6
 * 新增:
     01.新增WebApiBinder接口支持RegisterInfo方式绑定。

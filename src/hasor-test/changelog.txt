@@ -1,4 +1,7 @@
-﻿===== Hasor-Test v0.0.1
+﻿===== Hasor-Test v0.0.2
+* 新增:
+
+===== Hasor-Test v0.0.1
 * 新增:
     01.支持测试方法通过@TestOrder注解排序。
     02.支持@DaemonThread 注解将一个方法作为后台线程启动。

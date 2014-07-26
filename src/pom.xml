@@ -27,7 +27,7 @@
 
 	<properties>
 		<gpg.executable>gpg2</gpg.executable>
-		<scm.pushVersion>0.0.8</scm.pushVersion>
+		<scm.pushVersion>0.0.9</scm.pushVersion>
 	</properties>
 
 	<!-- SCM -->
@@ -35,7 +35,7 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
-		<tag>Release.Hasor-0.0.8</tag>
+		<tag>Release.Hasor-0.0.9</tag>
 	</scm>
 
 	<!-- 构建描述 -->

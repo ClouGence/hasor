@@ -46,19 +46,19 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.8</version>
+			<version>0.0.9-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-db</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-test</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-Web -->
 		<!-- <dependency> -->
