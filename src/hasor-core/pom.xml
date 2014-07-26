@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-core</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.8</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
@@ -22,12 +22,6 @@
 			<email>zyc@hasor.net</email>
 		</developer>
 	</developers>
-
-	<scm>
-		<connection>scm:git:git@github.com:zycgit/hasor.git</connection>
-		<developerConnection>scm:git:git@github.com:zycgit/hasor.git</developerConnection>
-		<url>git@github.com:zycgit/hasor.git</url>
-	</scm>
 
 	<!-- 引用依赖 -->
 	<dependencies>
@@ -44,7 +38,6 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 
 		<!-- Guice3 -->
 		<dependency>

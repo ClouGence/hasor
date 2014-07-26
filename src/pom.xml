@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -25,11 +25,17 @@
 		</license>
 	</licenses>
 
+	<properties>
+		<gpg.executable>gpg2</gpg.executable>
+		<scm.pushVersion>0.0.8</scm.pushVersion>
+	</properties>
+
 	<!-- SCM -->
 	<scm>
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
+		<tag>Release.Hasor-0.0.8</tag>
 	</scm>
 
 	<!-- 构建描述 -->
@@ -117,6 +123,29 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.2</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<tagNameFormat>Release.Hasor-${scm.pushVersion}</tagNameFormat>
+							<goals>deploy</goals>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
