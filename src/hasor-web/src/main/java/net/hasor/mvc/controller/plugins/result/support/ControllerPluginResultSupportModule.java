@@ -28,7 +28,7 @@ import net.hasor.servlet.WebApiBinder;
 @AnnoModule(description = "org.hasor.mvc.controller.plugins.result软件包功能支持。")
 public class ControllerPluginResultSupportModule extends AbstractWebModule {
     public void init(WebApiBinder apiBinder) {
-        apiBinder.moduleSettings().followTarget(ServletControllerSupportModule.class);
+        apiBinder.dependency().forced(ServletControllerSupportModule.class);
         apiBinder.getGuiceBinder().bind(Caller.class);
     }
     public void start(AppContext appContext) {

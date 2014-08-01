@@ -18,10 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.ModuleSettings;
 import net.hasor.core.AppContext;
-import net.hasor.core.Module;
 import net.hasor.core.context.AnnoModule;
 import net.hasor.mvc.controller.ActionBinder.ActionBindingBuilder;
 import net.hasor.mvc.controller.ActionBinder.NameSpaceBindingBuilder;
@@ -29,8 +26,8 @@ import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.controller.HttpMethod;
 import net.hasor.mvc.controller.Path;
 import net.hasor.mvc.controller.Produces;
+import net.hasor.servlet.AbstractWebModule;
 import net.hasor.servlet.WebApiBinder;
-import net.hasor.servlet.anno.support.ServletAnnoSupportModule;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -41,13 +38,13 @@ import com.google.inject.Binder;
  * @author 赵永春 (zyc@hasor.net)
  */
 @AnnoModule(description = "org.hasor.web.controller软件包功能支持。")
-public class ServletControllerSupportModule implements Module {
+public class ServletControllerSupportModule extends AbstractWebModule {
     private ActionSettings settings      = null;
     private ActionManager  actionManager = null;
-    public void configuration(ModuleSettings info) {
-        info.beforeMe(ServletAnnoSupportModule.class);
-    }
+    //
     public void init(WebApiBinder apiBinder) {
+        apiBinder.dependency().forced(ServletControllerSupportModule.class);
+        //
         Binder binder = apiBinder.getGuiceBinder();
         apiBinder.filter("*").through(MergedController.class);
         this.settings = new ActionSettings();
@@ -61,7 +58,6 @@ public class ServletControllerSupportModule implements Module {
         /*构造*/
         actionBinder.buildManager(binder);
     }
-    public void init(ApiBinder apiBinder) {}
     public void stop(AppContext appContext) {}
     //
     /**装载Controller*/

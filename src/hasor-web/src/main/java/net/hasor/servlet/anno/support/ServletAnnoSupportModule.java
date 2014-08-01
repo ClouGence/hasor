@@ -48,7 +48,7 @@ import org.more.util.StringUtils;
 public class ServletAnnoSupportModule extends AbstractWebModule {
     /**≥ı ºªØ.*/
     public void init(WebApiBinder apiBinder) {
-        apiBinder.moduleSettings().followTarget(GiftSupportModule.class);
+        apiBinder.dependency().forced(GiftSupportModule.class);
         //1.LoadFilter.
         this.loadFilter(apiBinder);
         //2.LoadServlet.

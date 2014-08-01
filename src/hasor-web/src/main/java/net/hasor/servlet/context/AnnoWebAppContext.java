@@ -119,7 +119,7 @@ public class AnnoWebAppContext extends AnnoAppContext {
             public Binder getGuiceBinder() {
                 return binder;
             }
-            public ModuleSettings moduleSettings() {
+            public DependencySettings dependency() {
                 return forModule;
             }
         };
