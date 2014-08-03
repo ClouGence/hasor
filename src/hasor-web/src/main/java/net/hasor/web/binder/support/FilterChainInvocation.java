@@ -29,6 +29,7 @@ class FilterChainInvocation implements FilterChain {
     private final FilterChain            proceedingChain;
     private final ManagedServletPipeline servletPipeline;
     private int                          index = -1;
+    //
     public FilterChainInvocation(final FilterDefinition[] filterDefinitions, final ManagedServletPipeline servletPipeline, final FilterChain proceedingChain) {
         this.filterDefinitions = filterDefinitions;
         this.servletPipeline = servletPipeline;

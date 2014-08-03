@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.RegisterInfo;
 import net.hasor.web.WebAppContext;
@@ -38,7 +39,6 @@ import org.more.util.Iterators;
 class FilterDefinition extends AbstractServletModuleBinding {
     private RegisterInfo<Filter> filterRegister = null;
     private Filter               filterInstance = null;
-    private WebAppContext        appContext     = null;
     //
     public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final RegisterInfo<Filter> filterRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
@@ -50,7 +50,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
         }
         //
         final Map<String, String> initParams = this.getInitParams();
-        this.filterInstance = this.appContext.getInstance(this.filterRegister);
+        this.filterInstance = this.getAppContext().getInstance(this.filterRegister);
         this.filterInstance.init(new FilterConfig() {
             @Override
             public String getFilterName() {
@@ -58,7 +58,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
             }
             @Override
             public ServletContext getServletContext() {
-                return appContext.getServletContext();
+                return getAppContext().getServletContext();
             }
             @Override
             public String getInitParameter(final String s) {
@@ -79,6 +79,8 @@ class FilterDefinition extends AbstractServletModuleBinding {
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+        super.init(appContext);
+        //
         if (filterConfig != null) {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
@@ -89,14 +91,16 @@ class FilterDefinition extends AbstractServletModuleBinding {
             }
         }
         //
-        this.appContext = appContext;
         this.getTarget();
     }
     /**/
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
+        //
+        this.updateRR(httpRequest, httpResponse);
         //
         Filter filter = this.getTarget();
         if (serve == true && filter != null) {

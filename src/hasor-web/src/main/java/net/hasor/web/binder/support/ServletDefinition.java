@@ -26,6 +26,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.RegisterInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
@@ -38,7 +39,6 @@ class ServletDefinition extends AbstractServletModuleBinding {
     private RegisterInfo<HttpServlet> servletRegister = null;
     private HttpServlet               servletInstance = null;
     private UriPatternMatcher         patternMatcher  = null;
-    private WebAppContext             appContext      = null;
     //
     public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final RegisterInfo<HttpServlet> servletRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
@@ -51,7 +51,7 @@ class ServletDefinition extends AbstractServletModuleBinding {
         }
         //
         final Map<String, String> initParams = this.getInitParams();
-        this.servletInstance = this.appContext.getInstance(this.servletRegister);
+        this.servletInstance = this.getAppContext().getInstance(this.servletRegister);
         this.servletInstance.init(new ServletConfig() {
             @Override
             public String getServletName() {
@@ -59,7 +59,7 @@ class ServletDefinition extends AbstractServletModuleBinding {
             }
             @Override
             public ServletContext getServletContext() {
-                return appContext.getServletContext();
+                return getAppContext().getServletContext();
             }
             @Override
             public String getInitParameter(final String s) {
@@ -80,6 +80,7 @@ class ServletDefinition extends AbstractServletModuleBinding {
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
     public void init(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+        super.init(appContext);
         if (filterConfig != null) {
             Map<String, String> thisConfig = this.getInitParams();
             for (Entry<String, String> ent : filterConfig.entrySet()) {
@@ -90,16 +91,20 @@ class ServletDefinition extends AbstractServletModuleBinding {
             }
         }
         //
-        this.appContext = appContext;
         this.getTarget();
     }
     /**/
     public boolean service(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        //
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         // 
         if (serve) {
+            //
+            this.updateRR(httpRequest, httpResponse);
+            //
             this.doService(request, response);
         }
         return serve;
@@ -162,6 +167,7 @@ class ServletDefinition extends AbstractServletModuleBinding {
         if (servlet == null) {
             return;
         }
+        //
         servlet.service(request, servletResponse);
     }
     /**/

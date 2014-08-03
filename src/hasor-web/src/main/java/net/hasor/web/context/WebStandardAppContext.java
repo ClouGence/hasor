@@ -33,12 +33,12 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
+import net.hasor.web.binder.reqres.RRUpdate;
 import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
-import net.hasor.web.startup.RuntimeFilter;
 /**
  * 
  * @version : 2013-7-16
@@ -97,39 +97,41 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
+        apiBinder.bindType(RRUpdate.class).toInstance(new RRUpdate());
+        //
         /*绑定ServletRequest对象的Provider*/
         apiBinder.bindType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
             @Override
             public ServletRequest get() {
-                return RuntimeFilter.getLocalRequest();
+                return RRUpdate.getLocalRequest();
             }
         });
         /*绑定HttpServletRequest对象的Provider*/
         apiBinder.bindType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
             @Override
             public HttpServletRequest get() {
-                return RuntimeFilter.getLocalRequest();
+                return RRUpdate.getLocalRequest();
             }
         });
         /*绑定ServletResponse对象的Provider*/
         apiBinder.bindType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
             @Override
             public ServletResponse get() {
-                return RuntimeFilter.getLocalResponse();
+                return RRUpdate.getLocalResponse();
             }
         });
         /*绑定HttpServletResponse对象的Provider*/
         apiBinder.bindType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
             @Override
             public HttpServletResponse get() {
-                return RuntimeFilter.getLocalResponse();
+                return RRUpdate.getLocalResponse();
             }
         });
         /*绑定HttpSession对象的Provider*/
         apiBinder.bindType(HttpSession.class).toProvider(new Provider<HttpSession>() {
             @Override
             public HttpSession get() {
-                HttpServletRequest req = RuntimeFilter.getLocalRequest();
+                HttpServletRequest req = RRUpdate.getLocalRequest();
                 return req != null ? req.getSession(true) : null;
             }
         });
@@ -137,7 +139,7 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             @Override
             public ServletContext get() {
-                return WebStandardAppContext.this.getServletContext();
+                return getServletContext();
             }
         });
     }

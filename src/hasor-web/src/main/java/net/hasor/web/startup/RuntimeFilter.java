@@ -31,12 +31,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
+import net.hasor.web.binder.reqres.RRUpdate;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
+    private RRUpdate       rrRpdate       = null;
     private WebAppContext  appContext     = null;
     private FilterPipeline filterPipeline = null;
     //
@@ -60,6 +62,9 @@ public class RuntimeFilter implements Filter {
             }
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
+        //2.init RR
+        this.rrRpdate = this.appContext.getInstance(RRUpdate.class);
+        //
         Hasor.logInfo("PlatformFilter started.");
     }
     //
@@ -99,28 +104,21 @@ public class RuntimeFilter implements Filter {
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        RuntimeFilter.LocalRequest.set(httpReq);
-        RuntimeFilter.LocalResponse.set(httpRes);
+        this.rrRpdate.update(httpReq, httpRes);
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        RuntimeFilter.LocalRequest.remove();
-        RuntimeFilter.LocalResponse.remove();
+        this.rrRpdate.release();
     }
-    //
-    //
-    private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();
-    private static ThreadLocal<HttpServletResponse> LocalResponse = new ThreadLocal<HttpServletResponse>();
-    //
     /**获取{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
-        return RuntimeFilter.LocalRequest.get();
+        return RRUpdate.getLocalRequest();
     }
     //
     /**获取{@link HttpServletResponse}*/
     public static HttpServletResponse getLocalResponse() {
-        return RuntimeFilter.LocalResponse.get();
+        return RRUpdate.getLocalResponse();
     }
     //
     /**获取{@link ServletContext}*/

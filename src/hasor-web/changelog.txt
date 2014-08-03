@@ -1,5 +1,7 @@
 ﻿===== Hasor-Web v0.0.7
 * 新增:
+    01.新增 RRUpdate类 负责更新Request、Response对象。
+
 
 ===== Hasor-Web v0.0.6
 * 新增:

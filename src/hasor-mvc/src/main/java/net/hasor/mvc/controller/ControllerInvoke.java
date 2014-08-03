@@ -15,15 +15,14 @@
  */
 package net.hasor.mvc.controller;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import org.more.UnhandledException;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
-import org.more.util.exception.ExceptionUtils;
 /**
  * 线程安全
  * @version : 2013-6-5
@@ -50,7 +49,7 @@ public class ControllerInvoke {
         this.localObject.set(targetObject);
         return targetObject;
     }
-    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws Throwable {
         AbstractController targetObject = this.getTargetObject();
         try {
             Object[] paramArrays = this.getParams(servletRequest, servletResponse);
@@ -58,9 +57,9 @@ public class ControllerInvoke {
             return this.targetMethod.invoke(targetObject, paramArrays);
         } catch (Throwable e) {
             //传送异常
-            Throwable target = ExceptionUtils.getCause(e);
-            target = (target == null) ? e : target;
-            throw new UnhandledException(target);
+            if (e instanceof InvocationTargetException)
+                e=((InvocationTargetException)e).getTargetException();
+            throw e;
         } finally {
             targetObject.resetController();
             this.localObject.remove();
