@@ -22,7 +22,6 @@ import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
 import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -92,12 +91,12 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         this.guiceInjector = this.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                Iterator<RegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
+                Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
                 while (registerIterator.hasNext()) {
-                    GuiceRegisterInfoAdapter<Object> register = (GuiceRegisterInfoAdapter<Object>) registerIterator.next();
+                    AbstractRegisterInfoAdapter<?> register = registerIterator.next();
                     //1.处理绑定
-                    GuiceRegisterFactory.this.configRegister(register, binder);
-                    //2.处理Aop
+                    GuiceRegisterFactory.this.configRegister((GuiceRegisterInfoAdapter<Object>) register, binder);
+                    //2.处理Aop 
                     if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptorData.class)) {
                         final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
                         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {

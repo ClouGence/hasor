@@ -19,14 +19,14 @@ import java.util.Map;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.TypeBuilder;
+import net.hasor.core.binder.RegisterInfoBuilder;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 /**
  * 
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdapter<T>, TypeBuilder<T> {
+public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdapter<T>, RegisterInfoBuilder<T> {
     //1.基本属性
     private String                  bindName         = null;
     private Class<T>                bindType         = null;
@@ -99,6 +99,10 @@ public abstract class AbstractRegisterInfoAdapter<T> implements RegisterInfoAdap
     }
     public Provider<Scope> getScopeProvider() {
         return this.scopeProvider;
+    }
+    @Override
+    public RegisterInfoAdapter<T> toInfo() {
+        return this;
     }
 }
 /** RegisterInfo的默认的Provider，作用是通过RegisterFactory的getInstance方法来创建对象 */

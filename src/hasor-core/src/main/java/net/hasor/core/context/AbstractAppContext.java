@@ -33,13 +33,15 @@ import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
-import net.hasor.core.binder.TypeBuilder;
+import net.hasor.core.binder.RegisterInfoBuilder;
 import net.hasor.core.context.adapter.RegisterFactory;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.adapter.RegisterScope;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
+import org.more.util.Iterators;
+import org.more.util.Iterators.Converter;
 import org.more.util.MergeUtils;
 import org.more.util.StringUtils;
 /**
@@ -100,11 +102,21 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     /**已注册的类型列表。*/
     protected Iterator<RegisterInfoAdapter<?>> localRegisterIterator() {
-        return this.getRegisterFactory().getRegisterIterator();
+        Iterator<? extends RegisterInfoBuilder<?>> builderIterator = this.getRegisterFactory().getRegisterIterator();
+        return Iterators.converIterator(builderIterator, new Converter<RegisterInfoBuilder<?>, RegisterInfoAdapter<?>>() {
+            public RegisterInfoAdapter<?> converter(RegisterInfoBuilder<?> target) {
+                return target.toInfo();
+            }
+        });
     }
     /**已注册的类型列表。*/
     protected <T> Iterator<RegisterInfoAdapter<T>> localRegisterIterator(final Class<T> bindType) {
-        return this.getRegisterFactory().getRegisterIterator(bindType);
+        Iterator<? extends RegisterInfoBuilder<T>> builderIterator = this.getRegisterFactory().getRegisterIterator(bindType);
+        return Iterators.converIterator(builderIterator, new Converter<RegisterInfoBuilder<T>, RegisterInfoAdapter<T>>() {
+            public RegisterInfoAdapter<T> converter(RegisterInfoBuilder<T> target) {
+                return target.toInfo();
+            }
+        });
     }
     //
     /*---------------------------------------------------------------------------------------Bean*/
@@ -392,7 +404,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
             @Override
-            protected <T> TypeBuilder<T> createTypeBuilder(final Class<T> type) {
+            protected <T> RegisterInfoBuilder<T> createTypeBuilder(final Class<T> type) {
                 return AbstractAppContext.this.getRegisterFactory().createTypeBuilder(type);
             }
         };

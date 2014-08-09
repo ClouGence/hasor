@@ -111,11 +111,11 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
-    protected abstract <T> TypeBuilder<T> createTypeBuilder(Class<T> type);
+    protected abstract <T> RegisterInfoBuilder<T> createTypeBuilder(Class<T> type);
     //
     @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        TypeBuilder<T> typeBuilder = this.createTypeBuilder(type);
+        RegisterInfoBuilder<T> typeBuilder = this.createTypeBuilder(type);
         //typeBuilder.setID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }
@@ -198,10 +198,10 @@ public abstract class AbstractBinder implements ApiBinder {
     private static class BindingBuilderImpl<T> implements //
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>,//
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
-        private TypeBuilder<T> typeBuilder = null;
-        private Class<?>[]     initParams  = new Class<?>[0];
+        private RegisterInfoBuilder<T> typeBuilder = null;
+        private Class<?>[]             initParams  = new Class<?>[0];
         //
-        public BindingBuilderImpl(final TypeBuilder<T> typeBuilder) {
+        public BindingBuilderImpl(final RegisterInfoBuilder<T> typeBuilder) {
             this.typeBuilder = typeBuilder;
         }
         @Override
@@ -306,7 +306,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public RegisterInfo<T> toInfo() {
-            return this.typeBuilder;
+            return this.typeBuilder.toInfo();
         }
     }
     //

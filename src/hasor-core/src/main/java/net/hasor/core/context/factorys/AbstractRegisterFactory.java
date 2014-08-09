@@ -27,9 +27,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
+import net.hasor.core.binder.RegisterInfoBuilder;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterFactory;
-import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import org.more.RepeateException;
@@ -93,24 +93,24 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     protected abstract <T> T newInstance(RegisterInfo<T> oriType);
     //
     @Override
-    public <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(final Class<T> bindType) {
+    public <T> Iterator<? extends RegisterInfoBuilder<T>> getRegisterIterator(final Class<T> bindType) {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。
         //
         List<AbstractRegisterInfoAdapter<?>> bindingTypeAdapterList = this.registerDataSource.get(bindType);
         if (bindingTypeAdapterList == null) {
-            return new ArrayList<RegisterInfoAdapter<T>>(0).iterator();
+            return new ArrayList<RegisterInfoBuilder<T>>(0).iterator();
         }
         Iterator<AbstractRegisterInfoAdapter<?>> iterator = bindingTypeAdapterList.iterator();
         /*迭代器类型转换*/
-        return Iterators.converIterator(iterator, new Iterators.Converter<AbstractRegisterInfoAdapter<?>, RegisterInfoAdapter<T>>() {
+        return Iterators.converIterator(iterator, new Iterators.Converter<AbstractRegisterInfoAdapter<?>, RegisterInfoBuilder<T>>() {
             @Override
-            public RegisterInfoAdapter<T> converter(final AbstractRegisterInfoAdapter<?> target) {
-                return (RegisterInfoAdapter<T>) target;
+            public RegisterInfoBuilder<T> converter(final AbstractRegisterInfoAdapter<?> target) {
+                return (RegisterInfoBuilder<T>) target;
             }
         });
     }
     @Override
-    public Iterator<RegisterInfoAdapter<?>> getRegisterIterator() {
+    public Iterator<AbstractRegisterInfoAdapter<?>> getRegisterIterator() {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。
         /*
          * 代码相当于：
@@ -124,10 +124,10 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
          */
         final Collection<List<AbstractRegisterInfoAdapter<?>>> adapterList = this.registerDataSource.values();
         final Iterator<List<AbstractRegisterInfoAdapter<?>>> entIterator = adapterList.iterator();
-        return new Iterator<RegisterInfoAdapter<?>>() {
+        return new Iterator<AbstractRegisterInfoAdapter<?>>() {
             private Iterator<AbstractRegisterInfoAdapter<?>> regIterator = new ArrayList<AbstractRegisterInfoAdapter<?>>(0).iterator();
             @Override
-            public RegisterInfoAdapter<?> next() {
+            public AbstractRegisterInfoAdapter<?> next() {
                 while (true) {
                     if (this.regIterator.hasNext() == false) {
                         /*1.当前List迭代完了，并且没有可迭代的List了 --> break */

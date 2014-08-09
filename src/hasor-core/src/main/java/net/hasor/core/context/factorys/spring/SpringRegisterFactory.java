@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.context.factorys.spring;
+import java.util.Iterator;
+import net.hasor.core.Environment;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -33,8 +39,10 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
         return this.spring;
     }
     /**创建Guice*/
-    protected AbstractApplicationContext createSpring() {
-        return new ClassPathXmlApplicationContext();
+    protected AbstractApplicationContext createSpring(Environment env) {
+        ClassPathXmlApplicationContext spring = new ClassPathXmlApplicationContext();
+        spring.refresh();
+        return spring;
     }
     @Override
     protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
@@ -46,29 +54,57 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
     public void doInitializeCompleted(final AbstractAppContext appContext) {
         //1.检查
         super.doInitializeCompleted(appContext);
-        //2.绑定
-        //TODO
-        //      AbstractApplicationContext spring = new ClassPathXmlApplicationContext();
-        //      spring.refresh();
-        //      BeanDefinitionRegistry reg = (BeanDefinitionRegistry) spring.getBeanFactory();
-        //      //
-        //      //
-        //      Set<Class<?>> anonymityTypes = new HashSet<Class<?>>();
-        //      for (SpringTypeRegister<?> tempItem : tempRegisterList) {
-        //          SpringTypeRegister<Object> register = (SpringTypeRegister<Object>) tempItem;
-        //          if (ifAnonymity(register)) {
-        //              /*多一层判断防止相同的类型的匿名注册重复注册*/
-        //              Class<?> bindType = register.getType();
-        //              if (anonymityTypes.contains(bindType) == true)
-        //                  continue;
-        //              anonymityTypes.add(bindType);
-        //          }
-        //          //
-        //          String name = register.getName();
-        //          name = !StringUtils.isBlank(name) ? name : register.getType().getName();
-        //          BeanDefinition define = this.paserBeanDefinition(name, register);
-        //          reg.registerBeanDefinition(name, define);
+        //2.Spring
+        this.spring = this.createSpring(appContext.getEnvironment());
+        //3.注册
+        Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = this.getRegisterIterator();
+        while (registerIterator.hasNext()) {
+            AbstractRegisterInfoAdapter<?> regObject = registerIterator.next();
+            if (regObject.getCustomerProvider() != null) {
+                //单例Bean
+                this.registerProvider(regObject);
+            } else {
+                //注册Bean
+                this.registerBean(regObject);
+            }
+        }
     }
+    //
+    private void registerProvider(AbstractRegisterInfoAdapter<?> regObject) {
+        String regName = regObject.getBindName();
+        if (regName == null) {
+            regName = regObject.getBindType().getName();
+        }
+        //
+        ConfigurableListableBeanFactory factory = this.spring.getBeanFactory();
+        BeanDefinitionRegistry defineRegistry = (BeanDefinitionRegistry) factory;
+        BeanDefinitionBuilder defineBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringCustomerBean.class);
+        if (regObject.isSingleton() == true) {
+            defineBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
+        }
+        BeanDefinition define = defineBuilder.getRawBeanDefinition();
+        define.setAttribute("RegObject", regObject);
+        defineRegistry.registerBeanDefinition(regName, define);
+    }
+    private void registerBean(AbstractRegisterInfoAdapter<?> regObject) {
+        String regName = regObject.getBindName();
+        if (regName == null) {
+            regName = regObject.getBindType().getName();
+        }
+        Class<?> regType = regObject.getSourceType();
+        if (regType == null) {
+            regType = regObject.getBindType();
+        }
+        //
+        ConfigurableListableBeanFactory factory = this.spring.getBeanFactory();
+        BeanDefinitionRegistry defineRegistry = (BeanDefinitionRegistry) factory;
+        BeanDefinitionBuilder define = BeanDefinitionBuilder.genericBeanDefinition(regType);
+        if (regObject.isSingleton() == true) {
+            define.setScope(BeanDefinition.SCOPE_SINGLETON);
+        }
+        defineRegistry.registerBeanDefinition(regName, define.getRawBeanDefinition());
+    }
+    //
     @Override
     protected <T> T newInstance(final RegisterInfo<T> oriType) {
         String name = oriType.getBindName();
