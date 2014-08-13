@@ -16,6 +16,7 @@
 package net.hasor.core.context.factorys.guice;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
@@ -24,6 +25,7 @@ import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import net.hasor.core.context.factorys.DefaultRegisterInfoAdapter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.more.util.StringUtils;
@@ -31,7 +33,6 @@ import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Module;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
@@ -50,12 +51,12 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         return this.guiceInjector;
     }
     /**创建Guice*/
-    protected Injector createInjector(final Module rootModule) {
+    protected Injector createInjector(final com.google.inject.Module rootModule) {
         return Guice.createInjector(rootModule);
     }
     @Override
     protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
-        GuiceRegisterInfoAdapter<T> adapter = new GuiceRegisterInfoAdapter<T>();
+        DefaultRegisterInfoAdapter<T> adapter = new DefaultRegisterInfoAdapter<T>();
         adapter.setBindType(bindingType);
         return adapter;
     }
@@ -68,11 +69,12 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             throw new IllegalStateException("Guice is not ready.");
         }
         //
-        if (oriType instanceof GuiceRegisterInfoAdapter) {
-            Key<T> key = ((GuiceRegisterInfoAdapter<T>) oriType).getKey();
+        if (StringUtils.isBlank(oriType.getBindName()) == false) {
+            Key<T> key = Key.get(oriType.getBindType(), Names.named(oriType.getBindName()));
             return this.guiceInjector.getInstance(key);
+        } else {
+            return this.guiceInjector.getInstance(oriType.getBindType());
         }
-        return this.guiceInjector.getInstance(oriType.getBindType());
     }
     @Override
     public <T> T getDefaultInstance(final Class<T> oriType) {
@@ -84,39 +86,57 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     //
     /*-------------------------------------------------------------------------------add to Guice*/
     @Override
+    public void doInitialize(ApiBinder apiBinder) {
+        super.doInitialize(apiBinder);
+        apiBinder.bindType(Injector.class).toProvider(new Provider<Injector>() {
+            public Injector get() {
+                return guiceInjector;
+            }
+        });
+    }
+    //
+    //将Bean信息绑定到Guice上
+    @Override
     public void doInitializeCompleted(final AbstractAppContext appContext) {
         //1.系统自检
         super.doInitializeCompleted(appContext);
         //2.执行绑定
-        this.guiceInjector = this.createInjector(new Module() {
+        this.guiceInjector = this.createInjector(new com.google.inject.Module() {
             @Override
             public void configure(final Binder binder) {
                 Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
                 while (registerIterator.hasNext()) {
-                    AbstractRegisterInfoAdapter<?> register = registerIterator.next();
-                    //1.处理绑定
-                    GuiceRegisterFactory.this.configRegister((GuiceRegisterInfoAdapter<Object>) register, binder);
+                    AbstractRegisterInfoAdapter<Object> register = (AbstractRegisterInfoAdapter<Object>) registerIterator.next();
+                    //1.处理绑定 
+                    configRegister(register, binder);
                     //2.处理Aop 
-                    if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptorData.class)) {
-                        final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
-                        binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
-                            @Override
-                            public boolean matches(final Class<?> targetClass) {
-                                return amr.matcher(targetClass);
-                            }
-                        }, new AbstractMatcher<Method>() {
-                            @Override
-                            public boolean matches(final Method targetMethod) {
-                                return amr.matcher(targetMethod);
-                            }
-                        }, new MethodInterceptorAdapter(amr));
-                    }
-                    //GuiceTypeRegister<Object> register = (GuiceTypeRegister<Object>) tempItem;
+                    configAopRegister(register, binder);
                 }
             }
         });
     }
-    private void configRegister(final GuiceRegisterInfoAdapter<Object> register, final Binder binder) {
+    //
+    //处理Aop配置
+    private void configAopRegister(final AbstractRegisterInfoAdapter<Object> register, final Binder binder) {
+        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptorData.class) == false)
+            return;
+        //
+        final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
+        binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
+            @Override
+            public boolean matches(final Class<?> targetClass) {
+                return amr.matcher(targetClass);
+            }
+        }, new AbstractMatcher<Method>() {
+            @Override
+            public boolean matches(final Method targetMethod) {
+                return amr.matcher(targetMethod);
+            }
+        }, new MethodInterceptorAdapter(amr));
+    }
+    //
+    //处理一般配置
+    private void configRegister(final AbstractRegisterInfoAdapter<Object> register, final Binder binder) {
         binder.bind(RegisterInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
         //1.绑定类型
         AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getBindType());

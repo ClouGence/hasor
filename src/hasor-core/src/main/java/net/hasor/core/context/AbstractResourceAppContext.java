@@ -37,9 +37,11 @@ import com.google.inject.Provider;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractResourceAppContext extends AbstractStateAppContext {
+public abstract class AbstractResourceAppContext extends AbstractAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     private URI                mainSettings    = null;
+    private AbstractAppContext parent;
+    private Environment        environment;
     //
     /**设置主配置文件*/
     protected AbstractResourceAppContext() throws IOException, URISyntaxException {
@@ -66,13 +68,22 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
     public final URI getMainSettings() {
         return this.mainSettings;
     }
-    //
     @Override
+    public AbstractAppContext getParent() {
+        return this.parent;
+    }
+    /**获取环境接口。*/
+    @Override
+    public Environment getEnvironment() {
+        if (this.environment == null) {
+            this.environment = this.createEnvironment();
+        }
+        return this.environment;
+    }
+    /**创建环境对象*/
     protected Environment createEnvironment() {
         return new StandardEnvironment(this.mainSettings);
     }
-    //
-    //
     //
     @Override
     protected void doInitialize() {
@@ -90,9 +101,9 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
                     try {
                         ClassLoader loader = Thread.currentThread().getContextClassLoader();
                         Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
-                        Module mod = (Module) moduleType.newInstance();
-                        this.addModule(mod);
-                    } catch (Exception e) {
+                        Module module = (Module) moduleType.newInstance();
+                        this.installModule(module);
+                    } catch (Throwable e) {
                         Hasor.logError("loadModule Error: %s.", e.getMessage());
                     }
                 }
@@ -101,7 +112,6 @@ public abstract class AbstractResourceAppContext extends AbstractStateAppContext
         //2.继续init
         super.doInitialize();
     }
-    //
     //
     //
     private Provider<RegisterFactory> registerFactoryProvider = null;

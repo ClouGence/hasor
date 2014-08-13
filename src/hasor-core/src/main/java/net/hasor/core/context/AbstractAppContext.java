@@ -374,7 +374,8 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     protected void doInitialize() {
         RegisterFactory registerFactory = this.getRegisterFactory();
         if (registerFactory instanceof ContextInitializeListener) {
-            ((ContextInitializeListener) registerFactory).doInitialize(this);
+            ApiBinder apiBinder = this.newApiBinder(null);
+            ((ContextInitializeListener) registerFactory).doInitialize(apiBinder);
         }
     }
     /**初始化过程完成.*/
@@ -441,8 +442,19 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     public boolean isStart() {
         return this.startState;
     }
+    /**安装模块的工具方法。*/
+    protected void installModule(Module module) throws Throwable {
+        if (this.isStart()) {
+            throw new IllegalStateException("AppContent is started.");
+        }
+        if (module == null) {
+            return;
+        }
+        ApiBinder apiBinder = this.newApiBinder(module);
+        module.loadModule(apiBinder);
+    }
     @Override
-    public synchronized final void start() throws Throwable {
+    public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
             return;
         }
@@ -451,10 +463,10 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         Hasor.logInfo("send init sign...");
         appContext.doInitialize();
         /*2.Bind*/
-        final Module[] modules = this.getModules();
-        for (Module module : modules) {
-            ApiBinder apiBinder = appContext.newApiBinder(module);
-            module.loadModule(apiBinder);
+        if (modules != null && modules.length > 0) {
+            for (Module module : modules) {
+                this.installModule(module);
+            }
         }
         ApiBinder apiBinder = appContext.newApiBinder(null);
         appContext.doBind(apiBinder);

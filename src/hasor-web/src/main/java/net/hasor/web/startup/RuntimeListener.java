@@ -39,26 +39,40 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
     private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
     /*----------------------------------------------------------------------------------------------------*/
+    //
+    /**创建{@link WebAppContext}对象*/
     protected WebAppContext createAppContext(final ServletContext sc) throws Throwable {
         return new WebStandardAppContext("hasor-config.xml", sc);
     }
+    //
+    /**获取启动模块*/
+    protected Module getStartModule(ServletContext sc) throws Exception {
+        //
+        //1.Start Module.
+        Module startModule = null;
+        String startModuleType = sc.getInitParameter("startModule");
+        if (StringUtils.isBlank(startModuleType)) {
+            Hasor.logWarn("startModule is undefinition.");
+        } else {
+            Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModuleType);
+            startModule = startModuleClass.newInstance();
+            Hasor.logInfo("startModule is %s.", startModuleType);
+        }
+        return startModule;
+    }
+    //
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
-        //1.创建AppContext
         try {
-            this.appContext = this.createAppContext(servletContextEvent.getServletContext());
-            String startModule = servletContextEvent.getServletContext().getInitParameter("startModule");
-            if (StringUtils.isBlank(startModule)) {
-                Hasor.logWarn("startModule is undefinition.");
-            } else {
-                Class<Module> startModuleType = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModule);
-                this.appContext.addModule(startModuleType.newInstance());
-                Hasor.logInfo("startModule is %s.", startModuleType);
+            //
+            //2.create AppContext
+            final ServletContext sc = servletContextEvent.getServletContext();
+            this.appContext = this.createAppContext(sc);
+            if (this.appContext.isStart() == false) {
+                Module startModule = this.getStartModule(sc);
+                this.appContext.start(startModule);
             }
             //
-            if (this.appContext.isStart() == false) {
-                this.appContext.start();
-            }
             RuntimeListener.LocalServletContext.set(servletContextEvent.getServletContext());
             RuntimeListener.LocalAppContext.set(this.appContext);
         } catch (Throwable e) {

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.binder.RegisterInfoBuilder;
@@ -57,6 +58,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         registerList.add(adapter);
         return adapter;
     }
+    //
     /**为类型创建AbstractRegisterInfoAdapter适配器。*/
     protected abstract <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindType);
     //
@@ -90,6 +92,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         }
         return this.newInstance(oriType);
     };
+    //
     protected abstract <T> T newInstance(RegisterInfo<T> oriType);
     //
     @Override
@@ -168,7 +171,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         return StringUtils.isBlank(register.getBindName());
     }
     @Override
-    public void doInitialize(final AbstractAppContext appContext) {
+    public void doInitialize(final ApiBinder apiBinder) {
         // TODO Auto-generated method stub
     }
     @Override

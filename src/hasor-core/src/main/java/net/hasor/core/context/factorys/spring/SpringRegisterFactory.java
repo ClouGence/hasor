@@ -15,11 +15,14 @@
  */
 package net.hasor.core.context.factorys.spring;
 import java.util.Iterator;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
+import net.hasor.core.Provider;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import net.hasor.core.context.factorys.DefaultRegisterInfoAdapter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -46,9 +49,19 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
     }
     @Override
     protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
-        SpringRegisterInfoAdapter<T> adapter = new SpringRegisterInfoAdapter<T>();
+        DefaultRegisterInfoAdapter<T> adapter = new DefaultRegisterInfoAdapter<T>();
         adapter.setBindType(bindingType);
         return adapter;
+    }
+    @Override
+    public void doInitialize(ApiBinder apiBinder) {
+        super.doInitialize(apiBinder);
+        apiBinder.bindType(ApplicationContext.class).toProvider(new Provider<ApplicationContext>() {
+            @Override
+            public ApplicationContext get() {
+                return getSpring();
+            }
+        });
     }
     @Override
     public void doInitializeCompleted(final AbstractAppContext appContext) {
@@ -68,6 +81,16 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
                 this.registerBean(regObject);
             }
         }
+    }
+    //
+    @Override
+    protected <T> T newInstance(final RegisterInfo<T> oriType) {
+        String name = oriType.getBindName();
+        Class<T> type = oriType.getBindType();
+        if (name == null) {
+            name = type.getName();
+        }
+        return (T) this.spring.getBean(name, type);
     }
     //
     private void registerProvider(AbstractRegisterInfoAdapter<?> regObject) {
@@ -103,15 +126,5 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
             define.setScope(BeanDefinition.SCOPE_SINGLETON);
         }
         defineRegistry.registerBeanDefinition(regName, define.getRawBeanDefinition());
-    }
-    //
-    @Override
-    protected <T> T newInstance(final RegisterInfo<T> oriType) {
-        String name = oriType.getBindName();
-        Class<T> type = oriType.getBindType();
-        if (name == null) {
-            name = type.getName();
-        }
-        return (T) this.spring.getBean(name, type);
     }
 }

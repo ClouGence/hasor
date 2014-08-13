@@ -33,7 +33,7 @@ public final class HasorFactory {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final RegisterFactoryCreater factory, final Module... modules) {
-        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, new Module[0]);
+        return HasorFactory.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, modules);
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
@@ -48,10 +48,7 @@ public final class HasorFactory {
     public static AppContext createAppContext(final String config, final RegisterFactoryCreater factory, final Module... modules) {
         try {
             StandardAppContext app = new StandardAppContext(config, factory);
-            for (Module mod : modules) {
-                app.addModule(mod);
-            }
-            app.start();
+            app.start(modules);
             return app;
         } catch (Throwable e) {
             if (e instanceof RuntimeException) {
