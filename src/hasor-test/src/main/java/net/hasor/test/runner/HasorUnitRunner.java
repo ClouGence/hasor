@@ -25,7 +25,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractResourceAppContext;
-import net.hasor.core.context.HasorFactory;
 import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.junit.DaemonThread;
@@ -65,7 +64,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
                     HasorUnitRunner.this.typeRegister = apiBinder.bindType(klass).uniqueName().toInfo();
                 }
             });
-            this.appContext = HasorFactory.createAppContext(configResource, factoryCreater, loadModule.toArray(new Module[loadModule.size()]));
+            this.appContext = Hasor.createAppContext(configResource, factoryCreater, loadModule.toArray(new Module[loadModule.size()]));
             //3.
             if (this.appContext == null)
                 throw new NullPointerException("HasorFactory.createAppContext return null.");

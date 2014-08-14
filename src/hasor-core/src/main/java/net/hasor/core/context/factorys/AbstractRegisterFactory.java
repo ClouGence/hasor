@@ -45,7 +45,7 @@ import org.more.util.StringUtils;
 public abstract class AbstractRegisterFactory implements RegisterFactory, ContextInitializeListener, ContextStartListener {
     private Map<Class<?>, List<AbstractRegisterInfoAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractRegisterInfoAdapter<?>>>();
     //
-    @Override
+    /**注册一个类型*/
     public <T> AbstractRegisterInfoAdapter<T> createTypeBuilder(final Class<T> bindType) {
         List<AbstractRegisterInfoAdapter<?>> registerList = this.registerDataSource.get(bindType);
         if (registerList == null) {
@@ -60,9 +60,11 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     }
     //
     /**为类型创建AbstractRegisterInfoAdapter适配器。*/
-    protected abstract <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindType);
+    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindingType) {
+        return new DefaultRegisterInfoAdapter<T>(bindingType);
+    }
     //
-    @Override
+    /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(final Class<T> oriType) {
         try {
             if (oriType.isInterface() || oriType.isEnum()) {
@@ -80,8 +82,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
             return null;
         }
     }
-    //
-    @Override
+    /**创建{@link RegisterInfo} 所表示的类型对象。*/
     public final <T> T getInstance(final RegisterInfo<T> oriType) {
         if (oriType instanceof AbstractRegisterInfoAdapter) {
             AbstractRegisterInfoAdapter<T> adapter = (AbstractRegisterInfoAdapter<T>) oriType;
@@ -93,9 +94,11 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         return this.newInstance(oriType);
     };
     //
+    /**创建 {@link RegisterInfo}所表示的那个类型。
+     * @see #getInstance(RegisterInfo)*/
     protected abstract <T> T newInstance(RegisterInfo<T> oriType);
     //
-    @Override
+    /**根据Type查找RegisterInfo迭代器*/
     public <T> Iterator<? extends RegisterInfoBuilder<T>> getRegisterIterator(final Class<T> bindType) {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。
         //
@@ -112,7 +115,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
             }
         });
     }
-    @Override
+    /**查找所有RegisterInfo迭代器*/
     public Iterator<AbstractRegisterInfoAdapter<?>> getRegisterIterator() {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。
         /*
@@ -165,15 +168,16 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
             }
         };
     }
-    //
     /*测试register是否为匿名的*/
     private boolean ifAnonymity(final RegisterInfo<?> register) {
         return StringUtils.isBlank(register.getBindName());
     }
+    //
     @Override
-    public void doInitialize(final ApiBinder apiBinder) {
+    public void doInitialize(ApiBinder apiBinder) {
         // TODO Auto-generated method stub
     }
+    //
     @Override
     public void doInitializeCompleted(final AbstractAppContext appContext) {
         //check begin

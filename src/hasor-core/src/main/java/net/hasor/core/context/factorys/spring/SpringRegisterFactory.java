@@ -22,7 +22,6 @@ import net.hasor.core.RegisterInfo;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
-import net.hasor.core.context.factorys.DefaultRegisterInfoAdapter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -46,12 +45,6 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
         ClassPathXmlApplicationContext spring = new ClassPathXmlApplicationContext();
         spring.refresh();
         return spring;
-    }
-    @Override
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
-        DefaultRegisterInfoAdapter<T> adapter = new DefaultRegisterInfoAdapter<T>();
-        adapter.setBindType(bindingType);
-        return adapter;
     }
     @Override
     public void doInitialize(ApiBinder apiBinder) {

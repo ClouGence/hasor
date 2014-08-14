@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.utils.HasorUnit;
 import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
@@ -35,7 +35,7 @@ public class SimpleParam_QueryTest {
     public void simpleParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like ?", "76%");

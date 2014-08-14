@@ -25,7 +25,6 @@ import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.factorys.AbstractRegisterFactory;
 import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
-import net.hasor.core.context.factorys.DefaultRegisterInfoAdapter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.more.util.StringUtils;
@@ -54,13 +53,6 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     protected Injector createInjector(final com.google.inject.Module rootModule) {
         return Guice.createInjector(rootModule);
     }
-    @Override
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(final Class<T> bindingType) {
-        DefaultRegisterInfoAdapter<T> adapter = new DefaultRegisterInfoAdapter<T>();
-        adapter.setBindType(bindingType);
-        return adapter;
-    }
-    @Override
     protected <T> T newInstance(final RegisterInfo<T> oriType) {
         if (oriType == null) {
             return null;
@@ -76,7 +68,6 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             return this.guiceInjector.getInstance(oriType.getBindType());
         }
     }
-    @Override
     public <T> T getDefaultInstance(final Class<T> oriType) {
         if (this.guiceInjector == null) {
             return super.getDefaultInstance(oriType);
@@ -85,7 +76,9 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
-    @Override
+    /**GuiceRegisterFactory的初始化过程，负责将{@link com.google.inject.Injector}类型绑定到  Hasor 中。
+     * 在程序运行时可以通过<code>AppContext.getInstance(Injector.class)</code>方法获取原生的 Guice 接口。
+     * @see net.hasor.core.AppContext#getInstance(Class) */
     public void doInitialize(ApiBinder apiBinder) {
         super.doInitialize(apiBinder);
         apiBinder.bindType(Injector.class).toProvider(new Provider<Injector>() {
@@ -96,13 +89,11 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     }
     //
     //将Bean信息绑定到Guice上
-    @Override
     public void doInitializeCompleted(final AbstractAppContext appContext) {
         //1.系统自检
         super.doInitializeCompleted(appContext);
         //2.执行绑定
         this.guiceInjector = this.createInjector(new com.google.inject.Module() {
-            @Override
             public void configure(final Binder binder) {
                 Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
                 while (registerIterator.hasNext()) {
@@ -123,12 +114,10 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         //
         final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getProvider().get();
         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
-            @Override
             public boolean matches(final Class<?> targetClass) {
                 return amr.matcher(targetClass);
             }
         }, new AbstractMatcher<Method>() {
-            @Override
             public boolean matches(final Method targetMethod) {
                 return amr.matcher(targetMethod);
             }
@@ -178,28 +167,23 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
 }
 //
 /*---------------------------------------------------------------------------------------Util*/
-/**Aop桥*/
+/**Hasor Aop 到 Aop 联盟的桥*/
 class MethodInterceptorAdapter implements MethodInterceptor {
     private AopMatcherMethodInterceptor aopInterceptor = null;
     public MethodInterceptorAdapter(final AopMatcherMethodInterceptor aopInterceptor) {
         this.aopInterceptor = aopInterceptor;
     }
-    @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         return this.aopInterceptor.invoke(new net.hasor.core.MethodInvocation() {
-            @Override
             public Object proceed() throws Throwable {
                 return invocation.proceed();
             }
-            @Override
             public Object getThis() {
                 return invocation.getThis();
             }
-            @Override
             public Method getMethod() {
                 return invocation.getMethod();
             }
-            @Override
             public Object[] getArguments() {
                 return invocation.getArguments();
             }
@@ -212,11 +196,9 @@ class GuiceScope implements com.google.inject.Scope {
     public GuiceScope(final Scope scope) {
         this.scope = scope;
     }
-    @Override
     public String toString() {
         return this.scope.toString();
     };
-    @Override
     public <T> com.google.inject.Provider<T> scope(final Key<T> key, final com.google.inject.Provider<T> unscoped) {
         Provider<T> returnData = this.scope.scope(key, new ToHasorProvider<T>(unscoped));
         if (returnData instanceof com.google.inject.Provider) {
@@ -234,7 +216,6 @@ class ToHasorProvider<T> implements net.hasor.core.Provider<T> {
     public ToHasorProvider(final com.google.inject.Provider<T> provider) {
         this.provider = provider;
     }
-    @Override
     public T get() {
         return this.provider.get();
     }
@@ -247,7 +228,6 @@ class ToGuiceProvider<T> implements com.google.inject.Provider<T> {
     public ToGuiceProvider(final Provider<T> provider) {
         this.provider = provider;
     }
-    @Override
     public T get() {
         return this.provider.get();
     }

@@ -21,7 +21,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.HasorFactory;
 import org.junit.Test;
 /**
  * 本示列演示带有名字的绑定。
@@ -33,7 +32,7 @@ public class NameBindTest {
     public void nameBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>nameBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new Module() {
+        AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 //绑定一个接口和实现类
                 apiBinder.bindType(CharSequence.class).nameWith("ModuleA").toInstance("this String form A");

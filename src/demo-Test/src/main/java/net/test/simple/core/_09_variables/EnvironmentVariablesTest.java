@@ -16,7 +16,7 @@
 package net.test.simple.core._09_variables;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import org.junit.Test;
 /**
  * 读取环境变量操作演示
@@ -27,7 +27,7 @@ public class EnvironmentVariablesTest {
     @Test
     public void environmentVariablesTest() throws Exception {
         System.out.println("--->>environmentVariablesTest<<--");
-        AppContext appContext = HasorFactory.createAppContext();
+        AppContext appContext = Hasor.createAppContext();
         Environment env = appContext.getEnvironment();
         //
         //JAVA_HOME

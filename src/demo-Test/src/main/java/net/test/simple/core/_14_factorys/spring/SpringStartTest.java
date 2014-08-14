@@ -16,10 +16,14 @@
 package net.test.simple.core._14_factorys.spring;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater;
+import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 /**
  * 本示列演示如何启动 Hasor 框架。
  * @version : 2013-8-11
@@ -30,9 +34,22 @@ public class SpringStartTest {
     public void springStartTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>springStartTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new SpringRegisterFactoryCreater());
+        AppContext appContext = Hasor.createAppContext(new SpringRegisterFactoryCreater(), new Module() {
+            @Override
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                PojoBean pojo = new PojoBean();
+                pojo.setName("马大帅");
+                apiBinder.bindType(PojoBean.class).nameWith("myBean").toInstance(pojo);
+                //
+                apiBinder.defineBean("define").bindType(PojoBean.class).toInstance(pojo);
+            }
+        });
         //
-        SpringStartTest a = appContext.getInstance(SpringStartTest.class);
-        System.out.println(a);
+        ApplicationContext spring = appContext.getInstance(ApplicationContext.class);
+        PojoBean pbean = (PojoBean) spring.getBean("myBean");
+        System.out.println(pbean.getName());
+        //
+        PojoBean define = (PojoBean) spring.getBean("define");
+        System.out.println(define.getName());
     }
 }

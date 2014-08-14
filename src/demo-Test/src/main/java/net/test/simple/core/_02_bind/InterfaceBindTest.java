@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.HasorFactory;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import net.test.simple.core._03_beans.pojo.PojoInfo;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class InterfaceBindTest {
     public void faceBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>faceBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext(new Module() {
+        AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /*绑定一个接口的实现类*/
                 apiBinder.bindType(PojoInfo.class).to(PojoBean.class);

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import net.test.simple.core._08_event.listener.MyListener;
 import org.junit.Test;
 /**
@@ -31,7 +31,7 @@ public class EventLinkTest {
     @Test
     public void syncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>syncEventTest<<--");
-        AppContext appContext = HasorFactory.createAppContext();
+        AppContext appContext = Hasor.createAppContext();
         //
         final String EventName = "MyEvent";//事件链的终端
         final String SeedEvent = "SeedEvent";//种子事件

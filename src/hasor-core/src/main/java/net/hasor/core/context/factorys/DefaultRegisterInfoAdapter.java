@@ -22,6 +22,10 @@ import net.hasor.core.RegisterInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
+    public DefaultRegisterInfoAdapter() {}
+    public DefaultRegisterInfoAdapter(Class<T> bindingType) {
+        this.setBindType(bindingType);
+    }
     @Override
     public void setInitParam(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
         throw new UnsupportedOperationException();

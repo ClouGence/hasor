@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.core.context.HasorFactory;
 import net.test.simple.core._06_aop.objs.CustomAnnoFooBean;
 import net.test.simple.core._06_aop.objs.FooBean;
 import net.test.simple.core._06_aop.objs.MyAop;
@@ -35,7 +35,7 @@ public class CustomAnnoAopTest {
     @Test
     public void customAnnoAopTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>customAnnoAopTest<<--");
-        AppContext appContext = HasorFactory.createAppContext(new WarpAnnoAop());
+        AppContext appContext = Hasor.createAppContext(new WarpAnnoAop());
         //
         FooBean fooBean1 = appContext.getInstance(FooBean.class);
         FooBean fooBean2 = appContext.getInstance(CustomAnnoFooBean.class);

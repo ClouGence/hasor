@@ -18,7 +18,7 @@ import static net.hasor.test.utils.HasorUnit.newID;
 import java.io.IOException;
 import java.sql.SQLException;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.simple.db._07_datasource.warp.MoreDataSourceWarp;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class UseMoreDataSource {
     @Test
     public void useMoreDataSource() throws SQLException, IOException {
         //1.构建AppContext
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new MoreDataSourceWarp());
+        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new MoreDataSourceWarp());
         //2.取得JDBC操作接口
         JdbcTemplate mJDBC = app.getBean("mysql");
         JdbcTemplate hJDBC = app.getBean("hsql");

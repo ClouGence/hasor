@@ -20,7 +20,6 @@ import java.util.Date;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.core.context.HasorFactory;
 import org.junit.Test;
 /**
  * 读取配置文件中的内容。
@@ -31,7 +30,7 @@ public class SimpleSettingsTest {
     @Test
     public void simpleSettingsTest() throws IOException, URISyntaxException {
         System.out.println("--->>simpleSettingsTest<<--");
-        AppContext appContext = HasorFactory.createAppContext("net/test/simple/core/_10_settings/simple-config.xml");
+        AppContext appContext = Hasor.createAppContext("net/test/simple/core/_10_settings/simple-config.xml");
         Settings settings = appContext.getSettings();
         //
         String myName = settings.getString("mySelf.myName");

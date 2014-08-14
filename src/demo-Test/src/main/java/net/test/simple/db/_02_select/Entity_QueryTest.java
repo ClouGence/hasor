@@ -17,7 +17,7 @@ package net.test.simple.db._02_select;
 import java.sql.SQLException;
 import java.util.List;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.test.utils.HasorUnit;
 import net.test.simple.db._02_select.entity.TB_User;
@@ -33,7 +33,7 @@ public class Entity_QueryTest {
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
         //
-        AppContext app = HasorFactory.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);

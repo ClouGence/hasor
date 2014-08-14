@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.core.context.HasorFactory;
 import net.test.simple.core._06_aop.objs.FooBean;
 import net.test.simple.core._06_aop.objs.SimpleInterceptor;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class AopTest {
     @Test
     public void aopTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>aopTest<<--");
-        AppContext appContext = HasorFactory.createAppContext(new WarpAop());
+        AppContext appContext = Hasor.createAppContext(new WarpAop());
         //
         FooBean fooBean = appContext.getInstance(FooBean.class);
         fooBean.fooCall();

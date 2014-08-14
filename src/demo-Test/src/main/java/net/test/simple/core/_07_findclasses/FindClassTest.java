@@ -22,7 +22,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.HasorFactory;
 import org.junit.Test;
 /**
  * 本示列演示如何通过Hasor扫描类。
@@ -34,7 +33,7 @@ public class FindClassTest {
     public void findClassTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>findClassTest<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = HasorFactory.createAppContext();
+        AppContext appContext = Hasor.createAppContext();
         //
         // 请注意： Hasor默认扫描的范围是、net.*,com.*,org.*。 如要自定义扫描范围有两种办法：
         //         1.通过hasor-config.xml配置文件配置。

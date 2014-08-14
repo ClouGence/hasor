@@ -16,7 +16,7 @@
 package net.test.simple.core._09_variables;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.context.HasorFactory;
+import net.hasor.core.Hasor;
 import org.junit.Test;
 /**
  * 读取环境变量操作演示
@@ -28,7 +28,7 @@ public class SystemVariablesTest {
     public void systemVariablesTest() throws Exception {
         System.out.println("--->>systemVariablesTest<<--");
         //
-        AppContext appContext = HasorFactory.createAppContext();
+        AppContext appContext = Hasor.createAppContext();
         Environment env = appContext.getEnvironment();
         //
         //设置属性

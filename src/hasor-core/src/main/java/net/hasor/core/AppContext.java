@@ -22,11 +22,15 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext extends EventContext {
-    /**获取上下文*/
+    /**获取 {@link net.hasor.core.Environment#getContext()} 环境接口中所表示的上下文。
+     * @see net.hasor.core.Environment*/
     public Object getContext();
-    /**获取父层级*/
+    /**获取父层级。*/
     public AppContext getParent();
-    /**获取应用程序配置。*/
+    /**获取应用程序配置。
+     * <li>该方法可以在任何时候被使用，不需要考虑容器状态 {@link AppContext#isStart()} </li>
+     * <li>该方法相当于 {@link Environment#getSettings()}</li>
+     * @see net.hasor.core.Environment*/
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
