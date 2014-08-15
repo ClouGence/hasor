@@ -17,7 +17,7 @@ package net.test.web.startup;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.plugin.WebModule;
 import net.test.web.filters.MyFilter;
-import net.test.web.servlet.MyServlet;
+import net.test.web.module.OSSModule;
 /**
  * 
  * @version : 2014年7月24日
@@ -29,6 +29,7 @@ public class StartModule extends WebModule {
         //1.注册Filter
         apiBinder.filter("/*").through(MyFilter.class);
         //2.注册Servlet
-        apiBinder.serve("/my.do").with(MyServlet.class);
+        //        apiBinder.serve("/my.do").with(MyServlet.class);
+        apiBinder.installModule(new OSSModule());
     }
 }

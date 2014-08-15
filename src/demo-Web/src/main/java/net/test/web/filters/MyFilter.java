@@ -15,27 +15,52 @@
  */
 package net.test.web.filters;
 import java.io.IOException;
+import java.io.OutputStream;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.hasor.web.startup.RuntimeListener;
+import org.more.util.IOUtils;
+import org.more.util.StringUtils;
+import com.aliyun.openservices.oss.OSSClient;
+import com.aliyun.openservices.oss.model.OSSObject;
 /**
  * 
  * @version : 2014年7月24日
  * @author 赵永春(zyc@hasor.net)
  */
 public class MyFilter implements Filter {
+    private OSSClient client = null;
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub
+        this.client = RuntimeListener.getLocalAppContext().getInstance(OSSClient.class);
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("doFilter before..");
-        chain.doFilter(request, response);
-        System.out.println("doFilter after..");
+        //
+        HttpServletRequest req = (HttpServletRequest) request;
+        String reqURI = req.getRequestURI();
+        reqURI = reqURI.substring(req.getContextPath().length());
+        if (StringUtils.isBlank(reqURI) == false && reqURI.charAt(0) == '/')
+            reqURI = reqURI.substring(1);
+        //
+        if (StringUtils.isBlank(reqURI))
+            reqURI = "index.html";
+        //
+        OSSObject obj = null;
+        try {
+            obj = client.getObject("www-hasor", reqURI);
+            OutputStream out = response.getOutputStream();
+            IOUtils.copy(obj.getObjectContent(), out);
+        } catch (Exception e) {
+            obj = client.getObject("www-hasor", reqURI + "/index.html");
+            ((HttpServletResponse) response).sendRedirect(reqURI + "/index.html");
+        }
     }
     @Override
     public void destroy() {

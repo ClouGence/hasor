@@ -157,8 +157,10 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public void bindInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
-        AopMatcherMethodInterceptorData ard = new AopMatcherMethodInterceptorData(matcherClass, matcherMethod, interceptor);
-        this.bindType(AopMatcherMethodInterceptorData.class).uniqueName().toInstance(ard);
+        this.bindAop(new AopMatcherMethodInterceptorData(matcherClass, matcherMethod, interceptor));
+    }
+    private void bindAop(AopMatcherMethodInterceptorData ard) {
+        // TODO Auto-generated method stub
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

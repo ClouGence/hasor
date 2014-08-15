@@ -66,6 +66,9 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     //
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(final Class<T> oriType) {
+        if (oriType == null) {
+            return null;
+        }
         try {
             if (oriType.isInterface() || oriType.isEnum()) {
                 return null;
@@ -79,7 +82,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
             }
             return oriType.newInstance();
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
     /**创建{@link RegisterInfo} 所表示的类型对象。*/

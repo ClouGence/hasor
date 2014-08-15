@@ -73,11 +73,11 @@ public class ClassEngine {
     private RootClassLoader                  rootClassLoader          = null;                                //处理来自类新类装载请求的类装载器。
     //==================================================================================Constructor
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
-    public ClassEngine() throws ClassNotFoundException {
+    public ClassEngine() {
         this(null, ClassEngine.DefaultSuperClass, null);
     };
     /** 创建一个ClassEngine类型对象，默认生成的类是Object的子类， */
-    public ClassEngine(final String className) throws ClassNotFoundException {
+    public ClassEngine(final String className) {
         this(className, ClassEngine.DefaultSuperClass, null);
     };
     /**
