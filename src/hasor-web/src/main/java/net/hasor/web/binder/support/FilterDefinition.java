@@ -28,7 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**
@@ -37,10 +37,10 @@ import org.more.util.Iterators;
  * @author 赵永春 (zyc@hasor.net)
  */
 class FilterDefinition extends AbstractServletModuleBinding {
-    private RegisterInfo<Filter> filterRegister = null;
+    private BindInfo<Filter> filterRegister = null;
     private Filter               filterInstance = null;
     //
-    public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final RegisterInfo<Filter> filterRegister, final Map<String, String> initParams) {
+    public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<Filter> filterRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.filterRegister = filterRegister;
     }

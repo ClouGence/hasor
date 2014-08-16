@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**
@@ -36,11 +36,11 @@ import org.more.util.Iterators;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ServletDefinition extends AbstractServletModuleBinding {
-    private RegisterInfo<HttpServlet> servletRegister = null;
+    private BindInfo<HttpServlet> servletRegister = null;
     private HttpServlet               servletInstance = null;
     private UriPatternMatcher         patternMatcher  = null;
     //
-    public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final RegisterInfo<HttpServlet> servletRegister, final Map<String, String> initParams) {
+    public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<HttpServlet> servletRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.servletRegister = servletRegister;
         this.patternMatcher = uriPatternMatcher;

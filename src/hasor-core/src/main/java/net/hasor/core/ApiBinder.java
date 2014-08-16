@@ -108,7 +108,7 @@ public interface ApiBinder extends EventContext {
         /**启用自动装配*/
         public InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
         /**启用自动装配*/
-        public InjectConstructorBindingBuilder<T> inject(int index, RegisterInfo<?> valueInfo);
+        public InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
         /**启用自动装配*/
         public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider);
     }
@@ -119,7 +119,7 @@ public interface ApiBinder extends EventContext {
         /**启用自动装配*/
         public InjectPropertyBindingBuilder<T> injectValue(String property, Object value);
         /**启用自动装配*/
-        public InjectPropertyBindingBuilder<T> inject(String property, RegisterInfo<?> valueInfo);
+        public InjectPropertyBindingBuilder<T> inject(String property, BindInfo<?> valueInfo);
         /**启用自动装配*/
         public InjectPropertyBindingBuilder<T> inject(String property, Provider<?> valueProvider);
     }
@@ -142,6 +142,6 @@ public interface ApiBinder extends EventContext {
         /**获取元信息。*/
         public MetaDataBindingBuilder<T> metaData(String key, Object value);
         /***/
-        public RegisterInfo<T> toInfo();
+        public BindInfo<T> toInfo();
     }
 }

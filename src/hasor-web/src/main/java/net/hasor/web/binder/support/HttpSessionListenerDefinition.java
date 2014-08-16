@@ -16,7 +16,7 @@
 package net.hasor.web.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 /**
  * 
@@ -24,11 +24,11 @@ import net.hasor.web.WebAppContext;
  * @author 赵永春 (zyc@hasor.net)
  */
 class HttpSessionListenerDefinition {
-    private RegisterInfo<HttpSessionListener> listenerRegister = null;
+    private BindInfo<HttpSessionListener> listenerRegister = null;
     private HttpSessionListener               listenerInstance = null;
     private WebAppContext                     appContext       = null;
     //
-    public HttpSessionListenerDefinition(final RegisterInfo<HttpSessionListener> listenerRegister) {
+    public HttpSessionListenerDefinition(final BindInfo<HttpSessionListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
     //

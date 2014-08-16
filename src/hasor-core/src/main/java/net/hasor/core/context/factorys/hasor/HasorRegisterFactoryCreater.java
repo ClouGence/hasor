@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 package net.hasor.core.context.factorys.hasor;
+import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Environment;
 import net.hasor.core.context.adapter.RegisterFactory;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
 /**
  * 
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class HasorRegisterFactoryCreater implements RegisterFactoryCreater {
+public class HasorRegisterFactoryCreater implements BindInfoFactoryCreater {
     @Override
     public RegisterFactory create(final Environment env) {
         return new HasorRegisterFactory();

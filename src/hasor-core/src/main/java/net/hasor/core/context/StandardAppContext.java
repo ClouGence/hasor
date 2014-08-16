@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
+import net.hasor.core.BindInfoFactoryCreater;
 /**
  * 
  * @version : 2014-5-10
@@ -42,22 +42,22 @@ public class StandardAppContext extends AbstractResourceAppContext {
         super(mainSettings);
     }
     /**设置主配置文件*/
-    public StandardAppContext(final RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
+    public StandardAppContext(final BindInfoFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super();
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(final File mainSettings, final RegisterFactoryCreater registerFactoryCreate) {
+    public StandardAppContext(final File mainSettings, final BindInfoFactoryCreater registerFactoryCreate) {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(final URI mainSettings, final RegisterFactoryCreater registerFactoryCreate) {
+    public StandardAppContext(final URI mainSettings, final BindInfoFactoryCreater registerFactoryCreate) {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }
     /**设置主配置文件*/
-    public StandardAppContext(final String mainSettings, final RegisterFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
+    public StandardAppContext(final String mainSettings, final BindInfoFactoryCreater registerFactoryCreate) throws IOException, URISyntaxException {
         super(mainSettings);
         this.setRegisterFactoryCreater(registerFactoryCreate);
     }

@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.Scope;
-import net.hasor.core.context.adapter.RegisterInfoAdapter;
+package net.hasor.core;
 /**
  * 
  * @version : 2014年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RegisterInfoBuilder<T> {
+public interface BindInfoBuilder<T> {
     //    /**为绑定设置ID*/
     //    public void setID(String newID);
     /**为类型绑定一个名称。*/
@@ -43,10 +39,10 @@ public interface RegisterInfoBuilder<T> {
     public void setScopeProvider(Provider<Scope> scopeProvider);
     //
     public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider);
-    public void setInitParam(int index, Class<?> paramType, RegisterInfo<?> valueInfo);
+    public void setInitParam(int index, Class<?> paramType, BindInfo<?> valueInfo);
     //
     public void addInject(String property, Provider<?> valueProvider);
-    public void addInject(String property, RegisterInfo<?> valueInfo);
+    public void addInject(String property, BindInfo<?> valueInfo);
     //
-    public RegisterInfoAdapter<T> toInfo();
+    public BindInfo<T> toInfo();
 }

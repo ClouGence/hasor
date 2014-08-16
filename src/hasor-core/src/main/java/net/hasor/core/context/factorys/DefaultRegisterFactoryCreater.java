@@ -15,11 +15,11 @@
  */
 package net.hasor.core.context.factorys;
 import java.util.List;
+import net.hasor.core.BindInfoFactory;
+import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.context.adapter.RegisterFactory;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import org.more.UndefinedException;
 import org.more.util.StringUtils;
 /**
@@ -27,9 +27,9 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultRegisterFactoryCreater implements RegisterFactoryCreater {
+public class DefaultRegisterFactoryCreater implements BindInfoFactoryCreater {
     @Override
-    public RegisterFactory create(final Environment env) {
+    public BindInfoFactory create(final Environment env) {
         String createrToUse = null;
         //1.取得即将创建的ManagerCreater类型
         Settings setting = env.getSettings();
@@ -55,7 +55,7 @@ public class DefaultRegisterFactoryCreater implements RegisterFactoryCreater {
         //3.创建Creater
         try {
             Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
-            RegisterFactoryCreater creater = (RegisterFactoryCreater) createrType.newInstance();
+            BindInfoFactoryCreater creater = (BindInfoFactoryCreater) createrType.newInstance();
             return creater.create(env);
         } catch (Throwable e) {
             if (e instanceof RuntimeException) {

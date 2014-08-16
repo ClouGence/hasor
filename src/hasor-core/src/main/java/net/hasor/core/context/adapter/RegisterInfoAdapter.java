@@ -15,13 +15,13 @@
  */
 package net.hasor.core.context.adapter;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 /**
  * 
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RegisterInfoAdapter<T> extends RegisterInfo<T> {
+public interface RegisterInfoAdapter<T> extends BindInfo<T> {
     /**获取Provider，通过Provider可以快速的创建RegisterInfo所表示的类型实例。*/
     public Provider<T> getProvider();
 }

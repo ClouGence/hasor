@@ -16,7 +16,7 @@
 package net.hasor.web.binder.support;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 /**
  * 
@@ -24,12 +24,12 @@ import net.hasor.web.WebAppContext;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ContextListenerDefinition {
-    private RegisterInfo<ServletContextListener> listenerRegister = null;
+    private BindInfo<ServletContextListener> listenerRegister = null;
     private ServletContextListener               listenerInstance = null;
     private WebAppContext                        appContext       = null;
     //
     //
-    public ContextListenerDefinition(final RegisterInfo<ServletContextListener> listenerRegister) {
+    public ContextListenerDefinition(final BindInfo<ServletContextListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
     //

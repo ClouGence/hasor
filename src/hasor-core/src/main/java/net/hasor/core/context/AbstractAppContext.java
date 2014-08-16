@@ -22,6 +22,9 @@ import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
+import net.hasor.core.BindInfoBuilder;
+import net.hasor.core.BindInfoFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
@@ -29,12 +32,9 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BeanInfo;
-import net.hasor.core.binder.RegisterInfoBuilder;
-import net.hasor.core.context.adapter.RegisterFactory;
 import net.hasor.core.context.adapter.RegisterInfoAdapter;
 import net.hasor.core.context.adapter.RegisterScope;
 import net.hasor.core.context.listener.ContextInitializeListener;
@@ -55,12 +55,10 @@ import org.more.util.StringUtils;
 public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /*------------------------------------------------------------------------------RegisterScope*/
     /**父级*/
-    @Override
     public RegisterScope getParentScope() {
         return this.getParent();
     }
     /**查找RegisterInfo*/
-    @Override
     public final <T> RegisterInfoAdapter<T> getRegister(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -77,7 +75,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return null;
     }
     /**根据Type查找RegisterInfo迭代器*/
-    @Override
     public final <T> Iterator<RegisterInfoAdapter<T>> getRegisterIterator(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -90,7 +87,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return registerIterator;
     }
     /**查找所有RegisterInfo迭代器*/
-    @Override
     public final Iterator<RegisterInfoAdapter<?>> getRegisterIterator() {
         Iterator<RegisterInfoAdapter<?>> registerIterator = this.localRegisterIterator();
         RegisterScope parentScope = this.getParentScope();
@@ -102,18 +98,18 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     /**已注册的类型列表。*/
     protected Iterator<RegisterInfoAdapter<?>> localRegisterIterator() {
-        Iterator<? extends RegisterInfoBuilder<?>> builderIterator = this.getRegisterFactory().getRegisterIterator();
-        return Iterators.converIterator(builderIterator, new Converter<RegisterInfoBuilder<?>, RegisterInfoAdapter<?>>() {
-            public RegisterInfoAdapter<?> converter(RegisterInfoBuilder<?> target) {
+        Iterator<? extends BindInfoBuilder<?>> builderIterator = this.getRegisterFactory().getRegisterIterator();
+        return Iterators.converIterator(builderIterator, new Converter<BindInfoBuilder<?>, RegisterInfoAdapter<?>>() {
+            public RegisterInfoAdapter<?> converter(BindInfoBuilder<?> target) {
                 return target.toInfo();
             }
         });
     }
     /**已注册的类型列表。*/
     protected <T> Iterator<RegisterInfoAdapter<T>> localRegisterIterator(final Class<T> bindType) {
-        Iterator<? extends RegisterInfoBuilder<T>> builderIterator = this.getRegisterFactory().getRegisterIterator(bindType);
-        return Iterators.converIterator(builderIterator, new Converter<RegisterInfoBuilder<T>, RegisterInfoAdapter<T>>() {
-            public RegisterInfoAdapter<T> converter(RegisterInfoBuilder<T> target) {
+        Iterator<? extends BindInfoBuilder<T>> builderIterator = this.getRegisterFactory().getRegisterIterator(bindType);
+        return Iterators.converIterator(builderIterator, new Converter<BindInfoBuilder<T>, RegisterInfoAdapter<T>>() {
+            public RegisterInfoAdapter<T> converter(BindInfoBuilder<T> target) {
                 return target.toInfo();
             }
         });
@@ -121,7 +117,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/
-    @Override
     public Class<?> getBeanType(final String name) {
         Hasor.assertIsNotNull(name, "name is null.");
         //
@@ -130,14 +125,13 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             return null;
         }
         BeanInfo<?> info = infoRegister.getProvider().get();
-        RegisterInfo<?> typeRegister = info.getReferInfo();;
+        BindInfo<?> typeRegister = info.getReferInfo();;
         if (typeRegister != null) {
             return typeRegister.getBindType();
         }
         return null;
     }
     /**如果存在目标类型的Bean则返回Bean的名称。*/
-    @Override
     public String[] getBeanNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         //
@@ -160,7 +154,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return nameSet.toArray(new String[nameSet.size()]);
     }
     /**获取已经注册的Bean名称。*/
-    @Override
     public String[] getBeanNames() {
         Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getRegisterIterator(BeanInfo.class);
         if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
@@ -179,7 +172,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return nameSet.toArray(new String[nameSet.size()]);
     }
     /**创建Bean。*/
-    @Override
     public <T> T getBean(final String name) {
         Hasor.assertIsNotNull(name, "name is null.");
         //
@@ -188,14 +180,13 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
             return null;
         }
         BeanInfo<?> info = infoRegister.getProvider().get();
-        RegisterInfo<?> typeRegister = info.getReferInfo();
+        BindInfo<?> typeRegister = info.getReferInfo();
         if (typeRegister != null) {
-            return (T) this.getRegisterFactory().getInstance(typeRegister);
+            return (T) this.getBindInfoFactory().getInstance(typeRegister);
         }
         return null;
     };
     /**创建Bean。*/
-    @Override
     public <T> T getInstance(final Class<T> oriType) {
         /* 1.由于同一个Type可能会有多个注册，每个注册可能会映射了不同的实现，例如:
          *     String -> "HelloWord"   > name = "Hi"
@@ -206,33 +197,29 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         if (info != null) {
             return info.getProvider().get();
         }
-        return this.getRegisterFactory().getDefaultInstance(oriType);
+        return this.getBindInfoFactory().getDefaultInstance(oriType);
     };
     /**创建Bean。*/
-    @Override
-    public <T> T getInstance(final RegisterInfo<T> typeRegister) {
-        return this.getRegisterFactory().getInstance(typeRegister);
+    public <T> T getInstance(final BindInfo<T> typeRegister) {
+        return this.getBindInfoFactory().getInstance(typeRegister);
     }
     /**创建Bean。*/
-    @Override
-    public <T> Provider<T> getProvider(final RegisterInfo<T> typeRegister) {
+    public <T> Provider<T> getProvider(final BindInfo<T> typeRegister) {
         if (typeRegister instanceof RegisterInfoAdapter) {
             return ((RegisterInfoAdapter<T>) typeRegister).getProvider();
         }
         final AppContext app = this;
         return new Provider<T>() {
-            @Override
             public T get() {
                 return app.getInstance(typeRegister);
             }
         };
     };
-    /**获取用于创建Bean对象的{@link RegisterFactory}接口*/
-    protected abstract RegisterFactory getRegisterFactory();
+    /**获取用于创建Bean对象的{@link BindInfoFactory}接口*/
+    protected abstract BindInfoFactory getBindInfoFactory();
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
     public <T> List<T> findBindingBean(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -251,7 +238,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return returnData;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
     public <T> List<Provider<T>> findBindingProvider(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -267,7 +253,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return returnData;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
     public <T> T findBindingBean(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
@@ -279,7 +264,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return null;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
     public <T> Provider<T> findBindingProvider(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
@@ -291,15 +275,14 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return null;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
-    public <T> List<RegisterInfo<T>> findBindingRegister(final Class<T> bindType) {
+    public <T> List<BindInfo<T>> findBindingRegister(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
         Iterator<RegisterInfoAdapter<T>> infoRegisterIterator = this.getRegisterIterator(bindType);
         if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
-            return new ArrayList<RegisterInfo<T>>(0);
+            return new ArrayList<BindInfo<T>>(0);
         }
-        ArrayList<RegisterInfo<T>> returnData = new ArrayList<RegisterInfo<T>>();
+        ArrayList<BindInfo<T>> returnData = new ArrayList<BindInfo<T>>();
         while (infoRegisterIterator.hasNext()) {
             RegisterInfoAdapter<T> typeRegister = infoRegisterIterator.next();
             returnData.add(typeRegister);
@@ -307,8 +290,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         return returnData;
     };
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    @Override
-    public <T> RegisterInfo<T> findBindingRegister(final String withName, final Class<T> bindType) {
+    public <T> BindInfo<T> findBindingRegister(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -320,51 +302,40 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     };
     //
     /*--------------------------------------------------------------------------------------Event*/
-    @Override
     public void pushListener(final String eventType, final EventListener eventListener) {
         this.getEnvironment().pushListener(eventType, eventListener);
     }
-    @Override
     public void addListener(final String eventType, final EventListener eventListener) {
         this.getEnvironment().addListener(eventType, eventListener);
     }
-    @Override
     public void removeListener(final String eventType, final EventListener eventListener) {
         this.getEnvironment().removeListener(eventType, eventListener);
     }
-    @Override
     public void fireSyncEvent(final String eventType, final Object... objects) {
         this.getEnvironment().fireSyncEvent(eventType, objects);
     }
-    @Override
     public void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
         this.getEnvironment().fireSyncEvent(eventType, callBack, objects);
     }
-    @Override
     public void fireAsyncEvent(final String eventType, final Object... objects) {
         this.getEnvironment().fireAsyncEvent(eventType, objects);
     }
-    @Override
     public void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
         this.getEnvironment().fireAsyncEvent(eventType, callBack, objects);
     }
     //
     /*------------------------------------------------------------------------------------Context*/
     /**获取上下文*/
-    @Override
     public Object getContext() {
         return this.getEnvironment().getContext();
     }
     /**获取父层级*/
-    @Override
     public abstract AbstractAppContext getParent();
     /**获取应用程序配置。*/
-    @Override
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     };
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.getEnvironment().findClass(featureType);
     }
@@ -372,7 +343,7 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /*------------------------------------------------------------------------------------Process*/
     /**开始进入初始化过程.*/
     protected void doInitialize() {
-        RegisterFactory registerFactory = this.getRegisterFactory();
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
         if (registerFactory instanceof ContextInitializeListener) {
             ApiBinder apiBinder = this.newApiBinder(null);
             ((ContextInitializeListener) registerFactory).doInitialize(apiBinder);
@@ -380,21 +351,21 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        RegisterFactory registerFactory = this.getRegisterFactory();
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
         if (registerFactory instanceof ContextInitializeListener) {
             ((ContextInitializeListener) registerFactory).doInitializeCompleted(this);
         }
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
-        RegisterFactory registerFactory = this.getRegisterFactory();
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
         if (registerFactory instanceof ContextStartListener) {
             ((ContextStartListener) registerFactory).doStart(this);
         }
     }
     /**容器启动完成。*/
     protected void doStartCompleted() {
-        RegisterFactory registerFactory = this.getRegisterFactory();
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
         if (registerFactory instanceof ContextStartListener) {
             ((ContextStartListener) registerFactory).doStartCompleted(this);
         }
@@ -404,9 +375,8 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
-            @Override
-            protected <T> RegisterInfoBuilder<T> createTypeBuilder(final Class<T> type) {
-                return AbstractAppContext.this.getRegisterFactory().createTypeBuilder(type);
+            protected BindInfoFactory getBindTypeFactory() {
+                return AbstractAppContext.this.getBindInfoFactory();
             }
         };
     }
@@ -415,21 +385,18 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         final AbstractAppContext appContet = this;
         /*绑定Environment对象的Provider*/
         apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
-            @Override
             public Environment get() {
                 return appContet.getEnvironment();
             }
         });
         /*绑定Settings对象的Provider*/
         apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
-            @Override
             public Settings get() {
                 return appContet.getSettings();
             }
         });
         /*绑定AppContext对象的Provider*/
         apiBinder.bindType(AppContext.class).toProvider(new Provider<AppContext>() {
-            @Override
             public AppContext get() {
                 return appContet;
             }
@@ -438,7 +405,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
     //
     /*------------------------------------------------------------------------------------Creater*/
     private boolean startState = false;
-    @Override
     public boolean isStart() {
         return this.startState;
     }
@@ -453,7 +419,6 @@ public abstract class AbstractAppContext implements AppContext, RegisterScope {
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
     }
-    @Override
     public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
             return;

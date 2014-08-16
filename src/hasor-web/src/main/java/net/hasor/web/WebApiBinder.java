@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
+import net.hasor.core.BindInfo;
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10
@@ -59,57 +59,57 @@ public interface WebApiBinder extends ApiBinder {
         public void through(Class<? extends Filter> filterKey);
         public void through(Filter filter);
         public void through(Provider<Filter> filterProvider);
-        public void through(RegisterInfo<Filter> filterRegister);
+        public void through(BindInfo<Filter> filterRegister);
         //
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(Filter filter, Map<String, String> initParams);
         public void through(Provider<Filter> filterProvider, Map<String, String> initParams);
-        public void through(RegisterInfo<Filter> filterRegister, Map<String, String> initParams);
+        public void through(BindInfo<Filter> filterRegister, Map<String, String> initParams);
         //
         public void through(int index, Class<? extends Filter> filterKey);
         public void through(int index, Filter filter);
         public void through(int index, Provider<Filter> filterProvider);
-        public void through(int index, RegisterInfo<Filter> filterRegister);
+        public void through(int index, BindInfo<Filter> filterRegister);
         //
         public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams);
         public void through(int index, Filter filter, Map<String, String> initParams);
         public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams);
-        public void through(int index, RegisterInfo<Filter> filterRegister, Map<String, String> initParams);
+        public void through(int index, BindInfo<Filter> filterRegister, Map<String, String> initParams);
     }
     /**负责配置Servlet。*/
     public static interface ServletBindingBuilder {
         public void with(Class<? extends HttpServlet> servletKey);
         public void with(HttpServlet servlet);
         public void with(Provider<HttpServlet> servletProvider);
-        public void with(RegisterInfo<HttpServlet> servletRegister);
+        public void with(BindInfo<HttpServlet> servletRegister);
         //
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(HttpServlet servlet, Map<String, String> initParams);
         public void with(Provider<HttpServlet> servletProvider, Map<String, String> initParams);
-        public void with(RegisterInfo<HttpServlet> servletRegister, Map<String, String> initParams);
+        public void with(BindInfo<HttpServlet> servletRegister, Map<String, String> initParams);
         //
         public void with(int index, Class<? extends HttpServlet> servletKey);
         public void with(int index, HttpServlet servlet);
         public void with(int index, Provider<HttpServlet> servletProvider);
-        public void with(int index, RegisterInfo<HttpServlet> servletRegister);
+        public void with(int index, BindInfo<HttpServlet> servletRegister);
         //
         public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
         public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams);
-        public void with(int index, RegisterInfo<HttpServlet> servletRegister, Map<String, String> initParams);
+        public void with(int index, BindInfo<HttpServlet> servletRegister, Map<String, String> initParams);
     }
     /**负责配置SessionListener。*/
     public static interface SessionListenerBindingBuilder {
         public void bind(Class<? extends HttpSessionListener> listenerKey);
         public void bind(HttpSessionListener sessionListener);
         public void bind(Provider<HttpSessionListener> listenerProvider);
-        public void bind(RegisterInfo<HttpSessionListener> listenerRegister);
+        public void bind(BindInfo<HttpSessionListener> listenerRegister);
     }
     /**负责配置ServletContextListener。*/
     public static interface ServletContextListenerBindingBuilder {
         public void bind(Class<? extends ServletContextListener> listenerKey);
         public void bind(ServletContextListener sessionListener);
         public void bind(Provider<ServletContextListener> listenerProvider);
-        public void bind(RegisterInfo<ServletContextListener> listenerRegister);
+        public void bind(BindInfo<ServletContextListener> listenerRegister);
     }
 }

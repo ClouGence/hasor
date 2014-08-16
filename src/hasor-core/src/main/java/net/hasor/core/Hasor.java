@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import net.hasor.core.context.AbstractResourceAppContext;
 import net.hasor.core.context.StandardAppContext;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -39,11 +38,11 @@ public abstract class Hasor {
         return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final RegisterFactoryCreater factory) {
+    public static AppContext createAppContext(final BindInfoFactoryCreater factory) {
         return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final RegisterFactoryCreater factory, final Module... modules) {
+    public static AppContext createAppContext(final BindInfoFactoryCreater factory, final Module... modules) {
         return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, modules);
     }
     //
@@ -52,11 +51,11 @@ public abstract class Hasor {
         return Hasor.createAppContext(config, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final RegisterFactoryCreater factory) {
+    public static AppContext createAppContext(final String config, final BindInfoFactoryCreater factory) {
         return Hasor.createAppContext(config, factory, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final RegisterFactoryCreater factory, final Module... modules) {
+    public static AppContext createAppContext(final String config, final BindInfoFactoryCreater factory, final Module... modules) {
         try {
             StandardAppContext app = new StandardAppContext(config, factory);
             app.start(modules);

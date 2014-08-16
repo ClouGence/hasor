@@ -15,8 +15,8 @@
  */
 package net.hasor.core.context.adapter;
 import java.util.Iterator;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.binder.RegisterInfoBuilder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.BindInfoBuilder;
 /**
  * 
  * @version : 2014-3-17
@@ -24,14 +24,14 @@ import net.hasor.core.binder.RegisterInfoBuilder;
  */
 public interface RegisterFactory {
     /**创建一个绑定过类型*/
-    public <T> T getInstance(RegisterInfo<T> oriType);
+    public <T> T getInstance(BindInfo<T> oriType);
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(Class<T> oriType);
     /**注册一个类型*/
-    public <T> RegisterInfoBuilder<T> createTypeBuilder(Class<T> bindType);
+    public <T> BindInfoBuilder<T> createTypeBuilder(Class<T> bindType);
     //
     /**根据Type查找RegisterInfo迭代器*/
-    public <T> Iterator<? extends RegisterInfoBuilder<T>> getRegisterIterator(Class<T> bindType);
+    public <T> Iterator<? extends BindInfoBuilder<T>> getRegisterIterator(Class<T> bindType);
     /**查找所有RegisterInfo迭代器*/
-    public Iterator<? extends RegisterInfoBuilder<?>> getRegisterIterator();
+    public Iterator<? extends BindInfoBuilder<?>> getRegisterIterator();
 }

@@ -20,12 +20,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfoFactory;
+import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.XmlNode;
 import net.hasor.core.context.adapter.RegisterFactory;
-import net.hasor.core.context.adapter.RegisterFactoryCreater;
 import net.hasor.core.context.factorys.DefaultRegisterFactoryCreater;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ClassUtils;
@@ -133,14 +134,14 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         } else {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
                 @Override
-                protected RegisterFactory getRegisterFactory() {
+                protected BindInfoFactory getBindInfoFactory() {
                     return registerFactory;
                 }
             };
         }
     }
     /**设置一个RegisterFactoryCreater实例对象*/
-    protected void setRegisterFactoryCreater(final RegisterFactoryCreater registerFactoryCreate) {
+    protected void setRegisterFactoryCreater(final BindInfoFactoryCreater registerFactoryCreate) {
         if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
         }
@@ -150,19 +151,19 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         } else {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
                 @Override
-                protected RegisterFactory getRegisterFactory() {
+                protected BindInfoFactory getBindInfoFactory() {
                     return registerFactoryCreate.create(AbstractResourceAppContext.this.getEnvironment());
                 }
             };
         }
     }
     @Override
-    protected RegisterFactory getRegisterFactory() {
+    protected BindInfoFactory getBindInfoFactory() {
         //
         if (this.registerFactoryProvider == null) {
             this.registerFactoryProvider = new AbstractRegisterFactoryProvider() {
                 @Override
-                protected RegisterFactory getRegisterFactory() {
+                protected BindInfoFactory getBindInfoFactory() {
                     return new DefaultRegisterFactoryCreater().create(AbstractResourceAppContext.this.getEnvironment());
                 }
             };
@@ -173,15 +174,15 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         }
         return factory;
     }
-    private static abstract class AbstractRegisterFactoryProvider implements Provider<RegisterFactory> {
-        private RegisterFactory registerFactory = null;
+    private static abstract class AbstractRegisterFactoryProvider implements Provider<BindInfoFactory> {
+        private BindInfoFactory bindInfoFactory = null;
         @Override
-        public RegisterFactory get() {
-            if (this.registerFactory == null) {
-                this.registerFactory = this.getRegisterFactory();
+        public BindInfoFactory get() {
+            if (this.bindInfoFactory == null) {
+                this.bindInfoFactory = this.getBindInfoFactory();
             }
-            return this.registerFactory;
+            return this.bindInfoFactory;
         }
-        protected abstract RegisterFactory getRegisterFactory();
+        protected abstract BindInfoFactory getBindInfoFactory();
     }
 }
