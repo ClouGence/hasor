@@ -26,8 +26,13 @@ public interface BindInfoFactory {
     public <T> BindInfoBuilder<T> createTypeBuilder(Class<T> bindType);
     /**注册一个Aop*/
     public void registerAop(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
+    //
     /**创建一个绑定过类型*/
     public <T> T getInstance(BindInfo<T> oriType);
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(Class<T> oriType);
+    /**获取类型绑定的所有名字。*/
+    public String[] getNamesOfType(Class<?> bindType);
+    /**根据名称和类型获取获取{@link BindInfo}。*/
+    public <T> BindInfo<T> getRegister(String withName, Class<T> bindType);
 }

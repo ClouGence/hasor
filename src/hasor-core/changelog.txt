@@ -3,7 +3,9 @@
     01.新增 Spring 作为Hasor 的 Bean 容器支持（暂不支持 Hasor Aop）。
 * 改进:
     01.优化 AppContext 接口实现类的层次关系。
-    02.AppContext,不再支持 addModule 这种形式添加模块，改为通过 start 方法传入。
+    02.AppContext，不再支持 addModule 这种形式添加模块，改为通过 start 方法传入。
+    03.AppContext，不在支持 getParent()方法。
+    04.context部分重构，精简了设计。
 
 ===== Hasor-Core v0.0.8
 * 新增:

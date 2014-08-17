@@ -26,9 +26,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.binder.RegisterInfoBuilder;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.adapter.RegisterFactory;
 import net.hasor.core.context.listener.ContextInitializeListener;
@@ -86,7 +85,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         }
     }
     /**创建{@link RegisterInfo} 所表示的类型对象。*/
-    public final <T> T getInstance(final RegisterInfo<T> oriType) {
+    public final <T> T getInstance(final BindInfo<T> oriType) {
         if (oriType instanceof AbstractRegisterInfoAdapter) {
             AbstractRegisterInfoAdapter<T> adapter = (AbstractRegisterInfoAdapter<T>) oriType;
             Provider<T> provider = adapter.getCustomerProvider();
@@ -99,7 +98,7 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
     //
     /**创建 {@link RegisterInfo}所表示的那个类型。
      * @see #getInstance(RegisterInfo)*/
-    protected abstract <T> T newInstance(RegisterInfo<T> oriType);
+    protected abstract <T> T newInstance(BindInfo<T> bindInfo);
     //
     /**根据Type查找RegisterInfo迭代器*/
     public <T> Iterator<? extends RegisterInfoBuilder<T>> getRegisterIterator(final Class<T> bindType) {
@@ -112,7 +111,6 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         Iterator<AbstractRegisterInfoAdapter<?>> iterator = bindingTypeAdapterList.iterator();
         /*迭代器类型转换*/
         return Iterators.converIterator(iterator, new Iterators.Converter<AbstractRegisterInfoAdapter<?>, RegisterInfoBuilder<T>>() {
-            @Override
             public RegisterInfoBuilder<T> converter(final AbstractRegisterInfoAdapter<?> target) {
                 return (RegisterInfoBuilder<T>) target;
             }
@@ -135,7 +133,6 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         final Iterator<List<AbstractRegisterInfoAdapter<?>>> entIterator = adapterList.iterator();
         return new Iterator<AbstractRegisterInfoAdapter<?>>() {
             private Iterator<AbstractRegisterInfoAdapter<?>> regIterator = new ArrayList<AbstractRegisterInfoAdapter<?>>(0).iterator();
-            @Override
             public AbstractRegisterInfoAdapter<?> next() {
                 while (true) {
                     if (this.regIterator.hasNext() == false) {
@@ -158,30 +155,26 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
                 }
                 return this.regIterator.next();
             }
-            @Override
             public boolean hasNext() {
                 if (entIterator.hasNext() == false && this.regIterator.hasNext() == false) {
                     return false;
                 }
                 return true;
             }
-            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }
         };
     }
     /*测试register是否为匿名的*/
-    private boolean ifAnonymity(final RegisterInfo<?> register) {
+    private boolean ifAnonymity(final BindInfo<?> register) {
         return StringUtils.isBlank(register.getBindName());
     }
     //
-    @Override
     public void doInitialize(ApiBinder apiBinder) {
         // TODO Auto-generated method stub
     }
     //
-    @Override
     public void doInitializeCompleted(final AbstractAppContext appContext) {
         //check begin
         Set<Class<?>> anonymityTypes = new HashSet<Class<?>>();
@@ -217,11 +210,9 @@ public abstract class AbstractRegisterFactory implements RegisterFactory, Contex
         }
         //check end
     }
-    @Override
     public void doStart(final AbstractAppContext appContext) {
         // TODO Auto-generated method stub
     }
-    @Override
     public void doStartCompleted(final AbstractAppContext appContext) {
         // TODO Auto-generated method stub
     }

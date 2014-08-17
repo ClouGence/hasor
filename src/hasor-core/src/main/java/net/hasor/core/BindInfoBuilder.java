@@ -19,7 +19,7 @@ package net.hasor.core;
  * @version : 2014年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BindInfoBuilder<T> {
+public interface BindInfoBuilder<T> extends BindInfo<T> {
     //    /**为绑定设置ID*/
     //    public void setID(String newID);
     /**为类型绑定一个名称。*/
