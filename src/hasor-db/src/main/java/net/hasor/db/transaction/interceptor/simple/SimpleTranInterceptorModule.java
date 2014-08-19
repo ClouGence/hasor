@@ -41,12 +41,13 @@ public class SimpleTranInterceptorModule implements Module {
     public void loadModule(final ApiBinder apiBinder) throws Throwable {
         TransactionBinder it = new TransactionBinder(apiBinder);
         it.bind(this.dataSource)/*设置到数据源*/
-        .aroundOperation(new TransactionOperation())/*事务执行行为*/
+        .aroundOperation(new TransactionOperation())/*事务执行行为控制*/
         .matcher(AopMatchers.annotatedWithMethod(Transactional.class))/*所有标记 @Transactional 注解的方法*/
         .withPropagation(new PropagationStrategy())/*传播属性*/
         .withIsolation(new IsolationStrategy());/*隔离级别*/
     }
 }
+/**事务执行行为控制*/
 class TransactionOperation implements TranOperations {
     @Override
     public Object execute(final TransactionStatus tranStatus, final MethodInvocation invocation) throws Throwable {

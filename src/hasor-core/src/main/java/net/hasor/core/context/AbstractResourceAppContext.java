@@ -128,11 +128,7 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         if (bindInfoFactory == null) {
             this.factoryProvider = null;
         } else {
-            this.factoryProvider = new AbstractRegisterFactoryProvider() {
-                protected BindInfoFactory getBindInfoFactory() {
-                    return bindInfoFactory;
-                }
-            };
+            this.factoryProvider = new FactoryProvider(bindInfoFactory);
         }
     }
     /**设置一个RegisterFactoryCreater实例对象*/
@@ -144,9 +140,9 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         if (registerFactoryCreate == null) {
             this.factoryProvider = null;
         } else {
-            this.factoryProvider = new AbstractRegisterFactoryProvider() {
+            this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return registerFactoryCreate.create(AbstractResourceAppContext.this.getEnvironment());
+                    return registerFactoryCreate.create(getEnvironment());
                 }
             };
         }
@@ -154,9 +150,9 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
     protected BindInfoFactory getBindInfoFactory() {
         //
         if (this.factoryProvider == null) {
-            this.factoryProvider = new AbstractRegisterFactoryProvider() {
+            this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return new DefaultRegisterFactoryCreater().create(AbstractResourceAppContext.this.getEnvironment());
+                    return new DefaultRegisterFactoryCreater().create(getEnvironment());
                 }
             };
         }
@@ -166,14 +162,20 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         }
         return factory;
     }
-    private static abstract class AbstractRegisterFactoryProvider implements Provider<BindInfoFactory> {
-        private BindInfoFactory bindInfoFactory = null;
-        public BindInfoFactory get() {
-            if (this.bindInfoFactory == null) {
-                this.bindInfoFactory = this.getBindInfoFactory();
-            }
-            return this.bindInfoFactory;
+}
+/***/
+class FactoryProvider implements Provider<BindInfoFactory> {
+    private BindInfoFactory bindInfoFactory = null;
+    public FactoryProvider(BindInfoFactory bindInfoFactory) {
+        this.bindInfoFactory = bindInfoFactory;
+    }
+    public BindInfoFactory get() {
+        if (this.bindInfoFactory == null) {
+            this.bindInfoFactory = this.getBindInfoFactory();
         }
-        protected abstract BindInfoFactory getBindInfoFactory();
+        return this.bindInfoFactory;
+    }
+    protected BindInfoFactory getBindInfoFactory() {
+        return null;
     }
 }

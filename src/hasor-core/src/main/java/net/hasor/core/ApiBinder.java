@@ -48,17 +48,6 @@ public interface ApiBinder extends EventContext {
         public boolean matches(T target);
     }
     //
-    /*---------------------------------------------------------------------------------------Bean*/
-    /**注册一个bean。*/
-    public BeanBindingBuilder defineBean(String beanName);
-    //
-    public interface BeanBindingBuilder {
-        /**别名*/
-        public BeanBindingBuilder aliasName(String aliasName);
-        /**bean绑定的类型。*/
-        public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
-    }
-    //
     /*------------------------------------------------------------------------------------Binding*/
     /** */
     public <T> NamedBindingBuilder<T> bindType(Class<T> type);
@@ -91,6 +80,8 @@ public interface ApiBinder extends EventContext {
         public LinkedBindingBuilder<T> nameWith(String name);
         /**随机取一个不重复的名字*/
         public LinkedBindingBuilder<T> uniqueName();
+        //        /**设置一个ID标识符*/
+        //        public LinkedBindingBuilder<T> idWith(String idString);
     }
     /**处理类型和实现的绑定*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {

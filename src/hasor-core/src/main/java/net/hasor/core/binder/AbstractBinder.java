@@ -16,7 +16,6 @@
 package net.hasor.core.binder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
@@ -34,7 +33,6 @@ import net.hasor.core.Scope;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import org.more.util.BeanUtils;
-import org.more.util.StringUtils;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #configModule()} ,会返回一个接口( {@link net.hasor.core.ApiBinder.ModuleSettings ModuleSettings} )
@@ -92,11 +90,6 @@ public abstract class AbstractBinder implements ApiBinder {
         this.getEnvironment().fireAsyncEvent(eventType, callBack, objects);
     }
     //
-    /*---------------------------------------------------------------------------------------Bean*/
-    public BeanBindingBuilder defineBean(final String beanName) {
-        return new BeanBindingBuilderImpl().aliasName(beanName);
-    }
-    //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
     protected abstract BindInfoFactory getBindTypeFactory();
@@ -139,36 +132,6 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
-    private static long referIndex = 0;
-    private static long referIndex() {
-        return AbstractBinder.referIndex++;
-    }
-    /**BeanBindingBuilder接口实现*/
-    private class BeanBindingBuilderImpl implements BeanBindingBuilder {
-        private ArrayList<String> names = new ArrayList<String>();
-        public BeanBindingBuilder aliasName(final String aliasName) {
-            if (!StringUtils.isBlank(aliasName)) {
-                this.names.add(aliasName);
-            }
-            return this;
-        }
-        public <T> LinkedBindingBuilder<T> bindType(final Class<T> beanType) {
-            if (this.names.isEmpty() == true) {
-                throw new UnsupportedOperationException("the bean name is undefined!");
-            }
-            /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
-            String referID = beanType.getName() + "#" + String.valueOf(AbstractBinder.referIndex());
-            LinkedBindingBuilder<T> returnData = AbstractBinder.this.bindType(beanType).nameWith(referID);
-            //
-            String[] aliasNames = this.names.toArray(new String[this.names.size()]);
-            BeanInfoData<T> beanInfo = new BeanInfoData<T>(aliasNames, returnData.toInfo());
-            /*将名字和BeanInfo绑到一起*/
-            for (String nameItem : this.names) {
-                AbstractBinder.this.bindType(BeanInfo.class).nameWith(nameItem).toInstance(beanInfo);
-            }
-            return returnData;
-        }
-    }
     /** 一堆接口的实现 */
     private static class BindingBuilderImpl<T> implements //
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>,//
@@ -187,8 +150,9 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.setSingleton(true);
             return this;
         }
-        //        public NamedBindingBuilder<T> idWith(String newID) {
-        //            this.typeBuilder.setID(newID);
+        //        public LinkedBindingBuilder<T> idWith(String newID) {
+        //            if (StringUtils.isBlank(newID)) {}
+        //            this.typeBuilder.setBindName(newID);
         //            return this;
         //        }
         public LinkedBindingBuilder<T> nameWith(final String name) {

@@ -13,19 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.Provider;
 /**
- * 实体类型的Provider代理
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * <p>这个包提供了Hasor事件服务支持。</p>
+ * <p>this package that provides Hasor event service support.</p>
  */
-public class InstanceProvider<T> implements Provider<T> {
-    private T instance = null;
-    public InstanceProvider(final T instance) {
-        this.instance = instance;
-    }
-    public T get() {
-        return this.instance;
-    }
-}
+package net.hasor.core.event;

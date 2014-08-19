@@ -33,8 +33,8 @@ public class DefaultRegisterFactoryCreater implements BindInfoFactoryCreater {
         String createrToUse = null;
         //1.取得即将创建的ManagerCreater类型
         Settings setting = env.getSettings();
-        String defaultManager = setting.getString("hasor.registerFactory.default");
-        XmlNode[] managerArray = setting.getXmlNodeArray("hasor.registerFactory");
+        String defaultManager = setting.getString("hasor.bindFactory.default");
+        XmlNode[] managerArray = setting.getXmlNodeArray("hasor.bindFactory");
         for (XmlNode manager : managerArray) {
             List<XmlNode> createrList = manager.getChildren("creater");
             for (XmlNode creater : createrList) {

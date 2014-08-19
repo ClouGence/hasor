@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.Provider;
 /**
- * 实体类型的Provider代理
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * 该软件包提供了一系列工具类和接口。<br/>
+ * 说明：
+ * 工具软件包提供了，诸如属性软件包。文件拷贝，字符串转换其他类型的工具类，以及简单加密工具类。
+ * 这个JS文件是与org.more.util.CommonCodeUtil.Base64类对应的JS编解码脚本.<a href="doc-files/base64.js">js文件</a>
  */
-public class InstanceProvider<T> implements Provider<T> {
-    private T instance = null;
-    public InstanceProvider(final T instance) {
-        this.instance = instance;
-    }
-    public T get() {
-        return this.instance;
-    }
-}
+package org.more.util;

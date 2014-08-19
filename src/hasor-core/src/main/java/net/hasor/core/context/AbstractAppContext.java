@@ -15,7 +15,6 @@
  */
 package net.hasor.core.context;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -122,44 +121,32 @@ public abstract class AbstractAppContext implements AppContext/*, RegisterScope*
         return null;
     }
     /**如果存在目标类型的Bean则返回Bean的名称。*/
-    public String[] getBeanNames(final Class<?> targetClass) {
+    public String[] getNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         //
-        Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getBindInfoFactory().getNamesOfType(targetClass).getRegisterIterator(BeanInfo.class);
-        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
+        String[] returnData = this.getBindInfoFactory().getNamesOfType(targetClass);
+        if (returnData == null) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        //
-        Set<String> nameSet = new HashSet<String>();
-        while (infoRegisterIterator.hasNext()) {
-            RegisterInfoAdapter<BeanInfo> infoRegister = infoRegisterIterator.next();
-            BeanInfo<?> info = infoRegister.getProvider().get();
-            if (targetClass == info.getType()) {
-                String[] names = info.getNames();
-                for (String n : names) {
-                    nameSet.add(n);
-                }
-            }
-        }
-        return nameSet.toArray(new String[nameSet.size()]);
+        return returnData;
     }
     /**获取已经注册的Bean名称。*/
     public String[] getBeanNames() {
-        Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getRegisterIterator(BeanInfo.class);
-        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
-        }
-        //
-        Set<String> nameSet = new HashSet<String>();
-        while (infoRegisterIterator.hasNext()) {
-            RegisterInfoAdapter<BeanInfo> infoRegister = infoRegisterIterator.next();
-            BeanInfo<?> info = infoRegister.getProvider().get();
-            String[] names = info.getNames();
-            for (String n : names) {
-                nameSet.add(n);
-            }
-        }
-        return nameSet.toArray(new String[nameSet.size()]);
+        //        Iterator<RegisterInfoAdapter<BeanInfo>> infoRegisterIterator = this.getRegisterIterator(BeanInfo.class);
+        //        if (infoRegisterIterator == null || infoRegisterIterator.hasNext() == false) {
+        //            return ArrayUtils.EMPTY_STRING_ARRAY;
+        //        }
+        //        //
+        //        Set<String> nameSet = new HashSet<String>();
+        //        while (infoRegisterIterator.hasNext()) {
+        //            RegisterInfoAdapter<BeanInfo> infoRegister = infoRegisterIterator.next();
+        //            BeanInfo<?> info = infoRegister.getProvider().get();
+        //            String[] names = info.getNames();
+        //            for (String n : names) {
+        //                nameSet.add(n);
+        //            }
+        //        }
+        //        return nameSet.toArray(new String[nameSet.size()]);
     }
     /**创建Bean。*/
     public <T> T getBean(final String name) {

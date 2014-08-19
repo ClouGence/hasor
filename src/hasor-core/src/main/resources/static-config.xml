@@ -15,12 +15,12 @@
 		<fullStart>false</fullStart>
 		<!-- 配置文件改变监视线程检查时间间隔(毫秒) -->
 		<settingsMonitor interval="15000" />
-		<!-- RegisterManager 接口注册 -->
-		<registerFactory default="hasor">
+		<!-- BindInfoFactory 注册 -->
+		<bindFactory default="hasor">
 			<creater name="Hasor" class="net.hasor.core.context.factorys.hasor.HasorRegisterFactoryCreater" />
 			<creater name="Spring" class="net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater" />
 			<creater name="Guice" class="net.hasor.core.context.factorys.guice.GuiceRegisterFactoryCreater" />
-		</registerFactory>
+		</bindFactory>
 		<!-- 默认要装载的模块 -->
 		<modules loadModule="true">
 			<!-- <module class="" /> -->
