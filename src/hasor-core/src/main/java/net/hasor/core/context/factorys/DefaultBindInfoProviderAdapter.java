@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.context.factorys;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T> {
-    public DefaultRegisterInfoAdapter() {}
-    public DefaultRegisterInfoAdapter(Class<T> bindingType) {
+public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
+    public DefaultBindInfoProviderAdapter() {}
+    public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this.setBindType(bindingType);
     }
     @Override
@@ -31,7 +31,7 @@ public class DefaultRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T
         throw new UnsupportedOperationException();
     }
     @Override
-    public void setInitParam(final int index, final Class<?> paramType, final RegisterInfo<?> valueInfo) {
+    public void setInitParam(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
     @Override
@@ -39,7 +39,7 @@ public class DefaultRegisterInfoAdapter<T> extends AbstractRegisterInfoAdapter<T
         throw new UnsupportedOperationException();
     }
     @Override
-    public void addInject(final String property, final RegisterInfo<?> valueInfo) {
+    public void addInject(final String property, final BindInfo<?> valueInfo) {
         throw new UnsupportedOperationException();
     }
 }

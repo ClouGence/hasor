@@ -17,14 +17,12 @@ package net.hasor.core.context.factorys.guice;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.aop.AopMatcherMethodInterceptor;
-import net.hasor.core.binder.aop.AopMatcherMethodInterceptorData;
 import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.factorys.AbstractRegisterFactory;
-import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import net.hasor.core.context.factorys.AbstractBindInfoFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.more.util.StringUtils;
@@ -43,7 +41,7 @@ import com.google.inject.name.Names;
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class GuiceRegisterFactory extends AbstractRegisterFactory {
+public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
     private Injector guiceInjector = null;
     //
     public Injector getGuice() {
@@ -53,7 +51,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
     protected Injector createInjector(final com.google.inject.Module rootModule) {
         return Guice.createInjector(rootModule);
     }
-    protected <T> T newInstance(final RegisterInfo<T> oriType) {
+    protected <T> T newInstance(final BindInfo<T> oriType) {
         if (oriType == null) {
             return null;
         }
@@ -73,6 +71,9 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
             return super.getDefaultInstance(oriType);
         }
         return this.guiceInjector.getInstance(oriType);
+    }
+    public void registerAop(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, net.hasor.core.MethodInterceptor interceptor) {
+        // TODO Auto-generated method stub
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
@@ -95,7 +96,7 @@ public class GuiceRegisterFactory extends AbstractRegisterFactory {
         //2.执行绑定
         this.guiceInjector = this.createInjector(new com.google.inject.Module() {
             public void configure(final Binder binder) {
-                Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = GuiceRegisterFactory.this.getRegisterIterator();
+                Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = GuiceBindInfoFactory.this.getRegisterIterator();
                 while (registerIterator.hasNext()) {
                     AbstractRegisterInfoAdapter<Object> register = (AbstractRegisterInfoAdapter<Object>) registerIterator.next();
                     //1.处理绑定 

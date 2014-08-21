@@ -27,7 +27,7 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultRegisterFactoryCreater implements BindInfoFactoryCreater {
+public class DefaultBindInfoFactoryCreater implements BindInfoFactoryCreater {
     @Override
     public BindInfoFactory create(final Environment env) {
         String createrToUse = null;
