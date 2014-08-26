@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.guice;
-import net.hasor.core.BindInfoFactory;
-import net.hasor.core.BindInfoFactoryCreater;
-import net.hasor.core.Environment;
+package net.hasor.core.factorys;
+import java.lang.reflect.Method;
+import net.hasor.core.MethodInterceptor;
 /**
  * 
- * @version : 2014-5-10
+ * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public class GuiceRegisterFactoryCreater implements BindInfoFactoryCreater {
-    public BindInfoFactory create(final Environment env) {
-        return new GuiceBindInfoFactory();
-    }
+public interface AopMatcherMethodInterceptor extends MethodInterceptor {
+    /**匹配类型*/
+    public boolean matcher(Class<?> targetClass);
+    /**匹配方法*/
+    public boolean matcher(Method targetMethod);
 }

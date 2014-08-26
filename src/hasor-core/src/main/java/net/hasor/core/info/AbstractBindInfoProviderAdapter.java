@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys;
+package net.hasor.core.info;
 import java.util.HashMap;
 import java.util.Map;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
-import net.hasor.core.BindInfoFactory;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.context.BindInfoProviderAdapter;
 /**
  * 
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoProviderAdapter<T>, BindInfoBuilder<T> {
+public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuilder<T>, BindInfo<T> {
     //1.基本属性
     private String              bindName         = null;
     private Class<T>            bindType         = null;
@@ -36,12 +35,8 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoProv
     //2.系统属性
     private Provider<T>         customerProvider = null;
     private Provider<Scope>     scopeProvider    = null;
-    private BindInfoFactory     factory          = null;
     private Map<String, Object> metaData         = new HashMap<String, Object>();
     //
-    void setFactory(final BindInfoFactory factory) {
-        this.factory = factory;
-    }
     public void setBindName(final String bindName) {
         this.bindName = bindName;
     }
@@ -75,15 +70,15 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoProv
     public void setCustomerProvider(final Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
     }
-    /***/
     public Provider<T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public Provider<T> getProvider() {
-        if (this.customerProvider == null) {
-            return new FactoryProvider<T>(this, this.factory);
+    /***/
+    public Provider<T> getProvider(AppContext appContext) {
+        if (this.customerProvider != null) {
+            return this.customerProvider;
         }
-        return this.customerProvider;
+        return appContext.getProvider(this);
     }
     public void setScopeProvider(final Provider<Scope> scopeProvider) {
         this.scopeProvider = scopeProvider;
@@ -93,17 +88,5 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoProv
     }
     public BindInfo<T> toInfo() {
         return this;
-    }
-}
-/** RegisterInfo的默认的Provider，作用是通过RegisterFactory的getInstance方法来创建对象 */
-class FactoryProvider<T> implements Provider<T> {
-    private BindInfo<T>     adapter = null;
-    private BindInfoFactory factory = null;
-    public FactoryProvider(final BindInfo<T> adapter, final BindInfoFactory factory) {
-        this.adapter = adapter;
-        this.factory = factory;
-    }
-    public T get() {
-        return this.factory.getInstance(this.adapter);
     }
 }

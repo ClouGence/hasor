@@ -20,7 +20,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.factorys.spring.SpringRegisterFactoryCreater;
+import net.hasor.core.factorys.spring.SpringRegisterFactoryCreater;
 import net.test.simple.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

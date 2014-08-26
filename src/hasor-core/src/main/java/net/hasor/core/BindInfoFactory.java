@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.lang.reflect.Method;
-import net.hasor.core.ApiBinder.Matcher;
 /**
  * 
  * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BindInfoFactory {
-    /**注册一个类型*/
-    public <T> BindInfoBuilder<T> createTypeBuilder(Class<T> bindType);
-    /**注册一个Aop*/
-    public void registerAop(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
+    /**获取注册器*/
+    public BindInfoDefineManager getManager();
     //
     /**创建一个绑定过类型*/
     public <T> T getInstance(BindInfo<T> oriType);
@@ -34,5 +30,5 @@ public interface BindInfoFactory {
     /**获取类型绑定的所有名字。*/
     public String[] getNamesOfType(Class<?> bindType);
     /**根据名称和类型获取获取{@link BindInfo}。*/
-    public <T> BindInfo<T> getRegister(String withName, Class<T> bindType);
+    public <T> BindInfo<T> getBindInfo(String withName, Class<T> bindType);
 }

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys;
-import java.lang.reflect.Array;
+package net.hasor.core.factorys;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,16 +25,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import net.hasor.core.ApiBinder;
+import java.util.UUID;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoFactory;
-import net.hasor.core.Provider;
-import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.listener.ContextInitializeListener;
-import net.hasor.core.context.listener.ContextStartListener;
+import net.hasor.core.BindInfoBuilder;
+import net.hasor.core.BindInfoDefineManager;
+import net.hasor.core.Hasor;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.RepeateException;
-import org.more.util.ArrayUtils;
-import org.more.util.BeanUtils;
 import org.more.util.Iterators;
 import org.more.util.StringUtils;
 /**
@@ -42,21 +43,33 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractBindInfoFactory implements BindInfoFactory, ContextInitializeListener, ContextStartListener {
+public class BaseBindInfoDefineManager implements BindInfoDefineManager {
     private Map<Class<?>, List<AbstractBindInfoProviderAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractBindInfoProviderAdapter<?>>>();
     //
     /**注册一个类型*/
-    public <T> AbstractBindInfoProviderAdapter<T> createTypeBuilder(final Class<T> bindType) {
+    public <T> AbstractBindInfoProviderAdapter<T> createBuilder(final Class<T> bindType) {
         List<AbstractBindInfoProviderAdapter<?>> registerList = this.registerDataSource.get(bindType);
         if (registerList == null) {
             registerList = new ArrayList<AbstractBindInfoProviderAdapter<?>>();
             this.registerDataSource.put(bindType, registerList);
         }
         AbstractBindInfoProviderAdapter<T> adapter = this.createRegisterInfoAdapter(bindType);
-        adapter.setFactory(this);
         adapter.setBindType(bindType);
         registerList.add(adapter);
         return adapter;
+    }
+    //
+    public void addAop(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+        Hasor.assertIsNotNull(matcherClass, "matcherClass is null.");
+        Hasor.assertIsNotNull(matcherMethod, "matcherMethod is null.");
+        Hasor.assertIsNotNull(interceptor, "interceptor is null.");
+        //
+        BindInfoBuilder<AopMatcherMethodInterceptor> builder = createBuilder(AopMatcherMethodInterceptor.class);
+        //
+        AopMatcherMethodInterceptor target = new InnerAopMatcherMethodInterceptor(matcherClass, matcherMethod, interceptor);
+        builder.setCustomerProvider(new InstanceProvider<AopMatcherMethodInterceptor>(target));
+        builder.setSingleton(true);
+        builder.setBindName(UUID.randomUUID().toString());
     }
     //
     /**为类型创建AbstractRegisterInfoAdapter适配器。*/
@@ -64,80 +77,12 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
         return new DefaultBindInfoProviderAdapter<T>(bindingType);
     }
     //
-    /**创建一个未绑定过的类型*/
-    public <T> T getDefaultInstance(final Class<T> oriType) {
-        if (oriType == null) {
-            return null;
-        }
-        try {
-            if (oriType.isInterface() || oriType.isEnum()) {
-                return null;
-            }
-            if (oriType.isPrimitive()) {
-                return (T) BeanUtils.getDefaultValue(oriType);
-            }
-            if (oriType.isArray()) {
-                Class<?> comType = oriType.getComponentType();
-                return (T) Array.newInstance(comType, 0);
-            }
-            return oriType.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    /**创建{@link RegisterInfo} 所表示的类型对象。*/
-    public final <T> T getInstance(final BindInfo<T> oriType) {
-        if (oriType instanceof AbstractBindInfoProviderAdapter) {
-            AbstractBindInfoProviderAdapter<T> adapter = (AbstractBindInfoProviderAdapter<T>) oriType;
-            Provider<T> provider = adapter.getCustomerProvider();
-            if (provider != null) {
-                return provider.get();
-            }
-        }
-        return this.newInstance(oriType);
-    };
-    //
-    /**创建 {@link RegisterInfo}所表示的那个类型。
-     * @see #getInstance(RegisterInfo)*/
-    protected abstract <T> T newInstance(BindInfo<T> bindInfo);
-    //
-    public String[] getNamesOfType(Class<?> bindType) {
-        List<AbstractBindInfoProviderAdapter<?>> adapterList = this.registerDataSource.get(bindType);
-        if (adapterList == null || adapterList.isEmpty()) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
-        }
-        List<String> names = new ArrayList<String>();
-        for (AbstractBindInfoProviderAdapter<?> adapter : adapterList) {
-            String name = adapter.getBindName();
-            if (StringUtils.isBlank(name) == false) {
-                names.add(name);
-            }
-        }
-        return names.toArray(new String[names.size()]);
-    }
-    public <T> BindInfo<T> getRegister(String withName, Class<T> bindType) {
-        List<AbstractBindInfoProviderAdapter<?>> adapterList = this.registerDataSource.get(bindType);
-        if (adapterList == null || adapterList.isEmpty()) {
-            return null;
-        }
-        for (AbstractBindInfoProviderAdapter<?> adapter : adapterList) {
-            boolean eq = StringUtils.equals(adapter.getBindName(), withName);
-            if (eq == true) {
-                return (BindInfo<T>) adapter;
-            }
-        }
-        return null;
-    }
     /*测试register是否为匿名的*/
     private boolean ifAnonymity(final BindInfo<?> register) {
         return StringUtils.isBlank(register.getBindName());
     }
     //
-    public void doInitialize(ApiBinder apiBinder) {
-        // TODO Auto-generated method stub
-    }
-    //
-    public void doInitializeCompleted(final AbstractAppContext appContext) {
+    public void doFinish() {
         //check begin
         Set<Class<?>> anonymityTypes = new HashSet<Class<?>>();
         Map<Class<?>, Set<String>> checkMap = new HashMap<Class<?>, Set<String>>();
@@ -171,12 +116,6 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
             //
         }
         //check end
-    }
-    public void doStart(final AbstractAppContext appContext) {
-        // TODO Auto-generated method stub
-    }
-    public void doStartCompleted(final AbstractAppContext appContext) {
-        // TODO Auto-generated method stub
     }
     //
     /*---------------------------------------------------------------------------------------Util*/

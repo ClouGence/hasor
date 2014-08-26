@@ -19,14 +19,11 @@ package net.hasor.core;
  * @version : 2014年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BindInfoBuilder<T> extends BindInfo<T> {
+public interface BindInfoBuilder<T> {
     //    /**为绑定设置ID*/
     //    public void setID(String newID);
     /**为类型绑定一个名称。*/
     public void setBindName(String bindName);
-    /**获取注册的类型*/
-    public Class<T> getBindType();
-    //
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/
     public void setSourceType(Class<? extends T> sourceType);
     /**设置元信息*/

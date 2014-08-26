@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+package net.hasor.core.factorys.guice;
+import net.hasor.core.BindInfoFactory;
+import net.hasor.core.BindInfoFactoryCreater;
+import net.hasor.core.Environment;
 /**
  * 
- * @version : 2014年7月3日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2014-5-10
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface BindInfoProviderAdapter<T> extends BindInfo<T> {
-    /**获取Provider，通过Provider可以快速的创建RegisterInfo所表示的类型实例。*/
-    public Provider<T> getProvider();
+public class GuiceRegisterFactoryCreater implements BindInfoFactoryCreater {
+    public BindInfoFactory create(final Environment env) {
+        return new GuiceBindInfoFactory();
+    }
 }

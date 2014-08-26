@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.factorys.guice.GuiceRegisterFactoryCreater;
+import net.hasor.core.factorys.guice.GuiceRegisterFactoryCreater;
 import org.junit.Test;
 import com.google.inject.Injector;
 /**

@@ -21,8 +21,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Provider;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10

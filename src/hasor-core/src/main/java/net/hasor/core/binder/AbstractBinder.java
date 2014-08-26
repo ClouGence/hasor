@@ -22,7 +22,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
-import net.hasor.core.BindInfoFactory;
+import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventListener;
@@ -92,10 +92,10 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
-    protected abstract BindInfoFactory getBindTypeFactory();
+    protected abstract BindInfoDefineManager getBuilderRegister();
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BindInfoBuilder<T> typeBuilder = this.getBindTypeFactory().createTypeBuilder(type);
+        BindInfoBuilder<T> typeBuilder = this.getBuilderRegister().createBuilder(type);
         //typeBuilder.setID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }
@@ -128,7 +128,7 @@ public abstract class AbstractBinder implements ApiBinder {
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     public void bindInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
-        this.getBindTypeFactory().registerAop(matcherClass, matcherMethod, interceptor);
+        this.getBuilderRegister().addAop(matcherClass, matcherMethod, interceptor);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

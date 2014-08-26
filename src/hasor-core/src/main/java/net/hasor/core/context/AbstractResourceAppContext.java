@@ -26,7 +26,6 @@ import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.XmlNode;
-import net.hasor.core.context.factorys.DefaultBindInfoFactoryCreater;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ClassUtils;
 import org.more.util.ResourcesUtils;
@@ -152,7 +151,7 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         if (this.factoryProvider == null) {
             this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return new DefaultBindInfoFactoryCreater().create(getEnvironment());
+                    return new InnerBindInfoFactoryCreater().create(getEnvironment());
                 }
             };
         }

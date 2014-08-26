@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys;
+package net.hasor.core.context;
 import java.util.List;
 import net.hasor.core.BindInfoFactory;
 import net.hasor.core.BindInfoFactoryCreater;
@@ -27,7 +27,7 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DefaultBindInfoFactoryCreater implements BindInfoFactoryCreater {
+class InnerBindInfoFactoryCreater implements BindInfoFactoryCreater {
     @Override
     public BindInfoFactory create(final Environment env) {
         String createrToUse = null;

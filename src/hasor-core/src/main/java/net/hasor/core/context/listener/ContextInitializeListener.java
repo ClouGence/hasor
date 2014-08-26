@@ -15,7 +15,6 @@
  */
 package net.hasor.core.context.listener;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.context.AbstractAppContext;
 /**
  * 用于容器初始化事件接收
  * @version : 2014-5-10
@@ -25,5 +24,5 @@ public interface ContextInitializeListener {
     /**开始进入初始化过程.*/
     public void doInitialize(ApiBinder apiBinder);
     /**初始化过程完成.*/
-    public void doInitializeCompleted(AbstractAppContext appContext);
+    public <T> void doInitializeCompleted(T context);
 }
