@@ -80,8 +80,8 @@ public interface ApiBinder extends EventContext {
         public LinkedBindingBuilder<T> nameWith(String name);
         /**随机取一个不重复的名字*/
         public LinkedBindingBuilder<T> uniqueName();
-        //        /**设置一个ID标识符*/
-        //        public LinkedBindingBuilder<T> idWith(String idString);
+        /**设置一个ID标识符*/
+        public NamedBindingBuilder<T> idWith(String idString);
     }
     /**处理类型和实现的绑定*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {

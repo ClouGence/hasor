@@ -56,7 +56,7 @@ public class MoreDataSourceWarp implements Module {
         apiBinder.bindType(DataSource.class).nameWith(dsName).toInstance(dataSource);
         //2.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).nameWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
-        apiBinder.defineBean(dsName).bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
+        apiBinder.bindType(JdbcTemplate.class).idWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
         //3.启用默认事务拦截器
         apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
     }

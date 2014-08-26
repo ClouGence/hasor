@@ -40,14 +40,14 @@ public class ScopeTest {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 MyScope myScope1 = new MyScope();
                 //
-                apiBinder.defineBean("myBean1").bindType(PojoBean.class).toScope(myScope1);
+                apiBinder.bindType(PojoBean.class).nameWith("myBean1").toScope(myScope1);
             }
         });
         //
         PojoBean myBean = null;
-        myBean = appContext.getBean("myBean1");
+        myBean = appContext.findBindingBean("myBean1", PojoBean.class);
         System.out.println("Scope 1 : " + myBean.getName() + myBean);
-        myBean = appContext.getBean("myBean1");
+        myBean = appContext.findBindingBean("myBean1", PojoBean.class);
         System.out.println("Scope 1 : " + myBean.getName() + myBean);
     }
 }

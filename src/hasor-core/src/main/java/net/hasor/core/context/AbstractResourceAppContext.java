@@ -27,6 +27,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.XmlNode;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.factorys.inner.InnerBindInfoFactoryCreater;
 import org.more.util.ClassUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;

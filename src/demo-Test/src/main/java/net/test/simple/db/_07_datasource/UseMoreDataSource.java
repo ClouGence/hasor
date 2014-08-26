@@ -33,8 +33,8 @@ public class UseMoreDataSource {
         //1.构建AppContext
         AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new MoreDataSourceWarp());
         //2.取得JDBC操作接口
-        JdbcTemplate mJDBC = app.getBean("mysql");
-        JdbcTemplate hJDBC = app.getBean("hsql");
+        JdbcTemplate mJDBC = app.getInstance("mysql");
+        JdbcTemplate hJDBC = app.getInstance("hsql");
         //3.初始化表
         this.initData(mJDBC, hJDBC);
         //

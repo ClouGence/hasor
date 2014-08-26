@@ -110,7 +110,7 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
         // TODO Auto-generated method stub
     }
     public void doInitializeCompleted(Object context) {
-        this.defineManager.doFinish();
+        this.defineManager.doFinish();/*数据检测*/
         Iterator<AbstractBindInfoProviderAdapter<?>> registerIterator = getManager().getBindInfoIterator();
         while (registerIterator.hasNext()) {
             AbstractBindInfoProviderAdapter<?> register = registerIterator.next();

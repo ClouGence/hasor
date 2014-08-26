@@ -81,7 +81,7 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         return new AbstractWebApiBinder((WebEnvironment) this.getEnvironment()) {
             @Override
             protected BindInfoDefineManager getBuilderRegister() {
-                return getBindInfoFactory().getRegister();
+                return getBindInfoFactory().getManager();
             }
         };
     }

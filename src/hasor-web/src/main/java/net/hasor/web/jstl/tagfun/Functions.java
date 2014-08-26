@@ -36,7 +36,7 @@ public class Functions {
         if (StringUtils.isBlank(defineBean)) {
             return null;
         }
-        return Functions.getAppContext().getBean(defineBean);
+        return Functions.getAppContext().getInstance(defineBean);
     }
     public static Object defineType(final String className) throws ClassNotFoundException {
         Class<?> defineType = Class.forName(className);
@@ -61,13 +61,7 @@ public class Functions {
         if (StringUtils.isBlank(defineBean)) {
             return false;
         }
-        String[] names = Functions.getAppContext().getBeanNames();
-        for (String ns : names) {
-            if (ns.equals(defineBean)) {
-                return true;
-            }
-        }
-        return false;
+        return Functions.getAppContext().containsBindID(defineBean);
     }
     public static boolean hasBind(final String name, final String className) throws ClassNotFoundException {
         if (StringUtils.isBlank(name)) {

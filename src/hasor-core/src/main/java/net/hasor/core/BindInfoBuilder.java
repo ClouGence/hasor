@@ -20,8 +20,8 @@ package net.hasor.core;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BindInfoBuilder<T> {
-    //    /**为绑定设置ID*/
-    //    public void setID(String newID);
+    /**为绑定设置ID*/
+    public void setBindID(String newID);
     /**为类型绑定一个名称。*/
     public void setBindName(String bindName);
     /**为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。*/

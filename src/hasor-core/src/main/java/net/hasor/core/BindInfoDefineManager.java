@@ -31,8 +31,11 @@ public interface BindInfoDefineManager {
     /**当有{@link #createBuilder(Class)}或者{@link #addAop(Matcher, Matcher, MethodInterceptor)}操作之后需要执行一次该方法。*/
     public void doFinish();
     //
+    //
     /**根据Type查找RegisterInfo迭代器*/
     public <T> Iterator<? extends AbstractBindInfoProviderAdapter<T>> getBindInfoIterator(final Class<T> bindType);
     /**查找所有RegisterInfo迭代器*/
     public Iterator<AbstractBindInfoProviderAdapter<?>> getBindInfoIterator();
+    //
+    public <T> AbstractBindInfoProviderAdapter<T> getBindInfoByID(String bindID);
 }

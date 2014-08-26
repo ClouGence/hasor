@@ -24,5 +24,5 @@ public interface ContextInitializeListener {
     /**开始进入初始化过程.*/
     public void doInitialize(ApiBinder apiBinder);
     /**初始化过程完成.*/
-    public <T> void doInitializeCompleted(T context);
+    public void doInitializeCompleted(Object context);
 }

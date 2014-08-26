@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.hasor;
-import net.hasor.core.context.factorys.DefaultRegisterInfoAdapter;
+package net.hasor.core.factorys.hasor;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.classcode.ClassEngine;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorRegisterInfoAdapter<T> extends DefaultRegisterInfoAdapter<T> {
+public class HasorBindInfoProviderAdapter<T> extends DefaultBindInfoProviderAdapter<T> {
     //
-    public HasorRegisterInfoAdapter() {
+    public HasorBindInfoProviderAdapter() {
         super();
     }
-    public HasorRegisterInfoAdapter(Class<T> bindingType) {
+    public HasorBindInfoProviderAdapter(Class<T> bindingType) {
         super(bindingType);
     }
     //

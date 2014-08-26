@@ -45,6 +45,7 @@ import org.more.util.StringUtils;
  */
 public class BaseBindInfoDefineManager implements BindInfoDefineManager {
     private Map<Class<?>, List<AbstractBindInfoProviderAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractBindInfoProviderAdapter<?>>>();
+    private Map<String, AbstractBindInfoProviderAdapter<?>>         idDataSource       = new HashMap<String, AbstractBindInfoProviderAdapter<?>>();
     //
     /**注册一个类型*/
     public <T> AbstractBindInfoProviderAdapter<T> createBuilder(final Class<T> bindType) {
@@ -69,7 +70,8 @@ public class BaseBindInfoDefineManager implements BindInfoDefineManager {
         AopMatcherMethodInterceptor target = new InnerAopMatcherMethodInterceptor(matcherClass, matcherMethod, interceptor);
         builder.setCustomerProvider(new InstanceProvider<AopMatcherMethodInterceptor>(target));
         builder.setSingleton(true);
-        builder.setBindName(UUID.randomUUID().toString());
+        builder.setBindID(UUID.randomUUID().toString());
+        builder.setBindName(builder.toInfo().getBindID());
     }
     //
     /**为类型创建AbstractRegisterInfoAdapter适配器。*/
@@ -112,6 +114,9 @@ public class BaseBindInfoDefineManager implements BindInfoDefineManager {
                     throw new RepeateException(String.format("repeate name bind ,name = %s. type is %s", name, nowType));
                 }
                 nowSet.add(name);
+                //
+                //3.ID
+                this.idDataSource.put(e.getBindID(), e);
             }
             //
         }
@@ -119,6 +124,9 @@ public class BaseBindInfoDefineManager implements BindInfoDefineManager {
     }
     //
     /*---------------------------------------------------------------------------------------Util*/
+    public <T> AbstractBindInfoProviderAdapter<T> getBindInfoByID(String bindID) {
+        return (AbstractBindInfoProviderAdapter<T>) this.idDataSource.get(bindID);
+    }
     /**根据Type查找RegisterInfo迭代器*/
     public <T> Iterator<? extends AbstractBindInfoProviderAdapter<T>> getBindInfoIterator(final Class<T> bindType) {
         //原则1：避免对迭代器进行迭代，以减少时间复杂度。

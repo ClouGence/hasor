@@ -34,16 +34,18 @@ public class NameBindTest {
         //1.创建一个标准的 Hasor 容器。
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.defineBean("myBean1").bindType(PojoBean.class);
+                //Bean1
+                apiBinder.bindType(PojoBean.class).idWith("myBean1");
+                //Bean2
                 PojoBean pojo = new PojoBean();
                 pojo.setName("马大帅");
-                apiBinder.defineBean("myBean2").bindType(PojoBean.class).toInstance(pojo);
+                apiBinder.bindType(PojoBean.class).idWith("myBean2").toInstance(pojo);
             }
         });
         //
-        PojoBean myBean1 = appContext.getBean("myBean1");
+        PojoBean myBean1 = appContext.getInstance("myBean1");
         System.out.println(myBean1.getName() + "\t" + myBean1);
-        PojoBean myBean2 = appContext.getBean("myBean2");
+        PojoBean myBean2 = appContext.getInstance("myBean2");
         System.out.println(myBean2.getName() + "\t" + myBean2);
     }
 }

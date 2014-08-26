@@ -43,6 +43,7 @@ public final class Iterators {
             }
         };
     }
+    /**转换为 Enumeration*/
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
             @Override

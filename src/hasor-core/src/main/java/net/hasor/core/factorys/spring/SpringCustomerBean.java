@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.spring;
-import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+package net.hasor.core.factorys.spring;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -29,10 +29,10 @@ import org.springframework.context.support.AbstractApplicationContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SpringCustomerBean implements FactoryBean, ApplicationContextAware, BeanNameAware, InitializingBean {
-    private String                         springBeanName     = null;
-    private AbstractApplicationContext     applicationContext = null;
-    private AbstractRegisterInfoAdapter<?> regObject          = null;
-    private Object                         target             = null;
+    private String                             springBeanName     = null;
+    private AbstractApplicationContext         applicationContext = null;
+    private AbstractBindInfoProviderAdapter<?> regObject          = null;
+    private Object                             target             = null;
     //
     @Override
     public void setBeanName(String name) {
@@ -45,7 +45,7 @@ public class SpringCustomerBean implements FactoryBean, ApplicationContextAware,
     @Override
     public void afterPropertiesSet() throws Exception {
         BeanDefinition define = this.applicationContext.getBeanFactory().getBeanDefinition(this.springBeanName);
-        this.regObject = (AbstractRegisterInfoAdapter<?>) define.getAttribute("RegObject");
+        this.regObject = (AbstractBindInfoProviderAdapter<?>) define.getAttribute("RegObject");
     }
     @Override
     public Object getObject() throws Exception {

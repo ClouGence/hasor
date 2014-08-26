@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.spring;
-import java.util.Iterator;
+package net.hasor.core.factorys.spring;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.Provider;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.context.AbstractAppContext;
-import net.hasor.core.context.factorys.AbstractRegisterFactory;
-import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+import net.hasor.core.factorys.AbstractBindInfoFactory;
+import net.hasor.core.factorys.AopMatcherMethodInterceptor;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -29,68 +29,72 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.google.inject.Binder;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SpringRegisterFactory extends AbstractRegisterFactory {
+public class SpringRegisterFactory extends AbstractBindInfoFactory {
     private AbstractApplicationContext spring = null;
     //
     public ApplicationContext getSpring() {
         return this.spring;
     }
-    /**创建Guice*/
+    /**创建Spring*/
     protected AbstractApplicationContext createSpring(Environment env) {
         ClassPathXmlApplicationContext spring = new ClassPathXmlApplicationContext();
         spring.refresh();
         return spring;
     }
-    @Override
-    public void doInitialize(ApiBinder apiBinder) {
-        super.doInitialize(apiBinder);
-        apiBinder.bindType(ApplicationContext.class).toProvider(new Provider<ApplicationContext>() {
-            @Override
-            public ApplicationContext get() {
-                return getSpring();
-            }
-        });
-    }
-    @Override
-    public void doInitializeCompleted(final AbstractAppContext appContext) {
-        //1.检查
-        super.doInitializeCompleted(appContext);
-        //2.Spring
-        this.spring = this.createSpring(appContext.getEnvironment());
-        //3.注册
-        Iterator<AbstractRegisterInfoAdapter<?>> registerIterator = this.getRegisterIterator();
-        while (registerIterator.hasNext()) {
-            AbstractRegisterInfoAdapter<?> regObject = registerIterator.next();
-            if (regObject.getCustomerProvider() != null) {
-                //单例Bean
-                this.registerProvider(regObject);
-            } else {
-                //注册Bean
-                this.registerBean(regObject);
-            }
-        }
-    }
     //
-    @Override
-    protected <T> T newInstance(final RegisterInfo<T> oriType) {
-        String name = oriType.getBindName();
-        Class<T> type = oriType.getBindType();
+    public <T> T getInstance(BindInfo<T> bindInfo) {
+        String name = bindInfo.getBindName();
+        Class<T> type = bindInfo.getBindType();
         if (name == null) {
             name = type.getName();
         }
         return (T) this.spring.getBean(name, type);
     }
     //
-    private void registerProvider(AbstractRegisterInfoAdapter<?> regObject) {
-        String regName = regObject.getBindName();
-        if (regName == null) {
-            regName = regObject.getBindType().getName();
+    /*------------------------------------------------------------------------------add to Spring*/
+    public void doInitialize(ApiBinder apiBinder) {
+        super.doInitialize(apiBinder);
+        apiBinder.bindType(ApplicationContext.class).toProvider(new Provider<ApplicationContext>() {
+            public ApplicationContext get() {
+                return getSpring();
+            }
+        });
+    }
+    //
+    public void doInitializeCompleted(Object context) {
+        //1.创建Spring
+        AppContext appContext = (AppContext) context;
+        this.spring = this.createSpring(appContext.getEnvironment());
+        //2.
+        super.doInitializeCompleted(appContext);
+    }
+    protected void configBindInfo(AbstractBindInfoProviderAdapter<?> bindInfo, Object context) {
+        AbstractBindInfoProviderAdapter<Object> regObject = (AbstractBindInfoProviderAdapter<Object>) bindInfo;
+        if (regObject.getCustomerProvider() != null) {
+            //单例Bean
+            this.registerProvider(regObject);
+        } else {
+            //注册Bean
+            this.registerBean(regObject);
         }
+    }
+    //
+    //处理Aop配置
+    private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
+        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == false) {
+            return;
+        }
+    }
+    //
+    //处理带有CustomerProvider配置
+    private void registerProvider(AbstractBindInfoProviderAdapter<?> regObject) {
+        String bindID = regObject.getBindID();
         //
         ConfigurableListableBeanFactory factory = this.spring.getBeanFactory();
         BeanDefinitionRegistry defineRegistry = (BeanDefinitionRegistry) factory;
@@ -100,13 +104,12 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
         }
         BeanDefinition define = defineBuilder.getRawBeanDefinition();
         define.setAttribute("RegObject", regObject);
-        defineRegistry.registerBeanDefinition(regName, define);
+        defineRegistry.registerBeanDefinition(bindID, define);
     }
-    private void registerBean(AbstractRegisterInfoAdapter<?> regObject) {
-        String regName = regObject.getBindName();
-        if (regName == null) {
-            regName = regObject.getBindType().getName();
-        }
+    //
+    //处理一般配置
+    private void registerBean(AbstractBindInfoProviderAdapter<?> regObject) {
+        String bindID = regObject.getBindID();
         Class<?> regType = regObject.getSourceType();
         if (regType == null) {
             regType = regObject.getBindType();
@@ -118,6 +121,6 @@ public class SpringRegisterFactory extends AbstractRegisterFactory {
         if (regObject.isSingleton() == true) {
             define.setScope(BeanDefinition.SCOPE_SINGLETON);
         }
-        defineRegistry.registerBeanDefinition(regName, define.getRawBeanDefinition());
+        defineRegistry.registerBeanDefinition(bindID, define.getRawBeanDefinition());
     }
 }

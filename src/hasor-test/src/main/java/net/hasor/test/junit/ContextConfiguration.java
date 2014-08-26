@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Module;
-import net.hasor.core.context.InnerBindInfoFactoryCreater;
+import net.hasor.core.factorys.inner.InnerBindInfoFactoryCreater;
 /**
  * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日

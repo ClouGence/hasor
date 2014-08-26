@@ -40,21 +40,22 @@ public interface AppContext extends EventContext {
     public boolean isStart();
     //
     /*---------------------------------------------------------------------------------------Bean*/
-    //    /**通过名获取Bean的类型。*/
-    //    public Class<?> getBeanType(String name);
-    //    /**获取已经注册的Bean名称。*/
-    //    public String[] getBeanNames();
-    //    /**创建Bean。*/
-    //    public <T> T getBean(String name);
-    //
+    /**通过名获取Bean的类型。*/
+    public Class<?> getBeanType(String bindID);
+    /**获取已经注册的Bean名称。*/
+    public String[] getBindIDs();
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(Class<?> targetClass);
+    /**判断是否存在某个ID的绑定。*/
+    public boolean containsBindID(String bindID);
+    /**创建Bean。*/
+    public <T> Provider<T> getProvider(BindInfo<T> info);
+    /**创建Bean。*/
+    public <T> T getInstance(String bindID);
     /**创建Bean。*/
     public <T> T getInstance(Class<T> targetClass);
     /**创建Bean。*/
     public <T> T getInstance(BindInfo<T> info);
-    /**创建Bean。*/
-    public <T> Provider<T> getProvider(BindInfo<T> info);
     //
     /*-------------------------------------------------------------------------------------Binder*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/

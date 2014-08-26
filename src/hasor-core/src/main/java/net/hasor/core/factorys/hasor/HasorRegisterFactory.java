@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.hasor;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.context.factorys.AbstractRegisterFactory;
-import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+package net.hasor.core.factorys.hasor;
+import net.hasor.core.BindInfo;
+import net.hasor.core.factorys.AbstractBindInfoFactory;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.classcode.ClassEngine;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorRegisterFactory extends AbstractRegisterFactory {
-    @Override
-    public <T> T getDefaultInstance(Class<T> oriType) {
-        return super.getDefaultInstance(oriType);
-    }
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindingType) {
-        return new HasorRegisterInfoAdapter<T>(bindingType);
-    }
-    @Override
-    protected <T> T newInstance(final RegisterInfo<T> oriType) {
-        if (oriType instanceof HasorRegisterInfoAdapter == false) {
+public class HasorRegisterFactory extends AbstractBindInfoFactory {
+    protected <T> T newInstance(final BindInfo<T> oriType) {
+        if (oriType instanceof HasorBindInfoProviderAdapter == false) {
             return this.getDefaultInstance(oriType.getBindType());
         }
         //
-        HasorRegisterInfoAdapter<T> infoAdapter = (HasorRegisterInfoAdapter<T>) oriType;
+        HasorBindInfoProviderAdapter<T> infoAdapter = (HasorBindInfoProviderAdapter<T>) oriType;
         ClassEngine engine = infoAdapter.buildEngine();
         try {
             Class<?> newType = engine.builderClass().toClass();
@@ -46,5 +38,14 @@ public class HasorRegisterFactory extends AbstractRegisterFactory {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @Override
+    public <T> T getInstance(BindInfo<T> bindInfo) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    protected void configBindInfo(AbstractBindInfoProviderAdapter<?> bindInfo, Object context) {
+        // TODO Auto-generated method stub
     }
 }

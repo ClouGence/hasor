@@ -16,11 +16,11 @@
 package net.hasor.core.info;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014年7月3日
@@ -28,6 +28,7 @@ import net.hasor.core.Scope;
  */
 public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuilder<T>, BindInfo<T> {
     //1.基本属性
+    private String              bindID           = null;
     private String              bindName         = null;
     private Class<T>            bindType         = null;
     private Class<? extends T>  sourceType       = null;
@@ -37,6 +38,15 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuil
     private Provider<Scope>     scopeProvider    = null;
     private Map<String, Object> metaData         = new HashMap<String, Object>();
     //
+    public String getBindID() {
+        return this.bindID;
+    }
+    public void setBindID(String newID) {
+        if (StringUtils.isBlank(newID) == true) {
+            throw new NullPointerException("newID is null.");
+        }
+        this.bindID = newID;
+    }
     public void setBindName(final String bindName) {
         this.bindName = bindName;
     }
@@ -70,15 +80,9 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuil
     public void setCustomerProvider(final Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
     }
+    /***/
     public Provider<T> getCustomerProvider() {
         return this.customerProvider;
-    }
-    /***/
-    public Provider<T> getProvider(AppContext appContext) {
-        if (this.customerProvider != null) {
-            return this.customerProvider;
-        }
-        return appContext.getProvider(this);
     }
     public void setScopeProvider(final Provider<Scope> scopeProvider) {
         this.scopeProvider = scopeProvider;

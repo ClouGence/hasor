@@ -22,6 +22,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.factorys.spring.SpringRegisterFactoryCreater;
 import net.test.simple.core._03_beans.pojo.PojoBean;
+import net.test.simple.core._03_beans.pojo.PojoInfo;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 /**
@@ -37,19 +38,31 @@ public class SpringStartTest {
         AppContext appContext = Hasor.createAppContext(new SpringRegisterFactoryCreater(), new Module() {
             @Override
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                PojoBean pojo = new PojoBean();
-                pojo.setName("马大帅");
-                apiBinder.bindType(PojoBean.class).nameWith("myBean").toInstance(pojo);
+                PojoBean pojo1 = new PojoBean();
+                pojo1.setName("马大帅");
+                apiBinder.bindType(PojoBean.class).idWith("myBean1").nameWith("myBean").toInstance(pojo1);
                 //
-                apiBinder.defineBean("define").bindType(PojoBean.class).toInstance(pojo);
+                PojoBean pojo2 = new PojoBean();
+                pojo2.setName("王二勺");
+                apiBinder.bindType(PojoInfo.class).idWith("myBean2").nameWith("myBean").toInstance(pojo2);
             }
         });
         //
-        ApplicationContext spring = appContext.getInstance(ApplicationContext.class);
-        PojoBean pbean = (PojoBean) spring.getBean("myBean");
-        System.out.println(pbean.getName());
         //
-        PojoBean define = (PojoBean) spring.getBean("define");
-        System.out.println(define.getName());
+        PojoBean bean1 = null;
+        PojoInfo bean2 = null;
+        //
+        bean1 = (PojoBean) appContext.findBindingBean("myBean", PojoBean.class);
+        System.out.println(bean1.getName());
+        bean2 = (PojoInfo) appContext.findBindingBean("myBean", PojoInfo.class);
+        System.out.println(bean2.getName());
+        //
+        System.out.println("-- 注意 --");
+        //
+        ApplicationContext spring = appContext.getInstance(ApplicationContext.class);
+        bean1 = (PojoBean) spring.getBean("myBean1");
+        System.out.println(bean1.getName());
+        bean2 = (PojoInfo) spring.getBean("myBean2");
+        System.out.println(bean2.getName());
     }
 }

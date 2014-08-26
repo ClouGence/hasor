@@ -27,7 +27,7 @@ public class AwareBean implements AppContextAware {
         this.appContext = appContext;
     }
     public void foo() {
-        Object sayBody = this.appContext.getBean("say");
+        Object sayBody = this.appContext.findBindingBean("say", String.class);
         System.out.println(sayBody);
     }
 }

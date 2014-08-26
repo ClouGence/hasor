@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.factorys.guice;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
@@ -71,22 +71,13 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
         if (this.guiceInjector == null) {
             return super.getDefaultInstance(oriType);
         }
+        if (Injector.class == oriType) {
+            return (T) this.guiceInjector;
+        }
         return this.guiceInjector.getInstance(oriType);
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
-    /**GuiceRegisterFactory的初始化过程，负责将{@link com.google.inject.Injector}类型绑定到  Hasor 中。
-     * 在程序运行时可以通过<code>AppContext.getInstance(Injector.class)</code>方法获取原生的 Guice 接口。
-     * @see net.hasor.core.AppContext#getInstance(Class) */
-    public void doInitialize(ApiBinder apiBinder) {
-        super.doInitialize(apiBinder);
-        apiBinder.bindType(Injector.class).toProvider(new Provider<Injector>() {
-            public Injector get() {
-                return guiceInjector;
-            }
-        });
-    }
-    //
     //将Bean信息绑定到Guice上
     public void doInitializeCompleted(final Object context) {
         this.guiceInjector = this.createInjector(new com.google.inject.Module() {
@@ -105,8 +96,9 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
     //
     //处理Aop配置
     private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
-        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == false)
+        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == false) {
             return;
+        }
         //
         final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getCustomerProvider().get();
         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
@@ -122,7 +114,10 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
     //
     //处理一般配置
     private void configRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
-        binder.bind(BindInfo.class).annotatedWith(UniqueAnnotations.create()).toInstance(register);
+        //0.内置绑定
+        String bindID = register.getBindID();
+        Annotation bindAnnotation = (bindID != null) ? Names.named(register.getBindID()) : UniqueAnnotations.create();
+        binder.bind(BindInfo.class).annotatedWith(bindAnnotation).toInstance(register);
         //1.绑定类型
         AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getBindType());
         LinkedBindingBuilder<Object> linkedBinding = annoBinding;

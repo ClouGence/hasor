@@ -36,13 +36,13 @@ public class SingletonBindTest {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 PojoBean pojo = new PojoBean();
                 pojo.setName("马大帅");
-                apiBinder.defineBean("myBean1").bindType(PojoBean.class).toInstance(pojo);
+                apiBinder.bindType(PojoBean.class).idWith("myBean1").toInstance(pojo);
             }
         });
         //
-        PojoBean myBean1 = appContext.getBean("myBean1");
+        PojoBean myBean1 = appContext.getInstance("myBean1");
         System.out.println(myBean1.getName() + "\t" + myBean1);
-        PojoBean myBean2 = appContext.getBean("myBean1");
+        PojoBean myBean2 = appContext.getInstance("myBean1");
         System.out.println(myBean2.getName() + "\t" + myBean2);
     }
 }

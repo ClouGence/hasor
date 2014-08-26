@@ -20,8 +20,8 @@ package net.hasor.core;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BindInfo<T> {
-    //    /**绑定的ID*/
-    //    public String getID();
+    /**绑定的ID*/
+    public String getBindID();
     /**为类型绑定的名称。*/
     public String getBindName();
     /**获取注册的类型*/
