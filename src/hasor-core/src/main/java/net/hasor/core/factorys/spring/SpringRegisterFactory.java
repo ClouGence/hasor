@@ -74,8 +74,7 @@ public class SpringRegisterFactory extends AbstractBindInfoFactory {
         //2.
         super.doInitializeCompleted(appContext);
     }
-    protected void configBindInfo(AbstractBindInfoProviderAdapter<?> bindInfo, Object context) {
-        AbstractBindInfoProviderAdapter<Object> regObject = (AbstractBindInfoProviderAdapter<Object>) bindInfo;
+    protected void configBindInfo(AbstractBindInfoProviderAdapter<Object> regObject, Object context) {
         if (regObject.getCustomerProvider() != null) {
             //单例Bean
             this.registerProvider(regObject);

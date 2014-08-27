@@ -87,11 +87,10 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
         });
     }
     //
-    protected void configBindInfo(AbstractBindInfoProviderAdapter<?> bindInfo, Object context) {
+    protected void configBindInfo(AbstractBindInfoProviderAdapter<Object> bindInfo, Object context) {
         Binder binder = (Binder) context;
-        AbstractBindInfoProviderAdapter<Object> register = (AbstractBindInfoProviderAdapter<Object>) bindInfo;
-        configRegister(register, binder);
-        configAopRegister(register, binder);
+        configRegister(bindInfo, binder);
+        configAopRegister(bindInfo, binder);
     }
     //
     //处理Aop配置

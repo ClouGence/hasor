@@ -113,7 +113,7 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
         this.defineManager.doFinish();/*数据检测*/
         Iterator<AbstractBindInfoProviderAdapter<?>> registerIterator = getManager().getBindInfoIterator();
         while (registerIterator.hasNext()) {
-            AbstractBindInfoProviderAdapter<?> register = registerIterator.next();
+            AbstractBindInfoProviderAdapter<Object> register = (AbstractBindInfoProviderAdapter<Object>) registerIterator.next();
             configBindInfo(register, context);
         }
     }
@@ -124,5 +124,5 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
         // TODO Auto-generated method stub
     }
     //
-    protected abstract void configBindInfo(AbstractBindInfoProviderAdapter<?> bindInfo, Object context);
+    protected abstract void configBindInfo(AbstractBindInfoProviderAdapter<Object> bindInfo, Object context);
 }
