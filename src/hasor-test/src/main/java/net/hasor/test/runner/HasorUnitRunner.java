@@ -40,7 +40,7 @@ import org.more.util.BeanUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorUnitRunner extends BlockJUnit4ClassRunner {
-    private AppContext      appContext   = null;
+    private AppContext  appContext   = null;
     private BindInfo<?> typeRegister = null;
     //
     public HasorUnitRunner(final Class<?> klass) throws InitializationError {

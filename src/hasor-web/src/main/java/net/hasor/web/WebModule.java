@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
-import javax.sql.DataSource;
-import net.hasor.core.Provider;
+package net.hasor.web;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 /**
  * 
- * @version : 2014年7月17日
+ * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
-public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
-    private DataSource dataSource;
-    public JdbcTemplateProvider(final DataSource dataSource) {
-        this.dataSource = dataSource;
+public abstract class WebModule implements Module {
+    @Override
+    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+        if (apiBinder instanceof WebApiBinder == false) {
+            Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            return;
+        }
+        this.loadModule((WebApiBinder) apiBinder);
+        Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
-    public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
-    }
+    public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

@@ -33,29 +33,13 @@ import net.hasor.web.startup.RuntimeFilter;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractController {
-    //无论是单例还是多例,利用ThreadLocal进行线程隔离，都会保证 AbstractController 是线程安全的。
-    private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
-    private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
-    //
-    public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        this.resetController();
-        this.httpRequest.set(httpRequest);
-        this.httpResponse.set(httpResponse);
-    }
-    public void resetController() {
-        if (this.httpRequest.get() != null)
-            this.httpRequest.remove();
-        if (this.httpResponse.get() != null)
-            this.httpResponse.remove();
-    }
-    //
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
-        return this.httpRequest.get();
+        return RuntimeFilter.getLocalRequest();
     }
     /** Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
     public HttpServletResponse getResponse() {
-        return this.httpResponse.get();
+        return RuntimeFilter.getLocalResponse();
     }
     /** Return AppContext. */
     public AppContext getAppContext() {
@@ -413,8 +397,8 @@ public abstract class AbstractController {
         return this.getAppContext().getInstance(modelClass);
     }
     /** Get model from AppContext. */
-    protected Object getModel(String modelName) {
-        return this.getAppContext().getBean(modelName);
+    protected Object getModel(String bindID) {
+        return this.getAppContext().getInstance(bindID);
     }
     // --------
     //    private MultipartRequest multipartRequest;

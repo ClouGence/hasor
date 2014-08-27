@@ -24,7 +24,7 @@ import net.hasor.mvc.controller.AbstractController;
 import net.hasor.mvc.controller.Controller;
 import net.hasor.mvc.restful.RestfulService;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.WebModule;
+import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2013-9-26

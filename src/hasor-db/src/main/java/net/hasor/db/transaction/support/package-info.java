@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
-import javax.sql.DataSource;
-import net.hasor.core.Provider;
 /**
- * 
- * @version : 2014年7月17日
- * @author 赵永春(zyc@hasor.net)
+ * Hasor 事务管理器实现类。
  */
-public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
-    private DataSource dataSource;
-    public JdbcTemplateProvider(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
-    }
-}
+package net.hasor.db.transaction.support;

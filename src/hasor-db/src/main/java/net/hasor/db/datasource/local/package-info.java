@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
-import javax.sql.DataSource;
-import net.hasor.core.Provider;
 /**
- * 
- * @version : 2014年7月17日
- * @author 赵永春(zyc@hasor.net)
+ * 提供了基于本地线程的数据库连接管理控制，该组建意图建立一种规则，该规则迫使不同数据源的数据库连接在一个线程中只能存在一份。
  */
-public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
-    private DataSource dataSource;
-    public JdbcTemplateProvider(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
-    }
-}
+package net.hasor.db.datasource.local;

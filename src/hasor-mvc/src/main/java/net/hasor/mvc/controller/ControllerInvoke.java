@@ -15,7 +15,6 @@
  */
 package net.hasor.mvc.controller;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
@@ -34,37 +33,6 @@ public class ControllerInvoke {
     private AppContext                      appContext;
     private ThreadLocal<AbstractController> localObject;
     //
-    public ControllerInvoke(Method targetMethod, AppContext appContext) {
-        this.targetMethod = targetMethod;
-        this.targetMethod.setAccessible(false);
-        this.targetClass = targetMethod.getDeclaringClass();
-        this.appContext = appContext;
-        this.localObject = new ThreadLocal<AbstractController>();//使用ThreadLocal 确保每个线程在执行 Action 过滤器期间不会创建多个 Controller
-    }
-    public AbstractController getTargetObject() {
-        AbstractController targetObject = this.localObject.get();
-        if (targetObject != null)
-            return targetObject;
-        targetObject = (AbstractController) this.appContext.getInstance(this.targetClass);
-        this.localObject.set(targetObject);
-        return targetObject;
-    }
-    public Object invoke(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws Throwable {
-        AbstractController targetObject = this.getTargetObject();
-        try {
-            Object[] paramArrays = this.getParams(servletRequest, servletResponse);
-            targetObject.initController(servletRequest, servletResponse);
-            return this.targetMethod.invoke(targetObject, paramArrays);
-        } catch (Throwable e) {
-            //传送异常
-            if (e instanceof InvocationTargetException)
-                e=((InvocationTargetException)e).getTargetException();
-            throw e;
-        } finally {
-            targetObject.resetController();
-            this.localObject.remove();
-        }
-    }
     /***/
     private Object[] getParams(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Class<?>[] targetParamClass = this.targetMethod.getParameterTypes();

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.test.web.startup;
+import net.hasor.mvc.ControllerModule;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.WebModule;
+import net.hasor.web.WebModule;
 import net.test.web.filters.MyFilter;
-import net.test.web.module.OSSModule;
+import net.test.web.startup.module.DataSourceModule;
+import net.test.web.startup.module.OSSModule;
 /**
  * 
  * @version : 2014年7月24日
@@ -26,10 +28,21 @@ import net.test.web.module.OSSModule;
 public class StartModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        //1.阿里云 OSS
+        apiBinder.installModule(new OSSModule());
+        //2.数据库连接，使用c3p0连接池
+        apiBinder.installModule(new DataSourceModule());
+        //3.Web MVC
+        apiBinder.installModule(new ControllerModule());
+        //
+        //
+        //
+        //
+        //
         //1.注册Filter
         apiBinder.filter("/*").through(MyFilter.class);
         //2.注册Servlet
         //        apiBinder.serve("/my.do").with(MyServlet.class);
-        apiBinder.installModule(new OSSModule());
+        //
     }
 }
