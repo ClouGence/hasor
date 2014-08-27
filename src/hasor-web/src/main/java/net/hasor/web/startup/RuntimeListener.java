@@ -64,8 +64,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
         try {
-            //
-            //2.create AppContext
+            //1.create AppContext
             final ServletContext sc = servletContextEvent.getServletContext();
             this.appContext = this.createAppContext(sc);
             if (this.appContext.isStart() == false) {

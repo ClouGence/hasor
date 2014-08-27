@@ -16,7 +16,7 @@
 		<!-- 配置文件改变监视线程检查时间间隔(毫秒) -->
 		<settingsMonitor interval="15000" />
 		<!-- BindInfoFactory 注册 -->
-		<bindFactory default="hasor">
+		<bindFactory default="guice">
 			<creater name="Hasor" class="net.hasor.core.factorys.hasor.HasorRegisterFactoryCreater" />
 			<creater name="Spring" class="net.hasor.core.factorys.spring.SpringRegisterFactoryCreater" />
 			<creater name="Guice" class="net.hasor.core.factorys.guice.GuiceRegisterFactoryCreater" />

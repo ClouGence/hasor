@@ -20,8 +20,8 @@ import java.util.Map;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.mvc.restful.interceptor.RestfulInterceptor;
-import net.hasor.mvc.restful.interceptor.RestfulInvocation;
+import net.hasor.mvc.web.restful.interceptor.RestfulInterceptor;
+import net.hasor.mvc.web.restful.interceptor.RestfulInvocation;
 /**
  * 
  * @version : 2013-8-11

@@ -25,11 +25,18 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
+		<!-- Hasor-Core -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.9-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
 			<version>0.0.7-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

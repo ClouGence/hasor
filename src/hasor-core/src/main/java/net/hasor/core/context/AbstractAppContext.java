@@ -80,6 +80,10 @@ public abstract class AbstractAppContext implements AppContext {
         }
         return names.toArray(new String[names.size()]);
     }
+    public <T> BindInfo<T> getBindInfo(String bindID) {
+        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
+        return defineManager.getBindInfoByID(bindID);
+    }
     public <T> T getInstance(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
         //

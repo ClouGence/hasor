@@ -84,7 +84,12 @@
 			<artifactId>aliyun-openservices</artifactId>
 			<version>1.0.10</version>
 		</dependency>
-
+		<!-- Guice3 -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
 
 
 

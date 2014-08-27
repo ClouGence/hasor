@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.web.startup;
-import net.hasor.mvc.ControllerModule;
+import net.hasor.mvc.support.ControllerModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.test.web.filters.MyFilter;

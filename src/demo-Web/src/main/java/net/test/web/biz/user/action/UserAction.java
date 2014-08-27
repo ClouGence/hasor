@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.test.web.biz.user.action;
+import net.hasor.mvc.MappingTo;
+import net.hasor.mvc.web.WebModelController;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
- * @author 赵永春 (zyc@hasor.net)
+ * View层控制器
+ * http://localhost:8080/user/execute.do
+ * @version : 2014年8月27日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ResultDefine {
-    public Class<? extends Annotation> value();
+public class UserAction extends WebModelController {
+    @MappingTo("/user.do")
+    public void execute() {
+        // TODO Auto-generated method stub
+    }
 }

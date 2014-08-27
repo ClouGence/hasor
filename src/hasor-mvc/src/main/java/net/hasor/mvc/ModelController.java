@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.mvc;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
+ * Controller
+ * @version : 2013-8-14
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ResultDefine {
-    public Class<? extends Annotation> value();
-}
+public abstract class ModelController {}

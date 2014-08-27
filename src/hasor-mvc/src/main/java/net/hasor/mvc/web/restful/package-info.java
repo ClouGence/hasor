@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
- * @author 赵永春 (zyc@hasor.net)
+ * <p>Web 插件，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface ResultDefine {
-    public Class<? extends Annotation> value();
-}
+package net.hasor.mvc.web.restful;
