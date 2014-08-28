@@ -31,11 +31,10 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingDefine {
-    private String                    bindID           = null;
-    private Provider<ModelController> targetProvider   = null;
-    private Method                    targetMethod     = null;
-    private String                    mappingTo        = null;
-    private String                    mappingToMatches = null;
+    private String                    bindID         = null;
+    private Provider<ModelController> targetProvider = null;
+    private Method                    targetMethod   = null;
+    private MappingInfo               mappingInfo    = null;
     //
     protected MappingDefine(String bindID, Method targetMethod) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
@@ -49,23 +48,32 @@ public class MappingDefine {
         //
         this.bindID = bindID;
         this.targetMethod = targetMethod;
-        this.mappingTo = servicePath;
-        this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
+        this.mappingInfo = new MappingInfo();
+        this.mappingInfo.setMappingTo(servicePath);
+        this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
+    }
+    /**获取目标方法*/
+    public Method getTargetMethod() {
+        return this.targetMethod;
     }
     /**获取映射的地址*/
     public String getMappingTo() {
-        return mappingTo;
+        return this.mappingInfo.getMappingTo();
     }
     /**测试路径是否匹配*/
     public boolean matchingMapping(String requestPath) {
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
-        return requestPath.matches(this.mappingToMatches);
+        return requestPath.matches(this.mappingInfo.getMappingToMatches());
     }
     /**执行初始化*/
     public void init(AppContext appContext) {
         Hasor.assertIsNotNull(appContext, "appContext is null.");
         BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
         this.targetProvider = appContext.getProvider(controllerInfo);
+    }
+    /**调用目标*/
+    public Object invoke() throws Throwable {
+        return this.invoke(null);
     }
     /**调用目标*/
     public Object invoke(CallStrategy call) throws Throwable {
@@ -79,6 +87,9 @@ public class MappingDefine {
             }
             public ModelController getTarget() {
                 return mc;
+            }
+            public MappingInfo getMappingInfo() {
+                return mappingInfo;
             }
             public Object call(Object... objects) throws Throwable {
                 return targetMethod.invoke(mc, objects);

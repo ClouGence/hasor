@@ -18,7 +18,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.mvc.web.HttpMethod;
 /**
  * Indicates that the annotated method responds to HTTP OPTIONS requests
  * @see HttpMethod

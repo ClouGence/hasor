@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.mvc.support;
-import java.lang.reflect.Method;
-import net.hasor.mvc.ModelController;
 /**
- * 
- * @version : 2014年8月27日
+ * 映射信息
+ * @version : 2014年8月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Call {
-    /**目标方法*/
-    public Method getMethod();
-    /**映射信息*/
-    public MappingInfo getMappingInfo();
-    /**目标类*/
-    public ModelController getTarget();
-    /**执行最终的调用并传入参数。*/
-    public Object call(Object... params) throws Throwable;
+public class MappingInfo {
+    private String mappingTo        = null;
+    private String mappingToMatches = null;
+    //
+    public String getMappingTo() {
+        return mappingTo;
+    }
+    public String getMappingToMatches() {
+        return mappingToMatches;
+    }
+    //
+    protected MappingInfo() {}
+    protected void setMappingTo(String mappingTo) {
+        this.mappingTo = mappingTo;
+    }
+    protected void setMappingToMatches(String mappingToMatches) {
+        this.mappingToMatches = mappingToMatches;
+    }
 }

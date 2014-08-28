@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.web.support;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -32,39 +26,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.web.restful.Path;
-import net.hasor.mvc.web.restful.RestfulService;
+import net.hasor.mvc.support.MappingDefine;
 import net.hasor.web.startup.RuntimeListener;
-import org.more.util.BeanUtils;
 /**
  * action功能的入口。
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class RestfulController implements Filter {
-    private MappingDefine[] invokeArray = null;
+class ControllerFilter implements Filter {
+    private WebRootController rootController = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
-        Set<Class<?>> controllerSet = appContext.findClass(RestfulService.class);
-        if (controllerSet == null)
-            return;
-        //1.注册服务
-        ArrayList<MappingDefine> restfulList = new ArrayList<MappingDefine>();
-        for (Class<?> controllerType : controllerSet) {
-            List<Method> actionMethods = BeanUtils.getMethods(controllerType);
-            for (Method targetMethod : actionMethods) {
-                if (targetMethod.getAnnotation(Path.class) == null)
-                    continue;
-                restfulList.add(new MappingDefine(appContext, targetMethod));
-            }
+        this.rootController = appContext.getInstance(WebRootController.class);
+        if (this.rootController == null) {
+            throw new NullPointerException("RootController is null.");
         }
-        Collections.sort(restfulList, new Comparator<MappingDefine>() {
-            public int compare(MappingDefine o1, MappingDefine o2) {
-                return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping()) * -1;
-            }
-        });
-        this.invokeArray = restfulList.toArray(new MappingDefine[restfulList.size()]);
     }
     public void destroy() {}
     //
@@ -74,22 +51,13 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        MappingDefine define = this.getRestfulInvoke(request.getMethod(), actionPath);
+        MappingDefine define = this.rootController.findMapping(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
         }
         //3.执行调用
         this.doInvoke(define, request, resp);
-    }
-    private MappingDefine getRestfulInvoke(String httpMethod, String requestPath) {
-        for (MappingDefine restAction : this.invokeArray) {
-            if (requestPath.matches(restAction.getRestfulMappingMatches()) == true) {
-                if (restAction.matchingMethod(httpMethod))
-                    return restAction;
-            }
-        }
-        return null;
     }
     private void doInvoke(MappingDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {

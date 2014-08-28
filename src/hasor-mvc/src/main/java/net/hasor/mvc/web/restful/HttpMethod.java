@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.web;
+package net.hasor.mvc.web.restful;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.mvc.web.restful.Get;
-import net.hasor.mvc.web.restful.Head;
-import net.hasor.mvc.web.restful.Post;
-import net.hasor.mvc.web.restful.Put;
 /**
  * Associates the name of a HTTP method with an annotation. A Java method annotated
  * with a runtime annotation that is itself annotated with this annotation will

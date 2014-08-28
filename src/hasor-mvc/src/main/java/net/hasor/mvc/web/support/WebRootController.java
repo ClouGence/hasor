@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.web.restful;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.mvc.web.support;
+import net.hasor.mvc.support.MappingDefine;
+import net.hasor.mvc.support.RootController;
 /**
- * Indicates that the annotated method responds to HTTP POST requests
- * @see HttpMethod
- * @version : 2013-3-26
- * @author 赵永春 (zyc@hasor.net)
+ * 根控制器
+ * @version : 2014年8月28日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Target({ ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@HttpMethod(HttpMethod.POST)
-public @interface Post {}
+public class WebRootController extends RootController {
+    public MappingDefine findMapping(String method, String controllerPath) {
+        // TODO Auto-generated method stub
+        return null;s
+    }
+    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
+        // TODO Auto-generated method stub
+        return super.matchingMapping(controllerPath, atInvoke);
+    }
+}

@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
@@ -51,6 +52,9 @@ public class ControllerModule implements Module {
                 apiBinder.bindType(clazz).idWith(newID);
             }
         }
-        //3.
+        //3.安装服务
+        RootController root = new RootController();
+        apiBinder.pushListener(AppContext.ContextEvent_Started, root);
+        apiBinder.bindType(RootController.class).toInstance(root);
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.web.support;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -28,6 +28,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.Hasor;
+import net.hasor.mvc.support.Call;
+import net.hasor.mvc.support.CallStrategy;
+import net.hasor.mvc.support.MappingInfo;
 import net.hasor.mvc.web.restful.AttributeParam;
 import net.hasor.mvc.web.restful.CookieParam;
 import net.hasor.mvc.web.restful.HeaderParam;
@@ -44,12 +47,14 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class WebCallStrategy implements CallStrategy {
-    public Object exeCall(Call call) throws Throwable {
-        Object[] args = this.prepareParams(call.getMethod());
-        return this.returnCallBack(call.call(args), call.getMethod());
+    //
+    public final Object exeCall(Call call) throws Throwable {
+        Object[] args = this.prepareParams(call);
+        return this.returnCallBack(call.call(args), call);
     }
     /**处理 @Produces 注解。*/
-    protected Object returnCallBack(Object returnData, Method targetMethod) {
+    protected Object returnCallBack(Object returnData, Call call) {
+        Method targetMethod = call.getMethod();
         if (targetMethod.isAnnotationPresent(Produces.class) == true) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
@@ -61,7 +66,10 @@ public class WebCallStrategy implements CallStrategy {
     }
     //
     /**准备参数*/
-    protected Object[] prepareParams(Method targetMethod) throws Throwable {
+    protected Object[] prepareParams(Call call) throws Throwable {
+        MappingInfo mappingInfo = call.getMappingInfo();
+        Method targetMethod = call.getMethod();
+        //
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
         targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
@@ -70,7 +78,7 @@ public class WebCallStrategy implements CallStrategy {
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i]);//获取参数
+            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i], mappingInfo);//获取参数
             /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
             if (paramObject == null) {
                 paramObject = BeanUtils.getDefaultValue(paramClass);
@@ -83,7 +91,7 @@ public class WebCallStrategy implements CallStrategy {
         return invokeParams;
     }
     /**/
-    private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno) {
+    private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno, MappingInfo mappingInfo) {
         for (Annotation pAnno : paramAnno) {
             if (pAnno instanceof AttributeParam) {
                 return this.getAttributeParam(paramClass, (AttributeParam) pAnno);
@@ -94,15 +102,15 @@ public class WebCallStrategy implements CallStrategy {
             } else if (pAnno instanceof QueryParam) {
                 return this.getQueryParam(paramClass, (QueryParam) pAnno);
             } else if (pAnno instanceof PathParam) {
-                return this.getPathParam(paramClass, (PathParam) pAnno);
+                return this.getPathParam(paramClass, (PathParam) pAnno, mappingInfo);
             }
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
     /**/
-    private Object getPathParam(Class<?> paramClass, PathParam pAnno) {
+    private Object getPathParam(Class<?> paramClass, PathParam pAnno, MappingInfo mappingInfo) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap().get(paramName);
+        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(mappingInfo).get(paramName);
     }
     /**/
     private Object getQueryParam(Class<?> paramClass, QueryParam pAnno) {
@@ -208,16 +216,16 @@ public class WebCallStrategy implements CallStrategy {
     }
     /**/
     private Map<String, Object> pathParamsLocal;
-    private Map<String, Object> getPathParamMap() {
+    private Map<String, Object> getPathParamMap(MappingInfo mappingInfo) {
         if (pathParamsLocal != null) {
             return pathParamsLocal;
         }
         //
         HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        String matchVar = this.define.getRestfulMappingMatches();
+        String matchVar = mappingInfo.getMappingToMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-        Matcher keyM = Pattern.compile(matchKey).matcher(this.define.getRestfulMapping());
+        Matcher keyM = Pattern.compile(matchKey).matcher(mappingInfo.getMappingTo());
         Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
         ArrayList<String> keyArray = new ArrayList<String>();
         ArrayList<String> varArray = new ArrayList<String>();
