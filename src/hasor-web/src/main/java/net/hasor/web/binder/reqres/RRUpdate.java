@@ -25,6 +25,7 @@ public class RRUpdate {
     private static ThreadLocal<HttpServletRequest>  LocalRequest  = new ThreadLocal<HttpServletRequest>();
     private static ThreadLocal<HttpServletResponse> LocalResponse = new ThreadLocal<HttpServletResponse>();
     //
+    protected RRUpdate() {};
     /**获取{@link HttpServletRequest}*/
     public static HttpServletRequest getLocalRequest() {
         return LocalRequest.get();

@@ -35,6 +35,7 @@ public class MappingDefine {
     private Provider<ModelController> targetProvider = null;
     private Method                    targetMethod   = null;
     private MappingInfo               mappingInfo    = null;
+    private boolean                   init           = false;
     //
     protected MappingDefine(String bindID, Method targetMethod) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
@@ -67,9 +68,13 @@ public class MappingDefine {
     }
     /**执行初始化*/
     public void init(AppContext appContext) {
+        if (init == true) {
+            return;
+        }
         Hasor.assertIsNotNull(appContext, "appContext is null.");
         BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
         this.targetProvider = appContext.getProvider(controllerInfo);
+        this.init = true;
     }
     /**调用目标*/
     public Object invoke() throws Throwable {
@@ -95,6 +100,9 @@ public class MappingDefine {
                 return targetMethod.invoke(mc, objects);
             }
         });
+    }
+    public String toString() {
+        return this.getMappingTo();
     }
 }
 class InnerCallStrategy implements CallStrategy {

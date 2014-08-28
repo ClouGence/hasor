@@ -45,7 +45,7 @@ public class ControllerModule implements Module {
                     continue;
                 }
                 hasMapping = true;
-                apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(new MappingDefine(newID, atMethod));
+                apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(createMappingDefine(newID, atMethod));
             }
             //
             if (hasMapping == true) {
@@ -56,5 +56,8 @@ public class ControllerModule implements Module {
         RootController root = new RootController();
         apiBinder.pushListener(AppContext.ContextEvent_Started, root);
         apiBinder.bindType(RootController.class).toInstance(root);
+    }
+    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
+        return new MappingDefine(newID, atMethod);
     }
 }

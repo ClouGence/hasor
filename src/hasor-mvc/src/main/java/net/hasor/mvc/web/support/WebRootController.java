@@ -22,12 +22,21 @@ import net.hasor.mvc.support.RootController;
  * @author 赵永春(zyc@hasor.net)
  */
 public class WebRootController extends RootController {
-    public MappingDefine findMapping(String method, String controllerPath) {
-        // TODO Auto-generated method stub
-        return null;s
-    }
-    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
-        // TODO Auto-generated method stub
-        return super.matchingMapping(controllerPath, atInvoke);
+    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke, Object... params) {
+        String httpMethod = null;
+        if (params.length > 0) {
+            httpMethod = params[0].toString();
+        }
+        if (httpMethod != null) {
+            httpMethod.trim().toUpperCase();
+        }
+        //
+        boolean one = atInvoke.matchingMapping(controllerPath);
+        //
+        if (one == true && atInvoke instanceof WebMappingDefine) {
+            one = ((WebMappingDefine) atInvoke).matchingMethod(httpMethod);
+        }
+        //
+        return one;
     }
 }

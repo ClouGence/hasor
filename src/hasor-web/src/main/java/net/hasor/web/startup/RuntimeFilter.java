@@ -84,7 +84,9 @@ public class RuntimeFilter implements Filter {
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         //
         try {
-            //执行.
+            /*初始化RRUpdate*/
+            this.rrRpdate.update(httpReq, httpRes);
+            /*执行.*/
             this.beforeRequest(this.appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } finally {
@@ -104,7 +106,7 @@ public class RuntimeFilter implements Filter {
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        this.rrRpdate.update(httpReq, httpRes);
+        //
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/

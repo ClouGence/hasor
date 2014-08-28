@@ -91,15 +91,21 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
     @Override
     public void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
+        if (this.sessionListenerPipeline != null) {
+            this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
+        }
     }
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
-        this.sessionListenerPipeline.sessionCreated(se);
+        if (this.sessionListenerPipeline != null) {
+            this.sessionListenerPipeline.sessionCreated(se);
+        }
     }
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
-        this.sessionListenerPipeline.sessionDestroyed(se);
+        if (this.sessionListenerPipeline != null) {
+            this.sessionListenerPipeline.sessionDestroyed(se);
+        }
     }
     //
     /**获取{@link ServletContext}*/

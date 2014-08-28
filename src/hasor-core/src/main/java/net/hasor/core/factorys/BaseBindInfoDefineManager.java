@@ -102,7 +102,9 @@ public class BaseBindInfoDefineManager implements BindInfoDefineManager {
                 //
                 //1.负责检查重复的匿名绑定
                 if (anonymityTypes.contains(nowType) == true && this.ifAnonymity(e) == true) {
-                    throw new RepeateException(String.format("repeate anonymity bind , type is %s", nowType));
+                    Class<?> type = e.getSourceType();
+                    type = (type == null) ? e.getBindType() : type;
+                    throw new RepeateException(String.format("repeate anonymity bind , type is %s", type));
                 }
                 if (anonymityTypes.contains(nowType) == false) {
                     anonymityTypes.add(nowType);

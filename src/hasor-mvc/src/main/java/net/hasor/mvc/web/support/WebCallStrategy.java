@@ -190,10 +190,12 @@ public class WebCallStrategy implements CallStrategy {
         queryParamLocal = new HashMap<String, List<String>>();
         String[] params = queryString.split("&");
         for (String pData : params) {
-            String oriData = null;
+            String oriData = pData;
             String encoding = httpRequest.getCharacterEncoding();
             try {
-                oriData = URLDecoder.decode(pData, encoding);
+                if (encoding != null) {
+                    oriData = URLDecoder.decode(pData, encoding);
+                }
             } catch (Exception e) {
                 Hasor.logWarn("use ‘%s’ decode ‘%s’ error.", encoding, pData);
                 continue;
@@ -202,7 +204,7 @@ public class WebCallStrategy implements CallStrategy {
             if (kv.length < 2) {
                 continue;
             }
-            String k = kv[0].trim().toUpperCase();
+            String k = kv[0].trim();
             String v = kv[1];
             //
             List<String> pArray = queryParamLocal.get(k);

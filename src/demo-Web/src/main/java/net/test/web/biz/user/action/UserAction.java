@@ -16,6 +16,9 @@
 package net.test.web.biz.user.action;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.web.WebModelController;
+import net.hasor.mvc.web.restful.Get;
+import net.hasor.mvc.web.restful.Post;
+import net.hasor.mvc.web.restful.QueryParam;
 /**
  * View层控制器
  * http://localhost:8080/user/execute.do
@@ -23,8 +26,16 @@ import net.hasor.mvc.web.WebModelController;
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserAction extends WebModelController {
+    @Post
     @MappingTo("/user.do")
-    public void execute() {
+    public void doPost(@QueryParam("userID") String userID) {
+        System.out.println(userID);
+        // TODO Auto-generated method stub
+    }
+    @Get
+    @MappingTo("/user.do")
+    public void doGet(@QueryParam("userID") String userID) {
+        System.out.println(userID);
         // TODO Auto-generated method stub
     }
 }

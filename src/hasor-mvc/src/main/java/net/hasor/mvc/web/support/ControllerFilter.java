@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.mvc.support.MappingDefine;
+import net.hasor.web.binder.reqres.RRUpdate;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
@@ -35,6 +36,7 @@ import net.hasor.web.startup.RuntimeListener;
  */
 class ControllerFilter implements Filter {
     private WebRootController rootController = null;
+    private RRUpdate          rrUpdate       = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -42,6 +44,7 @@ class ControllerFilter implements Filter {
         if (this.rootController == null) {
             throw new NullPointerException("RootController is null.");
         }
+        this.rrUpdate = appContext.getInstance(RRUpdate.class);
     }
     public void destroy() {}
     //
@@ -51,22 +54,23 @@ class ControllerFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        MappingDefine define = this.rootController.findMapping(request.getMethod(), actionPath);
+        MappingDefine define = this.rootController.findMapping(actionPath, request.getMethod());
         if (define == null) {
             chain.doFilter(request, resp);
             return;
         }
-        //3.执行调用
+        //2.执行调用
         this.doInvoke(define, request, resp);
     }
     private void doInvoke(MappingDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
-            RestfulInvoke invoke = define.createIvnoke();
-            invoke.initHttp((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);//初始化
-            invoke.invoke();
-        } catch (Throwable e) {
-            Throwable target = ExceptionUtils.getCause(e);
-            target = (target == null) ? e : target;
+            HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
+            HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
+            //
+            this.rrUpdate.update(httpReq, httpRes);
+            define.invoke(new WebCallStrategy());
+            //
+        } catch (Throwable target) {
             //
             if (target instanceof ServletException)
                 throw (ServletException) target;
@@ -84,7 +88,7 @@ class ControllerFilter implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final MappingDefine define = getRestfulInvoke(request.getMethod(), newRequestUri);
+        final MappingDefine define = this.rootController.findMapping(newRequestUri, request.getMethod());
         if (define == null)
             return null;
         //

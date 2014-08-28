@@ -145,17 +145,17 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         //
         @Override
         public void through(final int index, final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).to(filterKey).toInfo();
+            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().to(filterKey).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
         public void through(final int index, final Filter filter, final Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).toInstance(filter).toInfo();
+            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toInstance(filter).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
         public void through(final int index, final Provider<Filter> filterProvider, Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).toProvider(filterProvider).toInfo();
+            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toProvider(filterProvider).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
@@ -166,7 +166,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
-                bindType(FilterDefinition.class, define);
+                bindType(FilterDefinition.class).uniqueName().toInstance(define);
             }
         }
     }
@@ -252,17 +252,17 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         //
         @Override
         public void with(final int index, final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).to(servletKey).toInfo();
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().to(servletKey).toInfo();
             this.with(index, servletRegister, initParams);
         }
         @Override
         public void with(final int index, final HttpServlet servlet, final Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).toInstance(servlet).toInfo();
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toInstance(servlet).toInfo();
             this.with(index, servletRegister, initParams);
         }
         @Override
         public void with(final int index, final Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).toProvider(servletProvider).toInfo();
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).toInfo();
             this.with(index, servletRegister, initParams);
         }
         @Override
@@ -273,7 +273,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletRegister, initParams);
-                bindType(ServletDefinition.class, define);/*单列*/
+                bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单列*/
             }
         }
     }
@@ -301,7 +301,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         }
         @Override
         public void bind(BindInfo<ServletContextListener> listenerRegister) {
-            bindType(ContextListenerDefinition.class, new ContextListenerDefinition(listenerRegister));
+            bindType(ContextListenerDefinition.class).uniqueName().toInstance(new ContextListenerDefinition(listenerRegister));
         }
     }
     //
@@ -328,7 +328,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         }
         @Override
         public void bind(BindInfo<HttpSessionListener> listenerRegister) {
-            bindType(HttpSessionListenerDefinition.class, new HttpSessionListenerDefinition(listenerRegister));
+            bindType(HttpSessionListenerDefinition.class).uniqueName().toInstance(new HttpSessionListenerDefinition(listenerRegister));
         }
     }
 }

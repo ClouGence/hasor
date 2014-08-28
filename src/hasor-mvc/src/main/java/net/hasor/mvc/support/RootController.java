@@ -25,31 +25,46 @@ import net.hasor.core.EventListener;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RootController implements EventListener {
+    private AppContext      appContext  = null;
     private MappingDefine[] invokeArray = null;
+    /**获取AppContext*/
+    public AppContext getAppContext() {
+        return this.appContext;
+    }
     /**初始化*/
     public final void onEvent(String event, Object[] params) throws Throwable {
-        AppContext app = (AppContext) params[0];
-        //
-        List<MappingDefine> mappingList = app.findBindingBean(MappingDefine.class);
+        this.appContext = (AppContext) params[0];
+        this.init();
+    }
+    protected void init() {
+        //1.find
+        List<MappingDefine> mappingList = this.appContext.findBindingBean(MappingDefine.class);
         Collections.sort(mappingList, new Comparator<MappingDefine>() {
             public int compare(MappingDefine o1, MappingDefine o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
-        //
+        //2.init
+        for (MappingDefine define : mappingList) {
+            this.initDefine(define);
+        }
         this.invokeArray = mappingList.toArray(new MappingDefine[mappingList.size()]);
     }
+    /**初始化{@link MappingDefine}*/
+    protected void initDefine(MappingDefine define) {
+        define.init(this.appContext);
+    }
     /**查找符合路径的MappingDefine*/
-    public final MappingDefine findMapping(String controllerPath) {
+    public final MappingDefine findMapping(String controllerPath, Object... params) {
         for (MappingDefine invoke : this.invokeArray) {
-            if (this.matchingMapping(controllerPath, invoke) == true) {
+            if (this.matchingMapping(controllerPath, invoke, params) == true) {
                 return invoke;
             }
         }
         return null;
     }
     /**匹配策略*/
-    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
+    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke, Object... params) {
         return atInvoke.matchingMapping(controllerPath);
     }
     //

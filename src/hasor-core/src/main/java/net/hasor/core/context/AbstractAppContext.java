@@ -280,7 +280,7 @@ public abstract class AbstractAppContext implements AppContext {
     //
     /*------------------------------------------------------------------------------------Process*/
     /**开始进入初始化过程.*/
-    protected void doInitialize() {
+    protected void doInitialize() throws Throwable {
         BindInfoFactory registerFactory = this.getBindInfoFactory();
         if (registerFactory instanceof ContextInitializeListener) {
             ApiBinder apiBinder = this.newApiBinder(null);

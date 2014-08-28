@@ -191,7 +191,7 @@ public class StandardEventManager implements EventContext {
         LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
         if (eventList != null) {
             EventListener listener = null;
-            while ((listener = eventList.removeFirst()) != null) {
+            while ((listener = eventList.pollLast()) != null) {
                 try {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {

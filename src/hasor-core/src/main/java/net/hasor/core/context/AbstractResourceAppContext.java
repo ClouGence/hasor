@@ -83,7 +83,7 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         return new StandardEnvironment(this.mainSettings);
     }
     //
-    protected void doInitialize() {
+    protected void doInitialize() throws Throwable {
         //1.预先加载Module
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
@@ -95,14 +95,10 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
                     if (StringUtils.isBlank(moduleTypeString)) {
                         continue;
                     }
-                    try {
-                        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                        Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
-                        Module module = (Module) moduleType.newInstance();
-                        this.installModule(module);
-                    } catch (Throwable e) {
-                        Hasor.logError("loadModule Error: %s.", e.getMessage());
-                    }
+                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                    Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
+                    Module module = (Module) moduleType.newInstance();
+                    this.installModule(module);
                 }
             }
         }

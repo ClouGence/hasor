@@ -14,22 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.mvc.web.support;
+import java.lang.reflect.Method;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.mvc.support.ControllerModule;
-import net.hasor.mvc.support.RootController;
+import net.hasor.mvc.support.MappingDefine;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 /***
  * 创建WebMVC环境
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class WebControllerModule extends WebModule {
+public class WebControllerModule extends ControllerModule implements Module {
+    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+        if (apiBinder instanceof WebApiBinder == false) {
+            Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            return;
+        }
+        this.loadModule((WebApiBinder) apiBinder);
+        Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
+    }
+    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
+        return new WebMappingDefine(newID, atMethod);
+    }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //1.安装基本服务
-        apiBinder.installModule(new ControllerModule());
+        super.loadModule(apiBinder);
         //2.安装服务
         WebRootController root = new WebRootController();
-        apiBinder.bindType(RootController.class).toInstance(root);
+        apiBinder.pushListener(AppContext.ContextEvent_Started, root);
+        apiBinder.bindType(WebRootController.class).toInstance(root);
         //3.安装Filter
         apiBinder.filter("/*").through(new ControllerFilter());
     }

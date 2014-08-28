@@ -97,7 +97,7 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
-        apiBinder.bindType(RRUpdate.class).toInstance(new RRUpdate());
+        apiBinder.bindType(RRUpdate.class).toInstance(new RRUpdate() {});
         //
         /*绑定ServletRequest对象的Provider*/
         apiBinder.bindType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {

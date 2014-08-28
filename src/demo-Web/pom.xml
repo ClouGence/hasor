@@ -54,6 +54,12 @@
 			<artifactId>hasor-test</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
@@ -66,6 +72,20 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
+
+		<!-- Log -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
+
+
+
+
+
 		<!-- JSTL -->
 		<dependency>
 			<groupId>jstl</groupId>
@@ -77,7 +97,6 @@
 			<artifactId>standard</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-
 		<!-- OSS -->
 		<dependency>
 			<groupId>com.aliyun.openservices</groupId>
@@ -90,9 +109,23 @@
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
-
-
-
+		<!-- JDBC -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hsqldb</groupId> -->
+		<!-- <artifactId>hsqldb</artifactId> -->
+		<!-- <version>2.3.1</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.30</version>
+		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- Freemarker -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.freemarker</groupId> -->
@@ -113,42 +146,11 @@
 		<!-- </dependency> -->
 
 
-		<!-- Log -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
-		</dependency>
-		<!-- JDBC Driver -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.hsqldb</groupId> -->
-		<!-- <artifactId>hsqldb</artifactId> -->
-		<!-- <version>2.3.1</version> -->
-		<!-- </dependency> -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.30</version>
-		</dependency>
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-
 		<!-- Jetty Test -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.hasor</groupId> -->
-		<!-- <artifactId>hasor-jetty</artifactId> -->
-		<!-- <version>0.0.1</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>junit</groupId> -->
-		<!-- <artifactId>junit</artifactId> -->
-		<!-- <version>4.8.2</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-jetty</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 </project>
