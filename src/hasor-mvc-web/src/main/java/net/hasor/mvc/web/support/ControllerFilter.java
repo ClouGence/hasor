@@ -68,6 +68,13 @@ class ControllerFilter implements Filter {
             HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
             HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
             //
+            httpReq = new HttpServletRequestWrapper(httpReq) {
+                public RequestDispatcher getRequestDispatcher(final String path) {
+                    final RequestDispatcher dispatcher = getReqDispatcher(path, this);
+                    return null != dispatcher ? dispatcher : super.getRequestDispatcher(path);
+                }
+            };
+            //
             this.rrUpdate.update(httpReq, httpRes);
             define.invoke(new WebCallStrategy(), null);
             //
@@ -85,7 +92,7 @@ class ControllerFilter implements Filter {
     //
     //
     /** 为转发提供支持 */
-    public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
+    public RequestDispatcher getReqDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
         final MappingDefine define = this.rootController.findMapping(new WebFindMapping(newRequestUri, request.getMethod()));

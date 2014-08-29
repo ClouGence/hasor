@@ -19,6 +19,7 @@ import net.hasor.mvc.web.AbstractWebController;
 import net.hasor.mvc.web.restful.Get;
 import net.hasor.mvc.web.restful.Post;
 import net.hasor.mvc.web.restful.QueryParam;
+import net.hasor.mvc.web.result.Forword;
 import net.hasor.mvc.web.result.Redirect;
 /**
  * View层控制器
@@ -29,16 +30,23 @@ import net.hasor.mvc.web.result.Redirect;
 public class UserAction extends AbstractWebController {
     @Redirect
     @Get
-    @MappingTo("/user.do")
-    public String doPost(@QueryParam("userID") String userID) {
+    @MappingTo("/goBaidu.do")
+    public String doBaidu(@QueryParam("userID") String userID) {
         System.out.println(userID);
         //
         return "http://www.baidu.com";
     }
+    @Forword
+    @Get
+    @MappingTo("/user.do")
+    public String doGet(@QueryParam("userID") String userID) {
+        System.out.println(userID);
+        //
+        return "/goBaidu.do";
+    }
     @Post
     @MappingTo("/user.do")
-    public void doGet(@QueryParam("userID") String userID) {
+    public void doPost(@QueryParam("userID") String userID) {
         System.out.println(userID);
-        // TODO Auto-generated method stub
     }
 }
