@@ -1,3 +1,6 @@
 ﻿===== Hasor-MVC v0.0.1
 * 新增:
-    1.迁移 controller、restful、result 插件。
+    1.迁移 controller、result 插件。
+    2.增加 around 功能，用作 Action 拦截器。
+    3.Hasor-MVC 可以在 非Web 环境下提供 MVC 功能。
+    4.支持 Action 返回值自定义处理。

@@ -1,3 +1,6 @@
-﻿===== Hasor-WebMVC v0.0.1
+﻿===== Hasor-MVC-Web v0.0.1
 * 新增:
     1.迁移 controller、restful、result 插件。
+    2.扩展了 Hasor-MVC 在 Web 模式下的支持。
+    3.支持 Restful。
+    4.支持 Action 返回值处理。@Forword、@Include、@Redirect
