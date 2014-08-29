@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
+import net.hasor.mvc.FindMapping;
 /**
  * 根控制器
  * @version : 2014年8月28日
@@ -27,16 +28,13 @@ import net.hasor.core.EventListener;
 public class RootController implements EventListener {
     private AppContext      appContext  = null;
     private MappingDefine[] invokeArray = null;
-    /**获取AppContext*/
-    public AppContext getAppContext() {
-        return this.appContext;
-    }
-    /**初始化*/
-    public final void onEvent(String event, Object[] params) throws Throwable {
+    private boolean         init        = false;
+    //
+    public void onEvent(String event, Object[] params) throws Throwable {
         this.appContext = (AppContext) params[0];
-        this.init();
-    }
-    protected void init() {
+        if (this.init == true) {
+            return;
+        }
         //1.find
         List<MappingDefine> mappingList = this.appContext.findBindingBean(MappingDefine.class);
         Collections.sort(mappingList, new Comparator<MappingDefine>() {
@@ -49,31 +47,36 @@ public class RootController implements EventListener {
             this.initDefine(define);
         }
         this.invokeArray = mappingList.toArray(new MappingDefine[mappingList.size()]);
+        this.init = true;
     }
-    /**初始化{@link MappingDefine}*/
+    /**获取AppContext*/
+    protected AppContext getAppContext() {
+        return this.appContext;
+    }
+    /**初始化 {@link MappingDefine}*/
     protected void initDefine(MappingDefine define) {
         define.init(this.appContext);
     }
-    /**查找符合路径的MappingDefine*/
-    public final MappingDefine findMapping(String controllerPath, Object... params) {
+    /**查找符合路径的 {@link MappingDefine}*/
+    public final MappingDefine findMapping(String controllerPath) {
         for (MappingDefine invoke : this.invokeArray) {
-            if (this.matchingMapping(controllerPath, invoke, params) == true) {
+            if (this.matchingMapping(controllerPath, invoke) == true) {
+                return invoke;
+            }
+        }
+        return null;
+    }
+    /**查找符合的 {@link MappingDefine}*/
+    public MappingDefine findMapping(FindMapping findMapping) {
+        for (MappingDefine invoke : this.invokeArray) {
+            if (findMapping.matching(invoke) == true) {
                 return invoke;
             }
         }
         return null;
     }
     /**匹配策略*/
-    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke, Object... params) {
+    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
         return atInvoke.matchingMapping(controllerPath);
-    }
-    //
-    /**调用符合路径的MappingDefine*/
-    public Object invokeMapping(String controllerPath) throws Throwable {
-        MappingDefine define = this.findMapping(controllerPath);
-        if (define != null) {
-            return define.invoke();
-        }
-        return null;
     }
 }

@@ -28,12 +28,12 @@ import net.test.web.startup.module.OSSModule;
 public class StartModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //1.阿里云 OSS
-        apiBinder.installModule(new OSSModule());
-        //2.数据库连接，使用c3p0连接池
+        //1.数据库连接，使用c3p0连接池
         apiBinder.installModule(new DataSourceModule());
-        //3.Web MVC
+        //2.Web MVC
         apiBinder.installModule(new WebControllerModule());
+        //3.阿里云 OSS
+        apiBinder.installModule(new OSSModule());
         //
         //1.注册Filter
         apiBinder.filter("/*").through(MyFilter.class);

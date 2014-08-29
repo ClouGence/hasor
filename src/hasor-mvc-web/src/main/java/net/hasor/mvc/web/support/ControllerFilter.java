@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.mvc.support.MappingDefine;
+import net.hasor.mvc.support.RootController;
 import net.hasor.web.binder.reqres.RRUpdate;
 import net.hasor.web.startup.RuntimeListener;
 /**
@@ -35,12 +36,12 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ControllerFilter implements Filter {
-    private WebRootController rootController = null;
-    private RRUpdate          rrUpdate       = null;
+    private RootController rootController = null;
+    private RRUpdate       rrUpdate       = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
-        this.rootController = appContext.getInstance(WebRootController.class);
+        this.rootController = appContext.getInstance(RootController.class);
         if (this.rootController == null) {
             throw new NullPointerException("RootController is null.");
         }
@@ -54,7 +55,7 @@ class ControllerFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        MappingDefine define = this.rootController.findMapping(actionPath, request.getMethod());
+        MappingDefine define = this.rootController.findMapping(new WebFindMapping(actionPath, request.getMethod()));
         if (define == null) {
             chain.doFilter(request, resp);
             return;
@@ -68,7 +69,7 @@ class ControllerFilter implements Filter {
             HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
             //
             this.rrUpdate.update(httpReq, httpRes);
-            define.invoke(new WebCallStrategy());
+            define.invoke(new WebCallStrategy(), null);
             //
         } catch (Throwable target) {
             //
@@ -83,12 +84,11 @@ class ControllerFilter implements Filter {
     }
     //
     //
-    //
     /** 为转发提供支持 */
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final MappingDefine define = this.rootController.findMapping(newRequestUri, request.getMethod());
+        final MappingDefine define = this.rootController.findMapping(new WebFindMapping(newRequestUri, request.getMethod()));
         if (define == null)
             return null;
         //

@@ -81,6 +81,9 @@ public class ConverterUtils {
      * @exception ConversionException if thrown by an underlying Converter
      */
     public static Object convert(final Class<?> targetType, final Object value) {
+        if (targetType.isInstance(value) == true) {
+            return value;
+        }
         return ConverterBean.getInstance().convert(value, targetType);
     }
     /**

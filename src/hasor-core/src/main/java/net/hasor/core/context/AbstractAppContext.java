@@ -137,7 +137,7 @@ public abstract class AbstractAppContext implements AppContext {
         }
         return new Provider<T>() {
             public T get() {
-                return getInstance(info);
+                return getBindInfoFactory().getInstance(info);
             }
         };
     };

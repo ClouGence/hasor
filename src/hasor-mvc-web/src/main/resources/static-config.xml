@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc-web">
+	<!-- 框架配置 -->
+	<hasor>
+		<!-- 包扫描范围 -->
+		<loadPackages>net.hasor.mvc.web.*</loadPackages>
+		<!-- Hasor-MVC-Web 专用 -->
+		<mvcConfig></mvcConfig>
+	</hasor>
+</config>

@@ -29,7 +29,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.Hasor;
 import net.hasor.mvc.support.Call;
-import net.hasor.mvc.support.CallStrategy;
+import net.hasor.mvc.support.DefaultCallStrategy;
 import net.hasor.mvc.support.MappingInfo;
 import net.hasor.mvc.web.restful.AttributeParam;
 import net.hasor.mvc.web.restful.CookieParam;
@@ -38,20 +38,13 @@ import net.hasor.mvc.web.restful.PathParam;
 import net.hasor.mvc.web.restful.Produces;
 import net.hasor.mvc.web.restful.QueryParam;
 import net.hasor.web.startup.RuntimeFilter;
-import org.more.convert.ConverterUtils;
-import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class WebCallStrategy implements CallStrategy {
-    //
-    public final Object exeCall(Call call) throws Throwable {
-        Object[] args = this.prepareParams(call);
-        return this.returnCallBack(call.call(args), call);
-    }
+public class WebCallStrategy extends DefaultCallStrategy {
     /**处理 @Produces 注解。*/
     protected Object returnCallBack(Object returnData, Call call) {
         Method targetMethod = call.getMethod();
@@ -65,47 +58,22 @@ public class WebCallStrategy implements CallStrategy {
         return returnData;
     }
     //
-    /**准备参数*/
-    protected Object[] prepareParams(Call call) throws Throwable {
-        MappingInfo mappingInfo = call.getMappingInfo();
-        Method targetMethod = call.getMethod();
-        //
-        Class<?>[] targetParamClass = targetMethod.getParameterTypes();
-        Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
-        targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
-        targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
-        ArrayList<Object> paramsArray = new ArrayList<Object>();
-        /*准备参数*/
-        for (int i = 0; i < targetParamClass.length; i++) {
-            Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.getIvnokeParams(paramClass, targetParamAnno[i], mappingInfo);//获取参数
-            /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
-            if (paramObject == null) {
-                paramObject = BeanUtils.getDefaultValue(paramClass);
-            } else {
-                paramObject = ConverterUtils.convert(paramClass, paramObject);
-            }
-            paramsArray.add(paramObject);
-        }
-        Object[] invokeParams = paramsArray.toArray();
-        return invokeParams;
-    }
-    /**/
-    private Object getIvnokeParams(Class<?> paramClass, Annotation[] paramAnno, MappingInfo mappingInfo) {
-        for (Annotation pAnno : paramAnno) {
+    protected Object resolveParam(Class<?> paramClass, Annotation pAnno, Call call) {
+        Object atData = super.resolveParam(paramClass, pAnno, call);
+        if (atData == null) {
             if (pAnno instanceof AttributeParam) {
-                return this.getAttributeParam(paramClass, (AttributeParam) pAnno);
+                atData = this.getAttributeParam(paramClass, (AttributeParam) pAnno);
             } else if (pAnno instanceof CookieParam) {
-                return this.getCookieParam(paramClass, (CookieParam) pAnno);
+                atData = this.getCookieParam(paramClass, (CookieParam) pAnno);
             } else if (pAnno instanceof HeaderParam) {
-                return this.getHeaderParam(paramClass, (HeaderParam) pAnno);
+                atData = this.getHeaderParam(paramClass, (HeaderParam) pAnno);
             } else if (pAnno instanceof QueryParam) {
-                return this.getQueryParam(paramClass, (QueryParam) pAnno);
+                atData = this.getQueryParam(paramClass, (QueryParam) pAnno);
             } else if (pAnno instanceof PathParam) {
-                return this.getPathParam(paramClass, (PathParam) pAnno, mappingInfo);
+                atData = this.getPathParam(paramClass, (PathParam) pAnno, call.getMappingInfo());
             }
         }
-        return BeanUtils.getDefaultValue(paramClass);
+        return atData;
     }
     /**/
     private Object getPathParam(Class<?> paramClass, PathParam pAnno, MappingInfo mappingInfo) {

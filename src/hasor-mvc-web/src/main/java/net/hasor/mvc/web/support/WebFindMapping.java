@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.mvc.web.support;
+import net.hasor.mvc.FindMapping;
 import net.hasor.mvc.support.MappingDefine;
-import net.hasor.mvc.support.RootController;
 /**
- * 根控制器
- * @version : 2014年8月28日
+ * 
+ * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class WebRootController extends RootController {
-    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke, Object... params) {
-        String httpMethod = null;
-        if (params.length > 0) {
-            httpMethod = params[0].toString();
-        }
+public class WebFindMapping implements FindMapping {
+    private String controllerPath = null;
+    private String httpMethod     = null;
+    //
+    public WebFindMapping(String controllerPath, String httpMethod) {
+        this.controllerPath = controllerPath;
+        this.httpMethod = httpMethod;
+        //
         if (httpMethod != null) {
             httpMethod.trim().toUpperCase();
         }
+    }
+    public boolean matching(MappingDefine invoke) {
+        boolean one = invoke.matchingMapping(this.controllerPath);
         //
-        boolean one = atInvoke.matchingMapping(controllerPath);
-        //
-        if (one == true && atInvoke instanceof WebMappingDefine) {
-            one = ((WebMappingDefine) atInvoke).matchingMethod(httpMethod);
+        if (one == true && invoke instanceof WebMappingDefine) {
+            one = ((WebMappingDefine) invoke).matchingMethod(this.httpMethod);
         }
-        //
         return one;
     }
 }

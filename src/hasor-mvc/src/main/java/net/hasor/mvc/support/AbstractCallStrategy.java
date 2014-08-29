@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.action;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.web.AbstractWebController;
-import net.hasor.mvc.web.restful.Get;
-import net.hasor.mvc.web.restful.Post;
-import net.hasor.mvc.web.restful.QueryParam;
+package net.hasor.mvc.support;
 /**
- * View层控制器
- * http://localhost:8080/user/execute.do
+ * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserAction extends AbstractWebController {
-    @Post
-    @MappingTo("/user.do")
-    public void doPost(@QueryParam("userID") String userID) {
-        System.out.println(userID);
-        // TODO Auto-generated method stub
+public abstract class AbstractCallStrategy implements CallStrategy {
+    public final Object exeCall(Call call) throws Throwable {
+        Object[] args = this.resolveParams(call);
+        return this.returnCallBack(call.call(args), call);
     }
-    @Get
-    @MappingTo("/user.do")
-    public void doGet(@QueryParam("userID") String userID) {
-        System.out.println(userID);
-        // TODO Auto-generated method stub
+    /**处理 @Produces 注解。*/
+    protected Object returnCallBack(Object returnData, Call call) {
+        return returnData;
     }
+    /**准备参数*/
+    protected abstract Object[] resolveParams(Call call) throws Throwable;
 }

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.mvc;
+import net.hasor.mvc.support.MappingDefine;
 /**
  * Controller
  * @version : 2013-8-14
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ModelController {}
+public interface FindMapping {
+    public boolean matching(MappingDefine invoke);
+}

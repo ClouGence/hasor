@@ -57,6 +57,7 @@ public class ControllerModule implements Module {
         apiBinder.pushListener(AppContext.ContextEvent_Started, root);
         apiBinder.bindType(RootController.class).toInstance(root);
     }
+    /**创建 {@link MappingDefine}*/
     protected MappingDefine createMappingDefine(String newID, Method atMethod) {
         return new MappingDefine(newID, atMethod);
     }

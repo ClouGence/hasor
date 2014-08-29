@@ -1,0 +1,3 @@
+﻿===== Hasor-WebMVC v0.0.1
+* 新增:
+    1.迁移 controller、restful、result 插件。

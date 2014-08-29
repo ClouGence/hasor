@@ -16,7 +16,6 @@
 package net.hasor.mvc.web.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.mvc.support.ControllerModule;
@@ -42,11 +41,7 @@ public class WebControllerModule extends ControllerModule implements Module {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //1.安装基本服务
         super.loadModule(apiBinder);
-        //2.安装服务
-        WebRootController root = new WebRootController();
-        apiBinder.pushListener(AppContext.ContextEvent_Started, root);
-        apiBinder.bindType(WebRootController.class).toInstance(root);
-        //3.安装Filter
+        //4.安装Filter
         apiBinder.filter("/*").through(new ControllerFilter());
     }
 }

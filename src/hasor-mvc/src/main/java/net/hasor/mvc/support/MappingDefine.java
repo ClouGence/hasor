@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.mvc.support;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
@@ -23,7 +27,6 @@ import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
 import org.more.UndefinedException;
 import org.more.classcode.FormatException;
-import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
  * 线程安全
@@ -31,11 +34,13 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingDefine {
-    private String                    bindID         = null;
-    private Provider<ModelController> targetProvider = null;
-    private Method                    targetMethod   = null;
-    private MappingInfo               mappingInfo    = null;
-    private boolean                   init           = false;
+    private String                    bindID           = null;
+    private Provider<ModelController> targetProvider   = null;
+    private Method                    targetMethod     = null;
+    private Class<?>[]                targetParamTypes = null;
+    private Annotation[][]            targetParamAnno  = null;
+    private MappingInfo               mappingInfo      = null;
+    private boolean                   init             = false;
     //
     protected MappingDefine(String bindID, Method targetMethod) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
@@ -49,9 +54,15 @@ public class MappingDefine {
         //
         this.bindID = bindID;
         this.targetMethod = targetMethod;
+        this.targetParamTypes = targetMethod.getParameterTypes();
+        this.targetParamAnno = targetMethod.getParameterAnnotations();
         this.mappingInfo = new MappingInfo();
         this.mappingInfo.setMappingTo(servicePath);
         this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
+    }
+    /**方法参数注解。*/
+    public Annotation[][] getTargetParamAnno() {
+        return this.targetParamAnno;
     }
     /**获取目标方法*/
     public Method getTargetMethod() {
@@ -67,7 +78,7 @@ public class MappingDefine {
         return requestPath.matches(this.mappingInfo.getMappingToMatches());
     }
     /**执行初始化*/
-    public void init(AppContext appContext) {
+    protected void init(AppContext appContext) {
         if (init == true) {
             return;
         }
@@ -77,18 +88,30 @@ public class MappingDefine {
         this.init = true;
     }
     /**调用目标*/
-    public Object invoke() throws Throwable {
-        return this.invoke(null);
+    public Object invoke(Map<String, ?> params) throws Throwable {
+        return this.invoke(null, params);
     }
     /**调用目标*/
-    public Object invoke(CallStrategy call) throws Throwable {
-        if (call == null)
-            call = new InnerCallStrategy();
+    public Object invoke(CallStrategy call, Map<String, ?> params) throws Throwable {
+        final CallStrategy alCall = (call == null) ? new DefaultCallStrategy() : call;
+        final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;
         //
         final ModelController mc = this.targetProvider.get();
-        return call.exeCall(new Call() {
+        return alCall.exeCall(new Call() {
+            public Set<String> getParamKeys() {
+                return atParams.keySet();
+            }
+            public Object getParam(String key) {
+                return atParams.get(key);
+            }
             public Method getMethod() {
                 return targetMethod;
+            }
+            public Class<?>[] getParameterTypes() {
+                return targetParamTypes;
+            }
+            public Annotation[][] getMethodParamAnnos() {
+                return targetParamAnno;
             }
             public ModelController getTarget() {
                 return mc;
@@ -103,15 +126,5 @@ public class MappingDefine {
     }
     public String toString() {
         return this.getMappingTo();
-    }
-}
-class InnerCallStrategy implements CallStrategy {
-    public Object exeCall(Call call) throws Throwable {
-        Class<?>[] params = call.getMethod().getParameterTypes();
-        Object[] paramsValues = new Object[params.length];
-        for (int i = 0; i < params.length; i++) {
-            paramsValues[i] = BeanUtils.getDefaultValue(params[i]);
-        }
-        return call.call(paramsValues);
     }
 }

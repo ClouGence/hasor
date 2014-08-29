@@ -54,6 +54,12 @@
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
