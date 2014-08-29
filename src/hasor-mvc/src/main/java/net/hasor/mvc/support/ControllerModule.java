@@ -15,6 +15,7 @@
  */
 package net.hasor.mvc.support;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
@@ -22,6 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
+import org.more.classcode.EngineToos;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
@@ -36,6 +38,12 @@ public class ControllerModule implements Module {
         }
         //2.绑定到Hasor
         for (Class<?> clazz : controllerSet) {
+            int modifier = clazz.getModifiers();
+            if (EngineToos.checkIn(modifier, Modifier.INTERFACE) || //
+                    EngineToos.checkIn(modifier, Modifier.ABSTRACT)) {
+                continue;
+            }
+            //
             String newID = UUID.randomUUID().toString();
             boolean hasMapping = false;
             //

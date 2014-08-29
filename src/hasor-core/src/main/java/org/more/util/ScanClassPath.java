@@ -102,19 +102,16 @@ public class ScanClassPath {
                         InputStream inStream = event.getStream();
                         ClassInfo info = ScanClassPath.this.loadClassInfo(name, inStream, ScanClassPath.this.classLoader);
                         //3.测试目标类是否匹配
-                        for (String face : info.superLink) {
-                            if (face.equals(compareTypeStr)) {
+                        for (String castType : info.castType) {
+                            if (castType.equals(compareTypeStr)) {
                                 classStrSet.add(name);
-                            }
-                        }
-                        for (String face : info.interFacesLink) {
-                            if (face.equals(compareTypeStr)) {
-                                classStrSet.add(name);
+                                return;
                             }
                         }
                         for (String face : info.annos) {
                             if (face.equals(compareTypeStr)) {
                                 classStrSet.add(name);
+                                return;
                             }
                         }
                     }
@@ -190,8 +187,9 @@ public class ScanClassPath {
                 this.loadClassInfo(faces, superStream, loader);//加载父类
             }
         }
-        //六、取得父类链
-        List<String> superLink = new ArrayList<String>();
+        //六、类型链
+        List<String> superLink = new ArrayList<String>();/*父类练*/
+        Set<String> castTypeList = new TreeSet<String>();/*可转换的类型*/
         String superName = info.superName;
         if (superName != null) {
             while (true) {
@@ -201,18 +199,31 @@ public class ScanClassPath {
                 }
                 superLink.add(superName);
                 superName = superInfo.superName;
+                //
+                String[] castType = superInfo.castType;
+                if (castType != null) {
+                    for (String faces : castType) {
+                        castTypeList.add(faces);
+                    }
+                    break;
+                }
             }
         }
         info.superLink = superLink.toArray(new String[superLink.size()]);
         //七、取得接口链
-        Set<String> facesLink = new TreeSet<String>();
-        this.addFaces(info, facesLink);
-        info.interFacesLink = facesLink.toArray(new String[facesLink.size()]);
+        castTypeList.add(className);
+        for (String faces : info.interFaces) {
+            castTypeList.add(faces);
+        }
+        info.castType = castTypeList.toArray(new String[castTypeList.size()]);
         //
         this.classInfoMap.put(info.className, info);
         return info;
     }
     private void addFaces(final ClassInfo info, final Set<String> addTo) {
+        if (info == null) {
+            return;
+        }
         addTo.addAll(Arrays.asList(info.interFaces));
         for (String atFaces : info.interFaces) {
             this.addFaces(this.classInfoMap.get(atFaces), addTo);
@@ -222,16 +233,16 @@ public class ScanClassPath {
     /**类信息结构*/
     private static class ClassInfo {
         /*类名*/
-        public String   className      = null;
+        public String   className  = null;
         /*继承的父类*/
-        public String   superName      = null;
+        public String   superName  = null;
         /*继承的父类链*/
-        public String[] superLink      = new String[0];
+        public String[] superLink  = new String[0];
         /*直接实现的接口*/
-        public String[] interFaces     = new String[0];
-        /*实现的所有接口*/
-        public String[] interFacesLink = new String[0];
+        public String[] interFaces = new String[0];
+        /*可以转换的类型*/
+        public String[] castType   = new String[0];
         /*标记的注解*/
-        public String[] annos          = new String[0];
+        public String[] annos      = new String[0];
     }
 }
