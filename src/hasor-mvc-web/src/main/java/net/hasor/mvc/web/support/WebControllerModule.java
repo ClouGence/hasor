@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.MappingDefine;
 import net.hasor.web.WebApiBinder;
@@ -35,8 +36,8 @@ public class WebControllerModule extends ControllerModule implements Module {
         this.loadModule((WebApiBinder) apiBinder);
         Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
-    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
-        return new WebMappingDefine(newID, atMethod);
+    protected MappingDefine createMappingDefine(String newID, Method atMethod, CallStrategyFactory strategyFactory) {
+        return new WebMappingDefine(newID, atMethod, strategyFactory);
     }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //1.安装基本服务

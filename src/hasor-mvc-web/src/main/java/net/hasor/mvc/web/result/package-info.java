@@ -13,16 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result.ext;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 服务端转发
- * @version : 2013-6-5
- * @author 赵永春 (zyc@hasor.net)
+ * <p>提供 WebMVC 下 action 返回值的处理。</p>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface Forword {}
+package net.hasor.mvc.web.result;

@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.mvc.result;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import net.hasor.mvc.support.Call;
 /**
- * 负责处理Action调用之后的返回值。
- * @version : 2013-5-10
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014年8月29日
+ * @author 赵永春(zyc@hasor.net)
  */
 public interface ResultProcess {
-    /**执行方法调用。*/
-    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException;
+    public Object returnData(Object returnData, Call call) throws Throwable;
 }

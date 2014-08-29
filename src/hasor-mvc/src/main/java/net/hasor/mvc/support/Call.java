@@ -34,6 +34,8 @@ public interface Call {
     public Class<?>[] getParameterTypes();
     /**方法参数注解。*/
     public Annotation[][] getMethodParamAnnos();
+    /**方法注解。*/
+    public Annotation[] getAnnotations();
     /**映射信息*/
     public MappingInfo getMappingInfo();
     /**目标类*/

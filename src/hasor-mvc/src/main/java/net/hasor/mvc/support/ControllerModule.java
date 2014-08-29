@@ -19,10 +19,12 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
+import net.hasor.mvc.strategy.CallStrategyFactory;
+import net.hasor.mvc.strategy.DefaultCallStrategyFactory;
 import org.more.classcode.EngineToos;
 /***
  * 创建MVC环境
@@ -36,6 +38,7 @@ public class ControllerModule implements Module {
         if (controllerSet == null || controllerSet.isEmpty() == true) {
             return;
         }
+        CallStrategyFactory strategyFactory = this.createCallStrategyFactory(apiBinder);
         //2.绑定到Hasor
         for (Class<?> clazz : controllerSet) {
             int modifier = clazz.getModifiers();
@@ -53,7 +56,7 @@ public class ControllerModule implements Module {
                     continue;
                 }
                 hasMapping = true;
-                apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(createMappingDefine(newID, atMethod));
+                apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(createMappingDefine(newID, atMethod, strategyFactory));
             }
             //
             if (hasMapping == true) {
@@ -61,12 +64,15 @@ public class ControllerModule implements Module {
             }
         }
         //3.安装服务
-        RootController root = new RootController();
-        apiBinder.pushListener(AppContext.ContextEvent_Started, root);
+        RootController root = Hasor.pushStartListener(apiBinder, new RootController());
         apiBinder.bindType(RootController.class).toInstance(root);
     }
+    /**创建 {@link CallStrategyFactory}*/
+    protected CallStrategyFactory createCallStrategyFactory(ApiBinder apiBinder) {
+        return new DefaultCallStrategyFactory(apiBinder);
+    }
     /**创建 {@link MappingDefine}*/
-    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
-        return new MappingDefine(newID, atMethod);
+    protected MappingDefine createMappingDefine(String newID, Method atMethod, CallStrategyFactory strategyFactory) {
+        return new MappingDefine(newID, atMethod, strategyFactory);
     }
 }

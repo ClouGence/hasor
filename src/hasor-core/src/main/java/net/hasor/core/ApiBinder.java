@@ -33,7 +33,7 @@ public interface ApiBinder extends EventContext {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
     /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
-    public void registerAware(AppContextAware aware);
+    public <T extends AppContextAware> T autoAware(T aware);
     /**安装其它插件*/
     public void installModule(Module module) throws Throwable;
     //

@@ -55,8 +55,9 @@ public abstract class AbstractBinder implements ApiBinder {
     public Settings getSettings() {
         return this.getEnvironment().getSettings();
     }
-    public void registerAware(final AppContextAware aware) {
+    public <T extends AppContextAware> T autoAware(final T aware) {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
+        return aware;
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
         if (featureType == null) {

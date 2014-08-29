@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.mvc.web.support;
-import net.hasor.mvc.FindMapping;
+import net.hasor.mvc.support.FindMapping;
 import net.hasor.mvc.support.MappingDefine;
 /**
  * 

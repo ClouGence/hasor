@@ -49,8 +49,7 @@ public class OSSModule extends WebModule {
             }
         });
         //        //
-        Upload up = new Upload();
-        apiBinder.registerAware(up);
+        Upload up = apiBinder.autoAware(new Upload());
         apiBinder.addListener("UPLOAD", up);
     }
     // 

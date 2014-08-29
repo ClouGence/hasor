@@ -25,6 +25,8 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
+import net.hasor.mvc.strategy.CallStrategy;
+import net.hasor.mvc.strategy.CallStrategyFactory;
 import org.more.UndefinedException;
 import org.more.classcode.FormatException;
 import org.more.util.StringUtils;
@@ -39,10 +41,12 @@ public class MappingDefine {
     private Method                    targetMethod     = null;
     private Class<?>[]                targetParamTypes = null;
     private Annotation[][]            targetParamAnno  = null;
+    private Annotation[]              targetMethodAnno = null;
     private MappingInfo               mappingInfo      = null;
+    private CallStrategyFactory       strategyFactory  = null;
     private boolean                   init             = false;
     //
-    protected MappingDefine(String bindID, Method targetMethod) {
+    protected MappingDefine(String bindID, Method targetMethod, CallStrategyFactory strategyFactory) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
         if (pathAnno == null)
             throw new UndefinedException("is not a valid Mapping Service.");
@@ -56,9 +60,11 @@ public class MappingDefine {
         this.targetMethod = targetMethod;
         this.targetParamTypes = targetMethod.getParameterTypes();
         this.targetParamAnno = targetMethod.getParameterAnnotations();
+        this.targetMethodAnno = targetMethod.getAnnotations();
         this.mappingInfo = new MappingInfo();
         this.mappingInfo.setMappingTo(servicePath);
         this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
+        this.strategyFactory = strategyFactory;
     }
     /**方法参数注解。*/
     public Annotation[][] getTargetParamAnno() {
@@ -93,7 +99,7 @@ public class MappingDefine {
     }
     /**调用目标*/
     public Object invoke(CallStrategy call, Map<String, ?> params) throws Throwable {
-        final CallStrategy alCall = (call == null) ? new DefaultCallStrategy() : call;
+        final CallStrategy alCall = this.createCallStrategy(call);
         final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;
         //
         final ModelController mc = this.targetProvider.get();
@@ -113,6 +119,9 @@ public class MappingDefine {
             public Annotation[][] getMethodParamAnnos() {
                 return targetParamAnno;
             }
+            public Annotation[] getAnnotations() {
+                return targetMethodAnno;
+            }
             public ModelController getTarget() {
                 return mc;
             }
@@ -123,6 +132,9 @@ public class MappingDefine {
                 return targetMethod.invoke(mc, objects);
             }
         });
+    }
+    protected CallStrategy createCallStrategy(CallStrategy parentCall) {
+        return this.strategyFactory.createStrategy(parentCall);
     }
     public String toString() {
         return this.getMappingTo();

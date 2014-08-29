@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.strategy;
 /**
  * 
- * @version : 2014年8月27日
+ * @version : 2014年8月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface CallStrategy {
-    public Object exeCall(Call call) throws Throwable;
+public class SimpleCallStrategyFactory implements CallStrategyFactory {
+    public CallStrategy createStrategy(CallStrategy parentCall) {
+        return (parentCall == null) ? new DefaultCallStrategy() : parentCall;
+    };
 }

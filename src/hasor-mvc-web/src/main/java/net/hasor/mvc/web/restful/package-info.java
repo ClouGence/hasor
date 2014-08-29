@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Web 插件，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
+ * <p>MVC Web 框架，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
  */
 package net.hasor.mvc.web.restful;

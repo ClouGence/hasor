@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import net.hasor.core.Hasor;
+import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.support.MappingDefine;
 import net.hasor.mvc.web.restful.HttpMethod;
 import org.more.util.StringUtils;
@@ -29,8 +30,8 @@ import org.more.util.StringUtils;
 public class WebMappingDefine extends MappingDefine {
     private String[] httpMethod;
     //
-    protected WebMappingDefine(String bindID, Method targetMethod) {
-        super(bindID, targetMethod);
+    protected WebMappingDefine(String bindID, Method targetMethod, CallStrategyFactory strategyFactory) {
+        super(bindID, targetMethod, strategyFactory);
         /*HttpMethod*/
         Annotation[] annos = targetMethod.getAnnotations();
         ArrayList<String> allHttpMethod = new ArrayList<String>();

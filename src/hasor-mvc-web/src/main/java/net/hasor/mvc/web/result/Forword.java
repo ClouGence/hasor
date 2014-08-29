@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._15_mvc;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.ModelController;
-import net.hasor.mvc.Param;
+package net.hasor.mvc.web.result;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * View层控制器
- * http://localhost:8080/user/execute.do
- * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * 服务端转发
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class UserAction implements ModelController {
-    @MappingTo("/users/@add")
-    public void doAdd(@Param("userID") String userID) {
-        System.out.println("add:" + userID);
-    }
-    @MappingTo("/users/@del")
-    public void doDelete(@Param("userID") String userID) {
-        System.out.println("del:" + userID);
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface Forword {}

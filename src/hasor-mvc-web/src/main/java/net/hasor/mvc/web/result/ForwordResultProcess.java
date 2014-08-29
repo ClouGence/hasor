@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result.ext;
+package net.hasor.mvc.web.result;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.Hasor;
 import net.hasor.mvc.result.ResultDefine;
 import net.hasor.mvc.result.ResultProcess;
+import net.hasor.mvc.support.Call;
+import net.hasor.web.startup.RuntimeFilter;
 /**
 * 
 * @version : 2013-6-5
@@ -29,8 +30,19 @@ import net.hasor.mvc.result.ResultProcess;
 */
 @ResultDefine(Forword.class)
 public class ForwordResultProcess implements ResultProcess {
-    public void process(HttpServletRequest request, HttpServletResponse response, Annotation annoData, Object result) throws ServletException, IOException {
+    public Object returnData(Object result, Call call) throws ServletException, IOException {
         Hasor.logDebug("forword to %s.", result);
+        if (result == null) {
+            return result;
+        }
+        HttpServletRequest request = RuntimeFilter.getLocalRequest();
+        HttpServletResponse response = RuntimeFilter.getLocalResponse();
+        //
+        if (request == null || response == null) {
+            return result;
+        }
+        //
         request.getRequestDispatcher(result.toString()).forward(request, response);
+        return result;
     }
 }

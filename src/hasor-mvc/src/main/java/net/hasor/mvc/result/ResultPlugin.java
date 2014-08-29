@@ -17,21 +17,16 @@ package net.hasor.mvc.result;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
-import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.mvc.AbstractController;
-import net.hasor.mvc.controller.Controller;
-import net.hasor.mvc.web.restful.RestfulService;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+import net.hasor.core.Module;
 /**
  * 
  * @version : 2013-9-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ResultPlugin extends WebModule {
-    public void loadModule(WebApiBinder apiBinder) {
+public class ResultPlugin implements Module {
+    public void loadModule(ApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取
         Set<Class<?>> resultDefineSet = apiBinder.findClass(ResultDefine.class);
@@ -49,17 +44,6 @@ public class ResultPlugin extends WebModule {
             Hasor.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             defineMap.put(resultType, defineType);
         }
-        {
-            /*所有继承 AbstractController 并且标记了 @Controller 注解的类都是控制器*/
-            Matcher<Class<?>> matcherController = AopMatchers.subClassesOf(AbstractController.class);
-            matcherController = AopMatchers.createDevice(matcherController).and(AopMatchers.annotatedWithClass(Controller.class));
-            ResultCaller_Controller caller_1 = new ResultCaller_Controller(apiBinder, defineMap);
-            apiBinder.bindInterceptor(matcherController, AopMatchers.anyMethod(), caller_1);
-        }
-        {
-            /*所有标记了 @RestfulService 注解的类都是Restful服务*/
-            ResultCaller_Restful caller_2 = new ResultCaller_Restful(apiBinder, defineMap);
-            apiBinder.bindInterceptor(AopMatchers.annotatedWithClass(RestfulService.class), AopMatchers.anyMethod(), caller_2);
-        }
+        //
     }
 }
