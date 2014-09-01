@@ -94,6 +94,10 @@ public class MappingDefine {
         this.init = true;
     }
     /**调用目标*/
+    public Object invoke() throws Throwable {
+        return this.invoke(null, null);
+    }
+    /**调用目标*/
     public Object invoke(Map<String, ?> params) throws Throwable {
         return this.invoke(null, params);
     }

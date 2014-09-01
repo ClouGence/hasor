@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._15_mvc;
-import java.util.HashMap;
-import java.util.Map;
+package net.test.simple.mvc._01_simple;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -41,19 +39,9 @@ public class ControllerTest {
         });
         //
         RootController root = appContext.getInstance(RootController.class);
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("userID", "zyc");
+        //F
+        root.findMapping("/oper/add").invoke();
+        root.findMapping("/oper/del").invoke();
         //
-        root.findMapping("/users/@add").invoke(data);
-        root.findMapping("/users/@del").invoke(data);
-        //
-        //        MappingDefine define = root.findMapping("/users/@add");
-        //        long t1 = System.currentTimeMillis();
-        //        System.out.println("begin Call.");
-        //        for (int i = 0; i < 10000000; i++) {
-        //            define.invoke(data);
-        //        }
-        //        long t2 = System.currentTimeMillis();
-        //        System.out.println(t2 - t1);
     }
 }

@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._15_mvc;
+package net.test.simple.mvc._01_simple;
 import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
-import net.hasor.mvc.Param;
 /**
- * View层控制器
- * http://localhost:8080/user/execute.do
+ * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserAction implements ModelController {
-    @MappingTo("/users/@add")
-    public void doAdd(@Param("userID") String userID) {
-        System.out.println("add:" + userID);
+public class OperAction implements ModelController {
+    @MappingTo("/oper/add")
+    public void doAdd() {
+        System.out.println("add called.");
     }
-    @MappingTo("/users/@del")
-    public void doDelete(@Param("userID") String userID) {
-        System.out.println("del:" + userID);
+    @MappingTo("/oper/del")
+    public void doDelete() {
+        System.out.println("del called.");
     }
 }
