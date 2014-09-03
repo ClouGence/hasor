@@ -18,7 +18,6 @@ package org.more.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import org.springframework.util.ObjectUtils;
 /**
  * <p>Operations on {@link java.lang.String} that are
  * <code>null</code> safe.</p>

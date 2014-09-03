@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._15_ioc;
+package net.test.simple.core._12_ioc;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;

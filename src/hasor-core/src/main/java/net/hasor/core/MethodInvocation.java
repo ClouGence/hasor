@@ -15,7 +15,6 @@
  */
 package net.hasor.core;
 import java.lang.reflect.Method;
-import org.aopalliance.intercept.Joinpoint;
 /**
  * 
  * @version : 2014-7-17
@@ -24,7 +23,6 @@ import org.aopalliance.intercept.Joinpoint;
 public interface MethodInvocation {
     /**
      * Gets the method being called.
-     * <p>This method is a frienly implementation of the {@link Joinpoint#getStaticPart()} method (same result).
      * @return the method being called.
      */
     public Method getMethod();

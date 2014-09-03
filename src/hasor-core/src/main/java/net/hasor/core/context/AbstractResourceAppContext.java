@@ -20,18 +20,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import net.hasor.core.AppContext;
-import net.hasor.core.BindInfoFactory;
-import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import net.hasor.core.Provider;
 import net.hasor.core.XmlNode;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.factorys.inner.InnerBindInfoFactoryCreater;
+import net.hasor.core.factorys.BindInfoFactory;
+import net.hasor.core.factorys.hasor.HasorRegisterFactory;
 import org.more.util.ClassUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
-import com.google.inject.Provider;
 /**
  * {@link AppContext}接口默认实现。
  * @version : 2013-4-9
@@ -127,30 +126,15 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
             this.factoryProvider = new FactoryProvider(bindInfoFactory);
         }
     }
-    /**设置一个RegisterFactoryCreater实例对象*/
-    protected void setRegisterFactoryCreater(final BindInfoFactoryCreater registerFactoryCreate) {
-        if (this.isStart() == true) {
-            throw new IllegalStateException("context is started.");
-        }
-        //
-        if (registerFactoryCreate == null) {
-            this.factoryProvider = null;
-        } else {
-            final AppContext app = this;
-            this.factoryProvider = new FactoryProvider(null) {
-                protected BindInfoFactory getBindInfoFactory() {
-                    return registerFactoryCreate.create(app);
-                }
-            };
-        }
-    }
     protected BindInfoFactory getBindInfoFactory() {
         //
         if (this.factoryProvider == null) {
             final AppContext app = this;
             this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return new InnerBindInfoFactoryCreater().create(app);
+                    HasorRegisterFactory factory = new HasorRegisterFactory();
+                    factory.setAppContext(app);
+                    return factory;
                 }
             };
         }

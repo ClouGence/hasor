@@ -23,7 +23,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
-import net.hasor.core.BindInfoFactory;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;

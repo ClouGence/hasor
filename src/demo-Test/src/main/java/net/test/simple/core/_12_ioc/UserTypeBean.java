@@ -13,7 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.test.simple.core._12_ioc;
 /**
- * <p>使用 Guice 作为 Hasor 的IoC容器，Hasor所注册的所有Bean均会被动态的添加到 Guice 容器中。</p>
+ * Bean
+ * @version : 2014年9月1日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.core.factorys.guice;
+public class UserTypeBean {
+    private String typeID;
+    private String name;
+    //
+    public String getTypeID() {
+        return typeID;
+    }
+    public void setTypeID(String typeID) {
+        this.typeID = typeID;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}

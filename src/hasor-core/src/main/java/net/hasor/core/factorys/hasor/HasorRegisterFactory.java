@@ -16,10 +16,10 @@
 package net.hasor.core.factorys.hasor;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
+import net.hasor.core.InjectMembers;
 import net.hasor.core.factorys.AbstractBindInfoFactory;
 import net.hasor.core.factorys.BaseBindInfoDefineManager;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import org.more.classcode.ClassEngine;
 /**
  * 
  * @version : 2014年7月4日
@@ -39,11 +39,17 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
         }
         //
         HasorBindInfoProviderAdapter<T> infoAdapter = (HasorBindInfoProviderAdapter<T>) bindInfo;
-        ClassEngine engine = infoAdapter.buildEngine();
         try {
-            Class<?> newType = engine.builderClass().toClass();
-            Object targetBean = newType.newInstance();
-            return (T) engine.configBean(targetBean);
+            Class<?> newType = infoAdapter.getBindType();
+            if (infoAdapter.getSourceType() != null) {
+                newType = infoAdapter.getSourceType();
+            }
+            Object targetBean = newType.newInstance();//ClassEngine engine = infoAdapter.buildEngine(); (T) engine.configBean(targetBean)
+            if (targetBean instanceof InjectMembers) {
+                ((InjectMembers) targetBean).doInject(getAppContext());
+            }
+            //
+            return (T) targetBean;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

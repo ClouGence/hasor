@@ -17,7 +17,6 @@ package net.test.simple.core._07_findclasses;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Set;
-import javax.inject.Singleton;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
@@ -42,10 +41,7 @@ public class FindClassTest {
         //1.查找所有Hasor模块（实现了Module接口的类）。
         Set<Class<?>> facesFeature = appContext.findClass(Module.class);
         Hasor.logInfo("find %s.", facesFeature);
-        //2.查找标记了Singleton注解的类型（JSR-330中约定单列的类）
-        Set<Class<?>> annoFeature = appContext.findClass(Singleton.class);
-        Hasor.logInfo("find %s.", annoFeature);
-        //3.查找AbstractAppContext的子类
+        //2.查找AbstractAppContext的子类
         Set<Class<?>> subFeature = appContext.findClass(AbstractAppContext.class);
         Hasor.logInfo("find %s.", subFeature);
     }

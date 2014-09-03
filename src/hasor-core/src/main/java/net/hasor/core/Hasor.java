@@ -44,29 +44,21 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, null, new Module[0]);
+        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final BindInfoFactoryCreater factory) {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, new Module[0]);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final BindInfoFactoryCreater factory, final Module... modules) {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, factory, modules);
+    public static AppContext createAppContext(final Module... modules) {
+        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, modules);
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String config) {
-        return Hasor.createAppContext(config, null, new Module[0]);
+        return Hasor.createAppContext(config, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final BindInfoFactoryCreater factory) {
-        return Hasor.createAppContext(config, factory, new Module[0]);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final BindInfoFactoryCreater factory, final Module... modules) {
+    public static AppContext createAppContext(final String config, final Module... modules) {
         try {
-            StandardAppContext app = new StandardAppContext(config, factory);
+            StandardAppContext app = new StandardAppContext(config);
             app.start(modules);
             return app;
         } catch (Throwable e) {
@@ -76,17 +68,6 @@ public abstract class Hasor {
                 throw new RuntimeException(e);
             }
         }
-    }
-    //
-    //
-    //
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final Module... modules) {
-        return Hasor.createAppContext(config, null, modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final Module... modules) {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, null, modules);
     }
     //
     /*----------------------------------------------------------------------------------------Log*/

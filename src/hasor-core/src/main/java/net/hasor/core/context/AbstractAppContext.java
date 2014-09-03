@@ -23,7 +23,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
-import net.hasor.core.BindInfoFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
@@ -35,6 +34,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
+import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -121,7 +121,11 @@ public abstract class AbstractAppContext implements AppContext {
     };
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
-        return this.getBindInfoFactory().getInstance(info);
+        Provider<T> pro = this.getProvider(info);
+        if (pro == null) {
+            return this.getBindInfoFactory().getInstance(info);
+        }
+        return pro.get();
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {

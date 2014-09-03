@@ -69,18 +69,6 @@
 
 
 
-		<!-- Guice3 -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-			<version>2.5.6.SEC03</version>
-		</dependency>
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

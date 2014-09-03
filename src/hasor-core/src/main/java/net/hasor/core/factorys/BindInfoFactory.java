@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.factorys.guice;
-import net.hasor.core.Provider;
+package net.hasor.core.factorys;
+import net.hasor.core.BindInfo;
+import net.hasor.core.BindInfoDefineManager;
 /**
  * 
- * @version : 2014年9月3日
+ * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */
-class ToGuiceProviderAdapter<T> implements com.google.inject.Provider<T> {
-    private Provider<T> provider;
-    public ToGuiceProviderAdapter(final Provider<T> provider) {
-        this.provider = provider;
-    }
-    public T get() {
-        return this.provider.get();
-    }
-    public Provider<T> getProvider() {
-        return this.provider;
-    }
+public interface BindInfoFactory {
+    /**获取注册器*/
+    public BindInfoDefineManager getManager();
+    //
+    /**创建一个绑定过类型*/
+    public <T> T getInstance(BindInfo<T> oriType);
+    /**创建一个未绑定过的类型*/
+    public <T> T getDefaultInstance(Class<T> oriType);
+    /**获取类型绑定的所有名字。*/
+    public String[] getNamesOfType(Class<?> bindType);
+    /**根据名称和类型获取获取{@link BindInfo}。*/
+    public <T> BindInfo<T> getBindInfo(String withName, Class<T> bindType);
 }

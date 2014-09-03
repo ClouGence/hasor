@@ -18,9 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.core.BindInfoFactoryCreater;
 import net.hasor.core.Module;
-import net.hasor.core.factorys.inner.InnerBindInfoFactoryCreater;
 /**
  * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日
@@ -31,8 +29,6 @@ import net.hasor.core.factorys.inner.InnerBindInfoFactoryCreater;
 public @interface ContextConfiguration {
     /**Hasor的主配置文件.*/
     public String value() default "";
-    /**使用的{@link BindInfoFactoryCreater}*/
-    public Class<? extends BindInfoFactoryCreater> factoryCreater() default InnerBindInfoFactoryCreater.class;
     /**要装载的{@link Module}*/
     public Class<? extends Module>[] loadModules() default {};
 }
