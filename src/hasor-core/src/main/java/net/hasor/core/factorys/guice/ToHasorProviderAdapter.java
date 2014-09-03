@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core.factorys.guice;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfoFactory;
-import net.hasor.core.BindInfoFactoryCreater;
 /**
- * 
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * 负责com.google.inject.Provider到net.hasor.core.Provider的对接转换
+ * @version : 2014年9月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class GuiceRegisterFactoryCreater implements BindInfoFactoryCreater {
-    public BindInfoFactory create(AppContext app) {
-        GuiceBindInfoFactory factory = new GuiceBindInfoFactory();
-        factory.setAppContext(app);
-        return factory;
+class ToHasorProviderAdapter<T> implements net.hasor.core.Provider<T> {
+    private com.google.inject.Provider<T> provider;
+    public ToHasorProviderAdapter(final com.google.inject.Provider<T> provider) {
+        this.provider = provider;
+    }
+    public T get() {
+        return this.provider.get();
+    }
+    public com.google.inject.Provider<T> getProvider() {
+        return this.provider;
     }
 }

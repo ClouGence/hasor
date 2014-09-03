@@ -29,7 +29,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import com.google.inject.Binder;
 /**
  * 
  * @version : 2014年7月4日
@@ -49,12 +48,7 @@ public class SpringRegisterFactory extends AbstractBindInfoFactory {
     }
     //
     public <T> T getInstance(BindInfo<T> bindInfo) {
-        String name = bindInfo.getBindName();
-        Class<T> type = bindInfo.getBindType();
-        if (name == null) {
-            name = type.getName();
-        }
-        return (T) this.spring.getBean(name, type);
+        return (T) this.spring.getBean(bindInfo.getBindID());
     }
     //
     /*------------------------------------------------------------------------------add to Spring*/
@@ -75,24 +69,20 @@ public class SpringRegisterFactory extends AbstractBindInfoFactory {
         super.doInitializeCompleted(appContext);
     }
     protected void configBindInfo(AbstractBindInfoProviderAdapter<Object> regObject, Object context) {
-        if (regObject.getCustomerProvider() != null) {
-            //单例Bean
-            this.registerProvider(regObject);
+        if (regObject.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == true) {
+            this.configAopRegister(regObject);//Aop
         } else {
-            //注册Bean
-            this.registerBean(regObject);
+            this.registerBean(regObject);//Bean
         }
     }
     //
     //处理Aop配置
-    private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
-        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == false) {
-            return;
-        }
+    private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> register) {
+        //
     }
     //
-    //处理带有CustomerProvider配置
-    private void registerProvider(AbstractBindInfoProviderAdapter<?> regObject) {
+    //处理Bean
+    private void registerBean(AbstractBindInfoProviderAdapter<?> regObject) {
         String bindID = regObject.getBindID();
         //
         ConfigurableListableBeanFactory factory = this.spring.getBeanFactory();
@@ -101,25 +91,10 @@ public class SpringRegisterFactory extends AbstractBindInfoFactory {
         if (regObject.isSingleton() == true) {
             defineBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
         }
+        //
         BeanDefinition define = defineBuilder.getRawBeanDefinition();
         define.setAttribute("RegObject", regObject);
+        define.setAttribute("RegAppContext", this.getAppContext());
         defineRegistry.registerBeanDefinition(bindID, define);
-    }
-    //
-    //处理一般配置
-    private void registerBean(AbstractBindInfoProviderAdapter<?> regObject) {
-        String bindID = regObject.getBindID();
-        Class<?> regType = regObject.getSourceType();
-        if (regType == null) {
-            regType = regObject.getBindType();
-        }
-        //
-        ConfigurableListableBeanFactory factory = this.spring.getBeanFactory();
-        BeanDefinitionRegistry defineRegistry = (BeanDefinitionRegistry) factory;
-        BeanDefinitionBuilder define = BeanDefinitionBuilder.genericBeanDefinition(regType);
-        if (regObject.isSingleton() == true) {
-            define.setScope(BeanDefinition.SCOPE_SINGLETON);
-        }
-        defineRegistry.registerBeanDefinition(bindID, define.getRawBeanDefinition());
     }
 }

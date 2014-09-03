@@ -17,13 +17,12 @@ package net.hasor.core.factorys.guice;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import net.hasor.core.BindInfo;
+import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.factorys.AbstractBindInfoFactory;
 import net.hasor.core.factorys.AopMatcherMethodInterceptor;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.more.util.StringUtils;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -78,7 +77,8 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
     }
     //
     /*-------------------------------------------------------------------------------add to Guice*/
-    //将Bean信息绑定到Guice上
+    /** 重写 doInitializeCompleted，使doInitializeCompleted的执行过程处于Guice创建过程中。<p>
+     * 目的是将{@link #doInitializeCompleted(Object)} 方法的 context 传入参数改变为Guice 的 {@link com.google.inject.Binder}*/
     public void doInitializeCompleted(final Object context) {
         this.guiceInjector = this.createInjector(new com.google.inject.Module() {
             public void configure(Binder binder) {
@@ -90,16 +90,14 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
     protected void configBindInfo(AbstractBindInfoProviderAdapter<Object> bindInfo, Object context) {
         Binder binder = (Binder) context;
         configRegister(bindInfo, binder);
-        configAopRegister(bindInfo, binder);
+        if (bindInfo.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == true) {
+            configAopRegister(bindInfo, binder);
+        }
     }
     //
-    //处理Aop配置
-    private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
-        if (register.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class) == false) {
-            return;
-        }
-        //
-        final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) register.getCustomerProvider().get();
+    /**处理Aop的注册*/
+    private void configAopRegister(final AbstractBindInfoProviderAdapter<Object> bindInfo, final Binder binder) {
+        final AopMatcherMethodInterceptor amr = (AopMatcherMethodInterceptor) bindInfo.getCustomerProvider().get();
         binder.bindInterceptor(new AbstractMatcher<Class<?>>() {
             public boolean matches(final Class<?> targetClass) {
                 return amr.matcher(targetClass);
@@ -111,117 +109,73 @@ public class GuiceBindInfoFactory extends AbstractBindInfoFactory {
         }, new MethodInterceptorAdapter(amr));
     }
     //
-    //处理一般配置
-    private void configRegister(final AbstractBindInfoProviderAdapter<Object> register, final Binder binder) {
+    /**处理一般配置*/
+    private void configRegister(final AbstractBindInfoProviderAdapter<Object> bindInfo, final Binder binder) {
         //0.内置绑定
-        String bindID = register.getBindID();
-        Annotation bindAnnotation = (bindID != null) ? Names.named(register.getBindID()) : UniqueAnnotations.create();
-        binder.bind(BindInfo.class).annotatedWith(bindAnnotation).toInstance(register);
+        String bindID = bindInfo.getBindID();
+        Annotation bindAnnotation = (bindID != null) ? Names.named(bindInfo.getBindID()) : UniqueAnnotations.create();
+        binder.bind(BindInfo.class).annotatedWith(bindAnnotation).toInstance(bindInfo);
         //1.绑定类型
-        AnnotatedBindingBuilder<Object> annoBinding = binder.bind(register.getBindType());
+        AnnotatedBindingBuilder<Object> annoBinding = binder.bind(bindInfo.getBindType());
         LinkedBindingBuilder<Object> linkedBinding = annoBinding;
         ScopedBindingBuilder scopeBinding = annoBinding;
         //2.绑定名称
-        boolean haveName = false;
-        String name = register.getBindName();
+        String name = bindInfo.getBindName();
         if (!StringUtils.isBlank(name)) {
             linkedBinding = annoBinding.annotatedWith(Names.named(name));
-            haveName = true;
         }
         //3.绑定实现
-        if (register.getCustomerProvider() != null) {
-            scopeBinding = linkedBinding.toProvider(new ToGuiceProvider<Object>(register.getCustomerProvider()));
-        } else if (register.getSourceType() != null) {
-            scopeBinding = linkedBinding.to(register.getSourceType());
+        if (bindInfo.getCustomerProvider() != null) {
+            scopeBinding = linkedBinding.toProvider(new ToGuiceProviderAdapter<Object>(bindInfo.getCustomerProvider()));
         } else {
-            if (haveName == true) {
-                /*有了BindName一定要，有impl绑定，所以只能自己绑定自己*/
-                scopeBinding = linkedBinding.to(register.getBindType());
-            }
+            scopeBinding = linkedBinding.toProvider(this.defProvider(bindInfo));
         }
         //3.处理单例
-        if (register.isSingleton()) {
+        if (bindInfo.isSingleton()) {
             scopeBinding.asEagerSingleton();
             return;/*第五步不进行处理*/
         }
         //4.绑定作用域
-        Provider<Scope> scopeProvider = register.getScopeProvider();
+        Provider<Scope> scopeProvider = bindInfo.getScopeProvider();
         if (scopeProvider != null) {
             Scope scope = scopeProvider.get();
             if (scope != null) {
-                scopeBinding.in(new GuiceScope(scope));
+                scopeBinding.in(new GuiceScopeAdapter(scope));
             }
         }
         //
     }
+    //
+    private com.google.inject.Provider<Object> defProvider(AbstractBindInfoProviderAdapter<Object> register) {
+        Class<?> finalClass = register.getBindType();
+        if (register.getSourceType() != null) {
+            finalClass = register.getSourceType();
+        }
+        return new NewInstanceProvider(this, finalClass);
+    }
 }
 //
 /*---------------------------------------------------------------------------------------Util*/
-/**Hasor Aop 到 Aop 联盟的桥*/
-class MethodInterceptorAdapter implements MethodInterceptor {
-    private AopMatcherMethodInterceptor aopInterceptor = null;
-    public MethodInterceptorAdapter(final AopMatcherMethodInterceptor aopInterceptor) {
-        this.aopInterceptor = aopInterceptor;
+class NewInstanceProvider implements com.google.inject.Provider<Object> {
+    private Class<?>             targetType = null;
+    private GuiceBindInfoFactory factory    = null;
+    //
+    public NewInstanceProvider(GuiceBindInfoFactory factory, Class<?> targetType) {
+        this.targetType = targetType;
+        this.factory = factory;
     }
-    public Object invoke(final MethodInvocation invocation) throws Throwable {
-        return this.aopInterceptor.invoke(new net.hasor.core.MethodInvocation() {
-            public Object proceed() throws Throwable {
-                return invocation.proceed();
+    public Object get() {
+        try {
+            Object target = this.targetType.newInstance();
+            this.factory.getGuice().injectMembers(target);
+            //
+            if (target instanceof InjectMembers) {
+                ((InjectMembers) target).doInject(this.factory.getAppContext());
             }
-            public Object getThis() {
-                return invocation.getThis();
-            }
-            public Method getMethod() {
-                return invocation.getMethod();
-            }
-            public Object[] getArguments() {
-                return invocation.getArguments();
-            }
-        });
-    }
-}
-/**负责net.hasor.core.Scope与com.google.inject.Scope的对接转换*/
-class GuiceScope implements com.google.inject.Scope {
-    private Scope scope = null;
-    public GuiceScope(final Scope scope) {
-        this.scope = scope;
-    }
-    public String toString() {
-        return this.scope.toString();
-    };
-    public <T> com.google.inject.Provider<T> scope(final Key<T> key, final com.google.inject.Provider<T> unscoped) {
-        Provider<T> returnData = this.scope.scope(key, new ToHasorProvider<T>(unscoped));
-        if (returnData instanceof com.google.inject.Provider) {
-            return (com.google.inject.Provider<T>) returnData;
-        } else if (returnData instanceof ToHasorProvider) {
-            return ((ToHasorProvider) returnData).getProvider();
-        } else {
-            return new ToGuiceProvider(returnData);
+            return target;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw null;
         }
-    }
-}
-/** 负责com.google.inject.Provider到net.hasor.core.Provider的对接转换*/
-class ToHasorProvider<T> implements net.hasor.core.Provider<T> {
-    private com.google.inject.Provider<T> provider;
-    public ToHasorProvider(final com.google.inject.Provider<T> provider) {
-        this.provider = provider;
-    }
-    public T get() {
-        return this.provider.get();
-    }
-    public com.google.inject.Provider<T> getProvider() {
-        return this.provider;
-    }
-}
-class ToGuiceProvider<T> implements com.google.inject.Provider<T> {
-    private Provider<T> provider;
-    public ToGuiceProvider(final Provider<T> provider) {
-        this.provider = provider;
-    }
-    public T get() {
-        return this.provider.get();
-    }
-    public Provider<T> getProvider() {
-        return this.provider;
     }
 }

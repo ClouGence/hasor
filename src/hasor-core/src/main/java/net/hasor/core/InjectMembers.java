@@ -15,10 +15,11 @@
  */
 package net.hasor.core;
 /**
- * 
+ * 初始化注入接口。
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface BindInfoFactoryCreater {
-    public BindInfoFactory create(AppContext app);
+public interface InjectMembers {
+    /**执行注入*/
+    public void doInject(AppContext appContext);
 }

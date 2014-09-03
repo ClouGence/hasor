@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.factorys.guice;
+import net.hasor.core.Provider;
 /**
  * 
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2014年9月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface BindInfoFactoryCreater {
-    public BindInfoFactory create(AppContext app);
+class ToGuiceProviderAdapter<T> implements com.google.inject.Provider<T> {
+    private Provider<T> provider;
+    public ToGuiceProviderAdapter(final Provider<T> provider) {
+        this.provider = provider;
+    }
+    public T get() {
+        return this.provider.get();
+    }
+    public Provider<T> getProvider() {
+        return this.provider;
+    }
 }

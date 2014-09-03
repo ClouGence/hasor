@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core.factorys.spring;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfoFactory;
 import net.hasor.core.BindInfoFactoryCreater;
-import net.hasor.core.Environment;
 /**
  * 
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SpringRegisterFactoryCreater implements BindInfoFactoryCreater {
-    public BindInfoFactory create(final Environment env) {
-        return new SpringRegisterFactory();
+    public BindInfoFactory create(AppContext app) {
+        SpringRegisterFactory factory = new SpringRegisterFactory();
+        factory.setAppContext(app);
+        return factory;
     }
 }

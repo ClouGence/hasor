@@ -136,9 +136,10 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
         if (registerFactoryCreate == null) {
             this.factoryProvider = null;
         } else {
+            final AppContext app = this;
             this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return registerFactoryCreate.create(getEnvironment());
+                    return registerFactoryCreate.create(app);
                 }
             };
         }
@@ -146,9 +147,10 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
     protected BindInfoFactory getBindInfoFactory() {
         //
         if (this.factoryProvider == null) {
+            final AppContext app = this;
             this.factoryProvider = new FactoryProvider(null) {
                 protected BindInfoFactory getBindInfoFactory() {
-                    return new InnerBindInfoFactoryCreater().create(getEnvironment());
+                    return new InnerBindInfoFactoryCreater().create(app);
                 }
             };
         }

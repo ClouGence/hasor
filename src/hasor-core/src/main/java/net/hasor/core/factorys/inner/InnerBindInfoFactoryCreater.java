@@ -15,9 +15,9 @@
  */
 package net.hasor.core.factorys.inner;
 import java.util.List;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfoFactory;
 import net.hasor.core.BindInfoFactoryCreater;
-import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import org.more.UndefinedException;
@@ -29,10 +29,10 @@ import org.more.util.StringUtils;
  */
 public class InnerBindInfoFactoryCreater implements BindInfoFactoryCreater {
     @Override
-    public BindInfoFactory create(final Environment env) {
+    public BindInfoFactory create(AppContext app) {
         String createrToUse = null;
         //1.取得即将创建的ManagerCreater类型
-        Settings setting = env.getSettings();
+        Settings setting = app.getSettings();
         String defaultManager = setting.getString("hasor.bindFactory.default");
         XmlNode[] managerArray = setting.getXmlNodeArray("hasor.bindFactory");
         for (XmlNode manager : managerArray) {
@@ -56,7 +56,7 @@ public class InnerBindInfoFactoryCreater implements BindInfoFactoryCreater {
         try {
             Class<?> createrType = Thread.currentThread().getContextClassLoader().loadClass(createrToUse);
             BindInfoFactoryCreater creater = (BindInfoFactoryCreater) createrType.newInstance();
-            return creater.create(env);
+            return creater.create(app);
         } catch (Throwable e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;

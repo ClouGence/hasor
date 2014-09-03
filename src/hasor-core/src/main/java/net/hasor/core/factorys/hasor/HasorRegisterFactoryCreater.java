@@ -13,16 +13,18 @@
  * limitations under the License.
  */
 package net.hasor.core.factorys.hasor;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfoFactory;
 import net.hasor.core.BindInfoFactoryCreater;
-import net.hasor.core.Environment;
 /**
  * 
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HasorRegisterFactoryCreater implements BindInfoFactoryCreater {
-    public BindInfoFactory create(final Environment env) {
-        return new HasorRegisterFactory();
+    public BindInfoFactory create(AppContext app) {
+        HasorRegisterFactory factory = new HasorRegisterFactory();
+        factory.setAppContext(app);
+        return factory;
     }
 }

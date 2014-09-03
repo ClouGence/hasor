@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.BindInfoFactory;
@@ -34,8 +36,9 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractBindInfoFactory implements BindInfoFactory, ContextInitializeListener, ContextStartListener {
+public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppContextAware, ContextInitializeListener, ContextStartListener {
     private BindInfoDefineManager defineManager = null;
+    private AppContext            appContext    = null;
     //
     public BindInfoDefineManager getManager() {
         if (this.defineManager == null) {
@@ -45,6 +48,14 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, Contex
             throw new NullPointerException("BuilderRegister is null.");
         }
         return this.defineManager;
+    }
+    /**获得所处的{@link AppContext}对象。*/
+    public AppContext getAppContext() {
+        return this.appContext;
+    }
+    /**注入AppContext*/
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
     }
     /**创建{@link BindInfoDefineManager}对象。*/
     protected BindInfoDefineManager createDefineManager() {

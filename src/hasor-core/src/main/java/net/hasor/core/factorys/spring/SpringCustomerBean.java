@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.factorys.spring;
+import net.hasor.core.AppContext;
+import net.hasor.core.InjectMembers;
+import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
@@ -31,6 +34,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 public class SpringCustomerBean implements FactoryBean, ApplicationContextAware, BeanNameAware, InitializingBean {
     private String                             springBeanName     = null;
     private AbstractApplicationContext         applicationContext = null;
+    private AppContext                         appContext         = null;
     private AbstractBindInfoProviderAdapter<?> regObject          = null;
     private Object                             target             = null;
     //
@@ -46,20 +50,38 @@ public class SpringCustomerBean implements FactoryBean, ApplicationContextAware,
     public void afterPropertiesSet() throws Exception {
         BeanDefinition define = this.applicationContext.getBeanFactory().getBeanDefinition(this.springBeanName);
         this.regObject = (AbstractBindInfoProviderAdapter<?>) define.getAttribute("RegObject");
+        this.appContext = (AppContext) define.getAttribute("RegAppContext");
     }
     @Override
     public Object getObject() throws Exception {
         if (this.target != null) {
             return this.target;
         }
-        Object returnData = this.regObject.getCustomerProvider().get();
+        //
+        Object returnData = null;
+        Provider<?> customerProvider = this.regObject.getCustomerProvider();
+        if (customerProvider != null) {
+            returnData = customerProvider.get();
+        } else {
+            //
+            Class<?> finalClass = this.regObject.getBindType();
+            if (this.regObject.getSourceType() != null) {
+                finalClass = this.regObject.getSourceType();
+            }
+            returnData = finalClass.newInstance();
+            returnData = this.applicationContext.getBeanFactory().configureBean(returnData, this.springBeanName);
+        }
+        //
+        if (returnData instanceof InjectMembers) {
+            ((InjectMembers) returnData).doInject(this.appContext);
+        }
         if (this.isSingleton()) {
             this.target = returnData;
         }
         return returnData;
     }
     @Override
-    public Class getObjectType() {
+    public Class<?> getObjectType() {
         return this.regObject.getBindType();
     }
     @Override
