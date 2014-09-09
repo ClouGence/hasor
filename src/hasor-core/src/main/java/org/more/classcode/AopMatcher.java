@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode.objects;
+package org.more.classcode;
 import java.lang.reflect.Method;
-import org.more.classcode.MethodDelegate;
-import org.more.util.BeanUtils;
 /**
- * 代理方法的空实现。
- * @version 2010-9-3
+ * 该类的作用是在生成的类中加入aop的支持。
+ * @version 2010-9-2
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(final Method callMethod, final Object target, final Object[] params) {
-        Class<?> returnType = callMethod.getReturnType();
-        return BeanUtils.getDefaultValue(returnType);
-    }
+public interface AopMatcher {
+    /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
+    public boolean matches(Method target);
 }

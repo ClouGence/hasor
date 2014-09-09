@@ -25,13 +25,17 @@ import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.strategy.DefaultCallStrategyFactory;
-import org.more.classcode.EngineToos;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public class ControllerModule implements Module {
+    /**通过位运算决定check是否在data里。*/
+    private static boolean checkIn(final int data, final int check) {
+        int or = data | check;
+        return or == data;
+    };
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.搜索ModelController
         Set<Class<?>> controllerSet = apiBinder.findClass(ModelController.class);
@@ -42,8 +46,8 @@ public class ControllerModule implements Module {
         //2.绑定到Hasor
         for (Class<?> clazz : controllerSet) {
             int modifier = clazz.getModifiers();
-            if (EngineToos.checkIn(modifier, Modifier.INTERFACE) || //
-                    EngineToos.checkIn(modifier, Modifier.ABSTRACT)) {
+            if (checkIn(modifier, Modifier.INTERFACE) || //
+                    checkIn(modifier, Modifier.ABSTRACT)) {
                 continue;
             }
             //

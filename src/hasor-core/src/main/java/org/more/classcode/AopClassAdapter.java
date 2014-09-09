@@ -15,235 +15,123 @@
  */
 package org.more.classcode;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.asm.ClassVisitor;
-import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
+import org.more.asm.Type;
 /**
- *该类的作用是在生成的类中加入aop的支持。
+ * 该类的作用是在生成的类中加入aop的支持。
  * @version 2010-9-2
  * @author 赵永春 (zyc@hasor.net)
  */
 class AopClassAdapter extends ClassVisitor implements Opcodes {
-    private ClassBuilder        classBuilder        = null;
-    private String              asmClassName        = null;
+    public final static String AopPrefix      = "$aopFun";              //生成的Aop方法前缀
+    private String             superClassName = null;                   //父类类名
+    private String             thisClassName  = null;                   //当前类名
+    private ClassConfig        classConfig    = null;                   //Aop筛选器
+    private ArrayList<Method>  aopMethodMap   = new ArrayList<Method>();
     //
-    /**生成的Aop方法前缀*/
-    public final static String  AopMethodPrefix     = "$aopFun";
-    /**生成的字段名*/
-    public final static String  AopMethodArrayName  = "$aopMethods";
-    private final static String AopMethodType       = EngineToos.toAsmType(org.more.classcode.Method.class);
-    private final static String AopMethodArrayType  = EngineToos.toAsmType(org.more.classcode.Method[].class);
-    /**生成的字段名*/
-    public final static String  AopFilterChainName  = "$aopFilterChain";
-    /**具有aop特性的方法特定描述*/
-    private ArrayList<String>   renderAopMethodList = new ArrayList<String>();
-    //==================================================================================Constructor
-    public AopClassAdapter(final ClassVisitor visitor, final ClassBuilder classBuilder) {
-        super(Opcodes.ASM4, visitor);
-        this.classBuilder = classBuilder;
-    }
-    /**获取具有aop特性的方法集合。*/
-    public ArrayList<String> getRenderAopMethodList() {
-        return this.renderAopMethodList;
+    public AopClassAdapter(final ClassVisitor visitor, ClassConfig classConfig) {
+        super(ASM4, visitor);
+        this.classConfig = classConfig;
     }
     /**asm.visit，用于保存类名。*/
-    @Override
     public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
-        this.asmClassName = name;
-        super.visit(version, access, name, signature, superName, interfaces);
+        this.superClassName = name;
+        this.thisClassName = this.superClassName + "$Aop";
+        this.visitBegin();
+        super.visit(version, access, this.thisClassName, signature, this.superClassName, interfaces);
     }
-    /**asm.visitMethod，遇到一个方法。*/
-    @Override
+    /**处理构造方法*/
     public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
-        ClassEngine ce = this.classBuilder.getClassEngine();
-        AopStrategy aopStrategy = ce.getAopStrategy();//获取Aop策略对象。
         //
         //1.准备输出方法数据，该方法的主要目的是从desc中拆分出参数表和返回值。
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
-        String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         asmReturns = asmReturns.charAt(0) == 'L' ? asmReturns.substring(1, asmReturns.length() - 1) : asmReturns;
         //
         //2.忽略构造方法，aop包装不会考虑构造方法。
         if (name.equals("<init>") == true) {
-            return super.visitMethod(access, name, desc, signature, exceptions);
+            MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+            mv.visitCode();
+            this.visitConstruction(mv, name, desc);
+            mv.visitEnd();
+            return null;
         }
-        //
-        //3.执行方法忽略策略，根据aop策略对象来决定忽略的方法列表。
-        Class<?> superClass = ce.getSuperClass();
-        Class<?>[] paramTypes = EngineToos.toJavaType(asmParams, ce.getRootClassLoader());
-        Method method = EngineToos.findMethod(superClass, name, paramTypes);
-        if (name.contains("$") == true) {
-            return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
-        }
-        if (method != null) {
-            if (aopStrategy.isIgnore(superClass, method) == true) {
-                return super.visitMethod(access, name, desc, signature, exceptions);//忽略方法
-            }
-        }
-        //
-        //4.输出Aop代理方法。
-        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-        mv.visitCode();
-        String aopMethod = AopClassAdapter.AopMethodPrefix + name + desc;//合成新方法的完整描述
-        this.renderAopMethodList.add(aopMethod);
-        int index = this.renderAopMethodList.indexOf(aopMethod);//确定新方法的输出索引用于输出新方法。
-        this.visitAOPMethod(index, mv, name, desc);//输出新方法。
-        mv.visitEnd();
-        //
-        //5.更改名称输出老方法
-        String newMethodName = AopClassAdapter.AopMethodPrefix + name;
-        return super.visitMethod(access, newMethodName, desc, signature, exceptions);
+        return null;
     }
-    /**asm.visitEnd，输出aop需要的特定属性。*/
-    @Override
+    /**前期收集符合策略的方法*/
+    private void visitBegin() {
+        //
+        Method[] methodSet = this.classConfig.getSuperClass().getMethods();
+        for (Method targetMethod : methodSet) {
+            int dataModifiers = targetMethod.getModifiers();
+            if (/**/InnerEngineToos.checkIn(dataModifiers, Modifier.PRIVATE) == true || //
+                    InnerEngineToos.checkIn(dataModifiers, Modifier.FINAL) == true) {
+                continue;
+            }
+            //
+            String targetMethodDesc = InnerEngineToos.toAsmFullDesc(targetMethod);
+            AopInterceptor[] aop = this.classConfig.findInterceptor(targetMethodDesc);
+            if (aop == null || aop.length == 0) {
+                continue;
+            }
+            this.aopMethodMap.add(targetMethod);
+        }
+    }
+    /**后期输出代理的目标方法*/
     public void visitEnd() {
-        //输出FilterChain的数组，是进入Aop的过滤器链。
-        this.putSimpleProperty(AopClassAdapter.AopFilterChainName, AopFilterChain_Start[].class);
-        //输出Method的数组，Method保存的是Aop方法。
-        this.putSimpleProperty(AopClassAdapter.AopMethodArrayName, org.more.classcode.Method[].class);
+        //
+        for (Method targetMethod : this.aopMethodMap) {
+            int access = targetMethod.getModifiers();
+            String name = targetMethod.getName();
+            String desc = "(" + InnerEngineToos.toAsmType(targetMethod.getParameterTypes()) + ")" + InnerEngineToos.toAsmType(targetMethod.getReturnType());
+            String signature = InnerEngineToos.toAsmSignature(targetMethod);
+            Class<?>[] errors = targetMethod.getExceptionTypes();
+            String[] exceptions = new String[errors.length];
+            for (int i = 0; i < errors.length; i++) {
+                exceptions[i] = InnerEngineToos.replaceClassName(errors[i]);
+            }
+            //
+            if (InnerEngineToos.checkIn(access, Modifier.NATIVE)) {
+                access = access - Modifier.NATIVE;
+            }
+            MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+            mv.visitCode();
+            this.visitProxyMethod(mv, name, desc);//输出新方法。
+            mv.visitEnd();
+        }
+        //
+        for (Method targetMethod : this.aopMethodMap) {
+            int access = Modifier.PRIVATE;
+            String name = targetMethod.getName();
+            String desc = "(" + InnerEngineToos.toAsmType(targetMethod.getParameterTypes()) + ")" + InnerEngineToos.toAsmType(targetMethod.getReturnType());
+            String signature = InnerEngineToos.toAsmSignature(targetMethod);
+            Class<?>[] errors = targetMethod.getExceptionTypes();
+            String[] exceptions = new String[errors.length];
+            for (int i = 0; i < errors.length; i++) {
+                exceptions[i] = InnerEngineToos.replaceClassName(errors[i]);
+            }
+            //
+            MethodVisitor mv = super.visitMethod(access, AopPrefix + name, desc, signature, exceptions);
+            mv.visitCode();
+            this.visitAOPMethod(mv, name, desc);//输出新方法。
+            mv.visitEnd();
+        }
         super.visitEnd();
     }
-    /**输出简单属性，visitEnd方法调用，用于输出某一个属性的set方法和其字段。*/
-    private void putSimpleProperty(final String propertyName, final Class<?> propertyType) {
-        String asmFieldType = EngineToos.toAsmType(propertyType);
-        FieldVisitor fv = super.visitField(Opcodes.ACC_PRIVATE, propertyName, asmFieldType, null, null);
-        fv.visitEnd();
-        MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, "set" + EngineToos.toUpperCase(propertyName), "(" + asmFieldType + ")V", null, null);
-        mv.visitCode();
-        mv.visitVarInsn(Opcodes.ALOAD, 0);//装载this
-        mv.visitVarInsn(Opcodes.ALOAD, 1);//装载参数
-        mv.visitFieldInsn(Opcodes.PUTFIELD, this.asmClassName, propertyName, asmFieldType);
-        mv.visitInsn(Opcodes.RETURN);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-    }
-    public void visitAOPMethod__(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {
-        //
-        //1.准备输出方法数据
-        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
-        Matcher m = p.matcher(desc);
-        m.find();
-        String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        m.group(2);
+    //
+    //
+    //Code Builder “new Object[] { abc, abcc, abcc };”
+    private void codeBuilder_1(MethodVisitor mv, String[] asmParams) {
         int paramCount = asmParams.length;
-        //
-        //2.输出数据
-        //  mv = cw.visitMethod(ACC_PUBLIC, "getP_long", "(IZLjava/lang/Object;IZLjava/lang/Object;)J", null, null);
-        //  mv.visitCode();
-        Label l0 = new Label();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(27, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
-        Label l1 = new Label();
-        mv.visitJumpInsn(Opcodes.IFNONNULL, l1);
-        Label l2 = new Label();
-        mv.visitLabel(l2);
-        mv.visitLineNumber(28, l2);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, this.asmClassName, AopClassAdapter.AopMethodPrefix + originalMethodName, desc);
-        mv.visitInsn(Opcodes.LRETURN);
-        mv.visitLabel(l1);
-        mv.visitLineNumber(29, l1);
-        mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-        mv.visitIntInsn(Opcodes.BIPUSH, 6);
-        mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_0);
-        mv.visitVarInsn(Opcodes.ILOAD, 1);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_1);
-        mv.visitVarInsn(Opcodes.ILOAD, 2);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_2);
-        mv.visitVarInsn(Opcodes.ALOAD, 3);
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_3);
-        mv.visitVarInsn(Opcodes.ILOAD, 4);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_4);
-        mv.visitVarInsn(Opcodes.ILOAD, 5);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitInsn(Opcodes.ICONST_5);
-        mv.visitVarInsn(Opcodes.ALOAD, 6);
-        mv.visitInsn(Opcodes.AASTORE);
-        mv.visitVarInsn(Opcodes.ASTORE, 7);
-        Label l3 = new Label();
-        mv.visitLabel(l3);
-        mv.visitLineNumber(30, l3);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
-        mv.visitInsn(Opcodes.ICONST_0);
-        mv.visitInsn(Opcodes.AALOAD);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopMethodArrayName, AopClassAdapter.AopMethodArrayType);
-        mv.visitInsn(Opcodes.ICONST_0);
-        mv.visitInsn(Opcodes.AALOAD);
-        mv.visitVarInsn(Opcodes.ALOAD, 7);
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "org/more/core/classcode/AopFilterChain_Start", "doInvokeFilter", "(Ljava/lang/Object;Lorg/more/core/classcode/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
-        mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
-        mv.visitInsn(Opcodes.LRETURN);
-        mv.visitMaxs(4, 8);
-        mv.visitEnd();
-    }
-    /**实现AOP方法的输出，其中指令详见ASM3.2的{@link Opcodes}接口定义。 */
-    public void visitAOPMethod(final int index, final MethodVisitor mv, final String originalMethodName, final String desc) {//, final Method method) {
-        //
-        //1.准备输出方法数据
-        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
-        Matcher m = p.matcher(desc);
-        m.find();
-        String[] asmParams = EngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
-        String asmReturns = m.group(2);
-        int paramCount = asmParams.length;
-        int localVarSize = paramCount + 1;//方法变量表大小
-        int maxStackSize = 0;//方法最大堆栈大小
-        //
-        //2.输出数据
-        mv.visitVarInsn(Opcodes.ALOAD, 0);//装载this
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
-        Label ifTag = new Label();
-        mv.visitJumpInsn(Opcodes.IFNONNULL, ifTag);
-        //return this.$method_passObject(param);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        for (int i = 0; i < paramCount; i++) {
-            mv.visitVarInsn(Opcodes.ALOAD, i + 1);//装载参数
-        }
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, this.asmClassName, AopClassAdapter.AopMethodPrefix + originalMethodName, desc);
-        mv.visitInsn(EngineToos.getReturn(asmReturns));
-        mv.visitLabel(ifTag);
-        //else
-        mv.visitVarInsn(Opcodes.ALOAD, 0);//装载this
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopFilterChainName, EngineToos.toAsmType(AopFilterChain_Start[].class));
-        mv.visitIntInsn(Opcodes.BIPUSH, index);
-        mv.visitInsn(Opcodes.AALOAD);//装载数组的第index个元素
-        //param 1 this
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        //param 2 $aopMethod[6]
-        mv.visitVarInsn(Opcodes.ALOAD, 0);//
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.asmClassName, AopClassAdapter.AopMethodArrayName, AopClassAdapter.AopMethodArrayType);
-        mv.visitIntInsn(Opcodes.BIPUSH, index);
-        mv.visitInsn(Opcodes.AALOAD);
-        //param 3 new Object[] { param }
         mv.visitIntInsn(Opcodes.BIPUSH, paramCount);
         mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
         for (int i = 0; i < paramCount; i++) {
@@ -251,70 +139,222 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitInsn(Opcodes.DUP);
             mv.visitIntInsn(Opcodes.BIPUSH, i);
             if (asmParams[i].equals("B") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
             } else if (asmParams[i].equals("S") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
             } else if (asmParams[i].equals("I") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
             } else if (asmParams[i].equals("J") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
             } else if (asmParams[i].equals("F") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
             } else if (asmParams[i].equals("D") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
             } else if (asmParams[i].equals("C") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
             } else if (asmParams[i].equals("Z") == true) {
-                mv.visitVarInsn(EngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
             } else {
                 mv.visitVarInsn(Opcodes.ALOAD, i + 1);
             }
             mv.visitInsn(Opcodes.AASTORE);
         }
-        //chain.doInvokeFilter(this, $aopMethod[6], new Object[] { param })
-        String aop_desc = "(Ljava/lang/Object;" + AopClassAdapter.AopMethodType + "[Ljava/lang/Object;)Ljava/lang/Object;";
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, EngineToos.replaceClassName(AopFilterChain_Start.class.getName()), "doInvokeFilter", aop_desc);
-        //return (String)a;
+    }
+    //Code Builder “new Class[] { int.class, Object.class, boolean.class, short.class };”
+    private void codeBuilder_2(MethodVisitor mv, String[] asmParams) {
+        int paramCount = asmParams.length;
+        mv.visitIntInsn(Opcodes.BIPUSH, paramCount);
+        mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Class");
+        for (int i = 0; i < paramCount; i++) {
+            String asmType = asmParams[i];
+            mv.visitInsn(Opcodes.DUP);
+            mv.visitIntInsn(Opcodes.BIPUSH, i);
+            if (asmParams[i].equals("B") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Byte", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("S") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Short", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("I") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("J") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Long", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("F") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("D") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Double", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("C") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Character", "TYPE", "Ljava/lang/Class;");
+            } else if (asmParams[i].equals("Z") == true) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", "TYPE", "Ljava/lang/Class;");
+            } else {
+                mv.visitLdcInsn(Type.getType(asmType));//  Ljava/lang/Object;
+            }
+            mv.visitInsn(Opcodes.AASTORE);
+        }
+    }
+    //Code Builder “return ...”
+    private void codeBuilder_3(MethodVisitor mv, String asmReturns) {
         if (asmReturns.equals("B") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
+            mv.visitInsn(InnerEngineToos.getReturn("B"));
         } else if (asmReturns.equals("S") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
+            mv.visitInsn(InnerEngineToos.getReturn("S"));
         } else if (asmReturns.equals("I") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
+            mv.visitInsn(InnerEngineToos.getReturn("I"));
         } else if (asmReturns.equals("J") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
+            mv.visitInsn(InnerEngineToos.getReturn("J"));
         } else if (asmReturns.equals("F") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
+            mv.visitInsn(InnerEngineToos.getReturn("F"));
         } else if (asmReturns.equals("D") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
+            mv.visitInsn(InnerEngineToos.getReturn("D"));
         } else if (asmReturns.equals("C") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Character");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
+            mv.visitInsn(InnerEngineToos.getReturn("C"));
         } else if (asmReturns.equals("Z") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
+            mv.visitInsn(InnerEngineToos.getReturn("Z"));
         } else if (asmReturns.equals("V") == true) {
-            //void
+            mv.visitInsn(Opcodes.POP);
+            mv.visitInsn(Opcodes.RETURN);
         } else {
-            String asmReturnsType = asmReturns.charAt(0) == 'L' ? asmReturns.substring(1, asmReturns.length() - 1) : asmReturns;
-            mv.visitTypeInsn(Opcodes.CHECKCAST, asmReturnsType);
+            mv.visitTypeInsn(Opcodes.CHECKCAST, InnerEngineToos.asmTypeToType(asmReturns));
+            mv.visitInsn(Opcodes.ARETURN);
         }
-        mv.visitInsn(EngineToos.getReturn(asmReturns));
-        /* 输出堆栈列表 */
-        mv.visitMaxs(maxStackSize, localVarSize + 1);
+    }
+    //
+    private void visitProxyMethod(MethodVisitor mv, String name, String desc) {
+        // 生成的例子代码：
+        //    public int doCall(int abc, Object abcc) {
+        //        Class<?>[] pTypes = new Class[] { int.class, Object.class, boolean.class, short.class };
+        //        Object[] pObjects = new Object[] { abc, abcc, abcc };
+        //        try {
+        //            Method m = this.getClass().getMethod("doCall", pTypes);
+        //            InnerChainAopInvocation chain = new InnerChainAopInvocation(pObjects, m, this);
+        //            Object obj = new InnerAopInvocation(m, chain).proceed();
+        //            return ((Integer) obj).intValue();
+        //        } catch (Throwable e) {
+        //            throw new RuntimeException(e);
+        //        }
+        //    }
+        //1.准备输出方法数据
+        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
+        Matcher m = p.matcher(desc);
+        m.find();
+        String[] asmParams = InnerEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String asmReturns = m.group(2);
+        int paramCount = asmParams.length;
+        int maxStack = 5;//方法最大堆栈大小
+        int maxLocals = paramCount + 5;//本地变量表大小
+        //
+        {//Class<?>[] pTypes = new Class[] { int.class, Object.class, boolean.class, short.class };
+            this.codeBuilder_2(mv, asmParams);
+            mv.visitVarInsn(ASTORE, paramCount + 1);
+        }
+        {//Object[] pObjects = new Object[] { abc, abcc, abcc };
+            this.codeBuilder_1(mv, asmParams);
+            mv.visitVarInsn(ASTORE, paramCount + 2);
+        }
+        //
+        Label tryBegin = new Label();
+        Label tryEnd = new Label();
+        Label tryCatch = new Label();
+        mv.visitTryCatchBlock(tryBegin, tryEnd, tryCatch, "java/lang/Throwable");
+        {//try {
+            mv.visitLabel(tryBegin);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, this.thisClassName, "getClass", "()Ljava/lang/Class;");
+            mv.visitLdcInsn(name);
+            mv.visitVarInsn(ALOAD, paramCount + 1);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+            mv.visitVarInsn(ASTORE, paramCount + 3);
+            //
+            mv.visitTypeInsn(NEW, InnerEngineToos.replaceClassName(InnerChainAopInvocation.class));
+            mv.visitInsn(DUP);
+            mv.visitVarInsn(ALOAD, paramCount + 3);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, paramCount + 2);
+            mv.visitMethodInsn(INVOKESPECIAL, InnerEngineToos.replaceClassName(InnerChainAopInvocation.class), "<init>", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)V");
+            mv.visitVarInsn(ASTORE, paramCount + 4);
+            //
+            mv.visitTypeInsn(NEW, InnerEngineToos.replaceClassName(InnerAopInvocation.class));
+            mv.visitInsn(DUP);
+            mv.visitLdcInsn(name + desc);
+            mv.visitVarInsn(ALOAD, paramCount + 3);
+            mv.visitVarInsn(ALOAD, paramCount + 4);
+            mv.visitMethodInsn(INVOKESPECIAL, InnerEngineToos.replaceClassName(InnerAopInvocation.class), "<init>", "(Ljava/lang/String;Ljava/lang/reflect/Method;" + InnerEngineToos.toAsmType(AopInvocation.class) + ")V");//
+            mv.visitMethodInsn(INVOKEVIRTUAL, InnerEngineToos.replaceClassName(InnerAopInvocation.class), "proceed", "()Ljava/lang/Object;");
+            mv.visitVarInsn(ASTORE, paramCount + 5);
+            mv.visitVarInsn(ALOAD, paramCount + 5);
+            mv.visitLabel(tryEnd);
+            this.codeBuilder_3(mv, asmReturns);
+        }
+        {//} catch (Exception e) {
+            mv.visitLabel(tryCatch);
+            mv.visitFrame(Opcodes.F_FULL, 5, new Object[] { this.thisClassName, Opcodes.INTEGER, "java/lang/Object", "[Ljava/lang/Object;", "[Ljava/lang/Class;" }, 1, new Object[] { "java/lang/Throwable" });
+            mv.visitVarInsn(ASTORE, 5);
+            mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
+            mv.visitInsn(DUP);
+            mv.visitVarInsn(ALOAD, 5);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
+            mv.visitInsn(ATHROW);
+        }// }
+        mv.visitMaxs(maxStack, maxLocals);
+    }
+    //
+    private void visitConstruction(MethodVisitor mv, String name, String desc) {
+        //1.准备输出方法数据
+        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
+        Matcher m = p.matcher(desc);
+        m.find();
+        String[] asmParams = InnerEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        int paramCount = asmParams.length;
+        //
+        mv.visitVarInsn(ALOAD, 0);
+        for (int i = 0; i < paramCount; i++) {
+            String asmType = asmParams[i];
+            mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
+        }
+        mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, name, desc);
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(paramCount + 1, paramCount + 1);
+    }
+    //
+    private void visitAOPMethod(MethodVisitor mv, String name, String desc) {
+        //1.准备输出方法数据
+        Pattern p = Pattern.compile("\\((.*)\\)(.*)");
+        Matcher m = p.matcher(desc);
+        m.find();
+        String[] asmParams = InnerEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String asmReturns = m.group(2);
+        int paramCount = asmParams.length;
+        //
+        mv.visitVarInsn(ALOAD, 0);
+        for (int i = 0; i < paramCount; i++) {
+            String asmType = asmParams[i];
+            mv.visitVarInsn(InnerEngineToos.getLoad(asmType), i + 1);
+        }
+        mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, name, desc);
+        mv.visitInsn(InnerEngineToos.getReturn(asmReturns));
+        mv.visitMaxs(paramCount + 1, paramCount + 1);
     }
 }

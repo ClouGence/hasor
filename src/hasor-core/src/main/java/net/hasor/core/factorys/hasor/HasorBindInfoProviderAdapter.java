@@ -15,7 +15,7 @@
  */
 package net.hasor.core.factorys.hasor;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import org.more.classcode.ClassEngine;
+import org.more.classcode.ClassConfig;
 /**
  * 
  * @version : 2014年7月4日
@@ -30,13 +30,13 @@ public class HasorBindInfoProviderAdapter<T> extends DefaultBindInfoProviderAdap
         super(bindingType);
     }
     //
-    private ClassEngine engine = null;
+    private ClassConfig engine = null;
     /**获取用于创建Bean的 Engine。*/
-    public ClassEngine buildEngine() {
+    public ClassConfig buildEngine() {
         if (this.engine == null) {
             Class<?> superType = this.getSourceType();
             superType = (superType == null) ? this.getBindType() : superType;
-            this.engine = new ClassEngine(superType);
+            this.engine = new ClassConfig(superType);
         }
         return this.engine;
     }

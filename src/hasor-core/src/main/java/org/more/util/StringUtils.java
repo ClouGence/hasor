@@ -5864,4 +5864,12 @@ public class StringUtils {
         }
         return new String(chars);
     }
+    /**转换首字母大写*/
+    public static String firstToUpperCase(final String value) {
+        StringBuffer sb = new StringBuffer(value);
+        char firstChar = sb.charAt(0);
+        sb.delete(0, 1);
+        sb.insert(0, (char) (firstChar >= 97 ? firstChar - 32 : firstChar));
+        return sb.toString();
+    }
 };

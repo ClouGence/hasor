@@ -24,7 +24,7 @@ public interface PropertyDelegate<T> {
     /**获取这个委托属性的属性类型。*/
     public Class<? extends T> getType();
     /**该委托属性的get方法，参数是属性所处的对象。*/
-    public T get(Object target) throws PropertyException;
+    public T get() throws Throwable;
     /**该委托属性的set方法，第一个参数是属性所处的对象，第二个参数代表设置的新值。*/
-    public void set(Object target, T newValue) throws PropertyException;
+    public void set(T newValue) throws Throwable;
 }

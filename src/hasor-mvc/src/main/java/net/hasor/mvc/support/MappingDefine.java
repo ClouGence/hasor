@@ -28,7 +28,6 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.CallStrategy;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import org.more.UndefinedException;
-import org.more.classcode.FormatException;
 import org.more.util.StringUtils;
 /**
  * 线程安全
@@ -54,7 +53,7 @@ public class MappingDefine {
         if (StringUtils.isBlank(servicePath))
             throw new NullPointerException("Service path is empty.");
         if (!servicePath.matches("/.+"))
-            throw new FormatException("Service path format error");
+            throw new IllegalStateException("Service path format error");
         //
         this.bindID = bindID;
         this.targetMethod = targetMethod;

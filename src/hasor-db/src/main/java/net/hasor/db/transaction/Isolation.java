@@ -15,7 +15,6 @@
  */
 package net.hasor.db.transaction;
 import java.sql.Connection;
-import org.more.classcode.FormatException;
 /**
  * 事务隔离级别
  * @version : 2013-10-30
@@ -73,6 +72,6 @@ public enum Isolation {
         case Connection.TRANSACTION_SERIALIZABLE:
             return Isolation.SERIALIZABLE;
         }
-        throw new FormatException(String.format("Connection ISOLATION error level %s.", value));
+        throw new IllegalStateException(String.format("Connection ISOLATION error level %s.", value));
     }
 }
