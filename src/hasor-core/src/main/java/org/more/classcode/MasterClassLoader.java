@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
-import org.more.asm.Opcodes;
 import org.more.util.ResourcesUtils;
 /**
  * 
@@ -69,21 +68,15 @@ public class MasterClassLoader extends ClassLoader {
         //2.构建visitor环
         //------第一环，写入
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        ClassVisitor firstVisitor = new ClassVisitor(Opcodes.ASM4, writer) {
-            public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-                config.setClassName(name.replace("/", "."));/*提取类名*/
-                super.visit(version, access, name, signature, superName, interfaces);
-            }
-        };
         //------第二环，用户扩展
-        ClassVisitor visitor = config.acceptClass(firstVisitor);
-        visitor = (visitor == null) ? firstVisitor : visitor;
-        //------第三环，Aop
-        visitor = new AopClassAdapter(visitor, config);
-        //------第四环，方法委托
+        ClassVisitor visitor = config.acceptClass(writer);
+        visitor = (visitor == null) ? writer : visitor;
+        //------第三环，方法委托
         visitor = new MethodDelegateClassAdapter(visitor, config);
-        //------第五环，属性委托
+        //------第四环，属性委托
         visitor = new PropertyDelegateClassAdapter(visitor, config);
+        //------第五环，Aop
+        visitor = new AopClassAdapter(visitor, config);
         //
         //3.Read
         String resName = superClass.getName().replace(".", "/") + ".class";

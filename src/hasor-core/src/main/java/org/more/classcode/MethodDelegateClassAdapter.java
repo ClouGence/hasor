@@ -16,7 +16,6 @@
 package org.more.classcode;
 import java.util.ArrayList;
 import org.more.asm.ClassVisitor;
-import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
 /**
  * 该类负责输出代理方法。
@@ -34,20 +33,11 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
         this.classConfig = config;
         this.delegateList = new ArrayList<String>();
     }
-    private void visitBegin() {
-        // TODO Auto-generated method stub
-    }
     //
     public void visit(final int version, final int access, String name, final String signature, String superName, String[] interfaces) {
         this.superClassName = superName;
         this.thisClassName = name;
-        this.visitBegin();
         super.visit(version, access, name, signature, superName, interfaces);
-    }
-    //
-    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        // TODO Auto-generated method stub
-        return super.visitMethod(access, name, desc, signature, exceptions);
     }
     //
     public void visitEnd() {

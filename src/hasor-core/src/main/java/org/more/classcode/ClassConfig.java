@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.more.asm.ClassVisitor;
 import org.more.classcode.objects.SimplePropertyDelegate;
+import org.more.util.BeanUtils;
 /**
  * 
  * @version : 2014年9月7日
@@ -30,29 +31,34 @@ import org.more.classcode.objects.SimplePropertyDelegate;
  */
 public class ClassConfig {
     /**默认超类java.lang.Object。*/
-    public static final Class<?>             DefaultSuperClass = java.lang.Object.class;
-    private Class<?>                         superClass        = DefaultSuperClass;
-    private String                           className         = null;                   //新类名称
-    private byte[]                           classBytes        = null;                   //新类字节码
-    private MasterClassLoader                parentLoader      = new MasterClassLoader();
+    public static final Class<?>               DefaultSuperClass = java.lang.Object.class;
+    private Class<?>                           superClass        = DefaultSuperClass;
+    private String                             className         = null;                   //新类名称
+    private byte[]                             classBytes        = null;                   //新类字节码
+    private MasterClassLoader                  parentLoader      = new MasterClassLoader();
     //
-    private List<InnerAopInterceptor>        aopList           = null;                   //Aop
-    //
-    private Map<Class<?>, MethodDelegate>    newDelegateMap    = null;                   //方法委托
-    private Map<String, PropertyDelegate<?>> newPropertyMap    = null;                   //属性委托
-    //
+    private List<InnerAopInterceptor>          aopList           = null;                   //Aop
+    private Map<Class<?>, MethodDelegate>      newDelegateMap    = null;                   //方法委托
+    private Map<String, InnerPropertyDelegate> newPropertyMap    = null;                   //属性委托
     //
     //
+    /**创建{@link ClassConfig}类型对象。 */
     public ClassConfig(Class<?> superClass) {
         this.superClass = superClass;
+        this.className = this.initClassName();
     }
+    /**创建{@link ClassConfig}类型对象。 */
     public ClassConfig(Class<?> superClass, ClassLoader parentLoader) {
         this.superClass = superClass;
+        this.className = this.initClassName();
         if (parentLoader instanceof MasterClassLoader) {
             this.parentLoader = (MasterClassLoader) parentLoader;
         } else {
             this.parentLoader = new MasterClassLoader(parentLoader);
         }
+    }
+    protected String initClassName() {
+        return this.superClass.getName() + "$Aop";
     }
     /**
      * 向新类中添加一个委托接口实现，该委托接口中的所有方法均通过委托对象代理处理。如果委托接口中有方法与基类的方法冲突时。
@@ -77,29 +83,54 @@ public class ClassConfig {
         if (this.newDelegateMap.containsKey(appendInterface) == false) {
             this.newDelegateMap.put(appendInterface, delegate);
         }
-    };
-    /**在新生成的类中添加一个属性字段，并且依据属性策略生成其get/set方法。*/
-    public void addProperty(final String name, final Class<?> type) {
-        if (name == null || name.equals("") || type == null) {
-            throw new NullPointerException("参数name或type为空。");
-        }
-        this.addProperty(name, new SimplePropertyDelegate(type), true, true);
-    };
-    public void addProperty(final String name, final PropertyDelegate<?> delegate, boolean readOnly) {
-        this.addProperty(name, delegate, readOnly, false);
     }
-    /**在新生成的类中添加一个委托属性，并且依据属性策略生成其get/set方法。*/
-    public void addProperty(final String name, final PropertyDelegate<?> delegate, boolean read, boolean write) {
-        if (name == null || name.equals("") || delegate == null) {
-            throw new NullPointerException("参数name或delegate为空。");
+    /**动态添加一个属性，并且生成可以属性的get/set方法。*/
+    public void addProperty(final String propertyName, Class<?> propertyType) {
+        this.addProperty(propertyName, propertyType, true, true);
+    }
+    /**
+     * 动态添加一个属性，并且生成可以属性的get/set方法。
+     * @param readOnly 是否为只读属性
+     */
+    public void addProperty(final String propertyName, Class<?> propertyType, boolean readOnly) {
+        this.addProperty(propertyName, propertyType, !readOnly, true);
+    }
+    /**动态添加一个属性，并且生成可以属性的get/set方法。*/
+    public void addProperty(final String propertyName, Class<?> propertyType, boolean canRead, boolean canWrite) {
+        if (propertyName == null || propertyName.equals("") || propertyType == null) {
+            throw new NullPointerException("参数 propertyName 或 propertyType 为空。");
         }
-        if (this.newPropertyMap == null) {
-            this.newPropertyMap = new LinkedHashMap<String, PropertyDelegate<?>>();
+        this.addProperty(propertyName, new SimplePropertyDelegate(propertyType), canRead, canWrite);
+    }
+    /**动态添加一个属性，并且生成可以属性的get/set方法。*/
+    public void addProperty(final String propertyName, final PropertyDelegate<?> delegate) {
+        this.addProperty(propertyName, delegate, true, true);
+    }
+    /**
+    * 动态添加一个属性，并且生成可以属性的get/set方法。
+    * @param readOnly 是否为只读属性
+    */
+    public void addProperty(final String propertyName, final PropertyDelegate<?> delegate, boolean readOnly) {
+        this.addProperty(propertyName, delegate, !readOnly, true);
+    }
+    /**动态添加一个属性，并且生成可以属性的get/set方法。*/
+    public void addProperty(final String propertyName, final PropertyDelegate<?> delegate, boolean canRead, boolean canWrite) {
+        if (propertyName == null || propertyName.equals("") || delegate == null) {
+            throw new NullPointerException("参数 propertyName 或 delegate 为空。");
         }
-        //检测是否是为已存在的属性，如果是则类型必须相同
-        //        this.getSuperClass().getMethod("", parameterTypes)
+        //如果存在这个属性，则抛出异常
+        boolean readMark = BeanUtils.canReadProperty(propertyName, this.getSuperClass());
+        boolean writeMark = BeanUtils.canWriteProperty(propertyName, this.getSuperClass());
+        if (readMark == true || writeMark == true) {
+            throw new IllegalStateException("已存在的属性。");
+        }
         //
-        this.newPropertyMap.put(name, delegate);
+        if (this.newPropertyMap == null) {
+            this.newPropertyMap = new LinkedHashMap<String, InnerPropertyDelegate>();
+        }
+        //
+        InnerPropertyDelegate inner = new InnerPropertyDelegate(propertyName, delegate, canRead, canWrite);
+        this.newPropertyMap.put(propertyName, inner);
     }
     /**添加Aop拦截器。*/
     public void addAopInterceptor(AopInterceptor aopInterceptor) {
@@ -126,23 +157,34 @@ public class ClassConfig {
     protected ClassVisitor acceptClass(ClassVisitor writer) {
         return null;
     }
-    //
+    /**调用ClassLoader，生成字节码并装载它*/
     public synchronized Class<?> toClass() throws IOException, ClassNotFoundException {
         if (this.classBytes == null) {
             this.classBytes = this.parentLoader.buildClass(this);
         }
         return this.parentLoader.loadClass(getClassName());
     }
-    //
+    /**取得字节码信息*/
     public byte[] toBytes() {
         return this.classBytes;
     }
+    /**父类类型*/
     public Class<?> getSuperClass() {
         return superClass;
     }
+    /**新类类名*/
     public String getClassName() {
         return this.className;
     }
+    public PropertyDelegate<Object> getPropertyDelegate(String propertyName) {
+        if (this.newPropertyMap != null) {
+            return this.newPropertyMap.get(propertyName);
+        }
+        return null;
+    }
+    //
+    //
+    //
     //
     //
     //
@@ -161,6 +203,7 @@ public class ClassConfig {
             this.$methodMapping.put(tmDesc, tMethod);
         }
     }
+    //
     AopInterceptor[] findInterceptor(String tmDesc) {
         AopInterceptor[] aopArrays = this.$finalAopMapping.get(tmDesc);
         if (aopArrays == null) {
@@ -182,7 +225,12 @@ public class ClassConfig {
         }
         return aopArrays;
     }
-    void setClassName(String className) {
-        this.className = className;
+    InnerPropertyDelegate[] getNewPropertyList() {
+        if (this.newPropertyMap == null) {
+            return new InnerPropertyDelegate[0];
+        }
+        InnerPropertyDelegate[] newProperty = this.newPropertyMap.values()//
+                .toArray(new InnerPropertyDelegate[this.newPropertyMap.size()]);
+        return newProperty;
     }
 }

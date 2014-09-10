@@ -276,6 +276,20 @@ class InnerEngineToos implements Opcodes {
         }
         return str.toString();
     }
+    /**获取方法的ASM格式描述信息。*/
+    public static String toAsmDesc(Method method) {
+        StringBuffer str = new StringBuffer();
+        str.append("(");
+        str.append(toAsmType(method.getParameterTypes()));
+        str.append(")");
+        Class<?> returnType = method.getReturnType();
+        if (returnType == void.class) {
+            str.append("V");
+        } else {
+            str.append(toAsmType(returnType));
+        }
+        return str.toString();
+    }
     /**判断某个类是否为一个lang包的类。*/
     public static boolean isLangClass(final Class<?> type) {
         return type.getName().startsWith("java.lang.");

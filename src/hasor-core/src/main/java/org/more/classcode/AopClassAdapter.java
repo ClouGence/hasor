@@ -17,6 +17,7 @@ package org.more.classcode;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.asm.ClassVisitor;
@@ -34,16 +35,16 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
     private String             superClassName = null;                   //父类类名
     private String             thisClassName  = null;                   //当前类名
     private ClassConfig        classConfig    = null;                   //Aop筛选器
-    private ArrayList<Method>  aopMethodMap   = new ArrayList<Method>();
+    private List<Method>       aopMethodMap   = new ArrayList<Method>();
     //
     public AopClassAdapter(final ClassVisitor visitor, ClassConfig classConfig) {
         super(ASM4, visitor);
         this.classConfig = classConfig;
+        this.thisClassName = classConfig.getClassName().replace(".", "/");
     }
     /**asm.visit，用于保存类名。*/
     public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
         this.superClassName = name;
-        this.thisClassName = this.superClassName + "$Aop";
         this.visitBegin();
         super.visit(version, access, this.thisClassName, signature, this.superClassName, interfaces);
     }
@@ -65,6 +66,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitEnd();
             return null;
         }
+        //
         return null;
     }
     /**前期收集符合策略的方法*/
@@ -92,7 +94,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         for (Method targetMethod : this.aopMethodMap) {
             int access = targetMethod.getModifiers();
             String name = targetMethod.getName();
-            String desc = "(" + InnerEngineToos.toAsmType(targetMethod.getParameterTypes()) + ")" + InnerEngineToos.toAsmType(targetMethod.getReturnType());
+            String desc = InnerEngineToos.toAsmDesc(targetMethod);
             String signature = InnerEngineToos.toAsmSignature(targetMethod);
             Class<?>[] errors = targetMethod.getExceptionTypes();
             String[] exceptions = new String[errors.length];
@@ -112,7 +114,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         for (Method targetMethod : this.aopMethodMap) {
             int access = Modifier.PRIVATE;
             String name = targetMethod.getName();
-            String desc = "(" + InnerEngineToos.toAsmType(targetMethod.getParameterTypes()) + ")" + InnerEngineToos.toAsmType(targetMethod.getReturnType());
+            String desc = InnerEngineToos.toAsmDesc(targetMethod);
             String signature = InnerEngineToos.toAsmSignature(targetMethod);
             Class<?>[] errors = targetMethod.getExceptionTypes();
             String[] exceptions = new String[errors.length];
@@ -127,7 +129,6 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         }
         super.visitEnd();
     }
-    //
     //
     //Code Builder “new Object[] { abc, abcc, abcc };”
     private void codeBuilder_1(MethodVisitor mv, String[] asmParams) {
@@ -310,8 +311,17 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         }
         {//} catch (Exception e) {
             mv.visitLabel(tryCatch);
-            mv.visitFrame(Opcodes.F_FULL, 5, new Object[] { this.thisClassName, Opcodes.INTEGER, "java/lang/Object", "[Ljava/lang/Object;", "[Ljava/lang/Class;" }, 1, new Object[] { "java/lang/Throwable" });
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
             mv.visitVarInsn(ASTORE, 5);
+            mv.visitVarInsn(ALOAD, 5);
+            mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
+            Label ifBlock = new Label();
+            mv.visitJumpInsn(IFEQ, ifBlock);
+            mv.visitVarInsn(ALOAD, 5);
+            mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
+            mv.visitInsn(ATHROW);
+            mv.visitLabel(ifBlock);
+            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 5);
