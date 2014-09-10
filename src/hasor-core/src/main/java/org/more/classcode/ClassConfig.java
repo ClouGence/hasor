@@ -133,18 +133,18 @@ public class ClassConfig {
         this.newPropertyMap.put(propertyName, inner);
     }
     /**添加Aop拦截器。*/
-    public void addAopInterceptor(AopInterceptor aopInterceptor) {
-        this.addAopInterceptor(new AopMatcher() {
-            public boolean matches(Method target) {
-                return true;
-            }
-        }, aopInterceptor);
-    }
-    /**添加Aop拦截器。*/
-    public void addAopInterceptor(AopMatcher aopMatcher, AopInterceptor... aopInterceptor) {
+    public void addAopInterceptors(AopMatcher aopMatcher, AopInterceptor... aopInterceptor) {
         for (AopInterceptor aop : aopInterceptor) {
             this.addAopInterceptor(aopMatcher, aop);
         }
+    }
+    /**添加Aop拦截器。*/
+    public void addAopInterceptor(AopInterceptor aopInterceptor) {
+        this.addAopInterceptor(new AopMatcher() {
+            public boolean matcher(Method target) {
+                return true;
+            }
+        }, aopInterceptor);
     }
     /**添加Aop拦截器。*/
     public void addAopInterceptor(AopMatcher aopMatcher, AopInterceptor aopInterceptor) {
@@ -152,6 +152,15 @@ public class ClassConfig {
             this.aopList = new ArrayList<InnerAopInterceptor>();
         }
         this.aopList.add(new InnerAopInterceptor(aopMatcher, aopInterceptor));
+    }
+    /**是否包含改变*/
+    public boolean hasChange() {
+        if (this.aopList.isEmpty() == false ||
+            this.newDelegateMap.isEmpty() == false ||
+            this.newPropertyMap.isEmpty() == false) {
+            return true;
+        }
+        return false;
     }
     //
     protected ClassVisitor acceptClass(ClassVisitor writer) {
@@ -214,7 +223,7 @@ public class ClassConfig {
             Method targetMethod = this.$methodMapping.get(tmDesc);
             if (targetMethod != null && this.aopList != null) {
                 for (InnerAopInterceptor inner : this.aopList) {
-                    if (inner.matches(targetMethod) == true) {
+                    if (inner.matcher(targetMethod) == true) {
                         aopList.add(inner);
                     }
                 }

@@ -43,7 +43,7 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public class BaseBindInfoDefineManager implements BindInfoDefineManager {
+public abstract class AbstractBindInfoDefineManager implements BindInfoDefineManager {
     private Map<Class<?>, List<AbstractBindInfoProviderAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractBindInfoProviderAdapter<?>>>();
     private Map<String, AbstractBindInfoProviderAdapter<?>>         idDataSource       = new HashMap<String, AbstractBindInfoProviderAdapter<?>>();
     //
@@ -67,7 +67,7 @@ public class BaseBindInfoDefineManager implements BindInfoDefineManager {
         //
         BindInfoBuilder<AopMatcherMethodInterceptor> builder = createBuilder(AopMatcherMethodInterceptor.class);
         //
-        AopMatcherMethodInterceptor target = new InnerAopMatcherMethodInterceptor(matcherClass, matcherMethod, interceptor);
+        AopMatcherMethodInterceptor target = new AopMatcherMethodInterceptor(matcherClass, matcherMethod, interceptor);
         builder.setCustomerProvider(new InstanceProvider<AopMatcherMethodInterceptor>(target));
         builder.setSingleton(true);
         builder.setBindID(UUID.randomUUID().toString());

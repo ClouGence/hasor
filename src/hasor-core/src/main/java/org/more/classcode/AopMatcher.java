@@ -22,5 +22,5 @@ import java.lang.reflect.Method;
  */
 public interface AopMatcher {
     /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
-    public boolean matches(Method target);
+    public boolean matcher(Method target);
 }

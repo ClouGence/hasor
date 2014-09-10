@@ -20,8 +20,8 @@ package net.test.simple.core._12_ioc;
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserTypeBean {
-    private String typeID;
-    private String name;
+    private String typeID = "4321";
+    private String name   = "测试用户类型";
     //
     public String getTypeID() {
         return typeID;

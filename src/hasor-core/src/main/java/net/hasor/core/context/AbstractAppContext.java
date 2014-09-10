@@ -121,11 +121,7 @@ public abstract class AbstractAppContext implements AppContext {
     };
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
-        Provider<T> pro = this.getProvider(info);
-        if (pro == null) {
-            return this.getBindInfoFactory().getInstance(info);
-        }
-        return pro.get();
+        return this.getBindInfoFactory().getInstance(info);
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {

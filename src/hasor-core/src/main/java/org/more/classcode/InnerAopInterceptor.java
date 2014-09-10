@@ -14,8 +14,8 @@ class InnerAopInterceptor implements AopInterceptor, AopMatcher {
         this.aopInterceptor = aopInterceptor;
     }
     // 
-    public boolean matches(Method target) {
-        return this.aopMatcher.matches(target);
+    public boolean matcher(Method target) {
+        return this.aopMatcher.matcher(target);
     }
     public Object invoke(AopInvocation invocation) throws Throwable {
         return this.aopInterceptor.invoke(invocation);

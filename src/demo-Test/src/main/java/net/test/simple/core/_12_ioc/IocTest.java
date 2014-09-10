@@ -39,7 +39,7 @@ public class IocTest {
         //
         UserBean userBean = appContext.getInstance(UserBean.class);
         //
-        System.out.println(userBean.getUserID());
+        System.out.println(userBean.getUserType().getTypeID());
         Thread.sleep(1000);
     }
 }

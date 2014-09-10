@@ -58,7 +58,7 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppCon
     }
     /**创建{@link BindInfoDefineManager}对象。*/
     protected BindInfoDefineManager createDefineManager() {
-        return new BaseBindInfoDefineManager();
+        return new AbstractBindInfoDefineManager() {};
     }
     //
     /**创建一个未绑定过的类型*/

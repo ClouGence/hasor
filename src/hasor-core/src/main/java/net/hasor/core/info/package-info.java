@@ -15,5 +15,6 @@
  */
 /**
  * <p>注册元信息的管理。</p>
+ * <p>{@link net.hasor.core.BindInfoBuilder BindInfoBuilder} 接口实现。</p>
  */
 package net.hasor.core.info;

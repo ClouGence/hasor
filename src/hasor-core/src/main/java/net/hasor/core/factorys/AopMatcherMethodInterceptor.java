@@ -15,15 +15,56 @@
  */
 package net.hasor.core.factorys;
 import java.lang.reflect.Method;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
+import org.more.classcode.AopInvocation;
 /**
  * 
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopMatcherMethodInterceptor extends MethodInterceptor {
-    /**匹配类型*/
-    public boolean matcher(Class<?> targetClass);
-    /**匹配方法*/
-    public boolean matcher(Method targetMethod);
+class AopMatcherMethodInterceptor implements MethodInterceptor, org.more.classcode.AopInterceptor {
+    private Matcher<Class<?>> matcherClass  = null;
+    private Matcher<Method>   matcherMethod = null;
+    private MethodInterceptor interceptor   = null;
+    //
+    public AopMatcherMethodInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
+        this.matcherClass = matcherClass;
+        this.matcherMethod = matcherMethod;
+        this.interceptor = interceptor;
+    }
+    //
+    public Matcher<Class<?>> getMatcherClass() {
+        return matcherClass;
+    }
+    public Matcher<Method> getMatcherMethod() {
+        return matcherMethod;
+    }
+    //
+    public Object invoke(AopInvocation invocation) throws Throwable {
+        return this.invoke(new ProxyAopInvocation(invocation));
+    }
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
+        return this.interceptor.invoke(invocation);
+    }
+    //
+    private static class ProxyAopInvocation implements MethodInvocation {
+        private AopInvocation invocation;
+        public ProxyAopInvocation(AopInvocation invocation) {
+            this.invocation = invocation;
+        }
+        public Method getMethod() {
+            return this.invocation.getMethod();
+        }
+        public Object[] getArguments() {
+            return this.invocation.getArguments();
+        }
+        public Object proceed() throws Throwable {
+            return this.invocation.proceed();
+        }
+        public Object getThis() {
+            return this.invocation.getThis();
+        }
+    }
 }

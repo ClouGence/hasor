@@ -22,9 +22,9 @@ import net.hasor.core.InjectMembers;
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserBean implements InjectMembers {
-    private String       userID   = null;
+    private String       userID   = "1234";
+    private String       userName = "测试用户";
     private UserTypeBean userType = null;
-    private String       userName = null;
     //
     public void doInject(AppContext appContext) {
         this.userType = appContext.getInstance(UserTypeBean.class);

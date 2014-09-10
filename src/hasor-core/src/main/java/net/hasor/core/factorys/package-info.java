@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>{@link net.hasor.core.BindInfoBuilder BindInfoBuilder} 接口实现。</p>
- * <p>为 Hasor 提供了基于  Guice、Spring、等IoC容器的集成。</p>
+ * <p>为 Hasor 提供了IoC,Aop的基础支持。</p>
  */
 package net.hasor.core.factorys;
