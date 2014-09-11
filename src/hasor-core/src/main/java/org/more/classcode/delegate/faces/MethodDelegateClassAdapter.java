@@ -42,10 +42,23 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
     //
     /**用于更新类名。*/
     public void visit(final int version, final int access, final String name, final String signature, final String superName, final String[] interfaces) {
+        //1.类名
         this.superClassName = name;
         String className = this.classConfig.getClassName();
         className = classConfig.getClassName().replace(".", "/");
-        super.visit(version, access, className, signature, name, interfaces);
+        //2.确定接口
+        Set<String> newFaces = new HashSet<String>();
+        for (String faces : interfaces) {
+            newFaces.add(faces);
+        }
+        InnerMethodDelegateDefine[] defineArrays = this.classConfig.getNewDelegateList();
+        for (InnerMethodDelegateDefine define : defineArrays) {
+            Class<?> faceType = define.getFaces();
+            newFaces.add(ASMEngineToos.replaceClassName(faceType));
+        }
+        String[] finalInterfaces = newFaces.toArray(new String[newFaces.size()]);
+        //
+        super.visit(version, access, className, signature, name, finalInterfaces);
     }
     //
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
@@ -141,9 +154,10 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
             //Object target = new InnerChainMethodDelegate("xxxx", localLoader).invoke(localMethod, this, arrayOfObject);
             mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class));
             mv.visitInsn(DUP);
-            mv.visitLdcInsn("xxxx");
+            mv.visitLdcInsn(this.classConfig.getClassName());
+            mv.visitLdcInsn(faceType.getName());
             mv.visitVarInsn(ALOAD, paramCount + 4);
-            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/ClassLoader;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
             mv.visitVarInsn(ALOAD, paramCount + 3);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, paramCount + 2);

@@ -16,6 +16,7 @@
 package org.more.classcode.delegate.faces;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.more.asm.ClassReader;
@@ -97,5 +98,24 @@ public class MethodClassConfig extends AbstractClassConfig {
         InnerMethodDelegateDefine[] newProperty = this.newDelegateMap.values()//
                 .toArray(new InnerMethodDelegateDefine[this.newDelegateMap.size()]);
         return newProperty;
+    }
+    //
+    //
+    //bytecode called.
+    private Map<String, InnerMethodDelegateDefine> $methodMapping = null;
+    private void initMapping() {
+        if (this.$methodMapping != null) {
+            return;
+        }
+        this.$methodMapping = new HashMap<String, InnerMethodDelegateDefine>();
+        InnerMethodDelegateDefine[] defineList = this.getNewDelegateList();
+        for (InnerMethodDelegateDefine mDefine : defineList) {
+            String tmName = mDefine.getFaces().getName();
+            this.$methodMapping.put(tmName, mDefine);
+        }
+    }
+    InnerMethodDelegateDefine getMethodDelegate(String delegateClassName) {
+        this.initMapping();
+        return this.$methodMapping.get(delegateClassName);
     }
 }

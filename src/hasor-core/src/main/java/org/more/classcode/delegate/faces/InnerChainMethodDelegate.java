@@ -15,20 +15,31 @@
  */
 package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
+import org.more.classcode.AbstractClassConfig;
+import org.more.classcode.MoreClassLoader;
 /**
  * 
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InnerChainMethodDelegate implements MethodDelegate {
-    private MethodDelegate propertyDelegate = null;
+    private MethodDelegate methodDelegate = null;
     //
-    public InnerChainMethodDelegate(String delegateID, ClassLoader loader) {
-        System.out.println();
+    public InnerChainMethodDelegate(String className, String delegateClassName, ClassLoader loader) {
+        if (loader instanceof MoreClassLoader) {
+            AbstractClassConfig cc = ((MoreClassLoader) loader).findClassConfig(className);
+            if (cc != null && cc instanceof MethodClassConfig) {
+                MethodClassConfig methodCC = (MethodClassConfig) cc;
+                this.methodDelegate = methodCC.getMethodDelegate(delegateClassName);
+            }
+        }
+        //
+        if (this.methodDelegate == null) {
+            throw new UnsupportedOperationException("not implemented.");
+        }
     }
     //
     public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+        return this.methodDelegate.invoke(callMethod, target, params);
     }
 }
