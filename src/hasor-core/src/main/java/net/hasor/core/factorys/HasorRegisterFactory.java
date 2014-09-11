@@ -24,9 +24,9 @@ import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import org.more.classcode.AopMatcher;
-import org.more.classcode.ClassConfig;
-import org.more.classcode.MasterClassLoader;
+import org.more.classcode.MoreClassLoader;
+import org.more.classcode.aop.AopClassConfig;
+import org.more.classcode.aop.AopMatcher;
 /**
  * 
  * @version : 2014年7月4日
@@ -49,7 +49,7 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
         //3.Build 对象。
         HasorBindInfoProviderAdapter<T> infoAdapter = (HasorBindInfoProviderAdapter<T>) bindInfo;
         try {
-            ClassConfig cc = infoAdapter.buildEngine(this.aopList);
+            AopClassConfig cc = infoAdapter.buildEngine(this.aopList);
             Class<?> newType = null;
             if (cc.hasChange() == true) {
                 newType = cc.toClass();
@@ -78,7 +78,7 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
     //
     //
     //
-    private ClassLoader                       masterLosder = new MasterClassLoader();
+    private ClassLoader                       masterLosder = new MoreClassLoader();
     private List<AopMatcherMethodInterceptor> aopList      = new ArrayList<AopMatcherMethodInterceptor>();
     protected BindInfoDefineManager createDefineManager() {
         return new AbstractBindInfoDefineManager() {
@@ -93,13 +93,13 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             super(bindingType);
             this.masterLosder = masterLosder;
         }
-        private ClassConfig engine = null;
+        private AopClassConfig engine = null;
         /**获取用于创建Bean的 Engine。*/
-        public ClassConfig buildEngine(List<AopMatcherMethodInterceptor> aopList) {
+        public AopClassConfig buildEngine(List<AopMatcherMethodInterceptor> aopList) {
             if (this.engine == null) {
                 Class<?> superType = this.getSourceType();
                 superType = (superType == null) ? this.getBindType() : superType;
-                this.engine = new ClassConfig(superType, this.masterLosder);
+                this.engine = new AopClassConfig(superType, this.masterLosder);
                 for (AopMatcherMethodInterceptor aop : aopList) {
                     if (aop.getMatcherClass().matches(superType) == false) {
                         continue;

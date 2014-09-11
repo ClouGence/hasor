@@ -1,15 +1,15 @@
-package org.more.classcode;
+package org.more.classcode.aop;
 import java.lang.reflect.Method;
 /**
  * 
  * @version : 2014年9月8日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerAopInterceptor implements AopInterceptor, AopMatcher {
+class InnerAopInterceptorDefine implements AopInterceptor, AopMatcher {
     private AopMatcher     aopMatcher     = null;
     private AopInterceptor aopInterceptor = null;
     //
-    public InnerAopInterceptor(AopMatcher aopMatcher, AopInterceptor aopInterceptor) {
+    public InnerAopInterceptorDefine(AopMatcher aopMatcher, AopInterceptor aopInterceptor) {
         this.aopMatcher = aopMatcher;
         this.aopInterceptor = aopInterceptor;
     }

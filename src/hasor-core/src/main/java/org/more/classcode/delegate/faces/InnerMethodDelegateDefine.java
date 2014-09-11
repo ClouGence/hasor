@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode.objects;
+package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
-import org.more.classcode.MethodDelegate;
-import org.more.util.BeanUtils;
 /**
- * 代理方法的空实现。
- * @version 2010-9-3
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014年9月9日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultMethodDelegate implements MethodDelegate {
-    public Object invoke(final Method callMethod, final Object target, final Object[] params) {
-        Class<?> returnType = callMethod.getReturnType();
-        return BeanUtils.getDefaultValue(returnType);
+class InnerMethodDelegateDefine implements MethodDelegate {
+    private Class<?>       faces    = null;
+    private MethodDelegate delegate = null;
+    //
+    public InnerMethodDelegateDefine(Class<?> faces, MethodDelegate delegate) {
+        this.faces = faces;
+        this.delegate = delegate;
+    }
+    public Class<?> getFaces() {
+        return this.faces;
+    }
+    public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
+        return this.delegate.invoke(callMethod, target, params);
     }
 }

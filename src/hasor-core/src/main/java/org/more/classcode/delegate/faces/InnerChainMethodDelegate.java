@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode;
+package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
 /**
- * 该类的作用是在生成的类中加入aop的支持。
- * @version 2010-9-2
+ * 
+ * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AopMatcher {
-    /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
-    public boolean matcher(Method target);
+public class InnerChainMethodDelegate implements MethodDelegate {
+    private MethodDelegate propertyDelegate = null;
+    //
+    public InnerChainMethodDelegate(String delegateID, ClassLoader loader) {
+        System.out.println();
+    }
+    //
+    public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

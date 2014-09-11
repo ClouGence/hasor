@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode;
+package org.more.classcode.delegate.property;
+import org.more.classcode.AbstractClassConfig;
+import org.more.classcode.MoreClassLoader;
 /**
  * 
  * @version : 2013-4-13
@@ -23,9 +25,12 @@ public class InnerChainPropertyDelegate implements PropertyDelegate<Object> {
     private PropertyDelegate<Object> propertyDelegate = null;
     //
     public InnerChainPropertyDelegate(String className, String propertyName, ClassLoader loader) throws NoSuchFieldException {
-        if (loader instanceof MasterClassLoader) {
-            ClassConfig config = ((MasterClassLoader) loader).findClassConfig(className);
-            this.propertyDelegate = config.getPropertyDelegate(propertyName);
+        if (loader instanceof MoreClassLoader) {
+            AbstractClassConfig cc = ((MoreClassLoader) loader).findClassConfig(className);
+            if (cc != null && cc instanceof PropertyClassConfig) {
+                PropertyClassConfig proCC = (PropertyClassConfig) cc;
+                this.propertyDelegate = proCC.getPropertyDelegate(propertyName);
+            }
         }
         //
         if (this.propertyDelegate == null) {

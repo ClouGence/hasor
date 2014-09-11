@@ -16,37 +16,55 @@
 package net.test.simple.core._14_aop;
 import java.beans.PropertyDescriptor;
 import java.io.FileOutputStream;
-import org.more.classcode.AopInterceptor;
-import org.more.classcode.AopInvocation;
-import org.more.classcode.ClassConfig;
-import org.more.classcode.objects.SimplePropertyDelegate;
+import java.io.IOException;
+import java.util.List;
+import org.more.classcode.AbstractClassConfig;
+import org.more.classcode.aop.AopClassConfig;
+import org.more.classcode.aop.AopInterceptor;
+import org.more.classcode.aop.AopInvocation;
+import org.more.classcode.delegate.faces.DefaultMethodDelegate;
+import org.more.classcode.delegate.faces.MethodClassConfig;
+import org.more.classcode.delegate.property.PropertyClassConfig;
+import org.more.classcode.delegate.property.SimplePropertyDelegate;
 /**
  * 
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClassR {
-    public static void main(String[] args) throws Exception {
-        //1.基本信息
-        ClassConfig cc = new ClassConfig(Bean.class);
-        cc.addAopInterceptor(new TestAopInterceptor());
-        cc.addProperty("name", new TestSimplePropertyDelegate(int.class));
-        //
-        Class<?> ccType = cc.toClass();
-        //
-        FileOutputStream fos = new FileOutputStream(ccType.getSimpleName() + ".class");
-        fos.write(cc.toBytes());
+    public static void write(AbstractClassConfig cc) throws IOException {
+        FileOutputStream fos = new FileOutputStream(cc.getSimpleName() + ".class");
+        fos.write(cc.buildBytes());
         fos.flush();
         fos.close();
+    }
+    //
+    public static void main(String[] args) throws Exception {
+        AopClassConfig aCC = new AopClassConfig(Bean.class);
+        aCC.addAopInterceptor(new TestAopInterceptor());
         //
+        PropertyClassConfig pCC = new PropertyClassConfig(aCC.toClass());
+        pCC.addProperty("name", new TestSimplePropertyDelegate(String.class));
+        //
+        MethodClassConfig mCC = new MethodClassConfig(pCC.toClass());
+        mCC.addDelegate(List.class, new DefaultMethodDelegate());
+        //
+        write(aCC);
+        write(pCC);
+        write(mCC);
+        //
+        Class<?> ccType = mCC.toClass();
         Bean bean = (Bean) ccType.newInstance();
         //
         bean.print(0, 0);
         //
         PropertyDescriptor pd = new PropertyDescriptor("name", ccType);
-        Object wData = pd.getWriteMethod().invoke(bean, 12);
+        Object wData = pd.getWriteMethod().invoke(bean, "new Value");
         Object rData = pd.getReadMethod().invoke(bean);
         System.out.println(rData);
+        //
+        List beanList = (List) bean;
+        beanList.set(0, new Object());
     }
 }
 class TestSimplePropertyDelegate extends SimplePropertyDelegate {

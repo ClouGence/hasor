@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode;
+package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
+import org.more.classcode.aop.AopClassConfig;
 /**
- * 当使用{@link ClassConfig}类的addDelegate方法来添加委托，添加的委托处理函数对象就是该接口对象。
- * 被委托的方法将会采用注册委托时传递的MethodDelegate接口对象作为回调对象。
+ * 当使用{@link AopClassConfig}类的addDelegate方法来添加委托，添加的委托处理函数对象就是该接口对象。
+ * 被委托的方法将会采用注册委托时传递的{@link MethodDelegate}接口对象作为回调对象。
  * @version 2010-9-3
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -27,7 +28,7 @@ public interface MethodDelegate {
      * @param callMethod 被调用的函数。
      * @param target 调用委托方法的类对象。
      * @param params 当调用方法时方法的参数，如果没有参数传入则是一个空数组。
-     * @return 返回方法执行结果，注意依照相关接口方法的返回值进行返回{@link ClassConfig}不会自动转换起格式。
+     * @return 返回方法执行结果，注意依照相关接口方法的返回值进行返回{@link AopClassConfig}不会自动转换起格式。
      * 如果方法返回类型是java基本类型请务必按照附加的接口方法返回相关返回值否则将产生类型转换异常。
      * @throws InvokeException 当调用过程中发生的异常。
      */

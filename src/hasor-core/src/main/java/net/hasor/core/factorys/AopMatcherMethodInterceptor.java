@@ -18,13 +18,13 @@ import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
-import org.more.classcode.AopInvocation;
+import org.more.classcode.aop.AopInvocation;
 /**
  * 
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-class AopMatcherMethodInterceptor implements MethodInterceptor, org.more.classcode.AopInterceptor {
+class AopMatcherMethodInterceptor implements MethodInterceptor, org.more.classcode.aop.AopInterceptor {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;

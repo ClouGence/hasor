@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode;
+package org.more.classcode.delegate.property;
 import java.lang.reflect.InvocationTargetException;
 /**
  * 
  * @version : 2014年9月9日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerPropertyDelegate implements PropertyDelegate<Object> {
+class InnerPropertyDelegateDefine implements PropertyDelegate<Object> {
     private String                   propertyName   = null;
     private boolean                  markRead       = true;
     private boolean                  markWrite      = true;
     private PropertyDelegate<Object> targetDelegate = null;
     //
-    public InnerPropertyDelegate(String propertyName, PropertyDelegate<?> targetDelegate, boolean markRead, boolean markWrite) {
+    public InnerPropertyDelegateDefine(String propertyName, PropertyDelegate<?> targetDelegate, boolean markRead, boolean markWrite) {
         this.propertyName = propertyName;
         this.markRead = markRead;
         this.markWrite = markWrite;

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode.objects;
-import org.more.classcode.PropertyDelegate;
+package org.more.classcode.delegate.property;
 import org.more.util.BeanUtils;
 /**
  * 

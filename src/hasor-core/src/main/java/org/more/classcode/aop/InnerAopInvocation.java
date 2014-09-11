@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.classcode;
+package org.more.classcode.aop;
 import java.lang.reflect.Method;
+import org.more.classcode.AbstractClassConfig;
+import org.more.classcode.MoreClassLoader;
 /**
  * 
  * @version : 2013-4-13
@@ -28,11 +30,12 @@ public class InnerAopInvocation implements AopInvocation {
     public InnerAopInvocation(String targetMethodDesc, final Method targetMethod, final AopInvocation proceedingChain) {
         Class<?> targetClass = targetMethod.getDeclaringClass();
         ClassLoader loader = targetClass.getClassLoader();
-        if (loader instanceof MasterClassLoader) {
+        if (loader instanceof MoreClassLoader) {
             String className = targetMethod.getDeclaringClass().getName();
-            ClassConfig cc = ((MasterClassLoader) loader).findClassConfig(className);
-            if (cc != null) {
-                this.interceptorDefinitions = cc.findInterceptor(targetMethodDesc);
+            AbstractClassConfig cc = ((MoreClassLoader) loader).findClassConfig(className);
+            if (cc != null && cc instanceof AopClassConfig) {
+                AopClassConfig aopCC = (AopClassConfig) cc;
+                this.interceptorDefinitions = aopCC.findInterceptor(targetMethodDesc);
             }
         }
         if (this.interceptorDefinitions == null) {

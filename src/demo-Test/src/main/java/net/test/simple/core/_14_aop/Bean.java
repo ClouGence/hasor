@@ -17,9 +17,12 @@ package net.test.simple.core._14_aop;
 //
 public class Bean {
     public String print(int i, int c) {
-        System.out.println();
+        System.out.println("--");
         return "";
     }
+    //    public String getName() {
+    //        return "Hello";
+    //    }
     //    public int doCall(int abc, Object abcc, Class classType, Date date, Long lon) {
     //        System.out.println();
     //        return abc;

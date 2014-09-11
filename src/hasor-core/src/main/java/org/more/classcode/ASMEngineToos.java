@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
 /**
- * 生成字节码时候使用的工具类，当重写{@link ClassConfig}的相关方法时候会用上此类。
+ * 生成字节码时候使用的工具类。
  * @version 2009-10-16
  * @author 赵永春 (zyc@hasor.net)
  */
-class InnerEngineToos implements Opcodes {
+public class ASMEngineToos implements Opcodes {
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
@@ -138,7 +138,7 @@ class InnerEngineToos implements Opcodes {
         } else if (classType == void.class) {
             return "V";
         } else if (classType.isArray() == true) {
-            return "[" + InnerEngineToos.toAsmType(classType.getComponentType());
+            return "[" + ASMEngineToos.toAsmType(classType.getComponentType());
         } else {
             return "L" + Type.getInternalName(classType) + ";";
         }
@@ -147,7 +147,7 @@ class InnerEngineToos implements Opcodes {
     public static String toAsmType(final Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType) {
-            returnString += InnerEngineToos.toAsmType(c);
+            returnString += ASMEngineToos.toAsmType(c);
         };
         return returnString;
     }

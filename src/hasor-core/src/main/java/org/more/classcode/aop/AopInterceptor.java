@@ -1,4 +1,4 @@
-package org.more.classcode;
+package org.more.classcode.aop;
 /**
  * Intercepts calls on an interface on its way to the target. These are nested "on top" of the target.
  * <p>
