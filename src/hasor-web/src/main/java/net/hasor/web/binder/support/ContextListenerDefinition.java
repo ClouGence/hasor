@@ -25,8 +25,8 @@ import net.hasor.web.WebAppContext;
  */
 class ContextListenerDefinition {
     private BindInfo<ServletContextListener> listenerRegister = null;
-    private ServletContextListener               listenerInstance = null;
-    private WebAppContext                        appContext       = null;
+    private ServletContextListener           listenerInstance = null;
+    private WebAppContext                    appContext       = null;
     //
     //
     public ContextListenerDefinition(final BindInfo<ServletContextListener> listenerRegister) {

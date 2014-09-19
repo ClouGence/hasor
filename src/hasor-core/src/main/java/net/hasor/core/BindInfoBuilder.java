@@ -35,10 +35,13 @@ public interface BindInfoBuilder<T> {
     /**将类型发布到一个固定的命名空间内。*/
     public void setScopeProvider(Provider<Scope> scopeProvider);
     //
+    /**设置构造参数*/
     public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider);
+    /**设置构造参数*/
     public void setInitParam(int index, Class<?> paramType, BindInfo<?> valueInfo);
-    //
+    /**添加依赖注入*/
     public void addInject(String property, Provider<?> valueProvider);
+    /**添加依赖注入*/
     public void addInject(String property, BindInfo<?> valueInfo);
     //
     public BindInfo<T> toInfo();

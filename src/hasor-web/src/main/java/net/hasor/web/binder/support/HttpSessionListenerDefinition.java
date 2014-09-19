@@ -25,8 +25,8 @@ import net.hasor.web.WebAppContext;
  */
 class HttpSessionListenerDefinition {
     private BindInfo<HttpSessionListener> listenerRegister = null;
-    private HttpSessionListener               listenerInstance = null;
-    private WebAppContext                     appContext       = null;
+    private HttpSessionListener           listenerInstance = null;
+    private WebAppContext                 appContext       = null;
     //
     public HttpSessionListenerDefinition(final BindInfo<HttpSessionListener> listenerRegister) {
         this.listenerRegister = listenerRegister;

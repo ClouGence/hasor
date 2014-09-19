@@ -17,6 +17,7 @@ package net.hasor.mvc.support;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 /**
@@ -27,13 +28,13 @@ import net.hasor.core.EventListener;
 public class RootController implements EventListener {
     private AppContext      appContext  = null;
     private MappingDefine[] invokeArray = null;
-    private boolean         init        = false;
+    private AtomicBoolean   inited      = new AtomicBoolean(false);
     //
     public void onEvent(String event, Object[] params) throws Throwable {
-        this.appContext = (AppContext) params[0];
-        if (this.init == true) {
-            return;
+        if (!this.inited.compareAndSet(false, true)) {
+            return;/*避免被初始化多次*/
         }
+        this.appContext = (AppContext) params[0];
         //1.find
         List<MappingDefine> mappingList = this.appContext.findBindingBean(MappingDefine.class);
         Collections.sort(mappingList, new Comparator<MappingDefine>() {
@@ -46,7 +47,6 @@ public class RootController implements EventListener {
             this.initDefine(define);
         }
         this.invokeArray = mappingList.toArray(new MappingDefine[mappingList.size()]);
-        this.init = true;
     }
     /**获取AppContext*/
     protected AppContext getAppContext() {

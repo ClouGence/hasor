@@ -37,8 +37,8 @@ import org.more.util.Iterators;
  */
 class ServletDefinition extends AbstractServletModuleBinding {
     private BindInfo<HttpServlet> servletRegister = null;
-    private HttpServlet               servletInstance = null;
-    private UriPatternMatcher         patternMatcher  = null;
+    private HttpServlet           servletInstance = null;
+    private UriPatternMatcher     patternMatcher  = null;
     //
     public ServletDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<HttpServlet> servletRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);

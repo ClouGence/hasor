@@ -39,7 +39,6 @@ import org.more.util.StringUtils;
 public abstract class AbstractResourceAppContext extends AbstractAppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     private URI                mainSettings    = null;
-    private AbstractAppContext parent;
     private Environment        environment;
     //
     /**设置主配置文件*/
@@ -66,9 +65,6 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
     /**获取设置的主配置文件*/
     public final URI getMainSettings() {
         return this.mainSettings;
-    }
-    public AbstractAppContext getParent() {
-        return this.parent;
     }
     /**获取环境接口。*/
     public Environment getEnvironment() {

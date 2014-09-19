@@ -42,7 +42,6 @@ public class RuntimeFilter implements Filter {
     private WebAppContext  appContext     = null;
     private FilterPipeline filterPipeline = null;
     //
-    //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     @Override
     public synchronized void init(final FilterConfig filterConfig) throws ServletException {

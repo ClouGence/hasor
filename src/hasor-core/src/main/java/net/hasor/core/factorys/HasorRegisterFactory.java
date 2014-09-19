@@ -56,16 +56,26 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             } else {
                 newType = cc.getSuperClass();
             }
-            //
-            Object targetBean = newType.newInstance();
-            if (targetBean instanceof InjectMembers) {
-                ((InjectMembers) targetBean).doInject(getAppContext());
-            }
-            return (T) targetBean;
+            return (T) createObject(newType, infoAdapter);
         } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new RuntimeException(e);
         }
     }
+    /**创建对象*/
+    protected Object createObject(Class<?> targetType, AbstractBindInfoProviderAdapter<?> bindInfo) throws Exception {
+        Object targetBean = targetType.newInstance();
+        if (targetBean instanceof InjectMembers) {
+            ((InjectMembers) targetBean).doInject(getAppContext());
+        }
+        return targetBean;
+    }
+    //
+    //
+    //
+    //
     //
     protected void configBindInfo(AbstractBindInfoProviderAdapter<Object> bindInfo, Object context) {
         if (bindInfo.getBindType().isAssignableFrom(AopMatcherMethodInterceptor.class)) {
@@ -74,10 +84,6 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             this.aopList.add(aop);
         }
     }
-    //
-    //
-    //
-    //
     private ClassLoader                       masterLosder = new MoreClassLoader();
     private List<AopMatcherMethodInterceptor> aopList      = new ArrayList<AopMatcherMethodInterceptor>();
     protected BindInfoDefineManager createDefineManager() {

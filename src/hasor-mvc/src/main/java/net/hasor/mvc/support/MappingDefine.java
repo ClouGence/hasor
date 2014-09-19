@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
@@ -43,7 +44,7 @@ public class MappingDefine {
     private Annotation[]              targetMethodAnno = null;
     private MappingInfo               mappingInfo      = null;
     private CallStrategyFactory       strategyFactory  = null;
-    private boolean                   init             = false;
+    private AtomicBoolean             inited           = new AtomicBoolean(false);
     //
     protected MappingDefine(String bindID, Method targetMethod, CallStrategyFactory strategyFactory) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
@@ -84,13 +85,12 @@ public class MappingDefine {
     }
     /**执行初始化*/
     protected void init(AppContext appContext) {
-        if (init == true) {
-            return;
+        if (!this.inited.compareAndSet(false, true)) {
+            return;/*避免被初始化多次*/
         }
         Hasor.assertIsNotNull(appContext, "appContext is null.");
         BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
         this.targetProvider = appContext.getProvider(controllerInfo);
-        this.init = true;
     }
     /**调用目标*/
     public Object invoke() throws Throwable {

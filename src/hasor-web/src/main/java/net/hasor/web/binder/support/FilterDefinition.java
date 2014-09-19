@@ -38,7 +38,7 @@ import org.more.util.Iterators;
  */
 class FilterDefinition extends AbstractServletModuleBinding {
     private BindInfo<Filter> filterRegister = null;
-    private Filter               filterInstance = null;
+    private Filter           filterInstance = null;
     //
     public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<Filter> filterRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);

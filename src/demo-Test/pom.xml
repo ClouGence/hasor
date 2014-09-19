@@ -60,13 +60,18 @@
 			<artifactId>hasor-mvc</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-RSF -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-rsf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-test</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-
 
 
 		<!-- Log -->
