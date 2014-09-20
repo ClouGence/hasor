@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.serialize;
+package net.hasor.rsf.server;
+import net.hasor.rsf.protocol.ProtocolRequest;
+import net.hasor.rsf.protocol.ProtocolResponse;
 /**
- * 序列化解码器（Decoder）
- * @version : 2014年9月19日
+ * 
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Decoder {
-    /** decode byte[] to Object */
-    public Object decode(byte[] bytes) throws Throwable;
+public interface ServerHandler {
+    /**处理RSF请求之前。*/
+    public void beforeHandler();
+    /**处理RSF请求*/
+    public ProtocolResponse handlerRequest(ProtocolRequest request);
+    /**处理RSF请求之后。*/
+    public void afterHandler();
 }

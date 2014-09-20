@@ -27,9 +27,8 @@ public class ServiceMetaData {
     private String  serviceDesc    = "";       //服务描述
     private boolean supportAsync   = false;    //是否支持异步调用
     //Consumer
-    private int     clientTimeout  = 6000;     //调用超时(6秒)
+    private int     clientTimeout  = 6000;     //调用超时（毫秒）
     private String  serializeType  = null;     //传输序列化类型
-    //
     //
     //
     /**获取发布服务的名称。*/

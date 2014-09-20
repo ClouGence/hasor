@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.client;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.Provider;
 import net.hasor.rsf.metadata.ServiceMetaData;
+import org.more.classcode.delegate.faces.MethodDelegate;
 /**
  * 远程服务消费者
  * @version : 2014年9月19日
@@ -26,6 +28,7 @@ public class ConsumerProvider<T> implements Provider<T>, InitLife {
     private Class<T>        serviceInterface = null;
     private ServiceMetaData metaData         = new ServiceMetaData();
     private AtomicBoolean   inited           = new AtomicBoolean(false);
+    private T               serviceWarp      = null;
     //
     /**获取服务接口类型*/
     public Class<T> getServiceInterface() {
@@ -51,15 +54,6 @@ public class ConsumerProvider<T> implements Provider<T>, InitLife {
     public void setSerializeType(String serializeType) {
         this.metaData.setSerializeType(serializeType);
     }
-    //    public String getCallBack() {
-    //        return callBack;
-    //    }
-    //    public void setCallBack(String callBack) {
-    //        this.callBack = callBack;
-    //    }
-    //
-    //
-    //
     //
     //
     /**初始化服务*/
@@ -67,10 +61,24 @@ public class ConsumerProvider<T> implements Provider<T>, InitLife {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
-        //
+        /*构建RemoteTicket对象*/
+        RemoteTicket remoteTicket = RemoteTicket.getWrapper(this.serviceInterface);
+        remoteTicket.initTicket(this.metaData);
+        
+        
+        this.metaData
     }
     //
     public T get() {
+        if (this.serviceWarp == null) {
+            throw new java.lang.IllegalStateException("Service Uninitialized.");
+        }
+        return this.serviceWarp;
+    }
+}
+//
+class ObjectWrapper implements MethodDelegate {
+    public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
         // TODO Auto-generated method stub
         return null;
     }

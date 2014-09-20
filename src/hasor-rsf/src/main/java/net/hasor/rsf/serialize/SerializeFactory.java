@@ -15,11 +15,18 @@
  */
 package net.hasor.rsf.serialize;
 /**
- * 序列化解码器（Decoder）
- * @version : 2014年9月19日
+ * 序列化工厂
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Decoder {
-    /** decode byte[] to Object */
-    public Object decode(byte[] bytes) throws Throwable;
+public interface SerializeFactory {
+    /**获取序列化解码器（Decoder）*/
+    public Decoder getDecoder(String codeName);
+    /**获取序列化编码器（Encoder）*/
+    public Encoder getEncoder(String codeName);
+    //
+    /**注册序列化解码器（Decoder）*/
+    public void registerDecoder(String codeName, Decoder Decoder);
+    /**注册序列化编码器（Encoder）*/
+    public void registerEncoder(String codeName, Encoder Encoder);
 }

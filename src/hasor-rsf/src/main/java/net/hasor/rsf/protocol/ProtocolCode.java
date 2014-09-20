@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.serialize;
+package net.hasor.rsf.protocol;
+import io.netty.buffer.ByteBuf;
 /**
- * 序列化解码器（Decoder）
- * @version : 2014年9月19日
+ * 定义了RSF传输协议的编码解码入口。
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Decoder {
-    /** decode byte[] to Object */
-    public Object decode(byte[] bytes) throws Throwable;
+public interface ProtocolCode {
+    /**解码*/
+    public void decode(ByteBuf buf) throws Throwable;
+    /**编码*/
+    public void encode(ByteBuf buf) throws Throwable;
 }

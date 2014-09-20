@@ -16,7 +16,6 @@
 package net.hasor.rsf.serialize.coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import net.hasor.rsf.serialize.Decoder;
@@ -28,7 +27,7 @@ import net.hasor.rsf.serialize.Encoder;
  */
 public class Java_DecoderEncoder implements Decoder, Encoder {
     //
-    public byte[] encode(Object object) throws IOException {
+    public byte[] encode(Object object) throws Throwable {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ObjectOutputStream output = new ObjectOutputStream(byteArray);
         output.writeObject(object);
@@ -37,7 +36,7 @@ public class Java_DecoderEncoder implements Decoder, Encoder {
         return byteArray.toByteArray();
     }
     //
-    public Object decode(byte[] bytes) throws IOException {
+    public Object decode(byte[] bytes) throws Throwable {
         ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
         Object resultObject = objectIn.readObject();
         objectIn.close();

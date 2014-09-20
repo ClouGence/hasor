@@ -15,8 +15,10 @@
  */
 package net.hasor.rsf.serialize.coder;
 import java.io.IOException;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.Encoder;
+import com.alibaba.fastjson.JSON;
 /**
  * 
  * @version : 2014年9月19日
@@ -24,8 +26,8 @@ import net.hasor.rsf.serialize.Encoder;
  */
 public class FastJson_DecoderEncoder implements Decoder, Encoder {
     public byte[] encode(Object object) throws IOException {
-        String text = JSON.json(object);
-        return text.getBytes(RemotingConstants.DEFAULT_CHARSET);
+        String text = JSON.toJSONString(object);
+        return text.getBytes(RSFConstants.DEFAULT_CHARSET);
     }
     //
     public Object decode(byte[] bytes) throws IOException {

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize;
-import java.io.IOException;
 /**
- * 序列化编码器（Decoder）
+ * 序列化编码器（Encoder）
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Encoder {
     /** Encode Object to byte[] */
-    public byte[] encode(Object object) throws IOException;
+    public byte[] encode(Object object) throws Throwable;
 }
