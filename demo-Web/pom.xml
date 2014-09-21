@@ -46,13 +46,13 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-mvc-web</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-db</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.2</version>
 		</dependency>
 		<!-- Hasor-RSF -->
 		<dependency>
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-test</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.2</version>
 		</dependency>
 
 

@@ -27,7 +27,7 @@
 
 	<properties>
 		<gpg.executable>gpg2</gpg.executable>
-		<scm.pushVersion>0.0.9</scm.pushVersion>
+		<scm.pushVersion>0.0.10</scm.pushVersion>
 	</properties>
 
 	<!-- SCM -->
@@ -35,7 +35,7 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
-		<tag>Release.Hasor-0.0.9</tag>
+		<tag>Release.Hasor-0.0.10</tag>
 	</scm>
 
 	<!-- 构建描述 -->
@@ -80,7 +80,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
-					<aggregate>true</aggregate> 
+					<aggregate>true</aggregate>
 					<excludePackageNames>
 						org.more.*
 					</excludePackageNames>
@@ -166,7 +166,7 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-mvc-web</module>
-		<!-- module>hasor-rsf</module -->
+		<module>hasor-rsf</module>
 		<!-- module>hasor-security</module -->
 		<!-- module>hasor-quick</module -->
 	</modules>
