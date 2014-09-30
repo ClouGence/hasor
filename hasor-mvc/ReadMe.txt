@@ -11,3 +11,10 @@ Strategy机制：
 Result特性：
 	  result 特性是通过 MVC 策略机制扩展出来的一种特殊功能，可以当作插件看待。该特性允许控制器在
 	调用结束返回时，额外对返回值进行特殊处理。
+
+Web：
+	  Web扩展，专注于Web上提供MVC功能，支持 restful 特性。
+	@Any、@AttributeParam、@CookieParam、@Get、@Head、@HeaderParam、@HttpMethod、@Options
+	@Path、@PathParam、@Post、@Produces、@Put、@QueryParam 这些注解是由这个插件提供的。
+	---Result 扩展---
+	  @Forword、@Include、@Json、@Redirect 就是它提供的，开发者还可以自己另外自定义扩展。
