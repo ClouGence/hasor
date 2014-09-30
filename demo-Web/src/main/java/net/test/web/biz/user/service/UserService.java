@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 package net.test.web.biz.user.service;
+import net.hasor.core.AppContext;
+import net.hasor.core.InjectMembers;
+import net.test.web.biz.user.dao.UserDao;
 /**
  * 服务层类。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserService {}
+public class UserService implements InjectMembers {
+    private UserDao userDao = null;
+    //
+    public void doInject(AppContext appContext) {
+        this.userDao = appContext.getInstance(UserDao.class);
+    }
+}

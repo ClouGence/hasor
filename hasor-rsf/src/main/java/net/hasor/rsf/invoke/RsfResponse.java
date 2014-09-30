@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.metadata;
+package net.hasor.rsf.invoke;
+import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.ProtocolRequest;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -21,11 +22,11 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ReturnMetaData {
+public class RsfResponse {
     public ServiceMetaData getServiceMetaData() {
         return null;
     }
-    public InvokeMetaData getInvokeMetaData() {
+    public RsfRequest getInvokeMetaData() {
         // TODO Auto-generated method stub
         return null;
     }

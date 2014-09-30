@@ -1,11 +1,16 @@
-﻿===== Hasor-Core v0.0.9
+﻿===== Hasor-Core v0.0.10
+* 改进:
+    01.修复当程序工作在特殊 ClassLoader 下例如 （Web容器中）时，MoreClassLoader类导致 Class 重复加载问题。
+
+===== Hasor-Core v0.0.9
+* 新增:
+    01.Hasor 的依赖注入使用 InjectMembers接口。
 * 改进:
     01.优化 AppContext 接口实现类的层次关系。
     02.AppContext，不再支持 addModule 这种形式添加模块，改为通过 start 方法传入。
     03.AppContext，不在支持 getParent()方法。
     04.context部分重构，精简了设计。
     05.Hasor 不再依赖 Guice or Spring。
-    06.Hasor 的依赖注入使用 InjectMembers接口。
 
 ===== Hasor-Core v0.0.8
 * 新增:

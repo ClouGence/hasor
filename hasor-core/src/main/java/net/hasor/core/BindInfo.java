@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * 
+ * 表示一个 bean 的配置信息。
  * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */

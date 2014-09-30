@@ -22,7 +22,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import org.more.util.StringUtils;
 /**
- * 
+ * 用于表示一个 Hasor 的 bean 定义信息，同时实现了 {@link BindInfoBuilder} 接口。可以用于配置 bean 。
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -80,7 +80,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuil
     public void setCustomerProvider(final Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
     }
-    /***/
+    /**获取 {@link #setCustomerProvider(Provider)} 方法设置的 Provider 对象。*/
     public Provider<T> getCustomerProvider() {
         return this.customerProvider;
     }

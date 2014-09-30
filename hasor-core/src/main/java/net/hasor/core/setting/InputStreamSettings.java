@@ -22,9 +22,10 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
 /***
- * 传入InputStream的方式获取Settings接口的支持。
+ * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */

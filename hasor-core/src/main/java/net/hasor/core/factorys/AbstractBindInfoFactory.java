@@ -23,12 +23,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
+import net.hasor.core.InjectMembers;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.util.ArrayUtils;
 import org.more.util.BeanUtils;
+import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 /**
  * RegisterFactory接口的默认实现，包含了一些检查过程。
@@ -61,6 +63,14 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppCon
         return new AbstractBindInfoDefineManager() {};
     }
     //
+    /**创建对象*/
+    protected <T> T createObject(Class<T> targetType) throws Exception {
+        T targetBean = targetType.newInstance();
+        if (targetBean instanceof InjectMembers) {
+            ((InjectMembers) targetBean).doInject(getAppContext());
+        }
+        return targetBean;
+    }
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(final Class<T> oriType) {
         if (oriType == null) {
@@ -77,9 +87,9 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppCon
                 Class<?> comType = oriType.getComponentType();
                 return (T) Array.newInstance(comType, 0);
             }
-            return oriType.newInstance();
+            return this.createObject(oriType);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw ExceptionUtils.toRuntimeException(e);
         }
     }
     /**创建 {@link BindInfo}所表示的那个类型。

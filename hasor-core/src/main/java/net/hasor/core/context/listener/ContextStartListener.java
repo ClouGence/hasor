@@ -21,8 +21,8 @@ import net.hasor.core.context.AbstractAppContext;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface ContextStartListener {
-    /**开始进入容器启动过程.*/
+    /**开始进入容器启动过程。*/
     public void doStart(AbstractAppContext appContext);
-    /**容器启动完成*/
+    /**容器启动完成。*/
     public void doStartCompleted(AbstractAppContext appContext);
 }

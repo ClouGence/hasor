@@ -37,6 +37,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractResourceAppContext extends AbstractAppContext {
+    /**默认配置文件。*/
     public static final String DefaultSettings = "hasor-config.xml";
     private URI                mainSettings    = null;
     private Environment        environment;
@@ -103,14 +104,14 @@ public abstract class AbstractResourceAppContext extends AbstractAppContext {
     //
     //
     private Provider<BindInfoFactory> factoryProvider = null;
-    /**设置一个RegisterFactory实例对象*/
+    /**设置一个 {@link BindInfoFactory} 实例对象。*/
     protected void setBindInfoFactory(final Provider<BindInfoFactory> factoryProvider) {
         if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");
         }
         this.factoryProvider = factoryProvider;
     }
-    /**设置一个RegisterFactory实例对象*/
+    /**设置一个 {@link BindInfoFactory} 实例对象。*/
     protected void setBindInfoFactory(final BindInfoFactory bindInfoFactory) {
         if (this.isStart() == true) {
             throw new IllegalStateException("context is started.");

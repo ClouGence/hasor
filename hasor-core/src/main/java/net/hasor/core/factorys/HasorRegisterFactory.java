@@ -20,21 +20,25 @@ import java.util.List;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
-import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.classcode.MoreClassLoader;
 import org.more.classcode.aop.AopClassConfig;
 import org.more.classcode.aop.AopMatcher;
+import org.more.util.ExceptionUtils;
 /**
  * 
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorRegisterFactory extends AbstractBindInfoFactory {
+    /**创建对象*/
+    protected <T> T createObject(Class<T> newType, HasorBindInfoProviderAdapter<T> infoAdapter) throws Exception {
+        return super.createObject(newType);
+    }
     public <T> T getInstance(BindInfo<T> bindInfo) {
-        //1.可能存在的 CustomerProvider。
+        //1.可能存在的 CustomerProvider。 
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
             AbstractBindInfoProviderAdapter<T> adapter = (AbstractBindInfoProviderAdapter<T>) bindInfo;
             Provider<T> provider = adapter.getCustomerProvider();
@@ -56,21 +60,10 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             } else {
                 newType = cc.getSuperClass();
             }
-            return (T) createObject(newType, infoAdapter);
+            return (T) createObject((Class<T>) newType, infoAdapter);
         } catch (Exception e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }
-            throw new RuntimeException(e);
+            throw ExceptionUtils.toRuntimeException(e);
         }
-    }
-    /**创建对象*/
-    protected Object createObject(Class<?> targetType, AbstractBindInfoProviderAdapter<?> bindInfo) throws Exception {
-        Object targetBean = targetType.newInstance();
-        if (targetBean instanceof InjectMembers) {
-            ((InjectMembers) targetBean).doInject(getAppContext());
-        }
-        return targetBean;
     }
     //
     //

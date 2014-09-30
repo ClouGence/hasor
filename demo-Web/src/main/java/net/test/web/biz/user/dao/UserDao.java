@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package net.test.web.biz.user.dao;
+import net.test.web.biz.user.entity.UserBean;
 /**
  * Dao层类
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserDao {}
+public class UserDao {
+    public void createUser(UserBean user) {
+        
+    }
+}

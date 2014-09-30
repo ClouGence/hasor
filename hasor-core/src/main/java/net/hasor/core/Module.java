@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * Hasor模块，该方法中定义了模块生命周期。
+ * Hasor模块。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */

@@ -21,7 +21,7 @@ import java.util.Set;
 import net.hasor.core.Hasor;
 import org.more.util.map.DecSequenceMap;
 /***
- * 基本支持。
+ * 继承自 {@link AbstractSettings} 类，提供了命名空间方面的支持。
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */

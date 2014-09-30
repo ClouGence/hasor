@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 /**
- * 
+ * 默认的AppContext 实现类，继承自{@link AbstractResourceAppContext}。
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */

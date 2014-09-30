@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
         HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
         String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString)) {
-            return null;
+            return Collections.EMPTY_MAP;
         }
         //
         queryParamLocal = new HashMap<String, List<String>>();

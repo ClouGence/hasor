@@ -27,7 +27,7 @@ import net.hasor.core.EventListener;
  */
 public class RootController implements EventListener {
     private AppContext      appContext  = null;
-    private MappingDefine[] invokeArray = null;
+    private MappingDefine[] invokeArray = new MappingDefine[0];
     private AtomicBoolean   inited      = new AtomicBoolean(false);
     //
     public void onEvent(String event, Object[] params) throws Throwable {
@@ -46,7 +46,10 @@ public class RootController implements EventListener {
         for (MappingDefine define : mappingList) {
             this.initDefine(define);
         }
-        this.invokeArray = mappingList.toArray(new MappingDefine[mappingList.size()]);
+        MappingDefine[] defineArrays = mappingList.toArray(new MappingDefine[mappingList.size()]);
+        if (defineArrays != null) {
+            this.invokeArray = defineArrays;
+        }
     }
     /**获取AppContext*/
     protected AppContext getAppContext() {
@@ -54,7 +57,9 @@ public class RootController implements EventListener {
     }
     /**初始化 {@link MappingDefine}*/
     protected void initDefine(MappingDefine define) {
-        define.init(this.appContext);
+        if (define != null) {
+            define.init(this.appContext);
+        }
     }
     /**查找符合路径的 {@link MappingDefine}*/
     public final MappingDefine findMapping(String controllerPath) {
@@ -76,6 +81,9 @@ public class RootController implements EventListener {
     }
     /**匹配策略*/
     protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
+        if (atInvoke == null) {
+            return false;
+        }
         return atInvoke.matchingMapping(controllerPath);
     }
 }

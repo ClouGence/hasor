@@ -34,6 +34,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
+    /**获取一个 Map，该Map中保存了所有配置信息。*/
     protected abstract Map<String, Object> getSettingsMap();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     @Override

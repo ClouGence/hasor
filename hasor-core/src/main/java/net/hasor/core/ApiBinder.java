@@ -19,9 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Set;
 /**
  * Hasor的核心接口，主要用于收集绑定配置信息。<p>
- *
- * Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>方法 {@link ApiBinder#configModule()} ,会返回一个接口用于配置当前模块依赖情况。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -30,21 +27,21 @@ public interface ApiBinder extends EventContext {
     public Settings getSettings();
     /**获取环境接口。*/
     public Environment getEnvironment();
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
+    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）。*/
     public Set<Class<?>> findClass(Class<?> featureType);
     /**注册一个需要 AppContextAware 的类。该接口会在 AppContext 启动后第一时间注入 AppContext。*/
     public <T extends AppContextAware> T autoAware(T aware);
-    /**安装其它插件*/
+    /**安装其它插件。*/
     public void installModule(Module module) throws Throwable;
     //
     /*----------------------------------------------------------------------------------------Aop*/
-    /**配置Aop，表达式格式为*/
+    /**配置Aop，表达式格式为“<code>&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>”。*/
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
-    /**配置Aop*/
+    /**配置Aop。*/
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
     /***/
     public static interface Matcher<T> {
-        /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
+        /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
         public boolean matches(T target);
     }
     //
@@ -52,55 +49,55 @@ public interface ApiBinder extends EventContext {
     /** */
     public <T> NamedBindingBuilder<T> bindType(Class<T> type);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see #bindingType(Class) */
+     * @see #bindType(Class) */
     public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see #bindingType(Class) */
+     * @see #bindType(Class) */
     public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上。可以通过AppContext使用绑定的类型重新获取绑定的对象。
-     * @see #bindingType(Class) */
+     * @see #bindType(Class) */
     public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindingType(Class)*/
+     * @see #bindType(Class) */
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindingType(String, Class)*/
+     * @see #bindType(String, Class) */
     public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindingType(String, Class)*/
+     * @see #bindType(String, Class) */
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindingType(String, Class)*/
+     * @see #bindType(String, Class) */
     public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider);
     //
     /*--------------------------------------------------------------------------------------Faces*/
-    /**给绑定起个名字*/
+    /**给绑定起个名字。*/
     public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
-        /**绑定一个名称*/
+        /**绑定一个名称。*/
         public LinkedBindingBuilder<T> nameWith(String name);
-        /**随机取一个不重复的名字*/
+        /**随机取一个不重复的名字。*/
         public LinkedBindingBuilder<T> uniqueName();
-        /**设置一个ID标识符*/
+        /**设置一个ID标识符。*/
         public NamedBindingBuilder<T> idWith(String idString);
     }
-    /**处理类型和实现的绑定*/
+    /**处理类型和实现的绑定。*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
-        /**为绑定设置一个实现类*/
+        /**为绑定设置一个实现类。*/
         public InjectPropertyBindingBuilder<T> to(Class<? extends T> implementation);
-        /**为绑定设置一个实例*/
+        /**为绑定设置一个实例。*/
         public MetaDataBindingBuilder<T> toInstance(T instance);
-        /**为绑定设置一个Provider*/
+        /**为绑定设置一个 {@link Provider}。*/
         public LifeBindingBuilder<T> toProvider(Provider<T> provider);
-        /**为绑定设置一个构造方法*/
+        /**为绑定设置一个构造方法。*/
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
-    /**构造方法依赖注入*/
+    /**构造方法依赖注入。*/
     public interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
-        /**启用自动装配*/
+        /**启用自动装配。*/
         public InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
-        /**启用自动装配*/
+        /**启用自动装配。*/
         public InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
-        /**启用自动装配*/
+        /**启用自动装配。*/
         public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider);
     }
     /**属性依赖注入*/
@@ -121,18 +118,18 @@ public interface ApiBinder extends EventContext {
     }
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends MetaDataBindingBuilder<T> {
-        /**注册为单例*/
+        /**注册为单例。*/
         public MetaDataBindingBuilder<T> asEagerSingleton();
-        /**设施Scope*/
+        /**设置Scope。*/
         public MetaDataBindingBuilder<T> toScope(Scope scope);
-        /**设施Scope*/
+        /**设置Scope。*/
         public MetaDataBindingBuilder<T> toScope(Provider<Scope> scope);
     }
     /**绑定元信息*/
     public interface MetaDataBindingBuilder<T> {
-        /**获取元信息。*/
+        /**设置元信息。*/
         public MetaDataBindingBuilder<T> metaData(String key, Object value);
-        /***/
+        /**转换为 {@link BindInfo} 接口对象。*/
         public BindInfo<T> toInfo();
     }
 }

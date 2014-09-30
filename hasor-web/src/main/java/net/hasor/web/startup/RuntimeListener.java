@@ -26,6 +26,7 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebStandardAppContext;
 import org.more.util.ContextClassLoaderLocal;
+import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 /**
  * 
@@ -75,10 +76,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             RuntimeListener.LocalServletContext.set(servletContextEvent.getServletContext());
             RuntimeListener.LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }
-            throw new RuntimeException(e);
+            throw ExceptionUtils.toRuntimeException(e);
         }
         //2.获取SessionListenerPipeline
         this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);

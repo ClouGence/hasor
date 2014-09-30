@@ -66,6 +66,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             if (this.appContext == null)
                 throw new NullPointerException("HasorFactory.createAppContext return null.");
         } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new InitializationError(e);
         }
     }
@@ -75,17 +78,20 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
         //1.获取带有 @Test 注解的方法
         List<FrameworkMethod> toRunMethodList = super.computeTestMethods();
         //2.检查是否Test方法中同时带有DaemonThread注解的方法。
-        for (FrameworkMethod method : toRunMethodList)
-            if (method.getAnnotation(DaemonThread.class) != null)
+        for (FrameworkMethod method : toRunMethodList) {
+            if (method.getAnnotation(DaemonThread.class) != null) {
                 throw new IllegalStateException("test method cannot be used at the same time, @Test, @DaemonThread");
+            }
+        }
         //3.获取测试方法上的 @Order 注解，并对所有的测试方法重新排序
         Collections.sort(toRunMethodList, new Comparator<FrameworkMethod>() {
             @Override
             public int compare(final FrameworkMethod m1, final FrameworkMethod m2) {
                 TestOrder o1 = m1.getAnnotation(TestOrder.class);
                 TestOrder o2 = m2.getAnnotation(TestOrder.class);
-                if (o1 == null || o2 == null)
+                if (o1 == null || o2 == null) {
                     return 0;
+                }
                 return o1.value() - o2.value();
             }
         });
@@ -109,8 +115,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             public void evaluate() throws Throwable {
                 try {
                     /*A.启动监控线程*/
-                    for (Thread thread : daemonThreads)
+                    for (Thread thread : daemonThreads) {
                         thread.start();
+                    }
                     invokerStatement.evaluate();
                 } finally {
                     /*b.终止监控线程*/
@@ -126,8 +133,9 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Object createTest() throws Exception {
         Object testUnit = this.appContext.getInstance(this.typeRegister);
-        if (testUnit != null && testUnit instanceof AppContextAware)
+        if (testUnit != null && testUnit instanceof AppContextAware) {
             ((AppContextAware) testUnit).setAppContext(this.appContext);
+        }
         return testUnit;
     }
     //
@@ -143,9 +151,11 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
         public void run() {
             List<Object> args = new ArrayList<Object>();
             Class<?>[] params = this.method.getMethod().getParameterTypes();
-            if (params != null)
-                for (Class<?> param : params)
+            if (params != null) {
+                for (Class<?> param : params) {
                     args.add(BeanUtils.getDefaultValue(param));
+                }
+            }
             try {
                 this.method.invokeExplosively(this.targetObject, args.toArray());
             } catch (Throwable e) {

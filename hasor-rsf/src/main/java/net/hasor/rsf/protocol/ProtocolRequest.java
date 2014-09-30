@@ -15,8 +15,7 @@
  */
 package net.hasor.rsf.protocol;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.general.RSFConstants;
-import net.hasor.rsf.metadata.InvokeMetaData;
+import net.hasor.rsf.invoke.RsfRequest;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.util.ByteUtils;
@@ -32,7 +31,6 @@ public class ProtocolRequest implements ProtocolCode {
     private DataField    serviceVersion = new DataField();
     private DataField    targetMethod   = new DataField();
     private DataField    serializeType  = new DataField();
-    private int          clientTimeout  = RSFConstants.ClientTimeout;
     private ParamField[] paramArrays    = new ParamField[0];
     //
     /**获取协议版本*/
@@ -69,7 +67,7 @@ public class ProtocolRequest implements ProtocolCode {
     }
     /**调用超时时间（毫秒）*/
     public int getClientTimeout() {
-        return this.clientTimeout;
+        return this.head.getClientTimeout();
     }
     //
     public void decode(ByteBuf buf) throws Throwable {
@@ -81,13 +79,7 @@ public class ProtocolRequest implements ProtocolCode {
         this.targetMethod.decode(buf);
         this.serializeType.decode(buf);
         //
-        int clientTimeout = buf.readBytes(4).readInt();
-        if (clientTimeout == 0) {
-            clientTimeout = RSFConstants.ClientTimeout;
-        }
-        this.clientTimeout = clientTimeout;
-        //
-        int paramCount = buf.readBytes(2).readInt();
+        int paramCount = buf.readBytes(2).readShort();
         this.paramArrays = new ParamField[paramCount];
         String serializeType = this.serializeType.getValue();
         for (int i = 0; i < paramCount; i++) {
@@ -104,9 +96,6 @@ public class ProtocolRequest implements ProtocolCode {
         this.targetMethod.encode(buf);
         this.serializeType.encode(buf);
         //
-        byte[] clientTimeoutBytes = ByteUtils.toByteArray(this.clientTimeout, 4);
-        buf.writeBytes(clientTimeoutBytes);
-        //
         int paramCount = this.paramArrays.length;
         byte[] paramCountBytes = ByteUtils.toByteArray(paramCount, 2);
         buf.writeBytes(paramCountBytes);
@@ -116,7 +105,7 @@ public class ProtocolRequest implements ProtocolCode {
     }
     //
     /**根据 {@link ServiceMetaData} 描述信息创建一个remote请求对象。*/
-    public static ProtocolRequest generationRequest(InvokeMetaData invokeMetaData) throws Throwable {
+    public static ProtocolRequest generationRequest(RsfRequest invokeMetaData) throws Throwable {
         ServiceMetaData metaData = invokeMetaData.getServiceMetaData();
         ProtocolRequest request = new ProtocolRequest();
         //
@@ -126,7 +115,6 @@ public class ProtocolRequest implements ProtocolCode {
         //
         request.targetMethod.setValue(invokeMetaData.getMethod());
         request.serializeType.setValue(metaData.getSerializeType());
-        request.clientTimeout = metaData.getClientTimeout();
         //
         Class<?>[] paramTypes = invokeMetaData.getParameterTypes();
         Object[] paramObjects = invokeMetaData.getParameterObjects();

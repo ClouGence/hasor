@@ -17,6 +17,7 @@ package net.hasor.rsf.protocol;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.general.RSFConstants;
 import org.more.util.ByteUtils;
+import org.more.util.IntegerUtils;
 /**
  * RSF协议头
  * @version : 2014年9月20日
@@ -32,8 +33,7 @@ public class Head implements ProtocolCode {
     }
     //
     private byte version    = 0; // 1Byte
-    private int  requestID  = 0; // 3Byte
-    private byte info       = 0; // 1Byte
+    private int  requestID  = 0; // 4Byte
     private int  dataLength = 0; // 3Byte
     //
     public Head() {
@@ -60,6 +60,14 @@ public class Head implements ProtocolCode {
     public void setRequestID(int requestID) {
         this.requestID = requestID;
     }
+    /**获取请求超时时间*/
+    public int getClientTimeout() {
+        return this.clientTimeout;
+    }
+    /**设置请求超时时间*/
+    public void setClientTimeout(int clientTimeout) {
+        this.clientTimeout = clientTimeout;
+    }
     /**请求数据长度*/
     public int getDataLength() {
         return this.dataLength;
@@ -74,11 +82,16 @@ public class Head implements ProtocolCode {
         //1.version
         this.version = buf.readByte();
         //2.requestID
-        this.requestID = buf.readBytes(3).readInt();
+        this.requestID = IntegerUtils.toInt(buf.readBytes(3).array());
         //3.info
         this.info = buf.readByte();
-        //4.dataLength
-        this.dataLength = buf.readBytes(3).readInt();
+        //4.clientTimeout
+        this.clientTimeout = IntegerUtils.toInt(buf.readBytes(3).array());
+        if (this.clientTimeout == 0) {
+            this.clientTimeout = RSFConstants.ClientTimeout;
+        }
+        //5.dataLength
+        this.dataLength = IntegerUtils.toInt(buf.readBytes(3).array());
     }
     public void encode(ByteBuf buf) throws Throwable {
         //1.version
@@ -87,7 +100,9 @@ public class Head implements ProtocolCode {
         buf.writeBytes(ByteUtils.toByteArray(this.requestID, 3));
         //3.info
         buf.writeByte(this.info);
-        //4.dataLength 
+        //4.clientTimeout
+        buf.writeBytes(ByteUtils.toByteArray(this.clientTimeout, 3));
+        //5.dataLength
         buf.writeBytes(ByteUtils.toByteArray(this.dataLength, 3));
     }
 }

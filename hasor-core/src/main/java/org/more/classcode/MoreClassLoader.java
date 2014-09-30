@@ -27,7 +27,7 @@ public class MoreClassLoader extends ClassLoader {
     private Map<String, AbstractClassConfig> classMap = new ConcurrentHashMap<String, AbstractClassConfig>();
     //
     public MoreClassLoader() {
-        //
+        super(Thread.currentThread().getContextClassLoader());
     }
     public MoreClassLoader(ClassLoader parentLoader) {
         super(parentLoader);
@@ -38,11 +38,15 @@ public class MoreClassLoader extends ClassLoader {
     }
     //
     protected final Class<?> findClass(final String className) throws ClassNotFoundException {
-        if (this.classMap.containsKey(className) == true) {
-            byte[] bs = this.classMap.get(className).getBytes();
-            return this.defineClass(className, bs, 0, bs.length);
+        try {
+            return super.findClass(className);
+        } catch (ClassNotFoundException e) {
+            if (this.classMap.containsKey(className) == true) {
+                byte[] bs = this.classMap.get(className).getBytes();
+                return this.defineClass(className, bs, 0, bs.length);
+            }
+            throw e;
         }
-        return super.findClass(className);
     }
     public InputStream getResourceAsStream(final String classResource) {
         if (classResource.endsWith(".class")) {

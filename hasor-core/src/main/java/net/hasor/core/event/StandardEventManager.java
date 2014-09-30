@@ -60,11 +60,11 @@ public class StandardEventManager implements EventContext {
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
-    /**获取Setting接口对象*/
+    /**获取{@link Setting}接口对象*/
     public Settings getSettings() {
         return this.settings;
     }
-    /**获取执行事件使用的ScheduledExecutorService接口对象。*/
+    /**获取执行事件使用的{@link ScheduledExecutorService}接口对象。*/
     protected ScheduledExecutorService getExecutorService() {
         return this.executorService;
     }
@@ -153,7 +153,6 @@ public class StandardEventManager implements EventContext {
         } else {
             //异步的
             this.executorService.submit(new Runnable() {
-                @Override
                 public void run() {
                     StandardEventManager.this.executeEvent(event);
                 }

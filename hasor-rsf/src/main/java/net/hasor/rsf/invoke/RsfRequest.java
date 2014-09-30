@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.metadata;
+package net.hasor.rsf.invoke;
+import java.lang.reflect.Method;
+import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.ProtocolRequest;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -21,12 +23,23 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InvokeMetaData {
+public class RsfRequest {
+    private ServiceMetaData serviceMD     = null;
+    private Method          targetMethod  = null;
+    private ProtocolRequest requestObject = null;
+    //
+    //
+    //
+    public RsfRequest(ServiceMetaData serviceMetaData, Method targetMethod) throws Throwable {
+        this.serviceMD = serviceMetaData;
+        this.targetMethod = targetMethod;
+        this.requestObject = ProtocolRequest.generationRequest(this);
+    }
     public ServiceMetaData getServiceMetaData() {
-        return null;
+        return this.serviceMD;
     }
     public ProtocolRequest getRequest() {
-        return null;
+        return this.requestObject;
     }
     public SerializeFactory getSerializeFactory() {
         // TODO Auto-generated method stub
@@ -35,15 +48,11 @@ public class InvokeMetaData {
     //
     //
     public String getMethod() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.targetMethod.getName();
     }
     public Class<?>[] getParameterTypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.targetMethod.getParameterTypes();
     }
-    //
-    //
     public Object[] getParameterObjects() {
         // TODO Auto-generated method stub
         return null;

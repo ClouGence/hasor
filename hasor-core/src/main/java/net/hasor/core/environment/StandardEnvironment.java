@@ -24,12 +24,12 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import org.more.util.ResourcesUtils;
 /**
- * {@link Environment}接口实现类。
+ * {@link Environment}接口实现类，继承自{@link AbstractEnvironment}。
  * @version : 2013-9-11
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    //子类需要自己调用initEnvironment方法初始化。
+    /**子类需要自己调用{@link #initEnvironment()}方法初始化。*/
     protected StandardEnvironment() {}
     //
     public StandardEnvironment(final String mainSettings) throws IOException, URISyntaxException {

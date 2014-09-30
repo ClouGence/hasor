@@ -1,6 +1,10 @@
-﻿===== Hasor-MVC v0.0.1
+﻿===== Hasor-MVC v0.0.2
+* 修正:
+    01.修正 RootController 修正其空指针异常问题，该问题是由于初始化时无任何mvc控制器而引发。
+
+===== Hasor-MVC v0.0.1
 * 新增:
-    1.迁移 controller、result 插件。
-    2.增加 around 功能，用作 Action 拦截器。
-    3.Hasor-MVC 可以在 非Web 环境下提供 MVC 功能。
-    4.支持 Action 返回值自定义处理。
+    01.迁移 controller、result 插件。
+    02.增加 around 功能，用作 Action 拦截器。
+    03.Hasor-MVC 可以在 非Web 环境下提供 MVC 功能。
+    04.支持 Action 返回值自定义处理。

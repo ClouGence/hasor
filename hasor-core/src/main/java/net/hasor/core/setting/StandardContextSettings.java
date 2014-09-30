@@ -26,7 +26,7 @@ import java.util.List;
 import net.hasor.core.Hasor;
 import org.more.util.ResourcesUtils;
 /**
- * 继承自FileSettings父类，该类自动装载Classpath中所有静态配置文件。
+ * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
  * 并且自动装载主配置文件（该配置文件应当只有一个）。
  * @version : 2013-9-9
  * @author 赵永春(zyc@hasor.net)
@@ -55,7 +55,7 @@ public class StandardContextSettings extends InputStreamSettings {
     public StandardContextSettings(final URI mainSettings) throws IOException {
         this.settingURI = mainSettings;
     }
-    /**获取配置文件URI*/
+    /**获取配置文件{@link URI}。*/
     public URI getSettingURI() {
         return this.settingURI;
     }

@@ -16,7 +16,7 @@
 package net.hasor.core.event;
 import net.hasor.core.EventCallBackHook;
 /**
- * 
+ * 用于封装事件对象。
  * @version : 2014-3-13
  * @author 赵永春(zyc@hasor.net)
  */
@@ -30,7 +30,7 @@ public class EventObject {
         this.eventType = eventType;
         this.sync = sync;
     }
-    //
+    /**获得事件类型。*/
     public String getEventType() {
         return this.eventType;
     }

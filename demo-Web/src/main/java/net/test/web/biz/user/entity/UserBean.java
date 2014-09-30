@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.listener;
-import net.hasor.core.ApiBinder;
+package net.test.web.biz.user.entity;
 /**
- * 用于容器初始化事件接收
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * User 实体类
+ * @version : 2014年9月24日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface ContextInitializeListener {
-    /**开始进入初始化过程。*/
-    public void doInitialize(ApiBinder apiBinder);
-    /**初始化过程完成。*/
-    public void doInitializeCompleted(Object context);
-}
+public class UserBean {}

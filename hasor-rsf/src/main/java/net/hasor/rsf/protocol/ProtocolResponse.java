@@ -15,9 +15,9 @@
  */
 package net.hasor.rsf.protocol;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.metadata.InvokeMetaData;
+import net.hasor.rsf.invoke.RsfRequest;
+import net.hasor.rsf.invoke.RsfResponse;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.metadata.ReturnMetaData;
 import org.more.util.BeanUtils;
 import org.more.util.ByteUtils;
 /**
@@ -77,10 +77,10 @@ public class ProtocolResponse implements ProtocolCode {
         return response;
     }
     //
-    /**根据 {@link ReturnMetaData} 创建一个response 响应对象。*/
-    public static ProtocolResponse generationRequest(ReturnMetaData returnMetaData) throws Throwable {
+    /**根据 {@link RsfResponse} 创建一个response 响应对象。*/
+    public static ProtocolResponse generationRequest(RsfResponse returnMetaData) throws Throwable {
         ServiceMetaData serviceMetaData = returnMetaData.getServiceMetaData();
-        InvokeMetaData invokeMetaData = returnMetaData.getInvokeMetaData();
+        RsfRequest invokeMetaData = returnMetaData.getInvokeMetaData();
         //
         ProtocolRequest request = invokeMetaData.getRequest();
         ProtocolResponse response = new ProtocolResponse();

@@ -42,7 +42,7 @@ import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /**
- * {@link Environment}接口实现类。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */

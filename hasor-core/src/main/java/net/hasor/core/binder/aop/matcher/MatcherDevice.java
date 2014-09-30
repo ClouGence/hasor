@@ -27,21 +27,20 @@ public class MatcherDevice<T> implements Matcher<T> {
         this.matcherNode = matcherNode;
     }
     //
-    @Override
     public final boolean matches(final T t) {
         return this.matcherNode.matches(t);
     }
-    /**与*/
+    /**与逻辑。*/
     public MatcherDevice<T> and(final Matcher<T> other) {
         this.matcherNode = new And<T>(this.matcherNode, other);
         return this;
     }
-    /**或*/
+    /**或逻辑。*/
     public MatcherDevice<T> or(final Matcher<T> other) {
         this.matcherNode = new Or<T>(this.matcherNode, other);
         return this;
     }
-    /**非*/
+    /**非逻辑。*/
     public MatcherDevice<T> not() {
         this.matcherNode = new Not<T>(this.matcherNode);
         return this;

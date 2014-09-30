@@ -16,7 +16,7 @@
 package net.hasor.core.binder;
 import net.hasor.core.Provider;
 /**
- * 实体类型的Provider代理
+ * 对象的{@link Provider}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */

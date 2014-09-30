@@ -42,7 +42,7 @@ public class DataField implements ProtocolCode {
     //
     //
     public void decode(ByteBuf buf) throws Throwable {
-        int length = buf.readBytes(2).readInt();
+        int length = buf.readBytes(2).readShort();
         if (length != 0) {
             this.value = buf.readBytes(length).toString(RSFConstants.DEFAULT_CHARSET);
         }
