@@ -13,46 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol;
+package net.hasor.rsf.general;
 /**
  * 
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum ResponseStatus {
+public enum ProtocolType {
     /**未定义*/
-    Unknown(0),
-    /**内容正确返回。*/
-    OK(200),
-    /**已经接受请求处理正在进行中（异步模式下）。*/
-    Accepted(202),
-    /**服务重定向。*/
-    MovedPermanently(301),
-    /**试图调用受保护的服务。*/
-    Unauthorized(401),
-    /**服务资源不可用，客户端应当重试其它远程服务提供者。*/
-    Forbidden(403),
-    /**找不到服务*/
-    NotFound(404),
-    /**调用服务超时*/
-    RequestTimeout(408),
-    /**调用服务执行出错*/
-    InternalServerError(500);
+    Unknown((byte) 0),
+    /**调用请求。*/
+    Request((byte) 1),
+    /**调用响应。*/
+    Response((byte) 2),
+    /**文本消息。*/
+    Message((byte) 3),
+    /**ping指令。*/
+    Ping((byte) 4);
     //
     //
-    private int value = 0;
-    private ResponseStatus(int value) {
+    private byte value = 0;
+    private ProtocolType(byte value) {
         this.value = value;
     }
-    public int value() {
+    public byte value() {
         return this.value;
     }
     public String toString() {
         return String.format("%s(%s)", this.name(), this.value);
     }
     /**根据状态值获取状态枚举*/
-    public static ResponseStatus valueOf(int statusValue) {
-        for (ResponseStatus element : ResponseStatus.values()) {
+    public static ProtocolType valueOf(byte statusValue) {
+        for (ProtocolType element : ProtocolType.values()) {
             if (element.value() == statusValue)
                 return element;
         }

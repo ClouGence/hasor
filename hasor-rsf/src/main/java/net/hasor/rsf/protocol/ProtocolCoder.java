@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.general;
-import java.nio.charset.Charset;
+package net.hasor.rsf.protocol;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 /**
- * 
+ * 定义了RSF传输协议的编码解码入口。
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RSFConstants {
-    public static final byte    RSF_Version     = 1;
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    public static final int     ClientTimeout   = 6000;                    //（毫秒）
+public interface ProtocolCoder {
+    public static final int NULL_Short = 0x8000;
+    public static final int NULL_Int   = 0x80000000;
+    /**解码*/
+    public void decode(ByteBuf buf) throws IOException;
+    /**编码*/
+    public void encode(ByteBuf buf) throws IOException;
 }

@@ -25,7 +25,7 @@ import net.hasor.core.Module;
  * @version : 2013-9-26
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ResultPlugin implements Module {
+public class ResultModule implements Module {
     public void loadModule(ApiBinder apiBinder) {
         Map<Class<?>, Class<ResultProcess>> defineMap = new HashMap<Class<?>, Class<ResultProcess>>();
         //1.获取

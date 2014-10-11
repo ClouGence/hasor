@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol;
-import io.netty.buffer.ByteBuf;
 /**
- * 定义了RSF传输协议的编码解码入口。
+ * 计算 block 块大小。
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ProtocolCode {
-    /**解码*/
-    public void decode(ByteBuf buf) throws Throwable;
-    /**编码*/
-    public void encode(ByteBuf buf) throws Throwable;
+public interface BlockSize {
+    /**计算 block 块大小*/
+    public int size();
 }

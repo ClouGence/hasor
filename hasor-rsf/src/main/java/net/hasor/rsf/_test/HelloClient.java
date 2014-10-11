@@ -1,7 +1,7 @@
-package net.hasor.rsf.netty;
-import java.util.zip.CRC32;
+package net.hasor.rsf._test;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -11,6 +11,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import net.hasor.rsf.general.ProtocolType;
+import net.hasor.rsf.protocol.ProtocolRequest;
 /**
  * 
  * @version : 2014年9月12日
@@ -38,31 +40,47 @@ public class HelloClient {
         }
     }
     public static void main(String[] args) throws Exception {
-        byte[] data = "HelloWord...".getBytes("utf-8");
-        CRC32 crc = new CRC32();
-        crc.update(data);
-        String a = Long.toString(crc.getValue(), 16);
-        System.out.println(a.toUpperCase());
         //
-        //        HelloClient client = new HelloClient();
-        //        client.connect("127.0.0.1", 8000);
+        //        byte[] data = "HelloWord...".getBytes("utf-8");
+        //        CRC32 crc = new CRC32();
+        //        crc.update(data);
+        //        String a = Long.toString(crc.getValue(), 16);
+        //        System.out.println(a.toUpperCase());
+        //
+        HelloClient client = new HelloClient();
+        client.connect("127.0.0.1", 8000);
     }
 }
 class HelloClientIntHandler extends ChannelInboundHandlerAdapter {
-    // 接收server端的消息，并打印出来
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf result = (ByteBuf) msg;
-        byte[] result1 = new byte[result.readableBytes()];
-        result.readBytes(result1);
-        System.out.println("Server said:" + new String(result1));
-        result.release();
-    }
     // 连接成功后，向server发送消息
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        String msg = "Are you ok?";
-        ByteBuf encoded = ctx.alloc().buffer(4 * msg.length());
-        encoded.writeBytes(msg.getBytes());
-        ctx.write(encoded);
-        ctx.flush();
+        ProtocolRequest req = new ProtocolRequest();
+        req.setRequestID(1234);
+        req.setProtocolType(ProtocolType.Request);
+        req.setSerializeType("json");
+        req.setServiceName("java.util.List");
+        req.setServiceVersion("1.0.0");
+        req.setServiceGroup("default");
+        req.setTargetMethod("size");
+        //
+        ByteBuf allData = PooledByteBufAllocator.DEFAULT.heapBuffer();
+        req.encode(allData);
+        byte[] allBytes = allData.readBytes(allData.readableBytes()).array();
+        //
+        for (int i = 0;; i++) {
+            if ((i * 5) > allBytes.length) {
+                break;
+            }
+            ByteBuf itemData = ctx.alloc().buffer();
+            int length = ((i * 5) < allBytes.length) ? 5 : (allBytes.length - (i * 5));
+            itemData.writeBytes(allBytes, i * 5, length);
+            //
+            //            ctx.alloc().buffer()
+            ctx.write(itemData);
+            ctx.flush();
+            itemData.duplicate();
+        }
+        //
+        System.out.println();
     }
 }

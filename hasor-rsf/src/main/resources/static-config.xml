@@ -3,10 +3,21 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描范围 -->
-		<loadPackages>net.hasor.mvc.web.*</loadPackages>
-		<!-- Hasor-SF 专用 -->
-		<sfConfig address="localhost" port="6000">
-
-		</sfConfig>
+		<loadPackages>net.hasor.rsf.*</loadPackages>
+		<!-- Hasor-RSF 专用 -->
+		<rsfConfig address="localhost" port="6000">
+			<serializeType>
+				<!-- JSON格式序列化 -->
+				<serialize name="Json">
+					<encoder>net.hasor.rsf.serialize.coder.FastJson_DecoderEncoder</encoder>
+					<decoder>net.hasor.rsf.serialize.coder.FastJson_DecoderEncoder</decoder>
+				</serialize>
+				<!-- Java原生序列化 -->
+				<serialize name="Java">
+					<encoder>net.hasor.rsf.serialize.coder.Java_DecoderEncoder</encoder>
+					<decoder>net.hasor.rsf.serialize.coder.Java_DecoderEncoder</decoder>
+				</serialize>
+			</serializeType>
+		</rsfConfig>
 	</hasor>
 </config>
