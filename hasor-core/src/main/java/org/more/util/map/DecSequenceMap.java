@@ -110,7 +110,17 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     }
     public List<Map<K, T>> elementMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
-    };
+    }
+    /**从所有Map中取同名Key的值*/
+    public List<T> getAll(K key) {
+        List<T> findT = new ArrayList<T>();
+        for (Map<K, T> e : this.elementMapList()) {
+            if (e.containsKey(key) == true) {
+                findT.add(e.get(key));
+            }
+        }
+        return findT;
+    }
     /**确认K所在的Map*/
     public Map<K, T> keyAt(final K key) {
         for (Map<K, T> e : this.elementMapList()) {

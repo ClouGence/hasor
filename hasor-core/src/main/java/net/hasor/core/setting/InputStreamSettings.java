@@ -16,9 +16,7 @@
 package net.hasor.core.setting;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import net.hasor.core.Hasor;
@@ -29,7 +27,7 @@ import net.hasor.core.setting.xml.SaxXmlParser;
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InputStreamSettings extends AbstractBaseSettings implements IOSettings {
+public class InputStreamSettings extends AbstractMergeSettings implements IOSettings {
     private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
     /**子类决定如何添加资源*/
     public InputStreamSettings() {}
@@ -64,12 +62,12 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     @Override
     public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
+        this.cleanData();
         {
             if (this.pendingStream.isEmpty() == true) {
                 return;
             }
             //构建装载环境
-            Map<String, Map<String, Object>> loadTo = new HashMap<String, Map<String, Object>>();
             InputStream inStream = null;
             //
             try {
@@ -77,7 +75,7 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
                 factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
                 factory.setFeature("http://xml.org/sax/features/namespaces", true);
                 SAXParser parser = factory.newSAXParser();
-                SaxXmlParser handler = new SaxXmlParser(loadTo);
+                SaxXmlParser handler = new SaxXmlParser(this);
                 while ((inStream = this.pendingStream.removeFirst()) != null) {
                     parser.parse(inStream, handler);
                     inStream.close();
@@ -85,14 +83,9 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
                         break;
                     }
                 }
+                super.refresh();
             } catch (Exception e) {
                 throw new IOException(e);
-            }
-            //
-            this.cleanData();
-            this.getNamespaceSettingMap().putAll(loadTo);
-            for (Map<String, Object> ent : loadTo.values()) {
-                this.getSettingsMap().addMap(ent);
             }
         }
         this.loadFinish();//完成装载
@@ -101,7 +94,4 @@ public class InputStreamSettings extends AbstractBaseSettings implements IOSetti
     protected void readyLoad() throws IOException {}
     /**完成装载*/
     protected void loadFinish() throws IOException {}
-    /**{@link InputStreamSettings}类型不支持该方法，调用该方法不会起到任何作用。*/
-    @Override
-    public void refresh() throws IOException {}
 }

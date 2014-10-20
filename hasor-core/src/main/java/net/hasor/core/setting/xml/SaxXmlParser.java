@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -30,11 +29,11 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SaxXmlParser extends DefaultHandler {
-    private Map<String, Map<String, Object>> dataContainer     = null;
-    private Map<String, StringBuffer>        xmlText           = new HashMap<String, StringBuffer>();
-    private Map<String, DefaultXmlNode>      currentXmlPropert = new HashMap<String, DefaultXmlNode>();
+    private Settings                    dataContainer     = null;
+    private Map<String, StringBuffer>   xmlText           = new HashMap<String, StringBuffer>();
+    private Map<String, DefaultXmlNode> currentXmlPropert = new HashMap<String, DefaultXmlNode>();
     //
-    public SaxXmlParser(final Map<String, Map<String, Object>> dataContainer) {
+    public SaxXmlParser(final Settings dataContainer) {
         this.dataContainer = dataContainer;
     }
     private StringBuffer getText(final String xmlns) {
@@ -53,10 +52,7 @@ public class SaxXmlParser extends DefaultHandler {
         this.currentXmlPropert.put(xmlns, xmlProperty);
     }
     //
-    //
-    //
     private String curXmlns = null;
-    @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
         DefaultXmlNode xmlProperty = this.getCurrentXmlPropert(uri);
         if (xmlProperty == null) {
@@ -74,7 +70,6 @@ public class SaxXmlParser extends DefaultHandler {
         }
         this.curXmlns = uri;
     }
-    @Override
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         StringBuffer strBuffer = this.getText(uri);
         //
@@ -85,7 +80,6 @@ public class SaxXmlParser extends DefaultHandler {
         this.cleanText(uri);
         this.curXmlns = uri;
     }
-    @Override
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
         if (this.curXmlns == null) {
             return;
@@ -94,14 +88,10 @@ public class SaxXmlParser extends DefaultHandler {
         StringBuffer strBuffer = this.getText(this.curXmlns);
         strBuffer.append(content);
     }
-    @Override
     public void endDocument() throws SAXException {
         for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
             DefaultXmlNode currentXml = ent.getValue();
-            if (this.dataContainer.get(currentXmlns) == null) {
-                this.dataContainer.put(currentXmlns, new HashMap<String, Object>());
-            }
             //1.将XmlTree转换为map映射
             HashMap<String, Object> dataMap = new HashMap<String, Object>();
             this.convertType(dataMap, currentXml.getChildren(), "");
@@ -123,30 +113,7 @@ public class SaxXmlParser extends DefaultHandler {
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();
                 Object $var = dataMap.get(key);
-                Object $varConflict = null;
-                $varConflict = this.dataContainer.get(currentXmlns).get($key);
-                if ($varConflict != null && $varConflict instanceof XmlNode && $var instanceof XmlNode) {
-                    XmlNode $new = (XmlNode) $var;
-                    XmlNode $old = (XmlNode) $varConflict;
-                    XmlNode $final = ((DefaultXmlNode) $old).clone();
-                    /*覆盖策略*/
-                    $final.getAttributeMap().putAll($new.getAttributeMap());
-                    ((DefaultXmlNode) $final).setText($new.getText());
-                    /*追加策略*/
-                    List<XmlNode> $newChildren = new ArrayList<XmlNode>($new.getChildren());
-                    List<XmlNode> $oldChildren = new ArrayList<XmlNode>($old.getChildren());
-                    Collections.reverse($newChildren);
-                    Collections.reverse($oldChildren);
-                    $final.getChildren().clear();
-                    $final.getChildren().addAll($oldChildren);
-                    $final.getChildren().addAll($newChildren);
-                    Collections.reverse($final.getChildren());
-                    this.dataContainer.get(currentXmlns).put($key, $final);
-                } else {
-                    this.dataContainer.get(currentXmlns).put($key, $var);
-                }
-                //
-                //
+                this.dataContainer.setSettings($key, $var, currentXmlns);
             }
         }
     }

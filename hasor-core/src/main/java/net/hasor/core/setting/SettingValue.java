@@ -13,13 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.setting;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 应用程序事件监听器
- * @version : 2013-7-10
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014年10月11日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface EventListener extends java.util.EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
-    public void onEvent(String event, Object[] params) throws Throwable;
+public class SettingValue {
+    private Object       defaultVar;
+    private List<Object> varList = new ArrayList<Object>();
+    //
+    //
+    public void newValue(Object value) {
+        if (this.varList.contains(value) == false)
+            this.varList.add(value);
+        this.defaultVar = value;
+    }
+    //
+    public Object getDefaultVar() {
+        return this.defaultVar;
+    }
+    public List<Object> getVarList() {
+        return this.varList;
+    }
 }

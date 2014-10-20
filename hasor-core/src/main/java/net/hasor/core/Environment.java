@@ -21,7 +21,7 @@ import java.util.Set;
  * @version : 2013-6-19
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Environment extends EventContext {
+public interface Environment {
     /**获取配置文件URI*/
     public URI getSettingURI();
     /**获取扫描路径*/
@@ -32,6 +32,8 @@ public interface Environment extends EventContext {
     public boolean isDebug();
     /**获取上下文*/
     public Object getContext();
+    /***/
+    public EventContext getEventContext();
     //
     /*-----------------------------------------------------------------------------------Settings*/
     /**获取应用程序配置。*/

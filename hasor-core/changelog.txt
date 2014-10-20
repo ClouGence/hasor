@@ -1,6 +1,7 @@
 ﻿===== Hasor-Core v0.0.10
 * 改进:
     01.修复当程序工作在特殊 ClassLoader 下例如 （Web容器中）时，MoreClassLoader类导致 Class 重复加载问题。
+    02.优化，AbstractSettings 实现细节，解决在多线程下可能引发的 HashMap 死锁问题。
 
 ===== Hasor-Core v0.0.9
 * 新增:

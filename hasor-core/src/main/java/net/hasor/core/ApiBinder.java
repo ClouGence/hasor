@@ -22,10 +22,7 @@ import java.util.Set;
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ApiBinder extends EventContext {
-    /**获取应用程序配置。*/
-    public Settings getSettings();
-    /**获取环境接口。*/
+public interface ApiBinder {
     public Environment getEnvironment();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）。*/
     public Set<Class<?>> findClass(Class<?> featureType);

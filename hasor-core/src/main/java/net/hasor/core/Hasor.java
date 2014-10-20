@@ -35,11 +35,11 @@ import org.slf4j.LoggerFactory;
 public abstract class Hasor {
     //
     public static <T extends EventListener> T pushStartListener(EventContext env, T eventListener) {
-        env.pushListener(AppContext.ContextEvent_Started, eventListener);
+        env.pushListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;
     }
     public static <T extends EventListener> T addStartListener(EventContext env, T eventListener) {
-        env.addListener(AppContext.ContextEvent_Started, eventListener);
+        env.addListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;
     }
     /**用简易的方式创建{@link AppContext}容器。*/

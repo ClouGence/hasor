@@ -17,6 +17,7 @@ package net.test.simple.core._08_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.test.simple.core._08_event.listener.MyListener;
 import org.junit.Test;
@@ -30,13 +31,14 @@ public class SyncEventTest {
     public void syncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>syncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        EventContext ec = appContext.getEnvironment().getEventContext();
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        appContext.addListener(EventName, new MyListener());
+        ec.addListener(EventName, new MyListener());
         //2.引发异步事件
         for (int i = 0; i < 10; i++)
-            appContext.fireSyncEvent(EventName, i);
+            ec.fireSyncEvent(EventName, i);
         //3.由于是同步事件，因此下面这条日志会在事件处理完毕之后喷出
         System.out.println("before Event do sth...");
     }

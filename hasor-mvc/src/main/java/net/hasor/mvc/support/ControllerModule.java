@@ -19,6 +19,7 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.mvc.MappingTo;
@@ -68,7 +69,8 @@ public class ControllerModule implements Module {
             }
         }
         //3.安装服务
-        RootController root = Hasor.pushStartListener(apiBinder, new RootController());
+        EventContext ec = apiBinder.getEnvironment().getEventContext();
+        RootController root = Hasor.pushStartListener(ec, new RootController());
         apiBinder.bindType(RootController.class).toInstance(root);
     }
     /**创建 {@link CallStrategyFactory}*/

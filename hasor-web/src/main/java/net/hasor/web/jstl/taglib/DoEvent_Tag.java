@@ -64,9 +64,9 @@ public class DoEvent_Tag extends AbstractHasorTag {
     public int doStartTag() throws JspException {
         try {
             if (this.async == true) {
-                this.getAppContext().fireAsyncEvent(this.event, this.params());
+                this.getAppContext().getEnvironment().getEventContext().fireAsyncEvent(this.event, this.params());
             } else {
-                this.getAppContext().fireSyncEvent(this.event, this.params());
+                this.getAppContext().getEnvironment().getEventContext().fireSyncEvent(this.event, this.params());
             }
             return Tag.SKIP_BODY;
         } catch (Throwable e) {

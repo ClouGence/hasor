@@ -165,7 +165,7 @@
 		<module>hasor-db</module>
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
-		<!-- module>hasor-rsf</module -->
+		<module>hasor-rsf</module>
 		<!-- module>hasor-security</module -->
 		<!-- module>hasor-quick</module -->
 	</modules>

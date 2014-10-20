@@ -17,6 +17,7 @@ package net.test.simple.core._08_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.test.simple.core._08_event.listener.MyListener;
 import org.junit.Test;
@@ -30,13 +31,14 @@ public class OnesSyncEventTest {
     public void onesAsyncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>onesAsyncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        EventContext ec = appContext.getEnvironment().getEventContext();
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        appContext.pushListener(EventName, new MyListener());
+        ec.pushListener(EventName, new MyListener());
         //2.引发异步事件，虽然引发了10次事件但只有一次会被执行。
         for (int i = 0; i < 10; i++)
-            appContext.fireSyncEvent(EventName, i);
+            ec.fireSyncEvent(EventName, i);
         //3.由于事件引发一次是同步事件，因此下面这条日志会在事件处理完毕之后喷出
         System.out.println("after Event do sth...");
     }

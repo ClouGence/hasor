@@ -17,6 +17,7 @@ package net.test.simple.core._08_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.test.simple.core._08_event.listener.MyListener;
 import org.junit.Test;
@@ -30,13 +31,14 @@ public class AsyncEventTest {
     public void asyncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>asyncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        EventContext ec = appContext.getEnvironment().getEventContext();
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        appContext.addListener(EventName, new MyListener());
+        ec.addListener(EventName, new MyListener());
         //2.引发异步事件
         for (int i = 0; i < 10; i++)
-            appContext.fireAsyncEvent(EventName, i);
+            ec.fireAsyncEvent(EventName, i);
         //3.由于是异步事件，因此下面这条日志会在事件喷出Log之前打印
         System.out.println("before Event do sth...");
         //

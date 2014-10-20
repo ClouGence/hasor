@@ -17,16 +17,13 @@ package net.hasor.core.context;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Environment;
-import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
@@ -241,43 +238,6 @@ public abstract class AbstractAppContext implements AppContext {
         return null;
     };
     //
-    /*--------------------------------------------------------------------------------------Event*/
-    public void pushListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().pushListener(eventType, eventListener);
-    }
-    public void addListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().addListener(eventType, eventListener);
-    }
-    public void removeListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().removeListener(eventType, eventListener);
-    }
-    public void fireSyncEvent(final String eventType, final Object... objects) {
-        this.getEnvironment().fireSyncEvent(eventType, objects);
-    }
-    public void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEnvironment().fireSyncEvent(eventType, callBack, objects);
-    }
-    public void fireAsyncEvent(final String eventType, final Object... objects) {
-        this.getEnvironment().fireAsyncEvent(eventType, objects);
-    }
-    public void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEnvironment().fireAsyncEvent(eventType, callBack, objects);
-    }
-    //
-    /*------------------------------------------------------------------------------------Context*/
-    /**获取上下文*/
-    public Object getContext() {
-        return this.getEnvironment().getContext();
-    }
-    /**获取应用程序配置。*/
-    public Settings getSettings() {
-        return this.getEnvironment().getSettings();
-    };
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> findClass(final Class<?> featureType) {
-        return this.getEnvironment().findClass(featureType);
-    }
-    //
     /*------------------------------------------------------------------------------------Process*/
     /**开始进入初始化过程.*/
     protected void doInitialize() throws Throwable {
@@ -330,7 +290,7 @@ public abstract class AbstractAppContext implements AppContext {
         /*绑定Settings对象的Provider*/
         apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
             public Settings get() {
-                return appContet.getSettings();
+                return appContet.getEnvironment().getSettings();
             }
         });
         /*绑定AppContext对象的Provider*/
@@ -362,6 +322,7 @@ public abstract class AbstractAppContext implements AppContext {
             return;
         }
         final AbstractAppContext appContext = this;
+        EventContext ec = appContext.getEnvironment().getEventContext();
         /*1.Init*/
         Hasor.logInfo("send init sign...");
         appContext.doInitialize();
@@ -374,7 +335,7 @@ public abstract class AbstractAppContext implements AppContext {
         ApiBinder apiBinder = appContext.newApiBinder(null);
         appContext.doBind(apiBinder);
         /*3.引发事件*/
-        appContext.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
+        ec.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
         appContext.doInitializeCompleted();
         Hasor.logInfo("the init is completed!");
         //
@@ -389,7 +350,7 @@ public abstract class AbstractAppContext implements AppContext {
             }
         }
         /*3.发送启动事件*/
-        appContext.fireSyncEvent(EventContext.ContextEvent_Started, appContext);
+        ec.fireSyncEvent(EventContext.ContextEvent_Started, appContext);
         appContext.doStartCompleted();/*用于扩展*/
         /*3.打印状态*/
         this.startState = true;

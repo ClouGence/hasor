@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -42,9 +42,9 @@ public class StandardEventManager implements EventContext {
     //
     private Settings                               settings           = null;
     private ScheduledExecutorService               executorService    = null;
-    private Map<String, EventListener[]>           listenerMap        = new HashMap<String, EventListener[]>();
+    private Map<String, EventListener[]>           listenerMap        = new ConcurrentHashMap<String, EventListener[]>();
     private ReadWriteLock                          listenerRWLock     = new ReentrantReadWriteLock();
-    private Map<String, LinkedList<EventListener>> onceListenerMap    = new HashMap<String, LinkedList<EventListener>>();
+    private Map<String, LinkedList<EventListener>> onceListenerMap    = new ConcurrentHashMap<String, LinkedList<EventListener>>();
     private Lock                                   onceListenerLock   = new ReentrantLock();
     //
     public StandardEventManager(Environment env) {

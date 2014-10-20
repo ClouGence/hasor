@@ -24,13 +24,10 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Environment;
-import net.hasor.core.EventCallBackHook;
-import net.hasor.core.EventListener;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.Settings;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -50,9 +47,6 @@ public abstract class AbstractBinder implements ApiBinder {
     public Environment getEnvironment() {
         return this.environment;
     }
-    public Settings getSettings() {
-        return this.getEnvironment().getSettings();
-    }
     public <T extends AppContextAware> T autoAware(final T aware) {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
         return aware;
@@ -65,29 +59,6 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     public void installModule(final Module module) throws Throwable {
         module.loadModule(this);
-    }
-    //
-    /*--------------------------------------------------------------------------------------Event*/
-    public void pushListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().pushListener(eventType, eventListener);
-    }
-    public void addListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().addListener(eventType, eventListener);
-    }
-    public void removeListener(final String eventType, final EventListener eventListener) {
-        this.getEnvironment().removeListener(eventType, eventListener);
-    }
-    public void fireSyncEvent(final String eventType, final Object... objects) {
-        this.getEnvironment().fireSyncEvent(eventType, objects);
-    }
-    public void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEnvironment().fireSyncEvent(eventType, callBack, objects);
-    }
-    public void fireAsyncEvent(final String eventType, final Object... objects) {
-        this.getEnvironment().fireAsyncEvent(eventType, objects);
-    }
-    public void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEnvironment().fireAsyncEvent(eventType, callBack, objects);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

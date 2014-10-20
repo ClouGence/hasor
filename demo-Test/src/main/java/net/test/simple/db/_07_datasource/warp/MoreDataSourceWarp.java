@@ -30,7 +30,7 @@ public class MoreDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         {
             //MySQL
-            Settings settings = apiBinder.getSettings();
+            Settings settings = apiBinder.getEnvironment().getSettings();
             String driverString = settings.getString("demo-jdbc-mysql.driver");
             String urlString = settings.getString("demo-jdbc-mysql.url");
             String userString = settings.getString("demo-jdbc-mysql.user");
@@ -41,7 +41,7 @@ public class MoreDataSourceWarp implements Module {
         }
         {
             //HSQL
-            Settings settings = apiBinder.getSettings();
+            Settings settings = apiBinder.getEnvironment().getSettings();
             String driverString = settings.getString("demo-jdbc-hsql.driver");
             String urlString = settings.getString("demo-jdbc-hsql.url");
             String userString = settings.getString("demo-jdbc-hsql.user");

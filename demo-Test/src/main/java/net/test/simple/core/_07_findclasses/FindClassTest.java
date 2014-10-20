@@ -39,10 +39,10 @@ public class FindClassTest {
         //         2.通过 ((AbstractEnvironment)appContext.getEnvironment()).setSpanPackage(...); 方法修改
         //
         //1.查找所有Hasor模块（实现了Module接口的类）。
-        Set<Class<?>> facesFeature = appContext.findClass(Module.class);
+        Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
         Hasor.logInfo("find %s.", facesFeature);
         //2.查找AbstractAppContext的子类
-        Set<Class<?>> subFeature = appContext.findClass(AbstractAppContext.class);
+        Set<Class<?>> subFeature = appContext.getEnvironment().findClass(AbstractAppContext.class);
         Hasor.logInfo("find %s.", subFeature);
     }
 }

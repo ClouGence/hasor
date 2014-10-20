@@ -29,9 +29,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.core.Environment;
-import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
@@ -47,9 +45,10 @@ import org.more.util.map.DecSequenceMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    private String[] spanPackage;
-    private Settings settings;
-    private Object   context;
+    private String[]     spanPackage  = null;
+    private Settings     settings     = null;
+    private Object       context      = null;
+    private EventContext eventManager = null;
     //---------------------------------------------------------------------------------Basic Method
     @Override
     public Object getContext() {
@@ -78,6 +77,13 @@ public abstract class AbstractEnvironment implements Environment {
     public Settings getSettings() {
         return this.settings;
     }
+    @Override
+    public EventContext getEventContext() {
+        if (this.eventManager == null) {
+            this.eventManager = new StandardEventManager(this);
+        }
+        return this.eventManager;
+    }
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
@@ -95,7 +101,7 @@ public abstract class AbstractEnvironment implements Environment {
             throw new UnhandledException(e);
         }
         this.envVars = this.createEnvVars();
-        this.eventManager = this.createEventManager();
+        //this.eventManager = this.createEventManager();
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
@@ -152,44 +158,6 @@ public abstract class AbstractEnvironment implements Environment {
             number = c;
         } while (c > 0);
         return buffer.reverse().toString();
-    }
-    //
-    /*--------------------------------------------------------------------------------------Event*/
-    private EventContext eventManager;
-    public EventContext getEventManager() {
-        return this.eventManager;
-    }
-    /**创建{@link EventContext}接口对象*/
-    protected EventContext createEventManager() {
-        return new StandardEventManager(this);
-    }
-    @Override
-    public void pushListener(final String eventType, final EventListener eventListener) {
-        this.getEventManager().pushListener(eventType, eventListener);
-    }
-    @Override
-    public void addListener(final String eventType, final EventListener eventListener) {
-        this.getEventManager().addListener(eventType, eventListener);
-    }
-    @Override
-    public void removeListener(final String eventType, final EventListener eventListener) {
-        this.getEventManager().removeListener(eventType, eventListener);
-    }
-    @Override
-    public void fireSyncEvent(final String eventType, final Object... objects) {
-        this.getEventManager().fireSyncEvent(eventType, objects);
-    }
-    @Override
-    public void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEventManager().fireSyncEvent(eventType, callBack, objects);
-    }
-    @Override
-    public void fireAsyncEvent(final String eventType, final Object... objects) {
-        this.getEventManager().fireAsyncEvent(eventType, objects);
-    }
-    @Override
-    public void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.getEventManager().fireAsyncEvent(eventType, callBack, objects);
     }
     //
     /*-----------------------------------------------------------------------HasorSettingListener*/

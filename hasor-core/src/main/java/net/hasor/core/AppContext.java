@@ -15,25 +15,14 @@
  */
 package net.hasor.core;
 import java.util.List;
-import java.util.Set;
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AppContext extends EventContext {
-    /**获取 {@link net.hasor.core.Environment#getContext()} 环境接口中所表示的上下文。
-     * @see net.hasor.core.Environment*/
-    public Object getContext();
-    /**获取应用程序配置。
-     * <li>该方法可以在任何时候被使用，不需要考虑容器状态 {@link AppContext#isStart()} </li>
-     * <li>该方法相当于 {@link Environment#getSettings()}</li>
-     * @see net.hasor.core.Environment*/
-    public Settings getSettings();
+public interface AppContext {
     /**获取环境接口。*/
     public Environment getEnvironment();
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
-    public Set<Class<?>> findClass(Class<?> featureType);
     /**模块启动*/
     public void start(Module... modules) throws Throwable;
     /**是否启动*/

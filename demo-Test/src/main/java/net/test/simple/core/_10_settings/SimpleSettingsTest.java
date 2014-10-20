@@ -31,11 +31,11 @@ public class SimpleSettingsTest {
     public void simpleSettingsTest() throws IOException, URISyntaxException {
         System.out.println("--->>simpleSettingsTest<<--");
         AppContext appContext = Hasor.createAppContext("net/test/simple/core/_10_settings/simple-config.xml");
-        Settings settings = appContext.getSettings();
+        Settings settings = appContext.getEnvironment().getSettings();
         //
         String myName = settings.getString("mySelf.myName");
         Hasor.logInfo("my Name is %s.", myName);
-        //F
+        //
         int myAge = settings.getInteger("mySelf.myAge");
         Hasor.logInfo("my Age is %s.", myAge);
         //
@@ -47,5 +47,8 @@ public class SimpleSettingsTest {
         //
         String myProjectURL = settings.getString("mySelf.myProjectURL");
         Hasor.logInfo("my Project is %s.", myProjectURL);
+        //
+        String[] packages = settings.getStringArray("hasor.loadPackages");
+        Hasor.logInfo("my packages is %s.", (Object) packages);
     }
 }

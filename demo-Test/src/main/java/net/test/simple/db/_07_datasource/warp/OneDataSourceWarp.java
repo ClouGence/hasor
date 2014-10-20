@@ -29,7 +29,7 @@ import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
 public class OneDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.获取数据库连接配置信息
-        Settings settings = apiBinder.getSettings();
+        Settings settings = apiBinder.getEnvironment().getSettings();
         String driverString = settings.getString("demo-jdbc-mysql.driver");
         String urlString = settings.getString("demo-jdbc-mysql.url");
         String userString = settings.getString("demo-jdbc-mysql.user");

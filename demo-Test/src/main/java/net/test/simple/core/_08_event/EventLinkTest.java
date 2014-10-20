@@ -17,6 +17,7 @@ package net.test.simple.core._08_event;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.test.simple.core._08_event.listener.MyListener;
@@ -32,21 +33,23 @@ public class EventLinkTest {
     public void syncEventTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>syncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        EventContext ec = appContext.getEnvironment().getEventContext();
         //
         final String EventName = "MyEvent";//事件链的终端
         final String SeedEvent = "SeedEvent";//种子事件
         //1.添加事件监听器F
-        appContext.addListener(EventName, new MyListener());
-        appContext.addListener(SeedEvent, new EventListener() {
+        ec.addListener(EventName, new MyListener());
+        ec.addListener(SeedEvent, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
                 AppContext app = (AppContext) params[0];
+                EventContext localEC = app.getEnvironment().getEventContext();
                 System.out.println("before MyEvent.");
-                app.fireAsyncEvent(EventName, 1);
-                app.fireAsyncEvent(EventName, 2);
+                localEC.fireAsyncEvent(EventName, 1);
+                localEC.fireAsyncEvent(EventName, 2);
             }
         });
         //2.引发种子事件
-        appContext.fireAsyncEvent(SeedEvent, appContext);
+        ec.fireAsyncEvent(SeedEvent, appContext);
         //3.由于是同步事件，因此下面这条日志会在事件处理完毕之后喷出
         System.out.println("before All Event.");
         Thread.sleep(1000);
