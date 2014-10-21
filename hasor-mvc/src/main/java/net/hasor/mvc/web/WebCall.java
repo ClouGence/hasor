@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc.web;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.hasor.mvc.support.Call;
 /**
- * 提供了 {@link RRUpdate}类。
+ * 
+ * @version : 2014年10月21日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.web.binder.reqres;
+public interface WebCall extends Call {
+    public HttpServletRequest getHttpRequest();
+    public HttpServletResponse getHttpResponse();
+}

@@ -19,11 +19,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Module;
@@ -33,7 +28,6 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
-import net.hasor.web.binder.reqres.RRUpdate;
 import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
@@ -97,44 +91,6 @@ public class WebStandardAppContext extends StandardAppContext implements WebAppC
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
-        apiBinder.bindType(RRUpdate.class).toInstance(new RRUpdate() {});
-        //
-        /*绑定ServletRequest对象的Provider*/
-        apiBinder.bindType(ServletRequest.class).toProvider(new Provider<ServletRequest>() {
-            @Override
-            public ServletRequest get() {
-                return RRUpdate.getLocalRequest();
-            }
-        });
-        /*绑定HttpServletRequest对象的Provider*/
-        apiBinder.bindType(HttpServletRequest.class).toProvider(new Provider<HttpServletRequest>() {
-            @Override
-            public HttpServletRequest get() {
-                return RRUpdate.getLocalRequest();
-            }
-        });
-        /*绑定ServletResponse对象的Provider*/
-        apiBinder.bindType(ServletResponse.class).toProvider(new Provider<ServletResponse>() {
-            @Override
-            public ServletResponse get() {
-                return RRUpdate.getLocalResponse();
-            }
-        });
-        /*绑定HttpServletResponse对象的Provider*/
-        apiBinder.bindType(HttpServletResponse.class).toProvider(new Provider<HttpServletResponse>() {
-            @Override
-            public HttpServletResponse get() {
-                return RRUpdate.getLocalResponse();
-            }
-        });
-        /*绑定HttpSession对象的Provider*/
-        apiBinder.bindType(HttpSession.class).toProvider(new Provider<HttpSession>() {
-            @Override
-            public HttpSession get() {
-                HttpServletRequest req = RRUpdate.getLocalRequest();
-                return req != null ? req.getSession(true) : null;
-            }
-        });
         /*绑定ServletContext对象的Provider*/
         apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             @Override

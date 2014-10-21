@@ -51,8 +51,7 @@ public class DefaultCallStrategy extends AbstractCallStrategy {
         Object[] invokeParams = paramsArray.toArray();
         return invokeParams;
     }
-    /**准备参数
-     * @param call */
+    /**准备参数*/
     protected Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, Call call) {
         for (Annotation pAnno : paramAnno) {
             Object finalValue = resolveParam(paramClass, pAnno, call);

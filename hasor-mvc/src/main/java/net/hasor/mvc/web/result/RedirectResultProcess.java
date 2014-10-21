@@ -16,13 +16,12 @@
 package net.hasor.mvc.web.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.Hasor;
 import net.hasor.mvc.result.ResultDefine;
 import net.hasor.mvc.result.ResultProcess;
 import net.hasor.mvc.support.Call;
-import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.mvc.web.WebCall;
 /**
  * 
  * @version : 2013-6-5
@@ -35,12 +34,11 @@ public class RedirectResultProcess implements ResultProcess {
         if (result == null) {
             return result;
         }
-        HttpServletRequest request = RuntimeFilter.getLocalRequest();
-        HttpServletResponse response = RuntimeFilter.getLocalResponse();
-        //
-        if (request == null || response == null) {
+        if (call instanceof WebCall == false) {
             return result;
         }
+        WebCall webCall = (WebCall) call;
+        HttpServletResponse response = webCall.getHttpResponse();
         //
         if (response.isCommitted() == false) {
             response.sendRedirect(result.toString());

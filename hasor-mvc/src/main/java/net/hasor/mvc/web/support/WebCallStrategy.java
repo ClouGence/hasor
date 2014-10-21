@@ -28,17 +28,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.Hasor;
+import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.DefaultCallStrategy;
 import net.hasor.mvc.support.Call;
 import net.hasor.mvc.support.MappingInfo;
+import net.hasor.mvc.web.WebModelController;
 import net.hasor.mvc.web.restful.AttributeParam;
 import net.hasor.mvc.web.restful.CookieParam;
 import net.hasor.mvc.web.restful.HeaderParam;
 import net.hasor.mvc.web.restful.PathParam;
 import net.hasor.mvc.web.restful.Produces;
 import net.hasor.mvc.web.restful.QueryParam;
-import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.StringUtils;
 /**
  * 
@@ -46,6 +48,29 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class WebCallStrategy extends DefaultCallStrategy {
+    private HttpServletRequest  servletRequest  = null;
+    private HttpServletResponse servletResponse = null;
+    //
+    public WebCallStrategy(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        this.servletRequest = servletRequest;
+        this.servletResponse = servletResponse;
+    }
+    @Override
+    public Object exeCall(Call call) throws Throwable {
+        WebModelController webController = null;
+        try {
+            ModelController controller = call.getTarget();
+            if (controller instanceof WebModelController) {
+                webController = ((WebModelController) controller);
+                webController.initController(this.servletRequest, this.servletResponse);
+            }
+            return super.exeCall(new WebCallWrap(call, this.servletRequest, this.servletResponse));
+        } finally {
+            if (webController != null) {
+                webController.initController(null, null);
+            }
+        }
+    }
     /**处理 @Produces 注解。*/
     protected Object returnCallBack(Object returnData, Call call) {
         Method targetMethod = call.getMethod();
@@ -53,7 +78,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
             if (StringUtils.isBlank(proValue) == false) {
-                RuntimeFilter.getLocalResponse().setContentType(proValue);
+                this.servletResponse.setContentType(proValue);
             }
         }
         return returnData;
@@ -93,7 +118,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
             return null;
         }
         //
-        HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
+        HttpServletRequest httpRequest = this.servletRequest;
         Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -115,7 +140,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
             return null;
         }
         //
-        HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
+        HttpServletRequest httpRequest = this.servletRequest;
         Cookie[] cookies = httpRequest.getCookies();
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null) {
@@ -133,7 +158,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
-        HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
+        HttpServletRequest httpRequest = this.servletRequest;
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -150,7 +175,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
             return queryParamLocal;
         }
         //
-        HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
+        HttpServletRequest httpRequest = this.servletRequest;
         String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString)) {
             return Collections.EMPTY_MAP;
@@ -188,11 +213,11 @@ public class WebCallStrategy extends DefaultCallStrategy {
     /**/
     private Map<String, Object> pathParamsLocal;
     private Map<String, Object> getPathParamMap(MappingInfo mappingInfo) {
-        if (pathParamsLocal != null) {
-            return pathParamsLocal;
+        if (this.pathParamsLocal != null) {
+            return this.pathParamsLocal;
         }
         //
-        HttpServletRequest httpRequest = RuntimeFilter.getLocalRequest();
+        HttpServletRequest httpRequest = this.servletRequest;
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String matchVar = mappingInfo.getMappingToMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
@@ -219,12 +244,12 @@ public class WebCallStrategy extends DefaultCallStrategy {
             }
             uriParams.put(k, pArray);
         }
-        pathParamsLocal = new HashMap<String, Object>();
+        this.pathParamsLocal = new HashMap<String, Object>();
         for (Entry<String, List<String>> ent : uriParams.entrySet()) {
             String k = ent.getKey();
             List<String> v = ent.getValue();
-            pathParamsLocal.put(k, v.toArray(new String[v.size()]));
+            this.pathParamsLocal.put(k, v.toArray(new String[v.size()]));
         }
-        return pathParamsLocal;
+        return this.pathParamsLocal;
     }
 }

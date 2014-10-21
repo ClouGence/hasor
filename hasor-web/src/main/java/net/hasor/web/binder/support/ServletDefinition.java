@@ -26,7 +26,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
@@ -96,14 +95,11 @@ class ServletDefinition extends AbstractServletModuleBinding {
     /**/
     public boolean service(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
         //
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean serve = this.matchesUri(path);
         // 
         if (serve) {
-            //
-            this.updateRR(httpRequest, httpResponse);
             //
             this.doService(request, response);
         }

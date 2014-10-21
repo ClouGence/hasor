@@ -16,10 +16,7 @@
 package net.hasor.web.binder.support;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.hasor.web.WebAppContext;
-import net.hasor.web.binder.reqres.RRUpdate;
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
@@ -31,7 +28,6 @@ class AbstractServletModuleBinding {
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
     private WebAppContext             appContext = null;
-    private RRUpdate                  rrUpdate   = null;
     //
     public AbstractServletModuleBinding(final int index, final Map<String, String> initParams, final String pattern, final UriPatternMatcher patternMatcher) {
         this.index = index;
@@ -61,12 +57,6 @@ class AbstractServletModuleBinding {
     /**init.*/
     public void init(WebAppContext appContext) {
         this.appContext = appContext;
-        this.rrUpdate = appContext.getInstance(RRUpdate.class);
-    }
-    /**更新RR中的Request、Response
-     * @see net.hasor.web.binder.reqres.RRUpdate*/
-    protected void updateRR(HttpServletRequest req, HttpServletResponse res) {
-        this.rrUpdate.update(req, res);
     }
     /**获取{@link WebAppContext}对象。
      * @see #init(WebAppContext)*/

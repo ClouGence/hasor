@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.strategy;
-import net.hasor.mvc.support.Call;
+package net.hasor.mvc.web;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.hasor.mvc.ModelController;
 /**
- * 
- * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * Web Controller
+ * @version : 2013-8-14
+ * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractCallStrategy implements CallStrategy {
-    public Object exeCall(Call call) throws Throwable {
-        Object[] args = this.resolveParams(call);
-        return this.returnCallBack(call.call(args), call);
-    }
-    /**处理 @Produces 注解。*/
-    protected Object returnCallBack(Object returnData, Call call) {
-        return returnData;
-    }
-    /**准备参数*/
-    protected abstract Object[] resolveParams(Call call) throws Throwable;
+public interface WebModelController extends ModelController {
+    /***/
+    public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
 }

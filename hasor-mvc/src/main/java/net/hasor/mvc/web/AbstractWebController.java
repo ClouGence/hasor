@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.ModelController;
 import net.hasor.web.startup.RuntimeFilter;
 /**
  * Controller
@@ -33,14 +32,33 @@ import net.hasor.web.startup.RuntimeFilter;
  * @author JFinal
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractWebController implements ModelController {
+public abstract class AbstractWebController implements WebModelController {
+    private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
+    private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
+    //
+    //
+    @Override
+    public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        if (this.httpRequest.get() != null) {
+            this.httpRequest.remove();
+        }
+        if (this.httpResponse.get() != null) {
+            this.httpResponse.remove();
+        }
+        if (httpRequest != null) {
+            this.httpRequest.set(httpRequest);
+        }
+        if (httpResponse != null) {
+            this.httpResponse.set(httpResponse);
+        }
+    }
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
-        return RuntimeFilter.getLocalRequest();
+        return this.httpRequest.get();
     }
     /** Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
     public HttpServletResponse getResponse() {
-        return RuntimeFilter.getLocalResponse();
+        return httpResponse.get();
     }
     /** Return AppContext. */
     public AppContext getAppContext() {

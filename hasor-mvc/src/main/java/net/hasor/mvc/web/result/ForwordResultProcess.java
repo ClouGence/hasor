@@ -22,7 +22,7 @@ import net.hasor.core.Hasor;
 import net.hasor.mvc.result.ResultDefine;
 import net.hasor.mvc.result.ResultProcess;
 import net.hasor.mvc.support.Call;
-import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.mvc.web.WebCall;
 /**
 * 
 * @version : 2013-6-5
@@ -35,12 +35,12 @@ public class ForwordResultProcess implements ResultProcess {
         if (result == null) {
             return result;
         }
-        HttpServletRequest request = RuntimeFilter.getLocalRequest();
-        HttpServletResponse response = RuntimeFilter.getLocalResponse();
-        //
-        if (request == null || response == null) {
+        if (call instanceof WebCall == false) {
             return result;
         }
+        WebCall webCall = (WebCall) call;
+        HttpServletRequest request = webCall.getHttpRequest();
+        HttpServletResponse response = webCall.getHttpResponse();
         //
         request.getRequestDispatcher(result.toString()).forward(request, response);
         return result;

@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.mvc.support.MappingDefine;
 import net.hasor.mvc.support.RootController;
-import net.hasor.web.binder.reqres.RRUpdate;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
@@ -37,7 +36,6 @@ import net.hasor.web.startup.RuntimeListener;
  */
 class ControllerFilter implements Filter {
     private RootController rootController = null;
-    private RRUpdate       rrUpdate       = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -45,7 +43,6 @@ class ControllerFilter implements Filter {
         if (this.rootController == null) {
             throw new NullPointerException("RootController is null.");
         }
-        this.rrUpdate = appContext.getInstance(RRUpdate.class);
     }
     public void destroy() {}
     //
@@ -66,7 +63,6 @@ class ControllerFilter implements Filter {
     private void doInvoke(MappingDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
             HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
-            HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
             //
             httpReq = new HttpServletRequestWrapper(httpReq) {
                 public RequestDispatcher getRequestDispatcher(final String path) {
@@ -75,8 +71,7 @@ class ControllerFilter implements Filter {
                 }
             };
             //
-            this.rrUpdate.update(httpReq, httpRes);
-            define.invoke(new WebCallStrategy(), null);
+            define.invoke(new WebCallStrategy(httpReq, (HttpServletResponse) servletResponse), null);
             //
         } catch (Throwable target) {
             //

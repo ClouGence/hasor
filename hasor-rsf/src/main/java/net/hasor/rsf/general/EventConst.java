@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.strategy;
-import net.hasor.mvc.support.Call;
+package net.hasor.rsf.general;
 /**
  * 
- * @version : 2014年8月27日
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractCallStrategy implements CallStrategy {
-    public Object exeCall(Call call) throws Throwable {
-        Object[] args = this.resolveParams(call);
-        return this.returnCallBack(call.call(args), call);
-    }
-    /**处理 @Produces 注解。*/
-    protected Object returnCallBack(Object returnData, Call call) {
-        return returnData;
-    }
-    /**准备参数*/
-    protected abstract Object[] resolveParams(Call call) throws Throwable;
+public interface EventConst {
+    public static final String Received_Request = "RSF_Received_Request_Event";
+    public static final String Receiving_Request = "RSF_Receiving_Request_Event";
+    
 }

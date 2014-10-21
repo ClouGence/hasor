@@ -31,14 +31,12 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import net.hasor.web.binder.reqres.RRUpdate;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
-    private RRUpdate       rrRpdate       = null;
     private WebAppContext  appContext     = null;
     private FilterPipeline filterPipeline = null;
     //
@@ -61,8 +59,6 @@ public class RuntimeFilter implements Filter {
             }
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
-        //2.init RR
-        this.rrRpdate = this.appContext.getInstance(RRUpdate.class);
         //
         Hasor.logInfo("PlatformFilter started.");
     }
@@ -83,8 +79,6 @@ public class RuntimeFilter implements Filter {
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         //
         try {
-            /*初始化RRUpdate*/
-            this.rrRpdate.update(httpReq, httpRes);
             /*执行.*/
             this.beforeRequest(this.appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
@@ -110,16 +104,7 @@ public class RuntimeFilter implements Filter {
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        this.rrRpdate.release();
-    }
-    /**获取{@link HttpServletRequest}*/
-    public static HttpServletRequest getLocalRequest() {
-        return RRUpdate.getLocalRequest();
-    }
-    //
-    /**获取{@link HttpServletResponse}*/
-    public static HttpServletResponse getLocalResponse() {
-        return RRUpdate.getLocalResponse();
+        //
     }
     //
     /**获取{@link ServletContext}*/
