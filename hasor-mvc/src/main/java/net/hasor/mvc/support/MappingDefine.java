@@ -66,14 +66,6 @@ public class MappingDefine {
         this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
         this.strategyFactory = strategyFactory;
     }
-    /**方法参数注解。*/
-    public Annotation[][] getTargetParamAnno() {
-        return this.targetParamAnno;
-    }
-    /**获取目标方法*/
-    public Method getTargetMethod() {
-        return this.targetMethod;
-    }
     /**获取映射的地址*/
     public String getMappingTo() {
         return this.mappingInfo.getMappingTo();
@@ -92,6 +84,10 @@ public class MappingDefine {
         BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
         this.targetProvider = appContext.getProvider(controllerInfo);
     }
+    protected CallStrategy createCallStrategy(CallStrategy parentCall) {
+        return this.strategyFactory.createStrategy(parentCall);
+    }
+    //
     /**调用目标*/
     public Object invoke() throws Throwable {
         return this.invoke(null, null);
@@ -135,11 +131,5 @@ public class MappingDefine {
                 return targetMethod.invoke(mc, objects);
             }
         });
-    }
-    protected CallStrategy createCallStrategy(CallStrategy parentCall) {
-        return this.strategyFactory.createStrategy(parentCall);
-    }
-    public String toString() {
-        return this.getMappingTo();
     }
 }
