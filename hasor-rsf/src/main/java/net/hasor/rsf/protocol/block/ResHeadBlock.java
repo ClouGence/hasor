@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol;
+package net.hasor.rsf.protocol.block;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.protocol.AbstractBlock;
 import net.hasor.rsf.protocol.field.DataField;
-import net.hasor.rsf.protocol.field.ParamField;
-import net.hasor.rsf.serialize.SerializeFactory;
 /**
- * 响应信息
+ * 响应信息头
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  * @see net.hasor.rsf.general.ProtocolType#Response
  */
-public class ProtocolResponse extends ProtocolHead {
+public class ResHeadBlock extends AbstractBlock {
     private ProtocolStatus status        = ProtocolStatus.Unknown;
     private DataField      replyMessage  = new DataField();
     private DataField      serializeType = new DataField();
-    private ParamField     returnData    = null;
     //
     /**获取响应状态*/
     public ProtocolStatus getStatus() {
@@ -55,55 +53,26 @@ public class ProtocolResponse extends ProtocolHead {
     public void setSerializeType(String serializeType) {
         this.serializeType.setValue(serializeType);
     }
-    /**获取要返回的值*/
-    public Object getReturnData(SerializeFactory factory) throws Throwable {
-        if (this.returnData == null) {
-            return null;
-        }
-        return this.returnData.readObject(factory);
-    }
-    /**设置要返回的值*/
-    public void setReturnData(Class<?> dataType, Object returnData, SerializeFactory factory) throws Throwable {
-        if (this.returnData == null) {
-            this.returnData = new ParamField(this.getSerializeType());
-        }
-        this.returnData.writeObject(returnData, factory);
-    }
     //
     public void decode(ByteBuf buf) {
-        super.decode(buf);
-        //
         short statusValue = buf.readShort();
         this.status = ProtocolStatus.valueOf(statusValue);
         //
         this.replyMessage.decode(buf);
         this.serializeType.decode(buf);
-        //
-        String serializeType = this.serializeType.getValue();
-        this.returnData = new ParamField(serializeType);
-        this.returnData.decode(buf);
     }
     public void encode(ByteBuf buf) {
-        super.encode(buf);
-        //
         int statusValue = this.status.value();
         buf.writeShort(statusValue);
         //
         this.replyMessage.encode(buf);
         this.serializeType.encode(buf);
-        //
-        if (this.returnData == null) {
-            String serializeType = this.serializeType.getValue();
-            this.returnData = new ParamField(serializeType);
-        }
-        this.returnData.encode(buf);
     }
     public int size() {
-        int finalSize = super.size();//Head
+        int finalSize = 0;//Head
         finalSize += 2;//status
         finalSize += this.replyMessage.size();
         finalSize += this.serializeType.size();
-        finalSize += this.returnData.size();
         return finalSize;
     }
 }

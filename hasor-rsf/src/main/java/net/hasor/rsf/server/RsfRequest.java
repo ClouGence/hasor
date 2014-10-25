@@ -15,10 +15,25 @@
  */
 package net.hasor.rsf.server;
 /**
- * 基础处理器
- * @version : 2014年9月20日
+ * 调用请求
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Processor {
-    public Object execute();
+public interface RsfRequest {
+    /***请求ID。*/
+    public String getRequestID();
+    /**远程调用请求IP地址。*/
+    public String getRemotHost();
+    //
+    /**请求超时时间。*/
+    public int getTimeout();
+    /**获取服务名。*/
+    public String getServiceName();
+    /**获取服务方法名。*/
+    public String getServiceMethod();
+    //
+    /**获取请求参数类型。*/
+    public Class<?>[] getParameterTypes();
+    /**获取请求参数值。*/
+    public Object[] getParameterObject();
 }

@@ -13,58 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol;
-import io.netty.buffer.ByteBuf;
+package net.hasor.rsf.protocol.message;
 import net.hasor.rsf.general.ProtocolType;
-import net.hasor.rsf.protocol.field.HeadField;
+import net.hasor.rsf.general.ProtocolVersion;
+import net.hasor.rsf.protocol.block.HeadBlock;
 /**
- * 协议头
- * @version : 2014年9月20日
+ * 
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProtocolHead implements ProtocolCoder, BlockSize {
-    private HeadField head = new HeadField();
+public class AbstractMessage {
+    private HeadBlock headBlock = new HeadBlock();
+    //
     //
     /**获取协议版本*/
-    public byte getVersion() {
-        return this.head.getVersion();
+    public ProtocolVersion getVersion() {
+        return this.headBlock.getVersion();
     }
     /**设置协议版本*/
-    public void setVersion(byte version) {
-        this.head.setVersion(version);
+    public void setVersion(ProtocolVersion version) {
+        this.headBlock.setVersion(version);
     }
     /**获取请求ID*/
     public int getRequestID() {
-        return this.head.getRequestID();
+        return this.headBlock.getRequestID();
     }
     /**设置请求ID*/
     public void setRequestID(int requestID) {
-        this.head.setRequestID(requestID);
+        this.headBlock.setRequestID(requestID);
     }
     /**获取协议类型*/
     public ProtocolType getProtocolType() {
-        return ProtocolType.valueOf(this.head.getProtocolType());
+        return this.headBlock.getProtocolType();
     }
     /**设置协议类型*/
     public void setProtocolType(ProtocolType protocolType) {
-        if (protocolType == null) {
-            protocolType = ProtocolType.Unknown;
-        }
-        this.head.setProtocolType(protocolType.value());
-    }
-    /**请求数据长度*/
-    public int getContentLength() {
-        return this.head.getContentLength();
+        this.headBlock.setProtocolType(protocolType);
     }
     //
-    public void decode(ByteBuf buf) {
-        this.head.decode(buf);
-    }
-    public void encode(ByteBuf buf) {
-        this.head.setContentLength(this.size());
-        this.head.encode(buf);
-    }
-    public int size() {
-        return this.head.size();
+    //
+    public void useProtocol(HeadBlock head) {
+        if (head != null) {
+            this.headBlock = head;
+        }
     }
 }

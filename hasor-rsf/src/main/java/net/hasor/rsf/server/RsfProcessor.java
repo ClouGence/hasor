@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.general;
-import java.nio.charset.Charset;
+package net.hasor.rsf.server;
 /**
- * 
+ * 基础处理器
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RSFConstants {
-    public static final byte    RSF_Version     = ProtocolVersion.V_1_0.value();
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    public static final int     ClientTimeout   = 6000;                         //（毫秒）
+public interface RsfProcessor {
+    /***/
+    public void doCall(RsfRequest request, RsfResponse response);
 }

@@ -13,29 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.field;
+package net.hasor.rsf.protocol.block;
 import io.netty.buffer.ByteBuf;
+import net.hasor.rsf.general.ProtocolType;
+import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.general.RSFConstants;
-import net.hasor.rsf.protocol.BlockSize;
-import net.hasor.rsf.protocol.ProtocolCoder;
+import net.hasor.rsf.protocol.AbstractBlock;
 /**
- * RSF协议头
+ * 协议头
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HeadField implements ProtocolCoder, BlockSize {
+public class HeadBlock extends AbstractBlock {
     private byte version       = RSFConstants.RSF_Version;
     private byte protocolType  = 0;
     private int  requestID     = 0;
     private int  contentLength = 0;
     //
     /**获取协议版本*/
-    public byte getVersion() {
-        return this.version;
+    public ProtocolVersion getVersion() {
+        return ProtocolVersion.valueOf(this.version);
     }
     /**设置协议版本*/
-    public void setVersion(byte version) {
-        this.version = version;
+    public void setVersion(ProtocolVersion version) {
+        if (version == null) {
+            version = ProtocolVersion.Unknown;
+        }
+        this.version = version.value();
     }
     /**获取请求ID*/
     public int getRequestID() {
@@ -46,12 +50,15 @@ public class HeadField implements ProtocolCoder, BlockSize {
         this.requestID = requestID;
     }
     /**获取协议类型*/
-    public byte getProtocolType() {
-        return protocolType;
+    public ProtocolType getProtocolType() {
+        return ProtocolType.valueOf(this.protocolType);
     }
     /**设置协议类型*/
-    public void setProtocolType(byte protocolType) {
-        this.protocolType = protocolType;
+    public void setProtocolType(ProtocolType protocolType) {
+        if (protocolType == null) {
+            protocolType = ProtocolType.Unknown;
+        }
+        this.protocolType = protocolType.value();
     }
     /**请求数据长度*/
     public int getContentLength() {

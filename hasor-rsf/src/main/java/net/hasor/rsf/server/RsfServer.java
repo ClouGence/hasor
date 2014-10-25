@@ -15,10 +15,15 @@
  */
 package net.hasor.rsf.server;
 /**
- * 请求处理器
- * @version : 2014年9月20日
+ * RSF 服务器控制接口
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RequestProcessor extends Processor {
-    
+public interface RsfServer {
+    /**启动服务。*/
+    public void start();
+    /**启动服务。*/
+    public void start(int listenPort);
+    /**停止服务。*/
+    public void stop();
 }

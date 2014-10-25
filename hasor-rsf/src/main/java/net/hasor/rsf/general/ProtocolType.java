@@ -25,11 +25,7 @@ public enum ProtocolType {
     /**调用请求。*/
     Request((byte) 1),
     /**调用响应。*/
-    Response((byte) 2),
-    /**文本消息。*/
-    Message((byte) 3),
-    /**ping指令。*/
-    Ping((byte) 4);
+    Response((byte) 2);
     //
     //
     private byte value = 0;

@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.server;
+import net.hasor.rsf.general.ProtocolStatus;
 /**
- * 响应处理器
- * @version : 2014年9月20日
+ * 响应请求
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ResponseProcessor extends Processor {}
+public interface RsfResponse {
+    /**请求ID。*/
+    public String getRequestID();
+    /**响应远程请求。*/
+    public void send(Object returnObject);
+    //
+    /**响应一条消息给远程。*/
+    public void sendMessage(ProtocolStatus status);
+    /**响应一条消息给远程。*/
+    public void sendMessage(ProtocolStatus status, String messageBody);
+}
