@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.simple.core._01_hello;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
@@ -33,5 +34,8 @@ public class StartTest {
         //
         StartTest a = appContext.getInstance(StartTest.class);
         System.out.println(a);
+        
+        String userHome = appContext.getEnvironment().getEnvVar("user.home");
+      System.out.println( new File(userHome,"aaa/aaa.txt").getParentFile().mkdirs()   ); 
     }
 }

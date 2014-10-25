@@ -86,7 +86,7 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             }
         };
     }
-    public static class HasorBindInfoProviderAdapter<T> extends DefaultBindInfoProviderAdapter<T> {
+    private static class HasorBindInfoProviderAdapter<T> extends DefaultBindInfoProviderAdapter<T> {
         private ClassLoader masterLosder = null;
         public HasorBindInfoProviderAdapter(Class<T> bindingType, ClassLoader masterLosder) {
             super(bindingType);
@@ -110,7 +110,7 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
             return this.engine;
         }
     }
-    public static class HasorAopMatcher implements AopMatcher {
+    private static class HasorAopMatcher implements AopMatcher {
         private Matcher<Method> matcherMethod = null;
         public HasorAopMatcher(Matcher<Method> matcherMethod) {
             this.matcherMethod = matcherMethod;

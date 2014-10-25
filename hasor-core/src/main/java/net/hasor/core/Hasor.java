@@ -23,7 +23,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import net.hasor.core.context.AbstractResourceAppContext;
 import net.hasor.core.context.StandardAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +43,11 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, new Module[0]);
+        return Hasor.createAppContext(StandardAppContext.DefaultSettings, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final Module... modules) {
-        return Hasor.createAppContext(AbstractResourceAppContext.DefaultSettings, modules);
+        return Hasor.createAppContext(StandardAppContext.DefaultSettings, modules);
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/

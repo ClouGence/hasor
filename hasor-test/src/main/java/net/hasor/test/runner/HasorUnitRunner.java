@@ -24,7 +24,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.AbstractResourceAppContext;
+import net.hasor.core.context.StandardAppContext;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.junit.DaemonThread;
 import net.hasor.test.junit.TestOrder;
@@ -45,7 +45,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
     public HasorUnitRunner(final Class<?> klass) throws InitializationError {
         super(klass);
         try {
-            String configResource = AbstractResourceAppContext.DefaultSettings;
+            String configResource = StandardAppContext.DefaultSettings;
             //1.获取配置信息
             ContextConfiguration config = klass.getAnnotation(ContextConfiguration.class);
             List<Module> loadModule = new ArrayList<Module>();
