@@ -45,8 +45,8 @@ public interface JdbcOperations {
     //
     //
     //
-    /**执行一个 SQL语句，通常是一个 DDL 语句. */
-    public void execute(String sql) throws SQLException;
+    /**执行一个 SQL语句，通常是一个 DDL 语句.*/
+    public boolean execute(String sql) throws SQLException;
     //
     //
     //

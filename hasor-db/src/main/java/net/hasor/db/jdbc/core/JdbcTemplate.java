@@ -292,27 +292,26 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     //
     @Override
-    public void execute(final String sql) throws SQLException {
+    public boolean execute(final String sql) throws SQLException {
         Hasor.logDebug("Executing SQL statement [%s].", sql);
-        class ExecuteStatementCallback implements StatementCallback<Object>, SqlProvider {
+        class ExecuteStatementCallback implements StatementCallback<Boolean>, SqlProvider {
             @Override
-            public Object doInStatement(final Statement stmt) throws SQLException {
-                stmt.execute(sql);
-                return null;
+            public Boolean doInStatement(final Statement stmt) throws SQLException {
+                return stmt.execute(sql);
             }
             @Override
             public String getSql() {
                 return sql;
             }
         }
-        this.execute(new ExecuteStatementCallback());
+        return this.execute(new ExecuteStatementCallback());
     }
     //
     //
     //
     /***/
     public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
-        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null");
+        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
         Hasor.logDebug("Executing prepared SQL query");
         return this.execute(psc, new PreparedStatementCallback<T>() {
             @Override
@@ -339,8 +338,8 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     @Override
     public <T> T query(final String sql, final ResultSetExtractor<T> rse) throws SQLException {
-        Hasor.assertIsNotNull(sql, "SQL must not be null");
-        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null");
+        Hasor.assertIsNotNull(sql, "SQL must not be null.");
+        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
         Hasor.logDebug("Executing SQL query [%s].", sql);
         class QueryStatementCallback implements StatementCallback<T>, SqlProvider {
             @Override
@@ -871,7 +870,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         if (size == 0)
             throw new SQLException("Empty Result");
         if (results.size() > 1)
-            throw new SQLException("Incorrect column count: expected " + 1 + ", actual " + size);
+            throw new SQLException("Incorrect column count: expected 1, actual " + size);
         return results.iterator().next();
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
