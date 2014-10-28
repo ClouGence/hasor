@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.more.util.BeanUtils;
 /**
- * 表示数据库的表
+ * 表示数据库的表结构
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */

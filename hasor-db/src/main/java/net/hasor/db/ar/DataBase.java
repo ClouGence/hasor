@@ -16,13 +16,15 @@
 package net.hasor.db.ar;
 import net.hasor.db.jdbc.JdbcOperations;
 /**
- * 
+ * 用来表示数据库s
  * @version : 2014年10月27日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DataBase {
-    public static Sechma openSechma(String string);
+    public static Sechma openSechma(String tableName);
     public static Entity openEntity(String tableName);
+    //
+    //
     public int hashCode() {
         // TODO Auto-generated method stub
         return super.hashCode();

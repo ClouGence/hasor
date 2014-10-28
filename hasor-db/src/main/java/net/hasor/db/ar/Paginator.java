@@ -21,23 +21,104 @@ package net.hasor.db.ar;
  */
 public class Paginator {
     /**满足条件的总记录数*/
-    private int     totalCount  = 0;
+    private int totalCount  = 0;
     /**每页记录数（-1表示无限大）*/
-    private int     pageSize    = -1;
+    private int pageSize    = 15;
     /**当前页号*/
-    private int     currentPage = 0;
+    private int currentPage = 1;
+    //    //
+    //    /** 排序字段 */
+    //    private String  sortField   = "";
+    //    /** 排序方式 */
+    //    private OrderBy orderBy     = OrderBy.ASC;
+    //    //
+    //    /**排序方式*/
+    //    public static enum OrderBy {
+    //        ASC, DESC
+    //    }
     //
-    /** 排序字段 */
-    private String  sortField   = "";
-    /** 排序方式 */
-    private OrderBy orderBy     = OrderBy.ASC;
     //
-    /**开始行*/
-    private int     startRow;
-    /**结束行*/
-    private int     endRow;
     //
-    public enum OrderBy {
-        ASC, DESC
+    /**获取分页的页大小。*/
+    public int getPageSize() {
+        return pageSize;
+    }
+    /**设置分页的页大小。*/
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+    /**获取记录总数。*/
+    public int getTotalCount() {
+        return this.totalCount;
+    }
+    /**设置记录总数。*/
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+    //
+    /**当前是否是第一页。*/
+    public boolean isFirstPage() {
+        return getCurrentPage() == 1;
+    }
+    /**判断是否还具备上一页。*/
+    public boolean hasPreviousPage() {
+        return !(getPreviousPage() == 1);
+    }
+    /**获取上一页页号。*/
+    public int getPreviousPage() {
+        int back = getCurrentPage() - 1;
+        return (back <= 0) ? 1 : back;
+    }
+    /**获取下一页页号。*/
+    public int getNextPage() {
+        int back = getCurrentPage() + 1;
+        return (back > getTotalPage()) ? getTotalPage() : back;
+    }
+    /**判断是否还具备下一页。*/
+    public boolean hasNextPage() {
+        return !(getNextPage() == getTotalPage());
+    }
+    /**当前是否是最后一页。*/
+    public boolean isLastPage() {
+        return getTotalPage() == getCurrentPage();
+    }
+    /**取当前页号。*/
+    public int getCurrentPage() {
+        return this.currentPage;
+    }
+    /**设置前页号。*/
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+    /**获取总页数。*/
+    public int getTotalPage() {
+        int pgSize = getPageSize();
+        int result = 0;
+        if (pgSize > 0) {
+            int totalCount = getTotalCount();
+            result = getTotalCount() / pgSize;
+            if ((totalCount == 0) || ((totalCount % pgSize) != 0)) {
+                result++;
+            }
+        }
+        return result;
+    }
+    /**计算并返回该页第一条数据的位置。*/
+    public int getPageFirstItem() {
+        int cPage = getCurrentPage();
+        if (cPage == 1) {
+            return 1; // 第一页开始当然是第 1 条记录
+        }
+        cPage--;
+        int pgSize = getPageSize();
+        return (pgSize * cPage) + 1;
+    }
+    /**计算并返回该页最后一条数据的位置。*/
+    public int getPageLastItem() {
+        int cPage = getCurrentPage();
+        int pgSize = getPageSize();
+        int assumeLast = pgSize * cPage;
+        int totalCount = getTotalCount();
+        return (assumeLast > totalCount) ? totalCount : assumeLast;
     }
 }

@@ -31,7 +31,7 @@ import net.hasor.db.jdbc.core.LinkedCaseInsensitiveMap;
 import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
 import org.more.convert.ConverterUtils;
 /**
- * 
+ * 用来表示表的数据记录
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
