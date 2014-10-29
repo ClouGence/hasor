@@ -14,30 +14,93 @@
  * limitations under the License.
  */
 package net.hasor.db.ar;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
 /**
  * 表示数据库的表结构
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Sechma {
-    private String              name        = null;
-    private Column              idColumn    = null;
-    private Identify            identify    = null;
-    private Column[]            columnArray = new Column[0];
-    private Map<String, Column> columnMap   = new HashMap<String, Column>();
+public final class Sechma implements Serializable {
+    private static final long   serialVersionUID = 8496566657601059017L;
+    private transient DataBase  dataBase         = null;
+    private String              catalog          = null;
+    private String              sechmaType       = null;
+    private String              name             = null;
+    private String              comment          = null;
+    private String              idColumn         = null;
+    private Column[]            columnArray      = new Column[0];
+    private Map<String, Column> columnMap        = new HashMap<String, Column>();
     //
+    /**创建表记录对象。*/
+    protected Sechma(DataBase dataBase, String sechmaName) {
+        this(dataBase, null, sechmaName);
+    }
+    /**创建表记录对象。*/
+    protected Sechma(DataBase dataBase, String catalog, String sechmaName) {
+        if (dataBase == null) {
+            throw new NullPointerException("dataBase is null.");
+        }
+        if (sechmaName == null) {
+            throw new NullPointerException("sechmaName is null.");
+        }
+        this.dataBase = dataBase;
+        this.catalog = catalog;
+        this.name = sechmaName;
+    }
+    //
+    /**获取Sechma 所处的数据库。*/
+    public DataBase getDataBase() {
+        return this.dataBase;
+    }
+    /**获取类别名称*/
+    public String getCatalog() {
+        return this.catalog;
+    }
+    /**获取列说明文本。*/
+    public String getComment() {
+        return comment;
+    }
+    /**设置列说明文本。*/
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+    /**判断是否为视图。*/
+    public boolean isView() {
+        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+        return StringUtils.equalsIgnoreCase(this.sechmaType, "VIEW");
+    }
+    /**判断是否为表。*/
+    public boolean isTable() {
+        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+        return StringUtils.contains(this.sechmaType, "TABLE") || //
+                StringUtils.contains(this.sechmaType, "TEMPORARY");
+    }
+    /**判断是否为临时表。*/
+    public boolean isTemp() {
+        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+        return StringUtils.contains(this.sechmaType, "TEMPORARY");
+    }
+    /**判断是否为系统表。*/
+    public boolean isSystem() {
+        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+        return StringUtils.contains(this.sechmaType, "SYSTEM TABLE");
+    }
+    protected void setSechmaType(String sechmaType) {
+        this.sechmaType = sechmaType;
+    }
     /**取得表名*/
     public String getName() {
         return this.name;
     }
     /**获取主键列*/
     public Column getID() {
-        return this.idColumn;
+        return this.getColumn(this.idColumn);
     }
     /**根据类名获取列*/
     public Column getColumn(String columnName) {
@@ -89,7 +152,7 @@ public class Sechma {
     /**添加列*/
     protected void addColumn(Column column) {
         if (column.isPrimaryKey())
-            this.idColumn = column;
+            this.idColumn = column.getName();
         //
         this.columnMap.put(column.getName(), column);
         Column[] newColumnArray = new Column[this.columnArray.length + 1];
@@ -97,6 +160,7 @@ public class Sechma {
         newColumnArray[newColumnArray.length - 1] = column;
         this.columnArray = newColumnArray;
     }
+    //
     /**用于判断两涨表是否同源（同源是指出自于同一数据库）*/
     public boolean isHomology(Sechma sechma) {
         return this.getDataBase().equals(sechma.getDataBase());
@@ -107,21 +171,20 @@ public class Sechma {
     }
     /**获取标识符生成器*/
     public Identify getIdentify() {
-        return this.identify;
+        return this.getDataBase().getIdentify(this);
     }
     //
-    //
-    //
-    //
-    //
-    //
+    /**取得HashCode。*/
     public int hashCode() {
-        // TODO Auto-generated method stub
-        return super.hashCode();
+        int result = this.getClass().hashCode();
+        result = 20 * result + getName().hashCode();
+        result = 21 * result + getDataBase().hashCode();
+        return result;
     }
+    /**判断是否相等。*/
     public boolean equals(Object obj) {
-        // TODO Auto-generated method stub
-        return super.equals(obj);
+        if (obj instanceof Sechma == false)
+            return false;
+        return this.hashCode() == obj.hashCode();
     }
-    public DataBase getDataBase();
 }

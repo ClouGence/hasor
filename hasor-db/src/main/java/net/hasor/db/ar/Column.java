@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 package net.hasor.db.ar;
+import java.io.Serializable;
 import java.sql.Types;
 /**
  * 
  * @version : 2014年10月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Column {
-    private String   name         = null;      //字段名
-    private String   title        = null;      //字段title
-    private String   comment      = null;      //字段解释说明
-    private int      sqlType      = Types.NULL; //SQL类型
-    private Class<?> javaType     = null;      //Java类型
+public final class Column implements Serializable {
+    private static final long serialVersionUID = 7779635033083814425L;
+    private String            name             = null;                //字段名
+    private String            title            = null;                //字段title
+    private String            comment          = null;                //字段解释说明
+    private int               sqlType          = Types.NULL;          //SQL类型
     //
-    private boolean  primaryKey   = false;     //主键约束
-    private boolean  unique       = false;     //唯一约束
-    private boolean  empty        = true;      //非空约束
-    private Object   defaultValue = null;      //默认约束
-    private boolean  insert       = true;      //是否允许用于数据新增
-    private boolean  update       = true;      //是否允许用于数据更新
+    private boolean           primaryKey       = false;               //主键约束
+    private Integer           maxSize          = null;                //字段值大小限制
+    private boolean           identify         = false;               //具有自增标识属性的列。
+    private boolean           unique           = false;               //唯一约束
+    private boolean           empty            = true;                //非空约束
+    private Object            defaultValue     = null;                //默认约束
+    private boolean           insert           = true;                //是否允许用于数据新增
+    private boolean           update           = true;                //是否允许用于数据更新
+    //
+    public Column(String colName, int colSQLType) {
+        this.name = colName;
+        this.sqlType = colSQLType;
+    }
     //
     //
     /**获取列名*/
@@ -62,12 +70,20 @@ public class Column {
     }
     /**获取列表示的Java类型。*/
     public Class<?> getJavaType() {
-        return this.javaType;
+        return InnerArUtils.sqlTypeToJavaType(getSqlType());
     }
     //
     /**表示列是否为主键列。*/
     public boolean isPrimaryKey() {
         return this.primaryKey;
+    }
+    /**字段值内容大小限制（0表示不详）*/
+    public int getMaxSize() {
+        return this.maxSize == null ? 0 : this.maxSize.intValue();
+    }
+    /**表示是否具有自增标识属性的列。*/
+    public boolean isIdentify() {
+        return this.identify;
     }
     /**表示列是否具有唯一约束。*/
     public boolean isUnique() {
@@ -89,12 +105,37 @@ public class Column {
     public Object getDefaultValue() {
         return this.defaultValue;
     }
-    //
     /**设置修改默认值约束.*/
     public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
     }
-    public void setInsert(boolean insert) {
+    /**设置允许用于数据新增*/
+    public void setAllowInsert(boolean insert) {
         this.insert = insert;
+    }
+    /**设置允许用于数据更新*/
+    public void setAllowUpdate(boolean update) {
+        this.update = update;
+    }
+    //
+    /**设置是否为主键列*/
+    protected void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+    /**设置是否支持自动增长。*/
+    protected void setIdentify(boolean identify) {
+        this.identify = identify;
+    }
+    /**设置是否具有唯一性*/
+    protected void setUnique(boolean unique) {
+        this.unique = unique;
+    }
+    /**设置是否允许为空*/
+    protected void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+    /**设置字段的大小限制*/
+    protected void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.ar;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -35,9 +36,10 @@ import org.more.convert.ConverterUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Entity {
-    private Sechma              sechma        = null;
-    private Map<String, Object> dataContainer = null;
+public class Entity implements Cloneable, Serializable {
+    private static final long   serialVersionUID = 7553043036092551721L;
+    private Sechma              sechma           = null;
+    private Map<String, Object> dataContainer    = null;
     //
     /**创建表记录对象。*/
     public Entity(Sechma sechma) {
@@ -49,17 +51,30 @@ public class Entity {
     }
     /**创建表记录对象，并用具体数据填充。*/
     public Entity(Sechma sechma, Map<String, Object> dataContainer) {
+        if (sechma == null) {
+            throw new NullPointerException("sechma is null.");
+        }
         this.sechma = sechma;
         this.dataContainer = new LinkedCaseInsensitiveMap<Object>();
-        this.dataContainer.putAll(dataContainer);
+        if (dataContainer != null)
+            this.dataContainer.putAll(dataContainer);
     }
-    /**获取JDBC接口*/
-    protected JdbcOperations getJdbc() {
-        return this.sechma.getDataBase().getJdbc();
+    //
+    /**获取记录所属的Sechma（表）。*/
+    protected Sechma getSechma() {
+        return this.sechma;
     }
     /**获取数据容器。*/
     protected Map<String, Object> getDataContainer() {
         return this.dataContainer;
+    }
+    /**获取JDBC接口*/
+    protected JdbcOperations getJdbc() {
+        return this.getSechma().getDataBase().getJdbc();
+    }
+    /**获取SQLBuilder接口*/
+    protected SQLBuilder getSQLBuilder() {
+        return this.getSechma().getDataBase().getSQLBuilder();
     }
     //
     //    /**利用连接查询填充另外一张表的数据。*/
@@ -73,12 +88,12 @@ public class Entity {
     //    /**利用连接查询填充另外一张表的数据。*/
     //    public Entity fillForm(Sechma tableName, Column foreignThis, Column col) {}
     //
-    /**获取记录所属的Sechma（表）。*/
-    public Sechma getSechma() {
-        return this.sechma;
+    /**克隆一个新的{@link Entity}*/
+    public Object clone() throws CloneNotSupportedException {
+        return new Entity(this.getSechma(), this.getDataContainer());
     }
     /**获取指定列的值。*/
-    public Object[] getArray(Column[] columnArrays) {
+    private Object[] columnValues(Column[] columnArrays) {
         if (columnArrays == null)
             return null;
         Object[] arrays = new Object[columnArrays.length];
@@ -105,19 +120,19 @@ public class Entity {
     /**记录在数据库中是否存在。*/
     public int countByExample() throws SQLException {
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         Column[] allColumn = this.hasValueColumns(sechma.getColumns());
-        Object[] dataArrays = this.getArray(allColumn);
+        Object[] dataArrays = this.columnValues(allColumn);
         String countSQL = builder.buildCount(sechma, allColumn);
         return this.getJdbc().queryForInt(countSQL, dataArrays);
     }
     /**删除数据库中满足该对象特征的。*/
     public int deleteByExample() throws SQLException {
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column[] allColumn = this.hasValueColumns(sechma.getColumns());
-        Object[] dataArrays = this.getArray(allColumn);
+        Object[] dataArrays = this.columnValues(allColumn);
         String deleteSQL = builder.buildDelete(sechma, allColumn);
         return this.getJdbc().update(deleteSQL, dataArrays);
     }
@@ -126,12 +141,12 @@ public class Entity {
         if (dataContainer == null || this.isHomology(dataContainer) == false)
             return 0;
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column[] whereColumn = this.hasValueColumns(sechma.getColumns());
         Column[] dataColumn = dataContainer.hasValueColumns(sechma.getUpdateColumns());
-        Object[] whereArrays = this.getArray(whereColumn);
-        Object[] dataArrays = dataContainer.getArray(dataColumn);
+        Object[] whereArrays = this.columnValues(whereColumn);
+        Object[] dataArrays = dataContainer.columnValues(dataColumn);
         //
         String updateSQL = builder.buildUpdate(sechma, whereColumn, dataColumn);
         Object[] updateData = new Object[whereArrays.length + dataArrays.length];
@@ -153,10 +168,10 @@ public class Entity {
     /**从数据库中查询满足该对象特征的。*/
     public List<Entity> listByExample(Paginator pageInfo) throws SQLException {
         final Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column[] whereColumn = this.hasValueColumns(sechma.getColumns());//所有列
-        Object[] whereArrays = this.getArray(whereColumn);
+        Object[] whereArrays = this.columnValues(whereColumn);
         //
         String selectSQL = builder.buildSelect(sechma, whereColumn, pageInfo);
         return this.getJdbc().query(selectSQL, whereArrays, new RowMapper<Entity>() {
@@ -219,7 +234,7 @@ public class Entity {
     public int delete() throws SQLException {
         checkID();
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column idColumn = sechma.getID();
         Object idValue = this.getID();
@@ -230,7 +245,7 @@ public class Entity {
     public int update() throws SQLException {
         checkID();
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column idColumn = sechma.getID();
         String countSQL = builder.buildCount(sechma, new Column[] { idColumn });
@@ -240,7 +255,7 @@ public class Entity {
         if (jdbc.queryForInt(countSQL, idValue) > 0) {
             Column[] allColumn = this.hasValueColumns(sechma.getUpdateColumns());//用于执行更新的列
             String updateSQL = builder.buildUpdate(sechma, new Column[] { idColumn }, allColumn);
-            Object[] allData = this.getArray(allColumn);
+            Object[] allData = this.columnValues(allColumn);
             Object[] finalData = new Object[allData.length + 1];
             System.arraycopy(allData, 0, finalData, 0, allData.length);
             finalData[finalData.length - 1] = idValue;
@@ -253,7 +268,7 @@ public class Entity {
     public boolean saveOrUpdate() throws SQLException {
         checkID();
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //1.决定update or insert
         Column idColumn = sechma.getID();
         String countSQL = builder.buildCount(sechma, new Column[] { idColumn });
@@ -269,7 +284,7 @@ public class Entity {
         if (targetCount == 1) {
             //Save
             Column[] allColumn = this.hasValueColumns(sechma.getUpdateColumns());//更新只需要一部分列
-            Object[] allData = this.getArray(allColumn);
+            Object[] allData = this.columnValues(allColumn);
             finalData = new Object[allData.length + 1];
             System.arraycopy(allData, 0, finalData, 0, allData.length);
             finalData[finalData.length - 1] = idValue;
@@ -277,7 +292,7 @@ public class Entity {
         } else {
             //Insert
             Column[] allColumn = sechma.getInsertColumns();//新增需要所有列
-            finalData = this.getArray(allColumn);
+            finalData = this.columnValues(allColumn);
             executeSQL = builder.buildInsert(sechma, allColumn);
         }
         //3.执行SQL
@@ -290,7 +305,7 @@ public class Entity {
             throw new SQLException("does not support Identify.");
         }
         //创建标识符，保存并新增。
-        Object newID = sechma.getIdentify().newUniqueID();
+        Object newID = sechma.getIdentify().newUniqueID(this);
         this.set(this.getSechma().getID(), newID);
         return this.saveOrUpdate();
     }
@@ -298,7 +313,7 @@ public class Entity {
     public boolean existByID() throws SQLException {
         checkID();
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column idColumn = sechma.getID();
         String countSQL = builder.buildCount(sechma, new Column[] { idColumn });
@@ -309,7 +324,7 @@ public class Entity {
     public void loadData() throws SQLException {
         checkID();
         Sechma sechma = this.getSechma();
-        SQLBuilder builder = sechma.getDataBase().getSQLBuilder();
+        SQLBuilder builder = this.getSQLBuilder();
         //
         Column idColumn = sechma.getID();
         Object idValue = this.getID();

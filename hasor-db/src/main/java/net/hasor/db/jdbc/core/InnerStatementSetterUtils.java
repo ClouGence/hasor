@@ -22,58 +22,58 @@ class InnerStatementSetterUtils {
     private static Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
     static {
         /* JDBC 3.0 only - not compatible with e.g. MySQL at present*/
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(boolean.class, new Integer(Types.BOOLEAN));
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Boolean.class, new Integer(Types.BOOLEAN));
+        javaTypeToSqlTypeMap.put(boolean.class, new Integer(Types.BOOLEAN));
+        javaTypeToSqlTypeMap.put(Boolean.class, new Integer(Types.BOOLEAN));
         //
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(byte.class, Types.TINYINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Byte.class, Types.TINYINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(short.class, Types.SMALLINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Short.class, Types.SMALLINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(int.class, Types.INTEGER);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Integer.class, Types.INTEGER);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(long.class, Types.BIGINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Long.class, Types.BIGINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(BigInteger.class, Types.BIGINT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(float.class, Types.FLOAT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Float.class, Types.FLOAT);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(double.class, Types.DOUBLE);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Double.class, Types.DOUBLE);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(BigDecimal.class, Types.DECIMAL);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(java.sql.Date.class, Types.DATE);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(java.sql.Time.class, Types.TIME);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(java.sql.Timestamp.class, Types.TIMESTAMP);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Blob.class, Types.BLOB);
-        InnerStatementSetterUtils.javaTypeToSqlTypeMap.put(Clob.class, Types.CLOB);
+        javaTypeToSqlTypeMap.put(byte.class, Types.TINYINT);
+        javaTypeToSqlTypeMap.put(Byte.class, Types.TINYINT);
+        javaTypeToSqlTypeMap.put(short.class, Types.SMALLINT);
+        javaTypeToSqlTypeMap.put(Short.class, Types.SMALLINT);
+        javaTypeToSqlTypeMap.put(int.class, Types.INTEGER);
+        javaTypeToSqlTypeMap.put(Integer.class, Types.INTEGER);
+        javaTypeToSqlTypeMap.put(long.class, Types.BIGINT);
+        javaTypeToSqlTypeMap.put(Long.class, Types.BIGINT);
+        javaTypeToSqlTypeMap.put(BigInteger.class, Types.BIGINT);
+        javaTypeToSqlTypeMap.put(float.class, Types.FLOAT);
+        javaTypeToSqlTypeMap.put(Float.class, Types.FLOAT);
+        javaTypeToSqlTypeMap.put(double.class, Types.DOUBLE);
+        javaTypeToSqlTypeMap.put(Double.class, Types.DOUBLE);
+        javaTypeToSqlTypeMap.put(BigDecimal.class, Types.DECIMAL);
+        javaTypeToSqlTypeMap.put(java.sql.Date.class, Types.DATE);
+        javaTypeToSqlTypeMap.put(java.sql.Time.class, Types.TIME);
+        javaTypeToSqlTypeMap.put(java.sql.Timestamp.class, Types.TIMESTAMP);
+        javaTypeToSqlTypeMap.put(Blob.class, Types.BLOB);
+        javaTypeToSqlTypeMap.put(Clob.class, Types.CLOB);
     }
     //
     /**根据 Java 类型Derive a default SQL type from the given Java type.*/
     public static int javaTypeToSqlParameterType(final Class<?> javaType) {
-        Integer sqlType = InnerStatementSetterUtils.javaTypeToSqlTypeMap.get(javaType);
+        Integer sqlType = javaTypeToSqlTypeMap.get(javaType);
         if (sqlType != null) {
             return sqlType;
         }
         if (Number.class.isAssignableFrom(javaType)) {
             return Types.NUMERIC;
         }
-        if (InnerStatementSetterUtils.isStringValue(javaType)) {
+        if (isStringValue(javaType)) {
             return Types.VARCHAR;
         }
-        if (InnerStatementSetterUtils.isDateValue(javaType) || Calendar.class.isAssignableFrom(javaType)) {
+        if (isDateValue(javaType) || Calendar.class.isAssignableFrom(javaType)) {
             return Types.TIMESTAMP;
         }
-        return InnerStatementSetterUtils.TYPE_UNKNOWN;
+        return TYPE_UNKNOWN;
     }
     /***/
     public static void setParameterValue(final PreparedStatement ps, final int parameterPosition, final Object inValue) throws SQLException {
         if (inValue == null) {
             ps.setObject(parameterPosition, null);
         } else {
-            InnerStatementSetterUtils.setValue(ps, parameterPosition, inValue);
+            setValue(ps, parameterPosition, inValue);
         }
     }
     private static void setValue(final PreparedStatement ps, final int paramIndex, final Object inValue) throws SQLException {
-        int sqlType = InnerStatementSetterUtils.javaTypeToSqlParameterType(inValue.getClass());
-        if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || sqlType == Types.CLOB && InnerStatementSetterUtils.isStringValue(inValue.getClass())) {
+        int sqlType = javaTypeToSqlParameterType(inValue.getClass());
+        if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || sqlType == Types.CLOB && isStringValue(inValue.getClass())) {
             //字符
             ps.setString(paramIndex, inValue.toString());
         } else if (sqlType == Types.DECIMAL || sqlType == Types.NUMERIC) {
@@ -134,11 +134,11 @@ class InnerStatementSetterUtils {
                 /*其他*/
                 ps.setObject(paramIndex, inValue, Types.TIMESTAMP);
             }
-        } else if (sqlType == InnerStatementSetterUtils.TYPE_UNKNOWN) {
+        } else if (sqlType == TYPE_UNKNOWN) {
             //不确定类型
-            if (InnerStatementSetterUtils.isStringValue(inValue.getClass())) {
+            if (isStringValue(inValue.getClass())) {
                 ps.setString(paramIndex, inValue.toString());
-            } else if (InnerStatementSetterUtils.isDateValue(inValue.getClass())) {
+            } else if (isDateValue(inValue.getClass())) {
                 ps.setTimestamp(paramIndex, new java.sql.Timestamp(((java.util.Date) inValue).getTime()));
             } else if (inValue instanceof Calendar) {
                 Calendar cal = (Calendar) inValue;
@@ -159,7 +159,7 @@ class InnerStatementSetterUtils {
      */
     public static void cleanupParameters(final Object[] paramValues) {
         if (paramValues != null) {
-            InnerStatementSetterUtils.cleanupParameters(Arrays.asList(paramValues));
+            cleanupParameters(Arrays.asList(paramValues));
         }
     }
     /**
@@ -173,7 +173,7 @@ class InnerStatementSetterUtils {
             return;
         }
         for (Object inValue : paramValues) {
-            InnerStatementSetterUtils.cleanupParameter(inValue);
+            cleanupParameter(inValue);
         }
     }
     public static void cleanupParameter(final Object paramValue) {
