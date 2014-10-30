@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.ar;
+package net.hasor.db.ar.support;
 import java.io.Serializable;
 import java.sql.Types;
 /**
@@ -31,7 +31,6 @@ public final class Column implements Serializable {
     private boolean           primaryKey       = false;               //主键约束
     private Integer           maxSize          = null;                //字段值大小限制
     private boolean           identify         = false;               //具有自增标识属性的列。
-    private boolean           unique           = false;               //唯一约束
     private boolean           empty            = true;                //非空约束
     private Object            defaultValue     = null;                //默认约束
     private boolean           insert           = true;                //是否允许用于数据新增
@@ -85,10 +84,6 @@ public final class Column implements Serializable {
     public boolean isIdentify() {
         return this.identify;
     }
-    /**表示列是否具有唯一约束。*/
-    public boolean isUnique() {
-        return this.unique;
-    }
     /**表示列是否在insert时将实际数据用于新增(true)，如果不是新增将采用默认值约束(false)。*/
     public boolean allowInsert() {
         return this.insert;
@@ -125,10 +120,6 @@ public final class Column implements Serializable {
     /**设置是否支持自动增长。*/
     protected void setIdentify(boolean identify) {
         this.identify = identify;
-    }
-    /**设置是否具有唯一性*/
-    protected void setUnique(boolean unique) {
-        this.unique = unique;
     }
     /**设置是否允许为空*/
     protected void setEmpty(boolean empty) {

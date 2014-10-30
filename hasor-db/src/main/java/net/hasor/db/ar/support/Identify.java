@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.ar;
+package net.hasor.db.ar.support;
 /**
  * 
  * @version : 2014年10月27日

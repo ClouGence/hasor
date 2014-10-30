@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.entity;
-import java.util.Date;
-import net.hasor.db.ar.AbstractTable;
+package net.test.web.biz.user.remote;
 /**
- * User 实体类
- * @version : 2014年9月24日
+ * 远程服务
+ * @version : 2014年10月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserBean extends AbstractTable {
-    private String userUUID      = null;
-    private String name          = null;
-    private String loginName     = null;
-    private String loginPassword = null;
-    private String email         = null;
-    private Date   registerTime  = null;
-}
+public class RemoteUserServices {}

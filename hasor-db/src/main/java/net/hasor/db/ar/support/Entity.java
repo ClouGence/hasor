@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.ar;
+package net.hasor.db.ar.support;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import net.hasor.db.ar.PageResult;
+import net.hasor.db.ar.Paginator;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.db.jdbc.core.LinkedCaseInsensitiveMap;
@@ -162,11 +164,11 @@ public class Entity implements Cloneable, Serializable {
         return this.updateByExample(new Entity(this, dataContainer));
     }
     /**从数据库中查询满足该对象特征的。*/
-    public List<Entity> listByExample() throws SQLException {
+    public PageResult<Entity> listByExample() throws SQLException {
         return this.listByExample(null);
     }
     /**从数据库中查询满足该对象特征的。*/
-    public List<Entity> listByExample(Paginator pageInfo) throws SQLException {
+    public PageResult<Entity> listByExample(Paginator pageInfo) throws SQLException {
         final Sechma sechma = this.getSechma();
         SQLBuilder builder = this.getSQLBuilder();
         //
@@ -174,22 +176,23 @@ public class Entity implements Cloneable, Serializable {
         Object[] whereArrays = this.columnValues(whereColumn);
         //
         String selectSQL = builder.buildSelect(sechma, whereColumn, pageInfo);
-        return this.getJdbc().query(selectSQL, whereArrays, new RowMapper<Entity>() {
+        List<Entity> entList = this.getJdbc().query(selectSQL, whereArrays, new RowMapper<Entity>() {
             private ColumnMapRowMapper mapRowMapper = new ColumnMapRowMapper();
             public Entity mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Map<String, Object> data = this.mapRowMapper.mapRow(rs, rowNum);
                 return new Entity(sechma, data);
             }
         });
+        return new PageResult<Entity>(pageInfo, entList);
     }
     //
     /**获取ID数据。*/
     public Object getID() {
-        return this.get(this.getSechma().getID());
+        return this.get(this.getSechma().getID().getName());
     }
     /**按照列名获取数据。*/
     public Entity setID(Object var) {
-        return this.set(this.getSechma().getID(), var);
+        return this.set(this.getSechma().getID().getName(), var);
     }
     /**按照列名获取数据。*/
     public Object get(String column) {
@@ -302,11 +305,9 @@ public class Entity implements Cloneable, Serializable {
     public boolean saveAsNew() throws SQLException {
         Sechma sechma = this.getSechma();
         if (sechma.supportIdentify() == false) {
-            throw new SQLException("does not support Identify.");
+            Object newID = sechma.getIdentify().newUniqueID(this);
+            this.set(this.getSechma().getID().getName(), newID);
         }
-        //创建标识符，保存并新增。
-        Object newID = sechma.getIdentify().newUniqueID(this);
-        this.set(this.getSechma().getID(), newID);
         return this.saveOrUpdate();
     }
     /**根据ID判断记录在数据库中是否存在。*/

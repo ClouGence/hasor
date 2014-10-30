@@ -41,10 +41,12 @@ public class Paginator {
     //
     /**获取分页的页大小。*/
     public int getPageSize() {
-        return pageSize;
+        return this.pageSize;
     }
     /**设置分页的页大小。*/
     public void setPageSize(int pageSize) {
+        if (pageSize < 1)
+            pageSize = 1;
         this.pageSize = pageSize;
     }
     /**获取记录总数。*/
@@ -53,6 +55,8 @@ public class Paginator {
     }
     /**设置记录总数。*/
     public void setTotalCount(int totalCount) {
+        if (totalCount < 0)
+            totalCount = 0;
         this.totalCount = totalCount;
     }
     //
@@ -62,7 +66,7 @@ public class Paginator {
     }
     /**判断是否还具备上一页。*/
     public boolean hasPreviousPage() {
-        return !(getPreviousPage() == 1);
+        return !isFirstPage();
     }
     /**获取上一页页号。*/
     public int getPreviousPage() {
@@ -76,11 +80,11 @@ public class Paginator {
     }
     /**判断是否还具备下一页。*/
     public boolean hasNextPage() {
-        return !(getNextPage() == getTotalPage());
+        return !isLastPage();
     }
     /**当前是否是最后一页。*/
     public boolean isLastPage() {
-        return getTotalPage() == getCurrentPage();
+        return getTotalPage() <= getCurrentPage();
     }
     /**取当前页号。*/
     public int getCurrentPage() {
@@ -88,12 +92,14 @@ public class Paginator {
     }
     /**设置前页号。*/
     public void setCurrentPage(int currentPage) {
+        if (currentPage < 1)
+            currentPage = 1;
         this.currentPage = currentPage;
     }
     /**获取总页数。*/
     public int getTotalPage() {
         int pgSize = getPageSize();
-        int result = 0;
+        int result = 1;
         if (pgSize > 0) {
             int totalCount = getTotalCount();
             result = getTotalCount() / pgSize;
@@ -103,8 +109,8 @@ public class Paginator {
         }
         return result;
     }
-    /**计算并返回该页第一条数据的位置。*/
-    public int getPageFirstItem() {
+    /**获取本页第一个记录的索引位置。*/
+    public int getFirstItem() {
         int cPage = getCurrentPage();
         if (cPage == 1) {
             return 1; // 第一页开始当然是第 1 条记录
@@ -113,8 +119,8 @@ public class Paginator {
         int pgSize = getPageSize();
         return (pgSize * cPage) + 1;
     }
-    /**计算并返回该页最后一条数据的位置。*/
-    public int getPageLastItem() {
+    /**获取本页最后一个记录的索引位置。*/
+    public int getLastItem() {
         int cPage = getCurrentPage();
         int pgSize = getPageSize();
         int assumeLast = pgSize * cPage;

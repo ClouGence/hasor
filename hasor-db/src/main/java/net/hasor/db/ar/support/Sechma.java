@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.ar;
+package net.hasor.db.ar.support;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.util.BeanUtils;
-import org.more.util.StringUtils;
 /**
  * 表示数据库的表结构
  * @version : 2014年10月25日
@@ -30,10 +29,8 @@ public final class Sechma implements Serializable {
     private static final long   serialVersionUID = 8496566657601059017L;
     private transient DataBase  dataBase         = null;
     private String              catalog          = null;
-    private String              sechmaType       = null;
     private String              name             = null;
-    private String              comment          = null;
-    private String              idColumn         = null;
+    private Column              idColumn         = null;
     private Column[]            columnArray      = new Column[0];
     private Map<String, Column> columnMap        = new HashMap<String, Column>();
     //
@@ -62,45 +59,13 @@ public final class Sechma implements Serializable {
     public String getCatalog() {
         return this.catalog;
     }
-    /**获取列说明文本。*/
-    public String getComment() {
-        return comment;
-    }
-    /**设置列说明文本。*/
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-    /**判断是否为视图。*/
-    public boolean isView() {
-        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-        return StringUtils.equalsIgnoreCase(this.sechmaType, "VIEW");
-    }
-    /**判断是否为表。*/
-    public boolean isTable() {
-        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-        return StringUtils.contains(this.sechmaType, "TABLE") || //
-                StringUtils.contains(this.sechmaType, "TEMPORARY");
-    }
-    /**判断是否为临时表。*/
-    public boolean isTemp() {
-        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-        return StringUtils.contains(this.sechmaType, "TEMPORARY");
-    }
-    /**判断是否为系统表。*/
-    public boolean isSystem() {
-        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-        return StringUtils.contains(this.sechmaType, "SYSTEM TABLE");
-    }
-    protected void setSechmaType(String sechmaType) {
-        this.sechmaType = sechmaType;
-    }
     /**取得表名*/
     public String getName() {
         return this.name;
     }
-    /**获取主键列*/
+    /**获取ID列名。*/
     public Column getID() {
-        return this.getColumn(this.idColumn);
+        return this.idColumn;
     }
     /**根据类名获取列*/
     public Column getColumn(String columnName) {
@@ -151,8 +116,9 @@ public final class Sechma implements Serializable {
     }
     /**添加列*/
     protected void addColumn(Column column) {
-        if (column.isPrimaryKey())
-            this.idColumn = column.getName();
+        if (column.isPrimaryKey() == true) {
+            this.idColumn = column;
+        }
         //
         this.columnMap.put(column.getName(), column);
         Column[] newColumnArray = new Column[this.columnArray.length + 1];
@@ -187,4 +153,28 @@ public final class Sechma implements Serializable {
             return false;
         return this.hashCode() == obj.hashCode();
     }
+    //    /**判断是否为视图。*/
+    //    public boolean isView() {
+    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+    //        return StringUtils.equalsIgnoreCase(this.sechmaType, "VIEW");
+    //    }
+    //    /**判断是否为表。*/
+    //    public boolean isTable() {
+    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+    //        return StringUtils.contains(this.sechmaType, "TABLE") || //
+    //                StringUtils.contains(this.sechmaType, "TEMPORARY");
+    //    }
+    //    /**判断是否为临时表。*/
+    //    public boolean isTemp() {
+    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+    //        return StringUtils.contains(this.sechmaType, "TEMPORARY");
+    //    }
+    //    /**判断是否为系统表。*/
+    //    public boolean isSystem() {
+    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+    //        return StringUtils.contains(this.sechmaType, "SYSTEM TABLE");
+    //    }
+    //    protected void setSechmaType(String sechmaType) {
+    //        this.sechmaType = sechmaType;
+    //    }
 }
