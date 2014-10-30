@@ -15,10 +15,10 @@
  */
 package net.test.simple.db._08_ar;
 import java.util.HashMap;
-import java.util.List;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.db.ar.PageResult;
 import net.hasor.db.ar.support.DataBase;
 import net.hasor.db.ar.support.Entity;
 import net.hasor.test.junit.ContextConfiguration;
@@ -59,7 +59,7 @@ public class ARTest implements AppContextAware {
         //改：条件更新
         dataBase.openEntity("TB_USER").set("status", 2).updateByExample(new HashMap<String, Object>());
         //查：条件查询
-        List<Entity> listEnt = dataBase.openEntity("TB_USER").set("status", 2).listByExample();
+        PageResult<Entity> listEnt = dataBase.openEntity("TB_USER").set("status", 2).listByExample();
         //取总数
         dataBase.openEntity("TB_USER").set("userName", "aac").set("password", "asdf").countByExample();
         //

@@ -153,28 +153,4 @@ public final class Sechma implements Serializable {
             return false;
         return this.hashCode() == obj.hashCode();
     }
-    //    /**判断是否为视图。*/
-    //    public boolean isView() {
-    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-    //        return StringUtils.equalsIgnoreCase(this.sechmaType, "VIEW");
-    //    }
-    //    /**判断是否为表。*/
-    //    public boolean isTable() {
-    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-    //        return StringUtils.contains(this.sechmaType, "TABLE") || //
-    //                StringUtils.contains(this.sechmaType, "TEMPORARY");
-    //    }
-    //    /**判断是否为临时表。*/
-    //    public boolean isTemp() {
-    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-    //        return StringUtils.contains(this.sechmaType, "TEMPORARY");
-    //    }
-    //    /**判断是否为系统表。*/
-    //    public boolean isSystem() {
-    //        //"TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-    //        return StringUtils.contains(this.sechmaType, "SYSTEM TABLE");
-    //    }
-    //    protected void setSechmaType(String sechmaType) {
-    //        this.sechmaType = sechmaType;
-    //    }
 }

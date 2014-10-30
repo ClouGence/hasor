@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.ar.support;
-
 import net.hasor.db.ar.Paginator;
-
 /**
  * 
  * @version : 2014年10月27日
@@ -40,6 +38,10 @@ public class SQLBuilder {
         return null;
     }
     public String buildInsert(Sechma sechma, Column[] dataColumn) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public String buildEmptySelect(String catalog, String tableName) {
         // TODO Auto-generated method stub
         return null;
     }

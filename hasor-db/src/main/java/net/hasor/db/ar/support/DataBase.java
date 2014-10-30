@@ -15,8 +15,6 @@
  */
 package net.hasor.db.ar.support;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +22,6 @@ import javax.sql.DataSource;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.more.UndefinedException;
-import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 /**
  * 用来表示数据库。
@@ -55,6 +51,7 @@ public final class DataBase {
             return define;
         }
         //1.获取表属性。
+        String emptySelect= this.getSQLBuilder().buildEmptySelect(catalog,tableName);
         
         this.getJdbc().q
         
@@ -69,43 +66,41 @@ public final class DataBase {
         return define;
     }
     //
-    private static Sechma loadSechma(Sechma sechma, Connection con) throws SQLException {
-        DatabaseMetaData metaData = con.getMetaData();
-        ResultSet resultSet = null;
-        //
-        //1.验证表
-        resultSet = metaData.getTables(sechma.getCatalog(), null, sechma.getName().toUpperCase(), new String[] { "TABLE" });
-        if (resultSet.next() == false) {
-            throw new UndefinedException("table " + sechma.getName() + " is Undefined.");
-        }
-        sechma.setSechmaType(resultSet.getString("TABLE_TYPE"));
-        sechma.setComment(resultSet.getString("REMARKS"));
-        //
-        //2.查询列
-        resultSet = metaData.getColumns(sechma.getCatalog(), null, sechma.getName(), null);
-        while (resultSet.next()) {
-            String colName = resultSet.getString("COLUMN_NAME");//列名称。
-            int colSQLType = resultSet.getInt("DATA_TYPE");//来自 java.sql.Types 的 SQL 类型。
-            //
-            Column col = new Column(colName, colSQLType);
-            col.setMaxSize(resultSet.getInt("COLUMN_SIZE"));//列的大小。
-            int allowEmpty = resultSet.getInt("NULLABLE");//是否允许使用 NULL。 
-            col.setEmpty(allowEmpty == DatabaseMetaData.columnNullable);//明确允许使用null
-            col.setComment(resultSet.getString("REMARKS")); //描述
-            String colDefaultValue = resultSet.getString("COLUMN_DEF");//该列的默认值，当值在单引号内时应被解释为一个字符串（可为 null） 
-            //                    col.setDefaultValue(colDefaultValue);
-            boolean colIdentify = (Boolean) ConverterUtils.convert(Boolean.TYPE, resultSet.getString("IS_AUTOINCREMENT"));//指示此列是否自动增加（Yes，No）
-            col.setIdentify(colIdentify);
-            //
-            sechma.addColumn(col);
-        }
-        //
-        //3.确定主键
-        //        resultSet = metaData.getPrimaryKeys(catalog, schema, table).getColumns(sechma.getCatalog(), null, sechma.getName(), null);
-        //
-        //4.通过权限判断决定列可见
-        return sechma;
-    }
+    //    private static Sechma loadSechma(Sechma sechma, Connection con) throws SQLException {
+    //        DatabaseMetaData metaData = con.getMetaData();
+    //        ResultSet resultSet = null;
+    //        //
+    //        //1.验证表
+    //        resultSet = metaData.getTables(sechma.getCatalog(), null, sechma.getName().toUpperCase(), new String[] { "TABLE" });
+    //        if (resultSet.next() == false) {
+    //            throw new UndefinedException("table " + sechma.getName() + " is Undefined.");
+    //        }
+    //        //
+    //        //2.查询列
+    //        resultSet = metaData.getColumns(sechma.getCatalog(), null, sechma.getName(), null);
+    //        while (resultSet.next()) {
+    //            String colName = resultSet.getString("COLUMN_NAME");//列名称。
+    //            int colSQLType = resultSet.getInt("DATA_TYPE");//来自 java.sql.Types 的 SQL 类型。
+    //            //
+    //            Column col = new Column(colName, colSQLType);
+    //            col.setMaxSize(resultSet.getInt("COLUMN_SIZE"));//列的大小。
+    //            int allowEmpty = resultSet.getInt("NULLABLE");//是否允许使用 NULL。 
+    //            col.setEmpty(allowEmpty == DatabaseMetaData.columnNullable);//明确允许使用null
+    //            col.setComment(resultSet.getString("REMARKS")); //描述
+    //            String colDefaultValue = resultSet.getString("COLUMN_DEF");//该列的默认值，当值在单引号内时应被解释为一个字符串（可为 null） 
+    //            //                    col.setDefaultValue(colDefaultValue);
+    //            boolean colIdentify = (Boolean) ConverterUtils.convert(Boolean.TYPE, resultSet.getString("IS_AUTOINCREMENT"));//指示此列是否自动增加（Yes，No）
+    //            col.setIdentify(colIdentify);
+    //            //
+    //            sechma.addColumn(col);
+    //        }
+    //        //
+    //        //3.确定主键
+    //        //        resultSet = metaData.getPrimaryKeys(catalog, schema, table).getColumns(sechma.getCatalog(), null, sechma.getName(), null);
+    //        //
+    //        //4.通过权限判断决定列可见
+    //        return sechma;
+    //    }
     //
     //
     //

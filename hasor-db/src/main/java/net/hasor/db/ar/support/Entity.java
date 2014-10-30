@@ -79,17 +79,6 @@ public class Entity implements Cloneable, Serializable {
         return this.getSechma().getDataBase().getSQLBuilder();
     }
     //
-    //    /**利用连接查询填充另外一张表的数据。*/
-    //    public Entity fillForm(String tableName, String foreignThis) {
-    //        Sechma sechma = this.getSechma().getDataBase().open(tableName);
-    //    }
-    //    /**利用连接查询填充另外一张表的数据。*/
-    //    public Entity fillForm(Sechma tableName, Column foreignThis) {}
-    //    /**利用连接查询填充另外一张表的数据。*/
-    //    public Entity fillForm(String tableName, String foreignThis, String col) {}
-    //    /**利用连接查询填充另外一张表的数据。*/
-    //    public Entity fillForm(Sechma tableName, Column foreignThis, Column col) {}
-    //
     /**克隆一个新的{@link Entity}*/
     public Object clone() throws CloneNotSupportedException {
         return new Entity(this.getSechma(), this.getDataContainer());
