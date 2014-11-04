@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.field;
+package net.hasor.rsf.client;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.protocol.BlockSize;
-import net.hasor.rsf.protocol.ProtocolCoder;
 /**
  * RSF数据字段
  * @version : 2014年9月20日

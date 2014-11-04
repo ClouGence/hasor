@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol;
+package net.hasor.rsf.client;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 /**
- * 协议头
+ * 定义了RSF传输协议的编码解码入口。
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractBlock implements BlockSize, ProtocolCoder {}
+public interface ProtocolCoder {
+    public static final int NULL_Short = 0x8000;
+    /**解码*/
+    public void decode(ByteBuf buf) throws IOException;
+    /**编码*/
+    public void encode(ByteBuf buf) throws IOException;
+}

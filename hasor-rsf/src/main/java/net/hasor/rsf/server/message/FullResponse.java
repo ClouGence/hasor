@@ -13,83 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.message;
+package net.hasor.rsf.server.message;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.protocol.block.ResBodyBlock;
-import net.hasor.rsf.protocol.block.ResHeadBlock;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.Encoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
- * 
+ * RSF 1.0-Response 协议数据.
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FullResponse extends AbstractMessage {
-    private ResHeadBlock resHeadBlock = null;
-    private ResBodyBlock resBodyBlock = null;
+public class FullResponse extends FullCommon {
+    private ProtocolStatus status        = ProtocolStatus.Unknown;
+    private String         serializeType = "";
+    private String         returnType    = "";
+    private byte[]         returnData    = null;
     //
+    public FullResponse() {
+        super(RSFConstants.RSF_V_1_0_Res);
+    }
     //
     /**获取响应状态*/
     public ProtocolStatus getStatus() {
-        return this.resHeadBlock.getStatus();
+        return this.status;
     }
     /**设置响应状态*/
     public void setStatus(ProtocolStatus status) {
-        this.resHeadBlock.setStatus(status);
-    }
-    /**获取回复消息*/
-    public String getReplyMessage() {
-        return this.resHeadBlock.getReplyMessage();
-    }
-    /**设置回复消息*/
-    public void setReplyMessage(String replyMessage) {
-        this.resHeadBlock.setReplyMessage(replyMessage);
+        this.status = status;
     }
     /**获取序列化类型*/
     public String getSerializeType() {
-        return this.resHeadBlock.getSerializeType();
+        return this.serializeType;
     }
     /**设置序列化类型*/
     public void setSerializeType(String serializeType) {
-        this.resHeadBlock.setSerializeType(serializeType);
+        this.serializeType = serializeType;
     }
-    //
-    //
     /**获取返回值类型*/
     public String getReturnType() {
-        return this.resBodyBlock.getReturnType();
+        return this.returnType;
     }
     /**设置返回值类型*/
     public void setReturnType(String returnType) {
-        this.resBodyBlock.setReturnType(returnType);
+        this.returnType = returnType;
     }
     /**获取要返回的值*/
     public Object getReturnData(SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
         Decoder decoder = serializeFactory.getDecoder(codeName);
-        byte[] paramData = this.resBodyBlock.getReturnData();
         //
-        return decoder.decode(paramData);
+        return decoder.decode(this.returnData);
     }
     /**设置要返回的值*/
     public void setReturnData(Object data, SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
         Encoder encoder = serializeFactory.getEncoder(codeName);
         //
-        byte[] paramData = encoder.encode(data);
-        this.resBodyBlock.setReturnData(paramData);
-    }
-    //
-    //
-    public void useRequest(ResHeadBlock response) {
-        if (response != null) {
-            this.resHeadBlock = response;
-        }
-    }
-    public void useBody(ResBodyBlock body) {
-        if (body != null) {
-            this.resBodyBlock = body;
-        }
+        this.returnData = encoder.encode(data);
     }
 }

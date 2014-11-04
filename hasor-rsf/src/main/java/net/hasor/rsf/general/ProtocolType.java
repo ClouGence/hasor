@@ -21,28 +21,26 @@ package net.hasor.rsf.general;
  */
 public enum ProtocolType {
     /**未定义*/
-    Unknown((byte) 0),
+    Unknown(0xFF), // ...
     /**调用请求。*/
-    Request((byte) 1),
+    Request(0xC0), // 1100 0000
     /**调用响应。*/
-    Response((byte) 2);
+    Response(0x80);// 1000 0000
     //
     //
-    private byte value = 0;
-    private ProtocolType(byte value) {
+    private int value = 0;
+    private ProtocolType(int value) {
         this.value = value;
-    }
-    public byte value() {
-        return this.value;
     }
     public String toString() {
         return String.format("%s(%s)", this.name(), this.value);
     }
     /**根据状态值获取状态枚举*/
-    public static ProtocolType valueOf(byte statusValue) {
+    public static ProtocolType valueOf(byte value) {
         for (ProtocolType element : ProtocolType.values()) {
-            if (element.value() == statusValue)
+            if ((element.value | value) == value) {
                 return element;
+            }
         }
         return Unknown;
     }

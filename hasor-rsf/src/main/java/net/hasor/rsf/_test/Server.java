@@ -22,22 +22,23 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import net.hasor.rsf.net.netty.RSFProtocolDecoder;
+import net.hasor.rsf.net.netty.RSFCodec;
 /**
  * 
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HelloServer {
+public class Server {
     public void start(int port) throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(2);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(2);
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RSFProtocolDecoder());
+                    ch.pipeline().addLast(//
+                            new RSFCodec(),//
+                            new ServerHandler());
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.bind(port).sync();
@@ -48,7 +49,7 @@ public class HelloServer {
         }
     }
     public static void main(String[] args) throws Exception {
-        HelloServer server = new HelloServer();
+        Server server = new Server();
         server.start(8000);
     }
 }

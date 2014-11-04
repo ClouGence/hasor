@@ -13,98 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.message;
-import net.hasor.rsf.protocol.block.ReqBodyBlock;
-import net.hasor.rsf.protocol.block.ReqHeadBlock;
+package net.hasor.rsf.server.message;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
- * 
+ * RSF 1.0-Request 协议数据.
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FullRequest extends AbstractMessage {
-    private ReqHeadBlock reqHeadBlock = new ReqHeadBlock();
-    private ReqBodyBlock reqBodyBlock = new ReqBodyBlock();
+public class FullRequest extends FullCommon {
+    private String              serviceName    = "";
+    private String              serviceGroup   = "";
+    private String              serviceVersion = "";
+    private String              targetMethod   = "";
+    private String              serializeType  = "";
+    private List<String>        paramTypes     = new ArrayList<String>();      //参数列表
+    private Map<String, byte[]> paramMapping   = new HashMap<String, byte[]>(); //参数值映射
     //
+    public FullRequest() {
+        super(RSFConstants.RSF_V_1_0_Req);
+    }
     //
     /**获取服务名*/
     public String getServiceName() {
-        return this.reqHeadBlock.getServiceName();
+        return this.serviceName;
     }
     /**设置服务名*/
     public void setServiceName(String serviceName) {
-        this.reqHeadBlock.setServiceName(serviceName);
+        this.serviceName = serviceName;
     }
     /**获取服务分组*/
     public String getServiceGroup() {
-        return this.reqHeadBlock.getServiceGroup();
+        return this.serviceGroup;
     }
     /**设置服务分组*/
     public void setServiceGroup(String serviceGroup) {
-        this.reqHeadBlock.setServiceGroup(serviceGroup);
+        this.serviceGroup = serviceGroup;
     }
     /**获取服务版本*/
     public String getServiceVersion() {
-        return this.reqHeadBlock.getServiceVersion();
+        return this.serviceVersion;
     }
     /**设置服务版本*/
     public void setServiceVersion(String serviceVersion) {
-        this.reqHeadBlock.setServiceVersion(serviceVersion);
+        this.serviceVersion = serviceVersion;
     }
     /**获取调用的方法名*/
     public String getTargetMethod() {
-        return this.reqHeadBlock.getTargetMethod();
+        return this.targetMethod;
     }
     /**设置调用的方法名*/
     public void setTargetMethod(String targetMethod) {
-        this.reqHeadBlock.setTargetMethod(targetMethod);
+        this.targetMethod = targetMethod;
     }
     /**获取序列化类型*/
     public String getSerializeType() {
-        return this.reqHeadBlock.getSerializeType();
+        return this.serializeType;
     }
     /**设置序列化类型*/
     public void setSerializeType(String serializeType) {
-        this.reqHeadBlock.setSerializeType(serializeType);
+        this.serializeType = serializeType;
     }
-    /**请求数据长度*/
-    public int getContentLength() {
-        return this.reqHeadBlock.size() + this.reqBodyBlock.size();
+    /**添加请求参数。*/
+    public void addParameter(String paramType, byte[] rawData) {
+        this.paramTypes.add(paramType);
+        this.paramMapping.put(paramType, rawData);
     }
-    //
+    /**获取请求参数类型列表。*/
+    public String[] getParameterTypes() {
+        return this.paramTypes.toArray(new String[this.paramTypes.size()]);
+    }
     //
     /**将请求参数转换为对象。*/
     public Object[] toParameters(SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
         Decoder decoder = serializeFactory.getDecoder(codeName);
-        byte[][] paramData = this.reqBodyBlock.getParameterData();
         //
-        Object[] paramObject = new Object[paramData.length];
-        for (int i = 0; i < paramData.length; i++) {
-            paramObject[i] = decoder.decode(paramData[i]);
+        String[] paramTypes = this.getParameterTypes();
+        Object[] paramObject = new Object[paramTypes.length];
+        for (int i = 0; i < paramTypes.length; i++) {
+            byte[] paramData = this.paramMapping.get(paramTypes[i]);
+            paramObject[i] = decoder.decode(paramData);
         }
         return paramObject;
-    }
-    /**添加请求参数。*/
-    public void addRawParameter(String paramType, byte[] rawData) {
-        this.reqHeadBlock.addParameter(paramType);
-        this.reqBodyBlock.addParameter(rawData);
-    }
-    /**获取请求参数类型列表。*/
-    public String[] getParameterTypes() {
-        return this.reqHeadBlock.getParameterTypes();
-    }
-    //
-    //
-    public void useRequest(ReqHeadBlock request) {
-        if (request != null) {
-            this.reqHeadBlock = request;
-        }
-    }
-    public void useBody(ReqBodyBlock body) {
-        if (body != null) {
-            this.reqBodyBlock = body;
-        }
     }
 }

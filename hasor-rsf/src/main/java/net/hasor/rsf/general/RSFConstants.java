@@ -21,7 +21,8 @@ import java.nio.charset.Charset;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RSFConstants {
-    public static final byte    RSF_Version     = ProtocolVersion.V_1_0.value();
+    public static final byte    RSF_V_1_0_Req   = (byte) (0xC0 | ProtocolVersion.V_1_0.value());
+    public static final byte    RSF_V_1_0_Res   = (byte) (0x80 | ProtocolVersion.V_1_0.value());
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    public static final int     ClientTimeout   = 6000;                         //（毫秒）
+    public static final int     ClientTimeout   = 6000;                                         //（毫秒）
 }

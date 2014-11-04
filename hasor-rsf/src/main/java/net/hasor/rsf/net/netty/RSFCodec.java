@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol;
+package net.hasor.rsf.net.netty;
+import io.netty.channel.CombinedChannelDuplexHandler;
 /**
- * 计算 block 块大小。
- * @version : 2014年9月20日
+ * 
+ * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BlockSize {
-    /**计算 block 块大小*/
-    public int size();
+public final class RSFCodec extends CombinedChannelDuplexHandler<RSFProtocolDecoder, RSFProtocolEncoder> {
+    public RSFCodec() {
+        this(16777216);// 16MB
+    }
+    public RSFCodec(int maxBodyLength) {
+        super(new RSFProtocolDecoder(maxBodyLength), new RSFProtocolEncoder());
+    }
 }
