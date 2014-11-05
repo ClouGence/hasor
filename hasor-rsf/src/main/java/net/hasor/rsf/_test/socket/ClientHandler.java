@@ -24,12 +24,35 @@ import java.io.IOException;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.socket.RequestSocketMessage;
+import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
+import net.hasor.rsf.protocol.toos.SocketUtils;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
+    private long sendCount     = 0;
+    private long acceptedCount = 0;
+    private long start         = System.currentTimeMillis();
+    //
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (SocketUtils.isACK((ResponseSocketMessage) msg))
+            acceptedCount++;
+        //
+        //
+        //
+        long duration = System.currentTimeMillis() - start;
+        if (duration % 5000 == 0) {
+            long qps = sendCount * 1000 / duration;
+            System.out.println("QPS:" + qps);
+            System.out.println("send:" + sendCount);
+            System.out.println("accepted:" + acceptedCount);
+            System.out.println("ok(%):" + (float) acceptedCount / (float) sendCount * 100);
+            System.out.println();
+        }
+    }
+    //1.第一个包
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ChannelFutureListener listener = new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
@@ -41,9 +64,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         //
         ctx.writeAndFlush(getData()).addListener(listener);
     }
-    // 连接成功后，向server发送消息
-    public void _channelActive(ChannelHandlerContext ctx) throws Exception {}
-    private static int reqID = 1230;
+    //
+    //
+    private static int reqID = 0;
     private ByteBuf getData() throws IOException {
         RequestSocketMessage req = new RequestSocketMessage();
         req.setVersion(RSFConstants.RSF_V_1_0_Req);
@@ -73,6 +96,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         //
         ByteBuf out = ByteBufAllocator.DEFAULT.heapBuffer();
         new RpcRequestProtocol().encode(req, out);
+        sendCount++;
         return out;
     }
 }

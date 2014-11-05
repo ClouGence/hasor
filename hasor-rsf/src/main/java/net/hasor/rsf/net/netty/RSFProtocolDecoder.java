@@ -54,8 +54,9 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
             decObj = new RpcResponseProtocol().decode(frame);
         }
         //
-        if (decObj != null)
+        if (decObj != null) {
             ctx.fireChannelRead(decObj);
+        }
         return null;
     }
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {

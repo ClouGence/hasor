@@ -27,6 +27,9 @@ public class RSFSocketMessage {
     private int[]           poolMap   = {};
     private ByteBuf         poolData  = ByteBufAllocator.DEFAULT.heapBuffer();
     //
+    public RSFSocketMessage() {
+        this.addPoolData(0);
+    }
     //
     public void fillFrom(ByteBuf formData) {
         if (formData == null)

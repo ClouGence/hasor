@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.handler;
+package net.hasor.rsf._test.socket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.socket.RequestSocketMessage;
-import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceHandler extends ChannelInboundHandlerAdapter {
+public class ServerHandler extends ChannelInboundHandlerAdapter {
+    long readCount = 0;
+    long start     = System.currentTimeMillis();
+    //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof RequestSocketMessage) {
-            //1.发送ACK包
-            RequestSocketMessage reqMSG = (RequestSocketMessage) msg;
-            ResponseSocketMessage ack = new ResponseSocketMessage();
-            ack.setVersion(RSFConstants.RSF_V_1_0_Res);
-            ack.setRequestID(reqMSG.getRequestID());
-            ack.setStatus(ProtocolStatus.Accepted.shortValue());
-            //2.当ACK，发送成功之后继续传递msg
-            ctx.writeAndFlush(ack).addListener(new FireChannel(ctx, msg));
-            //
-        } else if (msg instanceof RequestSocketMessage) {
-            //
-            //
+        if (msg instanceof RequestSocketMessage == false)
+            return;
+        long requestID = ((RequestSocketMessage) msg).getRequestID();
+        //
+        readCount++;
+        //
+        long duration = System.currentTimeMillis() - start;
+        if (duration % 5000 == 0) {
+            long qps = readCount * 1000 / duration;
+            System.out.println("QPS:" + qps);
+            System.out.println("readCount:" + readCount);
+            System.out.println("last REQID:" + requestID);
+            System.out.println();
         }
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        super.exceptionCaught(ctx, cause);
     }
 }

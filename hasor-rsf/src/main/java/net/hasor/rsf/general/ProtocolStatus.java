@@ -40,23 +40,23 @@ public enum ProtocolStatus {
     InternalServerError(500);
     //
     //
-    private int value = 0;
+    private short value = 0;
     private ProtocolStatus(int value) {
         if (value >= 0xFFFF) {
             throw new IndexOutOfBoundsException("value maximum is 0xFFFF.");
         }
-        this.value = value;
+        this.value = (short) value;
     }
-    public int value() {
+    public short shortValue() {
         return this.value;
     }
     public String toString() {
         return String.format("%s(%s)", this.name(), this.value);
     }
     /**根据状态值获取状态枚举*/
-    public static ProtocolStatus valueOf(int statusValue) {
+    public static ProtocolStatus valueOf(short statusValue) {
         for (ProtocolStatus element : ProtocolStatus.values()) {
-            if (element.value() == statusValue)
+            if (element.shortValue() == statusValue)
                 return element;
         }
         return Unknown;

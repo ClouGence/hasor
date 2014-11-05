@@ -23,6 +23,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.server.handler.ServiceHandler;
 /**
  * 
  * @version : 2014年9月12日
@@ -38,6 +39,7 @@ public class Server {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
                             new RSFCodec(),//
+                            new ServiceHandler(),//
                             new ServerHandler());
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);

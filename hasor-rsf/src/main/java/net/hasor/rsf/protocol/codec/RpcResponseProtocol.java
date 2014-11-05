@@ -74,9 +74,6 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketMessage> {
         //* byte[4]  contentLength                        内容大小
         buf.skipBytes(4);
         //
-        ProtocolType pType = ProtocolType.valueOf(version);
-        if (pType != ProtocolType.Request)
-            return null;
         ResponseSocketMessage res = new ResponseSocketMessage();
         res.setVersion(version);
         res.setRequestID(requestID);
