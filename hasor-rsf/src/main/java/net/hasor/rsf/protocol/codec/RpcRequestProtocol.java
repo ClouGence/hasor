@@ -2,7 +2,6 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
-import net.hasor.rsf.general.ProtocolType;
 import net.hasor.rsf.protocol.socket.RequestSocketMessage;
 /**
  * Protocol Interface,for custom network protocol
@@ -82,9 +81,6 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         //* byte[4]  contentLength                        内容大小
         buf.skipBytes(4);
         //
-        ProtocolType pType = ProtocolType.valueOf(version);
-        if (pType != ProtocolType.Request)
-            return null;
         RequestSocketMessage req = new RequestSocketMessage();
         req.setVersion(version);
         req.setRequestID(requestID);
