@@ -23,9 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TrackManager {
-    private TrainNode[]   trainArray     = null;
-    private Class<?>[]    stationArray   = null;
-    private AtomicInteger currentStation = null;
+    private TrainNode[]     trainArray   = null;
+    private AtomicInteger[] trainSignal  = null;
+    private Class<?>[]      stationArray = null;
     //
     public TrackManager(Class<?>[] stationArray) {
         this(stationArray, 2, 2048);
@@ -40,13 +40,20 @@ public class TrackManager {
         if (trainCount <= 0) {
             trainCount = 1;
         }
-        /*初始化列车*/
+        /*初始化列车&信号*/
         this.trainArray = new TrainNode[trainCount];
+        this.trainSignal = new AtomicInteger[trainCount];
         for (int i = 0; i < trainCount; i++) {
             this.trainArray[i] = new TrainNode(capacity);
+            this.trainSignal[i] = new AtomicInteger();
         }
-        /*初始化追踪信号*/
-        this.currentStation = new AtomicInteger();
+        /*布局列车信号，保证每个车站都有列车出发*/
+        int j = 0;
+        for (int i = 0; i < trainCount; i++) {
+            this.trainSignal[i].set(j++);
+            if (j == stationArray.length)
+                j = 0;
+        }
     }
     //
     /**waitType 定是要追踪的类型，一旦等到了要追踪的类型将会返回。该方法会有很多线程调用，因此每个线程都在等待追踪的那个类型的到达。*/
@@ -59,44 +66,70 @@ public class TrackManager {
     }
     //
     private TrainNode waitFor(Class<?> waitType, int rw) {
-        int trainCount = this.trainArray.length;
-        TrainNode atTrainNode = null;
-        //
-        Out: while (atTrainNode == null || !this.stationArray[currentStation.get()].equals(waitType)) {
-            //从众多列车中选出一辆可以卸货的列车。
-            for (int i = 0; i < trainCount; i++) {
-                if (this.trainArray[i].takeFor(rw)) {
-                    atTrainNode = this.trainArray[i];
+        int atTrainNode = -1;
+        Out: while (true) {
+            for (int i = 0; i < this.trainSignal.length; i++) {
+                //循环所有列车的信号量，找出正在位于 waitType 的那个列车
+                boolean trainHit = this.stationArray[this.trainSignal[i].get()].equals(waitType);
+                //找到那个列车
+                if (trainHit && this.trainArray[i].takeFor(rw)) {
+                    atTrainNode = i;
                     break Out;
                 }
             }
             Thread.yield(); // 为保证高吞吐量的消息传递，这个是必须的,但在等待列车时它会消耗CPU周期
         }
-        //
         return markTrain(atTrainNode);
     }
-    private ThreadLocal<List<TrainNode>> localMark = new ThreadLocal<List<TrainNode>>();
-    private TrainNode markTrain(TrainNode train) {
-        List<TrainNode> trainList = this.localMark.get();
+    private ThreadLocal<List<Integer>> localMark = new ThreadLocal<List<Integer>>();
+    private TrainNode markTrain(int train) {
+        if (train < 0)
+            return null;
+        //
+        List<Integer> trainList = this.localMark.get();
         if (trainList == null) {
-            trainList = new ArrayList<TrainNode>(this.trainArray.length);
+            trainList = new ArrayList<Integer>(this.trainArray.length);
             this.localMark.set(trainList);
         }
         trainList.add(train);
-        return train;
+        return this.trainArray[train];
     }
-    /**通过这个方法轮转追踪的类型。*/
-    public void switchNext() {
-        //1.模式重置
-        List<TrainNode> trainList = this.localMark.get();
-        if (trainList != null) {
-            for (int i = 0; i < trainList.size(); i++)
-                trainList.get(i).cleanTake();
-            trainList.clear();
+    //    /**通过这个方法将列车开往下一个车站。*/
+    //    public void switchNext() {
+    //        List<Integer> trainList = this.localMark.get();
+    //        if (trainList != null) {
+    //            for (int i = 0; i < trainList.size(); i++) {
+    //                //1.车站轮转
+    //                int index = trainList.get(i);
+    //                AtomicInteger ai = this.trainSignal[index];
+    //                if (ai.compareAndSet(this.stationArray.length - 1, 0) == false) {
+    //                    ai.getAndIncrement();
+    //                }
+    //                //2.模式重置
+    //                this.trainArray[index].cleanTake();
+    //            }
+    //            trainList.clear();
+    //        }
+    //    }
+    /**通过这个方法将列车开往下一个目的地。*/
+    public void switchNext(Class<?> waitType) {
+        int switchTo = -1;
+        for (int i = 0; i < this.stationArray.length; i++) {
+            if (this.stationArray[i].equals(waitType))
+                switchTo = i;
         }
-        //2.车站轮转
-        if (this.currentStation.compareAndSet(this.stationArray.length - 1, 0) == false) {
-            this.currentStation.getAndIncrement();
+        if (switchTo < 0)
+            throw new RuntimeException("");
+        //
+        List<Integer> trainList = this.localMark.get();
+        if (trainList != null) {
+            for (int i = 0; i < trainList.size(); i++) {
+                //1.车站轮转
+                this.trainSignal[i].set(switchTo);
+                //2.模式重置
+                this.trainArray[trainList.get(i)].cleanTake();
+            }
+            trainList.clear();
         }
     }
 }
