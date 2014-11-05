@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test;
-import net.hasor.rsf.protocol.socket.RequestSocketMessage;
+package net.hasor.rsf.server.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.hasor.rsf.protocol.socket.RequestSocketMessage;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerHandler extends ChannelInboundHandlerAdapter {
-    long readCount = 0;
+public class ServiceHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestSocketMessage) {
             //
-            RequestSocketMessage req = (RequestSocketMessage) msg;
-            readCount++;
-            if (readCount % 1000 == 0)
+            ctx.handler().
+            
+            
                 System.out.println("Req:" + req.getRequestID() + "\t" + req.readPool(req.getServiceName()));
             //
         } else if (msg instanceof RequestSocketMessage) {

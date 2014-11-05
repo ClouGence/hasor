@@ -1,4 +1,4 @@
-package net.hasor.rsf._test;
+package net.hasor.rsf._test.socket;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -15,7 +15,7 @@ import net.hasor.rsf.net.netty.RSFCodec;
  */
 public class Client {
     public void connect(String host, int port) throws Exception {
-        EventLoopGroup workerGroup = new NioEventLoopGroup(2);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
             b.group(workerGroup);

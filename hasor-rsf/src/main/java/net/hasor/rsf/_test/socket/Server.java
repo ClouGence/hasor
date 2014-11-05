@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test;
+package net.hasor.rsf._test.socket;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -29,9 +29,9 @@ import net.hasor.rsf.net.netty.RSFCodec;
  * @author 赵永春(zyc@hasor.net)
  */
 public class Server {
-    public void start(int port) throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(2);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(2);
+    public void start(String host, int port) throws Exception {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);//
+        EventLoopGroup workerGroup = new NioEventLoopGroup(1);//Work线程，负责接收数据
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
@@ -41,7 +41,7 @@ public class Server {
                             new ServerHandler());
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture f = b.bind(port).sync();
+            ChannelFuture f = b.bind(host, port).sync();
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
@@ -50,6 +50,6 @@ public class Server {
     }
     public static void main(String[] args) throws Exception {
         Server server = new Server();
-        server.start(8000);
+        server.start("127.0.0.1", 8000);
     }
 }

@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test;
+package net.hasor.rsf._test.socket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.io.IOException;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.socket.RequestSocketMessage;
@@ -27,15 +30,21 @@ import net.hasor.rsf.protocol.socket.RequestSocketMessage;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
-    private static int reqID = 1230;
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        for (int i = 0; i < 9000000; i++) {
-            this._channelActive(ctx);
-        }
-        ctx.close();
+        ChannelFutureListener listener = new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess() == false)
+                    return;
+                future.channel().writeAndFlush(getData()).addListener(this);
+            }
+        };
+        //
+        ctx.writeAndFlush(getData()).addListener(listener);
     }
     // 连接成功后，向server发送消息
-    public void _channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void _channelActive(ChannelHandlerContext ctx) throws Exception {}
+    private static int reqID = 1230;
+    private ByteBuf getData() throws IOException {
         RequestSocketMessage req = new RequestSocketMessage();
         req.setVersion(RSFConstants.RSF_V_1_0_Req);
         req.setRequestID(reqID++);
@@ -64,7 +73,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         //
         ByteBuf out = ByteBufAllocator.DEFAULT.heapBuffer();
         new RpcRequestProtocol().encode(req, out);
-        //        System.out.println("pack Size=" + out.readableBytes());
-        ctx.writeAndFlush(out);
+        return out;
     }
 }

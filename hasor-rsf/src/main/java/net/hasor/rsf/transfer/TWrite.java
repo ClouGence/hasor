@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.general;
+package net.hasor.rsf.transfer;
 /**
- * 
- * @version : 2014年9月20日
+ * 写模式的列车
+ * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface EventConst {
-    public static final String Received_Request = "RSF_Received_Request_Event";
-    public static final String Receiving_Request = "RSF_Receiving_Request_Event";
-    
+public interface TWrite {
+    /**货物是否装满了*/
+    public boolean isFull(Class<?> goodType);
+    /**推送一个货物到列车上。*/
+    public boolean pushGood(Class<?> goodType, Object good);
+    /**列车容量*/
+    public int getCapacity();
 }
