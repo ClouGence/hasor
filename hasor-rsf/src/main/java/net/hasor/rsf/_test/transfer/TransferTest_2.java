@@ -24,13 +24,12 @@ import net.hasor.rsf.transfer.TrackManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TransferTest_2 {
-    private static class StationA {};
-    private static class StationB {};
-    private static class StationC {};
-    private static class StationD {};
+    static enum StationEnum {
+        A, B, C, D
+    };
     //
     //
-    private static final int CAPACITY = 2048;
+    private static final int CAPACITY = 4096;
     static volatile long     index    = 0;
     public static void main(String[] args) throws Exception {
         _1_main(args);
@@ -49,39 +48,49 @@ public class TransferTest_2 {
     }
     public static void _1_main(String[] args) throws IOException {
         final TrackManager t = new TrackManager(//
-                new Class[] { StationA.class, StationB.class, StationC.class, StationD.class },//
-                2048, CAPACITY);
+                StationEnum.values(), 40, CAPACITY);
         //
-        seller(StationA.class, StationB.class, t, 0).start();
-        consumer(StationB.class, StationC.class, t, 0).start();
+        seller(StationEnum.A, StationEnum.B, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
+        consumer(StationEnum.B, StationEnum.C, t, 0).start();
         //
-        seller(StationC.class, StationD.class, t, 0).start();
-        consumer(StationD.class, StationA.class, t, 0).start();
+        seller(StationEnum.C, StationEnum.D, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
+        consumer(StationEnum.D, StationEnum.A, t, 0).start();
     }
-    private static Thread consumer(final Class<?> stationType, final Class<?> nextStationType, final TrackManager track, final int id) {
+    private static Thread consumer(final StationEnum atStation, final StationEnum nextStation, final TrackManager track, final int id) {
         return new Thread() {
             public void run() {
                 this.setName("Consumer-" + id);
                 while (true) {
-                    TRead node = track.waitForRead(stationType);
+                    TRead node = track.waitForRead(atStation);
                     for (int i = 0; i < CAPACITY; i++) {
-                        Long data = node.pullGood(Long.class);
+                        Object data = node.pullGood();
                     }
-                    track.switchNext(nextStationType);
+                    track.switchNext(nextStation);
                 }
             }
         };
     }
-    private static Thread seller(final Class<?> stationType, final Class<?> nextStationType, final TrackManager track, final int id) {
+    private static Thread seller(final StationEnum atStation, final StationEnum nextStation, final TrackManager track, final int id) {
         return new Thread() {
             public void run() {
                 this.setName("Seller-" + id);
                 while (true) {
-                    TWrite node = track.waitForWrite(stationType);
+                    TWrite node = track.waitForWrite(atStation);
                     for (int i = 0; i < CAPACITY; i++) {
-                        node.pushGood(Long.class, index++);
+                        node.pushGood(index++);
                     }
-                    track.switchNext(nextStationType);
+                    track.switchNext(nextStation);
                 }
             }
         };

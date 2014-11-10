@@ -20,10 +20,10 @@ package net.hasor.rsf.transfer;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TRead {
-    /**判断列车上是否有需要的货物。*/
-    public boolean hasGoods(Class<?> goodType);
+    /**是否空了*/
+    public boolean isEmpty();
     /**从列车上拉取一个货物。*/
-    public <T> T pullGood(Class<T> goodType);
+    public Object pullGood();
     /**获取货物数量*/
-    public int getGoodCount(Class<?> goodType);
+    public int getGoodCount();
 }

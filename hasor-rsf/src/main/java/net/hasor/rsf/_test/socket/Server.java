@@ -23,7 +23,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hasor.rsf.net.netty.RSFCodec;
-import net.hasor.rsf.server.handler.ServiceHandler;
 /**
  * 
  * @version : 2014年9月12日
@@ -31,15 +30,14 @@ import net.hasor.rsf.server.handler.ServiceHandler;
  */
 public class Server {
     public void start(String host, int port) throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);//
-        EventLoopGroup workerGroup = new NioEventLoopGroup(1);//Work线程，负责接收数据
+        EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
+        EventLoopGroup workerGroup = new NioEventLoopGroup(100);//Work线程，负责接收数据
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
                             new RSFCodec(),//
-                            new ServiceHandler(),//
                             new ServerHandler());
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);

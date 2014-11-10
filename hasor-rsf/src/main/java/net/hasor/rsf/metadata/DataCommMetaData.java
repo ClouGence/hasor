@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.message;
+package net.hasor.rsf.metadata;
 import java.util.HashMap;
 import java.util.Map;
+import net.hasor.rsf.general.RSFConstants;
 /**
  * 
  * @version : 2014年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class FullCommon {
-    private byte                version   = 0;                            //
+abstract class DataCommMetaData {
+    private byte                version   = RSFConstants.RSF;             //
     private long                requestID = 0;                            //
     private Map<String, String> optionMap = new HashMap<String, String>(); //选项
     //
-    protected FullCommon(byte version) {
+    /**设置协议版本。*/
+    protected void setVersion(byte version) {
         this.version = version;
     }
-    //
     /**是否为Request消息。*/
     public boolean isRequest() {
         return (0xC1 | this.version) == this.version;

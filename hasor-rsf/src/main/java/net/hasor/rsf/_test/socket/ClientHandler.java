@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test.socket;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
-import net.hasor.rsf.general.RSFConstants;
-import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
-import net.hasor.rsf.protocol.socket.RequestSocketMessage;
-import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
+import net.hasor.rsf.general.ProtocolVersion;
+import net.hasor.rsf.metadata.RequestMetaData;
+import net.hasor.rsf.protocol.message.ResponseSocketMessage;
 import net.hasor.rsf.protocol.toos.SocketUtils;
 /**
  * 
@@ -67,36 +64,24 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     //
     //
     private static int reqID = 0;
-    private ByteBuf getData() throws IOException {
-        RequestSocketMessage req = new RequestSocketMessage();
-        req.setVersion(RSFConstants.RSF_V_1_0_Req);
-        req.setRequestID(reqID++);
+    private RequestMetaData getData() throws IOException {
+        RequestMetaData request = new RequestMetaData();
+        request.setVersion(ProtocolVersion.V_1_0.value());
+        request.setRequestID(reqID++);
         //
-        req.setServiceName(req.pushData("java.util.List".getBytes()));
-        req.setServiceVersion(req.pushData("1.0.0".getBytes()));
-        req.setServiceGroup(req.pushData("default".getBytes()));
-        req.setTargetMethod(req.pushData("size".getBytes()));
-        req.setSerializeType(req.pushData("json".getBytes()));
+        request.setServiceName("java.util.List");
+        request.setServiceVersion("1.0.0");
+        request.setServiceGroup("default");
+        request.setTargetMethod("size");
+        request.setSerializeType("json");
         //
-        req.addParameter(//
-                req.pushData("java.lang.String".getBytes()),//
-                req.pushData("你好...".getBytes()));
-        req.addParameter(//
-                req.pushData("java.lang.String".getBytes()),//
-                req.pushData("你好...".getBytes()));
-        req.addParameter(//
-                req.pushData("java.lang.String".getBytes()),//
-                req.pushData(null));
+        request.addParameter("java.lang.String", "你好...".getBytes());
+        request.addParameter("java.lang.String", "你好...".getBytes());
+        request.addParameter("java.lang.String", "你好...".getBytes());
         //
+        request.addOption("sync", "true");
         //
-        req.addOption(//
-                req.pushData("sync".getBytes()),//
-                req.pushData("true".getBytes()));
-        //
-        //
-        ByteBuf out = ByteBufAllocator.DEFAULT.heapBuffer();
-        new RpcRequestProtocol().encode(req, out);
         sendCount++;
-        return out;
+        return request;
     }
 }

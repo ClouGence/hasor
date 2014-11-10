@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.socket;
+package net.hasor.rsf.protocol.message;
 import org.more.util.ArrayUtils;
 /**
- * RSF 1.0 协议格式
+ * RSF 1.0 Request 协议
  * --------------------------------------------------------bytes =13
  * byte[1]  version                              RSF版本(0xC1 or 0x81)
  * byte[8]  requestID                            请求ID
- * byte[4]  contentLength                        内容大小(max = 16MB)
+ * byte[1]  keepData                             保留区
+ * byte[3]  contentLength                        内容大小(max ~ 16MB)
  * --------------------------------------------------------bytes =10
  * byte[2]  servicesName-(attr-index)            远程服务名
  * byte[2]  servicesGroup-(attr-index)           远程服务分组

@@ -2,7 +2,7 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
-import net.hasor.rsf.protocol.socket.RequestSocketMessage;
+import net.hasor.rsf.protocol.message.RequestSocketMessage;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年10月25日
@@ -18,7 +18,9 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         buf.writeLong(reqMsg.getRequestID());
         ByteBuf requestBody = this.encodeRequest(reqMsg);
         //* byte[4]  contentLength                        内容大小(max = 16MB)
-        buf.writeInt(requestBody.readableBytes());
+        int bodyLength = requestBody.readableBytes();
+        bodyLength = (bodyLength << 8) >>> 8;//左移8未，在无符号右移8位。形成最大16777215字节的限制。
+        buf.writeInt(bodyLength);
         //
         buf.writeBytes(requestBody);
     }

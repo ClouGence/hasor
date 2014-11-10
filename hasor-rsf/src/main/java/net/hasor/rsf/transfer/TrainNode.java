@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transfer;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 列车
@@ -23,93 +21,70 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author 赵永春(zyc@hasor.net)
  */
 class TrainNode implements TRead, TWrite {
-    private int poolCapacity = 2048;
-    private class GoodPool {
-        private Object[] dataPool   = new Object[poolCapacity];
-        private int      readIndex  = 0;
-        private int      writeIndex = 0;
-        private int      size       = 0;
-    }
-    //
-    private AtomicInteger           model   = new AtomicInteger(0); //-1(读)，0(就绪)，1(写)
-    private Map<Class<?>, GoodPool> goodMap = null;
+    private int           poolCapacity = 2048;
+    private Object[]      dataPool     = new Object[0];
+    private int           readIndex    = 0;
+    private int           writeIndex   = 0;
+    private int           size         = 0;
+    private AtomicInteger rwModel      = new AtomicInteger(0); //-1(读)，0(就绪)，1(写)
     //
     public TrainNode() {
         this(2048);
     }
     public TrainNode(int capacity) {
-        this.goodMap = new HashMap<Class<?>, GoodPool>();
         this.poolCapacity = capacity;
+        this.dataPool = new Object[capacity];
     }
     //
-    /**判断节点上是否有货物。*/
-    public boolean hasGoods(Class<?> goodType) {
-        return this.goodMap.containsKey(goodType);
-    }
-    public int getGoodCount(Class<?> goodType) {
-        GoodPool pool = this.goodMap.get(goodType);
-        if (pool == null) {
-            return 0;
-        }
-        return pool.size;
+    public int getGoodCount() {
+        return this.size;
     }
     /**列车容量*/
     public int getCapacity() {
         return this.poolCapacity;
     }
     /**货物是否装满了*/
-    public boolean isFull(Class<?> goodType) {
-        GoodPool pool = this.goodMap.get(goodType);
-        if (pool == null) {
-            return false;
-        }
-        return pool.size == pool.dataPool.length;
+    public boolean isFull() {
+        return this.size == this.dataPool.length;
+    }
+    /**货物是否空了*/
+    public boolean isEmpty() {
+        return this.size == 0;
     }
     /**推送一个货物到节点上。*/
-    public boolean pushGood(Class<?> goodType, Object good) {
+    public boolean pushGood(Object good) {
         if (good == null)
             return false;
         //
-        GoodPool pool = this.goodMap.get(goodType);
-        if (pool == null) {
-            pool = new GoodPool();
-            this.goodMap.put(goodType, pool);
-        }
-        //
-        if (pool.size == pool.dataPool.length)
+        if (this.size == this.dataPool.length)
             return false;
         //
-        pool.dataPool[pool.writeIndex++] = good;
-        pool.size++;
+        this.dataPool[this.writeIndex++] = good;
+        this.size++;
         //
-        if (pool.writeIndex == pool.dataPool.length)
-            pool.writeIndex = 0;
+        if (this.writeIndex == this.dataPool.length)
+            this.writeIndex = 0;
         //
         return true;
     }
     /**从节点中拉取一个货物。*/
-    public <T> T pullGood(Class<T> goodType) {
-        GoodPool pool = this.goodMap.get(goodType);
-        if (pool == null) {
-            return null;
-        }
-        //
-        Object good = pool.dataPool[pool.readIndex];
-        pool.dataPool[pool.readIndex] = null;
-        pool.readIndex++;
-        pool.size--;
+    public Object pullGood() {
+        Object good = this.dataPool[this.readIndex];
+        this.dataPool[this.readIndex] = null;
+        this.readIndex++;
+        this.size--;
         // 
-        if (pool.readIndex == pool.dataPool.length)
-            pool.readIndex = 0;
+        if (this.readIndex == this.dataPool.length)
+            this.readIndex = 0;
         //
-        return (T) good;
+        return good;
     }
     //
     public void cleanTake() {
-        this.model.set(0);
+        this.rwModel.set(0);
     }
     /**-1(读)，0(就绪)，1(写)*/
     public boolean takeFor(int rw) {
-        return this.model.compareAndSet(0, rw);
+        return this.rwModel.compareAndSet(0, rw);
     }
 }

@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.message;
+package net.hasor.rsf.metadata;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -26,19 +24,20 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FullRequest extends FullCommon {
-    private String              serviceName    = "";
-    private String              serviceGroup   = "";
-    private String              serviceVersion = "";
-    private String              targetMethod   = "";
-    private String              serializeType  = "";
-    private List<String>        paramTypes     = new ArrayList<String>();      //参数列表
-    private Map<String, byte[]> paramMapping   = new HashMap<String, byte[]>(); //参数值映射
+public class RequestMetaData extends DataCommMetaData {
+    private String       serviceName    = "";
+    private String       serviceGroup   = "";
+    private String       serviceVersion = "";
+    private String       targetMethod   = "";
+    private String       serializeType  = "";
+    private List<String> paramTypes     = new ArrayList<String>(); //参数列表
+    private List<byte[]> paramDatas     = new ArrayList<byte[]>(); //参数值映射
     //
-    public FullRequest() {
-        super(RSFConstants.RSF_V_1_0_Req);
+    //
+    /**设置协议版本。*/
+    public void setVersion(byte version) {
+        super.setVersion((byte) (RSFConstants.RSF_Request | version));
     }
-    //
     /**获取服务名*/
     public String getServiceName() {
         return this.serviceName;
@@ -82,11 +81,21 @@ public class FullRequest extends FullCommon {
     /**添加请求参数。*/
     public void addParameter(String paramType, byte[] rawData) {
         this.paramTypes.add(paramType);
-        this.paramMapping.put(paramType, rawData);
+        this.paramDatas.add(rawData);
     }
     /**获取请求参数类型列表。*/
     public String[] getParameterTypes() {
         return this.paramTypes.toArray(new String[this.paramTypes.size()]);
+    }
+    /**获取请求参数总数。*/
+    public int getParameterCount() {
+        return this.paramTypes.size();
+    }
+    public String getParameterType(int index) {
+        return this.paramTypes.get(index);
+    }
+    public byte[] getParameterValue(int index) {
+        return this.paramDatas.get(index);
     }
     //
     /**将请求参数转换为对象。*/
@@ -97,7 +106,7 @@ public class FullRequest extends FullCommon {
         String[] paramTypes = this.getParameterTypes();
         Object[] paramObject = new Object[paramTypes.length];
         for (int i = 0; i < paramTypes.length; i++) {
-            byte[] paramData = this.paramMapping.get(paramTypes[i]);
+            byte[] paramData = this.paramDatas.get(i);
             paramObject[i] = decoder.decode(paramData);
         }
         return paramObject;

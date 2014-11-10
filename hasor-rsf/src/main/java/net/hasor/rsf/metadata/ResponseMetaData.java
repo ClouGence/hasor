@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.message;
+package net.hasor.rsf.metadata;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.serialize.Decoder;
@@ -24,16 +24,16 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FullResponse extends FullCommon {
+public class ResponseMetaData extends DataCommMetaData {
     private ProtocolStatus status        = ProtocolStatus.Unknown;
     private String         serializeType = "";
     private String         returnType    = "";
     private byte[]         returnData    = null;
     //
-    public FullResponse() {
-        super(RSFConstants.RSF_V_1_0_Res);
+    /**设置协议版本。*/
+    public void setVersion(byte version) {
+        super.setVersion((byte) (RSFConstants.RSF_Response | version));
     }
-    //
     /**获取响应状态*/
     public ProtocolStatus getStatus() {
         return this.status;
@@ -57,6 +57,14 @@ public class FullResponse extends FullCommon {
     /**设置返回值类型*/
     public void setReturnType(String returnType) {
         this.returnType = returnType;
+    }
+    /**设置要返回的值*/
+    public void setReturnData(byte[] rawReturnData) {
+        this.returnData = rawReturnData;
+    }
+    /**获取要返回的值*/
+    public byte[] getReturnData() {
+        return this.returnData;
     }
     /**获取要返回的值*/
     public Object getReturnData(SerializeFactory serializeFactory) throws Throwable {

@@ -21,9 +21,9 @@ package net.hasor.rsf.transfer;
  */
 public interface TWrite {
     /**货物是否装满了*/
-    public boolean isFull(Class<?> goodType);
+    public boolean isFull();
     /**推送一个货物到列车上。*/
-    public boolean pushGood(Class<?> goodType, Object good);
+    public boolean pushGood(Object good);
     /**列车容量*/
     public int getCapacity();
 }

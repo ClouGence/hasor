@@ -16,25 +16,25 @@
 package net.hasor.rsf._test.socket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.protocol.socket.RequestSocketMessage;
+import net.hasor.rsf.metadata.RequestMetaData;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    long readCount = 0;
-    long start     = System.currentTimeMillis();
+    static long readCount = 0;
+    static long start     = System.currentTimeMillis();
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof RequestSocketMessage == false)
+        if (msg instanceof RequestMetaData == false)
             return;
-        long requestID = ((RequestSocketMessage) msg).getRequestID();
+        long requestID = ((RequestMetaData) msg).getRequestID();
         //
         readCount++;
         //
         long duration = System.currentTimeMillis() - start;
-        if (duration % 5000 == 0) {
+        if (duration % 1000 == 0) {
             long qps = readCount * 1000 / duration;
             System.out.println("QPS:" + qps);
             System.out.println("readCount:" + readCount);

@@ -25,15 +25,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TrackManager {
     private TrainNode[]     trainArray   = null;
     private AtomicInteger[] trainSignal  = null;
-    private Class<?>[]      stationArray = null;
+    private Enum<?>[]       stationArray = null;
     //
-    public TrackManager(Class<?>[] stationArray) {
+    public TrackManager(Enum<?>[] stationArray) {
         this(stationArray, 2, 2048);
     }
-    public TrackManager(Class<?>[] stationArray, int trainCount, int capacity) {
+    public TrackManager(Enum<?>[] stationArray, int trainCount, int capacity) {
         /*初始化车站*/
         if (stationArray == null) {
-            stationArray = new Class[0];
+            stationArray = new Enum<?>[0];
         }
         this.stationArray = stationArray;
         /*列车数*/
@@ -57,27 +57,31 @@ public class TrackManager {
     }
     //
     /**waitType 定是要追踪的类型，一旦等到了要追踪的类型将会返回。该方法会有很多线程调用，因此每个线程都在等待追踪的那个类型的到达。*/
-    public TWrite waitForWrite(Class<?> waitType) {
-        return waitFor(waitType, 1);
+    public TWrite waitForWrite(Enum<?> waitStation) {
+        return waitFor(waitStation, 1);
     }
     /**waitType 定是要追踪的类型，一旦等到了要追踪的类型将会返回。该方法会有很多线程调用，因此每个线程都在等待追踪的那个类型的到达。*/
-    public TRead waitForRead(Class<?> waitType) {
-        return waitFor(waitType, -1);
+    public TRead waitForRead(Enum<?> waitStation) {
+        return waitFor(waitStation, -1);
     }
     //
-    private TrainNode waitFor(Class<?> waitType, int rw) {
+    private TrainNode waitFor(Enum<?> waitStation, int rw) {
         int atTrainNode = -1;
         Out: while (true) {
             for (int i = 0; i < this.trainSignal.length; i++) {
                 //循环所有列车的信号量，找出正在位于 waitType 的那个列车
-                boolean trainHit = this.stationArray[this.trainSignal[i].get()].equals(waitType);
+                boolean trainHit = this.stationArray[this.trainSignal[i].get()] == waitStation;
                 //找到那个列车
                 if (trainHit && this.trainArray[i].takeFor(rw)) {
                     atTrainNode = i;
                     break Out;
                 }
             }
-            Thread.yield(); // 为保证高吞吐量的消息传递，这个是必须的,但在等待列车时它会消耗CPU周期
+            //
+            try {
+                Thread.yield(); // 为保证高吞吐量的消息传递，这个是必须的,但在等待列车时它会消耗CPU周期
+                //Thread.sleep(10);
+            } catch (Exception e) {}
         }
         return markTrain(atTrainNode);
     }
@@ -94,28 +98,12 @@ public class TrackManager {
         trainList.add(train);
         return this.trainArray[train];
     }
-    //    /**通过这个方法将列车开往下一个车站。*/
-    //    public void switchNext() {
-    //        List<Integer> trainList = this.localMark.get();
-    //        if (trainList != null) {
-    //            for (int i = 0; i < trainList.size(); i++) {
-    //                //1.车站轮转
-    //                int index = trainList.get(i);
-    //                AtomicInteger ai = this.trainSignal[index];
-    //                if (ai.compareAndSet(this.stationArray.length - 1, 0) == false) {
-    //                    ai.getAndIncrement();
-    //                }
-    //                //2.模式重置
-    //                this.trainArray[index].cleanTake();
-    //            }
-    //            trainList.clear();
-    //        }
-    //    }
+    //
     /**通过这个方法将列车开往下一个目的地。*/
-    public void switchNext(Class<?> waitType) {
+    public void switchNext(Enum<?> nextStation) {
         int switchTo = -1;
         for (int i = 0; i < this.stationArray.length; i++) {
-            if (this.stationArray[i].equals(waitType))
+            if (this.stationArray[i] == nextStation)
                 switchTo = i;
         }
         if (switchTo < 0)

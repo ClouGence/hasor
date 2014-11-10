@@ -15,11 +15,21 @@
  */
 package net.hasor.rsf.net.netty;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolType;
+import net.hasor.rsf.general.ProtocolVersion;
+import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.metadata.RequestMetaData;
+import net.hasor.rsf.metadata.ResponseMetaData;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
+import net.hasor.rsf.protocol.message.RequestSocketMessage;
+import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
  * 解码器
  * @version : 2014年10月10日
@@ -30,12 +40,14 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         this(Integer.MAX_VALUE);
     }
     public RSFProtocolDecoder(int maxBodyLength) {
-        // lengthFieldOffset   = 9
-        // lengthFieldLength   = 4
+        // lengthFieldOffset   = 10
+        // lengthFieldLength   = 3
         // lengthAdjustment    = 0
         // initialBytesToStrip = 0
-        super(maxBodyLength, 9, 4, 0, 0);
+        super(maxBodyLength, 10, 3, 0, 0);
     }
+    //
+    /*解码*/
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         ByteBuf frame = (ByteBuf) super.decode(ctx, in);
         if (frame == null) {
@@ -45,21 +57,48 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         //* byte[1]  version                              RSF版本(0xC1)
         byte version = frame.getByte(0);
         ProtocolType pType = ProtocolType.valueOf(version);
-        Object decObj = null;
         if (pType == ProtocolType.Request) {
             //request
-            decObj = new RpcRequestProtocol().decode(frame);
+            RequestSocketMessage reqSocket = new RpcRequestProtocol().decode(frame);
+            RequestMetaData reqMetaData = TransferUtils.requestTransferToMetaData(reqSocket);
+            this.fireAck(ctx, reqMetaData);
         } else if (pType == ProtocolType.Response) {
             //response
-            decObj = new RpcResponseProtocol().decode(frame);
+            ResponseSocketMessage resSocket = new RpcResponseProtocol().decode(frame);
+            ResponseMetaData resMetaData = TransferUtils.responseTransferToMetaData(resSocket);
+            ctx.fireChannelRead(resMetaData);
         }
         //
-        if (decObj != null) {
-            ctx.fireChannelRead(decObj);
-        }
         return null;
     }
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
         return buffer.slice(index, length);
+    }
+    //
+    //
+    //
+    private void fireAck(ChannelHandlerContext ctx, RequestMetaData reqMetaData) {
+        //1.发送ACK包
+        ResponseSocketMessage ack = new ResponseSocketMessage();
+        ack.setVersion((byte) (RSFConstants.RSF_Response | ProtocolVersion.V_1_0.value()));
+        ack.setRequestID(reqMetaData.getRequestID());
+        ack.setStatus(ProtocolStatus.Accepted.shortValue());
+        //2.当ACK，发送成功之后继续传递msg
+        ctx.pipeline().writeAndFlush(ack).addListener(new FireChannel(ctx, reqMetaData));
+    }
+}
+/***/
+class FireChannel implements ChannelFutureListener {
+    private ChannelHandlerContext ctx     = null;
+    private Object                message = null;
+    //
+    public FireChannel(ChannelHandlerContext ctx, Object message) {
+        this.ctx = ctx;
+        this.message = message;
+    }
+    public void operationComplete(ChannelFuture future) throws Exception {
+        if (future.isSuccess() == false)
+            return;
+        this.ctx.fireChannelRead(this.message);
     }
 }

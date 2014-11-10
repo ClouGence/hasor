@@ -16,10 +16,8 @@
 package net.hasor.rsf.server.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
-import net.hasor.rsf.protocol.socket.RequestSocketMessage;
-import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
+import net.hasor.rsf.metadata.RequestMetaData;
+import net.hasor.rsf.metadata.ResponseMetaData;
 /**
  * 
  * @version : 2014年11月4日
@@ -27,17 +25,10 @@ import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
  */
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof RequestSocketMessage) {
-            //1.发送ACK包
-            RequestSocketMessage reqMSG = (RequestSocketMessage) msg;
-            ResponseSocketMessage ack = new ResponseSocketMessage();
-            ack.setVersion(RSFConstants.RSF_V_1_0_Res);
-            ack.setRequestID(reqMSG.getRequestID());
-            ack.setStatus(ProtocolStatus.Accepted.shortValue());
-            //2.当ACK，发送成功之后继续传递msg
-            ctx.writeAndFlush(ack).addListener(new FireChannel(ctx, msg));
+        if (msg instanceof RequestMetaData) {
             //
-        } else if (msg instanceof RequestSocketMessage) {
+            //
+        } else if (msg instanceof ResponseMetaData) {
             //
             //
         }

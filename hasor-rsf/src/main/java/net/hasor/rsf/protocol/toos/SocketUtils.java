@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.protocol.toos;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.protocol.socket.ResponseSocketMessage;
+import net.hasor.rsf.protocol.message.ResponseSocketMessage;
 /**
  * 
  * @version : 2014年11月5日
