@@ -2,15 +2,15 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
-import net.hasor.rsf.protocol.message.RequestSocketMessage;
+import net.hasor.rsf.protocol.block.RequestSocketBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
+public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
     /**encode Message to byte & write to network framework*/
-    public void encode(RequestSocketMessage reqMsg, ByteBuf buf) throws IOException {
+    public void encode(RequestSocketBlock reqMsg, ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0xC1)
         buf.writeByte(reqMsg.getVersion());
@@ -25,9 +25,9 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         buf.writeBytes(requestBody);
     }
     //
-    private ByteBuf encodeRequest(RequestSocketMessage reqMsg) {
+    private ByteBuf encodeRequest(RequestSocketBlock reqMsg) {
         ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.heapBuffer();
-        //* --------------------------------------------------------bytes =10
+        //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名
         bodyBuf.writeShort(reqMsg.getServiceName());
         //* byte[2]  servicesGroup-(attr-index)           远程服务分组
@@ -38,6 +38,8 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         bodyBuf.writeShort(reqMsg.getTargetMethod());
         //* byte[2]  serializeType-(attr-index)           序列化策略
         bodyBuf.writeShort(reqMsg.getSerializeType());
+        //* byte[4]  clientTimeout                        远程客户端超时时间
+        bodyBuf.writeInt(reqMsg.getClientTimeout());
         //* --------------------------------------------------------bytes =1 ~ 1021
         //* byte[1]  paramCount                           参数总数
         int[] paramMapping = reqMsg.getParameters();
@@ -74,7 +76,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
     //
     //
     /**decode stream to object*/
-    public RequestSocketMessage decode(ByteBuf buf) throws IOException {
+    public RequestSocketBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0xC1)
         byte version = buf.readByte();
@@ -83,10 +85,10 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         //* byte[4]  contentLength                        内容大小
         buf.skipBytes(4);
         //
-        RequestSocketMessage req = new RequestSocketMessage();
+        RequestSocketBlock req = new RequestSocketBlock();
         req.setVersion(version);
         req.setRequestID(requestID);
-        //* --------------------------------------------------------bytes =10
+        //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名
         req.setServiceName(buf.readShort());
         //* byte[2]  servicesGroup-(attr-index)           远程服务分组
@@ -97,6 +99,8 @@ public class RpcRequestProtocol implements Protocol<RequestSocketMessage> {
         req.setTargetMethod(buf.readShort());
         //* byte[2]  serializeType-(attr-index)           序列化策略
         req.setSerializeType(buf.readShort());
+        //* byte[4]  clientTimeout                        远程客户端超时时间
+        req.setClientTimeout(buf.readInt());
         //* --------------------------------------------------------bytes =1 ~ 1021
         //* byte[1]  paramCount                           参数总数
         byte paramCount = buf.readByte();

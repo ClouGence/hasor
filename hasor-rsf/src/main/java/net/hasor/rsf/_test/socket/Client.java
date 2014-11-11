@@ -38,6 +38,6 @@ public class Client {
     }
     public static void main(String[] args) throws Exception {
         Client client = new Client();
-        client.connect("127.0.0.1", 8000);
+        client.connect("10.68.213.79", 8000);
     }
 }

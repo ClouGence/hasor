@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.message;
+package net.hasor.rsf.protocol.block;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Request 协议
@@ -22,12 +22,13 @@ import org.more.util.ArrayUtils;
  * byte[8]  requestID                            请求ID
  * byte[1]  keepData                             保留区
  * byte[3]  contentLength                        内容大小(max ~ 16MB)
- * --------------------------------------------------------bytes =10
+ * --------------------------------------------------------bytes =14
  * byte[2]  servicesName-(attr-index)            远程服务名
  * byte[2]  servicesGroup-(attr-index)           远程服务分组
  * byte[2]  servicesVersion-(attr-index)         远程服务版本
  * byte[2]  servicesMethod-(attr-index)          远程服务方法名
  * byte[2]  serializeType-(attr-index)           序列化策略
+ * byte[4]  clientTimeout                        远程客户端超时时间
  * --------------------------------------------------------bytes =1 ~ 1021
  * byte[1]  paramCount                           参数总数
  *     byte[4]  ptype-0-(attr-index,attr-index)  参数类型1
@@ -50,7 +51,7 @@ import org.more.util.ArrayUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestSocketMessage extends RSFSocketMessage {
+public class RequestSocketBlock extends BaseSocketBlock {
     private byte  version        = 0; //byte[1]  RSF版本(0xC1 or 0x81)
     private long  requestID      = 0; //byte[8]  请求ID
     private short serviceName    = 0; //byte[2]  远程服务名
@@ -58,6 +59,7 @@ public class RequestSocketMessage extends RSFSocketMessage {
     private short serviceVersion = 0; //byte[2]  远程服务版本
     private short targetMethod   = 0; //byte[2]  远程服务方法名
     private short serializeType  = 0; //byte[2]  序列化策略
+    private int   clientTimeout  = 0; //byte[4]  远程客户端超时时间
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
     //
@@ -117,6 +119,14 @@ public class RequestSocketMessage extends RSFSocketMessage {
     /**设置序列化类型*/
     public void setSerializeType(short serializeType) {
         this.serializeType = serializeType;
+    }
+    /**获取远程客户端调用超时时间。*/
+    public int getClientTimeout() {
+        return this.clientTimeout;
+    }
+    /**设置远程客户端调用超时时间。*/
+    public void setClientTimeout(int clientTimeout) {
+        this.clientTimeout = clientTimeout;
     }
     //
     /**添加请求参数。*/

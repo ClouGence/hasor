@@ -21,7 +21,7 @@ import net.hasor.rsf.metadata.ServiceMetaData;
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceProvider implements InitLife {
+public class ServiceProvider {
     private ServiceMetaData metaData = new ServiceMetaData();
     private AtomicBoolean   inited   = new AtomicBoolean(false);
     /**初始化服务*/

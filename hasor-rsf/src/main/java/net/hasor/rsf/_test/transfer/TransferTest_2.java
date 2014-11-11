@@ -15,9 +15,9 @@
  */
 package net.hasor.rsf._test.transfer;
 import java.io.IOException;
-import net.hasor.rsf.transfer.TRead;
-import net.hasor.rsf.transfer.TWrite;
-import net.hasor.rsf.transfer.TrackManager;
+import net.hasor.rsf.executes.queue.TRead;
+import net.hasor.rsf.executes.queue.TWrite;
+import net.hasor.rsf.executes.queue.TrackManager;
 /**
  * 
  * @version : 2014年11月5日

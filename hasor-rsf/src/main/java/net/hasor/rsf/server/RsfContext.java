@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transfer;
+package net.hasor.rsf.server;
+import net.hasor.rsf.metadata.ServiceMetaData;
 /**
- * 写模式的列车
- * @version : 2014年11月4日
+ * RSF容器环境。
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TWrite {
-    /**货物是否装满了*/
-    public boolean isFull();
-    /**推送一个货物到列车上。*/
-    public boolean pushGood(Object good);
-    /**列车容量*/
-    public int getCapacity();
+public interface RsfContext {
+    /***/
+    public ServiceMetaData getServiceByID(String serviceID);
+    /***/
+    public String[] getServiceIDs();
 }

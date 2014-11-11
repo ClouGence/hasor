@@ -22,7 +22,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.server.handler.ServiceHandler;
 /**
  * 
  * @version : 2014年9月12日
@@ -30,15 +32,19 @@ import net.hasor.rsf.net.netty.RSFCodec;
  */
 public class Server {
     public void start(String host, int port) throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
-        EventLoopGroup workerGroup = new NioEventLoopGroup(100);//Work线程，负责接收数据
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
+        final EventLoopGroup workerGroup = new NioEventLoopGroup(100);//Work线程，负责接收数据
+        final ExecutesManager manager = new ExecutesManager();
+        //
+        new Thread(new ServerHandler(manager)).start();
+        //
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
                             new RSFCodec(),//
-                            new ServerHandler());
+                            new ServiceHandler(manager));
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.bind(host, port).sync();
@@ -50,6 +56,6 @@ public class Server {
     }
     public static void main(String[] args) throws Exception {
         Server server = new Server();
-        server.start("127.0.0.1", 8000);
+        server.start("10.68.213.79", 8000);
     }
 }

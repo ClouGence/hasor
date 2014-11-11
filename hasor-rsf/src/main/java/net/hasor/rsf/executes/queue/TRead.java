@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transfer;
+package net.hasor.rsf.executes.queue;
 /**
  * 读模式的列车
  * @version : 2014年11月4日

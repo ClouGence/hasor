@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transfer;
+package net.hasor.rsf.executes.queue;
 import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 列车

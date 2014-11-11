@@ -18,11 +18,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.hasor.rsf.metadata.RequestMetaData;
-import net.hasor.rsf.metadata.ResponseMetaData;
+import net.hasor.rsf.protocol.block.RequestSocketBlock;
+import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.message.RequestSocketMessage;
-import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
@@ -36,23 +36,24 @@ public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
         ctx.flush();
     }
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        //1.MetaData转换
-        if (msg instanceof RequestMetaData) {
-            msg = TransferUtils.requestTransferToSocket((RequestMetaData) msg); //request
-        } else if (msg instanceof ResponseMetaData) {
-            msg = TransferUtils.responseTransferToSocket((ResponseMetaData) msg);//response
+        //1.MetaData 转换 SocketBlock
+        if (msg instanceof RequestMsg) {
+            msg = TransferUtils.requestToBlock((RequestMsg) msg); //request
+        }
+        if (msg instanceof ResponseMsg) {
+            msg = TransferUtils.responseToBlock((ResponseMsg) msg);//response
         }
         //
-        //2.SocketMessage转换
-        if (msg instanceof RequestSocketMessage) {
-            RequestSocketMessage request = (RequestSocketMessage) msg;
-            Protocol<RequestSocketMessage> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
-            requestProtocol.encode((RequestSocketMessage) msg, out);//request
+        //2.SocketBlock 转换 ByteBuf
+        if (msg instanceof RequestSocketBlock) {
+            RequestSocketBlock request = (RequestSocketBlock) msg;
+            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
+            requestProtocol.encode((RequestSocketBlock) msg, out);//request
         }
-        if (msg instanceof ResponseSocketMessage) {
-            ResponseSocketMessage response = (ResponseSocketMessage) msg;
-            Protocol<ResponseSocketMessage> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
-            responseProtocol.encode((ResponseSocketMessage) msg, out);//response
+        if (msg instanceof ResponseSocketBlock) {
+            ResponseSocketBlock response = (ResponseSocketBlock) msg;
+            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
+            responseProtocol.encode((ResponseSocketBlock) msg, out);//response
         }
     }
 }

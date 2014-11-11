@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.message;
+package net.hasor.rsf.protocol.block;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.more.util.ArrayUtils;
@@ -21,13 +21,13 @@ import org.more.util.ArrayUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RSFSocketMessage {
+public class BaseSocketBlock {
     public static final int NULL_Mark = 0x80000000;                           //
     public static int       MaxSize   = 16777215;                             //0x00FFFFFF
     private int[]           poolMap   = {};
     private ByteBuf         poolData  = ByteBufAllocator.DEFAULT.heapBuffer();
     //
-    public RSFSocketMessage() {
+    public BaseSocketBlock() {
         this.addPoolData(0);
     }
     //

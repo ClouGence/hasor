@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.toos;
-import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+package net.hasor.rsf.executes;
 /**
  * 
- * @version : 2014年11月5日
+ * @version : 2014年11月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SocketUtils {
-    /**判断 response 是否为一个ACK包。*/
-    public static boolean isACK(ResponseSocketMessage socketMessage) {
-        return socketMessage.getStatus() == ProtocolStatus.Accepted.shortValue();
-    }
-}
+public interface MessageProcessing {}

@@ -16,30 +16,49 @@
 package net.hasor.rsf.server.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.metadata.RequestMetaData;
-import net.hasor.rsf.metadata.ResponseMetaData;
-import net.hasor.rsf.transfer.TWrite;
-import net.hasor.rsf.transfer.TrackManager;
+import net.hasor.rsf.executes.ExecutesManager;
+import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.protocol.block.ResponseSocketBlock;
+import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
- * 
+ * 负责将 Netty 事件放入 ExecutesManager 队列中。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
-    private static final int CAPACITY     = 4096;
-    private TrackManager     trackManager = new TrackManager(TMEnum.values(), 20, CAPACITY);
-    private static enum TMEnum {
-        MsgIn
+    private ExecutesManager executesManager = null;
+    //
+    public ServiceHandler(ExecutesManager executesManager) {
+        this.executesManager = executesManager;
     }
-    //
-    //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        TWrite write = this.trackManager.waitForWrite(TMEnum.MsgIn);
-        if (msg instanceof RequestMetaData) {
-            write.pushGood(msg);//Request
-        } else if (msg instanceof ResponseMetaData) {
-            write.pushGood(msg);//Response
+        byte version = 0;
+        long requestID = 0;
+        boolean pushOK = false;
+        //
+        if (msg instanceof RequestMsg) {
+            RequestMsg request = (RequestMsg) msg;
+            version = request.getVersion();
+            requestID = request.getRequestID();
+            pushOK = this.executesManager.pushMessage(msg);//Request
+        } else if (msg instanceof ResponseMsg) {
+            ResponseMsg response = (ResponseMsg) msg;
+            version = response.getVersion();
+            requestID = response.getRequestID();
+            pushOK = this.executesManager.pushMessage(msg);//Response
         }
-        this.trackManager.switchNext(TMEnum.MsgIn);
+        //
+        if (pushOK == false) {
+            this.fireChooseOther(ctx, version, requestID);
+        }
+    }
+    private void fireChooseOther(ChannelHandlerContext ctx, byte version, long requestID) {
+        //1.创建ChooseOther包
+        ResponseSocketBlock ack = TransferUtils.buildStatus(//
+                version, requestID, ProtocolStatus.ChooseOther);
+        //2.发送ChooseOther包
+        ctx.pipeline().writeAndFlush(ack);
     }
 }

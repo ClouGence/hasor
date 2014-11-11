@@ -24,7 +24,7 @@ import org.more.classcode.delegate.faces.MethodDelegate;
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsumerProvider<T> implements Provider<T>, InitLife {
+public class ConsumerProvider<T> implements Provider<T> {
     private Class<T>        serviceInterface = null;
     private ServiceMetaData metaData         = new ServiceMetaData();
     private AtomicBoolean   inited           = new AtomicBoolean(false);

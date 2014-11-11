@@ -21,13 +21,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolType;
-import net.hasor.rsf.general.ProtocolVersion;
-import net.hasor.rsf.general.RSFConstants;
-import net.hasor.rsf.metadata.RequestMetaData;
-import net.hasor.rsf.metadata.ResponseMetaData;
+import net.hasor.rsf.protocol.block.RequestSocketBlock;
+import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.message.RequestSocketMessage;
-import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
@@ -60,27 +58,27 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         ProtocolType pType = ProtocolType.valueOf(version);
         if (pType == ProtocolType.Request) {
             //request
-            Protocol<RequestSocketMessage> requestProtocol = ProtocolUtils.requestProtocol(version);
+            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(version);
             if (requestProtocol != null) {
-                RequestSocketMessage reqSocket = requestProtocol.decode(frame);
-                RequestMetaData reqMetaData = TransferUtils.requestTransferToMetaData(reqSocket);
+                RequestSocketBlock block = requestProtocol.decode(frame);
+                RequestMsg reqMetaData = TransferUtils.requestToMessage(block);
                 this.fireAck(ctx, reqMetaData);
                 return null;/*正常处理后返回*/
             }
         }
         if (pType == ProtocolType.Response) {
             //response
-            Protocol<ResponseSocketMessage> responseProtocol = ProtocolUtils.responseProtocol(version);
+            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(version);
             if (responseProtocol != null) {
-                ResponseSocketMessage resSocket = responseProtocol.decode(frame);
-                ResponseMetaData resMetaData = TransferUtils.responseTransferToMetaData(resSocket);
+                ResponseSocketBlock block = responseProtocol.decode(frame);
+                ResponseMsg resMetaData = TransferUtils.responseToMessage(block);
                 ctx.fireChannelRead(resMetaData);
                 return null;/*正常处理后返回*/
             }
         }
         /*                    错误情况*/
         frame.skipBytes(1);
-        this.fireProtocolError(ctx, frame.readLong());
+        this.fireProtocolError(ctx, version, frame.readLong());
         return null;
     }
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
@@ -88,22 +86,23 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     //
-    /**发送协议错误*/
-    private void fireProtocolError(ChannelHandlerContext ctx, long reqID) {
-        //1.发送Error包
-        ResponseSocketMessage ack = new ResponseSocketMessage();
-        ack.setVersion((byte) (RSFConstants.RSF_Response | ProtocolVersion.V_1_0.value()));
-        ack.setRequestID(reqID);
-        ack.setStatus(ProtocolStatus.ProtocolError.shortValue());
+    //
+    /**发送协议错误 */
+    private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID) {
+        //1.创建Error包
+        byte version = ProtocolUtils.getVersion(oriVersion);
+        ResponseSocketBlock ack = TransferUtils.buildStatus(//
+                version, requestID, ProtocolStatus.ProtocolError);
+        //2.发送Error包
         ctx.pipeline().writeAndFlush(ack);
     }
     /**发送ACK*/
-    private void fireAck(ChannelHandlerContext ctx, RequestMetaData reqMetaData) {
-        //1.发送ACK包
-        ResponseSocketMessage ack = new ResponseSocketMessage();
-        ack.setVersion((byte) (RSFConstants.RSF_Response | ProtocolVersion.V_1_0.value()));
-        ack.setRequestID(reqMetaData.getRequestID());
-        ack.setStatus(ProtocolStatus.Accepted.shortValue());
+    private void fireAck(ChannelHandlerContext ctx, RequestMsg reqMetaData) {
+        //1.创建ACK包
+        byte version = reqMetaData.getVersion();
+        long requestID = reqMetaData.getRequestID();
+        ResponseSocketBlock ack = TransferUtils.buildStatus(//
+                version, requestID, ProtocolStatus.Accepted);
         //2.当ACK，发送成功之后继续传递msg
         ctx.pipeline().writeAndFlush(ack).addListener(new FireChannel(ctx, reqMetaData));
     }

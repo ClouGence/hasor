@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test.socket;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.metadata.RequestMetaData;
+import net.hasor.rsf.executes.ExecutesManager;
+import net.hasor.rsf.executes.MessageProcessing;
+import net.hasor.rsf.protocol.message.RequestMsg;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerHandler extends ChannelInboundHandlerAdapter {
-    static volatile long readCount = 0;
-    static volatile long start     = System.currentTimeMillis();
+public class ServerHandler implements Runnable {
+    private static volatile long readCount = 0;
+    private static volatile long start     = System.currentTimeMillis();
+    private ExecutesManager      manager   = null;
     //
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof RequestMetaData == false)
+    public ServerHandler(ExecutesManager manager) {
+        this.manager = manager;
+        //        this.manager.addMessageProcessing(Object.class, this);
+    }
+    //
+    //
+    //
+    public void run() {
+        while (true) {}
+        //
+        if (msg instanceof RequestMsg == false)
             return;
-        long requestID = ((RequestMetaData) msg).getRequestID();
+        long requestID = ((RequestMsg) msg).getRequestID();
         //
         readCount++;
         //
@@ -41,10 +51,5 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("last REQID:" + requestID);
             System.out.println();
         }
-    }
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        super.exceptionCaught(ctx, cause);
     }
 }

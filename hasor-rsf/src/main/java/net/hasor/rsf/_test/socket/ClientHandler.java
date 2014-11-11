@@ -20,9 +20,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
 import net.hasor.rsf.general.ProtocolVersion;
-import net.hasor.rsf.metadata.RequestMetaData;
-import net.hasor.rsf.protocol.message.ResponseSocketMessage;
-import net.hasor.rsf.protocol.toos.SocketUtils;
+import net.hasor.rsf.protocol.block.ResponseSocketBlock;
+import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 /**
  * 
  * @version : 2014年11月4日
@@ -34,7 +34,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     private long start         = System.currentTimeMillis();
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (SocketUtils.isACK((ResponseSocketMessage) msg))
+        if (ProtocolUtils.isACK((ResponseSocketBlock) msg))
             acceptedCount++;
         //
         //
@@ -64,8 +64,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     //
     //
     private static int reqID = 0;
-    private RequestMetaData getData() throws IOException {
-        RequestMetaData request = new RequestMetaData();
+    private RequestMsg getData() throws IOException {
+        RequestMsg request = new RequestMsg();
         request.setVersion(ProtocolVersion.V_1_0.value());
         request.setRequestID(reqID++);
         //

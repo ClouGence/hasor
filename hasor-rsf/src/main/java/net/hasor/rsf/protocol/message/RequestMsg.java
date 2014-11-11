@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.metadata;
+package net.hasor.rsf.protocol.message;
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -24,19 +25,20 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestMetaData extends DataCommMetaData {
+public class RequestMsg extends BaseMsg {
     private String       serviceName    = "";
     private String       serviceGroup   = "";
     private String       serviceVersion = "";
     private String       targetMethod   = "";
     private String       serializeType  = "";
-    private List<String> paramTypes     = new ArrayList<String>(); //参数列表
-    private List<byte[]> paramDatas     = new ArrayList<byte[]>(); //参数值映射
+    private int          clientTimeout  = RSFConstants.ClientTimeout;
+    private List<String> paramTypes     = new ArrayList<String>();   //参数列表
+    private List<byte[]> paramDatas     = new ArrayList<byte[]>();   //参数值映射
     //
     //
     /**设置协议版本。*/
     public void setVersion(byte version) {
-        super.setVersion((byte) (RSFConstants.RSF_Request | version));
+        super.setVersion(ProtocolUtils.finalVersionForRequest(version));
     }
     /**获取服务名*/
     public String getServiceName() {
@@ -77,6 +79,14 @@ public class RequestMetaData extends DataCommMetaData {
     /**设置序列化类型*/
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
+    }
+    /**获取远程客户端调用超时时间。*/
+    public int getClientTimeout() {
+        return this.clientTimeout;
+    }
+    /**设置远程客户端调用超时时间。*/
+    public void setClientTimeout(int clientTimeout) {
+        this.clientTimeout = clientTimeout;
     }
     /**添加请求参数。*/
     public void addParameter(String paramType, byte[] rawData) {

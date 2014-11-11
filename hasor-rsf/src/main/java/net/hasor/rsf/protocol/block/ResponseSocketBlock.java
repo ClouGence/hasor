@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.message;
+package net.hasor.rsf.protocol.block;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Response 协议
@@ -43,7 +43,7 @@ import org.more.util.ArrayUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ResponseSocketMessage extends RSFSocketMessage {
+public class ResponseSocketBlock extends BaseSocketBlock {
     private byte  version       = 0; //byte[1]  RSF版本(0xC1 or 0x81)
     private long  requestID     = 0; //byte[8]  请求ID
     private short status        = 0; //byte[2]  响应状态

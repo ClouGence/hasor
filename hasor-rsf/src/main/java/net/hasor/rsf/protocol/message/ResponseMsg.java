@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.metadata;
+package net.hasor.rsf.protocol.message;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.Encoder;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -24,7 +24,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ResponseMetaData extends DataCommMetaData {
+public class ResponseMsg extends BaseMsg {
     private ProtocolStatus status        = ProtocolStatus.Unknown;
     private String         serializeType = "";
     private String         returnType    = "";
@@ -32,7 +32,7 @@ public class ResponseMetaData extends DataCommMetaData {
     //
     /**设置协议版本。*/
     public void setVersion(byte version) {
-        super.setVersion((byte) (RSFConstants.RSF_Response | version));
+        super.setVersion(ProtocolUtils.finalVersionForResponse(version));
     }
     /**获取响应状态*/
     public ProtocolStatus getStatus() {

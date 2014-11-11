@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.client;
+package net.hasor.rsf.executes.queue;
 /**
- * 服务注册&初始化 公用接口。
- * @version : 2014年9月19日
+ * 写模式的列车
+ * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface InitLife {
-    /**初始化服务*/
-    public void initService();
+public interface TWrite {
+    /**货物是否装满了*/
+    public boolean isFull();
+    /**推送一个货物到列车上。*/
+    public boolean pushGood(Object good);
+    /**列车容量*/
+    public int getCapacity();
 }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.metadata;
+package net.hasor.rsf.protocol.message;
 import java.util.HashMap;
 import java.util.Map;
 import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 /**
  * 
  * @version : 2014年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-abstract class DataCommMetaData {
+abstract class BaseMsg {
     private byte                version   = RSFConstants.RSF;             //
     private long                requestID = 0;                            //
     private Map<String, String> optionMap = new HashMap<String, String>(); //选项
@@ -33,15 +34,15 @@ abstract class DataCommMetaData {
     }
     /**是否为Request消息。*/
     public boolean isRequest() {
-        return (0xC1 | this.version) == this.version;
+        return ProtocolUtils.isRequest(this.version);
     }
     /**是否为Response消息。*/
     public boolean isResponse() {
-        return (0x81 | this.version) == this.version;
+        return ProtocolUtils.isResponse(this.version);
     }
     /**获取协议版本。*/
     public byte getVersion() {
-        return (byte) (0x3F & this.version);
+        return ProtocolUtils.getVersion(this.version);
     }
     /**获取请求ID。*/
     public long getRequestID() {
