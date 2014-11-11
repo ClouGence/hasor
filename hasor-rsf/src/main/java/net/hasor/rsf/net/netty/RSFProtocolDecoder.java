@@ -25,10 +25,10 @@ import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.metadata.RequestMetaData;
 import net.hasor.rsf.metadata.ResponseMetaData;
-import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
-import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
+import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.message.RequestSocketMessage;
 import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
  * 解码器
@@ -56,19 +56,31 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         //
         //* byte[1]  version                              RSF版本(0xC1)
         byte version = frame.getByte(0);
+        //decode
         ProtocolType pType = ProtocolType.valueOf(version);
         if (pType == ProtocolType.Request) {
             //request
-            RequestSocketMessage reqSocket = new RpcRequestProtocol().decode(frame);
-            RequestMetaData reqMetaData = TransferUtils.requestTransferToMetaData(reqSocket);
-            this.fireAck(ctx, reqMetaData);
-        } else if (pType == ProtocolType.Response) {
-            //response
-            ResponseSocketMessage resSocket = new RpcResponseProtocol().decode(frame);
-            ResponseMetaData resMetaData = TransferUtils.responseTransferToMetaData(resSocket);
-            ctx.fireChannelRead(resMetaData);
+            Protocol<RequestSocketMessage> requestProtocol = ProtocolUtils.requestProtocol(version);
+            if (requestProtocol != null) {
+                RequestSocketMessage reqSocket = requestProtocol.decode(frame);
+                RequestMetaData reqMetaData = TransferUtils.requestTransferToMetaData(reqSocket);
+                this.fireAck(ctx, reqMetaData);
+                return null;/*正常处理后返回*/
+            }
         }
-        //
+        if (pType == ProtocolType.Response) {
+            //response
+            Protocol<ResponseSocketMessage> responseProtocol = ProtocolUtils.responseProtocol(version);
+            if (responseProtocol != null) {
+                ResponseSocketMessage resSocket = responseProtocol.decode(frame);
+                ResponseMetaData resMetaData = TransferUtils.responseTransferToMetaData(resSocket);
+                ctx.fireChannelRead(resMetaData);
+                return null;/*正常处理后返回*/
+            }
+        }
+        /*                    错误情况*/
+        frame.skipBytes(1);
+        this.fireProtocolError(ctx, frame.readLong());
         return null;
     }
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
@@ -76,7 +88,16 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     //
-    //
+    /**发送协议错误*/
+    private void fireProtocolError(ChannelHandlerContext ctx, long reqID) {
+        //1.发送Error包
+        ResponseSocketMessage ack = new ResponseSocketMessage();
+        ack.setVersion((byte) (RSFConstants.RSF_Response | ProtocolVersion.V_1_0.value()));
+        ack.setRequestID(reqID);
+        ack.setStatus(ProtocolStatus.ProtocolError.shortValue());
+        ctx.pipeline().writeAndFlush(ack);
+    }
+    /**发送ACK*/
     private void fireAck(ChannelHandlerContext ctx, RequestMetaData reqMetaData) {
         //1.发送ACK包
         ResponseSocketMessage ack = new ResponseSocketMessage();

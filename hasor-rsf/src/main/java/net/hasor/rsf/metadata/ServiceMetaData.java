@@ -30,10 +30,9 @@ public class ServiceMetaData {
     private int     clientTimeout  = 6000;     //调用超时（毫秒）
     private String  serializeType  = null;     //传输序列化类型
     //
-    //
     /**获取发布服务的名称。*/
     public String getServiceName() {
-        return serviceName;
+        return this.serviceName;
     }
     /**设置发布服务的名称。*/
     public void setServiceName(String serviceName) {
@@ -41,7 +40,7 @@ public class ServiceMetaData {
     }
     /**获取发布服务的分组名称（默认是：default）。*/
     public String getServiceGroup() {
-        return serviceGroup;
+        return this.serviceGroup;
     }
     /**设置发布服务的分组名称（默认是：default）。*/
     public void setServiceGroup(String serviceGroup) {
@@ -49,7 +48,7 @@ public class ServiceMetaData {
     }
     /**获取发布服务的版本号。*/
     public String getServiceVersion() {
-        return serviceVersion;
+        return this.serviceVersion;
     }
     /**设置发布服务的版本号。*/
     public void setServiceVersion(String serviceVersion) {

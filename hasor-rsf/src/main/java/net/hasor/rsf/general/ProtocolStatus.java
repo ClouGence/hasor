@@ -37,7 +37,9 @@ public enum ProtocolStatus {
     /**调用服务超时*/
     RequestTimeout(408),
     /**调用服务执行出错*/
-    InternalServerError(500);
+    InternalServerError(500),
+    /**协议错误。*/
+    ProtocolError(1000);
     //
     //
     private short value = 0;

@@ -42,7 +42,7 @@ public class TransferTest_3 {
         }
     }
     public static void _1_main(String[] args) throws IOException {
-        final TransferQueue queue = new TransferQueue(32768, CAPACITY);
+        final TransferQueue queue = new TransferQueue(2048, CAPACITY);
         //
         seller(queue, 0).start();
         consumer(queue, 0).start();

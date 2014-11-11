@@ -20,10 +20,10 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.metadata.RequestMetaData;
 import net.hasor.rsf.metadata.ResponseMetaData;
-import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
-import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
+import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.message.RequestSocketMessage;
 import net.hasor.rsf.protocol.message.ResponseSocketMessage;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 /**
  * 编码器
@@ -45,9 +45,14 @@ public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
         //
         //2.SocketMessage转换
         if (msg instanceof RequestSocketMessage) {
-            new RpcRequestProtocol().encode((RequestSocketMessage) msg, out);//request
-        } else if (msg instanceof ResponseSocketMessage) {
-            new RpcResponseProtocol().encode((ResponseSocketMessage) msg, out);//response
+            RequestSocketMessage request = (RequestSocketMessage) msg;
+            Protocol<RequestSocketMessage> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
+            requestProtocol.encode((RequestSocketMessage) msg, out);//request
+        }
+        if (msg instanceof ResponseSocketMessage) {
+            ResponseSocketMessage response = (ResponseSocketMessage) msg;
+            Protocol<ResponseSocketMessage> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
+            responseProtocol.encode((ResponseSocketMessage) msg, out);//response
         }
     }
 }

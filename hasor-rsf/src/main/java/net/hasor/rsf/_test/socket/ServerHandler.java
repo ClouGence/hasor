@@ -23,8 +23,8 @@ import net.hasor.rsf.metadata.RequestMetaData;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    static long readCount = 0;
-    static long start     = System.currentTimeMillis();
+    static volatile long readCount = 0;
+    static volatile long start     = System.currentTimeMillis();
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestMetaData == false)
@@ -34,7 +34,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         readCount++;
         //
         long duration = System.currentTimeMillis() - start;
-        if (duration % 1000 == 0) {
+        if (duration % 100 == 0) {
             long qps = readCount * 1000 / duration;
             System.out.println("QPS:" + qps);
             System.out.println("readCount:" + readCount);
