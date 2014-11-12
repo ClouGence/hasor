@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.client;
+package net.hasor.rsf.runtime.client;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.Provider;

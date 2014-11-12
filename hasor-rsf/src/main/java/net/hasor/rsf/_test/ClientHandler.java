@@ -13,39 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test.socket;
+package net.hasor.rsf._test;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
+import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolVersion;
-import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.message.RequestMsg;
-import net.hasor.rsf.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
-    private long sendCount     = 0;
-    private long acceptedCount = 0;
-    private long start         = System.currentTimeMillis();
+    private long sendCount        = 0;
+    private long acceptedCount    = 0;
+    private long chooseOtherCount = 0;
+    private long okCount          = 0;
+    private long start            = System.currentTimeMillis();
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (ProtocolUtils.isACK((ResponseSocketBlock) msg))
+        ResponseMsg response = (ResponseMsg) msg;
+        if (response.getStatus() == ProtocolStatus.Accepted)
             acceptedCount++;
+        else if (response.getStatus() == ProtocolStatus.ChooseOther)
+            chooseOtherCount++;
+        else if (response.getStatus() == ProtocolStatus.OK)
+            okCount++;
         //
         //
         //
         long duration = System.currentTimeMillis() - start;
-        if (duration % 5000 == 0) {
-            long qps = sendCount * 1000 / duration;
-            System.out.println("QPS:" + qps);
-            System.out.println("send:" + sendCount);
-            System.out.println("accepted:" + acceptedCount);
-            System.out.println("ok(%):" + (float) acceptedCount / (float) sendCount * 100);
+        if (duration % 500 == 0) {
+            System.out.println("send QPS  :" + (sendCount * 1000 / duration));
+            System.out.println("accept QPS:" + ((acceptedCount - chooseOtherCount) * 1000 / duration));
+            System.out.println("send      :" + sendCount);
+            System.out.println("accept    :" + (acceptedCount - chooseOtherCount));
+            System.out.println("choose    :" + chooseOtherCount);
+            System.out.println("ok(%)     :" + (float) okCount / (float) sendCount * 100);
             System.out.println();
         }
     }

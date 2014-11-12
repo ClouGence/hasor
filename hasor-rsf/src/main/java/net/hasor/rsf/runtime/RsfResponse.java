@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
+package net.hasor.rsf.runtime;
+import net.hasor.rsf.general.ProtocolStatus;
 /**
- * RSF 服务器控制接口
+ * 响应请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfServer {
-    /**启动服务。*/
-    public void start();
-    /**启动服务。*/
-    public void start(int listenPort);
-    /**停止服务。*/
-    public void stop();
+public interface RsfResponse {
+    /**响应远程请求。*/
+    public void send(Object returnObject);
+    /**响应一条消息给远程。*/
+    public void sendMessage(ProtocolStatus status);
+    /**响应一条消息给远程。*/
+    public void sendMessage(ProtocolStatus status, String messageBody);
+    /**响应一条消息给远程。*/
+    public void sendError(ProtocolStatus status, Object messageBody);
 }

@@ -89,11 +89,10 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     //
     /**发送协议错误 */
     private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID) {
-        //1.创建Error包
+        //502 ProtocolError
         byte version = ProtocolUtils.getVersion(oriVersion);
         ResponseSocketBlock ack = TransferUtils.buildStatus(//
                 version, requestID, ProtocolStatus.ProtocolError);
-        //2.发送Error包
         ctx.pipeline().writeAndFlush(ack);
     }
     /**发送ACK*/

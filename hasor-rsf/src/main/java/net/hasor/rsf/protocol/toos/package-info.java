@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
-import net.hasor.rsf.general.ProtocolStatus;
 /**
- * 响应请求
- * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * RSF 协议包工具。
  */
-public interface RsfResponse {
-    /**请求ID。*/
-    public String getRequestID();
-    /**响应远程请求。*/
-    public void send(Object returnObject);
-    //
-    /**响应一条消息给远程。*/
-    public void sendMessage(ProtocolStatus status);
-    /**响应一条消息给远程。*/
-    public void sendMessage(ProtocolStatus status, String messageBody);
-}
+package net.hasor.rsf.protocol.toos;

@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.client;
-import java.util.concurrent.atomic.AtomicBoolean;
-import net.hasor.rsf.metadata.ServiceMetaData;
 /**
- * 服务发布者
- * @version : 2014年9月19日
- * @author 赵永春(zyc@hasor.net)
+ * RSF 协议的数据结构。
  */
-public class ServiceProvider {
-    private ServiceMetaData metaData = new ServiceMetaData();
-    private AtomicBoolean   inited   = new AtomicBoolean(false);
-    /**初始化服务*/
-    public void initService() {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
-        //
-    }
-}
+package net.hasor.rsf.protocol.block;

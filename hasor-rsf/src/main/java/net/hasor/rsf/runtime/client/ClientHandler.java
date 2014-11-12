@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
+package net.hasor.rsf.runtime.client;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
- * 调用请求
- * @version : 2014年10月25日
+ * 客户端发起调用
+ * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfRequest {
-    /***请求ID。*/
-    public String getRequestID();
-    /**远程调用请求IP地址。*/
-    public String getRemotHost();
-    //
-    /**请求超时时间。*/
-    public int getTimeout();
-    /**获取服务名。*/
-    public String getServiceName();
-    /**获取服务方法名。*/
-    public String getServiceMethod();
-    //
-    /**获取请求参数类型。*/
-    public Class<?>[] getParameterTypes();
-    /**获取请求参数值。*/
-    public Object[] getParameterObject();
+public class ClientHandler extends ChannelInboundHandlerAdapter {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        // TODO Auto-generated method stub
+        super.channelRead(ctx, msg);
+    }
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        // TODO Auto-generated method stub
+        super.userEventTriggered(ctx, evt);
+    }
 }

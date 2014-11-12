@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.executes;
 /**
- * 
- * @version : 2014年11月11日
- * @author 赵永春(zyc@hasor.net)
+ * 负责 Hasor-RSF 传输协议实现。
  */
-public interface MessageProcessing {}
+package net.hasor.rsf.protocol;

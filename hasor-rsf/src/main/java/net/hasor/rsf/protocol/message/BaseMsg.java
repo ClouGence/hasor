@@ -23,7 +23,7 @@ import net.hasor.rsf.protocol.toos.ProtocolUtils;
  * @version : 2014年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-abstract class BaseMsg {
+public abstract class BaseMsg {
     private byte                version   = RSFConstants.RSF;             //
     private long                requestID = 0;                            //
     private Map<String, String> optionMap = new HashMap<String, String>(); //选项

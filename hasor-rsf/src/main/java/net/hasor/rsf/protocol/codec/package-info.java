@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
 /**
- * 基础处理器
- * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * RSF 协议的编码解码器。
  */
-public interface RsfProcessor {
-    /***/
-    public void doCall(RsfRequest request, RsfResponse response);
-}
+package net.hasor.rsf.protocol.codec;

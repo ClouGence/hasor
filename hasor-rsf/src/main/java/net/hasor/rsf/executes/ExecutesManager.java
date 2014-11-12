@@ -14,33 +14,41 @@
  * limitations under the License.
  */
 package net.hasor.rsf.executes;
-import net.hasor.rsf.executes.queue.TWrite;
-import net.hasor.rsf.executes.queue.TrackManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 /**
  * 
  * @version : 2014年11月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
-    private static final int CAPACITY     = 4096;
-    private TrackManager     trackManager = new TrackManager(TMEnum.values(), 20, CAPACITY);
-    private static enum TMEnum {
-        MsgIn
-    }
-    /**推送消息进来。*/
-    public boolean pushMessage(Object msgData) {
-        try {
-            TWrite write = this.trackManager.waitForWrite(TMEnum.MsgIn);
-            return write.pushGood(msgData);
-        } finally {
-            this.trackManager.switchNext(TMEnum.MsgIn);
-        }
+    private long                                  keepAliveTime    = 300L;
+    private ThreadPoolExecutor                    defaultExecutor  = null;
+    private final Map<String, ThreadPoolExecutor> servicePoolCache = new HashMap<String, ThreadPoolExecutor>();
+    //
+    public ExecutesManager() {
+        int minCorePoolSize = 1;
+        int maxCorePoolSize = 10;
+        int queueSize = 4096;
+        //
+        final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
+        this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//
+                this.keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//
+                new RsfThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
     }
     //
-    //    public void addMessageProcessing(Class<?> processType, MessageProcessing processing) {
-    //        
-    //        
-    //        
-    //        
-    //    }
+    public Executor getExecute(String serviceUniqueName) {
+        if (this.servicePoolCache.isEmpty() == false) {
+            ThreadPoolExecutor executor = this.servicePoolCache.get(serviceUniqueName);
+            if (executor != null) {
+                return executor;
+            }
+        }
+        return this.defaultExecutor;
+    }
 }

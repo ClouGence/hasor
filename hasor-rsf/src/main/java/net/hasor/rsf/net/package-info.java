@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.executes.queue;
 /**
- * 读模式的列车
- * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * 负责 Hasor-RSF 网络传输方面的工作。
  */
-public interface TRead {
-    /**是否空了*/
-    public boolean isEmpty();
-    /**从列车上拉取一个货物。*/
-    public Object pullGood();
-    /**获取货物数量*/
-    public int getGoodCount();
-}
+package net.hasor.rsf.net;

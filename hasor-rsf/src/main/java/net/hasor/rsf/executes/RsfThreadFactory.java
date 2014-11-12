@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
-import net.hasor.rsf.metadata.ServiceMetaData;
+package net.hasor.rsf.executes;
+import java.util.concurrent.ThreadFactory;
 /**
- * RSF容器环境。
- * @version : 2014年10月25日
+ * 
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
-    /***/
-    public ServiceMetaData getServiceByID(String serviceID);
-    /***/
-    public String[] getServiceIDs();
+class RsfThreadFactory implements ThreadFactory {
+    private String nameSample = "RSF-BizThread-";
+    private int    index      = 1;
+    //
+    public Thread newThread(Runnable run) {
+        Thread t = new Thread(run);
+        t.setName(nameSample + index++);
+        t.setDaemon(true);
+        return t;
+    }
 }

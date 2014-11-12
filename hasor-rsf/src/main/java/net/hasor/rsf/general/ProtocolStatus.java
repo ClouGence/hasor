@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.general;
 /**
- * ChooseOther、Accepted
+ * ChooseOther、Accepted、
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -42,10 +42,12 @@ public enum ProtocolStatus {
     /**调用服务超时*/
     RequestTimeout(408),
     //-----------------------------------------------------
-    /**调用服务执行出错*/
+    /**调用服务执行出错，通常是遭到异常抛出。*/
     InternalServerError(500),
+    /**序列化错误。*/
+    SerializeError(501),
     /**协议错误。*/
-    ProtocolError(1000);
+    ProtocolError(502);
     //-----------------------------------------------------
     //
     //
