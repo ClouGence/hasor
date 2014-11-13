@@ -21,8 +21,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfFilter;
@@ -50,7 +50,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             Executor exe = this.rsfContext.getCallExecute(request.getServiceName());
             exe.execute(new InvokeHandler(this.rsfContext, request, ctx));
         } catch (RejectedExecutionException e) {
-            ResponseSocketBlock pack = TransferUtils.buildStatus(//
+            ResponseMsg pack = TransferUtils.buildStatus(//
                     request.getVersion(), //协议版本
                     request.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther);//服务器资源紧张

@@ -141,12 +141,12 @@ public class TransferUtils {
     //
     //
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildStatus(byte version, long requestID, ProtocolStatus status) {
+    public static ResponseMsg buildStatus(byte version, long requestID, ProtocolStatus status) {
         //1.发送ACK包
-        ResponseSocketBlock ack = new ResponseSocketBlock();
+        ResponseMsg ack = new ResponseMsg();
         ack.setVersion(ProtocolUtils.finalVersionForResponse(version));
         ack.setRequestID(requestID);
-        ack.setStatus(status.shortValue());
+        ack.setStatus(status);
         return ack;
     }
 }

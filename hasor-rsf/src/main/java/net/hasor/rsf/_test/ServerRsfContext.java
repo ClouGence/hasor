@@ -34,7 +34,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
  */
 public class ServerRsfContext implements RsfContext {
     static int               minCorePoolSize  = 1;
-    static int               maxCorePoolSize  = 3;
+    static int               maxCorePoolSize  = 10;
     static int               queueSize        = 4096;
     private SerializeFactory serializeFactory = null;
     private ExecutesManager  manager          = null;

@@ -91,16 +91,16 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID) {
         //502 ProtocolError
         byte version = ProtocolUtils.getVersion(oriVersion);
-        ResponseSocketBlock ack = TransferUtils.buildStatus(//
+        ResponseMsg error = TransferUtils.buildStatus(//
                 version, requestID, ProtocolStatus.ProtocolError);
-        ctx.pipeline().writeAndFlush(ack);
+        ctx.pipeline().writeAndFlush(error);
     }
     /**发送ACK*/
     private void fireAck(ChannelHandlerContext ctx, RequestMsg reqMetaData) {
         //1.创建ACK包
         byte version = reqMetaData.getVersion();
         long requestID = reqMetaData.getRequestID();
-        ResponseSocketBlock ack = TransferUtils.buildStatus(//
+        ResponseMsg ack = TransferUtils.buildStatus(//
                 version, requestID, ProtocolStatus.Accepted);
         //2.当ACK，发送成功之后继续传递msg
         ctx.pipeline().writeAndFlush(ack).addListener(new FireChannel(ctx, reqMetaData));

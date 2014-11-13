@@ -90,7 +90,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess() == false)
                     return;
-                future.channel().writeAndFlush(getData()).addListener(this);
+                if (reqID < 1000000)
+                    future.channel().writeAndFlush(getData()).addListener(this);
             }
         };
         //
