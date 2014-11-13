@@ -16,28 +16,72 @@
 package net.hasor.rsf.runtime.server;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.protocol.message.RequestMsg;
-import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfResponseImpl implements RsfResponse {
-    public RsfResponseImpl(RequestMsg requestMessage, ChannelHandlerContext channelContext, RsfContext rsfServer) {
-        // TODO Auto-generated constructor stub
+    private RsfRequest            rsfRequest     = null;
+    private ChannelHandlerContext channelContext = null;
+    private RsfContext            rsfContext     = null;
+    private boolean               committed      = false;
+    //
+    public RsfResponseImpl(RsfRequest rsfRequest, ChannelHandlerContext channelContext, RsfContext rsfContext) {
+        this.rsfRequest = rsfRequest;
+        this.channelContext = channelContext;
+        this.rsfContext = rsfContext;
     }
-    @Override
-    public void send(Object returnObject) {
-        // TODO Auto-generated method stub
+    //
+    private void check() {
+        if (this.committed == true)
+            throw new IllegalStateException("is committed.");
+        if (this.channelContext.channel().isActive() == false)
+            throw new IllegalStateException("connection is closed.");
     }
-    @Override
-    public void sendMessage(ProtocolStatus status) {
-        // TODO Auto-generated method stub
+    //
+    public boolean isCommitted() {
+        return this.committed;
     }
-    @Override
-    public void sendMessage(ProtocolStatus status, Object messageBody) {
-        // TODO Auto-generated method stub
+    public void onMessage(Object messageBody) {
+        sendStatus(ProtocolStatus.Message, messageBody);
+    }
+    public void sendData(Object returnObject) {
+        sendStatus(ProtocolStatus.OK, returnObject);
+    }
+    public void sendStatus(ProtocolStatus status) {
+        sendStatus(status, null);
+    }
+    public void sendStatus(ProtocolStatus status, Object messageBody) {
+        check();
+        //1.基本信息
+        ResponseMsg response = new ResponseMsg();
+        response.setVersion(this.rsfRequest.getProtocolVersion());
+        response.setRequestID(this.rsfRequest.getRequestID());
+        response.setStatus(status);
+        response.setSerializeType(rsfRequest.getSerializeType());
+        //2.序列化
+        try {
+            if (messageBody != null) {
+                SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
+                response.setReturnData(messageBody, serializeFactory);
+                response.setReturnType(messageBody.getClass().getName());
+            } else {
+                response.setReturnData(null);
+                response.setReturnType(null);
+            }
+        } catch (Throwable e) {
+            response.setStatus(ProtocolStatus.SerializeError);;
+            response.setReturnData(e.getMessage().getBytes());;
+            response.setReturnType(String.class.getName());
+        }
+        //3.写内容
+        this.channelContext.channel().writeAndFlush(response);
+        this.committed = true;
     }
 }

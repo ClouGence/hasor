@@ -27,10 +27,6 @@ public class BaseSocketBlock {
     private int[]           poolMap   = {};
     private ByteBuf         poolData  = ByteBufAllocator.DEFAULT.heapBuffer();
     //
-    public BaseSocketBlock() {
-        this.addPoolData(0);
-    }
-    //
     public void fillFrom(ByteBuf formData) {
         if (formData == null)
             return;
@@ -79,14 +75,18 @@ public class BaseSocketBlock {
     }
     /**内容所处起始位置*/
     public byte[] readPool(int attrIndex) {
+        if (this.poolMap[attrIndex] == NULL_Mark) {
+            return null;
+        }
+        //
         int rawIndex = 0;
         for (int i = 0; i < this.poolMap.length; i++) {
             if (i == attrIndex)
                 break;
             rawIndex += this.poolMap[i];
         }
-        //
         int readLength = this.poolMap[attrIndex];//内容长度
+        //
         return this.poolData.copy(rawIndex, readLength).array();
     }
 }

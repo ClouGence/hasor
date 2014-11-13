@@ -22,7 +22,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.server.ServerHandler;
 /**
@@ -34,7 +33,12 @@ public class Server {
     public void start(String host, int port) throws Exception {
         final EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
         final EventLoopGroup workerGroup = new NioEventLoopGroup(100);//Work线程，负责接收数据
-        final ExecutesManager manager = new ExecutesManager();
+        final ServerRsfContext manager = new ServerRsfContext();
+        manager.getCallExecute("aa").execute(new Runnable() {
+            public void run() {
+                manager.print();
+            }
+        });
         //
         try {
             ServerBootstrap b = new ServerBootstrap();

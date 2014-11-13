@@ -59,7 +59,7 @@ public class TransferUtils {
     public static ResponseSocketBlock responseToBlock(ResponseMsg msg) {
         ResponseSocketBlock socketMsg = new ResponseSocketBlock();
         //1.基本信息
-        byte version = (byte) (RSFConstants.RSF_Response | msg.getVersion());
+        byte version = ProtocolUtils.finalVersionForResponse(msg.getVersion());
         socketMsg.setVersion(version);//协议版本
         socketMsg.setRequestID(msg.getRequestID());//请求ID
         socketMsg.setStatus(msg.getStatus().shortValue());//响应状态
@@ -75,10 +75,7 @@ public class TransferUtils {
         return socketMsg;
     };
     private static short pushString(BaseSocketBlock socketMessage, String attrData) {
-        if (attrData == null)
-            return socketMessage.pushData(null);
-        else
-            return socketMessage.pushData(attrData.getBytes());
+        return socketMessage.pushData(attrData.getBytes());
     }
     //
     //

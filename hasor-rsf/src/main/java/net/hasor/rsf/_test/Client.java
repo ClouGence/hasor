@@ -16,6 +16,7 @@ import net.hasor.rsf.net.netty.RSFCodec;
 public class Client {
     public void connect(String host, int port) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final ServerRsfContext manager = new ServerRsfContext();
         try {
             Bootstrap b = new Bootstrap();
             b.group(workerGroup);
@@ -25,7 +26,7 @@ public class Client {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
                             new RSFCodec(),//
-                            new ClientHandler());
+                            new ClientHandler(manager));
                 }
             });
             // Start the client.

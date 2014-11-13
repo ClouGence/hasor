@@ -21,12 +21,15 @@ import net.hasor.rsf.general.ProtocolStatus;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfResponse {
-    /**响应远程请求。*/
-    public void send(Object returnObject);
-    /**响应一条消息给远程。*/
-    public void sendMessage(ProtocolStatus status);
-    /**响应一条消息给远程。*/
-    public void sendMessage(ProtocolStatus status, String messageBody);
-    /**响应一条消息给远程。*/
-    public void sendError(ProtocolStatus status, Object messageBody);
+    /**发送最终结果。*/
+    public void sendData(Object returnObject);
+    /**发送错误消息。*/
+    public void sendStatus(ProtocolStatus status);
+    /**发送错误消息。*/
+    public void sendStatus(ProtocolStatus status, Object messageBody);
+    //
+    /**在send操作完成响应之前，给予客户端的消息（在长调用的时候可以用来替代消息队列）。*/
+    public void onMessage(Object messageBody);
+    /**调用的结果是否已经写入客户端。*/
+    public boolean isCommitted();
 }

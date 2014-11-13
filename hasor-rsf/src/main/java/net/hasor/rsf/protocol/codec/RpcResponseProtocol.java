@@ -17,11 +17,13 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         buf.writeByte(resMsg.getVersion());
         //* byte[8]  requestID                            请求ID
         buf.writeLong(resMsg.getRequestID());
-        //* byte[4]  contentLength                        内容大小(max = 16MB)
+        //* byte[1]  keepData                             保留区
+        buf.writeByte(0);
+        //* byte[3]  contentLength                        内容大小(max = 16MB)
         ByteBuf responseBody = this.encodeResponse(resMsg);
         int bodyLength = responseBody.readableBytes();
         bodyLength = (bodyLength << 8) >>> 8;//左移8未，在无符号右移8位。形成最大16777215字节的限制。
-        buf.writeInt(bodyLength);
+        buf.writeMedium(bodyLength);
         //
         buf.writeBytes(responseBody);
         //
@@ -72,8 +74,10 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         byte version = buf.readByte();
         //* byte[8]  requestID                            包含的请求ID
         long requestID = buf.readLong();
-        //* byte[4]  contentLength                        内容大小
-        buf.skipBytes(4);
+        //* byte[1]  keepData                             保留区
+        buf.skipBytes(1);
+        //* byte[3]  contentLength                        内容大小
+        buf.skipBytes(3);//.readUnsignedMedium()
         //
         ResponseSocketBlock res = new ResponseSocketBlock();
         res.setVersion(version);

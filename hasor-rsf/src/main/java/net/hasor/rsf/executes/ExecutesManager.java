@@ -31,11 +31,7 @@ public class ExecutesManager {
     private ThreadPoolExecutor                    defaultExecutor  = null;
     private final Map<String, ThreadPoolExecutor> servicePoolCache = new HashMap<String, ThreadPoolExecutor>();
     //
-    public ExecutesManager() {
-        int minCorePoolSize = 1;
-        int maxCorePoolSize = 10;
-        int queueSize = 4096;
-        //
+    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize) {
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
         this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//
                 this.keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//

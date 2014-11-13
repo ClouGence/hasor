@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.message;
+import org.more.UndefinedException;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
@@ -70,6 +71,9 @@ public class ResponseMsg extends BaseMsg {
     public Object getReturnData(SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
         Decoder decoder = serializeFactory.getDecoder(codeName);
+        //
+        if (decoder == null && this.returnData != null)
+            throw new UndefinedException("Undefined ‘" + codeName + "’ serialize decoder ");
         //
         return decoder.decode(this.returnData);
     }

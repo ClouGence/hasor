@@ -20,6 +20,7 @@ import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import org.more.UndefinedException;
 /**
  * RSF 1.0-Request 协议数据.
  * @version : 2014年10月25日
@@ -34,6 +35,7 @@ public class RequestMsg extends BaseMsg {
     private int          clientTimeout  = RSFConstants.ClientTimeout;
     private List<String> paramTypes     = new ArrayList<String>();   //参数列表
     private List<byte[]> paramDatas     = new ArrayList<byte[]>();   //参数值映射
+    private long         receiveTime    = 0;                         //收到消息的时间
     //
     //
     /**设置协议版本。*/
@@ -88,6 +90,14 @@ public class RequestMsg extends BaseMsg {
     public void setClientTimeout(int clientTimeout) {
         this.clientTimeout = clientTimeout;
     }
+    /**设置收到消息的本地时间*/
+    public void setReceiveTime(long receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+    /**获取收到消息本地时间*/
+    public long getReceiveTime() {
+        return this.receiveTime;
+    }
     /**添加请求参数。*/
     public void addParameter(String paramType, byte[] rawData) {
         this.paramTypes.add(paramType);
@@ -115,6 +125,10 @@ public class RequestMsg extends BaseMsg {
         //
         String[] paramTypes = this.getParameterTypes();
         Object[] paramObject = new Object[paramTypes.length];
+        //
+        if (decoder == null && (paramTypes.length > 0))
+            throw new UndefinedException("Undefined ‘" + codeName + "’ serialize decoder ");
+        //
         for (int i = 0; i < paramTypes.length; i++) {
             byte[] paramData = this.paramDatas.get(i);
             paramObject[i] = decoder.decode(paramData);

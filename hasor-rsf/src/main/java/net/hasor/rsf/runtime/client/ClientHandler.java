@@ -16,6 +16,8 @@
 package net.hasor.rsf.runtime.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.message.ResponseMsg;
 /**
  * 客户端发起调用
  * @version : 2014年11月4日
@@ -23,8 +25,13 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        // TODO Auto-generated method stub
-        super.channelRead(ctx, msg);
+        if (msg instanceof RequestMsg == true) {
+            ctx.fireChannelRead(msg);
+            return;
+        }
+        if (msg instanceof ResponseMsg == true) {
+            //
+        }
     }
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // TODO Auto-generated method stub
