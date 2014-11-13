@@ -45,11 +45,13 @@ public class StandardContextSettings extends InputStreamSettings {
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
-        this.settingURI = url.toURI();
+        if (url != null)
+            this.settingURI = url.toURI();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final File mainSettings) throws IOException {
-        this.settingURI = mainSettings.toURI();
+        if (mainSettings != null)
+            this.settingURI = mainSettings.toURI();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final URI mainSettings) throws IOException {
@@ -92,9 +94,10 @@ public class StandardContextSettings extends InputStreamSettings {
             }
         }
         //2.装载hasor-config.xml
-        if (this.settingURI != null) {
-            InputStream stream = ResourcesUtils.getResourceAsStream(this.settingURI);
-            Hasor.logInfo("load ‘%s’", this.settingURI);
+        URI settingConfig = getSettingURI();
+        if (settingConfig != null) {
+            InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
+            Hasor.logInfo("load ‘%s’", settingConfig);
             this.addStream(stream);
         }
     }
