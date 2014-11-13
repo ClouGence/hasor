@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime;
-import java.util.concurrent.Executor;
+package net.hasor.rsf._test._;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.serialize.SerializeFactory;
 /**
- * RSF 服务器控制接口
- * @version : 2014年10月25日
+ * 服务发布者
+ * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
-    /***/
-    public ServiceMetaData getService(String serviceName);
-    /**获取用于执行远程服务调用的 Executor。*/
-    public Executor getCallExecute(String serviceName);
-    //
-    public SerializeFactory getSerializeFactory();
-    //
-    public Object getBean(ServiceMetaData metaData);
-    //
-    public RsfFilter[] getRsfFilters(ServiceMetaData metaData);
+public class ServiceProvider {
+    private ServiceMetaData metaData = new ServiceMetaData();
+    private AtomicBoolean   inited   = new AtomicBoolean(false);
+    /**初始化服务*/
+    public void initService() {
+        if (!this.inited.compareAndSet(false, true)) {
+            return;/*避免被初始化多次*/
+        }
+        //
+    }
 }

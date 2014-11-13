@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime;
+package net.hasor.rsf.server;
 import net.hasor.rsf.metadata.ServiceMetaData;
 /**
  * 调用请求
@@ -38,8 +38,6 @@ public interface RsfRequest {
     /**本地端口。*/
     public int getLocalPort();
     //
-    /**获取消息到达时间。*/
-    public long getReceiveTime();
     /**超时时间。*/
     public int getTimeout();
     /**获取请求的服务。*/

@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.executes.ExecutesManager;
+import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.RsfFilter;
-import net.hasor.rsf.runtime.RsfFilterChain;
-import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.runtime.RsfResponse;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.server.RsfFilter;
+import net.hasor.rsf.server.RsfFilterChain;
+import net.hasor.rsf.server.RsfRequest;
+import net.hasor.rsf.server.RsfResponse;
 /**
  * 
  * @version : 2014年11月12日
@@ -45,6 +48,10 @@ public class ServerRsfContext implements RsfContext {
         Settings settings = new StandardContextSettings();
         settings.refresh();
         serializeFactory = SerializeFactory.createFactory(settings);
+    }
+    private EventLoopGroup group = new NioEventLoopGroup();
+    public EventLoopGroup getLoopGroup() {
+        return group;
     }
     //
     @Override
@@ -74,6 +81,14 @@ public class ServerRsfContext implements RsfContext {
             }
         } };
     }
+    public RsfRequest createRequest(ServiceMetaData metaData) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public RsfRequest getRequest(long requestID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
     //
     //
     //
@@ -95,5 +110,9 @@ public class ServerRsfContext implements RsfContext {
     }
     public static void aa(RsfRequest request) {
         requestCount++;
+    }
+    @Override
+    public byte getProtocolVersion() {
+        return ProtocolVersion.V_1_0.value();
     }
 }

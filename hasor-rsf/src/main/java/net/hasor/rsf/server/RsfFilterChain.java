@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.server;
 /**
- * 负责 Hasor-RSF 网络传输方面的工作。
+ * 
+ * @version : 2014年11月12日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.net;
+public interface RsfFilterChain {
+    public void doFilter(RsfRequest request, RsfResponse response) throws Throwable;
+}

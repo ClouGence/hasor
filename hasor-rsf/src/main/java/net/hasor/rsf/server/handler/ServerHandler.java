@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime.server;
+package net.hasor.rsf.server.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
-import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.RsfFilter;
-import net.hasor.rsf.runtime.RsfFilterChain;
-import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.server.RsfFilter;
+import net.hasor.rsf.server.RsfFilterChain;
+import net.hasor.rsf.server.RsfRequest;
+import net.hasor.rsf.server.RsfResponse;
 /**
- * 提供服务的Handler。
+ * 提供服务的Handler（只处理RequestMsg）
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */

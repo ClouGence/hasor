@@ -23,7 +23,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hasor.rsf.net.netty.RSFCodec;
-import net.hasor.rsf.runtime.server.ServerHandler;
+import net.hasor.rsf.server.handler.ServerHandler;
 /**
  * 
  * @version : 2014年9月12日
@@ -32,7 +32,6 @@ import net.hasor.rsf.runtime.server.ServerHandler;
 public class Server {
     public void start(String host, int port) throws Exception {
         final EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
-        final EventLoopGroup workerGroup = new NioEventLoopGroup(100);//Work线程，负责接收数据
         final ServerRsfContext manager = new ServerRsfContext();
         manager.getCallExecute("aa").execute(new Runnable() {
             public void run() {
@@ -42,7 +41,7 @@ public class Server {
         //
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
+            b.group(bossGroup, manager.getLoopGroup()).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
                             new RSFCodec(),//
@@ -52,7 +51,7 @@ public class Server {
             ChannelFuture f = b.bind(host, port).sync();
             f.channel().closeFuture().sync();
         } finally {
-            workerGroup.shutdownGracefully();
+            manager.getLoopGroup().shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
     }
