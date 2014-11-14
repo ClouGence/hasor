@@ -1,11 +1,11 @@
 package net.hasor.rsf.runtime.client.netty;
 import java.util.concurrent.Future;
 import net.hasor.rsf.net.netty.NetworkChanne;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
 import net.hasor.rsf.runtime.client.AbstractRsfClient;
 import net.hasor.rsf.runtime.client.RsfCallBack;
-import net.hasor.rsf.runtime.context.RsfContext;
 /**
  * 远程RSF服务器的客户端类。
  * @version : 2014年9月12日

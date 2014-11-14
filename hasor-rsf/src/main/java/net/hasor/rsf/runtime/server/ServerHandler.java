@@ -22,7 +22,7 @@ import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
-import net.hasor.rsf.runtime.context.RsfContext;
+import net.hasor.rsf.runtime.RsfContext;
 /**
  * 提供服务的Handler（只处理RequestMsg）
  * @version : 2014年11月4日

@@ -36,7 +36,6 @@
 			<version>4.0.23.Final</version>
 		</dependency>
 
-
 		<!-- Serialize - Hessian -->
 		<dependency>
 			<groupId>com.caucho</groupId>
@@ -49,17 +48,5 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.1.41</version>
 		</dependency>
-		<!-- Serialize - kryo -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.esotericsoftware.kryo</groupId> -->
-		<!-- <artifactId>kryo</artifactId> -->
-		<!-- <version>2.24.0</version> -->
-		<!-- </dependency> -->
-		<!-- JGit -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jgit</groupId> -->
-		<!-- <artifactId>org.eclipse.jgit</artifactId> -->
-		<!-- <version>3.0.0.201306101825-r</version> -->
-		<!-- </dependency> -->
 	</dependencies>
 </project>

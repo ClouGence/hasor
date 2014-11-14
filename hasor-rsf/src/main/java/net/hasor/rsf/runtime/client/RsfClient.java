@@ -39,6 +39,8 @@ public interface RsfClient {
     /**设置选项数据*/
     public void addOption(String key, String value);
     //
+    /**获取远程服务*/
+    public RsfService getRemoteService(String serviceName);
     /**关闭与远端的连接*/
     public void close() throws InterruptedException;
     /**连接是否为活动的。*/
@@ -48,7 +50,7 @@ public interface RsfClient {
     //
     //
     //
-    public Object syncInvoke(RsfRequest rsfRequest);
+    public Object syncInvoke(RsfRequest rsfRequest);s
     public Future<Object> asyncInvoke(RsfRequest rsfRequest);
     public void invokeWithCallBack(RsfRequest rsfRequest, final RsfCallBack listener);
     public RsfFuture<RsfResponse> sendRequest(RsfRequest rsfRequest);

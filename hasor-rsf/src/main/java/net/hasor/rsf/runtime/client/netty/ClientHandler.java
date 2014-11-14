@@ -18,7 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.protocol.message.ResponseMsg;
-import net.hasor.rsf.runtime.context.RsfContext;
+import net.hasor.rsf.runtime.RsfContext;
 /**
  * 调用服务的Handler（只处理ResponseMsg）
  * @version : 2014年11月4日

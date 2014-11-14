@@ -28,14 +28,14 @@ import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
-import net.hasor.rsf.runtime.context.RsfContext;
+import net.hasor.rsf.runtime.context.DefaultRsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerRsfContext implements RsfContext {
+public class ServerRsfContext extends DefaultRsfContext {
     static int               minCorePoolSize  = 2;
     static int               maxCorePoolSize  = 10;
     static int               queueSize        = 4096;
@@ -108,7 +108,7 @@ public class ServerRsfContext implements RsfContext {
         requestCount++;
     }
     @Override
-    public byte getProtocolVersion() {
+    public byte getVersion() {
         return ProtocolVersion.V_1_0.value();
     }
 }

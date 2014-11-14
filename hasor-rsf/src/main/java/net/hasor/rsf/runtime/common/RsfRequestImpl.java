@@ -21,8 +21,8 @@ import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.runtime.context.RsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * RSF请求

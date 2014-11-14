@@ -55,18 +55,29 @@
 			<version>0.0.2</version>
 		</dependency>
 		<!-- Hasor-RSF -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>net.hasor</groupId> -->
-<!-- 			<artifactId>hasor-rsf</artifactId> -->
-<!-- 			<version>0.0.1-SNAPSHOT</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-rsf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Test -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>net.hasor</groupId> -->
-<!-- 			<artifactId>hasor-test</artifactId> -->
-<!-- 			<version>0.0.2</version> -->
-<!-- 		</dependency> -->
-
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-test</artifactId> -->
+		<!-- <version>0.0.2</version> -->
+		<!-- </dependency> -->
+		<!-- Serialize - kryo -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.esotericsoftware.kryo</groupId> -->
+		<!-- <artifactId>kryo</artifactId> -->
+		<!-- <version>2.24.0</version> -->
+		<!-- </dependency> -->
+		<!-- JGit -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jgit</groupId> -->
+		<!-- <artifactId>org.eclipse.jgit</artifactId> -->
+		<!-- <version>3.0.0.201306101825-r</version> -->
+		<!-- </dependency> -->
 
 		<!-- Log -->
 		<dependency>
@@ -97,11 +108,11 @@
 			<version>1.1.2</version>
 		</dependency>
 		<!-- OSS -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.aliyun.openservices</groupId> -->
-<!-- 			<artifactId>aliyun-openservices</artifactId> -->
-<!-- 			<version>1.0.10</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.aliyun.openservices</groupId> -->
+		<!-- <artifactId>aliyun-openservices</artifactId> -->
+		<!-- <version>1.0.10</version> -->
+		<!-- </dependency> -->
 		<!-- JDBC -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.hsqldb</groupId> -->

@@ -17,9 +17,9 @@ package net.hasor.rsf.runtime.common;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
-import net.hasor.rsf.runtime.context.RsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 调用请求
@@ -34,7 +34,6 @@ public class RsfResponseImpl implements RsfResponse {
     private Object         returnObject = null;
     private Class<?>       returnType   = null;
     private boolean        committed    = false;
-    //
     //
     public RsfResponseImpl(RsfRequestImpl rsfRequest, RsfContext rsfContext) {
         this.rsfRequest = rsfRequest;

@@ -6,9 +6,15 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.runtime.client.RsfClient;
+import net.hasor.rsf.runtime.client.RsfClientFactory;
+import net.hasor.rsf.runtime.client.RsfService;
 import net.hasor.rsf.runtime.client.netty.ClientHandler;
 import net.hasor.rsf.serialize.coder.Hessian_DecoderEncoder;
 /**
@@ -17,6 +23,23 @@ import net.hasor.rsf.serialize.coder.Hessian_DecoderEncoder;
  * @author 赵永春(zyc@hasor.net)
  */
 public class Client {
+    public void after() throws IOException, URISyntaxException, InterruptedException {
+        RsfContext context = new ServerRsfContext();
+        RsfClientFactory factary = new RsfClientFactory(context);
+        RsfClient client = factary.connect("127.0.0.1", 8000);
+        //
+        RsfService services = client.getRemoteService("net.hasor.rsf._test.TestServices");
+        //
+        //发起100万次调用.
+        for (int i = 0; i < 1000000; i++) {
+            RsfRequest rsfRequest = services.newRequest("sayHello", new Object[] { "你好..." });
+            Object data = client.syncInvoke(rsfRequest);
+        }
+        //
+        client.close();
+    }
+    //
+    //
     public void connect(String host, int port) throws Exception {
         final ServerRsfContext manager = new ServerRsfContext();
         try {

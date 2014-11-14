@@ -21,11 +21,11 @@ import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.common.RsfRequestImpl;
 import net.hasor.rsf.runtime.common.RsfResponseImpl;
-import net.hasor.rsf.runtime.context.RsfContext;
 /**
  * 调用主逻辑
  * @version : 2014年11月4日

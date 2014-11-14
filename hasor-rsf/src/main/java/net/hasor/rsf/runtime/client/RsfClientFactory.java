@@ -5,13 +5,14 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.client.netty.ClientHandler;
 import net.hasor.rsf.runtime.client.netty.NettyRsfClient;
-import net.hasor.rsf.runtime.context.RsfContext;
 /**
  * 负责创建{@link RsfClient}。
  * @version : 2014年9月12日
@@ -24,10 +25,16 @@ public class RsfClientFactory {
         this.rsfContext = rsfContext;
     }
     //
-    public RsfClient newClient(SocketAddress remoteAddress) {
-        return newClient(remoteAddress, null);
+    /**连接远程服务。*/
+    public RsfClient connect(String hostName, int port) {
+        return connect(new InetSocketAddress(hostName, port));
     }
-    public RsfClient newClient(SocketAddress remoteAddress, SocketAddress localAddress) {
+    /**连接远程服务。*/
+    public RsfClient connect(SocketAddress remoteAddress) {
+        return connect(remoteAddress, null);
+    }
+    /**连接远程服务。*/
+    public RsfClient connect(SocketAddress remoteAddress, SocketAddress localAddress) {
         Hasor.assertIsNotNull(remoteAddress, "remoteAddress is null.");
         //
         Bootstrap boot = new Bootstrap();
