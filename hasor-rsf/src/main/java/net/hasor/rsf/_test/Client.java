@@ -36,11 +36,7 @@ public class Client {
             {
                 for (int i = 0; i < 1000000; i++) {
                     RequestMsg req = getData();
-                    synchronized (req) {
-                        f.channel().writeAndFlush(req);
-                        req.wait();
-                        System.out.println();
-                    }
+                    f.channel().writeAndFlush(req).await();
                 }
             }
             // Wait until the connection is closed.

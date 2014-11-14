@@ -34,7 +34,8 @@ public interface RsfContext {
     public SerializeFactory getSerializeFactory();
     //
     public Object getBean(ServiceMetaData metaData);
-    //
+    public Class<?> getBeanType(ServiceMetaData metaData);
+    // 
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData);
     //
     public byte getProtocolVersion();

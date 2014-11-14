@@ -20,33 +20,22 @@ import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
-import java.util.Map;
+import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.net.netty.NetworkChanne;
+import net.hasor.rsf.server.RsfRequest;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfRequestImpl implements RsfRequest {
-    private long                requestID        = 0;
-    private ServiceMetaData     metaData         = null;
-    private Method              targetMethod     = null;
-    private Channel             socketChanne     = null;
-    private RsfContext          rsfContext       = null;
-    //
-    private String              remoteHost       = null;
-    private int                 remotePort       = 0;
-    private String              localHost        = null;
-    private int                 localPort        = 0;
-    //
-    private Class<?>[]          parameterTypes   = null;
-    private  = null;
-    private Map<String, String> optionMap        = null; //选项
+    private long             requestID     = 0;
+    private RsfRequestDefine requestDefine = null;
+    private NetworkChanne    connection    = null;
     //
     //
-    public RsfRequestImpl(long requestID, Method targetMethod,  ServiceMetaData metaData, Channel socketChanne, RsfContext rsfContext) {
+    public RsfRequestImpl(long requestID, Method targetMethod, ServiceMetaData metaData, Channel socketChanne, RsfContext rsfContext) {
         this.requestID = requestID;
         this.metaData = metaData;
         this.socketChanne = socketChanne;
@@ -119,7 +108,7 @@ class RsfRequestImpl implements RsfRequest {
         this.optionMap.put(key, value);
     }
     //
-    public ChannelFuture doRequest(Object[]            parameterObjects) {
+    public ChannelFuture doRequest(Object[] parameterObjects) {
         //
         this.socketChanne.writeAndFlush(msg);
     }

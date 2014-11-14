@@ -16,11 +16,12 @@
 package net.hasor.rsf.protocol.message;
 import java.util.ArrayList;
 import java.util.List;
+import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.SerializeFactory;
-import org.more.UndefinedException;
 /**
  * RSF 1.0-Request 协议数据.
  * @version : 2014年10月25日
@@ -126,8 +127,10 @@ public class RequestMsg extends BaseMsg {
         String[] paramTypes = this.getParameterTypes();
         Object[] paramObject = new Object[paramTypes.length];
         //
-        if (decoder == null && (paramTypes.length > 0))
-            throw new UndefinedException("Undefined ‘" + codeName + "’ serialize decoder ");
+        if (decoder == null && (paramTypes.length > 0)) {
+            throw new RsfException(ProtocolStatus.SerializeError,//
+                    "Undefined ‘" + codeName + "’ serialize decoder ");
+        }
         //
         for (int i = 0; i < paramTypes.length; i++) {
             byte[] paramData = this.paramDatas.get(i);

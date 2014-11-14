@@ -36,7 +36,7 @@ import net.hasor.rsf.server.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerRsfContext implements RsfContext {
-    static int               minCorePoolSize  = 1;
+    static int               minCorePoolSize  = 2;
     static int               maxCorePoolSize  = 10;
     static int               queueSize        = 4096;
     private SerializeFactory serializeFactory = null;
@@ -73,6 +73,10 @@ public class ServerRsfContext implements RsfContext {
         return new TestServices();
     }
     @Override
+    public Class<?> getBeanType(ServiceMetaData metaData) {
+        return TestServices.class;
+    }
+    @Override
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
         return new RsfFilter[] { new RsfFilter() {
             public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
@@ -80,14 +84,6 @@ public class ServerRsfContext implements RsfContext {
                 chain.doFilter(request, response);
             }
         } };
-    }
-    public RsfRequest createRequest(ServiceMetaData metaData) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    public RsfRequest getRequest(long requestID) {
-        // TODO Auto-generated method stub
-        return null;
     }
     //
     //

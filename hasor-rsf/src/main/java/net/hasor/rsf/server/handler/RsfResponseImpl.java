@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.server.handler;
-import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.server.RsfRequest;
@@ -27,61 +27,104 @@ import net.hasor.rsf.server.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfResponseImpl implements RsfResponse {
-    private RsfRequest            rsfRequest     = null;
-    private ChannelHandlerContext channelContext = null;
-    private RsfContext            rsfContext     = null;
-    private boolean               committed      = false;
+    private RsfRequestImpl rsfRequest   = null;
+    private ResponseMsg    responseMsg  = null;
+    private RsfContext     rsfContext   = null;
     //
-    public RsfResponseImpl(RsfRequest rsfRequest, ChannelHandlerContext channelContext, RsfContext rsfContext) {
+    private Object         returnObject = null;
+    private Class<?>       returnType   = null;
+    private boolean        committed    = false;
+    //
+    //
+    public RsfResponseImpl(RsfRequestImpl rsfRequest, RsfContext rsfContext) {
         this.rsfRequest = rsfRequest;
-        this.channelContext = channelContext;
         this.rsfContext = rsfContext;
+        this.responseMsg = new ResponseMsg();
+        this.responseMsg.setVersion(rsfRequest.getProtocol());
+        this.responseMsg.setRequestID(rsfRequest.getRequestID());
+        this.responseMsg.setStatus(ProtocolStatus.Unknown);
+        this.responseMsg.setSerializeType(rsfRequest.getSerializeType());
+    }
+    //
+    public void init() {
+        this.returnType = this.rsfRequest.getTargetMethod().getReturnType();
+        this.responseMsg.setReturnType(this.returnType.getName());
     }
     //
     private void check() {
         if (this.committed == true)
             throw new IllegalStateException("is committed.");
-        if (this.channelContext.channel().isActive() == false)
+        if (this.rsfRequest.getConnection().isActive() == false)
             throw new IllegalStateException("connection is closed.");
     }
-    //
     public boolean isCommitted() {
         return this.committed;
     }
-    public void onMessage(Object messageBody) {
-        sendStatus(ProtocolStatus.Message, messageBody);
-    }
-    public void sendData(Object returnObject) {
-        sendStatus(ProtocolStatus.OK, returnObject);
-    }
-    public void sendStatus(ProtocolStatus status) {
-        sendStatus(status, null);
-    }
-    public void sendStatus(ProtocolStatus status, Object messageBody) {
-        check();
-        //1.基本信息
-        ResponseMsg response = new ResponseMsg();
-        response.setVersion(this.rsfRequest.getProtocolVersion());
-        response.setRequestID(this.rsfRequest.getRequestID());
-        response.setStatus(status);
-        response.setSerializeType(rsfRequest.getSerializeType());
-        //2.序列化
+    public void refresh() {
+        if (this.committed == true)
+            return;
+        //
         try {
-            if (messageBody != null) {
+            if (this.returnObject != null) {
                 SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
-                response.setReturnData(messageBody, serializeFactory);
-                response.setReturnType(messageBody.getClass().getName());
-            } else {
-                response.setReturnData(null);
-                response.setReturnType(null);
+                this.responseMsg.setReturnData(this.returnObject, serializeFactory);
             }
         } catch (Throwable e) {
-            response.setStatus(ProtocolStatus.SerializeError);;
-            response.setReturnData(e.getMessage().getBytes());;
-            response.setReturnType(String.class.getName());
+            this.responseMsg.setStatus(ProtocolStatus.SerializeError);;
+            this.responseMsg.setReturnData(e.getMessage().getBytes());;
+            this.responseMsg.setReturnType(String.class.getName());
         }
-        //3.写内容
-        this.channelContext.channel().writeAndFlush(response);
+        this.rsfRequest.getConnection().sendData(this.responseMsg);
         this.committed = true;
+    }
+    //
+    public Object getReturn() {
+        return this.returnObject;
+    }
+    public Class<?> getReturnType() {
+        return this.returnType;
+    }
+    public ProtocolStatus getReturnStatus() {
+        return this.responseMsg.getStatus();
+    }
+    public ServiceMetaData getMetaData() {
+        return this.rsfRequest.getMetaData();
+    }
+    public RsfRequest fromRequest() {
+        return this.rsfRequest;
+    }
+    //
+    public String[] getOptionKeys() {
+        return this.responseMsg.getOptionKeys();
+    }
+    public String getOption(String key) {
+        return this.responseMsg.getOption(key);
+    }
+    public void addOption(String key, String value) {
+        this.responseMsg.addOption(key, value);
+    }
+    public byte getProtocol() {
+        return this.responseMsg.getVersion();
+    }
+    public long getRequestID() {
+        return this.responseMsg.getRequestID();
+    }
+    public String getSerializeType() {
+        return this.responseMsg.getSerializeType();
+    }
+    //
+    public void sendData(Object returnObject) {
+        updateReturn(ProtocolStatus.OK, returnObject);
+    }
+    public void sendStatus(ProtocolStatus status) {
+        updateReturn(status, null);
+    }
+    public void sendStatus(ProtocolStatus status, Object messageBody) {
+        updateReturn(status, messageBody);
+    }
+    private void updateReturn(ProtocolStatus status, Object messageBody) {
+        check();
+        this.returnObject = messageBody;
+        this.responseMsg.setStatus(status);
     }
 }

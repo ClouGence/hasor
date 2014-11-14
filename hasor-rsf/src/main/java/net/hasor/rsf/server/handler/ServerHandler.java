@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.server.handler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.lang.reflect.Method;
@@ -21,7 +22,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
+import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
@@ -43,88 +46,65 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestMsg == false)
             return;
-        RequestMsg request = (RequestMsg) msg;
-        request.setReceiveTime(System.currentTimeMillis());
+        RequestMsg requestMsg = (RequestMsg) msg;
+        requestMsg.setReceiveTime(System.currentTimeMillis());
         //
         try {
-            Executor exe = this.rsfContext.getCallExecute(request.getServiceName());
-            exe.execute(new InvokeHandler(this.rsfContext, request, ctx));
+            Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
+            exe.execute(new InvokeHandler(this.rsfContext, requestMsg, ctx.channel()));
         } catch (RejectedExecutionException e) {
             ResponseMsg pack = TransferUtils.buildStatus(//
-                    request.getVersion(), //协议版本
-                    request.getRequestID(),//请求ID
+                    requestMsg.getVersion(), //协议版本
+                    requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther);//服务器资源紧张
             ctx.pipeline().writeAndFlush(pack);
         }
     }
     //
-    //
-    //
     /**调用主逻辑*/
     private static class InvokeHandler implements Runnable {
-        private RsfContext            rsfContext     = null;
-        private RequestMsg            requestMessage = null;
-        private ChannelHandlerContext channelContext = null;
+        private RsfContext rsfContext = null;
+        private RequestMsg requestMsg = null;
+        private Channel    channel    = null;
         //
-        public InvokeHandler(RsfContext rsfContext, RequestMsg requestMessage, ChannelHandlerContext channelContext) {
+        public InvokeHandler(RsfContext rsfContext, RequestMsg requestMsg, Channel channel) {
             this.rsfContext = rsfContext;
-            this.requestMessage = requestMessage;
-            this.channelContext = channelContext;
+            this.requestMsg = requestMsg;
+            this.channel = channel;
         }
         public void run() {
-            RsfRequestImpl request = new RsfRequestImpl(requestMessage, channelContext, rsfContext);
-            RsfResponseImpl response = new RsfResponseImpl(request, channelContext, rsfContext);
+            NetworkChanne connection = new NetworkChanne(channel);
+            RsfRequestImpl request = new RsfRequestImpl(requestMsg, connection, rsfContext);
+            RsfResponseImpl response = new RsfResponseImpl(request, rsfContext);
             this.process(request, response);
         }
         private void process(RsfRequestImpl request, RsfResponseImpl response) {
-            //
-            //1.check 404(NotFound)
-            String serviceName = request.getMetaData().getServiceName();
-            ServiceMetaData metaData = this.rsfContext.getService(serviceName);
-            if (metaData == null) {
-                response.sendStatus(ProtocolStatus.NotFound, "service was not found.");
-                return;
-            }
-            //
-            //2.引发反序列化参数
+            //1.初始化
             try {
                 request.init();
-            } catch (Throwable e) {
-                //503 SerializeError
-                response.sendStatus(ProtocolStatus.SerializeError, e);
+                response.init();
+            } catch (RsfException e) {
+                response.sendStatus(e.getStatus(), e);
                 return;
             }
             //
-            //3.获取调用对象
-            Object targetObj = null;
-            Method targetMethod = null;
-            Object forbidden = null;
-            try {
-                targetObj = this.rsfContext.getBean(metaData);
-                if (targetObj != null) {
-                    targetMethod = targetObj.getClass().getMethod(//
-                            request.getMethod(), request.getParameterTypes());
-                }
-                if (targetObj == null || targetMethod == null) {
-                    forbidden = "failed to get the instance.";
-                }
-            } catch (Exception e) {
-                forbidden = e;
-            }
-            if (forbidden != null) {
-                //403 Forbidden
-                response.sendStatus(ProtocolStatus.Forbidden, forbidden);
-                return;
-            }
-            //
-            //4.检查timeout
+            //2.检查timeout
             long lostTime = System.currentTimeMillis() - request.getReceiveTime();
             if (lostTime > request.getTimeout()) {
                 response.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
                 return;
             }
             //
-            //5.执行调用
+            //3.check target Object
+            ServiceMetaData metaData = request.getMetaData();
+            Method targetMethod = request.getTargetMethod();
+            Object targetObj = this.rsfContext.getBean(metaData);
+            if (targetObj == null) {
+                response.sendStatus(ProtocolStatus.Forbidden, "failed to get service.");
+                return;
+            }
+            //
+            //4.执行调用
             try {
                 RsfFilterChain rsfChain = new InnerRsfFilterChain(targetObj, targetMethod);
                 RsfFilter[] rsfFilters = this.rsfContext.getRsfFilters(metaData);
@@ -136,7 +116,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             }
             //6.检测请求是否被友谊丢弃。
             if (response.isCommitted() == false) {
-                response.sendStatus(ProtocolStatus.Ignore);
+                response.refresh();
                 return;
             }
         }
