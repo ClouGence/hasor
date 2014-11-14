@@ -69,15 +69,15 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ResponseMsg response = (ResponseMsg) msg;
         //
-        if (response.getStatus() == ProtocolStatus.Accepted)
+        if (response.getStatus() == ProtocolStatus.Accepted.shortValue())
             acceptedCount++;
-        else if (response.getStatus() == ProtocolStatus.ChooseOther)
+        else if (response.getStatus() == ProtocolStatus.ChooseOther.shortValue())
             chooseOtherCount++;
-        else if (response.getStatus() == ProtocolStatus.OK)
+        else if (response.getStatus() == ProtocolStatus.OK.shortValue())
             okCount++;
-        else if (response.getStatus() == ProtocolStatus.SerializeError)
+        else if (response.getStatus() == ProtocolStatus.SerializeError.shortValue())
             serializeError++;
-        else if (response.getStatus() == ProtocolStatus.RequestTimeout)
+        else if (response.getStatus() == ProtocolStatus.RequestTimeout.shortValue())
             requestTimeout++;
         else {
             int a = 0;

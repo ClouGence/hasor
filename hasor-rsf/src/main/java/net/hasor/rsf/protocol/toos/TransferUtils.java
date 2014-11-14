@@ -62,7 +62,7 @@ public class TransferUtils {
         byte version = ProtocolUtils.finalVersionForResponse(msg.getVersion());
         socketMsg.setVersion(version);//协议版本
         socketMsg.setRequestID(msg.getRequestID());//请求ID
-        socketMsg.setStatus(msg.getStatus().shortValue());//响应状态
+        socketMsg.setStatus(msg.getStatus());//响应状态
         socketMsg.setSerializeType(pushString(socketMsg, msg.getSerializeType()));//序列化策略
         socketMsg.setReturnType(pushString(socketMsg, msg.getReturnType()));//返回类型
         socketMsg.setReturnData(socketMsg.pushData(msg.getReturnData()));//返回值
@@ -118,7 +118,7 @@ public class TransferUtils {
         ResponseMsg resMetaData = new ResponseMsg();
         resMetaData.setVersion(block.getVersion());//协议版本
         resMetaData.setRequestID(block.getRequestID());//请求ID
-        resMetaData.setStatus(ProtocolStatus.valueOf(block.getStatus()));//响应状态
+        resMetaData.setStatus(block.getStatus());//响应状态
         resMetaData.setSerializeType(getString(block, block.getSerializeType()));//序列化策略
         resMetaData.setReturnType(getString(block, block.getReturnType()));//返回类型
         resMetaData.setReturnData(block.readPool(block.getReturnData()));//返回数据
@@ -142,6 +142,10 @@ public class TransferUtils {
     //
     /**生成指定状态的的响应包*/
     public static ResponseMsg buildStatus(byte version, long requestID, ProtocolStatus status) {
+        return buildStatus(version, requestID, status.shortValue());
+    }
+    /**生成指定状态的的响应包*/
+    public static ResponseMsg buildStatus(byte version, long requestID, short status) {
         //1.发送ACK包
         ResponseMsg ack = new ResponseMsg();
         ack.setVersion(ProtocolUtils.finalVersionForResponse(version));

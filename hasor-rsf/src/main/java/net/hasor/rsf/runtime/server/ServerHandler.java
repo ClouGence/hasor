@@ -43,6 +43,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         try {
             Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
             exe.execute(new InnerInvokeHandler(this.rsfContext, requestMsg, ctx.channel()));
+            //
+            ResponseMsg pack = TransferUtils.buildStatus(//
+                    requestMsg.getVersion(), //协议版本
+                    requestMsg.getRequestID(),//请求ID
+                    ProtocolStatus.Accepted);//回应ACK
+            ctx.pipeline().writeAndFlush(pack);
         } catch (RejectedExecutionException e) {
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本

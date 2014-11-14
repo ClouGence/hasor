@@ -15,8 +15,6 @@
  */
 package net.hasor.rsf.net.netty;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.general.ProtocolStatus;
@@ -62,7 +60,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
             if (requestProtocol != null) {
                 RequestSocketBlock block = requestProtocol.decode(frame);
                 RequestMsg reqMetaData = TransferUtils.requestToMessage(block);
-                this.fireAck(ctx, reqMetaData);
+                ctx.fireChannelRead(reqMetaData);
                 return null;/*正常处理后返回*/
             }
         }
@@ -94,30 +92,5 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         ResponseMsg error = TransferUtils.buildStatus(//
                 version, requestID, ProtocolStatus.ProtocolError);
         ctx.pipeline().writeAndFlush(error);
-    }
-    /**发送ACK*/
-    private void fireAck(ChannelHandlerContext ctx, RequestMsg reqMetaData) {
-        //1.创建ACK包
-        byte version = reqMetaData.getVersion();
-        long requestID = reqMetaData.getRequestID();
-        ResponseMsg ack = TransferUtils.buildStatus(//
-                version, requestID, ProtocolStatus.Accepted);
-        //2.当ACK，发送成功之后继续传递msg
-        ctx.pipeline().writeAndFlush(ack).addListener(new FireChannel(ctx, reqMetaData));
-    }
-}
-/***/
-class FireChannel implements ChannelFutureListener {
-    private ChannelHandlerContext ctx     = null;
-    private Object                message = null;
-    //
-    public FireChannel(ChannelHandlerContext ctx, Object message) {
-        this.ctx = ctx;
-        this.message = message;
-    }
-    public void operationComplete(ChannelFuture future) throws Exception {
-        if (future.isSuccess() == false)
-            return;
-        this.ctx.fireChannelRead(this.message);
     }
 }

@@ -8,6 +8,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
@@ -19,10 +20,13 @@ import net.hasor.rsf.runtime.client.netty.NettyRsfClient;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private RsfContext rsfContext = null;
+    private SendLimitPolicy sendLimitPolicy = SendLimitPolicy.Reject;
+    private RsfContext      rsfContext      = null;
+    //
     public RsfClientFactory(RsfContext rsfContext) {
         Hasor.assertIsNotNull(rsfContext, "rsfContext is null.");
         this.rsfContext = rsfContext;
+        this.sendLimitPolicy = rsfContext.getSendLimitPolicy();
     }
     //
     /**连接远程服务。*/

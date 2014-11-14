@@ -27,17 +27,21 @@ public interface RsfResponse extends RsfHeader {
     public void refresh() throws Throwable;
     //
     /**最终结果。*/
-    public Object getReturn();
+    public Object getData();
     /**返回的类型信息。*/
     public Class<?> getReturnType();
     /**返回状态*/
-    public ProtocolStatus getReturnStatus();
+    public short getReturnStatus();
     //
     /**发送最终结果，只有{@link #isCommitted()}为 false 时才可用。*/
     public void sendData(Object returnObject);
     /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
+    public void sendStatus(short status);
+    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
     public void sendStatus(ProtocolStatus status);
     /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。*/
+    public void sendStatus(short status, Object messageBody);
+    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
     public void sendStatus(ProtocolStatus status, Object messageBody);
     //
     //    /**在send操作完成响应之前，给予客户端的消息（在长调用的时候可以用来替代消息队列）。*/

@@ -39,12 +39,13 @@ public class ServerRsfContext extends DefaultRsfContext {
     static int               minCorePoolSize  = 2;
     static int               maxCorePoolSize  = 10;
     static int               queueSize        = 4096;
+    static long              keepAliveTime    = 300L;
     private SerializeFactory serializeFactory = null;
     private ExecutesManager  manager          = null;
     //
     //
     public ServerRsfContext() throws IOException, URISyntaxException {
-        manager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize);
+        manager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         Settings settings = new StandardContextSettings();
         settings.refresh();
         serializeFactory = SerializeFactory.createFactory(settings);

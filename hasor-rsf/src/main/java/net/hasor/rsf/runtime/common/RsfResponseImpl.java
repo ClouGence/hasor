@@ -69,21 +69,22 @@ public class RsfResponseImpl implements RsfResponse {
                 this.responseMsg.setReturnData(this.returnObject, serializeFactory);
             }
         } catch (Throwable e) {
+            String msg = e.getClass().getName() + ":" + e.getMessage();
             this.responseMsg.setStatus(ProtocolStatus.SerializeError);;
-            this.responseMsg.setReturnData(e.getMessage().getBytes());;
+            this.responseMsg.setReturnData(msg.getBytes());;
             this.responseMsg.setReturnType(String.class.getName());
         }
         this.rsfRequest.getConnection().sendData(this.responseMsg);
         this.committed = true;
     }
     //
-    public Object getReturn() {
+    public Object getData() {
         return this.returnObject;
     }
     public Class<?> getReturnType() {
         return this.returnType;
     }
-    public ProtocolStatus getReturnStatus() {
+    public short getReturnStatus() {
         return this.responseMsg.getStatus();
     }
     public ServiceMetaData getMetaData() {
@@ -113,15 +114,21 @@ public class RsfResponseImpl implements RsfResponse {
     }
     //
     public void sendData(Object returnObject) {
-        updateReturn(ProtocolStatus.OK, returnObject);
+        updateReturn(ProtocolStatus.OK.shortValue(), returnObject);
     }
-    public void sendStatus(ProtocolStatus status) {
+    public void sendStatus(short status) {
         updateReturn(status, null);
     }
-    public void sendStatus(ProtocolStatus status, Object messageBody) {
+    public void sendStatus(short status, Object messageBody) {
         updateReturn(status, messageBody);
     }
-    private void updateReturn(ProtocolStatus status, Object messageBody) {
+    public void sendStatus(ProtocolStatus status) {
+        updateReturn(status.shortValue(), null);
+    }
+    public void sendStatus(ProtocolStatus status, Object messageBody) {
+        updateReturn(status.shortValue(), messageBody);
+    }
+    private void updateReturn(short status, Object messageBody) {
         check();
         this.returnObject = messageBody;
         this.responseMsg.setStatus(status);

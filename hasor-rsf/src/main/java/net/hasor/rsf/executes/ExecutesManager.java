@@ -27,14 +27,13 @@ import java.util.concurrent.TimeUnit;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
-    private long                                  keepAliveTime    = 300L;
     private ThreadPoolExecutor                    defaultExecutor  = null;
     private final Map<String, ThreadPoolExecutor> servicePoolCache = new HashMap<String, ThreadPoolExecutor>();
     //
-    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize) {
+    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
         this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//
-                this.keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//
+                keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//
                 new RsfThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
     }
     //

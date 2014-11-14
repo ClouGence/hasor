@@ -14,34 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.message;
-import org.more.UndefinedException;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.Decoder;
 import net.hasor.rsf.serialize.Encoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import org.more.UndefinedException;
 /**
  * RSF 1.0-Response 协议数据.
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseMsg extends BaseMsg {
-    private ProtocolStatus status        = ProtocolStatus.Unknown;
-    private String         serializeType = "";
-    private String         returnType    = "";
-    private byte[]         returnData    = null;
+    private short  status        = ProtocolStatus.Unknown.shortValue();
+    private String serializeType = "";
+    private String returnType    = "";
+    private byte[] returnData    = null;
     //
     /**设置协议版本。*/
     public void setVersion(byte version) {
         super.setVersion(ProtocolUtils.finalVersionForResponse(version));
     }
     /**获取响应状态*/
-    public ProtocolStatus getStatus() {
+    public short getStatus() {
         return this.status;
     }
     /**设置响应状态*/
-    public void setStatus(ProtocolStatus status) {
+    public void setStatus(short status) {
         this.status = status;
+    }
+    /**设置响应状态*/
+    public void setStatus(ProtocolStatus status) {
+        this.status = status.shortValue();
     }
     /**获取序列化类型*/
     public String getSerializeType() {

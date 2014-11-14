@@ -53,7 +53,7 @@ class InnerInvokeHandler implements Runnable {
             request.init();
             response.init();
         } catch (RsfException e) {
-            response.sendStatus(e.getStatus(), e);
+            response.sendStatus(e.getStatus(), e.getMessage());
             return;
         }
         //
@@ -80,7 +80,7 @@ class InnerInvokeHandler implements Runnable {
             new InnerRsfFilterChainInterceptor(rsfFilters, rsfChain).doFilter(request, response);
         } catch (Throwable e) {
             //500 InternalServerError
-            response.sendStatus(ProtocolStatus.InternalServerError, e);
+            response.sendStatus(ProtocolStatus.InternalServerError, e.getMessage());
             return;
         }
         //6.检测请求是否被友谊丢弃。

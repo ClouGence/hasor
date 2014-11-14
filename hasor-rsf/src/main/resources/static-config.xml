@@ -5,8 +5,50 @@
 		<!-- 包扫描范围 -->
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- Hasor-RSF 专用 -->
-		<rsfConfig address="localhost" port="6000">
-			<serializeType>
+		<rsfConfig address="127.0.0.1" port="6000">
+			<!--
+				用于更新服务列表的配置服务器
+					如果配置 loadType = auto，表示从现有网络上自动发现。
+					如果配置 loadType = host，表示从指定的服务器上获取更新（60秒）
+			-->
+			<configServer loadType="auto" address="127.0.0.1" port="6000" interval="60000" />
+
+			<!--
+				通用配置
+					defaultTimeout	默认超时时间
+					maximumRequest	最大并发请求数
+					sendLimitPolicy	并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
+			-->
+			<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject"/>
+
+			<!-- 公共选项配置 -->
+			<optionSet>
+				<option key="certification">user=abc;password=123</option>
+				<option key=""></option>
+			</optionSet>
+
+			<!--
+				处理队列配置（用于配置ExecutesManager）
+					maxSize
+						处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。
+					minPoolSize		
+						the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
+					maxPoolSize
+						the maximum number of threads to allow in the pool.
+					keepAliveTime(SECONDS)
+						when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.
+			-->
+			<queue maxSize="4096" minPoolSize="1" maxPoolSize="7" keepAliveTime="300" />
+
+			<!--
+				网络数据包线程配置
+					workerThread	处理网络IO数据包的线程数。
+					listenThread	处理网络监听请求的线程数。
+			-->
+			<network workerThread="2" listenThread="1"/>
+
+			<!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
+			<serializeType default="Hessian">
 				<!-- JSON-格式序列化 -->
 				<serialize name="Json">
 					<encoder>net.hasor.rsf.serialize.coder.FastJson_DecoderEncoder</encoder>

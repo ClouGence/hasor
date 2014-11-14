@@ -21,14 +21,13 @@ package net.hasor.rsf.metadata;
  */
 public class ServiceMetaData {
     //Provider
-    private String  serviceName    = null;     //服务名
-    private String  serviceGroup   = "default"; //服务分组
-    private String  serviceVersion = "1.0.0";  //服务版本
-    private String  serviceDesc    = "";       //服务描述
-    private boolean supportAsync   = false;    //是否支持异步调用
+    private String serviceName    = null;     //服务名
+    private String serviceGroup   = "default"; //服务分组
+    private String serviceVersion = "1.0.0";  //服务版本
+    private String serviceDesc    = "";       //服务描述
     //Consumer
-    private int     clientTimeout  = 6000;     //调用超时（毫秒）
-    private String  serializeType  = null;     //传输序列化类型
+    private int    clientTimeout  = 6000;     //调用超时（毫秒）
+    private String serializeType  = null;     //传输序列化类型
     //
     /**获取发布服务的名称。*/
     public String getServiceName() {
@@ -61,14 +60,6 @@ public class ServiceMetaData {
     /**设置服务描述性信息。*/
     public void setServiceDesc(String serviceDesc) {
         this.serviceDesc = serviceDesc;
-    }
-    /**服务是否支持异步调用。*/
-    public boolean isSupportAsync() {
-        return this.supportAsync;
-    }
-    /**设置服务是否支持异步调用。*/
-    public void setSupportAsync(boolean supportAsync) {
-        this.supportAsync = supportAsync;
     }
     /**获取客户端调用服务超时时间。*/
     public int getClientTimeout() {
