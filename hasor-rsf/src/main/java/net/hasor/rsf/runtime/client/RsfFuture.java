@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.client;
+package net.hasor.rsf.runtime.client;
+import java.util.concurrent.Future;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCallBack {}
+public interface RsfFuture<T> extends Future<T> {
+    /**等待一段时间，如果在这段时间内收到远程响应，会提前结束等待。*/
+    public void await(int timeout);
+    /**等待调用结束。*/
+    public void await();
+}

@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.handler;
-import net.hasor.rsf.context.RsfContext;
+package net.hasor.rsf.runtime.common;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.runtime.context.RsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.server.RsfRequest;
-import net.hasor.rsf.server.RsfResponse;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfResponseImpl implements RsfResponse {
+public class RsfResponseImpl implements RsfResponse {
     private RsfRequestImpl rsfRequest   = null;
     private ResponseMsg    responseMsg  = null;
     private RsfContext     rsfContext   = null;

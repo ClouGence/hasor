@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
+package net.hasor.rsf.runtime;
 /**
- * 调用请求过滤器
- * @version : 2014年10月25日
+ * 
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfFilter {
-    public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable;
+public interface RsfFilterChain {
+    public void doFilter(RsfRequest request, RsfResponse response) throws Throwable;
 }

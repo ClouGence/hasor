@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.client;
-import java.util.concurrent.Future;
-import net.hasor.rsf.server.RsfResponse;
+package net.hasor.rsf.runtime.client.netty;
+import io.netty.channel.ChannelFuture;
 /**
- * 
- * @version : 2014年11月14日
+ * 调用请求
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfResponseFuture extends Future<RsfResponse> {
-    public void await();
-    public void await(int timeout);
+class RsfRequestDefine {
+    public ChannelFuture doRequest(Object[] parameterObjects) {
+        //
+        this.socketChanne.writeAndFlush(msg);
+    }
 }

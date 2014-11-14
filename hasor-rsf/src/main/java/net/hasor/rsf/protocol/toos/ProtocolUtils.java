@@ -1,4 +1,5 @@
 package net.hasor.rsf.protocol.toos;
+import java.lang.reflect.Array;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.block.RequestSocketBlock;
@@ -6,6 +7,7 @@ import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
+import org.more.util.StringUtils;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -56,5 +58,44 @@ public class ProtocolUtils {
     /**生成 response 的 version 信息。*/
     public static byte finalVersionForResponse(byte version) {
         return (byte) (RSFConstants.RSF_Response | version);
+    }
+    /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
+    public static Class<?> toJavaType(final String tType, final ClassLoader loader) throws ClassNotFoundException {
+        if (/*   */tType.equals("I") == true || StringUtils.equalsIgnoreCase(tType, "int") == true) {
+            return int.class;
+        } else if (tType.equals("B") == true || StringUtils.equalsIgnoreCase(tType, "byte") == true) {
+            return byte.class;
+        } else if (tType.equals("C") == true || StringUtils.equalsIgnoreCase(tType, "char") == true) {
+            return char.class;
+        } else if (tType.equals("D") == true || StringUtils.equalsIgnoreCase(tType, "double") == true) {
+            return double.class;
+        } else if (tType.equals("F") == true || StringUtils.equalsIgnoreCase(tType, "float") == true) {
+            return float.class;
+        } else if (tType.equals("J") == true || StringUtils.equalsIgnoreCase(tType, "long") == true) {
+            return long.class;
+        } else if (tType.equals("S") == true || StringUtils.equalsIgnoreCase(tType, "short") == true) {
+            return short.class;
+        } else if (tType.equals("Z") == true || StringUtils.equalsIgnoreCase(tType, "bit") == true || StringUtils.equalsIgnoreCase(tType, "boolean") == true) {
+            return boolean.class;
+        } else if (tType.equals("V") == true || StringUtils.equalsIgnoreCase(tType, "void") == true) {
+            return void.class;
+        } else if (tType.charAt(0) == '[') {
+            int length = 0;
+            while (true) {
+                if (tType.charAt(length) != '[') {
+                    break;
+                }
+                length++;
+            }
+            String arrayType = tType.substring(length, tType.length());
+            Class<?> returnType = toJavaType(arrayType, loader);
+            for (int i = 0; i < length; i++) {
+                Object obj = Array.newInstance(returnType, length);
+                returnType = obj.getClass();
+            }
+            return returnType;
+        } else {
+            return loader.loadClass(tType);
+        }
     }
 }

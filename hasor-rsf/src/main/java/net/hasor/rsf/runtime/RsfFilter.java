@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server;
+package net.hasor.rsf.runtime;
 /**
- * 调用请求
+ * 调用请求过滤器
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfRequest extends RsfHeader {
-    /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
-    public String getRemotHost();
-    /**远程端口。*/
-    public int getRemotePort();
-    /**本地IP。*/
-    public String getLocalHost();
-    /**本地端口。*/
-    public int getLocalPort();
-    /**超时时间。*/
-    public int getTimeout();
-    /**获取请求的服务。*/
-    public String getMethod();
-    /**获取请求参数类型。*/
-    public Class<?>[] getParameterTypes();
-    /**获取请求参数值。*/
-    public Object[] getParameterObject();
+public interface RsfFilter {
+    public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable;
 }

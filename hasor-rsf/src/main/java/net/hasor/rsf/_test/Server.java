@@ -23,7 +23,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hasor.rsf.net.netty.RSFCodec;
-import net.hasor.rsf.server.handler.ServerHandler;
+import net.hasor.rsf.runtime.server.ServerHandler;
 /**
  * 
  * @version : 2014年9月12日

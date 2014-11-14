@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.server.handler;
+package net.hasor.rsf.runtime.common;
 import java.lang.reflect.Method;
-import net.hasor.rsf.context.RsfContext;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.runtime.context.RsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.server.RsfRequest;
 /**
- * 调用请求
+ * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfRequestImpl implements RsfRequest {
+public class RsfRequestImpl implements RsfRequest {
     private ServiceMetaData metaData         = null;
     private RequestMsg      requestMsg       = null;
     private RsfContext      rsfContext       = null;
@@ -58,7 +59,7 @@ class RsfRequestImpl implements RsfRequest {
             String[] pTypes = this.requestMsg.getParameterTypes();
             this.parameterTypes = new Class<?>[pTypes.length];
             for (int i = 0; i < pTypes.length; i++) {
-                this.parameterTypes[i] = Utils.toJavaType(pTypes[i], Thread.currentThread().getContextClassLoader());
+                this.parameterTypes[i] = ProtocolUtils.toJavaType(pTypes[i], Thread.currentThread().getContextClassLoader());
             }
         } catch (RsfException e) {
             throw e;
