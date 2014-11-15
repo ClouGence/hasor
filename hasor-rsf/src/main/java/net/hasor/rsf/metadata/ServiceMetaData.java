@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.rsf.metadata;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceMetaData {
+    //
+    private Class<?>            targetService  = null;
+    private Map<String, Method> methodMap      = null;
     //Provider
-    private String serviceName    = null;     //服务名
-    private String serviceGroup   = "default"; //服务分组
-    private String serviceVersion = "1.0.0";  //服务版本
-    private String serviceDesc    = "";       //服务描述
+    private String              serviceName    = null;     //服务名
+    private String              serviceGroup   = "default"; //服务分组
+    private String              serviceVersion = "1.0.0";  //服务版本
+    private String              serviceDesc    = "";       //服务描述
     //Consumer
-    private int    clientTimeout  = 6000;     //调用超时（毫秒）
-    private String serializeType  = null;     //传输序列化类型
+    private int                 clientTimeout  = 6000;     //调用超时（毫秒）
+    private String              serializeType  = null;     //传输序列化类型
+    //
+    public ServiceMetaData(Class<?> targetService) {
+        this.targetService = targetService;
+        this.methodMap = new HashMap<String, Method>();
+    }
     //
     /**获取发布服务的名称。*/
     public String getServiceName() {
@@ -76,5 +87,21 @@ public class ServiceMetaData {
     /**设置客户端使用的对象序列化格式。*/
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
+    }
+    public Method getServiceMethod(String methodName, String[] pTypes, Class<?>[] parameterTypes) {
+        StringBuffer key = new StringBuffer(methodName);
+        for (String pt : pTypes) {
+            key.append(pt + ";");
+        }
+        String mKey = key.toString();
+        if (this.methodMap.containsKey(mKey) == false) {
+            try {
+                Method m = this.targetService.getMethod(methodName, parameterTypes);
+                this.methodMap.put(mKey, m);
+            } catch (Exception e) {
+                this.methodMap.put(mKey, null);
+            }
+        }
+        return this.methodMap.get(mKey);
     }
 }

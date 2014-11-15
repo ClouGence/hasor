@@ -52,11 +52,11 @@ public class RsfRequestImpl implements RsfRequest {
             throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
         }
         //2.反序列化
+        String[] pTypes = this.requestMsg.getParameterTypes();
         try {
             SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
             this.parameterObjects = this.requestMsg.toParameters(serializeFactory);
             //
-            String[] pTypes = this.requestMsg.getParameterTypes();
             this.parameterTypes = new Class<?>[pTypes.length];
             for (int i = 0; i < pTypes.length; i++) {
                 this.parameterTypes[i] = ProtocolUtils.toJavaType(pTypes[i], Thread.currentThread().getContextClassLoader());
@@ -66,25 +66,10 @@ public class RsfRequestImpl implements RsfRequest {
         } catch (Throwable e) {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
-        //3.check target Method
-        Class<?> targeType = this.rsfContext.getBeanType(metaData);
-        Object forbidden = null;
-        try {
-            if (targeType == null) {
-                forbidden = "undefined service.";
-            } else {
-                this.targetMethod = targeType.getMethod(//
-                        this.requestMsg.getTargetMethod(), this.parameterTypes);
-            }
-        } catch (Exception e) {
-            forbidden = e;
-        }
-        if (forbidden != null) {
-            if (forbidden instanceof Exception) {
-                throw new RsfException(ProtocolStatus.Forbidden, (Exception) forbidden);
-            } else {
-                throw new RsfException(ProtocolStatus.Forbidden, (String) forbidden);
-            }
+        //3.check Forbidden
+        this.targetMethod = this.metaData.getServiceMethod(this.requestMsg.getTargetMethod(), pTypes, this.parameterTypes);
+        if (this.targetMethod == null) {
+            throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
         }
     }
     //

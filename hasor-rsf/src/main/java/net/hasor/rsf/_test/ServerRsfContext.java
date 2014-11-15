@@ -23,6 +23,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.general.ProtocolVersion;
+import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
@@ -36,8 +37,8 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerRsfContext extends DefaultRsfContext {
-    static int               minCorePoolSize  = 2;
-    static int               maxCorePoolSize  = 10;
+    static int               minCorePoolSize  = 1;
+    static int               maxCorePoolSize  = 7;
     static int               queueSize        = 4096;
     static long              keepAliveTime    = 300L;
     private SerializeFactory serializeFactory = null;
@@ -50,15 +51,18 @@ public class ServerRsfContext extends DefaultRsfContext {
         settings.refresh();
         serializeFactory = SerializeFactory.createFactory(settings);
     }
-    private EventLoopGroup group = new NioEventLoopGroup();
+    private EventLoopGroup group = new NioEventLoopGroup(5);
     public EventLoopGroup getLoopGroup() {
         return group;
     }
     //
+    private ServiceMetaData data = null;
     @Override
     public ServiceMetaData getService(String serviceName) {
-        ServiceMetaData data = new ServiceMetaData();
-        data.setServiceName(serviceName);
+        if (data == null) {
+            data = new ServiceMetaData(TestServices.class);
+            data.setServiceName(serviceName);
+        }
         return data;
     }
     @Override
@@ -69,22 +73,27 @@ public class ServerRsfContext extends DefaultRsfContext {
     public SerializeFactory getSerializeFactory() {
         return this.serializeFactory;
     }
+    private TestServices test = null;
     @Override
     public Object getBean(ServiceMetaData metaData) {
-        return new TestServices();
+        if (test == null) {
+            this.test = new TestServices();
+        }
+        return this.test;
     }
     @Override
     public Class<?> getBeanType(ServiceMetaData metaData) {
         return TestServices.class;
     }
+    RsfFilter[] filter = new RsfFilter[] { new RsfFilter() {
+                           public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
+                               aa(request);
+                               chain.doFilter(request, response);
+                           }
+                       } };
     @Override
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
-        return new RsfFilter[] { new RsfFilter() {
-            public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-                aa(request);
-                chain.doFilter(request, response);
-            }
-        } };
+        return filter;
     }
     //
     //
@@ -111,5 +120,9 @@ public class ServerRsfContext extends DefaultRsfContext {
     @Override
     public byte getVersion() {
         return ProtocolVersion.V_1_0.value();
+    }
+    @Override
+    public SendLimitPolicy getSendLimitPolicy() {
+        return SendLimitPolicy.Reject;
     }
 }

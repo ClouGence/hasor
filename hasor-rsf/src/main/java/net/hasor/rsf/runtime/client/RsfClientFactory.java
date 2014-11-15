@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.general.SendLimitPolicy;
+import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
@@ -29,15 +30,23 @@ public class RsfClientFactory {
         this.sendLimitPolicy = rsfContext.getSendLimitPolicy();
     }
     //
-    /**连接远程服务。*/
+    /**连接远程服务（分布式）*/
+    public RsfClient connect(String serviceName) {
+        return connect(this.rsfContext.getService(serviceName));
+    }
+    /**连接远程服务（分布式）*/
+    public RsfClient connect(ServiceMetaData metaData) {
+        //
+    }
+    /**连接远程服务（具体的地址）*/
     public RsfClient connect(String hostName, int port) {
         return connect(new InetSocketAddress(hostName, port));
     }
-    /**连接远程服务。*/
+    /**连接远程服务（具体的地址）*/
     public RsfClient connect(SocketAddress remoteAddress) {
         return connect(remoteAddress, null);
     }
-    /**连接远程服务。*/
+    /**连接远程服务（具体的地址）*/
     public RsfClient connect(SocketAddress remoteAddress, SocketAddress localAddress) {
         Hasor.assertIsNotNull(remoteAddress, "remoteAddress is null.");
         //

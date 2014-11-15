@@ -31,7 +31,7 @@ import net.hasor.rsf.runtime.server.ServerHandler;
  */
 public class Server {
     public void start(String host, int port) throws Exception {
-        final EventLoopGroup bossGroup = new NioEventLoopGroup(4);//
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);//
         final ServerRsfContext manager = new ServerRsfContext();
         manager.getCallExecute("aa").execute(new Runnable() {
             public void run() {
@@ -57,6 +57,7 @@ public class Server {
     }
     public static void main(String[] args) throws Exception {
         Server server = new Server();
-        server.start("127.0.0.1", 8000);
+        server.start("192.168.1.12", 8000);
+        //        server.start("127.0.0.1", 8000);
     }
 }

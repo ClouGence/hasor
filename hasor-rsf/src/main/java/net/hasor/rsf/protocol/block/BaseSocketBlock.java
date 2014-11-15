@@ -87,6 +87,8 @@ public class BaseSocketBlock {
         }
         int readLength = this.poolMap[attrIndex];//内容长度
         //
-        return this.poolData.copy(rawIndex, readLength).array();
+        byte[] data = new byte[readLength];
+        this.poolData.getBytes(rawIndex, data, 0, readLength);
+        return data;
     }
 }

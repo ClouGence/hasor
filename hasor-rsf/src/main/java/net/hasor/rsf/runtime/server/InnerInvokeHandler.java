@@ -42,7 +42,9 @@ class InnerInvokeHandler implements Runnable {
         this.channel = channel;
     }
     public void run() {
-        NetworkChanne connection = new NetworkChanne(channel);
+        NetworkChanne connection = channel.attr(ServerHandler.NetworkChanneKey).get();
+        if (connection == null)
+            connection = new NetworkChanne(channel);
         RsfRequestImpl request = new RsfRequestImpl(requestMsg, connection, rsfContext);
         RsfResponseImpl response = new RsfResponseImpl(request, rsfContext);
         this.process(request, response);

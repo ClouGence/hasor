@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.server;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.AttributeKey;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
@@ -29,10 +32,17 @@ import net.hasor.rsf.runtime.RsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    private RsfContext rsfContext = null;
+    public static final AttributeKey<NetworkChanne> NetworkChanneKey = new AttributeKey<NetworkChanne>("NetworkChanne");
+    private RsfContext                              rsfContext       = null;
     //
     public ServerHandler(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
+    }
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        if (channel.attr(NetworkChanneKey).get() == null)
+            channel.attr(NetworkChanneKey).set(new NetworkChanne(channel));
+        super.channelActive(ctx);
     }
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestMsg == false)
