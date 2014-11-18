@@ -17,8 +17,7 @@ package net.hasor.rsf.serialize.coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import net.hasor.rsf.serialize.Decoder;
-import net.hasor.rsf.serialize.Encoder;
+import net.hasor.rsf.serialize.SerializeCoder;
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
 import com.caucho.hessian.io.SerializerFactory;
@@ -27,10 +26,10 @@ import com.caucho.hessian.io.SerializerFactory;
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Hessian_DecoderEncoder implements Decoder, Encoder {
+public class HessianSerializeCoder implements SerializeCoder {
     private SerializerFactory serializerFactory = null;
     //
-    public Hessian_DecoderEncoder() {
+    public HessianSerializeCoder() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         this.serializerFactory = new SerializerFactory(loader);
     }
@@ -45,7 +44,7 @@ public class Hessian_DecoderEncoder implements Decoder, Encoder {
     //
     public Object decode(byte[] bytes) throws IOException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(Hessian_DecoderEncoder.class.getClassLoader());
+        Thread.currentThread().setContextClassLoader(HessianSerializeCoder.class.getClassLoader());
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes));
         input.setSerializerFactory(this.serializerFactory);
         Object resultObject = input.readObject();

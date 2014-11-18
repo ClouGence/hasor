@@ -15,10 +15,12 @@
  */
 package net.hasor.rsf.runtime.client;
 import java.util.concurrent.Future;
-import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.metadata.ServiceMetaData;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfResponse;
+import org.more.future.FutureCallback;
 /**
- * 远程RSF服务器的客户端类。
+ * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -31,6 +33,8 @@ public interface RsfClient {
     public String getLocalHost();
     /**本地端口。*/
     public int getLocalPort();
+    /**获取{@link RsfContext}*/
+    public RsfContext getRsfContext();
     //
     /**获取选项Key集合。*/
     public String[] getOptionKeys();
@@ -39,19 +43,28 @@ public interface RsfClient {
     /**设置选项数据*/
     public void addOption(String key, String value);
     //
-    /**获取远程服务*/
-    public RsfService getRemoteService(String serviceName);
-    /**关闭与远端的连接*/
-    public void close() throws InterruptedException;
+    /**关闭与远端的连接（异步）*/
+    public Future<Void> close() throws InterruptedException;
     /**连接是否为活动的。*/
     public boolean isActive();
     //
+    /**获取正在进行中的调用请求。*/
+    public RsfFuture getRequest(long requestID);
     //
-    //
-    //
-    //
-    public Object syncInvoke(RsfRequest rsfRequest);s
-    public Future<Object> asyncInvoke(RsfRequest rsfRequest);
-    public void invokeWithCallBack(RsfRequest rsfRequest, final RsfCallBack listener);
-    public RsfFuture<RsfResponse> sendRequest(RsfRequest rsfRequest);
+    /**同步方式调用远程服务。*/
+    public Object syncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
+    /**同步方式调用远程服务。*/
+    public Object syncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
+    /**异步方式调用远程服务。*/
+    public RsfFuture asyncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
+    /**异步方式调用远程服务。*/
+    public RsfFuture asyncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
+    /**以回调方式调用远程服务。*/
+    public void doCallBackInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
+    /**以回调方式调用远程服务。*/
+    public void doCallBackInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
+    /**以回调方式发送RSF调用请求。*/
+    public void doCallBackRequest(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
+    /**以回调方式发送RSF调用请求。*/
+    public void doCallBackRequest(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
 }

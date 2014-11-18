@@ -15,63 +15,39 @@
  */
 package net.hasor.rsf.general;
 /**
- * ChooseOther、Accepted、
+ * Server:Unknown、Message、MovedPermanently、Unauthorized
+ * Client:
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum ProtocolStatus {
-    //-----------------------------------------------------
+public class ProtocolStatus {
     /**未定义*/
-    Unknown(0),
-    /**内容正确返回。*/
-    OK(200),
-    /**已经接受请求处理正在进行中。*/
-    Accepted(202),
-    /**在请求响应中间传递的消息。*/
-    Message(201),
+    public static final short Unknown             = 0;
     //-----------------------------------------------------
-    /**服务重定向。*/
-    MovedPermanently(301),
+    /**内容正确返回。*/
+    public static final short OK                  = 200;
+    /**已经接受请求处理正在进行中。*/
+    public static final short Accepted            = 202;
+    //-----------------------------------------------------
     /**服务器要求客户端选择其它服务提供者处理该请求。*/
-    ChooseOther(302),
+    public static final short ChooseOther         = 302;
     //-----------------------------------------------------
     /**试图调用受保护的服务。*/
-    Unauthorized(401),
+    public static final short Unauthorized        = 401;
     /**服务资源不可用。*/
-    Forbidden(403),
+    public static final short Forbidden           = 403;
     /**找不到服务*/
-    NotFound(404),
+    public static final short NotFound            = 404;
     /**调用服务超时*/
-    RequestTimeout(408),
+    public static final short RequestTimeout      = 408;
     //-----------------------------------------------------
     /**序列化异常。*/
-    SerializeError(503),
+    public static final short SerializeError      = 503;
     /**调用服务执行出错，通常是遭到异常抛出。*/
-    InternalServerError(500),
+    public static final short InternalServerError = 500;
     /**协议错误。*/
-    ProtocolError(502);
+    public static final short ProtocolError       = 502;
     //-----------------------------------------------------
-    //
-    //
-    private short value = 0;
-    private ProtocolStatus(int value) {
-        if (value >= 0xFFFF) {
-            throw new IndexOutOfBoundsException("value maximum is 0xFFFF.");
-        }
-        this.value = (short) value;
-    }
-    public short shortValue() {
-        return this.value;
-    }
-    public String toString() {
-        return String.format("%s(%s)", this.name(), this.value);
-    }
-    /**根据状态值获取状态枚举*/
-    public static ProtocolStatus valueOf(short statusValue) {
-        for (ProtocolStatus element : ProtocolStatus.values()) {
-            if (element.shortValue() == statusValue)
-                return element;
-        }
-        return Unknown;
-    }
+    /**客户端错误。*/
+    public static final short ClientError         = 600;
 }

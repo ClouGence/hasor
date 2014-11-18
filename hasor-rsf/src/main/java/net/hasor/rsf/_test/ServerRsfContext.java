@@ -23,20 +23,19 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.general.ProtocolVersion;
-import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
-import net.hasor.rsf.runtime.context.DefaultRsfContext;
+import net.hasor.rsf.runtime.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerRsfContext extends DefaultRsfContext {
+public class ServerRsfContext extends AbstractRsfContext {
     static int               minCorePoolSize  = 1;
     static int               maxCorePoolSize  = 7;
     static int               queueSize        = 4096;
@@ -61,7 +60,10 @@ public class ServerRsfContext extends DefaultRsfContext {
     public ServiceMetaData getService(String serviceName) {
         if (data == null) {
             data = new ServiceMetaData(TestServices.class);
-            data.setServiceName(serviceName);
+            data.setServiceName("net.hasor.rsf._test.TestServices");
+            data.setServiceVersion("1.0.0");
+            data.setServiceGroup("default");
+            data.setSerializeType("Hessian");
         }
         return data;
     }
@@ -120,9 +122,5 @@ public class ServerRsfContext extends DefaultRsfContext {
     @Override
     public byte getVersion() {
         return ProtocolVersion.V_1_0.value();
-    }
-    @Override
-    public SendLimitPolicy getSendLimitPolicy() {
-        return SendLimitPolicy.Reject;
     }
 }

@@ -14,38 +14,28 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime;
-import net.hasor.rsf.general.ProtocolStatus;
 /**
  * 响应请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfResponse extends RsfHeader {
-    /**应对的请求*/
-    public RsfRequest fromRequest();
-    /**将尚未写出的响应信息写入到客户端，该动作将导致 isCommitted 状态变更为 true.*/
-    public void refresh() throws Throwable;
-    //
     /**最终结果。*/
-    public Object getData();
+    public Object getResponseData();
     /**返回的类型信息。*/
-    public Class<?> getReturnType();
+    public Class<?> getResponseType();
     /**返回状态*/
-    public short getReturnStatus();
+    public short getResponseStatus();
     //
-    /**发送最终结果，只有{@link #isCommitted()}为 false 时才可用。*/
+    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendData(Object returnObject);
-    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
+    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendStatus(short status);
-    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
-    public void sendStatus(ProtocolStatus status);
-    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。*/
+    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendStatus(short status, Object messageBody);
-    /**发送错误消息，只有{@link #isCommitted()}为 false 时才可用。。*/
-    public void sendStatus(ProtocolStatus status, Object messageBody);
     //
     //    /**在send操作完成响应之前，给予客户端的消息（在长调用的时候可以用来替代消息队列）。*/
     //    public void onMessage(Object messageBody);
     /**调用的结果是否已经写入客户端。*/
-    public boolean isCommitted();
+    public boolean isResponse();
 }

@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime.client;
-import net.hasor.rsf.runtime.RsfRequest;
+package org.more.future;
 /**
- * 调用请求
- * @version : 2014年10月25日
+ * 
+ * @version : 2014年11月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfService {
-    /**新的请求*/
-    public RsfRequest newRequest(String methodName, Object[] parameterObjects) {
-        // TODO Auto-generated constructor stub
-        return null;
-    }
-    /**新的请求*/
-    public RsfRequest newRequest(String methodName,Class<?>[] parameterTypes, Object[] parameterObjects) {
-        // TODO Auto-generated constructor stub
-        return null;s
-    }
+public interface FutureCallback<T> {
+    /**执行完毕。*/
+    public void completed(T result);
+    /**执行过程出错*/
+    public void failed(Throwable ex);
+    /**执行被取消。*/
+    public void cancelled();
 }

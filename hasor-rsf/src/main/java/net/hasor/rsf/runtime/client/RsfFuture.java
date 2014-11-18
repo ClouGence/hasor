@@ -14,15 +14,37 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.client;
-import java.util.concurrent.Future;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import net.hasor.rsf.runtime.RsfRequest;
+import net.hasor.rsf.runtime.RsfResponse;
+import org.more.future.BasicFuture;
+import org.more.future.FutureCallback;
 /**
- * 
+ * RSF Future
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfFuture<T> extends Future<T> {
-    /**等待一段时间，如果在这段时间内收到远程响应，会提前结束等待。*/
-    public void await(int timeout);
-    /**等待调用结束。*/
-    public void await();
+public class RsfFuture extends BasicFuture<RsfResponse> {
+    private RsfRequest rsfRequest = null;
+    RsfFuture(RsfRequest rsfRequest) {
+        this.rsfRequest = rsfRequest;
+    }
+    public RsfFuture(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener) {
+        super(listener);
+        this.rsfRequest = rsfRequest;
+    }
+    /**获取发起请求的Request*/
+    public RsfRequest getRequest() {
+        return this.rsfRequest;
+    }
+    /**获取响应的结果。*/
+    public Object getData() throws InterruptedException, ExecutionException {
+        return this.get().getResponseData();
+    }
+    /**获取响应的结果。*/
+    public Object getData(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return this.get(timeout, unit).getResponseData();
+    }
 }

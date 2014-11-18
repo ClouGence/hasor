@@ -23,7 +23,6 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceMetaData {
-    //
     private Class<?>            targetService  = null;
     private Map<String, Method> methodMap      = null;
     //Provider
@@ -88,10 +87,10 @@ public class ServiceMetaData {
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
-    public Method getServiceMethod(String methodName, String[] pTypes, Class<?>[] parameterTypes) {
+    public Method getServiceMethod(String methodName, Class<?>[] parameterTypes) {
         StringBuffer key = new StringBuffer(methodName);
-        for (String pt : pTypes) {
-            key.append(pt + ";");
+        for (Class<?> pt : parameterTypes) {
+            key.append(pt.getName() + ";");
         }
         String mKey = key.toString();
         if (this.methodMap.containsKey(mKey) == false) {

@@ -15,69 +15,42 @@
  */
 package net.hasor.rsf.runtime.common;
 import java.lang.reflect.Method;
-import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.net.netty.NetworkChanne;
 import net.hasor.rsf.protocol.message.RequestMsg;
-import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRequestImpl implements RsfRequest {
-    private ServiceMetaData metaData         = null;
-    private RequestMsg      requestMsg       = null;
-    private RsfContext      rsfContext       = null;
-    private NetworkChanne   connection       = null;
+    private ServiceMetaData   metaData         = null;
+    private RequestMsg        requestMsg       = null;
+    private NetworkConnection connection       = null;
+    private RsfContext        rsfContext       = null;
     //
-    private Method          targetMethod     = null;
-    private Class<?>[]      parameterTypes   = null;
-    private Object[]        parameterObjects = null;
+    private String            targetMethod     = null;
+    private Class<?>[]        parameterTypes   = null;
+    private Object[]          parameterObjects = null;
     //
-    public RsfRequestImpl(RequestMsg requestMsg, NetworkChanne connection, RsfContext rsfContext) {
+    public RsfRequestImpl(String targetMethod, Class<?>[] parameterTypes, Object[] parameterObjects,//
+            ServiceMetaData metaData, RequestMsg requestMsg,//
+            NetworkConnection connection, RsfContext rsfContext) {
+        this.targetMethod = targetMethod;
+        this.parameterTypes = parameterTypes;
+        this.parameterObjects = parameterObjects;
+        this.metaData = metaData;
         this.requestMsg = requestMsg;
-        this.rsfContext = rsfContext;
         this.connection = connection;
+        this.rsfContext = rsfContext;
     }
     //
-    public void init() throws RsfException {
-        //1.获取MetaData
-        this.metaData = this.rsfContext.getService(requestMsg.getServiceName());
-        if (this.metaData == null) {
-            throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
-        }
-        //2.反序列化
-        String[] pTypes = this.requestMsg.getParameterTypes();
-        try {
-            SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
-            this.parameterObjects = this.requestMsg.toParameters(serializeFactory);
-            //
-            this.parameterTypes = new Class<?>[pTypes.length];
-            for (int i = 0; i < pTypes.length; i++) {
-                this.parameterTypes[i] = ProtocolUtils.toJavaType(pTypes[i], Thread.currentThread().getContextClassLoader());
-            }
-        } catch (RsfException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new RsfException(ProtocolStatus.SerializeError, e);
-        }
-        //3.check Forbidden
-        this.targetMethod = this.metaData.getServiceMethod(this.requestMsg.getTargetMethod(), pTypes, this.parameterTypes);
-        if (this.targetMethod == null) {
-            throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
-        }
-    }
-    //
-    public Method getTargetMethod() {
-        return this.targetMethod;
-    }
-    public NetworkChanne getConnection() {
+    public NetworkConnection getConnection() {
         return this.connection;
+    }
+    public RequestMsg getMsg() {
+        return this.requestMsg;
     }
     //
     public String getRemotHost() {
@@ -109,7 +82,7 @@ public class RsfRequestImpl implements RsfRequest {
         return this.requestMsg.getReceiveTime();
     }
     public String getMethod() {
-        return this.requestMsg.getTargetMethod();
+        return this.targetMethod;
     }
     public String[] getOptionKeys() {
         return this.requestMsg.getOptionKeys();
@@ -121,6 +94,9 @@ public class RsfRequestImpl implements RsfRequest {
         this.requestMsg.addOption(key, value);
     }
     //
+    public RsfContext getContext() {
+        return this.rsfContext;
+    }
     public ServiceMetaData getMetaData() {
         return this.metaData;
     }
@@ -129,5 +105,13 @@ public class RsfRequestImpl implements RsfRequest {
     }
     public Object[] getParameterObject() {
         return this.parameterObjects;
+    }
+    public Method getServiceMethod() {
+        return this.getMetaData().getServiceMethod(this.targetMethod, this.parameterTypes);
+    }
+    //
+    /**根据{@link RsfRequest}创建对应的Response。*/
+    public RsfResponseImpl buildResponse() {
+        return new RsfResponseImpl(this);
     }
 }

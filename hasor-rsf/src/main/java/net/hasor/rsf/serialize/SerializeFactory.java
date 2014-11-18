@@ -25,26 +25,16 @@ import net.hasor.core.XmlNode;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SerializeFactory {
-    private Map<String, Decoder> decoderMap = new HashMap<String, Decoder>();
-    private Map<String, Encoder> encoderMap = new HashMap<String, Encoder>();
+    private Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
     //
-    /**获取序列化解码器（Decoder）*/
-    public Decoder getDecoder(String codeName) {
+    /**获取序列化（编码/解码）器。*/
+    public SerializeCoder getSerializeCoder(String codeName) {
         codeName = codeName.toLowerCase();
-        return this.decoderMap.get(codeName);
+        return this.coderMap.get(codeName);
     }
-    /**获取序列化编码器（Encoder）*/
-    public Encoder getEncoder(String codeName) {
-        codeName = codeName.toLowerCase();
-        return this.encoderMap.get(codeName);
-    }
-    /**注册序列化解码器（Decoder）*/
-    public void registerDecoder(String codeName, Decoder decoder) {
-        this.decoderMap.put(codeName, decoder);
-    }
-    /**注册序列化编码器（Encoder）*/
-    public void registerEncoder(String codeName, Encoder encoder) {
-        this.encoderMap.put(codeName, encoder);
+    /**注册序列化（编码/解码）器*/
+    public void registerSerializeCoder(String codeName, SerializeCoder decoder) {
+        this.coderMap.put(codeName, decoder);
     }
     //
     //
@@ -63,14 +53,11 @@ public class SerializeFactory {
     private static void initSerialize(SerializeFactory factory, XmlNode atNode) {
         String serializeType = atNode.getAttribute("name");
         serializeType = serializeType.toLowerCase();
-        String serializeEncoder = atNode.getChildren("encoder").get(0).getText().trim();
-        String serializeDecoder = atNode.getChildren("decoder").get(0).getText().trim();
+        String serializeCoder = atNode.getText().trim();
         //
         try {
-            Decoder decoder = (Decoder) Class.forName(serializeEncoder).newInstance();
-            Encoder encoder = (Encoder) Class.forName(serializeDecoder).newInstance();
-            factory.encoderMap.put(serializeType, encoder);
-            factory.decoderMap.put(serializeType, decoder);
+            SerializeCoder coder = (SerializeCoder) Class.forName(serializeCoder).newInstance();
+            factory.registerSerializeCoder(serializeType, coder);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

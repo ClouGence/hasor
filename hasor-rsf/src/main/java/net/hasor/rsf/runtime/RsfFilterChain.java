@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.runtime;
 /**
- * 
+ * 负责执行过滤器链后面的过滤器。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime;
+import java.lang.reflect.Method;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfRequest extends RsfHeader {
+    /**获取要调用的目标方法。*/
+    public Method getServiceMethod();
+    /**获取上下文。*/
+    public RsfContext getContext();
+    /**请求到达时间（如果是本地发起的请求，该值为发起调用的时间戳）。*/
+    public long getReceiveTime();
     /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
     public String getRemotHost();
     /**远程端口。*/

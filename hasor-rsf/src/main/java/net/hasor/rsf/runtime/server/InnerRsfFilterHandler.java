@@ -19,16 +19,16 @@ import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
 /**
- * 负责处理RsfFilter调用
+ * 负责处理 RsfFilter 调用
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfFilterChainInterceptor implements RsfFilterChain {
+class InnerRsfFilterHandler implements RsfFilterChain {
     private RsfFilter[]    rsfFilters = null;
     private RsfFilterChain rsfChain   = null;
     private int            index      = -1;
     //
-    public InnerRsfFilterChainInterceptor(final RsfFilter[] rsfFilters, final RsfFilterChain rsfChain) {
+    public InnerRsfFilterHandler(final RsfFilter[] rsfFilters, final RsfFilterChain rsfChain) {
         this.rsfFilters = (rsfFilters == null) ? new RsfFilter[0] : rsfFilters;
         this.rsfChain = rsfChain;
     }

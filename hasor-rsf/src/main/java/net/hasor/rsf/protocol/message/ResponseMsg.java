@@ -16,8 +16,7 @@
 package net.hasor.rsf.protocol.message;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
-import net.hasor.rsf.serialize.Decoder;
-import net.hasor.rsf.serialize.Encoder;
+import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.UndefinedException;
 /**
@@ -26,7 +25,7 @@ import org.more.UndefinedException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseMsg extends BaseMsg {
-    private short  status        = ProtocolStatus.Unknown.shortValue();
+    private short  status        = ProtocolStatus.Unknown;
     private String serializeType = "";
     private String returnType    = "";
     private byte[] returnData    = null;
@@ -42,10 +41,6 @@ public class ResponseMsg extends BaseMsg {
     /**设置响应状态*/
     public void setStatus(short status) {
         this.status = status;
-    }
-    /**设置响应状态*/
-    public void setStatus(ProtocolStatus status) {
-        this.status = status.shortValue();
     }
     /**获取序列化类型*/
     public String getSerializeType() {
@@ -74,18 +69,18 @@ public class ResponseMsg extends BaseMsg {
     /**获取要返回的值*/
     public Object getReturnData(SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
-        Decoder decoder = serializeFactory.getDecoder(codeName);
+        SerializeCoder coder = serializeFactory.getSerializeCoder(codeName);
         //
-        if (decoder == null && this.returnData != null)
+        if (coder == null && this.returnData != null)
             throw new UndefinedException("Undefined ‘" + codeName + "’ serialize decoder ");
         //
-        return decoder.decode(this.returnData);
+        return coder.decode(this.returnData);
     }
     /**设置要返回的值*/
     public void setReturnData(Object data, SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
-        Encoder encoder = serializeFactory.getEncoder(codeName);
+        SerializeCoder coder = serializeFactory.getSerializeCoder(codeName);
         //
-        this.returnData = encoder.encode(data);
+        this.returnData = coder.encode(data);
     }
 }

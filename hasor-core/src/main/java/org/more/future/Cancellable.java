@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.serialize;
+package org.more.future;
 /**
- * 序列化解码器（Decoder）
- * @version : 2014年9月19日
+ * 
+ * @version : 2014年11月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Decoder {
-    /** decode byte[] to Object */
-    public Object decode(byte[] bytes) throws Throwable;
+public interface Cancellable {
+    /**取消调用。*/
+    public boolean cancel();
 }

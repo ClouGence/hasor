@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test;
+package net.hasor.rsf._test._;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
+import net.hasor.rsf._test.ServerRsfContext;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
-import net.hasor.rsf.serialize.coder.Hessian_DecoderEncoder;
+import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
 /**
  * 
  * @version : 2014年11月4日
@@ -101,7 +102,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     //
     private static int reqID = 0;
     private RequestMsg getData() throws IOException {
-        Hessian_DecoderEncoder de = new Hessian_DecoderEncoder();
+        HessianSerializeCoder de = new HessianSerializeCoder();
         RequestMsg request = new RequestMsg();
         request.setVersion(ProtocolVersion.V_1_0.value());
         request.setRequestID(reqID++);

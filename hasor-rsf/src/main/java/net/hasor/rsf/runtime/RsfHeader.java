@@ -16,7 +16,7 @@
 package net.hasor.rsf.runtime;
 import net.hasor.rsf.metadata.ServiceMetaData;
 /**
- * 请求响应通用头。
+ * 请求响应通用。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -20,5 +20,6 @@ package net.hasor.rsf.runtime;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfFilter {
+    /**执行过滤器*/
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable;
 }

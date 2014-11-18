@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.toos;
-import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.block.BaseSocketBlock;
 import net.hasor.rsf.protocol.block.RequestSocketBlock;
@@ -140,10 +139,6 @@ public class TransferUtils {
     //
     //
     //
-    /**生成指定状态的的响应包*/
-    public static ResponseMsg buildStatus(byte version, long requestID, ProtocolStatus status) {
-        return buildStatus(version, requestID, status.shortValue());
-    }
     /**生成指定状态的的响应包*/
     public static ResponseMsg buildStatus(byte version, long requestID, short status) {
         //1.发送ACK包

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.net.netty;
+package net.hasor.rsf.runtime.common;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import net.hasor.rsf.protocol.message.BaseMsg;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NetworkChanne {
+public class NetworkConnection {
     private String  remoteHost   = null;
     private int     remotePort   = 0;
     private String  localHost    = null;
     private int     localPort    = 0;
     private Channel socketChanne = null;
     //
-    public NetworkChanne(Channel socketChanne) {
+    public NetworkConnection(Channel socketChanne) {
         this.socketChanne = socketChanne;
         //remote
         SocketAddress rAddress = socketChanne.remoteAddress();//InetSocketAddress
@@ -73,8 +72,8 @@ public class NetworkChanne {
     public Future<Void> close() {
         return this.socketChanne.close();
     }
-    /**在连接上发送数据。*/
-    public void sendData(BaseMsg rsfMessage) {
-        this.socketChanne.writeAndFlush(rsfMessage);
+    /**获取具体的连接。*/
+    public Channel getChannel() {
+        return this.socketChanne;
     }
 }

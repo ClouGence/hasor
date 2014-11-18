@@ -21,17 +21,17 @@ package net.hasor.rsf.general;
  */
 public class RsfException extends RuntimeException {
     private static final long serialVersionUID = -2959224725202940531L;
-    private ProtocolStatus    protocolStatus   = null;
+    private short             status           = ProtocolStatus.Unknown;
     //
-    public RsfException(ProtocolStatus protocolStatus, String string) {
+    public RsfException(short status, String string) {
         super(string);
-        this.protocolStatus = protocolStatus;
+        this.status = status;
     }
-    public RsfException(ProtocolStatus protocolStatus, Throwable e) {
+    public RsfException(short status, Throwable e) {
         super(e);
-        this.protocolStatus = protocolStatus;
+        this.status = status;
     }
-    public ProtocolStatus getStatus() {
-        return this.protocolStatus;
+    public short getStatus() {
+        return this.status;
     }
 }

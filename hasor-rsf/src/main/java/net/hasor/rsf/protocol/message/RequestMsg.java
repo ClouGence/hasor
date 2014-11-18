@@ -20,7 +20,7 @@ import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
-import net.hasor.rsf.serialize.Decoder;
+import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * RSF 1.0-Request 协议数据.
@@ -122,19 +122,19 @@ public class RequestMsg extends BaseMsg {
     /**将请求参数转换为对象。*/
     public Object[] toParameters(SerializeFactory serializeFactory) throws Throwable {
         String codeName = this.getSerializeType();
-        Decoder decoder = serializeFactory.getDecoder(codeName);
+        SerializeCoder coder = serializeFactory.getSerializeCoder(codeName);
         //
         String[] paramTypes = this.getParameterTypes();
         Object[] paramObject = new Object[paramTypes.length];
         //
-        if (decoder == null && (paramTypes.length > 0)) {
+        if (coder == null && (paramTypes.length > 0)) {
             throw new RsfException(ProtocolStatus.SerializeError,//
                     "Undefined ‘" + codeName + "’ serialize decoder ");
         }
         //
         for (int i = 0; i < paramTypes.length; i++) {
             byte[] paramData = this.paramDatas.get(i);
-            paramObject[i] = decoder.decode(paramData);
+            paramObject[i] = coder.decode(paramData);
         }
         return paramObject;
     }

@@ -18,14 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import net.hasor.rsf.serialize.Decoder;
-import net.hasor.rsf.serialize.Encoder;
+import net.hasor.rsf.serialize.SerializeCoder;
 /**
  * 
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Java_DecoderEncoder implements Decoder, Encoder {
+public class JavaSerializeCoder implements SerializeCoder {
     //
     public byte[] encode(Object object) throws Throwable {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
