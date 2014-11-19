@@ -29,7 +29,6 @@ public class SerializeFactory {
     //
     /**获取序列化（编码/解码）器。*/
     public SerializeCoder getSerializeCoder(String codeName) {
-        codeName = codeName.toLowerCase();
         return this.coderMap.get(codeName);
     }
     /**注册序列化（编码/解码）器*/
@@ -52,7 +51,6 @@ public class SerializeFactory {
     }
     private static void initSerialize(SerializeFactory factory, XmlNode atNode) {
         String serializeType = atNode.getAttribute("name");
-        serializeType = serializeType.toLowerCase();
         String serializeCoder = atNode.getText().trim();
         //
         try {

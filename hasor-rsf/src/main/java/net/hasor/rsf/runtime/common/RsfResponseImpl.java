@@ -16,6 +16,7 @@
 package net.hasor.rsf.runtime.common;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.metadata.ServiceMetaData;
+import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.runtime.RsfResponse;
 /**
@@ -41,12 +42,13 @@ public class RsfResponseImpl implements RsfResponse {
     }
     RsfResponseImpl(RsfRequestImpl rsfRequest) {
         this.metaData = rsfRequest.getMetaData();
+        RequestMsg msg = rsfRequest.getMsg();
         //
         this.responseMsg = new ResponseMsg();
-        this.responseMsg.setVersion(rsfRequest.getProtocol());
-        this.responseMsg.setRequestID(rsfRequest.getRequestID());
+        this.responseMsg.setVersion(msg.getVersion());
+        this.responseMsg.setRequestID(msg.getRequestID());
+        this.responseMsg.setSerializeType(msg.getSerializeType());
         this.responseMsg.setStatus(ProtocolStatus.Unknown);
-        this.responseMsg.setSerializeType(rsfRequest.getSerializeType());
         this.returnType = rsfRequest.getServiceMethod().getReturnType();
         this.responseMsg.setReturnType(this.returnType.getName());
     }

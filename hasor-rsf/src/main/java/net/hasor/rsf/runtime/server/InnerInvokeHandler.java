@@ -26,6 +26,8 @@ import net.hasor.rsf.runtime.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerInvokeHandler implements RsfFilterChain {
+    public static RsfFilterChain Default = new InnerInvokeHandler();
+    //
     //default invoke
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         if (response.isResponse() == true)

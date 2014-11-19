@@ -43,12 +43,16 @@ public class ServerRsfContext extends AbstractRsfContext {
     private SerializeFactory serializeFactory = null;
     private ExecutesManager  manager          = null;
     //
-    //
     public ServerRsfContext() throws IOException, URISyntaxException {
         manager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         Settings settings = new StandardContextSettings();
         settings.refresh();
         serializeFactory = SerializeFactory.createFactory(settings);
+        new Thread(new Runnable() {
+            public void run() {
+                print();
+            }
+        }).start();
     }
     private EventLoopGroup group = new NioEventLoopGroup(5);
     public EventLoopGroup getLoopGroup() {
@@ -56,7 +60,6 @@ public class ServerRsfContext extends AbstractRsfContext {
     }
     //
     private ServiceMetaData data = null;
-    @Override
     public ServiceMetaData getService(String serviceName) {
         if (data == null) {
             data = new ServiceMetaData(TestServices.class);
@@ -67,23 +70,19 @@ public class ServerRsfContext extends AbstractRsfContext {
         }
         return data;
     }
-    @Override
     public Executor getCallExecute(String serviceName) {
         return manager.getExecute(serviceName);
     }
-    @Override
     public SerializeFactory getSerializeFactory() {
         return this.serializeFactory;
     }
     private TestServices test = null;
-    @Override
     public Object getBean(ServiceMetaData metaData) {
         if (test == null) {
             this.test = new TestServices();
         }
         return this.test;
     }
-    @Override
     public Class<?> getBeanType(ServiceMetaData metaData) {
         return TestServices.class;
     }
@@ -93,12 +92,9 @@ public class ServerRsfContext extends AbstractRsfContext {
                                chain.doFilter(request, response);
                            }
                        } };
-    @Override
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
         return filter;
     }
-    //
-    //
     //
     private static volatile long requestCount = 0;
     private static volatile long start        = System.currentTimeMillis();
@@ -119,7 +115,6 @@ public class ServerRsfContext extends AbstractRsfContext {
     public static void aa(RsfRequest request) {
         requestCount++;
     }
-    @Override
     public byte getVersion() {
         return ProtocolVersion.V_1_0.value();
     }

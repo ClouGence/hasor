@@ -29,10 +29,10 @@ public class Client implements FutureCallback<Object> {
                     new Object[] { "你好..." },//
                     new Client());
             sendCount++;
+            Thread.sleep(1);
         }
         //关闭连接
         //        client.close();
-        System.in.read();
     }
     private static void start() {
         new Thread() {

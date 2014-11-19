@@ -18,19 +18,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 import net.hasor.rsf.runtime.common.NetworkConnection;
+import net.hasor.rsf.runtime.common.RsfRequestImpl;
+import net.hasor.rsf.runtime.common.RsfResponseImpl;
+import net.hasor.rsf.runtime.common.RuntimeUtils;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
- * 提供服务的Handler（只处理RequestMsg）
+ * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerServerHandler extends ChannelInboundHandlerAdapter {
-    private AbstractRsfContext rsfContext = null;
+    private AbstractRsfContext rsfContext;
     //
     public InnerServerHandler(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
@@ -38,25 +43,41 @@ class InnerServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestMsg == false)
             return;
+        //创建request、response
         RequestMsg requestMsg = (RequestMsg) msg;
         requestMsg.setReceiveTime(System.currentTimeMillis());
-        NetworkConnection connection = new NetworkConnection(ctx.channel());
-        //
+        RsfRequestImpl request = null;
+        RsfResponseImpl response = null;
+        try {
+            request = RuntimeUtils.recoverRequest(//
+                    requestMsg, new NetworkConnection(ctx.channel()), this.rsfContext);
+            response = request.buildResponse();
+        } catch (RsfException e) {
+            Hasor.logError("recoverRequest fail, requestID:" + requestMsg.getRequestID() + " , " + e.getMessage());
+            //
+            ResponseMsg pack = TransferUtils.buildStatus(//
+                    requestMsg.getVersion(), //协议版本
+                    requestMsg.getRequestID(),//请求ID
+                    e.getStatus());//回应状态
+            ctx.pipeline().writeAndFlush(pack);
+            return;
+        }
+        //放入业务线程准备执行
         try {
             Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
-            exe.execute(new InnerRequestHandler(this.rsfContext, requestMsg, connection));
+            exe.execute(new InnerRequestHandler(this.rsfContext, request, response));
             //
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.Accepted);//回应ACK
-            ctx.pipeline().write(pack);
+            ctx.pipeline().writeAndFlush(pack);
         } catch (RejectedExecutionException e) {
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther);//服务器资源紧张
-            ctx.pipeline().write(pack);
+            ctx.pipeline().writeAndFlush(pack);
         }
     }
 }

@@ -43,12 +43,8 @@ public class HessianSerializeCoder implements SerializeCoder {
     }
     //
     public Object decode(byte[] bytes) throws IOException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(HessianSerializeCoder.class.getClassLoader());
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes));
         input.setSerializerFactory(this.serializerFactory);
-        Object resultObject = input.readObject();
-        Thread.currentThread().setContextClassLoader(tccl);
-        return resultObject;
+        return input.readObject();
     }
 }

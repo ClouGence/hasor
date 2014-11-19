@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.protocol.toos;
 import java.lang.reflect.Array;
+import java.util.Map;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.block.RequestSocketBlock;
@@ -22,7 +23,6 @@ import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
-import org.more.util.StringUtils;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -76,25 +76,26 @@ public class ProtocolUtils {
     }
     /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
     public static Class<?> toJavaType(final String tType, final ClassLoader loader) throws ClassNotFoundException {
-        if (/*   */tType.equals("I") == true || StringUtils.equalsIgnoreCase(tType, "int") == true) {
+        char atChar = tType.charAt(0);
+        if (/*   */'I' == atChar) {
             return int.class;
-        } else if (tType.equals("B") == true || StringUtils.equalsIgnoreCase(tType, "byte") == true) {
+        } else if ('B' == atChar) {
             return byte.class;
-        } else if (tType.equals("C") == true || StringUtils.equalsIgnoreCase(tType, "char") == true) {
+        } else if ('C' == atChar) {
             return char.class;
-        } else if (tType.equals("D") == true || StringUtils.equalsIgnoreCase(tType, "double") == true) {
+        } else if ('D' == atChar) {
             return double.class;
-        } else if (tType.equals("F") == true || StringUtils.equalsIgnoreCase(tType, "float") == true) {
+        } else if ('F' == atChar) {
             return float.class;
-        } else if (tType.equals("J") == true || StringUtils.equalsIgnoreCase(tType, "long") == true) {
+        } else if ('J' == atChar) {
             return long.class;
-        } else if (tType.equals("S") == true || StringUtils.equalsIgnoreCase(tType, "short") == true) {
+        } else if ('S' == atChar) {
             return short.class;
-        } else if (tType.equals("Z") == true || StringUtils.equalsIgnoreCase(tType, "bit") == true || StringUtils.equalsIgnoreCase(tType, "boolean") == true) {
+        } else if ('Z' == atChar) {
             return boolean.class;
-        } else if (tType.equals("V") == true || StringUtils.equalsIgnoreCase(tType, "void") == true) {
+        } else if ('V' == atChar) {
             return void.class;
-        } else if (tType.charAt(0) == '[') {
+        } else if (atChar == '[') {
             int length = 0;
             while (true) {
                 if (tType.charAt(length) != '[') {
@@ -110,7 +111,13 @@ public class ProtocolUtils {
             }
             return returnType;
         } else {
-            return loader.loadClass(tType);
+            Class<?> cache = loadClassCache.get(tType);
+            if (cache == null) {
+                cache = loader.loadClass(tType);
+                loadClassCache.put(tType, cache);
+            }
+            return cache;
         }
     }
+    private static Map<String, Class<?>> loadClassCache = new java.util.concurrent.ConcurrentHashMap<String, Class<?>>();
 }

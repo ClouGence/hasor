@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.common;
-import java.lang.reflect.Method;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
@@ -69,7 +69,7 @@ public class RuntimeUtils {
             requestMsg.addOption(optKey, optVar);
         }
         //4.RsfRequest
-        return new RsfRequestImpl(methodName, parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
+        return new RsfRequestImpl(parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
     }
     //
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
@@ -78,7 +78,6 @@ public class RuntimeUtils {
         ServiceMetaData metaData = rsfContext.getService(requestMsg.getServiceName());
         Object[] parameterObjects = null;//
         Class<?>[] parameterTypes = null;//
-        Method targetMethod = null;//
         //
         if (metaData == null) {
             throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
@@ -87,23 +86,18 @@ public class RuntimeUtils {
         try {
             SerializeFactory serializeFactory = rsfContext.getSerializeFactory();
             parameterObjects = requestMsg.toParameters(serializeFactory);
-            String[] pTypes = requestMsg.getParameterTypes();
-            parameterTypes = new Class<?>[pTypes.length];
-            for (int i = 0; i < pTypes.length; i++) {
-                parameterTypes[i] = ProtocolUtils.toJavaType(pTypes[i], Thread.currentThread().getContextClassLoader());
+            List<String> pTypes = requestMsg.getParameterTypes();
+            parameterTypes = new Class<?>[pTypes.size()];
+            for (int i = 0; i < pTypes.size(); i++) {
+                parameterTypes[i] = ProtocolUtils.toJavaType(pTypes.get(i), Thread.currentThread().getContextClassLoader());
             }
         } catch (RsfException e) {
             throw e;
         } catch (Throwable e) {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
-        //3.check Forbidden
-        targetMethod = metaData.getServiceMethod(requestMsg.getTargetMethod(), parameterTypes);
-        if (targetMethod == null) {
-            throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
-        }
-        //4.RsfRequest
-        return new RsfRequestImpl(requestMsg.getTargetMethod(), parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
+        //4.RsfRequest and check Forbidden
+        return new RsfRequestImpl(parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
     }
     /**从响应数据包中恢复{@link RsfResponse}对象。*/
     public static RsfResponse recoverResponse(ResponseMsg responseMsg, RsfRequest rsfRequest, AbstractRsfContext rsfContext) throws Throwable {

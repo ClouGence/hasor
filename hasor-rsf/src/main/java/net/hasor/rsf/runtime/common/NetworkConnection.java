@@ -24,45 +24,31 @@ import java.net.SocketAddress;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkConnection {
-    private String  remoteHost   = null;
-    private int     remotePort   = 0;
-    private String  localHost    = null;
-    private int     localPort    = 0;
-    private Channel socketChanne = null;
+    private SocketAddress remoteAddress = null;
+    private SocketAddress localAddress  = null;
+    private Channel       socketChanne  = null;
     //
     public NetworkConnection(Channel socketChanne) {
         this.socketChanne = socketChanne;
-        //remote
-        SocketAddress rAddress = socketChanne.remoteAddress();//InetSocketAddress
-        if (rAddress instanceof InetSocketAddress) {
-            InetSocketAddress address = (InetSocketAddress) rAddress;
-            this.remoteHost = address.getAddress().getHostAddress();
-            this.remotePort = address.getPort();
-        }
-        //local
-        SocketAddress lAddress = socketChanne.localAddress();//InetSocketAddress
-        if (lAddress instanceof InetSocketAddress) {
-            InetSocketAddress address = (InetSocketAddress) lAddress;
-            this.localHost = address.getAddress().getHostAddress();
-            this.localPort = address.getPort();
-        }
+        this.remoteAddress = socketChanne.remoteAddress();//remote
+        this.localAddress = socketChanne.localAddress();//local
     }
     //
     /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
     public String getRemotHost() {
-        return this.remoteHost;
+        return ((InetSocketAddress) this.remoteAddress).getAddress().getHostAddress();
     }
     /**远程端口。*/
     public int getRemotePort() {
-        return this.remotePort;
+        return ((InetSocketAddress) this.remoteAddress).getPort();
     }
     /**本地IP。*/
     public String getLocalHost() {
-        return this.localHost;
+        return ((InetSocketAddress) this.localAddress).getAddress().getHostAddress();
     }
     /**本地端口。*/
     public int getLocalPort() {
-        return this.localPort;
+        return ((InetSocketAddress) this.localAddress).getPort();
     }
     /**连接是否为活动的。*/
     public boolean isActive() {

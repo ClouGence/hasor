@@ -24,13 +24,14 @@ import net.hasor.rsf.runtime.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerRsfFilterHandler implements RsfFilterChain {
-    private RsfFilter[]    rsfFilters = null;
-    private RsfFilterChain rsfChain   = null;
-    private int            index      = -1;
+    private RsfFilter[]    rsfFilters;
+    private RsfFilterChain rsfChain;
+    private int            index;
     //
     public InnerRsfFilterHandler(final RsfFilter[] rsfFilters, final RsfFilterChain rsfChain) {
         this.rsfFilters = (rsfFilters == null) ? new RsfFilter[0] : rsfFilters;
         this.rsfChain = rsfChain;
+        this.index = -1;
     }
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         this.index++;

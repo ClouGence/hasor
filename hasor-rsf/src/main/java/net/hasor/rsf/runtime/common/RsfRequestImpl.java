@@ -15,6 +15,8 @@
  */
 package net.hasor.rsf.runtime.common;
 import java.lang.reflect.Method;
+import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.runtime.RsfContext;
@@ -30,20 +32,22 @@ public class RsfRequestImpl implements RsfRequest {
     private NetworkConnection connection       = null;
     private RsfContext        rsfContext       = null;
     //
-    private String            targetMethod     = null;
     private Class<?>[]        parameterTypes   = null;
     private Object[]          parameterObjects = null;
     //
-    public RsfRequestImpl(String targetMethod, Class<?>[] parameterTypes, Object[] parameterObjects,//
+    public RsfRequestImpl(Class<?>[] parameterTypes, Object[] parameterObjects,//
             ServiceMetaData metaData, RequestMsg requestMsg,//
-            NetworkConnection connection, RsfContext rsfContext) {
-        this.targetMethod = targetMethod;
+            NetworkConnection connection, RsfContext rsfContext) throws RsfException {
         this.parameterTypes = parameterTypes;
         this.parameterObjects = parameterObjects;
         this.metaData = metaData;
         this.requestMsg = requestMsg;
         this.connection = connection;
         this.rsfContext = rsfContext;
+        //check Forbidden
+        if (getServiceMethod() == null) {
+            throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
+        }
     }
     //
     public NetworkConnection getConnection() {
@@ -82,7 +86,7 @@ public class RsfRequestImpl implements RsfRequest {
         return this.requestMsg.getReceiveTime();
     }
     public String getMethod() {
-        return this.targetMethod;
+        return this.requestMsg.getTargetMethod();
     }
     public String[] getOptionKeys() {
         return this.requestMsg.getOptionKeys();
@@ -106,8 +110,11 @@ public class RsfRequestImpl implements RsfRequest {
     public Object[] getParameterObject() {
         return this.parameterObjects;
     }
+    private Method serviceMethod = null;
     public Method getServiceMethod() {
-        return this.getMetaData().getServiceMethod(this.targetMethod, this.parameterTypes);
+        if (this.serviceMethod == null)
+            this.serviceMethod = this.getMetaData().getServiceMethod(this.requestMsg.getTargetMethod(), this.parameterTypes);
+        return this.serviceMethod;
     }
     //
     /**根据{@link RsfRequest}创建对应的Response。*/

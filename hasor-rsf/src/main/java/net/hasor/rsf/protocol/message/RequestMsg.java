@@ -34,8 +34,8 @@ public class RequestMsg extends BaseMsg {
     private String       targetMethod   = "";
     private String       serializeType  = "";
     private int          clientTimeout  = RSFConstants.ClientTimeout;
-    private List<String> paramTypes     = new ArrayList<String>();   //参数列表
-    private List<byte[]> paramDatas     = new ArrayList<byte[]>();   //参数值映射
+    private List<String> paramTypes     = new ArrayList<String>(10); //参数列表
+    private List<byte[]> paramDatas     = new ArrayList<byte[]>(10); //参数值映射
     private long         receiveTime    = 0;                         //收到消息的时间
     //
     //
@@ -105,8 +105,8 @@ public class RequestMsg extends BaseMsg {
         this.paramDatas.add(rawData);
     }
     /**获取请求参数类型列表。*/
-    public String[] getParameterTypes() {
-        return this.paramTypes.toArray(new String[this.paramTypes.size()]);
+    public List<String> getParameterTypes() {
+        return this.paramTypes;
     }
     /**获取请求参数总数。*/
     public int getParameterCount() {
@@ -121,18 +121,17 @@ public class RequestMsg extends BaseMsg {
     //
     /**将请求参数转换为对象。*/
     public Object[] toParameters(SerializeFactory serializeFactory) throws Throwable {
-        String codeName = this.getSerializeType();
-        SerializeCoder coder = serializeFactory.getSerializeCoder(codeName);
+        SerializeCoder coder = serializeFactory.getSerializeCoder(this.serializeType);
         //
-        String[] paramTypes = this.getParameterTypes();
-        Object[] paramObject = new Object[paramTypes.length];
+        int paramTypesLength = this.paramTypes.size();
+        Object[] paramObject = new Object[paramTypesLength];
         //
-        if (coder == null && (paramTypes.length > 0)) {
+        if (coder == null && (this.paramTypes.size() > 0)) {
             throw new RsfException(ProtocolStatus.SerializeError,//
-                    "Undefined ‘" + codeName + "’ serialize decoder ");
+                    "Undefined ‘" + this.serializeType + "’ serialize decoder ");
         }
         //
-        for (int i = 0; i < paramTypes.length; i++) {
+        for (int i = 0; i < paramTypesLength; i++) {
             byte[] paramData = this.paramDatas.get(i);
             paramObject[i] = coder.decode(paramData);
         }

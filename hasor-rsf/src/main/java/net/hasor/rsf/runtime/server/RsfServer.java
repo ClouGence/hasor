@@ -28,7 +28,7 @@ import java.net.UnknownHostException;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
- * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
+ * 负责维持与远程RSF服务器连接的客户端类。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
