@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.Executor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfFilter;
@@ -29,34 +25,23 @@ import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
-import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerRsfContext extends AbstractRsfContext {
-    static int               minCorePoolSize  = 1;
-    static int               maxCorePoolSize  = 7;
-    static int               queueSize        = 4096;
-    static long              keepAliveTime    = 300L;
-    private SerializeFactory serializeFactory = null;
-    private ExecutesManager  manager          = null;
+    Settings settings = null;
     //
     public ServerRsfContext() throws IOException, URISyntaxException {
-        manager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
-        Settings settings = new StandardContextSettings();
+        settings = new StandardContextSettings();
         settings.refresh();
-        serializeFactory = SerializeFactory.createFactory(settings);
         new Thread(new Runnable() {
             public void run() {
                 print();
             }
         }).start();
-    }
-    private EventLoopGroup group = new NioEventLoopGroup(5);
-    public EventLoopGroup getLoopGroup() {
-        return group;
+        this.init();
     }
     //
     private ServiceMetaData data = null;
@@ -69,12 +54,6 @@ public class ServerRsfContext extends AbstractRsfContext {
             data.setSerializeType("Hessian");
         }
         return data;
-    }
-    public Executor getCallExecute(String serviceName) {
-        return manager.getExecute(serviceName);
-    }
-    public SerializeFactory getSerializeFactory() {
-        return this.serializeFactory;
     }
     private TestServices test = null;
     public Object getBean(ServiceMetaData metaData) {
@@ -115,7 +94,8 @@ public class ServerRsfContext extends AbstractRsfContext {
     public static void aa(RsfRequest request) {
         requestCount++;
     }
-    public byte getVersion() {
-        return ProtocolVersion.V_1_0.value();
+    @Override
+    public Settings getSettings() {
+        return settings;
     }
 }

@@ -34,7 +34,7 @@ public class ExecutesManager {
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
         this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//
                 keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//
-                new RsfThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+                new NameThreadFactory("RSF-Biz-%s"), new ThreadPoolExecutor.AbortPolicy());
     }
     //
     public Executor getExecute(String serviceUniqueName) {

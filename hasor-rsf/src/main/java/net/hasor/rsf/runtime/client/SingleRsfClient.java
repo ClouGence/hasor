@@ -22,11 +22,11 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerSingleRsfClient extends InnerAbstractRsfClient {
+class SingleRsfClient extends InnerAbstractRsfClient {
     private RsfClientFactory  clientFactory = null;
     private NetworkConnection connection    = null;
     //
-    public InnerSingleRsfClient(NetworkConnection connection, RsfClientFactory clientFactory) {
+    public SingleRsfClient(NetworkConnection connection, RsfClientFactory clientFactory) {
         this.clientFactory = clientFactory;
         this.connection = connection;
         Hasor.assertIsNotNull(connection, "connection is null.");

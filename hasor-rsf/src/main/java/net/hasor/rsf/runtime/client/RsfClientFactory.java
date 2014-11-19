@@ -24,8 +24,17 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
+import net.hasor.rsf.executes.NameThreadFactory;
+import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
@@ -35,12 +44,32 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private AbstractRsfContext                         rsfContext           = null;
-    private final Map<Channel, InnerAbstractRsfClient> channelClientMapping = new ConcurrentHashMap<Channel, InnerAbstractRsfClient>();
+    private int                                        defaultTimeout  = RSFConstants.ClientTimeout;
+    private int                                        maximumRequest  = 200;
+    private SendLimitPolicy                            sendLimitPolicy = SendLimitPolicy.Reject;
+
+    
+    private AbstractRsfContext                         rsfContext;
+    private final Map<Channel, InnerAbstractRsfClient> channelClientMapping;
     //
     public RsfClientFactory(AbstractRsfContext rsfContext) {
+        Settings settings = rsfContext.getSettings();
+        this.defaultTimeout = settings.getInteger("hasor.rsfConfig.client.defaultTimeout", RSFConstants.ClientTimeout);
+        this.maximumRequest = settings.getInteger("hasor.rsfConfig.client.maximumRequest", 200);
+        this.sendLimitPolicy = settings.getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
+        //
+        BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>();
+        this.clientExecutor = new ThreadPoolExecutor(1, 1, 300L, TimeUnit.SECONDS, inWorkQueue,//
+                new NameThreadFactory("RSF-Client-%s"), new ThreadPoolExecutor.AbortPolicy());
+        //
         this.rsfContext = rsfContext;
+        this.channelClientMapping = new ConcurrentHashMap<Channel, InnerAbstractRsfClient>();
     }
+    Executor getExecutor() {
+        // TODO Auto-generated method stub
+        return this.clientExecutor;
+    }
+    //
     /**连接远程服务（具体的地址）*/
     public RsfClient connect(String hostName, int port) {
         return connect(new InetSocketAddress(hostName, port));
@@ -75,9 +104,15 @@ public class RsfClientFactory {
         return client;
     }
     //
+    /**获取{@link AbstractRsfContext}对象。*/
     protected AbstractRsfContext getRsfContext() {
         return this.rsfContext;
     }
+    /**获取默认超时时间。*/
+    public int getDefaultTimeout() {
+        return this.defaultTimeout;
+    }
+    //
     /**获取Channel 所属的 RsfClient*/
     InnerAbstractRsfClient getRsfClient(Channel socketChanne) {
         return channelClientMapping.get(socketChanne);
@@ -86,8 +121,8 @@ public class RsfClientFactory {
     void removeChannelMapping(Channel socketChanne) {
         channelClientMapping.remove(socketChanne);
     }
-    //
+    //  
     protected InnerAbstractRsfClient createRsfClient(NetworkConnection connection) {
-        return new InnerSingleRsfClient(connection, this);
+        return new SingleRsfClient(connection, this);
     }
 }

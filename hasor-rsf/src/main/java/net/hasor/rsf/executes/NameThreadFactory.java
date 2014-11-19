@@ -20,13 +20,17 @@ import java.util.concurrent.ThreadFactory;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfThreadFactory implements ThreadFactory {
-    private String nameSample = "RSF-BizThread-";
+public class NameThreadFactory implements ThreadFactory {
+    private String nameSample = "Thread-%s";
     private int    index      = 1;
+    //
+    public NameThreadFactory(String nameSample) {
+        this.nameSample = nameSample;
+    }
     //
     public Thread newThread(Runnable run) {
         Thread t = new Thread(run);
-        t.setName(nameSample + index++);
+        t.setName(String.format(nameSample, index++));
         t.setDaemon(true);
         return t;
     }

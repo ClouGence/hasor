@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
@@ -44,10 +44,10 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class InnerAbstractRsfClient implements RsfClient {
-    private int                                      defaultTimeOut = RSFConstants.ClientTimeout;
-    private final Map<String, String>                optionMap      = new HashMap<String, String>();
-    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse    = new ConcurrentHashMap<Long, RsfFuture>();
-    private final Timer                              timer          = new HashedWheelTimer();
+    private final Map<String, String>                optionMap   = new HashMap<String, String>();
+    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
+    private final Timer                              timer       = new HashedWheelTimer();
+    private ThreadPoolExecutor                       clientExecutor;
     //
     /**server address.*/
     public String getServerHost() {
@@ -65,6 +65,10 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     public int getLocalPort() {
         return this.getConnection().getLocalPort();
     }
+    /**获取 {@link AbstractRsfContext}*/
+    public AbstractRsfContext getRsfContext() {
+        return this.getRsfClientFactory().getRsfContext();
+    };
     /**获取选项Key集合。*/
     public String[] getOptionKeys() {
         return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
@@ -165,11 +169,38 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     //
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
-            timeout = this.defaultTimeOut;
+            timeout = this.getRsfClientFactory().getDefaultTimeout();
         return timeout;
     }
+    private RsfFuture removeRsfFuture(long requestID) {
+        //放弃Response响应。
+        RsfFuture rsfFuture = this.rsfResponse.remove(requestID);
+        if (rsfFuture == null) {
+            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
+            return null;
+        }
+        return rsfFuture;
+    }
+    /**收到Response响应。*/
+    protected void putResponse(long requestID, RsfResponse response) {
+        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
+        if (rsfFuture != null) {
+            rsfFuture.completed(response);
+        }
+    }
+    /**收到Response响应。*/
+    protected void putError(long requestID, Throwable e) {
+        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
+        if (rsfFuture != null) {
+            rsfFuture.failed(e);
+        }
+    }
+    //
+    //
+    //
     /**负责客户端引发的超时逻辑。*/
-    private void startTiming(RsfFuture rsfFuture) {
+    private void startRequest(RsfFuture rsfFuture) {
+        this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
@@ -188,14 +219,15 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         this.timer.newTimeout(timeTask, request.getTimeout(), TimeUnit.MILLISECONDS);
     };
     /**发送连接请求。*/
-    protected RsfFuture sendRequest(final RsfRequestImpl request, FutureCallback<RsfResponse> listener) {
-        RsfFuture rsfFuture = new RsfFuture(request, listener);
+    protected RsfFuture sendRequest(final RsfRequestImpl request, FutureCallback<RsfResponse> listener) {}
+    /**发送连接请求。*/
+    private void sendRequest(RsfFuture rsfFuture) {
+        final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
-        this.startTiming(rsfFuture);/*应用 timeout 属性*/
-        this.rsfResponse.put(request.getRequestID(), rsfFuture);
+        this.startRequest(rsfFuture);/*应用 timeout 属性*/
         ChannelFuture future = this.getConnection().getChannel().write(rsfMessage);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
@@ -225,34 +257,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
-        return rsfFuture;
-    }
-    private RsfFuture removeRsfFuture(long requestID) {
-        //放弃Response响应。
-        RsfFuture rsfFuture = this.rsfResponse.remove(requestID);
-        if (rsfFuture == null) {
-            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
-            return null;
-        }
-        return rsfFuture;
-    }
-    /**收到Response响应。*/
-    protected void putResponse(long requestID, RsfResponse response) {
-        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
-        if (rsfFuture != null) {
-            rsfFuture.completed(response);
-        }
-    }
-    /**收到Response响应。*/
-    protected void putError(long requestID, Throwable e) {
-        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
-        if (rsfFuture != null) {
-            rsfFuture.failed(e);
-        }
     }
     /**获取网络连接。*/
     protected abstract NetworkConnection getConnection();
+    /**获取{@link RsfClientFactory}*/
     protected abstract RsfClientFactory getRsfClientFactory();
-    /**获取 {@link AbstractRsfContext}*/
-    public abstract AbstractRsfContext getRsfContext();
 }

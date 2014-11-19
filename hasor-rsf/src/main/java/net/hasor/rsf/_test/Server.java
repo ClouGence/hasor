@@ -26,6 +26,6 @@ public class Server {
         AbstractRsfContext manager = new ServerRsfContext();
         RsfServer server = new RsfServer(manager);
         //
-        server.start(8000);
+        server.start();
     }
 }

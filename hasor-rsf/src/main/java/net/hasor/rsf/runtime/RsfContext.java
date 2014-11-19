@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime;
+import net.hasor.core.Settings;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -28,6 +29,9 @@ public interface RsfContext {
     public Object getBean(ServiceMetaData metaData);
     /**获取元信息所描述的服务类型。*/
     public Class<?> getBeanType(ServiceMetaData metaData);
+    //
+    /**获取配置*/
+    public Settings getSettings();
     //
     /**获取当发起请求的时候所使用的RSF协议版本。*/
     public byte getVersion();
