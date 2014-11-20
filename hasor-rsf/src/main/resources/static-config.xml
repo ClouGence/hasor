@@ -33,14 +33,14 @@
 					keepAliveTime(SECONDS)
 						when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.
 			-->
-			<queue maxSize="4096" minPoolSize="1" maxPoolSize="5" keepAliveTime="300" />
+			<queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300" />
 
 			<!--
 				网络数据包线程配置
 					workerThread	处理网络IO数据包的线程数。
 					listenThread	处理网络监听请求的线程数。
 			-->
-			<network workerThread="4" listenThread="1"/>
+			<network workerThread="8" listenThread="1"/>
 
 			<!-- 公共选项配置 -->
 			<serverOptionSet>

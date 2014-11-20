@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;

@@ -21,6 +21,7 @@ import net.hasor.core.Settings;
 import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.general.ProtocolVersion;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfFilter;
@@ -31,6 +32,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
+    private int              defaultTimeout   = RSFConstants.ClientTimeout;
     private SerializeFactory serializeFactory = null;
     private ExecutesManager  executesManager  = null;
     private EventLoopGroup   loopGroup        = null;
@@ -50,6 +52,10 @@ public abstract class AbstractRsfContext implements RsfContext {
     public byte getVersion() {
         return ProtocolVersion.V_1_0.value();
     }
+    /**获取默认超时时间。*/
+    public int getDefaultTimeout() {
+        return this.defaultTimeout;
+    }
     //
     /**获取服务上配置有效的过滤器。*/
     public abstract RsfFilter[] getRsfFilters(ServiceMetaData metaData);
@@ -62,6 +68,8 @@ public abstract class AbstractRsfContext implements RsfContext {
         int maxCorePoolSize = settings.getInteger("hasor.rsfConfig.queue.maxPoolSize", 7);
         long keepAliveTime = settings.getLong("hasor.rsfConfig.queue.keepAliveTime", 300L);
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        //
+        this.defaultTimeout = settings.getInteger("hasor.rsfConfig.client.defaultTimeout", RSFConstants.ClientTimeout);
         //
         int workerThread = settings.getInteger("hasor.rsfConfig.network.workerThread", 2);
         this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));

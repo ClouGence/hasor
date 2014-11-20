@@ -17,6 +17,7 @@ package net.hasor.rsf.net.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import java.io.IOException;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolType;
 import net.hasor.rsf.protocol.block.RequestSocketBlock;
@@ -52,7 +53,27 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         //
         //* byte[1]  version                              RSF版本(0xC1)
         byte version = frame.getByte(0);
+        short status = 0;
         //decode
+        try {
+            status = this.doDecode(version, ctx, frame);//协议解析
+        } catch (Throwable e) {
+            status = ProtocolStatus.ProtocolError;
+        } finally {
+            if (status == ProtocolStatus.OK)
+                return null;
+            /*                    错误情况*/
+            frame.skipBytes(1);
+            this.fireProtocolError(ctx, version, frame.readLong(), ProtocolStatus.ProtocolError);
+        }
+        return null;
+    }
+    protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
+        return buffer.slice(index, length);
+    }
+    //
+    /**协议解析*/
+    private short doDecode(byte version, ChannelHandlerContext ctx, ByteBuf frame) throws IOException {
         ProtocolType pType = ProtocolType.valueOf(version);
         if (pType == ProtocolType.Request) {
             //request
@@ -61,7 +82,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
                 RequestSocketBlock block = requestProtocol.decode(frame);
                 RequestMsg reqMetaData = TransferUtils.requestToMessage(block);
                 ctx.fireChannelRead(reqMetaData);
-                return null;/*正常处理后返回*/
+                return ProtocolStatus.OK;/*正常处理后返回*/
             }
         }
         if (pType == ProtocolType.Response) {
@@ -71,26 +92,17 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
                 ResponseSocketBlock block = responseProtocol.decode(frame);
                 ResponseMsg resMetaData = TransferUtils.responseToMessage(block);
                 ctx.fireChannelRead(resMetaData);
-                return null;/*正常处理后返回*/
+                return ProtocolStatus.OK;/*正常处理后返回*/
             }
         }
-        /*                    错误情况*/
-        frame.skipBytes(1);
-        this.fireProtocolError(ctx, version, frame.readLong());
-        return null;
-    }
-    protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
-        return buffer.slice(index, length);
+        return ProtocolStatus.ProtocolError;
     }
     //
-    //
-    //
-    /**发送协议错误 */
-    private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID) {
-        //502 ProtocolError
+    /**发送错误 */
+    private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID, short status) {
         byte version = ProtocolUtils.getVersion(oriVersion);
         ResponseMsg error = TransferUtils.buildStatus(//
-                version, requestID, ProtocolStatus.ProtocolError);
+                version, requestID, status);
         ctx.pipeline().writeAndFlush(error);
     }
 }

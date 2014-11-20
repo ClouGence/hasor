@@ -45,8 +45,19 @@ public class ServerPressureTest {
     }
     //
     public static void main(String[] args) throws Exception {
-        ServerPressureTest client = new ServerPressureTest();
-        client.connect(InetAddress.getLocalHost().getHostAddress(), 8000);
+        for (int i=1 ;i<10;i++){
+            new Thread(){
+                public void run() {
+                    try {
+                        ServerPressureTest client = new ServerPressureTest();
+                        client.connect(InetAddress.getLocalHost().getHostAddress(), 8000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                };
+            }.start();
+        }
+
     }
 }
 class ClientHandler extends ChannelInboundHandlerAdapter {

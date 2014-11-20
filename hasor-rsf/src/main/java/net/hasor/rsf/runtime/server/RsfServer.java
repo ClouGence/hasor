@@ -25,6 +25,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
@@ -82,6 +83,7 @@ public class RsfServer {
         //
         ChannelFuture future = boot.bind(localAddress, port);
         this.serverChannel = future.channel();
+        Hasor.logInfo("rsf Server started at :%s:%s", localAddress, port);
     }
     /**停止服务*/
     public void shutdown() {

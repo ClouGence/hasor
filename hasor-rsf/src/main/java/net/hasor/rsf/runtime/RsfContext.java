@@ -30,6 +30,8 @@ public interface RsfContext {
     /**获取元信息所描述的服务类型。*/
     public Class<?> getBeanType(ServiceMetaData metaData);
     //
+    /**获取默认超时时间。*/
+    public int getDefaultTimeout();
     /**获取配置*/
     public Settings getSettings();
     //

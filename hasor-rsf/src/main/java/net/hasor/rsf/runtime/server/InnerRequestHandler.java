@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.server;
+import io.netty.channel.Channel;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
+import net.hasor.rsf.general.RsfException;
+import net.hasor.rsf.metadata.ServiceMetaData;
+import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.protocol.toos.TransferUtils;
 import net.hasor.rsf.runtime.RsfFilter;
+import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.common.RsfRequestImpl;
 import net.hasor.rsf.runtime.common.RsfResponseImpl;
+import net.hasor.rsf.runtime.common.RuntimeUtils;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.util.BeanUtils;
@@ -29,22 +37,39 @@ import org.more.util.BeanUtils;
  */
 class InnerRequestHandler implements Runnable {
     private AbstractRsfContext rsfContext;
-    private RsfRequestImpl     request  = null;
-    private RsfResponseImpl    response = null;
+    private RequestMsg         requestMsg;
+    private Channel            channel;
     //
-    public InnerRequestHandler(AbstractRsfContext rsfContext, RsfRequestImpl request, RsfResponseImpl response) {
+    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestMsg requestMsg, Channel channel) {
         this.rsfContext = rsfContext;
-        this.request = request;
-        this.response = response;
+        this.requestMsg = requestMsg;
+        this.channel = channel;
     }
     public void run() {
         RsfResponseImpl response = this.doRequest();
         sendResponse(response);
     }
     private RsfResponseImpl doRequest() {
+        RsfRequestImpl request = null;
+        RsfResponseImpl response = null;
+        try {
+            request = RuntimeUtils.recoverRequest(//
+                    requestMsg, new NetworkConnection(this.channel), this.rsfContext);
+            response = request.buildResponse();
+        } catch (RsfException e) {
+            Hasor.logError("recoverRequest fail, requestID:" + requestMsg.getRequestID() + " , " + e.getMessage());
+            //
+            ResponseMsg pack = TransferUtils.buildStatus(//
+                    requestMsg.getVersion(), //协议版本
+                    requestMsg.getRequestID(),//请求ID
+                    e.getStatus());//回应状态
+            this.channel.write(pack);
+            return null;
+        }
         //1.检查timeout
-        long lostTime = System.currentTimeMillis() - this.request.getReceiveTime();
-        if (lostTime > this.request.getTimeout()) {
+        long lostTime = System.currentTimeMillis() - requestMsg.getReceiveTime();
+        int timeout = validateTimeout(requestMsg.getClientTimeout(), request.getMetaData());
+        if (lostTime > timeout) {
             response.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
             return response;
         }
@@ -60,6 +85,8 @@ class InnerRequestHandler implements Runnable {
         return response;
     }
     private void sendResponse(RsfResponseImpl response) {
+        if (response == null)
+            return;
         //给予默认值
         if (response.isResponse() == false) {
             Object defaultValue = BeanUtils.getDefaultValue(response.getResponseType());
@@ -79,6 +106,13 @@ class InnerRequestHandler implements Runnable {
             responseMsg.setReturnData(msg.getBytes());;
             responseMsg.setReturnType(String.class.getName());
         }
-        this.request.getConnection().getChannel().writeAndFlush(responseMsg);
+        this.channel.write(responseMsg);
+    }
+    private int validateTimeout(int timeout, ServiceMetaData serviceMetaData) {
+        if (timeout <= 0)
+            timeout = this.rsfContext.getDefaultTimeout();
+        if (timeout > serviceMetaData.getClientTimeout())
+            timeout = serviceMetaData.getClientTimeout();
+        return timeout;
     }
 }

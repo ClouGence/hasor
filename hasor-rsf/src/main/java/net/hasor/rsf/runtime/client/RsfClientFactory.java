@@ -44,17 +44,13 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private int                                        defaultTimeout  = RSFConstants.ClientTimeout;
     private int                                        maximumRequest  = 200;
     private SendLimitPolicy                            sendLimitPolicy = SendLimitPolicy.Reject;
-
-    
     private AbstractRsfContext                         rsfContext;
     private final Map<Channel, InnerAbstractRsfClient> channelClientMapping;
     //
     public RsfClientFactory(AbstractRsfContext rsfContext) {
         Settings settings = rsfContext.getSettings();
-        this.defaultTimeout = settings.getInteger("hasor.rsfConfig.client.defaultTimeout", RSFConstants.ClientTimeout);
         this.maximumRequest = settings.getInteger("hasor.rsfConfig.client.maximumRequest", 200);
         this.sendLimitPolicy = settings.getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
         //
@@ -107,10 +103,6 @@ public class RsfClientFactory {
     /**获取{@link AbstractRsfContext}对象。*/
     protected AbstractRsfContext getRsfContext() {
         return this.rsfContext;
-    }
-    /**获取默认超时时间。*/
-    public int getDefaultTimeout() {
-        return this.defaultTimeout;
     }
     //
     /**获取Channel 所属的 RsfClient*/
