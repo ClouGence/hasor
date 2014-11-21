@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
+import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.runtime.RsfResponse;
@@ -47,6 +49,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     private final Map<String, String>                optionMap     = new HashMap<String, String>();
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse   = new ConcurrentHashMap<Long, RsfFuture>();
     private final Timer                              timer         = new HashedWheelTimer();
+    private final AtomicInteger                      requestCount  = new AtomicInteger(0);
     //
     public InnerAbstractRsfClient(RsfClientFactory clientFactory, AbstractRsfContext rsfContext) {
         this.clientFactory = clientFactory;
@@ -181,12 +184,8 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         return timeout;
     }
     private RsfFuture removeRsfFuture(long requestID) {
-        //放弃Response响应。
         RsfFuture rsfFuture = this.rsfResponse.remove(requestID);
-        if (rsfFuture == null) {
-            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
-            return null;
-        }
+        this.requestCount.decrementAndGet();// i--;
         return rsfFuture;
     }
     /**收到Response响应。*/
@@ -194,6 +193,8 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
             rsfFuture.completed(response);
+        } else {
+            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
         }
     }
     /**收到Response响应。*/
@@ -201,6 +202,8 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
             rsfFuture.failed(e);
+        } else {
+            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
         }
     }
     //
@@ -208,6 +211,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     //
     /**负责客户端引发的超时逻辑。*/
     private void startRequest(RsfFuture rsfFuture) {
+        this.requestCount.incrementAndGet();// i++;
         this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         TimerTask timeTask = new TimerTask() {
@@ -230,6 +234,19 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     private RsfFuture sendRequest(final RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
         if (this.isActive() == false) {
             throw new IllegalStateException();
+        }
+        if (this.requestCount.get() >= this.getRsfClientFactory().getMaximumRequest()) {
+            //
+            SendLimitPolicy sendPolicy = this.getRsfClientFactory().getSendLimitPolicy();
+            String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
+            Hasor.logWarn(this + ": " + errorMessage);
+            if (sendPolicy == SendLimitPolicy.Reject) {
+                throw new RsfException(ProtocolStatus.ClientError, errorMessage);
+            } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
+            }
         }
         //
         RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);

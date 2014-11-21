@@ -17,38 +17,45 @@ package net.hasor.rsf.runtime.common;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkConnection {
-    private SocketAddress remoteAddress = null;
-    private SocketAddress localAddress  = null;
-    private Channel       socketChanne  = null;
+    private InetSocketAddress remoteAddress = null;
+    private InetSocketAddress localAddress  = null;
+    private Channel           socketChanne  = null;
     //
     public NetworkConnection(Channel socketChanne) {
         this.socketChanne = socketChanne;
-        this.remoteAddress = socketChanne.remoteAddress();//remote
-        this.localAddress = socketChanne.localAddress();//local
+    }
+    private InetSocketAddress remote() {
+        if (this.remoteAddress == null)
+            this.remoteAddress = (InetSocketAddress) socketChanne.remoteAddress();//remote
+        return this.remoteAddress;
+    }
+    private InetSocketAddress local() {
+        if (this.localAddress == null)
+            this.localAddress = (InetSocketAddress) socketChanne.remoteAddress();//remote
+        return this.localAddress;
     }
     //
     /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
     public String getRemotHost() {
-        return ((InetSocketAddress) this.remoteAddress).getAddress().getHostAddress();
+        return remote().getAddress().getHostAddress();
     }
     /**远程端口。*/
     public int getRemotePort() {
-        return ((InetSocketAddress) this.remoteAddress).getPort();
+        return remote().getPort();
     }
     /**本地IP。*/
     public String getLocalHost() {
-        return ((InetSocketAddress) this.localAddress).getAddress().getHostAddress();
+        return local().getAddress().getHostAddress();
     }
     /**本地端口。*/
     public int getLocalPort() {
-        return ((InetSocketAddress) this.localAddress).getPort();
+        return local().getPort();
     }
     /**连接是否为活动的。*/
     public boolean isActive() {
