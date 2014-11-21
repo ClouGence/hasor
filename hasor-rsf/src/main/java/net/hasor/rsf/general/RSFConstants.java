@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.rsf.general;
+import io.netty.util.AttributeKey;
 import java.nio.charset.Charset;
+import net.hasor.rsf.runtime.common.NetworkConnection;
 /**
  * 
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RSFConstants {
+    public static final AttributeKey<NetworkConnection> NettyKey        = new AttributeKey<NetworkConnection>("NetworkConnection");
     // 1000 0000
-    public static final byte    RSF             = (byte) (0x80);
+    public static final byte                            RSF             = (byte) (0x80);
     // 1100 0000
-    public static final byte    RSF_Request     = RSF | 0x40;
+    public static final byte                            RSF_Request     = RSF | 0x40;
     // 1000 0000
-    public static final byte    RSF_Response    = RSF | 0x00;
+    public static final byte                            RSF_Response    = RSF | 0x00;
     //
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    public static final int     ClientTimeout   = 6000;                    //（毫秒）
+    public static final Charset                         DEFAULT_CHARSET = Charset.forName("UTF-8");
+    public static final int                             ClientTimeout   = 6000;                                                    //（毫秒）
 }

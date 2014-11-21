@@ -24,18 +24,15 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.rsf.executes.NameThreadFactory;
+import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RSFConstants;
+import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
@@ -44,46 +41,41 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private int                                        maximumRequest  = 200;
-    private SendLimitPolicy                            sendLimitPolicy = SendLimitPolicy.Reject;
-    private AbstractRsfContext                         rsfContext;
-    private final Map<Channel, InnerAbstractRsfClient> channelClientMapping;
+    private final int                                            maximumRequest;
+    private final SendLimitPolicy                                sendLimitPolicy;
+    private final AbstractRsfContext                             rsfContext;
+    private final Map<NetworkConnection, InnerAbstractRsfClient> connClientMapping;
     //
     public RsfClientFactory(AbstractRsfContext rsfContext) {
         Settings settings = rsfContext.getSettings();
         this.maximumRequest = settings.getInteger("hasor.rsfConfig.client.maximumRequest", 200);
         this.sendLimitPolicy = settings.getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
         //
-        BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>();
-        this.clientExecutor = new ThreadPoolExecutor(1, 1, 300L, TimeUnit.SECONDS, inWorkQueue,//
-                new NameThreadFactory("RSF-Client-%s"), new ThreadPoolExecutor.AbortPolicy());
-        //
         this.rsfContext = rsfContext;
-        this.channelClientMapping = new ConcurrentHashMap<Channel, InnerAbstractRsfClient>();
-    }
-    Executor getExecutor() {
-        // TODO Auto-generated method stub
-        return this.clientExecutor;
+        this.connClientMapping = new ConcurrentHashMap<NetworkConnection, InnerAbstractRsfClient>();
     }
     //
     /**连接远程服务（具体的地址）*/
-    public RsfClient connect(String hostName, int port) {
+    public RsfClient connect(String hostName, int port) throws RsfException, InterruptedException {
         return connect(new InetSocketAddress(hostName, port));
     }
     /**连接远程服务（具体的地址）*/
-    public RsfClient connect(SocketAddress remoteAddress) {
+    public RsfClient connect(SocketAddress remoteAddress) throws RsfException, InterruptedException {
         return connect(remoteAddress, null);
     }
     /**连接远程服务（具体的地址）*/
-    public RsfClient connect(SocketAddress remoteAddress, SocketAddress localAddress) {
+    public RsfClient connect(SocketAddress remoteAddress, SocketAddress localAddress) throws RsfException, InterruptedException {
         Hasor.assertIsNotNull(remoteAddress, "remoteAddress is null.");
         //
         Bootstrap boot = new Bootstrap();
-        boot.group(this.getRsfContext().getLoopGroup());
+        boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
+                Channel channel = ch.pipeline().channel();
+                channel.attr(RSFConstants.NettyKey).set(new NetworkConnection(channel));
+                //
                 ch.pipeline().addLast(new RSFCodec(), new InnerClientHandler(RsfClientFactory.this));
             }
         });
@@ -93,28 +85,40 @@ public class RsfClientFactory {
         } else {
             future = boot.connect(remoteAddress);
         }
-        //
-        NetworkConnection connection = new NetworkConnection(future.channel());
-        InnerAbstractRsfClient client = this.createRsfClient(connection);
-        channelClientMapping.put(future.channel(), client);
-        return client;
+        future.await();
+        if (future.isSuccess()) {
+            NetworkConnection conn = future.channel().attr(RSFConstants.NettyKey).get();
+            InnerAbstractRsfClient client = this.createRsfClient(conn);
+            connClientMapping.put(conn, client);
+            return client;
+        }
+        throw new RsfException(ProtocolStatus.ClientError, future.cause());
     }
     //
     /**获取{@link AbstractRsfContext}对象。*/
-    protected AbstractRsfContext getRsfContext() {
+    public RsfContext getRsfContext() {
         return this.rsfContext;
     }
+    /**获取每个客户端连接可以发起的最大连接请求数量。*/
+    public int getMaximumRequest() {
+        return this.maximumRequest;
+    }
+    /**获取当客户端达到了最大连接请求数的时所做出的策略。*/
+    public SendLimitPolicy getSendLimitPolicy() {
+        return this.sendLimitPolicy;
+    }
     //
-    /**获取Channel 所属的 RsfClient*/
-    InnerAbstractRsfClient getRsfClient(Channel socketChanne) {
-        return channelClientMapping.get(socketChanne);
+    /**获取NetworkConnection 所属的 RsfClient*/
+    InnerAbstractRsfClient getRsfClient(NetworkConnection conn) {
+        return connClientMapping.get(conn);
     }
-    /**删除Channel 与 RsfClient 的映射关系。*/
-    void removeChannelMapping(Channel socketChanne) {
-        channelClientMapping.remove(socketChanne);
+    /**删除NetworkConnection 与 RsfClient 的映射关系。*/
+    void removeChannelMapping(NetworkConnection conn) {
+        connClientMapping.remove(conn);
     }
-    //  
+    //
+    /**创建 RsfClient 对象*/
     protected InnerAbstractRsfClient createRsfClient(NetworkConnection connection) {
-        return new SingleRsfClient(connection, this);
+        return new SingleRsfClient(connection, this, this.rsfContext);
     }
 }

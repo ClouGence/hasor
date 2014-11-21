@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.server;
-import io.netty.channel.Channel;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
@@ -38,12 +37,12 @@ import org.more.util.BeanUtils;
 class InnerRequestHandler implements Runnable {
     private AbstractRsfContext rsfContext;
     private RequestMsg         requestMsg;
-    private Channel            channel;
+    private NetworkConnection  connection;
     //
-    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestMsg requestMsg, Channel channel) {
+    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestMsg requestMsg, NetworkConnection connection) {
         this.rsfContext = rsfContext;
         this.requestMsg = requestMsg;
-        this.channel = channel;
+        this.connection = connection;
     }
     public void run() {
         RsfResponseImpl response = this.doRequest();
@@ -54,7 +53,7 @@ class InnerRequestHandler implements Runnable {
         RsfResponseImpl response = null;
         try {
             request = RuntimeUtils.recoverRequest(//
-                    requestMsg, new NetworkConnection(this.channel), this.rsfContext);
+                    requestMsg, connection, this.rsfContext);
             response = request.buildResponse();
         } catch (RsfException e) {
             Hasor.logError("recoverRequest fail, requestID:" + requestMsg.getRequestID() + " , " + e.getMessage());
@@ -63,7 +62,7 @@ class InnerRequestHandler implements Runnable {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     e.getStatus());//回应状态
-            this.channel.write(pack);
+            this.connection.getChannel().write(pack);
             return null;
         }
         //1.检查timeout
@@ -106,7 +105,7 @@ class InnerRequestHandler implements Runnable {
             responseMsg.setReturnData(msg.getBytes());;
             responseMsg.setReturnType(String.class.getName());
         }
-        this.channel.write(responseMsg);
+        this.connection.getChannel().write(responseMsg);
     }
     private int validateTimeout(int timeout, ServiceMetaData serviceMetaData) {
         if (timeout <= 0)

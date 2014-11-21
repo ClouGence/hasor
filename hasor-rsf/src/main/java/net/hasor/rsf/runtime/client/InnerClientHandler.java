@@ -16,9 +16,9 @@
 package net.hasor.rsf.runtime.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import java.util.concurrent.Executor;
-import java.util.concurrent.RejectedExecutionException;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.runtime.common.NetworkConnection;
 /**
  * 接受Response响应，并交付Response处理线程处理。
  * @version : 2014年11月4日
@@ -35,17 +35,20 @@ class InnerClientHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ResponseMsg == false)
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
-        InnerAbstractRsfClient rsfClient = this.rsfClientFactory.getRsfClient(ctx.channel());
+        NetworkConnection connection = ctx.channel().attr(RSFConstants.NettyKey).get();
+        //
+        InnerAbstractRsfClient rsfClient = this.rsfClientFactory.getRsfClient(connection);
         RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
             return;//或许它已经超时了。
         }
         //送入队列
-        try {
-            Executor exe = this.rsfClientFactory.getExecutor();
-            exe.execute(new InnerResponseHandler(responseMsg, rsfClient, rsfFuture));
-        } catch (RejectedExecutionException e) {
-            // TODO: handle exception
-        }
+        new InnerResponseHandler(responseMsg, rsfClient, rsfFuture).run();
+        //        try {
+        //            Executor exe = this.rsfClientFactory.getExecutor();
+        //            exe.execute();
+        //        } catch (RejectedExecutionException e) {
+        //            // TODO: handle exception
+        //        }
     }
 }

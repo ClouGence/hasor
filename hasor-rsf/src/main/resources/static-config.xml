@@ -18,9 +18,8 @@
 					defaultTimeout	默认超时时间
 					maximumRequest	最大并发请求数
 					sendLimitPolicy	并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
-					sendThread		负责发送调用请求的并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
 			-->
-			<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" clientThread="2"/>
+			<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject"/>
 
 			<!--
 				处理队列配置（用于配置ExecutesManager）
@@ -36,7 +35,7 @@
 			<queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300" />
 
 			<!--
-				网络数据包线程配置
+				网络数据包线程配置（）
 					workerThread	处理网络IO数据包的线程数。
 					listenThread	处理网络监听请求的线程数。
 			-->

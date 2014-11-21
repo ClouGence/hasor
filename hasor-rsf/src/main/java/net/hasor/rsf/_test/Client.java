@@ -9,27 +9,34 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 public class Client implements FutureCallback<Object> {
-    public static void main(String[] args) throws Throwable {
+    public static void main(final String[] args) throws Throwable {
+        for (int i = 0; i < 50; i++) {
+            new Thread() {
+                public void run() {
+                    try {
+                        main1(args);
+                    } catch (Throwable e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                };
+            }.start();
+        }
+    }
+    public static void main1(String[] args) throws Throwable {
         Client.start();
         //
         //初始化RsfClientFactory
         RsfClientFactory factory = new RsfClientFactory(new ServerRsfContext());
         //连接Server
         RsfClient client = factory.connect(InetAddress.getLocalHost().getHostAddress(), 8000);
-        //发起200万次同步调用.
+        //
+        //发起调用.
         for (int i = 0; i < 1000000; i++) {
-            client.doCallBackInvoke(//
-                    /*1.远程服务*/
-                    "net.hasor.rsf._test.TestServices",
-                    /*2.远程方法*/
-                    "sayHello",
-                    /*3.远程方法参数类型*/
-                    new Class<?>[] { String.class },
-                    /*4.远程方法参数值*/
-                    new Object[] { "你好..." },//
-                    new Client());
+            client.doCallBackInvoke("net.hasor.rsf._test.TestServices", "sayHello", //
+                    new Class<?>[] { String.class }, new Object[] { "你好..." }, new Client());
             sendCount++;
-            Thread.sleep(1);
+            Thread.sleep(5);
         }
         //关闭连接
         //        client.close();
@@ -50,10 +57,10 @@ public class Client implements FutureCallback<Object> {
     }
     //
     //
-    private static long sendCount = 0;
-    private static long errCount  = 0;
-    private static long okCount   = 0;
-    private static long start     = System.currentTimeMillis();
+    private volatile static long sendCount = 0;
+    private volatile static long errCount  = 0;
+    private volatile static long okCount   = 0;
+    private volatile static long start     = System.currentTimeMillis();
     public static void aa() {
         long duration = System.currentTimeMillis() - start;
         System.out.println("send Count:" + sendCount);
@@ -67,6 +74,7 @@ public class Client implements FutureCallback<Object> {
     }
     public void completed(Object result) {
         okCount++;
+        //
     }
     public void failed(Throwable ex) {
         errCount++;

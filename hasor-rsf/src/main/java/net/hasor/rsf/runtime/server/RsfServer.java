@@ -27,7 +27,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.executes.NameThreadFactory;
+import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
  * 负责维持与远程RSF服务器连接的客户端类。
@@ -77,6 +79,9 @@ public class RsfServer {
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
+                Channel channel = ch.pipeline().channel();
+                channel.attr(RSFConstants.NettyKey).set(new NetworkConnection(channel));
+                //
                 ch.pipeline().addLast(new RSFCodec(), new InnerServerHandler(RsfServer.this.rsfContext));
             }
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);

@@ -23,24 +23,17 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 class SingleRsfClient extends InnerAbstractRsfClient {
-    private RsfClientFactory  clientFactory = null;
-    private NetworkConnection connection    = null;
+    private NetworkConnection connection = null;
     //
-    public SingleRsfClient(NetworkConnection connection, RsfClientFactory clientFactory) {
-        this.clientFactory = clientFactory;
+    public SingleRsfClient(NetworkConnection connection, RsfClientFactory clientFactory, AbstractRsfContext rsfContext) {
+        super(clientFactory, rsfContext);
         this.connection = connection;
+        //
         Hasor.assertIsNotNull(connection, "connection is null.");
         Hasor.assertIsNotNull(clientFactory, "clientFactory is null.");
-    }
-    /**获取{@link AbstractRsfContext}对象。*/
-    public AbstractRsfContext getRsfContext() {
-        return this.clientFactory.getRsfContext();
     }
     /**获取网络连接。*/
     protected NetworkConnection getConnection() {
         return this.connection;
-    }
-    protected RsfClientFactory getRsfClientFactory() {
-        return this.clientFactory;
     }
 }

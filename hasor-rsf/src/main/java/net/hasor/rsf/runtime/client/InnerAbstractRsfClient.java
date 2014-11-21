@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.client;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.HashedWheelTimer;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
@@ -44,10 +42,16 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class InnerAbstractRsfClient implements RsfClient {
-    private final Map<String, String>                optionMap   = new HashMap<String, String>();
-    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-    private final Timer                              timer       = new HashedWheelTimer();
-    private ThreadPoolExecutor                       clientExecutor;
+    private RsfClientFactory                         clientFactory = null;
+    private AbstractRsfContext                       rsfContext    = null;
+    private final Map<String, String>                optionMap     = new HashMap<String, String>();
+    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse   = new ConcurrentHashMap<Long, RsfFuture>();
+    private final Timer                              timer         = new HashedWheelTimer();
+    //
+    public InnerAbstractRsfClient(RsfClientFactory clientFactory, AbstractRsfContext rsfContext) {
+        this.clientFactory = clientFactory;
+        this.rsfContext = rsfContext;
+    }
     //
     /**server address.*/
     public String getServerHost() {
@@ -67,8 +71,12 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
-        return this.getRsfClientFactory().getRsfContext();
-    };
+        return this.rsfContext;
+    }
+    /**获取{@link RsfClientFactory}*/
+    protected RsfClientFactory getRsfClientFactory() {
+        return this.clientFactory;
+    }
     /**获取选项Key集合。*/
     public String[] getOptionKeys() {
         return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
@@ -83,9 +91,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     /**关闭与远端的连接（异步）*/
     public Future<Void> close() {
-        Channel channel = this.getConnection().getChannel();
-        this.getRsfClientFactory().removeChannelMapping(channel);
-        return this.getConnection().close();
+        NetworkConnection conn = this.getConnection();
+        this.getRsfClientFactory().removeChannelMapping(conn);
+        return conn.close();
     }
     /**连接是否为活动的。*/
     public boolean isActive() {
@@ -169,7 +177,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     //
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
-            timeout = this.getRsfClientFactory().getDefaultTimeout();
+            timeout = this.getRsfContext().getDefaultTimeout();
         return timeout;
     }
     private RsfFuture removeRsfFuture(long requestID) {
@@ -219,9 +227,13 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         this.timer.newTimeout(timeTask, request.getTimeout(), TimeUnit.MILLISECONDS);
     };
     /**发送连接请求。*/
-    protected RsfFuture sendRequest(final RsfRequestImpl request, FutureCallback<RsfResponse> listener) {}
-    /**发送连接请求。*/
-    private void sendRequest(RsfFuture rsfFuture) {
+    private RsfFuture sendRequest(final RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
+        if (this.isActive() == false) {
+            throw new IllegalStateException();
+        }
+        //
+        RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
+        //
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         final long beginTime = System.currentTimeMillis();
@@ -257,9 +269,8 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
+        return rsfFuture;
     }
     /**获取网络连接。*/
     protected abstract NetworkConnection getConnection();
-    /**获取{@link RsfClientFactory}*/
-    protected abstract RsfClientFactory getRsfClientFactory();
 }
