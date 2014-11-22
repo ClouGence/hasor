@@ -34,9 +34,10 @@ public interface RsfContext {
     public int getDefaultTimeout();
     /**获取配置*/
     public Settings getSettings();
-    //
     /**获取当发起请求的时候所使用的RSF协议版本。*/
     public byte getVersion();
     /**获取序列化管理器。*/
     public SerializeFactory getSerializeFactory();
+    //
+    
 }

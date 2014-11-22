@@ -42,7 +42,7 @@ class InnerResponseHandler implements Runnable {
             return;
         } else if (resStatus == ProtocolStatus.ChooseOther) {
             //
-            System.out.println("RequestID:" + responseMsg.getRequestID() + " -> ChooseOther");
+            this.rsfClient.tryAgain(responseMsg.getRequestID());
             return;
         }
         //恢复response

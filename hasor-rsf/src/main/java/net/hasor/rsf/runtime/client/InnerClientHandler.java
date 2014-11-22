@@ -42,13 +42,7 @@ class InnerClientHandler extends ChannelInboundHandlerAdapter {
         if (rsfFuture == null) {
             return;//或许它已经超时了。
         }
-        //送入队列
+        //
         new InnerResponseHandler(responseMsg, rsfClient, rsfFuture).run();
-        //        try {
-        //            Executor exe = this.rsfClientFactory.getExecutor();
-        //            exe.execute();
-        //        } catch (RejectedExecutionException e) {
-        //            // TODO: handle exception
-        //        }
     }
 }

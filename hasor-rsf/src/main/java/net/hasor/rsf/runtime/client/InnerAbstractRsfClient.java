@@ -176,8 +176,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         return sb.toString();
     }
     //
-    //
-    //
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
             timeout = this.getRsfContext().getDefaultTimeout();
@@ -206,8 +204,12 @@ abstract class InnerAbstractRsfClient implements RsfClient {
             Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
         }
     }
-    //
-    //
+    /**要求重新发起请求*/
+    protected void tryAgain(long requestID) {
+        //
+        //TODO 
+        System.out.println("RequestID:" + requestID + " -> ChooseOther");
+    }
     //
     /**负责客户端引发的超时逻辑。*/
     private void startRequest(RsfFuture rsfFuture) {
@@ -232,9 +234,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     };
     /**发送连接请求。*/
     private RsfFuture sendRequest(final RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
-        if (this.isActive() == false) {
-            throw new IllegalStateException();
-        }
         if (this.requestCount.get() >= this.getRsfClientFactory().getMaximumRequest()) {
             //
             SendLimitPolicy sendPolicy = this.getRsfClientFactory().getSendLimitPolicy();
@@ -247,6 +246,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {}
             }
+        }
+        if (this.isActive() == false) {
+            throw new IllegalStateException("client is closed.");
         }
         //
         RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
