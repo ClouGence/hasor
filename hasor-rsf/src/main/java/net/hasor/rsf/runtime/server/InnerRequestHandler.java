@@ -63,7 +63,7 @@ class InnerRequestHandler implements Runnable {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     e.getStatus());//回应状态
-            this.connection.getChannel().write(pack);
+            this.connection.getChannel().writeAndFlush(pack);
             return null;
         }
         //1.检查timeout
@@ -106,7 +106,7 @@ class InnerRequestHandler implements Runnable {
             responseMsg.setReturnData(msg.getBytes());;
             responseMsg.setReturnType(String.class.getName());
         }
-        this.connection.getChannel().write(responseMsg);
+        this.connection.getChannel().writeAndFlush(responseMsg);
     }
     private int validateTimeout(int timeout, ServiceMetaData serviceMetaData) {
         if (timeout <= 0)

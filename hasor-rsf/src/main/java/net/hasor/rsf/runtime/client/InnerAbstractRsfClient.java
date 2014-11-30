@@ -235,9 +235,8 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     /**要求重新发起请求*/
     protected void tryAgain(long requestID) {
-        //
-        //TODO 
-        System.out.println("RequestID:" + requestID + " -> ChooseOther");
+        this.putError(requestID, new RsfException(ProtocolStatus.ChooseOther, "Server response  ChooseOther!"));
+        System.out.println("RequestID:" + requestID + " -> ChooseOther"); //TODO
     }
     //
     /**负责客户端引发的超时逻辑。*/
@@ -309,7 +308,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         final long timeout = rsfMessage.getClientTimeout();
         //
         this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
-        ChannelFuture future = this.getConnection().getChannel().write(rsfMessage);
+        ChannelFuture future = this.getConnection().getChannel().writeAndFlush(rsfMessage);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {

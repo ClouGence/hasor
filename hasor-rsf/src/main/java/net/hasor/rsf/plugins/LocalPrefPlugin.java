@@ -21,7 +21,7 @@ import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
 /**
- * 优先检查本地是否有服务提供。
+ * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */

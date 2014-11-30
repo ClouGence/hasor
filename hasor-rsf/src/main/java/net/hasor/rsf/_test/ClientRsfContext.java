@@ -60,7 +60,7 @@ public class ClientRsfContext extends AbstractRsfContext {
     private ServiceMetaData data = null;
     public ServiceMetaData getService(String serviceName) {
         if (data == null) {
-            data = new ServiceMetaData(Mode.Provider, TestServices.class);
+            data = new ServiceMetaData(Mode.Consumer, TestServices.class);
             data.setServiceName("net.hasor.rsf._test.TestServices");
             data.setServiceVersion("1.0.0");
             data.setServiceGroup("default");

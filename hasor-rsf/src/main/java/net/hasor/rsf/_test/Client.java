@@ -16,7 +16,7 @@ public class Client {
         //获取服务
         final ITestServices bean = client.wrapper("net.hasor.rsf._test.TestServices", ITestServices.class);
         //
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 200; i++) {
             new Thread() {
                 public void run() {
                     call(bean);
@@ -28,7 +28,7 @@ public class Client {
     }
     public static void call(ITestServices bean) {
         for (int i = 0; i < 1000000; i++) {
-            System.out.println(bean.sayHello("你好..."));//发起调用.
+            bean.sayHello("你好...");//发起调用.
         }
     }
 }

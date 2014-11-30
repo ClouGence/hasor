@@ -51,13 +51,13 @@ class InnerServerHandler extends ChannelInboundHandlerAdapter {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.Accepted);//回应ACK
-            ctx.pipeline().write(pack);
+            ctx.pipeline().writeAndFlush(pack);
         } catch (RejectedExecutionException e) {
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther);//服务器资源紧张
-            ctx.pipeline().write(pack);
+            ctx.pipeline().writeAndFlush(pack);
         }
     }
 }

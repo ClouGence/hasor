@@ -38,6 +38,4 @@ public interface RsfContext {
     public byte getVersion();
     /**获取序列化管理器。*/
     public SerializeFactory getSerializeFactory();
-    //
-    
 }
