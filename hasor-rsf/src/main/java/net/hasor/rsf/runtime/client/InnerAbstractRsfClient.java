@@ -115,7 +115,12 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     //
     private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
-    /**将服务包装为一个对象*/
+    /**获取远程服务对象*/
+    public Object getRemote(String serviceName) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        ServiceMetaData service = this.getRsfContext().getService(serviceName);
+        return wrapper(serviceName, service.getServiceType());
+    }
+    /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
         Hasor.assertIsNotNull(serviceName, "serviceName is null.");
         Hasor.assertIsNotNull(interFace, "interFace is null.");

@@ -35,12 +35,12 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
-    private int              defaultTimeout      = RSFConstants.ClientTimeout;
-    private SerializeFactory serializeFactory    = null;
-    private ExecutesManager  executesManager     = null;
-    private EventLoopGroup   loopGroup           = null;
-    private OptionManager    serverOptionManager = new OptionManager();
-    private OptionManager    clientOptionManager = new OptionManager();
+    private int                defaultTimeout      = RSFConstants.ClientTimeout;
+    private SerializeFactory   serializeFactory    = null;
+    private ExecutesManager    executesManager     = null;
+    private EventLoopGroup     loopGroup           = null;
+    private InnerOptionManager serverOptionManager = new InnerOptionManager();
+    private InnerOptionManager clientOptionManager = new InnerOptionManager();
     //
     /**获取使用的{@link EventLoopGroup}*/
     public EventLoopGroup getLoopGroup() {

@@ -22,7 +22,7 @@ import net.hasor.rsf.runtime.RsfOptionSet;
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-class OptionManager implements RsfOptionSet {
+class InnerOptionManager implements RsfOptionSet {
     private final Map<String, String> optionMap = new HashMap<String, String>();
     //
     /**获取选项Key集合。*/

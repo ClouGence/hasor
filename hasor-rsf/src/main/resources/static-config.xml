@@ -11,7 +11,7 @@
 					如果配置 loadType = auto，表示从现有网络上自动发现。
 					如果配置 loadType = host，表示从指定的服务器上获取更新（60秒）
 			-->
-			<configServer loadType="auto" address="local" port="6000" interval="60000" />
+			<configServer loadType="auto" address="local" port="8000" interval="60000" />
 
 			<!--
 				通用配置

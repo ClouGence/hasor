@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.metadata;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
@@ -24,7 +24,7 @@ import net.hasor.core.Hasor;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceMetaData {
-    private Class<?>            targetService  = null;
+    private Class<?>            serviceType    = null;     //服务类型
     private Mode                mode           = null;
     private Map<String, Method> methodMap      = null;
     //Provider
@@ -41,10 +41,10 @@ public class ServiceMetaData {
     }
     //
     //
-    public ServiceMetaData(Mode mode, Class<?> targetService) {
+    public ServiceMetaData(Mode mode, Class<?> serviceType) {
         this.mode = Hasor.assertIsNotNull(mode, "mode is null.");
-        this.targetService = targetService;
-        this.methodMap = new HashMap<String, Method>();
+        this.serviceType = serviceType;
+        this.methodMap = new ConcurrentHashMap<String, Method>();
     }
     //
     /**获取发布服务的名称。*/
@@ -111,13 +111,17 @@ public class ServiceMetaData {
         String mKey = key.toString();
         if (this.methodMap.containsKey(mKey) == false) {
             try {
-                Method m = this.targetService.getMethod(methodName, parameterTypes);
+                Method m = this.serviceType.getMethod(methodName, parameterTypes);
                 this.methodMap.put(mKey, m);
             } catch (Exception e) {
                 this.methodMap.put(mKey, null);
             }
         }
         return this.methodMap.get(mKey);
+    }
+    /**服务类型*/
+    public Class<?> getServiceType() {
+        return this.serviceType;
     }
     public String toString() {
         return String.format("Service - N=%s ,G=%s ,V=%s", this.serviceName, this.serviceGroup, this.serviceVersion);

@@ -52,7 +52,10 @@ public interface RsfClient {
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID);
     //
-    /**将服务包装为一个对象*/
+    /**获取远程服务对象*/
+    public Object getRemote(String serviceName) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String serviceName, Class<T> interFace) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     //
