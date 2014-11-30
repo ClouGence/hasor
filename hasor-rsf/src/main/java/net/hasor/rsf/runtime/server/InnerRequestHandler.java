@@ -56,13 +56,15 @@ class InnerRequestHandler implements Runnable {
             request = RuntimeUtils.recoverRequest(//
                     requestMsg, connection, this.rsfContext);
             response = request.buildResponse();
+            //
         } catch (RsfException e) {
             Hasor.logError("recoverRequest fail, requestID:" + requestMsg.getRequestID() + " , " + e.getMessage());
             //
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
-                    e.getStatus());//回应状态
+                    e.getStatus(),//响应状态
+                    this.rsfContext.getServerOption());//选项参数
             this.connection.getChannel().writeAndFlush(pack);
             return null;
         }

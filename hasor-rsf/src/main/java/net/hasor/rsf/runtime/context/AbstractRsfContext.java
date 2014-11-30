@@ -18,6 +18,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import java.util.concurrent.Executor;
 import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 import net.hasor.rsf.executes.ExecutesManager;
 import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.general.ProtocolVersion;
@@ -25,17 +26,21 @@ import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfFilter;
+import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.serialize.SerializeFactory;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
-    private int              defaultTimeout   = RSFConstants.ClientTimeout;
-    private SerializeFactory serializeFactory = null;
-    private ExecutesManager  executesManager  = null;
-    private EventLoopGroup   loopGroup        = null;
+    private int              defaultTimeout      = RSFConstants.ClientTimeout;
+    private SerializeFactory serializeFactory    = null;
+    private ExecutesManager  executesManager     = null;
+    private EventLoopGroup   loopGroup           = null;
+    private OptionManager    serverOptionManager = new OptionManager();
+    private OptionManager    clientOptionManager = new OptionManager();
     //
     /**获取使用的{@link EventLoopGroup}*/
     public EventLoopGroup getLoopGroup() {
@@ -56,7 +61,14 @@ public abstract class AbstractRsfContext implements RsfContext {
     public int getDefaultTimeout() {
         return this.defaultTimeout;
     }
-    //
+    /**获取配置的服务器端选项*/
+    public RsfOptionSet getServerOption() {
+        return this.serverOptionManager;
+    }
+    /**获取配置的客户端选项*/
+    public RsfOptionSet getClientOption() {
+        return this.clientOptionManager;
+    }
     /**获取服务上配置有效的过滤器。*/
     public abstract RsfFilter[] getRsfFilters(ServiceMetaData metaData);
     //
@@ -73,5 +85,32 @@ public abstract class AbstractRsfContext implements RsfContext {
         //
         int workerThread = settings.getInteger("hasor.rsfConfig.network.workerThread", 2);
         this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
+        //
+        XmlNode[] clientOptSetArray = settings.getXmlNodeArray("hasor.rsfConfig.clientOptionSet");
+        if (clientOptSetArray != null) {
+            for (XmlNode optSet : clientOptSetArray) {
+                for (XmlNode opt : optSet.getChildren("option")) {
+                    String key = opt.getAttribute("key");
+                    String var = opt.getText();
+                    if (StringUtils.isBlank(key) == false) {
+                        this.clientOptionManager.addOption(key, var);
+                    }
+                }
+            }
+        }
+        //
+        XmlNode[] serverOptSetArray = settings.getXmlNodeArray("hasor.rsfConfig.serverOptionSet");
+        if (serverOptSetArray != null) {
+            for (XmlNode optSet : serverOptSetArray) {
+                for (XmlNode opt : optSet.getChildren("option")) {
+                    String key = opt.getAttribute("key");
+                    String var = opt.getText();
+                    if (StringUtils.isBlank(key) == false) {
+                        this.serverOptionManager.addOption(key, var);
+                    }
+                }
+            }
+        }
+        //
     }
 }

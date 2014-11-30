@@ -20,6 +20,7 @@ import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.runtime.RsfRequest;
 /**
  * RSF请求
@@ -125,8 +126,12 @@ public class RsfRequestImpl implements RsfRequest {
     private RsfResponseImpl response = null;
     /**根据{@link RsfRequest}创建对应的Response。*/
     public RsfResponseImpl buildResponse() {
-        if (this.response == null)
+        if (this.response == null) {
             this.response = new RsfResponseImpl(this);
+            RsfOptionSet optMap = this.rsfContext.getServerOption();
+            for (String optKey : optMap.getOptionKeys())
+                response.addOption(optKey, optMap.getOption(optKey));
+        }
         return this.response;
     }
 }

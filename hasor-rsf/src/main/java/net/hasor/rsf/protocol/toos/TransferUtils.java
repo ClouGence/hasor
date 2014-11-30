@@ -20,6 +20,7 @@ import net.hasor.rsf.protocol.block.RequestSocketBlock;
 import net.hasor.rsf.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.runtime.RsfOptionSet;
 /**
  * 负责{@link RequestMsg}、{@link ResponseMsg}到{@link RequestSocketBlock}、{@link ResponseSocketBlock}的类型转换。
  * @version : 2014年11月10日
@@ -140,12 +141,17 @@ public class TransferUtils {
     //
     //
     /**生成指定状态的的响应包*/
-    public static ResponseMsg buildStatus(byte version, long requestID, short status) {
-        //1.发送ACK包
+    public static ResponseMsg buildStatus(byte version, long requestID, short status, RsfOptionSet optMap) {
         ResponseMsg ack = new ResponseMsg();
         ack.setVersion(ProtocolUtils.finalVersionForResponse(version));
         ack.setRequestID(requestID);
         ack.setStatus(status);
+        //
+        if (optMap != null) {
+            for (String optKey : optMap.getOptionKeys())
+                ack.addOption(optKey, optMap.getOption(optKey));
+        }
+        //
         return ack;
     }
 }

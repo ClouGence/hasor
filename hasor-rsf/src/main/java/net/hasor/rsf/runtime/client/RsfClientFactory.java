@@ -32,6 +32,7 @@ import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
@@ -88,7 +89,11 @@ public class RsfClientFactory {
         if (future.isSuccess()) {
             NetworkConnection conn = NetworkConnection.getConnection(future.channel());
             InnerAbstractRsfClient client = this.createRsfClient(conn);
-            connClientMapping.put(conn, client);
+            RsfOptionSet optManager = this.rsfContext.getClientOption();
+            for (String optKey : optManager.getOptionKeys()) {
+                client.addOption(optKey, optManager.getOption(optKey));
+            }
+            this.connClientMapping.put(conn, client);
             return client;
         }
         throw new RsfException(ProtocolStatus.ClientError, future.cause());

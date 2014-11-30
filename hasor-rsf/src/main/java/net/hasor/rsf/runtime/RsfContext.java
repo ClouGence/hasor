@@ -38,4 +38,9 @@ public interface RsfContext {
     public byte getVersion();
     /**获取序列化管理器。*/
     public SerializeFactory getSerializeFactory();
+    //
+    /**获取配置的服务器端选项*/
+    public RsfOptionSet getServerOption();
+    /**获取配置的客户端选项*/
+    public RsfOptionSet getClientOption();
 }

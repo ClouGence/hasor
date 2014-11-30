@@ -41,14 +41,14 @@
 			-->
 			<network workerThread="8" listenThread="1"/>
 
-			<!-- 公共选项配置 -->
+			<!-- 作为服务端向客户端响应时携带的选项 -->
 			<serverOptionSet>
-				<option key="certification">user=abc;password=123</option>
-				<option key=""></option>
+				<option key="identity">Response</option>
 			</serverOptionSet>
+			
+			<!-- 作为客户端向服务端发送调用请求时携带的选项 -->
 			<clientOptionSet>
-				<option key="certification">user=abc;password=123</option>
-				<option key=""></option>
+				<option key="identity">Request</option>
 			</clientOptionSet>
 
 			<!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
