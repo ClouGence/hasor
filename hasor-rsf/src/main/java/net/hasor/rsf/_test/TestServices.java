@@ -19,7 +19,7 @@ package net.hasor.rsf._test;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServices {
+public class TestServices implements ITestServices {
     public String sayHello(String msg) {
         return msg;
     }

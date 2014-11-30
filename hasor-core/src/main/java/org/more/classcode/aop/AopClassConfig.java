@@ -35,6 +35,10 @@ public class AopClassConfig extends AbstractClassConfig {
     private List<InnerAopInterceptorDefine> aopList = null; //Aop
     //
     /**创建{@link AopClassConfig}类型对象。 */
+    public AopClassConfig() {
+        super(DefaultSuperClass);
+    }
+    /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig(Class<?> superClass) {
         super(superClass);
     }

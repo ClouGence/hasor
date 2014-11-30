@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.dao;
-import java.sql.SQLException;
-import net.hasor.db.orm.AbstractDao;
-import net.test.web.biz.user.entity.UserBean;
-/**
- * Dao层类
- * @version : 2014年8月27日
+package org.more.classcode;
+/***
+ * 
+ * @version : 2014年11月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserDao extends AbstractDao<UserBean> {
-    public void createUser(UserBean user) throws SQLException {
-        this.saveAsNew(user);
-    }
-}
+public class Object extends java.lang.Object {}

@@ -37,7 +37,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
 public class RuntimeUtils {
     private static AtomicLong requestID = new AtomicLong(1);
     //
-    /**从请求数据包中恢复{@link RsfRequest}对象。*/
+    /**根据元信息创建一个{@link RsfRequest}对象。*/
     public static RsfRequestImpl buildRequest(ServiceMetaData metaData, NetworkConnection connection, RsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
         //1.基本信息
         RsfContext rsfContext = rsfClient.getRsfContext();
@@ -69,7 +69,7 @@ public class RuntimeUtils {
             requestMsg.addOption(optKey, optVar);
         }
         //4.RsfRequest
-        return new RsfRequestImpl(parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
+        return new RsfRequestImpl(true, parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
     }
     //
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
@@ -97,7 +97,7 @@ public class RuntimeUtils {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
         //4.RsfRequest and check Forbidden
-        return new RsfRequestImpl(parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
+        return new RsfRequestImpl(false, parameterTypes, parameterObjects, metaData, requestMsg, connection, rsfContext);
     }
     /**从响应数据包中恢复{@link RsfResponse}对象。*/
     public static RsfResponse recoverResponse(ResponseMsg responseMsg, RsfRequest rsfRequest, AbstractRsfContext rsfContext) throws Throwable {

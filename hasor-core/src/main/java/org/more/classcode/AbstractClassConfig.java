@@ -15,6 +15,7 @@
  */
 package org.more.classcode;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 import org.more.asm.ClassVisitor;
 /**
  * 
@@ -23,10 +24,10 @@ import org.more.asm.ClassVisitor;
  */
 public abstract class AbstractClassConfig {
     /**默认超类java.lang.Object。*/
-    public static final Class<?> DefaultSuperClass = java.lang.Object.class;
+    public static final Class<?> DefaultSuperClass = org.more.classcode.Object.class;
     private Class<?>             superClass        = DefaultSuperClass;
-    private String               className         = null;                  //新类名称
-    private byte[]               classBytes        = null;                  //新类字节码
+    private String               className         = null;                           //新类名称
+    private byte[]               classBytes        = null;                           //新类字节码
     private MoreClassLoader      parentLoader      = new MoreClassLoader();
     //
     /**创建{@link AbstractClassConfig}类型对象。 */
@@ -44,9 +45,9 @@ public abstract class AbstractClassConfig {
         }
     }
     //
-    private static long index = 0;
+    private static AtomicLong index = new AtomicLong(0);
     protected static long index() {
-        return index++;
+        return index.getAndIncrement();
     }
     protected String initClassName() {
         return this.superClass.getName() + "$Auto$" + index();

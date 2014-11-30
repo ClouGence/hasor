@@ -20,7 +20,6 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.metadata.ServiceMetaData.Mode;
-import net.hasor.rsf.plugins.LocalPrefPlugin;
 import net.hasor.rsf.plugins.QPSPlugin;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
@@ -29,11 +28,11 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerRsfContext extends AbstractRsfContext {
-    private RsfFilter[] plugins  = new RsfFilter[] { new QPSPlugin(), new LocalPrefPlugin() };
+public class ClientRsfContext extends AbstractRsfContext {
+    private RsfFilter[] plugins  = new RsfFilter[] { new QPSPlugin() /*, new LocalPrefPlugin()*/};
     private Settings    settings = new StandardContextSettings();
     //
-    public ServerRsfContext() throws IOException, URISyntaxException {
+    public ClientRsfContext() throws IOException, URISyntaxException {
         this.settings.refresh();
         this.init();
         //
@@ -43,7 +42,7 @@ public class ServerRsfContext extends AbstractRsfContext {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {}
-                    QPSPlugin plugins = (QPSPlugin) ServerRsfContext.this.plugins[0];
+                    QPSPlugin plugins = (QPSPlugin) ClientRsfContext.this.plugins[0];
                     System.out.println("QPS         :" + plugins.getQPS());
                     System.out.println("requestCount:" + plugins.getOkCount());
                     System.out.println();

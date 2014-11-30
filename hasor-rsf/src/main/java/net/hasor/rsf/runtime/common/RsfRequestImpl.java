@@ -31,11 +31,12 @@ public class RsfRequestImpl implements RsfRequest {
     private RequestMsg        requestMsg       = null;
     private NetworkConnection connection       = null;
     private RsfContext        rsfContext       = null;
+    private boolean           local            = false;
     //
     private Class<?>[]        parameterTypes   = null;
     private Object[]          parameterObjects = null;
     //
-    public RsfRequestImpl(Class<?>[] parameterTypes, Object[] parameterObjects,//
+    public RsfRequestImpl(boolean local, Class<?>[] parameterTypes, Object[] parameterObjects,//
             ServiceMetaData metaData, RequestMsg requestMsg,//
             NetworkConnection connection, RsfContext rsfContext) throws RsfException {
         this.parameterTypes = parameterTypes;
@@ -44,6 +45,7 @@ public class RsfRequestImpl implements RsfRequest {
         this.requestMsg = requestMsg;
         this.connection = connection;
         this.rsfContext = rsfContext;
+        this.local = local;
         //check Forbidden
         if (getServiceMethod() == null) {
             throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
@@ -98,6 +100,9 @@ public class RsfRequestImpl implements RsfRequest {
         this.requestMsg.addOption(key, value);
     }
     //
+    public boolean isLocal() {
+        return this.local;
+    }
     public RsfContext getContext() {
         return this.rsfContext;
     }
@@ -117,8 +122,11 @@ public class RsfRequestImpl implements RsfRequest {
         return this.serviceMethod;
     }
     //
+    private RsfResponseImpl response = null;
     /**根据{@link RsfRequest}创建对应的Response。*/
     public RsfResponseImpl buildResponse() {
-        return new RsfResponseImpl(this);
+        if (this.response == null)
+            this.response = new RsfResponseImpl(this);
+        return this.response;
     }
 }

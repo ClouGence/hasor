@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime.server;
+package net.hasor.rsf.runtime.common;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
@@ -23,12 +23,12 @@ import net.hasor.rsf.runtime.RsfResponse;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfFilterHandler implements RsfFilterChain {
+public class RsfFilterHandler implements RsfFilterChain {
     private RsfFilter[]    rsfFilters;
     private RsfFilterChain rsfChain;
     private int            index;
     //
-    public InnerRsfFilterHandler(final RsfFilter[] rsfFilters, final RsfFilterChain rsfChain) {
+    public RsfFilterHandler(final RsfFilter[] rsfFilters, final RsfFilterChain rsfChain) {
         this.rsfFilters = (rsfFilters == null) ? new RsfFilter[0] : rsfFilters;
         this.rsfChain = rsfChain;
         this.index = -1;

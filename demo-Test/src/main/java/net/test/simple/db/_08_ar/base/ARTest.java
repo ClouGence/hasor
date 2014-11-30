@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db._08_ar;
+package net.test.simple.db._08_ar.base;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.db.ar.PageResult;
-import net.hasor.db.ar.support.DataBase;
-import net.hasor.db.ar.support.Entity;
+import net.hasor.db.orm.PageResult;
+import net.hasor.db.orm.support.DataBase;
+import net.hasor.db.orm.support.Entity;
+import net.hasor.db.orm.support.MapRecord;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
@@ -43,25 +44,26 @@ public class ARTest implements AppContextAware {
     public void ar_Test() throws Exception {
         System.out.println("--->>ar_Test<<--");
         //
+        Entity userEnt = dataBase.loadSechma("TB_USER", "userName");
         //---------------------------------------------------------
         //增：插入
-        dataBase.openEntity("TB_USER").set("userName", "").saveAsNew();
+        dataBase.saveAsNew(userEnt.set("userName", ""));
         //删：删除
-        dataBase.openEntity("TB_USER").setID("123").delete();
+        dataBase.delete(userEnt.setID("123"));
         //改：更新
-        dataBase.openEntity("TB_USER").setID("123").set("userName", "").saveOrUpdate();
+        dataBase.saveOrUpdate(userEnt.setID("123").set("userName", ""));
         //查
-        dataBase.openEntity("TB_USER").setID("123").loadData();//查询单条
+        dataBase.loadData(userEnt.setID("123"));//查询单条
         //
         //---------------------------------------------------------
         //删：条件删除
-        dataBase.openEntity("TB_USER").set("status", 2).deleteByExample();
+        dataBase.deleteByExample(userEnt.set("status", 2));
         //改：条件更新
-        dataBase.openEntity("TB_USER").set("status", 2).updateByExample(new HashMap<String, Object>());
+        dataBase.updateByExample(userEnt.set("status", 2), new HashMap<String, Object>());
         //查：条件查询
-        PageResult<Entity> listEnt = dataBase.openEntity("TB_USER").set("status", 2).listByExample();
+        PageResult<Entity> listEnt = dataBase.listByExample(userEnt.set("status", 2));
         //取总数
-        dataBase.openEntity("TB_USER").set("userName", "aac").set("password", "asdf").countByExample();
+        int count = dataBase.countByExample(userEnt.set("userName", "aac").set("password", "asdf"));
         //
         //---------------------------------------------------------
         //
@@ -72,6 +74,8 @@ public class ARTest implements AppContextAware {
         //
         //
         //
+        PageResult<MapRecord> record = dataBase.queryBySQL("select * from aaa");
+        MapRecord r = null;
         //
         // TODO Auto-generated method stub
     }

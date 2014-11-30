@@ -27,7 +27,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.executes.NameThreadFactory;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
@@ -80,7 +79,7 @@ public class RsfServer {
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                channel.attr(RSFConstants.NettyKey).set(new NetworkConnection(channel));
+                NetworkConnection.initConnection(channel);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new InnerServerHandler(RsfServer.this.rsfContext));
             }

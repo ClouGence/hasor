@@ -32,6 +32,10 @@ public class MethodClassConfig extends AbstractClassConfig {
     private Map<Class<?>, InnerMethodDelegateDefine> newDelegateMap = null; //方法委托
     //
     /**创建{@link MethodClassConfig}类型对象。 */
+    public MethodClassConfig() {
+        super(DefaultSuperClass);
+    }
+    /**创建{@link MethodClassConfig}类型对象。 */
     public MethodClassConfig(Class<?> superClass) {
         super(superClass);
     }
@@ -79,7 +83,7 @@ public class MethodClassConfig extends AbstractClassConfig {
             throw new ClassCastException("委托不是一个有效的接口类型，或者MethodDelegate类型参数为空。");
         }
         //2.测试该接口是否已经得到实现
-        if (this.getSuperClass().isAssignableFrom(appendInterface) == true) {
+        if (appendInterface.isAssignableFrom(this.getSuperClass()) == true) {
             throw new IllegalStateException("委托接口已经被实现。");
         }
         //3.检测重复,附加接口实现

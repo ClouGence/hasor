@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test._;
-import java.util.concurrent.atomic.AtomicBoolean;
+package net.hasor.rsf.runtime.client;
+import java.lang.reflect.Method;
 import net.hasor.rsf.metadata.ServiceMetaData;
+import org.more.classcode.delegate.faces.MethodDelegate;
 /**
- * 服务发布者
+ * 负责将接口的调用转发到client的同步调用方法上。
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceProvider {
-    private ServiceMetaData metaData = new ServiceMetaData();
-    private AtomicBoolean   inited   = new AtomicBoolean(false);
-    /**初始化服务*/
-    public void initService() {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
-        //
+class RemoteWrapper implements MethodDelegate {
+    private ServiceMetaData service = null;
+    private RsfClient       client  = null;
+    //
+    public RemoteWrapper(ServiceMetaData service, RsfClient client) {
+        this.service = service;
+        this.client = client;
+    }
+    public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
+        return this.client.syncInvoke(this.service, callMethod.getName(), callMethod.getParameterTypes(), params);
     }
 }

@@ -21,7 +21,7 @@ import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerPressureTest {
+public class ProtocolPressureTest {
     public void connect(String host, int port) throws Exception {
         final ServerRsfContext manager = new ServerRsfContext();
         try {
@@ -45,11 +45,11 @@ public class ServerPressureTest {
     }
     //
     public static void main(String[] args) throws Exception {
-        for (int i=1 ;i<10;i++){
-            new Thread(){
+        for (int i = 1; i < 10; i++) {
+            new Thread() {
                 public void run() {
                     try {
-                        ServerPressureTest client = new ServerPressureTest();
+                        ProtocolPressureTest client = new ProtocolPressureTest();
                         client.connect(InetAddress.getLocalHost().getHostAddress(), 8000);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -57,7 +57,6 @@ public class ServerPressureTest {
                 };
             }.start();
         }
-
     }
 }
 class ClientHandler extends ChannelInboundHandlerAdapter {

@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfRequest extends RsfHeader {
+    /**请求是否为本地发起的。*/
+    public boolean isLocal();
     /**获取要调用的目标方法。*/
     public Method getServiceMethod();
     /**获取上下文。*/

@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.RSFCodec;
@@ -74,7 +73,7 @@ public class RsfClientFactory {
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                channel.attr(RSFConstants.NettyKey).set(new NetworkConnection(channel));
+                NetworkConnection.initConnection(channel);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new InnerClientHandler(RsfClientFactory.this));
             }
@@ -87,7 +86,7 @@ public class RsfClientFactory {
         }
         future.await();
         if (future.isSuccess()) {
-            NetworkConnection conn = future.channel().attr(RSFConstants.NettyKey).get();
+            NetworkConnection conn = NetworkConnection.getConnection(future.channel());
             InnerAbstractRsfClient client = this.createRsfClient(conn);
             connClientMapping.put(conn, client);
             return client;

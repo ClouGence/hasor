@@ -20,6 +20,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,11 +33,17 @@ import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.protocol.message.RequestMsg;
+import net.hasor.rsf.runtime.RsfFilter;
+import net.hasor.rsf.runtime.RsfFilterChain;
+import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
 import net.hasor.rsf.runtime.common.NetworkConnection;
+import net.hasor.rsf.runtime.common.RsfFilterHandler;
 import net.hasor.rsf.runtime.common.RsfRequestImpl;
+import net.hasor.rsf.runtime.common.RsfResponseImpl;
 import net.hasor.rsf.runtime.common.RuntimeUtils;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
+import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.future.FutureCallback;
 /**
  * 远程RSF服务器的客户端类。
@@ -106,6 +113,28 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     public RsfFuture getRequest(long requestID) {
         return this.rsfResponse.get(requestID);
     }
+    //
+    private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
+    /**将服务包装为一个对象*/
+    public <T> T wrapper(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        Hasor.assertIsNotNull(serviceName, "serviceName is null.");
+        Hasor.assertIsNotNull(interFace, "interFace is null.");
+        if (interFace.isInterface() == false)
+            throw new UnsupportedOperationException("interFace parameter must be an interFace.");
+        //
+        ServiceMetaData service = this.getRsfContext().getService(serviceName);
+        String cacheKey = service.toString() + interFace.getName();
+        Class<?> wrapperType = this.wrapperMap.get(cacheKey);
+        //
+        if (wrapperType == null) {
+            MethodClassConfig mcc = new MethodClassConfig();
+            mcc.addDelegate(interFace, new RemoteWrapper(service, this));
+            wrapperType = mcc.toClass();
+            this.wrapperMap.put(cacheKey, wrapperType);
+        }
+        return (T) wrapperType.newInstance();
+    }
+    //
     /**同步方式调用远程服务。*/
     public Object syncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         ServiceMetaData metaData = this.getRsfContext().getService(serviceName);
@@ -233,9 +262,32 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         this.timer.newTimeout(timeTask, request.getTimeout(), TimeUnit.MILLISECONDS);
     };
     /**发送连接请求。*/
-    private RsfFuture sendRequest(final RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
+    private RsfFuture sendRequest(RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
+        final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
+        RsfRequestImpl req = (RsfRequestImpl) rsfFuture.getRequest();
+        RsfResponseImpl res = req.buildResponse();
+        //
+        try {
+            ServiceMetaData metaData = req.getMetaData();
+            RsfFilter[] rsfFilter = this.rsfContext.getRsfFilters(metaData);
+            new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
+                public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
+                    sendRequest(rsfFuture);//发送请求到远方
+                }
+            }).doFilter(req, res);
+        } catch (Throwable e) {
+            rsfFuture.failed(e);
+        }
+        //
+        if (res.isResponse()) {
+            rsfFuture.completed(res);
+        }
+        return rsfFuture;
+    }
+    /**将请求发送到远端服务器。*/
+    private void sendRequest(RsfFuture rsfFuture) {
+        //发送之前的检查
         if (this.requestCount.get() >= this.getRsfClientFactory().getMaximumRequest()) {
-            //
             SendLimitPolicy sendPolicy = this.getRsfClientFactory().getSendLimitPolicy();
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
             Hasor.logWarn(this + ": " + errorMessage);
@@ -250,15 +302,13 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         if (this.isActive() == false) {
             throw new IllegalStateException("client is closed.");
         }
-        //
-        RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
-        //
+        //RsfFilter
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
-        this.startRequest(rsfFuture);/*应用 timeout 属性*/
+        this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
         ChannelFuture future = this.getConnection().getChannel().write(rsfMessage);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
@@ -288,7 +338,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
-        return rsfFuture;
     }
     /**获取网络连接。*/
     protected abstract NetworkConnection getConnection();

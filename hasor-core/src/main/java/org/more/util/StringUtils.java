@@ -2204,7 +2204,7 @@ public class StringUtils {
         }
         int closeLen = close.length();
         int openLen = open.length();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int pos = 0;
         while (pos < strLen - closeLen) {
             int start = str.indexOf(open, pos);
@@ -2222,7 +2222,7 @@ public class StringUtils {
         if (list.isEmpty()) {
             return null;
         }
-        return (String[]) list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
     // Splitting
     //-----------------------------------------------------------------------
@@ -2482,7 +2482,7 @@ public class StringUtils {
             return StringUtils.splitWorker(str, null, max, preserveAllTokens);
         }
         int separatorLength = separator.length();
-        ArrayList substrings = new ArrayList();
+        ArrayList<String> substrings = new ArrayList<String>();
         int numberOfSubstrings = 0;
         int beg = 0;
         int end = 0;
@@ -2522,7 +2522,7 @@ public class StringUtils {
                 end = len;
             }
         }
-        return (String[]) substrings.toArray(new String[substrings.size()]);
+        return substrings.toArray(new String[substrings.size()]);
     }
     // -----------------------------------------------------------------------
     /**
@@ -2608,7 +2608,7 @@ public class StringUtils {
         if (len == 0) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
@@ -2629,7 +2629,7 @@ public class StringUtils {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return (String[]) list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
     /**
      * <p>Splits the provided text into an array, separators specified, 
@@ -2731,7 +2731,7 @@ public class StringUtils {
         if (len == 0) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int sizePlus1 = 1;
         int i = 0, start = 0;
         boolean match = false;
@@ -2801,7 +2801,7 @@ public class StringUtils {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return (String[]) list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
     /**
      * <p>Splits a String by Character type as returned by
@@ -2874,7 +2874,7 @@ public class StringUtils {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         char[] c = str.toCharArray();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int tokenStart = 0;
         int currentType = Character.getType(c[tokenStart]);
         for (int pos = tokenStart + 1; pos < c.length; pos++) {
@@ -2895,7 +2895,7 @@ public class StringUtils {
             currentType = type;
         }
         list.add(new String(c, tokenStart, c.length - tokenStart));
-        return (String[]) list.toArray(new String[list.size()]);
+        return list.toArray(new String[list.size()]);
     }
     // Joining
     //-----------------------------------------------------------------------

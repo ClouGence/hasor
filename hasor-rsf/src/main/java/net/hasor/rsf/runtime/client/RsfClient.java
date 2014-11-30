@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.client;
+import java.io.IOException;
 import java.util.concurrent.Future;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
@@ -50,6 +51,10 @@ public interface RsfClient {
     //
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID);
+    //
+    /**将服务包装为一个对象*/
+    public <T> T wrapper(String serviceName, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     //
     /**同步方式调用远程服务。*/
     public Object syncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;

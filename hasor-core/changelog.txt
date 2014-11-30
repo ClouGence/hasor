@@ -3,6 +3,8 @@
     01.修复当程序工作在特殊 ClassLoader 下例如 （Web容器中）时，MoreClassLoader类导致 Class 重复加载问题。
     02.优化，AbstractSettings 实现细节，解决在多线程下可能引发的 HashMap 死锁问题。
     03.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
+    04.AopClassConfig、MethodClassConfig、MethodClassConfig 类增加了一个无参的构造方法。
+    05.ClassUtils 增加 getSuperClassGenricType 方法以获取泛型信息。
 
 ===== Hasor-Core v0.0.9
 * 新增:

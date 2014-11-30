@@ -34,6 +34,7 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -733,7 +734,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     @Override
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
         Hasor.logDebug("Executing SQL batch update [%s].", sql);
-        final ParsedSql parsedSql = ParsedSql.getParsedSql(sql);
+        final ParsedSql parsedSql = getParsedSql(sql);
         sql = ParsedSql.buildSql(parsedSql, null);
         //
         return this.execute(sql, new PreparedStatementCallback<int[]>() {
@@ -838,6 +839,19 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
      */
     protected PreparedStatementCreator getPreparedStatementCreator(final String sql, final SqlParameterSource paramSource) {
         return new MapPreparedStatementCreator(sql, paramSource);
+    }
+    /* Map of original SQL String to ParsedSql representation */
+    private final Map<String, ParsedSql> parsedSqlCache = new HashMap<String, ParsedSql>();
+    /*Obtain a parsed representation of the given SQL statement.*/
+    protected ParsedSql getParsedSql(String originalSql) {
+        synchronized (this.parsedSqlCache) {
+            ParsedSql parsedSql = (ParsedSql) this.parsedSqlCache.get(originalSql);
+            if (parsedSql == null) {
+                parsedSql = ParsedSql.getParsedSql(originalSql);
+                this.parsedSqlCache.put(originalSql, parsedSql);
+            }
+            return parsedSql;
+        }
     }
     //
     /**处理潜在的 SQL 警告。当要求不忽略 SQL 警告时，检测到 SQL 警告抛出 SQL 异常。*/
@@ -968,13 +982,13 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link CallableStatementCreator} 的简单实现，目的是根据 SQL 语句创建 {@link CallableStatement}对象。*/
-    private static class MapPreparedStatementCreator implements PreparedStatementCreator, ParameterDisposer, JdbcTemplate.SqlProvider {
+    private class MapPreparedStatementCreator implements PreparedStatementCreator, ParameterDisposer, JdbcTemplate.SqlProvider {
         private ParsedSql          parsedSql   = null;
         private SqlParameterSource paramSource = null;
         //
         public MapPreparedStatementCreator(final String originalSql, final SqlParameterSource paramSource) {
             Hasor.assertIsNotNull(originalSql, "SQL must not be null");
-            this.parsedSql = ParsedSql.getParsedSql(originalSql);
+            this.parsedSql = getParsedSql(originalSql);
             this.paramSource = paramSource;
         }
         //
@@ -1002,11 +1016,11 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         }
     }
     /**接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作*/
-    private static class SqlParameterSourceBatchPreparedStatementSetter implements BatchPreparedStatementSetter, ParameterDisposer {
+    private class SqlParameterSourceBatchPreparedStatementSetter implements BatchPreparedStatementSetter, ParameterDisposer {
         private ParsedSql            parsedSql = null;
         private SqlParameterSource[] batchArgs = null;
         public SqlParameterSourceBatchPreparedStatementSetter(final String sql, final SqlParameterSource[] batchArgs) {
-            this.parsedSql = ParsedSql.getParsedSql(sql);
+            this.parsedSql = getParsedSql(sql);
             this.batchArgs = batchArgs;
         }
         //        public String preparedSQL(int i) throws SQLException {

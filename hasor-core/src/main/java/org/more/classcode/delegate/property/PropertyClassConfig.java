@@ -32,6 +32,10 @@ public class PropertyClassConfig extends AbstractClassConfig {
     private Map<String, InnerPropertyDelegateDefine> newPropertyMap = null; //属性委托
     //
     /**创建{@link PropertyClassConfig}类型对象。 */
+    public PropertyClassConfig() {
+        super(DefaultSuperClass);
+    }
+    /**创建{@link PropertyClassConfig}类型对象。 */
     public PropertyClassConfig(Class<?> superClass) {
         super(superClass);
     }

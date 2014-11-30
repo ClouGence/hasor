@@ -23,6 +23,7 @@ import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.common.NetworkConnection;
+import net.hasor.rsf.runtime.common.RsfFilterHandler;
 import net.hasor.rsf.runtime.common.RsfRequestImpl;
 import net.hasor.rsf.runtime.common.RsfResponseImpl;
 import net.hasor.rsf.runtime.common.RuntimeUtils;
@@ -75,7 +76,7 @@ class InnerRequestHandler implements Runnable {
         //2.执行调用
         try {
             RsfFilter[] rsfFilters = this.rsfContext.getRsfFilters(request.getMetaData());
-            new InnerRsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
+            new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
         } catch (Throwable e) {
             //500 InternalServerError
             response.sendStatus(ProtocolStatus.InternalServerError, e.getMessage());

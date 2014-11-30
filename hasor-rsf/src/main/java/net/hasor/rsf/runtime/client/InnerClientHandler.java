@@ -16,7 +16,6 @@
 package net.hasor.rsf.runtime.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 /**
@@ -35,7 +34,7 @@ class InnerClientHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ResponseMsg == false)
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
-        NetworkConnection connection = ctx.channel().attr(RSFConstants.NettyKey).get();
+        NetworkConnection connection = NetworkConnection.getConnection(ctx.channel());
         //
         InnerAbstractRsfClient rsfClient = this.rsfClientFactory.getRsfClient(connection);
         RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());

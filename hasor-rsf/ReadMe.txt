@@ -10,3 +10,4 @@ Multiplex Group Message Transmission Protocol (MGMTP)
 	
 TODO：
 	server 端应该避免同一个 requestID 在一个请求响应周期内重复请求（重放攻击）。
+	client 处理ChooseOther

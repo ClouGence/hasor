@@ -17,6 +17,7 @@ package net.hasor.rsf.metadata;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import net.hasor.core.Hasor;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 public class ServiceMetaData {
     private Class<?>            targetService  = null;
+    private Mode                mode           = null;
     private Map<String, Method> methodMap      = null;
     //Provider
     private String              serviceName    = null;     //服务名
@@ -34,7 +36,13 @@ public class ServiceMetaData {
     private int                 clientTimeout  = 6000;     //调用超时（毫秒）
     private String              serializeType  = null;     //传输序列化类型
     //
-    public ServiceMetaData(Class<?> targetService) {
+    public static enum Mode {
+        Provider, Consumer
+    }
+    //
+    //
+    public ServiceMetaData(Mode mode, Class<?> targetService) {
+        this.mode = Hasor.assertIsNotNull(mode, "mode is null.");
         this.targetService = targetService;
         this.methodMap = new HashMap<String, Method>();
     }
@@ -87,6 +95,14 @@ public class ServiceMetaData {
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
+    /**服务提供者*/
+    public boolean isProvider() {
+        return this.mode == Mode.Provider;
+    }
+    /**服务消费者*/
+    public boolean isConsumer() {
+        return this.mode == Mode.Consumer;
+    }
     public Method getServiceMethod(String methodName, Class<?>[] parameterTypes) {
         StringBuffer key = new StringBuffer(methodName);
         for (Class<?> pt : parameterTypes) {
@@ -102,5 +118,8 @@ public class ServiceMetaData {
             }
         }
         return this.methodMap.get(mKey);
+    }
+    public String toString() {
+        return String.format("Service - N=%s ,G=%s ,V=%s", this.serviceName, this.serviceGroup, this.serviceVersion);
     }
 }

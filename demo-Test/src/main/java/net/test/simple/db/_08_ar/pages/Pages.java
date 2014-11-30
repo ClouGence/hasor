@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.db._09_pages;
-import net.hasor.db.ar.Paginator;
+package net.test.simple.db._08_ar.pages;
+import net.hasor.db.orm.Paginator;
 /**
  * 
  * @version : 2014年10月30日

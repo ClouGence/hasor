@@ -19,7 +19,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.protocol.toos.TransferUtils;
@@ -45,7 +44,7 @@ class InnerServerHandler extends ChannelInboundHandlerAdapter {
         //放入业务线程准备执行
         try {
             Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
-            NetworkConnection conn = ctx.channel().attr(RSFConstants.NettyKey).get();
+            NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
             exe.execute(new InnerRequestHandler(this.rsfContext, requestMsg, conn));
             //
             ResponseMsg pack = TransferUtils.buildStatus(//
