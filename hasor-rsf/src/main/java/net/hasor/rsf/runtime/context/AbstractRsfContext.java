@@ -25,7 +25,6 @@ import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.util.StringUtils;
@@ -69,8 +68,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     public RsfOptionSet getClientOption() {
         return this.clientOptionManager;
     }
-    /**获取服务上配置有效的过滤器。*/
-    public abstract RsfFilter[] getRsfFilters(ServiceMetaData metaData);
     //
     public void init() {
         Settings settings = this.getSettings();
@@ -112,5 +109,8 @@ public abstract class AbstractRsfContext implements RsfContext {
             }
         }
         //
+    }
+    public ServiceMetaData getService(String serviceName) {
+        return this.getRegisterCenter().getService(serviceName);
     }
 }

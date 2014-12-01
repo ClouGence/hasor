@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins;
+package net.hasor.rsf.plugins.local;
 import java.lang.reflect.Method;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfFilter;
@@ -31,7 +31,7 @@ public class LocalPrefPlugin implements RsfFilter {
             ServiceMetaData metaData = request.getMetaData();
             if (metaData.isProvider() == true) {
                 //
-                Object bean = request.getContext().getBean(metaData);
+                Object bean = request.getContext().getRegisterCenter().getBean(metaData);
                 String rMethod = request.getMethod();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();

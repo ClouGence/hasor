@@ -15,9 +15,9 @@
  */
 package net.hasor.rsf.runtime.common;
 import io.netty.channel.Channel;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
-import net.hasor.rsf.general.RSFConstants;
 /**
  * 
  * @version : 2014年11月14日
@@ -71,10 +71,11 @@ public class NetworkConnection {
         return this.socketChanne;
     }
     //
+    public static final AttributeKey<NetworkConnection> NettyKey = new AttributeKey<NetworkConnection>("NetworkConnection");
     public static NetworkConnection getConnection(Channel channel) {
-        return channel.attr(RSFConstants.NettyKey).get();
+        return channel.attr(NettyKey).get();
     }
     public static void initConnection(Channel channel) {
-        channel.attr(RSFConstants.NettyKey).set(new NetworkConnection(channel));
+        channel.attr(NettyKey).set(new NetworkConnection(channel));
     }
 }

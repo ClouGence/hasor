@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.metadata.ServiceMetaData.Mode;
-import net.hasor.rsf.plugins.QPSPlugin;
+import net.hasor.rsf.plugins.qps.QPSPlugin;
 import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
@@ -52,30 +50,5 @@ public class ClientRsfContext extends AbstractRsfContext {
     }
     public Settings getSettings() {
         return this.settings;
-    }
-    public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
-        return this.plugins;
-    }
-    //
-    private ServiceMetaData data = null;
-    public ServiceMetaData getService(String serviceName) {
-        if (data == null) {
-            data = new ServiceMetaData(Mode.Consumer, TestServices.class);
-            data.setServiceName("net.hasor.rsf._test.TestServices");
-            data.setServiceVersion("1.0.0");
-            data.setServiceGroup("default");
-            data.setSerializeType("Hessian");
-        }
-        return data;
-    }
-    private TestServices test = null;
-    public Object getBean(ServiceMetaData metaData) {
-        if (test == null) {
-            this.test = new TestServices();
-        }
-        return this.test;
-    }
-    public Class<?> getBeanType(ServiceMetaData metaData) {
-        return TestServices.class;
     }
 }

@@ -5,6 +5,7 @@
     03.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
     04.AopClassConfig、MethodClassConfig、MethodClassConfig 类增加了一个无参的构造方法。
     05.ClassUtils 增加 getSuperClassGenricType 方法以获取泛型信息。
+    06.新增一个 ApiBinderWrap类。
 
 ===== Hasor-Core v0.0.9
 * 新增:

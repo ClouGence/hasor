@@ -13,33 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime;
-import net.hasor.core.Settings;
+package net.hasor.rsf.register;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.register.RegisterCenter;
-import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.runtime.RsfFilter;
 /**
- * RSF 环境。
- * @version : 2014年11月18日
+ * 注册中心
+ * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
-    /**获取注册中心。*/
-    public RegisterCenter getRegisterCenter();
+public interface RegisterCenter {
+    /**获取RsfBinder*/
+    public RsfBinder getRsfBinder();
+    //
+    /**获取元信息所描述的服务对象。*/
+    public Object getBean(ServiceMetaData metaData);
     /**根据服务名获取服务描述。*/
     public ServiceMetaData getService(String serviceName);
-    //
-    /**获取默认超时时间。*/
-    public int getDefaultTimeout();
-    /**获取配置*/
-    public Settings getSettings();
-    /**获取当发起请求的时候所使用的RSF协议版本。*/
-    public byte getVersion();
-    /**获取序列化管理器。*/
-    public SerializeFactory getSerializeFactory();
-    //
-    /**获取配置的服务器端选项*/
-    public RsfOptionSet getServerOption();
-    /**获取配置的客户端选项*/
-    public RsfOptionSet getClientOption();
+    /**获取服务上配置有效的过滤器。*/
+    public RsfFilter[] getRsfFilters(ServiceMetaData metaData);
+    /**获取已经注册的所有服务名称。*/
+    public String[] getServiceNames();
 }

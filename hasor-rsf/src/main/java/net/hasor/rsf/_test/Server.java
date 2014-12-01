@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test;
-import net.hasor.rsf.runtime.context.AbstractRsfContext;
+import net.hasor.rsf.register.RsfBinder;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.server.RsfServer;
 /**
  * 
@@ -23,8 +24,11 @@ import net.hasor.rsf.runtime.server.RsfServer;
  */
 public class Server {
     public static void main(String[] args) throws Exception {
-        AbstractRsfContext manager = new ServerRsfContext();
-        RsfServer server = new RsfServer(manager);
+        RsfContext rsfContext = new ServerRsfContext();
+        RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
+        rsfBinder.bindService(ITestServices.class, new TestServices()).register();
+        //TestServices
+        RsfServer server = new RsfServer(rsfContext);
         //
         server.start();
     }

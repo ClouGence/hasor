@@ -77,7 +77,7 @@ class InnerRequestHandler implements Runnable {
         }
         //2.执行调用
         try {
-            RsfFilter[] rsfFilters = this.rsfContext.getRsfFilters(request.getMetaData());
+            RsfFilter[] rsfFilters = this.rsfContext.getRegisterCenter().getRsfFilters(request.getMetaData());
             new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
         } catch (Throwable e) {
             //500 InternalServerError

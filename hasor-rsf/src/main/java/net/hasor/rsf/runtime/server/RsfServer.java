@@ -28,6 +28,7 @@ import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.net.netty.RSFCodec;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
 /**
@@ -40,8 +41,8 @@ public class RsfServer {
     private Channel            serverChannel = null;
     private EventLoopGroup     bossGroup     = null;
     //
-    public RsfServer(AbstractRsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+    public RsfServer(RsfContext rsfContext) {
+        this.rsfContext = (AbstractRsfContext) rsfContext;
     }
     //
     private String getBindAddress() throws UnknownHostException {

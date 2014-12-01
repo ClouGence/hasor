@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.rsf.general.RsfException;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
@@ -57,8 +58,7 @@ public class SerializeFactory {
             SerializeCoder coder = (SerializeCoder) Class.forName(serializeCoder).newInstance();
             factory.registerSerializeCoder(serializeType, coder);
         } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
+            throw new RsfException((short) 0, e);
         }
     }
 }

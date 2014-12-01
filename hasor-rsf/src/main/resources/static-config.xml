@@ -6,6 +6,15 @@
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- Hasor-RSF 专用 -->
 		<rsfConfig address="local" port="8000">
+
+			<!--
+				用于设置默认情况下RSF服务的一些基本信息。
+					version = 在未指定注册服务的版本信息时使用下面这个配置。
+					group   = 在未指定注册服务的分组信息时使用下面这个配置。
+					timeout = 在未指定注册服务的超时时间情况下使用下面这个配置。
+			-->
+			<defaultServiceValue version="1.0.0" group="RSF" timeout="6000"/>
+
 			<!--
 				用于更新服务列表的配置服务器
 					如果配置 loadType = auto，表示从现有网络上自动发现。
@@ -15,7 +24,7 @@
 
 			<!--
 				通用配置
-					defaultTimeout	默认超时时间
+					defaultTimeout	客户端请求超时时间
 					maximumRequest	最大并发请求数
 					sendLimitPolicy	并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
 			-->
@@ -45,7 +54,7 @@
 			<serverOptionSet>
 				<option key="identity">Response</option>
 			</serverOptionSet>
-			
+
 			<!-- 作为客户端向服务端发送调用请求时携带的选项 -->
 			<clientOptionSet>
 				<option key="identity">Request</option>

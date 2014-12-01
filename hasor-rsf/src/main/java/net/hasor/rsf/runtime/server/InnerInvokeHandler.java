@@ -33,7 +33,7 @@ class InnerInvokeHandler implements RsfFilterChain {
         if (response.isResponse() == true)
             return;
         ServiceMetaData metaData = request.getMetaData();
-        Object targetObj = request.getContext().getBean(metaData);
+        Object targetObj = request.getContext().getRegisterCenter().getBean(metaData);
         //
         if (targetObj == null) {
             response.sendStatus(ProtocolStatus.Forbidden, "failed to get service.");

@@ -273,7 +273,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         //
         try {
             ServiceMetaData metaData = req.getMetaData();
-            RsfFilter[] rsfFilter = this.rsfContext.getRsfFilters(metaData);
+            RsfFilter[] rsfFilter = this.rsfContext.getRegisterCenter().getRsfFilters(metaData);
             new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     sendRequest(rsfFuture);//发送请求到远方
