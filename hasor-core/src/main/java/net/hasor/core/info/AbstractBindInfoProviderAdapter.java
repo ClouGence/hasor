@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import java.util.HashMap;
-import java.util.Map;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
@@ -26,17 +24,16 @@ import org.more.util.StringUtils;
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuilder<T>, BindInfo<T> {
+public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T> {
     //1.基本属性
-    private String              bindID           = null;
-    private String              bindName         = null;
-    private Class<T>            bindType         = null;
-    private Class<? extends T>  sourceType       = null;
-    private boolean             singleton        = false;
+    private String             bindID           = null;
+    private String             bindName         = null;
+    private Class<T>           bindType         = null;
+    private Class<? extends T> sourceType       = null;
+    private boolean            singleton        = false;
     //2.系统属性
-    private Provider<T>         customerProvider = null;
-    private Provider<Scope>     scopeProvider    = null;
-    private Map<String, Object> metaData         = new HashMap<String, Object>();
+    private Provider<T>        customerProvider = null;
+    private Provider<Scope>    scopeProvider    = null;
     //
     public String getBindID() {
         return this.bindID;
@@ -70,12 +67,6 @@ public abstract class AbstractBindInfoProviderAdapter<T> implements BindInfoBuil
     }
     public boolean isSingleton() {
         return this.singleton;
-    }
-    public void setMetaData(final String key, final Object value) {
-        this.metaData.put(key, value);
-    }
-    public Object getMetaData(final String key) {
-        return this.metaData.get(key);
     }
     public void setCustomerProvider(final Provider<T> customerProvider) {
         this.customerProvider = customerProvider;

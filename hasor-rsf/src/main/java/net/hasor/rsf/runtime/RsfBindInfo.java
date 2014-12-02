@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.runtime;
+import net.hasor.core.BindInfo;
+import net.hasor.rsf.metadata.ServiceMetaData;
 /**
- * 负责 Hasor-RSF 传输协议实现（无关网络层实现）。
+ * Rsf绑定信息。
+ * @version : 2014年11月12日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.protocol;
+public interface RsfBindInfo<T> extends BindInfo<T> {
+    /**获取元信息。*/
+    public ServiceMetaData getMetaData();
+}

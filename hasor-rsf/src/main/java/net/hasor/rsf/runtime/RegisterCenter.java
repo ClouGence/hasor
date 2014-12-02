@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.register;
+package net.hasor.rsf.runtime;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfFilter;
 /**
  * 注册中心
  * @version : 2014年11月30日

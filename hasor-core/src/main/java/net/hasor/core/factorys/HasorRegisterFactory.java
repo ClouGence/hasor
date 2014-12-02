@@ -22,6 +22,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.classcode.MoreClassLoader;
 import org.more.classcode.aop.AopClassConfig;
@@ -38,32 +39,32 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
         return super.createObject(newType);
     }
     public <T> T getInstance(BindInfo<T> bindInfo) {
-        //1.可能存在的 CustomerProvider。 
-        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            AbstractBindInfoProviderAdapter<T> adapter = (AbstractBindInfoProviderAdapter<T>) bindInfo;
+        if (bindInfo instanceof CustomerProvider) {
+            //1.可能存在的 CustomerProvider。 
+            CustomerProvider<T> adapter = (CustomerProvider<T>) bindInfo;
             Provider<T> provider = adapter.getCustomerProvider();
             if (provider != null) {
                 return provider.get();
             }
         }
-        //2.非 HasorBindInfoProviderAdapter 类型。
-        if (bindInfo instanceof HasorBindInfoProviderAdapter == false) {
-            return this.getDefaultInstance(bindInfo.getBindType());
-        }
-        //3.Build 对象。
-        HasorBindInfoProviderAdapter<T> infoAdapter = (HasorBindInfoProviderAdapter<T>) bindInfo;
-        try {
-            AopClassConfig cc = infoAdapter.buildEngine(this.aopList);
-            Class<?> newType = null;
-            if (cc.hasChange() == true) {
-                newType = cc.toClass();
-            } else {
-                newType = cc.getSuperClass();
+        //2.HasorBindInfoProviderAdapter 类型。
+        if (bindInfo instanceof HasorBindInfoProviderAdapter == true) {
+            //3.Build 对象。
+            HasorBindInfoProviderAdapter<T> infoAdapter = (HasorBindInfoProviderAdapter<T>) bindInfo;
+            try {
+                AopClassConfig cc = infoAdapter.buildEngine(this.aopList);
+                Class<?> newType = null;
+                if (cc.hasChange() == true) {
+                    newType = cc.toClass();
+                } else {
+                    newType = cc.getSuperClass();
+                }
+                return (T) createObject((Class<T>) newType, infoAdapter);
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
             }
-            return (T) createObject((Class<T>) newType, infoAdapter);
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
         }
+        return this.getDefaultInstance(bindInfo.getBindType());
     }
     //
     //

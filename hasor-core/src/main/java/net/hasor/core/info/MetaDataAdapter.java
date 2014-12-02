@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.core.info;
+import java.util.HashMap;
+import java.util.Map;
 /**
- * 负责 Hasor-RSF 传输协议实现（无关网络层实现）。
+ * 提供metaData。
+ * @version : 2014年7月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.protocol;
+public class MetaDataAdapter {
+    private Map<String, Object> metaData = new HashMap<String, Object>();
+    public void setMetaData(final String key, final Object value) {
+        this.metaData.put(key, value);
+    }
+    public Object getMetaData(final String key) {
+        return this.metaData.get(key);
+    }
+}

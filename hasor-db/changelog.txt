@@ -1,7 +1,13 @@
-﻿===== Hasor-DB v0.0.2
+﻿===== Hasor-DB v0.0.3
+* 新增:
+    01.新增 orm 工具包。
+* 改进:
+    01.JdbcOperations.execute方法修改为 boolean 返回值。
+    02.解析带参的SQL增加对 ParsedSql 的缓存。
+
+===== Hasor-DB v0.0.2
 * 新增:
     01.新增 SimpleDBModule 工具类，便于为一个数据源配置 事务管理器。
-    02.新增 orm 工具包。
 
 ===== Hasor-DB v0.0.1
 * 改进:

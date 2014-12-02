@@ -1,5 +1,9 @@
 package net.hasor.rsf._test;
 import java.net.InetAddress;
+import net.hasor.rsf.plugins.local.LocalPrefPlugin;
+import net.hasor.rsf.plugins.qps.QPSPlugin;
+import net.hasor.rsf.runtime.RsfBinder;
+import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.client.RsfClient;
 import net.hasor.rsf.runtime.client.RsfClientFactory;
 /**
@@ -9,12 +13,17 @@ import net.hasor.rsf.runtime.client.RsfClientFactory;
  */
 public class Client {
     public static void main(String[] args) throws Throwable {
+        RsfContext rsfContext = new ServerRsfContext();
+        RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
+        rsfBinder.bindFilter(new QPSPlugin());
+        rsfBinder.bindFilter(new LocalPrefPlugin());
+        rsfBinder.bindService(ITestServices.class).register();
+        //
         //初始化RsfClientFactory
-        RsfClientFactory factory = new RsfClientFactory(new ClientRsfContext());
-        //连接Server
+        RsfClientFactory factory = new RsfClientFactory(rsfContext);
         RsfClient client = factory.connect(InetAddress.getLocalHost().getHostAddress(), 8000);
         //获取服务
-        final ITestServices bean = client.wrapper("net.hasor.rsf._test.TestServices", ITestServices.class);
+        final ITestServices bean = client.getRemote("net.hasor.rsf._test.TestServices");
         //
         for (int i = 0; i < 200; i++) {
             new Thread() {

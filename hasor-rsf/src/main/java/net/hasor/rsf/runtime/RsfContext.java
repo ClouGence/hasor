@@ -16,7 +16,6 @@
 package net.hasor.rsf.runtime;
 import net.hasor.core.Settings;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.register.RegisterCenter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * RSF 环境。

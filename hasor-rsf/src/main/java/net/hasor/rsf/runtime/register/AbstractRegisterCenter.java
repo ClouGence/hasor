@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.register;
+package net.hasor.rsf.runtime.register;
 import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.rsf.metadata.ServiceMetaData;
+import net.hasor.rsf.runtime.RegisterCenter;
+import net.hasor.rsf.runtime.RsfBinder;
 import net.hasor.rsf.runtime.RsfFilter;
 /**
  * 注册中心
@@ -25,18 +27,31 @@ import net.hasor.rsf.runtime.RsfFilter;
  */
 public abstract class AbstractRegisterCenter implements RegisterCenter {
     public RsfBinder getRsfBinder() {
-        return new InnerRsfBinderBuilder() {
-            public AbstractRegisterCenter getRegisterCenter() {
-                return AbstractRegisterCenter.this;
-            }
-        };
+        return new RsfBinderBuilder(this);
     }
-    /**发布服务*/
-    public abstract void publishService(ServiceMetaData serviceMetaData, Provider<?> provider, Provider<RsfFilter>[] rsfFilter);
-    /**回收已经发布的服务*/
-    public abstract void recoverService(ServiceMetaData serviceMetaData);
-    /**添加全局Filter*/
-    public abstract void addRsfFilter(Provider<RsfFilter> provider);
     /**获取RSF配置。*/
     public abstract Settings getSettings();
+    /**回收已经发布的服务*/
+    public abstract void recoverService(ServiceMetaData serviceMetaData);
+    /**发布服务*/
+    public abstract void publishService(ServiceMetaData serviceMetaData, Provider<?> provider, Provider<RsfFilter>[] rsfFilter);
+    /**添加全局Filter*/
+    public abstract void addRsfFilter(Provider<RsfFilter> provider);
+    //
+    public ServiceMetaData getService(String serviceName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public String[] getServiceNames() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public Object getBean(ServiceMetaData metaData) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

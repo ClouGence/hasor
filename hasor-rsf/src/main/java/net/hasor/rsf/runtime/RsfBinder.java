@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.register;
+package net.hasor.rsf.runtime;
 import net.hasor.core.Provider;
-import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.RsfFilter;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -25,32 +22,32 @@ import net.hasor.rsf.runtime.RsfFilter;
  */
 public interface RsfBinder {
     /**添加全局的RsfFilter。*/
-    public void addRsfFilter(RsfFilter instance);
+    public void bindFilter(RsfFilter instance);
     /**添加全局的RsfFilter。*/
-    public void addRsfFilter(Provider<RsfFilter> provider);
+    public void bindFilter(Provider<RsfFilter> provider);
     /** */
-    public <T> LinkedBuilder<T> bindService(Class<T> type);
+    public <T> LinkedBuilder<T> rsfService(Class<T> type);
     /**将后面的对象绑定前一个类型上，可以通过AppContext获取该绑定对象。
-     * @see #bindService(Class) */
-    public <T> NamedBuilder<T> bindService(Class<T> type, T instance);
+     * @see #rsfService(Class) */
+    public <T> NamedBuilder<T> rsfService(Class<T> type, T instance);
     /**将后面的对象绑定前一个类型上，可以通过AppContext获取该绑定对象。
-     * @see #bindService(Class) */
-    public <T> NamedBuilder<T> bindService(Class<T> type, Class<? extends T> implementation);
+     * @see #rsfService(Class) */
+    public <T> NamedBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
     /**将后面的对象绑定前一个类型上，可以通过AppContext获取该绑定对象。
-     * @see #bindService(Class) */
-    public <T> NamedBuilder<T> bindService(Class<T> type, Provider<T> provider);
+     * @see #rsfService(Class) */
+    public <T> NamedBuilder<T> rsfService(Class<T> type, Provider<T> provider);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
      * @see #rsfService(Class) */
-    public <T> ConfigurationBuilder<T> bindService(String withName, Class<T> type);
+    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindService(String, Class) */
-    public <T> ConfigurationBuilder<T> bindService(String withName, Class<T> type, T instance);
+     * @see #rsfService(String, Class) */
+    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, T instance);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindService(String, Class) */
-    public <T> ConfigurationBuilder<T> bindService(String withName, Class<T> type, Class<? extends T> implementation);
+     * @see #rsfService(String, Class) */
+    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Class<? extends T> implementation);
     /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #bindService(String, Class) */
-    public <T> ConfigurationBuilder<T> bindService(String withName, Class<T> type, Provider<T> provider);
+     * @see #rsfService(String, Class) */
+    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Provider<T> provider);
     //
     /**处理类型和实现的绑定。*/
     public interface LinkedBuilder<T> extends NamedBuilder<T> {
@@ -61,7 +58,7 @@ public interface RsfBinder {
         /**为绑定设置一个 {@link Provider}。*/
         public NamedBuilder<T> toProvider(Provider<T> provider);
     }
-    /**给绑定起个名字。*/
+    /**设置服务名。*/
     public interface NamedBuilder<T> extends ConfigurationBuilder<T> {
         /**设置服务名称。*/
         public ConfigurationBuilder<T> nameWith(String name);
@@ -69,22 +66,22 @@ public interface RsfBinder {
     /**设置参数。*/
     public interface ConfigurationBuilder<T> extends MetaDataBuilder<T> {
         /**设置分组。*/
-        public ConfigurationBuilder<T> groupWith(String group);
+        public ConfigurationBuilder<T> group(String group);
         /**设置版本。*/
-        public ConfigurationBuilder<T> versionWith(String version);
+        public ConfigurationBuilder<T> version(String version);
         /**设置超时时间*/
         public ConfigurationBuilder<T> timeout(int clientTimeout);
         /**设置序列化方式*/
         public ConfigurationBuilder<T> serialize(String serializeType);
         /**添加RsfFilter。*/
-        public ConfigurationBuilder<T> addRsfFilter(RsfFilter instance);
+        public ConfigurationBuilder<T> bindFilter(RsfFilter instance);
         /**添加RsfFilter。*/
-        public ConfigurationBuilder<T> addRsfFilter(Provider<RsfFilter> provider);
+        public ConfigurationBuilder<T> bindFilter(Provider<RsfFilter> provider);
     }
     /**绑定元信息*/
     public interface MetaDataBuilder<T> {
-        /**转换为 {@link ServiceMetaData} 对象。*/
-        public ServiceMetaData getMetaData();
+        /**转换为 {@link RsfBindInfo} 对象。*/
+        public RsfBindInfo<T> toBindInfo();
         /**将服务注册到{@link RsfContext}上。*/
         public void register();
         /**解除注册。*/

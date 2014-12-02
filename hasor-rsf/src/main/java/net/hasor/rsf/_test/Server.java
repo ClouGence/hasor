@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf._test;
-import net.hasor.rsf.register.RsfBinder;
+import net.hasor.rsf.plugins.local.LocalPrefPlugin;
+import net.hasor.rsf.plugins.qps.QPSPlugin;
+import net.hasor.rsf.runtime.RsfBinder;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.server.RsfServer;
 /**
@@ -26,6 +28,8 @@ public class Server {
     public static void main(String[] args) throws Exception {
         RsfContext rsfContext = new ServerRsfContext();
         RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
+        rsfBinder.bindFilter(new QPSPlugin());
+        rsfBinder.bindFilter(new LocalPrefPlugin());
         rsfBinder.bindService(ITestServices.class, new TestServices()).register();
         //TestServices
         RsfServer server = new RsfServer(rsfContext);

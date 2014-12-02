@@ -46,12 +46,12 @@ public class RsfClientFactory {
     private final AbstractRsfContext                             rsfContext;
     private final Map<NetworkConnection, InnerAbstractRsfClient> connClientMapping;
     //
-    public RsfClientFactory(AbstractRsfContext rsfContext) {
+    public RsfClientFactory(RsfContext rsfContext) {
         Settings settings = rsfContext.getSettings();
         this.maximumRequest = settings.getInteger("hasor.rsfConfig.client.maximumRequest", 200);
         this.sendLimitPolicy = settings.getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
         //
-        this.rsfContext = rsfContext;
+        this.rsfContext = (AbstractRsfContext) rsfContext;
         this.connClientMapping = new ConcurrentHashMap<NetworkConnection, InnerAbstractRsfClient>();
     }
     //
