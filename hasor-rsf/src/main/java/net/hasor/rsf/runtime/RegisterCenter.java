@@ -27,7 +27,7 @@ public interface RegisterCenter {
     /**获取元信息所描述的服务对象。*/
     public Object getBean(ServiceMetaData metaData);
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String serviceName);
+    public ServiceMetaData getService(String name, String group, String version);
     /**获取服务上配置有效的过滤器。*/
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData);
     /**获取已经注册的所有服务名称。*/

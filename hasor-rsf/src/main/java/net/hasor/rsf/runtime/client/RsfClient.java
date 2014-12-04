@@ -58,21 +58,19 @@ public interface RsfClient {
     /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String serviceName, Class<T> interFace) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**获取远程服务对象*/
+    public <T> T getRemote(String serviceName, String group, String version) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(String serviceName, String group, String version, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     //
-    /**同步方式调用远程服务。*/
-    public Object syncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
     /**同步方式调用远程服务。*/
     public Object syncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
     /**异步方式调用远程服务。*/
-    public RsfFuture asyncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
-    /**异步方式调用远程服务。*/
     public RsfFuture asyncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
     /**以回调方式调用远程服务。*/
-    public void doCallBackInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
-    /**以回调方式调用远程服务。*/
     public void doCallBackInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
-    /**以回调方式发送RSF调用请求。*/
-    public void doCallBackRequest(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
     /**以回调方式发送RSF调用请求。*/
     public void doCallBackRequest(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
 }

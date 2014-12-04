@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime;
-import net.hasor.core.Settings;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -26,19 +25,9 @@ public interface RsfContext {
     /**获取注册中心。*/
     public RegisterCenter getRegisterCenter();
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String serviceName);
-    //
-    /**获取默认超时时间。*/
-    public int getDefaultTimeout();
+    public ServiceMetaData getService(String serviceName, String group, String version);
     /**获取配置*/
-    public Settings getSettings();
-    /**获取当发起请求的时候所使用的RSF协议版本。*/
-    public byte getVersion();
+    public RsfSettings getSettings();
     /**获取序列化管理器。*/
     public SerializeFactory getSerializeFactory();
-    //
-    /**获取配置的服务器端选项*/
-    public RsfOptionSet getServerOption();
-    /**获取配置的客户端选项*/
-    public RsfOptionSet getClientOption();
 }

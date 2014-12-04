@@ -29,6 +29,4 @@ public interface RSFConstants {
     public static final byte    RSF_Response    = RSF | 0x00;
     //
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    //毫秒
-    public static final int     ClientTimeout   = 6000;
 }

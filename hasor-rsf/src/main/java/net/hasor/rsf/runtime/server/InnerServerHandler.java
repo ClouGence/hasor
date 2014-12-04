@@ -51,14 +51,14 @@ class InnerServerHandler extends ChannelInboundHandlerAdapter {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.Accepted,//响应状态
-                    this.rsfContext.getServerOption());//选项参数
+                    this.rsfContext.getSettings().getServerOption());//选项参数
             ctx.pipeline().writeAndFlush(pack);
         } catch (RejectedExecutionException e) {
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther,//服务器资源紧张
-                    this.rsfContext.getServerOption());//选项参数
+                    this.rsfContext.getSettings().getServerOption());//选项参数
             ctx.pipeline().writeAndFlush(pack);
         }
     }

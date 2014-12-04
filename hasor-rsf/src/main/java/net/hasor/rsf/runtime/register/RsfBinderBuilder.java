@@ -16,15 +16,15 @@
 package net.hasor.rsf.runtime.register;
 import java.util.ArrayList;
 import java.util.List;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfBindInfo;
+import net.hasor.rsf.metadata.ServiceMetaData.Mode;
 import net.hasor.rsf.runtime.RsfBinder;
 import net.hasor.rsf.runtime.RsfFilter;
+import net.hasor.rsf.runtime.RsfSettings;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -57,65 +57,56 @@ public class RsfBinderBuilder implements RsfBinder {
     public <T> NamedBuilder<T> rsfService(Class<T> type, Provider<T> provider) {
         return this.rsfService(type).toProvider(provider);
     }
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type) {
-        return this.rsfService(type).nameWith(withName);
-    }
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, T instance) {
-        return this.rsfService(type).toInstance(instance).nameWith(withName);
-    }
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Class<? extends T> implementation) {
-        return this.rsfService(type).to(implementation).nameWith(withName);
-    }
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Provider<T> provider) {
-        return this.rsfService(type).toProvider(provider).nameWith(withName);
-    }
     //
     public static class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private ServiceMetaData           serviceMetaData = null;
-        private List<Provider<RsfFilter>> rsfFilterList   = null;
-        private Provider<T>               rsfProvider     = null;
-        private AbstractRegisterCenter    registerCenter  = null;
+        protected String                    serviceName    = null;   //服务名
+        protected String                    serviceGroup   = "RSF";  //服务分组
+        protected String                    serviceVersion = "1.0.0"; //服务版本
+        protected int                       clientTimeout  = 6000;   //调用超时（毫秒）
+        protected String                    serializeType  = null;   //传输序列化类型
+        //
+        protected Class<T>                  serviceType    = null;   //服务接口类型
+        protected List<Provider<RsfFilter>> rsfFilterList  = null;
+        protected Provider<T>               rsfProvider    = null;
+        protected AbstractRegisterCenter    registerCenter = null;
+        //
         //
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRegisterCenter registerCenter) {
             this.registerCenter = registerCenter;
-            Settings settings = registerCenter.getSettings();
+            RsfSettings settings = registerCenter.getSettings();
             this.rsfFilterList = new ArrayList<Provider<RsfFilter>>();
-            //
-            this.serviceMetaData = new ServiceMetaData(null, serviceType);
-            this.serviceMetaData.setServiceName(serviceType.getName());
-            this.serviceMetaData.setServiceGroup(settings.getString("hasor.rsfConfig.defaultServiceValue.group", "RSF"));
-            this.serviceMetaData.setServiceVersion(settings.getString("hasor.rsfConfig.defaultServiceValue.version", "1.0.0"));
-            this.serviceMetaData.setClientTimeout(settings.getInteger("hasor.rsfConfig.defaultServiceValue.timeout", RSFConstants.ClientTimeout));
-            this.serviceMetaData.setSerializeType(settings.getString("hasor.rsfConfig.serializeType.default", "Hessian"));
+            this.serviceName = serviceType.getName();
+            this.serviceGroup = settings.getDefaultGroup();
+            this.serviceVersion = settings.getDefaultVersion();
+            this.clientTimeout = settings.getDefaultTimeout();
+            this.serializeType = settings.getDefaultSerializeType();
             //this.serviceMetaData.setServiceDesc(serviceDesc);
-            this.to(serviceType);
         }
-        public ConfigurationBuilder<T> nameWith(String name) {
-            this.serviceMetaData.setServiceName(name);
-            return this;
-        }
-        public ConfigurationBuilder<T> group(String group) {
-            this.serviceMetaData.setServiceGroup(group);
-            return this;
-        }
-        public ConfigurationBuilder<T> version(String version) {
-            this.serviceMetaData.setServiceVersion(version);
+        public ConfigurationBuilder<T> ngv(String name, String group, String version) {
+            Hasor.assertIsNotNull(name, "name is null.");
+            Hasor.assertIsNotNull(group, "group is null.");
+            Hasor.assertIsNotNull(version, "version is null.");
+            this.serviceName = name;
+            this.serviceGroup = group;
+            this.serviceVersion = version;
             return this;
         }
         public ConfigurationBuilder<T> timeout(int clientTimeout) {
-            this.serviceMetaData.setClientTimeout(clientTimeout);
+            this.clientTimeout = clientTimeout;
             return this;
         }
         public ConfigurationBuilder<T> serialize(String serializeType) {
-            this.serviceMetaData.setSerializeType(serializeType);
+            Hasor.assertIsNotNull(serializeType, "serializeType is null.");
+            this.serializeType = serializeType;
             return this;
         }
         public ConfigurationBuilder<T> bindFilter(RsfFilter instance) {
             return this.bindFilter(new InstanceProvider<RsfFilter>(instance));
         }
         public ConfigurationBuilder<T> bindFilter(Provider<RsfFilter> provider) {
-            if (provider != null)
+            if (provider != null) {
                 this.rsfFilterList.add(provider);
+            }
             return this;
         }
         public NamedBuilder<T> to(final Class<? extends T> implementation) {
@@ -136,16 +127,20 @@ public class RsfBinderBuilder implements RsfBinder {
             this.rsfProvider = provider;
             return this;
         }
-        public void register() {
+        public RegisterReference<T> register() {
+            Mode mode = (this.rsfProvider == null) ? Mode.Consumer : Mode.Provider;
+            ServiceMetaData serviceMetaData = new ServiceMetaData(mode, this.serviceType);
+            serviceMetaData.setServiceName(this.serviceName);
+            serviceMetaData.setServiceGroup(this.serviceGroup);
+            serviceMetaData.setServiceVersion(this.serviceVersion);
+            serviceMetaData.setClientTimeout(this.clientTimeout);
+            serviceMetaData.setSerializeType(this.serializeType);
+            //
             Provider<RsfFilter>[] rsfFilterArray = this.rsfFilterList.toArray(new Provider[this.rsfFilterList.size()]);
-            this.registerCenter.publishService(this.serviceMetaData, this.rsfProvider, rsfFilterArray);
-        }
-        public void unRegister() {
-            this.registerCenter.recoverService(this.serviceMetaData);
-        }
-        public RsfBindInfo<T> toBindInfo() {
-            // TODO Auto-generated method stub
-            return null;
+            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider);
+            //
+            this.registerCenter.publishService(define);
+            return define;
         }
     }
 }

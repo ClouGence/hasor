@@ -17,7 +17,7 @@ public class Client {
         RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
         rsfBinder.bindFilter(new QPSPlugin());
         rsfBinder.bindFilter(new LocalPrefPlugin());
-        rsfBinder.bindService(ITestServices.class).register();
+        rsfBinder.rsfService(ITestServices.class).register();
         //
         //初始化RsfClientFactory
         RsfClientFactory factory = new RsfClientFactory(rsfContext);

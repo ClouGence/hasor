@@ -37,6 +37,7 @@ import net.hasor.rsf.runtime.RsfFilter;
 import net.hasor.rsf.runtime.RsfFilterChain;
 import net.hasor.rsf.runtime.RsfRequest;
 import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.runtime.RsfSettings;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.common.RsfFilterHandler;
 import net.hasor.rsf.runtime.common.RsfRequestImpl;
@@ -117,17 +118,27 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
     /**获取远程服务对象*/
     public <T> T getRemote(String serviceName) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        ServiceMetaData service = this.getRsfContext().getService(serviceName);
+        RsfSettings rsfSettings = this.getRsfContext().getSettings();
+        return this.getRemote(serviceName, rsfSettings.getDefaultGroup(), rsfSettings.getDefaultVersion());
+    }
+    /**获取远程服务对象*/
+    public <T> T getRemote(String serviceName, String group, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        ServiceMetaData service = this.getRsfContext().getService(serviceName, group, version);
         return (T) wrapper(serviceName, service.getServiceType());
     }
     /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfSettings rsfSettings = this.getRsfContext().getSettings();
+        return this.wrapper(serviceName, rsfSettings.getDefaultGroup(), rsfSettings.getDefaultVersion(), interFace);
+    }
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(String serviceName, String group, String version, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
         Hasor.assertIsNotNull(serviceName, "serviceName is null.");
         Hasor.assertIsNotNull(interFace, "interFace is null.");
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         //
-        ServiceMetaData service = this.getRsfContext().getService(serviceName);
+        ServiceMetaData service = this.getRsfContext().getService(serviceName, group, version);
         String cacheKey = service.toString() + interFace.getName();
         Class<?> wrapperType = this.wrapperMap.get(cacheKey);
         //
@@ -141,11 +152,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     //
     /**同步方式调用远程服务。*/
-    public Object syncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
-        ServiceMetaData metaData = this.getRsfContext().getService(serviceName);
-        return this.syncInvoke(metaData, methodName, parameterTypes, parameterObjects);
-    }
-    /**同步方式调用远程服务。*/
     public Object syncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         //1.准备Request
         int timeout = validateTimeout(metaData.getClientTimeout());
@@ -158,22 +164,12 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         return response.getResponseData();
     }
     /**异步方式调用远程服务。*/
-    public RsfFuture asyncInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
-        ServiceMetaData metaData = this.getRsfContext().getService(serviceName);
-        return this.asyncInvoke(metaData, methodName, parameterTypes, parameterObjects);
-    }
-    /**异步方式调用远程服务。*/
     public RsfFuture asyncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         //1.准备Request
         RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
                 methodName, parameterTypes, parameterObjects);
         //2.发起Request
         return this.sendRequest(request, null);
-    }
-    /**以回调方式调用远程服务。*/
-    public void doCallBackInvoke(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener) {
-        ServiceMetaData metaData = this.getRsfContext().getService(serviceName);
-        this.doCallBackInvoke(metaData, methodName, parameterTypes, parameterObjects, listener);
     }
     /**以回调方式调用远程服务。*/
     public void doCallBackInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
@@ -188,11 +184,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                 listener.cancelled();
             }
         });
-    }
-    /**以回调方式调用远程服务。*/
-    public void doCallBackRequest(String serviceName, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener) {
-        ServiceMetaData metaData = this.getRsfContext().getService(serviceName);
-        this.doCallBackRequest(metaData, methodName, parameterTypes, parameterObjects, listener);
     }
     /**以回调方式调用远程服务。*/
     public void doCallBackRequest(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
@@ -212,7 +203,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     //
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
-            timeout = this.getRsfContext().getDefaultTimeout();
+            timeout = this.getRsfContext().getSettings().getDefaultTimeout();
         return timeout;
     }
     private RsfFuture removeRsfFuture(long requestID) {
@@ -291,8 +282,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     /**将请求发送到远端服务器。*/
     private void sendRequest(RsfFuture rsfFuture) {
         //发送之前的检查
-        if (this.requestCount.get() >= this.getRsfClientFactory().getMaximumRequest()) {
-            SendLimitPolicy sendPolicy = this.getRsfClientFactory().getSendLimitPolicy();
+        RsfSettings rsfSettings = this.getRsfContext().getSettings();
+        if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
+            SendLimitPolicy sendPolicy = rsfSettings.getSendLimitPolicy();
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
             Hasor.logWarn(this + ": " + errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {

@@ -27,12 +27,10 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClientRsfContext extends AbstractRsfContext {
-    private RsfFilter[] plugins  = new RsfFilter[] { new QPSPlugin() /*, new LocalPrefPlugin()*/};
-    private Settings    settings = new StandardContextSettings();
+    private RsfFilter[] plugins = new RsfFilter[] { new QPSPlugin() /*, new LocalPrefPlugin()*/};
     //
     public ClientRsfContext() throws IOException, URISyntaxException {
-        this.settings.refresh();
-        this.init();
+        super(createSettings());
         //
         new Thread(new Runnable() {
             public void run() {
@@ -48,7 +46,9 @@ public class ClientRsfContext extends AbstractRsfContext {
             }
         }).start();
     }
-    public Settings getSettings() {
-        return this.settings;
+    private static Settings createSettings() throws IOException, URISyntaxException {
+        Settings settings = new StandardContextSettings();
+        settings.refresh();
+        return settings;
     }
 }

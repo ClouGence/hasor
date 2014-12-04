@@ -17,9 +17,9 @@ package net.hasor.rsf.serialize;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.rsf.general.RsfException;
+import net.hasor.rsf.runtime.RsfSettings;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
@@ -38,7 +38,7 @@ public class SerializeFactory {
     }
     //
     //
-    public static SerializeFactory createFactory(Settings settings) {
+    public static SerializeFactory createFactory(RsfSettings settings) {
         SerializeFactory factory = new SerializeFactory();
         XmlNode[] atNode = settings.getXmlNodeArray("hasor.rsfConfig.serializeType");
         //

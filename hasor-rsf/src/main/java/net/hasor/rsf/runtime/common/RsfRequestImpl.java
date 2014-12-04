@@ -128,7 +128,7 @@ public class RsfRequestImpl implements RsfRequest {
     public RsfResponseImpl buildResponse() {
         if (this.response == null) {
             this.response = new RsfResponseImpl(this);
-            RsfOptionSet optMap = this.rsfContext.getServerOption();
+            RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
             for (String optKey : optMap.getOptionKeys())
                 response.addOption(optKey, optMap.getOption(optKey));
         }

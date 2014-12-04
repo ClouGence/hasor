@@ -14,42 +14,88 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.register;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Provider;
-import net.hasor.core.Settings;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RegisterCenter;
+import net.hasor.rsf.runtime.RsfBindInfo;
 import net.hasor.rsf.runtime.RsfBinder;
 import net.hasor.rsf.runtime.RsfFilter;
+import net.hasor.rsf.runtime.RsfSettings;
+import org.more.RepeateException;
 /**
  * 注册中心
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRegisterCenter implements RegisterCenter {
+    /* Name -> Group -> Version*/
+    private final Map<String, Map<String, Map<String, RsfBindInfo<?>>>> rsfServiceMap;
+    //
+    public AbstractRegisterCenter() {
+        this.rsfServiceMap = new ConcurrentHashMap<String, Map<String, Map<String, RsfBindInfo<?>>>>();
+    }
+    //
     public RsfBinder getRsfBinder() {
         return new RsfBinderBuilder(this);
     }
     /**获取RSF配置。*/
-    public abstract Settings getSettings();
+    public abstract RsfSettings getSettings();
     /**回收已经发布的服务*/
-    public abstract void recoverService(ServiceMetaData serviceMetaData);
+    final void recoverService(RsfBindInfo<?> rsfInfo) {
+        ServiceMetaData smd = rsfInfo.getMetaData();//
+        //
+        Map<String, Map<String, RsfBindInfo<?>>> groupMap = this.rsfServiceMap.get(smd.getServiceName());
+        if (groupMap != null) {
+            Map<String, RsfBindInfo<?>> versionMap = groupMap.get(smd.getServiceVersion());
+            if (versionMap != null) {
+                versionMap.remove(smd.getServiceVersion());
+            }
+        }
+    };
     /**发布服务*/
-    public abstract void publishService(ServiceMetaData serviceMetaData, Provider<?> provider, Provider<RsfFilter>[] rsfFilter);
+    final void publishService(RsfBindInfo<?> rsfInfo) {
+        ServiceMetaData smd = rsfInfo.getMetaData();
+        //name
+        Map<String, Map<String, RsfBindInfo<?>>> groupMap = this.rsfServiceMap.get(smd.getServiceName());
+        if (groupMap == null) {
+            groupMap = new ConcurrentHashMap<String, Map<String, RsfBindInfo<?>>>();
+            this.rsfServiceMap.put(smd.getServiceName(), groupMap);
+        }
+        //group
+        Map<String, RsfBindInfo<?>> versionMap = groupMap.get(smd.getServiceGroup());
+        if (versionMap == null) {
+            versionMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
+            groupMap.put(smd.getServiceGroup(), versionMap);
+        }
+        //version
+        String version = smd.getServiceVersion();
+        if (versionMap.containsKey(version) == true) {
+            throw new RepeateException("Repeate:" + smd);
+        }
+        //
+        versionMap.put(version, rsfInfo);
+    };
     /**添加全局Filter*/
     public abstract void addRsfFilter(Provider<RsfFilter> provider);
-    //
-    public ServiceMetaData getService(String serviceName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /**获取服务上配置有效的过滤器。*/
     public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
         // TODO Auto-generated method stub
         return null;
     }
-    public String[] getServiceNames() {
+    /**根据服务名获取服务描述。*/
+    public ServiceMetaData getService(String serviceName) {
         // TODO Auto-generated method stub
         return null;
     }
+    /**获取已经注册的所有服务名称。*/
+    public String[] getServiceNames() {
+        String[] sname = new String[this.rsfServiceMap.size()];
+        this.rsfServiceMap.keySet().toArray(sname);
+        return sname;
+    }
+    /**获取元信息所描述的服务对象。*/
     public Object getBean(ServiceMetaData metaData) {
         // TODO Auto-generated method stub
         return null;

@@ -36,18 +36,6 @@ public interface RsfBinder {
     /**将后面的对象绑定前一个类型上，可以通过AppContext获取该绑定对象。
      * @see #rsfService(Class) */
     public <T> NamedBuilder<T> rsfService(Class<T> type, Provider<T> provider);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #rsfService(Class) */
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #rsfService(String, Class) */
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, T instance);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #rsfService(String, Class) */
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Class<? extends T> implementation);
-    /**为绑定的对象指定一个名称进行绑定，相同名称的类型绑定只能绑定一次。
-     * @see #rsfService(String, Class) */
-    public <T> ConfigurationBuilder<T> rsfService(String withName, Class<T> type, Provider<T> provider);
     //
     /**处理类型和实现的绑定。*/
     public interface LinkedBuilder<T> extends NamedBuilder<T> {
@@ -60,15 +48,11 @@ public interface RsfBinder {
     }
     /**设置服务名。*/
     public interface NamedBuilder<T> extends ConfigurationBuilder<T> {
-        /**设置服务名称。*/
-        public ConfigurationBuilder<T> nameWith(String name);
+        /**设置分组。*/
+        public ConfigurationBuilder<T> ngv(String name, String group, String version);
     }
     /**设置参数。*/
-    public interface ConfigurationBuilder<T> extends MetaDataBuilder<T> {
-        /**设置分组。*/
-        public ConfigurationBuilder<T> group(String group);
-        /**设置版本。*/
-        public ConfigurationBuilder<T> version(String version);
+    public interface ConfigurationBuilder<T> extends RegisterBuilder<T> {
         /**设置超时时间*/
         public ConfigurationBuilder<T> timeout(int clientTimeout);
         /**设置序列化方式*/
@@ -79,11 +63,12 @@ public interface RsfBinder {
         public ConfigurationBuilder<T> bindFilter(Provider<RsfFilter> provider);
     }
     /**绑定元信息*/
-    public interface MetaDataBuilder<T> {
-        /**转换为 {@link RsfBindInfo} 对象。*/
-        public RsfBindInfo<T> toBindInfo();
+    public interface RegisterBuilder<T> {
         /**将服务注册到{@link RsfContext}上。*/
-        public void register();
+        public RegisterReference<T> register();
+    }
+    /**可以用于解除注册的接口。*/
+    public interface RegisterReference<T> extends RsfBindInfo<T> {
         /**解除注册。*/
         public void unRegister();
     }

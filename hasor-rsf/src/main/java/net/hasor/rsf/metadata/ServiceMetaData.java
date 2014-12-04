@@ -27,12 +27,11 @@ public class ServiceMetaData {
     private Class<?>            serviceType    = null;     //服务类型
     private Mode                mode           = null;
     private Map<String, Method> methodMap      = null;
-    //Provider
+    //
     private String              serviceName    = null;     //服务名
     private String              serviceGroup   = "default"; //服务分组
     private String              serviceVersion = "1.0.0";  //服务版本
     private String              serviceDesc    = "";       //服务描述
-    //Consumer
     private int                 clientTimeout  = 6000;     //调用超时（毫秒）
     private String              serializeType  = null;     //传输序列化类型
     //

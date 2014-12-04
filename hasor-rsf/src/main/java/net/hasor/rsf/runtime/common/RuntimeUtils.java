@@ -42,7 +42,7 @@ public class RuntimeUtils {
         //1.基本信息
         RsfContext rsfContext = rsfClient.getRsfContext();
         RequestMsg requestMsg = new RequestMsg();
-        requestMsg.setVersion(rsfContext.getVersion());
+        requestMsg.setVersion(rsfContext.getSettings().getVersion());
         requestMsg.setRequestID(requestID.getAndIncrement());
         requestMsg.setServiceName(metaData.getServiceName());//远程服务名
         requestMsg.setServiceGroup(metaData.getServiceGroup());//远程服务分组
@@ -75,7 +75,8 @@ public class RuntimeUtils {
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
     public static RsfRequestImpl recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
         //1.获取MetaData
-        ServiceMetaData metaData = rsfContext.getRegisterCenter().getService(requestMsg.getServiceName());
+        ServiceMetaData metaData = rsfContext.getService(//
+                requestMsg.getServiceName(), requestMsg.getServiceGroup(), requestMsg.getServiceVersion());
         Object[] parameterObjects = null;//
         Class<?>[] parameterTypes = null;//
         //

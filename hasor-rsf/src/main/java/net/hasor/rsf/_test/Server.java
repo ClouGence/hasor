@@ -30,7 +30,7 @@ public class Server {
         RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
         rsfBinder.bindFilter(new QPSPlugin());
         rsfBinder.bindFilter(new LocalPrefPlugin());
-        rsfBinder.bindService(ITestServices.class, new TestServices()).register();
+        rsfBinder.rsfService(ITestServices.class, new TestServices()).register();
         //TestServices
         RsfServer server = new RsfServer(rsfContext);
         //

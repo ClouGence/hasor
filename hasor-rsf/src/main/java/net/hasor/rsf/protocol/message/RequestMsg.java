@@ -33,10 +33,10 @@ public class RequestMsg extends BaseMsg {
     private String       serviceVersion = "";
     private String       targetMethod   = "";
     private String       serializeType  = "";
-    private int          clientTimeout  = RSFConstants.ClientTimeout;
+    private int          clientTimeout  = 0;
     private List<String> paramTypes     = new ArrayList<String>(10); //参数列表
     private List<byte[]> paramDatas     = new ArrayList<byte[]>(10); //参数值映射
-    private long         receiveTime    = 0;                         //收到消息的时间
+    private long         receiveTime    = 0;                        //收到消息的时间
     //
     //
     /**设置协议版本。*/

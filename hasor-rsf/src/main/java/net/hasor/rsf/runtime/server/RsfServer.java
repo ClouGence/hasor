@@ -29,8 +29,10 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.RsfSettings;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
+import org.more.util.StringUtils;
 /**
  * 负责维持与远程RSF服务器连接的客户端类。
  * @version : 2014年9月12日
@@ -45,19 +47,20 @@ public class RsfServer {
         this.rsfContext = (AbstractRsfContext) rsfContext;
     }
     //
-    private String getBindAddress() throws UnknownHostException {
-        return this.rsfContext.getSettings().getString("hasor.rsfConfig.address", InetAddress.getLocalHost().getHostAddress());
+    private RsfSettings getRsfSettings() {
+        return this.rsfContext.getSettings();
     }
-    private int getBindPort() {
-        return this.rsfContext.getSettings().getInteger("hasor.rsfConfig.port", 8000);
+    private String finalBindAddress() throws UnknownHostException {
+        String bindAddress = getRsfSettings().getBindAddress();
+        return StringUtils.equalsIgnoreCase("local", bindAddress) ? InetAddress.getLocalHost().getHostAddress() : bindAddress;
     }
     /**连接远程服务（具体的地址）*/
     public void start() throws UnknownHostException {
-        this.start(this.getBindAddress(), this.getBindPort());
+        this.start(this.finalBindAddress(), getRsfSettings().getBindPort());
     }
     /**连接远程服务（具体的地址）*/
     public void start(int port) throws UnknownHostException {
-        this.start(this.getBindAddress(), port);
+        this.start(this.finalBindAddress(), port);
     }
     /**连接远程服务（具体的地址）*/
     public void start(String localHost, int port) throws UnknownHostException {
@@ -72,8 +75,7 @@ public class RsfServer {
     /**连接远程服务（具体的地址）*/
     public void start(InetAddress localAddress, int port) {
         //
-        int listenThread = this.rsfContext.getSettings().getInteger("hasor.rsfConfig.network.listenThread", 1);
-        this.bossGroup = new NioEventLoopGroup(listenThread, new NameThreadFactory("RSF-Listen-%s"));
+        this.bossGroup = new NioEventLoopGroup(getRsfSettings().getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(this.bossGroup, this.rsfContext.getLoopGroup());
         boot.channel(NioServerSocketChannel.class);

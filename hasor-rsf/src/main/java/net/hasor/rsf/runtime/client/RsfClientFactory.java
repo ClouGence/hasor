@@ -26,10 +26,8 @@ import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
-import net.hasor.core.Settings;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
-import net.hasor.rsf.general.SendLimitPolicy;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfOptionSet;
@@ -41,16 +39,10 @@ import net.hasor.rsf.runtime.context.AbstractRsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private final int                                            maximumRequest;
-    private final SendLimitPolicy                                sendLimitPolicy;
     private final AbstractRsfContext                             rsfContext;
     private final Map<NetworkConnection, InnerAbstractRsfClient> connClientMapping;
     //
     public RsfClientFactory(RsfContext rsfContext) {
-        Settings settings = rsfContext.getSettings();
-        this.maximumRequest = settings.getInteger("hasor.rsfConfig.client.maximumRequest", 200);
-        this.sendLimitPolicy = settings.getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
-        //
         this.rsfContext = (AbstractRsfContext) rsfContext;
         this.connClientMapping = new ConcurrentHashMap<NetworkConnection, InnerAbstractRsfClient>();
     }
@@ -89,7 +81,7 @@ public class RsfClientFactory {
         if (future.isSuccess()) {
             NetworkConnection conn = NetworkConnection.getConnection(future.channel());
             InnerAbstractRsfClient client = this.createRsfClient(conn);
-            RsfOptionSet optManager = this.rsfContext.getClientOption();
+            RsfOptionSet optManager = this.rsfContext.getSettings().getClientOption();
             for (String optKey : optManager.getOptionKeys()) {
                 client.addOption(optKey, optManager.getOption(optKey));
             }
@@ -102,14 +94,6 @@ public class RsfClientFactory {
     /**获取{@link AbstractRsfContext}对象。*/
     public RsfContext getRsfContext() {
         return this.rsfContext;
-    }
-    /**获取每个客户端连接可以发起的最大连接请求数量。*/
-    public int getMaximumRequest() {
-        return this.maximumRequest;
-    }
-    /**获取当客户端达到了最大连接请求数的时所做出的策略。*/
-    public SendLimitPolicy getSendLimitPolicy() {
-        return this.sendLimitPolicy;
     }
     //
     /**获取NetworkConnection 所属的 RsfClient*/

@@ -64,7 +64,7 @@ class InnerRequestHandler implements Runnable {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     e.getStatus(),//响应状态
-                    this.rsfContext.getServerOption());//选项参数
+                    this.rsfContext.getSettings().getServerOption());//选项参数
             this.connection.getChannel().writeAndFlush(pack);
             return null;
         }
@@ -112,7 +112,7 @@ class InnerRequestHandler implements Runnable {
     }
     private int validateTimeout(int timeout, ServiceMetaData serviceMetaData) {
         if (timeout <= 0)
-            timeout = this.rsfContext.getDefaultTimeout();
+            timeout = this.rsfContext.getSettings().getDefaultTimeout();
         if (timeout > serviceMetaData.getClientTimeout())
             timeout = serviceMetaData.getClientTimeout();
         return timeout;
