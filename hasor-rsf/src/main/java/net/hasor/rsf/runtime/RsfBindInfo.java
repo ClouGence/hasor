@@ -22,6 +22,17 @@ import net.hasor.rsf.metadata.ServiceMetaData;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBindInfo<T> extends BindInfo<T> {
+    /**唯一标识。*/
+    public String getBindID();
+    /**服务名称。*/
+    public String getBindName();
+    /**服务分组。*/
+    public String getBindGroup();
+    /**服务版本。*/
+    public String getBindVersion();
+    /**注册的服务类型。*/
+    public Class<T> getBindType();
+    //
     /**获取元信息。*/
-    public ServiceMetaData getMetaData();
+    public ServiceMetaData<T> getMetaData();
 }

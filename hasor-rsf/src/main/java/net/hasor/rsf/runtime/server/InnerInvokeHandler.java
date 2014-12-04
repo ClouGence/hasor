@@ -32,7 +32,7 @@ class InnerInvokeHandler implements RsfFilterChain {
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         if (response.isResponse() == true)
             return;
-        ServiceMetaData metaData = request.getMetaData();
+        ServiceMetaData<?> metaData = request.getMetaData();
         Object targetObj = request.getContext().getRegisterCenter().getBean(metaData);
         //
         if (targetObj == null) {

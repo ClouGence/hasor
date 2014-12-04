@@ -25,7 +25,7 @@ public interface RsfContext {
     /**获取注册中心。*/
     public RegisterCenter getRegisterCenter();
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String serviceName, String group, String version);
+    public <T> ServiceMetaData<T> getService(String serviceName, String group, String version);
     /**获取配置*/
     public RsfSettings getSettings();
     /**获取序列化管理器。*/

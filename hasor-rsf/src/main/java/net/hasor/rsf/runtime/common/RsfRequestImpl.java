@@ -28,17 +28,17 @@ import net.hasor.rsf.runtime.RsfRequest;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRequestImpl implements RsfRequest {
-    private ServiceMetaData   metaData         = null;
-    private RequestMsg        requestMsg       = null;
-    private NetworkConnection connection       = null;
-    private RsfContext        rsfContext       = null;
-    private boolean           local            = false;
+    private ServiceMetaData<?> metaData         = null;
+    private RequestMsg         requestMsg       = null;
+    private NetworkConnection  connection       = null;
+    private RsfContext         rsfContext       = null;
+    private boolean            local            = false;
     //
-    private Class<?>[]        parameterTypes   = null;
-    private Object[]          parameterObjects = null;
+    private Class<?>[]         parameterTypes   = null;
+    private Object[]           parameterObjects = null;
     //
     public RsfRequestImpl(boolean local, Class<?>[] parameterTypes, Object[] parameterObjects,//
-            ServiceMetaData metaData, RequestMsg requestMsg,//
+            ServiceMetaData<?> metaData, RequestMsg requestMsg,//
             NetworkConnection connection, RsfContext rsfContext) throws RsfException {
         this.parameterTypes = parameterTypes;
         this.parameterObjects = parameterObjects;
@@ -107,7 +107,7 @@ public class RsfRequestImpl implements RsfRequest {
     public RsfContext getContext() {
         return this.rsfContext;
     }
-    public ServiceMetaData getMetaData() {
+    public ServiceMetaData<?> getMetaData() {
         return this.metaData;
     }
     public Class<?>[] getParameterTypes() {

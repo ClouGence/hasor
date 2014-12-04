@@ -110,7 +110,7 @@ class InnerRequestHandler implements Runnable {
         }
         this.connection.getChannel().writeAndFlush(responseMsg);
     }
-    private int validateTimeout(int timeout, ServiceMetaData serviceMetaData) {
+    private int validateTimeout(int timeout, ServiceMetaData<?> serviceMetaData) {
         if (timeout <= 0)
             timeout = this.rsfContext.getSettings().getDefaultTimeout();
         if (timeout > serviceMetaData.getClientTimeout())

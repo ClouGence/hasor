@@ -22,7 +22,7 @@ import net.hasor.rsf.metadata.ServiceMetaData;
  */
 public interface RsfHeader {
     /**获取元信息*/
-    public ServiceMetaData getMetaData();
+    public ServiceMetaData<?> getMetaData();
     /**获取协议版本。*/
     public byte getProtocol();
     /**请求ID。*/

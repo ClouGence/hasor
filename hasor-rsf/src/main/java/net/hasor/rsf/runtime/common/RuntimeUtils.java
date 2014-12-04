@@ -38,7 +38,7 @@ public class RuntimeUtils {
     private static AtomicLong requestID = new AtomicLong(1);
     //
     /**根据元信息创建一个{@link RsfRequest}对象。*/
-    public static RsfRequestImpl buildRequest(ServiceMetaData metaData, NetworkConnection connection, RsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
+    public static RsfRequestImpl buildRequest(ServiceMetaData<?> metaData, NetworkConnection connection, RsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
         //1.基本信息
         RsfContext rsfContext = rsfClient.getRsfContext();
         RequestMsg requestMsg = new RequestMsg();
@@ -75,7 +75,7 @@ public class RuntimeUtils {
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
     public static RsfRequestImpl recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
         //1.获取MetaData
-        ServiceMetaData metaData = rsfContext.getService(//
+        ServiceMetaData<?> metaData = rsfContext.getService(//
                 requestMsg.getServiceName(), requestMsg.getServiceGroup(), requestMsg.getServiceVersion());
         Object[] parameterObjects = null;//
         Class<?>[] parameterTypes = null;//
@@ -102,7 +102,7 @@ public class RuntimeUtils {
     }
     /**从响应数据包中恢复{@link RsfResponse}对象。*/
     public static RsfResponse recoverResponse(ResponseMsg responseMsg, RsfRequest rsfRequest, AbstractRsfContext rsfContext) throws Throwable {
-        ServiceMetaData metaData = rsfRequest.getMetaData();
+        ServiceMetaData<?> metaData = rsfRequest.getMetaData();
         Class<?> returnType = rsfRequest.getServiceMethod().getReturnType();
         Object returnObject = responseMsg.getReturnData(rsfContext.getSerializeFactory());
         return new RsfResponseImpl(metaData, responseMsg, returnObject, returnType);

@@ -25,11 +25,11 @@ public interface RegisterCenter {
     public RsfBinder getRsfBinder();
     //
     /**获取元信息所描述的服务对象。*/
-    public Object getBean(ServiceMetaData metaData);
+    public <T> T getBean(ServiceMetaData<T> metaData);
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String name, String group, String version);
+    public <T> ServiceMetaData<T> getService(String name, String group, String version);
     /**获取服务上配置有效的过滤器。*/
-    public RsfFilter[] getRsfFilters(ServiceMetaData metaData);
+    public <T> RsfFilter[] getRsfFilters(ServiceMetaData<T> metaData);
     /**获取已经注册的所有服务名称。*/
     public String[] getServiceNames();
 }

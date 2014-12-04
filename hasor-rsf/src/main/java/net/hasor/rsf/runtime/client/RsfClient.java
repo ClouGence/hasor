@@ -66,11 +66,11 @@ public interface RsfClient {
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     //
     /**同步方式调用远程服务。*/
-    public Object syncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
+    public Object syncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
     /**异步方式调用远程服务。*/
-    public RsfFuture asyncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
+    public RsfFuture asyncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
     /**以回调方式调用远程服务。*/
-    public void doCallBackInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
+    public void doCallBackInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
     /**以回调方式发送RSF调用请求。*/
-    public void doCallBackRequest(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
+    public void doCallBackRequest(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
 }

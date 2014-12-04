@@ -44,7 +44,7 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
     public abstract RsfSettings getSettings();
     /**回收已经发布的服务*/
     final void recoverService(RsfBindInfo<?> rsfInfo) {
-        ServiceMetaData smd = rsfInfo.getMetaData();//
+        ServiceMetaData<?> smd = rsfInfo.getMetaData();//
         //
         Map<String, Map<String, RsfBindInfo<?>>> groupMap = this.rsfServiceMap.get(smd.getServiceName());
         if (groupMap != null) {
@@ -56,23 +56,22 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
     };
     /**发布服务*/
     final void publishService(RsfBindInfo<?> rsfInfo) {
-        ServiceMetaData smd = rsfInfo.getMetaData();
         //name
-        Map<String, Map<String, RsfBindInfo<?>>> groupMap = this.rsfServiceMap.get(smd.getServiceName());
+        Map<String, Map<String, RsfBindInfo<?>>> groupMap = this.rsfServiceMap.get(rsfInfo.getBindName());
         if (groupMap == null) {
             groupMap = new ConcurrentHashMap<String, Map<String, RsfBindInfo<?>>>();
-            this.rsfServiceMap.put(smd.getServiceName(), groupMap);
+            this.rsfServiceMap.put(rsfInfo.getBindName(), groupMap);
         }
         //group
-        Map<String, RsfBindInfo<?>> versionMap = groupMap.get(smd.getServiceGroup());
+        Map<String, RsfBindInfo<?>> versionMap = groupMap.get(rsfInfo.getBindGroup());
         if (versionMap == null) {
             versionMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
-            groupMap.put(smd.getServiceGroup(), versionMap);
+            groupMap.put(rsfInfo.getBindGroup(), versionMap);
         }
         //version
-        String version = smd.getServiceVersion();
+        String version = rsfInfo.getBindVersion();
         if (versionMap.containsKey(version) == true) {
-            throw new RepeateException("Repeate:" + smd);
+            throw new RepeateException("Repeate:" + rsfInfo.getMetaData());
         }
         //
         versionMap.put(version, rsfInfo);
@@ -80,12 +79,12 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
     /**添加全局Filter*/
     public abstract void addRsfFilter(Provider<RsfFilter> provider);
     /**获取服务上配置有效的过滤器。*/
-    public RsfFilter[] getRsfFilters(ServiceMetaData metaData) {
+    public <T> RsfFilter[] getRsfFilters(ServiceMetaData<T> metaData) {
         // TODO Auto-generated method stub
         return null;
     }
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String serviceName) {
+    public <T> ServiceMetaData<T> getService(String serviceName) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -96,7 +95,7 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
         return sname;
     }
     /**获取元信息所描述的服务对象。*/
-    public Object getBean(ServiceMetaData metaData) {
+    public <T> T getBean(ServiceMetaData<T> metaData) {
         // TODO Auto-generated method stub
         return null;
     }

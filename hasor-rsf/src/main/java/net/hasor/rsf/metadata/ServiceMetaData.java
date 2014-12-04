@@ -23,8 +23,8 @@ import net.hasor.core.Hasor;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceMetaData {
-    private Class<?>            serviceType    = null;     //服务类型
+public class ServiceMetaData<T> {
+    private Class<T>            serviceType    = null;     //服务类型
     private Mode                mode           = null;
     private Map<String, Method> methodMap      = null;
     //
@@ -40,7 +40,7 @@ public class ServiceMetaData {
     }
     //
     //
-    public ServiceMetaData(Mode mode, Class<?> serviceType) {
+    public ServiceMetaData(Mode mode, Class<T> serviceType) {
         this.mode = Hasor.assertIsNotNull(mode, "mode is null.");
         this.serviceType = serviceType;
         this.methodMap = new ConcurrentHashMap<String, Method>();
@@ -119,7 +119,7 @@ public class ServiceMetaData {
         return this.methodMap.get(mKey);
     }
     /**服务类型*/
-    public Class<?> getServiceType() {
+    public Class<T> getServiceType() {
         return this.serviceType;
     }
     public String toString() {

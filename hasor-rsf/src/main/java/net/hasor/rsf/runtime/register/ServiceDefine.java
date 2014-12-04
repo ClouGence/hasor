@@ -27,33 +27,39 @@ import net.hasor.rsf.runtime.RsfFilter;
  * @author 赵永春(zyc@hasor.net)
  */
 class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, CustomerProvider<T>, RegisterReference<T> {
-    private ServiceMetaData        serviceMetaData;
+    private ServiceMetaData<T>     serviceMetaData;
     private AbstractRegisterCenter registerCenter;
     private Provider<RsfFilter>[]  rsfFilterArray;
     private Provider<T>            rsfProvider;
     //
-    public ServiceDefine(ServiceMetaData serviceMetaData, AbstractRegisterCenter registerCenter, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
+    public ServiceDefine(ServiceMetaData<T> serviceMetaData, AbstractRegisterCenter registerCenter, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
         this.serviceMetaData = serviceMetaData;
         this.registerCenter = registerCenter;
         this.rsfFilterArray = rsfFilterArray;
         this.rsfProvider = rsfProvider;
     }
+    //
     public String getBindID() {
         // TODO Auto-generated method stub
         return null;
-    }s
+    }
     public String getBindName() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.serviceMetaData.getServiceName();
+    }
+    public String getBindGroup() {
+        return this.serviceMetaData.getServiceGroup();
+    }
+    public String getBindVersion() {
+        return this.serviceMetaData.getServiceVersion();
     }
     public Class<T> getBindType() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.serviceMetaData.getServiceType();
     }
+    //
     public Provider<T> getCustomerProvider() {
         return this.rsfProvider;
     }
-    public ServiceMetaData getMetaData() {
+    public ServiceMetaData<T> getMetaData() {
         return this.serviceMetaData;
     }
     public void unRegister() {

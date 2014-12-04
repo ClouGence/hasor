@@ -23,10 +23,10 @@ import org.more.classcode.delegate.faces.MethodDelegate;
  * @author 赵永春(zyc@hasor.net)
  */
 class RemoteWrapper implements MethodDelegate {
-    private ServiceMetaData service = null;
-    private RsfClient       client  = null;
+    private ServiceMetaData<?> service = null;
+    private RsfClient          client  = null;
     //
-    public RemoteWrapper(ServiceMetaData service, RsfClient client) {
+    public RemoteWrapper(ServiceMetaData<?> service, RsfClient client) {
         this.service = service;
         this.client = client;
     }

@@ -72,7 +72,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         //
     };
     /**根据服务名获取服务描述。*/
-    public ServiceMetaData getService(String serviceName, String group, String version) {
+    public <T> ServiceMetaData<T> getService(String serviceName, String group, String version) {
         return this.getRegisterCenter().getService(serviceName, group, version);
     }
 }

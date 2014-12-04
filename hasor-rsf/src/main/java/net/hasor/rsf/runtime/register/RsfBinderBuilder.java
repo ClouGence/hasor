@@ -129,7 +129,7 @@ public class RsfBinderBuilder implements RsfBinder {
         }
         public RegisterReference<T> register() {
             Mode mode = (this.rsfProvider == null) ? Mode.Consumer : Mode.Provider;
-            ServiceMetaData serviceMetaData = new ServiceMetaData(mode, this.serviceType);
+            ServiceMetaData<T> serviceMetaData = new ServiceMetaData<T>(mode, this.serviceType);
             serviceMetaData.setServiceName(this.serviceName);
             serviceMetaData.setServiceGroup(this.serviceGroup);
             serviceMetaData.setServiceVersion(this.serviceVersion);

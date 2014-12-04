@@ -25,14 +25,14 @@ import net.hasor.rsf.runtime.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseImpl implements RsfResponse {
-    private ServiceMetaData metaData     = null;
-    private ResponseMsg     responseMsg  = null;
+    private ServiceMetaData<?> metaData     = null;
+    private ResponseMsg        responseMsg  = null;
     //
-    private Object          returnObject = null;
-    private Class<?>        returnType   = null;
-    private boolean         committed    = false;
+    private Object             returnObject = null;
+    private Class<?>           returnType   = null;
+    private boolean            committed    = false;
     //
-    public RsfResponseImpl(ServiceMetaData metaData, ResponseMsg responseMsg,//
+    public RsfResponseImpl(ServiceMetaData<?> metaData, ResponseMsg responseMsg,//
             Object returnObject, Class<?> returnType) {
         this.metaData = metaData;
         this.responseMsg = responseMsg;
@@ -66,7 +66,7 @@ public class RsfResponseImpl implements RsfResponse {
     public short getResponseStatus() {
         return this.responseMsg.getStatus();
     }
-    public ServiceMetaData getMetaData() {
+    public ServiceMetaData<?> getMetaData() {
         return this.metaData;
     }
     //

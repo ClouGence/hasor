@@ -8,6 +8,7 @@
     06.新增一个 ApiBinderWrap类。
     07.内部实现增加 CustomerProvider接口。
     08.内部实现增加 MetaDataAdapter类。
+    09.增加 SettingsWarp 工具类。
 
 ===== Hasor-Core v0.0.9
 * 新增:

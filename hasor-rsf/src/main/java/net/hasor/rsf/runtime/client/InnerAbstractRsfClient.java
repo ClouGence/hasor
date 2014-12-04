@@ -123,7 +123,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     /**获取远程服务对象*/
     public <T> T getRemote(String serviceName, String group, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        ServiceMetaData service = this.getRsfContext().getService(serviceName, group, version);
+        ServiceMetaData<T> service = this.getRsfContext().getService(serviceName, group, version);
         return (T) wrapper(serviceName, service.getServiceType());
     }
     /**将服务包装为另外一个接口。*/
@@ -138,7 +138,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         //
-        ServiceMetaData service = this.getRsfContext().getService(serviceName, group, version);
+        ServiceMetaData<?> service = this.getRsfContext().getService(serviceName, group, version);
         String cacheKey = service.toString() + interFace.getName();
         Class<?> wrapperType = this.wrapperMap.get(cacheKey);
         //
@@ -152,7 +152,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     //
     /**同步方式调用远程服务。*/
-    public Object syncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
+    public Object syncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         //1.准备Request
         int timeout = validateTimeout(metaData.getClientTimeout());
         RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
@@ -164,7 +164,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         return response.getResponseData();
     }
     /**异步方式调用远程服务。*/
-    public RsfFuture asyncInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
+    public RsfFuture asyncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         //1.准备Request
         RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
                 methodName, parameterTypes, parameterObjects);
@@ -172,7 +172,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         return this.sendRequest(request, null);
     }
     /**以回调方式调用远程服务。*/
-    public void doCallBackInvoke(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
+    public void doCallBackInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
         this.doCallBackRequest(metaData, methodName, parameterTypes, parameterObjects, new FutureCallback<RsfResponse>() {
             public void completed(RsfResponse result) {
                 listener.completed(result.getResponseData());
@@ -186,7 +186,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         });
     }
     /**以回调方式调用远程服务。*/
-    public void doCallBackRequest(ServiceMetaData metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
+    public void doCallBackRequest(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
         //1.准备Request
         RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
                 methodName, parameterTypes, parameterObjects);
@@ -263,7 +263,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         RsfResponseImpl res = req.buildResponse();
         //
         try {
-            ServiceMetaData metaData = req.getMetaData();
+            ServiceMetaData<?> metaData = req.getMetaData();
             RsfFilter[] rsfFilter = this.rsfContext.getRegisterCenter().getRsfFilters(metaData);
             new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
