@@ -13,39 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf._test;
+package net.hasor.rsf.runtime.context;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.plugins.local.LocalPrefPlugin;
-import net.hasor.rsf.plugins.qps.QPSPlugin;
-import net.hasor.rsf.runtime.RsfFilter;
-import net.hasor.rsf.runtime.context.AbstractRsfContext;
+import net.hasor.rsf.runtime.register.AbstractRegisterCenter;
+import net.hasor.rsf.runtime.register.DefaultRegisterCenter;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerRsfContext extends AbstractRsfContext {
-    private RsfFilter[] plugins = new RsfFilter[] { new QPSPlugin(), new LocalPrefPlugin() };
-    //
-    public ServerRsfContext() throws IOException, URISyntaxException {
+public class DefaultRsfContext extends AbstractRsfContext {
+    /**设置主配置文件*/
+    public DefaultRsfContext() throws IOException, URISyntaxException {
         super(createSettings());
-        //
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {}
-                    QPSPlugin plugins = (QPSPlugin) ServerRsfContext.this.plugins[0];
-                    System.out.println("QPS         :" + plugins.getQPS());
-                    System.out.println("requestCount:" + plugins.getOkCount());
-                    System.out.println();
-                }
-            }
-        }).start();
+    }
+    /***/
+    public DefaultRsfContext(Settings settings) {
+        super(settings);
+    }
+    /***/
+    public AbstractRegisterCenter createRegisterCenter() {
+        return new DefaultRegisterCenter(this);
     }
     private static Settings createSettings() throws IOException, URISyntaxException {
         Settings settings = new StandardContextSettings();

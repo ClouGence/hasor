@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime;
-import net.hasor.rsf.metadata.ServiceMetaData;
+package net.hasor.rsf.runtime.register;
+import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.general.RsfException;
+import net.hasor.rsf.runtime.RsfBindInfo;
+import net.hasor.rsf.runtime.RsfContext;
 /**
  * 注册中心
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RegisterCenter {
-    /**获取RsfBinder*/
-    public RsfBinder getRsfBinder();
-    /**获取元信息所描述的服务对象。*/
-    public <T> T getBean(ServiceMetaData<T> metaData);
-    /**根据服务名获取服务描述。*/
-    public <T> ServiceMetaData<T> getService(String name, String group, String version);
-    /**获取已经注册的所有服务名称。*/
-    public String[] getServiceNames();
+public class DefaultRegisterCenter extends AbstractRegisterCenter {
+    public DefaultRegisterCenter(RsfContext rsfContext) {
+        super(rsfContext);
+    }
+    protected <T> T createBean(RsfBindInfo<T> define) {
+        if (define instanceof CustomerProvider) {
+            CustomerProvider<T> cp = (CustomerProvider<T>) define;
+            return cp.getCustomerProvider().get();
+        }
+        throw new RsfException("RSF object cannot be created.");
+    }
 }

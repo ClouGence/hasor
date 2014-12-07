@@ -10,11 +10,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
+import net.hasor.core.Settings;
+import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.ProtocolVersion;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.protocol.message.RequestMsg;
 import net.hasor.rsf.protocol.message.ResponseMsg;
+import net.hasor.rsf.runtime.context.DefaultRsfContext;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
 /**
  * 对Server的压力测试
@@ -23,7 +26,9 @@ import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
  */
 public class ProtocolPressureTest {
     public void connect(String host, int port) throws Exception {
-        final ServerRsfContext manager = new ServerRsfContext();
+        Settings settings = new StandardContextSettings();
+        settings.refresh();
+        final DefaultRsfContext manager = new DefaultRsfContext(settings);
         try {
             Bootstrap b = new Bootstrap();
             b.group(manager.getLoopGroup());
@@ -60,16 +65,16 @@ public class ProtocolPressureTest {
     }
 }
 class ClientHandler extends ChannelInboundHandlerAdapter {
-    private ServerRsfContext manager          = null;
-    private long             sendCount        = 0;
-    private long             acceptedCount    = 0;
-    private long             chooseOtherCount = 0;
-    private long             serializeError   = 0;
-    private long             requestTimeout   = 0;
-    private long             okCount          = 0;
-    private long             start            = System.currentTimeMillis();
+    private DefaultRsfContext manager          = null;
+    private long              sendCount        = 0;
+    private long              acceptedCount    = 0;
+    private long              chooseOtherCount = 0;
+    private long              serializeError   = 0;
+    private long              requestTimeout   = 0;
+    private long              okCount          = 0;
+    private long              start            = System.currentTimeMillis();
     //
-    public ClientHandler(ServerRsfContext manager) {
+    public ClientHandler(DefaultRsfContext manager) {
         this.manager = manager;
         manager.getCallExecute("aa").execute(new Runnable() {
             @Override
@@ -135,7 +140,7 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
         request.setVersion(ProtocolVersion.V_1_0.value());
         request.setRequestID(reqID++);
         //
-        request.setServiceName("net.hasor.rsf._test.TestServices");
+        request.setServiceName("net.hasor.rsf._test.ITestServices");
         request.setServiceVersion("1.0.0");
         request.setServiceGroup("default");
         request.setTargetMethod("sayHello");//String item, int index

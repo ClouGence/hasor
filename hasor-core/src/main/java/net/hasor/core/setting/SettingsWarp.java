@@ -28,10 +28,8 @@ public class SettingsWarp implements Settings {
     private final Settings settings;
     public SettingsWarp(Settings settings) {
         this.settings = settings;
-        this.init();
     }
     //
-    protected void init() {}
     protected Settings getSettings() {
         return settings;
     }

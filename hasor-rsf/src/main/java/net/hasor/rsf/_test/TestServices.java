@@ -21,6 +21,7 @@ package net.hasor.rsf._test;
  */
 public class TestServices implements ITestServices {
     public String sayHello(String msg) {
+        System.out.println(msg);
         return msg;
     }
 }

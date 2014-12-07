@@ -166,6 +166,7 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-rsf</module>
+		<module>hasor-solr</module>
 		<!-- module>hasor-security</module -->
 		<!-- module>hasor-quick</module -->
 	</modules>

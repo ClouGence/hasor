@@ -28,7 +28,7 @@ import net.hasor.rsf.runtime.RsfResponse;
 public class LocalPrefPlugin implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal() == true) {
-            ServiceMetaData metaData = request.getMetaData();
+            ServiceMetaData<?> metaData = request.getMetaData();
             if (metaData.isProvider() == true) {
                 //
                 Object bean = request.getContext().getRegisterCenter().getBean(metaData);

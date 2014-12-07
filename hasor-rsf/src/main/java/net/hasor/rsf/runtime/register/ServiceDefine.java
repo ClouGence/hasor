@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.register;
+import java.util.UUID;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.MetaDataAdapter;
@@ -27,6 +28,7 @@ import net.hasor.rsf.runtime.RsfFilter;
  * @author 赵永春(zyc@hasor.net)
  */
 class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, CustomerProvider<T>, RegisterReference<T> {
+    private String                 uniqueID = UUID.randomUUID().toString();
     private ServiceMetaData<T>     serviceMetaData;
     private AbstractRegisterCenter registerCenter;
     private Provider<RsfFilter>[]  rsfFilterArray;
@@ -40,8 +42,7 @@ class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, Custom
     }
     //
     public String getBindID() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.uniqueID;
     }
     public String getBindName() {
         return this.serviceMetaData.getServiceName();
@@ -64,5 +65,8 @@ class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, Custom
     }
     public void unRegister() {
         this.registerCenter.recoverService(this);
+    }
+    public Provider<RsfFilter>[] getFilterProvider() {
+        return this.rsfFilterArray;
     }
 }

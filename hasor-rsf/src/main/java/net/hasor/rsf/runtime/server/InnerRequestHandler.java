@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.runtime.server;
 import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
@@ -77,7 +78,7 @@ class InnerRequestHandler implements Runnable {
         }
         //2.执行调用
         try {
-            RsfFilter[] rsfFilters = this.rsfContext.getRegisterCenter().getRsfFilters(request.getMetaData());
+            Provider<RsfFilter>[] rsfFilters = this.rsfContext.getRegisterCenter().getFilters(request.getMetaData());
             new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
         } catch (Throwable e) {
             //500 InternalServerError

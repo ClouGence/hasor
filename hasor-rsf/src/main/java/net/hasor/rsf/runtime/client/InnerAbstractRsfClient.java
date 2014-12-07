@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.general.SendLimitPolicy;
@@ -264,7 +265,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         //
         try {
             ServiceMetaData<?> metaData = req.getMetaData();
-            RsfFilter[] rsfFilter = this.rsfContext.getRegisterCenter().getRsfFilters(metaData);
+            Provider<RsfFilter>[] rsfFilter = this.rsfContext.getRegisterCenter().getFilters(metaData);
             new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     sendRequest(rsfFuture);//发送请求到远方

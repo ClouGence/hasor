@@ -23,6 +23,7 @@ import net.hasor.rsf.executes.NameThreadFactory;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfSettings;
+import net.hasor.rsf.runtime.register.AbstractRegisterCenter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
@@ -30,14 +31,14 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
-    private SerializeFactory serializeFactory = null;
-    private ExecutesManager  executesManager  = null;
-    private EventLoopGroup   loopGroup        = null;
-    private RsfSettingsImpl  rsfSettings      = null;
+    private SerializeFactory       serializeFactory = null;
+    private ExecutesManager        executesManager  = null;
+    private AbstractRegisterCenter registerCenter   = null;
+    private EventLoopGroup         loopGroup        = null;
+    private RsfSettingsImpl        rsfSettings      = null;
     //
     public AbstractRsfContext(Settings settings) {
         this.rsfSettings = new RsfSettingsImpl(settings);
-        this.rsfSettings.init();
         this.initSettings();
     }
     //
@@ -59,6 +60,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     //
     protected void initSettings() {
+        this.rsfSettings.init();
         RsfSettings settings = this.getSettings();
         this.serializeFactory = SerializeFactory.createFactory(settings);
         int queueSize = settings.getQueueMaxSize();
@@ -75,4 +77,11 @@ public abstract class AbstractRsfContext implements RsfContext {
     public <T> ServiceMetaData<T> getService(String serviceName, String group, String version) {
         return this.getRegisterCenter().getService(serviceName, group, version);
     }
+    /**获取注册中心。*/
+    public AbstractRegisterCenter getRegisterCenter() {
+        if (this.registerCenter == null)
+            this.registerCenter = this.createRegisterCenter();
+        return this.registerCenter;
+    }
+    public abstract AbstractRegisterCenter createRegisterCenter();
 }

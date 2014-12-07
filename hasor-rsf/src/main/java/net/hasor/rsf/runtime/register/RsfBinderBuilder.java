@@ -31,19 +31,21 @@ import net.hasor.rsf.runtime.RsfSettings;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBinderBuilder implements RsfBinder {
-    private AbstractRegisterCenter registerCenter = null;
+    private final AbstractRegisterCenter    registerCenter;
+    private final List<Provider<RsfFilter>> filterList;
     public RsfBinderBuilder(AbstractRegisterCenter registerCenter) {
         this.registerCenter = registerCenter;
+        this.filterList = new ArrayList<Provider<RsfFilter>>();
     }
     protected AbstractRegisterCenter getRegisterCenter() {
         return this.registerCenter;
     };
     //
     public void bindFilter(RsfFilter instance) {
-        getRegisterCenter().addRsfFilter(new InstanceProvider<RsfFilter>(instance));
+        this.filterList.add(new InstanceProvider<RsfFilter>(instance));
     }
     public void bindFilter(Provider<RsfFilter> provider) {
-        getRegisterCenter().addRsfFilter(provider);
+        this.filterList.add(provider);
     }
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
         return new LinkedBuilderImpl<T>(type, getRegisterCenter());
@@ -58,7 +60,7 @@ public class RsfBinderBuilder implements RsfBinder {
         return this.rsfService(type).toProvider(provider);
     }
     //
-    public static class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
+    public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
         protected String                    serviceName    = null;   //服务名
         protected String                    serviceGroup   = "RSF";  //服务分组
         protected String                    serviceVersion = "1.0.0"; //服务版本
@@ -74,13 +76,14 @@ public class RsfBinderBuilder implements RsfBinder {
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRegisterCenter registerCenter) {
             this.registerCenter = registerCenter;
             RsfSettings settings = registerCenter.getSettings();
-            this.rsfFilterList = new ArrayList<Provider<RsfFilter>>();
+            this.rsfFilterList = new ArrayList<Provider<RsfFilter>>(filterList);
             this.serviceName = serviceType.getName();
             this.serviceGroup = settings.getDefaultGroup();
             this.serviceVersion = settings.getDefaultVersion();
             this.clientTimeout = settings.getDefaultTimeout();
             this.serializeType = settings.getDefaultSerializeType();
             //this.serviceMetaData.setServiceDesc(serviceDesc);
+            this.serviceType = serviceType;
         }
         public ConfigurationBuilder<T> ngv(String name, String group, String version) {
             Hasor.assertIsNotNull(name, "name is null.");

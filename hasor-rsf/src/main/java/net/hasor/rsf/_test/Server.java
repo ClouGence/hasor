@@ -18,6 +18,7 @@ import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
 import net.hasor.rsf.runtime.RsfBinder;
 import net.hasor.rsf.runtime.RsfContext;
+import net.hasor.rsf.runtime.context.DefaultRsfContext;
 import net.hasor.rsf.runtime.server.RsfServer;
 /**
  * 
@@ -26,14 +27,29 @@ import net.hasor.rsf.runtime.server.RsfServer;
  */
 public class Server {
     public static void main(String[] args) throws Exception {
-        RsfContext rsfContext = new ServerRsfContext();
+        RsfContext rsfContext = new DefaultRsfContext();
         RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
-        rsfBinder.bindFilter(new QPSPlugin());
-        rsfBinder.bindFilter(new LocalPrefPlugin());
-        rsfBinder.rsfService(ITestServices.class, new TestServices()).register();
-        //TestServices
-        RsfServer server = new RsfServer(rsfContext);
         //
+        final QPSPlugin qps = new QPSPlugin();
+        rsfBinder.bindFilter(qps);
+        rsfBinder.bindFilter(new LocalPrefPlugin());
+        //
+        new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {}
+                    System.out.println("QPS         :" + qps.getQPS());
+                    System.out.println("requestCount:" + qps.getOkCount());
+                    System.out.println();
+                }
+            }
+        }).start();
+        //
+        //TestServices
+        rsfBinder.rsfService(ITestServices.class, new TestServices()).register();
+        RsfServer server = new RsfServer(rsfContext);
         server.start();
     }
 }
