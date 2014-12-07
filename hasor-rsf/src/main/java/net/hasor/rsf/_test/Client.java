@@ -53,9 +53,9 @@ public class Client {
     public static void call(ITestServices bean) {
         for (int i = 0; i < 1000000; i++) {
             try {
-                System.out.println(bean.sayHello("你好...(" + i + ")"));;//发起调用.
+                bean.sayHello("你好...(" + i + ")");//发起调用.
             } catch (Exception e) {
-                // TODO: handle exception
+                System.out.println("time out (" + i + ")");//发起调用.
             }
         }
     }

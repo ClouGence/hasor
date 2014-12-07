@@ -49,17 +49,15 @@ class InnerResponseHandler implements Runnable {
         RsfResponse response = null;
         try {
             response = RuntimeUtils.recoverResponse(responseMsg, rsfFuture.getRequest(), rsfClient.getRsfContext());
-            rsfClient.putResponse(responseMsg.getRequestID(), response);
+            if (resStatus == ProtocolStatus.OK) {
+                rsfClient.putResponse(responseMsg.getRequestID(), response);
+            } else {
+                String errorMessage = (String) response.getResponseData();
+                rsfClient.putError(responseMsg.getRequestID(), new RsfException(resStatus, errorMessage));
+            }
         } catch (Throwable e) {
             rsfClient.putError(responseMsg.getRequestID(), e);
             return;
-        }
-        if (resStatus == ProtocolStatus.OK) {
-            //
-            rsfClient.putResponse(responseMsg.getRequestID(), response);
-        } else {
-            String errorMessage = (String) response.getResponseData();
-            rsfClient.putError(responseMsg.getRequestID(), new RsfException(resStatus, errorMessage));
         }
     }
 }

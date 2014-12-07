@@ -26,9 +26,7 @@ import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
  */
 public class ProtocolPressureTest {
     public void connect(String host, int port) throws Exception {
-        Settings settings = new StandardContextSettings();
-        settings.refresh();
-        final DefaultRsfContext manager = new DefaultRsfContext(settings);
+        final DefaultRsfContext manager = new DefaultRsfContext();
         try {
             Bootstrap b = new Bootstrap();
             b.group(manager.getLoopGroup());
@@ -142,7 +140,7 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
         //
         request.setServiceName("net.hasor.rsf._test.ITestServices");
         request.setServiceVersion("1.0.0");
-        request.setServiceGroup("default");
+        request.setServiceGroup("RSF");
         request.setTargetMethod("sayHello");//String item, int index
         request.setSerializeType("Hessian");
         //

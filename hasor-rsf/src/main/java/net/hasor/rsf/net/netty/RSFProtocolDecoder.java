@@ -63,7 +63,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
             if (status == ProtocolStatus.OK)
                 return null;
             /*                    错误情况*/
-            frame.skipBytes(1);
+            frame = frame.resetReaderIndex().skipBytes(1);
             this.fireProtocolError(ctx, version, frame.readLong(), ProtocolStatus.ProtocolError);
         }
         return null;

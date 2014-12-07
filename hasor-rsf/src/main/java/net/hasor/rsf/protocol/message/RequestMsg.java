@@ -17,7 +17,6 @@ package net.hasor.rsf.protocol.message;
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.general.RSFConstants;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.protocol.toos.ProtocolUtils;
 import net.hasor.rsf.serialize.SerializeCoder;

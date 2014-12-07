@@ -209,7 +209,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     }
     private RsfFuture removeRsfFuture(long requestID) {
         RsfFuture rsfFuture = this.rsfResponse.remove(requestID);
-        this.requestCount.decrementAndGet();// i--;
+        if (rsfFuture != null) {
+            this.requestCount.decrementAndGet();// i--;
+        }
         return rsfFuture;
     }
     /**收到Response响应。*/

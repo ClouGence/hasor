@@ -39,6 +39,7 @@ class InnerClientHandler extends ChannelInboundHandlerAdapter {
         InnerAbstractRsfClient rsfClient = this.rsfClientFactory.getRsfClient(connection);
         RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
+            //            Hasor.logDebug("requestID is not here,may be timeout.", responseMsg.getRequestID());
             return;//或许它已经超时了。
         }
         //
