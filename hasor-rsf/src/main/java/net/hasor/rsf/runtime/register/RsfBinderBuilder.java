@@ -61,22 +61,21 @@ public class RsfBinderBuilder implements RsfBinder {
     }
     //
     public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        protected String                    serviceName    = null;   //服务名
-        protected String                    serviceGroup   = "RSF";  //服务分组
-        protected String                    serviceVersion = "1.0.0"; //服务版本
-        protected int                       clientTimeout  = 6000;   //调用超时（毫秒）
-        protected String                    serializeType  = null;   //传输序列化类型
+        private String                    serviceName;   //服务名
+        private String                    serviceGroup;  //服务分组
+        private String                    serviceVersion; //服务版本
+        private int                       clientTimeout; //调用超时（毫秒）
+        private String                    serializeType; //传输序列化类型
         //
-        protected Class<T>                  serviceType    = null;   //服务接口类型
-        protected List<Provider<RsfFilter>> rsfFilterList  = null;
-        protected Provider<T>               rsfProvider    = null;
-        protected AbstractRegisterCenter    registerCenter = null;
+        private Class<T>                  serviceType;   //服务接口类型
+        private List<Provider<RsfFilter>> rsfFilterList;
+        private Provider<T>               rsfProvider;
+        private AbstractRegisterCenter    registerCenter;
+        private List<AddressInfo>         addressList;
         //
         //
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRegisterCenter registerCenter) {
-            this.registerCenter = registerCenter;
             RsfSettings settings = registerCenter.getSettings();
-            this.rsfFilterList = new ArrayList<Provider<RsfFilter>>(filterList);
             this.serviceName = serviceType.getName();
             this.serviceGroup = settings.getDefaultGroup();
             this.serviceVersion = settings.getDefaultVersion();
@@ -84,6 +83,9 @@ public class RsfBinderBuilder implements RsfBinder {
             this.serializeType = settings.getDefaultSerializeType();
             //this.serviceMetaData.setServiceDesc(serviceDesc);
             this.serviceType = serviceType;
+            this.rsfFilterList = new ArrayList<Provider<RsfFilter>>(filterList);
+            this.registerCenter = registerCenter;
+            this.addressList = new ArrayList<AddressInfo>();
         }
         public ConfigurationBuilder<T> ngv(String name, String group, String version) {
             Hasor.assertIsNotNull(name, "name is null.");
@@ -140,10 +142,17 @@ public class RsfBinderBuilder implements RsfBinder {
             serviceMetaData.setSerializeType(this.serializeType);
             //
             Provider<RsfFilter>[] rsfFilterArray = this.rsfFilterList.toArray(new Provider[this.rsfFilterList.size()]);
-            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider);
+            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider, addressList);
             //
             this.registerCenter.publishService(define);
             return define;
+        }
+        public RegisterBuilder<T> bindAddress(String hostIP, int hostPort) {
+            AddressInfo info = new AddressInfo();
+            info.setHostIP(hostIP);
+            info.setHostPort(hostPort);
+            addressList.add(info);
+            return this;
         }
     }
 }

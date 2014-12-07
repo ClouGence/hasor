@@ -25,11 +25,11 @@ import net.hasor.rsf.runtime.common.RuntimeUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerResponseHandler implements Runnable {
-    private ResponseMsg            responseMsg;
-    private InnerAbstractRsfClient rsfClient;
-    private RsfFuture              rsfFuture;
+    private ResponseMsg    responseMsg;
+    private InnerRsfClient rsfClient;
+    private RsfFuture      rsfFuture;
     //
-    public InnerResponseHandler(ResponseMsg responseMsg, InnerAbstractRsfClient rsfClient, RsfFuture rsfFuture) {
+    public InnerResponseHandler(ResponseMsg responseMsg, InnerRsfClient rsfClient, RsfFuture rsfFuture) {
         this.responseMsg = responseMsg;
         this.rsfClient = rsfClient;
         this.rsfFuture = rsfFuture;

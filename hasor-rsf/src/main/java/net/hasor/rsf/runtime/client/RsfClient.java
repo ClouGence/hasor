@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.runtime.client;
 import java.io.IOException;
-import java.util.concurrent.Future;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfResponse;
@@ -26,14 +25,6 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfClient {
-    /**server address.*/
-    public String getServerHost();
-    /**server port.*/
-    public int getServerPort();
-    /**本地IP。*/
-    public String getLocalHost();
-    /**本地端口。*/
-    public int getLocalPort();
     /**获取{@link RsfContext}*/
     public RsfContext getRsfContext();
     //
@@ -43,11 +34,6 @@ public interface RsfClient {
     public String getOption(String key);
     /**设置选项数据*/
     public void addOption(String key, String value);
-    //
-    /**关闭与远端的连接（异步）*/
-    public Future<Void> close() throws InterruptedException;
-    /**连接是否为活动的。*/
-    public boolean isActive();
     //
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID);

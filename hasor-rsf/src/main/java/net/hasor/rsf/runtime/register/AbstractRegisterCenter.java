@@ -110,6 +110,12 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
             return null;
         return define.getFilterProvider();
     }
+    public AddressInfo findAddress(ServiceMetaData<?> metaData) {
+        ServiceDefine<?> define = this.rsfDefineMap.get(metaData);
+        if (define == null)
+            return null;
+        return define.nextAddress();
+    }
     /**获取元信息所描述的服务对象。*/
     public <T> T getBean(ServiceMetaData<T> metaData) {
         ServiceDefine<?> define = this.rsfDefineMap.get(metaData);

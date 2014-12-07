@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.hasor.core.Hasor;
@@ -52,7 +51,7 @@ import org.more.future.FutureCallback;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-abstract class InnerAbstractRsfClient implements RsfClient {
+class InnerRsfClient implements RsfClient {
     private RsfClientFactory                         clientFactory = null;
     private AbstractRsfContext                       rsfContext    = null;
     private final Map<String, String>                optionMap     = new HashMap<String, String>();
@@ -60,27 +59,11 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     private final Timer                              timer         = new HashedWheelTimer();
     private final AtomicInteger                      requestCount  = new AtomicInteger(0);
     //
-    public InnerAbstractRsfClient(RsfClientFactory clientFactory, AbstractRsfContext rsfContext) {
+    public InnerRsfClient(RsfClientFactory clientFactory, AbstractRsfContext rsfContext) {
         this.clientFactory = clientFactory;
         this.rsfContext = rsfContext;
     }
     //
-    /**server address.*/
-    public String getServerHost() {
-        return this.getConnection().getRemotHost();
-    }
-    /**server port.*/
-    public int getServerPort() {
-        return this.getConnection().getRemotePort();
-    }
-    /**本地IP。*/
-    public String getLocalHost() {
-        return this.getConnection().getLocalHost();
-    }
-    /**本地端口。*/
-    public int getLocalPort() {
-        return this.getConnection().getLocalPort();
-    }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
         return this.rsfContext;
@@ -100,16 +83,6 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     /**设置选项数据*/
     public void addOption(String key, String value) {
         this.optionMap.put(key, value);
-    }
-    /**关闭与远端的连接（异步）*/
-    public Future<Void> close() {
-        NetworkConnection conn = this.getConnection();
-        this.getRsfClientFactory().removeChannelMapping(conn);
-        return conn.close();
-    }
-    /**连接是否为活动的。*/
-    public boolean isActive() {
-        return this.getConnection().isActive();
     }
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID) {
@@ -156,8 +129,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     public Object syncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         //1.准备Request
         int timeout = validateTimeout(metaData.getClientTimeout());
-        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
-                methodName, parameterTypes, parameterObjects);
+        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         RsfFuture rsfFuture = this.sendRequest(request, null);
         //3.返回数据
@@ -167,8 +139,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     /**异步方式调用远程服务。*/
     public RsfFuture asyncInvoke(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         //1.准备Request
-        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
-                methodName, parameterTypes, parameterObjects);
+        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         return this.sendRequest(request, null);
     }
@@ -189,17 +160,9 @@ abstract class InnerAbstractRsfClient implements RsfClient {
     /**以回调方式调用远程服务。*/
     public void doCallBackRequest(ServiceMetaData<?> metaData, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
         //1.准备Request
-        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this.getConnection(), this,//
-                methodName, parameterTypes, parameterObjects);
+        RsfRequestImpl request = RuntimeUtils.buildRequest(metaData, this, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         this.sendRequest(request, listener);
-    }
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Rsf Client -");
-        sb.append("Local=" + getLocalHost() + ":" + this.getLocalPort());
-        sb.append(", Remote=" + getServerHost() + ":" + this.getServerPort());
-        sb.append(", Status=" + (this.isActive() ? "Connected" : "DisConnected"));
-        return sb.toString();
     }
     //
     private int validateTimeout(int timeout) {
@@ -220,7 +183,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         if (rsfFuture != null) {
             rsfFuture.completed(response);
         } else {
-            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
+            Hasor.logWarn("give up the response,requestID:" + requestID + " ,maybe because timeout! ");
         }
     }
     /**收到Response响应。*/
@@ -229,7 +192,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         if (rsfFuture != null) {
             rsfFuture.failed(e);
         } else {
-            Hasor.logWarn(this + "give up the response,requestID:" + requestID + " ,maybe because timeout! ");
+            Hasor.logWarn("give up the response,requestID:" + requestID + " ,maybe because timeout! ");
         }
     }
     /**要求重新发起请求*/
@@ -246,14 +209,14 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
-                RsfFuture rsfCallBack = InnerAbstractRsfClient.this.getRequest(request.getRequestID());
+                RsfFuture rsfCallBack = InnerRsfClient.this.getRequest(request.getRequestID());
                 if (rsfCallBack == null)
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 Hasor.logWarn(errorInfo);
                 //回应Response
-                InnerAbstractRsfClient.this.putError(request.getRequestID(), //
+                InnerRsfClient.this.putError(request.getRequestID(), //
                         new RsfException(ProtocolStatus.RequestTimeout, errorInfo));
             }
         };
@@ -289,7 +252,7 @@ abstract class InnerAbstractRsfClient implements RsfClient {
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
             SendLimitPolicy sendPolicy = rsfSettings.getSendLimitPolicy();
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
-            Hasor.logWarn(this + ": " + errorMessage);
+            Hasor.logWarn(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
                 throw new RsfException(ProtocolStatus.ClientError, errorMessage);
             } else {
@@ -298,17 +261,19 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                 } catch (InterruptedException e) {}
             }
         }
-        if (this.isActive() == false) {
-            throw new IllegalStateException("client is closed.");
-        }
         //RsfFilter
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
+        final NetworkConnection netConnection = this.clientFactory.getConnection(request.getMetaData(), this);
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
+        if (netConnection.isActive() == false) {
+            throw new IllegalStateException("client is closed.");
+        }
         this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
-        ChannelFuture future = this.getConnection().getChannel().writeAndFlush(rsfMessage);
+        //
+        ChannelFuture future = netConnection.getChannel().writeAndFlush(rsfMessage);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
@@ -326,18 +291,17 @@ abstract class InnerAbstractRsfClient implements RsfClient {
                 }
                 //异常状况
                 if (!future.isSuccess()) {
-                    if (getConnection().isActive()) {
-                        InnerAbstractRsfClient.this.close();// maybe some exception, so close the channel
+                    if (netConnection.isActive()) {
+                        // maybe some exception, so close the channel
+                        InnerRsfClient.this.clientFactory.closeChannel(netConnection);
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                Hasor.logError(InnerAbstractRsfClient.this + ":" + errorMsg);
+                Hasor.logError(InnerRsfClient.this + ":" + errorMsg);
                 //回应Response
-                InnerAbstractRsfClient.this.putError(request.getRequestID(), //
+                InnerRsfClient.this.putError(request.getRequestID(), //
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
     }
-    /**获取网络连接。*/
-    protected abstract NetworkConnection getConnection();
 }

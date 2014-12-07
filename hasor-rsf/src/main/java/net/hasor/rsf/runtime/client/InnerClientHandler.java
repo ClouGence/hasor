@@ -16,6 +16,7 @@
 package net.hasor.rsf.runtime.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.protocol.message.ResponseMsg;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 /**
@@ -24,25 +25,23 @@ import net.hasor.rsf.runtime.common.NetworkConnection;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerClientHandler extends ChannelInboundHandlerAdapter {
-    private RsfClientFactory rsfClientFactory = null;
+    private InnerRsfClient rsfClient = null;
     //
-    public InnerClientHandler(RsfClientFactory rsfClientFactory) {
-        this.rsfClientFactory = rsfClientFactory;
+    public InnerClientHandler(InnerRsfClient rsfClient) {
+        this.rsfClient = rsfClient;
     }
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ResponseMsg == false)
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
-        NetworkConnection connection = NetworkConnection.getConnection(ctx.channel());
         //
-        InnerAbstractRsfClient rsfClient = this.rsfClientFactory.getRsfClient(connection);
-        RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
+        RsfFuture rsfFuture = this.rsfClient.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
-            //            Hasor.logDebug("requestID is not here,may be timeout.", responseMsg.getRequestID());
+            NetworkConnection netConn = NetworkConnection.getConnection(ctx.channel());
+            Hasor.logWarn(netConn + " give up the response,requestID:" + responseMsg.getRequestID() + " ,maybe because timeout! ");
             return;//或许它已经超时了。
         }
-        //
-        new InnerResponseHandler(responseMsg, rsfClient, rsfFuture).run();
+        new InnerResponseHandler(responseMsg, this.rsfClient, rsfFuture).run();
     }
 }

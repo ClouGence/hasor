@@ -29,14 +29,6 @@ public interface RsfRequest extends RsfHeader {
     public RsfContext getContext();
     /**请求到达时间（如果是本地发起的请求，该值为发起调用的时间戳）。*/
     public long getReceiveTime();
-    /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
-    public String getRemotHost();
-    /**远程端口。*/
-    public int getRemotePort();
-    /**本地IP。*/
-    public String getLocalHost();
-    /**本地端口。*/
-    public int getLocalPort();
     /**超时时间。*/
     public int getTimeout();
     /**获取请求的服务。*/

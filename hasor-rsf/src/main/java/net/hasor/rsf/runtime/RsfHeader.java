@@ -29,7 +29,7 @@ public interface RsfHeader {
     public long getRequestID();
     /**客户端希望的序列化方式*/
     public String getSerializeType();
-    // 
+    //
     /**获取选项Key集合。*/
     public String[] getOptionKeys();
     /**获取选项数据*/

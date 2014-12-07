@@ -30,7 +30,6 @@ import net.hasor.rsf.runtime.RsfRequest;
 public class RsfRequestImpl implements RsfRequest {
     private ServiceMetaData<?> metaData         = null;
     private RequestMsg         requestMsg       = null;
-    private NetworkConnection  connection       = null;
     private RsfContext         rsfContext       = null;
     private boolean            local            = false;
     //
@@ -38,39 +37,17 @@ public class RsfRequestImpl implements RsfRequest {
     private Object[]           parameterObjects = null;
     //
     public RsfRequestImpl(boolean local, Class<?>[] parameterTypes, Object[] parameterObjects,//
-            ServiceMetaData<?> metaData, RequestMsg requestMsg,//
-            NetworkConnection connection, RsfContext rsfContext) throws RsfException {
+            ServiceMetaData<?> metaData, RequestMsg requestMsg, RsfContext rsfContext) throws RsfException {
         this.parameterTypes = parameterTypes;
         this.parameterObjects = parameterObjects;
         this.metaData = metaData;
         this.requestMsg = requestMsg;
-        this.connection = connection;
         this.rsfContext = rsfContext;
         this.local = local;
         //check Forbidden
         if (getServiceMethod() == null) {
             throw new RsfException(ProtocolStatus.Forbidden, "undefined service.");
         }
-    }
-    //
-    public NetworkConnection getConnection() {
-        return this.connection;
-    }
-    public RequestMsg getMsg() {
-        return this.requestMsg;
-    }
-    //
-    public String getRemotHost() {
-        return this.connection.getRemotHost();
-    }
-    public int getRemotePort() {
-        return this.connection.getRemotePort();
-    }
-    public String getLocalHost() {
-        return this.connection.getLocalHost();
-    }
-    public int getLocalPort() {
-        return this.connection.getLocalPort();
     }
     //
     public byte getProtocol() {
@@ -133,5 +110,8 @@ public class RsfRequestImpl implements RsfRequest {
                 response.addOption(optKey, optMap.getOption(optKey));
         }
         return this.response;
+    }
+    public RequestMsg getMsg() {
+        return this.requestMsg;
     }
 }

@@ -25,7 +25,7 @@ import net.hasor.rsf.runtime.server.RsfServer;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Server {
+public class Server8001 {
     public static void main(String[] args) throws Exception {
         RsfContext rsfContext = new DefaultRsfContext();
         RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
@@ -50,6 +50,6 @@ public class Server {
         //TestServices
         rsfBinder.rsfService(ITestServices.class, new TestServices()).register();
         RsfServer server = new RsfServer(rsfContext);
-        server.start();
+        server.start(8001);
     }
 }

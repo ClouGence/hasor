@@ -25,40 +25,52 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
+import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.net.netty.RSFCodec;
 import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
+import net.hasor.rsf.runtime.register.AddressInfo;
 /**
  * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientFactory {
-    private final AbstractRsfContext                             rsfContext;
-    private final Map<NetworkConnection, InnerAbstractRsfClient> connClientMapping;
+    private final AbstractRsfContext rsfContext;
     //
     public RsfClientFactory(RsfContext rsfContext) {
         this.rsfContext = (AbstractRsfContext) rsfContext;
-        this.connClientMapping = new ConcurrentHashMap<NetworkConnection, InnerAbstractRsfClient>();
     }
     //
     /**连接远程服务（具体的地址）*/
-    public RsfClient connect(String hostName, int port) throws RsfException, InterruptedException {
-        return connect(new InetSocketAddress(hostName, port));
+    public RsfClient getClient() throws RsfException, InterruptedException {
+        InnerRsfClient client = new InnerRsfClient(this, this.rsfContext);
+        RsfOptionSet optManager = this.rsfContext.getSettings().getClientOption();
+        for (String optKey : optManager.getOptionKeys()) {
+            client.addOption(optKey, optManager.getOption(optKey));
+        }
+        return client;
     }
-    /**连接远程服务（具体的地址）*/
-    public RsfClient connect(SocketAddress remoteAddress) throws RsfException, InterruptedException {
-        return connect(remoteAddress, null);
+    //
+    /**关闭这个连接并解除注册。*/
+    void closeChannel(NetworkConnection conn) {
+        this.addressMapping.remove(conn);
+        conn.close();
     }
-    /**连接远程服务（具体的地址）*/
-    public RsfClient connect(SocketAddress remoteAddress, SocketAddress localAddress) throws RsfException, InterruptedException {
-        Hasor.assertIsNotNull(remoteAddress, "remoteAddress is null.");
-        //
+    //
+    private final Map<String, NetworkConnection> addressMapping = new ConcurrentHashMap<String, NetworkConnection>();
+    NetworkConnection getConnection(ServiceMetaData<?> metaData, final InnerRsfClient rsfClient) {
+        //查找可用的连接
+        AddressInfo address = this.rsfContext.getRegisterCenter().findAddress(metaData);
+        String addressKey = address.getID();
+        NetworkConnection conn = this.addressMapping.get(addressKey);
+        if (conn != null)
+            return conn;
+        //连接到一个地址
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);
@@ -68,45 +80,22 @@ public class RsfClientFactory {
                 Channel channel = ch.pipeline().channel();
                 NetworkConnection.initConnection(channel);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new InnerClientHandler(RsfClientFactory.this));
+                ch.pipeline().addLast(new RSFCodec(), new InnerClientHandler(rsfClient));
             }
         });
         ChannelFuture future = null;
-        if (localAddress != null) {
-            future = boot.connect(remoteAddress, localAddress);
-        } else {
-            future = boot.connect(remoteAddress);
+        SocketAddress remote = new InetSocketAddress(address.getHostIP(), address.getHostPort());
+        future = boot.connect(remote);
+        try {
+            future.await();
+        } catch (InterruptedException e) {
+            throw new RsfException(ProtocolStatus.ClientError, e);
         }
-        future.await();
         if (future.isSuccess()) {
-            NetworkConnection conn = NetworkConnection.getConnection(future.channel());
-            InnerAbstractRsfClient client = this.createRsfClient(conn);
-            RsfOptionSet optManager = this.rsfContext.getSettings().getClientOption();
-            for (String optKey : optManager.getOptionKeys()) {
-                client.addOption(optKey, optManager.getOption(optKey));
-            }
-            this.connClientMapping.put(conn, client);
-            return client;
+            conn = NetworkConnection.getConnection(future.channel());
+            this.addressMapping.put(addressKey, conn);
+            return conn;
         }
         throw new RsfException(ProtocolStatus.ClientError, future.cause());
-    }
-    //
-    /**获取{@link AbstractRsfContext}对象。*/
-    public RsfContext getRsfContext() {
-        return this.rsfContext;
-    }
-    //
-    /**获取NetworkConnection 所属的 RsfClient*/
-    InnerAbstractRsfClient getRsfClient(NetworkConnection conn) {
-        return connClientMapping.get(conn);
-    }
-    /**删除NetworkConnection 与 RsfClient 的映射关系。*/
-    void removeChannelMapping(NetworkConnection conn) {
-        connClientMapping.remove(conn);
-    }
-    //
-    /**创建 RsfClient 对象*/
-    protected InnerAbstractRsfClient createRsfClient(NetworkConnection connection) {
-        return new SingleRsfClient(connection, this, this.rsfContext);
     }
 }

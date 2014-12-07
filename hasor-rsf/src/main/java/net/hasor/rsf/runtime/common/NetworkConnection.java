@@ -43,7 +43,7 @@ public class NetworkConnection {
     }
     //
     /**远程IP（如果远程使用了代理服务器那么该IP将不可信）。*/
-    public String getRemotHost() {
+    public String getRemoteHost() {
         return remote().getAddress().getHostAddress();
     }
     /**远程端口。*/
@@ -69,6 +69,13 @@ public class NetworkConnection {
     /**获取具体的连接。*/
     public Channel getChannel() {
         return this.socketChanne;
+    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder("");
+        sb.append("Local=" + getLocalHost() + ":" + this.getLocalPort());
+        sb.append(", Remote=" + getRemoteHost() + ":" + this.getRemotePort());
+        sb.append(", Status=" + (this.isActive() ? "Connected" : "DisConnected"));
+        return sb.toString();
     }
     //
     public static final AttributeKey<NetworkConnection> NettyKey = new AttributeKey<NetworkConnection>("NetworkConnection");
