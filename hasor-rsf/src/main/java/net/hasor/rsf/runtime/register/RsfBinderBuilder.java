@@ -19,6 +19,7 @@ import java.util.List;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
+import net.hasor.rsf.address.AddressInfo;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.metadata.ServiceMetaData.Mode;
@@ -142,9 +143,10 @@ public class RsfBinderBuilder implements RsfBinder {
             serviceMetaData.setSerializeType(this.serializeType);
             //
             Provider<RsfFilter>[] rsfFilterArray = this.rsfFilterList.toArray(new Provider[this.rsfFilterList.size()]);
-            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider, addressList);
+            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider);
             //
             this.registerCenter.publishService(define);
+            this.registerCenter.getAddressManager().updateAddress(serviceMetaData, addressList);
             return define;
         }
         public RegisterBuilder<T> bindAddress(String hostIP, int hostPort) {

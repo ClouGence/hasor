@@ -25,6 +25,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.address.AddressInfo;
+import net.hasor.rsf.address.AddressManager;
 import net.hasor.rsf.general.ProtocolStatus;
 import net.hasor.rsf.general.RsfException;
 import net.hasor.rsf.metadata.ServiceMetaData;
@@ -33,7 +36,6 @@ import net.hasor.rsf.runtime.RsfContext;
 import net.hasor.rsf.runtime.RsfOptionSet;
 import net.hasor.rsf.runtime.common.NetworkConnection;
 import net.hasor.rsf.runtime.context.AbstractRsfContext;
-import net.hasor.rsf.runtime.register.AddressInfo;
 /**
  * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
  * @version : 2014年9月12日
@@ -64,13 +66,31 @@ public class RsfClientFactory {
     //
     private final Map<String, NetworkConnection> addressMapping = new ConcurrentHashMap<String, NetworkConnection>();
     NetworkConnection getConnection(ServiceMetaData<?> metaData, final InnerRsfClient rsfClient) {
-        //查找可用的连接
-        AddressInfo address = this.rsfContext.getRegisterCenter().findAddress(metaData);
-        String addressKey = address.getID();
-        NetworkConnection conn = this.addressMapping.get(addressKey);
-        if (conn != null)
-            return conn;
-        //连接到一个地址
+        AddressManager addressManager = this.rsfContext.getRegisterCenter().getAddressManager();
+        while (true) {
+            //查找可用的连接
+            AddressInfo address = addressManager.findAddress(metaData);
+            if (address == null) {
+                return null;
+            }
+            String addressKey = address.getID();
+            NetworkConnection conn = this.addressMapping.get(addressKey);
+            //尝试连接到远端
+            if (conn == null) {
+                conn = this.connSocket(address, rsfClient);
+                if (conn != null) {
+                    this.addressMapping.put(addressKey, conn);
+                }
+            }
+            //
+            if (conn == null) {
+                addressManager.invalidAddress(address);
+            } else {
+                return conn;
+            }
+        }
+    }
+    private NetworkConnection connSocket(AddressInfo address, final InnerRsfClient rsfClient) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);
@@ -92,10 +112,12 @@ public class RsfClientFactory {
             throw new RsfException(ProtocolStatus.ClientError, e);
         }
         if (future.isSuccess()) {
-            conn = NetworkConnection.getConnection(future.channel());
-            this.addressMapping.put(addressKey, conn);
+            NetworkConnection conn = NetworkConnection.getConnection(future.channel());
             return conn;
         }
-        throw new RsfException(ProtocolStatus.ClientError, future.cause());
+        //
+        RsfException e = new RsfException(ProtocolStatus.ClientError, future.cause());
+        Hasor.logWarn(e);
+        return null;
     }
 }

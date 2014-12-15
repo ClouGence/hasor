@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime.register;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
@@ -36,23 +34,11 @@ class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, Custom
     private Provider<RsfFilter>[]  rsfFilterArray;
     private Provider<T>            rsfProvider;
     //
-    private List<AddressInfo>      addressList;
-    private int                    addressCount;
-    private final Random           addressRandom;
-    //
-    public ServiceDefine(ServiceMetaData<T> serviceMetaData, AbstractRegisterCenter registerCenter, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider, List<AddressInfo> addressList) {
+    public ServiceDefine(ServiceMetaData<T> serviceMetaData, AbstractRegisterCenter registerCenter, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
         this.serviceMetaData = serviceMetaData;
         this.registerCenter = registerCenter;
         this.rsfFilterArray = rsfFilterArray;
         this.rsfProvider = rsfProvider;
-        this.addressList = addressList;
-        this.addressCount = addressList.size();
-        this.addressRandom = new Random(System.currentTimeMillis());
-    }
-    public AddressInfo nextAddress() {
-        if (this.addressCount == 0)
-            return null;
-        return this.addressList.get(this.addressRandom.nextInt(addressCount));
     }
     //
     public String getBindID() {

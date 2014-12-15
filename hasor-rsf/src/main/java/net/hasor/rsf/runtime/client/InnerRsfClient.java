@@ -268,8 +268,13 @@ class InnerRsfClient implements RsfClient {
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
+        if (netConnection == null) {
+            rsfFuture.failed(new IllegalStateException("The lack of effective service provider."));
+            return;
+        }
         if (netConnection.isActive() == false) {
-            throw new IllegalStateException("client is closed.");
+            rsfFuture.failed(new IllegalStateException("client is closed."));
+            return;
         }
         this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
         //

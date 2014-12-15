@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.runtime;
+import net.hasor.rsf.address.AddressManager;
 import net.hasor.rsf.metadata.ServiceMetaData;
 /**
  * 注册中心

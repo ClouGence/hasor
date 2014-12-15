@@ -17,6 +17,7 @@ package net.hasor.rsf.runtime.register;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Provider;
+import net.hasor.rsf.address.AddressManager;
 import net.hasor.rsf.metadata.ServiceMetaData;
 import net.hasor.rsf.runtime.RegisterCenter;
 import net.hasor.rsf.runtime.RsfBindInfo;
@@ -34,12 +35,14 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
     /* Name -> Group -> Version*/
     private final Map<String, Map<String, Map<String, ServiceDefine<?>>>> rsfServiceMap;
     private final Map<ServiceMetaData<?>, ServiceDefine<?>>               rsfDefineMap;
+    private AddressManager                                                addressManager;
     private final RsfContext                                              rsfContext;
     //
     public AbstractRegisterCenter(RsfContext rsfContext) {
         this.rsfServiceMap = new ConcurrentHashMap<String, Map<String, Map<String, ServiceDefine<?>>>>();
         this.rsfDefineMap = new ConcurrentHashMap<ServiceMetaData<?>, ServiceDefine<?>>();
         this.rsfContext = rsfContext;
+        this.addressManager = new AddressManager();
     }
     //
     public RsfBinder getRsfBinder() {
@@ -64,7 +67,7 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
         Map<String, Map<String, ServiceDefine<?>>> groupMap = this.rsfServiceMap.get(rsfInfo.getBindName());
         if (groupMap == null) {
             groupMap = new ConcurrentHashMap<String, Map<String, ServiceDefine<?>>>();
-            rsfServiceMap.put(rsfInfo.getBindName(), groupMap);
+            this.rsfServiceMap.put(rsfInfo.getBindName(), groupMap);
         }
         //group
         Map<String, ServiceDefine<?>> versionMap = groupMap.get(rsfInfo.getBindGroup());
@@ -78,7 +81,7 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
             throw new RepeateException("Repeate:" + rsfInfo.getMetaData());
         }
         //
-        rsfDefineMap.put(rsfInfo.getMetaData(), rsfInfo);
+        this.rsfDefineMap.put(rsfInfo.getMetaData(), rsfInfo);
         versionMap.put(version, rsfInfo);
     }
     /**根据服务名获取服务描述。*/
@@ -110,12 +113,6 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
             return null;
         return define.getFilterProvider();
     }
-    public AddressInfo findAddress(ServiceMetaData<?> metaData) {
-        ServiceDefine<?> define = this.rsfDefineMap.get(metaData);
-        if (define == null)
-            return null;
-        return define.nextAddress();
-    }
     /**获取元信息所描述的服务对象。*/
     public <T> T getBean(ServiceMetaData<T> metaData) {
         ServiceDefine<?> define = this.rsfDefineMap.get(metaData);
@@ -127,6 +124,10 @@ public abstract class AbstractRegisterCenter implements RegisterCenter {
     public RsfSettings getSettings() {
         return this.rsfContext.getSettings();
     };
+    /**获取地址管理器。*/
+    public AddressManager getAddressManager() {
+        return this.addressManager;
+    }
     /**创建 RSF 对象*/
     protected abstract <T> T createBean(RsfBindInfo<T> define);
 }

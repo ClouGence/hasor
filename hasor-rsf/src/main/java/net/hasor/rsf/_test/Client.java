@@ -1,4 +1,5 @@
 package net.hasor.rsf._test;
+import java.net.InetAddress;
 import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
 import net.hasor.rsf.runtime.RsfBinder;
@@ -19,10 +20,10 @@ public class Client {
         rsfBinder.bindFilter(qps);
         rsfBinder.bindFilter(new LocalPrefPlugin());
         rsfBinder.rsfService(ITestServices.class)//
-                .bindAddress("10.100.1.36", 8000)//
-                .bindAddress("10.100.1.36", 8001)//
-                .bindAddress("10.100.1.36", 8002)//
-                .bindAddress("10.100.1.36", 8003)//
+                .bindAddress(InetAddress.getLocalHost().getHostAddress(), 8000)//
+                .bindAddress(InetAddress.getLocalHost().getHostAddress(), 8001)//
+                .bindAddress(InetAddress.getLocalHost().getHostAddress(), 8002)//
+                .bindAddress(InetAddress.getLocalHost().getHostAddress(), 8003)//
                 .register();
         //
         new Thread(new Runnable() {
@@ -44,7 +45,7 @@ public class Client {
         //获取服务
         final ITestServices bean = client.getRemote("net.hasor.rsf._test.ITestServices");
         //
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread() {
                 public void run() {
                     call(bean);

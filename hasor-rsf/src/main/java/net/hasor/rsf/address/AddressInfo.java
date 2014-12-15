@@ -13,36 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.runtime.register;
+package net.hasor.rsf.address;
 /**
- * 表示远程服务的地址和服务提供的版本信息。
+ * 表示远程服务的地址信息。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressInfo {
     private String hostIP   = null;
     private int    hostPort = 8000;
-    private String version  = null;
     //
     public String getID() {
-        return hostIP + ":" + this.hostPort;
+        return this.hostIP + ":" + this.hostPort;
     }
     public String getHostIP() {
-        return hostIP;
+        return this.hostIP;
     }
     public void setHostIP(String hostIP) {
         this.hostIP = hostIP;
     }
     public int getHostPort() {
-        return hostPort;
+        return this.hostPort;
     }
     public void setHostPort(int hostPort) {
         this.hostPort = hostPort;
-    }
-    public String getVersion() {
-        return version;
-    }
-    public void setVersion(String version) {
-        this.version = version;
     }
 }
