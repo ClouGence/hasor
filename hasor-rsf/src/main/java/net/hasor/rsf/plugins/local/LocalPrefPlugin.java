@@ -15,11 +15,11 @@
  */
 package net.hasor.rsf.plugins.local;
 import java.lang.reflect.Method;
-import net.hasor.rsf.metadata.ServiceMetaData;
-import net.hasor.rsf.runtime.RsfFilter;
-import net.hasor.rsf.runtime.RsfFilterChain;
-import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.common.metadata.ServiceMetaData;
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * @version : 2014年11月30日
@@ -31,7 +31,7 @@ public class LocalPrefPlugin implements RsfFilter {
             ServiceMetaData<?> metaData = request.getMetaData();
             if (metaData.isProvider() == true) {
                 //
-                Object bean = request.getContext().getRegisterCenter().getBean(metaData);
+                Object bean = request.getContext().getBindCenter().getBean(metaData);
                 String rMethod = request.getMethod();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();

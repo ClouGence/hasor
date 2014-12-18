@@ -1,12 +1,12 @@
 package net.hasor.rsf._test;
 import java.net.InetAddress;
+import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.context.DefaultRsfContext;
 import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
-import net.hasor.rsf.runtime.RsfBinder;
-import net.hasor.rsf.runtime.RsfContext;
-import net.hasor.rsf.runtime.client.RsfClient;
-import net.hasor.rsf.runtime.client.RsfClientFactory;
-import net.hasor.rsf.runtime.context.DefaultRsfContext;
+import net.hasor.rsf.remoting.client.RsfClient;
+import net.hasor.rsf.remoting.client.RsfClientFactory;
 /**
  * 
  * @version : 2014年9月12日
@@ -16,7 +16,7 @@ public class Client {
     public static void main(String[] args) throws Throwable {
         RsfContext rsfContext = new DefaultRsfContext();
         final QPSPlugin qps = new QPSPlugin();
-        RsfBinder rsfBinder = rsfContext.getRegisterCenter().getRsfBinder();
+        RsfBinder rsfBinder = rsfContext.getBindCenter().getRsfBinder();
         rsfBinder.bindFilter(qps);
         rsfBinder.bindFilter(new LocalPrefPlugin());
         rsfBinder.rsfService(ITestServices.class)//

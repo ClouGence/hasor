@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.plugins.qps;
-import net.hasor.rsf.general.ProtocolStatus;
-import net.hasor.rsf.runtime.RsfFilter;
-import net.hasor.rsf.runtime.RsfFilterChain;
-import net.hasor.rsf.runtime.RsfRequest;
-import net.hasor.rsf.runtime.RsfResponse;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.common.constants.ProtocolStatus;
 /**
  * 统计QPS。
  * @version : 2014年11月30日
