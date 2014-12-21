@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.transport.protocol.toos;
+package net.hasor.rsf.utils;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.common.constants.RSFConstants;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.remoting.transport.protocol.block.BaseSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.block.RequestSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.block.ResponseSocketBlock;

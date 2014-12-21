@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.transport.protocol.toos;
+package net.hasor.rsf.utils;
 import java.lang.reflect.Array;
 import java.util.Map;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RSFConstants;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.remoting.transport.protocol.block.RequestSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.codec.Protocol;

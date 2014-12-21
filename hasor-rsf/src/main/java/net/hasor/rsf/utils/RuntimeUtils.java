@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting;
+package net.hasor.rsf.utils;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
-import net.hasor.rsf.context.AbstractRsfContext;
-import net.hasor.rsf.remoting.client.RsfClient;
-import net.hasor.rsf.remoting.serialize.SerializeCoder;
-import net.hasor.rsf.remoting.serialize.SerializeFactory;
+import net.hasor.rsf.adapter.AbstractRsfClient;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
+import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
-import net.hasor.rsf.remoting.transport.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
  * @version : 2014年11月17日
@@ -38,18 +40,18 @@ public class RuntimeUtils {
     private static AtomicLong requestID = new AtomicLong(1);
     //
     /**根据元信息创建一个{@link RsfRequest}对象。*/
-    public static RsfRequestImpl buildRequest(ServiceMetaData<?> metaData, RsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
+    public static RsfRequestImpl buildRequest(RsfBindInfo<?> bindInfo, AbstractRsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
         //1.基本信息
-        RsfContext rsfContext = rsfClient.getRsfContext();
+        AbstractRsfContext rsfContext = rsfClient.getRsfContext();
         RequestMsg requestMsg = new RequestMsg();
         requestMsg.setVersion(rsfContext.getSettings().getVersion());
         requestMsg.setRequestID(requestID.getAndIncrement());
-        requestMsg.setServiceName(metaData.getServiceName());//远程服务名
-        requestMsg.setServiceGroup(metaData.getServiceGroup());//远程服务分组
-        requestMsg.setServiceVersion(metaData.getServiceVersion());//远程服务版本
+        requestMsg.setServiceName(bindInfo.getBindName());//远程服务名
+        requestMsg.setServiceGroup(bindInfo.getBindGroup());//远程服务分组
+        requestMsg.setServiceVersion(bindInfo.getBindVersion());//远程服务版本
         requestMsg.setTargetMethod(methodName);//远程服务方法名
-        requestMsg.setSerializeType(metaData.getSerializeType());//序列化策略
-        requestMsg.setClientTimeout(metaData.getClientTimeout());//远程客户端超时时间
+        requestMsg.setSerializeType(bindInfo.getSerializeType());//序列化策略
+        requestMsg.setClientTimeout(bindInfo.getClientTimeout());//远程客户端超时时间
         //2.序列化调用参数
         try {
             SerializeFactory serializeFactory = rsfContext.getSerializeFactory();
@@ -63,24 +65,25 @@ public class RuntimeUtils {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
         //3.Opt参数
-        String[] optKeys = rsfClient.getOptionKeys();
+        RsfOptionSet optSet = rsfClient.getRsfContext().getSettings().getClientOption();
+        String[] optKeys = optSet.getOptionKeys();
         for (String optKey : optKeys) {
-            String optVar = rsfClient.getOption(optKey);
+            String optVar = optSet.getOption(optKey);
             requestMsg.addOption(optKey, optVar);
         }
         //4.RsfRequest
-        return new RsfRequestImpl(true, parameterTypes, parameterObjects, metaData, requestMsg, rsfContext);
+        return new RsfRequestImpl(true, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
     }
     //
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
     public static RsfRequestImpl recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
         //1.获取MetaData
-        ServiceMetaData<?> metaData = rsfContext.getService(//
+        RsfBindInfo<?> bindInfo = rsfContext.getService(//
                 requestMsg.getServiceName(), requestMsg.getServiceGroup(), requestMsg.getServiceVersion());
         Object[] parameterObjects = null;//
         Class<?>[] parameterTypes = null;//
         //
-        if (metaData == null) {
+        if (bindInfo == null) {
             throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
         }
         //2.反序列化
@@ -98,11 +101,11 @@ public class RuntimeUtils {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
         //4.RsfRequest and check Forbidden
-        return new RsfRequestImpl(false, parameterTypes, parameterObjects, metaData, requestMsg, rsfContext);
+        return new RsfRequestImpl(false, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
     }
     /**从响应数据包中恢复{@link RsfResponse}对象。*/
     public static RsfResponse recoverResponse(ResponseMsg responseMsg, RsfRequest rsfRequest, AbstractRsfContext rsfContext) throws Throwable {
-        ServiceMetaData<?> metaData = rsfRequest.getMetaData();
+        RsfBindInfo<?> metaData = rsfRequest.getBindInfo();
         Class<?> returnType = rsfRequest.getServiceMethod().getReturnType();
         Object returnObject = responseMsg.getReturnData(rsfContext.getSerializeFactory());
         return new RsfResponseImpl(metaData, responseMsg, returnObject, returnType);
