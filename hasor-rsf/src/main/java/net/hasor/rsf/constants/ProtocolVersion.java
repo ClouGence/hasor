@@ -13,34 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.common.constants;
+package net.hasor.rsf.constants;
 /**
  * 
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum ProtocolType {
+public enum ProtocolVersion {
     /**未定义*/
-    Unknown(0xFF), // ...
-    /**调用请求。*/
-    Request(0xC0), // 1100 0000
-    /**调用响应。*/
-    Response(0x80);// 1000 0000
+    Unknown(0x00),
+    /**RSF 1.0 协议*/
+    V_1_0(0x01);
     //
     //
-    private int value = 0;
-    private ProtocolType(int value) {
-        this.value = value;
+    private byte value = 0;
+    private ProtocolVersion(int value) {
+        if (value >= 0xFF) {
+            throw new IndexOutOfBoundsException("value maximum is 0xFF.");
+        }
+        this.value = (byte) value;
+    }
+    public byte value() {
+        return this.value;
     }
     public String toString() {
         return String.format("%s(%s)", this.name(), this.value);
     }
     /**根据状态值获取状态枚举*/
-    public static ProtocolType valueOf(byte value) {
-        for (ProtocolType element : ProtocolType.values()) {
-            if ((element.value | value) == value) {
+    public static ProtocolVersion valueOf(byte statusValue) {
+        for (ProtocolVersion element : ProtocolVersion.values()) {
+            if (element.value() == statusValue)
                 return element;
-            }
         }
         return Unknown;
     }

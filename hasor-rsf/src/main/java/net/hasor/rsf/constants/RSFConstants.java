@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.constants;
+import java.nio.charset.Charset;
 /**
- * RSF 常量定义。
+ * 
+ * @version : 2014年9月20日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.common.constants;
+public interface RSFConstants {
+    // 1000 0000
+    public static final byte    RSF             = (byte) (0x80);
+    // 1100 0000
+    public static final byte    RSF_Request     = RSF | 0x40;
+    // 1000 0000
+    public static final byte    RSF_Response    = RSF | 0x00;
+    //
+    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+}
