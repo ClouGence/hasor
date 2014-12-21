@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
 /**
  * 注册中心
  * @version : 2014年11月30日
@@ -24,9 +23,11 @@ public interface BindCenter {
     /**获取RsfBinder*/
     public RsfBinder getRsfBinder();
     /**获取元信息所描述的服务对象。*/
-    public <T> T getBean(ServiceMetaData<T> metaData);
+    public <T> T getBean(RsfBindInfo<T> metaData);
     /**根据服务名获取服务描述。*/
-    public <T> ServiceMetaData<T> getService(String name, String group, String version);
+    public <T> RsfBindInfo<T> getService(String serviceID);
+    /**根据服务名获取服务描述。*/
+    public <T> RsfBindInfo<T> getService(String name, String group, String version);
     /**获取已经注册的所有服务名称。*/
     public String[] getServiceNames();
 }

@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.BindInfo;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日
@@ -33,6 +32,8 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
     /**注册的服务类型。*/
     public Class<T> getBindType();
     //
-    /**获取元信息。*/
-    public ServiceMetaData<T> getMetaData();
+    /**获取客户端调用服务超时时间。*/
+    public int getClientTimeout();
+    /**获取序列化方式*/
+    public String getSerializeType();
 }

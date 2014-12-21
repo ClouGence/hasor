@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
 /**
  * 请求响应通用。
  * @version : 2014年10月25日
@@ -22,7 +21,7 @@ import net.hasor.rsf.common.metadata.ServiceMetaData;
  */
 public interface RsfHeader {
     /**获取元信息*/
-    public ServiceMetaData<?> getMetaData();
+    public RsfBindInfo<?> getBindInfo();
     /**获取协议版本。*/
     public byte getProtocol();
     /**请求ID。*/

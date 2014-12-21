@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.Settings;
-import net.hasor.rsf.common.constants.SendLimitPolicy;
 /**
  * RSF 配置。
  * @version : 2014年11月18日

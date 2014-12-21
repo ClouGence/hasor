@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
-import net.hasor.rsf.remoting.serialize.SerializeFactory;
+import java.io.IOException;
+import org.more.future.FutureCallback;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
@@ -25,9 +25,31 @@ public interface RsfContext {
     /**获取注册中心。*/
     public BindCenter getBindCenter();
     /**根据服务名获取服务描述。*/
-    public <T> ServiceMetaData<T> getService(String serviceName, String group, String version);
+    public <T> RsfBindInfo<T> getService(String serviceID);
+    /**根据服务名获取服务描述。*/
+    public <T> RsfBindInfo<T> getService(String serviceName, String group, String version);
     /**获取配置*/
     public RsfSettings getSettings();
-    /**获取序列化管理器。*/
-    public SerializeFactory getSerializeFactory();
+    //
+    /**获取远程服务对象*/
+    public <T> T getRemote(String serviceID) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(String serviceID, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**获取远程服务对象*/
+    public <T> T getRemote(String name, String group, String version) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(String name, String group, String version, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    //
+    /**同步方式调用远程服务。*/
+    public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
+    /**异步方式调用远程服务。*/
+    public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects);
+    /**以回调方式调用远程服务。*/
+    public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
+    /**以回调方式发送RSF调用请求。*/
+    public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
 }
