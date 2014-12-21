@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.serialize.coder;
+package net.hasor.rsf.serialize.coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import net.hasor.rsf.remoting.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeCoder;
 /**
  * 
  * @version : 2014年9月19日

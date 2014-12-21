@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.serialize;
 /**
- * 序列化工具集。
+ * 序列化（编码/解码）器
+ * @version : 2014年9月19日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.remoting.serialize;
+public interface SerializeCoder {
+    /** decode byte[] to Object */
+    public Object decode(byte[] bytes) throws Throwable;
+    /** Encode Object to byte[] */
+    public byte[] encode(Object object) throws Throwable;
+}

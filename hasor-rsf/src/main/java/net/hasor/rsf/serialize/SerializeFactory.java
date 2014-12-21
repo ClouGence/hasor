@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.serialize;
+package net.hasor.rsf.serialize;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.hasor.core.XmlNode;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.common.constants.RsfException;
+import net.hasor.rsf.constants.RsfException;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
