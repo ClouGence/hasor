@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
+import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.Executor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
@@ -34,4 +35,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract AbstractBindCenter getBindCenter();
     /**获取服务上配置有效的过滤器。*/
     public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);
+    /**获取Netty事件处理工具*/
+    public abstract EventLoopGroup getLoopGroup();
 }

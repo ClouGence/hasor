@@ -23,5 +23,8 @@ import net.hasor.rsf.RsfBindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractBindCenter implements BindCenter {
+    /**查找一个有效的连接。*/
     public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
+    /**被明确为无效的连接。*/
+    public abstract void invalidAddress(URL address);
 }

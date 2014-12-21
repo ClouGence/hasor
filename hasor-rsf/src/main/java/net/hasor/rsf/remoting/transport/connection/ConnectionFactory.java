@@ -23,12 +23,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfOptionSet;
+import net.hasor.rsf.adapter.AbstractBindCenter;
 import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.ProtocolStatus;
@@ -57,37 +58,36 @@ public class ConnectionFactory {
     //
     /**关闭这个连接并解除注册。*/
     public void closeChannel(NetworkConnection conn) {
-        this.addressMapping.remove(conn);
+        this.addressMapping.remove(conn.getRemoteURL());
         conn.close();
     }
     //
-    private final Map<String, NetworkConnection> addressMapping = new ConcurrentHashMap<String, NetworkConnection>();
-    public NetworkConnection getConnection(RsfBindInfo<?> metaData, final AbstractRsfClient rsfClient) {
-        AddressManager addressManager = this.rsfContext.createBindCenter().getAddressManager();
+    private final Map<URL, NetworkConnection> addressMapping = new ConcurrentHashMap<URL, NetworkConnection>();
+    public NetworkConnection getConnection(RsfBindInfo<?> bindInfo, final AbstractRsfClient rsfClient) {
+        AbstractBindCenter bindCenter = this.rsfContext.getBindCenter();
         while (true) {
             //查找可用的连接
-            AddressInfo address = addressManager.findAddress(metaData);
-            if (address == null) {
+            URL addressURL = bindCenter.findServiceAddress(bindInfo);
+            if (addressURL == null) {
                 return null;
             }
-            String addressKey = address.getID();
-            NetworkConnection conn = this.addressMapping.get(addressKey);
+            NetworkConnection conn = this.addressMapping.get(addressURL);
             //尝试连接到远端
             if (conn == null) {
-                conn = this.connSocket(address, rsfClient);
+                conn = this.connSocket(addressURL, rsfClient);
                 if (conn != null) {
-                    this.addressMapping.put(addressKey, conn);
+                    this.addressMapping.put(addressURL, conn);
                 }
             }
             //
             if (conn == null) {
-                addressManager.invalidAddress(address);
+                bindCenter.invalidAddress(addressURL);
             } else {
                 return conn;
             }
         }
     }
-    private NetworkConnection connSocket(AddressInfo address, final InnerRsfClient rsfClient) {
+    private NetworkConnection connSocket(final URL addressURL, final AbstractRsfClient rsfClient) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);
@@ -95,13 +95,13 @@ public class ConnectionFactory {
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                NetworkConnection.initConnection(channel);
+                NetworkConnection.initConnection(addressURL, channel);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(rsfClient));
+                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(ConnectionFactory.this));
             }
         });
         ChannelFuture future = null;
-        SocketAddress remote = new InetSocketAddress(address.getHostIP(), address.getHostPort());
+        SocketAddress remote = new InetSocketAddress(addressURL.getHost(), addressURL.getPort());
         future = boot.connect(remote);
         try {
             future.await();

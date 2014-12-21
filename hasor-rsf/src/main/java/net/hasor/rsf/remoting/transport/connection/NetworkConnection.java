@@ -18,17 +18,20 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
+import java.net.URL;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkConnection {
+    private URL               remoteAddressURL;
     private InetSocketAddress remoteAddress = null;
     private InetSocketAddress localAddress  = null;
     private Channel           socketChanne  = null;
     //
-    public NetworkConnection(Channel socketChanne) {
+    private NetworkConnection(URL remoteAddressURL, Channel socketChanne) {
+        this.remoteAddressURL = remoteAddressURL;
         this.socketChanne = socketChanne;
     }
     private InetSocketAddress remote() {
@@ -70,6 +73,10 @@ public class NetworkConnection {
     public Channel getChannel() {
         return this.socketChanne;
     }
+    /**获取远程URL*/
+    public URL getRemoteURL() {
+        return this.remoteAddressURL;
+    }
     public String toString() {
         StringBuilder sb = new StringBuilder("");
         sb.append("Local=" + getLocalHost() + ":" + this.getLocalPort());
@@ -82,7 +89,7 @@ public class NetworkConnection {
     public static NetworkConnection getConnection(Channel channel) {
         return channel.attr(NettyKey).get();
     }
-    public static void initConnection(Channel channel) {
-        channel.attr(NettyKey).set(new NetworkConnection(channel));
+    public static void initConnection(URL addressURL, Channel channel) {
+        channel.attr(NettyKey).set(new NetworkConnection(addressURL, channel));
     }
 }
