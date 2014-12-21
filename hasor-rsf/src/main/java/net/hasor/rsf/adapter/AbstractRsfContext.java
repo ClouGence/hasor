@@ -15,7 +15,10 @@
  */
 package net.hasor.rsf.adapter;
 import java.util.concurrent.Executor;
+import net.hasor.core.Provider;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
@@ -29,4 +32,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract SerializeFactory getSerializeFactory();
     /**获取注册中心。*/
     public abstract AbstractBindCenter getBindCenter();
+    /**获取服务上配置有效的过滤器。*/
+    public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);
 }

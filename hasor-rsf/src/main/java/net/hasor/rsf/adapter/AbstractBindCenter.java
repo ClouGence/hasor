@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
-import net.hasor.core.Provider;
+import java.net.URL;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfFilter;
 /**
  * 注册中心
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractBindCenter implements BindCenter {
-    /**获取服务上配置有效的过滤器。*/
-    public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);
+    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
 }

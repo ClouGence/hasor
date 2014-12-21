@@ -52,12 +52,7 @@ public class ConnectionFactory {
     }
     /**连接远程服务（具体的地址）*/
     public AbstractRsfClient getClient(NetworkConnection net) throws RsfException, InterruptedException {
-        InnerRsfClient client = new InnerRsfClient(this, this.rsfContext);
-        RsfOptionSet optManager = this.rsfContext.getSettings().getClientOption();
-        for (String optKey : optManager.getOptionKeys()) {
-            client.addOption(optKey, optManager.getOption(optKey));
-        }
-        return client;
+        return null;
     }
     //
     /**关闭这个连接并解除注册。*/

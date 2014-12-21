@@ -24,10 +24,8 @@ import org.more.future.FutureCallback;
 public interface RsfContext {
     /**获取注册中心。*/
     public BindCenter getBindCenter();
-    /**根据服务名获取服务描述。*/
-    public <T> RsfBindInfo<T> getService(String serviceID);
-    /**根据服务名获取服务描述。*/
-    public <T> RsfBindInfo<T> getService(String serviceName, String group, String version);
+    /**获取元信息所描述的服务对象。*/
+    public <T> T getBean(RsfBindInfo<T> metaData);
     /**获取配置*/
     public RsfSettings getSettings();
     //

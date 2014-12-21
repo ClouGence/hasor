@@ -85,7 +85,7 @@ public abstract class AbstractBindCenter implements BindCenter {
         versionMap.put(version, rsfInfo);
     }
     /**根据服务名获取服务描述。*/
-    public <T> ServiceMetaData<T> getService(String name, String group, String version) {
+    public <T> RsfBindInfo<T> getService(String name, String group, String version) {
         //name
         Map<String, Map<String, ServiceDefine<?>>> groupMap = this.rsfServiceMap.get(name);
         if (groupMap == null)
@@ -107,14 +107,14 @@ public abstract class AbstractBindCenter implements BindCenter {
         return sname;
     }
     /**获取服务上配置有效的过滤器。*/
-    public <T> Provider<RsfFilter>[] getFilters(ServiceMetaData<T> metaData) {
+    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData) {
         ServiceDefine<?> define = this.rsfDefineMap.get(metaData);
         if (define == null)
             return null;
         return define.getFilterProvider();
     }
     /**获取元信息所描述的服务对象。*/
-    public <T> T getBean(ServiceMetaData<T> metaData) {
+    public <T> T getBean(RsfBindInfo<T> metaData) {
         ServiceDefine<?> define = this.rsfDefineMap.get(metaData);
         if (define == null)
             return null;

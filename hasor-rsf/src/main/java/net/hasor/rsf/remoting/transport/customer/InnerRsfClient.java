@@ -134,7 +134,7 @@ class InnerRsfClient implements AbstractRsfClient {
         //
         try {
             RsfBindInfo<?> bindInfo = req.getBindInfo();
-            Provider<RsfFilter>[] rsfFilter = this.getRsfContext().getBindCenter().getFilters(bindInfo);
+            Provider<RsfFilter>[] rsfFilter = this.getRsfContext().getFilters(bindInfo);
             new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     sendRequest(rsfFuture);//发送请求到远方
