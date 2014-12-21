@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting;
+package net.hasor.rsf.remoting.transport.component;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;

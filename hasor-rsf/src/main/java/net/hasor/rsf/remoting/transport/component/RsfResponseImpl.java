@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting;
+package net.hasor.rsf.remoting.transport.component;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
+import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 /**
@@ -25,23 +25,23 @@ import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseImpl implements RsfResponse {
-    private ServiceMetaData<?> metaData     = null;
-    private ResponseMsg        responseMsg  = null;
+    private RsfBindInfo<?> bindInfo     = null;
+    private ResponseMsg    responseMsg  = null;
     //
-    private Object             returnObject = null;
-    private Class<?>           returnType   = null;
-    private boolean            committed    = false;
+    private Object         returnObject = null;
+    private Class<?>       returnType   = null;
+    private boolean        committed    = false;
     //
-    public RsfResponseImpl(ServiceMetaData<?> metaData, ResponseMsg responseMsg,//
+    public RsfResponseImpl(RsfBindInfo<?> bindInfo, ResponseMsg responseMsg,//
             Object returnObject, Class<?> returnType) {
-        this.metaData = metaData;
+        this.bindInfo = bindInfo;
         this.responseMsg = responseMsg;
         this.returnObject = returnObject;
         this.returnType = returnType;
         this.committed = true;
     }
     RsfResponseImpl(RsfRequestImpl rsfRequest) {
-        this.metaData = rsfRequest.getMetaData();
+        this.bindInfo = rsfRequest.getBindInfo();
         RequestMsg msg = rsfRequest.getMsg();
         //
         this.responseMsg = new ResponseMsg();
@@ -66,8 +66,8 @@ public class RsfResponseImpl implements RsfResponse {
     public short getResponseStatus() {
         return this.responseMsg.getStatus();
     }
-    public ServiceMetaData<?> getMetaData() {
-        return this.metaData;
+    public RsfBindInfo<?> getBindInfo() {
+        return this.bindInfo;
     }
     //
     public String[] getOptionKeys() {

@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.server;
+package net.hasor.rsf.remoting.transport.provider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.context.AbstractRsfContext;
-import net.hasor.rsf.remoting.NetworkConnection;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
-import net.hasor.rsf.remoting.transport.protocol.toos.TransferUtils;
+import net.hasor.rsf.utils.TransferUtils;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerServerHandler extends ChannelInboundHandlerAdapter {
+public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
     private AbstractRsfContext rsfContext;
     //
-    public InnerServerHandler(AbstractRsfContext rsfContext) {
+    public RsfProviderHandler(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
     }
     public void channelRead(ChannelHandlerContext ctx, Object msg) {

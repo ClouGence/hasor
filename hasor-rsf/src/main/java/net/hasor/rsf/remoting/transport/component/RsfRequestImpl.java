@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting;
+package net.hasor.rsf.remoting.transport.component;
 import java.lang.reflect.Method;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
+import net.hasor.rsf.utils.MethodCacheUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRequestImpl implements RsfRequest {
-    private ServiceMetaData<?> metaData         = null;
-    private RequestMsg         requestMsg       = null;
-    private RsfContext         rsfContext       = null;
-    private boolean            local            = false;
+    private RsfBindInfo<?> bindInfo         = null;
+    private RequestMsg     requestMsg       = null;
+    private RsfContext     rsfContext       = null;
+    private boolean        local            = false;
     //
-    private Class<?>[]         parameterTypes   = null;
-    private Object[]           parameterObjects = null;
+    private Class<?>[]     parameterTypes   = null;
+    private Object[]       parameterObjects = null;
     //
     public RsfRequestImpl(boolean local, Class<?>[] parameterTypes, Object[] parameterObjects,//
-            ServiceMetaData<?> metaData, RequestMsg requestMsg, RsfContext rsfContext) throws RsfException {
+            RsfBindInfo<?> bindInfo, RequestMsg requestMsg, RsfContext rsfContext) throws RsfException {
         this.parameterTypes = parameterTypes;
         this.parameterObjects = parameterObjects;
-        this.metaData = metaData;
+        this.bindInfo = bindInfo;
         this.requestMsg = requestMsg;
         this.rsfContext = rsfContext;
         this.local = local;
@@ -84,8 +85,8 @@ public class RsfRequestImpl implements RsfRequest {
     public RsfContext getContext() {
         return this.rsfContext;
     }
-    public ServiceMetaData<?> getMetaData() {
-        return this.metaData;
+    public RsfBindInfo<?> getBindInfo() {
+        return this.bindInfo;
     }
     public Class<?>[] getParameterTypes() {
         return this.parameterTypes;
@@ -96,7 +97,8 @@ public class RsfRequestImpl implements RsfRequest {
     private Method serviceMethod = null;
     public Method getServiceMethod() {
         if (this.serviceMethod == null)
-            this.serviceMethod = this.getMetaData().getServiceMethod(this.requestMsg.getTargetMethod(), this.parameterTypes);
+            this.serviceMethod = MethodCacheUtils.getServiceMethod(//
+                    this.bindInfo.getBindType(), this.requestMsg.getTargetMethod(), this.parameterTypes);
         return this.serviceMethod;
     }
     //

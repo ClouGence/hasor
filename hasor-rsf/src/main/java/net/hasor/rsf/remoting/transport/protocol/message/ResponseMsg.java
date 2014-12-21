@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.transport.protocol.message;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.remoting.serialize.SerializeCoder;
-import net.hasor.rsf.remoting.serialize.SerializeFactory;
-import net.hasor.rsf.remoting.transport.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.UndefinedException;
 /**
  * RSF 1.0-Response 协议数据.

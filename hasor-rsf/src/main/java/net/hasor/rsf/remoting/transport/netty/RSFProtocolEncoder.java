@@ -23,8 +23,8 @@ import net.hasor.rsf.remoting.transport.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.codec.Protocol;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
-import net.hasor.rsf.remoting.transport.protocol.toos.ProtocolUtils;
-import net.hasor.rsf.remoting.transport.protocol.toos.TransferUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.utils.TransferUtils;
 /**
  * 编码器
  * @version : 2014年10月10日

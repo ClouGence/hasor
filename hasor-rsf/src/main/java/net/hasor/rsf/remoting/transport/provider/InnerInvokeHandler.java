@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.server;
+package net.hasor.rsf.remoting.transport.provider;
 import java.lang.reflect.Method;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
+import net.hasor.rsf.constants.ProtocolStatus;
 /**
  * 负责处理服务的调用。
  * @version : 2014年11月4日
@@ -32,8 +32,8 @@ class InnerInvokeHandler implements RsfFilterChain {
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         if (response.isResponse() == true)
             return;
-        ServiceMetaData<?> metaData = request.getMetaData();
-        Object targetObj = request.getContext().getBindCenter().getBean(metaData);
+        RsfBindInfo<?> bindInfo = request.getBindInfo();
+        Object targetObj = request.getContext().getBindCenter().getBean(bindInfo);
         //
         if (targetObj == null) {
             response.sendStatus(ProtocolStatus.Forbidden, "failed to get service.");

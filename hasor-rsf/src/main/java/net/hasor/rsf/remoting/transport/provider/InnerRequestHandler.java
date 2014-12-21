@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.server;
+package net.hasor.rsf.remoting.transport.provider;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
-import net.hasor.rsf.context.AbstractRsfContext;
-import net.hasor.rsf.remoting.NetworkConnection;
-import net.hasor.rsf.remoting.RsfFilterHandler;
-import net.hasor.rsf.remoting.RsfRequestImpl;
-import net.hasor.rsf.remoting.RsfResponseImpl;
-import net.hasor.rsf.remoting.RuntimeUtils;
-import net.hasor.rsf.remoting.serialize.SerializeFactory;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.remoting.transport.component.RsfFilterHandler;
+import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
+import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
-import net.hasor.rsf.remoting.transport.protocol.toos.TransferUtils;
+import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.TransferUtils;
 import org.more.util.BeanUtils;
 /**
  * 负责处理 Request 调用逻辑，和response写入逻辑。
@@ -71,14 +71,14 @@ class InnerRequestHandler implements Runnable {
         }
         //1.检查timeout
         long lostTime = System.currentTimeMillis() - requestMsg.getReceiveTime();
-        int timeout = validateTimeout(requestMsg.getClientTimeout(), request.getMetaData());
+        int timeout = validateTimeout(requestMsg.getClientTimeout(), request.getBindInfo());
         if (lostTime > timeout) {
             response.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
             return response;
         }
         //2.执行调用
         try {
-            Provider<RsfFilter>[] rsfFilters = this.rsfContext.createBindCenter().getFilters(request.getMetaData());
+            Provider<RsfFilter>[] rsfFilters = this.rsfContext.getBindCenter().getFilters(request.getBindInfo());
             new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
         } catch (Throwable e) {
             //500 InternalServerError
@@ -111,11 +111,11 @@ class InnerRequestHandler implements Runnable {
         }
         this.connection.getChannel().writeAndFlush(responseMsg);
     }
-    private int validateTimeout(int timeout, ServiceMetaData<?> serviceMetaData) {
+    private int validateTimeout(int timeout, RsfBindInfo<?> bindInfo) {
         if (timeout <= 0)
             timeout = this.rsfContext.getSettings().getDefaultTimeout();
-        if (timeout > serviceMetaData.getClientTimeout())
-            timeout = serviceMetaData.getClientTimeout();
+        if (timeout > bindInfo.getClientTimeout())
+            timeout = bindInfo.getClientTimeout();
         return timeout;
     }
 }

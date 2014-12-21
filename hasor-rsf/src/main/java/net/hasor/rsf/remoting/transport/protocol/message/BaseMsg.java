@@ -16,8 +16,8 @@
 package net.hasor.rsf.remoting.transport.protocol.message;
 import java.util.HashMap;
 import java.util.Map;
-import net.hasor.rsf.common.constants.RSFConstants;
-import net.hasor.rsf.remoting.transport.protocol.toos.ProtocolUtils;
+import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
  * @version : 2014年11月3日

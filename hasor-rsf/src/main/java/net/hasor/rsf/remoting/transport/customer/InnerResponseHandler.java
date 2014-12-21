@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.client;
+package net.hasor.rsf.remoting.transport.customer;
+import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.remoting.RuntimeUtils;
+import net.hasor.rsf.adapter.AbstractRsfClient;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
+import net.hasor.rsf.utils.RuntimeUtils;
 /**
  * 负责处理客户端 Response 回应逻辑。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerResponseHandler implements Runnable {
-    private ResponseMsg    responseMsg;
-    private InnerRsfClient rsfClient;
-    private RsfFuture      rsfFuture;
+    private ResponseMsg       responseMsg;
+    private AbstractRsfClient rsfClient;
+    private RsfFuture         rsfFuture;
     //
-    public InnerResponseHandler(ResponseMsg responseMsg, InnerRsfClient rsfClient, RsfFuture rsfFuture) {
+    public InnerResponseHandler(ResponseMsg responseMsg, AbstractRsfClient rsfClient, RsfFuture rsfFuture) {
         this.responseMsg = responseMsg;
         this.rsfClient = rsfClient;
         this.rsfFuture = rsfFuture;
@@ -53,10 +55,10 @@ class InnerResponseHandler implements Runnable {
                 rsfClient.putResponse(responseMsg.getRequestID(), response);
             } else {
                 String errorMessage = (String) response.getResponseData();
-                rsfClient.putError(responseMsg.getRequestID(), new RsfException(resStatus, errorMessage));
+                rsfClient.putResponse(responseMsg.getRequestID(), new RsfException(resStatus, errorMessage));
             }
         } catch (Throwable e) {
-            rsfClient.putError(responseMsg.getRequestID(), e);
+            rsfClient.putResponse(responseMsg.getRequestID(), e);
             return;
         }
     }

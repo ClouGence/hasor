@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.client;
+package net.hasor.rsf.remoting.transport.connection;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -26,30 +26,32 @@ import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
-import net.hasor.rsf.context.AbstractRsfContext;
-import net.hasor.rsf.remoting.NetworkConnection;
-import net.hasor.rsf.remoting.address.AddressInfo;
-import net.hasor.rsf.remoting.address.AddressManager;
+import net.hasor.rsf.adapter.AbstractRsfClient;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.remoting.transport.customer.RsfCustomerHandler;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 /**
  * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfClientFactory {
+public class ConnectionFactory {
     private final AbstractRsfContext rsfContext;
     //
-    public RsfClientFactory(RsfContext rsfContext) {
+    public ConnectionFactory(RsfContext rsfContext) {
         this.rsfContext = (AbstractRsfContext) rsfContext;
     }
-    //
+    // 
+    public AbstractRsfContext getRsfContext() {
+        return this.rsfContext;
+    }
     /**连接远程服务（具体的地址）*/
-    public RsfClient getClient() throws RsfException, InterruptedException {
+    public AbstractRsfClient getClient(NetworkConnection net) throws RsfException, InterruptedException {
         InnerRsfClient client = new InnerRsfClient(this, this.rsfContext);
         RsfOptionSet optManager = this.rsfContext.getSettings().getClientOption();
         for (String optKey : optManager.getOptionKeys()) {
@@ -59,13 +61,13 @@ public class RsfClientFactory {
     }
     //
     /**关闭这个连接并解除注册。*/
-    void closeChannel(NetworkConnection conn) {
+    public void closeChannel(NetworkConnection conn) {
         this.addressMapping.remove(conn);
         conn.close();
     }
     //
     private final Map<String, NetworkConnection> addressMapping = new ConcurrentHashMap<String, NetworkConnection>();
-    NetworkConnection getConnection(ServiceMetaData<?> metaData, final InnerRsfClient rsfClient) {
+    public NetworkConnection getConnection(RsfBindInfo<?> metaData, final AbstractRsfClient rsfClient) {
         AddressManager addressManager = this.rsfContext.createBindCenter().getAddressManager();
         while (true) {
             //查找可用的连接
@@ -100,7 +102,7 @@ public class RsfClientFactory {
                 Channel channel = ch.pipeline().channel();
                 NetworkConnection.initConnection(channel);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new InnerClientHandler(rsfClient));
+                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(rsfClient));
             }
         });
         ChannelFuture future = null;

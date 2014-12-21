@@ -18,15 +18,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import java.io.IOException;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.ProtocolType;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.ProtocolType;
 import net.hasor.rsf.remoting.transport.protocol.block.RequestSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.block.ResponseSocketBlock;
 import net.hasor.rsf.remoting.transport.protocol.codec.Protocol;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
-import net.hasor.rsf.remoting.transport.protocol.toos.ProtocolUtils;
-import net.hasor.rsf.remoting.transport.protocol.toos.TransferUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.utils.TransferUtils;
 /**
  * 解码器
  * @version : 2014年10月10日

@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.client;
+package net.hasor.rsf.remoting.transport.customer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.remoting.NetworkConnection;
+import net.hasor.rsf.RsfFuture;
+import net.hasor.rsf.adapter.AbstractRsfClient;
+import net.hasor.rsf.remoting.transport.connection.ConnectionFactory;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 /**
  * 接受Response响应，并交付Response处理线程处理。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerClientHandler extends ChannelInboundHandlerAdapter {
-    private InnerRsfClient rsfClient = null;
+public class RsfCustomerHandler extends ChannelInboundHandlerAdapter {
+    private ConnectionFactory connManager = null;
     //
-    public InnerClientHandler(InnerRsfClient rsfClient) {
-        this.rsfClient = rsfClient;
+    public RsfCustomerHandler(ConnectionFactory connManager) {
+        this.connManager = connManager;
     }
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -36,12 +39,14 @@ class InnerClientHandler extends ChannelInboundHandlerAdapter {
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
         //
-        RsfFuture rsfFuture = this.rsfClient.getRequest(responseMsg.getRequestID());
+        NetworkConnection net = NetworkConnection.getConnection(ctx.channel());
+        AbstractRsfClient rsfClient = this.connManager.getClient(net);
+        RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
             NetworkConnection netConn = NetworkConnection.getConnection(ctx.channel());
             Hasor.logWarn(netConn + " give up the response,requestID:" + responseMsg.getRequestID() + " ,maybe because timeout! ");
             return;//或许它已经超时了。
         }
-        new InnerResponseHandler(responseMsg, this.rsfClient, rsfFuture).run();
+        new InnerResponseHandler(responseMsg, rsfClient, rsfFuture).run();
     }
 }
