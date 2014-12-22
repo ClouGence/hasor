@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
+package net.hasor.rsf.rpc;
+import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.adapter.AbstractBindCenter;
+import net.hasor.rsf.constants.RsfException;
 /**
  * 注册中心
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BindCenter {
-    /**获取RsfBinder*/
-    public RsfBinder getRsfBinder();
-    /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String serviceID);
-    /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String group, String name, String version);
-    /**获取已经注册的所有服务名称。*/
-    public String[] getServiceNames();
+public class DefaultBindCenter2 extends AbstractBindCenter {
+    public DefaultBindCenter(RsfContext rsfContext) {
+        super(rsfContext);
+    }
+    protected <T> T createBean(RsfBindInfo<T> define) {
+        if (define instanceof CustomerProvider) {
+            CustomerProvider<T> cp = (CustomerProvider<T>) define;
+            return cp.getCustomerProvider().get();
+        }
+        throw new RsfException("RSF object cannot be created.");
+    }
 }

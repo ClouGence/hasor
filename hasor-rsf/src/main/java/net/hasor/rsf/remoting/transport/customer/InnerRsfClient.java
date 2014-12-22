@@ -127,7 +127,7 @@ class InnerRsfClient implements AbstractRsfClient {
         this.timer.newTimeout(timeTask, reqTimeout, TimeUnit.MILLISECONDS);
     };
     /**发送连接请求。*/
-    public RsfFuture sendRequest(RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener) {
+    public RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener) {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
         RsfRequestImpl req = (RsfRequestImpl) rsfFuture.getRequest();
         RsfResponseImpl res = req.buildResponse();

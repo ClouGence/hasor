@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.remoting.binder;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 /**
- * RSF 服务元信息。
+ * 
+ * @version : 2014年12月22日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.remoting.metadata;
+class RsfURLStreamHandler extends URLStreamHandler {
+    protected URLConnection openConnection(URL u) throws IOException {
+        throw new UnsupportedOperationException("Method not implemented.");
+    }
+}

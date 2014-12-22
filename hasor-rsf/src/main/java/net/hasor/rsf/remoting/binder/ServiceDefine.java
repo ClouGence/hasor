@@ -14,59 +14,63 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.binder;
-import java.util.UUID;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
-import net.hasor.core.info.MetaDataAdapter;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfBinder.RegisterReference;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceDefine<T> extends MetaDataAdapter implements RsfBindInfo<T>, CustomerProvider<T>, RegisterReference<T> {
-    private String                uniqueID = UUID.randomUUID().toString();
-    private ServiceMetaData<T>    serviceMetaData;
-    private AbstractBindCenter    registerCenter;
+class ServiceDefine<T> implements CustomerProvider<T>, RegisterReference<T> {
+    private ServiceDomain<T>      serviceDomain;
+    private AbstractRsfContext    rsfContext;
     private Provider<RsfFilter>[] rsfFilterArray;
     private Provider<T>           rsfProvider;
     //
-    public ServiceDefine(ServiceMetaData<T> serviceMetaData, AbstractBindCenter registerCenter, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
-        this.serviceMetaData = serviceMetaData;
-        this.registerCenter = registerCenter;
+    public ServiceDefine(ServiceDomain<T> serviceDomain, AbstractRsfContext rsfContext, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
+        this.serviceDomain = serviceDomain;
+        this.rsfContext = rsfContext;
         this.rsfFilterArray = rsfFilterArray;
         this.rsfProvider = rsfProvider;
-    }
-    //
-    public String getBindID() {
-        return this.uniqueID;
-    }
-    public String getBindName() {
-        return this.serviceMetaData.getServiceName();
-    }
-    public String getBindGroup() {
-        return this.serviceMetaData.getServiceGroup();
-    }
-    public String getBindVersion() {
-        return this.serviceMetaData.getServiceVersion();
-    }
-    public Class<T> getBindType() {
-        return this.serviceMetaData.getServiceType();
     }
     //
     public Provider<T> getCustomerProvider() {
         return this.rsfProvider;
     }
-    public ServiceMetaData<T> getMetaData() {
-        return this.serviceMetaData;
-    }
     public void unRegister() {
-        this.registerCenter.recoverService(this);
+        this.rsfContext.getBindCenter().recoverService(this);
     }
     public Provider<RsfFilter>[] getFilterProvider() {
         return this.rsfFilterArray;
+    }
+    //
+    //
+    public String getBindID() {
+        return this.serviceDomain.getBindID();
+    }
+    public String getBindName() {
+        return this.serviceDomain.getBindName();
+    }
+    public String getBindGroup() {
+        return this.serviceDomain.getBindGroup();
+    }
+    public String getBindVersion() {
+        return this.serviceDomain.getBindVersion();
+    }
+    public Class<T> getBindType() {
+        return this.serviceDomain.getBindType();
+    }
+    public int getClientTimeout() {
+        return this.serviceDomain.getClientTimeout();
+    }
+    public String getSerializeType() {
+        return this.serviceDomain.getSerializeType();
+    }
+    public Object getMetaData(String key) {
+        return this.serviceDomain.getMetaData(key);
     }
 }

@@ -65,7 +65,7 @@ public interface RsfBinder {
     /**绑定元信息*/
     public interface RegisterBuilder<T> {
         /**绑定远程服务地址和端口。*/
-        public RegisterBuilder<T> bindAddress(String remoteHost, int remotePort);
+        public RegisterBuilder<T> addBindAddress(String remoteHost, int remotePort);
         /**将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register();
     }

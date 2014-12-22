@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
- * 
+ * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -31,7 +31,9 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract Executor getCallExecute(String serviceName);
     /**获取序列化管理器。*/
     public abstract SerializeFactory getSerializeFactory();
-    /**获取注册中心。*/
+    /**获取地址管理中心。*/
+    public abstract AbstracAddressCenter getAddressCenter();
+    /**获取服务注册中心。*/
     public abstract AbstractBindCenter getBindCenter();
     /**获取服务上配置有效的过滤器。*/
     public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);

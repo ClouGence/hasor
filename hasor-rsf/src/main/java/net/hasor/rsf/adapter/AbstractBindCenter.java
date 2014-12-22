@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
-import java.net.URL;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 /**
- * 注册中心
+ * 注册中心。负责维护服务的列表。
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractBindCenter implements BindCenter {
-    /**查找一个有效的连接。*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的连接。*/
-    public abstract void invalidAddress(URL address);
+    /**回收已经发布的服务*/
+    public abstract void recoverService(RsfBindInfo<?> bindInfo);
+    /**发布服务*/
+    public abstract void publishService(RsfBindInfo<?> bindInfo);
 }

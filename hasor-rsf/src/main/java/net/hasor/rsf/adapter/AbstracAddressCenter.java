@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
+package net.hasor.rsf.adapter;
+import java.net.URL;
+import java.util.List;
+import net.hasor.rsf.BindCenter;
+import net.hasor.rsf.RsfBindInfo;
 /**
- * 注册中心
+ * 地址管理中心，负责维护服务的远程服务提供者列表。
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface BindCenter {
-    /**获取RsfBinder*/
-    public RsfBinder getRsfBinder();
-    /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String serviceID);
-    /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String group, String name, String version);
-    /**获取已经注册的所有服务名称。*/
-    public String[] getServiceNames();
+public abstract class AbstracAddressCenter implements BindCenter {
+    /**查找一个有效的连接。*/
+    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
+    /**被明确为无效的连接。*/
+    public abstract void invalidAddress(URL address);
+    /**更新静态服务提供地址。*/
+    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
 }

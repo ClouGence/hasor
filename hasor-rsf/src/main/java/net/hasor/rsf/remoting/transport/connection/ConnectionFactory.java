@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.adapter.AbstractBindCenter;
+import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.ProtocolStatus;
@@ -64,10 +64,10 @@ public class ConnectionFactory {
     //
     private final Map<URL, NetworkConnection> addressMapping = new ConcurrentHashMap<URL, NetworkConnection>();
     public NetworkConnection getConnection(RsfBindInfo<?> bindInfo, final AbstractRsfClient rsfClient) {
-        AbstractBindCenter bindCenter = this.rsfContext.getBindCenter();
+        AbstracAddressCenter addressCenter = this.rsfContext.getAddressCenter();
         while (true) {
             //查找可用的连接
-            URL addressURL = bindCenter.findServiceAddress(bindInfo);
+            URL addressURL = addressCenter.findServiceAddress(bindInfo);
             if (addressURL == null) {
                 return null;
             }
@@ -81,7 +81,7 @@ public class ConnectionFactory {
             }
             //
             if (conn == null) {
-                bindCenter.invalidAddress(addressURL);
+                addressCenter.invalidAddress(addressURL);
             } else {
                 return conn;
             }

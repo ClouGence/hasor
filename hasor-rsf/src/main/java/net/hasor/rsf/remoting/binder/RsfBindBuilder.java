@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.binder;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.core.Hasor;
@@ -22,24 +23,23 @@ import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.common.constants.RsfException;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
-import net.hasor.rsf.common.metadata.ServiceMetaData.Mode;
-import net.hasor.rsf.remoting.address.AddressInfo;
+import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 服务注册器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBindBuilder implements RsfBinder {
-    private final AbstractBindCenter        registerCenter;
+    private final AbstractRsfContext        rsfContext;
     private final List<Provider<RsfFilter>> filterList;
-    public RsfBindBuilder(AbstractBindCenter registerCenter) {
-        this.registerCenter = registerCenter;
+    protected RsfBindBuilder(AbstractRsfContext rsfContext) {
+        this.rsfContext = rsfContext;
         this.filterList = new ArrayList<Provider<RsfFilter>>();
     }
-    protected AbstractBindCenter getRegisterCenter() {
-        return this.registerCenter;
+    protected AbstractRsfContext getContext() {
+        return this.rsfContext;
     };
     //
     public void bindFilter(RsfFilter instance) {
@@ -49,7 +49,7 @@ public class RsfBindBuilder implements RsfBinder {
         this.filterList.add(provider);
     }
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
-        return new LinkedBuilderImpl<T>(type, getRegisterCenter());
+        return new LinkedBuilderImpl<T>(type, getContext());
     }
     public <T> NamedBuilder<T> rsfService(Class<T> type, T instance) {
         return this.rsfService(type).toInstance(instance);
@@ -67,26 +67,23 @@ public class RsfBindBuilder implements RsfBinder {
         private String                    serviceVersion; //服务版本
         private int                       clientTimeout; //调用超时（毫秒）
         private String                    serializeType; //传输序列化类型
-        //
         private Class<T>                  serviceType;   //服务接口类型
         private List<Provider<RsfFilter>> rsfFilterList;
         private Provider<T>               rsfProvider;
-        private AbstractBindCenter        registerCenter;
-        private List<AddressInfo>         addressList;
+        private List<URL>                 addressList;
+        private AbstractRsfContext        rsfContext;
         //
-        //
-        protected LinkedBuilderImpl(Class<T> serviceType, AbstractBindCenter registerCenter) {
-            RsfSettings settings = registerCenter.getSettings();
+        protected LinkedBuilderImpl(Class<T> serviceType, AbstractRsfContext rsfContext) {
+            RsfSettings settings = rsfContext.getSettings();
+            this.rsfContext = rsfContext;
             this.serviceName = serviceType.getName();
             this.serviceGroup = settings.getDefaultGroup();
             this.serviceVersion = settings.getDefaultVersion();
             this.clientTimeout = settings.getDefaultTimeout();
             this.serializeType = settings.getDefaultSerializeType();
-            //this.serviceMetaData.setServiceDesc(serviceDesc);
             this.serviceType = serviceType;
             this.rsfFilterList = new ArrayList<Provider<RsfFilter>>(filterList);
-            this.registerCenter = registerCenter;
-            this.addressList = new ArrayList<AddressInfo>();
+            this.addressList = new ArrayList<URL>();
         }
         public ConfigurationBuilder<T> ngv(String name, String group, String version) {
             Hasor.assertIsNotNull(name, "name is null.");
@@ -134,26 +131,25 @@ public class RsfBindBuilder implements RsfBinder {
             return this;
         }
         public RegisterReference<T> register() {
-            Mode mode = (this.rsfProvider == null) ? Mode.Consumer : Mode.Provider;
-            ServiceMetaData<T> serviceMetaData = new ServiceMetaData<T>(mode, this.serviceType);
-            serviceMetaData.setServiceName(this.serviceName);
-            serviceMetaData.setServiceGroup(this.serviceGroup);
-            serviceMetaData.setServiceVersion(this.serviceVersion);
-            serviceMetaData.setClientTimeout(this.clientTimeout);
-            serviceMetaData.setSerializeType(this.serializeType);
+            ServiceDomain<T> domain = new ServiceDomain<T>(this.serviceType);
+            domain.setBindName(this.serviceName);
+            domain.setBindGroup(this.serviceGroup);
+            domain.setBindVersion(this.serviceVersion);
+            domain.setClientTimeout(this.clientTimeout);
+            domain.setSerializeType(this.serializeType);
             //
             Provider<RsfFilter>[] rsfFilterArray = this.rsfFilterList.toArray(new Provider[this.rsfFilterList.size()]);
-            ServiceDefine<T> define = new ServiceDefine<T>(serviceMetaData, this.registerCenter, rsfFilterArray, this.rsfProvider);
+            ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, rsfFilterArray, this.rsfProvider);
             //
-            this.registerCenter.publishService(define);
-            this.registerCenter.getAddressManager().updateAddress(serviceMetaData, addressList);
+            this.rsfContext.getBindCenter().publishService(define);
+            this.rsfContext.getAddressCenter().updateStaticAddress(define, this.addressList);;
             return define;
         }
-        public RegisterBuilder<T> bindAddress(String hostIP, int hostPort) {
-            AddressInfo info = new AddressInfo();
-            info.setHostIP(hostIP);
-            info.setHostPort(hostPort);
-            addressList.add(info);
+        public RegisterBuilder<T> addBindAddress(String hostIP, int hostPort) {
+            try {
+                String rsfPath = this.serviceGroup + "/" + this.serviceName + "/" + this.serviceVersion;
+                this.addressList.add(new URL("rsf", hostIP, hostPort, rsfPath, new RsfURLStreamHandler()));
+            } catch (Exception e) {}
             return this;
         }
     }

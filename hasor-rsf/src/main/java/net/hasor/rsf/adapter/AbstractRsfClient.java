@@ -16,8 +16,8 @@
 package net.hasor.rsf.adapter;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFuture;
+import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
 import org.more.future.FutureCallback;
 /**
  * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
@@ -30,7 +30,7 @@ public interface AbstractRsfClient {
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID);
     /**发送连接请求。*/
-    public RsfFuture sendRequest(RsfRequestImpl rsfRequest, FutureCallback<RsfResponse> listener);
+    public RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener);
     //
     /**尝试再次发送Request请求（如果request已经超时则无效）。*/
     public void tryAgain(long requestID);

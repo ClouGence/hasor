@@ -79,7 +79,7 @@ public class RuntimeUtils {
     public static RsfRequestImpl recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
         //1.获取MetaData
         RsfBindInfo<?> bindInfo = rsfContext.getBindCenter().getService(//
-                requestMsg.getServiceName(), requestMsg.getServiceGroup(), requestMsg.getServiceVersion());
+                requestMsg.getServiceGroup(), requestMsg.getServiceName(), requestMsg.getServiceVersion());
         Object[] parameterObjects = null;//
         Class<?>[] parameterTypes = null;//
         //
