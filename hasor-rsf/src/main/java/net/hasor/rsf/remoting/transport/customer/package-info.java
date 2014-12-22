@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 服务消费者传输层实现。
+ * RSF 服务消费者传输层实现（基于Netty）
  */
 package net.hasor.rsf.remoting.transport.customer;

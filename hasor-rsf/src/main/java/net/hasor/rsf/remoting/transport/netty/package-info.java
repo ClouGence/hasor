@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 负责基于Netty 下的 RSF 数据包传输工作。
+ * 负责基于Netty 下的 RSF 数据包的编码和解码。
  */
 package net.hasor.rsf.remoting.transport.netty;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 服务提供方传输层实现。
+ * RSF 服务提供方传输层实现（基于Netty）
  */
 package net.hasor.rsf.remoting.transport.provider;

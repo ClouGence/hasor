@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议的编码解码器。
+ * RSF 协议的编码/解码器。
  */
 package net.hasor.rsf.remoting.transport.protocol.codec;

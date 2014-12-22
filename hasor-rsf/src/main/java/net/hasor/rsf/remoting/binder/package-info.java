@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.adapter;
-import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
- * @author 赵永春(zyc@hasor.net)
+ * RSF Bind 机制实现。
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效的连接。*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的连接。*/
-    public abstract void invalidAddress(URL address);
-    /**更新静态服务提供地址。*/
-    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
-}
+package net.hasor.rsf.remoting.binder;
