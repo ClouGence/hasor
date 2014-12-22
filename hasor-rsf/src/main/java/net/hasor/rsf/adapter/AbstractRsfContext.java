@@ -31,12 +31,13 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract Executor getCallExecute(String serviceName);
     /**获取序列化管理器。*/
     public abstract SerializeFactory getSerializeFactory();
-    /**获取地址管理中心。*/
-    public abstract AbstracAddressCenter getAddressCenter();
-    /**获取服务注册中心。*/
-    public abstract AbstractBindCenter getBindCenter();
-    /**获取服务上配置有效的过滤器。*/
+    /**获取服务上配置有效的过滤器*/
     public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);
     /**获取Netty事件处理工具*/
     public abstract EventLoopGroup getLoopGroup();
+    //
+    /**获取地址管理中心*/
+    public abstract AbstracAddressCenter getAddressCenter();
+    /**获取服务注册中心*/
+    public abstract AbstractBindCenter getBindCenter();
 }

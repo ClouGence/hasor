@@ -23,9 +23,9 @@ public interface BindCenter {
     /**获取RsfBinder*/
     public RsfBinder getRsfBinder();
     /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String serviceID);
+    public <T> RsfBindInfo<T> getService(String serviceID);
     /**根据服务名获取服务描述。*/
-    public RsfBindInfo<?> getService(String group, String name, String version);
+    public <T> RsfBindInfo<T> getService(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
     public String[] getServiceNames();
 }

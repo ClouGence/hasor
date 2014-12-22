@@ -33,8 +33,8 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.adapter.AbstractfRsfClient;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.component.RsfFilterHandler;
@@ -49,13 +49,13 @@ import org.more.future.FutureCallback;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfClient implements AbstractRsfClient {
+class InnerRsfP2PClient extends AbstractfRsfClient {
     private ConnectionFactory                        connectionFactory = null;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse       = new ConcurrentHashMap<Long, RsfFuture>();
     private final Timer                              timer             = new HashedWheelTimer();
     private final AtomicInteger                      requestCount      = new AtomicInteger(0);
     //
-    public InnerRsfClient(ConnectionFactory connectionFactory) {
+    public InnerRsfP2PClient(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
     /**获取 {@link AbstractRsfContext}*/
@@ -111,14 +111,14 @@ class InnerRsfClient implements AbstractRsfClient {
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
-                RsfFuture rsfCallBack = InnerRsfClient.this.getRequest(request.getRequestID());
+                RsfFuture rsfCallBack = InnerRsfP2PClient.this.getRequest(request.getRequestID());
                 if (rsfCallBack == null)
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 Hasor.logWarn(errorInfo);
                 //回应Response
-                InnerRsfClient.this.putResponse(request.getRequestID(), //
+                InnerRsfP2PClient.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.RequestTimeout, errorInfo));
             }
         };
@@ -202,13 +202,13 @@ class InnerRsfClient implements AbstractRsfClient {
                 if (!future.isSuccess()) {
                     if (netConnection.isActive()) {
                         // maybe some exception, so close the channel
-                        InnerRsfClient.this.connectionFactory.closeChannel(netConnection);
+                        InnerRsfP2PClient.this.connectionFactory.closeChannel(netConnection);
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                Hasor.logError(InnerRsfClient.this + ":" + errorMsg);
+                Hasor.logError(InnerRsfP2PClient.this + ":" + errorMsg);
                 //回应Response
-                InnerRsfClient.this.putResponse(request.getRequestID(), //
+                InnerRsfP2PClient.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });

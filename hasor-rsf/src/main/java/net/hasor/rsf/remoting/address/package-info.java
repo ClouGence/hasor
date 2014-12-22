@@ -13,29 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.address;
 /**
- * 表示远程服务的地址信息。
- * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * 地址管理中心实现。
  */
-public class AddressInfo {
-    private String hostIP   = null;
-    private int    hostPort = 8000;
-    //
-    public String getID() {
-        return this.hostIP + ":" + this.hostPort;
-    }
-    public String getHostIP() {
-        return this.hostIP;
-    }
-    public void setHostIP(String hostIP) {
-        this.hostIP = hostIP;
-    }
-    public int getHostPort() {
-        return this.hostPort;
-    }
-    public void setHostPort(int hostPort) {
-        this.hostPort = hostPort;
-    }
-}
+package net.hasor.rsf.remoting.address;

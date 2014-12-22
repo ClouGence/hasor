@@ -16,7 +16,7 @@
 package net.hasor.rsf.remoting.transport.customer;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.adapter.AbstractRsfClient;
+import net.hasor.rsf.adapter.AbstractfRsfClient;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
@@ -27,11 +27,11 @@ import net.hasor.rsf.utils.RuntimeUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerResponseHandler implements Runnable {
-    private ResponseMsg       responseMsg;
-    private AbstractRsfClient rsfClient;
-    private RsfFuture         rsfFuture;
+    private ResponseMsg        responseMsg;
+    private AbstractfRsfClient rsfClient;
+    private RsfFuture          rsfFuture;
     //
-    public InnerResponseHandler(ResponseMsg responseMsg, AbstractRsfClient rsfClient, RsfFuture rsfFuture) {
+    public InnerResponseHandler(ResponseMsg responseMsg, AbstractfRsfClient rsfClient, RsfFuture rsfFuture) {
         this.responseMsg = responseMsg;
         this.rsfClient = rsfClient;
         this.rsfFuture = rsfFuture;

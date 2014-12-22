@@ -30,8 +30,8 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
-import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.adapter.AbstractfRsfClient;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.customer.RsfCustomerHandler;
@@ -52,7 +52,7 @@ public class ConnectionFactory {
         return this.rsfContext;
     }
     /**连接远程服务（具体的地址）*/
-    public AbstractRsfClient getClient(NetworkConnection net) throws RsfException, InterruptedException {
+    public AbstractfRsfClient getClient(NetworkConnection net) throws RsfException, InterruptedException {
         return null;
     }
     //
@@ -63,7 +63,7 @@ public class ConnectionFactory {
     }
     //
     private final Map<URL, NetworkConnection> addressMapping = new ConcurrentHashMap<URL, NetworkConnection>();
-    public NetworkConnection getConnection(RsfBindInfo<?> bindInfo, final AbstractRsfClient rsfClient) {
+    public NetworkConnection getConnection(RsfBindInfo<?> bindInfo, final AbstractfRsfClient rsfClient) {
         AbstracAddressCenter addressCenter = this.rsfContext.getAddressCenter();
         while (true) {
             //查找可用的连接
@@ -87,7 +87,7 @@ public class ConnectionFactory {
             }
         }
     }
-    private NetworkConnection connSocket(final URL addressURL, final AbstractRsfClient rsfClient) {
+    private NetworkConnection connSocket(final URL addressURL, final AbstractfRsfClient rsfClient) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);

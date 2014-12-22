@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.context;
+package net.hasor.rsf.rpc.context;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWarp;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.common.constants.ProtocolVersion;
-import net.hasor.rsf.common.constants.SendLimitPolicy;
+import net.hasor.rsf.SendLimitPolicy;
+import net.hasor.rsf.constants.ProtocolVersion;
 import org.more.util.StringUtils;
 /**
  * 
@@ -53,8 +56,9 @@ class RsfSettingsImpl extends SettingsWarp implements RsfSettings {
     //
     //
     //
-    public RsfSettingsImpl(Settings settings) {
+    public RsfSettingsImpl(Settings settings) throws IOException {
         super(settings);
+        this.refresh();
     }
     //
     public int getDefaultTimeout() {
@@ -111,8 +115,8 @@ class RsfSettingsImpl extends SettingsWarp implements RsfSettings {
     public int getBindPort() {
         return this.bindPort;
     }
-    //
-    public void init() {
+    public void refresh() throws IOException {
+        super.refresh();
         this.defaultGroup = getString("hasor.rsfConfig.defaultServiceValue.group", "RSF");
         this.defaultVersion = getString("hasor.rsfConfig.defaultServiceValue.version", "1.0.0");
         this.defaultTimeout = getInteger("hasor.rsfConfig.defaultServiceValue.timeout", 6000);
@@ -157,5 +161,23 @@ class RsfSettingsImpl extends SettingsWarp implements RsfSettings {
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
+    }
+    //
+    /***/
+    private static class InnerOptionManager implements RsfOptionSet {
+        private final Map<String, String> optionMap = new HashMap<String, String>();
+        //
+        /**获取选项Key集合。*/
+        public String[] getOptionKeys() {
+            return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
+        }
+        /**获取选项数据*/
+        public String getOption(String key) {
+            return this.optionMap.get(key);
+        }
+        /**设置选项数据*/
+        public void addOption(String key, String value) {
+            this.optionMap.put(key, value);
+        }
     }
 }

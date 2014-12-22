@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.common.executes;
+package net.hasor.rsf.rpc.executes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;

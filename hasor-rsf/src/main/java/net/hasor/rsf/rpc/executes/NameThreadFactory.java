@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.context;
-import java.util.HashMap;
-import java.util.Map;
-import net.hasor.rsf.RsfOptionSet;
+package net.hasor.rsf.rpc.executes;
+import java.util.concurrent.ThreadFactory;
 /**
  * 
- * @version : 2014年11月30日
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerOptionManager implements RsfOptionSet {
-    private final Map<String, String> optionMap = new HashMap<String, String>();
+public class NameThreadFactory implements ThreadFactory {
+    private String nameSample = "Thread-%s";
+    private int    index      = 1;
     //
-    /**获取选项Key集合。*/
-    public String[] getOptionKeys() {
-        return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
+    public NameThreadFactory(String nameSample) {
+        this.nameSample = nameSample;
     }
-    /**获取选项数据*/
-    public String getOption(String key) {
-        return this.optionMap.get(key);
-    }
-    /**设置选项数据*/
-    public void addOption(String key, String value) {
-        this.optionMap.put(key, value);
+    //
+    public Thread newThread(Runnable run) {
+        Thread t = new Thread(run);
+        t.setName(String.format(nameSample, index++));
+        t.setDaemon(true);
+        return t;
     }
 }

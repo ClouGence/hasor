@@ -41,10 +41,10 @@ public class BindCenter extends AbstractBindCenter {
     public RsfBinder getRsfBinder() {
         return new RsfBindBuilder(this.rsfContext);
     }
-    public RsfBindInfo<?> getService(String serviceID) {
-        return this.rsfService2Map.get(serviceID);
+    public <T> RsfBindInfo<T> getService(String serviceID) {
+        return (RsfBindInfo<T>) this.rsfService2Map.get(serviceID);
     }
-    public RsfBindInfo<?> getService(String group, String name, String version) {
+    public <T> RsfBindInfo<T> getService(String group, String name, String version) {
         //group
         Map<String, Map<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(group);
         if (nameMap == null)
@@ -54,7 +54,7 @@ public class BindCenter extends AbstractBindCenter {
         if (versionMap == null)
             return null;
         //version
-        return versionMap.get(version);
+        return (RsfBindInfo<T>) versionMap.get(version);
     }
     /**获取已经注册的所有服务名称。*/
     public String[] getServiceNames() {
