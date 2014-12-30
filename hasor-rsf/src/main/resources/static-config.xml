@@ -63,7 +63,7 @@
 			<!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
 			<serializeType default="Hessian">
 				<!-- JSON-格式序列化 -->
-				<serialize name="Json">net.hasor.rsf.remoting.serialize.coder.FastJsonSerializeCoder</serialize>
+				<!-- <serialize name="Json">net.hasor.rsf.remoting.serialize.coder.FastJsonSerializeCoder</serialize> -->
 				<!-- Java-原生序列化 -->
 				<serialize name="Java">net.hasor.rsf.remoting.serialize.coder.JavaSerializeCoder</serialize>
 				<!-- Hessian-格式序列化 -->

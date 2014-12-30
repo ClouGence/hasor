@@ -47,6 +47,8 @@ public abstract class AbstractfRsfClient implements RsfClient {
     public abstract void putResponse(long requestID, RsfResponse response);
     /**响应挂起的Request请求。*/
     public abstract void putResponse(long requestID, Throwable rsfException);
+    /**连接是否有效。*/
+    public abstract boolean isOpen();
     //
     //
     //

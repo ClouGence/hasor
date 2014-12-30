@@ -15,17 +15,17 @@
  */
 package net.hasor.rsf.remoting.binder;
 import net.hasor.core.Provider;
-import net.hasor.core.info.CustomerProvider;
 import net.hasor.rsf.RsfBinder.RegisterReference;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.adapter.RsfBindDefine;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceDefine<T> implements CustomerProvider<T>, RegisterReference<T> {
+class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
     private ServiceDomain<T>      serviceDomain;
     private AbstractRsfContext    rsfContext;
     private Provider<RsfFilter>[] rsfFilterArray;

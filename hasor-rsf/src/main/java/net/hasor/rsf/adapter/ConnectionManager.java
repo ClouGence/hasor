@@ -15,18 +15,15 @@
  */
 package net.hasor.rsf.adapter;
 import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.constants.RsfException;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
+ * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效的连接*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的地址*/
-    public abstract void invalidAddress(URL address);
-    /**更新静态服务提供地址*/
-    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
+public interface ConnectionManager {
+    /**获取或创建一个连接*/
+    public AbstractfRsfClient getClient(URL remoteAddress) throws RsfException, InterruptedException;
+    /**关闭这个连接并解除注册。*/
+    public void unRegistered(AbstractfRsfClient client);
 }

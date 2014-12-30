@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.adapter;
-import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
+package net.hasor.rsf.plugins.hasor;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.rsf.RsfBinder;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
+ * 服务注册器
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效的连接*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的地址*/
-    public abstract void invalidAddress(URL address);
-    /**更新静态服务提供地址*/
-    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
+public interface RsfApiBinder extends RsfBinder, ApiBinder {
+    /***/
+    public <T> HasorLinkedBuilder<T> rsfService(Class<T> type);
+    /**处理类型和实现的绑定。*/
+    public interface HasorLinkedBuilder<T> extends LinkedBuilder<T> {
+        /**为绑定设置一个{@link BindInfo}。*/
+        public NamedBuilder<T> toBindInfo(BindInfo<T> bindInfo);
+    }
 }

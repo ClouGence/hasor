@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
-import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
+import net.hasor.core.Provider;
+import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.RsfFilter;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
+ * 获取服务上配置有效的过滤器。
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效的连接*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的地址*/
-    public abstract void invalidAddress(URL address);
-    /**更新静态服务提供地址*/
-    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
+public interface RsfBindDefine<T> extends CustomerProvider<T> {
+    /**获取Provider对象，可以直接取得对象实例。*/
+    public Provider<T> getCustomerProvider();
+    /**获取服务上配置有效的过滤器*/
+    public Provider<RsfFilter>[] getFilterProvider();
 }

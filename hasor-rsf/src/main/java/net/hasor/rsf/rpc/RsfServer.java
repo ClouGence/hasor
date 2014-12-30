@@ -26,7 +26,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
@@ -44,8 +43,8 @@ public class RsfServer {
     private Channel            serverChannel = null;
     private EventLoopGroup     bossGroup     = null;
     //
-    public RsfServer(RsfContext rsfContext) {
-        this.rsfContext = (AbstractRsfContext) rsfContext;
+    public RsfServer(AbstractRsfContext rsfContext) {
+        this.rsfContext = rsfContext;
     }
     //
     private RsfSettings getRsfSettings() {

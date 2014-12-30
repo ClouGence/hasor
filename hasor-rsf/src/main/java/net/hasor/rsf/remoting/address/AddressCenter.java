@@ -39,9 +39,9 @@ public class AddressCenter extends AbstracAddressCenter {
     }
     public void invalidAddress(URL address) {
         AddressPool pool = this.addressMap.get(bindInfo.getBindID());
-                if (pool == null)
-                    return  ;
-                pool.
+        if (pool == null)
+            return;
+        pool.invalidAddress(address);
     }
     public void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address) {
         AddressPool pool = this.addressMap.get(bindInfo.getBindID());

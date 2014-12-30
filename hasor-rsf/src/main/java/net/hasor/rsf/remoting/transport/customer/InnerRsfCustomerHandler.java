@@ -19,7 +19,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.adapter.AbstractfRsfClient;
-import net.hasor.rsf.remoting.transport.connection.ConnectionFactory;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 /**
@@ -27,11 +26,11 @@ import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCustomerHandler extends ChannelInboundHandlerAdapter {
-    private ConnectionFactory connManager = null;
+class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
+    private InnerConnectionManager factory = null;
     //
-    public RsfCustomerHandler(ConnectionFactory connManager) {
-        this.connManager = connManager;
+    public InnerRsfCustomerHandler(InnerConnectionManager factory) {
+        this.factory = factory;
     }
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -40,7 +39,7 @@ public class RsfCustomerHandler extends ChannelInboundHandlerAdapter {
         ResponseMsg responseMsg = (ResponseMsg) msg;
         //
         NetworkConnection net = NetworkConnection.getConnection(ctx.channel());
-        AbstractfRsfClient rsfClient = this.connManager.getClient(net);
+        AbstractfRsfClient rsfClient = this.factory.getClient(net.z);
         RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
             NetworkConnection netConn = NetworkConnection.getConnection(ctx.channel());

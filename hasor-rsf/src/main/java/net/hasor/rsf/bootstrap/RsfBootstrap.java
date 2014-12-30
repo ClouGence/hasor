@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
+import net.hasor.core.Settings;
+import net.hasor.rsf.RsfContext;
 /**
  * Rsf启动引导程序。
  * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfBootstrap {}
+public class RsfBootstrap {
+    public RsfBootstrap bindSettings(Settings settings) {
+        return null;
+    }
+    public RsfContext start() {
+        return null;
+    }
+}s

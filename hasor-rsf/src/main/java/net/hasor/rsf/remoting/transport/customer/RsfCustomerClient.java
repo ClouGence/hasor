@@ -16,10 +16,12 @@
 package net.hasor.rsf.remoting.transport.customer;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
+import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,7 +42,6 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.component.RsfFilterHandler;
 import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
 import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
-import net.hasor.rsf.remoting.transport.connection.ConnectionFactory;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import org.more.future.FutureCallback;
@@ -49,14 +50,26 @@ import org.more.future.FutureCallback;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfP2PClient extends AbstractfRsfClient {
-    private ConnectionFactory                        connectionFactory = null;
-    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse       = new ConcurrentHashMap<Long, RsfFuture>();
-    private final Timer                              timer             = new HashedWheelTimer();
-    private final AtomicInteger                      requestCount      = new AtomicInteger(0);
+public class RsfCustomerClient extends AbstractfRsfClient {
+    private final AbstractRsfContext                 rsfContext;
+    private final URL                                remoteAddress;
+    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse  = new ConcurrentHashMap<Long, RsfFuture>();
+    private final Timer                              timer        = new HashedWheelTimer();
+    private final AtomicInteger                      requestCount = new AtomicInteger(0);
+    private NetworkConnection                        connection;
     //
-    public InnerRsfP2PClient(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    //
+    public RsfCustomerClient(URL remoteAddress, AbstractRsfContext rsfContext) {
+        this.rsfContext = rsfContext;
+        this.remoteAddress = remoteAddress;
+    }
+    /**生成 Netty 使用的 {@link ChannelInboundHandlerAdapter}对象。*/
+    public static ChannelInboundHandlerAdapter buildCustomerHandler(RsfCustomerClient client) {
+        return new InnerRsfCustomerHandler(client.connectionFactory);
+    }
+    /**生成 Netty 使用的 {@link ChannelInboundHandlerAdapter}对象。*/
+    public ChannelInboundHandlerAdapter buildCustomerHandler() {
+        return RsfCustomerClient.buildCustomerHandler(this);
     }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
@@ -111,14 +124,14 @@ class InnerRsfP2PClient extends AbstractfRsfClient {
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
-                RsfFuture rsfCallBack = InnerRsfP2PClient.this.getRequest(request.getRequestID());
+                RsfFuture rsfCallBack = RsfCustomerClient.this.getRequest(request.getRequestID());
                 if (rsfCallBack == null)
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 Hasor.logWarn(errorInfo);
                 //回应Response
-                InnerRsfP2PClient.this.putResponse(request.getRequestID(), //
+                RsfCustomerClient.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.RequestTimeout, errorInfo));
             }
         };
@@ -168,7 +181,7 @@ class InnerRsfP2PClient extends AbstractfRsfClient {
         //RsfFilter
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
-        final NetworkConnection netConnection = this.connectionFactory.getConnection(request.getBindInfo(), this);
+        final NetworkConnection netConnection = this.connectionManager.getConnection(request.getBindInfo(), this);
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
@@ -202,15 +215,19 @@ class InnerRsfP2PClient extends AbstractfRsfClient {
                 if (!future.isSuccess()) {
                     if (netConnection.isActive()) {
                         // maybe some exception, so close the channel
-                        InnerRsfP2PClient.this.connectionFactory.closeChannel(netConnection);
+                        RsfCustomerClient.this.connectionFactory.closeChannel(netConnection);
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                Hasor.logError(InnerRsfP2PClient.this + ":" + errorMsg);
+                Hasor.logError(RsfCustomerClient.this + ":" + errorMsg);
                 //回应Response
-                InnerRsfP2PClient.this.putResponse(request.getRequestID(), //
+                RsfCustomerClient.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
+    }
+    public boolean isOpen() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

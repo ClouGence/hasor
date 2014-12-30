@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.transport.connection;
+package net.hasor.rsf.remoting.transport.customer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -27,54 +27,44 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.adapter.AbstractfRsfClient;
+import net.hasor.rsf.adapter.ConnectionManager;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.remoting.transport.customer.RsfCustomerHandler;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 /**
- * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
+ * 负责维持 RsfCustomerClient 列表，同时负责创建和销毁它们。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConnectionFactory {
-    private final AbstractRsfContext rsfContext;
+class InnerConnectionManager implements ConnectionManager {
+    private final AbstractRsfContext          rsfContext;
+    private final Map<URL, RsfCustomerClient> clientMapping;
     //
-    public ConnectionFactory(RsfContext rsfContext) {
-        this.rsfContext = (AbstractRsfContext) rsfContext;
+    public InnerConnectionManager(AbstractRsfContext rsfContext) {
+        this.rsfContext = rsfContext;
+        this.clientMapping = new ConcurrentHashMap<URL, RsfCustomerClient>();
     }
     // 
     public AbstractRsfContext getRsfContext() {
         return this.rsfContext;
     }
     /**连接远程服务（具体的地址）*/
-    public AbstractfRsfClient getClient(NetworkConnection net) throws RsfException, InterruptedException {
-        return null;
-    }
-    //
-    /**关闭这个连接并解除注册。*/
-    public void closeChannel(NetworkConnection conn) {
-        this.addressMapping.remove(conn.getRemoteURL());
-        conn.close();
-    }
-    //
-    private final Map<URL, NetworkConnection> addressMapping = new ConcurrentHashMap<URL, NetworkConnection>();
-    public NetworkConnection getConnection(RsfBindInfo<?> bindInfo, final AbstractfRsfClient rsfClient) {
+    public RsfCustomerClient getClient(URL remoteAddress) throws RsfException, InterruptedException {
         AbstracAddressCenter addressCenter = this.rsfContext.getAddressCenter();
         while (true) {
             //查找可用的连接
-            URL addressURL = addressCenter.findServiceAddress(bindInfo);
-            if (addressURL == null) {
-                return null;
+            RsfCustomerClient client = this.clientMapping.get(remoteAddress);
+            //异常状态关闭连接重新申请新的
+            if (client.isOpen() == false) {
+                this.unRegistered(client);//解除注册。
             }
-            NetworkConnection conn = this.addressMapping.get(addressURL);
             //尝试连接到远端
             if (conn == null) {
-                conn = this.connSocket(addressURL, rsfClient);
+                conn = connSocket(addressURL, rsfClient);
                 if (conn != null) {
                     this.addressMapping.put(addressURL, conn);
                 }
@@ -86,10 +76,25 @@ public class ConnectionFactory {
                 return conn;
             }
         }
+        return null;//TODO
     }
-    private NetworkConnection connSocket(final URL addressURL, final AbstractfRsfClient rsfClient) {
+    public void unRegistered(AbstractfRsfClient client) {
+        // TODO Auto-generated method stub
+        
+    }
+    //
+    /**关闭这个连接并解除注册。*/
+    public void closeChannel(URL remoteAddress) {
+        RsfCustomerClient client = this.clientMapping.get(remoteAddress);
+        this.clientMapping.remove(remoteAddress);
+        client.close();
+    }
+    //
+    //
+    //
+    private static NetworkConnection connSocket(final URL addressURL, final RsfCustomerClient rsfClient) {
         Bootstrap boot = new Bootstrap();
-        boot.group(this.rsfContext.getLoopGroup());
+        boot.group(rsfClient.getRsfContext().getLoopGroup());
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
         boot.handler(new ChannelInitializer<SocketChannel>() {
@@ -97,7 +102,7 @@ public class ConnectionFactory {
                 Channel channel = ch.pipeline().channel();
                 NetworkConnection.initConnection(addressURL, channel);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(ConnectionFactory.this));
+                ch.pipeline().addLast(new RSFCodec(), RsfCustomerClient.buildCustomerHandler(rsfClient));
             }
         });
         ChannelFuture future = null;

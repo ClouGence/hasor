@@ -40,4 +40,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract AbstracAddressCenter getAddressCenter();
     /**获取服务注册中心*/
     public abstract AbstractBindCenter getBindCenter();
+    /**获取连接管理器*/
+    public abstract ConnectionManager getConnectionManager();
 }

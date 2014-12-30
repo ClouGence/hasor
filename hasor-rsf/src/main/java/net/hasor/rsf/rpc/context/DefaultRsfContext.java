@@ -27,6 +27,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractBindCenter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.adapter.RsfBindDefine;
 import net.hasor.rsf.remoting.address.AddressCenter;
 import net.hasor.rsf.remoting.binder.BindCenter;
 import net.hasor.rsf.rpc.executes.ExecutesManager;
@@ -89,18 +90,31 @@ public class DefaultRsfContext extends AbstractRsfContext {
         return this.addressCenter;
     }
     //
-    /**获取客户端*/
-    public RsfClient getRsfClient() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     /**获取元信息所描述的服务对象。*/
-    public <T> T getBean(RsfBindInfo<T> metaData) {
-        // TODO Auto-generated method stub
+    public <T> T getBean(RsfBindInfo<T> bindInfo) {
+        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
+        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
+        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        if (bindInfo instanceof RsfBindDefine == true) {
+            Provider<T> provider = ((RsfBindDefine<T>) bindInfo).getCustomerProvider();
+            if (provider != null)
+                return provider.get();
+        }
         return null;
     }
     /**获取服务上配置有效的过滤器*/
-    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData) {
+    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
+        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
+        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
+        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        if (bindInfo instanceof RsfBindDefine == true) {
+            return ((RsfBindDefine<T>) bindInfo).getFilterProvider();
+        }
+        return null;
+    }
+    //
+    /**获取客户端*/
+    public RsfClient getRsfClient() {
         // TODO Auto-generated method stub
         return null;
     }

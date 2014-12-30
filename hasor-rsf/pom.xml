@@ -36,17 +36,5 @@
 			<version>4.0.23.Final</version>
 		</dependency>
 
-		<!-- Serialize - Hessian -->
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>4.0.38</version>
-		</dependency>
-		<!-- Serialize - FastJson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.1.41</version>
-		</dependency>
 	</dependencies>
 </project>
