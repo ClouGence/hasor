@@ -60,22 +60,22 @@ class InnerClientManager extends AbstractClientManager {
         return rsfRequestManager;
     }
     /**连接远程服务（具体的地址）*/
-    public AbstractRsfClient getClient(URL remoteAddress) {
+    public AbstractRsfClient getClient(URL hostAddress) {
         AbstracAddressCenter addressCenter = this.rsfContext.getAddressCenter();
         {
             //查找可用的连接
-            AbstractRsfClient client = this.clientMapping.get(remoteAddress);
+            AbstractRsfClient client = this.clientMapping.get(hostAddress);
             //异常状态关闭连接重新申请新的
             if (client != null && client.isActive() == false) {
                 this.unRegistered(client);//解除注册
             }
             //尝试连接到远端
             if (client == null) {
-                client = connSocket(remoteAddress);
+                client = connSocket(hostAddress);
             }
             //
             if (client == null) {
-                addressCenter.invalidAddress(remoteAddress);
+                addressCenter.invalidAddress(hostAddress);
             } else {
                 return client;
             }
@@ -86,16 +86,16 @@ class InnerClientManager extends AbstractClientManager {
     public synchronized void unRegistered(AbstractRsfClient client) {
         if (client == null)
             return;
-        URL addressURL = client.getAddressURL();
-        AbstractRsfClient localClient = this.clientMapping.get(addressURL);
+        URL hostAddress = client.getHostAddress();
+        AbstractRsfClient localClient = this.clientMapping.get(hostAddress);
         if (client != localClient)
             throw new RsfException("target is not form me.");
         //
-        this.clientMapping.remove(addressURL).close();
+        this.clientMapping.remove(hostAddress).close();
     }
     //
-    private synchronized AbstractRsfClient connSocket(final URL addressURL) {
-        AbstractRsfClient rsfClient = this.clientMapping.get(addressURL);
+    private synchronized AbstractRsfClient connSocket(final URL hostAddress) {
+        AbstractRsfClient rsfClient = this.clientMapping.get(hostAddress);
         if (rsfClient != null) {
             return rsfClient;
         }
@@ -107,13 +107,13 @@ class InnerClientManager extends AbstractClientManager {
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                NetworkConnection.initConnection(addressURL, channel);
+                NetworkConnection.initConnection(hostAddress, channel);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new InnerRsfCustomerHandler(getRequestManager()));
             }
         });
         ChannelFuture future = null;
-        SocketAddress remote = new InetSocketAddress(addressURL.getHost(), addressURL.getPort());
+        SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getPort());
         future = boot.connect(remote);
         try {
             future.await();
@@ -128,7 +128,7 @@ class InnerClientManager extends AbstractClientManager {
         NetworkConnection conn = NetworkConnection.getConnection(future.channel());
         rsfClient = new InnerRsfClient(this.getRequestManager(), conn);
         if (rsfClient != null) {
-            this.clientMapping.put(addressURL, rsfClient);
+            this.clientMapping.put(hostAddress, rsfClient);
         }
         return rsfClient;
     }

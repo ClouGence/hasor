@@ -25,6 +25,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
@@ -37,6 +38,7 @@ import net.hasor.rsf.remoting.transport.provider.RsfProviderHandler;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
+import net.hasor.rsf.utils.URLUtils;
 import org.more.util.StringUtils;
 /**
  * Rsf启动引导程序。
@@ -111,6 +113,7 @@ public class RsfBootstrap {
         }
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
         //Netty
+        final URL hostAddress = URLUtils.toURL(localAddress.getHostAddress(), bindSocket);
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(bossGroup, rsfContext.getLoopGroup());
@@ -118,7 +121,7 @@ public class RsfBootstrap {
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                NetworkConnection.initConnection(channel);
+                NetworkConnection.initConnection(hostAddress, channel);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new RsfProviderHandler(rsfContext));
             }

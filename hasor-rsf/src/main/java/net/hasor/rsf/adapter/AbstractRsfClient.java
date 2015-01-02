@@ -42,8 +42,8 @@ public abstract class AbstractRsfClient implements RsfClient {
     public abstract void close();
     /**Netty的管道*/
     public abstract Channel getChannel();
-    /**远程地址*/
-    public abstract URL getAddressURL();
+    /**远程服务地址*/
+    public abstract URL getHostAddress();
     /**获取请求管理器*/
     public abstract AbstractRequestManager getRequestManager();
     //

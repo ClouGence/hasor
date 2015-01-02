@@ -20,8 +20,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.adapter.AbstractRequestManager;
+import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
@@ -109,5 +109,9 @@ public class RuntimeUtils {
         Class<?> returnType = rsfRequest.getServiceMethod().getReturnType();
         Object returnObject = responseMsg.getReturnData(rsfContext.getSerializeFactory());
         return new RsfResponseImpl(metaData, responseMsg, returnObject, returnType);
+    }
+    /**生成BindID*/
+    public static String bindID(String group, String name, String version) {
+        return String.format("[%s]%s-%s", group, name, version);
     }
 }

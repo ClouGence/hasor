@@ -18,6 +18,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 /**
  * 
@@ -25,13 +26,13 @@ import java.net.URL;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkConnection {
-    private URL               remoteAddressURL;
+    private URL               hostAddress;
     private InetSocketAddress remoteAddress = null;
     private InetSocketAddress localAddress  = null;
     private Channel           socketChanne  = null;
     //
-    private NetworkConnection(URL remoteAddressURL, Channel socketChanne) {
-        this.remoteAddressURL = remoteAddressURL;
+    private NetworkConnection(URL hostAddress, Channel socketChanne) throws MalformedURLException {
+        this.hostAddress = hostAddress;
         this.socketChanne = socketChanne;
     }
     private InetSocketAddress remote() {
@@ -73,9 +74,9 @@ public class NetworkConnection {
     public Channel getChannel() {
         return this.socketChanne;
     }
-    /**获取远程URL*/
-    public URL getRemoteURL() {
-        return this.remoteAddressURL;
+    /**获取远程主机地址*/
+    public URL getHostAddress() {
+        return this.hostAddress;
     }
     public String toString() {
         StringBuilder sb = new StringBuilder("");
@@ -89,7 +90,7 @@ public class NetworkConnection {
     public static NetworkConnection getConnection(Channel channel) {
         return channel.attr(NettyKey).get();
     }
-    public static void initConnection(URL addressURL, Channel channel) {
-        channel.attr(NettyKey).set(new NetworkConnection(addressURL, channel));
+    public static void initConnection(URL hostAddress, Channel channel) throws MalformedURLException {
+        channel.attr(NettyKey).set(new NetworkConnection(hostAddress, channel));
     }
 }

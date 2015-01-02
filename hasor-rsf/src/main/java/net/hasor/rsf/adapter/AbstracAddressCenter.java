@@ -23,10 +23,10 @@ import net.hasor.rsf.RsfBindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstracAddressCenter {
-    /**查找一个有效的连接*/
-    public abstract URL findServiceAddress(RsfBindInfo<?> bindInfo);
+    /**查找一个有效主机地址*/
+    public abstract URL findHostAddress(RsfBindInfo<?> bindInfo);
     /**被明确为无效的地址*/
-    public abstract void invalidAddress(URL address);
+    public abstract void invalidAddress(URL hostAddress);
     /**更新静态服务提供地址*/
-    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address);
+    public abstract void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> serviceURLs);
 }

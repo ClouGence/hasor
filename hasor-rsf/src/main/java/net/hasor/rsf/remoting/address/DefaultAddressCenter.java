@@ -31,19 +31,23 @@ public class DefaultAddressCenter extends AbstracAddressCenter {
         this.addressMap = new ConcurrentHashMap<String, AddressPool>();
     }
     //
-    public URL findServiceAddress(RsfBindInfo<?> bindInfo) {
+    public URL findHostAddress(RsfBindInfo<?> bindInfo) {
+        if (bindInfo == null)
+            return null;
         AddressPool pool = this.addressMap.get(bindInfo.getBindID());
         if (pool == null)
             return null;
         return pool.nextAddress();
     }
-    public void invalidAddress(URL address) {
+    public void invalidAddress(URL hostAddress) {
+        if (bindInfo == null)
+            return;
         AddressPool pool = this.addressMap.get(bindInfo.getBindID());
         if (pool == null)
             return;
         pool.invalidAddress(address);
     }
-    public void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> address) {
+    public void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> serviceURLs) {
         AddressPool pool = this.addressMap.get(bindInfo.getBindID());
         if (pool == null) {
             pool = new AddressPool();

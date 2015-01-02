@@ -25,7 +25,7 @@ public abstract class AbstractClientManager {
     /**获取{@link RsfContext}*/
     public abstract AbstractRsfContext getRsfContext();
     /**获取或创建一个连接*/
-    public abstract AbstractRsfClient getClient(URL remoteAddress);
+    public abstract AbstractRsfClient getClient(URL hostAddress);
     /**关闭这个连接并解除注册。*/
     public abstract void unRegistered(AbstractRsfClient client);
 }

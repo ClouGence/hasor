@@ -177,8 +177,8 @@ public class RsfRequestManager extends AbstractRequestManager {
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         //查找远程服务地址
-        URL remoteAddress = getRsfContext().getAddressCenter().findServiceAddress(request.getBindInfo());
-        final AbstractRsfClient rsfClient = this.getClientManager().getClient(remoteAddress);
+        URL hostAddress = getRsfContext().getAddressCenter().findHostAddress(request.getBindInfo());
+        final AbstractRsfClient rsfClient = this.getClientManager().getClient(hostAddress);
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //

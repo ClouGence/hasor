@@ -42,10 +42,10 @@ class InnerRsfClient extends AbstractRsfClient {
     public Channel getChannel() {
         return networkConnection.getChannel();
     }
-    public URL getAddressURL() {
-        return networkConnection.getRemoteURL();
-    }
     public AbstractRequestManager getRequestManager() {
         return this.requestManager;
+    }
+    public URL getHostAddress() {
+        return networkConnection.getHostAddress();
     }
 }

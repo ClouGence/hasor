@@ -49,7 +49,7 @@ public interface RsfBinder {
     /**设置服务名。*/
     public interface NamedBuilder<T> extends ConfigurationBuilder<T> {
         /**设置分组。*/
-        public ConfigurationBuilder<T> ngv(String name, String group, String version);
+        public ConfigurationBuilder<T> ngv(String group, String name, String version);
     }
     /**设置参数。*/
     public interface ConfigurationBuilder<T> extends RegisterBuilder<T> {

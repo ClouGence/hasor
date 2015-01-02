@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.remoting.binder;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+package org.more;
 /**
- * 
- * @version : 2014年12月22日
- * @author 赵永春(zyc@hasor.net)
+ * 格式错误。
+ * @version 2009-4-29
+ * @author 赵永春 (zyc@hasor.net)
  */
-class RsfURLStreamHandler extends URLStreamHandler {
-    protected URLConnection openConnection(URL u) throws IOException {
-        throw new UnsupportedOperationException("Method not implemented.");
+public class FormatException extends RuntimeException {
+    /**
+     * Required for serialization support.
+     * @see java.io.Serializable
+     */
+    private static final long serialVersionUID = 2377606123252842745L;
+    /**重复定义*/
+    public FormatException(final String string) {
+        super(string);
+    }
+    /**重复定义*/
+    public FormatException(final Throwable error) {
+        super(error);
+    }
+    /**重复定义*/
+    public FormatException(final String string, final Throwable error) {
+        super(string, error);
     }
 }

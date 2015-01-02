@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -30,6 +29,9 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
+import net.hasor.rsf.utils.URLUtils;
+import org.more.FormatException;
+import org.more.util.StringUtils;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -74,7 +76,7 @@ public class RsfBindBuilder implements RsfBinder {
         private Class<T>                         serviceType;   //服务接口类型
         private Map<String, Provider<RsfFilter>> meFilterMap;
         private Provider<T>                      rsfProvider;
-        private List<URL>                        addressList;
+        private List<URL>                        serviceURLs;
         private AbstractRsfContext               rsfContext;
         //
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRsfContext rsfContext) {
@@ -88,7 +90,7 @@ public class RsfBindBuilder implements RsfBinder {
             this.serializeType = settings.getDefaultSerializeType();
             this.serviceType = serviceType;
             this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>(parentFilterMap);
-            this.addressList = new ArrayList<URL>();
+            this.serviceURLs = new ArrayList<URL>();
             //覆盖
             RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
             if (serviceInfo != null) {
@@ -104,10 +106,17 @@ public class RsfBindBuilder implements RsfBinder {
                     this.clientTimeout = serviceInfo.clientTimeout();
             }
         }
-        public ConfigurationBuilder<T> ngv(String name, String group, String version) {
-            Hasor.assertIsNotNull(name, "name is null.");
+        public ConfigurationBuilder<T> ngv(String group, String name, String version) {
             Hasor.assertIsNotNull(group, "group is null.");
+            Hasor.assertIsNotNull(name, "name is null.");
             Hasor.assertIsNotNull(version, "version is null.");
+            if (group.contains("/") == true)
+                throw new FormatException(name + " contain '/'");
+            if (name.contains("/") == true)
+                throw new FormatException(name + " contain '/'");
+            if (version.contains("/") == true)
+                throw new FormatException(name + " contain '/'");
+            //
             this.serviceName = name;
             this.serviceGroup = group;
             this.serviceVersion = version;
@@ -161,13 +170,13 @@ public class RsfBindBuilder implements RsfBinder {
             ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, this.meFilterMap, this.rsfProvider);
             //
             this.rsfContext.getBindCenter().publishService(define);
-            this.rsfContext.getAddressCenter().updateStaticAddress(define, this.addressList);;
+            this.rsfContext.getAddressCenter().updateStaticAddress(define, this.serviceURLs);;
             return define;
         }
         public RegisterBuilder<T> addBindAddress(String hostIP, int hostPort) {
             try {
-                String rsfPath = this.serviceGroup + "/" + this.serviceName + "/" + this.serviceVersion;
-                this.addressList.add(new URL("rsf", hostIP, hostPort, rsfPath, new RsfURLStreamHandler()));
+                String servicePath = this.serviceGroup + "/" + this.serviceName + "/" + this.serviceVersion;
+                this.serviceURLs.add(URLUtils.toURL(hostIP, hostPort, servicePath));
             } catch (Exception e) {}
             return this;
         }
