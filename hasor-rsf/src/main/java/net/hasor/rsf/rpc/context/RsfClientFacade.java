@@ -32,7 +32,7 @@ class RsfClientFacade implements RsfClient {
     //
     public RsfClientFacade(AbstractRsfContext rsfContext) {
         this.addressCenter = rsfContext.getAddressCenter();
-    }
+    }s
     //
     public <T> T getRemote(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
         // TODO Auto-generated method stub

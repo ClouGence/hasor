@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.RsfException;
@@ -78,6 +80,7 @@ public class RsfBindBuilder implements RsfBinder {
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRsfContext rsfContext) {
             RsfSettings settings = rsfContext.getSettings();
             this.rsfContext = rsfContext;
+            //
             this.serviceName = serviceType.getName();
             this.serviceGroup = settings.getDefaultGroup();
             this.serviceVersion = settings.getDefaultVersion();
@@ -86,6 +89,20 @@ public class RsfBindBuilder implements RsfBinder {
             this.serviceType = serviceType;
             this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>(parentFilterMap);
             this.addressList = new ArrayList<URL>();
+            //覆盖
+            RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
+            if (serviceInfo != null) {
+                if (StringUtils.isBlank(serviceInfo.group()) == false)
+                    this.serviceGroup = serviceInfo.group();
+                if (StringUtils.isBlank(serviceInfo.name()) == false)
+                    this.serviceName = serviceInfo.name();
+                if (StringUtils.isBlank(serviceInfo.version()) == false)
+                    this.serviceVersion = serviceInfo.version();
+                if (StringUtils.isBlank(serviceInfo.serializeType()) == false)
+                    this.serializeType = serviceInfo.serializeType();
+                if (serviceInfo.clientTimeout() > 0)
+                    this.clientTimeout = serviceInfo.clientTimeout();
+            }
         }
         public ConfigurationBuilder<T> ngv(String name, String group, String version) {
             Hasor.assertIsNotNull(name, "name is null.");

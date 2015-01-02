@@ -30,6 +30,7 @@ public interface RsfContext {
     public RsfClient getRsfClient();
     /**查找一个{@link RsfFilter}*/
     public <T extends RsfFilter> T findFilter(String serviceID, String filterID);
-    /**查找一个{@link RsfFilter}*/
+    /**查找一个{@link RsfFilter}<br>
+     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。*/
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
 }

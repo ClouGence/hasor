@@ -97,10 +97,8 @@ public class DefaultRsfContext extends AbstractRsfContext {
     public AbstractRequestManager getRequestManager() {
         return this.requestManager;
     }
-    //
     /**获取客户端*/
     public RsfClient getRsfClient() {
-        // TODO Auto-generated method stub
-        return null;s
+        return new RsfClientFacade(this);
     }
 }

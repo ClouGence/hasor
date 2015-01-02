@@ -20,7 +20,10 @@ import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfService;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.serialize.SerializeFactory;
+import org.more.util.StringUtils;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
@@ -50,8 +53,22 @@ public abstract class AbstractRsfContext implements RsfContext {
         return null;
     }
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID) {
-        // TODO Auto-generated method stub
-        return null;s
+        RsfSettings settings = getSettings();
+        String serviceName = servicetType.getName();
+        String serviceGroup = settings.getDefaultGroup();
+        String serviceVersion = settings.getDefaultVersion();
+        //覆盖
+        RsfService serviceInfo = servicetType.getAnnotation(RsfService.class);
+        if (serviceInfo != null) {
+            if (StringUtils.isBlank(serviceInfo.group()) == false)
+                serviceGroup = serviceInfo.group();
+            if (StringUtils.isBlank(serviceInfo.name()) == false)
+                serviceName = serviceInfo.name();
+            if (StringUtils.isBlank(serviceInfo.version()) == false)
+                serviceVersion = serviceInfo.version();
+        }
+        String serviceID = String.format("[%s]%s-%s", serviceGroup, serviceName, serviceVersion);
+        return this.findFilter(serviceID, filterID);
     }
     /**获取服务上配置有效的过滤器*/
     public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
