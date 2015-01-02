@@ -15,11 +15,11 @@
  */
 package net.hasor.rsf.plugins.local;
 import java.lang.reflect.Method;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.metadata.ServiceMetaData;
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * @version : 2014年11月30日
@@ -28,22 +28,21 @@ import net.hasor.rsf.common.metadata.ServiceMetaData;
 public class LocalPrefPlugin implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal() == true) {
-            ServiceMetaData<?> metaData = request.getMetaData();
-            if (metaData.isProvider() == true) {
-                //
-                Object bean = request.getContext().getBindCenter().getBean(metaData);
+            RsfBindInfo<?> bindInfo = request.getBindInfo();
+            Object serviceBean = request.getContext().getBean(bindInfo);
+            //
+            if (serviceBean != null) {
                 String rMethod = request.getMethod();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();
                 //
-                Method m = bean.getClass().getMethod(rMethod, rParams);
-                response.sendData(m.invoke(bean, rObjects));
-                //
+                Method m = serviceBean.getClass().getMethod(rMethod, rParams);
+                response.sendData(m.invoke(serviceBean, rObjects));
                 return;
             }
         }
-        //
         chain.doFilter(request, response);
+        //
         return;
     }
 }

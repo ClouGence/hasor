@@ -19,8 +19,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
-import net.hasor.rsf.remoting.transport.customer.InnerConnectionManager;
 import org.more.future.FutureCallback;
 /**
  * 
@@ -28,8 +28,10 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfClientFacade implements RsfClient {
+    private AbstracAddressCenter addressCenter;
+    //
     public RsfClientFacade(AbstractRsfContext rsfContext) {
-        ConnectionManager factory = new ConnectionManager(rsfContext);
+        this.addressCenter = rsfContext.getAddressCenter();
     }
     //
     public <T> T getRemote(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {

@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfSettingsImpl extends SettingsWarp implements RsfSettings {
+public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     private int                defaultTimeout       = 6000;
     private String             defaultGroup         = "RSF";
     private String             defaultVersion       = "1.0.0";
@@ -56,7 +56,7 @@ class RsfSettingsImpl extends SettingsWarp implements RsfSettings {
     //
     //
     //
-    public RsfSettingsImpl(Settings settings) throws IOException {
+    public DefaultRsfSettings(Settings settings) throws IOException {
         super(settings);
         this.refresh();
     }

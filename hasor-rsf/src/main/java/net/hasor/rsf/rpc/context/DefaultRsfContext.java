@@ -18,18 +18,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 import java.util.concurrent.Executor;
-import net.hasor.core.Provider;
 import net.hasor.core.Settings;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractBindCenter;
+import net.hasor.rsf.adapter.AbstractRequestManager;
 import net.hasor.rsf.adapter.AbstractRsfContext;
-import net.hasor.rsf.adapter.RsfBindDefine;
-import net.hasor.rsf.remoting.address.AddressCenter;
-import net.hasor.rsf.remoting.binder.BindCenter;
+import net.hasor.rsf.remoting.address.DefaultAddressCenter;
+import net.hasor.rsf.remoting.binder.DefaultBindCenter;
+import net.hasor.rsf.remoting.transport.customer.RsfRequestManager;
 import net.hasor.rsf.rpc.executes.ExecutesManager;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -39,18 +37,24 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfContext extends AbstractRsfContext {
-    private AbstractBindCenter   bindCenter       = null;
-    private AbstracAddressCenter addressCenter    = null;
+    private final AbstractBindCenter     bindCenter;
+    private final AbstracAddressCenter   addressCenter;
+    private final AbstractRequestManager requestManager;
     //
-    private SerializeFactory     serializeFactory = null;
-    private ExecutesManager      executesManager  = null;
-    private EventLoopGroup       loopGroup        = null;
-    private RsfSettings          rsfSettings      = null;
+    private final SerializeFactory       serializeFactory;
+    private final ExecutesManager        executesManager;
+    private final EventLoopGroup         loopGroup;
+    private final RsfSettings            rsfSettings;
+    //
     //
     public DefaultRsfContext(Settings settings) throws IOException {
-        this.rsfSettings = new RsfSettingsImpl(settings);
-        this.bindCenter = new BindCenter(this);
-        this.addressCenter = new AddressCenter();
+        this(new DefaultRsfSettings(settings));
+    }
+    public DefaultRsfContext(RsfSettings settings) {
+        this.rsfSettings = settings;
+        this.bindCenter = new DefaultBindCenter(this);
+        this.addressCenter = new DefaultAddressCenter();
+        this.requestManager = new RsfRequestManager(this);
         //
         this.serializeFactory = SerializeFactory.createFactory(this.rsfSettings);
         //
@@ -89,33 +93,14 @@ public class DefaultRsfContext extends AbstractRsfContext {
     public AbstracAddressCenter getAddressCenter() {
         return this.addressCenter;
     }
-    //
-    /**获取元信息所描述的服务对象。*/
-    public <T> T getBean(RsfBindInfo<T> bindInfo) {
-        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
-        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
-        if (bindInfo instanceof RsfBindDefine == true) {
-            Provider<T> provider = ((RsfBindDefine<T>) bindInfo).getCustomerProvider();
-            if (provider != null)
-                return provider.get();
-        }
-        return null;
-    }
-    /**获取服务上配置有效的过滤器*/
-    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
-        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
-        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
-        if (bindInfo instanceof RsfBindDefine == true) {
-            return ((RsfBindDefine<T>) bindInfo).getFilterProvider();
-        }
-        return null;
+    /**获取请求管理中心*/
+    public AbstractRequestManager getRequestManager() {
+        return this.requestManager;
     }
     //
     /**获取客户端*/
     public RsfClient getRsfClient() {
         // TODO Auto-generated method stub
-        return null;
+        return null;s
     }
 }

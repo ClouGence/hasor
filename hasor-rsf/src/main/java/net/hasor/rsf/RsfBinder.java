@@ -22,9 +22,9 @@ import net.hasor.core.Provider;
  */
 public interface RsfBinder {
     /**添加全局的RsfFilter。*/
-    public void bindFilter(RsfFilter instance);
+    public void bindFilter(String id, RsfFilter instance);
     /**添加全局的RsfFilter。*/
-    public void bindFilter(Provider<RsfFilter> provider);
+    public void bindFilter(String id, Provider<RsfFilter> provider);
     /** */
     public <T> LinkedBuilder<T> rsfService(Class<T> type);
     /**将后面的对象绑定前一个类型上，可以通过AppContext获取该绑定对象。
@@ -58,9 +58,9 @@ public interface RsfBinder {
         /**设置序列化方式*/
         public ConfigurationBuilder<T> serialize(String serializeType);
         /**添加RsfFilter。*/
-        public ConfigurationBuilder<T> bindFilter(RsfFilter instance);
+        public ConfigurationBuilder<T> bindFilter(String id, RsfFilter instance);
         /**添加RsfFilter。*/
-        public ConfigurationBuilder<T> bindFilter(Provider<RsfFilter> provider);
+        public ConfigurationBuilder<T> bindFilter(String id, Provider<RsfFilter> provider);
     }
     /**绑定元信息*/
     public interface RegisterBuilder<T> {

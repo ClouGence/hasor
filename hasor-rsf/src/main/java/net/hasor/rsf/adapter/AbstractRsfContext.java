@@ -27,19 +27,53 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
+    //
+    /**获取元信息所描述的服务对象。*/
+    public <T> T getBean(RsfBindInfo<T> bindInfo) {
+        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
+        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
+        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
+            Provider<T> provider = ((RsfBindDefine<T>) bindInfo).getCustomerProvider();
+            if (provider != null)
+                return provider.get();
+        }
+        return null;
+    }
+    /**获取服务上配置有效的过滤器*/
+    public <T extends RsfFilter> T findFilter(String serviceID, String filterID) {
+        RsfBindInfo<?> bindInfo = this.getBindCenter().getService(serviceID);
+        if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
+            RsfBindDefine<?> rsfDefine = (RsfBindDefine<?>) bindInfo;
+            return (T) rsfDefine.getFilter(filterID);
+        }
+        return null;
+    }
+    public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID) {
+        // TODO Auto-generated method stub
+        return null;s
+    }
+    /**获取服务上配置有效的过滤器*/
+    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
+        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
+        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
+        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
+            return ((RsfBindDefine<T>) bindInfo).getFilterProvider();
+        }
+        return null;
+    }
+    //
     /**获取{@link Executor}用于安排执行任务。*/
     public abstract Executor getCallExecute(String serviceName);
     /**获取序列化管理器。*/
     public abstract SerializeFactory getSerializeFactory();
-    /**获取服务上配置有效的过滤器*/
-    public abstract <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> metaData);
     /**获取Netty事件处理工具*/
     public abstract EventLoopGroup getLoopGroup();
-    //
     /**获取地址管理中心*/
     public abstract AbstracAddressCenter getAddressCenter();
     /**获取服务注册中心*/
     public abstract AbstractBindCenter getBindCenter();
-    /**获取连接管理器*/
-    public abstract ConnectionManager getConnectionManager();
+    /**获取请求管理中心*/
+    public abstract AbstractRequestManager getRequestManager();
 }

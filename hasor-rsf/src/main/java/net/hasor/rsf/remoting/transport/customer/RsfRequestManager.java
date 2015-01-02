@@ -16,7 +16,6 @@
 package net.hasor.rsf.remoting.transport.customer;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
@@ -35,45 +34,41 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
+import net.hasor.rsf.adapter.AbstractClientManager;
+import net.hasor.rsf.adapter.AbstractRequestManager;
+import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
-import net.hasor.rsf.adapter.AbstractfRsfClient;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.component.RsfFilterHandler;
 import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
 import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
-import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import org.more.future.FutureCallback;
 /**
- * 远程RSF服务器的客户端类。
+ * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCustomerClient extends AbstractfRsfClient {
+public class RsfRequestManager extends AbstractRequestManager {
     private final AbstractRsfContext                 rsfContext;
-    private final URL                                remoteAddress;
+    private final AbstractClientManager              clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse  = new ConcurrentHashMap<Long, RsfFuture>();
     private final Timer                              timer        = new HashedWheelTimer();
     private final AtomicInteger                      requestCount = new AtomicInteger(0);
-    private NetworkConnection                        connection;
     //
     //
-    public RsfCustomerClient(URL remoteAddress, AbstractRsfContext rsfContext) {
+    public RsfRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.remoteAddress = remoteAddress;
-    }
-    /**生成 Netty 使用的 {@link ChannelInboundHandlerAdapter}对象。*/
-    public static ChannelInboundHandlerAdapter buildCustomerHandler(RsfCustomerClient client) {
-        return new InnerRsfCustomerHandler(client.connectionFactory);
-    }
-    /**生成 Netty 使用的 {@link ChannelInboundHandlerAdapter}对象。*/
-    public ChannelInboundHandlerAdapter buildCustomerHandler() {
-        return RsfCustomerClient.buildCustomerHandler(this);
+        this.clientManager = new InnerClientManager(this);
     }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
-        return this.connectionFactory.getRsfContext();
+        return this.rsfContext;
+    }
+    /**获取客户端管理器*/
+    public AbstractClientManager getClientManager() {
+        return this.clientManager;
     }
     /**获取正在进行中的调用请求。*/
     public RsfFuture getRequest(long requestID) {
@@ -124,14 +119,14 @@ public class RsfCustomerClient extends AbstractfRsfClient {
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
-                RsfFuture rsfCallBack = RsfCustomerClient.this.getRequest(request.getRequestID());
+                RsfFuture rsfCallBack = RsfRequestManager.this.getRequest(request.getRequestID());
                 if (rsfCallBack == null)
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 Hasor.logWarn(errorInfo);
                 //回应Response
-                RsfCustomerClient.this.putResponse(request.getRequestID(), //
+                RsfRequestManager.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.RequestTimeout, errorInfo));
             }
         };
@@ -181,21 +176,23 @@ public class RsfCustomerClient extends AbstractfRsfClient {
         //RsfFilter
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
-        final NetworkConnection netConnection = this.connectionManager.getConnection(request.getBindInfo(), this);
+        //查找远程服务地址
+        URL remoteAddress = getRsfContext().getAddressCenter().findServiceAddress(request.getBindInfo());
+        final AbstractRsfClient rsfClient = this.getClientManager().getClient(remoteAddress);
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
-        if (netConnection == null) {
+        if (rsfClient == null) {
             rsfFuture.failed(new IllegalStateException("The lack of effective service provider."));
             return;
         }
-        if (netConnection.isActive() == false) {
+        if (rsfClient.isActive() == false) {
             rsfFuture.failed(new IllegalStateException("client is closed."));
             return;
         }
         this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
         //
-        ChannelFuture future = netConnection.getChannel().writeAndFlush(rsfMessage);
+        ChannelFuture future = rsfClient.getChannel().writeAndFlush(rsfMessage);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
@@ -213,21 +210,17 @@ public class RsfCustomerClient extends AbstractfRsfClient {
                 }
                 //异常状况
                 if (!future.isSuccess()) {
-                    if (netConnection.isActive()) {
+                    if (rsfClient.isActive()) {
                         // maybe some exception, so close the channel
-                        RsfCustomerClient.this.connectionFactory.closeChannel(netConnection);
+                        getClientManager().unRegistered(rsfClient);
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                Hasor.logError(RsfCustomerClient.this + ":" + errorMsg);
+                Hasor.logError(RsfRequestManager.this + ":" + errorMsg);
                 //回应Response
-                RsfCustomerClient.this.putResponse(request.getRequestID(), //
+                RsfRequestManager.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
-    }
-    public boolean isOpen() {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

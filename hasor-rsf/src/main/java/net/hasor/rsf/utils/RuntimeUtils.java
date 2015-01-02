@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.adapter.AbstractRsfContext;
-import net.hasor.rsf.adapter.AbstractfRsfClient;
+import net.hasor.rsf.adapter.AbstractRequestManager;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
@@ -40,7 +40,7 @@ public class RuntimeUtils {
     private static AtomicLong requestID = new AtomicLong(1);
     //
     /**根据元信息创建一个{@link RsfRequest}对象。*/
-    public static RsfRequestImpl buildRequest(RsfBindInfo<?> bindInfo, AbstractfRsfClient rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
+    public static RsfRequestImpl buildRequest(RsfBindInfo<?> bindInfo, AbstractRequestManager rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
         //1.基本信息
         AbstractRsfContext rsfContext = rsfClient.getRsfContext();
         RequestMsg requestMsg = new RequestMsg();

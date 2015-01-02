@@ -27,4 +27,6 @@ public interface RsfBindDefine<T> extends CustomerProvider<T> {
     public Provider<T> getCustomerProvider();
     /**获取服务上配置有效的过滤器*/
     public Provider<RsfFilter>[] getFilterProvider();
+    /**查找注册的Filter*/
+    public RsfFilter getFilter(String filterID);
 }

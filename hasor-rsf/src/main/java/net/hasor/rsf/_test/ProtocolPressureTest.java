@@ -10,15 +10,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.common.constants.ProtocolStatus;
-import net.hasor.rsf.common.constants.ProtocolVersion;
-import net.hasor.rsf.context.DefaultRsfContext;
-import net.hasor.rsf.remoting.serialize.coder.HessianSerializeCoder;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.ProtocolVersion;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
+import net.hasor.rsf.rpc.context.DefaultRsfContext;
+import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
 /**
  * 对Server的压力测试
  * @version : 2014年9月12日

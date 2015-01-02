@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.binder;
+import java.util.Collection;
+import java.util.Map;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBinder.RegisterReference;
 import net.hasor.rsf.RsfFilter;
@@ -26,15 +28,20 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
-    private ServiceDomain<T>      serviceDomain;
-    private AbstractRsfContext    rsfContext;
-    private Provider<RsfFilter>[] rsfFilterArray;
-    private Provider<T>           rsfProvider;
+    private ServiceDomain<T>                 serviceDomain;
+    private AbstractRsfContext               rsfContext;
+    private Provider<RsfFilter>[]            rsfFilterArray;
+    private Map<String, Provider<RsfFilter>> rsfFilterMap;
+    private Provider<T>                      rsfProvider;
     //
-    public ServiceDefine(ServiceDomain<T> serviceDomain, AbstractRsfContext rsfContext, Provider<RsfFilter>[] rsfFilterArray, Provider<T> rsfProvider) {
+    public ServiceDefine(ServiceDomain<T> serviceDomain, AbstractRsfContext rsfContext, Map<String, Provider<RsfFilter>> rsfFilterMap, Provider<T> rsfProvider) {
+        Collection<Provider<RsfFilter>> filterCollection = this.rsfFilterMap.values();
+        Provider<RsfFilter>[] filterArray = filterCollection.toArray(new Provider[filterCollection.size()]);
+        //
         this.serviceDomain = serviceDomain;
         this.rsfContext = rsfContext;
-        this.rsfFilterArray = rsfFilterArray;
+        this.rsfFilterArray = filterArray;
+        this.rsfFilterMap = rsfFilterMap;
         this.rsfProvider = rsfProvider;
     }
     //
@@ -47,7 +54,10 @@ class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
     public Provider<RsfFilter>[] getFilterProvider() {
         return this.rsfFilterArray;
     }
-    //
+    public RsfFilter getFilter(String filterID) {
+        Provider<RsfFilter> provider = this.rsfFilterMap.get(filterID);
+        return provider == null ? null : provider.get();
+    }
     //
     public String getBindID() {
         return this.serviceDomain.getBindID();

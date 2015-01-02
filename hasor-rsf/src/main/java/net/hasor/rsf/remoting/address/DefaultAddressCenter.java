@@ -25,9 +25,9 @@ import net.hasor.rsf.adapter.AbstracAddressCenter;
  * @version : 2014年12月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressCenter extends AbstracAddressCenter {
+public class DefaultAddressCenter extends AbstracAddressCenter {
     private final Map<String, AddressPool> addressMap;
-    public AddressCenter() {
+    public DefaultAddressCenter() {
         this.addressMap = new ConcurrentHashMap<String, AddressPool>();
     }
     //

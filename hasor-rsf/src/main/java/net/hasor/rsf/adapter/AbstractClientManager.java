@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
+package net.hasor.rsf.adapter;
+import java.net.URL;
+import net.hasor.rsf.RsfContext;
 /**
- * RSF 环境。
- * @version : 2014年11月18日
+ * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
-    /**获取注册中心*/
-    public BindCenter getBindCenter();
-    /**获取元信息所描述的服务对象*/
-    public <T> T getBean(RsfBindInfo<T> bindInfo);
-    /**获取配置*/
-    public RsfSettings getSettings();
-    /**获取客户端*/
-    public RsfClient getRsfClient();
-    /**查找一个{@link RsfFilter}*/
-    public <T extends RsfFilter> T findFilter(String serviceID, String filterID);
-    /**查找一个{@link RsfFilter}*/
-    public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
+public abstract class AbstractClientManager {
+    /**获取{@link RsfContext}*/
+    public abstract AbstractRsfContext getRsfContext();
+    /**获取或创建一个连接*/
+    public abstract AbstractRsfClient getClient(URL remoteAddress);
+    /**关闭这个连接并解除注册。*/
+    public abstract void unRegistered(AbstractRsfClient client);
 }

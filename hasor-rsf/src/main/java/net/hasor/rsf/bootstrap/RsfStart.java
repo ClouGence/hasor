@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
+package net.hasor.rsf.bootstrap;
+import net.hasor.rsf.RsfBinder;
 /**
- * RSF 环境。
- * @version : 2014年11月18日
+ * Rsf启动引导程序。
+ * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
-    /**获取注册中心*/
-    public BindCenter getBindCenter();
-    /**获取元信息所描述的服务对象*/
-    public <T> T getBean(RsfBindInfo<T> bindInfo);
-    /**获取配置*/
-    public RsfSettings getSettings();
-    /**获取客户端*/
-    public RsfClient getRsfClient();
-    /**查找一个{@link RsfFilter}*/
-    public <T extends RsfFilter> T findFilter(String serviceID, String filterID);
-    /**查找一个{@link RsfFilter}*/
-    public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
+public class RsfStart {
+    public void onBind(RsfBinder rsfBinder) throws Throwable {
+        //
+    }
 }

@@ -16,7 +16,9 @@
 package net.hasor.rsf.remoting.binder;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -32,21 +34,21 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBindBuilder implements RsfBinder {
-    private final AbstractRsfContext        rsfContext;
-    private final List<Provider<RsfFilter>> filterList;
+    private final AbstractRsfContext               rsfContext;
+    private final Map<String, Provider<RsfFilter>> parentFilterMap;
+    //
     protected RsfBindBuilder(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.filterList = new ArrayList<Provider<RsfFilter>>();
+        this.parentFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>();
     }
     protected AbstractRsfContext getContext() {
         return this.rsfContext;
-    };
-    //
-    public void bindFilter(RsfFilter instance) {
-        this.filterList.add(new InstanceProvider<RsfFilter>(instance));
     }
-    public void bindFilter(Provider<RsfFilter> provider) {
-        this.filterList.add(provider);
+    public void bindFilter(String id, RsfFilter instance) {
+        this.parentFilterMap.put(id, new InstanceProvider<RsfFilter>(instance));
+    }
+    public void bindFilter(String id, Provider<RsfFilter> provider) {
+        this.parentFilterMap.put(id, provider);
     }
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
         return new LinkedBuilderImpl<T>(type, getContext());
@@ -62,16 +64,16 @@ public class RsfBindBuilder implements RsfBinder {
     }
     //
     public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private String                    serviceName;   //服务名
-        private String                    serviceGroup;  //服务分组
-        private String                    serviceVersion; //服务版本
-        private int                       clientTimeout; //调用超时（毫秒）
-        private String                    serializeType; //传输序列化类型
-        private Class<T>                  serviceType;   //服务接口类型
-        private List<Provider<RsfFilter>> rsfFilterList;
-        private Provider<T>               rsfProvider;
-        private List<URL>                 addressList;
-        private AbstractRsfContext        rsfContext;
+        private String                           serviceName;   //服务名
+        private String                           serviceGroup;  //服务分组
+        private String                           serviceVersion; //服务版本
+        private int                              clientTimeout; //调用超时（毫秒）
+        private String                           serializeType; //传输序列化类型
+        private Class<T>                         serviceType;   //服务接口类型
+        private Map<String, Provider<RsfFilter>> meFilterMap;
+        private Provider<T>                      rsfProvider;
+        private List<URL>                        addressList;
+        private AbstractRsfContext               rsfContext;
         //
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRsfContext rsfContext) {
             RsfSettings settings = rsfContext.getSettings();
@@ -82,7 +84,7 @@ public class RsfBindBuilder implements RsfBinder {
             this.clientTimeout = settings.getDefaultTimeout();
             this.serializeType = settings.getDefaultSerializeType();
             this.serviceType = serviceType;
-            this.rsfFilterList = new ArrayList<Provider<RsfFilter>>(filterList);
+            this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>(parentFilterMap);
             this.addressList = new ArrayList<URL>();
         }
         public ConfigurationBuilder<T> ngv(String name, String group, String version) {
@@ -103,12 +105,13 @@ public class RsfBindBuilder implements RsfBinder {
             this.serializeType = serializeType;
             return this;
         }
-        public ConfigurationBuilder<T> bindFilter(RsfFilter instance) {
-            return this.bindFilter(new InstanceProvider<RsfFilter>(instance));
+        public ConfigurationBuilder<T> bindFilter(String id, RsfFilter instance) {
+            this.meFilterMap.put(id, new InstanceProvider<RsfFilter>(instance));
+            return this;
         }
-        public ConfigurationBuilder<T> bindFilter(Provider<RsfFilter> provider) {
+        public ConfigurationBuilder<T> bindFilter(String id, Provider<RsfFilter> provider) {
             if (provider != null) {
-                this.rsfFilterList.add(provider);
+                this.meFilterMap.put(id, provider);
             }
             return this;
         }
@@ -138,8 +141,7 @@ public class RsfBindBuilder implements RsfBinder {
             domain.setClientTimeout(this.clientTimeout);
             domain.setSerializeType(this.serializeType);
             //
-            Provider<RsfFilter>[] rsfFilterArray = this.rsfFilterList.toArray(new Provider[this.rsfFilterList.size()]);
-            ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, rsfFilterArray, this.rsfProvider);
+            ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, this.meFilterMap, this.rsfProvider);
             //
             this.rsfContext.getBindCenter().publishService(define);
             this.rsfContext.getAddressCenter().updateStaticAddress(define, this.addressList);;

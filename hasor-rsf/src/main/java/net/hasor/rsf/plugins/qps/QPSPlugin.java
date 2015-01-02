@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.common.constants.ProtocolStatus;
+import net.hasor.rsf.constants.ProtocolStatus;
 /**
  * 统计QPS。
  * @version : 2014年11月30日

@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.adapter;
-import java.net.URL;
-import net.hasor.rsf.constants.RsfException;
+package net.hasor.rsf.bootstrap;
 /**
- * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
- * @version : 2014年9月12日
+ * 工作模式
+ * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ConnectionManager {
-    /**获取或创建一个连接*/
-    public AbstractfRsfClient getClient(URL remoteAddress) throws RsfException, InterruptedException;
-    /**关闭这个连接并解除注册。*/
-    public void unRegistered(AbstractfRsfClient client);
+public enum WorkMode {
+    /**RSF 仅作为客户端启动，本地任何注册的服务均不会对外发布。*/
+    Customer,
+    /**正常模式*/
+    None,
 }

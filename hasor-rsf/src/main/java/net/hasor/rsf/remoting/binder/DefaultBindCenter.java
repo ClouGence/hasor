@@ -26,13 +26,13 @@ import org.more.RepeateException;
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BindCenter extends AbstractBindCenter {
+public class DefaultBindCenter extends AbstractBindCenter {
     /* Group -> Name -> Version*/
     private final Map<String, Map<String, Map<String, RsfBindInfo<?>>>> rsfService1Map;
     private final Map<String, RsfBindInfo<?>>                           rsfService2Map;
     private final AbstractRsfContext                                    rsfContext;
     //
-    public BindCenter(AbstractRsfContext rsfContext) {
+    public DefaultBindCenter(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.rsfService1Map = new ConcurrentHashMap<String, Map<String, Map<String, RsfBindInfo<?>>>>();
         this.rsfService2Map = new ConcurrentHashMap<String, RsfBindInfo<?>>();

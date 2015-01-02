@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
+import io.netty.channel.Channel;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
@@ -34,27 +35,24 @@ import org.more.future.FutureCallback;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractfRsfClient implements RsfClient {
-    /**获取{@link RsfContext}*/
-    public abstract AbstractRsfContext getRsfContext();
-    /**获取正在进行中的调用请求。*/
-    public abstract RsfFuture getRequest(long requestID);
-    /**发送连接请求。*/
-    public abstract RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener);
-    /**尝试再次发送Request请求（如果request已经超时则无效）。*/
-    public abstract void tryAgain(long requestID);
-    /**响应挂起的Request请求。*/
-    public abstract void putResponse(long requestID, RsfResponse response);
-    /**响应挂起的Request请求。*/
-    public abstract void putResponse(long requestID, Throwable rsfException);
-    /**连接是否有效。*/
-    public abstract boolean isOpen();
+public abstract class AbstractRsfClient implements RsfClient {
+    /**客户端连接是否激活*/
+    public abstract boolean isActive();
+    /**关闭连接*/
+    public abstract void close();
+    /**Netty的管道*/
+    public abstract Channel getChannel();
+    /**远程地址*/
+    public abstract URL getAddressURL();
+    /**获取请求管理器*/
+    public abstract AbstractRequestManager getRequestManager();
     //
     //
     //
-    //
-    //
-    //
+    /**获取上下文*/
+    public AbstractRsfContext getRsfContext() {
+        return this.getRequestManager().getRsfContext();
+    }
     private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
     /**获取远程服务对象*/
     public <T> T getRemote(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
@@ -100,21 +98,23 @@ public abstract class AbstractfRsfClient implements RsfClient {
     //
     /**同步方式调用远程服务。*/
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
+        AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request
         int timeout = validateTimeout(bindInfo.getClientTimeout());
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, this, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
-        RsfFuture rsfFuture = this.sendRequest(request, null);
+        RsfFuture rsfFuture = reqManager.sendRequest(request, null);
         //3.返回数据
         RsfResponse response = rsfFuture.get(timeout, TimeUnit.MILLISECONDS);
         return response.getResponseData();
     }
     /**异步方式调用远程服务。*/
     public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
+        AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, this, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
-        return this.sendRequest(request, null);
+        return reqManager.sendRequest(request, null);
     }
     /**以回调方式调用远程服务。*/
     public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
@@ -132,10 +132,11 @@ public abstract class AbstractfRsfClient implements RsfClient {
     }
     /**以回调方式调用远程服务。*/
     public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
+        AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, this, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
-        this.sendRequest(request, listener);
+        reqManager.sendRequest(request, listener);
     }
     //
     private int validateTimeout(int timeout) {

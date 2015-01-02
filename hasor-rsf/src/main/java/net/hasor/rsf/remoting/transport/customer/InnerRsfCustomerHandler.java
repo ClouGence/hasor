@@ -18,19 +18,23 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.adapter.AbstractfRsfClient;
-import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
+import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.adapter.AbstractRequestManager;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
+import net.hasor.rsf.utils.RuntimeUtils;
 /**
- * 接受Response响应，并交付Response处理线程处理。
+ * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
+ *  -- 根据 {@link ResponseMsg}中包含的 requestID 找到对应的{@link RsfFuture}。
+ *  -- 通过{@link RsfFuture}发起响应。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
-    private InnerConnectionManager factory = null;
-    //
-    public InnerRsfCustomerHandler(InnerConnectionManager factory) {
-        this.factory = factory;
+    private AbstractRequestManager requestManager = null;
+    public InnerRsfCustomerHandler(AbstractRequestManager requestManager) {
+        this.requestManager = requestManager;
     }
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -38,14 +42,49 @@ class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
         //
-        NetworkConnection net = NetworkConnection.getConnection(ctx.channel());
-        AbstractfRsfClient rsfClient = this.factory.getClient(net.z);
-        RsfFuture rsfFuture = rsfClient.getRequest(responseMsg.getRequestID());
+        RsfFuture rsfFuture = this.requestManager.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
-            NetworkConnection netConn = NetworkConnection.getConnection(ctx.channel());
-            Hasor.logWarn(netConn + " give up the response,requestID:" + responseMsg.getRequestID() + " ,maybe because timeout! ");
+            Hasor.logWarn(" give up the response,requestID:" + responseMsg.getRequestID() + " ,maybe because timeout! ");
             return;//或许它已经超时了。
         }
-        new InnerResponseHandler(responseMsg, rsfClient, rsfFuture).run();
+        new ResponseHandler(responseMsg, requestManager, rsfFuture).run();
+    }
+}
+/**负责处理客户端 Response 回应逻辑。*/
+class ResponseHandler implements Runnable {
+    private ResponseMsg            responseMsg;
+    private AbstractRequestManager requestManager;
+    private RsfFuture              rsfFuture;
+    //
+    public ResponseHandler(ResponseMsg responseMsg, AbstractRequestManager requestManager, RsfFuture rsfFuture) {
+        this.responseMsg = responseMsg;
+        this.requestManager = requestManager;
+        this.rsfFuture = rsfFuture;
+    }
+    public void run() {
+        //状态判断
+        short resStatus = responseMsg.getStatus();
+        if (resStatus == ProtocolStatus.Accepted) {
+            //
+            return;
+        } else if (resStatus == ProtocolStatus.ChooseOther) {
+            //
+            this.requestManager.tryAgain(responseMsg.getRequestID());
+            return;
+        }
+        //恢复response
+        RsfResponse response = null;
+        try {
+            response = RuntimeUtils.recoverResponse(responseMsg, rsfFuture.getRequest(), requestManager.getRsfContext());
+            if (resStatus == ProtocolStatus.OK) {
+                requestManager.putResponse(responseMsg.getRequestID(), response);
+            } else {
+                String errorMessage = (String) response.getResponseData();
+                requestManager.putResponse(responseMsg.getRequestID(), new RsfException(resStatus, errorMessage));
+            }
+        } catch (Throwable e) {
+            requestManager.putResponse(responseMsg.getRequestID(), e);
+            return;
+        }
     }
 }
