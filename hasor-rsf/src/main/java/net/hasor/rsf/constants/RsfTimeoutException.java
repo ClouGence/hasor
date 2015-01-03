@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.adapter;
-import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
+package net.hasor.rsf.constants;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
+ * 
+ * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效主机地址*/
-    public abstract Address findHostAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的地址*/
-    public abstract void invalidAddress(Address refereeAddress);
-    /**更新静态服务提供地址*/
-    public abstract void updateAddress(RsfBindInfo<?> bindInfo, List<URL> serviceURLs);
+public class RsfTimeoutException extends RsfException {
+    private static final long serialVersionUID = -445430836145251422L;
+    //
+    public RsfTimeoutException(String string) {
+        super(ProtocolStatus.RequestTimeout, string);
+    }
+    public RsfTimeoutException(Throwable e) {
+        super(ProtocolStatus.RequestTimeout, e);
+    }
 }

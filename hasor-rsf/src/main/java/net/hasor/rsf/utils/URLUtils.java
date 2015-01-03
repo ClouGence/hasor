@@ -26,7 +26,7 @@ import java.net.URLStreamHandler;
  */
 public class URLUtils {
     public static URL toURL(String hostIP, int hostPort) throws MalformedURLException {
-        return new URL("rsf", hostIP, hostPort, null, new RsfURLStreamHandler());
+        return new URL("rsf", hostIP, hostPort, "", new RsfURLStreamHandler());
     }
     public static URL toURL(String hostIP, int hostPort, String servicePath) throws MalformedURLException {
         return new URL("rsf", hostIP, hostPort, servicePath, new RsfURLStreamHandler());
@@ -35,7 +35,7 @@ public class URLUtils {
         if ("rsf".equals(rsfURL.getProtocol()) == false) {
             throw new MalformedURLException(rsfURL.getProtocol() + " Protocol error.");
         }
-        return new URL("rsf", rsfURL.getHost(), rsfURL.getPort(), null, new RsfURLStreamHandler());
+        return new URL("rsf", rsfURL.getHost(), rsfURL.getPort(), "", new RsfURLStreamHandler());
     }
     //
     private static class RsfURLStreamHandler extends URLStreamHandler {

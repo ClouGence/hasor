@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.rpc.context;
 import java.io.IOException;
-import java.net.URL;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
@@ -36,51 +35,48 @@ class RsfClientFacade implements RsfClient {
         this.rsfContext = rsfContext;
     }
     //
-    protected URL findURL(String group, String name, String version) {
+    protected RsfBindInfo<?> findBindInfo(String group, String name, String version) {
         String serviceID = RuntimeUtils.bindID(group, name, version);
-        return this.findURL(serviceID);
+        return this.findBindInfo(serviceID);
     }
-    protected URL findURL(String serviceID) {
-        RsfBindInfo<?> bindInfo = this.rsfContext.getBindCenter().getService(serviceID);
-        if (bindInfo == null)
-            return null;
-        return this.rsfContext.getAddressCenter().findHostAddress(bindInfo);
+    protected RsfBindInfo<?> findBindInfo(String serviceID) {
+        return this.rsfContext.getBindCenter().getService(serviceID);
     }
-    protected RsfClient findRsfClient(URL hostAddress) {
+    protected RsfClient findRsfClient(RsfBindInfo<?> bindInfo) {
         AbstractClientManager clientManager = this.rsfContext.getRequestManager().getClientManager();
-        return clientManager.getClient(hostAddress);
+        return clientManager.getClient(bindInfo);
     }
     //
     public <T> T getRemote(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        return this.findRsfClient(this.findURL(serviceID))//
+        return this.findRsfClient(this.findBindInfo(serviceID))//
                 .getRemote(serviceID);
     }
     public <T> T wrapper(String serviceID, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        return this.findRsfClient(this.findURL(serviceID))//
+        return this.findRsfClient(this.findBindInfo(serviceID))//
                 .wrapper(serviceID, interFace);
     }
     public <T> T getRemote(String group, String name, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        return this.findRsfClient(this.findURL(group, name, version))//
+        return this.findRsfClient(this.findBindInfo(group, name, version))//
                 .getRemote(group, name, version);
     }
     public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        return this.findRsfClient(this.findURL(group, name, version))//
+        return this.findRsfClient(this.findBindInfo(group, name, version))//
                 .wrapper(group, name, version, interFace);
     }
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
-        return this.findRsfClient(this.findURL(bindInfo.getBindID()))//
+        return this.findRsfClient(this.findBindInfo(bindInfo.getBindID()))//
                 .syncInvoke(bindInfo, methodName, parameterTypes, parameterObjects);
     }
     public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
-        return this.findRsfClient(this.findURL(bindInfo.getBindID()))//
+        return this.findRsfClient(this.findBindInfo(bindInfo.getBindID()))//
                 .asyncInvoke(bindInfo, methodName, parameterTypes, parameterObjects);
     }
     public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener) {
-        this.findRsfClient(this.findURL(bindInfo.getBindID()))//
+        this.findRsfClient(this.findBindInfo(bindInfo.getBindID()))//
                 .doCallBackInvoke(bindInfo, methodName, parameterTypes, parameterObjects, listener);
     }
     public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener) {
-        this.findRsfClient(this.findURL(bindInfo.getBindID()))//
+        this.findRsfClient(this.findBindInfo(bindInfo.getBindID()))//
                 .doCallBackRequest(bindInfo, methodName, parameterTypes, parameterObjects, listener);
     }
 }

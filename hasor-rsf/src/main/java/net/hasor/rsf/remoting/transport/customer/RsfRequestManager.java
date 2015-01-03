@@ -20,7 +20,6 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
-import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,6 +39,7 @@ import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.constants.RsfTimeoutException;
 import net.hasor.rsf.remoting.transport.component.RsfFilterHandler;
 import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
 import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
@@ -54,13 +54,13 @@ public class RsfRequestManager extends AbstractRequestManager {
     private final AbstractRsfContext                 rsfContext;
     private final AbstractClientManager              clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse  = new ConcurrentHashMap<Long, RsfFuture>();
-    private final Timer                              timer        = new HashedWheelTimer();
+    private final Timer                              timer;
     private final AtomicInteger                      requestCount = new AtomicInteger(0);
-    //
     //
     public RsfRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.clientManager = new InnerClientManager(this);
+        this.timer = new HashedWheelTimer();
     }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
@@ -126,8 +126,7 @@ public class RsfRequestManager extends AbstractRequestManager {
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 Hasor.logWarn(errorInfo);
                 //回应Response
-                RsfRequestManager.this.putResponse(request.getRequestID(), //
-                        new RsfException(ProtocolStatus.RequestTimeout, errorInfo));
+                RsfRequestManager.this.putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
         };
         //
@@ -177,8 +176,7 @@ public class RsfRequestManager extends AbstractRequestManager {
         final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         //查找远程服务地址
-        URL hostAddress = getRsfContext().getAddressCenter().findHostAddress(request.getBindInfo());
-        final AbstractRsfClient rsfClient = this.getClientManager().getClient(hostAddress);
+        final AbstractRsfClient rsfClient = this.getClientManager().getClient(request.getBindInfo());
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfMessage.getClientTimeout();
         //
@@ -212,7 +210,7 @@ public class RsfRequestManager extends AbstractRequestManager {
                 if (!future.isSuccess()) {
                     if (rsfClient.isActive()) {
                         // maybe some exception, so close the channel
-                        getClientManager().unRegistered(rsfClient);
+                        getClientManager().unRegistered(rsfClient.getHostAddress());
                     }
                     errorMsg = "send request error " + future.cause();
                 }

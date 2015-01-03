@@ -15,44 +15,124 @@
  */
 package net.hasor.rsf.remoting.address;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
+import net.hasor.rsf.adapter.Address;
+import org.more.RepeateException;
 /**
  * 地址管理中心，负责维护服务的远程服务提供者列表。
+ * （线程安全）
  * @version : 2014年12月15日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultAddressCenter extends AbstracAddressCenter {
-    private final Map<String, AddressPool> addressMap;
+    private final Object                   lock;
+    private final Map<String, AddressPool> addressMap; //维护服务和服务地址的映射
+    private final List<Address>            addressPool; //维护所有服务地址
     public DefaultAddressCenter() {
+        this.lock = new Object();
         this.addressMap = new ConcurrentHashMap<String, AddressPool>();
+        this.addressPool = new CopyOnWriteArrayList<Address>();
     }
     //
-    public URL findHostAddress(RsfBindInfo<?> bindInfo) {
+    public Address findHostAddress(RsfBindInfo<?> bindInfo) {
         if (bindInfo == null)
             return null;
-        AddressPool pool = this.addressMap.get(bindInfo.getBindID());
-        if (pool == null)
-            return null;
-        return pool.nextAddress();
-    }
-    public void invalidAddress(URL hostAddress) {
-        if (bindInfo == null)
-            return;
-        AddressPool pool = this.addressMap.get(bindInfo.getBindID());
-        if (pool == null)
-            return;
-        pool.invalidAddress(address);
-    }
-    public void updateStaticAddress(RsfBindInfo<?> bindInfo, List<URL> serviceURLs) {
-        AddressPool pool = this.addressMap.get(bindInfo.getBindID());
-        if (pool == null) {
-            pool = new AddressPool();
-            this.addressMap.put(bindInfo.getBindID(), pool);
+        synchronized (this.lock) {
+            AddressPool pool = this.addressMap.get(bindInfo.getBindID());
+            if (pool != null) {
+                return pool.nextAddress();
+            }
         }
-        pool.updateAddress(address);
+        return null;
+    }
+    public void invalidAddress(Address refereeAddress) {
+        if (refereeAddress == null)
+            return;
+        if (this.addressPool.contains(refereeAddress) == false)
+            return;
+        refereeAddress.setInvalid();
+    }
+    public void updateAddress(RsfBindInfo<?> bindInfo, List<URL> hostAddress) {
+        if (bindInfo == null || hostAddress == null || hostAddress.isEmpty() == true)
+            return;
+        //
+        List<Address> hostAddressList = new ArrayList<Address>();
+        for (URL url : hostAddress) {
+            hostAddressList.add(new AddressInfo(url));
+        }
+        //
+        synchronized (this.lock) {
+            AddressPool pool = this.addressMap.get(bindInfo.getBindID());
+            if (pool == null) {
+                pool = new AddressPool();
+                this.addressMap.put(bindInfo.getBindID(), pool);
+            }
+            pool.updateAddress(hostAddressList);
+            hostAddressList.removeAll(this.addressPool);
+            this.addressPool.addAll(hostAddressList);
+        }
+    }
+}
+class AddressInfo implements Address {
+    public URL     address  = null;
+    public boolean invalid  = true;
+    public boolean isStatic = true;
+    public AddressInfo(URL address) {
+        this.address = address;
+    }
+    //
+    public URL getAddress() {
+        return this.address;
+    }
+    public boolean isInvalid() {
+        return this.invalid;
+    }
+    public boolean isStatic() {
+        return this.isStatic;
+    }
+    public int hashCode() {
+        return this.address.hashCode();
+    }
+    public boolean equals(Object obj) {
+        if (obj instanceof AddressInfo == false)
+            return false;
+        return this.address.equals(((AddressInfo) obj).address);
+    }
+    public String toString() {
+        return String.format("[invalid=%s ,Static=%s ] - ", invalid, isStatic) + address.toString();
+    }
+    //
+    private List<EventListener> listener = new ArrayList<EventListener>();
+    public void addListener(EventListener listener) {
+        synchronized (this.listener) {
+            if (this.listener.contains(listener) == true)
+                throw new RepeateException("listener repeate.");
+            this.listener.add(listener);
+        }
+    }
+    public void removeListener(EventListener listener) {
+        synchronized (this.listener) {
+            this.listener.remove(listener);
+        }
+    }
+    public void setInvalid() {
+        this.invalid = false;
+        synchronized (this.listener) {
+            List<EventListener> lost = new ArrayList<EventListener>();
+            for (EventListener event : this.listener)
+                lost.add(event);
+            for (EventListener event : lost) {
+                try {
+                    event.onEvent("Invalid", new Object[] { this });
+                } catch (Throwable e) {}
+            }
+        }
     }
 }

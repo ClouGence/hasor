@@ -35,7 +35,7 @@ class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
     private Provider<T>                      rsfProvider;
     //
     public ServiceDefine(ServiceDomain<T> serviceDomain, AbstractRsfContext rsfContext, Map<String, Provider<RsfFilter>> rsfFilterMap, Provider<T> rsfProvider) {
-        Collection<Provider<RsfFilter>> filterCollection = this.rsfFilterMap.values();
+        Collection<Provider<RsfFilter>> filterCollection = rsfFilterMap.values();
         Provider<RsfFilter>[] filterArray = filterCollection.toArray(new Provider[filterCollection.size()]);
         //
         this.serviceDomain = serviceDomain;

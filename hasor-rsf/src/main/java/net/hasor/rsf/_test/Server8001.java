@@ -19,7 +19,6 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
 import net.hasor.rsf.bootstrap.WorkMode;
-import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
 /**
  * 
@@ -27,11 +26,11 @@ import net.hasor.rsf.plugins.qps.QPSPlugin;
  * @author 赵永春(zyc@hasor.net)
  */
 public class Server8001 {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Throwable {
         RsfContext rsfContext = new RsfBootstrap().doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) {
-                rsfBinder.bindFilter("QPS", new QPSPlugin());
-                rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
+                //rsfBinder.bindFilter("QPS", new QPSPlugin());
+                //rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
                 //
                 rsfBinder.rsfService(ITestServices.class, new TestServices()).register();
             }
@@ -44,9 +43,11 @@ public class Server8001 {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {}
-                    System.out.println("QPS         :" + qps.getQPS());
-                    System.out.println("requestCount:" + qps.getOkCount());
-                    System.out.println();
+                    if (qps != null) {
+                        System.out.println("QPS         :" + qps.getQPS());
+                        System.out.println("requestCount:" + qps.getOkCount());
+                        System.out.println();
+                    }
                 }
             }
         }).start();

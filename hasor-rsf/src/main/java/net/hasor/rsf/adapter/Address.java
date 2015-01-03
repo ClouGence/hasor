@@ -15,18 +15,19 @@
  */
 package net.hasor.rsf.adapter;
 import java.net.URL;
-import java.util.List;
-import net.hasor.rsf.RsfBindInfo;
+import net.hasor.core.EventListener;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * @version : 2014年11月30日
+ * 
+ * @version : 2015年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstracAddressCenter {
-    /**查找一个有效主机地址*/
-    public abstract Address findHostAddress(RsfBindInfo<?> bindInfo);
-    /**被明确为无效的地址*/
-    public abstract void invalidAddress(Address refereeAddress);
-    /**更新静态服务提供地址*/
-    public abstract void updateAddress(RsfBindInfo<?> bindInfo, List<URL> serviceURLs);
+public interface Address {
+    public URL getAddress();
+    public boolean isInvalid();
+    public boolean isStatic();
+    public boolean equals(Object obj);
+    public void setInvalid();
+    //
+    public void addListener(EventListener listener);
+    public void removeListener(EventListener listener);
 }

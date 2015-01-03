@@ -27,7 +27,7 @@ import net.hasor.rsf.plugins.qps.QPSPlugin;
  * @author 赵永春(zyc@hasor.net)
  */
 public class Server8000 {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Throwable {
         RsfContext rsfContext = new RsfBootstrap().doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) {
                 rsfBinder.bindFilter("QPS", new QPSPlugin());
@@ -44,9 +44,11 @@ public class Server8000 {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {}
-                    System.out.println("QPS         :" + qps.getQPS());
-                    System.out.println("requestCount:" + qps.getOkCount());
-                    System.out.println();
+                    if (qps != null) {
+                        System.out.println("QPS         :" + qps.getQPS());
+                        System.out.println("requestCount:" + qps.getOkCount());
+                        System.out.println();
+                    }
                 }
             }
         }).start();

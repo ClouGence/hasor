@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.binder;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,10 +41,12 @@ import org.more.util.StringUtils;
 public class RsfBindBuilder implements RsfBinder {
     private final AbstractRsfContext               rsfContext;
     private final Map<String, Provider<RsfFilter>> parentFilterMap;
+    private final List<URL>                        parentAddressList;
     //
     protected RsfBindBuilder(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.parentFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>();
+        this.parentAddressList = new ArrayList<URL>();
     }
     protected AbstractRsfContext getContext() {
         return this.rsfContext;
@@ -53,6 +56,10 @@ public class RsfBindBuilder implements RsfBinder {
     }
     public void bindFilter(String id, Provider<RsfFilter> provider) {
         this.parentFilterMap.put(id, provider);
+    }
+    public void bindAddress(String hostIP, int hostPort) throws MalformedURLException {
+        this.parentAddressList.add(URLUtils.toURL(hostIP, hostPort));
+        return;
     }
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
         return new LinkedBuilderImpl<T>(type, getContext());
@@ -68,15 +75,15 @@ public class RsfBindBuilder implements RsfBinder {
     }
     //
     public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private String                           serviceName;   //服务名
-        private String                           serviceGroup;  //服务分组
+        private String                           serviceName;    //服务名
+        private String                           serviceGroup;   //服务分组
         private String                           serviceVersion; //服务版本
-        private int                              clientTimeout; //调用超时（毫秒）
-        private String                           serializeType; //传输序列化类型
-        private Class<T>                         serviceType;   //服务接口类型
+        private int                              clientTimeout;  //调用超时（毫秒）
+        private String                           serializeType;  //传输序列化类型
+        private Class<T>                         serviceType;    //服务接口类型
         private Map<String, Provider<RsfFilter>> meFilterMap;
         private Provider<T>                      rsfProvider;
-        private List<URL>                        serviceURLs;
+        private List<URL>                        hostAddressList;
         private AbstractRsfContext               rsfContext;
         //
         protected LinkedBuilderImpl(Class<T> serviceType, AbstractRsfContext rsfContext) {
@@ -90,7 +97,7 @@ public class RsfBindBuilder implements RsfBinder {
             this.serializeType = settings.getDefaultSerializeType();
             this.serviceType = serviceType;
             this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>(parentFilterMap);
-            this.serviceURLs = new ArrayList<URL>();
+            this.hostAddressList = new ArrayList<URL>(parentAddressList);
             //覆盖
             RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
             if (serviceInfo != null) {
@@ -170,14 +177,11 @@ public class RsfBindBuilder implements RsfBinder {
             ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, this.meFilterMap, this.rsfProvider);
             //
             this.rsfContext.getBindCenter().publishService(define);
-            this.rsfContext.getAddressCenter().updateStaticAddress(define, this.serviceURLs);;
+            this.rsfContext.getAddressCenter().updateAddress(define, this.hostAddressList);;
             return define;
         }
-        public RegisterBuilder<T> addBindAddress(String hostIP, int hostPort) {
-            try {
-                String servicePath = this.serviceGroup + "/" + this.serviceName + "/" + this.serviceVersion;
-                this.serviceURLs.add(URLUtils.toURL(hostIP, hostPort, servicePath));
-            } catch (Exception e) {}
+        public RegisterBuilder<T> bindAddress(String hostIP, int hostPort) throws MalformedURLException {
+            this.hostAddressList.add(URLUtils.toURL(hostIP, hostPort));
             return this;
         }
     }

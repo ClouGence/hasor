@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.net.MalformedURLException;
 import net.hasor.core.Provider;
 /**
  * 服务注册器
@@ -21,6 +22,8 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBinder {
+    /**绑定远程服务地址和端口。*/
+    public void bindAddress(String remoteHost, int remotePort) throws MalformedURLException;
     /**添加全局的RsfFilter。*/
     public void bindFilter(String id, RsfFilter instance);
     /**添加全局的RsfFilter。*/
@@ -65,7 +68,7 @@ public interface RsfBinder {
     /**绑定元信息*/
     public interface RegisterBuilder<T> {
         /**绑定远程服务地址和端口。*/
-        public RegisterBuilder<T> addBindAddress(String remoteHost, int remotePort);
+        public RegisterBuilder<T> bindAddress(String remoteHost, int remotePort) throws MalformedURLException;
         /**将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register();
     }

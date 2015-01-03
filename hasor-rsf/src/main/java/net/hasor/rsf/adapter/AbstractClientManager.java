@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.adapter;
 import java.net.URL;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 /**
  * 负责维持与远程RSF服务器连接的客户端类，并同时负责维护request/response。
@@ -25,7 +26,7 @@ public abstract class AbstractClientManager {
     /**获取{@link RsfContext}*/
     public abstract AbstractRsfContext getRsfContext();
     /**获取或创建一个连接*/
-    public abstract AbstractRsfClient getClient(URL hostAddress);
+    public abstract AbstractRsfClient getClient(RsfBindInfo<?> rsfBindInfo);
     /**关闭这个连接并解除注册。*/
-    public abstract void unRegistered(AbstractRsfClient client);
+    public abstract void unRegistered(URL hostAddress);
 }

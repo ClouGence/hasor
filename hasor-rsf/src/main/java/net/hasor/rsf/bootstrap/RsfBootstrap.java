@@ -88,11 +88,11 @@ public class RsfBootstrap {
         return this;
     }
     //
-    private InetAddress finalBindAddress(RsfSettings rsfSettings) throws UnknownHostException {
-        String bindAddress = rsfSettings.getBindAddress();
+    private InetAddress finalBindAddress(RsfContext rsfContext) throws UnknownHostException {
+        String bindAddress = rsfContext.getSettings().getBindAddress();
         return StringUtils.equalsIgnoreCase("local", bindAddress) ? InetAddress.getLocalHost() : InetAddress.getByName(bindAddress);
     }
-    public RsfContext sync() throws IOException, URISyntaxException {
+    public RsfContext sync() throws Throwable {
         if (this.rsfStart == null) {
             this.rsfStart = new RsfStart();
         }
@@ -103,13 +103,13 @@ public class RsfBootstrap {
         //RsfContext
         final DefaultRsfContext rsfContext = new DefaultRsfContext(this.settings);
         if (this.workMode == WorkMode.Customer) {
-            return rsfContext;
+            return doBinder(rsfContext);
         }
         //
         //localAddress & bindSocket
         InetAddress localAddress = this.localAddress;
         if (localAddress == null) {
-            localAddress = finalBindAddress(this.settings);
+            localAddress = finalBindAddress(rsfContext);
         }
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
         //Netty
@@ -130,9 +130,13 @@ public class RsfBootstrap {
         Channel serverChannel = future.channel();
         Hasor.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
         //add
-        bossGroup.shutdownGracefully();s
-        serverChannel.close();
+        //        bossGroup.shutdownGracefully();
+        //        serverChannel.close();
         //
+        return doBinder(rsfContext);
+    }
+    private RsfContext doBinder(RsfContext rsfContext) throws Throwable {
+        this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
         return rsfContext;
     }
 }
