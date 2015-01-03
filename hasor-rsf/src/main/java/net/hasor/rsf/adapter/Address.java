@@ -22,12 +22,21 @@ import net.hasor.core.EventListener;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Address {
+    /**地址*/
     public URL getAddress();
+    /**表示当前地址是否可用*/
     public boolean isInvalid();
+    /**是否为静态数据（静态数据是指在程序中明确指定的IP）*/
     public boolean isStatic();
+    /**两个 Address 可以比较是否相等*/
     public boolean equals(Object obj);
+    /**标记地址为失效的*/
     public void setInvalid();
     //
+    /**添加监听器*/
     public void addListener(EventListener listener);
+    /**移除监听器*/
     public void removeListener(EventListener listener);
+    /**被比较为失效的次数，当超过100之后会被 Hasor 永久放弃（静态数据不受此影响）*/
+    public int invalidCount();
 }

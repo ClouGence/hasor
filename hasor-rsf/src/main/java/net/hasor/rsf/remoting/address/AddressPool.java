@@ -68,6 +68,7 @@ class AddressPool implements EventListener {
         if ("Invalid".equalsIgnoreCase(event) == false || params.length < 1)
             return;
         Address address = (Address) params[0];
-        this.removeAddress(address);
+        if (address.invalidCount() > 100 && address.isStatic() == false)
+            this.removeAddress(address);
     }
 }

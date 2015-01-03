@@ -52,6 +52,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         }
         return null;
     }
+    /**获取服务上配置有效的过滤器*/
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID) {
         RsfSettings settings = getSettings();
         String serviceName = servicetType.getName();

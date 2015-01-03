@@ -33,4 +33,6 @@ public interface RsfContext {
     /**查找一个{@link RsfFilter}<br>
      *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。*/
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
+    /**停止工作*/
+    public void shutdown();
 }

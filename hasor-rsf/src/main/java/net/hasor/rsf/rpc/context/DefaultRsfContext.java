@@ -69,6 +69,9 @@ public class DefaultRsfContext extends AbstractRsfContext {
         //
     }
     //
+    public void shutdown() {
+        this.loopGroup.shutdownGracefully();
+    }
     /**获取使用的{@link EventLoopGroup}*/
     public EventLoopGroup getLoopGroup() {
         return this.loopGroup;

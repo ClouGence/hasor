@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.Address;
-import org.more.RepeateException;
 /**
  * 地址管理中心，负责维护服务的远程服务提供者列表。
  * （线程安全）
@@ -77,62 +75,6 @@ public class DefaultAddressCenter extends AbstracAddressCenter {
             pool.updateAddress(hostAddressList);
             hostAddressList.removeAll(this.addressPool);
             this.addressPool.addAll(hostAddressList);
-        }
-    }
-}
-class AddressInfo implements Address {
-    public URL     address  = null;
-    public boolean invalid  = true;
-    public boolean isStatic = true;
-    public AddressInfo(URL address) {
-        this.address = address;
-    }
-    //
-    public URL getAddress() {
-        return this.address;
-    }
-    public boolean isInvalid() {
-        return this.invalid;
-    }
-    public boolean isStatic() {
-        return this.isStatic;
-    }
-    public int hashCode() {
-        return this.address.hashCode();
-    }
-    public boolean equals(Object obj) {
-        if (obj instanceof AddressInfo == false)
-            return false;
-        return this.address.equals(((AddressInfo) obj).address);
-    }
-    public String toString() {
-        return String.format("[invalid=%s ,Static=%s ] - ", invalid, isStatic) + address.toString();
-    }
-    //
-    private List<EventListener> listener = new ArrayList<EventListener>();
-    public void addListener(EventListener listener) {
-        synchronized (this.listener) {
-            if (this.listener.contains(listener) == true)
-                throw new RepeateException("listener repeate.");
-            this.listener.add(listener);
-        }
-    }
-    public void removeListener(EventListener listener) {
-        synchronized (this.listener) {
-            this.listener.remove(listener);
-        }
-    }
-    public void setInvalid() {
-        this.invalid = false;
-        synchronized (this.listener) {
-            List<EventListener> lost = new ArrayList<EventListener>();
-            for (EventListener event : this.listener)
-                lost.add(event);
-            for (EventListener event : lost) {
-                try {
-                    event.onEvent("Invalid", new Object[] { this });
-                } catch (Throwable e) {}
-            }
         }
     }
 }

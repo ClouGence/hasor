@@ -24,7 +24,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import net.hasor.core.Hasor;
@@ -51,6 +50,7 @@ public class RsfBootstrap {
     private InetAddress localAddress = null;
     private WorkMode    workMode     = WorkMode.None;
     private int         bindSocket   = -1;
+    private Runnable    shutdownHook = null;
     //
     //
     public RsfBootstrap bindSettings(Settings settings) throws IOException {
@@ -101,7 +101,12 @@ public class RsfBootstrap {
         }
         //
         //RsfContext
-        final DefaultRsfContext rsfContext = new DefaultRsfContext(this.settings);
+        final DefaultRsfContext rsfContext = new DefaultRsfContext(this.settings) {
+            public void shutdown() {
+                super.shutdown();
+                doShutdown();
+            }
+        };
         if (this.workMode == WorkMode.Customer) {
             return doBinder(rsfContext);
         }
@@ -114,7 +119,7 @@ public class RsfBootstrap {
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
         //Netty
         final URL hostAddress = URLUtils.toURL(localAddress.getHostAddress(), bindSocket);
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
+        final NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(bossGroup, rsfContext.getLoopGroup());
         boot.channel(NioServerSocketChannel.class);
@@ -127,16 +132,24 @@ public class RsfBootstrap {
             }
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = boot.bind(localAddress, bindSocket);
-        Channel serverChannel = future.channel();
+        final Channel serverChannel = future.channel();
         Hasor.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
         //add
-        //        bossGroup.shutdownGracefully();
-        //        serverChannel.close();
+        this.shutdownHook = new Runnable() {
+            public void run() {
+                bossGroup.shutdownGracefully();
+                serverChannel.close();
+            }
+        };
         //
         return doBinder(rsfContext);
     }
     private RsfContext doBinder(RsfContext rsfContext) throws Throwable {
         this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
         return rsfContext;
+    }
+    private void doShutdown() {
+        if (this.shutdownHook != null)
+            this.shutdownHook.run();
     }
 }
