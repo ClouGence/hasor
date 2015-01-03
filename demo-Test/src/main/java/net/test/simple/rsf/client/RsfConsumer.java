@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf;
-import net.hasor.rsf.client.ServiceProvider;
+package net.test.simple.rsf.client;
+import java.net.InetAddress;
+import net.hasor.rsf.plugins.hasor.RsfApiBinder;
+import net.hasor.rsf.plugins.hasor.RsfModule;
 /**
- * 
+ * 负责注册远程服务
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyServiceProvider {
-    public static void main(String[] args) {
-        ServiceProvider sp = new ServiceProvider();
-        sp.initService();
-        //
-        // TODO Auto-generated method stub
+public class RsfConsumer extends RsfModule {
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        apiBinder.rsfService(EchoService.class)//
+                .bindAddress(hostAddress, 8000)//
+                .bindAddress(hostAddress, 8001)//
+                .bindAddress(hostAddress, 8002)//
+                .bindAddress(hostAddress, 8003)//
+                .register();
     }
 }

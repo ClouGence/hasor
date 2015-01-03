@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf.beans;
-//
-public interface MyService {}
+package net.test.simple.rsf.provider;
+import net.test.simple.rsf.client.EchoService;
+/**
+ * 远程服务实现。
+ * @version : 2015年1月3日
+ * @author 赵永春(zyc@hasor.net)
+ */
+public class EchoServiceImpl implements EchoService {
+    public String echo(String sayMessage) {
+        return "RE : " + sayMessage;
+    }
+}

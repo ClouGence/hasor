@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.hasor;
-import net.hasor.core.ApiBinder;
-import net.hasor.rsf.RsfBinder;
+package net.test.simple.rsf.provider;
+import net.hasor.rsf.plugins.hasor.RsfApiBinder;
+import net.hasor.rsf.plugins.hasor.RsfModule;
+import net.test.simple.rsf.client.EchoService;
 /**
- * 服务注册器
- * @version : 2014年11月12日
+ * 
+ * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfApiBinder extends RsfBinder, ApiBinder {}
+public class RsfProvider extends RsfModule {
+    public RsfProvider(int port) {
+        // TODO Auto-generated constructor stub
+    }
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        apiBinder.rsfService(EchoService.class, new EchoServiceImpl()).register();
+    }
+}

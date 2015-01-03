@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf;
-import net.hasor.rsf.client.ConsumerProvider;
-import net.test.simple.rsf.beans.MyService;
+package net.test.simple.rsf.client;
 /**
- * 
- * @version : 2014年9月19日
+ * 远程服务接口。
+ * @version : 2015年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyServiceConsumer {
-    public static void main(String[] args) {
-        ConsumerProvider<MyService> serviceProvider = new ConsumerProvider<MyService>();
-        serviceProvider.initService();
-        //
-        MyService my = serviceProvider.get();
-        //
-    }
+public interface EchoService {
+    public String echo(String sayMessage);
 }
