@@ -72,7 +72,7 @@ public abstract class Hasor {
     /*----------------------------------------------------------------------------------------Log*/
     private static StackTraceElement onTrace() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
-        StackTraceElement onCode = stackElements[4];
+        StackTraceElement onCode = stackElements[5];
         return onCode;
     }
     private static String callerTrace() {
