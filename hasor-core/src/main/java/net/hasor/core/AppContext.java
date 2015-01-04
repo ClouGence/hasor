@@ -23,10 +23,12 @@ import java.util.List;
 public interface AppContext {
     /**获取环境接口。*/
     public Environment getEnvironment();
-    /**模块启动*/
+    /**模块启动通知*/
     public void start(Module... modules) throws Throwable;
     /**是否启动*/
     public boolean isStart();
+    /**发送停止通知*/
+    public void shutdown();
     //
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/

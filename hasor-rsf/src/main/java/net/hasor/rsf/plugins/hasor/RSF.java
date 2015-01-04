@@ -15,13 +15,21 @@
  */
 package net.hasor.rsf.plugins.hasor;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfContext;
 /**
  * 服务注册器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfApiBinder extends ApiBinder {
-    /**获取 RSF 的Binder。*/
-    public RsfBinder getRsfBinder();
+class RSF extends ApiBinderWrap implements RsfApiBinder {
+    private final RsfBinder rsfBinder;
+    RSF(ApiBinder apiBinder, RsfContext rsfContext) {
+        super(apiBinder);
+        this.rsfBinder = rsfContext.getBindCenter().getRsfBinder();
+    }
+    public RsfBinder getRsfBinder() {
+        return this.rsfBinder;
+    }
 }

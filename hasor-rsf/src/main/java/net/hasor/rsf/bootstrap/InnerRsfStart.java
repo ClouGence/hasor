@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.hasor;
-import net.hasor.core.ApiBinder;
+package net.hasor.rsf.bootstrap;
 import net.hasor.rsf.RsfBinder;
 /**
- * 服务注册器
- * @version : 2014年11月12日
+ * Rsf启动引导程序。
+ * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfApiBinder extends ApiBinder {
-    /**获取 RSF 的Binder。*/
-    public RsfBinder getRsfBinder();
+class InnerRsfStart implements RsfStart {
+    public void onBind(RsfBinder rsfBinder) throws Throwable {
+        //
+    }
 }

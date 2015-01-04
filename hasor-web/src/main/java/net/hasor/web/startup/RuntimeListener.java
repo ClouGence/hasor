@@ -92,6 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (this.sessionListenerPipeline != null) {
             this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
         }
+        this.appContext.shutdown();
     }
     @Override
     public void sessionCreated(final HttpSessionEvent se) {

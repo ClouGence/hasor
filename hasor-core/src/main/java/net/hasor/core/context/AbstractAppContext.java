@@ -30,6 +30,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextInitializeListener;
+import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
@@ -268,6 +269,20 @@ public abstract class AbstractAppContext implements AppContext {
             ((ContextStartListener) registerFactory).doStartCompleted(this);
         }
     }
+    /**开始进入容器停止.*/
+    protected void doShutdown() {
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
+        if (registerFactory instanceof ContextShutdownListener) {
+            ((ContextShutdownListener) registerFactory).doShutdown(this);
+        }
+    }
+    /**容器启动停止。*/
+    protected void doShutdownCompleted() {
+        BindInfoFactory registerFactory = this.getBindInfoFactory();
+        if (registerFactory instanceof ContextShutdownListener) {
+            ((ContextShutdownListener) registerFactory).doShutdownCompleted(this);
+        }
+    }
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder。*/
@@ -355,5 +370,20 @@ public abstract class AbstractAppContext implements AppContext {
         /*3.打印状态*/
         this.startState = true;
         Hasor.logInfo("Hasor Started now!");
+    }
+    public synchronized final void shutdown() {
+        if (!this.isStart()) {
+            return;
+        }
+        final AbstractAppContext appContext = this;
+        EventContext ec = appContext.getEnvironment().getEventContext();
+        /*1.Init*/
+        Hasor.logInfo("send shutdown sign...");
+        appContext.doShutdown();
+        /*3.引发事件*/
+        ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
+        appContext.doShutdownCompleted();
+        this.startState = false;
+        Hasor.logInfo("the shutdown is completed!");
     }
 }

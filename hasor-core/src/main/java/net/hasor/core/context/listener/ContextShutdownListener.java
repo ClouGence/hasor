@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.hasor;
-import net.hasor.core.ApiBinder;
-import net.hasor.rsf.RsfBinder;
+package net.hasor.core.context.listener;
+import net.hasor.core.context.AbstractAppContext;
 /**
- * 服务注册器
- * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * 用于容器销毁事件接收
+ * @version : 2014-5-10
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface RsfApiBinder extends ApiBinder {
-    /**获取 RSF 的Binder。*/
-    public RsfBinder getRsfBinder();
+public interface ContextShutdownListener {
+    /**开始进入容器销毁过程。*/
+    public void doShutdown(AbstractAppContext appContext);
+    /**容器销毁完成。*/
+    public void doShutdownCompleted(AbstractAppContext appContext);
 }

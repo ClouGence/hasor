@@ -26,6 +26,7 @@ import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.context.listener.ContextInitializeListener;
+import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.util.ArrayUtils;
@@ -37,7 +38,8 @@ import org.more.util.StringUtils;
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppContextAware, ContextInitializeListener, ContextStartListener {
+public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppContextAware,//
+        ContextInitializeListener, ContextStartListener, ContextShutdownListener {
     private BindInfoDefineManager defineManager = null;
     private AppContext            appContext    = null;
     //
@@ -137,12 +139,17 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppCon
             configBindInfo(register, context);
         }
     }
-    public void doStart(final AbstractAppContext appContext) {
+    public void doStart(AbstractAppContext appContext) {
         // TODO Auto-generated method stub
     }
-    public void doStartCompleted(final AbstractAppContext appContext) {
+    public void doStartCompleted(AbstractAppContext appContext) {
         // TODO Auto-generated method stub
     }
-    //
+    public void doShutdown(AbstractAppContext appContext) {
+        this.defineManager = null;
+    }
+    public void doShutdownCompleted(AbstractAppContext appContext) {
+        // TODO Auto-generated method stub
+    }
     protected abstract void configBindInfo(AbstractBindInfoProviderAdapter<Object> bindInfo, Object context);
 }

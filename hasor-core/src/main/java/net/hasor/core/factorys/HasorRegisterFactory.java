@@ -21,6 +21,7 @@ import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Provider;
+import net.hasor.core.context.AbstractAppContext;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;

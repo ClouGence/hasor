@@ -20,8 +20,6 @@ import net.hasor.rsf.RsfBinder;
  * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfStart {
-    public void onBind(RsfBinder rsfBinder) throws Throwable {
-        //
-    }
+public interface RsfStart {
+    public void onBind(RsfBinder rsfBinder) throws Throwable;
 }

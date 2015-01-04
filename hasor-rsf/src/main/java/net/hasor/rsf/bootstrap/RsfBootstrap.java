@@ -49,7 +49,7 @@ public class RsfBootstrap {
     private RsfStart    rsfStart     = null;
     private InetAddress localAddress = null;
     private WorkMode    workMode     = WorkMode.None;
-    private int         bindSocket   = -1;
+    private int         bindSocket   = 0;
     private Runnable    shutdownHook = null;
     //
     //
@@ -77,7 +77,7 @@ public class RsfBootstrap {
         InetAddress address = null;
         if ("local".equals(localHost) == true) {
             address = InetAddress.getLocalHost();
-        } else {
+        } else if (localHost != null) {
             address = InetAddress.getByName(localHost);
         }
         return this.socketBind(address, port);
@@ -94,7 +94,7 @@ public class RsfBootstrap {
     }
     public RsfContext sync() throws Throwable {
         if (this.rsfStart == null) {
-            this.rsfStart = new RsfStart();
+            this.rsfStart = new InnerRsfStart();
         }
         if (this.settings == null) {
             this.settings = new DefaultRsfSettings(new StandardContextSettings("rsf-config.xml"));

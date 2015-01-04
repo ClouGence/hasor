@@ -9,6 +9,7 @@
     07.内部实现增加 CustomerProvider接口。
     08.内部实现增加 MetaDataAdapter类。
     09.增加 SettingsWarp 工具类。
+    10.增加 shutdown 生命周期阶段。
 
 ===== Hasor-Core v0.0.9
 * 新增:

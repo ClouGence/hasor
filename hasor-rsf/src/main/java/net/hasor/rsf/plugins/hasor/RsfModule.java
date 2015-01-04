@@ -16,9 +16,12 @@
 package net.hasor.rsf.plugins.hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.EventContext;
+import net.hasor.core.EventListener;
 import net.hasor.core.Module;
+import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.bootstrap.RsfBootstrap;
+import net.hasor.rsf.bootstrap.RsfStart;
 import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
 /**
@@ -28,15 +31,38 @@ import net.hasor.rsf.plugins.qps.QPSPlugin;
  */
 public abstract class RsfModule implements Module {
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        final AbstractRsfContext rsfContext = null;
+        //
+        //1.调用引导程序启动 RSF
+        RsfBootstrap bootstrap = new RsfBootstrap();
+        bootstrap.bindSettings(apiBinder.getEnvironment().getSettings());
+        bootstrap.doBinder(new RsfStart() {
+            public void onBind(RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.bindFilter("QPS", new QPSPlugin());
+                rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
+            }
+        });
+        bootstrap.socketBind(this.bindAddress(), this.bindPort());
+        final RsfContext rsfContext = bootstrap.sync();
+        //
+        //2.同步接收 AppContext 的 shutdown 通知，并且传递给 RSF
         EventContext eventContext = apiBinder.getEnvironment().getEventContext();
-        //
         apiBinder.bindType(RsfContext.class, rsfContext);
+        eventContext.pushListener(EventContext.ContextEvent_Shutdown, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                rsfContext.shutdown();
+            }
+        });
         //
-        rsfBinder.bindFilter("QPS", new QPSPlugin());
-        rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
-        //
-        this.loadModule(new RsfApiBinder(apiBinder, rsfContext));
+        //3.装载RSF Module
+        this.loadModule(new InnerRsfApiBinder(apiBinder, rsfContext));
+    }
+    /**用于覆盖 rsf 配置文件中的配置。*/
+    protected String bindAddress() {
+        return null;
+    }
+    /**用于覆盖 rsf 配置文件中的配置。*/
+    protected int bindPort() {
+        return 0;
     }
     //
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
