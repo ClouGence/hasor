@@ -15,21 +15,16 @@
  */
 package net.test.simple.rsf;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
-import net.test.simple.rsf.provider.RsfProvider;
 /**
  * 
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Server8000 {
-    public static void main(String[] args) throws Throwable {
-        //1.创建并启动环境
-        AppContext app = Hasor.createAppContext(new RsfProvider(8000));
-        //2.监视
-        final QPSPlugin qpsPlugin = (QPSPlugin) app.findBindingBean("QPS", RsfFilter.class);
+public class Utils {
+    public static void startQPS(RsfContext rsfContext) throws Throwable {//2.监视
+        final QPSPlugin qpsPlugin = rsfContext.findFilter("QPS");
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
@@ -44,5 +39,8 @@ public class Server8000 {
                 }
             }
         }).start();
+    }
+    public static void startQPS(AppContext appContext) throws Throwable {
+        startQPS(appContext.getInstance(RsfContext.class));
     }
 }

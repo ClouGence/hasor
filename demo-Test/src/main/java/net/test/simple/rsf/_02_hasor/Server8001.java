@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf.client;
+package net.test.simple.rsf._02_hasor;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.test.simple.rsf.Utils;
 /**
- * 远程服务接口。
- * @version : 2015年1月3日
+ * 
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface EchoService {
-    public String echo(String sayMessage);
+public class Server8001 {
+    public static void main(String[] args) throws Throwable {
+        //创建并启动环境
+        AppContext appContext = Hasor.createAppContext(new RsfProvider(8001));
+        Utils.startQPS(appContext);/*启动QPS实时报告*/
+    }
 }

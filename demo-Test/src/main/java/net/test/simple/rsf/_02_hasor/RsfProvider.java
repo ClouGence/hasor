@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf.client;
-import java.net.InetAddress;
+package net.test.simple.rsf._02_hasor;
+import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
+import net.test.simple.rsf.EchoService;
+import net.test.simple.rsf.EchoServiceImpl;
 /**
- * 负责注册远程服务
+ * 
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfConsumer extends RsfModule {
+public class RsfProvider extends RsfModule {
+    private int usePort = 0;
+    public RsfProvider(int port) {
+        this.usePort = port;
+    }
+    protected int bindPort() {
+        return usePort;
+    }
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-        String hostAddress = InetAddress.getLocalHost().getHostAddress();
-        apiBinder.rsfService(EchoService.class)//
-                .bindAddress(hostAddress, 8000)//
-                .bindAddress(hostAddress, 8001)//
-                .bindAddress(hostAddress, 8002)//
-                .bindAddress(hostAddress, 8003)//
-                .register();
+        RsfBinder rsfBinder = apiBinder.getRsfBinder();
+        rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).register();
     }
 }

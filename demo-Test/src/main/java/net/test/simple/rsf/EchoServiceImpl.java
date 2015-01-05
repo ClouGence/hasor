@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf.client;
-import net.hasor.core.AppContext;
-import net.hasor.core.InjectMembers;
+package net.test.simple.rsf;
 /**
- * 本地服务，调用远程服务接口
+ * 远程服务实现。
  * @version : 2015年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyService implements InjectMembers {
-    private EchoService echoService;
-    public void doInject(AppContext appContext) {
-        this.echoService = appContext.getInstance(EchoService.class);
-    }
-    //
-    /**调用远程服务，将一段文字传到远端在传回来。*/
-    public String callEcho(String sayMessage) {
-        return this.echoService.echo(sayMessage);
+public class EchoServiceImpl implements EchoService {
+    public String echo(String sayMessage) {
+        return "RE : " + sayMessage;
     }
 }

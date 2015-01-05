@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.rsf.provider;
-import net.hasor.rsf.plugins.hasor.RsfApiBinder;
-import net.hasor.rsf.plugins.hasor.RsfModule;
-import net.test.simple.rsf.client.EchoService;
+package net.test.simple.rsf._02_hasor;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.test.simple.rsf.Utils;
 /**
  * 
- * @version : 2014年9月19日
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfProvider extends RsfModule {
-    public RsfProvider(int port) {
-        // TODO Auto-generated constructor stub
-    }
-    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-        apiBinder.rsfService(EchoService.class, new EchoServiceImpl()).register();
+public class Server8002 {
+    public static void main(String[] args) throws Throwable {
+        //创建并启动环境
+        AppContext appContext = Hasor.createAppContext(new RsfProvider(8002));
+        Utils.startQPS(appContext);/*启动QPS实时报告*/
     }
 }
