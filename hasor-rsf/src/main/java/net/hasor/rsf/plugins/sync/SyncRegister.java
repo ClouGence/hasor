@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.plugins.sync;
-import net.hasor.rsf.remoting.address.AddressInfo;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日

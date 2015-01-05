@@ -30,8 +30,7 @@ import net.hasor.rsf.plugins.qps.QPSPlugin;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfModule implements Module {
-    public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        //
+    private final RsfContext createRsfContext(ApiBinder apiBinder) throws Throwable {
         //1.调用引导程序启动 RSF
         RsfBootstrap bootstrap = new RsfBootstrap();
         bootstrap.bindSettings(apiBinder.getEnvironment().getSettings());
@@ -52,6 +51,19 @@ public abstract class RsfModule implements Module {
                 rsfContext.shutdown();
             }
         });
+        return rsfContext;
+    }
+    //
+    private static final Object LOCK_KEY   = new Object();
+    private static RsfContext   rsfContext = null;
+    //
+    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+        //
+        synchronized (LOCK_KEY) {
+            if (rsfContext == null) {
+                rsfContext = createRsfContext(apiBinder);
+            }
+        }
         //
         //3.装载RSF Module
         this.loadModule(new InnerRsfApiBinder(apiBinder, rsfContext));

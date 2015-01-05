@@ -39,23 +39,21 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBindBuilder implements RsfBinder {
-    private final AbstractRsfContext               rsfContext;
-    private final Map<String, Provider<RsfFilter>> parentFilterMap;
-    private final List<URL>                        parentAddressList;
+    private final AbstractRsfContext rsfContext;
+    private final List<URL>          parentAddressList;
     //
     protected RsfBindBuilder(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.parentFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>();
         this.parentAddressList = new ArrayList<URL>();
     }
     protected AbstractRsfContext getContext() {
         return this.rsfContext;
     }
-    public void bindFilter(String id, RsfFilter instance) {
-        this.parentFilterMap.put(id, new InstanceProvider<RsfFilter>(instance));
+    public void bindFilter(String filterID, RsfFilter instance) {
+        getContext().getBindCenter().bindFilter(filterID, new InstanceProvider<RsfFilter>(instance));
     }
-    public void bindFilter(String id, Provider<RsfFilter> provider) {
-        this.parentFilterMap.put(id, provider);
+    public void bindFilter(String filterID, Provider<RsfFilter> provider) {
+        getContext().getBindCenter().bindFilter(filterID, provider);
     }
     public void bindAddress(String hostIP, int hostPort) throws MalformedURLException {
         this.parentAddressList.add(URLUtils.toURL(hostIP, hostPort));
@@ -96,7 +94,7 @@ public class RsfBindBuilder implements RsfBinder {
             this.clientTimeout = settings.getDefaultTimeout();
             this.serializeType = settings.getDefaultSerializeType();
             this.serviceType = serviceType;
-            this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>(parentFilterMap);
+            this.meFilterMap = new LinkedHashMap<String, Provider<RsfFilter>>();
             this.hostAddressList = new ArrayList<URL>(parentAddressList);
             //覆盖
             RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
@@ -138,13 +136,13 @@ public class RsfBindBuilder implements RsfBinder {
             this.serializeType = serializeType;
             return this;
         }
-        public ConfigurationBuilder<T> bindFilter(String id, RsfFilter instance) {
-            this.meFilterMap.put(id, new InstanceProvider<RsfFilter>(instance));
+        public ConfigurationBuilder<T> bindFilter(String filterID, RsfFilter instance) {
+            this.meFilterMap.put(filterID, new InstanceProvider<RsfFilter>(instance));
             return this;
         }
-        public ConfigurationBuilder<T> bindFilter(String id, Provider<RsfFilter> provider) {
+        public ConfigurationBuilder<T> bindFilter(String filterID, Provider<RsfFilter> provider) {
             if (provider != null) {
-                this.meFilterMap.put(id, provider);
+                this.meFilterMap.put(filterID, provider);
             }
             return this;
         }

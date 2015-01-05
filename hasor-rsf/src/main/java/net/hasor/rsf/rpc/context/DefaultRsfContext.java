@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractBindCenter;

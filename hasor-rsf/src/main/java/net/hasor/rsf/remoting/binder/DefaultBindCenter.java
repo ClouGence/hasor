@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.binder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.adapter.AbstractBindCenter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import org.more.RepeateException;
@@ -28,13 +34,17 @@ import org.more.RepeateException;
  */
 public class DefaultBindCenter extends AbstractBindCenter {
     /* Group -> Name -> Version*/
-    private final Map<String, Map<String, Map<String, RsfBindInfo<?>>>> rsfService1Map;
-    private final Map<String, RsfBindInfo<?>>                           rsfService2Map;
-    private final AbstractRsfContext                                    rsfContext;
+    private final ConcurrentMap<String, Provider<RsfFilter>>                                          rsfFilter1;
+    private final List<Provider<RsfFilter>>                                                           rsfFilter2;
+    private final ConcurrentMap<String, ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>>> rsfService1Map;
+    private final ConcurrentMap<String, RsfBindInfo<?>>                                               rsfService2Map;
+    private final AbstractRsfContext                                                                  rsfContext;
     //
     public DefaultBindCenter(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.rsfService1Map = new ConcurrentHashMap<String, Map<String, Map<String, RsfBindInfo<?>>>>();
+        this.rsfFilter1 = new ConcurrentSkipListMap<String, Provider<RsfFilter>>();
+        this.rsfFilter2 = new ArrayList<Provider<RsfFilter>>();
+        this.rsfService1Map = new ConcurrentHashMap<String, ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>>>();
         this.rsfService2Map = new ConcurrentHashMap<String, RsfBindInfo<?>>();
     }
     //
@@ -46,7 +56,7 @@ public class DefaultBindCenter extends AbstractBindCenter {
     }
     public <T> RsfBindInfo<T> getService(String group, String name, String version) {
         //group
-        Map<String, Map<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(group);
+        ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(group);
         if (nameMap == null)
             return null;
         //name
@@ -64,7 +74,7 @@ public class DefaultBindCenter extends AbstractBindCenter {
     }
     /**回收已经发布的服务*/
     public synchronized void recoverService(RsfBindInfo<?> bindInfo) {
-        Map<String, Map<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(bindInfo.getBindGroup());
+        ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(bindInfo.getBindGroup());
         if (nameMap != null) {
             Map<String, RsfBindInfo<?>> versionMap = nameMap.get(bindInfo.getBindName());
             if (versionMap != null) {
@@ -81,13 +91,13 @@ public class DefaultBindCenter extends AbstractBindCenter {
         }
         //
         //group
-        Map<String, Map<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(bindInfo.getBindGroup());
+        ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>> nameMap = this.rsfService1Map.get(bindInfo.getBindGroup());
         if (nameMap == null) {
-            nameMap = new ConcurrentHashMap<String, Map<String, RsfBindInfo<?>>>();
+            nameMap = new ConcurrentHashMap<String, ConcurrentMap<String, RsfBindInfo<?>>>();
             this.rsfService1Map.put(bindInfo.getBindGroup(), nameMap);
         }
         //name
-        Map<String, RsfBindInfo<?>> versionMap = nameMap.get(bindInfo.getBindName());
+        ConcurrentMap<String, RsfBindInfo<?>> versionMap = nameMap.get(bindInfo.getBindName());
         if (versionMap == null) {
             versionMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
             nameMap.put(bindInfo.getBindName(), versionMap);
@@ -96,5 +106,18 @@ public class DefaultBindCenter extends AbstractBindCenter {
         String version = bindInfo.getBindVersion();
         versionMap.put(version, bindInfo);
         this.rsfService2Map.put(bindInfo.getBindID(), bindInfo);
+    }
+    public Provider<RsfFilter>[] publicFilters() {
+        return this.rsfFilter2.toArray(new Provider[this.rsfFilter2.size()]);
+    }
+    public <T extends RsfFilter> T findFilter(String filterID) {
+        return (T) this.rsfFilter1.get(filterID).get();
+    }
+    public synchronized void bindFilter(String filterID, Provider<RsfFilter> provider) {
+        if (this.rsfFilter2.contains(filterID) == true) {
+            throw new RepeateException("repeate filterID " + filterID);
+        }
+        this.rsfFilter1.put(filterID, provider);
+        this.rsfFilter2.add(provider);
     }
 }

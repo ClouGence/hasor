@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.adapter;
+import net.hasor.core.Provider;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfFilter;
 /**
  * 注册中心。负责维护服务的列表。
  * @version : 2014年11月30日
@@ -26,4 +28,11 @@ public abstract class AbstractBindCenter implements BindCenter {
     public abstract void recoverService(RsfBindInfo<?> bindInfo);
     /**发布服务*/
     public abstract void publishService(RsfBindInfo<?> bindInfo);
+    //
+    /**获取全局{@link RsfFilter}*/
+    public abstract Provider<RsfFilter>[] publicFilters();
+    /**查找一个Filter*/
+    public abstract <T extends RsfFilter> T findFilter(String filterID);
+    /**发布一个Filter*/
+    public abstract void bindFilter(String filterID, Provider<RsfFilter> provider);
 }
