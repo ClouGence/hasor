@@ -34,6 +34,9 @@ public interface RsfClient {
     /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     //
     /**同步方式调用远程服务。*/
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;

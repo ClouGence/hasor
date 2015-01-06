@@ -34,6 +34,7 @@ import net.hasor.rsf.adapter.AbstractRequestManager;
 import net.hasor.rsf.adapter.AbstractRsfClient;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.adapter.Address;
+import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
@@ -91,7 +92,7 @@ class InnerClientManager extends AbstractClientManager {
             addressCenter.invalidAddress(refereeAddress);
         }
         //
-        throw new RsfException("there is not invalid address.");
+        throw new RsfException(ProtocolStatus.ClientError, "there is not invalid address.");
     }
     /**关闭这个连接并解除注册。*/
     public void unRegistered(URL hostAddress) {
@@ -101,7 +102,7 @@ class InnerClientManager extends AbstractClientManager {
         synchronized (this.clientMapping) {
             AbstractRsfClient localClient = this.clientMapping.get(hostAddress);
             if (hostAddress.equals(localClient.getHostAddress()) == false)
-                throw new RsfException("target is not form me.");
+                throw new RsfException(ProtocolStatus.ClientError, "target is not form me.");
             this.clientMapping.remove(hostAddress).close();
         }
     }

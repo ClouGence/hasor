@@ -15,6 +15,7 @@
  */
 package net.test.simple.rsf._02_hasor;
 import java.net.InetAddress;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
@@ -31,8 +32,9 @@ public class RsfConsumer extends RsfModule {
         String hostAddress = InetAddress.getLocalHost().getHostAddress();
         rsfBinder.bindAddress(hostAddress, 8001);//分布式的远程服务提供者：1
         rsfBinder.bindAddress(hostAddress, 8002);//分布式的远程服务提供者：2
-        rsfBinder.rsfService(EchoService.class).register();
+        RsfBindInfo<EchoService> bindInfo = rsfBinder.rsfService(EchoService.class).register();
+        //
         //2.将服务注册到Hasor容器中
-        apiBinder.bindType(EchoService.class, provider);
+        apiBinder.bindType(EchoService.class, toProvider(apiBinder, bindInfo));
     }
 }

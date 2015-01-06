@@ -55,13 +55,16 @@ class RsfClientFacade implements RsfClient {
         return this.findRsfClient(this.findBindInfo(serviceID))//
                 .wrapper(serviceID, interFace);
     }
-    public <T> T getRemote(String group, String name, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        return this.findRsfClient(this.findBindInfo(group, name, version))//
-                .getRemote(group, name, version);
-    }
     public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
         return this.findRsfClient(this.findBindInfo(group, name, version))//
                 .wrapper(group, name, version, interFace);
+    }
+    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        return this.findRsfClient(bindInfo).wrapper(bindInfo, interFace);
+    }
+    public <T> T getRemote(String group, String name, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        return this.findRsfClient(this.findBindInfo(group, name, version))//
+                .getRemote(group, name, version);
     }
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         return this.findRsfClient(this.findBindInfo(bindInfo.getBindID()))//

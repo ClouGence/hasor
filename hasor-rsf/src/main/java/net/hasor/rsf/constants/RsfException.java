@@ -23,8 +23,9 @@ public class RsfException extends RuntimeException {
     private static final long serialVersionUID = -2959224725202940531L;
     private short             status           = ProtocolStatus.Unknown;
     //
-    public RsfException(String string) {
-        super(string);
+    public RsfException(String string, Throwable e) {
+        super(string, e);
+        this.status = ProtocolStatus.Unknown;
     }
     public RsfException(short status, String string) {
         super(string);
