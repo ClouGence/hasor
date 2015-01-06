@@ -31,6 +31,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
+import org.more.logger.LoggerHelper;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
@@ -60,13 +61,13 @@ public class RuntimeFilter implements Filter {
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         //
-        Hasor.logInfo("PlatformFilter started.");
+        LoggerHelper.logInfo("PlatformFilter started.");
     }
     //
     /** 销毁 */
     @Override
     public void destroy() {
-        Hasor.logInfo("executeCycle destroyCycle.");
+        LoggerHelper.logInfo("executeCycle destroyCycle.");
         if (this.filterPipeline != null) {
             this.filterPipeline.destroyPipeline(this.appContext);
         }

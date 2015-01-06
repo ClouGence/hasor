@@ -36,6 +36,7 @@ import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.RepeateException;
+import org.more.logger.LoggerHelper;
 import org.more.util.Iterators;
 import org.more.util.StringUtils;
 /**
@@ -127,7 +128,9 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
     //
     /*---------------------------------------------------------------------------------------Util*/
     public <T> AbstractBindInfoProviderAdapter<T> getBindInfoByID(String bindID) {
-        return (AbstractBindInfoProviderAdapter<T>) this.idDataSource.get(bindID);
+        AbstractBindInfoProviderAdapter<?> info = this.idDataSource.get(bindID);
+        LoggerHelper.logFinest("bindID is %s. bindInfo = %s", bindID, info);
+        return (AbstractBindInfoProviderAdapter<T>) info;
     }
     /**根据Type查找RegisterInfo迭代器*/
     public <T> Iterator<? extends AbstractBindInfoProviderAdapter<T>> getBindInfoIterator(final Class<T> bindType) {
@@ -139,11 +142,14 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
         }
         Iterator<AbstractBindInfoProviderAdapter<?>> iterator = bindingTypeAdapterList.iterator();
         /*迭代器类型转换*/
-        return Iterators.converIterator(iterator, new Iterators.Converter<AbstractBindInfoProviderAdapter<?>, AbstractBindInfoProviderAdapter<T>>() {
+        Iterator<? extends AbstractBindInfoProviderAdapter<T>> adapterIterator = Iterators.converIterator(iterator, new Iterators.Converter<AbstractBindInfoProviderAdapter<?>, AbstractBindInfoProviderAdapter<T>>() {
             public AbstractBindInfoProviderAdapter<T> converter(final AbstractBindInfoProviderAdapter<?> target) {
                 return (AbstractBindInfoProviderAdapter<T>) target;
             }
         });
+        //
+        LoggerHelper.logFinest("bindType is %s. iterator = %s", bindType, adapterIterator);
+        return adapterIterator;
     }
     /**查找所有RegisterInfo迭代器*/
     public Iterator<AbstractBindInfoProviderAdapter<?>> getBindInfoIterator() {
@@ -160,7 +166,7 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
          */
         final Collection<List<AbstractBindInfoProviderAdapter<?>>> adapterList = this.registerDataSource.values();
         final Iterator<List<AbstractBindInfoProviderAdapter<?>>> entIterator = adapterList.iterator();
-        return new Iterator<AbstractBindInfoProviderAdapter<?>>() {
+        Iterator<AbstractBindInfoProviderAdapter<?>> adapterIterator = new Iterator<AbstractBindInfoProviderAdapter<?>>() {
             private Iterator<AbstractBindInfoProviderAdapter<?>> regIterator = new ArrayList<AbstractBindInfoProviderAdapter<?>>(0).iterator();
             public AbstractBindInfoProviderAdapter<?> next() {
                 while (true) {
@@ -194,5 +200,8 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
                 throw new UnsupportedOperationException();
             }
         };
+        //
+        LoggerHelper.logFinest("all bindType ,iterator = %s", adapterIterator);
+        return adapterIterator;
     }
 }

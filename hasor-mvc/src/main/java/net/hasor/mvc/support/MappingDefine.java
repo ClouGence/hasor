@@ -29,6 +29,8 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.CallStrategy;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import org.more.UndefinedException;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 import org.more.util.StringUtils;
 /**
  * 线程安全
@@ -131,5 +133,8 @@ public class MappingDefine {
                 return targetMethod.invoke(mc, objects);
             }
         });
+    }
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

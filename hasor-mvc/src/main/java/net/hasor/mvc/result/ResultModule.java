@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2013-9-26
@@ -35,13 +35,13 @@ public class ResultModule implements Module {
         //2.注册服务
         for (Class<?> resultDefineType : resultDefineSet) {
             if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                Hasor.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
+                LoggerHelper.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
                 continue;
             }
             ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
             Class<ResultProcess> defineType = (Class<ResultProcess>) resultDefineType;
             Class<?> resultType = resultDefineAnno.value();
-            Hasor.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
+            LoggerHelper.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             defineMap.put(resultType, defineType);
         }
         //

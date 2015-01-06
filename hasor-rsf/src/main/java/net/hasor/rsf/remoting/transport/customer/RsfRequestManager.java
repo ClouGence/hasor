@@ -23,7 +23,6 @@ import io.netty.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
@@ -45,6 +44,7 @@ import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
 import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import org.more.future.FutureCallback;
+import org.more.logger.LoggerHelper;
 /**
  * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
@@ -93,7 +93,7 @@ public class RsfRequestManager extends AbstractRequestManager {
         if (rsfFuture != null) {
             rsfFuture.completed(response);
         } else {
-            Hasor.logWarn("give up the response,requestID:" + requestID + " ,maybe because timeout! ");
+            LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", requestID);
         }
     }
     /**收到Response响应。*/
@@ -102,7 +102,7 @@ public class RsfRequestManager extends AbstractRequestManager {
         if (rsfFuture != null) {
             rsfFuture.failed(e);
         } else {
-            Hasor.logWarn("give up the response,requestID:" + requestID + " ,maybe because timeout! ");
+            LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", requestID);
         }
     }
     /**要求重新发起请求*/
@@ -124,7 +124,7 @@ public class RsfRequestManager extends AbstractRequestManager {
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
-                Hasor.logWarn(errorInfo);
+                LoggerHelper.logWarn(errorInfo);
                 //回应Response
                 RsfRequestManager.this.putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
@@ -163,7 +163,7 @@ public class RsfRequestManager extends AbstractRequestManager {
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
             SendLimitPolicy sendPolicy = rsfSettings.getSendLimitPolicy();
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
-            Hasor.logWarn(errorMessage);
+            LoggerHelper.logWarn(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
                 throw new RsfException(ProtocolStatus.ClientError, errorMessage);
             } else {
@@ -214,7 +214,7 @@ public class RsfRequestManager extends AbstractRequestManager {
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                Hasor.logError(RsfRequestManager.this + ":" + errorMsg);
+                LoggerHelper.logSevere(RsfRequestManager.this + ":" + errorMsg);
                 //回应Response
                 RsfRequestManager.this.putResponse(request.getRequestID(), //
                         new RsfException(ProtocolStatus.ClientError, errorMsg));

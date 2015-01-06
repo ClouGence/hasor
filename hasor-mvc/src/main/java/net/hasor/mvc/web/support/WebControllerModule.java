@@ -16,12 +16,12 @@
 package net.hasor.mvc.web.support;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.MappingDefine;
 import net.hasor.web.WebApiBinder;
+import org.more.logger.LoggerHelper;
 /***
  * 创建WebMVC环境
  * @version : 2014-1-13
@@ -30,11 +30,11 @@ import net.hasor.web.WebApiBinder;
 public class WebControllerModule extends ControllerModule implements Module {
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
-            Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            LoggerHelper.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
             return;
         }
         this.loadModule((WebApiBinder) apiBinder);
-        Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
+        LoggerHelper.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
     protected MappingDefine createMappingDefine(String newID, Method atMethod, CallStrategyFactory strategyFactory) {
         return new WebMappingDefine(newID, atMethod, strategyFactory);

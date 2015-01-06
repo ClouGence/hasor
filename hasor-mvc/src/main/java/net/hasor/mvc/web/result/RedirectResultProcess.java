@@ -17,11 +17,11 @@ package net.hasor.mvc.web.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Hasor;
 import net.hasor.mvc.result.ResultDefine;
 import net.hasor.mvc.result.ResultProcess;
 import net.hasor.mvc.support.Call;
 import net.hasor.mvc.web.WebCall;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2013-6-5
@@ -30,7 +30,6 @@ import net.hasor.mvc.web.WebCall;
 @ResultDefine(Redirect.class)
 public class RedirectResultProcess implements ResultProcess {
     public Object returnData(Object result, Call call) throws ServletException, IOException {
-        Hasor.logDebug("redirect to %s.", result);
         if (result == null) {
             return result;
         }
@@ -41,8 +40,10 @@ public class RedirectResultProcess implements ResultProcess {
         HttpServletResponse response = webCall.getHttpResponse();
         //
         if (response.isCommitted() == false) {
+            LoggerHelper.logFine("redirect to %s.", result);
             response.sendRedirect(result.toString());
         }
+        LoggerHelper.logFine("no redirect, response isCommitted!");
         return result;
     }
 }

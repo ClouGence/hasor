@@ -4,6 +4,7 @@
 * 改进:
     01.JdbcOperations.execute方法修改为 boolean 返回值。
     02.解析带参的SQL增加对 ParsedSql 的缓存。
+    03.更换LoggerHelper为日志输出组件。
 
 ===== Hasor-DB v0.0.2
 * 新增:

@@ -32,6 +32,7 @@ import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
+import org.more.logger.LoggerHelper;
 /**
  * 某一个数据源的事务管理器
  * 
@@ -164,8 +165,8 @@ public class JdbcTransactionManager implements TransactionManager {
         }
         /*回滚情况*/
         if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
-            if (Hasor.isDebugLogger()) {
-                Hasor.logDebug("Transactional code has requested rollback");
+            if (LoggerHelper.isEnableFineLoggable()) {
+                LoggerHelper.logFine("Transactional code has requested rollback");
             }
             this.rollBack(defStatus);
             return;

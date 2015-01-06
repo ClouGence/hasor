@@ -26,7 +26,6 @@ import java.net.SocketAddress;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractClientManager;
@@ -38,6 +37,7 @@ import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
+import org.more.logger.LoggerHelper;
 /**
  * 为{@link InnerRsfCustomerHandler}提供{@link AbstractRsfClient}列表维护。
  * 同时负责创建和销毁{@link AbstractRsfClient}的功能。
@@ -127,7 +127,7 @@ class InnerClientManager extends AbstractClientManager {
         try {
             future.await();
         } catch (InterruptedException e) {
-            Hasor.logWarn(e);
+            LoggerHelper.logWarn("connect to %s failure , %s", hostURL, e.getMessage());
             return null;
         }
         if (future.isSuccess() == true) {
@@ -136,10 +136,10 @@ class InnerClientManager extends AbstractClientManager {
         }
         //
         try {
-            Hasor.logWarn(future.cause().getMessage());
+            LoggerHelper.logWarn(future.cause().getMessage());
             future.channel().close().await();
         } catch (InterruptedException e) {
-            Hasor.logWarn(e);
+            LoggerHelper.logWarn("close connect(%s) failure , %s", hostURL, e.getMessage());
         }
         return null;
     }

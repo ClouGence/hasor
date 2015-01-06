@@ -5,6 +5,7 @@
     01.修正 RootController 修正其空指针异常问题，该问题是由于初始化时无任何mvc控制器而引发。
     02.修复 WebCallStrategy 类当请求参数为空的时候会导致空指针异常。
     03.更新代码以符合 RRUpdate 被删除的影响。
+    04.更换LoggerHelper为日志输出组件。
 
 ===== Hasor-MVC v0.0.1
 * 新增:

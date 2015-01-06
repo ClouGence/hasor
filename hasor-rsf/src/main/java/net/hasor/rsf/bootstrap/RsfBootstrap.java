@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
@@ -38,6 +37,7 @@ import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
 import net.hasor.rsf.utils.URLUtils;
+import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * Rsf启动引导程序。
@@ -133,7 +133,7 @@ public class RsfBootstrap {
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = boot.bind(localAddress, bindSocket);
         final Channel serverChannel = future.channel();
-        Hasor.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
+        LoggerHelper.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
         //add
         this.shutdownHook = new Runnable() {
             public void run() {

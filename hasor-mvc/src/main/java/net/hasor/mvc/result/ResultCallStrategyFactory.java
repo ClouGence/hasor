@@ -22,9 +22,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.mvc.strategy.CallStrategy;
 import net.hasor.mvc.strategy.SimpleCallStrategyFactory;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2014年8月29日
@@ -46,13 +46,13 @@ public class ResultCallStrategyFactory extends SimpleCallStrategyFactory impleme
         //2.注册服务
         for (Class<?> resultDefineType : resultDefineSet) {
             if (ResultProcess.class.isAssignableFrom(resultDefineType) == false) {
-                Hasor.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
+                LoggerHelper.logWarn("loadResultDefine : not implemented ResultProcess. class=%s", resultDefineType);
                 continue;
             }
             ResultDefine resultDefineAnno = resultDefineType.getAnnotation(ResultDefine.class);
             Class<ResultProcess> defineType = (Class<ResultProcess>) resultDefineType;
             Class<?> resultType = resultDefineAnno.value();
-            Hasor.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
+            LoggerHelper.logInfo("loadResultDefine annoType is %s toInstance %s", resultType, resultDefineType);
             //
             BindInfo<ResultProcess> processBindInfo = apiBinder.bindType(ResultProcess.class).uniqueName()//
                     .to(defineType).asEagerSingleton().toInfo();/*单例*/

@@ -15,8 +15,8 @@
  */
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2013-11-4
@@ -26,11 +26,11 @@ public abstract class WebModule implements Module {
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
-            Hasor.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            LoggerHelper.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
             return;
         }
         this.loadModule((WebApiBinder) apiBinder);
-        Hasor.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
+        LoggerHelper.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
     public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

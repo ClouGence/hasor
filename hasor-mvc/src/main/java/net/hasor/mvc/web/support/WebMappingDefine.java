@@ -17,10 +17,11 @@ package net.hasor.mvc.web.support;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import net.hasor.core.Hasor;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.support.MappingDefine;
 import net.hasor.mvc.web.restful.HttpMethod;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 import org.more.util.StringUtils;
 /**
  * 线程安全
@@ -63,6 +64,6 @@ public class WebMappingDefine extends MappingDefine {
         return false;
     }
     public String toString() {
-        return Hasor.logString(httpMethod) + " " + super.toString();
+        return ReflectionToStringBuilder.toString(httpMethod, ToStringStyle.SIMPLE_STYLE) + " " + super.toString();
     }
 }

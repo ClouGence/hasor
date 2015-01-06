@@ -16,6 +16,8 @@
 package net.hasor.core.info;
 import java.util.HashMap;
 import java.util.Map;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 提供metaData。
  * @version : 2014年7月3日
@@ -28,5 +30,8 @@ public class MetaDataAdapter {
     }
     public Object getMetaData(final String key) {
         return this.metaData.get(key);
+    }
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

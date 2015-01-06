@@ -16,7 +16,6 @@
 package net.hasor.rsf.remoting.transport.customer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.adapter.AbstractRequestManager;
@@ -24,6 +23,7 @@ import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 import net.hasor.rsf.utils.RuntimeUtils;
+import org.more.logger.LoggerHelper;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
  *  -- 根据 {@link ResponseMsg}中包含的 requestID 找到对应的{@link RsfFuture}。
@@ -44,7 +44,7 @@ class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
         //
         RsfFuture rsfFuture = this.requestManager.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
-            Hasor.logWarn(" give up the response,requestID:" + responseMsg.getRequestID() + " ,maybe because timeout! ");
+            LoggerHelper.logWarn(" give up the response,requestID(%s) ,maybe because timeout! ", responseMsg.getRequestID());
             return;//或许它已经超时了。
         }
         new ResponseHandler(responseMsg, requestManager, rsfFuture).run();

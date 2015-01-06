@@ -18,11 +18,11 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Hasor;
 import net.hasor.mvc.result.ResultDefine;
 import net.hasor.mvc.result.ResultProcess;
 import net.hasor.mvc.support.Call;
 import net.hasor.mvc.web.WebCall;
+import org.more.logger.LoggerHelper;
 /**
 * 
 * @version : 2013-6-5
@@ -31,7 +31,6 @@ import net.hasor.mvc.web.WebCall;
 @ResultDefine(Forword.class)
 public class ForwordResultProcess implements ResultProcess {
     public Object returnData(Object result, Call call) throws ServletException, IOException {
-        Hasor.logDebug("forword to %s.", result);
         if (result == null) {
             return result;
         }
@@ -41,6 +40,7 @@ public class ForwordResultProcess implements ResultProcess {
         WebCall webCall = (WebCall) call;
         HttpServletRequest request = webCall.getHttpRequest();
         HttpServletResponse response = webCall.getHttpResponse();
+        LoggerHelper.logFine("forword to %s.", result);
         //
         request.getRequestDispatcher(result.toString()).forward(request, response);
         return result;

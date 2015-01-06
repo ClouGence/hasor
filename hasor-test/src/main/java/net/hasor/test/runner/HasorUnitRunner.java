@@ -32,6 +32,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 /**
  * 
@@ -159,7 +160,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             try {
                 this.method.invokeExplosively(this.targetObject, args.toArray());
             } catch (Throwable e) {
-                Hasor.logError(e);
+                LoggerHelper.logSevere("call invokeExplosively exception = %s.", e);
             }
         }
     }

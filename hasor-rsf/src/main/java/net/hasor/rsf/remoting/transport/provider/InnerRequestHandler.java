@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.transport.provider;
-import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
@@ -30,6 +29,7 @@ import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.RuntimeUtils;
 import net.hasor.rsf.utils.TransferUtils;
+import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 /**
  * 负责处理 Request 调用逻辑，和response写入逻辑。
@@ -59,7 +59,7 @@ class InnerRequestHandler implements Runnable {
             response = request.buildResponse();
             //
         } catch (RsfException e) {
-            Hasor.logError("recoverRequest fail, requestID:" + requestMsg.getRequestID() + " , " + e.getMessage());
+            LoggerHelper.logSevere("recoverRequest fail, requestID(%s) , %s.", requestMsg.getRequestID(), e.getMessage());
             //
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本

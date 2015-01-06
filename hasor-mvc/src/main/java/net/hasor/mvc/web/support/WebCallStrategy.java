@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Hasor;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.DefaultCallStrategy;
 import net.hasor.mvc.support.Call;
@@ -41,6 +40,7 @@ import net.hasor.mvc.web.restful.HeaderParam;
 import net.hasor.mvc.web.restful.PathParam;
 import net.hasor.mvc.web.restful.Produces;
 import net.hasor.mvc.web.restful.QueryParam;
+import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * 
@@ -191,7 +191,7 @@ public class WebCallStrategy extends DefaultCallStrategy {
                     oriData = URLDecoder.decode(pData, encoding);
                 }
             } catch (Exception e) {
-                Hasor.logWarn("use ‘%s’ decode ‘%s’ error.", encoding, pData);
+                LoggerHelper.logWarn("use ‘%s’ decode ‘%s’ error.", encoding, pData);
                 continue;
             }
             String[] kv = oriData.split("=");

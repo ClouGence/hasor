@@ -20,11 +20,11 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebStandardAppContext;
+import org.more.logger.LoggerHelper;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -53,11 +53,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         Module startModule = null;
         String startModuleType = sc.getInitParameter("startModule");
         if (StringUtils.isBlank(startModuleType)) {
-            Hasor.logWarn("startModule is undefinition.");
+            LoggerHelper.logWarn("startModule is undefinition.");
         } else {
             Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModuleType);
             startModule = startModuleClass.newInstance();
-            Hasor.logInfo("startModule is %s.", startModuleType);
+            LoggerHelper.logInfo("startModule is %s.", startModuleType);
         }
         return startModule;
     }
@@ -81,9 +81,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //2.获取SessionListenerPipeline
         this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
         this.sessionListenerPipeline.init(this.appContext);
-        Hasor.logInfo("sessionListenerPipeline created.");
+        LoggerHelper.logInfo("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
-        Hasor.logInfo("ServletContext Attribut : " + RuntimeListener.AppContextName + " -->> " + Hasor.logString(this.appContext));
+        LoggerHelper.logInfo("ServletContext Attribut is %s", RuntimeListener.AppContextName);
         servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
         this.sessionListenerPipeline.contextInitialized(servletContextEvent);
     }
@@ -93,6 +93,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
         }
         this.appContext.shutdown();
+        LoggerHelper.logInfo("shutdown.");
     }
     @Override
     public void sessionCreated(final HttpSessionEvent se) {

@@ -10,6 +10,9 @@
     08.内部实现增加 MetaDataAdapter类。
     09.增加 SettingsWarp 工具类。
     10.增加 shutdown 生命周期阶段。
+    11.不再依赖slf4j日志包，日志输出采用jdk自带的，至此 Hasor实现了0依赖。
+    12.增加 apache 中 toStringBuilter 工具到 org.more.builder。
+    13.分离出专用的 log 工具包 org.more.logger。
 
 ===== Hasor-Core v0.0.9
 * 新增:

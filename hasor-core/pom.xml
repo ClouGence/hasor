@@ -25,18 +25,6 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Log -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		<!-- JSR-173 -->
-		<dependency>
-			<groupId>javax.xml</groupId>
-			<artifactId>jsr173</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- 零依赖 -->
 	</dependencies>
 </project>

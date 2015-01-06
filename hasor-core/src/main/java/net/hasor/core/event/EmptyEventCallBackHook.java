@@ -15,7 +15,7 @@
  */
 package net.hasor.core.event;
 import net.hasor.core.EventCallBackHook;
-import net.hasor.core.Hasor;
+import org.more.logger.LoggerHelper;
 /**
  * 异步事件回调接口。
  * @version : 2013-4-12
@@ -24,7 +24,7 @@ import net.hasor.core.Hasor;
 class EmptyEventCallBackHook implements EventCallBackHook {
     @Override
     public void handleException(final String eventType, final Object[] objects, final Throwable e) {
-        Hasor.logWarn("During the execution of Event ‘%s’ throw an error.%s", eventType, e);
+        LoggerHelper.logSevere("During the execution of Event ‘%s’ throw an error.%s", eventType, e.getMessage());
     }
     @Override
     public void handleComplete(final String eventType, final Object[] objects) {}

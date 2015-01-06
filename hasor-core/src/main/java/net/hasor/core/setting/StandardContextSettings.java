@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.hasor.core.Hasor;
+import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
@@ -89,7 +89,7 @@ public class StandardContextSettings extends InputStreamSettings {
         if (streamList != null) {
             for (URL resURL : streamList) {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
-                Hasor.logInfo("load ‘%s’", resURL);
+                LoggerHelper.logInfo("load ‘%s’", resURL);
                 this.addStream(stream);
             }
         }
@@ -97,13 +97,13 @@ public class StandardContextSettings extends InputStreamSettings {
         URI settingConfig = getSettingURI();
         if (settingConfig != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
-            Hasor.logInfo("load ‘%s’", settingConfig);
+            LoggerHelper.logInfo("load ‘%s’", settingConfig);
             this.addStream(stream);
         }
     }
     @Override
     public void refresh() throws IOException {
-        Hasor.logInfo("reload configuration.");
+        LoggerHelper.logInfo("reload configuration.");
         this.cleanData();
         this.loadSettings();
     }

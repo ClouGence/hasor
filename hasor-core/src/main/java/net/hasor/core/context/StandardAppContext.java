@@ -21,13 +21,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.XmlNode;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.factorys.HasorRegisterFactory;
+import org.more.logger.LoggerHelper;
 import org.more.util.ClassUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
@@ -58,8 +58,9 @@ public class StandardAppContext extends AbstractAppContext {
     public StandardAppContext(final String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
         if (resURL == null) {
-            Hasor.logWarn("can't find %s.", mainSettings);
+            LoggerHelper.logWarn("can't find %s.", mainSettings);
         } else {
+            LoggerHelper.logInfo("MainSettings is %s.", mainSettings);
             this.mainSettings = resURL.toURI();
         }
     }

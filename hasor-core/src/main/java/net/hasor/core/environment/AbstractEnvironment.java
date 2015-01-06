@@ -36,6 +36,7 @@ import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
+import org.more.logger.LoggerHelper;
 import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
@@ -88,7 +89,7 @@ public abstract class AbstractEnvironment implements Environment {
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected void initEnvironment() {
-        Hasor.logInfo("initEnvironment.");
+        LoggerHelper.logInfo("init Environment.");
         //
         this.settingListenerList = new ArrayList<SettingsListener>();
         try {
@@ -118,7 +119,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
-        Hasor.logInfo("loadPackages : " + Hasor.logString(this.spanPackage));
+        LoggerHelper.logInfo("loadPackages : %s", new Object[] { this.spanPackage });
         //
         this.settingWatch = this.createSettingWatch();
         if (this.settingWatch != null) {
@@ -139,7 +140,7 @@ public abstract class AbstractEnvironment implements Environment {
         File tmpFile = new File(this.evalEnvVar(Environment.TempPath), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
-        Hasor.logDebug("create Temp File at %s.", tmpFile);
+        LoggerHelper.logInfo("create Temp File at %s.", tmpFile);
         return tmpFile;
     }
     /**
@@ -201,7 +202,7 @@ public abstract class AbstractEnvironment implements Environment {
             public void reload(final Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
                 if (interval != settingWatch.getCheckSeepTime()) {
-                    Hasor.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
+                    LoggerHelper.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
                     settingWatch.setCheckSeepTime(interval);
                 }
             }
@@ -234,18 +235,18 @@ public abstract class AbstractEnvironment implements Environment {
         @Override
         public synchronized void start() {
             this.setName("MasterConfiguration-Watch");
-            Hasor.logInfo("settings Watch started thread name is %s.", this.getName());
+            LoggerHelper.logInfo("settings Watch started thread name is %s.", this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
             //2.启动监听器
             try {
                 if (mainConfig == null) {
-                    Hasor.logWarn("ignore the master setting file, Watch Thread exit.");
+                    LoggerHelper.logWarn("ignore the master setting file, Watch Thread exit.");
                     return;
                 }
                 this.setResourceURI(this.env.getSettingURI());
             } catch (Exception e) {
-                Hasor.logError("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
+                LoggerHelper.logWarn("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
             }
             //
             super.start();
@@ -302,25 +303,25 @@ public abstract class AbstractEnvironment implements Environment {
         }
         public void addEnvVar(final String envName, final String envValue) {
             if (StringUtils.isBlank(envName)) {
-                Hasor.logWarn("%s env, name is empty.", envName);
+                LoggerHelper.logWarn("%s env, name is empty.", envName);
                 return;
             }
             //
             if (StringUtils.isBlank(envValue)) {
-                Hasor.logWarn("%s env, value is empty.", envName);
+                LoggerHelper.logWarn("%s env, value is empty.", envName);
             } else {
-                Hasor.logInfo("%s = %s.", envName, envValue);
+                LoggerHelper.logInfo("%s = %s.", envName, envValue);
             }
             //
             this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
         }
         public void remoteEnvVar(final String varName) {
             if (StringUtils.isBlank(varName)) {
-                Hasor.logWarn("%s env, name is empty.");
+                LoggerHelper.logWarn("%s env, name is empty.");
                 return;
             }
             this.userEnvMap.remove(varName);
-            Hasor.logInfo("%s env removed.", varName);
+            LoggerHelper.logInfo("%s env removed.", varName);
         }
         public String getEnvVar(final String envName) {
             return this.getEnv().get(envName);
@@ -397,7 +398,7 @@ public abstract class AbstractEnvironment implements Environment {
             this.finalEnvMap = finalMap;
             //
             /*日志输出*/
-            if (Hasor.isInfoLogger()) {
+            if (LoggerHelper.isEnableInfoLoggable()) {
                 int keyMaxSize = 0;
                 for (String key : finalMap.keySet()) {
                     keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
@@ -423,7 +424,7 @@ public abstract class AbstractEnvironment implements Environment {
                     sb.append("\n" + this.formatMap4log(keyMaxSize, this.userEnvMap));
                     sb.append("\n" + StringUtils.fixedString('-', 50));
                 }
-                Hasor.logInfo(sb.toString());
+                LoggerHelper.logInfo(sb.toString());
             }
         }
         private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
@@ -485,7 +486,7 @@ public abstract class AbstractEnvironment implements Environment {
                 }
             }
             String returnData = sb.toString();
-            Hasor.logDebug("evalString '%s' eval to '%s'.", evalString, returnData);
+            LoggerHelper.logFiner("evalString '%s' eval to '%s'.", evalString, returnData);
             return returnData;
         }
     }
