@@ -23,6 +23,9 @@ import net.test.simple.core._05_plugins.mods.Mod_1;
 import net.test.simple.core._05_plugins.mods.Mod_2;
 import net.test.simple.core._05_plugins.mods.Mod_3;
 import org.junit.Test;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 /**
  * Hasor 添加多个模块的演示程序
  * @version : 2014-1-10
@@ -35,6 +38,6 @@ public class ModuleTest {
         AppContext appContext = Hasor.createAppContext(new Mod_1(), new Mod_2(), new Mod_3());
         //
         List<String> says = appContext.findBindingBean(String.class);
-        Hasor.logInfo("all modules say:%s.", says);
+        LoggerHelper.logInfo("all modules say:%s.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
     }
 }

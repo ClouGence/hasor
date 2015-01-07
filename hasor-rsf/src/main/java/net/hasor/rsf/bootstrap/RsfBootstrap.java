@@ -45,12 +45,13 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBootstrap {
-    private RsfSettings settings     = null;
-    private RsfStart    rsfStart     = null;
-    private InetAddress localAddress = null;
-    private WorkMode    workMode     = WorkMode.None;
-    private int         bindSocket   = 0;
-    private Runnable    shutdownHook = null;
+    public static final String DEFAULT_RSF_CONFIG = "rsf-config.xml";
+    private RsfSettings        settings           = null;
+    private RsfStart           rsfStart           = null;
+    private InetAddress        localAddress       = null;
+    private WorkMode           workMode           = WorkMode.None;
+    private int                bindSocket         = 0;
+    private Runnable           shutdownHook       = null;
     //
     //
     public RsfBootstrap bindSettings(Settings settings) throws IOException {
@@ -93,16 +94,20 @@ public class RsfBootstrap {
         return StringUtils.equalsIgnoreCase("local", bindAddress) ? InetAddress.getLocalHost() : InetAddress.getByName(bindAddress);
     }
     public RsfContext sync() throws Throwable {
+        LoggerHelper.logInfo("initialize rsfBootstrap。");
         if (this.rsfStart == null) {
+            LoggerHelper.logInfo("create RsfStart.");
             this.rsfStart = new InnerRsfStart();
         }
         if (this.settings == null) {
-            this.settings = new DefaultRsfSettings(new StandardContextSettings("rsf-config.xml"));
+            this.settings = new DefaultRsfSettings(new StandardContextSettings(DEFAULT_RSF_CONFIG));
         }
         //
         //RsfContext
+        LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);
         final DefaultRsfContext rsfContext = new DefaultRsfContext(this.settings) {
             public void shutdown() {
+                LoggerHelper.logInfo("shutdown rsf.");
                 super.shutdown();
                 doShutdown();
             }
@@ -117,6 +122,7 @@ public class RsfBootstrap {
             localAddress = finalBindAddress(rsfContext);
         }
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
+        LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
         //Netty
         final URL hostAddress = URLUtils.toURL(localAddress.getHostAddress(), bindSocket);
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
@@ -137,6 +143,7 @@ public class RsfBootstrap {
         //add
         this.shutdownHook = new Runnable() {
             public void run() {
+                LoggerHelper.logInfo("shutdown rsf server.");
                 bossGroup.shutdownGracefully();
                 serverChannel.close();
             }
@@ -145,7 +152,9 @@ public class RsfBootstrap {
         return doBinder(rsfContext);
     }
     private RsfContext doBinder(RsfContext rsfContext) throws Throwable {
+        LoggerHelper.logInfo("do RsfBinder.");
         this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
+        LoggerHelper.logInfo("rsf work at %s.", this.workMode);
         return rsfContext;
     }
     private void doShutdown() {

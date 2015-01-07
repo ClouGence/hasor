@@ -29,6 +29,9 @@ import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
@@ -49,15 +52,21 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     public <T extends AppContextAware> T autoAware(final T aware) {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
+        LoggerHelper.logFiner("registered autoAware(%s).", aware);
         return aware;
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
+        LoggerHelper.logFinest("findClass %s.", featureType);
         if (featureType == null) {
             return null;
         }
-        return this.getEnvironment().findClass(featureType);
+        Set<Class<?>> res = this.getEnvironment().findClass(featureType);
+        LoggerHelper.logFinest("findClass % result is %s.",//
+                ReflectionToStringBuilder.toString(res, ToStringStyle.SIMPLE_STYLE));
+        return res;
     }
     public void installModule(final Module module) throws Throwable {
+        LoggerHelper.logFinest("installModule %s.", module);
         module.loadModule(this);
     }
     //

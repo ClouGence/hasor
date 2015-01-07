@@ -15,10 +15,12 @@
  */
 package net.test.simple.core._11_xml;
 import java.io.IOException;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
 /**
  * 同时读取两个Xml文件的信息。
@@ -41,8 +43,8 @@ public class MergeXmlTest {
         String ns2_local = ns2_settings.getString("appSettings.serverLocal.url");
         String[] all_local = settings.getStringArray("appSettings.serverLocal.url");//同时取得全部命名空间下的相同配置节点配置信息。
         //
-        Hasor.logInfo("ns1 is %s.", ns1_local);
-        Hasor.logInfo("ns2 is %s.", ns2_local);
-        Hasor.logInfo("ns is %s.", (Object) all_local);
+        LoggerHelper.logInfo("ns1 is %s.", ns1_local);
+        LoggerHelper.logInfo("ns2 is %s.", ns2_local);
+        LoggerHelper.logInfo("ns is %s.", ReflectionToStringBuilder.toString(all_local, ToStringStyle.SIMPLE_STYLE));
     }
 }

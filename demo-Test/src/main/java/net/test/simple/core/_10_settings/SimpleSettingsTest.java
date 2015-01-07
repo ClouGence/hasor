@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original 赵永春(zyc@LoggerHelper.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import org.junit.Test;
+import org.more.logger.LoggerHelper;
 /**
  * 读取配置文件中的内容。
  * @version : 2013-7-16
- * @author 赵永春 (zyc@hasor.net)
+ * @author 赵永春 (zyc@LoggerHelper.net)
  */
 public class SimpleSettingsTest {
     @Test
@@ -34,21 +35,21 @@ public class SimpleSettingsTest {
         Settings settings = appContext.getEnvironment().getSettings();
         //
         String myName = settings.getString("mySelf.myName");
-        Hasor.logInfo("my Name is %s.", myName);
+        LoggerHelper.logInfo("my Name is %s.", myName);
         //
         int myAge = settings.getInteger("mySelf.myAge");
-        Hasor.logInfo("my Age is %s.", myAge);
+        LoggerHelper.logInfo("my Age is %s.", myAge);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday");
-        Hasor.logInfo("my Birthday is %s.", myBirthday);//TODO 需要解决通用格式转换问题
+        LoggerHelper.logInfo("my Birthday is %s.", myBirthday);//TODO 需要解决通用格式转换问题
         //
         String myWork = settings.getString("mySelf.myWork");
-        Hasor.logInfo("my Work is %s.", myWork);
+        LoggerHelper.logInfo("my Work is %s.", myWork);
         //
         String myProjectURL = settings.getString("mySelf.myProjectURL");
-        Hasor.logInfo("my Project is %s.", myProjectURL);
+        LoggerHelper.logInfo("my Project is %s.", myProjectURL);
         //
-        String[] packages = settings.getStringArray("hasor.loadPackages");
-        Hasor.logInfo("my packages is %s.", (Object) packages);
+        String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
+        LoggerHelper.logInfo("my packages is %s.", (Object) packages);
     }
 }

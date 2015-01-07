@@ -15,7 +15,8 @@
  */
 package net.test.simple.core._08_event.listener;
 import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 收到事件，同时线程沉睡500毫秒延迟。
  * @version : 2014-1-11
@@ -24,6 +25,6 @@ import net.hasor.core.Hasor;
 public class MyListener implements EventListener {
     public void onEvent(String event, Object[] params) throws InterruptedException {
         Thread.sleep(500);
-        System.out.println("Receive Message:" + Hasor.logString(params));
+        System.out.println("Receive Message:" + ReflectionToStringBuilder.toString(params, ToStringStyle.SIMPLE_STYLE));
     }
 };

@@ -60,7 +60,6 @@ public class StandardAppContext extends AbstractAppContext {
         if (resURL == null) {
             LoggerHelper.logWarn("can't find %s.", mainSettings);
         } else {
-            LoggerHelper.logInfo("MainSettings is %s.", mainSettings);
             this.mainSettings = resURL.toURI();
         }
     }
@@ -77,6 +76,7 @@ public class StandardAppContext extends AbstractAppContext {
     }
     /**创建环境对象*/
     protected Environment createEnvironment() {
+        LoggerHelper.logInfo("MainSettings is %s.", mainSettings);
         return new StandardEnvironment(this.mainSettings);
     }
     //

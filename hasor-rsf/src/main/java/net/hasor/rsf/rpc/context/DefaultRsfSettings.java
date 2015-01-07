@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.constants.ProtocolVersion;
+import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * 
@@ -58,7 +59,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
         super(settings);
-        this.refresh();
+        this.loadRsfConfig();
     }
     //
     public int getDefaultTimeout() {
@@ -117,6 +118,9 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     }
     public void refresh() throws IOException {
         super.refresh();
+        this.loadRsfConfig();
+    }
+    protected void loadRsfConfig() throws IOException {
         this.defaultGroup = getString("hasor.rsfConfig.defaultServiceValue.group", "RSF");
         this.defaultVersion = getString("hasor.rsfConfig.defaultServiceValue.version", "1.0.0");
         this.defaultTimeout = getInteger("hasor.rsfConfig.defaultServiceValue.timeout", 6000);
@@ -161,6 +165,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
+        LoggerHelper.logInfo("loadRsfConfig complete!");
     }
     //
     /***/

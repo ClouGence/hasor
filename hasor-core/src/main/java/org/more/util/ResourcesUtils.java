@@ -38,7 +38,7 @@ import org.more.util.io.AutoCloseInputStream;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
 /**
- * classpath工具类
+ * 资源加载工具类，所有方法均是程序级优先。
  * @version 2010-9-24
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -109,7 +109,7 @@ public abstract class ResourcesUtils {
     }
     /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
     public static Map<String, String> getPropertys(final String[] resourcePaths) throws IOException {
-        return ResourcesUtils.getPropertys(Arrays.asList(resourcePaths).iterator());
+        return getPropertys(Arrays.asList(resourcePaths).iterator());
     }
     /**合成所有属性文件的配置信息到一个{@link Map}接口中。*/
     public static Map<String, String> getPropertys(final Iterator<String> iterator) throws IOException {
@@ -120,7 +120,7 @@ public abstract class ResourcesUtils {
         DecSequenceMap<String, String> iatt = new DecSequenceMap<String, String>();
         while (iterator.hasNext() == true) {
             String str = iterator.next();
-            Map<String, String> att = ResourcesUtils.getPropertys(str);
+            Map<String, String> att = getPropertys(str);
             if (att != null) {
                 iatt.addMap(att);
             }
@@ -130,7 +130,7 @@ public abstract class ResourcesUtils {
     /**读取一个属性文件，并且以{@link Map}接口的形式返回。*/
     public static Map<String, String> getPropertys(final String resourcePath) throws IOException {
         Properties prop = new Properties();
-        InputStream in = ResourcesUtils.getResourceAsStream(ResourcesUtils.formatResource(resourcePath));
+        InputStream in = getResourceAsStream(formatResource(resourcePath));
         if (in != null) {
             prop.load(in);
         }
@@ -141,8 +141,8 @@ public abstract class ResourcesUtils {
         if (resourcePath == null) {
             return null;
         }
-        resourcePath = ResourcesUtils.formatResource(resourcePath);
-        URL url = ResourcesUtils.getCurrentLoader().getResource(resourcePath);
+        resourcePath = formatResource(resourcePath);
+        URL url = getCurrentLoader().getResource(resourcePath);
         return url;
     }
     /**获取classpath中可能存在的资源列表。*/
@@ -151,9 +151,9 @@ public abstract class ResourcesUtils {
             return new ArrayList<URL>(0);
         }
         //
-        resourcePath = ResourcesUtils.formatResource(resourcePath);
+        resourcePath = formatResource(resourcePath);
         ArrayList<URL> urls = new ArrayList<URL>();
-        Enumeration<URL> eurls = ResourcesUtils.getCurrentLoader().getResources(resourcePath);
+        Enumeration<URL> eurls = getCurrentLoader().getResources(resourcePath);
         while (eurls.hasMoreElements() == true) {
             URL url = eurls.nextElement();
             urls.add(url);
@@ -162,11 +162,11 @@ public abstract class ResourcesUtils {
     }
     /**获取可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(final File resourceFile) throws IOException {
-        return ResourcesUtils.getResourceAsStream(resourceFile.toURI().toURL());
+        return getResourceAsStream(resourceFile.toURI().toURL());
     }
     /**获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(final URI resourceURI) throws IOException {
-        return ResourcesUtils.getResourceAsStream(resourceURI.toURL());
+        return getResourceAsStream(resourceURI.toURL());
     }
     /**获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(final URL resourceURL) throws IOException {
@@ -187,23 +187,26 @@ public abstract class ResourcesUtils {
             ZipEntry e = jar.getEntry(entPath);
             return jar.getInputStream(e);
         } else if (protocol.equals("classpath") == true) {
-            String resourcePath = ResourcesUtils.formatResource(resourceURL.getPath());
-            return ResourcesUtils.getCurrentLoader().getResourceAsStream(resourcePath);
+            String resourcePath = formatResource(resourceURL.getPath());
+            return getResourceAsStream(resourcePath);
         }
         // TODO 该处处理其他协议的资源加载。诸如OSGi等协议。
         return null;
     }
     /**获取classpath中可能存在的资源，以流的形式返回。*/
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
-        resourcePath = ResourcesUtils.formatResource(resourcePath);
-        return ResourcesUtils.getCurrentLoader().getResourceAsStream(resourcePath);
+        resourcePath = formatResource(resourcePath);
+        InputStream inStream = getCurrentLoader().getResourceAsStream(resourcePath);
+        if (inStream == null)
+            inStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
+        return inStream;
     }
     /**获取classpath中可能存在的资源列表，以流的形式返回。*/
     public static List<InputStream> getResourcesAsStream(final String resourcePath) throws IOException {
         ArrayList<InputStream> iss = new ArrayList<InputStream>();
-        List<URL> urls = ResourcesUtils.getResources(resourcePath);//已经调用过，formatResource(resourcePath);
+        List<URL> urls = getResources(resourcePath);//已经调用过，formatResource(resourcePath);
         for (URL url : urls) {
-            InputStream in = ResourcesUtils.getResourceAsStream(url);//已经调用过，formatResource(resourcePath);
+            InputStream in = getResourceAsStream(url);//已经调用过，formatResource(resourcePath);
             if (in != null) {
                 iss.add(in);
             }
@@ -250,7 +253,7 @@ public abstract class ResourcesUtils {
             //3)执行发现
             if (f.isDirectory() == true) {
                 //扫描文件夹中的内容
-                ResourcesUtils.scanDir(f, wild, item, contextDir);
+                scanDir(f, wild, item, contextDir);
             }
             //2)计算忽略
             if (MatchUtils.matchWild(wild, dirPath) == false) {
@@ -298,18 +301,18 @@ public abstract class ResourcesUtils {
         if (_wild.charAt(_wild.length() - 1) == '/') {
             _wild = _wild.substring(0, _wild.length() - 1);
         }
-        Enumeration<URL> urls = ResourcesUtils.findAllClassPath(_wild);
-        List<URL> dirs = ResourcesUtils.rootDir();
+        Enumeration<URL> urls = findAllClassPath(_wild);
+        List<URL> dirs = rootDir();
         //
         while (urls.hasMoreElements() == true) {
             URL url = urls.nextElement();
             String protocol = url.getProtocol();
             if (protocol.equals("file") == true) {
                 File f = new File(url.toURI());
-                ResourcesUtils.scanDir(f, wild, item, new File(ResourcesUtils.has(dirs, url).toURI()));
+                scanDir(f, wild, item, new File(has(dirs, url).toURI()));
             } else if (protocol.equals("jar") == true) {
                 JarURLConnection urlc = (JarURLConnection) url.openConnection();
-                ResourcesUtils.scanJar(urlc.getJarFile(), wild, item);
+                scanJar(urlc.getJarFile(), wild, item);
             }
         }
     };
@@ -322,7 +325,7 @@ public abstract class ResourcesUtils {
         return null;
     }
     private static List<URL> rootDir() throws IOException {
-        Enumeration<URL> roote = ResourcesUtils.findAllClassPath("");
+        Enumeration<URL> roote = findAllClassPath("");
         ArrayList<URL> rootList = new ArrayList<URL>();
         while (roote.hasMoreElements() == true) {
             rootList.add(roote.nextElement());
@@ -331,7 +334,7 @@ public abstract class ResourcesUtils {
     };
     /**获取所有ClassPath条目*/
     public static Enumeration<URL> findAllClassPath(final String name) throws IOException {
-        ClassLoader loader = ResourcesUtils.getCurrentLoader();
+        ClassLoader loader = getCurrentLoader();
         return loader.getResources(name);
         //        Enumeration<URL> urls = null;
         //        if (loader instanceof URLClassLoader == false)

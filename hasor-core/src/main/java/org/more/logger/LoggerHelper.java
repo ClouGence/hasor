@@ -14,16 +14,36 @@
  * limitations under the License.
  */
 package org.more.logger;
+import java.io.InputStream;
 import java.util.logging.Filter;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
 /**
  * 日志工具类
  * @version : 2015年1月6日
  * @author 赵永春(zyc@hasor.net)
  */
 public class LoggerHelper {
+    private static final String LOGGING_NAME                  = "logger.properties";
+    private static final String JAVA_UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
+    static {
+        String configName = System.getProperty(JAVA_UTIL_LOGGING_CONFIG_FILE);
+        if (StringUtils.isBlank(configName) == true) {
+            System.setProperty(JAVA_UTIL_LOGGING_CONFIG_FILE, LOGGING_NAME);
+            try {
+                InputStream inStream = ResourcesUtils.getResourceAsStream(LOGGING_NAME);
+                if (inStream != null) {
+                    LogManager.getLogManager().readConfiguration(inStream);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     private static class CallerFilter implements Filter {
         private Filter            filter;
         private StackTraceElement onCode;
@@ -44,15 +64,11 @@ public class LoggerHelper {
     }
     private static Logger getLogger() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
-        StackTraceElement onCode = stackElements[5];
-        //
+        StackTraceElement onCode = stackElements[4];
         Logger logger = Logger.getLogger(onCode.getClassName());
         logger.setFilter(new CallerFilter(logger.getFilter(), onCode));
         return logger;
     }
-    //
-    //
-    //
     /**是否启用 Severe 级日志。*/
     public static boolean isEnableSevereLoggable() {
         return getLogger().isLoggable(Level.SEVERE);

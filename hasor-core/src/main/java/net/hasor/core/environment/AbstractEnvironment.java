@@ -36,6 +36,8 @@ import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 import org.more.logger.LoggerHelper;
 import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
@@ -119,11 +121,16 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
-        LoggerHelper.logInfo("loadPackages : %s", new Object[] { this.spanPackage });
+        LoggerHelper.logInfo("loadPackages : %s", ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
         //
+        if (this.getSettingURI() == null) {
+            LoggerHelper.logWarn("no need to monitor configuration file.");
+            return;
+        }
         this.settingWatch = this.createSettingWatch();
         if (this.settingWatch != null) {
             this.settingWatch.setDaemon(true);
+            LoggerHelper.logInfo("configuration monitor thread(%s) is start.", this.settingWatch.getId());
             this.settingWatch.start();
         }
     }
@@ -202,7 +209,7 @@ public abstract class AbstractEnvironment implements Environment {
             public void reload(final Settings newConfig) {
                 long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
                 if (interval != settingWatch.getCheckSeepTime()) {
-                    LoggerHelper.logInfo("SettingWatch to monitor configuration updates, set interval new Value is %s", interval);
+                    LoggerHelper.logInfo("monitor interval update, new value is %s", interval);
                     settingWatch.setCheckSeepTime(interval);
                 }
             }
@@ -234,22 +241,18 @@ public abstract class AbstractEnvironment implements Environment {
         }
         @Override
         public synchronized void start() {
-            this.setName("MasterConfiguration-Watch");
-            LoggerHelper.logInfo("settings Watch started thread name is %s.", this.getName());
+            this.setName("ConfigurationMonitor-" + this.getId());
+            LoggerHelper.logInfo("configuration monitor thread(%s) begin start, name is %s.", this.getId(), this.getName());
             this.setDaemon(true);
             URI mainConfig = this.env.getSettingURI();
             //2.启动监听器
-            try {
-                if (mainConfig == null) {
-                    LoggerHelper.logWarn("ignore the master setting file, Watch Thread exit.");
-                    return;
-                }
-                this.setResourceURI(this.env.getSettingURI());
-            } catch (Exception e) {
-                LoggerHelper.logWarn("settings Watch start error, on : %s Settings file !%s", mainConfig, e);
+            if (mainConfig == null) {
+                LoggerHelper.logWarn("no need to monitor configuration file, monitor exit!");
+                return;
             }
-            //
+            this.setResourceURI(this.env.getSettingURI());
             super.start();
+            LoggerHelper.logInfo("configuration monitor thread(%s) started.", this.getId(), this.getName());
         }
     }
     //
@@ -296,7 +299,7 @@ public abstract class AbstractEnvironment implements Environment {
         private Map<String, String> userEnvMap;
         //
         public EnvVars(final AbstractEnvironment env) {
-            this.env = Hasor.assertIsNotNull(env, "InitContext type parameter is empty!");
+            this.env = Hasor.assertIsNotNull(env, "initContext type parameter is empty!");
             this.userEnvMap = new HashMap<String, String>();
             this.env.addSettingsListener(this);
             this.reload(this.env.getSettings());

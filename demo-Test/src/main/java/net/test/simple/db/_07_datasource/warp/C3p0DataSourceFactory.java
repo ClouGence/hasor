@@ -16,7 +16,7 @@
 package net.test.simple.db._07_datasource.warp;
 import java.beans.PropertyVetoException;
 import javax.sql.DataSource;
-import net.hasor.core.Hasor;
+import org.more.logger.LoggerHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * 
@@ -26,7 +26,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class C3p0DataSourceFactory {
     public static DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 200;
-        Hasor.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
+        LoggerHelper.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setDriverClass(driverString);
         dataSource.setJdbcUrl(urlString);

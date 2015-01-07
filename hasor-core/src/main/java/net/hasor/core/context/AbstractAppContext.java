@@ -343,12 +343,14 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {
+        LoggerHelper.logFine("installModule %s.", module);
         if (this.isStart()) {
             throw new IllegalStateException("AppContent is started.");
         }
         if (module == null) {
             return;
         }
+        LoggerHelper.logInfo("loadModule %s.", module);
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
     }

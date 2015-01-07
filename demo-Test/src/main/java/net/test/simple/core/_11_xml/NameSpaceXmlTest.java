@@ -15,10 +15,12 @@
  */
 package net.test.simple.core._11_xml;
 import java.io.IOException;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
 /**
  * 对带有命名空间的Xml文件执行读取操作。
@@ -40,8 +42,8 @@ public class NameSpaceXmlTest {
         String ns2_local = ns2_settings.getString("appSettings.serverLocal.url");
         String[] all_local = settings.getStringArray("appSettings.serverLocal.url");
         //
-        Hasor.logInfo("ns1 is %s.", ns1_local);
-        Hasor.logInfo("ns2 is %s.", ns2_local);
-        Hasor.logInfo("ns is %s.", (Object) all_local);//同时取得全部命名空间下的相同配置节点配置信息。
+        LoggerHelper.logInfo("ns1 is %s.", ns1_local);
+        LoggerHelper.logInfo("ns2 is %s.", ns2_local);
+        LoggerHelper.logInfo("ns is %s.", ReflectionToStringBuilder.toString(all_local, ToStringStyle.SIMPLE_STYLE));//同时取得全部命名空间下的相同配置节点配置信息。
     }
 }

@@ -17,10 +17,10 @@ package net.test.simple.core._11_xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import net.hasor.core.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
+import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
 /**
  * 读取一般性Xml文件
@@ -41,7 +41,7 @@ public class ReadXmlTest {
             String menuCode = sub.getAttribute("code");
             String menuName = sub.getAttribute("name");
             String menuURL = sub.getAttribute("url");
-            Hasor.logInfo("%s[%s] to %s.", menuName, menuCode, menuURL);
+            LoggerHelper.logInfo("%s[%s] to %s.", menuName, menuCode, menuURL);
         }
     }
 }

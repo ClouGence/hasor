@@ -22,6 +22,9 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.context.AbstractAppContext;
 import org.junit.Test;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 /**
  * 本示列演示如何通过Hasor扫描类。
  * @version : 2013-8-11
@@ -40,9 +43,9 @@ public class FindClassTest {
         //
         //1.查找所有Hasor模块（实现了Module接口的类）。
         Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
-        Hasor.logInfo("find %s.", facesFeature);
+        LoggerHelper.logInfo("find %s.", ReflectionToStringBuilder.toString(facesFeature, ToStringStyle.SIMPLE_STYLE));
         //2.查找AbstractAppContext的子类
         Set<Class<?>> subFeature = appContext.getEnvironment().findClass(AbstractAppContext.class);
-        Hasor.logInfo("find %s.", subFeature);
+        LoggerHelper.logInfo("find %s.", ReflectionToStringBuilder.toString(subFeature, ToStringStyle.SIMPLE_STYLE));
     }
 }

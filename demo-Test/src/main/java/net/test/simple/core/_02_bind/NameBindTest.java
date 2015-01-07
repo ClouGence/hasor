@@ -22,6 +22,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import org.junit.Test;
+import org.more.logger.LoggerHelper;
 /**
  * 本示列演示带有名字的绑定。
  * @version : 2013-8-11
@@ -43,11 +44,11 @@ public class NameBindTest {
         System.out.println();
         CharSequence modeSay = null;
         modeSay = appContext.findBindingBean("ModuleA", CharSequence.class);
-        Hasor.logInfo(modeSay.toString());
+        LoggerHelper.logInfo(modeSay.toString());
         modeSay = appContext.findBindingBean("ModuleB", CharSequence.class);
-        Hasor.logInfo(modeSay.toString());
+        LoggerHelper.logInfo(modeSay.toString());
         //
         List<CharSequence> says = appContext.findBindingBean(CharSequence.class);//查找绑定
-        Hasor.logInfo("say %s.", says);
+        LoggerHelper.logInfo("say %s.", says);
     }
 }
