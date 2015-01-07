@@ -116,4 +116,8 @@ public class RsfRequestImpl implements RsfRequest {
     public RequestMsg getMsg() {
         return this.requestMsg;
     }
+    @Override
+    public String toString() {
+        return this.bindInfo.toString() + " - " + this.requestMsg.toString();
+    }
 }

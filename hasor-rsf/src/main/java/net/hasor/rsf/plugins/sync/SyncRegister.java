@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.plugins.sync;
+import java.net.URL;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
@@ -21,7 +22,7 @@ package net.hasor.rsf.plugins.sync;
  */
 public interface SyncRegister {
     /**拉取位于远端某个服务的可用地址列表。*/
-    public AddressInfo[] pullAddress(String serviceID, String groupName, String version);
+    public URL[] pullAddress(String serviceID, String groupName, String version);
     /**获取远程注册中心最后同步更新时间（远端Server时间戳）。*/
     public long lastSynchronizationTime();
 }

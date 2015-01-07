@@ -24,6 +24,7 @@ import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 import net.hasor.rsf.utils.TransferUtils;
+import org.more.logger.LoggerHelper;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
@@ -35,12 +36,14 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
     }
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof RequestMsg == false)
             return;
         //创建request、response
         RequestMsg requestMsg = (RequestMsg) msg;
         requestMsg.setReceiveTime(System.currentTimeMillis());
+        LoggerHelper.logInfo("received request(%s) full = %s", requestMsg.getRequestID(), requestMsg);
         //放入业务线程准备执行
         try {
             Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
@@ -60,6 +63,24 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
                     ProtocolStatus.ChooseOther,//服务器资源紧张
                     this.rsfContext.getSettings().getServerOption());//选项参数
             ctx.pipeline().writeAndFlush(pack);
+        }
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.channel().close();
+        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
+        if (conn != null) {
+            LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", conn.getHostAddress(), cause.getMessage());
+            this.rsfContext.getRequestManager().getClientManager().unRegistered(conn.getHostAddress());
+        }
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().close();
+        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
+        if (conn != null) {
+            LoggerHelper.logInfo("remote close, host = %s.", conn.getHostAddress());
+            this.rsfContext.getRequestManager().getClientManager().unRegistered(conn.getHostAddress());
         }
     }
 }

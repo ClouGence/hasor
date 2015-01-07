@@ -21,6 +21,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.adapter.AbstractRequestManager;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.logger.LoggerHelper;
@@ -37,17 +38,38 @@ class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
         this.requestManager = requestManager;
     }
     //
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ResponseMsg == false)
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
+        LoggerHelper.logInfo("received response(%s) full = %s", responseMsg.getRequestID(), responseMsg);
         //
         RsfFuture rsfFuture = this.requestManager.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {
             LoggerHelper.logWarn(" give up the response,requestID(%s) ,maybe because timeout! ", responseMsg.getRequestID());
             return;//或许它已经超时了。
         }
+        LoggerHelper.logFine("doResponse.");
         new ResponseHandler(responseMsg, requestManager, rsfFuture).run();
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.channel().close();
+        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
+        if (conn != null) {
+            LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", conn.getHostAddress(), cause.getMessage());
+            this.requestManager.getClientManager().unRegistered(conn.getHostAddress());
+        }
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().close();
+        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
+        if (conn != null) {
+            LoggerHelper.logInfo("remote close, host = %s.", conn.getHostAddress());
+            this.requestManager.getClientManager().unRegistered(conn.getHostAddress());
+        }
     }
 }
 /**负责处理客户端 Response 回应逻辑。*/

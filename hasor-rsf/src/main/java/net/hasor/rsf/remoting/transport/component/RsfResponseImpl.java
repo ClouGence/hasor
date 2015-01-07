@@ -57,47 +57,61 @@ public class RsfResponseImpl implements RsfResponse {
         return this.responseMsg;
     }
     //
+    @Override
     public Object getResponseData() {
         return this.returnObject;
     }
+    @Override
     public Class<?> getResponseType() {
         return this.returnType;
     }
+    @Override
     public short getResponseStatus() {
         return this.responseMsg.getStatus();
     }
+    @Override
     public RsfBindInfo<?> getBindInfo() {
         return this.bindInfo;
     }
     //
+    @Override
     public String[] getOptionKeys() {
         return this.responseMsg.getOptionKeys();
     }
+    @Override
     public String getOption(String key) {
         return this.responseMsg.getOption(key);
     }
+    @Override
     public void addOption(String key, String value) {
         this.responseMsg.addOption(key, value);
     }
+    @Override
     public byte getProtocol() {
         return this.responseMsg.getVersion();
     }
+    @Override
     public long getRequestID() {
         return this.responseMsg.getRequestID();
     }
+    @Override
     public String getSerializeType() {
         return this.responseMsg.getSerializeType();
     }
+    @Override
     public boolean isResponse() {
         return this.committed;
     }
     //
+    @Override
     public void sendData(Object returnObject) {
         updateReturn(ProtocolStatus.OK, returnObject);
     }
+    @Override
     public void sendStatus(short status) {
         updateReturn(status, null);
     }
+    @Override
     public void sendStatus(short status, Object messageBody) {
         updateReturn(status, messageBody);
     }
@@ -105,5 +119,9 @@ public class RsfResponseImpl implements RsfResponse {
         this.returnObject = messageBody;
         this.responseMsg.setStatus(status);
         this.committed = true;
+    }
+    @Override
+    public String toString() {
+        return this.bindInfo.toString() + " - " + this.responseMsg.toString();
     }
 }

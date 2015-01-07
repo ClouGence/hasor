@@ -117,29 +117,32 @@ class InnerClientManager extends AbstractClientManager {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
                 NetworkConnection.initConnection(hostURL, channel);
+                LoggerHelper.logInfo("initConnection connect %s.", hostURL);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new InnerRsfCustomerHandler(getRequestManager()));
             }
         });
         ChannelFuture future = null;
         SocketAddress remote = new InetSocketAddress(hostURL.getHost(), hostURL.getPort());
+        LoggerHelper.logInfo("connect to %s ...", hostURL);
         future = boot.connect(remote);
         try {
             future.await();
         } catch (InterruptedException e) {
-            LoggerHelper.logWarn("connect to %s failure , %s", hostURL, e.getMessage());
+            LoggerHelper.logSevere("connect to %s failure , %s", hostURL, e.getMessage());
             return null;
         }
         if (future.isSuccess() == true) {
+            LoggerHelper.logInfo("remote %s connected.", hostURL);
             NetworkConnection conn = NetworkConnection.getConnection(future.channel());
             return new InnerRsfClient(this.getRequestManager(), conn);
         }
         //
         try {
-            LoggerHelper.logWarn(future.cause().getMessage());
+            LoggerHelper.logSevere("connect to %s failure , %s", hostURL, future.cause().getMessage());
             future.channel().close().await();
         } catch (InterruptedException e) {
-            LoggerHelper.logWarn("close connect(%s) failure , %s", hostURL, e.getMessage());
+            LoggerHelper.logSevere("close connect(%s) failure , %s", hostURL, e.getMessage());
         }
         return null;
     }
