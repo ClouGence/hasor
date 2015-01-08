@@ -1,0 +1,125 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.5-SNAPSHOT</version>
+	</parent>
+
+	<!-- Maven Info -->
+	<groupId>net.hasor</groupId>
+	<artifactId>hasor-search</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<!-- Project Info -->
+	<name>Hasor-Search</name>
+	<description>the Hasor Search project.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春(Mr.Zhao)</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- 引用依赖 -->
+	<dependencies>
+		<!-- Hasor -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-search-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.hasor</groupId>
+					<artifactId>hasor-rsf</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-web</artifactId>
+			<version>0.0.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-rsf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Solr -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>4.10.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-continuation</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-deploy</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-io</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-jmx</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-security</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-servlet</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-webapp</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-xml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+					<artifactId>javax.servlet</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<!-- Jetty Test -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-jetty</artifactId>
+			<version>0.0.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

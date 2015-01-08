@@ -17,12 +17,12 @@ package net.test.web.startup;
 import java.beans.PropertyVetoException;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.db.provider.SimpleDBModule;
 import net.hasor.mvc.web.support.WebControllerModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.more.logger.LoggerHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * 
@@ -35,7 +35,7 @@ public class StartModule extends WebModule {
         //1.启用Hasor-DB 插件（使用c3p0连接池）
         apiBinder.installModule(new SimpleDBModule("default", buildC3p0(apiBinder)));
         //2.启用Hasor-AR
-        apiBinder.installModule(new SimpleDBModule("default", buildC3p0(apiBinder)));
+        //        apiBinder.installModule(new SimpleDBModule("default", buildC3p0(apiBinder)));
         //3.Web MVC
         apiBinder.installModule(new WebControllerModule());
     }
@@ -51,7 +51,7 @@ public class StartModule extends WebModule {
         String pwdString = settings.getString("demo-jdbc-mysql.password");
         //2.创建数据库连接池
         int poolMaxSize = 200;
-        Hasor.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
+        LoggerHelper.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setDriverClass(driverString);
         dataSource.setJdbcUrl(urlString);

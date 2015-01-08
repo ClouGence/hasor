@@ -1,0 +1,3 @@
+Hasor-Solr-Client
+
+

@@ -1,0 +1,46 @@
+<div id="query" class="clearfix">
+<div class="block fieldlist" id="form"><form action="#" method="get">
+  <input type="hidden" value="/select">
+  <h2><span>查询条件</span></h2>
+  <div class="content">
+    <dl>
+      <dd>
+        Query(了解 Solr语法):<br/>
+        <textarea name="q" title="The query string." rows="2">*:*</textarea>
+      </dd>
+      <dd>
+        <span>Sort:</span>
+        <input type="text"   name="sort"  class="text"   title="Sort field or function with asc|desc.">
+        start,rows:
+          <input type="text" name="start" class="number" placeholder="0"  value="0"  pattern="[0-9]+" title="Number of leading documents to skip. (Integer)">
+          <input type="text" name="rows"  class="number" placeholder="10" value="10" pattern="[0-9]+" title="Number of documents to return after 'start'. (Integer)">
+      </dd>
+      <dd>
+        <span>Filter Query(fq):</span>
+        <input        type="text"     name="fq"         class="text" title="Filter query.">
+        <label><input type="checkbox" name="debugQuery" value="true" title="Show timing and diagnostics.">DebugQuery</label>
+        <label><input type="checkbox" name="indent"     value="true" title="Indent results." checked="checked">缩进</label>
+      </dd>
+      <dd>
+        <span>Fields(fl):</span>
+        <input type="text" name="fl" class="text" value="" title="Field list, comma separated.">
+        <label>响应格式(wt):<select name="wt" title="The writer type (response format).">
+          <option>json</option>
+          <option>xml</option>
+          <option>python</option>
+          <option>ruby</option>
+          <option>php</option>
+          <option>csv</option>
+        </select></label>
+        <button type="submit" style="position: relative;top: -20px; left: 20px;">Execute Query</button>
+      </dd>
+    </dl>
+  </div>
+</form></div>
+<div class="block fieldlist">
+  <h2><span>查询结果</span></h2>
+  <div class="content">
+    <a id="url" class="address-bar" href="#" target="_blank"></a>
+    <div id="response"></div>
+  </div>
+</div>

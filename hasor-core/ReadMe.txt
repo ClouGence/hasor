@@ -2,12 +2,12 @@
 
 介绍：
 	核心软件包，包含“org.more”工具和“net.hasor.core”两个部分，最新版本 0.0.10。
-	软件包提供了 IoC、Aop、Event、Config 等必须要的开发基础功能。它是整个Hasor体系的基础。
+	软件包提供了 IoC、Aop、Event、Config 等必须要的开发基础功能，它是整个Hasor蓝图的基础。
 
 
 IoC机制：
 	  Hasor 的 Ioc 是通过递归的方式实现，在 0.0.9 版本中要想实依赖注入必须要实现 InjectMembers接口。
-	注入的过程需要开发人员自己编写，从 0.0.10 开始 Hasor Ioc 将会支持自动注入。
+	注入的过程需要开发人员自己编写(将来版本 Hasor Ioc 将会考虑支持自动注入)
 
 Aop机制：
 	  Aop, Hasor 使用 MethodInterceptor 的接口处理 Aop 拦截器的逻辑。注册 Aop需要在初始化时进行。

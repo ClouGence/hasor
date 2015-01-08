@@ -1,4 +1,9 @@
-Hasor-RemoteServiceFramework
+Hasor-RSF（RemoteServiceFramework）
+
+介绍：
+	远程服务调用
+
+
 
 Multiplex Group Message Transmission Protocol (MGMTP)
 

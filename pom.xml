@@ -166,7 +166,8 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-rsf</module>
-		<module>hasor-solr</module>
+		<module>hasor-search</module>
+		<module>hasor-search-client</module>
 		<!-- module>hasor-security</module -->
 		<!-- module>hasor-quick</module -->
 	</modules>
@@ -177,12 +178,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

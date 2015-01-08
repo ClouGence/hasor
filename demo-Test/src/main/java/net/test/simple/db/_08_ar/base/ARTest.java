@@ -20,8 +20,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.db.orm.PageResult;
 import net.hasor.db.orm.support.DataBase;
-import net.hasor.db.orm.support.Entity;
-import net.hasor.db.orm.support.MapRecord;
+import net.hasor.db.orm.support.Record;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
@@ -44,7 +43,7 @@ public class ARTest implements AppContextAware {
     public void ar_Test() throws Exception {
         System.out.println("--->>ar_Test<<--");
         //
-        Entity userEnt = dataBase.loadSechma("TB_USER", "userName");
+        Record userEnt = dataBase.loadSechma("TB_USER", "userName");
         //---------------------------------------------------------
         //增：插入
         dataBase.saveAsNew(userEnt.set("userName", ""));
@@ -61,7 +60,7 @@ public class ARTest implements AppContextAware {
         //改：条件更新
         dataBase.updateByExample(userEnt.set("status", 2), new HashMap<String, Object>());
         //查：条件查询
-        PageResult<Entity> listEnt = dataBase.listByExample(userEnt.set("status", 2));
+        PageResult<Record> listEnt = dataBase.listByExample(userEnt.set("status", 2));
         //取总数
         int count = dataBase.countByExample(userEnt.set("userName", "aac").set("password", "asdf"));
         //
@@ -74,8 +73,8 @@ public class ARTest implements AppContextAware {
         //
         //
         //
-        PageResult<MapRecord> record = dataBase.queryBySQL("select * from aaa");
-        MapRecord r = null;
+        PageResult<Record> record = dataBase.queryBySQL("select * from aaa");
+        Record r = null;
         //
         // TODO Auto-generated method stub
     }

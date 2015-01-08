@@ -13,6 +13,7 @@
     11.不再依赖slf4j日志包，日志输出采用jdk自带的，至此 Hasor实现了0依赖。
     12.增加 apache 中 toStringBuilter 工具到 org.more.builder。
     13.分离出专用的 log 工具包 org.more.logger。
+    14.增添业务基础包org.more.bizcommon（将来如果发展大了会分离出去，目前就几个类）
 
 ===== Hasor-Core v0.0.9
 * 新增:
