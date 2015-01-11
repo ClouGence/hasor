@@ -53,8 +53,8 @@
 		<!-- Hasor-Core -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-core</artifactId>
-			<version>0.0.9</version>
+			<artifactId>hasor-quick</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-DB -->
 		<dependency>

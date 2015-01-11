@@ -58,12 +58,5 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Hasor-Test -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-test</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>

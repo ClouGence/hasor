@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.quick.bean;
-import net.hasor.core.BindInfo;
+import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 /**
- * 注册到 Hasor 中 Bean 的元信息。
- * @version : 2013-5-6
- * @author 赵永春 (zyc@hasor.net)
+ * 提供基于名称的Bean获取，和多名的支持。
+ * @version : 2013-9-13
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanInfo<T> {
-    /**获取bean的名称*/
-    public String getName();
-    /**获取bean的名称*/
-    public String[] getAliasNames();
-    /**当同一类型定义了多个Bean时，配合该ID用以在绑定系统中找到它。*/
-    public BindInfo<T> getReferInfo();
-    /**获取bean的类型*/
-    public Class<T> getType();
+public interface BeanBindingBuilder {
+    /**别名*/
+    public BeanBindingBuilder aliasName(String aliasName);
+    /**bean绑定的类型。*/
+    public <T> LinkedBindingBuilder<T> bindType(Class<T> beanType);
 }

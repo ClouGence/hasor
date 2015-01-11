@@ -20,26 +20,32 @@ import net.hasor.core.BindInfo;
  * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
  */
-class BeanInfoData<T> implements BeanInfo<T> {
-    private String[]    names = null;
-    private BindInfo<T> info  = null;
+class InnerBeanInfoData<T> implements BeanInfo<T> {
+    private String      name;
+    private String[]    aliasNames;
+    private BindInfo<T> bindInfo;
     //
-    public BeanInfoData(final String[] aliasNames, final BindInfo<T> info) {
-        this.names = aliasNames;
-        this.info = info;
+    public InnerBeanInfoData(String name, String[] aliasNames, BindInfo<T> bindInfo) {
+        this.name = name;
+        this.aliasNames = aliasNames;
+        this.bindInfo = bindInfo;
+    }
+    @Override
+    public String getName() {
+        return this.name;
     }
     /**获取bean的名称*/
     @Override
-    public String[] getNames() {
-        return this.names;
+    public String[] getAliasNames() {
+        return this.aliasNames;
     }
     @Override
     public BindInfo<T> getReferInfo() {
-        return this.info;
+        return this.bindInfo;
     }
     /**获取bean的类型*/
     @Override
     public Class<T> getType() {
-        return this.info.getBindType();
+        return this.bindInfo.getBindType();
     }
 }

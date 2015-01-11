@@ -24,7 +24,7 @@ import net.hasor.web.WebModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-@Plugin()
+@Plugin
 public class ResourcePlugin extends WebModule {
     public void loadModule(WebApiBinder apiBinder) {
         //1.准备参数

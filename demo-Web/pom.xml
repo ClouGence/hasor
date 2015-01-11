@@ -42,10 +42,22 @@
 	</build>
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Hasor-WebMVC -->
+		<!-- Hasor-Quick -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-mvc-web</artifactId>
+			<artifactId>hasor-quick</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor-Web -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-web</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor-MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		<!-- Hasor-DB -->
@@ -61,11 +73,30 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-Test -->
-		<!-- <dependency> -->
-		<!-- <groupId>net.hasor</groupId> -->
-		<!-- <artifactId>hasor-test</artifactId> -->
-		<!-- <version>0.0.2</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-test</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+
+		<!-- J2EE -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
 		<!-- Serialize - kryo -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.esotericsoftware.kryo</groupId> -->
@@ -90,23 +121,7 @@
 
 
 
-		<!-- J2EE -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-		</dependency>
+
 		<!-- OSS -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.aliyun.openservices</groupId> -->

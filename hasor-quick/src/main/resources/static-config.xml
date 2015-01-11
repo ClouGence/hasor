@@ -4,7 +4,10 @@
 	<hasor>
 		<!-- 包扫描范围 -->
 		<loadPackages>net.hasor.quick.*</loadPackages>
-
+		<!-- 默认要装载的模块 -->
+		<modules>
+			<module class="net.hasor.quick.plugin.PluginsModule" />
+		</modules>
 		<!-- Hasor-Web 专用 -->
 		<webConfig>
 			<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />

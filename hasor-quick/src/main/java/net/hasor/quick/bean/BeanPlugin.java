@@ -16,9 +16,6 @@
 package net.hasor.quick.bean;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.LinkedBindingBuilder;
-import net.hasor.core.ApiBinder.NamedBindingBuilder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.quick.plugin.Plugin;
 import org.more.logger.LoggerHelper;
@@ -41,15 +38,16 @@ public class BeanPlugin implements Module {
                 LoggerHelper.logWarn("missing Bean name %s", beanClass);
                 continue;
             }
-            AppContext appContext = null;
-            appContext.getInstance(Cla)
             //
-            /*将Bean类型注册到Hasor上，并且附上随机ID,用于和BeanInfo绑定。*/
-            String referID = beanClass.getName() + "#" + 0;
-            LinkedBindingBuilder<?> returnData = apiBinder.bindType(beanClass).nameWith(referID);
-            BeanInfoData<?> beanInfo = new BeanInfoData(aliasNames, returnData.toInfo());
-            NamedBindingBuilder<?> nameBindBuilder = apiBinder.bindType(beanClass);
-            LoggerHelper.logInfo("loadBean %s bind %s", names, beanClass);
+            LoggerHelper.logInfo("loadBean %s bind %s", aliasNames, beanClass);
+            String firstName = aliasNames[0];
+            BeanBindingBuilder beanBinder = Beans.defineForType(apiBinder, firstName);
+            for (int i = 1; i < aliasNames.length; i++) {
+                beanBinder = beanBinder.aliasName(aliasNames[i]);
+            }
+            beanBinder.bindType(beanClass);
+            //
+            LoggerHelper.logFine("loadBean %s bind %s ->OK.", aliasNames, beanClass);
         }
     }
 }
