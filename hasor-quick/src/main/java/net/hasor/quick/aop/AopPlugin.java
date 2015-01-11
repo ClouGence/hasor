@@ -20,6 +20,7 @@ import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
+import org.more.logger.LoggerHelper;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
@@ -28,9 +29,11 @@ import net.hasor.quick.plugin.Plugin;
 @Plugin
 public class AopPlugin implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //2.@Aop拦截器
+        //Aop拦截器
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
+        //
+        LoggerHelper.logConfig("Aops -> matcherClass = %s, matcherMethod =%s.", matcherClass, matcherMethod);
         apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor(apiBinder));
     }
 }

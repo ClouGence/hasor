@@ -16,13 +16,13 @@
 package net.hasor.quick.cache;
 import java.lang.reflect.Method;
 import java.util.List;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.core.Hasor;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.more.json.JSON;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.logger.LoggerHelper;
 /**
  * 拦截器
  * @version : 2013-11-8
@@ -30,10 +30,6 @@ import org.more.json.JSON;
  */
 class CacheInterceptor implements MethodInterceptor, AppContextAware {
     private AppContext appContext = null;
-    public CacheInterceptor(ApiBinder apiBinder) {
-        /* 注册 AppContextAware 接口，以便获取到 AppContext 接口类型。*/
-        apiBinder.registerAware(this);
-    }
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
@@ -48,14 +44,14 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
             return invocation.proceed();
         List<CacheCreator> creatorList = appContext.findBindingBean(CacheCreator.class);/*查找 CacheCreator 实现类*/
         if (creatorList == null || creatorList.isEmpty()) {
-            Hasor.logWarn("does not define the CacheCreator.");
+            LoggerHelper.logWarn("does not define the CacheCreator.");
             return invocation.proceed();
         }
         //2.获取缓存
         CacheCreator cacheCreator = creatorList.get(0);
         Cache cache = cacheCreator.getCacheByName(appContext, cacheAnno.groupName());
         if (cache == null) {
-            Hasor.logWarn("Cache %s is not Defile. at Method %s.", cacheAnno.groupName(), targetMethod);
+            LoggerHelper.logWarn("Cache %s is not Defile. at Method %s.", cacheAnno.groupName(), targetMethod);
             return invocation.proceed();
         }
         //3.获取Key
@@ -68,18 +64,18 @@ class CacheInterceptor implements MethodInterceptor, AppContextAware {
                     continue;
                 }
                 /*保证arg参数不为空*/
-                cacheKey.append(JSON.toString(arg));
+                cacheKey.append(ReflectionToStringBuilder.toString(arg, ToStringStyle.SHORT_PREFIX_STYLE));
             }
-        Hasor.logDebug("MethodInterceptor Method : %s", targetMethod);
-        Hasor.logDebug("MethodInterceptor Cache key :%s", cacheKey.toString());
+        LoggerHelper.logFine("MethodInterceptor Method : %s", targetMethod);
+        LoggerHelper.logFine("MethodInterceptor Cache key :%s", cacheKey.toString());
         //4.操作缓存
         String key = cacheKey.toString();
         Object returnData = null;
         if (cache.hasCache(key) == true) {
-            Hasor.logDebug("the method return data is from Cache.");
+            LoggerHelper.logFine("the method return data is from Cache.");
             returnData = cache.fromCache(key);
         } else {
-            Hasor.logDebug("set data to Cache key :" + key);
+            LoggerHelper.logFine("set data to Cache key :" + key);
             returnData = invocation.proceed();
             cache.toCache(key, returnData);
         }

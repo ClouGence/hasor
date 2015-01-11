@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
-import net.hasor.core.Hasor;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.WebModule;
+import net.hasor.web.WebModule;
+import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * 
@@ -51,7 +51,7 @@ public class JavaEEPlugin extends WebModule {
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
             if (Filter.class.isAssignableFrom(cls) == false) {
-                Hasor.logWarn("not implemented Filter :%s", cls);
+                LoggerHelper.logWarn("not implemented Filter :%s", cls);
             } else {
                 webFilterList.add((Class<? extends Filter>) cls);
             }
@@ -63,7 +63,7 @@ public class JavaEEPlugin extends WebModule {
             apiBinder.filter(null, filterAnno.value()).through(filterAnno.sort(), filterType, initMap);
             //
             String filterName = StringUtils.isBlank(filterAnno.filterName()) ? filterType.getSimpleName() : filterAnno.filterName();
-            Hasor.logInfo("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
+            LoggerHelper.logInfo("loadFilter %s[%s] bind %s on %s.", filterName, getIndexStr(filterAnno.sort()), filterType, filterAnno.value());
         }
     }
     //
@@ -76,7 +76,7 @@ public class JavaEEPlugin extends WebModule {
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
-                Hasor.logWarn("not implemented HttpServlet :%s", cls);
+                LoggerHelper.logWarn("not implemented HttpServlet :%s", cls);
             } else {
                 webServletList.add((Class<? extends HttpServlet>) cls);
             }
@@ -89,17 +89,20 @@ public class JavaEEPlugin extends WebModule {
             int sortInt = servletAnno.loadOnStartup();
             //
             apiBinder.serve(null, servletAnno.value()).with(sortInt, servletType, initMap);
-            Hasor.logInfo("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
+            LoggerHelper.logInfo("loadServlet %s[%s] bind %s on %s.", servletName, getIndexStr(sortInt), servletType, servletAnno.value());
         }
     }
     //
     /**转换参数*/
     protected Map<String, String> toMap(WebInitParam[] initParams) {
         Map<String, String> initMap = new HashMap<String, String>();
-        if (initParams != null)
-            for (WebInitParam param : initParams)
-                if (StringUtils.isBlank(param.name()) == false)
+        if (initParams != null) {
+            for (WebInitParam param : initParams) {
+                if (StringUtils.isBlank(param.name()) == false) {
                     initMap.put(param.name(), param.value());
+                }
+            }
+        }
         return initMap;
     }
     //
@@ -110,14 +113,16 @@ public class JavaEEPlugin extends WebModule {
         int minStartIndex = Integer.MIN_VALUE;
         int minStopIndex = Integer.MIN_VALUE + allRange;
         for (int i = minStartIndex; i < minStopIndex; i++) {
-            if (index == i)
+            if (index == i) {
                 return "Min" + ((index == Integer.MIN_VALUE) ? "" : ("+" + String.valueOf(i + Math.abs(Integer.MIN_VALUE))));
+            }
         }
         int maxStartIndex = Integer.MAX_VALUE;
         int maxStopIndex = Integer.MAX_VALUE - allRange;
         for (int i = maxStartIndex; i > maxStopIndex; i--) {
-            if (index == i)
+            if (index == i) {
                 return "Max" + ((index == Integer.MAX_VALUE) ? "" : ("-" + Math.abs(Integer.MAX_VALUE - i)));
+            }
         }
         return String.valueOf(index);
     }

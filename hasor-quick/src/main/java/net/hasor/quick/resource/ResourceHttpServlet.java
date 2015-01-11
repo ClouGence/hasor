@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.web.startup.RuntimeListener;
+import org.more.logger.LoggerHelper;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.FileUtils;
 import org.more.util.IOUtils;
@@ -66,7 +66,7 @@ public class ResourceHttpServlet extends HttpServlet {
         FileUtils.deleteDir(cacheDir);
         cacheDir.mkdirs();
         CacheDir.set(cacheDir);
-        Hasor.logInfo("use cacheDir %s", cacheDir);
+        LoggerHelper.logInfo("use cacheDir %s", cacheDir);
     }
     //
     //
@@ -80,8 +80,9 @@ public class ResourceHttpServlet extends HttpServlet {
         String requestURI = req.getRequestURI();
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
         String typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
-        if (StringUtils.isBlank(typeMimeType))
-            Hasor.logError("%s not mapping MimeType!", requestURI); //typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
+        if (StringUtils.isBlank(typeMimeType)) {
+            LoggerHelper.logSevere("%s not mapping MimeType!", requestURI); //typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
+        }
         //
         if (typeMimeType != null)
             response.setContentType(typeMimeType);

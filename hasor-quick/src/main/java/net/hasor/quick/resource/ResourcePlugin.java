@@ -18,7 +18,7 @@ import java.io.File;
 import net.hasor.core.Environment;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.plugin.WebModule;
+import net.hasor.web.WebModule;
 /**
  * 负责装载jar包中的资源。
  * @version : 2013-4-8
@@ -30,7 +30,7 @@ public class ResourcePlugin extends WebModule {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();
         //3.缓存路径
-        String cacheSubPath = "%HASOR_PLUGIN_PATH%/net.hasor.web.resource/";
+        String cacheSubPath = "%HASOR_PLUGIN_PATH%/" + ResourcePlugin.class.getPackage().getName() + "/";
         File cacheDir = new File(env.evalString(cacheSubPath));
         if (!chekcCacheDir(cacheDir)) {
             int i = 0;

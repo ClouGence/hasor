@@ -24,11 +24,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.quick.plugin.Plugin;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.more.logger.LoggerHelper;
+import org.more.util.StringUtils;
 /**
  * 提供请求相应编码设置。
  * @version : 2013-9-13
@@ -36,18 +37,26 @@ import net.hasor.web.WebModule;
  */
 @Plugin
 public class EncodingFilterPlugin extends WebModule {
-    public static final String RequestEncoding  = "hasor-quick.requestEncoding";
-    public static final String ResponseEncoding = "hasor-quick.responseEncoding";
+    public static final String REQUEST_ENCODING      = "hasor.webConfig.encoding.requestEncoding";
+    public static final String RESPONSE_ENCODING     = "hasor.webConfig.encoding.responseEncoding";
+    public static final String URL_PATTERNS_ENCODING = "hasor.webConfig.encoding.urlPatterns";
     //
     public void loadModule(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
-        String requestEncoding = settings.getString(RequestEncoding);
-        String responseEncoding = settings.getString(ResponseEncoding);
-        HashMap<String, String> initParams = new HashMap<String, String>();
-        initParams.put(RequestEncoding, requestEncoding);
-        initParams.put(ResponseEncoding, responseEncoding);
+        String requestEncoding = settings.getString(REQUEST_ENCODING);
+        String responseEncoding = settings.getString(RESPONSE_ENCODING);
+        LoggerHelper.logConfig("EncodingFilterPlugin -> requestEncoding = %s.", requestEncoding);
+        LoggerHelper.logConfig("EncodingFilterPlugin -> responseEncoding = %s.", responseEncoding);
         //
-        apiBinder.filter("/*").through(Integer.MIN_VALUE, EncodingFilter.class, initParams);
+        HashMap<String, String> initParams = new HashMap<String, String>();
+        initParams.put(REQUEST_ENCODING, requestEncoding);
+        initParams.put(RESPONSE_ENCODING, responseEncoding);
+        //
+        String urlPatternsConfig = settings.getString(URL_PATTERNS_ENCODING);
+        String[] patterns = StringUtils.isBlank(urlPatternsConfig) ? new String[0] : urlPatternsConfig.split(";");
+        LoggerHelper.logConfig("EncodingFilterPlugin -> urlPatterns = %s.", new Object[] { patterns });
+        //
+        apiBinder.filter(patterns).through(Integer.MIN_VALUE, EncodingFilter.class, initParams);
     }
 }
 class EncodingFilter implements Filter {
@@ -55,8 +64,10 @@ class EncodingFilter implements Filter {
     private String responseEncoding = null;
     public void init(FilterConfig filterConfig) throws ServletException {
         /*获取请求响应编码*/
-        this.requestEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.RequestEncoding);
-        this.responseEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.ResponseEncoding);
+        this.requestEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.REQUEST_ENCODING);
+        this.responseEncoding = filterConfig.getInitParameter(EncodingFilterPlugin.RESPONSE_ENCODING);
+        LoggerHelper.logConfig("EncodingFilter.init -> requestEncoding = %s.", requestEncoding);
+        LoggerHelper.logConfig("EncodingFilter.init -> responseEncoding = %s.", responseEncoding);
     }
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
@@ -66,7 +77,7 @@ class EncodingFilter implements Filter {
         if (this.requestEncoding != null)
             httpRes.setCharacterEncoding(this.responseEncoding);
         //
-        Hasor.logDebug("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+        LoggerHelper.logFine("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         chain.doFilter(request, response);
     }
     public void destroy() {}

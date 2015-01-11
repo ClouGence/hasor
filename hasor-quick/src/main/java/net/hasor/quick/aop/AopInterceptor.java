@@ -49,16 +49,20 @@ class AopInterceptor implements MethodInterceptor, AppContextAware {
             //b.类级拦截器
             Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
             if (beforeAnno != null) {
-                for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
-                    if (interType != null)
+                for (Class<? extends MethodInterceptor> interType : beforeAnno.value()) {
+                    if (interType != null) {
                         list.add(interType);
+                    }
+                }
             }
             //c.方法级拦截器
             beforeAnno = targetMethod.getAnnotation(Aop.class);
             if (beforeAnno != null) {
-                for (Class<? extends MethodInterceptor> interType : beforeAnno.value())
-                    if (interType != null)
+                for (Class<? extends MethodInterceptor> interType : beforeAnno.value()) {
+                    if (interType != null) {
                         list.add(interType);
+                    }
+                }
             }
             //d.缓存结果
             this.methodInterceptorMap.put(targetMethod, list);

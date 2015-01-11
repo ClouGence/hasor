@@ -18,11 +18,12 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.quick.plugin.Plugin;
 import org.more.RepeateException;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 缓存服务。启动级别：Lv_0
  * @version : 2013-4-8
@@ -35,16 +36,20 @@ public class CachePlugin implements Module {
         //1.挂载Aop
         Matcher<Class<?>> matcherCass = AopMatchers.annotatedWithClass(NeedCache.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(NeedCache.class);//
-        apiBinder.bindInterceptor(matcherCass, matcherMethod, new CacheInterceptor(apiBinder));
+        apiBinder.bindInterceptor(matcherCass, matcherMethod, apiBinder.autoAware(new CacheInterceptor()));
         //2.排错
         Set<Class<?>> cacheSet = apiBinder.findClass(Creator.class);
-        if (cacheSet == null || cacheSet.isEmpty())
+        if (cacheSet == null || cacheSet.isEmpty()) {
             return;
-        if (cacheSet.size() > 1)
-            throw new RepeateException(Hasor.formatString("repeat CacheCreator at: %s.", cacheSet));
+        }
+        if (cacheSet.size() > 1) {
+            String setString = ReflectionToStringBuilder.toString(cacheSet, ToStringStyle.SIMPLE_STYLE);
+            throw new RepeateException("repeat CacheCreator at: " + setString);
+        }
         Class<?> cacheCreator = cacheSet.iterator().next();
-        if (CacheCreator.class.isAssignableFrom(cacheCreator) == false)
+        if (CacheCreator.class.isAssignableFrom(cacheCreator) == false) {
             throw new ClassCastException("cannot be cast to " + CacheCreator.class.getName());
+        }
         //2.注册服务
         apiBinder.bindType(CacheCreator.class, (Class<CacheCreator>) cacheCreator).asEagerSingleton();
     }

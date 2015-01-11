@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import org.more.logger.LoggerHelper;
 /**
  * 插件体系支持
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class PluginsSupportModule implements Module {
+public class PluginsModule implements Module {
     /**初始化.*/
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         Set<Class<?>> pluginSet = apiBinder.findClass(Plugin.class);
@@ -35,30 +35,29 @@ public class PluginsSupportModule implements Module {
         //
         Map<Class<?>, String> loadState = new HashMap<Class<?>, String>();
         for (Class<?> pluginClass : pluginSet) {
-            if (HasorPlugin.class.isAssignableFrom(pluginClass) == false) {
-                Hasor.logWarn("not implemented PluginFace :%s", pluginClass);
+            if (Module.class.isAssignableFrom(pluginClass) == false) {
+                LoggerHelper.logWarn("not implemented net.hasor.core.Module :%s", pluginClass);
                 continue;
             }
             try {
-                HasorPlugin hasorPlugin = (HasorPlugin) pluginClass.newInstance();
-                Hasor.logInfo("loadPlugin %s.", pluginClass);
-                hasorPlugin.loadPlugin(apiBinder);
+                Module plugin = (Module) pluginClass.newInstance();
+                LoggerHelper.logInfo("loadModule %s.", pluginClass);
+                apiBinder.installModule(plugin);
                 loadState.put(pluginClass, "<-- OK.");
-                apiBinder.bindingType(HasorPlugin.class).toInstance(hasorPlugin);
             } catch (Throwable e) {
                 loadState.put(pluginClass, "<-- Error.");
-                Hasor.logError("config Plugin error at %s.%s", pluginClass, e);
+                LoggerHelper.logSevere("config Plugin error at %s.%s", pluginClass, e);
             }
         }
         //
-        if (Hasor.isInfoLogger()) {
+        if (LoggerHelper.isEnableInfoLoggable()) {
             StringBuffer sb = new StringBuffer();
             for (Entry<Class<?>, String> e : loadState.entrySet()) {
                 sb.append("\n  " + e.getKey().getName());
                 sb.append(e.getValue());
             }
             String outData = (sb.length() == 0 ? "nothing." : sb.toString());
-            Hasor.logInfo("find Plugin : " + outData);
+            LoggerHelper.logInfo("find Plugin : " + outData);
         }
     }
 }
