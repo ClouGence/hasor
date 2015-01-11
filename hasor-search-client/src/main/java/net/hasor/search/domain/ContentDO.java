@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.search.domain;
-import java.util.List;
-import org.more.bizcommon.ResultDO;
+import java.io.Serializable;
 /**
- * 搜索返回的记录集
+ * 搜索返回的内容条目
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SearchResultDO extends ResultDO<List<ContentDO>> {
-    private static final long serialVersionUID = 3289264304107613001L;
+public class ContentDO implements Serializable {
+    private static final long serialVersionUID = -4225184098352696284L;
 }

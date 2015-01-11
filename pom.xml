@@ -168,8 +168,8 @@
 		<module>hasor-rsf</module>
 		<module>hasor-search</module>
 		<module>hasor-search-client</module>
+		<module>hasor-quick</module>
 		<!-- module>hasor-security</module -->
-		<!-- module>hasor-quick</module -->
 	</modules>
 
 	<!-- 公共依赖 -->

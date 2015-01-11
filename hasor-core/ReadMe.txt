@@ -1,12 +1,12 @@
 ﻿Hasor-Core
 
 介绍：
-	核心软件包，包含“org.more”工具和“net.hasor.core”两个部分，最新版本 0.0.10。
-	软件包提供了 IoC、Aop、Event、Config 等必须要的开发基础功能，它是整个Hasor蓝图的基础。
+	Hasor的核心软件包，几乎所有Hasor扩展模块都会依赖到它。包含工具和 Hasor 两个部分，它是整个Hasor蓝图的基础。
+	该软件包提供了：配置文件解析、事件、容器、IoC/Aop等核心功能。
 
 
 IoC机制：
-	  Hasor 的 Ioc 是通过递归的方式实现，在 0.0.9 版本中要想实依赖注入必须要实现 InjectMembers接口。
+	  Hasor 的 Ioc 是通过递归的方式实现，在 0.0.10 版本中要想实依赖注入必须要实现 InjectMembers接口。
 	注入的过程需要开发人员自己编写(将来版本 Hasor Ioc 将会考虑支持自动注入)
 
 Aop机制：
@@ -17,7 +17,7 @@ Aop机制：
 	位于“org.more.classcode”软件包下。是一个独立的工具，它可以脱离 Hasor 独立使用。
 
 Bind机制：
-	  Bind 参考了 Google Guice 的 Binder 接口，功能上大体相似。目的是提供一种不同于配置文件、注解方式
+	  Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式
 	的配置方法。这样一种设计并不是指 Hasor 抛弃配置文件和注解的优势，开发者可以根据项目的特征自行选择。
 	  Hasor 的开发者可以将某一个类使用 ApiBinder 接口的 bindType 方法注册到容器中。这个工作与 Spring
 	配置文件中 Bean 配置的作用并无不同。

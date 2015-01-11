@@ -36,19 +36,19 @@ public class NameBindTest {
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 //绑定一个接口和实现类
-                apiBinder.bindType(CharSequence.class).nameWith("ModuleA").toInstance("this String form A");
-                apiBinder.bindType(CharSequence.class).nameWith("ModuleB").toInstance("this String form B");
+                apiBinder.bindType(String.class).nameWith("ModuleA").toInstance("this String form A");
+                apiBinder.bindType(String.class).nameWith("ModuleB").toInstance("this String form B");
             }
         });
         //
         System.out.println();
-        CharSequence modeSay = null;
-        modeSay = appContext.findBindingBean("ModuleA", CharSequence.class);
+        String modeSay = null;
+        modeSay = appContext.findBindingBean("ModuleA", String.class);
         LoggerHelper.logInfo(modeSay.toString());
-        modeSay = appContext.findBindingBean("ModuleB", CharSequence.class);
+        modeSay = appContext.findBindingBean("ModuleB", String.class);
         LoggerHelper.logInfo(modeSay.toString());
         //
-        List<CharSequence> says = appContext.findBindingBean(CharSequence.class);//查找绑定
+        List<String> says = appContext.findBindingBean(String.class);//查找绑定
         LoggerHelper.logInfo("say %s.", says);
     }
 }

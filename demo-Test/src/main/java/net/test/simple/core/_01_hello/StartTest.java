@@ -34,8 +34,7 @@ public class StartTest {
         //
         StartTest a = appContext.getInstance(StartTest.class);
         System.out.println(a);
-        
         String userHome = appContext.getEnvironment().getEnvVar("user.home");
-      System.out.println( new File(userHome,"aaa/aaa.txt").getParentFile().mkdirs()   ); 
+        System.out.println(new File(userHome, "aaa/aaa.txt").getParentFile().mkdirs());
     }
 }

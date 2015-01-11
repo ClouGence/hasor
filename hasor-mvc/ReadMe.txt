@@ -1,8 +1,9 @@
 ﻿Hasor-MVC
 
 介绍：
-	Hasor-MVC 是一款专门的 mvc 框架。它使用 MappingTo 定义控制器。框架在初始化时候会将标记了
-	该注解的方法列入 mvc 控制器列表，并通过字符串查找匹配的控制器，然后进行调用。
+	一个轻量化的MVC框架，它的被分为两个部分一个部分可以用于非Web下的MVC模式开发，而另一个重要的部分就是Web下的MVC开发。
+	它是注解化的开发框架，开发者需要通过@MappingTo来定义控制器，而MappingTo的表达式中可以配置请求参数。
+	Hasor-MVC的Web方面还提供了Restful、Strategy、Result等支持，通过这些扩展可以使Web开发更加简单轻松。
 
 
 Strategy机制：

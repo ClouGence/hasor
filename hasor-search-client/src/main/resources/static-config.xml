@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc-web">
-	<hasor>
-		<solrConfig>
-			<!-- ZooKeeper | SolrHome -->
-			<locationType>SolrHome</locationType>
-		</solrConfig>
-		<environmentVar>
-			<SOLR-HOME>%HASOR_WORK_HOME%/solr-home</SOLR-HOME>
-		</environmentVar>
-	</hasor>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search-client">
+
 </config>
