@@ -26,11 +26,12 @@ import java.lang.annotation.Target;
  * for a method to be annotated with more than one annotation that is annotated
  * with {@code HttpMethod}.
  *
- * @see Get
- * @see Post
- * @see Put
- * @see DELETE
- * @see Head
+ * @see net.hasor.mvc.web.restful.HttpMethod#GET
+ * @see net.hasor.mvc.web.restful.HttpMethod#POST
+ * @see net.hasor.mvc.web.restful.HttpMethod#PUT
+ * @see net.hasor.mvc.web.restful.HttpMethod#DELETE
+ * @see net.hasor.mvc.web.restful.HttpMethod#HEAD
+ * @see net.hasor.mvc.web.restful.HttpMethod#OPTIONS
  */
 @Target({ ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)

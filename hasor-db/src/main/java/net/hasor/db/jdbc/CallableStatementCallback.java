@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public interface CallableStatementCallback<T> {
     /**
      * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。
-     * @param con 一个可用的 JDBC 数据库连接
+     * @param cs 一个可用的 JDBC 数据库连接
      * @return 返回操作执行的最终结果。
      */
     public T doInCallableStatement(CallableStatement cs) throws SQLException;

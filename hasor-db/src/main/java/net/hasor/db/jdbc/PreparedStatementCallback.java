@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public interface PreparedStatementCallback<T> {
     /**
      * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。
-     * @param stmt 一个可用的 PreparedStatement 对象连接
+     * @param ps 一个可用的 PreparedStatement 对象连接
      * @return 返回操作执行的最终结果。
      */
     public T doInPreparedStatement(PreparedStatement ps) throws SQLException;

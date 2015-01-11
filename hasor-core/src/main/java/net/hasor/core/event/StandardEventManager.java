@@ -38,14 +38,14 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEventManager implements EventContext {
-    private static final EmptyEventCallBackHook    EmptyAsyncCallBack = new EmptyEventCallBackHook();
+    private static final EmptyEventCallBackHook    EMPTY_CALLBACK   = new EmptyEventCallBackHook();
     //
-    private Settings                               settings           = null;
-    private ScheduledExecutorService               executorService    = null;
-    private Map<String, EventListener[]>           listenerMap        = new ConcurrentHashMap<String, EventListener[]>();
-    private ReadWriteLock                          listenerRWLock     = new ReentrantReadWriteLock();
-    private Map<String, LinkedList<EventListener>> onceListenerMap    = new ConcurrentHashMap<String, LinkedList<EventListener>>();
-    private Lock                                   onceListenerLock   = new ReentrantLock();
+    private Settings                               settings         = null;
+    private ScheduledExecutorService               executorService  = null;
+    private Map<String, EventListener[]>           listenerMap      = new ConcurrentHashMap<String, EventListener[]>();
+    private ReadWriteLock                          listenerRWLock   = new ReentrantReadWriteLock();
+    private Map<String, LinkedList<EventListener>> onceListenerMap  = new ConcurrentHashMap<String, LinkedList<EventListener>>();
+    private Lock                                   onceListenerLock = new ReentrantLock();
     //
     public StandardEventManager(Environment env) {
         env = Hasor.assertIsNotNull(env, "Environment type parameter is empty!");
@@ -60,7 +60,7 @@ public class StandardEventManager implements EventContext {
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
-    /**获取{@link Setting}接口对象*/
+    /**获取{@link Settings}接口对象*/
     public Settings getSettings() {
         return this.settings;
     }
@@ -164,7 +164,7 @@ public class StandardEventManager implements EventContext {
         String eventType = eventObj.getEventType();
         Object[] objects = eventObj.getParams();
         EventCallBackHook callBack = eventObj.getCallBack();
-        callBack = callBack != null ? callBack : StandardEventManager.EmptyAsyncCallBack;
+        callBack = callBack != null ? callBack : StandardEventManager.EMPTY_CALLBACK;
         if (StringUtils.isBlank(eventType) == true) {
             return;
         }

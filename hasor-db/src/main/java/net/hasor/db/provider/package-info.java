@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供了{@link SimpleDBModule}类可以快速的将 Hasor-DB 集成到开发环境中。
+ * 提供了{@link net.hasor.db.provider.SimpleDBModule SimpleDBModule}类可以快速的将 Hasor-DB 集成到开发环境中。
  */
 package net.hasor.db.provider;
