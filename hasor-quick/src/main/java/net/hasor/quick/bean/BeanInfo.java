@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.plugin;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.quick.bean;
+import net.hasor.core.BindInfo;
 /**
- * 标记该类为一个插件。
- * @version : 2013-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * 注册到 Hasor 中 Bean 的元信息。
+ * @version : 2013-5-6
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Plugin {}
+public interface BeanInfo<T> {
+    /**获取bean的名称*/
+    public String[] getNames();
+    /**当同一类型定义了多个Bean时，配合该ID用以在绑定系统中找到它。*/
+    public BindInfo<T> getReferInfo();
+    /**获取bean的类型*/
+    public Class<T> getType();
+}

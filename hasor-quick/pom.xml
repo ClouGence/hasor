@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>net.hasor</groupId>
 		<artifactId>hasor-parent</artifactId>
-		<version>0.0.4</version>
+		<version>0.0.5-SNAPSHOT</version>
 	</parent>
 
 	<!-- Maven Info -->
@@ -29,13 +29,14 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>0.0.10-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-Core -->
+		<!-- Hasor-Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
+			<version>0.0.8-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -43,25 +44,26 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- DB Pool -->
-		<!-- <dependency> -->
-		<!-- <groupId>commons-dbcp</groupId> -->
-		<!-- <artifactId>commons-dbcp</artifactId> -->
-		<!-- <version>1.4</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>c3p0</groupId> -->
-		<!-- <artifactId>c3p0</artifactId> -->
-		<!-- <version>0.9.1.2</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.alibaba</groupId> -->
-		<!-- <artifactId>druid</artifactId> -->
-		<!-- <version>0.2.25</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
+		<!-- Hasor-MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Hasor-RSF -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-rsf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Hasor-Test -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-test</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

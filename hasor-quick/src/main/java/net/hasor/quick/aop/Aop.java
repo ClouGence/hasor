@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.plugin;
+package net.hasor.quick.aop;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.MethodInterceptor;
 /**
- * 标记该类为一个插件。
- * @version : 2013-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * 标记在类或方法上，为类或方法指定拦截器。
+ * @version : 2013-3-20
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Plugin {}
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface Aop {
+    public Class<? extends MethodInterceptor>[] value();
+}

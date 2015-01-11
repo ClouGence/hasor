@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.plugin;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.quick.cache;
+import net.hasor.core.AppContext;
 /**
- * 标记该类为一个插件。
- * @version : 2013-9-13
+ * 用于创建指定名称的缓存器。
+ * @version : 2013-3-12
  * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Plugin {}
+public interface CacheCreator {
+    /**
+     * 根据名称创建或返回一个缓存器
+     * @param appContext 应用程序环境
+     * @param groupName 缓存器
+     */
+    public Cache getCacheByName(AppContext appContext, String groupName);
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.plugin;
+package net.hasor.quick.setting;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.SettingsListener;
 /**
- * 标记该类为一个插件。
- * @version : 2013-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * 声明一个配置文件改变监听器，标记了该接口的类必须要求实现{@link SettingsListener}接口。
+ * @version : 2013-3-12
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface Plugin {}
+public @interface Settings {}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.plugin;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.quick.resource;
+import net.hasor.core.AppContext;
 /**
- * 标记该类为一个插件。
- * @version : 2013-9-13
- * @author 赵永春 (zyc@byshell.org)
+ * 
+ * @version : 2013-10-29
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Plugin {}
+public interface ResourceLoaderFactory {
+    public ResourceLoader[] loaderArray(AppContext appContext);
+}
