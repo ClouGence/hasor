@@ -45,14 +45,10 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
-import java.io.IOException;
-
 /**
  * Serializing an object. 
  */
 public interface ObjectSerializer {
-  public Serializer getObjectSerializer();
+    public Serializer getObjectSerializer();
 }

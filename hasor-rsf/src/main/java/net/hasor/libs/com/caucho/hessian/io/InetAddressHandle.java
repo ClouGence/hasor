@@ -45,37 +45,28 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  * Handle for an InetAddress object.
  */
-public class InetAddressHandle implements java.io.Serializable, HessianHandle
-{
-  private static final Logger log = Logger.getLogger(InetAddressHandle.class.getName());
-  
-  private String hostName;
-  private byte []address;
-
-  public InetAddressHandle(String hostName, byte []address)
-  {
-    this.hostName = hostName;
-    this.address = address;
-  }
-
-  private Object readResolve()
-  {
-    try {
-      return InetAddress.getByAddress(this.hostName, this.address);
-    } catch (Exception e) {
-      log.log(Level.FINE, e.toString(), e);
-      
-      return null;
+public class InetAddressHandle implements java.io.Serializable, HessianHandle {
+    private static final long   serialVersionUID = 6406627607150401997L;
+    private static final Logger log              = Logger.getLogger(InetAddressHandle.class.getName());
+    private String              hostName;
+    private byte[]              address;
+    public InetAddressHandle(String hostName, byte[] address) {
+        this.hostName = hostName;
+        this.address = address;
     }
-  }
+    private Object readResolve() {
+        try {
+            return InetAddress.getByAddress(this.hostName, this.address);
+        } catch (Exception e) {
+            log.log(Level.FINE, e.toString(), e);
+            return null;
+        }
+    }
 }

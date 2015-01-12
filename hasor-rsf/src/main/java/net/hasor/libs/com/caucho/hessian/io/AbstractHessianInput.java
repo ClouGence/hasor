@@ -185,7 +185,7 @@ abstract public class AbstractHessianInput {
    * Reads a reply as an object.
    * If the reply has a fault, throws the exception.
    */
-  abstract public Object readReply(Class expectedClass)
+  abstract public Object readReply(Class<?> expectedClass)
     throws Throwable;
   
   /**
@@ -383,7 +383,7 @@ abstract public class AbstractHessianInput {
    *
    * @param expectedClass the expected class if the protocol doesn't supply it.
    */
-  abstract public Object readObject(Class expectedClass)
+  abstract public Object readObject(Class<?> expectedClass)
     throws IOException;
 
   /**

@@ -45,86 +45,66 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 /**
  * Encapsulates a remote address when no stub is available, e.g. for
  * Java MicroEdition.
  */
 public class HessianRemote implements java.io.Serializable {
-  private String type;
-  private String url;
-
-  /**
-   * Creates a new Hessian remote object.
-   *
-   * @param type the remote stub interface
-   * @param url the remote url
-   */
-  public HessianRemote(String type, String url)
-  {
-    this.type = type;
-    this.url = url;
-  }
-
-  /**
-   * Creates an uninitialized Hessian remote.
-   */
-  public HessianRemote()
-  {
-  }
-
-  /**
-   * Returns the remote api class name.
-   */
-  public String getType()
-  {
-    return type;
-  }
-
-  /**
-   * Returns the remote URL.
-   */
-  public String getURL()
-  {
-    return url;
-  }
-
-  /**
-   * Sets the remote URL.
-   */
-  public void setURL(String url)
-  {
-    this.url = url;
-  }
-
-  /**
-   * Defines the hashcode.
-   */
-  public int hashCode()
-  {
-    return url.hashCode();
-  }
-
-  /**
-   * Defines equality
-   */
-  public boolean equals(Object obj)
-  {
-    if (! (obj instanceof HessianRemote))
-      return false;
-
-    HessianRemote remote = (HessianRemote) obj;
-
-    return url.equals(remote.url);
-  }
-
-  /**
-   * Readable version of the remote.
-   */
-  public String toString()
-  {
-    return "HessianRemote[" + url + "]";
-  }
+    private static final long serialVersionUID = 1105355127087318847L;
+    private String            type;
+    private String            url;
+    /**
+     * Creates a new Hessian remote object.
+     *
+     * @param type the remote stub interface
+     * @param url the remote url
+     */
+    public HessianRemote(String type, String url) {
+        this.type = type;
+        this.url = url;
+    }
+    /**
+     * Creates an uninitialized Hessian remote.
+     */
+    public HessianRemote() {}
+    /**
+     * Returns the remote api class name.
+     */
+    public String getType() {
+        return type;
+    }
+    /**
+     * Returns the remote URL.
+     */
+    public String getURL() {
+        return url;
+    }
+    /**
+     * Sets the remote URL.
+     */
+    public void setURL(String url) {
+        this.url = url;
+    }
+    /**
+     * Defines the hashcode.
+     */
+    public int hashCode() {
+        return url.hashCode();
+    }
+    /**
+     * Defines equality
+     */
+    public boolean equals(Object obj) {
+        if (!(obj instanceof HessianRemote))
+            return false;
+        HessianRemote remote = (HessianRemote) obj;
+        return url.equals(remote.url);
+    }
+    /**
+     * Readable version of the remote.
+     */
+    public String toString() {
+        return "HessianRemote[" + url + "]";
+    }
 }

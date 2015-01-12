@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 /**
- * 软件包 net.hasor.quick.cache
- * <p>提供注解方式 声明缓存的支持，该软件包参考了JSR-107(JCache API).</p>
+ * 软件包 net.hasor.quick.bean
+ * <p>提供 <code>{@link net.hasor.quick.bean.Bean}</code> 注解功能的支持.</p>
+ * <p>Provide <code>{@link net.hasor.quick.bean.Bean}</code> annotation way to Bean.</p>
  */
-package net.hasor.quick.cache;
+package net.hasor.quick.bean;

@@ -15,7 +15,7 @@
  */
 /**
  * 软件包 for net.hasor.plugins.aop
- * <p>Provide <code>{@link net.hasor.plugins.aop.Aop}</code>
+ * <p>Provide <code>{@link net.hasor.quick.aop.Aop}</code>
  *  annotation way as the class or method statement Aop interceptors.</p>
  */
 package net.hasor.quick.aop;

@@ -45,20 +45,14 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
-
 /**
  * Serializing a remote object.
  */
 public class RemoteSerializer extends AbstractSerializer {
-  public void writeObject(Object obj, AbstractHessianOutput out)
-    throws IOException
-  {
-    HessianRemoteObject remoteObject = (HessianRemoteObject) obj;
-
-    out.writeObject(new HessianRemote(remoteObject.getHessianType(),
-                                      remoteObject.getHessianURL()));
-  }
+    public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
+        HessianRemoteObject remoteObject = (HessianRemoteObject) obj;
+        out.writeObject(new HessianRemote(remoteObject.getHessianType(), remoteObject.getHessianURL()));
+    }
 }

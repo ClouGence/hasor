@@ -45,23 +45,17 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-
 /**
  * Deserializing a JDK 1.2 Collection.
  */
 public class AbstractListDeserializer extends AbstractDeserializer {
-  public Object readObject(AbstractHessianInput in)
-    throws IOException
-  {
-    Object obj = in.readObject();
-
-    if (obj != null)
-      throw error("expected list at " + obj.getClass().getName() + " (" + obj + ")");
-    else
-      throw error("expected list at null");
-  }
+    public Object readObject(AbstractHessianInput in) throws IOException {
+        Object obj = in.readObject();
+        if (obj != null)
+            throw error("expected list at " + obj.getClass().getName() + " (" + obj + ")");
+        else
+            throw error("expected list at null");
+    }
 }

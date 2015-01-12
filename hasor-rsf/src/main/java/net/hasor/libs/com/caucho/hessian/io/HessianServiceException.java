@@ -45,47 +45,37 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 /**
  * Exception for faults when the fault doesn't return a java exception.
  * This exception is required for MicroHessianInput.
  */
 public class HessianServiceException extends Exception {
-  private String code;
-  private Object detail;
-
-  /**
-   * Zero-arg constructor.
-   */
-  public HessianServiceException()
-  {
-  }
-
-  /**
-   * Create the exception.
-   */
-  public HessianServiceException(String message, String code, Object detail)
-  {
-    super(message);
-    this.code = code;
-    this.detail = detail;
-  }
-
-  /**
-   * Returns the code.
-   */
-  public String getCode()
-  {
-    return code;
-  }
-
-  /**
-   * Returns the detail.
-   */
-  public Object getDetail()
-  {
-    return detail;
-  }
+    private static final long serialVersionUID = -4745317939227013095L;
+    private String            code;
+    private Object            detail;
+    /**
+     * Zero-arg constructor.
+     */
+    public HessianServiceException() {}
+    /**
+     * Create the exception.
+     */
+    public HessianServiceException(String message, String code, Object detail) {
+        super(message);
+        this.code = code;
+        this.detail = detail;
+    }
+    /**
+     * Returns the code.
+     */
+    public String getCode() {
+        return code;
+    }
+    /**
+     * Returns the detail.
+     */
+    public Object getDetail() {
+        return detail;
+    }
 }

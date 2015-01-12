@@ -16,7 +16,7 @@
 /**
  * 软件包 net.hasor.quick.setting
  * <p>提供注解方式注册配置文件改变监听器。</p>
- * <p>Provide <code>{@link net.hasor.plugins.setting.Settings}</code>
+ * <p>Provide <code>{@link net.hasor.quick.setting.Settings}</code>
  * annotation way to Configuration change listener.</p>
  */
 package net.hasor.quick.setting;

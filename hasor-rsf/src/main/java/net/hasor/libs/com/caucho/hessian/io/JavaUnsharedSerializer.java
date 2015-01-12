@@ -45,42 +45,22 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-import java.lang.ref.SoftReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Serializing an object for known object types.
  */
-public class JavaUnsharedSerializer extends JavaSerializer
-{
-  private static final Logger log
-    = Logger.getLogger(JavaUnsharedSerializer.class.getName());
-  
-  public JavaUnsharedSerializer(Class<?> cl)
-  {
-    super(cl);
-  }
-  
-  @Override
-  public void writeObject(Object obj, AbstractHessianOutput out)
-    throws IOException
-  {
-    boolean oldUnshared = out.setUnshared(true);
-    
-    try {
-      super.writeObject(obj, out);
-    } finally {
-      out.setUnshared(oldUnshared);
+public class JavaUnsharedSerializer extends JavaSerializer {
+    public JavaUnsharedSerializer(Class<?> cl) {
+        super(cl);
     }
-  }
+    @Override
+    public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
+        boolean oldUnshared = out.setUnshared(true);
+        try {
+            super.writeObject(obj, out);
+        } finally {
+            out.setUnshared(oldUnshared);
+        }
+    }
 }

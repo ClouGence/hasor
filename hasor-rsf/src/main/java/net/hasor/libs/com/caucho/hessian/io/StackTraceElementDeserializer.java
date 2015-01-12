@@ -45,25 +45,16 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
-import java.io.*;
-import java.util.HashMap;
-
 /**
  * Deserializing a JDK 1.4 StackTraceElement
  */
 public class StackTraceElementDeserializer extends JavaDeserializer {
-  public StackTraceElementDeserializer()
-  {
-    super(StackTraceElement.class);
-  }
-
-  @Override
-  protected Object instantiate()
-    throws Exception
-  {
-    return new StackTraceElement("", "", "", 0);
-  }
+    public StackTraceElementDeserializer() {
+        super(StackTraceElement.class);
+    }
+    @Override
+    protected Object instantiate() throws Exception {
+        return new StackTraceElement("", "", "", 0);
+    }
 }

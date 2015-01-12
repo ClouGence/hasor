@@ -45,39 +45,25 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
-import java.net.URL;
 import java.io.Serializable;
-
 /**
  * Handle for Java Byte objects.
  */
 public class ByteHandle implements Serializable {
-  private byte _value;
-
-  private ByteHandle()
-  {
-  }
-
-  public ByteHandle(byte value)
-  {
-    _value = value;
-  }
-
-  public byte getValue()
-  {
-    return _value;
-  }
-
-  public Object readResolve()
-  {
-    return new Byte(_value);
-  }
-
-  public String toString()
-  {
-    return getClass().getSimpleName() + "[" + _value + "]";
-  }
+    private static final long serialVersionUID = 4441048616155411120L;
+    private byte              _value;
+    private ByteHandle() {}
+    public ByteHandle(byte value) {
+        _value = value;
+    }
+    public byte getValue() {
+        return _value;
+    }
+    public Object readResolve() {
+        return new Byte(_value);
+    }
+    public String toString() {
+        return getClass().getSimpleName() + "[" + _value + "]";
+    }
 }

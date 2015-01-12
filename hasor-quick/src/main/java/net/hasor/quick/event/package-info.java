@@ -16,7 +16,7 @@
 /**
  * 软件包 net.hasor.quick.event
  * <p>提供注解方式声明事件监听器.</p>
- * <p>Provide <code>{@link net.hasor.plugins.event.Listener}</code>
+ * <p>Provide <code>{@link net.hasor.quick.event.Listener}</code>
  * annotation way to event listeners.</p>
  */
 package net.hasor.quick.event;
