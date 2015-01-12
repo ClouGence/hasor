@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import net.hasor.quick.plugin.Plugin;
+import net.hasor.quick.setting.Settings;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.logger.LoggerHelper;
@@ -50,6 +51,9 @@ public class JavaEEPlugin extends WebModule {
             return;
         List<Class<? extends Filter>> webFilterList = new ArrayList<Class<? extends Filter>>();
         for (Class<?> cls : webFilterSet) {
+            if (cls == WebFilter.class) {
+                continue;
+            }
             if (Filter.class.isAssignableFrom(cls) == false) {
                 LoggerHelper.logWarn("not implemented Filter :%s", cls);
             } else {
@@ -75,6 +79,9 @@ public class JavaEEPlugin extends WebModule {
             return;
         List<Class<? extends HttpServlet>> webServletList = new ArrayList<Class<? extends HttpServlet>>();
         for (Class<?> cls : webServletSet) {
+            if (cls == WebServlet.class) {
+                continue;
+            }
             if (HttpServlet.class.isAssignableFrom(cls) == false) {
                 LoggerHelper.logWarn("not implemented HttpServlet :%s", cls);
             } else {

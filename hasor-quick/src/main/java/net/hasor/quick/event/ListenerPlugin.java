@@ -38,9 +38,7 @@ public class ListenerPlugin implements Module {
         if (eventSet == null || eventSet.isEmpty())
             return;
         for (final Class<?> eventClass : eventSet) {
-            /*排除没有实现 EventListener 接口的类。*/
-            if (EventListener.class.isAssignableFrom(eventClass) == false) {
-                LoggerHelper.logWarn("not implemented EventListener :%s", eventClass);
+            if (eventClass == Listener.class || EventListener.class.isAssignableFrom(eventClass) == false) {
                 continue;
             }
             Listener eventAnno = eventClass.getAnnotation(Listener.class);

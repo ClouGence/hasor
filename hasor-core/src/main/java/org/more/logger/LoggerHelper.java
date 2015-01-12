@@ -15,6 +15,8 @@
  */
 package org.more.logger;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -28,8 +30,8 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class LoggerHelper {
-    private static final String LOGGING_NAME                  = "logger.properties";
-    private static final String JAVA_UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
+    private static String LOGGING_NAME                  = "logger.properties";
+    private static String JAVA_UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
     static {
         String configName = System.getProperty(JAVA_UTIL_LOGGING_CONFIG_FILE);
         if (StringUtils.isBlank(configName) == true) {
@@ -61,6 +63,15 @@ public class LoggerHelper {
                 return this.filter.isLoggable(record);
             return true;
         }
+    }
+    //
+    private static String toStrint(Throwable error) {
+        if (error == null) {
+            return "";
+        }
+        StringWriter writer = new StringWriter();
+        error.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
     }
     private static Logger getLogger() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
@@ -109,6 +120,17 @@ public class LoggerHelper {
         log.severe(String.format(string, params));
     }
     /**
+     * 输出 <i><b>严重</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logSevere(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.SEVERE) == false)
+            return;
+        log.severe(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
@@ -120,58 +142,124 @@ public class LoggerHelper {
         log.warning(String.format(string, params));
     }
     /**
+     * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logWarn(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.WARNING) == false)
+            return;
+        log.warning(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>信息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logInfo(final String string, final Object... params) {
+    public static void logInfo(String string, Object... params) {
         Logger log = getLogger();
         if (log.isLoggable(Level.INFO) == false)
             return;
         log.info(String.format(string, params));
     }
     /**
+     * 输出 <i><b>信息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logInfo(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.INFO) == false)
+            return;
+        log.info(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>静态配置</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logConfig(final String string, final Object... params) {
+    public static void logConfig(String string, Object... params) {
         Logger log = getLogger();
         if (log.isLoggable(Level.CONFIG) == false)
             return;
         log.config(String.format(string, params));
     }
     /**
+     * 输出 <i><b>静态配置</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logConfig(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.CONFIG) == false)
+            return;
+        log.config(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logFine(final String string, final Object... params) {
+    public static void logFine(String string, Object... params) {
         Logger log = getLogger();
         if (log.isLoggable(Level.FINE) == false)
             return;
         log.fine(String.format(string, params));
     }
     /**
+     * 输出 <i><b>精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logFine(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.FINE) == false)
+            return;
+        log.fine(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>更加精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logFiner(final String string, final Object... params) {
+    public static void logFiner(String string, Object... params) {
         Logger log = getLogger();
         if (log.isLoggable(Level.FINER) == false)
             return;
         log.finer(String.format(string, params));
     }
     /**
+     * 输出 <i><b>更加精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logFiner(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.FINER) == false)
+            return;
+        log.finer(string + toStrint(error));
+    }
+    /**
      * 输出 <i><b>最精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
      * @param string 要输出的日志信息，或将要输出的格式化日志信息。
      * @param params 需要被格式化的内容。
      */
-    public static void logFinest(final String string, final Object... params) {
+    public static void logFinest(String string, Object... params) {
         Logger log = getLogger();
         if (log.isLoggable(Level.FINEST) == false)
             return;
         log.finest(String.format(string, params));
+    }
+    /**
+     * 输出 <i><b>最精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
+     * @param string 要输出的日志信息，或将要输出的格式化日志信息。
+     * @param error 异常信息。
+     */
+    public static void logFinest(String string, Throwable error) {
+        Logger log = getLogger();
+        if (log.isLoggable(Level.FINEST) == false)
+            return;
+        log.finest(string + toStrint(error));
     }
 }

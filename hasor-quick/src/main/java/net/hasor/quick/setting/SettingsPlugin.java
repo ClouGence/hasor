@@ -43,8 +43,9 @@ public class SettingsPlugin implements Module {
             public void onEvent(String event, Object[] params) {
                 AppContext appContext = (AppContext) params[0];
                 List<Provider<SettingsListener>> settingProvider = appContext.findBindingProvider(SettingsListener.class);
-                if (settingProvider == null)
+                if (settingProvider == null) {
                     return;
+                }
                 for (Provider<SettingsListener> provider : settingProvider) {
                     SettingsListener target = provider.get();
                     target.reload(env.getSettings());
@@ -61,8 +62,7 @@ public class SettingsPlugin implements Module {
         if (settingSet == null || settingSet.isEmpty())
             return;
         for (Class<?> settingClass : settingSet) {
-            if (SettingsListener.class.isAssignableFrom(settingClass) == false) {
-                LoggerHelper.logWarn("not implemented SettingsListener :%s", settingClass);
+            if (settingClass == Settings.class || SettingsListener.class.isAssignableFrom(settingClass) == false) {
                 continue;
             }
             apiBinder.bindType(SettingsListener.class, (Class<SettingsListener>) settingClass).asEagerSingleton();

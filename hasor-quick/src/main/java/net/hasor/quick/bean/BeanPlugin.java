@@ -17,6 +17,7 @@ package net.hasor.quick.bean;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+import net.hasor.quick.event.Listener;
 import net.hasor.quick.plugin.Plugin;
 import org.more.logger.LoggerHelper;
 import org.more.util.ArrayUtils;
@@ -32,6 +33,9 @@ public class BeanPlugin implements Module {
         if (beanSet == null || beanSet.isEmpty())
             return;
         for (Class<?> beanClass : beanSet) {
+            if (beanClass == Bean.class) {
+                continue;
+            }
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] aliasNames = annoBean.value();
             if (ArrayUtils.isEmpty(aliasNames)) {

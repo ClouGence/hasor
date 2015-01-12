@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.quick.plugin;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
@@ -33,31 +30,19 @@ public class PluginsModule implements Module {
         if (pluginSet == null)
             return;
         //
-        Map<Class<?>, String> loadState = new HashMap<Class<?>, String>();
         for (Class<?> pluginClass : pluginSet) {
-            if (Module.class.isAssignableFrom(pluginClass) == false) {
-                LoggerHelper.logWarn("not implemented net.hasor.core.Module :%s", pluginClass);
+            if (pluginClass == Plugin.class || Module.class.isAssignableFrom(pluginClass) == false) {
                 continue;
             }
             try {
+                LoggerHelper.logInfo("loadModule ‘%s’ starting.", pluginClass);
                 Module plugin = (Module) pluginClass.newInstance();
-                LoggerHelper.logInfo("loadModule %s.", pluginClass);
                 apiBinder.installModule(plugin);
-                loadState.put(pluginClass, "<-- OK.");
+                LoggerHelper.logInfo("loadModule ‘%s’ --> No Error.", pluginClass);
             } catch (Throwable e) {
-                loadState.put(pluginClass, "<-- Error.");
-                LoggerHelper.logSevere("config Plugin error at %s.%s", pluginClass, e);
+                LoggerHelper.logWarn("loadModule ‘%s’ --> Exception.", pluginClass);
+                LoggerHelper.logWarn(pluginClass.getName(), e);
             }
-        }
-        //
-        if (LoggerHelper.isEnableInfoLoggable()) {
-            StringBuffer sb = new StringBuffer();
-            for (Entry<Class<?>, String> e : loadState.entrySet()) {
-                sb.append("\n  " + e.getKey().getName());
-                sb.append(e.getValue());
-            }
-            String outData = (sb.length() == 0 ? "nothing." : sb.toString());
-            LoggerHelper.logInfo("find Plugin : " + outData);
         }
     }
 }

@@ -26,7 +26,8 @@ public abstract class WebModule implements Module {
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
-            LoggerHelper.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            String errorMsg = String.format("need web environment ,WebModule=‘%s’", this.getClass());
+            LoggerHelper.logWarn(errorMsg);
             return;
         }
         this.loadModule((WebApiBinder) apiBinder);
