@@ -82,7 +82,7 @@
 				<configuration>
 					<aggregate>true</aggregate>
 					<excludePackageNames>
-						org.more.*
+						net.hasor.libs.*,org.*,
 					</excludePackageNames>
 				</configuration>
 				<executions>

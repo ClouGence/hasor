@@ -4,6 +4,7 @@
 	<artifactId>demo-Web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+
 	<!-- 构建描述 -->
 	<build>
 		<plugins>
@@ -40,6 +41,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- Hasor-Quick -->
@@ -48,23 +50,17 @@
 			<artifactId>hasor-quick</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-Web -->
+		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-web</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>hasor-db</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-MVC -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<!-- Hasor-DB -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-db</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Hasor-RSF -->
 		<dependency>
@@ -72,6 +68,14 @@
 			<artifactId>hasor-rsf</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-Web -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-web</artifactId>
+			<version>0.0.8-SNAPSHOT</version>
+		</dependency>
+
+
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
