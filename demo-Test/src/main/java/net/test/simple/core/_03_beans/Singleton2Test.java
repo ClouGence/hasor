@@ -27,22 +27,20 @@ import org.junit.Test;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SingletonBindTest {
+public class Singleton2Test {
     @Test
     public void singletonBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>singletonBindTest<<--");
         //1.创建一个标准的 Hasor 容器。
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                PojoBean pojo = new PojoBean();
-                pojo.setName("马大帅");
-                apiBinder.bindType(PojoBean.class).idWith("myBean1").toInstance(pojo);
+                apiBinder.bindType(PojoBean.class).asEagerSingleton();
             }
         });
         //
-        PojoBean myBean1 = appContext.getInstance("myBean1");
-        System.out.println(myBean1.getName() + "\t" + myBean1);
-        PojoBean myBean2 = appContext.getInstance("myBean1");
-        System.out.println(myBean2.getName() + "\t" + myBean2);
+        PojoBean myBean1 = appContext.getInstance("PojoBean");
+        System.out.println(myBean1);
+        PojoBean myBean2 = appContext.getInstance("PojoBean");
+        System.out.println(myBean2);
     }
 }

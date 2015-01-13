@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.simple.core._03_beans.pojo;
+package net.test.simple.quick.example;
+import net.hasor.quick.bean.Bean;
 /**
- * 一个Bean
- * @version : 2014-1-3
+ * Bean测试
+ * @version : 2015年1月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface PojoInfo {
-    public String getName();
-    public String getAddress();
-}
+@Bean(singleton = true)
+public class MyBeanSingleton {}

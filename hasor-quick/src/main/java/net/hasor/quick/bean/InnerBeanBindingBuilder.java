@@ -41,7 +41,7 @@ class InnerBeanBindingBuilder implements BeanBindingBuilder {
             throw new NullPointerException("the bean name is undefined!");
         }
         String[] aliasNames = this.names.toArray(new String[this.names.size()]);
-        LoggerHelper.logInfo("loadBean %s bind %s", aliasNames, beanType);
+        LoggerHelper.logInfo("loadBean [%s] to ‘%s’", StringUtils.join(aliasNames, ","), beanType);
         //
         //真实的类型注册
         LinkedBindingBuilder<T> realBeanBuilder = this.apiBinder.bindType(beanType).uniqueName();

@@ -16,29 +16,18 @@
 package net.hasor.quick.bean;
 import java.util.List;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import org.more.util.StringUtils;
 /**
  * 提供 <code>@Bean</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Beans {
+public abstract class Beans {
     /**注册一个bean。 */
     public static BeanBindingBuilder defineForType(ApiBinder apiBinder, String name) {
         return new InnerBeanBindingBuilder(apiBinder).aliasName(name);
     }
     /**注册一个bean。 */
-    public static <T> T getBean(AppContext appContext, String name) {
-        List<BeanInfo> beanList = appContext.findBindingBean(BeanInfo.class);
-        if (beanList.isEmpty()) {
-            return null;
-        }
-        for (BeanInfo<?> info : beanList) {
-            if (StringUtils.equalsIgnoreCase(info.getName(), name) == true) {
-                return (T) appContext.getInstance(info.getReferInfo());
-            }
-        }
-        return null;
-    }
+    public abstract <T> T getBean(String name);
+    /**注册一个bean。 */
+    public abstract List<String> getBeanNames();
 }

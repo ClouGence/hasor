@@ -29,5 +29,7 @@ import net.hasor.core.AppContext;
 @Target({ ElementType.TYPE })
 public @interface Bean {
     /** Bean名称。*/
-    public String[] value();
+    public String[] value() default "";
+    /**单列Bean*/
+    public boolean singleton() default false;
 }
