@@ -115,9 +115,14 @@ public class LoggerHelper {
      */
     public static void logSevere(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.SEVERE) == false)
+        if (log.isLoggable(Level.SEVERE) == false) {
             return;
-        log.severe(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.severe(string);
+        } else {
+            log.severe(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>严重</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -126,9 +131,14 @@ public class LoggerHelper {
      */
     public static void logSevere(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.SEVERE) == false)
+        if (log.isLoggable(Level.SEVERE) == false) {
             return;
-        log.severe(string + toStrint(error));
+        }
+        if (error == null) {
+            log.severe(string);
+        } else {
+            log.severe(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -137,9 +147,14 @@ public class LoggerHelper {
      */
     public static void logWarn(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.WARNING) == false)
+        if (log.isLoggable(Level.WARNING) == false) {
             return;
-        log.warning(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.warning(string);
+        } else {
+            log.warning(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>警告</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -148,9 +163,14 @@ public class LoggerHelper {
      */
     public static void logWarn(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.WARNING) == false)
+        if (log.isLoggable(Level.WARNING) == false) {
             return;
-        log.warning(string + toStrint(error));
+        }
+        if (error == null) {
+            log.warning(string);
+        } else {
+            log.warning(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>信息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -159,9 +179,14 @@ public class LoggerHelper {
      */
     public static void logInfo(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.INFO) == false)
+        if (log.isLoggable(Level.INFO) == false) {
             return;
-        log.info(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.info(string);
+        } else {
+            log.info(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>信息</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -170,9 +195,14 @@ public class LoggerHelper {
      */
     public static void logInfo(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.INFO) == false)
+        if (log.isLoggable(Level.INFO) == false) {
             return;
-        log.info(string + toStrint(error));
+        }
+        if (error == null) {
+            log.info(string);
+        } else {
+            log.info(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>静态配置</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -181,9 +211,14 @@ public class LoggerHelper {
      */
     public static void logConfig(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.CONFIG) == false)
+        if (log.isLoggable(Level.CONFIG) == false) {
             return;
-        log.config(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.config(string);
+        } else {
+            log.config(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>静态配置</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -192,9 +227,14 @@ public class LoggerHelper {
      */
     public static void logConfig(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.CONFIG) == false)
+        if (log.isLoggable(Level.CONFIG) == false) {
             return;
-        log.config(string + toStrint(error));
+        }
+        if (error == null) {
+            log.config(string);
+        } else {
+            log.config(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -203,9 +243,14 @@ public class LoggerHelper {
      */
     public static void logFine(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINE) == false)
+        if (log.isLoggable(Level.FINE) == false) {
             return;
-        log.fine(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.fine(string);
+        } else {
+            log.fine(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -214,9 +259,14 @@ public class LoggerHelper {
      */
     public static void logFine(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINE) == false)
+        if (log.isLoggable(Level.FINE) == false) {
             return;
-        log.fine(string + toStrint(error));
+        }
+        if (error == null) {
+            log.fine(string);
+        } else {
+            log.fine(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>更加精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -225,9 +275,14 @@ public class LoggerHelper {
      */
     public static void logFiner(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINER) == false)
+        if (log.isLoggable(Level.FINER) == false) {
             return;
-        log.finer(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.finer(string);
+        } else {
+            log.finer(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>更加精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -236,9 +291,14 @@ public class LoggerHelper {
      */
     public static void logFiner(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINER) == false)
+        if (log.isLoggable(Level.FINER) == false) {
             return;
-        log.finer(string + toStrint(error));
+        }
+        if (error == null) {
+            log.finer(string);
+        } else {
+            log.finer(string + toStrint(error));
+        }
     }
     /**
      * 输出 <i><b>最精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -247,9 +307,14 @@ public class LoggerHelper {
      */
     public static void logFinest(String string, Object... params) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINEST) == false)
+        if (log.isLoggable(Level.FINEST) == false) {
             return;
-        log.finest(String.format(string, params));
+        }
+        if (params == null || params.length == 0) {
+            log.finest(string);
+        } else {
+            log.finest(String.format(string, params));
+        }
     }
     /**
      * 输出 <i><b>最精细的</b></i> 日志信息。该方法使用：<code>String.format(String, Object[])</code>方式实现。
@@ -258,8 +323,13 @@ public class LoggerHelper {
      */
     public static void logFinest(String string, Throwable error) {
         Logger log = getLogger();
-        if (log.isLoggable(Level.FINEST) == false)
+        if (log.isLoggable(Level.FINEST) == false) {
             return;
-        log.finest(string + toStrint(error));
+        }
+        if (error == null) {
+            log.finest(string);
+        } else {
+            log.finest(string + toStrint(error));
+        }
     }
 }

@@ -18,6 +18,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Map;
 import javax.servlet.ServletContext;
+import net.hasor.core.environment.EnvVars;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.web.WebEnvironment;
 /**
@@ -49,18 +50,19 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
         final WebStandardEnvironment $this = this;
         return new EnvVars(this) {
             @Override
-            protected Map<String, String> configEnvironment() {
-                Map<String, String> hasorEnv = super.configEnvironment();
+            protected void configEnvironment(Map<String, String> envMap) {
+                super.configEnvironment(envMap);
                 String webContextDir = WebStandardEnvironment.this.servletContext.getRealPath("/");
-                hasorEnv.put("HASOR_WEBROOT", webContextDir);
+                envMap.put("HASOR_WEBROOT", webContextDir);
                 //
                 /*单独处理work_home*/
                 String workDir = $this.getSettings().getString("hasor.environmentVar.HASOR_WORK_HOME");
                 workDir = workDir.replace("/", File.separator);
                 if (workDir.startsWith("." + File.separatorChar)) {
-                    hasorEnv.put("HASOR_WORK_HOME", new File(webContextDir, workDir.substring(2)).getAbsolutePath());
+                    workDir = new File(webContextDir, workDir.substring(2)).getAbsolutePath();
                 }
-                return hasorEnv;
+                envMap.put("HASOR_WORK_HOME", workDir);
+                //
             }
         };
     }

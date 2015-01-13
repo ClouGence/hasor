@@ -3,6 +3,7 @@
     01.删除 RRUpdate类，Request\Response，不能通过依赖注入的方式被注入到类中。
     02.增加 shutdown 生命周期阶段。
     03.更换LoggerHelper为日志输出组件。
+    04.环境变量实现接口调整，应用Core改动。
 
 ===== Hasor-Web v0.0.7
 * 新增:

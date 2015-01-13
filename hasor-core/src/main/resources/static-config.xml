@@ -19,8 +19,10 @@
 		</modules>
 		<!-- 工作空间设置 -->
 		<environmentVar>
+			<!-- 程序启动目录 -->
+			<HASOR_RUN_PATH>./</HASOR_RUN_PATH>
 			<!-- 程序工作空间基础目录 -->
-			<HASOR_WORK_HOME>./work</HASOR_WORK_HOME>
+			<HASOR_WORK_HOME>%HASOR_RUN_PATH%/work</HASOR_WORK_HOME>
 			<!-- 临时文件位置 -->
 			<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
 			<!-- 日志存放位置 -->

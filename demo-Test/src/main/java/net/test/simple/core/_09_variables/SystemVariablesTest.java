@@ -34,7 +34,7 @@ public class SystemVariablesTest {
         //设置属性
         System.setProperty("MyVar", "hello");
         env.refreshVariables();/*刷新变量列表*/
-        System.out.println(env.getEnvVar("MyVar"));
+        System.out.println(env.envVar("MyVar"));
         System.out.println(env.evalString("i say %MyVar%."));
     }
 }

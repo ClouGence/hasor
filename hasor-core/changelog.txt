@@ -14,6 +14,7 @@
     12.增加 apache 中 toStringBuilter 工具到 org.more.builder。
     13.分离出专用的 log 工具包 org.more.logger。
     14.增添业务基础包org.more.bizcommon（将来如果发展大了会分离出去，目前就几个类）
+    15.环境变量实现接口调整，接口有删减。原有接口当设置Java系统属性之后，环境变量组建不能识别它（Bug）。
 
 ===== Hasor-Core v0.0.9
 * 新增:

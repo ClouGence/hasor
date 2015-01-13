@@ -18,22 +18,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.SettingsListener;
-import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.builder.ReflectionToStringBuilder;
@@ -41,7 +32,6 @@ import org.more.builder.ToStringStyle;
 import org.more.logger.LoggerHelper;
 import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
-import org.more.util.map.DecSequenceMap;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
@@ -104,7 +94,6 @@ public abstract class AbstractEnvironment implements Environment {
             throw new UnhandledException(e);
         }
         this.envVars = this.createEnvVars();
-        //this.eventManager = this.createEventManager();
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
@@ -144,7 +133,7 @@ public abstract class AbstractEnvironment implements Environment {
         long markTime = System.currentTimeMillis();
         String atPath = this.genPath(markTime, 512);
         String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(this.evalEnvVar(Environment.TempPath), fileName);
+        File tmpFile = new File(this.envVar(Environment.TempPath), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
         LoggerHelper.logInfo("create Temp File at %s.", tmpFile);
@@ -259,16 +248,12 @@ public abstract class AbstractEnvironment implements Environment {
     /*-----------------------------------------------------------------------------------Env Vars*/
     private EnvVars envVars;
     @Override
-    public String evalString(final String eval) {
+    public String evalString(String eval) {
         return this.envVars.evalString(eval);
     }
     @Override
-    public String evalEnvVar(final String varName) {
-        return this.envVars.evalEnvVar(varName);
-    }
-    @Override
-    public String getEnvVar(final String varName) {
-        return this.envVars.getEnvVar(varName);
+    public String envVar(String varName) {
+        return this.envVars.envVar(varName);
     }
     @Override
     public void addEnvVar(final String varName, final String value) {
@@ -282,215 +267,8 @@ public abstract class AbstractEnvironment implements Environment {
     public void refreshVariables() {
         this.envVars.reload(this.getSettings());
     }
-    public Map<String, String> getEnv() {
-        return this.envVars.getEnv();
-    }
     /**创建{@link EnvVars}接口对象*/
     protected EnvVars createEnvVars() {
         return new EnvVars(this);
-    }
-    /** 该类负责处理环境变量相关操作*/
-    protected class EnvVars implements SettingsListener {
-        /*所属的Environment*/
-        private AbstractEnvironment env;
-        /*最终使用的环境变量Map*/
-        private Map<String, String> finalEnvMap;
-        /*用户通过Api添加的环境变量Map*/
-        private Map<String, String> userEnvMap;
-        //
-        public EnvVars(final AbstractEnvironment env) {
-            this.env = Hasor.assertIsNotNull(env, "initContext type parameter is empty!");
-            this.userEnvMap = new HashMap<String, String>();
-            this.env.addSettingsListener(this);
-            this.reload(this.env.getSettings());
-        }
-        public void addEnvVar(final String envName, final String envValue) {
-            if (StringUtils.isBlank(envName)) {
-                LoggerHelper.logWarn("%s env, name is empty.", envName);
-                return;
-            }
-            //
-            if (StringUtils.isBlank(envValue)) {
-                LoggerHelper.logWarn("%s env, value is empty.", envName);
-            } else {
-                LoggerHelper.logInfo("%s = %s.", envName, envValue);
-            }
-            //
-            this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
-        }
-        public void remoteEnvVar(final String varName) {
-            if (StringUtils.isBlank(varName)) {
-                LoggerHelper.logWarn("%s env, name is empty.");
-                return;
-            }
-            this.userEnvMap.remove(varName);
-            LoggerHelper.logInfo("%s env removed.", varName);
-        }
-        public String getEnvVar(final String envName) {
-            return this.getEnv().get(envName);
-        }
-        public Map<String, String> getEnv() {
-            if (this.finalEnvMap == null) {
-                this.finalEnvMap = new HashMap<String, String>();
-            }
-            return Collections.unmodifiableMap(this.finalEnvMap);
-        }
-        //
-        /**特殊配置的环境变量*/
-        protected Map<String, String> configEnvironment() {
-            Settings settings = this.env.getSettings();
-            XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
-            List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
-            for (XmlNode xmlProp : xmlPropArray) {
-                for (XmlNode envItem : xmlProp.getChildren()) {
-                    envNames.add(envItem.getName().toUpperCase());
-                }
-            }
-            Map<String, String> hasorEnv = new HashMap<String, String>();
-            for (String envItem : envNames) {
-                hasorEnv.put(envItem, settings.getString("hasor.environmentVar." + envItem));
-            }
-            /*单独处理work_home*/
-            String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
-            workDir = workDir.replace("/", File.separator);
-            if (workDir.startsWith("." + File.separatorChar)) {
-                hasorEnv.put("HASOR_WORK_HOME", new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath());
-            } else {
-                hasorEnv.put("HASOR_WORK_HOME", workDir);
-            }
-            return hasorEnv;
-        }
-        /*
-         * SettingListener 接口实现
-         *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
-         */
-        @Override
-        public void reload(final Settings newConfig) {
-            //1.系统环境变量 & Java系统属性
-            Map<String, String> systemEnv = new HashMap<String, String>();
-            systemEnv.putAll(System.getenv());
-            //2.Java属性
-            Properties prop = System.getProperties();
-            Map<String, String> javaProp = new HashMap<String, String>();
-            for (Object propKey : prop.keySet()) {
-                String k = propKey.toString();
-                Object v = prop.get(propKey);
-                if (v != null) {
-                    javaProp.put(k, v.toString());
-                }
-            }
-            //3.Hasor 特有变量
-            Map<String, String> hasorEnv = this.configEnvironment();
-            hasorEnv = hasorEnv == null ? new HashMap<String, String>() : hasorEnv;
-            //4.设置生效
-            DecSequenceMap<String, String> finalMap = new DecSequenceMap<String, String>();
-            finalMap.addMap(this.userEnvMap);
-            finalMap.addMap(hasorEnv);
-            finalMap.addMap(javaProp);
-            finalMap.addMap(systemEnv);
-            //5.解析hasor 特有环境变量
-            for (Entry<String, String> hasorEnt : hasorEnv.entrySet()) {
-                String k = hasorEnt.getKey();
-                String v = hasorEnt.getValue();
-                finalMap.put(k, "");/*预输出，防止循环*/
-                v = this.evalString(v, finalMap);
-                finalMap.put(k, v);
-                hasorEnt.setValue(v);
-            }
-            //
-            this.finalEnvMap = finalMap;
-            //
-            /*日志输出*/
-            if (LoggerHelper.isEnableInfoLoggable()) {
-                int keyMaxSize = 0;
-                for (String key : finalMap.keySet()) {
-                    keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
-                }
-                keyMaxSize = keyMaxSize + 2;
-                StringBuffer sb = new StringBuffer();
-                sb.append("EnvVars:");
-                if (AbstractEnvironment.this.isDebug()) {
-                    if (!systemEnv.isEmpty()) {
-                        sb.append("\n" + this.formatMap4log(keyMaxSize, systemEnv));
-                        sb.append("\n" + StringUtils.fixedString('-', 50));
-                    }
-                    if (!javaProp.isEmpty()) {
-                        sb.append("\n" + this.formatMap4log(keyMaxSize, javaProp));
-                        sb.append("\n" + StringUtils.fixedString('-', 50));
-                    }
-                }
-                if (!hasorEnv.isEmpty()) {
-                    sb.append("\n" + this.formatMap4log(keyMaxSize, hasorEnv));
-                    sb.append("\n" + StringUtils.fixedString('-', 50));
-                }
-                if (!this.userEnvMap.isEmpty()) {
-                    sb.append("\n" + this.formatMap4log(keyMaxSize, this.userEnvMap));
-                    sb.append("\n" + StringUtils.fixedString('-', 50));
-                }
-                LoggerHelper.logInfo(sb.toString());
-            }
-        }
-        private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
-            /*输出系统环境变量日志*/
-            StringBuffer outLog = new StringBuffer("");
-            for (String key : mapData.keySet()) {
-                String var = mapData.get(key);
-                var = var != null ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
-                outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
-                outLog.append(String.format(" %s : %s", key, var));
-                outLog.append('\n');
-            }
-            if (outLog.length() > 1) {
-                outLog.deleteCharAt(outLog.length() - 1);
-            }
-            return outLog.toString();
-        }
-        //
-        public String evalEnvVar(final String varName) {
-            return this.evalEnvVar(varName, new HashMap<String, String>());
-        }
-        public String evalString(final String evalString) {
-            return this.evalString(evalString, new HashMap<String, String>());
-        }
-        private String evalEnvVar(final String varName, final Map<String, String> paramMap) {
-            if (paramMap.containsKey(varName)) {
-                return paramMap.get(varName);
-            }
-            paramMap.put(varName, "");/*预处理值*/
-            //
-            String varValue = this.getEnv().get(varName);
-            if (StringUtils.isBlank(varValue)) {
-                varValue = "";
-            } else {
-                varValue = this.evalString(varValue, paramMap);
-            }
-            paramMap.put(varName, varValue);/*覆盖预处理值*/
-            return varValue;
-        }
-        private String evalString(final String evalString, final Map<String, String> paramMap) {
-            if (StringUtils.isBlank(evalString)) {
-                return "";
-            }
-            Pattern keyPattern = Pattern.compile("(?:%(\\w+)%){1,1}");//  (?:%(\w+)%)
-            Matcher keyM = keyPattern.matcher(evalString);
-            ArrayList<String> data = new ArrayList<String>();
-            while (keyM.find()) {
-                String varKey = keyM.group(1);
-                String var = this.evalEnvVar(varKey, paramMap);
-                var = StringUtils.isBlank(var) ? "%" + varKey + "%" : var;
-                data.add(var);
-            }
-            String[] splitArr = keyPattern.split(evalString);
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < splitArr.length; i++) {
-                sb.append(splitArr[i]);
-                if (data.size() > i) {
-                    sb.append(data.get(i));
-                }
-            }
-            String returnData = sb.toString();
-            LoggerHelper.logFiner("evalString '%s' eval to '%s'.", evalString, returnData);
-            return returnData;
-        }
     }
 }

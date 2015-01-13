@@ -64,10 +64,8 @@ public interface Environment {
      * <div>%work_home%/data/range.png&nbsp;&nbsp;--&gt;&nbsp;&nbsp;%work_home%/data/range.png；并伴随一条警告</div>
      * */
     public String evalString(String eval);
-    /**计算指定名称的环境变量值.*/
-    public String evalEnvVar(String varName);
     /**根据环境变量名称获取环境变量的值，如果不存在该环境变量的定义则返回null.*/
-    public String getEnvVar(String varName);
+    public String envVar(String varName);
     /**添加环境变量，添加的环境变量并不会影响到系统环境变量，它会使用内部Map保存环境变量从而避免影响JVM正常运行。*/
     public void addEnvVar(String varName, String value);
     /**删除环境变量，该方法从内部Map删除所保存的环境变量，这样做的目的是为了避免影响JVM正常运行。*/
