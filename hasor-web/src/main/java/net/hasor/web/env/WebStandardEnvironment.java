@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.env;
-import java.io.File;
 import java.net.URI;
 import java.util.Map;
 import javax.servlet.ServletContext;
@@ -47,23 +46,19 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
     }
     @Override
     protected EnvVars createEnvVars() {
-        final WebStandardEnvironment $this = this;
-        return new EnvVars(this) {
-            @Override
-            protected void configEnvironment(Map<String, String> envMap) {
-                super.configEnvironment(envMap);
-                String webContextDir = WebStandardEnvironment.this.servletContext.getRealPath("/");
-                envMap.put("HASOR_WEBROOT", webContextDir);
-                //
-                /*单独处理work_home*/
-                String workDir = $this.getSettings().getString("hasor.environmentVar.HASOR_WORK_HOME");
-                workDir = workDir.replace("/", File.separator);
-                if (workDir.startsWith("." + File.separatorChar)) {
-                    workDir = new File(webContextDir, workDir.substring(2)).getAbsolutePath();
-                }
-                envMap.put("HASOR_WORK_HOME", workDir);
-                //
-            }
-        };
+        return new WebEnvVars(this);
+    }
+}
+class WebEnvVars extends EnvVars {
+    private WebStandardEnvironment environment;
+    public WebEnvVars(WebStandardEnvironment environment) {
+        super(environment);
+        this.environment = environment;
+    }
+    @Override
+    protected void configEnvironment(Map<String, String> envMap) {
+        super.configEnvironment(envMap);
+        String webContextDir = this.environment.getServletContext().getRealPath("/");
+        envMap.put("HASOR_WEBROOT", webContextDir);
     }
 }

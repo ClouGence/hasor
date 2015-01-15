@@ -80,7 +80,7 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
-    protected void initEnvironment() {
+    protected final void initEnvironment() {
         LoggerHelper.logInfo("init Environment.");
         //
         this.settingListenerList = new ArrayList<SettingsListener>();
@@ -94,6 +94,8 @@ public abstract class AbstractEnvironment implements Environment {
             throw new UnhandledException(e);
         }
         this.envVars = this.createEnvVars();
+        this.envVars.reload(getSettings());
+        this.addSettingsListener(this.envVars);
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();

@@ -45,8 +45,6 @@ public class EnvVars implements SettingsListener {
         this.environment = environment;
         this.envMap = new ConcurrentHashMap<String, String>();
         this.userEnvMap = new ConcurrentHashMap<String, String>();
-        environment.addSettingsListener(this);
-        this.reload(environment.getSettings());
     }
     public void addEnvVar(final String envName, final String envValue) {
         if (StringUtils.isBlank(envName)) {
@@ -91,12 +89,12 @@ public class EnvVars implements SettingsListener {
             }
         }
         /*单独处理work_home*/
-        String workDir = settings.getString("hasor.environmentVar.HASOR_WORK_HOME", "./");
+        String workDir = this.envVar("WORK_HOME");
         workDir = workDir.replace("/", File.separator);
         if (workDir.startsWith("." + File.separatorChar)) {
             workDir = new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath();
         }
-        envMap.put("HASOR_WORK_HOME", workDir);
+        envMap.put("WORK_HOME", workDir);
     }
     /*
      * SettingListener 接口实现

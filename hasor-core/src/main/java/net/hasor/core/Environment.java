@@ -44,8 +44,8 @@ public interface Environment {
     public void removeSettingsListener(SettingsListener settingsListener);
     //
     /*----------------------------------------------------------------------------------------Env*/
-    /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_WORK_HOME</b>”节点上配置。*/
-    public static final String Work_Home          = "HASOR_WORK_HOME";
+    /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.WORK_HOME</b>”节点上配置。*/
+    public static final String Work_Home          = "WORK_HOME";
     /**获取临时文件存放目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_TEMP_PATH</b>”节点上配置。*/
     public static final String TempPath           = "HASOR_TEMP_PATH";
     /**获取工作空间中专门用于存放日志的目录空间，配置可以在config.xml的“<b>environmentVar.HASOR_LOG_PATH</b>”节点上配置。*/
