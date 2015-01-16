@@ -101,9 +101,12 @@ class InnerClientManager extends AbstractClientManager {
         //
         synchronized (this.clientMapping) {
             AbstractRsfClient localClient = this.clientMapping.get(hostAddress);
-            if (hostAddress.equals(localClient.getHostAddress()) == false)
-                throw new RsfException(ProtocolStatus.ClientError, "target is not form me.");
-            this.clientMapping.remove(hostAddress).close();
+            if (localClient != null) {
+                if (hostAddress.equals(localClient.getHostAddress()) == false) {
+                    throw new RsfException(ProtocolStatus.ClientError, "target is not form me.");
+                }
+                this.clientMapping.remove(hostAddress).close();
+            }
         }
     }
     //
