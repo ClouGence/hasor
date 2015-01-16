@@ -30,6 +30,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 import net.hasor.rsf.remoting.transport.provider.RsfProviderHandler;
@@ -101,6 +102,10 @@ public class RsfBootstrap {
         }
         if (this.settings == null) {
             this.settings = new DefaultRsfSettings(new StandardContextSettings(DEFAULT_RSF_CONFIG));
+            this.settings.refresh();
+        }
+        if (this.settings.getXmlNode("hasor.rsfConfig") == null) {
+            throw new IOException("settings is not load.");
         }
         //
         //RsfContext
