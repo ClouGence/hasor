@@ -8,7 +8,7 @@ sammy.get(new RegExp(app.core_regex_base + '\\/(query)$'), function(context) {
 		var url_element = $('#url', query_element);
 		var response_element = $('#response', query_element);
 
-		/*加载数据*/
+		/* 加载数据 */
 		url_element.die('change').live('change', function(event) {
 			var wt = $('[name="wt"]', query_form).val();
 			var content_generator = {
@@ -35,7 +35,7 @@ sammy.get(new RegExp(app.core_regex_base + '\\/(query)$'), function(context) {
 				}
 			});
 		})
-		/*拼查询URL*/
+		/* 拼查询URL */
 		query_form.die('submit').live('submit', function(event) {
 			var queryString = $(query_form).formSerialize();
 			var handler_path = '/select';
@@ -43,7 +43,7 @@ sammy.get(new RegExp(app.core_regex_base + '\\/(query)$'), function(context) {
 			url_element.attr('href', query_url).text(query_url).trigger('change');
 			return false;
 		});
-		/*查询*/
+		/* 查询 */
 		query_form.trigger('submit');
 	});
 });

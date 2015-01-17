@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
 	<hasor>
-		<solrConfig>
-			<!-- ZooKeeper | SolrHome -->
-			<locationType>SolrHome</locationType>
-		</solrConfig>
+		<modules>
+			<module>net.hasor.search.server.installs.SorlInstall</module>
+		</modules>
+
+		<searchConfig>
+			<!-- -->
+		</searchConfig>
 		<environmentVar>
-			<SOLR-HOME>%HASOR_WORK_HOME%/solr-home</SOLR-HOME>
+			<SEARCH-HOME>%WORK_HOME%/search-home</SEARCH-HOME>
 		</environmentVar>
 	</hasor>
 </config>

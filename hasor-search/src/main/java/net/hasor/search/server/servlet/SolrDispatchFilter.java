@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package net.hasor.search.server.servlet;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,7 +45,6 @@ import net.hasor.search.server.servlet.cache.HttpCacheHeaderUtil;
 import net.hasor.search.server.servlet.cache.Method;
 import net.hasor.web.startup.RuntimeListener;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
@@ -64,12 +62,10 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.impl.HttpClientUtil;
 import org.apache.solr.common.SolrException;
-import org.apache.solr.common.SolrException.ErrorCode;
 import org.apache.solr.common.cloud.Aliases;
 import org.apache.solr.common.cloud.ClusterState;
 import org.apache.solr.common.cloud.Replica;
 import org.apache.solr.common.cloud.Slice;
-import org.apache.solr.common.cloud.SolrZkClient;
 import org.apache.solr.common.cloud.ZkCoreNodeProps;
 import org.apache.solr.common.cloud.ZkNodeProps;
 import org.apache.solr.common.cloud.ZkStateReader;
@@ -139,39 +135,40 @@ public class SolrDispatchFilter extends BaseSolrFilter {
         //String solrxmlLocation = System.getProperty("solr.solrxml.location", "solrhome");
         String solrxmlLocation = this.appContext.getEnvironment().getSettings().getString("hasor.solrConfig.locationType");
         //
-        if (solrxmlLocation == null || "solrhome".equalsIgnoreCase(solrxmlLocation))
-            return ConfigSolr.fromSolrHome(loader, loader.getInstanceDir());
-        if ("zookeeper".equalsIgnoreCase(solrxmlLocation)) {
-            String zkHost = System.getProperty("zkHost");
-            log.info("Trying to read solr.xml from " + zkHost);
-            if (StringUtils.isEmpty(zkHost))
-                throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper: zkHost system property not set");
-            SolrZkClient zkClient = new SolrZkClient(zkHost, 30000);
-            try {
-                if (!zkClient.exists("/solr.xml", true))
-                    throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper: node not found");
-                byte[] data = zkClient.getData("/solr.xml", null, null, true);
-                return ConfigSolr.fromInputStream(loader, new ByteArrayInputStream(data));
-            } catch (Exception e) {
-                throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper", e);
-            } finally {
-                zkClient.close();
-            }
-        }
-        throw new SolrException(ErrorCode.SERVER_ERROR, "Bad solr.solrxml.location set: " + solrxmlLocation + " - should be 'solrhome' or 'zookeeper'");
+        //        if (solrxmlLocation == null || "solrhome".equalsIgnoreCase(solrxmlLocation))
+        return ConfigSolr.fromSolrHome(loader, loader.getInstanceDir());
+        //        if ("zookeeper".equalsIgnoreCase(solrxmlLocation)) {
+        //            String zkHost = System.getProperty("zkHost");
+        //            log.info("Trying to read solr.xml from " + zkHost);
+        //            if (StringUtils.isEmpty(zkHost))
+        //                throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper: zkHost system property not set");
+        //            SolrZkClient zkClient = new SolrZkClient(zkHost, 30000);
+        //            try {
+        //                if (!zkClient.exists("/solr.xml", true))
+        //                    throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper: node not found");
+        //                byte[] data = zkClient.getData("/solr.xml", null, null, true);
+        //                return ConfigSolr.fromInputStream(loader, new ByteArrayInputStream(data));
+        //            } catch (Exception e) {
+        //                throw new SolrException(ErrorCode.SERVER_ERROR, "Could not load solr.xml from zookeeper", e);
+        //            } finally {
+        //                zkClient.close();
+        //            }
+        //        }
+        //        throw new SolrException(ErrorCode.SERVER_ERROR, "Bad solr.solrxml.location set: " + solrxmlLocation + " - should be 'solrhome' or 'zookeeper'");
     }
     /**
      * Override this to change CoreContainer initialization
      * @return a CoreContainer to hold this server's cores
      */
     protected CoreContainer createCoreContainer() {
-        String solrHome = this.appContext.getEnvironment().getEnvVar("SOLR-HOME");
-        //
-        SolrResourceLoader loader = new SolrResourceLoader(solrHome);//SolrResourceLoader.locateSolrHome()
-        ConfigSolr config = loadConfigSolr(loader);
-        CoreContainer cores = new CoreContainer(loader, config);
-        cores.load();
-        return cores;
+        return this.appContext.getInstance(CoreContainer.class);
+        //        String solrHome = this.appContext.getEnvironment().getEnvVar("SOLR-HOME");
+        //        //
+        //        SolrResourceLoader loader = new SolrResourceLoader(solrHome);//SolrResourceLoader.locateSolrHome()
+        //        ConfigSolr config = loadConfigSolr(loader);
+        //        CoreContainer cores = new CoreContainer(loader, config);
+        //        cores.load();
+        //        return cores;
     }
     public CoreContainer getCores() {
         return cores;
