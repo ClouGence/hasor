@@ -22,16 +22,16 @@
 			<!-- 程序目录 -->
 			<RUN_PATH>./</RUN_PATH>
 			<!-- 工作目录 -->
-			<WORK_HOME>%HASOR_RUN_PATH%/../work</WORK_HOME>
+			<WORK_HOME>%USER.DIR%/hasor-work</WORK_HOME>
 
 			<!-- 临时文件位置 -->
-			<HASOR_TEMP_PATH>%HASOR_WORK_HOME%/temp</HASOR_TEMP_PATH>
+			<HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
 			<!-- 日志存放位置 -->
-			<HASOR_LOG_PATH>%HASOR_WORK_HOME%/log</HASOR_LOG_PATH>
+			<HASOR_LOG_PATH>%WORK_HOME%/log</HASOR_LOG_PATH>
 			<!-- 插件目录 -->
-			<HASOR_PLUGIN_PATH>%HASOR_WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+			<HASOR_PLUGIN_PATH>%WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
 			<!-- 模块配置目录 -->
-			<HASOR_PLUGIN_SETTINGS>%HASOR_WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+			<HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
 		</environmentVar>
 	</hasor>
 </config>

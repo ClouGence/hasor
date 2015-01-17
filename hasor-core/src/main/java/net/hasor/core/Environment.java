@@ -45,15 +45,15 @@ public interface Environment {
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.WORK_HOME</b>”节点上配置。*/
-    public static final String Work_Home          = "WORK_HOME";
+    public static final String WORK_HOME             = "WORK_HOME";
     /**获取临时文件存放目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_TEMP_PATH</b>”节点上配置。*/
-    public static final String TempPath           = "HASOR_TEMP_PATH";
+    public static final String HASOR_TEMP_PATH       = "HASOR_TEMP_PATH";
     /**获取工作空间中专门用于存放日志的目录空间，配置可以在config.xml的“<b>environmentVar.HASOR_LOG_PATH</b>”节点上配置。*/
-    public static final String LogPath            = "HASOR_LOG_PATH";
+    public static final String HASOR_LOG_PATH        = "HASOR_LOG_PATH";
     /**获取工作空间中专门用于存放模块配置信息的目录空间，配置可以在config.xml的“<b>environmentVar.HASOR_PLUGIN_PATH</b>”节点上配置。*/
-    public static final String PluginPath         = "HASOR_PLUGIN_PATH";
+    public static final String HASOR_PLUGIN_PATH     = "HASOR_PLUGIN_PATH";
     /**获取工作空间中专门用于存放模块配置信息的目录空间，配置可以在config.xml的“<b>environmentVar.HASOR_PLUGIN_SETTINGS</b>”节点上配置。*/
-    public static final String PluginSettingsPath = "HASOR_PLUGIN_SETTINGS";
+    public static final String HASOR_PLUGIN_SETTINGS = "HASOR_PLUGIN_SETTINGS";
     //
     /**计算字符串，将字符串中定义的环境变量替换为环境变量值。环境变量名不区分大小写。<br/>
      * <font color="ff0000"><b>注意</b></font>：只有被百分号包裹起来的部分才被解析成为环境变量名，

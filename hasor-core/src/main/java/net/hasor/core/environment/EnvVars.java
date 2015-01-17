@@ -58,19 +58,15 @@ public class EnvVars implements SettingsListener {
             LoggerHelper.logInfo("%s = %s.", envName, envValue);
         }
         //
-        this.userEnvMap.put(envName, StringUtils.isBlank(envValue) ? "" : envValue);
+        this.userEnvMap.put(envName.toUpperCase(), StringUtils.isBlank(envValue) ? "" : envValue);
     }
     public void remoteEnvVar(final String varName) {
         if (StringUtils.isBlank(varName)) {
             LoggerHelper.logWarn("%s env, name is empty.");
             return;
         }
-        this.userEnvMap.remove(varName);
+        this.userEnvMap.remove(varName.toUpperCase());
         LoggerHelper.logInfo("%s env removed.", varName);
-    }
-    //
-    public String envVar(final String envName) {
-        return this.evalString(this.envMap.get(envName));
     }
     //
     /**特殊配置的环境变量*/
@@ -85,16 +81,12 @@ public class EnvVars implements SettingsListener {
         }
         for (String envItem : envNames) {
             if (envMap.containsKey(envItem) == false) {
-                envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
+                envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
             }
         }
-        /*单独处理work_home*/
-        String workDir = this.envVar("WORK_HOME");
-        workDir = workDir.replace("/", File.separator);
-        if (workDir.startsWith("." + File.separatorChar)) {
-            workDir = new File(System.getProperty("user.dir"), workDir.substring(2)).getAbsolutePath();
-        }
-        envMap.put("WORK_HOME", workDir);
+        /*单独处理RUN_PATH*/
+        String runPath = new File("").getAbsolutePath();
+        envMap.put("RUN_PATH", runPath);
     }
     /*
      * SettingListener 接口实现
@@ -103,18 +95,19 @@ public class EnvVars implements SettingsListener {
     @Override
     public void reload(final Settings newConfig) {
         //1.系统环境变量 & Java系统属性
-        this.envMap.putAll(System.getenv());
+        Map<String, String> envMap = System.getenv();
+        for (String key : envMap.keySet()) {
+            this.envMap.put(key.toUpperCase(), envMap.get(key));
+        }
         //2.Java属性
         Properties prop = System.getProperties();
         for (Object propKey : prop.keySet()) {
             String k = propKey.toString();
             Object v = prop.get(propKey);
             if (v != null) {
-                this.envMap.put(k, v.toString());
+                this.envMap.put(k.toUpperCase(), v.toString());
             }
         }
-        /*用户编码设置的*/
-        this.envMap.putAll(this.userEnvMap);
         //3.Hasor 特有变量
         this.configEnvironment(this.envMap);
         //
@@ -154,32 +147,18 @@ public class EnvVars implements SettingsListener {
         return outLog.toString();
     }
     //
-    public String evalEnvVar(final String varName) {
-        return this.evalEnvVar(varName, new HashMap<String, String>());
+    public String envVar(final String envName) {
+        return this.evalEnvVar(envName, new HashMap<String, String>());
     }
     public String evalString(final String evalString) {
         return this.evalString(evalString, new HashMap<String, String>());
     }
-    private String evalEnvVar(final String varName, final Map<String, String> paramMap) {
-        if (paramMap.containsKey(varName)) {
-            return paramMap.get(varName);
-        }
-        paramMap.put(varName, "");/*预处理值*/
-        //
-        String varValue = this.envMap.get(varName);
-        if (StringUtils.isBlank(varValue)) {
-            varValue = "";
-        } else {
-            varValue = this.evalString(varValue, paramMap);
-        }
-        paramMap.put(varName, varValue);/*覆盖预处理值*/
-        return varValue;
-    }
-    private String evalString(final String evalString, final Map<String, String> paramMap) {
+    //
+    private String evalString(String evalString, final Map<String, String> paramMap) {
         if (StringUtils.isBlank(evalString)) {
             return "";
         }
-        Pattern keyPattern = Pattern.compile("(?:%(\\w+)%){1,1}");//  (?:%(\w+)%)
+        Pattern keyPattern = Pattern.compile("(?:%([\\w\\._-]+)%){1,1}");//  (?:%([\w\._-]+)%)
         Matcher keyM = keyPattern.matcher(evalString);
         ArrayList<String> data = new ArrayList<String>();
         while (keyM.find()) {
@@ -199,5 +178,24 @@ public class EnvVars implements SettingsListener {
         String returnData = sb.toString();
         LoggerHelper.logFiner("evalString '%s' eval to '%s'.", evalString, returnData);
         return returnData;
+    }
+    private String evalEnvVar(String varName, final Map<String, String> paramMap) {
+        varName = varName.toUpperCase();
+        if (paramMap.containsKey(varName)) {
+            return paramMap.get(varName);
+        }
+        paramMap.put(varName, "");/*预处理值*/
+        //
+        String varValue = this.userEnvMap.get(varName);
+        if (StringUtils.isBlank(varValue)) {
+            varValue = this.envMap.get(varName);
+        }
+        if (StringUtils.isBlank(varValue)) {
+            varValue = "";
+        } else {
+            varValue = this.evalString(varValue, paramMap);
+        }
+        paramMap.put(varName, varValue);/*覆盖预处理值*/
+        return varValue;
     }
 }

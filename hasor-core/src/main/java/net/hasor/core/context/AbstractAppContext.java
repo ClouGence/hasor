@@ -28,6 +28,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Settings;
+import net.hasor.core.StartModule;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextShutdownListener;
@@ -393,6 +394,14 @@ public abstract class AbstractAppContext implements AppContext {
         ec.fireSyncEvent(EventContext.ContextEvent_Started, appContext);
         LoggerHelper.logInfo("doStartCompleted now.");
         appContext.doStartCompleted();/*用于扩展*/
+        //
+        if (modules != null && modules.length > 0) {
+            for (Module module : modules) {
+                if (module instanceof StartModule) {
+                    ((StartModule) module).onStart(this);
+                }
+            }
+        }
         /*3.打印状态*/
         this.startState = true;
         LoggerHelper.logInfo("doStart completed!");

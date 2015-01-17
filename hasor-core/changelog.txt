@@ -1,20 +1,22 @@
 ﻿===== Hasor-Core v0.0.10
+* 新增:
+    01.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
+    02.新增一个 ApiBinderWrap类。
+    03.增加 SettingsWarp 工具类。
+    04.增加 shutdown 生命周期阶段。
+    05.增加 apache 中 toStringBuilter 工具到 org.more.builder。
+    06.增添业务基础包org.more.bizcommon（将来如果发展大了会分离出去，目前就几个类）
+    07.增添 StartModule 接口。
 * 改进:
     01.修复当程序工作在特殊 ClassLoader 下例如 （Web容器中）时，MoreClassLoader类导致 Class 重复加载问题。
     02.优化，AbstractSettings 实现细节，解决在多线程下可能引发的 HashMap 死锁问题。
-    03.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
-    04.AopClassConfig、MethodClassConfig、MethodClassConfig 类增加了一个无参的构造方法。
-    05.ClassUtils 增加 getSuperClassGenricType 方法以获取泛型信息。
-    06.新增一个 ApiBinderWrap类。
-    07.内部实现增加 CustomerProvider接口。
-    08.内部实现增加 MetaDataAdapter类。
-    09.增加 SettingsWarp 工具类。
-    10.增加 shutdown 生命周期阶段。
-    11.不再依赖slf4j日志包，日志输出采用jdk自带的，至此 Hasor实现了0依赖。
-    12.增加 apache 中 toStringBuilter 工具到 org.more.builder。
-    13.分离出专用的 log 工具包 org.more.logger。
-    14.增添业务基础包org.more.bizcommon（将来如果发展大了会分离出去，目前就几个类）
-    15.环境变量实现接口调整，接口有删减。原有接口当设置Java系统属性之后，环境变量组建不能识别它（Bug）。
+    03.AopClassConfig、MethodClassConfig、MethodClassConfig 类增加了一个无参的构造方法。
+    04.ClassUtils 增加 getSuperClassGenricType 方法以获取泛型信息。
+    05.内部实现增加 CustomerProvider接口。
+    06.内部实现增加 MetaDataAdapter类。
+    07.不再依赖slf4j日志包，日志输出采用jdk自带的，至此 Hasor实现了0依赖。
+    08.分离出专用的 log 工具包 org.more.logger。
+    09.环境变量实现接口调整，接口有删减。原有接口当设置Java系统属性之后，环境变量组建不能识别它（Bug）。
 
 ===== Hasor-Core v0.0.9
 * 新增:

@@ -135,7 +135,7 @@ public abstract class AbstractEnvironment implements Environment {
         long markTime = System.currentTimeMillis();
         String atPath = this.genPath(markTime, 512);
         String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(this.envVar(Environment.TempPath), fileName);
+        File tmpFile = new File(this.envVar(Environment.HASOR_TEMP_PATH), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
         LoggerHelper.logInfo("create Temp File at %s.", tmpFile);
