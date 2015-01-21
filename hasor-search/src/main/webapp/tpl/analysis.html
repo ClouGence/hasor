@@ -8,25 +8,28 @@
    <div class="block analysis-error" id="analysis-error"> 
     <div class="body"></div> 
    </div> 
-   <div id="analysis-holder"> 
-    <div id="field-analysis"> 
+   <div id="analysis-holder" class="clearfix"> 
+    <div id="field-analysis" class="block fieldlist"> 
      <form method="get"> 
+      <h2><span>分词分析</span></h2>
+      <div class="content">
       <ul class="clearfix"> 
-       <li class="index"> <label for="analysis_fieldvalue_index">Field Value (Index)</label> <textarea name="analysis.fieldvalue" id="analysis_fieldvalue_index"></textarea> </li> 
-       <li class="query"> <label for="analysis_fieldvalue_query">Field Value (Query)</label> <textarea name="analysis.query" id="analysis_fieldvalue_query"></textarea> </li> 
+       <li class="index"> <label for="analysis_fieldvalue_index">字段值：(Index)</label> <textarea name="analysis.fieldvalue" id="analysis_fieldvalue_index"></textarea> </li> 
+       <li class="query"> <label for="analysis_fieldvalue_query">字段值：(Query)</label> <textarea name="analysis.query"      id="analysis_fieldvalue_query"></textarea> </li> 
        <li class="settings-holder clearfix"> 
         <div class="settings clearfix"> 
-         <label for="type_or_name">Analyse Fieldname / FieldType:</label> 
-         <select id="type_or_name"></select> 
-         <a id="tor_schema" href="#"><span>Schema Browser</span>&nbsp;</a> 
+         <label for="type_or_name" class="type_or_name">字段名/字段类型：</label> 
+         <div style="float: left;"><select id="type_or_name"></select></div>
+         <a id="tor_schema" href="#" class="type_or_name"><span>Schema Browser</span>&nbsp;</a> 
          <div class="buttons clearfix"> 
-          <button type="submit"><span>Analyse Values</span></button> 
-          <div class="verbose_output active"> 
-           <a>Verbose Output</a> 
+          <button type="submit"><span>执行分析</span></button> 
+          <div class="verbose_output active type_or_name"> 
+           <a>详细输出</a> 
           </div> 
          </div> 
         </div> </li> 
-      </ul> 
+      </ul>
+      </div>
      </form> 
     </div> 
     <div id="analysis-result" class="clearfix verbose_output"></div> 

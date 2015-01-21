@@ -1,6 +1,8 @@
 #content #files #tree-holder {
 	float: left;
 	width: 20%;
+	overflow-x: scroll;
+	border-right: 1px solid #c0c0c0;
 }
 
 #content #files form .buttons button {
@@ -17,6 +19,10 @@
 
 #content #files .show #file-content {
 	display: block;
+}
+
+.show {
+	padding: 10px;
 }
 
 #content #files #file-content .response {

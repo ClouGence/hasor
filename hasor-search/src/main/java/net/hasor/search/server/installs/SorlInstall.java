@@ -38,6 +38,7 @@ public class SorlInstall implements Module {
             CoreContainer cores = createCoreContainer(searchHome);
             //
             apiBinder.bindType(CoreContainer.class).toInstance(cores);
+            //
             LoggerHelper.logInfo("SEARCH-HOME = " + searchHome);
         } catch (Throwable t) {
             // catch this so our filter still works

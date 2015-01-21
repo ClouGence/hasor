@@ -212,7 +212,7 @@ var solr_admin = function(app_config) {
 				'<li class="overview"><a href="#/' + core_name + '"><span>概述</span></a></li>' + //
 				'<li class="query"><a href="#/' + core_name + '/query"><span>查询</span></a></li>' + //
 				'<li class="analysis"><a href="#/' + core_name + '/analysis"><span>分词</span></a></li>' + //
-				'<li class="schema-browser"><a href="#/' + core_name + '/schema-browser"><span>字段</span></a></li>' + //
+				'<li class="schema-browser"><a href="#/' + core_name + '/schema-browser"><span>模式</span></a></li>' + //
 				'<li class="files"><a href="#/' + core_name + '/files"><span>配置</span></a></li>' + //
 				'<li class="dataimport"><a href="#/' + core_name + '/dataimport"><span>导入</span></a></li>' + //
 				'<li class="documents"><a href="#/' + core_name + '/documents"><span>Documents</span></a></li>' + //
@@ -383,7 +383,7 @@ var connection_check = function connection_check() {
 		},
 		success : function(response) {
 			connection_working = true;
-			this.html('Instance is available - <a href="javascript:location.reload();">Reload the page</a>');
+			this.html('与服务器的连接恢复 - <a href="javascript:location.reload();">刷新页面</a>');
 			this.parents('#connection_status').addClass('online');
 			this.parents('.blockUI').css('borderColor', '#080');
 		},

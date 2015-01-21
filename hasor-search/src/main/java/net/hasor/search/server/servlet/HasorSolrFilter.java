@@ -15,16 +15,26 @@
  * limitations under the License.
  */
 package net.hasor.search.server.servlet;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import net.hasor.core.AppContext;
+import net.hasor.web.startup.RuntimeListener;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.servlet.SolrDispatchFilter;
 /**
- * All Solr servlets available to the user's webapp should
- * extend this class and not {@link HttpServlet}.
- * This class ensures that the logging configuration is correct
- * before any Solr specific code is executed.
+ * 
+ * @version : 2015年1月20日
+ * @author 赵永春(zyc@hasor.net)
  */
-@SuppressWarnings("serial")
-abstract class BaseSolrServlet extends HttpServlet {
-    static {
-        CheckLoggingConfiguration.check();
+public class HasorSolrFilter extends SolrDispatchFilter {
+    private AppContext appContext = null;
+    @Override
+    protected CoreContainer createCoreContainer() {
+        return this.appContext.getInstance(CoreContainer.class);
+    }
+    @Override
+    public void init(FilterConfig config) throws ServletException {
+        this.appContext = RuntimeListener.getLocalAppContext();
+        super.init(config);
     }
 }

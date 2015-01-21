@@ -88,7 +88,7 @@ public class StandardAppContext extends AbstractAppContext {
             XmlNode[] xmlNodes = env.getSettings().getXmlNodeArray("hasor.modules.module");
             if (xmlNodes != null) {
                 for (XmlNode node : xmlNodes) {
-                    String moduleTypeString = node.getAttribute("class");
+                    String moduleTypeString = node.getText();
                     if (StringUtils.isBlank(moduleTypeString)) {
                         continue;
                     }

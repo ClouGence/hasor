@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.search.server;
+package net.hasor.search.server.installs;
 import net.hasor.core.ApiBinder;
-import net.hasor.search.server.installs.SorlInstall;
 /**
  * Sorl容器启动
  * @version : 2015年1月13日

@@ -592,7 +592,7 @@ sammy.get(new RegExp(app.core_regex_base + '\\/(schema-browser)$'), function(con
 			}
 
 			if (flags) {
-				generate_flags_row(flags, 'Properties');
+				generate_flags_row(flags, '属性');
 			}
 
 			if (is_f && schema_browser_data.fields[field] && schema_browser_data.fields[field].schema) {
@@ -798,7 +798,7 @@ sammy.get(new RegExp(app.core_regex_base + '\\/(schema-browser)$'), function(con
 		}
 	} else {
 		trigger_params.callback = function(schema_browser_data, data_element) {
-			data_element.hide();
+			data_element.show();// TODO
 		};
 	}
 

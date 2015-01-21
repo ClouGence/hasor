@@ -2,7 +2,7 @@
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
 	<hasor>
 		<modules>
-			<module>net.hasor.search.server.installs.SorlInstall</module>
+			<module>net.hasor.search.server.installs.WebSorlInstall</module>
 		</modules>
 
 		<searchConfig>
