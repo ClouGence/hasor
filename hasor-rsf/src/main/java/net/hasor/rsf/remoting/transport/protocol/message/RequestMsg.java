@@ -31,7 +31,6 @@ public class RequestMsg extends BaseMsg {
     private String       serviceGroup   = "";
     private String       serviceVersion = "";
     private String       targetMethod   = "";
-    private String       serializeType  = "";
     private int          clientTimeout  = 0;
     private List<String> paramTypes     = new ArrayList<String>(10); //参数列表
     private List<byte[]> paramDatas     = new ArrayList<byte[]>(10); //参数值映射
@@ -74,14 +73,6 @@ public class RequestMsg extends BaseMsg {
     public void setTargetMethod(String targetMethod) {
         this.targetMethod = targetMethod;
     }
-    /**获取序列化类型*/
-    public String getSerializeType() {
-        return this.serializeType;
-    }
-    /**设置序列化类型*/
-    public void setSerializeType(String serializeType) {
-        this.serializeType = serializeType;
-    }
     /**获取远程客户端调用超时时间。*/
     public int getClientTimeout() {
         return this.clientTimeout;
@@ -120,14 +111,14 @@ public class RequestMsg extends BaseMsg {
     //
     /**将请求参数转换为对象。*/
     public Object[] toParameters(SerializeFactory serializeFactory) throws Throwable {
-        SerializeCoder coder = serializeFactory.getSerializeCoder(this.serializeType);
+        SerializeCoder coder = serializeFactory.getSerializeCoder(this.getSerializeType());
         //
         int paramTypesLength = this.paramTypes.size();
         Object[] paramObject = new Object[paramTypesLength];
         //
         if (coder == null && (this.paramTypes.size() > 0)) {
             throw new RsfException(ProtocolStatus.SerializeError,//
-                    "Undefined ‘" + this.serializeType + "’ serialize decoder ");
+                    "Undefined ‘" + this.getSerializeType() + "’ serialize decoder ");
         }
         //
         for (int i = 0; i < paramTypesLength; i++) {

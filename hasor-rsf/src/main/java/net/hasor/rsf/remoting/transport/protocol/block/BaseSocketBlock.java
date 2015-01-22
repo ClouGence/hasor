@@ -83,9 +83,12 @@ public class BaseSocketBlock {
         for (int i = 0; i < this.poolMap.length; i++) {
             if (i == attrIndex)
                 break;
-            rawIndex += this.poolMap[i];
+            if (this.poolMap[i] != NULL_Mark)
+                rawIndex += this.poolMap[i];
         }
         int readLength = this.poolMap[attrIndex];//内容长度
+        if (readLength == NULL_Mark)
+            return null;
         //
         byte[] data = new byte[readLength];
         this.poolData.getBytes(rawIndex, data, 0, readLength);

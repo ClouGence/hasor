@@ -30,7 +30,6 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 import net.hasor.rsf.remoting.transport.provider.RsfProviderHandler;

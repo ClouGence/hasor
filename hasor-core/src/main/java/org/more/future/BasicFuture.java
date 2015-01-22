@@ -50,7 +50,7 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
     }
     private T getResult() throws ExecutionException {
         if (this.ex != null) {
-            throw new ExecutionException(this.ex);
+            throw new ExecutionException(this.ex.getMessage(), this.ex);
         }
         return this.result;
     }

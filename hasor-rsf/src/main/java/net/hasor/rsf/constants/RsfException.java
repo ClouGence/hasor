@@ -28,7 +28,7 @@ public class RsfException extends RuntimeException {
         this.status = ProtocolStatus.Unknown;
     }
     public RsfException(short status, String string) {
-        super(string);
+        super("(" + status + ") - " + string);
         this.status = status;
     }
     public RsfException(short status, Throwable e) {

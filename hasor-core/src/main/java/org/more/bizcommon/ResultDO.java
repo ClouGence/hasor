@@ -25,6 +25,18 @@ public class ResultDO<T> implements Result<T> {
     private Throwable         throwable        = null;
     private boolean           success          = true;
     //
+    public ResultDO() {}
+    public ResultDO(T result) {
+        this.result = result;
+    }
+    public ResultDO(boolean success) {
+        this.success = success;
+    }
+    public ResultDO(Throwable throwable) {
+        this.success = false;
+        this.throwable = throwable;
+    }
+    //
     //
     /**获取分页结果集。*/
     @Override
@@ -40,13 +52,16 @@ public class ResultDO<T> implements Result<T> {
         return this.throwable;
     }
     //
-    public void setResult(T result) {
+    public ResultDO<T> setResult(T result) {
         this.result = result;
+        return this;
     }
-    public void setThrowable(Throwable throwable) {
+    public ResultDO<T> setThrowable(Throwable throwable) {
         this.throwable = throwable;
+        return this;
     }
-    public void setSuccess(boolean success) {
+    public ResultDO<T> setSuccess(boolean success) {
         this.success = success;
+        return this;
     }
 }

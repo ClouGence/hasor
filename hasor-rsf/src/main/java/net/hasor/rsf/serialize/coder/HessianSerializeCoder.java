@@ -43,6 +43,8 @@ public class HessianSerializeCoder implements SerializeCoder {
     }
     //
     public Object decode(byte[] bytes) throws IOException {
+        if (bytes == null)
+            return null;
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes));
         input.setSerializerFactory(this.serializerFactory);
         return input.readObject();

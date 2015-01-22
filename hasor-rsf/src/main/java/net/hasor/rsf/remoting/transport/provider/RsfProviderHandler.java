@@ -32,14 +32,17 @@ import org.more.logger.LoggerHelper;
  */
 public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
     private AbstractRsfContext rsfContext;
+    private String             serializeType;
     //
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
+        this.serializeType = rsfContext.getSettings().getDefaultSerializeType();
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof RequestMsg == false)
+        if (msg instanceof RequestMsg == false) {
             return;
+        }
         //创建request、response
         RequestMsg requestMsg = (RequestMsg) msg;
         requestMsg.setReceiveTime(System.currentTimeMillis());
@@ -54,6 +57,7 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.Accepted,//响应状态
+                    this.serializeType,//序列化类型
                     this.rsfContext.getSettings().getServerOption());//选项参数
             ctx.pipeline().writeAndFlush(pack);
         } catch (RejectedExecutionException e) {
@@ -61,6 +65,7 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     ProtocolStatus.ChooseOther,//服务器资源紧张
+                    this.serializeType,//序列化类型
                     this.rsfContext.getSettings().getServerOption());//选项参数
             ctx.pipeline().writeAndFlush(pack);
         }

@@ -1,0 +1,60 @@
+/*
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.search.client;
+import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.bootstrap.RsfBootstrap;
+import net.hasor.rsf.bootstrap.RsfStart;
+import net.hasor.rsf.bootstrap.WorkMode;
+import net.hasor.rsf.plugins.local.LocalPrefPlugin;
+import net.hasor.rsf.plugins.qps.QPSPlugin;
+/**
+ * 
+ * @version : 2015年1月8日
+ * @author 赵永春(zyc@hasor.net)
+ */
+public class SearchQueryClientFactory {
+    public static SearchService connect(final String host, final int port, final String coreName) throws Throwable {
+        RsfBootstrap bootstrap = new RsfBootstrap();
+        bootstrap.doBinder(new RsfStart() {
+            public void onBind(RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.bindFilter("QPS", new QPSPlugin());
+                rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
+                //
+                rsfBinder.bindAddress(host, port);//分布式的远程服务提供者：1
+                rsfBinder.rsfService(SearchService.class)//
+                        .bindFilter("CoreNameFilter", new CoreNameRsfFilter(coreName)).register();
+            }
+        });
+        RsfContext rsfContext = bootstrap.workAt(WorkMode.Customer).sync();
+        return rsfContext.getRsfClient().wrapper(SearchService.class);
+    }
+}
+class CoreNameRsfFilter implements RsfFilter {
+    private String coreName = null;
+    CoreNameRsfFilter(String coreName) {
+        this.coreName = coreName;
+    }
+    @Override
+    public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
+        request.addOption("CoreName", this.coreName);
+        chain.doFilter(request, response);
+    }
+}

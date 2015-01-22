@@ -25,10 +25,9 @@ import org.more.UndefinedException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseMsg extends BaseMsg {
-    private short  status        = ProtocolStatus.Unknown;
-    private String serializeType = "";
-    private String returnType    = "";
-    private byte[] returnData    = null;
+    private short  status     = ProtocolStatus.Unknown;
+    private String returnType = "";
+    private byte[] returnData = null;
     //
     /**设置协议版本。*/
     public void setVersion(byte version) {
@@ -41,14 +40,6 @@ public class ResponseMsg extends BaseMsg {
     /**设置响应状态*/
     public void setStatus(short status) {
         this.status = status;
-    }
-    /**获取序列化类型*/
-    public String getSerializeType() {
-        return this.serializeType;
-    }
-    /**设置序列化类型*/
-    public void setSerializeType(String serializeType) {
-        this.serializeType = serializeType;
     }
     /**获取返回值类型*/
     public String getReturnType() {

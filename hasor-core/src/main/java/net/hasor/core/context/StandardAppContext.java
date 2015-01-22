@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Module;
@@ -85,17 +86,19 @@ public class StandardAppContext extends AbstractAppContext {
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
         if (loadModule) {
-            XmlNode[] xmlNodes = env.getSettings().getXmlNodeArray("hasor.modules.module");
-            if (xmlNodes != null) {
-                for (XmlNode node : xmlNodes) {
-                    String moduleTypeString = node.getText();
-                    if (StringUtils.isBlank(moduleTypeString)) {
-                        continue;
+            XmlNode[] allModules = env.getSettings().getXmlNodeArray("hasor.modules");
+            if (allModules != null) {
+                for (XmlNode modules : allModules) {
+                    List<XmlNode> moduleArrays = modules.getChildren("module");
+                    for (XmlNode module : moduleArrays) {
+                        String moduleTypeString = module.getText();
+                        if (StringUtils.isBlank(moduleTypeString)) {
+                            continue;
+                        }
+                        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                        Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
+                        this.installModule((Module) moduleType.newInstance());
                     }
-                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                    Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
-                    Module module = (Module) moduleType.newInstance();
-                    this.installModule(module);
                 }
             }
         }

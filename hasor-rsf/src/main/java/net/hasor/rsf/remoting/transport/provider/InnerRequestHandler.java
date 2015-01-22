@@ -59,13 +59,18 @@ class InnerRequestHandler implements Runnable {
             response = request.buildResponse();
             //
         } catch (RsfException e) {
-            LoggerHelper.logSevere("recoverRequest fail, requestID(%s) , %s.", requestMsg.getRequestID(), e.getMessage());
+            String logMsg = String.format("recoverRequest fail, requestID(%s) , %s.", requestMsg.getRequestID(), e.getMessage());
+            LoggerHelper.logSevere(logMsg);
             //
             ResponseMsg pack = TransferUtils.buildStatus(//
                     requestMsg.getVersion(), //协议版本
                     requestMsg.getRequestID(),//请求ID
                     e.getStatus(),//响应状态
+                    requestMsg.getSerializeType(),//序列化类型
                     this.rsfContext.getSettings().getServerOption());//选项参数
+            try {
+                pack.setReturnData(logMsg, rsfContext.getSerializeFactory());
+            } catch (Throwable e1) { /**/}
             this.connection.getChannel().writeAndFlush(pack);
             return null;
         }

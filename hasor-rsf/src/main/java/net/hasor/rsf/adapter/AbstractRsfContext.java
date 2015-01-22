@@ -35,7 +35,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     public <T> T getBean(RsfBindInfo<T> bindInfo) {
         //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
         //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
         if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
             Provider<T> provider = ((RsfBindDefine<T>) bindInfo).getCustomerProvider();
             if (provider != null)
@@ -49,7 +49,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     /**获取服务上配置有效的过滤器*/
     public <T extends RsfFilter> T findFilter(String serviceID, String filterID) {
-        RsfBindInfo<?> bindInfo = this.getBindCenter().getService(serviceID);
+        RsfBindInfo<?> bindInfo = this.getBindCenter().getServiceByID(serviceID);
         if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
             RsfBindDefine<?> rsfDefine = (RsfBindDefine<?>) bindInfo;
             return (T) rsfDefine.getFilter(filterID);
@@ -79,7 +79,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
         //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
         //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getService(bindInfo.getBindID());
+        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
         if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
             Provider<RsfFilter>[] pubFilters = this.getBindCenter().publicFilters();
             Provider<RsfFilter>[] subFilters = ((RsfBindDefine<T>) bindInfo).getFilterProvider();

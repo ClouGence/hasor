@@ -141,11 +141,12 @@ public class TransferUtils {
     //
     //
     /**生成指定状态的的响应包*/
-    public static ResponseMsg buildStatus(byte version, long requestID, short status, RsfOptionSet optMap) {
+    public static ResponseMsg buildStatus(byte version, long requestID, short status, String serializeType, RsfOptionSet optMap) {
         ResponseMsg ack = new ResponseMsg();
         ack.setVersion(ProtocolUtils.finalVersionForResponse(version));
         ack.setRequestID(requestID);
         ack.setStatus(status);
+        ack.setSerializeType(serializeType);
         //
         if (optMap != null) {
             for (String optKey : optMap.getOptionKeys())

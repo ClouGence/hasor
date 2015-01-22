@@ -15,15 +15,19 @@
  */
 package net.hasor.rsf.plugins.hasor;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
+import net.hasor.core.binder.BindInfoProvider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
+import net.hasor.rsf.bootstrap.WorkMode;
 import net.hasor.rsf.plugins.local.LocalPrefPlugin;
 import net.hasor.rsf.plugins.qps.QPSPlugin;
 /**
@@ -33,20 +37,21 @@ import net.hasor.rsf.plugins.qps.QPSPlugin;
  */
 public abstract class RsfModule implements Module {
     private final RsfContext createRsfContext(ApiBinder apiBinder) throws Throwable {
+        Environment env = apiBinder.getEnvironment();
         //1.调用引导程序启动 RSF
         RsfBootstrap bootstrap = new RsfBootstrap();
-        bootstrap.bindSettings(apiBinder.getEnvironment().getSettings());
+        bootstrap.bindSettings(env.getSettings());
         bootstrap.doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) throws Throwable {
                 rsfBinder.bindFilter("QPS", new QPSPlugin());
                 rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
             }
         });
-        bootstrap.socketBind(this.bindAddress(), this.bindPort());
-        final RsfContext rsfContext = bootstrap.sync();
+        bootstrap.socketBind(this.bindAddress(env), this.bindPort(env));
+        final RsfContext rsfContext = bootstrap.workAt(workMode(env)).sync();
         //
         //2.同步接收 AppContext 的 shutdown 通知，并且传递给 RSF
-        EventContext eventContext = apiBinder.getEnvironment().getEventContext();
+        EventContext eventContext = env.getEventContext();
         apiBinder.bindType(RsfContext.class, rsfContext);
         eventContext.pushListener(EventContext.ContextEvent_Shutdown, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
@@ -59,29 +64,34 @@ public abstract class RsfModule implements Module {
     private static final Object LOCK_KEY   = new Object();
     private static RsfContext   rsfContext = null;
     //
-    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
-        //
+    public final void loadModule(ApiBinder apiBinder) throws Throwable {
         synchronized (LOCK_KEY) {
             if (rsfContext == null) {
                 rsfContext = createRsfContext(apiBinder);
             }
         }
-        //
-        //3.装载RSF Module
         this.loadModule(new InnerRsfApiBinder(apiBinder, rsfContext));
     }
     /**用于覆盖 rsf 配置文件中的配置。*/
-    protected String bindAddress() {
+    protected String bindAddress(Environment env) {
         return null;
     }
     /**用于覆盖 rsf 配置文件中的配置。*/
-    protected int bindPort() {
+    protected int bindPort(Environment env) {
         return 0;
+    }
+    /**用于覆盖 rsf 配置文件中的配置。*/
+    protected WorkMode workMode(Environment env) {
+        return WorkMode.None;
     }
     //
     /**转换{@link RsfBindInfo}为 Hasor{@link Provider}*/
     protected <T> Provider<T> toProvider(RsfApiBinder apiBinder, RsfBindInfo<T> bindInfo) {
-        return apiBinder.autoAware(new RsfBeanProvider<T>(bindInfo));
+        return new RsfBindInfoProvider<T>(apiBinder, bindInfo);
+    }
+    /**转换{@link BindInfo}为 Hasor{@link Provider}*/
+    protected <T> Provider<T> toProvider(ApiBinder apiBinder, BindInfo<T> bindInfo) {
+        return new BindInfoProvider<T>(apiBinder, bindInfo);
     }
     //
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;

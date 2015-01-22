@@ -68,6 +68,8 @@
 				<serialize name="Java">net.hasor.rsf.serialize.coder.JavaSerializeCoder</serialize>
 				<!-- Hessian-格式序列化 -->
 				<serialize name="Hessian">net.hasor.rsf.serialize.coder.HessianSerializeCoder</serialize>
+				<!-- BlackHole-黑洞序列化 -->
+				<serialize name="BlackHole">net.hasor.rsf.serialize.coder.BlackHoleSerializeCoder</serialize>
 			</serializeType>
 		</rsfConfig>
 	</hasor>

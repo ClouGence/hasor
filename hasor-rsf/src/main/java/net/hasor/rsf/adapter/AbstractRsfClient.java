@@ -55,8 +55,15 @@ public abstract class AbstractRsfClient implements RsfClient {
     }
     private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
     /**获取远程服务对象*/
-    public <T> T getRemote(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(serviceID);
+    public <T> T getRemoteByID(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
+        if (bindInfo == null)
+            return null;
+        return this.wrapper(bindInfo, bindInfo.getBindType());
+    }
+    /**获取远程服务对象*/
+    public <T> T getRemoteByName(String serviceName) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByName(serviceName);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, bindInfo.getBindType());
@@ -66,13 +73,30 @@ public abstract class AbstractRsfClient implements RsfClient {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(group, name, version);
         if (bindInfo == null)
             return null;
+        return this.getRemote(bindInfo);
+    }
+    /**获取远程服务对象*/
+    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
         return this.wrapper(bindInfo, bindInfo.getBindType());
     }
+    //
     /**将服务包装为另外一个接口。*/
-    public <T> T wrapper(String serviceID, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(serviceID);
+    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
         if (bindInfo == null)
             return null;
+        return this.wrapper(bindInfo, interFace);
+    }
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByName(serviceName);
+        if (bindInfo == null)
+            return null;
+        return this.wrapper(bindInfo, interFace);
+    }
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        RsfBindInfo<?> bindInfo = this.getRsfContext().getBindCenter().getService(interFace);
         return this.wrapper(bindInfo, interFace);
     }
     /**将服务包装为另外一个接口。*/
@@ -84,6 +108,8 @@ public abstract class AbstractRsfClient implements RsfClient {
     }
     /**将服务包装为另外一个接口。*/
     public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+        if (bindInfo == null)
+            throw new NullPointerException();
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         Class<?> wrapperType = this.wrapperMap.get(bindInfo.getBindID());

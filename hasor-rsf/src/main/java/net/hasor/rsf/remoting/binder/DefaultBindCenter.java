@@ -24,9 +24,12 @@ import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfService;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstractBindCenter;
 import net.hasor.rsf.adapter.AbstractRsfContext;
 import org.more.RepeateException;
+import org.more.util.StringUtils;
 /**
  * 注册中心
  * @version : 2014年11月30日
@@ -51,8 +54,29 @@ public class DefaultBindCenter extends AbstractBindCenter {
     public RsfBinder getRsfBinder() {
         return new RsfBindBuilder(this.rsfContext);
     }
-    public <T> RsfBindInfo<T> getService(String serviceID) {
+    public <T> RsfBindInfo<T> getServiceByID(String serviceID) {
         return (RsfBindInfo<T>) this.rsfService2Map.get(serviceID);
+    }
+    public <T> RsfBindInfo<T> getService(Class<T> serviceType) {
+        RsfSettings rsfSettings = this.rsfContext.getSettings();
+        String serviceGroup = rsfSettings.getDefaultGroup();
+        String serviceName = serviceType.getName();
+        String serviceVersion = rsfSettings.getDefaultVersion();
+        //覆盖
+        RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
+        if (serviceInfo != null) {
+            if (StringUtils.isBlank(serviceInfo.group()) == false)
+                serviceGroup = serviceInfo.group();
+            if (StringUtils.isBlank(serviceInfo.name()) == false)
+                serviceName = serviceInfo.name();
+            if (StringUtils.isBlank(serviceInfo.version()) == false)
+                serviceVersion = serviceInfo.version();
+        }
+        return getService(serviceGroup, serviceName, serviceVersion);
+    }
+    public <T> RsfBindInfo<T> getServiceByName(String serviceName) {
+        RsfSettings rsfSettings = this.rsfContext.getSettings();
+        return getService(rsfSettings.getDefaultGroup(), serviceName, rsfSettings.getDefaultVersion());
     }
     public <T> RsfBindInfo<T> getService(String group, String name, String version) {
         //group

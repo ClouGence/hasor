@@ -102,7 +102,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID, short status) {
         byte version = ProtocolUtils.getVersion(oriVersion);
         ResponseMsg error = TransferUtils.buildStatus(//
-                version, requestID, status, null);
+                version, requestID, status, "BlackHole", null);
         ctx.pipeline().writeAndFlush(error);
     }
 }

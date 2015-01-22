@@ -23,13 +23,26 @@ import org.more.future.FutureCallback;
  */
 public interface RsfClient {
     /**获取远程服务对象*/
-    public <T> T getRemote(String serviceID) throws //
+    public <T> T getRemoteByID(String serviceID) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapper(String serviceID, Class<T> interFace) throws //
+    /**获取远程服务对象*/
+    public <T> T getRemoteByName(String serviceName) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     /**获取远程服务对象*/
     public <T> T getRemote(String group, String name, String version) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**获取远程服务对象*/
+    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    //
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws //
+            ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
+    /**将服务包装为另外一个接口。*/
+    public <T> T wrapper(Class<T> interFace) throws //
             ClassNotFoundException, IOException, InstantiationException, IllegalAccessException;
     /**将服务包装为另外一个接口。*/
     public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws //
