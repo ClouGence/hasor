@@ -44,6 +44,8 @@ public class SorlQuery implements StartModule {
         CoreContainer cores = appContext.getInstance(CoreContainer.class);
         SolrCore solrCore = cores.getCore("new_core");
         //
+        
+        //
         query(solrCore, new SolrQuery("*:*"));
     }
     public void query(SolrCore solrCore, SolrQuery solrQuery) throws IOException {

@@ -1,12 +1,8 @@
-#content #documents {
-	background-image: url( ../../img/div.gif );
-	background-position: 45% 0;
-	background-repeat: repeat-y;
+#content #documents dd {
+	clear: both;
 }
 
 #content #documents #form {
-	float: left;
-	/*width: 21%;*/
 }
 
 #content #documents #form label {
@@ -18,22 +14,18 @@
 #content #documents #form input,#content #documents #form select,#content #documents #form textarea
 	{
 	margin-bottom: 2px;
-	/*width: 100%;*/
 }
 
 #content #documents #form input,#content #documents #form textarea {
 	margin-bottom: 2px;
-	/*width: 98%;*/
 }
 
 #content #documents #form #start {
 	float: left;
-	/*width: 45%;*/
 }
 
 #content #documents #form #rows {
 	float: right;
-	/* width: 45%;*/
 }
 
 #content #documents #form .checkbox input {
@@ -143,13 +135,4 @@
 
 #wizard {
 	display: none;
-}
-
-#wizard-fields div {
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-#wiz-field-data,#wiz-field-data span {
-	vertical-align: top;
 }

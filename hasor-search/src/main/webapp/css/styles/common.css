@@ -148,6 +148,14 @@ ul {
 	list-style: none;
 }
 
+dd ,.cdd{
+	padding: 2px 0px 2px 0px;
+}
+
+.cdd{
+	float: left;
+}
+
 .clearfix:after {
 	clear: both;
 	content: ".";
@@ -590,4 +598,25 @@ pre.syntax .tex .formula {
 	-moz-box-shadow: 1px 1px 0 #d8d8d8;
 	-webkit-box-shadow: 1px 1px 0 #d8d8d8;
 	color: #333;
+}
+
+.type_or_name{
+	float: left; padding: 3px;
+}
+
+#content .content input.number {
+	width: 60px;
+}
+
+#content .content input.text {
+	width: 250px;
+}
+#content .content dd span {
+	width: 110px;
+	display: block;
+	float: left;
+	text-align: right;
+}
+#content .content textarea {
+	width: 99%;
 }

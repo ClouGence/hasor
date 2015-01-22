@@ -1,14 +1,11 @@
 //helper for formatting JSON and others
 var content_generator = {
-
 	_default : function(toEsc) {
 		return toEsc.esc();
 	},
-
 	json : function(toEsc) {
 		return app.format_json(toEsc);
 	}
-
 };
 
 // Utiltity function for turning on/off various elements
