@@ -20,7 +20,6 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
@@ -31,35 +30,22 @@ import org.more.classcode.delegate.faces.MethodClassConfig;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SearchServer {
-    private CoreNameFilter coreNameFilter = null;
-    private RsfBindInfo<?> queryInfo      = null;
-    private RsfBindInfo<?> dumpInfo       = null;
-    private RsfClient      rsfClient      = null;
+    private WriteOptionFilter optionFilter = null;
+    private RsfContext        rsfContext   = null;
     //
     SearchServer(URL rsfHost, SearchServerFactory searchServerFactory) throws MalformedURLException {
         RsfContext rsfContext = searchServerFactory.getRsfContext();
-        BindCenter bindCenter = rsfContext.getBindCenter();
         this.rsfClient = rsfContext.getRsfClient();
-        this.coreNameFilter = new CoreNameFilter();
+        this.optionFilter = new WriteOptionFilter();
         //
-        String group = rsfContext.getSettings().getDefaultGroup();
-        String version = rsfContext.getSettings().getDefaultVersion();
-        String queryName = SearchService.class.getName();
         String dumpName = DumpService.class.getName();
         //
-        this.queryInfo = bindCenter.getService(group, queryName, version);
         this.dumpInfo = bindCenter.getService(group, dumpName, version);
         //
-        if (this.queryInfo == null) {
-            this.queryInfo = bindCenter.getRsfBinder().rsfService(SearchService.class)//
-                    .ngv(group, queryName, version)//
-                    .bindFilter("CoreNameFilter", this.coreNameFilter)//
-                    .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
-        }
         if (this.dumpInfo == null) {
             this.dumpInfo = bindCenter.getRsfBinder().rsfService(DumpService.class)//
                     .ngv(group, dumpName, version)//
-                    .bindFilter("CoreNameFilter", this.coreNameFilter)//
+                    .bindFilter("CoreNameFilter", this.optionFilter)//
                     .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
         }
     }
@@ -75,7 +61,22 @@ public class SearchServer {
     //
     private static Object                              LOCK        = new Object();
     private static ConcurrentHashMap<String, Class<?>> CACHE_TYPES = new ConcurrentHashMap<String, Class<?>>();
-    private <T> T getService(RsfBindInfo<?> info, String coreName, Class<T> type) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    private <T> T getService(String coreName, Class<T> type)//
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        //
+        String group = this.rsfContext.getSettings().getDefaultGroup();
+        String name = SearchService.class.getName();
+        String version = this.rsfContext.getSettings().getDefaultVersion();
+        //
+        BindCenter bindCenter = rsfContext.getBindCenter();
+        RsfBindInfo<?> info = bindCenter.getService(group, name, version);
+        if (this.queryInfo == null) {
+            this.queryInfo = bindCenter.getRsfBinder().rsfService(SearchService.class)//
+                    .ngv(group, queryName, version)//
+                    .bindFilter("CoreNameFilter", this.optionFilter)//
+                    .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
+        }
+        //
         T search = this.rsfClient.wrapper(info, type);
         Class<?> serviceType = CACHE_TYPES.get(coreName);
         if (serviceType == null) {
@@ -83,7 +84,7 @@ public class SearchServer {
                 serviceType = CACHE_TYPES.get(coreName);
                 if (serviceType == null) {
                     MethodClassConfig decConfig = new MethodClassConfig();
-                    decConfig.addDelegate(type, new CoreNameWarp(coreName, this.coreNameFilter, search));
+                    decConfig.addDelegate(type, new ServiceWarp(coreName, this.coreNameFilter, search));
                     serviceType = decConfig.toClass();
                     CACHE_TYPES.putIfAbsent(coreName, serviceType);
                 }

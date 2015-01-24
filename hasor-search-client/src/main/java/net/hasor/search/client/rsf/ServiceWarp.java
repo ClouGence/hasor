@@ -15,25 +15,37 @@
  */
 package net.hasor.search.client.rsf;
 import java.lang.reflect.Method;
+import net.hasor.rsf.RsfOptionSet;
+import net.hasor.search.client.Commit;
+import net.hasor.search.domain.OptionConstant;
 import org.more.classcode.delegate.faces.MethodDelegate;
 /**
  * 
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-class CoreNameWarp implements MethodDelegate {
-    private String         coreName       = null;
-    private CoreNameFilter coreNameFilter = null;
-    private Object         targetObject   = null;
+class ServiceWarp implements MethodDelegate, OptionConstant {
+    private String            coreName     = null;
+    private Commit            commit       = null;
     //
-    CoreNameWarp(String coreName, CoreNameFilter coreNameFilter, Object targetObject) {
+    private WriteOptionFilter optionFilter = null;
+    private Object            targetObject = null;
+    //
+    ServiceWarp(String coreName, WriteOptionFilter optionFilter, Object targetObject) {
         this.coreName = coreName;
-        this.coreNameFilter = coreNameFilter;
+        this.optionFilter = optionFilter;
         this.targetObject = targetObject;
     }
     @Override
     public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
-        this.coreNameFilter.useCoreName(coreName);
+        RsfOptionSet localOption = this.optionFilter.localOptionSet();
+        localOption.addOption(CORE_NAME_KEY, coreName);
+        if (this.commit != null) {
+            localOption.addOption(COMMIT_KEY, COMMIT_VALUE);
+            localOption.addOption(WAIT_FLUSH_KEY, Boolean.toString(this.commit.waitFlush()));
+            localOption.addOption(WAIT_SEARCHER_KEY, Boolean.toString(this.commit.waitSearcher()));
+            localOption.addOption(SOFT_COMMIT_KEY, Boolean.toString(this.commit.softCommit()));
+        }
         return callMethod.invoke(this.targetObject, params);
     }
 }

@@ -16,30 +16,40 @@
 package net.hasor.search.client.rsf;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.constants.ProtocolStatus;
-import org.more.util.StringUtils;
+import net.hasor.rsf.rpc.context.OptionManager;
+import net.hasor.search.domain.OptionConstant;
 /**
  * 不要把它加入全局过滤器，以免被误杀抛出 403.
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-class CoreNameFilter implements RsfFilter {
-    private final ThreadLocal<String> useCoreName = new ThreadLocal<String>();
+class WriteOptionFilter implements RsfFilter, OptionConstant {
+    private final ThreadLocalOptionManager localOptionSet = new ThreadLocalOptionManager();
+    //
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        String coreName = this.useCoreName.get();
-        if (StringUtils.isBlank(coreName) == true) {
-            response.sendStatus(ProtocolStatus.Forbidden, "coreName is empty.");
-            return;
+        RsfOptionSet optionSet = localOptionSet();
+        for (String key : optionSet.getOptionKeys()) {
+            request.addOption(key, optionSet.getOption(key));
         }
-        request.addOption("CoreName", coreName);
-        chain.doFilter(request, response);
+        //
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            localOptionSet.remove();
+        }
     }
-    public void useCoreName(String coreName) {
-        if (useCoreName.get() != null)
-            useCoreName.remove();
-        useCoreName.set(coreName);
+    public RsfOptionSet localOptionSet() {
+        return localOptionSet.get();
+    }
+    //
+    private static final class ThreadLocalOptionManager extends ThreadLocal<RsfOptionSet> {
+        @Override
+        protected RsfOptionSet initialValue() {
+            return new OptionManager();
+        }
     }
 }
