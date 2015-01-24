@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.test.simple.db._05_callable;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.simple.db._07_datasource.warp.OneDataSourceWarp;
 import org.junit.Test;
@@ -28,25 +31,25 @@ import org.junit.Test;
  */
 public class Callable_Test {
     @Test
-    public void testCallable() throws IOException, URISyntaxException, InterruptedException {
+    public void testCallable() throws Throwable {
         System.out.println("--->>testCallable<<--");
         //
         AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         //
-        //        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
-        //            public Integer doInConnection(Connection con) throws SQLException, DataAccessException {
-        //                String callSQL = "exec PR_BuildFlowTID ?,?";
-        //                CallableStatement callState = con.prepareCall(callSQL);
-        //                callState.setString(1, "TT");
-        //                callState.registerOutParameter(2, Types.INTEGER);
-        //                boolean res = callState.execute();
-        //                int resData = callState.getInt(2);
-        //                return resData;
-        //            }
-        //        });
-        //System.out.println(flowID);
+        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
+            public Integer doInConnection(Connection con) throws SQLException {
+                String callSQL = "exec PR_BuildFlowTID ?,?";
+                CallableStatement callState = con.prepareCall(callSQL);
+                callState.setString(1, "TT");
+                callState.registerOutParameter(2, Types.INTEGER);
+                boolean res = callState.execute();
+                int resData = callState.getInt(2);
+                return resData;
+            }
+        });
+        System.out.println(flowID);
         //
     }
 }

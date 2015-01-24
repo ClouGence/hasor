@@ -32,8 +32,8 @@ public class EnvironmentVariablesTest {
         //
         //JAVA_HOME
         System.out.println(env.envVar("JAVA_HOME"));
-        //HASOR_WORK_HOME，该环境变量由 hasor 的配置文件提供，仅在Hasor框架内有效
-        System.out.println(env.envVar("HASOR_WORK_HOME"));
+        //WORK_HOME，该环境变量由 hasor 的配置文件提供，仅在Hasor框架内有效
+        System.out.println(env.envVar("WORK_HOME"));
         //javac.exe
         System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
     }
