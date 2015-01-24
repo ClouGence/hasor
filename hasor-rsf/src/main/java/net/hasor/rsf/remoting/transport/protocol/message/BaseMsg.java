@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.transport.protocol.message;
-import java.util.HashMap;
-import java.util.Map;
 import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.rpc.context.OptionManager;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
  * @version : 2014年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class BaseMsg {
-    private byte                version       = RSFConstants.RSF;             //
-    private long                requestID     = 0;                            //
-    private String              serializeType = "";
-    private Map<String, String> optionMap     = new HashMap<String, String>(); //选项
+public abstract class BaseMsg extends OptionManager {
+    private byte   version       = RSFConstants.RSF;
+    private long   requestID     = 0;
+    private String serializeType = "";
     //
     /**设置协议版本。*/
     protected void setVersion(byte version) {
@@ -52,18 +50,6 @@ public abstract class BaseMsg {
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
-    }
-    /**获取选项Key集合。*/
-    public String[] getOptionKeys() {
-        return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
-    }
-    /**获取选项数据*/
-    public String getOption(String key) {
-        return this.optionMap.get(key);
-    }
-    /**设置选项数据*/
-    public void addOption(String key, String value) {
-        this.optionMap.put(key, value);
     }
     /**获取序列化类型*/
     public String getSerializeType() {

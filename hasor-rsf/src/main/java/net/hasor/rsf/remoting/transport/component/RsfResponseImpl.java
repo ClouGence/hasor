@@ -87,6 +87,10 @@ public class RsfResponseImpl implements RsfResponse {
         this.responseMsg.addOption(key, value);
     }
     @Override
+    public void removeOption(String key) {
+        this.responseMsg.removeOption(key);
+    }
+    @Override
     public byte getProtocol() {
         return this.responseMsg.getVersion();
     }

@@ -15,8 +15,6 @@
  */
 package net.hasor.rsf.rpc.context;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWarp;
@@ -32,28 +30,28 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
-    private int                defaultTimeout       = 6000;
-    private String             defaultGroup         = "RSF";
-    private String             defaultVersion       = "1.0.0";
-    private String             defaultSerializeType = "Hessian";
+    private int             defaultTimeout       = 6000;
+    private String          defaultGroup         = "RSF";
+    private String          defaultVersion       = "1.0.0";
+    private String          defaultSerializeType = "Hessian";
     //
-    private InnerOptionManager serverOptionManager  = new InnerOptionManager();
-    private InnerOptionManager clientOptionManager  = new InnerOptionManager();
+    private OptionManager   serverOptionManager  = new OptionManager();
+    private OptionManager   clientOptionManager  = new OptionManager();
     //
-    private int                networkWorker        = 2;
-    private int                networkListener      = 1;
+    private int             networkWorker        = 2;
+    private int             networkListener      = 1;
     //
-    private int                queueMaxSize         = 4096;
-    private int                queueMinPoolSize     = 1;
-    private int                queueMaxPoolSize     = 7;
-    private long               queueKeepAliveTime   = 300L;
+    private int             queueMaxSize         = 4096;
+    private int             queueMinPoolSize     = 1;
+    private int             queueMaxPoolSize     = 7;
+    private long            queueKeepAliveTime   = 300L;
     //
-    private int                requestTimeout       = 6000;
-    private int                maximumRequest       = 200;
-    private SendLimitPolicy    sendLimitPolicy      = SendLimitPolicy.Reject;
+    private int             requestTimeout       = 6000;
+    private int             maximumRequest       = 200;
+    private SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
     //
-    private String             bindAddress          = "local";
-    private int                bindPort             = 8000;
+    private String          bindAddress          = "local";
+    private int             bindPort             = 8000;
     //
     //
     //
@@ -166,23 +164,5 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
         LoggerHelper.logInfo("loadRsfConfig complete!");
-    }
-    //
-    /***/
-    private static class InnerOptionManager implements RsfOptionSet {
-        private final Map<String, String> optionMap = new HashMap<String, String>();
-        //
-        /**获取选项Key集合。*/
-        public String[] getOptionKeys() {
-            return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
-        }
-        /**获取选项数据*/
-        public String getOption(String key) {
-            return this.optionMap.get(key);
-        }
-        /**设置选项数据*/
-        public void addOption(String key, String value) {
-            this.optionMap.put(key, value);
-        }
     }
 }

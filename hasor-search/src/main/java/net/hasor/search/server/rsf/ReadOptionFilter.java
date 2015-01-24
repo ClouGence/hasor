@@ -20,14 +20,14 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.search.client.rsf.OptionConstant;
+import net.hasor.search.domain.OptionConstant;
 import org.more.util.StringUtils;
 /**
  * 
  * @version : 2015年1月16日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OptionRsfFilter implements RsfFilter, OptionConstant {
+public class ReadOptionFilter implements RsfFilter, OptionConstant {
     private final ThreadLocal<RsfOptionSet> optionSet = new ThreadLocal<RsfOptionSet>();
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {

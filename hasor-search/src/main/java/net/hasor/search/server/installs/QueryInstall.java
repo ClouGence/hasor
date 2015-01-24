@@ -23,7 +23,7 @@ import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
-import net.hasor.search.server.rsf.OptionRsfFilter;
+import net.hasor.search.server.rsf.ReadOptionFilter;
 import net.hasor.search.server.rsf.SorlDumpService;
 import net.hasor.search.server.rsf.SorlSearchService;
 /**
@@ -44,12 +44,12 @@ public class QueryInstall extends RsfModule {
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
         //注册到Hasor
-        BindInfo<OptionRsfFilter> filterInfo = apiBinder.bindType(OptionRsfFilter.class).toInstance(new OptionRsfFilter()).toInfo();
+        BindInfo<ReadOptionFilter> filterInfo = apiBinder.bindType(ReadOptionFilter.class).toInstance(new ReadOptionFilter()).toInfo();
         BindInfo<SearchService> searchInfo = apiBinder.bindType(SearchService.class).to(SorlSearchService.class).toInfo();
         BindInfo<DumpService> dumpInfo = apiBinder.bindType(DumpService.class).to(SorlDumpService.class).toInfo();
         //
         //BindInfo to Provider
-        Provider<OptionRsfFilter> filterBean = toProvider(apiBinder, filterInfo);
+        Provider<ReadOptionFilter> filterBean = toProvider(apiBinder, filterInfo);
         Provider<SearchService> searchBean = toProvider(apiBinder, searchInfo);
         Provider<DumpService> dumpBean = toProvider(apiBinder, dumpInfo);
         //
@@ -58,7 +58,7 @@ public class QueryInstall extends RsfModule {
         bindFilter(filterBean, rsfBinder.rsfService(SearchService.class).toProvider(searchBean));
         bindFilter(filterBean, rsfBinder.rsfService(DumpService.class).toProvider(dumpBean));
     }
-    protected void bindFilter(Provider<OptionRsfFilter> filterBean, ConfigurationBuilder<?> rsfBuilder) {
+    protected void bindFilter(Provider<ReadOptionFilter> filterBean, ConfigurationBuilder<?> rsfBuilder) {
         rsfBuilder.bindFilter("CoreNameFilter", filterBean).register();
     }
 }

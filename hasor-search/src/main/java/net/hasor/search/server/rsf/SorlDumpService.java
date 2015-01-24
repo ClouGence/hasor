@@ -21,7 +21,7 @@ import java.util.Map;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.search.SearchException;
 import net.hasor.search.client.DumpService;
-import net.hasor.search.client.rsf.OptionConstant;
+import net.hasor.search.domain.OptionConstant;
 import net.hasor.search.domain.SearchDocument;
 import net.hasor.search.domain.UpdateSearchResult;
 import net.hasor.search.utils.StrUtils;

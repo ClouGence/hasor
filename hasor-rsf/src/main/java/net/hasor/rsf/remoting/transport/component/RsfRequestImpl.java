@@ -78,6 +78,9 @@ public class RsfRequestImpl implements RsfRequest {
     public void addOption(String key, String value) {
         this.requestMsg.addOption(key, value);
     }
+    public void removeOption(String key) {
+        this.requestMsg.removeOption(key);
+    }
     //
     public boolean isLocal() {
         return this.local;

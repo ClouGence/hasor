@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
+package net.hasor.rsf.rpc.context;
+import java.util.HashMap;
+import java.util.Map;
+import net.hasor.rsf.RsfOptionSet;
 /**
  * 
- * @version : 2014年11月30日
+ * @version : 2015年1月24日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfOptionSet {
+public class OptionManager implements RsfOptionSet {
+    private final Map<String, String> optionMap = new HashMap<String, String>();
+    //
     /**获取选项Key集合。*/
-    public String[] getOptionKeys();
+    public String[] getOptionKeys() {
+        return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
+    }
     /**获取选项数据*/
-    public String getOption(String key);
+    public String getOption(String key) {
+        return this.optionMap.get(key);
+    }
     /**设置选项数据*/
-    public void addOption(String key, String value);
+    public void addOption(String key, String value) {
+        this.optionMap.put(key, value);
+    }
     /**删除选项数据*/
-    public void removeOption(String key);
+    public void removeOption(String key) {
+        this.optionMap.remove(key);
+    }
 }
