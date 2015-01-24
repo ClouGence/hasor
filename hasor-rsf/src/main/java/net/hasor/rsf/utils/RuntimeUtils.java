@@ -59,7 +59,7 @@ public class RuntimeUtils {
             for (int i = 0; i < parameterTypes.length; i++) {
                 Class<?> paramType = parameterTypes[i];
                 byte[] rawData = coder.encode(parameterObjects[i]);
-                requestMsg.addParameter(paramType.getName(), rawData);
+                requestMsg.addParameter(ProtocolUtils.toAsmType(paramType), rawData);
             }
         } catch (Throwable e) {
             throw new RsfException(ProtocolStatus.SerializeError, e);

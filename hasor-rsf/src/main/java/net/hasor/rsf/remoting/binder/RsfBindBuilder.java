@@ -52,7 +52,7 @@ public class RsfBindBuilder implements RsfBinder {
     public void bindFilter(String filterID, RsfFilter instance) {
         getContext().getBindCenter().bindFilter(filterID, new InstanceProvider<RsfFilter>(instance));
     }
-    public void bindFilter(String filterID, Provider<RsfFilter> provider) {
+    public void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
         getContext().getBindCenter().bindFilter(filterID, provider);
     }
     public void bindAddress(String hostIP, int hostPort) throws MalformedURLException {
@@ -140,9 +140,9 @@ public class RsfBindBuilder implements RsfBinder {
             this.meFilterMap.put(filterID, new InstanceProvider<RsfFilter>(instance));
             return this;
         }
-        public ConfigurationBuilder<T> bindFilter(String filterID, Provider<RsfFilter> provider) {
+        public ConfigurationBuilder<T> bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
             if (provider != null) {
-                this.meFilterMap.put(filterID, provider);
+                this.meFilterMap.put(filterID, (Provider<RsfFilter>) provider);
             }
             return this;
         }

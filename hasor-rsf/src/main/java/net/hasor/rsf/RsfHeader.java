@@ -19,7 +19,7 @@ package net.hasor.rsf;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfHeader {
+public interface RsfHeader extends RsfOptionSet {
     /**获取元信息*/
     public RsfBindInfo<?> getBindInfo();
     /**获取协议版本。*/
@@ -28,11 +28,4 @@ public interface RsfHeader {
     public long getRequestID();
     /**客户端希望的序列化方式*/
     public String getSerializeType();
-    //
-    /**获取选项Key集合。*/
-    public String[] getOptionKeys();
-    /**获取选项数据*/
-    public String getOption(String key);
-    /**设置选项数据*/
-    public void addOption(String key, String value);
 }

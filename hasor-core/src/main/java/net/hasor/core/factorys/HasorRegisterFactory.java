@@ -47,6 +47,7 @@ public class HasorRegisterFactory extends AbstractBindInfoFactory {
                 return provider.get();
             }
         }
+        //
         //2.HasorBindInfoProviderAdapter 类型。
         if (bindInfo instanceof HasorBindInfoProviderAdapter == true) {
             //3.Build 对象。

@@ -37,16 +37,16 @@ import org.more.util.StringUtils;
  */
 public class DefaultBindCenter extends AbstractBindCenter {
     /* Group -> Name -> Version*/
-    private final ConcurrentMap<String, Provider<RsfFilter>>                                          rsfFilter1;
-    private final List<Provider<RsfFilter>>                                                           rsfFilter2;
+    private final ConcurrentMap<String, Provider<? extends RsfFilter>>                                rsfFilter1;
+    private final List<Provider<? extends RsfFilter>>                                                 rsfFilter2;
     private final ConcurrentMap<String, ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>>> rsfService1Map;
     private final ConcurrentMap<String, RsfBindInfo<?>>                                               rsfService2Map;
     private final AbstractRsfContext                                                                  rsfContext;
     //
     public DefaultBindCenter(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.rsfFilter1 = new ConcurrentSkipListMap<String, Provider<RsfFilter>>();
-        this.rsfFilter2 = new ArrayList<Provider<RsfFilter>>();
+        this.rsfFilter1 = new ConcurrentSkipListMap<String, Provider<? extends RsfFilter>>();
+        this.rsfFilter2 = new ArrayList<Provider<? extends RsfFilter>>();
         this.rsfService1Map = new ConcurrentHashMap<String, ConcurrentMap<String, ConcurrentMap<String, RsfBindInfo<?>>>>();
         this.rsfService2Map = new ConcurrentHashMap<String, RsfBindInfo<?>>();
     }
@@ -137,7 +137,7 @@ public class DefaultBindCenter extends AbstractBindCenter {
     public <T extends RsfFilter> T findFilter(String filterID) {
         return (T) this.rsfFilter1.get(filterID).get();
     }
-    public synchronized void bindFilter(String filterID, Provider<RsfFilter> provider) {
+    public synchronized void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
         if (this.rsfFilter2.contains(filterID) == true) {
             throw new RepeateException("repeate filterID " + filterID);
         }

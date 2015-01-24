@@ -34,5 +34,5 @@ public abstract class AbstractBindCenter implements BindCenter {
     /**查找一个Filter*/
     public abstract <T extends RsfFilter> T findFilter(String filterID);
     /**发布一个Filter*/
-    public abstract void bindFilter(String filterID, Provider<RsfFilter> provider);
+    public abstract void bindFilter(String filterID, Provider<? extends RsfFilter> provider);
 }

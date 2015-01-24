@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 结果集
  * @version : 2014年10月25日
@@ -23,6 +25,7 @@ public class ResultDO<T> implements Result<T> {
     private static final long serialVersionUID = -4678893554960623786L;
     private T                 result           = null;
     private Throwable         throwable        = null;
+    private String            message          = null;
     private boolean           success          = true;
     //
     public ResultDO() {}
@@ -35,6 +38,10 @@ public class ResultDO<T> implements Result<T> {
     public ResultDO(Throwable throwable) {
         this.success = false;
         this.throwable = throwable;
+    }
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     //
     //
@@ -51,6 +58,10 @@ public class ResultDO<T> implements Result<T> {
     public Throwable getThrowable() {
         return this.throwable;
     }
+    @Override
+    public String getMessage() {
+        return message;
+    }
     //
     public ResultDO<T> setResult(T result) {
         this.result = result;
@@ -62,6 +73,10 @@ public class ResultDO<T> implements Result<T> {
     }
     public ResultDO<T> setSuccess(boolean success) {
         this.success = success;
+        return this;
+    }
+    public ResultDO<T> setMessage(String message) {
+        this.message = message;
         return this;
     }
 }

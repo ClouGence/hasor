@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface RsfService {
     /**唯一标识。*/
     public String name() default "";

@@ -25,6 +25,8 @@ public interface Result<T> extends Serializable {
     public boolean isSuccess();
     /**(如果有)返回如果操作失败反馈的异常信息。*/
     public Throwable getThrowable();
+    /**(如果有)返回消息。*/
+    public String getMessage();
     /**获取返回的结果集。*/
     public T getResult();
 }

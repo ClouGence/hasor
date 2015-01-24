@@ -119,5 +119,31 @@ public class ProtocolUtils {
             return cache;
         }
     }
+    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
+    public static String toAsmType(final Class<?> classType) {
+        if (classType == int.class) {
+            return "I";
+        } else if (classType == byte.class) {
+            return "B";
+        } else if (classType == char.class) {
+            return "C";
+        } else if (classType == double.class) {
+            return "D";
+        } else if (classType == float.class) {
+            return "F";
+        } else if (classType == long.class) {
+            return "J";
+        } else if (classType == short.class) {
+            return "S";
+        } else if (classType == boolean.class) {
+            return "Z";
+        } else if (classType == void.class) {
+            return "V";
+        } else if (classType.isArray() == true) {
+            return "[" + toAsmType(classType.getComponentType());
+        } else {
+            return classType.getName();
+        }
+    }
     private static Map<String, Class<?>> loadClassCache = new java.util.concurrent.ConcurrentHashMap<String, Class<?>>();
 }

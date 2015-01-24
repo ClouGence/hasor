@@ -55,7 +55,7 @@ class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
         return this.rsfFilterArray;
     }
     public RsfFilter getFilter(String filterID) {
-        Provider<RsfFilter> provider = this.rsfFilterMap.get(filterID);
+        Provider<? extends RsfFilter> provider = this.rsfFilterMap.get(filterID);
         return provider == null ? null : provider.get();
     }
     //

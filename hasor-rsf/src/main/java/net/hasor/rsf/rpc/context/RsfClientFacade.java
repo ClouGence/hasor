@@ -24,6 +24,7 @@ import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.remoting.binder.RsfServiceInfo;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.future.FutureCallback;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2014年12月22日
@@ -47,6 +48,11 @@ class RsfClientFacade implements RsfClient {
         return this.rsfContext.getBindCenter().getServiceByName(serviceName);
     }
     protected RsfClient findRsfClient(RsfBindInfo<?> bindInfo) {
+        if (bindInfo == null) {
+            NullPointerException npe = new NullPointerException("bindInfo is null. ");
+            LoggerHelper.logSevere(npe.getMessage(), npe);
+            throw npe;
+        }
         AbstractClientManager clientManager = this.rsfContext.getRequestManager().getClientManager();
         return clientManager.getClient(bindInfo);
     }
