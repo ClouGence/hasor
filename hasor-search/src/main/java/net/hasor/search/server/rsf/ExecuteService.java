@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.search.client;
-import net.hasor.search.domain.QuerySearchResult;
-import net.hasor.search.query.SearchQuery;
+package net.hasor.search.server.rsf;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.response.UpdateResponse;
 /**
- * 搜索接口
- * @version : 2015年1月8日
+ * 
+ * @version : 2015年1月16日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SearchService {
-    /**执行查询*/
-    public QuerySearchResult query(SearchQuery query) throws Throwable;
+public interface ExecuteService {
+    public UpdateResponse doExecute(SolrServer solrServer) throws Throwable;
 }

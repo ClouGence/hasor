@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.search.client;
-import net.hasor.search.domain.QuerySearchResult;
-import net.hasor.search.query.SearchQuery;
+package net.hasor.search.domain;
 /**
- * 搜索接口
+ * 搜索返回的记录集
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SearchService {
-    /**执行查询*/
-    public QuerySearchResult query(SearchQuery query) throws Throwable;
+public class UpdateSearchResult extends SearchResult<Integer> {
+    private static final long serialVersionUID = 3289264304107613001L;
+    //
+    public UpdateSearchResult() {
+        super(0);
+    }
+    public UpdateSearchResult(Integer result) {
+        super(result);
+    }
 }

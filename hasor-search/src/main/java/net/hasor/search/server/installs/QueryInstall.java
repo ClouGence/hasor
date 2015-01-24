@@ -18,12 +18,16 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfBinder.ConfigurationBuilder;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
+import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
+import net.hasor.search.server.rsf.OptionRsfFilter;
+import net.hasor.search.server.rsf.SorlDumpService;
 import net.hasor.search.server.rsf.SorlSearchService;
 /**
- * Sorl容器启动
+ * 查询服务接口
  * @version : 2015年1月13日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -39,13 +43,22 @@ public class QueryInstall extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
-        //1.SearchQueryClient
-        BindInfo<SearchService> bindInfo = apiBinder.bindType(SearchService.class).to(SorlSearchService.class).toInfo();
-        Provider<SearchService> lazyBean = toProvider(apiBinder, bindInfo);
+        //注册到Hasor
+        BindInfo<OptionRsfFilter> filterInfo = apiBinder.bindType(OptionRsfFilter.class).toInstance(new OptionRsfFilter()).toInfo();
+        BindInfo<SearchService> searchInfo = apiBinder.bindType(SearchService.class).to(SorlSearchService.class).toInfo();
+        BindInfo<DumpService> dumpInfo = apiBinder.bindType(DumpService.class).to(SorlDumpService.class).toInfo();
         //
-        //2.远程服务提供
+        //BindInfo to Provider
+        Provider<OptionRsfFilter> filterBean = toProvider(apiBinder, filterInfo);
+        Provider<SearchService> searchBean = toProvider(apiBinder, searchInfo);
+        Provider<DumpService> dumpBean = toProvider(apiBinder, dumpInfo);
+        //
+        //发布 RSf 服务
         RsfBinder rsfBinder = apiBinder.getRsfBinder();
-        rsfBinder.rsfService(SearchService.class).toProvider(lazyBean)//
-                .bindFilter("CoreNameFilter", new SorlSearchService()).register();
+        bindFilter(filterBean, rsfBinder.rsfService(SearchService.class).toProvider(searchBean));
+        bindFilter(filterBean, rsfBinder.rsfService(DumpService.class).toProvider(dumpBean));
+    }
+    protected void bindFilter(Provider<OptionRsfFilter> filterBean, ConfigurationBuilder<?> rsfBuilder) {
+        rsfBuilder.bindFilter("CoreNameFilter", filterBean).register();
     }
 }

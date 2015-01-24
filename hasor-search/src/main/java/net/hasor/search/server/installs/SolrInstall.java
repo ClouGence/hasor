@@ -37,9 +37,9 @@ public class SolrInstall implements Module {
             String searchHome = apiBinder.getEnvironment().envVar("SEARCH-HOME");
             LoggerHelper.logInfo("SEARCH-HOME = " + searchHome);
             CoreContainer cores = createCoreContainer(searchHome);
-            //
             apiBinder.bindType(CoreContainer.class).toInstance(cores);
             //
+            LoggerHelper.logInfo("Solr.inited.");
         } catch (Throwable t) {
             // catch this so our filter still works
             LoggerHelper.logSevere("Could not start Solr. Check SEARCH-HOME property and the logs");

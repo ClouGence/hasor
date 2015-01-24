@@ -14,46 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.search.domain;
-import org.more.bizcommon.ResultDO;
+import java.util.List;
 /**
  * 搜索返回的记录集
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class SearchResult<T> extends ResultDO<T> {
+public class QuerySearchResult extends SearchResult<List<SearchDocument>> {
     private static final long serialVersionUID = 3289264304107613001L;
-    private int               queryTime;
-    private long              elapsedTime;
-    private int               status;
+    private Float             maxScore;
+    private long              numFound;
+    private long              start;
     //
-    public SearchResult(T result) {
-        super(result);
+    public QuerySearchResult(List<SearchDocument> documentList) {
+        super(documentList);
     }
-    //
-    /***/
-    public int getQueryTime() {
-        return queryTime;
+    public Float getMaxScore() {
+        return maxScore;
     }
-    /***/
-    public void setQueryTime(int queryTime) {
-        this.queryTime = queryTime;
+    public void setMaxScore(Float maxScore) {
+        this.maxScore = maxScore;
     }
-    /***/
-    public long getElapsedTime() {
-        return elapsedTime;
+    public long getNumFound() {
+        return numFound;
     }
-    public void setElapsedTime(long elapsedTime) {
-        this.elapsedTime = elapsedTime;
+    public void setNumFound(long numFound) {
+        this.numFound = numFound;
     }
-    public int getStatus() {
-        return status;
+    public long getStart() {
+        return start;
     }
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStart(long start) {
+        this.start = start;
     }
     @Override
     public String toString() {
-        return "queryTime=" + queryTime + ",elapsedTime=" + elapsedTime + //
-                ",status=" + status + ",docs=" + super.toString();
+        return "numFound=" + numFound + ",start=" + start + //
+                (maxScore != null ? ",maxScore=" + maxScore : "") + super.toString();
     }
 }

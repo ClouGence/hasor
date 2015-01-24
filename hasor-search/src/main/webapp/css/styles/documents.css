@@ -84,8 +84,6 @@
 
 #content #documents #result {
 	display: none;
-	float: right;
-	width: 54%;
 }
 
 #content #documents #result #url {
