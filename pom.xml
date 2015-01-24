@@ -166,10 +166,9 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-rsf</module>
+		<module>hasor-quick</module>
 		<module>hasor-search</module>
 		<module>hasor-search-client</module>
-		<module>hasor-quick</module>
-		<!-- module>hasor-security</module -->
 	</modules>
 
 	<!-- 公共依赖 -->
