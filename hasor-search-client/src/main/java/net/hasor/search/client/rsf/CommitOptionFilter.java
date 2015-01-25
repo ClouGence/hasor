@@ -18,7 +18,6 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.search.client.Commit;
 import net.hasor.search.domain.OptionConstant;
 /**
  * 不要把它加入全局过滤器，以免被误杀抛出 403.

@@ -20,7 +20,6 @@ import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
-import net.hasor.search.client.Commit;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
 /**
@@ -37,20 +36,18 @@ public class SearchServer {
         this.rsfContext = searchServerFactory.getRsfContext();
     }
     //
+    /**获取查询接口。*/
     public SearchService getSearchService(String coreName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         return getService(coreName, SearchService.class, null);
     }
-    public SearchService getSearchService(String coreName, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
-        return getService(coreName, SearchService.class, commitMode);
-    }
+    /**获取Dump接口。*/
     public DumpService getDumpService(String coreName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         return getService(coreName, DumpService.class, null);
     }
+    /**获取Dump接口，第二个参数指定了递交方式。*/
     public DumpService getDumpService(String coreName, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         return getService(coreName, DumpService.class, commitMode);
     }
-    //
-    //
     //
     private <T> T getService(String coreName, Class<T> serviceType, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
         String name = serviceType.getName();
@@ -58,6 +55,10 @@ public class SearchServer {
         //
         BindCenter bindCenter = this.rsfContext.getBindCenter();
         RsfBindInfo<?> serviceInfo = bindCenter.getService(coreName, name, version);
+        //
+        if (commitMode == null) {
+            commitMode = serviceType.getAnnotation(Commit.class);
+        }
         //
         if (serviceInfo == null) {
             serviceInfo = bindCenter.getRsfBinder().rsfService(serviceType)//
