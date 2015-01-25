@@ -16,22 +16,21 @@
 package net.hasor.search.server.installs;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
-import net.hasor.core.Provider;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfBinder.ConfigurationBuilder;
+import net.hasor.core.EventContext;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
-import net.hasor.search.server.rsf.ReadOptionFilter;
-import net.hasor.search.server.rsf.SorlDumpService;
-import net.hasor.search.server.rsf.SorlSearchService;
+import net.hasor.search.server.rsf.monitor.CoreMonitor;
+import net.hasor.search.server.rsf.service.ReadOptionFilter;
+import net.hasor.search.server.rsf.service.SorlDumpService;
+import net.hasor.search.server.rsf.service.SorlSearchService;
 /**
  * 查询服务接口
  * @version : 2015年1月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class QueryInstall extends RsfModule {
+public class RsfInstall extends RsfModule {
     @Override
     protected String bindAddress(Environment env) {
         return env.envVar("SEARCH-HOST");
@@ -48,17 +47,9 @@ public class QueryInstall extends RsfModule {
         BindInfo<SearchService> searchInfo = apiBinder.bindType(SearchService.class).to(SorlSearchService.class).toInfo();
         BindInfo<DumpService> dumpInfo = apiBinder.bindType(DumpService.class).to(SorlDumpService.class).toInfo();
         //
-        //BindInfo to Provider
-        Provider<ReadOptionFilter> filterBean = toProvider(apiBinder, filterInfo);
-        Provider<SearchService> searchBean = toProvider(apiBinder, searchInfo);
-        Provider<DumpService> dumpBean = toProvider(apiBinder, dumpInfo);
-        //
-        //发布 RSf 服务
-        RsfBinder rsfBinder = apiBinder.getRsfBinder();
-        bindFilter(filterBean, rsfBinder.rsfService(SearchService.class).toProvider(searchBean));
-        bindFilter(filterBean, rsfBinder.rsfService(DumpService.class).toProvider(dumpBean));
-    }
-    protected void bindFilter(Provider<ReadOptionFilter> filterBean, ConfigurationBuilder<?> rsfBuilder) {
-        rsfBuilder.bindFilter("CoreNameFilter", filterBean).register();
+        //当容器启动时启动监听器，负责根据CoreName变化维护每个服务的注册状态
+        EventContext eventContext = apiBinder.getEnvironment().getEventContext();
+        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(filterInfo, searchInfo)));
+        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(filterInfo, dumpInfo)));
     }
 }
