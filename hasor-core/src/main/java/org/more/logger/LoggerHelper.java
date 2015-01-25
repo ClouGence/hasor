@@ -75,7 +75,7 @@ public class LoggerHelper {
     }
     private static Logger getLogger() {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
-        StackTraceElement onCode = stackElements[4];
+        StackTraceElement onCode = stackElements[3];
         Logger logger = Logger.getLogger(onCode.getClassName());
         logger.setFilter(new CallerFilter(logger.getFilter(), onCode));
         return logger;

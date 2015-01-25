@@ -59,6 +59,7 @@ public class CoreMonitor<T> extends Thread implements AppContextAware, EventList
     @Override
     public void run() {
         Settings settings = this.appContext.getEnvironment().getSettings();
+        LoggerHelper.logInfo("coreMonitor is started  , serviceInfo = " + serviceInfo);
         while (true) {
             int refreshTime = settings.getInteger("searchConfig.coreMonitor.refreshTime", 5);
             try {
@@ -75,7 +76,7 @@ public class CoreMonitor<T> extends Thread implements AppContextAware, EventList
         final RsfBinder rsfBinder = rsfContext.getBindCenter().getRsfBinder();
         final Class<T> serviceType = this.serviceInfo.getBindType();
         final String version = rsfContext.getSettings().getDefaultVersion();
-        LoggerHelper.logInfo("CoreMonitor.refresh , ServiceType = " + serviceType);
+        LoggerHelper.logFine("CoreMonitor.refresh , ServiceType = " + serviceType);
         //
         //1.提取差异使用
         Collection<String> nowNames = this.coreContainer.getCoreNames();

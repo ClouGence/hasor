@@ -19,8 +19,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import net.hasor.core.Settings;
+import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.adapter.AbstracAddressCenter;
 import net.hasor.rsf.adapter.AbstractBindCenter;
@@ -31,6 +31,7 @@ import net.hasor.rsf.remoting.binder.DefaultBindCenter;
 import net.hasor.rsf.remoting.transport.customer.RsfRequestManager;
 import net.hasor.rsf.rpc.executes.ExecutesManager;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
+import net.hasor.rsf.rpc.warp.InnerLocalWarpRsfFilter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
@@ -68,6 +69,8 @@ public class DefaultRsfContext extends AbstractRsfContext {
         int workerThread = this.rsfSettings.getNetworkWorker();
         this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
+        this.bindCenter.bindFilter(InnerLocalWarpRsfFilter.class.getName(),//
+                new InstanceProvider<InnerLocalWarpRsfFilter>(new InnerLocalWarpRsfFilter()));
     }
     //
     public void shutdown() {

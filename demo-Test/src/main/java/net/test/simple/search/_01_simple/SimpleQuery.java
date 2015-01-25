@@ -34,14 +34,14 @@ public class SimpleQuery {
         SearchServerFactory factory = new SearchServerFactory();
         SearchServer server = factory.connect("local", 8000);
         //
-        DumpService dump = server.getDumpService("collection1");
+        DumpService dump = server.getDumpService("collection1", null);
         //
         for (int i = 0; i < 10; i++) {
             Map<String, String> userInfo = new HashMap<String, String>();
             userInfo.put("id", String.valueOf(i));
             userInfo.put("title", "yongchun.zyc-" + String.valueOf(i));
             userInfo.put("author", "Num." + String.valueOf(i));
-            dump.addMap(userInfo,1000);
+            dump.addMap(userInfo, 1000);
         }
         //
         System.out.println();

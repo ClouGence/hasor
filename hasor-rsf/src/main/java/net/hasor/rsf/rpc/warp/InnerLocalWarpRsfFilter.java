@@ -13,32 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.search.client.rsf;
+package net.hasor.rsf.rpc.warp;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.search.client.Commit;
-import net.hasor.search.domain.OptionConstant;
 /**
- * 不要把它加入全局过滤器，以免被误杀抛出 403.
- * @version : 2015年1月8日
+ * 负责更新{@link RsfRequestLocal}、{@link RsfResponseLocal}
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-class WriteOptionFilter implements RsfFilter, OptionConstant {
-    private Commit commitMode = null;
-    public WriteOptionFilter(Commit commitMode) {
-        this.commitMode = commitMode;
-    }
-    //
+public final class InnerLocalWarpRsfFilter implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (this.commitMode != null) {
-            request.addOption(COMMIT_KEY, COMMIT_VALUE);
-            request.addOption(WAIT_FLUSH_KEY, Boolean.toString(this.commitMode.waitFlush()));
-            request.addOption(WAIT_SEARCHER_KEY, Boolean.toString(this.commitMode.waitSearcher()));
-            request.addOption(SOFT_COMMIT_KEY, Boolean.toString(this.commitMode.softCommit()));
+        try {
+            RsfRequestLocal.updateLocal(request);
+            RsfResponseLocal.updateLocal(response);
+            chain.doFilter(request, response);
+        } finally {
+            RsfRequestLocal.removeLocal();
+            RsfResponseLocal.removeLocal();
         }
-        chain.doFilter(request, response);
     }
 }

@@ -83,4 +83,14 @@ class ServiceDefine<T> implements RsfBindDefine<T>, RegisterReference<T> {
     public Object getMetaData(String key) {
         return this.serviceDomain.getMetaData(key);
     }
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer("");
+        if (rsfFilterMap != null) {
+            for (String fName : rsfFilterMap.keySet()) {
+                buffer.append(fName + ",");
+            }
+        }
+        return "ServiceDefine[Domain=" + serviceDomain + ",Filters=" + buffer.toString() + "]";
+    }
 }

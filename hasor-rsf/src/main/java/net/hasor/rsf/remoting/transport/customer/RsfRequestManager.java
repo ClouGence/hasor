@@ -53,14 +53,16 @@ import org.more.logger.LoggerHelper;
 public class RsfRequestManager extends AbstractRequestManager {
     private final AbstractRsfContext                 rsfContext;
     private final AbstractClientManager              clientManager;
-    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse  = new ConcurrentHashMap<Long, RsfFuture>();
+    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
     private final Timer                              timer;
-    private final AtomicInteger                      requestCount = new AtomicInteger(0);
+    private final AtomicInteger                      requestCount;
     //
     public RsfRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.clientManager = new InnerClientManager(this);
+        this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timer = new HashedWheelTimer();
+        this.requestCount = new AtomicInteger(0);
     }
     /**获取 {@link AbstractRsfContext}*/
     public AbstractRsfContext getRsfContext() {
@@ -144,7 +146,8 @@ public class RsfRequestManager extends AbstractRequestManager {
         try {
             RsfBindInfo<?> bindInfo = req.getBindInfo();
             Provider<RsfFilter>[] rsfFilter = this.getRsfContext().getFilters(bindInfo);
-            new RsfFilterHandler(rsfFilter, new RsfFilterChain() {
+            /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
+            new InnterRsfFilterHandler(rsfFilter, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     sendRequest(rsfFuture);//发送请求到远方
                 }
@@ -218,9 +221,19 @@ public class RsfRequestManager extends AbstractRequestManager {
                 }
                 LoggerHelper.logSevere(RsfRequestManager.this + ":" + errorMsg);
                 //回应Response
-                RsfRequestManager.this.putResponse(request.getRequestID(), //
-                        new RsfException(ProtocolStatus.ClientError, errorMsg));
+                putResponse(request.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
+    }
+    //
+    private class InnterRsfFilterHandler extends RsfFilterHandler {
+        public InnterRsfFilterHandler(Provider<RsfFilter>[] rsfFilters, RsfFilterChain rsfChain) {
+            super(rsfFilters, rsfChain);
+        }
+        public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
+            try {
+                super.doFilter(request, response);
+            } finally {}
+        }
     }
 }

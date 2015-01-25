@@ -58,10 +58,11 @@ public class SearchServer {
         //
         BindCenter bindCenter = this.rsfContext.getBindCenter();
         RsfBindInfo<?> serviceInfo = bindCenter.getService(coreName, name, version);
+        //
         if (serviceInfo == null) {
             serviceInfo = bindCenter.getRsfBinder().rsfService(serviceType)//
                     .ngv(coreName, name, version)//
-                    .bindFilter("CoreNameFilter", new WriteOptionFilter(commitMode))//
+                    .bindFilter(CommitOptionFilter.class.getName(), new CommitOptionFilter(commitMode))//
                     .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
         }
         //
