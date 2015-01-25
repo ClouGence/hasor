@@ -15,81 +15,57 @@
  */
 package net.hasor.search.client.rsf;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
+import net.hasor.search.client.Commit;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
-import org.more.classcode.delegate.faces.MethodClassConfig;
 /**
  * 
  * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class SearchServer {
-    private WriteOptionFilter optionFilter = null;
-    private RsfContext        rsfContext   = null;
+    private URL        rsfHost    = null;
+    private RsfContext rsfContext = null;
     //
-    SearchServer(URL rsfHost, SearchServerFactory searchServerFactory) throws MalformedURLException {
-        RsfContext rsfContext = searchServerFactory.getRsfContext();
-        this.rsfClient = rsfContext.getRsfClient();
-        this.optionFilter = new WriteOptionFilter();
-        //
-        String dumpName = DumpService.class.getName();
-        //
-        this.dumpInfo = bindCenter.getService(group, dumpName, version);
-        //
-        if (this.dumpInfo == null) {
-            this.dumpInfo = bindCenter.getRsfBinder().rsfService(DumpService.class)//
-                    .ngv(group, dumpName, version)//
-                    .bindFilter("CoreNameFilter", this.optionFilter)//
-                    .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
-        }
+    SearchServer(URL rsfHost, SearchServerFactory searchServerFactory) {
+        this.rsfHost = rsfHost;
+        this.rsfContext = searchServerFactory.getRsfContext();
     }
     //
     public SearchService getSearchService(String coreName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
-        return getService(this.queryInfo, coreName, SearchService.class);
+        return getService(coreName, SearchService.class, null);
+    }
+    public SearchService getSearchService(String coreName, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        return getService(coreName, SearchService.class, commitMode);
     }
     public DumpService getDumpService(String coreName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
-        return getService(this.dumpInfo, coreName, DumpService.class);
+        return getService(coreName, DumpService.class, null);
+    }
+    public DumpService getDumpService(String coreName, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        return getService(coreName, DumpService.class, commitMode);
     }
     //
     //
     //
-    private static Object                              LOCK        = new Object();
-    private static ConcurrentHashMap<String, Class<?>> CACHE_TYPES = new ConcurrentHashMap<String, Class<?>>();
-    private <T> T getService(String coreName, Class<T> type)//
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
-        //
-        String group = this.rsfContext.getSettings().getDefaultGroup();
-        String name = SearchService.class.getName();
+    private <T> T getService(String coreName, Class<T> serviceType, Commit commitMode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        String name = serviceType.getName();
         String version = this.rsfContext.getSettings().getDefaultVersion();
         //
-        BindCenter bindCenter = rsfContext.getBindCenter();
-        RsfBindInfo<?> info = bindCenter.getService(group, name, version);
-        if (this.queryInfo == null) {
-            this.queryInfo = bindCenter.getRsfBinder().rsfService(SearchService.class)//
-                    .ngv(group, queryName, version)//
-                    .bindFilter("CoreNameFilter", this.optionFilter)//
+        BindCenter bindCenter = this.rsfContext.getBindCenter();
+        RsfBindInfo<?> serviceInfo = bindCenter.getService(coreName, name, version);
+        if (serviceInfo == null) {
+            serviceInfo = bindCenter.getRsfBinder().rsfService(serviceType)//
+                    .ngv(coreName, name, version)//
+                    .bindFilter("CoreNameFilter", new WriteOptionFilter(commitMode))//
                     .bindAddress(rsfHost.getHost(), rsfHost.getPort()).register();
         }
         //
-        T search = this.rsfClient.wrapper(info, type);
-        Class<?> serviceType = CACHE_TYPES.get(coreName);
-        if (serviceType == null) {
-            synchronized (LOCK) {
-                serviceType = CACHE_TYPES.get(coreName);
-                if (serviceType == null) {
-                    MethodClassConfig decConfig = new MethodClassConfig();
-                    decConfig.addDelegate(type, new ServiceWarp(coreName, this.coreNameFilter, search));
-                    serviceType = decConfig.toClass();
-                    CACHE_TYPES.putIfAbsent(coreName, serviceType);
-                }
-            }
-        }
-        return (T) serviceType.newInstance();
+        RsfClient rsfClient = this.rsfContext.getRsfClient();
+        return rsfClient.wrapper(serviceInfo, serviceType);
     }
 }

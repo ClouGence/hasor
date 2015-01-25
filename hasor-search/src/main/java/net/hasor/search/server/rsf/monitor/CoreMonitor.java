@@ -28,7 +28,6 @@ import net.hasor.core.Settings;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfBinder.RegisterReference;
 import net.hasor.rsf.RsfContext;
-import net.hasor.search.server.rsf.service.ReadOptionFilter;
 import org.apache.solr.core.CoreContainer;
 import org.more.logger.LoggerHelper;
 /**
@@ -37,14 +36,12 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class CoreMonitor<T> extends Thread implements AppContextAware, EventListener {
-    private BindInfo<ReadOptionFilter>        rsfFilter     = null;
     private BindInfo<T>                       serviceInfo   = null;
     private AppContext                        appContext    = null;
     private CoreContainer                     coreContainer = null;
     private Map<String, RegisterReference<T>> bindNames     = null;
     //
-    public CoreMonitor(BindInfo<ReadOptionFilter> rsfFilter, BindInfo<T> serviceInfo) {
-        this.rsfFilter = rsfFilter;
+    public CoreMonitor(BindInfo<T> serviceInfo) {
         this.serviceInfo = serviceInfo;
         this.bindNames = new HashMap<String, RegisterReference<T>>();
     }
@@ -74,7 +71,6 @@ public class CoreMonitor<T> extends Thread implements AppContextAware, EventList
     }
     public void refresh() {
         final Provider<T> serviceProvider = this.appContext.getProvider(this.serviceInfo);
-        final Provider<ReadOptionFilter> filterProvider = this.appContext.getProvider(this.rsfFilter);
         final RsfContext rsfContext = this.appContext.getInstance(RsfContext.class);
         final RsfBinder rsfBinder = rsfContext.getBindCenter().getRsfBinder();
         final Class<T> serviceType = this.serviceInfo.getBindType();
@@ -88,9 +84,7 @@ public class CoreMonitor<T> extends Thread implements AppContextAware, EventList
         for (String nowName : nowNames) {
             if (this.bindNames.containsKey(nowName) == false) {
                 RegisterReference<T> register = rsfBinder.rsfService(serviceType, serviceProvider)//
-                        .ngv(nowName, serviceType.getName(), version)//
-                        .bindFilter("ReadCoreNameFilter", filterProvider)//
-                        .register();
+                        .ngv(nowName, serviceType.getName(), version).register();
                 this.bindNames.put(nowName, register);
                 LoggerHelper.logInfo("register NewCore[%s].", register);
             }

@@ -16,10 +16,9 @@
 package net.hasor.search.client.rsf;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.rpc.context.OptionManager;
+import net.hasor.search.client.Commit;
 import net.hasor.search.domain.OptionConstant;
 /**
  * 不要把它加入全局过滤器，以免被误杀抛出 403.
@@ -27,29 +26,19 @@ import net.hasor.search.domain.OptionConstant;
  * @author 赵永春(zyc@hasor.net)
  */
 class WriteOptionFilter implements RsfFilter, OptionConstant {
-    private final ThreadLocalOptionManager localOptionSet = new ThreadLocalOptionManager();
+    private Commit commitMode = null;
+    public WriteOptionFilter(Commit commitMode) {
+        this.commitMode = commitMode;
+    }
     //
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        RsfOptionSet optionSet = localOptionSet();
-        for (String key : optionSet.getOptionKeys()) {
-            request.addOption(key, optionSet.getOption(key));
+        if (this.commitMode != null) {
+            request.addOption(COMMIT_KEY, COMMIT_VALUE);
+            request.addOption(WAIT_FLUSH_KEY, Boolean.toString(this.commitMode.waitFlush()));
+            request.addOption(WAIT_SEARCHER_KEY, Boolean.toString(this.commitMode.waitSearcher()));
+            request.addOption(SOFT_COMMIT_KEY, Boolean.toString(this.commitMode.softCommit()));
         }
-        //
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            localOptionSet.remove();
-        }
-    }
-    public RsfOptionSet localOptionSet() {
-        return localOptionSet.get();
-    }
-    //
-    private static final class ThreadLocalOptionManager extends ThreadLocal<RsfOptionSet> {
-        @Override
-        protected RsfOptionSet initialValue() {
-            return new OptionManager();
-        }
+        chain.doFilter(request, response);
     }
 }

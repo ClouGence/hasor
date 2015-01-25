@@ -22,7 +22,6 @@ import net.hasor.rsf.plugins.hasor.RsfModule;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
 import net.hasor.search.server.rsf.monitor.CoreMonitor;
-import net.hasor.search.server.rsf.service.ReadOptionFilter;
 import net.hasor.search.server.rsf.service.SorlDumpService;
 import net.hasor.search.server.rsf.service.SorlSearchService;
 /**
@@ -43,13 +42,12 @@ public class RsfInstall extends RsfModule {
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
         //注册到Hasor
-        BindInfo<ReadOptionFilter> filterInfo = apiBinder.bindType(ReadOptionFilter.class).toInstance(new ReadOptionFilter()).toInfo();
         BindInfo<SearchService> searchInfo = apiBinder.bindType(SearchService.class).to(SorlSearchService.class).toInfo();
         BindInfo<DumpService> dumpInfo = apiBinder.bindType(DumpService.class).to(SorlDumpService.class).toInfo();
         //
         //当容器启动时启动监听器，负责根据CoreName变化维护每个服务的注册状态
         EventContext eventContext = apiBinder.getEnvironment().getEventContext();
-        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(filterInfo, searchInfo)));
-        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(filterInfo, dumpInfo)));
+        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(searchInfo)));
+        eventContext.pushListener(EventContext.ContextEvent_Started, apiBinder.autoAware(new CoreMonitor(dumpInfo)));
     }
 }

@@ -19,8 +19,9 @@ import java.util.Map;
 import java.util.Set;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.search.domain.OptionConstant;
+import net.hasor.rsf.RsfRequest;
 import net.hasor.search.domain.SearchDocument;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -33,21 +34,22 @@ import org.apache.solr.core.CoreContainer;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractSearchService implements InjectMembers {
-    private ReadOptionFilter rsfOption = null;
-    private CoreContainer    container = null;
+    private RsfRequest    rsfRequest = null;
+    private CoreContainer container  = null;
     @Override
     public void doInject(AppContext appContext) {
         this.container = appContext.getInstance(CoreContainer.class);
-        this.rsfOption = appContext.getInstance(ReadOptionFilter.class);
-        if (this.container == null || this.rsfOption == null) {
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
+        this.rsfRequest = rsfContext.getRequestWarp();
+        if (this.container == null || this.rsfRequest == null) {
             throw new NullPointerException();
         }
     }
     protected RsfOptionSet getRsfOptionSet() {
-        return this.rsfOption.getRsfOptionSet();
+        return this.rsfRequest;
     }
     protected SolrServer getSolrServer() {
-        String coreName = this.rsfOption.getRsfOptionSet().getOption(OptionConstant.CORE_NAME_KEY);
+        String coreName = this.rsfRequest.getBindInfo().getBindGroup();
         return new EmbeddedSolrServer(this.container, coreName);
     }
     //

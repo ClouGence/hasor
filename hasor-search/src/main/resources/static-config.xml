@@ -3,8 +3,13 @@
 	<hasor>
 		<modules>
 			<module>net.hasor.search.server.installs.SolrInstall</module>
-			<module>net.hasor.search.server.installs.QueryInstall</module>
+			<module>net.hasor.search.server.installs.RsfInstall</module>
 		</modules>
+
+		<searchConfig>
+			<!-- coreName 刷新 RSF时间间隔 -->
+			<coreMonitor refreshTime="5" />
+		</searchConfig>
 
 		<environmentVar>
 			<!-- RSF 服务地址 -->

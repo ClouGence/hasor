@@ -49,7 +49,6 @@ public class SearchServerFactory {
     }
     //
     public SearchServer connect(final String hostIP, final int hostPort) throws Throwable {
-        //
         return new SearchServer(URLUtils.toURL(hostIP(hostIP), hostPort), this);
     }
 }

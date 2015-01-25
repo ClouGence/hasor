@@ -20,8 +20,6 @@ package net.hasor.search.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface OptionConstant {
-    /**core name for search.*/
-    public static final String CORE_NAME_KEY     = "CoreName";
     /**waitFlush block until index changes are flushed to disk*/
     public static final String WAIT_FLUSH_KEY    = "WaitFlush";
     /**waitSearcher block until a new searcher is opened and registered as the main query searcher, making the changes visible.*/
