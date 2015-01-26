@@ -42,5 +42,6 @@ public class HtmlQueryResponseWriter implements QueryResponseWriter {
     @Override
     public void write(Writer writer, SolrQueryRequest request, SolrQueryResponse response) throws IOException {
         // TODO Auto-generated method stub
+        System.out.println();
     }
 }

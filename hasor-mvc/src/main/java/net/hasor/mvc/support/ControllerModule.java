@@ -26,6 +26,7 @@ import net.hasor.mvc.MappingTo;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.strategy.CallStrategyFactory;
 import net.hasor.mvc.strategy.DefaultCallStrategyFactory;
+import org.more.logger.LoggerHelper;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
@@ -38,17 +39,19 @@ public class ControllerModule implements Module {
         return or == data;
     };
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        LoggerHelper.logInfo("work at ControllerModule.", this.getClass());
         //1.搜索ModelController
         Set<Class<?>> controllerSet = apiBinder.findClass(ModelController.class);
         if (controllerSet == null || controllerSet.isEmpty() == true) {
+            LoggerHelper.logInfo("load Controller, controllerSet isEmpty.", this.getClass());
             return;
         }
         CallStrategyFactory strategyFactory = this.createCallStrategyFactory(apiBinder);
+        LoggerHelper.logInfo("create CallStrategyFactory. type is " + strategyFactory.getClass());
         //2.绑定到Hasor
         for (Class<?> clazz : controllerSet) {
             int modifier = clazz.getModifiers();
-            if (checkIn(modifier, Modifier.INTERFACE) || //
-                    checkIn(modifier, Modifier.ABSTRACT)) {
+            if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
                 continue;
             }
             //
@@ -61,6 +64,9 @@ public class ControllerModule implements Module {
                     continue;
                 }
                 hasMapping = true;
+                //
+                MappingTo mto = atMethod.getAnnotation(MappingTo.class);
+                LoggerHelper.logInfo("method ‘%s’ mappingTo: ‘%s’, form Type :%s.", atMethod.getName(), mto.value(), clazz.getName());
                 apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(createMappingDefine(newID, atMethod, strategyFactory));
             }
             //

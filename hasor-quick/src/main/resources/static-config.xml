@@ -6,7 +6,7 @@
 		<loadPackages>net.hasor.quick.*</loadPackages>
 		<!-- 默认要装载的模块 -->
 		<modules>
-			<module class="net.hasor.quick.plugin.PluginsModule" />
+			<module>net.hasor.quick.plugin.PluginsModule</module>
 		</modules>
 		<!-- Hasor-Web 专用 -->
 		<webConfig>

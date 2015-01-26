@@ -29,9 +29,14 @@ import org.more.util.StringUtils;
 @Plugin
 public class BeanPlugin implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        LoggerHelper.logInfo("beans Util ‘Beans’ bind OK.");
+        apiBinder.bindType(Beans.class).toInstance(apiBinder.autoAware(new InnerBeans()));
+        //
         Set<Class<?>> beanSet = apiBinder.findClass(Bean.class);
-        if (beanSet == null || beanSet.isEmpty())
+        if (beanSet == null || beanSet.isEmpty()) {
+            LoggerHelper.logInfo("could not find Bean.");
             return;
+        }
         for (Class<?> beanClass : beanSet) {
             if (beanClass == Bean.class) {
                 continue;
@@ -44,16 +49,17 @@ public class BeanPlugin implements Module {
             //
             String firstName = aliasNames[0];
             BeanBindingBuilder beanBinder = Beans.defineForType(apiBinder, firstName);
+            StringBuffer nameBuilder = new StringBuffer("");
             for (int i = 1; i < aliasNames.length; i++) {
                 beanBinder = beanBinder.aliasName(aliasNames[i]);
+                nameBuilder.append(aliasNames[i] + ",");
             }
             LinkedBindingBuilder<?> linkedBuilder = beanBinder.bindType(beanClass);
             if (annoBean.singleton() == true) {
                 linkedBuilder.asEagerSingleton();
             }
             //
-            LoggerHelper.logFine("loadBean %s bind %s ->OK.", aliasNames, beanClass);
-            apiBinder.bindType(Beans.class).toInstance(apiBinder.autoAware(new InnerBeans()));
+            LoggerHelper.logInfo("loadBean ‘%s’ bind to %s ->OK.", nameBuilder, linkedBuilder.toInfo());
         }
     }
 }

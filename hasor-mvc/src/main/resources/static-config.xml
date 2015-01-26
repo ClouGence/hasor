@@ -4,10 +4,6 @@
 	<hasor>
 		<!-- 包扫描范围 -->
 		<loadPackages>net.hasor.mvc.*</loadPackages>
-		<!-- 默认要装载的模块 -->
-		<modules>
-			<!-- <module class="net.hasor.mvc.web.support.WebControllerModule" /> -->
-		</modules>
 		<!-- Hasor-MVC 专用 -->
 		<mvcConfig></mvcConfig>
 	</hasor>

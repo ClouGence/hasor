@@ -15,6 +15,7 @@
  */
 package net.hasor.core.factorys;
 import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -79,7 +80,8 @@ public abstract class AbstractBindInfoFactory implements BindInfoFactory, AppCon
             return null;
         }
         try {
-            if (oriType.isInterface() || oriType.isEnum()) {
+            int modifiers = oriType.getModifiers();
+            if (oriType.isInterface() || oriType.isEnum() || (modifiers == (modifiers | Modifier.ABSTRACT))) {
                 return null;
             }
             if (oriType.isPrimitive()) {

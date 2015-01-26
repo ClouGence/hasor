@@ -30,9 +30,10 @@ import org.more.logger.LoggerHelper;
 public class WebControllerModule extends ControllerModule implements Module {
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
-            LoggerHelper.logWarn("does not support ‘%s’ Web plug-in.", this.getClass());
+            super.loadModule(apiBinder);
             return;
         }
+        LoggerHelper.logInfo("work at WebControllerModule.", this.getClass());
         this.loadModule((WebApiBinder) apiBinder);
         LoggerHelper.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
     }
