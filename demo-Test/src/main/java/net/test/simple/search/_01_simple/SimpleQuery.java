@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.hasor.search.client.DumpService;
 import net.hasor.search.client.SearchService;
+import net.hasor.search.client.rsf.CommitInfo;
 import net.hasor.search.client.rsf.SearchServer;
 import net.hasor.search.client.rsf.SearchServerFactory;
 import net.hasor.search.domain.QuerySearchResult;
@@ -34,14 +35,14 @@ public class SimpleQuery {
         SearchServerFactory factory = new SearchServerFactory();
         SearchServer server = factory.connect("local", 8000);
         //
-        DumpService dump = server.getDumpService("collection1", null);
+        DumpService dump = server.getDumpService("collection1", new CommitInfo());
         //
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Map<String, String> userInfo = new HashMap<String, String>();
             userInfo.put("id", String.valueOf(i));
             userInfo.put("title", "yongchun.zyc-" + String.valueOf(i));
             userInfo.put("author", "Num." + String.valueOf(i));
-            dump.addMap(userInfo, 1000);
+            dump.addMap(userInfo);
         }
         //
         System.out.println();

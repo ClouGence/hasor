@@ -96,11 +96,11 @@
 
 
 		<!-- OSS -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.aliyun.openservices</groupId> -->
-		<!-- <artifactId>aliyun-openservices</artifactId> -->
-		<!-- <version>1.0.10</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>com.aliyun.openservices</groupId>
+			<artifactId>aliyun-openservices</artifactId>
+			<version>1.0.10</version>
+		</dependency>
 		<!-- JDBC -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.hsqldb</groupId> -->
