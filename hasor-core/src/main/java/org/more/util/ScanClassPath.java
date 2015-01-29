@@ -116,7 +116,7 @@ public class ScanClassPath {
                         }
                     }
                 });
-            } catch (Exception e) {}
+            } catch (Throwable e) { /**/ }
         }
         //3.缓存
         returnData = new HashSet<Class<?>>();
@@ -124,7 +124,7 @@ public class ScanClassPath {
             try {
                 Class<?> clazz = Class.forName(atClass, false, this.classLoader);
                 returnData.add(clazz);
-            } catch (Exception e) {}
+            } catch (Throwable e) { /**/ }
         }
         this.cacheMap.put(compareType, returnData);
         return returnData;
