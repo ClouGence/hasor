@@ -18,28 +18,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.EventListener;
 import net.hasor.core.Module;
+
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PutObjectResult;
 /**
  * 
  * @version : 2014年8月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OSSModule implements Module {
+public class ImportDir implements Module {
     public static String BasePath = "C:/Users/yongchun.zyc/Desktop/apis";
     //
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        String accessKeyId = "Rmf8CTHe7Bq4DXRY";
-        String accessKeySecret = "nqEa79FsiZ1nQzw3wUTkT54AKevA82";
-        // 初始化一个OSSClient
-        final OSSClient client = new OSSClient(accessKeyId, accessKeySecret);
-        apiBinder.bindType(OSSClient.class).toInstance(client);
-        //
-        Upload up = apiBinder.autoAware(new Upload());
-        apiBinder.addListener("UPLOAD", up);
+    public void loadModule(ApiBinder apiBinder) throws Throwable { 
+    	
     }
     // 
     public void echPath(AppContext app, File path) throws FileNotFoundException {
@@ -77,7 +75,7 @@ class Upload implements EventListener, AppContextAware {
             // 上传Object.
             String key = file.getAbsolutePath();
             key = key.replace("\\", "/");
-            key = key.substring(OSSModule.BasePath.length());
+            key = key.substring(ImportDir.BasePath.length());
             if (key.charAt(0) == '/')
                 key = key.substring(1);
             PutObjectResult result = client.putObject("www-hasor", key, content, meta);
