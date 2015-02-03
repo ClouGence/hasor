@@ -138,7 +138,7 @@ public class DefaultBindCenter extends AbstractBindCenter {
         return (T) this.rsfFilter1.get(filterID).get();
     }
     public synchronized void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
-        if (this.rsfFilter2.contains(filterID) == true) {
+        if (this.rsfFilter1.containsKey(filterID) == true) {
             throw new RepeateException("repeate filterID " + filterID);
         }
         this.rsfFilter1.put(filterID, provider);

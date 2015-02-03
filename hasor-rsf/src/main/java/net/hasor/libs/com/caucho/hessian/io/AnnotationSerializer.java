@@ -111,6 +111,9 @@ public class AnnotationSerializer extends AbstractSerializer {
                 return;
             _annType = cl;
             ArrayList<Method> methods = new ArrayList<Method>();
+            if (_annType == null)
+                throw new IllegalStateException(cl.getName() + " is invalid because it does not have a valid annotationType()");
+            //
             for (Method method : _annType.getDeclaredMethods()) {
                 if (method.getName().equals("hashCode") || method.getName().equals("toString") || method.getName().equals("annotationType")) {
                     continue;
@@ -120,8 +123,7 @@ public class AnnotationSerializer extends AbstractSerializer {
                 methods.add(method);
                 method.setAccessible(true);
             }
-            if (_annType == null)
-                throw new IllegalStateException(cl.getName() + " is invalid because it does not have a valid annotationType()");
+            //
             _methods = new Method[methods.size()];
             methods.toArray(_methods);
             _methodSerializers = new MethodSerializer[_methods.length];

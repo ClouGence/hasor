@@ -32,18 +32,6 @@
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-MVC -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- Hasor-RSF -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-rsf</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
@@ -87,11 +75,11 @@
 			<artifactId>aliyun-openservices</artifactId>
 			<version>1.0.10</version>
 		</dependency>
-<dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-compress</artifactId>
-	<version>1.9</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.9</version>
+		</dependency>
 
 	</dependencies>
 </project>

@@ -25,6 +25,7 @@ import net.hasor.rsf.adapter.Address;
  * @author 赵永春(zyc@hasor.net)
  */
 class AddressPool implements EventListener {
+    private final Object        LOCK_OBJECT = new Object();
     private final List<Address> hostAddressList;
     private final Random        addressRandom;
     //
@@ -34,7 +35,7 @@ class AddressPool implements EventListener {
     }
     /**轮转获取地址*/
     public Address nextAddress() {
-        synchronized (this.hostAddressList) {
+        synchronized (this.LOCK_OBJECT) {
             return this.hostAddressList.get(this.addressRandom.nextInt(this.hostAddressList.size()));
         }
     }
@@ -42,7 +43,7 @@ class AddressPool implements EventListener {
     public void updateAddress(List<Address> hostAddress) {
         if (hostAddress == null || hostAddress.isEmpty())
             return;
-        synchronized (this.hostAddressList) {
+        synchronized (this.LOCK_OBJECT) {
             //1.排除重复
             for (Address newInfo : hostAddress) {
                 if (this.hostAddressList.contains(newInfo) == true)
@@ -54,7 +55,7 @@ class AddressPool implements EventListener {
     }
     /**从地址列表中移除。有失效的连接要及时通知以减少nextAddress的压力。*/
     public void removeAddress(Address hostAddress) {
-        synchronized (this.hostAddressList) {
+        synchronized (this.LOCK_OBJECT) {
             int index = this.hostAddressList.indexOf(hostAddress);
             if (index > -1) {
                 Address add = this.hostAddressList.get(index);

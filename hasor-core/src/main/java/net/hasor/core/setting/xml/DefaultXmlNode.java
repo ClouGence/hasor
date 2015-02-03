@@ -145,9 +145,9 @@ public class DefaultXmlNode implements XmlNode, FieldProperty {
         //
         for (XmlNode xmlEnt : this.children) {
             String xmlText = new String(xmlEnt.getXmlText());
-            xmlText.replace("<", "&lt;");
-            xmlText.replace(">", "&gt;");
-            xmlText.replace("&", "&amp;");
+            xmlText = xmlText.replace("<", "&lt;");
+            xmlText = xmlText.replace(">", "&gt;");
+            xmlText = xmlText.replace("&", "&amp;");
             strBuilder.append(xmlText);
         }
         //

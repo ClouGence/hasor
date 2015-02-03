@@ -56,11 +56,13 @@ public class WebMappingDefine extends MappingDefine {
     }
     /**判断Restful实例是否支持这个 请求方法。*/
     public boolean matchingMethod(String httpMethod) {
-        for (String m : this.httpMethod)
-            if (StringUtils.equalsIgnoreCase(httpMethod, m))
+        for (String m : this.httpMethod) {
+            if (StringUtils.equalsIgnoreCase(httpMethod, m)) {
                 return true;
-            else if (StringUtils.equalsIgnoreCase(m, "ANY"))
+            } else if (StringUtils.equalsIgnoreCase(m, "ANY")) {
                 return true;
+            }
+        }
         return false;
     }
     public String toString() {

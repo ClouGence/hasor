@@ -78,7 +78,7 @@ class ControllerFilter implements Filter {
             if (target instanceof ServletException)
                 throw (ServletException) target;
             if (target instanceof IOException)
-                throw (ServletException) target;
+                throw (IOException) target;
             if (target instanceof RuntimeException)
                 throw (RuntimeException) target;
             throw new ServletException(target);

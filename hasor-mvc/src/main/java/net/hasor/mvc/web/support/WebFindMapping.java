@@ -30,7 +30,7 @@ public class WebFindMapping implements FindMapping {
         this.httpMethod = httpMethod;
         //
         if (httpMethod != null) {
-            httpMethod.trim().toUpperCase();
+            this.httpMethod = httpMethod.trim().toUpperCase();
         }
     }
     public boolean matching(MappingDefine invoke) {
