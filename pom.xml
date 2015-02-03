@@ -169,6 +169,7 @@
 		<module>hasor-quick</module>
 		<module>hasor-search</module>
 		<module>hasor-search-client</module>
+		<module>hasor-scala</module>
 	</modules>
 
 	<!-- 公共依赖 -->

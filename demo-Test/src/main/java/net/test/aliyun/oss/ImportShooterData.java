@@ -63,17 +63,17 @@ public class ImportShooterData implements StartModule {
 				}
 				String itemName = ent.getName();
 				//
-				ObjectMetadata info = this.passInfo(tempPath, zipPack, ent);
-				info.addUserMetadata("oldFileName", itemName);
+//				ObjectMetadata info = this.passInfo(tempPath, zipPack, ent);
+//				info.addUserMetadata("oldFileName", itemName);
 				//
-				String key = fileName + "/" + UUID.randomUUID().toString().replace("-", "") + ".rar";
-				InputStream inStream = zipPack.getInputStream(ent);
-				PutObjectResult res = client.putObject("files-subtitle", key, inStream, info);
+//				String key = fileName + "/" + UUID.randomUUID().toString().replace("-", "") + ".rar";
+				//InputStream inStream = zipPack.getInputStream(ent);
+				//PutObjectResult res = client.putObject("files-subtitle", key, inStream, info);
 				//
 				intCount++;
 				long itemSize = ent.getSize();
-				String stated = String.format("%s/%s\t%s\t%s", fileName, itemName, itemSize, info);
-				System.out.println(stated + " -> " + res.getETag());
+				String stated = String.format("%s-%s/%s\t%s\t%s",intCount, fileName, itemName, itemSize, "");
+				System.out.println(stated + " -> " + "");
 				size = size + itemSize;
 			}
 			zipPack.close();

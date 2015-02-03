@@ -1,0 +1,8 @@
+
+
+/**
+ * @author Administrator
+ */
+class HelloWord {
+  
+}

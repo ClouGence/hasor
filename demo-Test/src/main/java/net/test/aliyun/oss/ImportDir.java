@@ -24,6 +24,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.EventListener;
 import net.hasor.core.Module;
+import net.hasor.core.StartModule;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -33,7 +34,7 @@ import com.aliyun.oss.model.PutObjectResult;
  * @version : 2014年8月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ImportDir implements Module {
+public class ImportDir implements StartModule {
     public static String BasePath = "C:/Users/yongchun.zyc/Desktop/apis";
     //
     public void loadModule(ApiBinder apiBinder) throws Throwable { 
@@ -50,6 +51,11 @@ public class ImportDir implements Module {
             }
         }
     }
+	@Override
+	public void onStart(AppContext appContext) throws Throwable {
+		// TODO Auto-generated method stub
+		
+	}
 }
 class Upload implements EventListener, AppContextAware {
     private OSSClient      client = null;

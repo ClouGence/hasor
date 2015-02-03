@@ -15,6 +15,8 @@
  */
 package net.test.aliyun.oss;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -42,7 +44,6 @@ public class ShooterDataRemove implements StartModule {
 	@Override
 	public void onStart(AppContext appContext) throws Throwable {
 		OSSClient client = appContext.getInstance(OSSClient.class);
-		String tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
 		ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
 		//
 		long index = 0;
@@ -50,15 +51,11 @@ public class ShooterDataRemove implements StartModule {
 			ObjectListing listData = client.listObjects(listQuery);
 			List<OSSObjectSummary> objSummary = listData.getObjectSummaries();
 			for (OSSObjectSummary summary :objSummary){
-				System.out.println(index + "\t" +summary.getKey());
-				//
-				String sourceKey =summary.getKey();
-				String to = "subtitle/" + sourceKey.replace("shooter_mirror-", "shooter_mirror/");
-				client.copyObject("files-subtitle", sourceKey, "files-subtitle",to);
-				client.deleteObject("files-subtitle", sourceKey);
-				//
 				index++;
+				System.out.println(index + "\t from :" +summary.getKey());
+				//
 			}
+			//
 			listQuery.setMarker(listData.getNextMarker());
 			if (StringUtils.isBlank(listData.getNextMarker())){
 				break;
