@@ -32,6 +32,24 @@
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor-MVC -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor-RSF -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-rsf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor-Search -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-search-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
@@ -39,14 +57,14 @@
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 
+
+
 		<!-- LOGGING begin -->
-		<!-- slf4j-log4j绑定 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<!-- java.util.logging 实际调用slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
@@ -54,7 +72,7 @@
 		</dependency>
 		<!-- LOGGING end -->
 
-		<!-- JDBC -->
+		<!-- JDBC begin -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -70,6 +88,9 @@
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
 		</dependency>
+		<!-- JDBC end -->
+
+
 		<dependency>
 			<groupId>com.aliyun.openservices</groupId>
 			<artifactId>aliyun-openservices</artifactId>

@@ -1,8 +1,0 @@
-
-
-/**
- * @author Administrator
- */
-class HelloWord {
-  
-}

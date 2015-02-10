@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.simple.db._08_ar.pages;
-import net.hasor.db.orm.Paginator;
+import net.hasor.db.ar.Paginator;
 /**
  * 
  * @version : 2014年10月30日

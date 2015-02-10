@@ -1,4 +1,5 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.hasor</groupId>
@@ -36,14 +37,14 @@
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
+			<url>https://oss.sonatype.org/content/groups/scala-tools/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>scala-tools.org</id>
 			<name>Scala-tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
+			<url>https://oss.sonatype.org/content/groups/scala-tools/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -75,19 +76,6 @@
 			</dependencies>
 			<build>
 				<plugins>
-					<!-- Scala编译 -->
-					<plugin>
-						<groupId>org.scala-tools</groupId>
-						<artifactId>maven-scala-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>compile</goal>
-									<goal>testCompile</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 					<!-- Scala源码 -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -119,7 +107,36 @@
 							</execution>
 						</executions>
 					</plugin>
+					<!-- Scala编译 -->
+					<plugin>
+						<groupId>org.scala-tools</groupId>
+						<artifactId>maven-scala-plugin</artifactId>
+						<executions>
+							<execution>
+								<!-- <id>scala-compile-first</id> -->
+								<!-- <phase>process-resources</phase> -->
+								<goals>
+									<goal>compile</goal>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.scala-tools</groupId>
+							<artifactId>maven-scala-plugin</artifactId>
+							<version>2.15.2</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>3.1</version>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>

@@ -16,20 +16,20 @@
 package net.test.aliyun;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.openservices.oss.OSSClient;
 /**
  * 阿里云OSS配置
  * @version : 2014年8月1日
  * @author 赵永春(zyc@hasor.net)
  */
 public class OSSModule implements Module {
-	@Override
-	public void loadModule(ApiBinder apiBinder) throws Throwable {
-		String accessKeyId = "nodwX1vbYpYLyJBP";
-		String accessKeySecret = "HpO1p9zLHHAGAinulrEuys80dBAW2X";
-		String endpoint = "http://oss-cn-beijing.aliyuncs.com";
-		// 初始化一个OSSClient
-		final OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
-		apiBinder.bindType(OSSClient.class).toInstance(client);
-	}
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        String accessKeyId = "nodwX1vbYpYLyJBP";
+        String accessKeySecret = "HpO1p9zLHHAGAinulrEuys80dBAW2X";
+        String endpoint = "http://oss-cn-beijing.aliyuncs.com";
+        // 初始化一个OSSClient
+        final OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        apiBinder.bindType(OSSClient.class).toInstance(client);
+    }
 }

@@ -1,2 +1,2 @@
-call mvn eclipse:eclipse -DdownloadSources -DdownloadJavadocs  -Dwtpversion=2.0 -Dreleases=true
+call mvn eclipse:eclipse -Dreleases=true
 pause
