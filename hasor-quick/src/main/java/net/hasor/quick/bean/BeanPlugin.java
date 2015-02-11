@@ -41,6 +41,8 @@ public class BeanPlugin implements Module {
             if (beanClass == Bean.class) {
                 continue;
             }
+            apiBinder.bindType(beanClass);
+            //
             Bean annoBean = beanClass.getAnnotation(Bean.class);
             String[] aliasNames = annoBean.value();
             if (aliasNames.length == 1 && StringUtils.equals(aliasNames[0], "")) {
