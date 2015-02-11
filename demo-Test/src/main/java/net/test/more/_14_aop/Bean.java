@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._14_aop;
+package net.test.more._14_aop;
 //
 public class Bean {
     public String print(int i, int c) {
