@@ -48,9 +48,9 @@ class InnerPropertyDelegateDefine implements PropertyDelegate<Object> {
     public Class<?> getType() {
         return this.targetDelegate.getType();
     }
-    public Object get() throws Throwable {
+    public Object get(Object target) throws Throwable {
         try {
-            return this.targetDelegate.get();
+            return this.targetDelegate.get(target);
         } catch (Throwable e) {
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
@@ -60,9 +60,9 @@ class InnerPropertyDelegateDefine implements PropertyDelegate<Object> {
             throw e;
         }
     }
-    public void set(Object newValue) throws Throwable {
+    public void set(Object target, Object newValue) throws Throwable {
         try {
-            this.targetDelegate.set(newValue);
+            this.targetDelegate.set(target, newValue);
         } catch (Throwable e) {
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;

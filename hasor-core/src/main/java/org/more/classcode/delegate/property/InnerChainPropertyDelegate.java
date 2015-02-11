@@ -41,10 +41,10 @@ public class InnerChainPropertyDelegate implements PropertyDelegate<Object> {
     public Class<? extends Object> getType() {
         return this.propertyDelegate.getType();
     }
-    public Object get() throws Throwable {
-        return this.propertyDelegate.get();
+    public Object get(Object target) throws Throwable {
+        return this.propertyDelegate.get(target);
     }
-    public void set(Object newValue) throws Throwable {
-        this.propertyDelegate.set(newValue);
+    public void set(Object target, Object newValue) throws Throwable {
+        this.propertyDelegate.set(target, newValue);
     }
 }

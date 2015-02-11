@@ -4,6 +4,7 @@
     02.增加 shutdown 生命周期阶段。
     03.更换LoggerHelper为日志输出组件。
     04.环境变量实现接口调整，应用Core改动。
+    05.增加 MimeType 获取工具Module。
 
 ===== Hasor-Web v0.0.7
 * 新增:

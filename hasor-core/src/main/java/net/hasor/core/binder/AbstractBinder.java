@@ -19,15 +19,19 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.StartModule;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -68,6 +72,14 @@ public abstract class AbstractBinder implements ApiBinder {
     public void installModule(final Module module) throws Throwable {
         LoggerHelper.logFinest("installModule %s.", module);
         module.loadModule(this);
+        //
+        Hasor.addStartListener(this.getEnvironment().getEventContext(), new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                if (module instanceof StartModule) {
+                    ((StartModule) module).onStart((AppContext) params[0]);
+                }
+            }
+        });
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

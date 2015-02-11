@@ -21,6 +21,8 @@ import java.io.InputStream;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.StartModule;
+import net.hasor.web.mime.MimeType;
+import net.hasor.web.mime.MimeTypeModule;
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
@@ -30,26 +32,30 @@ import com.aliyun.openservices.oss.model.PutObjectResult;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ImportDir implements StartModule {
-    public void loadModule(ApiBinder apiBinder) throws Throwable {}
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.installModule(new MimeTypeModule());
+    }
     //
+    private MimeType mimeType;
     public void onStart(AppContext appContext) throws Throwable {
+        this.mimeType = appContext.getInstance(MimeType.class);
         OSSClient client = appContext.getInstance(OSSClient.class);
         String localFielPath = "C:/Users/yongchun.zyc/Desktop/apis";
         String remotePath = "/hasor/apis/0.0.10";
-        this.echPath(localFielPath,new File(localFielPath), client,remotePath);
+        this.echPath(localFielPath, new File(localFielPath), client, remotePath);
     }
     //
-    public void echPath(String basePath,File localFielPath, OSSClient client,String remotePath) throws FileNotFoundException {
+    public void echPath(String basePath, File localFielPath, OSSClient client, String remotePath) throws FileNotFoundException {
         if (localFielPath.isFile()) {
-            this.upload(basePath,localFielPath, client,remotePath);
+            this.upload(basePath, localFielPath, client, remotePath);
         } else {
             File[] fs = localFielPath.listFiles();
             for (File file : fs) {
-                echPath(basePath,file, client,remotePath);
+                echPath(basePath, file, client, remotePath);
             }
         }
     }
-    private void upload(String basePath,File localFielPath, OSSClient client,String remotePath) {
+    private void upload(String basePath, File localFielPath, OSSClient client, String remotePath) throws FileNotFoundException {
         // 获取指定文件的输入流
         InputStream content = new FileInputStream(localFielPath);
         // 创建上传Object的Metadata
@@ -58,7 +64,7 @@ public class ImportDir implements StartModule {
         meta.setContentLength(localFielPath.length());
         int point = localFielPath.getName().lastIndexOf('.');
         if (point != -1) {
-            String mtype = sc.getMimeType("." + localFielPath.getName().substring(point));
+            String mtype = mimeType.getMimeType("." + localFielPath.getName().substring(point));
             meta.setContentType(mtype);
         }
         // 上传Object.

@@ -47,10 +47,10 @@ public class SimplePropertyDelegate implements PropertyDelegate<Object> {
     public Class<?> getType() {
         return this.type;
     }
-    public Object get() throws Throwable {
+    public Object get(Object target) throws Throwable {
         return this.value;
     }
-    public void set(Object newValue) throws Throwable {
+    public void set(Object target, Object newValue) throws Throwable {
         this.value = newValue;
     }
 }
