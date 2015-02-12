@@ -21,11 +21,18 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
-    /**获取环境接口。*/
+    /** @return 获取 {@link Environment} */
     public Environment getEnvironment();
-    /**模块启动通知*/
+    /**
+     * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
+     * @param modules 启动时使用的模块。
+     * @throws Throwable 启动过程中引发的异常。
+     */
     public void start(Module... modules) throws Throwable;
-    /**是否启动*/
+    /**
+     * 确定 AppContext 目前状态是否处于启动状态。
+     * @return 返回 true 表示已经完成初始化并且启动完成。false表示尚未完成启动过程。
+     */
     public boolean isStart();
     /**发送停止通知*/
     public void shutdown();
@@ -33,11 +40,11 @@ public interface AppContext {
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID);
-    /**获取已经注册的Bean名称。*/
+    /** @return 获取已经注册的Bean名称。*/
     public String[] getBindIDs();
-    /**如果存在目标类型的Bean则返回Bean的名称。*/
+    /** @return 如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(Class<?> targetClass);
-    /**判断是否存在某个ID的绑定。*/
+    /** @return 判断是否存在某个ID的绑定。*/
     public boolean containsBindID(String bindID);
     /**创建Bean。*/
     public <T> Provider<T> getProvider(BindInfo<T> info);
@@ -51,16 +58,43 @@ public interface AppContext {
     public <T> T getInstance(BindInfo<T> info);
     //
     /*-------------------------------------------------------------------------------------Binder*/
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 通过一个类型获取所有绑定到该类型的上的对象实例。
+     * @param bindType bean type
+     * @return 返回符合条件的绑定对象。
+     */
     public <T> List<T> findBindingBean(Class<T> bindType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 通过一个类型获取所有绑定到该类型的上的对象实例（Provider形式返回）。
+     * @param bindType bean type
+     * @return 返回符合条件的绑定对象。
+     */
     public <T> List<Provider<T>> findBindingProvider(Class<T> bindType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 根据名字和类型获取绑定的对象。
+     * @param withName name
+     * @param bindType bean type
+     * @return 返回符合条件的绑定对象。
+     */
     public <T> T findBindingBean(String withName, Class<T> bindType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 根据名字和类型获取绑定的对象。
+     * @param withName 绑定名称。
+     * @param bindType bean type
+     * @return 返回{@link Provider}形式对象。
+     */
     public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType);
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param withName 绑定名
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType);
 }

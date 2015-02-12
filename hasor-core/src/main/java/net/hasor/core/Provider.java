@@ -20,6 +20,6 @@ package net.hasor.core;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Provider<T> {
-    /** */
+    /** @return 获取对象。  */
     public T get();
 }

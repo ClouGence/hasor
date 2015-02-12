@@ -85,6 +85,7 @@
 				<version>2.9.1</version>
 				<configuration>
 					<aggregate>true</aggregate>
+					<additionalparam>-Xdoclint:none</additionalparam>
 					<excludePackageNames>
 						net.hasor.libs.*,org.*,
 					</excludePackageNames>

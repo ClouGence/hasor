@@ -25,18 +25,38 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRequestManager {
-    /**获取{@link RsfContext}*/
+    /** @return 获取{@link RsfContext}*/
     public abstract AbstractRsfContext getRsfContext();
-    /**获取正在进行中的调用请求。*/
+    /**
+     * 获取正在进行中的调用请求。
+     * @param requestID 请求ID
+     * @return 返回RsfFuture。
+     */
     public abstract RsfFuture getRequest(long requestID);
-    /**发送连接请求。*/
+    /**
+     * 发送连接请求。
+     * @param rsfRequest rsf请求
+     * @param listener FutureCallback回调监听器。
+     * @return 返回RsfFuture。
+     */
     public abstract RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener);
-    /**尝试再次发送Request请求（如果request已经超时则无效）。*/
+    /**
+     * 尝试再次发送Request请求（如果request已经超时则无效）。
+     * @param requestID 请求ID
+     */
     public abstract void tryAgain(long requestID);
-    /**响应挂起的Request请求。*/
+    /**
+     * 响应挂起的Request请求。
+     * @param requestID 请求ID
+     * @param response 响应结果
+     */
     public abstract void putResponse(long requestID, RsfResponse response);
-    /**响应挂起的Request请求。*/
+    /**
+     * 响应挂起的Request请求。
+     * @param requestID 请求ID
+     * @param rsfException 异常响应
+     */
     public abstract void putResponse(long requestID, Throwable rsfException);
-    /**获取客户端管理器*/
+    /** @return 获取客户端管理器*/
     public abstract AbstractClientManager getClientManager();
 }

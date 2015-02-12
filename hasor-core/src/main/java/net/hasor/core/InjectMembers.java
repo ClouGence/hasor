@@ -20,6 +20,9 @@ package net.hasor.core;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface InjectMembers {
-    /**执行注入*/
+    /**
+     * 执行注入
+     * @param appContext appContext对象
+     */
     public void doInject(AppContext appContext);
 }

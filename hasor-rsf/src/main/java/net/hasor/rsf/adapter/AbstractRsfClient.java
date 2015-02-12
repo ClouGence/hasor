@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.adapter;
 import io.netty.channel.Channel;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
@@ -26,6 +25,7 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
@@ -36,93 +36,157 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfClient implements RsfClient {
-    /**客户端连接是否激活*/
+    /** @return 客户端连接是否激活*/
     public abstract boolean isActive();
     /**关闭连接*/
     public abstract void close();
-    /**Netty的管道*/
+    /** @return Netty的管道*/
     public abstract Channel getChannel();
-    /**远程服务地址*/
+    /** @return 远程服务地址*/
     public abstract URL getHostAddress();
-    /**获取请求管理器*/
+    /** @return 获取请求管理器*/
     public abstract AbstractRequestManager getRequestManager();
     //
     //
     //
-    /**获取上下文*/
+    /** @return 获取上下文*/
     public AbstractRsfContext getRsfContext() {
         return this.getRequestManager().getRsfContext();
     }
     private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
-    /**获取远程服务对象*/
-    public <T> T getRemoteByID(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 根据服务ID，获取远程服务对象
+     * @param serviceID 服务ID
+     * @return 返回远程服务对象。
+     * @throws RsfException rsf异常
+     */
+    public <T> T getRemoteByID(String serviceID) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, bindInfo.getBindType());
     }
-    /**获取远程服务对象*/
-    public <T> T getRemoteByName(String serviceName) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 根据服务名，获取远程服务对象。服务版本、服务分组将使用默认值。
+     * @param serviceName 服务名
+     * @return 返回远程服务对象。
+     * @throws RsfException rsf异常
+     */
+    public <T> T getRemoteByName(String serviceName) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByName(serviceName);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, bindInfo.getBindType());
     }
-    /**获取远程服务对象*/
-    public <T> T getRemote(String group, String name, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 获取远程服务对象。
+     * @param group 分组
+     * @param name 服务名
+     * @param version 版本
+     * @return 返回远程服务对象。
+     * @throws RsfException rsf异常
+     */
+    public <T> T getRemote(String group, String name, String version) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(group, name, version);
         if (bindInfo == null)
             return null;
         return this.getRemote(bindInfo);
     }
-    /**获取远程服务对象*/
-    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 获取远程服务对象
+     * @param bindInfo rsf服务注册信息。
+     * @return 返回远程服务对象。
+     * @throws RsfException rsf异常
+     */
+    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws RsfException {
         return this.wrapper(bindInfo, bindInfo.getBindType());
     }
-    //
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 将服务包装为另外一个接口然后返回。
+     * @param serviceID 服务ID
+     * @param interFace 要装成为的接口
+     * @return 返回包装之后的服务接口。
+     * @throws RsfException rsf异常
+     */
+    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
     }
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 将服务包装为另外一个接口。
+     * @param serviceName 服务名
+     * @param interFace 包装成为的服务接口
+     * @return 返回包装之后的服务接口。
+     * @throws RsfException rsf异常
+     */
+    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByName(serviceName);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
     }
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapper(Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 将服务包装为另外一个接口。
+     * @param interFace 服务接口类型
+     * @return 返回包装之后的服务接口。
+     * @throws RsfException rsf异常
+     */
+    public <T> T wrapper(Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getRsfContext().getBindCenter().getService(interFace);
         return this.wrapper(bindInfo, interFace);
     }
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 将服务包装为另外一个接口。
+     * @param group 分组
+     * @param name 服务名
+     * @param version 版本
+     * @param interFace 服务接口类型
+     * @return 返回包装之后的服务接口。
+     * @throws RsfException rsf异常
+     */
+    public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws RsfException {
         RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(group, name, version);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
     }
-    /**将服务包装为另外一个接口。*/
-    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    /**
+     * 将服务包装为另外一个接口。
+     * @param bindInfo rsf服务注册信息。
+     * @param interFace 服务接口类型
+     * @return 返回包装之后的服务接口。
+     * @throws RsfException rsf异常
+     */
+    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         if (bindInfo == null)
             throw new NullPointerException();
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         Class<?> wrapperType = this.wrapperMap.get(bindInfo.getBindID());
-        if (wrapperType == null) {
-            MethodClassConfig mcc = new MethodClassConfig();
-            mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
-            wrapperType = mcc.toClass();
-            this.wrapperMap.put(bindInfo.getBindID(), wrapperType);
+        try {
+            if (wrapperType == null) {
+                MethodClassConfig mcc = new MethodClassConfig();
+                mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
+                wrapperType = mcc.toClass();
+                this.wrapperMap.put(bindInfo.getBindID(), wrapperType);
+            }
+            return (T) wrapperType.newInstance();
+        } catch (Exception e) {
+            throw new RsfException(e.getMessage(), e);
         }
-        return (T) wrapperType.newInstance();
     }
     //
-    /**同步方式调用远程服务。*/
+    /**
+     * 同步方式调用远程服务。
+     * @param bindInfo 远程服务信息
+     * @param methodName 远程方法名
+     * @param parameterTypes 参数类型
+     * @param parameterObjects 参数值
+     * @return 返回执行结果
+     * @throws Throwable 同步执行期间遇到的错误。
+     */
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
         AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request
@@ -134,7 +198,14 @@ public abstract class AbstractRsfClient implements RsfClient {
         RsfResponse response = rsfFuture.get(timeout, TimeUnit.MILLISECONDS);
         return response.getResponseData();
     }
-    /**异步方式调用远程服务。*/
+    /**
+     * 异步方式调用远程服务。
+     * @param bindInfo 远程服务信息
+     * @param methodName 远程方法名
+     * @param parameterTypes 参数类型
+     * @param parameterObjects 参数值
+     * @return 返回异步执行结果
+     */
     public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request
@@ -142,7 +213,14 @@ public abstract class AbstractRsfClient implements RsfClient {
         //2.发起Request
         return reqManager.sendRequest(request, null);
     }
-    /**以回调方式调用远程服务。*/
+    /**
+     * 以回调方式调用远程服务。
+     * @param bindInfo 远程服务信息
+     * @param methodName 远程方法名
+     * @param parameterTypes 参数类型
+     * @param parameterObjects 参数值
+     * @param listener 回调监听器。
+     */
     public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
         this.doCallBackRequest(bindInfo, methodName, parameterTypes, parameterObjects, new FutureCallback<RsfResponse>() {
             public void completed(RsfResponse result) {
@@ -156,7 +234,14 @@ public abstract class AbstractRsfClient implements RsfClient {
             }
         });
     }
-    /**以回调方式调用远程服务。*/
+    /**
+     * 以回调方式发送RSF调用请求。
+     * @param bindInfo 远程服务信息
+     * @param methodName 远程方法名
+     * @param parameterTypes 参数类型
+     * @param parameterObjects 参数值
+     * @param listener 回调监听器。
+     */
     public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
         AbstractRequestManager reqManager = this.getRequestManager();
         //1.准备Request

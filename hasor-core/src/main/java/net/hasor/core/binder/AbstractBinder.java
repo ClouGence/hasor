@@ -23,7 +23,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
-import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
@@ -33,6 +32,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.StartModule;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
+import net.hasor.core.factorys.BindInfoDefineManager;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.logger.LoggerHelper;
@@ -40,7 +40,7 @@ import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>抽象方法 {@link #getBuilderRegister()} ,会返回一个接口( {@link net.hasor.core.BindInfoDefineManager BindInfoDefineManager} )
+ * <p>抽象方法 {@link #getBuilderRegister()} ,会返回一个接口( {@link net.hasor.core.factorys.BindInfoDefineManager BindInfoDefineManager} )
  * 用于配置Bean信息。
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
@@ -107,7 +107,7 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.bindType(type).nameWith(withName).toInstance(instance);
     }
     public <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
-        return this.bindType(type).nameWith(withName).to(type);
+        return this.bindType(type).nameWith(withName).to(implementation);
     }
     public <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Provider<T> provider) {
         return this.bindType(type).nameWith(withName).toProvider(provider);

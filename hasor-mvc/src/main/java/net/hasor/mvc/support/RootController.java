@@ -19,22 +19,22 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
+import net.hasor.core.AppContextAware;
 /**
  * 根控制器
  * @version : 2014年8月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RootController implements EventListener {
+public class RootController implements AppContextAware {
     private AppContext      appContext  = null;
     private MappingDefine[] invokeArray = new MappingDefine[0];
     private AtomicBoolean   inited      = new AtomicBoolean(false);
     //
-    public void onEvent(String event, Object[] params) throws Throwable {
+    public void setAppContext(AppContext appContext) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
-        this.appContext = (AppContext) params[0];
+        this.appContext = appContext;
         //1.find
         List<MappingDefine> mappingList = this.appContext.findBindingBean(MappingDefine.class);
         Collections.sort(mappingList, new Comparator<MappingDefine>() {
@@ -51,17 +51,24 @@ public class RootController implements EventListener {
             this.invokeArray = defineArrays;
         }
     }
-    /**获取AppContext*/
+    /** @return 获取AppContext*/
     protected AppContext getAppContext() {
         return this.appContext;
     }
-    /**初始化 {@link MappingDefine}*/
+    /**
+     * 初始化 {@link MappingDefine}
+     * @param define 等待初始化的MappingDefine
+     */
     protected void initDefine(MappingDefine define) {
         if (define != null) {
             define.init(this.appContext);
         }
     }
-    /**查找符合路径的 {@link MappingDefine}*/
+    /**
+     * 查找符合路径的 {@link MappingDefine}
+     * @param controllerPath 匹配的路径
+     * @return 返回匹配的MappingDefine。
+     */
     public final MappingDefine findMapping(String controllerPath) {
         for (MappingDefine invoke : this.invokeArray) {
             if (this.matchingMapping(controllerPath, invoke) == true) {
@@ -70,7 +77,11 @@ public class RootController implements EventListener {
         }
         return null;
     }
-    /**查找符合的 {@link MappingDefine}*/
+    /**
+     * 查找符合 {@link FindMapping}要求的 {@link MappingDefine}
+     * @param findMapping 匹配器
+     * @return 返回匹配的MappingDefine。
+     */
     public MappingDefine findMapping(FindMapping findMapping) {
         for (MappingDefine invoke : this.invokeArray) {
             if (findMapping.matching(invoke) == true) {
@@ -79,7 +90,12 @@ public class RootController implements EventListener {
         }
         return null;
     }
-    /**匹配策略*/
+    /**
+     * 执行匹配
+     * @param controllerPath 匹配的路径
+     * @param atInvoke 匹配的{@link MappingDefine}
+     * @return 返回是否匹配成功。
+     */
     protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
         if (atInvoke == null) {
             return false;

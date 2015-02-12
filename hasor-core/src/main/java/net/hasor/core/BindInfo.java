@@ -20,12 +20,16 @@ package net.hasor.core;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BindInfo<T> {
-    /**绑定的ID*/
+    /** @return 绑定的ID */
     public String getBindID();
-    /**为类型绑定的名称。*/
+    /** @return 为类型绑定的名称。*/
     public String getBindName();
-    /**获取注册的类型*/
+    /** @return 获取注册的类型*/
     public Class<T> getBindType();
-    /**获取元信息。*/
+    /**
+     * 获取元信息。
+     * @param key 元信息 key
+     * @return 返回元信息值
+     */
     public Object getMetaData(String key);
 }

@@ -75,15 +75,19 @@ public class ControllerModule implements Module {
             }
         }
         //3.安装服务
-        EventContext ec = apiBinder.getEnvironment().getEventContext();
-        RootController root = Hasor.pushStartListener(ec, new RootController());
-        apiBinder.bindType(RootController.class).toInstance(root);
+        apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
     }
     /**创建 {@link CallStrategyFactory}*/
     protected CallStrategyFactory createCallStrategyFactory(ApiBinder apiBinder) {
         return new DefaultCallStrategyFactory(apiBinder);
     }
-    /**创建 {@link MappingDefine}*/
+    /**
+     * 创建 {@link MappingDefine}
+     * @param newID 唯一ID
+     * @param atMethod 映射的方法
+     * @param strategyFactory CallStrategy 工厂。
+     * @return 返回mvc定义。
+     */
     protected MappingDefine createMappingDefine(String newID, Method atMethod, CallStrategyFactory strategyFactory) {
         return new MappingDefine(newID, atMethod, strategyFactory);
     }

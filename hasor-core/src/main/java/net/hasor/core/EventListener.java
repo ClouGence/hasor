@@ -20,6 +20,11 @@ package net.hasor.core;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface EventListener extends java.util.EventListener {
-    /**处理事件的处理方法，参数是要处理的事件。*/
+    /**
+     * 处理事件的处理方法，参数是要处理的事件。
+     * @param event 事件类型
+     * @param params 事件参数
+     * @throws Throwable 执行事件期间引发的异常。
+     */
     public void onEvent(String event, Object[] params) throws Throwable;
 }

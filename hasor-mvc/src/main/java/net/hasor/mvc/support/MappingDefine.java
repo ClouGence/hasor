@@ -68,16 +68,23 @@ public class MappingDefine {
         this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
         this.strategyFactory = strategyFactory;
     }
-    /**获取映射的地址*/
+    /**@return 获取映射的地址*/
     public String getMappingTo() {
         return this.mappingInfo.getMappingTo();
     }
-    /**测试路径是否匹配*/
+    /**
+     * 测试路径是否匹配
+     * @param requestPath 要测试的路径。
+     * @return 返回测试结果。
+     */
     public boolean matchingMapping(String requestPath) {
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
         return requestPath.matches(this.mappingInfo.getMappingToMatches());
     }
-    /**执行初始化*/
+    /**
+     * 执行初始化
+     * @param appContext appContext
+     */
     protected void init(AppContext appContext) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
@@ -86,19 +93,39 @@ public class MappingDefine {
         BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
         this.targetProvider = appContext.getProvider(controllerInfo);
     }
+    /**
+     * 创建 CallStrategy 对象。
+     * @param parentCall 父parentCall
+     * @return 返回CallStrategy
+     */
     protected CallStrategy createCallStrategy(CallStrategy parentCall) {
         return this.strategyFactory.createStrategy(parentCall);
     }
     //
-    /**调用目标*/
+    /**
+     * 调用目标并返回结果
+     * @return 返回调用结果
+     * @throws Throwable 异常抛出
+     */
     public Object invoke() throws Throwable {
         return this.invoke(null, null);
     }
-    /**调用目标*/
+    /**
+     * 调用目标并返回结果
+     * @param params 执行控制器时用到的参数。
+     * @return 返回调用结果
+     * @throws Throwable 异常抛出
+     */
     public Object invoke(Map<String, ?> params) throws Throwable {
         return this.invoke(null, params);
     }
-    /**调用目标*/
+    /**
+     * 调用目标
+     * @param call 执行策略
+     * @param params 执行控制器时用到的参数。
+     * @return 返回调用结果
+     * @throws Throwable 异常抛出
+     */
     public Object invoke(CallStrategy call, Map<String, ?> params) throws Throwable {
         final CallStrategy alCall = this.createCallStrategy(call);
         final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;

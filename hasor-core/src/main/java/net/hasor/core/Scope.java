@@ -20,6 +20,11 @@ package net.hasor.core;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface Scope {
-    /**加入作用域 */
+    /**
+     * 加入作用域
+     * @param key 加入作用域的key。
+     * @param provider 对象 Provider。
+     * @return 返回作用域中的对象 Provider。
+     */
     public <T> Provider<T> scope(Object key, Provider<T> provider);
 }

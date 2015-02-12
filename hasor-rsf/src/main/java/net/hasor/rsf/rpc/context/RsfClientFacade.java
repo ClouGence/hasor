@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
-import java.io.IOException;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.adapter.AbstractClientManager;
 import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.binder.RsfServiceInfo;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.future.FutureCallback;
@@ -58,38 +58,38 @@ class RsfClientFacade implements RsfClient {
     }
     //
     @Override
-    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.findBindInfoByID(serviceID);
         return this.findRsfClient(bindInfo).wrapper(bindInfo, interFace);
     }
     @Override
-    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.findBindInfoByName(serviceName);
         return this.wrapper(bindInfo, interFace);
     }
-    public <T> T wrapper(Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T wrapper(Class<T> interFace) throws RsfException {
         RsfServiceInfo info = new RsfServiceInfo(this.rsfContext, interFace);
         RsfBindInfo<?> bindInfo = this.findBindInfo(info.group(), info.name(), info.version());
         return this.wrapper(bindInfo, interFace);
     }
-    public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.findBindInfo(group, name, version);
         return this.wrapper(bindInfo, interFace);
     }
-    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         return this.findRsfClient(bindInfo).wrapper(bindInfo, interFace);
     }
     //
-    public <T> T getRemoteByName(String serviceName) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T getRemoteByName(String serviceName) throws RsfException {
         return (T) this.getRemote(this.findBindInfoByName(serviceName));
     }
-    public <T> T getRemoteByID(String serviceID) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T getRemoteByID(String serviceID) throws RsfException {
         return (T) this.getRemote(this.findBindInfoByID(serviceID));
     }
-    public <T> T getRemote(String group, String name, String version) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T getRemote(String group, String name, String version) throws RsfException {
         return (T) getRemote(this.findBindInfo(group, name, version));
     }
-    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws RsfException {
         return this.findRsfClient(bindInfo).getRemote(bindInfo);
     }
     //

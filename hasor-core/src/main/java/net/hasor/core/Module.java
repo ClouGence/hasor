@@ -20,6 +20,10 @@ package net.hasor.core;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Module {
-    /**初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。*/
+    /**
+     * 初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。
+     * @param apiBinder
+     * @throws Throwable init异常抛出
+     */
     public void loadModule(ApiBinder apiBinder) throws Throwable;
 }

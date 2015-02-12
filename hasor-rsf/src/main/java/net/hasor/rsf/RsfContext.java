@@ -20,20 +20,38 @@ package net.hasor.rsf;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfContext {
-    /**获取注册中心*/
+    /** @return 获取注册中心*/
     public BindCenter getBindCenter();
-    /**获取元信息所描述的服务对象*/
+    /**
+     * 获取元信息所描述的服务对象
+     * @param bindInfo 元信息所描述对象
+     * @return 服务对象
+     */
     public <T> T getBean(RsfBindInfo<T> bindInfo);
-    /**获取配置*/
+    /** @return 获取配置*/
     public RsfSettings getSettings();
-    /**获取客户端*/
+    /** @return 获取客户端*/
     public RsfClient getRsfClient();
-    /**查找一个{@link RsfFilter}*/
+    /**
+     * 查找一个{@link RsfFilter}
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(String filterID);
-    /**查找一个{@link RsfFilter}*/
+    /**
+     * 获取服务上的{@link RsfFilter}
+     * @param serviceID 服务ID
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(String serviceID, String filterID);
-    /**查找一个{@link RsfFilter}<br>
-     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。*/
+    /**
+     * 查找一个{@link RsfFilter}<br>
+     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。
+     * @param servicetType 服务类型
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
     /**停止工作*/
     public void shutdown();

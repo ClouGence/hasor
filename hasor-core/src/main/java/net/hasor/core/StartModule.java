@@ -20,6 +20,10 @@ package net.hasor.core;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface StartModule extends Module {
-    /**初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。*/
+    /**
+     * 启动过程。
+     * @param appContext appContext
+     * @throws Throwable init异常抛出
+     */
     public void onStart(AppContext appContext) throws Throwable;
 }

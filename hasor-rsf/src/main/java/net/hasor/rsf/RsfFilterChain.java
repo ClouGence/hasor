@@ -20,5 +20,11 @@ package net.hasor.rsf;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfFilterChain {
+    /**
+     * 执行过滤器
+     * @param request rsf请求
+     * @param response rsf响应
+     * @throws Throwable 执行期间引发的异常。
+     */
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable;
 }

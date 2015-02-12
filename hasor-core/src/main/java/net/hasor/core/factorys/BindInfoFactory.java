@@ -15,22 +15,41 @@
  */
 package net.hasor.core.factorys;
 import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoDefineManager;
 /**
  * 
  * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BindInfoFactory {
-    /**获取注册器*/
+    /**
+     * 获取注册器
+     * @return 返回BindInfoDefineManager
+     */
     public BindInfoDefineManager getManager();
     //
-    /**创建一个绑定过类型*/
-    public <T> T getInstance(BindInfo<T> oriType);
-    /**创建一个未绑定过的类型*/
-    public <T> T getDefaultInstance(Class<T> oriType);
-    /**获取类型绑定的所有名字。*/
+    /**
+     * 通过{@link BindInfo}创建Bean。
+     * @param bindInfo 绑定信息。
+     * @return 创建并返回实例
+     */
+    public <T> T getInstance(BindInfo<T> bindInfo);
+    /**
+     * 通过绑定类型创建Bean。
+     * @param bindType 绑定类型。
+     * @return 创建并返回实例
+     */
+    public <T> T getDefaultInstance(Class<T> bindType);
+    /**
+     * 获取绑定类型下所有name。
+     * @param bindType 绑定类型。
+     * @return 返回所有name。
+     */
     public String[] getNamesOfType(Class<?> bindType);
-    /**根据名称和类型获取获取{@link BindInfo}。*/
+    /**
+     * 根据名称和类型获取获取{@link BindInfo}。
+     * @param withName 绑定名称
+     * @param bindType 绑定类型
+     * @return 返回{@link BindInfo}。
+     */
     public <T> BindInfo<T> getBindInfo(String withName, Class<T> bindType);
 }

@@ -23,10 +23,17 @@ import net.hasor.rsf.RsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractClientManager {
-    /**获取{@link RsfContext}*/
+    /** @return 获取{@link RsfContext}*/
     public abstract AbstractRsfContext getRsfContext();
-    /**获取或创建一个连接*/
+    /**
+     * 获取或创建一个连接
+     * @param rsfBindInfo 服务注册信息。
+     * @return 返回远程服务所处的客户端连接。
+     */
     public abstract AbstractRsfClient getClient(RsfBindInfo<?> rsfBindInfo);
-    /**关闭这个连接并解除注册。*/
+    /**
+     * 关闭这个连接并解除注册。
+     * @param hostAddress 主机地址
+     */
     public abstract void unRegistered(URL hostAddress);
 }

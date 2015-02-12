@@ -18,6 +18,7 @@ import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.Executor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
@@ -31,7 +32,11 @@ import org.more.util.StringUtils;
  */
 public abstract class AbstractRsfContext implements RsfContext {
     //
-    /**获取元信息所描述的服务对象。*/
+    /**
+     * 获取元信息所描述的服务对象
+     * @param bindInfo 元信息所描述对象
+     * @return 服务对象
+     */
     public <T> T getBean(RsfBindInfo<T> bindInfo) {
         //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
         //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
@@ -43,11 +48,20 @@ public abstract class AbstractRsfContext implements RsfContext {
         }
         return null;
     }
-    /**查找一个{@link RsfFilter}*/
+    /**
+     * 查找一个{@link RsfFilter}
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(String filterID) {
         return this.getBindCenter().findFilter(filterID);
     }
-    /**获取服务上配置有效的过滤器*/
+    /**
+     * 获取服务上的{@link RsfFilter}
+     * @param serviceID 服务ID
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(String serviceID, String filterID) {
         RsfBindInfo<?> bindInfo = this.getBindCenter().getServiceByID(serviceID);
         if (bindInfo != null && bindInfo instanceof RsfBindDefine == true) {
@@ -56,7 +70,13 @@ public abstract class AbstractRsfContext implements RsfContext {
         }
         return null;
     }
-    /**获取服务上配置有效的过滤器*/
+    /**
+     * 查找一个{@link RsfFilter}<br>
+     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。
+     * @param servicetType 服务类型
+     * @param filterID filter ID
+     * @return 返回{@link RsfFilter}
+     */
     public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID) {
         RsfSettings settings = getSettings();
         String serviceName = servicetType.getName();
@@ -75,7 +95,11 @@ public abstract class AbstractRsfContext implements RsfContext {
         String serviceID = String.format("[%s]%s-%s", serviceGroup, serviceName, serviceVersion);
         return this.findFilter(serviceID, filterID);
     }
-    /**获取服务上配置有效的过滤器*/
+    /**
+     * 获取服务上配置有效的过滤器
+     * @param bindInfo 元信息所描述对象
+     * @return 返回{@link RsfFilter}
+     */
     public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
         //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
         //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
@@ -92,16 +116,20 @@ public abstract class AbstractRsfContext implements RsfContext {
         return null;
     }
     //
-    /**获取{@link Executor}用于安排执行任务。*/
+    /**
+     * 获取{@link Executor}用于安排执行任务。
+     * @param serviceName 服务名
+     * @return 返回Executor
+     */
     public abstract Executor getCallExecute(String serviceName);
-    /**获取序列化管理器。*/
+    /** @return 获取序列化管理器。*/
     public abstract SerializeFactory getSerializeFactory();
-    /**获取Netty事件处理工具*/
+    /** @return 获取Netty事件处理工具*/
     public abstract EventLoopGroup getLoopGroup();
-    /**获取地址管理中心*/
+    /** @return 获取地址管理中心*/
     public abstract AbstracAddressCenter getAddressCenter();
-    /**获取服务注册中心*/
+    /** @return 获取服务注册中心*/
     public abstract AbstractBindCenter getBindCenter();
-    /**获取请求管理中心*/
+    /** @return 获取请求管理中心*/
     public abstract AbstractRequestManager getRequestManager();
 }

@@ -22,6 +22,9 @@ package net.hasor.core;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface AppContextAware {
-    /**注入AppContext。*/
+    /**
+     * 注入AppContext。
+     * @param appContext 注入的AppContext。
+     */
     public void setAppContext(AppContext appContext);
 }

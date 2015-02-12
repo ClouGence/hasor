@@ -19,6 +19,11 @@ package net.hasor.core;
  * </pre>
  */
 public interface MethodInterceptor {
-    /** Implement this method to perform extra treatments before and after the invocation. */
+    /**
+     * implement this method to perform extra treatments before and after the invocation.
+     * @param invocation 拦截器链
+     * @return 返回拦截器执行结果
+     * @throws Throwable 抛出的异常
+     */
     public Object invoke(MethodInvocation invocation) throws Throwable;
 }

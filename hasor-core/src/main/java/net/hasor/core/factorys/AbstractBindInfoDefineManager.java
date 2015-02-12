@@ -29,7 +29,6 @@ import java.util.UUID;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
-import net.hasor.core.BindInfoDefineManager;
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.binder.InstanceProvider;

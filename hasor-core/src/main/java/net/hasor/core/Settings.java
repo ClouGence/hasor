@@ -24,11 +24,23 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Settings {
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
+    /**
+     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
+     *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
+     * @param featureType 特征类型
+     * @param loadPackages 扫面范围，多个包
+     * @return 返回匹配的类集合。
+     */
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages);
-    /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
+    /**
+     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
+     *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
+     * @param featureType 特征类型
+     * @param loadPackages 扫面范围，单个包
+     * @return 返回匹配的类集合。
+     */
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages);
-    /**获取指在某个特定命名空间下的Settings接口对象。*/
+    /** @return 已解析的命名空间列表。*/
     public String[] getSettingArray();
     /**获取指在某个特定命名空间下的Settings接口对象。*/
     public Settings getSettings(String namespace);

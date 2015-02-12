@@ -21,6 +21,9 @@ import java.util.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SettingsListener extends EventListener {
-    /**当接收到配置文件重载事件时触发该方法。*/
+    /**
+     * 当接收到配置文件重载事件时触发该方法。
+     * @param newConfig 新加载的配置。
+     */
     public void reload(Settings newConfig);
 }

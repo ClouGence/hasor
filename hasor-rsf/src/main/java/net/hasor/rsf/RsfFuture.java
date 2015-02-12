@@ -33,15 +33,28 @@ public class RsfFuture extends BasicFuture<RsfResponse> {
         super(listener);
         this.rsfRequest = rsfRequest;
     }
-    /**获取发起请求的Request*/
+    /** @return 获取发起请求的Request*/
     public RsfRequest getRequest() {
         return this.rsfRequest;
     }
-    /**获取响应的结果。*/
+    /**
+     * 获取响应的结果。
+     * @return 获取响应的结果。
+     * @throws InterruptedException wait方法可能引发的异常。
+     * @throws ExecutionException 远程方法在调用过程中发生异常。
+     */
     public Object getData() throws InterruptedException, ExecutionException {
         return this.get().getResponseData();
     }
-    /**获取响应的结果。*/
+    /**
+     * 等待执行结果的返回。
+     * @param timeout 超时时间
+     * @param unit 超时时间单位
+     * @return 返回执行结果。
+     * @throws InterruptedException wait方法可能引发的异常。
+     * @throws ExecutionException 远程方法在调用过程中发生异常。
+     * @throws TimeoutException 超时时间到达
+     */
     public Object getData(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return this.get(timeout, unit).getResponseData();
     }

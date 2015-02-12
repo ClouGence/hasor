@@ -22,21 +22,33 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface XmlNode {
-    /**获取Xml节点元素名称。*/
+    /** @return 获取Xml节点元素名称。*/
     public String getName();
-    /**获取Xml节点文本值。*/
+    /** @return 获取Xml节点文本值。*/
     public String getText();
-    /**获取Xml节点Xml文本值。*/
+    /** @return 获取Xml节点Xml文本值。*/
     public String getXmlText();
-    /**获取属性集合*/
+    /** @return 获取属性集合*/
     public Map<String, String> getAttributeMap();
-    /**获取Xml子节点。*/
+    /** @return 获取Xml子节点。*/
     public List<XmlNode> getChildren();
     //
-    /**获取Xml子节点。*/
+    /**
+     * 获取Xml子节点。
+     * @param elementName 子节点名称。
+     * @return 返回子节点集合
+     */
     public List<XmlNode> getChildren(String elementName);
-    /**获取Xml子节点，如果有多个返回第一条。*/
+    /**
+     * 获取Xml子节点，如果有多个返回第一条。
+     * @param elementName 子节点名称。
+     * @return 返回子节点
+     */
     public XmlNode getOneChildren(String elementName);
-    /**获取Xml节点上的属性。*/
+    /**
+     * 获取Xml节点上的属性。
+     * @param attName 属性名
+     * @return 返回属性值
+     */
     public String getAttribute(String attName);
 }

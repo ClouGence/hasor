@@ -21,19 +21,19 @@ import net.hasor.core.BindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBindInfo<T> extends BindInfo<T> {
-    /**唯一标识。*/
+    /** @return 唯一标识。*/
     public String getBindID();
-    /**服务名称。*/
+    /** @return 服务名称。*/
     public String getBindName();
-    /**服务分组。*/
+    /** @return 服务分组。*/
     public String getBindGroup();
-    /**服务版本。*/
+    /** @return 服务版本。*/
     public String getBindVersion();
-    /**注册的服务类型。*/
+    /** @return 注册的服务类型。*/
     public Class<T> getBindType();
     //
-    /**获取客户端调用服务超时时间。*/
+    /** @return 获取客户端调用服务超时时间。*/
     public int getClientTimeout();
-    /**获取序列化方式*/
+    /** @return 获取序列化方式*/
     public String getSerializeType();
 }
