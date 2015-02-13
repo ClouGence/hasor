@@ -326,7 +326,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     rs = ps.executeQuery();
                     return rse.extractData(rs);
                 } finally {
-                    rs.close();
+                    if (rs != null) {
+                        rs.close();
+                    }
                     if (pss instanceof ParameterDisposer) {
                         ((ParameterDisposer) pss).cleanupParameters();
                     }
