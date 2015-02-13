@@ -21,11 +21,11 @@ import net.hasor.db.ar.Paginator;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface SQLBuilder {
-    public String buildDelete(Sechma sechma, Column[] whereColumn);
+    public String buildDelete(Sechma sechma, Column[] whereColumn, Object[] whereParams);
     public String buildPaginator(String selectSQL, Paginator paginator);
-    public String buildSelect(Sechma sechma, Column[] whereColumn);
-    public String buildUpdate(Sechma sechma, Column[] whereColumn, Column[] dataColumn);
-    public String buildCount(Sechma sechma, Column[] whereColumn);
-    public String buildInsert(Sechma sechma, Column[] dataColumn);
+    public String buildSelect(Sechma sechma, Column[] whereColumn, Object[] whereParams);
+    public String buildUpdate(Sechma sechma, Column[] whereColumn, Object[] whereParams, Column[] dataColumn, Object[] dataParams);
+    public String buildCount(Sechma sechma, Column[] whereColumn, Object[] whereParams);
+    public String buildInsert(Sechma sechma, Column[] dataColumn, Object[] dataParams);
     public String buildEmptySelect(String tableName);
 }

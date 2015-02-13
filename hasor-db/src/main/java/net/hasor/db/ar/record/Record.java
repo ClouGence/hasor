@@ -379,6 +379,7 @@ public abstract class Record implements Cloneable, Serializable {
         return this.toType(this.get(column), enmType, defaultValue);
     }
     //
+    @SuppressWarnings("unchecked")
     private <T> T toType(Object oriData, Class<?> toType, T defaultValue) {
         if (oriData == null) {
             return defaultValue;

@@ -16,8 +16,11 @@
 package net.hasor.db.ar;
 import java.sql.SQLException;
 import java.util.Map;
+import javax.sql.DataSource;
+import net.hasor.core.Hasor;
 import net.hasor.db.ar.record.DataBase;
 import net.hasor.db.ar.record.Record;
+import net.hasor.db.ar.record.dialect.DialectEnum;
 import net.hasor.db.jdbc.JdbcOperations;
 import org.more.util.ClassUtils;
 /**
@@ -26,21 +29,31 @@ import org.more.util.ClassUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AbstractDao<ENT> {
+    private DataBase dataBase = null;
+    public AbstractDao(DataSource dataSource, DialectEnum dialect) throws SQLException {
+        this.dataBase = new DataBase(dataSource, dialect);
+    }
+    public AbstractDao(DataBase dataBase) {
+        this.dataBase = Hasor.assertIsNotNull(dataBase);
+    }
+    //
+    public void setDataBase(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
+    public DataBase getDataBase() {
+        return this.dataBase;
+    }
+    protected JdbcOperations getJdbc() {
+        return getDataBase().getJdbc();
+    }
+    //
     protected Class<ENT> getRecordType() {
         return (Class<ENT>) ClassUtils.getSuperClassGenricType(this.getClass(), 0);
-    };
+    }
     protected Record newRecord(ENT record) {
         // TODO Auto-generated method stub
         return null;
-    };
-    protected JdbcOperations getJdbc() {
-        return getDataBase().getJdbc();
-    };
-    private DataBase getDataBase() {
-        // TODO Auto-generated method stub
-        return null;
-    };
-    //
+    }
     /**保存为新增。*/
     protected boolean saveAsNew(ENT record) throws SQLException {
         return this.getDataBase().saveAsNew(newRecord(record));
