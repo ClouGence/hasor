@@ -175,15 +175,15 @@ public final class DataBase {
     public boolean saveAsNew(Record ent) throws SQLException {
         Sechma sechma = ent.getSechma();
         Column keyColumn = sechma.getPrimaryKey();
-        if (ent.isNull(keyColumn.getName())) {
+        if (keyColumn != null && ent.isNull(keyColumn.getName())) {
             Identify identify = this.getIdentify(sechma);
             if (identify != null) {
                 Object newID = identify.newUniqueID(ent, sechma, this.getJdbc());
                 ent.set(keyColumn, newID);
             }
+            checkID(ent);
         }
         //
-        checkID(ent);
         //
         JdbcOperations jdbc = this.getJdbc();
         Column[] insertColumn = ent.hasValueColumns(sechma.getColumns());//用于执行更新的列

@@ -16,7 +16,9 @@
 package net.hasor.db.orm.ar;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import net.hasor.db.orm.ar.anno.Table;
 import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
 /**
  * 用来表示数据库。
  * @version : 2014年10月27日
@@ -24,8 +26,6 @@ import org.more.util.BeanUtils;
  */
 public final class ArConfiguration {
     private static ConcurrentHashMap<Class<?>, Sechma> sechmaMap = new ConcurrentHashMap<Class<?>, Sechma>();
-    //
-    //
     //
     protected Identify getIdentify(Sechma sechma) {
         // TODO Auto-generated method stub
@@ -35,77 +35,30 @@ public final class ArConfiguration {
     public Sechma loadSechma(Class<?> sechmaType) {
         Sechma sechma = sechmaMap.get(sechmaType);
         if (sechma == null) {
-            sechma = new Sechma(sechmaType.getSimpleName());
-            List<String> propNames = BeanUtils.getPropertys(sechmaType);
-            for (String propName : propNames) {
-                if ("class".equals(propName))
-                    continue;
-                Class<?> colType = BeanUtils.getPropertyType(sechmaType, propName);
-                Column col = new Column(propName, InnerArUtils.javaTypeToSqlType(colType));
-                sechma.addColumn(col);
-            }
+            sechma = parseSechma(sechmaType);
             sechmaMap.putIfAbsent(sechmaType, sechma);
         }
         return sechmaMap.get(sechmaType);
     }
+    private static Sechma parseSechma(Class<?> sechmaType) {
+        Table table = sechmaType.getAnnotation(Table.class);
+        if (table == null) {
+            return null;
+        }
+        //
+        String tableName = StringUtils.isBlank(table.tableName()) ? sechmaType.getSimpleName() : table.tableName();
+        Sechma sechma = new Sechma(tableName.toUpperCase());
+        //
+        List<String> propNames = BeanUtils.getPropertys(sechmaType);
+        for (String propName : propNames) {
+            if ("class".equals(propName))
+                continue;
+            //
+            Class<?> colType = BeanUtils.getPropertyType(sechmaType, propName);
+            Column col = new Column(propName, InnerArUtils.javaTypeToSqlType(colType));
+            sechma.addColumn(col);
+        }
+        //
+        return sechma;
+    }
 }
-//    /**从数据库中查找已存在的表，并创建其{@link Record}实例。*/
-//    public Record loadSechma(final String tableName, final String primarykey) throws SQLException {
-//        String sechmaCacheKey = tableName;// StringUtils.isBlank(catalog) ? tableName : (catalog + "." + tableName);
-//        Sechma define = this.sechmaDefine.get(sechmaCacheKey);
-//        if (define != null) {
-//            return new MapRecord(define);
-//        }
-//        //1.load
-//        define = this.getJdbc().execute(new ConnectionCallback<Sechma>() {
-//            public Sechma doInConnection(Connection con) throws SQLException {
-//                //1.验证表
-//                DatabaseMetaData metaData = con.getMetaData();
-//                ResultSet resultSet = metaData.getTables(null, null, tableName.toUpperCase(), new String[] { "TABLE" });
-//                if (resultSet.next() == false) {
-//                    throw new UndefinedException("table " + tableName + " is Undefined.");
-//                }
-//                //2.装载结构
-//                String emptySelect = getSQLBuilder().buildEmptySelect(tableName);
-//                ResultSetMetaData resMetaData = con.createStatement().executeQuery(emptySelect).getMetaData();
-//                return loadSechma(new Sechma(tableName), resMetaData, primarykey);
-//            }
-//        });
-//        //2.cache
-//        this.sechmaDefine.put(sechmaCacheKey, define);
-//        return new MapRecord(define);
-//    }
-//
-//    private static Sechma loadSechma(Sechma sechma, ResultSetMetaData resMetaData, String primarykey) throws SQLException {
-//        int columnCount = resMetaData.getColumnCount();
-//        for (int i = 1; i < columnCount; i++) {
-//            String colName = resMetaData.getColumnName(i);//列名称。
-//            int colSQLType = resMetaData.getColumnType(i);//来自 java.sql.Types 的 SQL 类型。
-//            //
-//            Column col = new Column(colName, colSQLType);
-//            col.setMaxSize(resMetaData.getPrecision(i));//列的大小。
-//            int allowEmpty = resMetaData.isNullable(i);//是否允许使用 NULL。 
-//            col.setEmpty(allowEmpty == ResultSetMetaData.columnNullable);//明确允许使用null
-//            //
-//            col.setDefaultValue(null);
-//            col.setIdentify(resMetaData.isAutoIncrement(i));
-//            //
-//            if (resMetaData.isReadOnly(i) == true) {
-//                col.setAllowInsert(false);
-//                col.setAllowUpdate(false);
-//            }
-//            //
-//            if (StringUtils.equalsBlankIgnoreCase(primarykey, colName) == true) {
-//                col.setPrimaryKey(true);
-//            }
-//            //
-//            sechma.addColumn(col);
-//        }
-//        return sechma;
-//    }
-//    private RowMapper<Record> getRecordRowMapper() {
-//        return new RecordRowMapper(sechmaKey);
-//    }
-//    private RowMapper<Record> getRecordRowMapper(Sechma sechma) {
-//        return new RecordRowMapper(sechma);
-//    }

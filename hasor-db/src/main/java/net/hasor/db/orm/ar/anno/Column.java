@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.service;
-import net.hasor.core.AppContext;
-import net.hasor.core.InjectMembers;
-import net.test.web.biz.user.dao.UserDao;
+package net.hasor.db.orm.ar.anno;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 服务层类。
- * @version : 2014年8月27日
+ * 
+ * @version : 2014年11月26日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserService implements InjectMembers {
-    private UserDao userDao = null;
-    //
-    public void doInject(AppContext appContext) {
-        this.userDao = appContext.getInstance(UserDao.class);
-    }
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Column {
+    /**映射的列名称，如果未指定则使用字段名的 全大写作为字段名*/
+    public String column() default "";
+    /**非空约束*/
+    public boolean isNull() default false;
+    /**大小限制*/
+    public int size() default 200;
+    /**策略*/
+    public AllowPolicy policy() default @AllowPolicy();
 }

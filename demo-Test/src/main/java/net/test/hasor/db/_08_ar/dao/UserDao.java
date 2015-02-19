@@ -15,6 +15,8 @@
 */
 package net.test.hasor.db._08_ar.dao;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.UUID;
 import javax.sql.DataSource;
 import net.hasor.db.orm.AbstractDao;
 import net.hasor.db.orm.PageResult;
@@ -35,5 +37,16 @@ public class UserDao extends AbstractDao<TB_User> {
     }
     public PageResult<TB_User> queryList2() throws SQLException {
         return this.queryBySQL("select * from TB_User");
+    }
+    public boolean insertUser(int i) throws SQLException {
+        TB_User tbUser = new TB_User();
+        tbUser.setUserUUID(UUID.randomUUID().toString());
+        tbUser.setName(String.format("默认用户_%s", i));
+        tbUser.setLoginName(String.format("acc_%s", i));
+        tbUser.setLoginPassword(String.format("pwd_%s", i));
+        tbUser.setEmail(String.format("autoUser_%s@hasor.net", i));
+        tbUser.setRegisterTime(new Date());
+        //
+        return this.saveAsNew(tbUser);
     }
 }

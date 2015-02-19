@@ -19,6 +19,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.db.orm.PageResult;
 import net.hasor.test.junit.ContextConfiguration;
+import net.hasor.test.junit.TestOrder;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.hasor.test.utils.HasorUnit;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
@@ -33,15 +34,26 @@ import org.junit.runner.RunWith;
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = OneDataSourceWarp.class)
-public class AR_SelectTest implements AppContextAware {
+public class AR_CURD_Test implements AppContextAware {
     private DataSource dataSource = null;
     @Override
     public void setAppContext(AppContext appContext) {
         this.dataSource = appContext.getInstance(DataSource.class);
     }
     @Test
-    public void ar_Test() throws Exception {
-        System.out.println("--->>ar_Test<<--");
+    @TestOrder(1)
+    public void insertTest() throws Exception {
+        System.out.println("--->>insertTest<<--");
+        //
+        UserDao userDao = new UserDao(this.dataSource);
+        for (int i = 0; i < 10; i++) {
+            System.out.println(userDao.insertUser(i));
+        }
+    }
+    @Test
+    @TestOrder(2)
+    public void selectTest() throws Exception {
+        System.out.println("--->>selectTest<<--");
         //
         UserDao userDao = new UserDao(this.dataSource);
         PageResult<TB_User> userEnt1 = userDao.queryList1();

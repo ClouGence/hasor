@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.service;
+package net.test.web.biz.user.search;
+import java.sql.SQLException;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.test.web.biz.user.dao.UserDao;
+import net.test.web.biz.user.entity.UserBean;
 /**
  * 服务层类。
  * @version : 2014年8月27日
@@ -27,5 +29,12 @@ public class UserService implements InjectMembers {
     //
     public void doInject(AppContext appContext) {
         this.userDao = appContext.getInstance(UserDao.class);
+    }
+    public void addNewUser(String userName, String emial, String password) throws SQLException {
+        UserBean user = new UserBean();
+        user.setLoginName(userName);
+        user.setEmail(emial);
+        user.setLoginPassword(password);
+        this.userDao.createUser(user);
     }
 }

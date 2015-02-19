@@ -15,11 +15,13 @@
  */
 package net.test.hasor.db._08_ar.entity;
 import java.util.Date;
+import net.hasor.db.orm.ar.anno.Table;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
+@Table()
 public class TB_User {
     private String userUUID;
     private String name;
@@ -27,6 +29,8 @@ public class TB_User {
     private String loginPassword;
     private String email;
     private Date   registerTime;
+    //
+    //
     public String getUserUUID() {
         return userUUID;
     }

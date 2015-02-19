@@ -193,7 +193,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         //
         StringBuffer insertSQL = new StringBuffer("");
         insertSQL.append(dia(Dialect.INSERT));
-        insertSQL.append(dia(Dialect.SPACE));
+        insertSQL.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
         insertSQL.append(dia(Dialect.LEFT_ANGLE) + insertColumn + dia(Dialect.RIGHT_ANGLE));
         insertSQL.append(dia(Dialect.VALUES));
         insertSQL.append(dia(Dialect.LEFT_ANGLE) + insertValue + dia(Dialect.RIGHT_ANGLE));

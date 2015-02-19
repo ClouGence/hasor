@@ -25,7 +25,6 @@ import net.hasor.db.orm.ar.dialect.SQLBuilderEnum;
 import net.hasor.test.junit.ContextConfiguration;
 import net.hasor.test.runner.HasorUnitRunner;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.hasor.db._08_ar.entity.TB_User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**

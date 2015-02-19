@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.orm.ar;
+package net.hasor.db.orm.ar.anno;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
  * @version : 2014年11月26日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class Annos {
-    /**映射的表。*/
-    public static @interface Table {
-        public String value() default "";
-    }
-    /**映射的列。*/
-    public static @interface Column {
-        public String value() default "";
-    }
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Table {
+    /**表名，默认为空将会使用类名的全大写作为标名。*/
+    public String tableName() default "";
     /**主键列。*/
-    public static @interface PrimaryKey {}
-    /**非空约束。*/
-    public static @interface Null {
-        public boolean value() default false;
-    }
-    /**大小限制。*/
-    public static @interface Size {
-        public int value() default 200;
-    }
-    /**字段的授权策略。*/
-    public static @interface AllowPolicy {
-        public boolean insert() default true;
-        public boolean update() default true;
-    }
+    public String primaryKey() default "";
+    /**列定义信息来源，默认：字段。*/
+    public ColumnType columnType() default ColumnType.FieldOnly;
 }

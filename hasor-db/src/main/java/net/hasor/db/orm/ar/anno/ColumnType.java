@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.web.biz.user.service;
-import net.hasor.core.AppContext;
-import net.hasor.core.InjectMembers;
-import net.test.web.biz.user.dao.UserDao;
+package net.hasor.db.orm.ar.anno;
 /**
- * 服务层类。
- * @version : 2014年8月27日
+ * 列类型
+ * @version : 2015年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserService implements InjectMembers {
-    private UserDao userDao = null;
-    //
-    public void doInject(AppContext appContext) {
-        this.userDao = appContext.getInstance(UserDao.class);
-    }
+public enum ColumnType {
+    /**列定义只来源于字段*/
+    FieldOnly,
+    /**列定义只来源于Column注解*/
+    ColumnOnly,
 }
