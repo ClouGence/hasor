@@ -39,7 +39,7 @@ public abstract class BeanUtils {
         } else if (returnType == byte.class || returnType == Byte.class) {
             return 0;
         } else if (returnType == char.class || returnType == Character.class) {
-            return ' ';
+            return '\0';
         } else if (returnType == double.class || returnType == Double.class) {
             return 0d;
         } else if (returnType == float.class || returnType == Float.class) {

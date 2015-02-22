@@ -25,6 +25,7 @@ import net.hasor.db.orm.Paginator.Order.OrderBy;
 import net.hasor.db.orm.ar.Column;
 import net.hasor.db.orm.ar.SQLBuilder;
 import net.hasor.db.orm.ar.Sechma;
+import org.more.util.BeanUtils;
 /**
  * 
  * @version : 2015年2月13日
@@ -41,7 +42,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
     }
     protected abstract void fillDialect(Map<Dialect, String> dialectData);
     //
-    private BuilderData buildWhere(Column[] whereColumn, Object[] whereParams, Oper forOper) {
+    private BuilderData buildWhere(Sechma sechma, Column[] whereColumn, Object[] whereParams, Oper forOper) {
         if (whereColumn.length != whereParams.length) {
             throw new IllegalArgumentException("parameters and column ,param count no same.");
         }
@@ -57,6 +58,18 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
                 continue;
             }
             if (Oper.Update == forOper && !col.allowUpdateWhere()) {
+                continue;
+            }
+            boolean goContinue = false;
+            if (col.isIgnoreUnset() == true || sechma.isIgnoreUnset() == true) {
+                Class<?> propType = col.getBeanField().getType();
+                if (propType.isPrimitive()) {
+                    goContinue = BeanUtils.getDefaultValue(propType).equals(val);//值类型
+                } else {
+                    goContinue = val == null;//引用类型
+                }
+            }
+            if (goContinue == true) {
                 continue;
             }
             //
@@ -81,7 +94,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
     //
     @Override
     public BuilderData buildDelete(Sechma sechma, Column[] whereColumn, Object[] whereParams) {
-        BuilderData whereData = buildWhere(whereColumn, whereParams, Oper.Delete);
+        BuilderData whereData = buildWhere(sechma, whereColumn, whereParams, Oper.Delete);
         //
         StringBuffer deleteSQL = new StringBuffer();
         deleteSQL.append(dia(Dialect.DELETE));
@@ -106,7 +119,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         //
         sqlSelect.append(dia(Dialect.FROM));
         sqlSelect.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
-        BuilderData whereData = buildWhere(whereColumn, whereParams, Oper.Select);
+        BuilderData whereData = buildWhere(sechma, whereColumn, whereParams, Oper.Select);
         sqlSelect.append(dia(Dialect.WHERE) + whereData.getSQL());
         return new ArrayBuilderData(sqlSelect.toString(), whereData.getData());
     }
@@ -143,7 +156,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         updateSQL.append(dia(Dialect.SET));
         updateSQL.append(updateSet);
         //
-        BuilderData whereData = buildWhere(whereColumn, whereParams, Oper.Update);
+        BuilderData whereData = buildWhere(sechma, whereColumn, whereParams, Oper.Update);
         paramArray.addAll(Arrays.asList(whereData.getData()));
         updateSQL.append(dia(Dialect.WHERE));
         updateSQL.append(whereData.getSQL());
@@ -152,7 +165,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
     }
     @Override
     public BuilderData buildCount(Sechma sechma, Column[] whereColumn, Object[] whereParams) {
-        BuilderData whereData = buildWhere(whereColumn, whereParams, Oper.Select);
+        BuilderData whereData = buildWhere(sechma, whereColumn, whereParams, Oper.Select);
         StringBuffer countSQL = new StringBuffer("");
         countSQL.append(dia(Dialect.SELECT));
         countSQL.append(dia(Dialect.COUNT_1));

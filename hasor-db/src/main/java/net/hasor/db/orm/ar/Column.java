@@ -15,7 +15,10 @@
  */
 package net.hasor.db.orm.ar;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.sql.Types;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 
  * @version : 2014年10月27日
@@ -26,6 +29,7 @@ public final class Column implements Serializable {
     private String            name             = null;                //字段名
     private String            title            = null;                //字段title
     private int               sqlType          = Types.NULL;          //SQL类型
+    private Field             beanField        = null;                //字段类型
     //
     private boolean           primaryKey       = false;               //主键约束
     private Integer           maxSize          = null;                //字段值大小限制
@@ -36,10 +40,15 @@ public final class Column implements Serializable {
     private boolean           update           = true;                //是否允许用于数据更新
     private boolean           deleteWhere      = true;                //是否允许作为删除条件
     private boolean           updateWhere      = true;                //是否允许作为更新条件
+    private boolean           ignoreUnset      = true;                //没有给它设置任何值的情况下忽略它作为查询条件
     //
     public Column(String colName, int colSQLType) {
         this.name = colName;
         this.sqlType = colSQLType;
+    }
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     //
     //
@@ -55,6 +64,10 @@ public final class Column implements Serializable {
      * @see java.sql.Types*/
     public int getSqlType() {
         return this.sqlType;
+    }
+    /**字段类型*/
+    public Field getBeanField() {
+        return this.beanField;
     }
     /**获取列表示的Java类型。*/
     public Class<?> getJavaType() {
@@ -97,9 +110,21 @@ public final class Column implements Serializable {
     public Object getDefaultValue() {
         return this.defaultValue;
     }
+    /**没有给它设置任何值的情况下忽略它作为查询条件*/
+    public boolean isIgnoreUnset() {
+        return ignoreUnset;
+    }
     /**设置列标题*/
     protected void setTitle(String title) {
         this.title = title;
+    }
+    /**设置列名*/
+    protected void setName(String name) {
+        this.name = name;
+    }
+    /**字段类型*/
+    protected void setBeanField(Field beanField) {
+        this.beanField = beanField;
     }
     /**设置修改默认值约束.*/
     protected void setDefaultValue(Object defaultValue) {
@@ -137,5 +162,9 @@ public final class Column implements Serializable {
     /**设置字段的大小限制*/
     protected void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
+    }
+    /**没有给它设置任何值的情况下忽略它作为查询条件*/
+    protected void setIgnoreUnset(boolean ignoreUnset) {
+        this.ignoreUnset = ignoreUnset;
     }
 }

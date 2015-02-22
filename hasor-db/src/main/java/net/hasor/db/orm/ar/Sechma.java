@@ -27,6 +27,7 @@ import java.util.Map;
 public final class Sechma implements Serializable {
     private static final long   serialVersionUID = 8496566657601059017L;
     private String              name             = null;
+    private boolean             ignoreUnset      = true;
     private Column              keyColumn        = null;
     private Column[]            columnArray      = new Column[0];
     private Map<String, Column> columnMap        = new HashMap<String, Column>();
@@ -39,6 +40,14 @@ public final class Sechma implements Serializable {
         this.name = sechmaName;
     }
     //
+    /**没有给它设置任何值的情况下忽略它作为查询条件*/
+    public boolean isIgnoreUnset() {
+        return this.ignoreUnset;
+    }
+    /**没有给它设置任何值的情况下忽略它作为查询条件*/
+    protected void setIgnoreUnset(boolean ignoreUnset) {
+        this.ignoreUnset = ignoreUnset;
+    }
     /**取得表名*/
     public String getName() {
         return this.name;

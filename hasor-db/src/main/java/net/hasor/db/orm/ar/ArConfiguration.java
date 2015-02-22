@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.orm.ar;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import net.hasor.db.orm.ar.anno.AllowPolicy;
 import net.hasor.db.orm.ar.anno.Table;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -48,14 +50,28 @@ public final class ArConfiguration {
         //
         String tableName = StringUtils.isBlank(table.tableName()) ? sechmaType.getSimpleName() : table.tableName();
         Sechma sechma = new Sechma(tableName.toUpperCase());
+        sechma.setIgnoreUnset(table.ignoreUnset());
         //
-        List<String> propNames = BeanUtils.getPropertys(sechmaType);
-        for (String propName : propNames) {
-            if ("class".equals(propName))
-                continue;
+        List<Field> propNames = BeanUtils.findALLFields(sechmaType);
+        for (Field propField : propNames) {
+            Class<?> propType = propField.getType();
+            Column col = new Column(propField.getName(), InnerArUtils.javaTypeToSqlType(propType));
+            col.setBeanField(propField);
+            col.setIgnoreUnset(sechma.isIgnoreUnset());
             //
-            Class<?> colType = BeanUtils.getPropertyType(sechmaType, propName);
-            Column col = new Column(propName, InnerArUtils.javaTypeToSqlType(colType));
+            net.hasor.db.orm.ar.anno.Column column = propField.getDeclaredAnnotation(net.hasor.db.orm.ar.anno.Column.class);
+            if (column != null) {
+                col.setMaxSize(column.size());
+                col.setName(column.column());
+                AllowPolicy policy = column.policy();
+                col.setAllowInsert(policy.insert());
+                col.setAllowUpdate(policy.update());
+                col.setAllowDeleteWhere(policy.deleteWhere());
+                col.setAllowUpdateWhere(policy.updateWhere());
+                col.setIgnoreUnset(policy.ignoreUnset());
+                col.setEmpty(column.isNull());
+            }
+            //
             sechma.addColumn(col);
         }
         //

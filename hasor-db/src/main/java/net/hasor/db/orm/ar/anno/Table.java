@@ -32,4 +32,10 @@ public @interface Table {
     public String primaryKey() default "";
     /**列定义信息来源，默认：字段。*/
     public ColumnType columnType() default ColumnType.FieldOnly;
+    /**一个值它定义之后，再没有给它设置任何值的情况下忽略它作为查询条件（默认策略：true）<p>
+     * --引用类型对象，默认值为null<br>
+     * --short,int,long,byte,char 的默认值为  0<br>
+     * --float,double 的默认值为 0.0<br>
+     * --boolean 的默认值为 false*/
+    public boolean ignoreUnset() default true;
 }
