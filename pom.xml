@@ -85,7 +85,7 @@
 				<version>2.9.1</version>
 				<configuration>
 					<aggregate>true</aggregate>
-					<additionalparam>-Xdoclint:none</additionalparam>
+					<additionalparam>${java_doc_additionalparam}</additionalparam>
 					<excludePackageNames>
 						net.hasor.libs.*,org.*,
 					</excludePackageNames>
@@ -128,6 +128,14 @@
 
 	<!-- 使用“-P release”启用下面配置 -->
 	<profiles>
+		<profile>
+			<activation>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+				<java_doc_additionalparam>-Xdoclint:none</java_doc_additionalparam>
+			</properties>
+		</profile>
 		<profile>
 			<id>release</id>
 			<build>
