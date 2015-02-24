@@ -59,7 +59,7 @@ public final class ArConfiguration {
             col.setBeanField(propField);
             col.setIgnoreUnset(sechma.isIgnoreUnset());
             //
-            net.hasor.db.orm.ar.anno.Column column = propField.getDeclaredAnnotation(net.hasor.db.orm.ar.anno.Column.class);
+            net.hasor.db.orm.ar.anno.Column column = propField.getAnnotation(net.hasor.db.orm.ar.anno.Column.class);
             if (column != null) {
                 col.setMaxSize(column.size());
                 col.setName(column.column());
