@@ -18,12 +18,20 @@
 			<artifactId>spark-streaming_2.11</artifactId>
 			<version>1.2.1</version>
 		</dependency>
-		<!-- Hasor-DB -->
+
+		<!-- Hasor begin -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-test</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor end -->
+
 		<!-- JDBC begin -->
 		<dependency>
 			<groupId>mysql</groupId>

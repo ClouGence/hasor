@@ -1,5 +1,7 @@
+package net.hasor.little.db
 import javax.sql.DataSource
-import net.hasor.core.{ ApiBinder, Module, Settings }
+import java.util.{ List, Map }
+import net.hasor.core.{ Hasor, AppContext, ApiBinder, StartModule, Settings }
 import net.hasor.db.jdbc.core.{ JdbcTemplate, JdbcTemplateProvider }
 import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule
 import org.more.logger.LoggerHelper
@@ -8,21 +10,19 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
  *
  */
 class DataDao(prex: String)
-  extends Module {
+  extends StartModule {
 
   override def loadModule(apiBinder: ApiBinder) = {
-    val settings = apiBinder.getEnvironment().getSettings()
-    val dataSource = createDataSource(settings)
-    //    //3.绑定DataSource接口实现
-    //    apiBinder.bindType(DataSource.class).toInstance(dataSource)
-    //    //4.绑定JdbcTemplate接口实现
-    //    apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource))
-    //    //5.启用默认事务拦截器
-    //    apiBinder.installModule(new SimpleTranInterceptorModule(dataSource))
+    //1.创建 DataSource
+    val dataSource = createDataSource(apiBinder.getEnvironment().getSettings())
+    //2.绑定DataSource接口实现
+    apiBinder.bindType(classOf[DataSource]).toInstance(dataSource)
+    //3.绑定JdbcTemplate接口实现
+    apiBinder.bindType(classOf[JdbcTemplate]).toProvider(new JdbcTemplateProvider(dataSource))
+    //4.启用默认事务拦截器
+    apiBinder.installModule(new SimpleTranInterceptorModule(dataSource))
   }
   private def createDataSource(settings: Settings): DataSource = {
-    val dataSource = new ComboPooledDataSource()
-    //
     val driverString = settings.getString("demo-jdbc-" + prex + ".driver")
     val urlString = settings.getString("demo-jdbc-" + prex + ".url")
     val userString = settings.getString("demo-jdbc-" + prex + ".user")
@@ -31,6 +31,7 @@ class DataDao(prex: String)
     //
     LoggerHelper.logInfo("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString)
     //
+    val dataSource = new ComboPooledDataSource()
     dataSource.setDriverClass(driverString)
     dataSource.setJdbcUrl(urlString)
     dataSource.setUser(userString)
@@ -47,5 +48,18 @@ class DataDao(prex: String)
     dataSource.setMaxIdleTime(25000)
     //
     dataSource
+  }
+  //
+  //
+  //
+
+  var jdbcTemplate: JdbcTemplate = null
+
+  override def onStart(appContext: AppContext) = {
+    this.jdbcTemplate = appContext.getInstance(classOf[JdbcTemplate])
+  }
+
+  def queryList(sqlQuery: String): List[Map[String, Object]] = {
+    this.jdbcTemplate.queryForList(sqlQuery)
   }
 }

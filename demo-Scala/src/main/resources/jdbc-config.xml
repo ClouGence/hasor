@@ -3,7 +3,8 @@
 	<!-- MySQL -->
 	<demo-jdbc-mysql>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</url>
+		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8
+		</url>
 		<user>htest</user>
 		<password>htest_1234</password>
 	</demo-jdbc-mysql>
