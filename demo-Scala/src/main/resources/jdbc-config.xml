@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<!-- MySQL -->
+	<demo-jdbc-mysql>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</url>
+		<user>htest</user>
+		<password>htest_1234</password>
+	</demo-jdbc-mysql>
+	<!-- HSQL -->
+	<demo-jdbc-hsql>
+		<driver>org.hsqldb.jdbcDriver</driver>
+		<url>jdbc:hsqldb:mem:aname</url>
+		<user>sa</user>
+		<password></password>
+	</demo-jdbc-hsql>
+</config>

@@ -16,8 +16,6 @@
 package net.hasor.db.orm.ar.dialect;
 import net.hasor.db.orm.ar.SQLBuilder;
 import net.hasor.db.orm.ar.dialect.mysql.MySqlBuilder;
-import net.hasor.db.orm.ar.dialect.oracle.OracleSqlBuilder;
-import net.hasor.db.orm.ar.dialect.sqlserver.SqlServerSqlBuilder;
 /**
  * 
  * @version : 2015年2月13日
@@ -25,11 +23,11 @@ import net.hasor.db.orm.ar.dialect.sqlserver.SqlServerSqlBuilder;
  */
 public enum SQLBuilderEnum {
     /*MySQL方言*/
-    MySql(MySqlBuilder.class),
-    /*SQLServer 2000*/
-    SqlServer(SqlServerSqlBuilder.class),
-    /*Oracle方言*/
-    Oracle(OracleSqlBuilder.class);
+    MySql(MySqlBuilder.class), ;
+    //    /*SQLServer 2000*/
+    //    SqlServer(SqlServerSqlBuilder.class),
+    //    /*Oracle方言*/
+    //    Oracle(OracleSqlBuilder.class);
     //
     //
     SQLBuilderEnum(Class<? extends SQLBuilder> sqlBuilder) {
