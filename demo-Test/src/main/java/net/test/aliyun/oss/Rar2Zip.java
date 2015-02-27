@@ -132,7 +132,7 @@ public class Rar2Zip implements StartModule {
         InputStream zipInStream = new FileInputStream(zipFileName);
         PutObjectResult result = client.putObject("files-subtitle-zip", ossKey, zipInStream, omd);
         zipInStream.close();
-        //        new File(zipFileName).delete();
+        new File(zipFileName).delete();
         System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
         //
