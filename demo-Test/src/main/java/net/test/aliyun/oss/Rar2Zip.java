@@ -17,8 +17,10 @@ package net.test.aliyun.oss;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 import net.hasor.core.ApiBinder;
@@ -30,7 +32,9 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.aliyun.OSSModule;
 import net.test.aliyun.z7.Zip7Object;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import org.apache.commons.compress.archivers.zip.Zip64Mode;
+import net.test.other.queue.TRead;
+import net.test.other.queue.TWrite;
+import net.test.other.queue.TrackManager;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.more.util.StringUtils;
@@ -45,43 +49,158 @@ import com.aliyun.openservices.oss.model.ObjectListing;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 /**
- * 射手 数据遍历
+ * 使用 7z 转换 oss1 中的 rar 文件为 zip 格式保存到 oss2里，同时将压缩包中的文件目录保存到数据库中。
+ *  -- 使用多线程无锁队列处理
  * @version : 2014年8月1日
  * @author 赵永春(zyc@hasor.net)
  */
 public class Rar2Zip implements StartModule {
     @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {}
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
+        apiBinder.bindType(TrackManager.class, new TrackManager(TaskEnum.values()));
+    }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
+        //OSS客户端，由 OSSModule 类初始化.
         OSSClient client = appContext.getInstance(OSSClient.class);
-        ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
+        //无锁队列由 loadModule 方法初始化.
+        TrackManager track = appContext.getInstance(TrackManager.class);
         //
+        //Work线程
+        TaskProcess work1 = new TaskProcess(track);
+        TaskProcess work2 = new TaskProcess(track);
+        TaskProcess work3 = new TaskProcess(track);
+        work1.start();
+        work2.start();
+        work3.start();
+        //
+        ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
         long index = 0;
         while (true) {
+            //查询列表
             ObjectListing listData = client.listObjects(listQuery);
             List<OSSObjectSummary> objSummary = listData.getObjectSummaries();
             for (OSSObjectSummary summary : objSummary) {
+                //计数器
                 index++;
-                System.out.println(index + "\t from :" + summary.getKey());
-                rar2zip(summary, client, appContext, jdbc);
+                //等待可以装货的列车
+                TWrite tw = track.waitForWrite(TaskEnum.LoadTask);
+                //把任务装到列车上
+                tw.pushGood(new Task(index, summary, appContext));
+                //开动列车驶向下一站（消费任务）
+                track.switchNext(TaskEnum.RunTask);
             }
-            //
+            //设置下一个分页Mark
             listQuery.setMarker(listData.getNextMarker());
+            //如果下一个分页Mark为空表示最后一页了
             if (StringUtils.isBlank(listData.getNextMarker())) {
                 break;
             }
         }
+        //
+        while (true) {
+            if (track.isEmpty())
+                break;
+            Thread.sleep(3000);
+        }
+        System.out.println("the end!");
     }
-    public void rar2zip(OSSObjectSummary summary, OSSClient client, AppContext appContext, JdbcTemplate jdbc) throws Throwable {
-        String tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
+    //
+    public static void main(String[] args) {
+        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml",//
+                new OneDataSourceWarp(), new OSSModule(), new Rar2Zip());
+        System.out.println("end");
+    }
+}
+enum TaskEnum {
+    LoadTask, RunTask
+}
+class TaskProcess extends Thread {
+    private TrackManager track;
+    public TaskProcess(TrackManager track) {
+        this.track = track;
+    }
+    public void run() {
+        while (true) {
+            //等待可以卸货的列车
+            TRead tr = track.waitForRead(TaskEnum.RunTask);
+            //卸货
+            Task task = (Task) tr.pullGood();
+            if (task == null) {
+                try {
+                    Thread.sleep(1000);
+                    continue;
+                } catch (InterruptedException e) {}
+            }
+            try {
+                task.doWork();
+            } catch (Throwable e) {
+                task.markError(e);
+            }
+            //开动列车驶向下一站（装载任务）
+            track.switchNext(TaskEnum.LoadTask);
+        }
+    }
+}
+/*使用 7z 转换 oss1 中的 rar 文件为 zip 格式并保存到 oss2里,同时将压缩包中的文件目录保存到数据库中。*/
+class Task {
+    private long             index    = 0;
+    private OSSObjectSummary summary  = null;
+    private String           tempPath = null;
+    private JdbcTemplate     jdbc     = null;
+    private OSSClient        client   = null;
+    //
+    public Task(long index, OSSObjectSummary summary, AppContext appContext) {
+        this.index = index;
+        this.summary = summary;
+        System.out.println("init Task([" + index + "]from :" + summary.getKey() + ")");
+        //
+        //OSS客户端，由 OSSModule 类初始化.
+        this.client = appContext.getInstance(OSSClient.class);
+        //数据库操作接口，由 OneDataSourceWarp 类初始化.
+        this.jdbc = appContext.getInstance(JdbcTemplate.class);
+        //临时文件目录
+        this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
+        //
+        this.markError(new Exception());
+    }
+    //
+    public void markError(Throwable errorMsg) {
+        String newKey = summary.getKey();
+        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
+        //
+        try {
+            StringWriter sw = new StringWriter();
+            errorMsg.printStackTrace(new PrintWriter(sw));;
+            //
+            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
+            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size) values (?,?,?,?)",//
+                    newKey, sw.toString(), null, -1);
+            System.out.println("\t dump to db -> " + res1 + ":" + res2);
+        } catch (Throwable e) {
+            try {
+                String dumpName = newKey.substring(newKey.lastIndexOf("/"), newKey.length());
+                File dumpFile = new File(tempPath, dumpName);
+                dumpFile.getParentFile().mkdirs();
+                FileOutputStream fos = new FileOutputStream(dumpFile);
+                e.printStackTrace(new PrintStream(fos, true));
+                fos.flush();
+                fos.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+    // 
+    public void doWork() throws Throwable {
+        System.out.println(index + "\t from :" + summary.getKey());
         //
         //1.写入本地文件 
         System.out.print("\t save to Local -> working... ");
         OSSObject ossObject = client.getObject("files-subtitle", summary.getKey());
         String contentDisposition = ossObject.getObjectMetadata().getContentDisposition();
-        File rarFile = new File(tempPath, ossObject.getObjectMetadata().getContentDisposition());
+        File rarFile = new File(this.tempPath, ossObject.getObjectMetadata().getContentDisposition());
         rarFile.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(rarFile, false);
         InputStream inStream = ossObject.getObjectContent();
@@ -129,44 +248,24 @@ public class Rar2Zip implements StartModule {
         //
         //5.save to
         System.out.print("\t save to oss -> working... ");
-        String ossKey = ossObject.getKey();
-        ossKey = ossKey.substring(0, ossKey.length() - ".rar".length()) + ".zip";
+        String newKey = summary.getKey();
+        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
         contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
         ObjectMetadata omd = ossObject.getObjectMetadata();
         omd.setContentDisposition(contentDisposition);
         omd.setContentLength(new File(zipFileName).length());
         InputStream zipInStream = new FileInputStream(zipFileName);
-        PutObjectResult result = client.putObject("files-subtitle-zip", ossKey, zipInStream, omd);
+        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
         zipInStream.close();
         new File(zipFileName).delete();
         System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
         //
         //6.save files info
-        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", ossKey);
+        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
         int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size) values (?,?,?,?)",//
-                ossKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
+                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
         System.out.println("\t save info to db -> " + res1 + ":" + res2);
         //
-    }
-    public static void compressFiles2Zip(File outputZipFile, File[] files) throws IOException {
-        if (files != null && files.length > 0) {
-            ZipArchiveOutputStream zaos = new ZipArchiveOutputStream(outputZipFile);
-            zaos.setUseZip64(Zip64Mode.AsNeeded);//Use Zip64 extensions for all entries where they are required
-            for (File file : files) {
-                ZipArchiveEntry zipArchiveEntry = new ZipArchiveEntry(file, file.getName());
-                zaos.putArchiveEntry(zipArchiveEntry);
-                InputStream is = new FileInputStream(file);
-                IOUtils.copy(is, zaos);
-                zaos.closeArchiveEntry();
-            }
-            zaos.finish();
-        }
-    }
-    //
-    public static void main(String[] args) {
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml",//
-                new OneDataSourceWarp(), new OSSModule(), new Rar2Zip());
-        System.out.println("end");
     }
 }
