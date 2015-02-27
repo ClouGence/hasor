@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.more.util.IOUtils;
 /**
  * An Iterator over the lines in a <code>Reader</code>.
  * <p>

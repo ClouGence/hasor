@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
+package org.more.util.io;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -43,8 +43,6 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.more.util.io.Charsets;
-import org.more.util.io.LineIterator;
 import org.more.util.io.output.ByteArrayOutputStream;
 import org.more.util.io.output.StringBuilderWriter;
 /**
