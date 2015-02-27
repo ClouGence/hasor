@@ -26,8 +26,10 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.StartModule;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.aliyun.OSSModule;
 import net.test.aliyun.z7.Zip7Object;
+import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -52,6 +54,7 @@ public class Rar2Zip implements StartModule {
     public void loadModule(ApiBinder apiBinder) throws Throwable {}
     @Override
     public void onStart(AppContext appContext) throws Throwable {
+        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         OSSClient client = appContext.getInstance(OSSClient.class);
         ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
         //
@@ -62,7 +65,7 @@ public class Rar2Zip implements StartModule {
             for (OSSObjectSummary summary : objSummary) {
                 index++;
                 System.out.println(index + "\t from :" + summary.getKey());
-                rar2zip(summary, client, appContext);
+                rar2zip(summary, client, appContext, jdbc);
             }
             //
             listQuery.setMarker(listData.getNextMarker());
@@ -71,7 +74,7 @@ public class Rar2Zip implements StartModule {
             }
         }
     }
-    public void rar2zip(OSSObjectSummary summary, OSSClient client, AppContext appContext) throws Throwable {
+    public void rar2zip(OSSObjectSummary summary, OSSClient client, AppContext appContext, JdbcTemplate jdbc) throws Throwable {
         String tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
         //1.写入本地文件 
@@ -101,6 +104,7 @@ public class Rar2Zip implements StartModule {
         zipFileName = zipFileName.substring(0, zipFileName.length() - ".rar".length()) + ".zip";
         ZipArchiveOutputStream outStream = new ZipArchiveOutputStream(new File(zipFileName));
         outStream.setEncoding("GBK");
+        StringBuffer files = new StringBuffer();
         Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
         while (itFile.hasNext()) {
             File it = itFile.next();
@@ -113,6 +117,7 @@ public class Rar2Zip implements StartModule {
             itInStream.close();
             outStream.flush();
             outStream.closeArchiveEntry();
+            files.append(entName + "\n");
         }
         outStream.flush();
         outStream.close();
@@ -137,6 +142,12 @@ public class Rar2Zip implements StartModule {
         System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
         //
+        //6.save files info
+        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", ossKey);
+        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size) values (?,?,?,?)",//
+                ossKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
+        System.out.println("\t save info to db -> " + res1 + ":" + res2);
+        //
     }
     public static void compressFiles2Zip(File outputZipFile, File[] files) throws IOException {
         if (files != null && files.length > 0) {
@@ -154,7 +165,8 @@ public class Rar2Zip implements StartModule {
     }
     //
     public static void main(String[] args) {
-        AppContext app = Hasor.createAppContext(new OSSModule(), new Rar2Zip());
+        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml",//
+                new OneDataSourceWarp(), new OSSModule(), new Rar2Zip());
         System.out.println("end");
     }
 }
