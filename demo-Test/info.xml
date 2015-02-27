@@ -1,5 +1,4 @@
 ﻿<subtitle-info>
-	
 	<autonym>Taken.3.2014</autonym>
 	<allNames>
 		<name>Taken.3.2014</name>
@@ -14,12 +13,12 @@
 		<proofreading>字幕校对</proofreading>
 		<timerShaft>时间轴校对</timerShaft>
 	</teamInfo>
-	
+
 	<languageSet>
 		<language>简体中文</language>
 		<language>繁体中文</language>
 	</languageSet>
-	
+
 	<format>字幕格式 ASS,Srt,...</format>
 	<matching>Taken.3.2014.1080p.WEB-DL.x264-PartyBoy</matching>
 	<split>1/1</split>

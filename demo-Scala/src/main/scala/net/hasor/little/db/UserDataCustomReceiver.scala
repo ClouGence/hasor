@@ -5,6 +5,8 @@ import org.more.logger.LoggerHelper
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.receiver.Receiver
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+
 /**
  *
  */
@@ -31,8 +33,6 @@ class UserDataCustomReceiver(dbConfig: String, sqlQuery: String)
     val userList = this.userDao.queryList(sqlQuery)
 
     for (user <- userList)
-      store(user)
-
-    HasorUnit.printMapList(userList)
+      store(user.toMap)
   }
 }
