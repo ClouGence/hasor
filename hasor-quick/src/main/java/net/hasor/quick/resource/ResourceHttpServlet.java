@@ -35,9 +35,9 @@ import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.logger.LoggerHelper;
 import org.more.util.ContextClassLoaderLocal;
-import org.more.util.FileUtils;
-import org.more.util.IOUtils;
 import org.more.util.StringUtils;
+import org.more.util.io.FileUtils;
+import org.more.util.io.IOUtils;
 /**
  * 负责装载jar包或zip包中的资源
  * @version : 2013-6-5

@@ -129,6 +129,7 @@ public class Rar2Zip implements StartModule {
         contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
         ObjectMetadata omd = ossObject.getObjectMetadata();
         omd.setContentDisposition(contentDisposition);
+        omd.setContentLength(new File(zipFileName).length());
         InputStream zipInStream = new FileInputStream(zipFileName);
         PutObjectResult result = client.putObject("files-subtitle-zip", ossKey, zipInStream, omd);
         zipInStream.close();
