@@ -69,6 +69,8 @@ class TrainNode implements TRead, TWrite {
     }
     /**从节点中拉取一个货物。*/
     public Object pullGood() {
+        if (this.size == 0)
+            return null;
         Object good = this.dataPool[this.readIndex];
         this.dataPool[this.readIndex] = null;
         this.readIndex++;

@@ -16,6 +16,8 @@
 package net.test.aliyun.z7;
 import java.io.File;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.more.util.io.FileFilterUtils;
 import org.more.util.io.FileUtils;
@@ -27,17 +29,44 @@ import org.more.util.io.FileUtils;
 public class Zip7Object {
     private static String[] compression = new String[] { ".zip", ".7z", ".rar" };
     //
-    public static void extract(String extToosHome, String extractFile, String toDir) throws Throwable {
-        String cmdFormat = String.format("%s\\7z.exe e \"%s\" \"-o%s\"", extToosHome, extractFile, toDir);
-        Process p = Runtime.getRuntime().exec(cmdFormat);
-        int extValue = p.waitFor();
-        if (extValue == 0) {
+    public static boolean extract(final String extToosHome, final String extractFile, final String toDir) throws Throwable {
+        final BasicFuture<Integer> future = new BasicFuture<Integer>();
+        class ExtractTask extends Thread {
+            Process process = null;
+            public void doWork() throws Throwable {
+                String cmdFormat = String.format("%s\\7z.exe e \"%s\" \"-o%s\"", extToosHome, extractFile, toDir);
+                process = Runtime.getRuntime().exec(cmdFormat);
+                int extValue = process.waitFor();
+                future.completed(extValue);
+            }
+            public void finish() {
+                try {
+                    stop();
+                } catch (Exception e) {}
+                if (process != null)
+                    process.destroy();
+                if (future.isDone() == false)
+                    future.completed(200);
+            }
+            //
+            public void run() {
+                try {
+                    this.doWork();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ExtractTask extractTask = new ExtractTask();
+        extractTask.start();
+        Integer extValue = future.get(300, TimeUnit.SECONDS);//5分钟
+        extractTask.finish();
+        //
+        if (extValue != null && extValue == 0) {
             new File(extractFile).delete();
-            p.destroy();
         } else {
             FileUtils.deleteDir(new File(toDir));
-            p.destroy();
-            return;
+            return false;
         }
         //
         Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
@@ -54,5 +83,6 @@ public class Zip7Object {
                 }
             }
         }
+        return true;
     }
 }

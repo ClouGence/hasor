@@ -28,7 +28,7 @@ public class TrackManager {
     private Enum<?>[]       stationArray = null;
     //
     public TrackManager(Enum<?>[] stationArray) {
-        this(stationArray, 2, 2048);
+        this(stationArray, 4, 2);
     }
     public TrackManager(Enum<?>[] stationArray, int trainCount, int capacity) {
         /*初始化车站*/

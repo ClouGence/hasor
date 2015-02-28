@@ -71,9 +71,11 @@ public class Rar2Zip implements StartModule {
         TaskProcess work1 = new TaskProcess(track);
         TaskProcess work2 = new TaskProcess(track);
         TaskProcess work3 = new TaskProcess(track);
+        TaskProcess work4 = new TaskProcess(track);
         work1.start();
         work2.start();
         work3.start();
+        work4.start();
         //
         ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
         long index = 0;
@@ -84,12 +86,20 @@ public class Rar2Zip implements StartModule {
             for (OSSObjectSummary summary : objSummary) {
                 //计数器
                 index++;
-                //等待可以装货的列车
-                TWrite tw = track.waitForWrite(TaskEnum.LoadTask);
-                //把任务装到列车上
-                tw.pushGood(new Task(index, summary, appContext));
-                //开动列车驶向下一站（消费任务）
-                track.switchNext(TaskEnum.RunTask);
+                Task task = new Task(index, summary, appContext);
+                //
+                while (true) {
+                    //等待一辆可以装货的列车
+                    TWrite tw = track.waitForWrite(TaskEnum.Task);
+                    //尝试把任务装到列车上
+                    boolean res = tw.pushGood(task);
+                    //让列车驶向下一站（消费任务）
+                    track.switchNext(TaskEnum.Task);
+                    //是否等待下一辆列车来装载此货物
+                    if (res == true)
+                        break;
+                    Thread.sleep(1000);
+                }
             }
             //设置下一个分页Mark
             listQuery.setMarker(listData.getNextMarker());
@@ -114,7 +124,7 @@ public class Rar2Zip implements StartModule {
     }
 }
 enum TaskEnum {
-    LoadTask, RunTask
+    Task
 }
 class TaskProcess extends Thread {
     private TrackManager track;
@@ -124,22 +134,18 @@ class TaskProcess extends Thread {
     public void run() {
         while (true) {
             //等待可以卸货的列车
-            TRead tr = track.waitForRead(TaskEnum.RunTask);
+            TRead tr = track.waitForRead(TaskEnum.Task);
             //卸货
             Task task = (Task) tr.pullGood();
-            if (task == null) {
+            if (task != null) {
                 try {
-                    Thread.sleep(1000);
-                    continue;
-                } catch (InterruptedException e) {}
-            }
-            try {
-                task.doWork();
-            } catch (Throwable e) {
-                task.markError(e);
+                    task.doWork();
+                } catch (Throwable e) {
+                    task.markError(e);
+                }
             }
             //开动列车驶向下一站（装载任务）
-            track.switchNext(TaskEnum.LoadTask);
+            track.switchNext(TaskEnum.Task);
         }
     }
 }
@@ -172,10 +178,10 @@ class Task {
         //
         try {
             StringWriter sw = new StringWriter();
-            errorMsg.printStackTrace(new PrintWriter(sw));;
+            errorMsg.printStackTrace(new PrintWriter(sw));
             //
             int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size) values (?,?,?,?)",//
+            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
                     newKey, sw.toString(), null, -1);
             System.out.println("\t dump to db -> " + res1 + ":" + res2);
         } catch (Throwable e) {
@@ -183,7 +189,7 @@ class Task {
                 String dumpName = newKey.substring(newKey.lastIndexOf("/"), newKey.length());
                 File dumpFile = new File(tempPath, dumpName);
                 dumpFile.getParentFile().mkdirs();
-                FileOutputStream fos = new FileOutputStream(dumpFile);
+                FileOutputStream fos = new FileOutputStream(dumpFile + ".log");
                 e.printStackTrace(new PrintStream(fos, true));
                 fos.flush();
                 fos.close();
@@ -214,7 +220,12 @@ class Task {
         String extToosHome = "C:\\Program Files (x86)\\7-Zip";
         String rarFileStr = rarFile.getAbsolutePath();
         String toDir = rarFileStr.substring(0, rarFileStr.length() - ".rar".length());
-        Zip7Object.extract(extToosHome, rarFile.getAbsolutePath(), toDir);
+        boolean extract = Zip7Object.extract(extToosHome, rarFile.getAbsolutePath(), toDir);
+        if (extract == false) {
+            FileUtils.deleteDir(new File(toDir));
+            rarFile.delete();
+            throw new Exception("extract error.");
+        }
         System.out.print("-> finish.\n");
         //
         //3.压缩
@@ -263,7 +274,7 @@ class Task {
         //
         //6.save files info
         int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size) values (?,?,?,?)",//
+        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
                 newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
         System.out.println("\t save info to db -> " + res1 + ":" + res2);
         //
