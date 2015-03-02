@@ -119,6 +119,7 @@ class TaskProcess extends Thread {
         this.track = track;
     }
     public void run() {
+        this.setName("TaskProcess - " + this.getId());
         while (true) {
             this.doProcess();
         }

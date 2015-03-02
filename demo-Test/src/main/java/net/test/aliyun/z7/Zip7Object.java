@@ -51,6 +51,7 @@ public class Zip7Object {
             }
             //
             public void run() {
+                this.setName("Call 7z.exe -" + this.getId());
                 try {
                     this.doWork();
                 } catch (Throwable e) {
@@ -60,7 +61,7 @@ public class Zip7Object {
         };
         ExtractTask extractTask = new ExtractTask();
         extractTask.start();
-        Integer extValue = future.get(5, TimeUnit.SECONDS);//5分钟
+        Integer extValue = future.get(300, TimeUnit.SECONDS);//5分钟
         extractTask.finish();
         //
         if (extValue != null && extValue == 0) {
