@@ -19,11 +19,11 @@ package net.test.other.queue;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TRead {
+public interface TRead<T> {
     /**是否空了*/
     public boolean isEmpty();
     /**从列车上拉取一个货物。*/
-    public Object pullGood();
+    public T pullGood();
     /**获取货物数量*/
     public int getGoodCount();
 }

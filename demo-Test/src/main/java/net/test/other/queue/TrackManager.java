@@ -22,20 +22,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TrackManager {
-    private TrainNode[]     trainArray   = null;
-    private AtomicInteger[] trainSignal  = null;
-    private Enum<?>[]       stationArray = null;
+public class TrackManager<T> {
+    private TrainNode<T>[]  trainArray   = null; //多辆列车
+    private AtomicInteger[] trainSignal  = null; //列车所处车站
+    private Enum<?>[]       stationArray = null; //所有车站
     //
-    public TrackManager(Enum<?>[] stationArray) {
-        this(stationArray, 4, 2);
+    public TrackManager(Class<? extends Enum<?>> stationEnum) {
+        this(stationEnum, 4, 2);
     }
-    public TrackManager(Enum<?>[] stationArray, int trainCount, int capacity) {
+    public TrackManager(Class<? extends Enum<?>> stationEnum, int trainCount, int capacity) {
         /*初始化车站*/
-        if (stationArray == null) {
-            stationArray = new Enum<?>[0];
-        }
-        this.stationArray = stationArray;
+        this.stationArray = stationEnum.getEnumConstants();
         /*列车数*/
         if (trainCount <= 0) {
             trainCount = 1;
@@ -44,7 +41,7 @@ public class TrackManager {
         this.trainArray = new TrainNode[trainCount];
         this.trainSignal = new AtomicInteger[trainCount];
         for (int i = 0; i < trainCount; i++) {
-            this.trainArray[i] = new TrainNode(capacity);
+            this.trainArray[i] = new TrainNode<T>(capacity);
             this.trainSignal[i] = new AtomicInteger();
         }
         /*布局列车信号，保证每个车站都有列车出发*/
@@ -57,15 +54,15 @@ public class TrackManager {
     }
     //
     /**waitType 定是要追踪的类型，一旦等到了要追踪的类型将会返回。该方法会有很多线程调用，因此每个线程都在等待追踪的那个类型的到达。*/
-    public TWrite waitForWrite(Enum<?> waitStation) {
+    public TWrite<T> waitForWrite(Enum<?> waitStation) {
         return waitFor(waitStation, 1);
     }
     /**waitType 定是要追踪的类型，一旦等到了要追踪的类型将会返回。该方法会有很多线程调用，因此每个线程都在等待追踪的那个类型的到达。*/
-    public TRead waitForRead(Enum<?> waitStation) {
+    public TRead<T> waitForRead(Enum<?> waitStation) {
         return waitFor(waitStation, -1);
     }
     //
-    private TrainNode waitFor(Enum<?> waitStation, int rw) {
+    private TrainNode<T> waitFor(Enum<?> waitStation, int rw) {
         int atTrainNode = -1;
         Out: while (true) {
             for (int i = 0; i < this.trainSignal.length; i++) {
@@ -86,7 +83,7 @@ public class TrackManager {
         return markTrain(atTrainNode);
     }
     private ThreadLocal<List<Integer>> localMark = new ThreadLocal<List<Integer>>();
-    private TrainNode markTrain(int train) {
+    private TrainNode<T> markTrain(int train) {
         if (train < 0)
             return null;
         //
@@ -122,9 +119,44 @@ public class TrackManager {
     }
     /**是否所有列车上都没有货物了*/
     public boolean isEmpty() {
-        for (TrainNode train : trainArray)
+        for (TrainNode<T> train : trainArray)
             if (train.isEmpty() == false)
                 return false;
         return true;
+    }
+    //
+    /**
+     * 在某一个车站等待列车，当有列车到达之后，装上货物让列车驶向指定的下一站。
+     * @param waitStation 等待的车站
+     * @param nextStation 目标车站
+     * @param good 货物
+     */
+    public void waitForWrite(Enum<?> waitStation, Enum<?> nextStation, T good) {
+        while (true) {
+            //等待一辆可以装货的列车
+            TWrite<T> tw = this.waitForWrite(waitStation);
+            //尝试把任务装到列车上
+            boolean res = tw.pushGood(good);
+            //让列车驶向下一站（消费任务）
+            this.switchNext(nextStation);
+            //是否等待下一辆列车来装载此货物
+            if (res == true)
+                break;
+        }
+    }
+    /**
+     * 在某一个车站等待列车，直到有货物到达。
+     * @param waitStation 等待的车站
+     * @param nextStation 经过列车的下一个车站
+     */
+    public T waitForRead(Enum<?> waitStation, Enum<?> nextStation) {
+        while (true) {
+            TRead<T> tr = this.waitForRead(waitStation);
+            T task = tr.pullGood();
+            this.switchNext(nextStation);
+            if (task != null) {
+                return task;
+            }
+        }
     }
 }

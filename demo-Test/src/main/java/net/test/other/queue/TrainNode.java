@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class TrainNode implements TRead, TWrite {
+class TrainNode<T> implements TRead<T>, TWrite<T> {
     private int           poolCapacity = 2048;
     private Object[]      dataPool     = new Object[0];
     private int           readIndex    = 0;
@@ -52,7 +52,7 @@ class TrainNode implements TRead, TWrite {
         return this.size == 0;
     }
     /**推送一个货物到节点上。*/
-    public boolean pushGood(Object good) {
+    public boolean pushGood(T good) {
         if (good == null)
             return false;
         //
@@ -68,7 +68,7 @@ class TrainNode implements TRead, TWrite {
         return true;
     }
     /**从节点中拉取一个货物。*/
-    public Object pullGood() {
+    public T pullGood() {
         if (this.size == 0)
             return null;
         Object good = this.dataPool[this.readIndex];
@@ -79,7 +79,7 @@ class TrainNode implements TRead, TWrite {
         if (this.readIndex == this.dataPool.length)
             this.readIndex = 0;
         //
-        return good;
+        return (T) good;
     }
     //
     public void cleanTake() {

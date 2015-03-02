@@ -42,7 +42,7 @@ public class Zip7Object {
             public void finish() {
                 try {
                     stop();
-                } catch (Exception e) {}
+                } catch (Throwable e) {}
                 if (process != null)
                     process.destroy();
                 if (future.isDone() == false)

@@ -19,11 +19,11 @@ package net.test.other.queue;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TWrite {
+public interface TWrite<T> {
     /**货物是否装满了*/
     public boolean isFull();
     /**推送一个货物到列车上。*/
-    public boolean pushGood(Object good);
+    public boolean pushGood(T good);
     /**列车容量*/
     public int getCapacity();
 }

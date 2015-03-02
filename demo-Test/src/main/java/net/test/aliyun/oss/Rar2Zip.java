@@ -32,8 +32,6 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.aliyun.OSSModule;
 import net.test.aliyun.z7.Zip7Object;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.other.queue.TRead;
-import net.test.other.queue.TWrite;
 import net.test.other.queue.TrackManager;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -58,14 +56,14 @@ public class Rar2Zip implements StartModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
-        apiBinder.bindType(TrackManager.class, new TrackManager(TaskEnum.values()));
+        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         //OSS客户端，由 OSSModule 类初始化.
         OSSClient client = appContext.getInstance(OSSClient.class);
         //无锁队列由 loadModule 方法初始化.
-        TrackManager track = appContext.getInstance(TrackManager.class);
+        TrackManager<Task> track = appContext.getInstance(TrackManager.class);
         //
         //Work线程
         TaskProcess work1 = new TaskProcess(track);
@@ -87,19 +85,8 @@ public class Rar2Zip implements StartModule {
                 //计数器
                 index++;
                 Task task = new Task(index, summary, appContext);
-                //
-                while (true) {
-                    //等待一辆可以装货的列车
-                    TWrite tw = track.waitForWrite(TaskEnum.Task);
-                    //尝试把任务装到列车上
-                    boolean res = tw.pushGood(task);
-                    //让列车驶向下一站（消费任务）
-                    track.switchNext(TaskEnum.Task);
-                    //是否等待下一辆列车来装载此货物
-                    if (res == true)
-                        break;
-                    Thread.sleep(1000);
-                }
+                //装货
+                track.waitForWrite(TaskEnum.Task, TaskEnum.Task, task);
             }
             //设置下一个分页Mark
             listQuery.setMarker(listData.getNextMarker());
@@ -127,25 +114,21 @@ enum TaskEnum {
     Task
 }
 class TaskProcess extends Thread {
-    private TrackManager track;
-    public TaskProcess(TrackManager track) {
+    private TrackManager<Task> track;
+    public TaskProcess(TrackManager<Task> track) {
         this.track = track;
     }
     public void run() {
         while (true) {
-            //等待可以卸货的列车
-            TRead tr = track.waitForRead(TaskEnum.Task);
-            //卸货
-            Task task = (Task) tr.pullGood();
-            if (task != null) {
-                try {
-                    task.doWork();
-                } catch (Throwable e) {
-                    task.markError(e);
-                }
-            }
-            //开动列车驶向下一站（装载任务）
-            track.switchNext(TaskEnum.Task);
+            this.doProcess();
+        }
+    }
+    private void doProcess() {
+        Task task = track.waitForRead(TaskEnum.Task, TaskEnum.Task);
+        try {
+            task.doWork();
+        } catch (Throwable e) {
+            task.markError(e);
         }
     }
 }
@@ -154,7 +137,7 @@ class Task {
     private long             index    = 0;
     private OSSObjectSummary summary  = null;
     private String           tempPath = null;
-    private JdbcTemplate     jdbc     = null;
+//    private JdbcTemplate     jdbc     = null;
     private OSSClient        client   = null;
     //
     public Task(long index, OSSObjectSummary summary, AppContext appContext) {
@@ -165,7 +148,7 @@ class Task {
         //OSS客户端，由 OSSModule 类初始化.
         this.client = appContext.getInstance(OSSClient.class);
         //数据库操作接口，由 OneDataSourceWarp 类初始化.
-        this.jdbc = appContext.getInstance(JdbcTemplate.class);
+//        this.jdbc = appContext.getInstance(JdbcTemplate.class);
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
@@ -180,10 +163,10 @@ class Task {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
-            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-                    newKey, sw.toString(), null, -1);
-            System.out.println("\t dump to db -> " + res1 + ":" + res2);
+//            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
+//            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
+//                    newKey, sw.toString(), null, -1);
+//            System.out.println("\t dump to db -> " + res1 + ":" + res2);
         } catch (Throwable e) {
             try {
                 String dumpName = newKey.substring(newKey.lastIndexOf("/"), newKey.length());
@@ -198,7 +181,7 @@ class Task {
             }
         }
     }
-    // 
+    //
     public void doWork() throws Throwable {
         System.out.println(index + "\t from :" + summary.getKey());
         //
@@ -257,26 +240,26 @@ class Task {
         FileUtils.deleteDir(new File(toDir));
         System.out.print("\t delete temp dir -> finish.\n");
         //
-        //5.save to
-        System.out.print("\t save to oss -> working... ");
-        String newKey = summary.getKey();
-        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
-        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
-        ObjectMetadata omd = ossObject.getObjectMetadata();
-        omd.setContentDisposition(contentDisposition);
-        omd.setContentLength(new File(zipFileName).length());
-        InputStream zipInStream = new FileInputStream(zipFileName);
-        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
-        zipInStream.close();
+//        //5.save to
+//        System.out.print("\t save to oss -> working... ");
+//        String newKey = summary.getKey();
+//        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
+//        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
+//        ObjectMetadata omd = ossObject.getObjectMetadata();
+//        omd.setContentDisposition(contentDisposition);
+//        omd.setContentLength(new File(zipFileName).length());
+//        InputStream zipInStream = new FileInputStream(zipFileName);
+//        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
+//        zipInStream.close();
         new File(zipFileName).delete();
-        System.out.print("-> OK:" + result.getETag());
+//        System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
-        //
-        //6.save files info
-        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
-        System.out.println("\t save info to db -> " + res1 + ":" + res2);
+//        //
+//        //6.save files info
+//        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
+//        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
+//                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
+//        System.out.println("\t save info to db -> " + res1 + ":" + res2);
         //
     }
 }
