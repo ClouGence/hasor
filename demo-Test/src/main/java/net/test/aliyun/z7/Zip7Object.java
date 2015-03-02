@@ -34,7 +34,7 @@ public class Zip7Object {
         class ExtractTask extends Thread {
             Process process = null;
             public void doWork() throws Throwable {
-                String cmdFormat = String.format("%s\\7z.exe e \"%s\" \"-o%s\"", extToosHome, extractFile, toDir);
+                String cmdFormat = String.format("%s\\7z.exe x \"%s\" \"-o%s\"", extToosHome, extractFile, toDir);
                 process = Runtime.getRuntime().exec(cmdFormat);
                 int extValue = process.waitFor();
                 future.completed(extValue);
@@ -42,11 +42,12 @@ public class Zip7Object {
             public void finish() {
                 try {
                     stop();
-                } catch (Throwable e) {}
-                if (process != null)
-                    process.destroy();
-                if (future.isDone() == false)
-                    future.completed(200);
+                } finally {
+                    if (process != null)
+                        process.destroy();
+                    if (future.isDone() == false)
+                        future.completed(200);
+                }
             }
             //
             public void run() {
@@ -59,7 +60,7 @@ public class Zip7Object {
         };
         ExtractTask extractTask = new ExtractTask();
         extractTask.start();
-        Integer extValue = future.get(300, TimeUnit.SECONDS);//5分钟
+        Integer extValue = future.get(5, TimeUnit.SECONDS);//5分钟
         extractTask.finish();
         //
         if (extValue != null && extValue == 0) {
@@ -84,5 +85,11 @@ public class Zip7Object {
             }
         }
         return true;
+    }
+    public static void main(String[] args) throws Throwable {
+        String extToosHome = "C:\\Program Files (x86)\\7-Zip";
+        String extractFile = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\004774.rar";
+        String toDir = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\004774";
+        Zip7Object.extract(extToosHome, extractFile, toDir);
     }
 }

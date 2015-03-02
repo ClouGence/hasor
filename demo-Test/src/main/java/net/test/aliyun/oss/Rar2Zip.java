@@ -137,7 +137,7 @@ class Task {
     private long             index    = 0;
     private OSSObjectSummary summary  = null;
     private String           tempPath = null;
-//    private JdbcTemplate     jdbc     = null;
+    private JdbcTemplate     jdbc     = null;
     private OSSClient        client   = null;
     //
     public Task(long index, OSSObjectSummary summary, AppContext appContext) {
@@ -148,7 +148,7 @@ class Task {
         //OSS客户端，由 OSSModule 类初始化.
         this.client = appContext.getInstance(OSSClient.class);
         //数据库操作接口，由 OneDataSourceWarp 类初始化.
-//        this.jdbc = appContext.getInstance(JdbcTemplate.class);
+        this.jdbc = appContext.getInstance(JdbcTemplate.class);
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
@@ -163,10 +163,10 @@ class Task {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
-//            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-//            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-//                    newKey, sw.toString(), null, -1);
-//            System.out.println("\t dump to db -> " + res1 + ":" + res2);
+            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
+            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
+                    newKey, sw.toString(), null, -1);
+            System.out.println("\t dump to db -> " + res1 + ":" + res2);
         } catch (Throwable e) {
             try {
                 String dumpName = newKey.substring(newKey.lastIndexOf("/"), newKey.length());
@@ -181,7 +181,7 @@ class Task {
             }
         }
     }
-    //
+    // 
     public void doWork() throws Throwable {
         System.out.println(index + "\t from :" + summary.getKey());
         //
@@ -240,26 +240,26 @@ class Task {
         FileUtils.deleteDir(new File(toDir));
         System.out.print("\t delete temp dir -> finish.\n");
         //
-//        //5.save to
-//        System.out.print("\t save to oss -> working... ");
-//        String newKey = summary.getKey();
-//        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
-//        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
-//        ObjectMetadata omd = ossObject.getObjectMetadata();
-//        omd.setContentDisposition(contentDisposition);
-//        omd.setContentLength(new File(zipFileName).length());
-//        InputStream zipInStream = new FileInputStream(zipFileName);
-//        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
-//        zipInStream.close();
+        //5.save to
+        System.out.print("\t save to oss -> working... ");
+        String newKey = summary.getKey();
+        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
+        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
+        ObjectMetadata omd = ossObject.getObjectMetadata();
+        omd.setContentDisposition(contentDisposition);
+        omd.setContentLength(new File(zipFileName).length());
+        InputStream zipInStream = new FileInputStream(zipFileName);
+        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
+        zipInStream.close();
         new File(zipFileName).delete();
-//        System.out.print("-> OK:" + result.getETag());
+        System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
-//        //
-//        //6.save files info
-//        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-//        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-//                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
-//        System.out.println("\t save info to db -> " + res1 + ":" + res2);
+        //
+        //6.save files info
+        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
+        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
+                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
+        System.out.println("\t save info to db -> " + res1 + ":" + res2);
         //
     }
 }
