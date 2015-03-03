@@ -61,7 +61,7 @@ public class Zip7Object {
         };
         ExtractTask extractTask = new ExtractTask();
         extractTask.start();
-        Integer extValue = future.get(300, TimeUnit.SECONDS);//5分钟
+        Integer extValue = future.get(120, TimeUnit.SECONDS);//2分钟
         extractTask.finish();
         //
         if (extValue != null && extValue == 0) {

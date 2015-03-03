@@ -21,8 +21,10 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
@@ -56,24 +58,23 @@ public class Rar2Zip implements StartModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
-        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class));
+        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class, 40, 2));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
+        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
+        jdbc.queryForList("select * from `oss-subtitle` where oss_key is null");
+        //
         //OSS客户端，由 OSSModule 类初始化.
         OSSClient client = appContext.getInstance(OSSClient.class);
         //无锁队列由 loadModule 方法初始化.
         TrackManager<Task> track = appContext.getInstance(TrackManager.class);
         //
         //Work线程
-        TaskProcess work1 = new TaskProcess(track);
-        TaskProcess work2 = new TaskProcess(track);
-        TaskProcess work3 = new TaskProcess(track);
-        TaskProcess work4 = new TaskProcess(track);
-        work1.start();
-        work2.start();
-        work3.start();
-        work4.start();
+        for (int i = 0; i < 25; i++) {
+            TaskProcess work00 = new TaskProcess(track);
+            work00.start();
+        }
         //
         ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
         long index = 0;
@@ -135,13 +136,16 @@ class TaskProcess extends Thread {
 }
 /*使用 7z 转换 oss1 中的 rar 文件为 zip 格式并保存到 oss2里,同时将压缩包中的文件目录保存到数据库中。*/
 class Task {
-    private long             index    = 0;
-    private OSSObjectSummary summary  = null;
-    private String           tempPath = null;
-    private JdbcTemplate     jdbc     = null;
-    private OSSClient        client   = null;
+    private long             index              = 0;
+    private String           tempPath           = null;
+    private JdbcTemplate     jdbc               = null;
+    private OSSClient        client             = null;
+    private OSSObjectSummary summary            = null;
+    private ObjectMetadata   ossObject          = null;
+    private String           newKey             = null;
+    private String           contentDisposition = null;
     //
-    public Task(long index, OSSObjectSummary summary, AppContext appContext) {
+    public Task(long index, OSSObjectSummary summary, AppContext appContext) throws SQLException {
         this.index = index;
         this.summary = summary;
         System.out.println("init Task([" + index + "]from :" + summary.getKey() + ")");
@@ -153,20 +157,22 @@ class Task {
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
-        this.markError(new Exception());
+        this.ossObject = client.getObjectMetadata("files-subtitle", summary.getKey());
+        //
+        this.newKey = summary.getKey();
+        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
+        this.contentDisposition = ossObject.getContentDisposition();
+        this.contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
     }
     //
     public void markError(Throwable errorMsg) {
-        String newKey = summary.getKey();
-        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
-        //
         try {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
             int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
             int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-                    newKey, sw.toString(), null, -1);
+                    newKey, sw.toString(), this.contentDisposition, -1);
             System.out.println("\t dump to db -> " + res1 + ":" + res2);
         } catch (Throwable e) {
             try {
@@ -184,12 +190,38 @@ class Task {
     }
     // 
     public void doWork() throws Throwable {
-        System.out.println(index + "\t from :" + summary.getKey());
+        try {
+            Thread.sleep(new Random().nextInt(2000));
+        } catch (Exception e) {}
+        //
+        //init task to DB
+        System.out.println(index + "\t from :" + this.summary.getKey());
+        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =?", newKey) > 0) {
+            int res = jdbc.update("update `oss-subtitle` set doWork=1 where oss_key =?", newKey);
+            System.out.println("init task to DB -> " + res);
+        } else {
+            int res = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime,doWork) values (?,null,?,-1,now(),1)",//
+                    newKey, contentDisposition);
+            System.out.println("init task to DB -> " + res);
+        }
+        //
+        //
+        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =? and size > 0 ", newKey) > 0) {
+            int res = jdbc.update("update `oss-subtitle` set doWork = 0 where oss_key =?", newKey);
+            System.out.println("init task has OK. -> " + res);
+            return;
+        }
+        //
+        //
+        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =? and size < 0 ", newKey) > 0) {
+            int res = jdbc.update("update `oss-subtitle` set doWork = 0 , ori_name = ?  where oss_key =?", contentDisposition, newKey);
+            System.out.println("fill Exception Task to DB-> " + res);
+            return;
+        }
         //
         //1.写入本地文件 
         System.out.print("\t save to Local -> working... ");
         OSSObject ossObject = client.getObject("files-subtitle", summary.getKey());
-        String contentDisposition = ossObject.getObjectMetadata().getContentDisposition();
         File rarFile = new File(this.tempPath, ossObject.getObjectMetadata().getContentDisposition());
         rarFile.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(rarFile, false);
@@ -243,24 +275,19 @@ class Task {
         //
         //5.save to
         System.out.print("\t save to oss -> working... ");
-        String newKey = summary.getKey();
-        newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
-        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
         ObjectMetadata omd = ossObject.getObjectMetadata();
         omd.setContentDisposition(contentDisposition);
         omd.setContentLength(new File(zipFileName).length());
         InputStream zipInStream = new FileInputStream(zipFileName);
-        PutObjectResult result = client.putObject("files-subtitle-zip", newKey, zipInStream, omd);
+        PutObjectResult result = client.putObject("files-subtitle-format-zip", newKey, zipInStream, omd);
         zipInStream.close();
         new File(zipFileName).delete();
         System.out.print("-> OK:" + result.getETag());
         System.out.print("-> finish.\n");
         //
         //6.save files info
-        int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-        int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-                newKey, files.toString(), omd.getContentDisposition(), omd.getContentLength());
-        System.out.println("\t save info to db -> " + res1 + ":" + res2);
+        int res = jdbc.update("update `oss-subtitle` set files = ? ,ori_name =? ,size = ? , lastTime =now() , doWork = 0 where oss_key =?", files.toString(), contentDisposition, omd.getContentLength(), newKey);
+        System.out.println("\t save info to db -> " + res);
         //
     }
 }
