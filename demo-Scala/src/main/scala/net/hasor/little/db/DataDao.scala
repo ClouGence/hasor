@@ -1,7 +1,7 @@
 package net.hasor.little.db
 import javax.sql.DataSource
 import java.util.{ List, Map }
-import net.hasor.core.{ Hasor, AppContext, ApiBinder, StartModule, Settings }
+import net.hasor.core.{ AppContext, ApiBinder, StartModule, Settings }
 import net.hasor.db.jdbc.core.{ JdbcTemplate, JdbcTemplateProvider }
 import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule
 import org.more.logger.LoggerHelper
@@ -10,7 +10,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
  *
  */
 class DataDao(prex: String)
-  extends StartModule {
+  extends StartModule with Serializable{
 
   override def loadModule(apiBinder: ApiBinder) = {
     //1.创建 DataSource
@@ -21,6 +21,8 @@ class DataDao(prex: String)
     apiBinder.bindType(classOf[JdbcTemplate]).toProvider(new JdbcTemplateProvider(dataSource))
     //4.启用默认事务拦截器
     apiBinder.installModule(new SimpleTranInterceptorModule(dataSource))
+    //
+    apiBinder.bindType(classOf[DataDao],this)
   }
   private def createDataSource(settings: Settings): DataSource = {
     val driverString = settings.getString("demo-jdbc-" + prex + ".driver")
@@ -52,7 +54,6 @@ class DataDao(prex: String)
   //
   //
   //
-
   var jdbcTemplate: JdbcTemplate = null
 
   override def onStart(appContext: AppContext) = {

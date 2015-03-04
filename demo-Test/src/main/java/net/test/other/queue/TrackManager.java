@@ -76,8 +76,8 @@ public class TrackManager<T> {
             }
             //
             try {
-                Thread.yield(); // 为保证高吞吐量的消息传递，这个是必须的,但在等待列车时它会消耗CPU周期
-                //Thread.sleep(10);
+//                Thread.yield(); // 为保证高吞吐量的消息传递，这个是必须的,但在等待列车时它会消耗CPU周期
+                Thread.sleep(1);
             } catch (Exception e) {}
         }
         return markTrain(atTrainNode);
@@ -142,6 +142,10 @@ public class TrackManager<T> {
             //是否等待下一辆列车来装载此货物
             if (res == true)
                 break;
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) { }
+            //
         }
     }
     /**
@@ -157,6 +161,10 @@ public class TrackManager<T> {
             if (task != null) {
                 return task;
             }
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) { }
+            //
         }
     }
 }

@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -58,12 +59,12 @@ public class Rar2Zip implements StartModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
-        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class, 40, 2));
+        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class,10,2));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
-        jdbc.queryForList("select * from `oss-subtitle` where oss_key is null");
+        jdbc.queryForList("select count(*) from `oss-subtitle` where oss_key is null");
         //
         //OSS客户端，由 OSSModule 类初始化.
         OSSClient client = appContext.getInstance(OSSClient.class);
@@ -71,9 +72,9 @@ public class Rar2Zip implements StartModule {
         TrackManager<Task> track = appContext.getInstance(TrackManager.class);
         //
         //Work线程
-        for (int i = 0; i < 25; i++) {
-            TaskProcess work00 = new TaskProcess(track);
-            work00.start();
+        for (int i=0;i<15;i++){
+	        TaskProcess work00 = new TaskProcess(track);
+	        work00.start();
         }
         //
         ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
@@ -136,18 +137,18 @@ class TaskProcess extends Thread {
 }
 /*使用 7z 转换 oss1 中的 rar 文件为 zip 格式并保存到 oss2里,同时将压缩包中的文件目录保存到数据库中。*/
 class Task {
-    private long             index              = 0;
-    private String           tempPath           = null;
-    private JdbcTemplate     jdbc               = null;
-    private OSSClient        client             = null;
-    private OSSObjectSummary summary            = null;
-    private ObjectMetadata   ossObject          = null;
-    private String           newKey             = null;
-    private String           contentDisposition = null;
+    private long           index     = 0;
+    private String         tempPath  = null;
+    private JdbcTemplate   jdbc      = null;
+    private OSSClient      client    = null;
+    private OSSObjectSummary summary =null;
+    private ObjectMetadata ossObject = null;
+    private String         newKey    = null;
+    private String         contentDisposition = null;
     //
     public Task(long index, OSSObjectSummary summary, AppContext appContext) throws SQLException {
         this.index = index;
-        this.summary = summary;
+        this.summary=summary;
         System.out.println("init Task([" + index + "]from :" + summary.getKey() + ")");
         //
         //OSS客户端，由 OSSModule 类初始化.
@@ -170,10 +171,8 @@ class Task {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
-            int res1 = jdbc.update("delete from `oss-subtitle` where oss_key=?", newKey);
-            int res2 = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime) values (?,?,?,?,now())",//
-                    newKey, sw.toString(), this.contentDisposition, -1);
-            System.out.println("\t dump to db -> " + res1 + ":" + res2);
+            int res = jdbc.update("update `oss-subtitle-copy` set files=? ,size=-1 ,lastTime=now() where oss_key =?", sw.toString(), newKey);
+            System.out.println("\t dump to db -> " + res );
         } catch (Throwable e) {
             try {
                 String dumpName = newKey.substring(newKey.lastIndexOf("/"), newKey.length());
@@ -190,104 +189,91 @@ class Task {
     }
     // 
     public void doWork() throws Throwable {
-        try {
-            Thread.sleep(new Random().nextInt(2000));
-        } catch (Exception e) {}
-        //
         //init task to DB
-        System.out.println(index + "\t from :" + this.summary.getKey());
-        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =?", newKey) > 0) {
-            int res = jdbc.update("update `oss-subtitle` set doWork=1 where oss_key =?", newKey);
-            System.out.println("init task to DB -> " + res);
-        } else {
-            int res = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime,doWork) values (?,null,?,-1,now(),1)",//
-                    newKey, contentDisposition);
-            System.out.println("init task to DB -> " + res);
-        }
-        //
-        //
-        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =? and size > 0 ", newKey) > 0) {
-            int res = jdbc.update("update `oss-subtitle` set doWork = 0 where oss_key =?", newKey);
-            System.out.println("init task has OK. -> " + res);
-            return;
-        }
-        //
-        //
-        if (jdbc.queryForInt("select count(*) from `oss-subtitle` where oss_key =? and size < 0 ", newKey) > 0) {
-            int res = jdbc.update("update `oss-subtitle` set doWork = 0 , ori_name = ?  where oss_key =?", contentDisposition, newKey);
-            System.out.println("fill Exception Task to DB-> " + res);
-            return;
-        }
-        //
-        //1.写入本地文件 
-        System.out.print("\t save to Local -> working... ");
-        OSSObject ossObject = client.getObject("files-subtitle", summary.getKey());
-        File rarFile = new File(this.tempPath, ossObject.getObjectMetadata().getContentDisposition());
-        rarFile.getParentFile().mkdirs();
-        FileOutputStream fos = new FileOutputStream(rarFile, false);
-        InputStream inStream = ossObject.getObjectContent();
-        IOUtils.copy(inStream, fos);
-        fos.flush();
-        fos.close();
-        System.out.print("-> finish.\n");
-        //
-        //2.解压
-        System.out.print("\t extract rar -> working... ");
-        String extToosHome = "C:\\Program Files (x86)\\7-Zip";
-        String rarFileStr = rarFile.getAbsolutePath();
-        String toDir = rarFileStr.substring(0, rarFileStr.length() - ".rar".length());
-        boolean extract = Zip7Object.extract(extToosHome, rarFile.getAbsolutePath(), toDir);
-        if (extract == false) {
-            FileUtils.deleteDir(new File(toDir));
-            rarFile.delete();
-            throw new Exception("extract error.");
-        }
-        System.out.print("-> finish.\n");
-        //
-        //3.压缩
-        System.out.print("\t package zip-> working... ");
-        String zipFileName = rarFile.getAbsolutePath();
-        zipFileName = zipFileName.substring(0, zipFileName.length() - ".rar".length()) + ".zip";
-        ZipArchiveOutputStream outStream = new ZipArchiveOutputStream(new File(zipFileName));
-        outStream.setEncoding("GBK");
-        StringBuffer files = new StringBuffer();
-        Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
-        while (itFile.hasNext()) {
-            File it = itFile.next();
-            if (it.isDirectory())
-                continue;
-            String entName = it.getAbsolutePath().substring(toDir.length() + 1);
-            outStream.putArchiveEntry(new ZipArchiveEntry(it, entName));
-            InputStream itInStream = new FileInputStream(it);
-            IOUtils.copy(itInStream, outStream);
-            itInStream.close();
-            outStream.flush();
-            outStream.closeArchiveEntry();
-            files.append(entName + "\n");
-        }
-        outStream.flush();
-        outStream.close();
-        System.out.print("-> finish.\n");
-        //
-        //4.删除临时文件
-        FileUtils.deleteDir(new File(toDir));
-        System.out.print("\t delete temp dir -> finish.\n");
-        //
-        //5.save to
-        System.out.print("\t save to oss -> working... ");
-        ObjectMetadata omd = ossObject.getObjectMetadata();
-        omd.setContentDisposition(contentDisposition);
-        omd.setContentLength(new File(zipFileName).length());
-        InputStream zipInStream = new FileInputStream(zipFileName);
-        PutObjectResult result = client.putObject("files-subtitle-format-zip", newKey, zipInStream, omd);
-        zipInStream.close();
-        new File(zipFileName).delete();
-        System.out.print("-> OK:" + result.getETag());
-        System.out.print("-> finish.\n");
-        //
-        //6.save files info
-        int res = jdbc.update("update `oss-subtitle` set files = ? ,ori_name =? ,size = ? , lastTime =now() , doWork = 0 where oss_key =?", files.toString(), contentDisposition, omd.getContentLength(), newKey);
-        System.out.println("\t save info to db -> " + res);
+        System.out.println("do Task " + index + "\t from :" + this.summary.getKey());
+        try {
+            ObjectMetadata ossObject = client.getObjectMetadata("files-subtitle-format-zip", this.newKey);
+            String desc = ossObject.getContentDisposition();
+            Object filesData = jdbc.queryForObject("select files from `oss-subtitle` where oss_key =? and ori_name=? and size >0" ,String.class, newKey,desc);
+            if (filesData!=null){
+                int res = jdbc.update("update `oss-subtitle-copy` set files=? ,size=? ,lastTime=now() where oss_key =?",
+                        filesData,ossObject.getContentLength(), newKey);
+                System.out.println("init task has OK dump to 'copy' table ->" + res);
+                return;
+            }
+        } catch (Exception e) { }
+//        //
+//        //1.写入本地文件 
+//        System.out.print("\t save to Local -> working... ");
+//        OSSObject ossObject =  client.getObject("files-subtitle", summary.getKey());
+//        File rarFile = new File(this.tempPath, ossObject.getObjectMetadata().getContentDisposition());
+//        rarFile.getParentFile().mkdirs();
+//        FileOutputStream fos = new FileOutputStream(rarFile, false);
+//        InputStream inStream = ossObject.getObjectContent();
+//        IOUtils.copy(inStream, fos);
+//        fos.flush();
+//        fos.close();
+//        System.out.print("-> finish.\n");
+//        //
+//        //2.解压
+//        System.out.print("\t extract rar -> working... ");
+//        String extToosHome = "C:\\Program Files (x86)\\7-Zip";
+//        String rarFileStr = rarFile.getAbsolutePath();
+//        String toDir = rarFileStr.substring(0, rarFileStr.length() - ".rar".length());
+//        boolean extract = Zip7Object.extract(extToosHome, rarFile.getAbsolutePath(), toDir);
+//        if (extract == false) {
+//            FileUtils.deleteDir(new File(toDir));
+//            rarFile.delete();
+//            throw new Exception("extract error.");
+//        }
+//        System.out.print("-> finish.\n");
+//        //
+//        //3.压缩
+//        System.out.print("\t package zip-> working... ");
+//        String zipFileName = rarFile.getAbsolutePath();
+//        zipFileName = zipFileName.substring(0, zipFileName.length() - ".rar".length()) + ".zip";
+//        ZipArchiveOutputStream outStream = new ZipArchiveOutputStream(new File(zipFileName));
+//        outStream.setEncoding("GBK");
+//        StringBuffer files = new StringBuffer();
+//        Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
+//        while (itFile.hasNext()) {
+//            File it = itFile.next();
+//            if (it.isDirectory())
+//                continue;
+//            String entName = it.getAbsolutePath().substring(toDir.length() + 1);
+//            outStream.putArchiveEntry(new ZipArchiveEntry(it, entName));
+//            InputStream itInStream = new FileInputStream(it);
+//            IOUtils.copy(itInStream, outStream);
+//            itInStream.close();
+//            outStream.flush();
+//            outStream.closeArchiveEntry();
+//            files.append(entName + "\n");
+//        }
+//        outStream.flush();
+//        outStream.close();
+//        System.out.print("-> finish.\n");
+//        //
+//        //4.删除临时文件
+//        FileUtils.deleteDir(new File(toDir));
+//        System.out.print("\t delete temp dir -> finish.\n");
+//        //
+//        //5.save to
+//        System.out.print("\t save to oss -> working... ");
+//        
+//        ObjectMetadata omd = ossObject.getObjectMetadata();
+//        omd.setContentDisposition(contentDisposition);
+//        omd.setContentLength(new File(zipFileName).length());
+//        InputStream zipInStream = new FileInputStream(zipFileName);
+//        PutObjectResult result = client.putObject("files-subtitle-format-zip", newKey, zipInStream, omd);
+//        zipInStream.close();
+//        new File(zipFileName).delete();
+//        System.out.print("-> OK:" + result.getETag());
+//        System.out.print("-> finish.\n");
+//        //
+//        //6.save files info
+//        int res = jdbc.update("update `oss-subtitle-copy` set files=? , size=? , lastTime=now() where oss_key =?",
+//        		files.toString(), omd.getContentLength(),newKey);
+//        System.out.println("\t save info to db -> " + res);
         //
     }
 }

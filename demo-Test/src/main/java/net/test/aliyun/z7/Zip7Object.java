@@ -34,7 +34,7 @@ public class Zip7Object {
         class ExtractTask extends Thread {
             Process process = null;
             public void doWork() throws Throwable {
-                String cmdFormat = String.format("%s\\7z.exe x \"%s\" \"-o%s\"", extToosHome, extractFile, toDir);
+                String cmdFormat = String.format("%s\\7z.exe x \"%s\" -aoa -y \"-o%s\"", extToosHome, extractFile, toDir);
                 process = Runtime.getRuntime().exec(cmdFormat);
                 int extValue = process.waitFor();
                 future.completed(extValue);
