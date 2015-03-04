@@ -29,7 +29,7 @@ import org.more.util.io.FileUtils;
 public class Zip7Object {
     private static String[] compression = new String[] { ".zip", ".7z", ".rar" };
     //
-    public static boolean extract(final String extToosHome, final String extractFile, final String toDir) throws Throwable {
+    public static int extract(final String extToosHome, final String extractFile, final String toDir) throws Throwable {
         final BasicFuture<Integer> future = new BasicFuture<Integer>();
         class ExtractTask extends Thread {
             Process process = null;
@@ -61,14 +61,15 @@ public class Zip7Object {
         };
         ExtractTask extractTask = new ExtractTask();
         extractTask.start();
-        Integer extValue = future.get(120, TimeUnit.SECONDS);//2分钟
+        future.get(300, TimeUnit.SECONDS);//5分钟
         extractTask.finish();
+        Integer extValue = future.get();
         //
         if (extValue != null && extValue == 0) {
             new File(extractFile).delete();
         } else {
             FileUtils.deleteDir(new File(toDir));
-            return false;
+            return extValue;
         }
         //
         Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
@@ -85,7 +86,7 @@ public class Zip7Object {
                 }
             }
         }
-        return true;
+        return 0;
     }
     public static void main(String[] args) throws Throwable {
         String extToosHome = "C:\\Program Files (x86)\\7-Zip";

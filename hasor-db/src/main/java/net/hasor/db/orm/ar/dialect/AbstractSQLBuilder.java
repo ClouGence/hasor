@@ -243,7 +243,6 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
             List<Order> orderList = paginator.getOrderBy();
             StringBuffer orderSQL = new StringBuffer("");
             if (orderList != null && !orderList.isEmpty()) {
-                orderSQL.append(dia(Dialect.ORDER_BY));
                 for (int i = 0; i < orderList.size(); i++) {
                     Order order = orderList.get(i);
                     OrderBy orderBy = order.getOrderBy();
@@ -254,6 +253,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
             }
             if (orderSQL.length() > 1) {
                 orderSQL.delete(0, dia(Dialect.SEPARATOR).length());
+                orderSQL.insert(0, dia(Dialect.ORDER_BY));
                 pageSQL.append(orderSQL);
             }
         }

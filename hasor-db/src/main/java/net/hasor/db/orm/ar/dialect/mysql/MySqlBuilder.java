@@ -64,8 +64,8 @@ public class MySqlBuilder extends AbstractSQLBuilder {
         StringBuffer sqlBuffer = orderBySQL(selectSQL, paginator);
         //limit
         if (paginator != null && paginator.isEnable()) {
-            sqlBuffer.append("limit ");
-            sqlBuffer.append(paginator.getFirstItem() + "," + paginator.getLastItem());
+            sqlBuffer.append(" limit ");
+            sqlBuffer.append(paginator.getFirstItem() + "," + paginator.getPageSize());
         }
         return new ArrayBuilderData(sqlBuffer.toString(), whereParams);
     }
@@ -74,8 +74,8 @@ public class MySqlBuilder extends AbstractSQLBuilder {
         StringBuffer sqlBuffer = orderBySQL(selectSQL, paginator);
         //limit
         if (paginator != null && paginator.isEnable()) {
-            sqlBuffer.append("limit ");
-            sqlBuffer.append(paginator.getFirstItem() + "," + paginator.getLastItem());
+            sqlBuffer.append(" limit ");
+            sqlBuffer.append(paginator.getFirstItem() + "," + paginator.getPageSize());
         }
         return new MapBuilderData(sqlBuffer.toString(), whereParams);
     }

@@ -28,7 +28,7 @@ public class Paginator {
     /**每页记录数（-1表示无限大）*/
     private int               pageSize    = 15;
     /**当前页号*/
-    private int               currentPage = 1;
+    private int               currentPage = 0;
     /**是否启用分页*/
     private boolean           enable      = true;
     /**排序方式 */
@@ -91,7 +91,7 @@ public class Paginator {
     /**获取上一页页号。*/
     public int getPreviousPage() {
         int back = getCurrentPage() - 1;
-        return (back <= 0) ? 1 : back;
+        return (back < 0) ? 0 : back;
     }
     /**获取下一页页号。*/
     public int getNextPage() {
@@ -112,8 +112,8 @@ public class Paginator {
     }
     /**设置前页号。*/
     public void setCurrentPage(int currentPage) {
-        if (currentPage < 1)
-            currentPage = 1;
+        if (currentPage < 0)
+            currentPage = 0;
         this.currentPage = currentPage;
     }
     /**获取总页数。*/
@@ -132,18 +132,14 @@ public class Paginator {
     /**获取本页第一个记录的索引位置。*/
     public int getFirstItem() {
         int cPage = getCurrentPage();
-        if (cPage == 1) {
-            return 1; // 第一页开始当然是第 1 条记录
-        }
-        cPage--;
         int pgSize = getPageSize();
-        return (pgSize * cPage) + 1;
+        return (pgSize * cPage);
     }
     /**获取本页最后一个记录的索引位置。*/
     public int getLastItem() {
         int cPage = getCurrentPage();
         int pgSize = getPageSize();
-        int assumeLast = pgSize * cPage;
+        int assumeLast = pgSize + (pgSize * cPage);
         int totalCount = getTotalCount();
         return (assumeLast > totalCount) ? totalCount : assumeLast;
     }

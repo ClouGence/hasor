@@ -43,52 +43,60 @@ public final class DataBase {
     //
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, null, Empty);
+        return this.queryBySQL(Record.class, sqlQuery, null, null, Empty);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery, Object... params) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, null, params);
+        return this.queryBySQL(Record.class, sqlQuery, null, null, params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery, Map<String, Object> params) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, null, params);
+        return this.queryBySQL(Record.class, sqlQuery, null, null, params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery, Paginator paginator) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, paginator, Empty);
+        return this.queryBySQL(Record.class, sqlQuery, paginator, null, Empty);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery, Paginator paginator, Object... params) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, paginator, params);
+        return this.queryBySQL(Record.class, sqlQuery, paginator, null, params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery, Paginator paginator, Map<String, Object> params) throws SQLException {
-        return this.queryBySQL(Record.class, sqlQuery, paginator, params);
+        return this.queryBySQL(Record.class, sqlQuery, paginator, null, params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(Class<T> recType, String sqlQuery) throws SQLException {
-        return this.queryBySQL(recType, sqlQuery, null, Empty);
+        return this.queryBySQL(recType, sqlQuery, null, this.loadSechma(recType), Empty);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(Class<T> recType, String sqlQuery, Object... params) throws SQLException {
-        return this.queryBySQL(recType, sqlQuery, null, params);
+        return this.queryBySQL(recType, sqlQuery, null, this.loadSechma(recType), params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(Class<T> recType, String sqlQuery, Map<String, Object> params) throws SQLException {
-        return this.queryBySQL(recType, sqlQuery, null, params);
+        return this.queryBySQL(recType, sqlQuery, null, this.loadSechma(recType), params);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(Class<T> recType, String sqlQuery, Paginator paginator) throws SQLException {
-        return this.queryBySQL(recType, sqlQuery, paginator, Empty);
+        return this.queryBySQL(recType, sqlQuery, paginator, this.loadSechma(recType), Empty);
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(final Class<T> recType, final String sqlQuery, final Paginator paginator, final Object... params) throws SQLException {
+        return this.queryBySQL(recType, sqlQuery, paginator, this.loadSechma(recType), params);
+    }
+    /**根据SQL语句执行查询返回{@link PageResult}。*/
+    public <T> PageResult<T> queryBySQL(final Class<T> recType, final String sqlQuery, final Paginator paginator, final Map<String, Object> params) throws SQLException {
+        return this.queryBySQL(recType, sqlQuery, paginator, this.loadSechma(recType), params);
+    }
+    /**根据SQL语句执行查询返回{@link PageResult}。*/
+    public <T> PageResult<T> queryBySQL(final Class<T> recType, final String sqlQuery, final Paginator paginator, Sechma useSechma, final Object... params) throws SQLException {
         SQLBuilder builder = this.getSQLBuilder();
         BuilderData queryData = builder.buildPaginator(sqlQuery, paginator, params);
         //
         if (recType == Record.class) {
             LoggerHelper.logInfo("selectSQL:%s", queryData);
-            List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper());
+            List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
             LoggerHelper.logInfo("selectSQL:%s", queryData);
@@ -97,13 +105,13 @@ public final class DataBase {
         }
     }
     /**根据SQL语句执行查询返回{@link PageResult}。*/
-    public <T> PageResult<T> queryBySQL(final Class<T> recType, final String sqlQuery, final Paginator paginator, final Map<String, Object> params) throws SQLException {
+    public <T> PageResult<T> queryBySQL(final Class<T> recType, final String sqlQuery, final Paginator paginator, Sechma useSechma, final Map<String, Object> params) throws SQLException {
         SQLBuilder builder = this.getSQLBuilder();
         BuilderMapData queryData = builder.buildPaginator(sqlQuery, paginator, params);
         //
         if (recType == Record.class) {
             LoggerHelper.logInfo("selectSQL:%s", queryData);
-            List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper());
+            List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
             LoggerHelper.logInfo("selectSQL:%s", queryData);
@@ -257,18 +265,22 @@ public final class DataBase {
     }
     /**从数据库中查询满足该对象特征的。*/
     public PageResult<Record> listByExample(Record example) throws SQLException {
-        return this.listByExample(Record.class, example, null);
+        return this.listByExample(Record.class, example, null, example.getSechma());
     }
     /**从数据库中查询满足该对象特征的。*/
     public PageResult<Record> listByExample(final Record example, Paginator paginator) throws SQLException {
-        return this.listByExample(Record.class, example, paginator);
+        return this.listByExample(Record.class, example, paginator, example.getSechma());
     }
     /**从数据库中查询满足该对象特征的。*/
     public <T> PageResult<T> listByExample(Class<T> recType, Record example) throws SQLException {
-        return this.listByExample(recType, example, null);
+        return this.listByExample(recType, example, null, this.loadSechma(recType));
     }
     /**从数据库中查询满足该对象特征的。*/
     public <T> PageResult<T> listByExample(final Class<T> recType, final Record example, Paginator paginator) throws SQLException {
+        return this.listByExample(recType, example, paginator, this.loadSechma(recType));
+    }
+    /**从数据库中查询满足该对象特征的。*/
+    public <T> PageResult<T> listByExample(final Class<T> recType, final Record example, Paginator paginator, Sechma useSechma) throws SQLException {
         SQLBuilder builder = this.getSQLBuilder();
         Sechma sechma = example.getSechma();
         Column[] whereColumn = example.hasValueColumns(sechma.getColumns());//所有列
@@ -279,7 +291,7 @@ public final class DataBase {
         //
         if (recType == Record.class) {
             LoggerHelper.logInfo("selectSQL:%s", selectData);
-            List<T> entList = (List<T>) this.getJdbc().query(selectData.getSQL(), selectData.getData(), getRecordRowMapper());
+            List<T> entList = (List<T>) this.getJdbc().query(selectData.getSQL(), selectData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
             LoggerHelper.logInfo("selectSQL:%s", selectData);
@@ -294,8 +306,8 @@ public final class DataBase {
         }
     }
     //
-    private RowMapper<Record> getRecordRowMapper() {
-        return new RecordRowMapper(new Sechma("none"));
+    private RowMapper<Record> getRecordRowMapper(Sechma sechma) {
+        return new RecordRowMapper(sechma == null ? new Sechma("none") : sechma);
     }
     private static class RecordRowMapper implements RowMapper<Record> {
         private ColumnMapRowMapper mapRowMapper = new ColumnMapRowMapper();
