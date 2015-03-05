@@ -16,8 +16,9 @@
 package net.test.aliyun.z7;
 import java.io.File;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-import org.more.future.BasicFuture;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
 import org.more.util.StringUtils;
 import org.more.util.io.FileFilterUtils;
 import org.more.util.io.FileUtils;
@@ -30,46 +31,25 @@ public class Zip7Object {
     private static String[] compression = new String[] { ".zip", ".7z", ".rar" };
     //
     public static int extract(final String extToosHome, final String extractFile, final String toDir) throws Throwable {
-        final BasicFuture<Integer> future = new BasicFuture<Integer>();
-        class ExtractTask extends Thread {
-            Process process = null;
-            public void doWork() throws Throwable {
-                String cmdFormat = String.format("%s\\7z.exe x \"%s\" -aoa -y \"-o%s\"", extToosHome, extractFile, toDir);
-                process = Runtime.getRuntime().exec(cmdFormat);
-                int extValue = process.waitFor();
-                future.completed(extValue);
+        String cmdLine = String.format("%s\\7z.exe x \"%s\" -aoa -y \"-o%s\"", extToosHome, extractFile, toDir);
+        CommandLine commandline = CommandLine.parse(cmdLine);
+        DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+        DefaultExecutor executor = new DefaultExecutor();
+        int extValue = -1;
+        try {
+            executor.execute(commandline, resultHandler);
+            resultHandler.waitFor(300 * 1000);
+            extValue = resultHandler.getExitValue();
+            if (extValue == 0) {
+                new File(extractFile).delete();
             }
-            public void finish() {
-                try {
-                    stop();
-                } finally {
-                    if (process != null)
-                        process.destroy();
-                    if (future.isDone() == false)
-                        future.completed(200);
-                }
-            }
+        } catch (Exception e) {
             //
-            public void run() {
-                this.setName("Call 7z.exe -" + this.getId());
-                try {
-                    this.doWork();
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
+        } finally {
+            if (extValue != 0) {
+                FileUtils.deleteDir(new File(toDir));
+                return extValue;
             }
-        };
-        ExtractTask extractTask = new ExtractTask();
-        extractTask.start();
-        future.get(300, TimeUnit.SECONDS);//5分钟
-        extractTask.finish();
-        Integer extValue = future.get();
-        //
-        if (extValue != null && extValue == 0) {
-            new File(extractFile).delete();
-        } else {
-            FileUtils.deleteDir(new File(toDir));
-            return extValue;
         }
         //
         Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
@@ -77,7 +57,6 @@ public class Zip7Object {
             File it = itFile.next();
             if (it.isDirectory())
                 continue;
-            //
             for (String com : compression) {
                 if (StringUtils.endsWithIgnoreCase(it.getName(), com)) {
                     String itPath = it.getAbsolutePath();
@@ -90,8 +69,9 @@ public class Zip7Object {
     }
     public static void main(String[] args) throws Throwable {
         String extToosHome = "C:\\Program Files (x86)\\7-Zip";
-        String extractFile = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\004774.rar";
-        String toDir = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\004774";
-        Zip7Object.extract(extToosHome, extractFile, toDir);
+        String extractFile = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\1234567890.rar";
+        String toDir = "D:\\work-space\\hasor-git\\hasor-src\\demo-Test\\hasor-work\\temp\\1234567890";
+        int res = Zip7Object.extract(extToosHome, extractFile, toDir);
+        System.out.println(res);
     }
 }

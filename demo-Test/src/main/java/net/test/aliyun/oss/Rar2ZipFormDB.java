@@ -30,7 +30,8 @@ import net.hasor.db.orm.ar.dialect.SQLBuilderEnum;
 import net.hasor.db.orm.ar.record.MapRecord;
 import net.test.aliyun.OSSModule;
 import net.test.aliyun.oss.ent.SubtitleBean;
-import net.test.aliyun.z7.Task;
+import net.test.aliyun.z7.AbstractTask;
+import net.test.aliyun.z7.DownLoadTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.other.queue.TrackManager;
 /**
@@ -43,7 +44,7 @@ public class Rar2ZipFormDB implements StartModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
-        apiBinder.bindType(TrackManager.class, new TrackManager<Task>(TaskEnum.class, 10, 2));
+        apiBinder.bindType(TrackManager.class, new TrackManager<AbstractTask>(TaskEnum.class, 10, 2));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
@@ -52,9 +53,9 @@ public class Rar2ZipFormDB implements StartModule {
         db.queryBySQL("select * from `oss-subtitle` where 1=2");
         //
         //无锁队列由 loadModule 方法初始化.
-        TrackManager<Task> track = appContext.getInstance(TrackManager.class);
+        TrackManager<AbstractTask> track = appContext.getInstance(TrackManager.class);
         //Work线程
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 10; i++) {
             TaskProcess work00 = new TaskProcess(track);
             work00.start();
         }
@@ -62,27 +63,29 @@ public class Rar2ZipFormDB implements StartModule {
         ArConfiguration arConfig = new ArConfiguration();
         Sechma sechma = arConfig.loadSechma(SubtitleBean.class);
         Record example = new MapRecord(sechma);
-        example.set("size", -1);
+        example.set("size", 0);
         //
         Paginator page = new Paginator();
         page.setEnable(true);
-        page.setTotalCount(db.countByExample(example));
-        page.setPageSize(1000);
-        page.addOrderBy("oss_key", OrderBy.DESC);
+        page.setTotalCount(db.getJdbc().queryForInt("select count(*) from `oss-subtitle-copy` where `size` > 0"));
+        page.setPageSize(500);
+        page.addOrderBy("oss_key", OrderBy.ASC);
         //
         int errorIndex = 0;
         for (int i = 0; i < page.getTotalPage(); i++) {
             page.setCurrentPage(i);
-            PageResult<Record> result = db.listByExample(example, page);
+            PageResult<Record> result = db.queryBySQL("select * from `oss-subtitle-copy` where `size` > 0", page);
             //
             for (Record rec : result.getResult()) {
                 //计数器
                 errorIndex++;
                 //
-                Task task = new Task(errorIndex, (String) rec.get(0), appContext);
+                String newKey = rec.asString("oss_key");;
+                String oldKey = newKey.substring(0, newKey.length() - ".zip".length()) + ".rar";
+                AbstractTask task = new DownLoadTest(errorIndex, oldKey, appContext);
                 //装货
                 track.waitForWrite(TaskEnum.Task, TaskEnum.Task, task);
-                System.out.println(errorIndex + "\t" + rec.get(0));
+                System.out.println(errorIndex + "\t" + rec.asString("oss_key"));
             }
         }
         //
@@ -103,8 +106,8 @@ public class Rar2ZipFormDB implements StartModule {
         Task
     }
     class TaskProcess extends Thread {
-        private TrackManager<Task> track;
-        public TaskProcess(TrackManager<Task> track) {
+        private TrackManager<AbstractTask> track;
+        public TaskProcess(TrackManager<AbstractTask> track) {
             this.track = track;
         }
         public void run() {
@@ -114,7 +117,7 @@ public class Rar2ZipFormDB implements StartModule {
             }
         }
         private void doProcess() {
-            Task task = track.waitForRead(TaskEnum.Task, TaskEnum.Task);
+            AbstractTask task = track.waitForRead(TaskEnum.Task, TaskEnum.Task);
             try {
                 task.doWork();
             } catch (Throwable e) {

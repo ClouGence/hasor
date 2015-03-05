@@ -41,7 +41,7 @@ import com.aliyun.openservices.oss.model.PutObjectResult;
  * @author 赵永春(zyc@hasor.net)
  */
 /* */
-public class Task {
+public class Task extends AbstractTask {
     private long           index              = 0;
     private String         tempPath           = null;
     private JdbcTemplate   jdbc               = null;
@@ -51,9 +51,9 @@ public class Task {
     private String         oldKey             = null;
     private String         contentDisposition = null;
     //
-    public Task(long index, String errorKey, AppContext appContext) throws SQLException {
+    public Task(long index, String oldKey, AppContext appContext) throws SQLException {
         this.index = index;
-        System.out.println("init Task([" + index + "]from :" + errorKey + ")");
+        System.out.println("init Task([" + index + "]from :" + oldKey + ")");
         //
         //OSS客户端，由 OSSModule 类初始化.
         this.client = appContext.getInstance(OSSClient.class);
@@ -62,10 +62,10 @@ public class Task {
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
-        this.oldKey = errorKey.substring(0, errorKey.length() - ".zip".length()) + ".rar";
+        this.oldKey = oldKey;
         this.ossObject = client.getObjectMetadata("files-subtitle", oldKey);
         //
-        this.newKey = errorKey;
+        this.newKey = oldKey.substring(0, oldKey.length() - ".rar".length()) + ".zip";
         this.contentDisposition = ossObject.getContentDisposition();
         this.contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
     }

@@ -15,6 +15,7 @@
  */
 package net.test.aliyun.oss.ent;
 import java.util.Date;
+import net.hasor.db.orm.ar.anno.AllowPolicy;
 import net.hasor.db.orm.ar.anno.Column;
 import net.hasor.db.orm.ar.anno.Table;
 /**
@@ -30,7 +31,7 @@ public class SubtitleBean {
     private String files;
     @Column(column = "ori_name")
     private String oriName;
-    @Column(column = "size")
+    @Column(column = "size", policy = @AllowPolicy(ignoreUnset = false))
     private long   size;
     @Column(column = "lastTime")
     private Date   lastTime;

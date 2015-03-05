@@ -35,7 +35,7 @@ import com.aliyun.openservices.oss.model.ObjectListing;
  * @version : 2014年8月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Rar2Zip implements StartModule {
+public class Rar2ZipFormOSS implements StartModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //初始化一条铁路，铁路上的车站由TaskEnum枚举定义
@@ -66,7 +66,7 @@ public class Rar2Zip implements StartModule {
             for (OSSObjectSummary summary : objSummary) {
                 //计数器
                 index++;
-                Task task = new Task(index, summary, appContext);
+                Task task = new Task(index, summary.getKey(), appContext);
                 //装货
                 track.waitForWrite(TaskEnum.Task, TaskEnum.Task, task);
             }
@@ -88,7 +88,7 @@ public class Rar2Zip implements StartModule {
     //
     public static void main(String[] args) {
         AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml",//
-                new OneDataSourceWarp(), new OSSModule(), new Rar2Zip());
+                new OneDataSourceWarp(), new OSSModule(), new Rar2ZipFormOSS());
         System.out.println("end");
     }
     enum TaskEnum {
