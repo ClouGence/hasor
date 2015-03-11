@@ -56,7 +56,7 @@ object CustomReceiver {
           outWrite.flush()
           Thread.sleep(100)
         }
-        socket.close()
+        //socket.close()
         println("--end--")
       }
     }.start()

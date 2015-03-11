@@ -17,18 +17,23 @@ package net.test.aliyun.z7;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.more.util.io.IOUtils;
+
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.model.OSSObject;
+import com.aliyun.openservices.oss.model.ObjectMetadata;
 /**
  * 使用 7z 转换 oss1 中的 rar 文件为 zip 格式并保存到 oss2里,同时将压缩包中的文件目录保存到数据库中。
  * @version : 2014年8月1日
@@ -42,15 +47,15 @@ public class DownLoadTest extends AbstractTask {
     private OSSClient    client   = null;
     private String       newKey   = null;
     //
-    public DownLoadTest(long index, String oldKey, AppContext appContext) throws SQLException {
+    public DownLoadTest(long index, String newKey, AppContext appContext) throws SQLException {
         this.index = index;
-        System.out.println("init Task([" + index + "]from :" + oldKey + ")");
+        System.out.println("init Task([" + index + "]from :" + newKey + ")");
         //
         //OSS客户端，由 OSSModule 类初始化.
         this.client = appContext.getInstance(OSSClient.class);
         //数据库操作接口，由 OneDataSourceWarp 类初始化.
         this.jdbc = appContext.getInstance(JdbcTemplate.class);
-        this.newKey = oldKey.substring(0, oldKey.length() - ".rar".length()) + ".zip";
+        this.newKey = newKey;
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
     }
@@ -60,7 +65,7 @@ public class DownLoadTest extends AbstractTask {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
-            int res = jdbc.update("update `oss-subtitle-copy` set files=? ,size=-1 ,lastTime=now() where oss_key =?", sw.toString(), newKey);
+            int res = jdbc.update("update `oss-subtitle` set files =null ,lastTime=now() where oss_key =?",newKey);
             System.out.println("\t dump to db -> " + res);
         } catch (Throwable e) {
             try {
@@ -81,30 +86,33 @@ public class DownLoadTest extends AbstractTask {
         //init task to DB
         System.out.println("do Task " + index + "\t from :" + this.newKey);
         //
-        //1.oss object
-        System.out.println("\t save to Local -> working... ");
-        OSSObject ossObject = client.getObject("files-subtitle-format-zip", this.newKey);
-        //
         try {
-            ZipArchiveInputStream inStream = new ZipArchiveInputStream(ossObject.getObjectContent());
+            OSSObject ossObject = client.getObject("files-subtitle-format-zip", this.newKey);
+            InputStream infromOSS =ossObject.getObjectContent();
+            ZipArchiveInputStream inStream = new ZipArchiveInputStream(infromOSS,"GBK");
             ZipArchiveEntry entry = null;
             StringBuffer buffer = new StringBuffer();
             while ((entry = inStream.getNextZipEntry()) != null) {
                 if (entry.isDirectory())
                     continue;
-                System.out.println(this.index + "\t - Test - " + entry.getName());
                 IOUtils.copy(inStream, new ByteArrayOutputStream());
                 buffer.append(entry.getName() + "\n");
             }
+            infromOSS.close();
             //
-            int res = jdbc.update("update `oss-subtitle-copy` set files=? ,lastTime=now() where oss_key =?", buffer.toString(), newKey);
+            ObjectMetadata meta = ossObject.getObjectMetadata();
+            int res = jdbc.update("update `oss-subtitle` set files=?,size=?,lastTime=now() where oss_key =?",
+            		buffer.toString(),meta.getContentLength(), newKey);
             System.out.println(this.index + " - Validation ok. -> " + res);
+            if (res == 0 ){
+            	res = jdbc.update("insert into `oss-subtitle` (oss_key,files,ori_name,size,lastTime,doWork) values (?,?,?,?,now(),0)",
+            			newKey,buffer.toString(),meta.getContentDisposition(),meta.getContentLength());
+            }
             //
         } catch (Throwable e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
+        	e.printStackTrace();
             //
-            int res = jdbc.update("update `oss-subtitle-copy` set files=? ,size=-1 ,lastTime=now() where oss_key =?", sw.toString(), newKey);
+            int res = jdbc.update("update `oss-subtitle` set files=null,lastTime=now() where oss_key =?",newKey);
             System.out.println("\t error dump to db -> " + res);
         }
     }

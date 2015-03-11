@@ -31,6 +31,7 @@ class UserDataCustomReceiver(host: String, port: Int)
 
   /** Create a socket connection and receive data until receiver is stopped */
   private def receive() {
+
     var socket: Socket = null
     var userInput: String = null
     try {

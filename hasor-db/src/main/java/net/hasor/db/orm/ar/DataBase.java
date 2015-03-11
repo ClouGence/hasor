@@ -41,6 +41,7 @@ public final class DataBase {
     private static final Map<String, Object> Empty           = new HashMap<String, Object>();
     private static final ArConfiguration     arConfiguration = new ArConfiguration();
     //
+    //
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public PageResult<Record> queryBySQL(String sqlQuery) throws SQLException {
         return this.queryBySQL(Record.class, sqlQuery, null, null, Empty);
@@ -65,6 +66,7 @@ public final class DataBase {
     public PageResult<Record> queryBySQL(String sqlQuery, Paginator paginator, Map<String, Object> params) throws SQLException {
         return this.queryBySQL(Record.class, sqlQuery, paginator, null, params);
     }
+    //
     /**根据SQL语句执行查询返回{@link PageResult}。*/
     public <T> PageResult<T> queryBySQL(Class<T> recType, String sqlQuery) throws SQLException {
         return this.queryBySQL(recType, sqlQuery, null, this.loadSechma(recType), Empty);

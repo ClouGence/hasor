@@ -31,7 +31,7 @@ import net.hasor.db.orm.ar.record.MapRecord;
 import net.test.aliyun.OSSModule;
 import net.test.aliyun.oss.ent.SubtitleBean;
 import net.test.aliyun.z7.AbstractTask;
-import net.test.aliyun.z7.DownLoadTest;
+import net.test.aliyun.z7.DownLoad;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.other.queue.TrackManager;
 /**
@@ -55,7 +55,7 @@ public class Rar2ZipFormDB implements StartModule {
         //无锁队列由 loadModule 方法初始化.
         TrackManager<AbstractTask> track = appContext.getInstance(TrackManager.class);
         //Work线程
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             TaskProcess work00 = new TaskProcess(track);
             work00.start();
         }
@@ -67,25 +67,24 @@ public class Rar2ZipFormDB implements StartModule {
         //
         Paginator page = new Paginator();
         page.setEnable(true);
-        page.setTotalCount(db.getJdbc().queryForInt("select count(*) from `oss-subtitle-copy` where `size` > 0"));
-        page.setPageSize(500);
-        page.addOrderBy("oss_key", OrderBy.ASC);
+        page.setTotalCount(db.getJdbc().queryForInt("select count(*) from `oss-subtitle` where `doWork` = 1 order by size asc"));
+        page.setPageSize(5000);
+        page.addOrderBy("size", OrderBy.ASC);
         //
         int errorIndex = 0;
         for (int i = 0; i < page.getTotalPage(); i++) {
             page.setCurrentPage(i);
-            PageResult<Record> result = db.queryBySQL("select * from `oss-subtitle-copy` where `size` > 0", page);
+            PageResult<Record> result = db.queryBySQL("select * from `oss-subtitle` where `doWork` = 1", page);
             //
             for (Record rec : result.getResult()) {
                 //计数器
                 errorIndex++;
                 //
                 String newKey = rec.asString("oss_key");;
-                String oldKey = newKey.substring(0, newKey.length() - ".zip".length()) + ".rar";
-                AbstractTask task = new DownLoadTest(errorIndex, oldKey, appContext);
+                AbstractTask task = new DownLoad(errorIndex, newKey, appContext);
                 //装货
                 track.waitForWrite(TaskEnum.Task, TaskEnum.Task, task);
-                System.out.println(errorIndex + "\t" + rec.asString("oss_key"));
+                System.out.println(errorIndex + "\t" + newKey);
             }
         }
         //

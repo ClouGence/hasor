@@ -15,16 +15,21 @@
  */
 package net.test.aliyun.oss;
 import java.util.List;
+
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.StartModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.aliyun.OSSModule;
+import net.test.aliyun.z7.AbstractTask;
+import net.test.aliyun.z7.DownLoadTest;
 import net.test.aliyun.z7.Task;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.other.queue.TrackManager;
+
 import org.more.util.StringUtils;
+
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.model.ListObjectsRequest;
 import com.aliyun.openservices.oss.model.OSSObjectSummary;
@@ -49,15 +54,15 @@ public class Rar2ZipFormOSS implements StartModule {
         //OSS客户端，由 OSSModule 类初始化.
         OSSClient client = appContext.getInstance(OSSClient.class);
         //无锁队列由 loadModule 方法初始化.
-        TrackManager<Task> track = appContext.getInstance(TrackManager.class);
+        TrackManager<AbstractTask> track = appContext.getInstance(TrackManager.class);
         //
         //Work线程
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 10; i++) {
             TaskProcess work00 = new TaskProcess(track);
             work00.start();
         }
         //
-        ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle");
+        ListObjectsRequest listQuery = new ListObjectsRequest("files-subtitle-format-zip");
         long index = 0;
         while (true) {
             //查询列表
@@ -66,7 +71,7 @@ public class Rar2ZipFormOSS implements StartModule {
             for (OSSObjectSummary summary : objSummary) {
                 //计数器
                 index++;
-                Task task = new Task(index, summary.getKey(), appContext);
+                AbstractTask task = new DownLoadTest(index, summary.getKey(), appContext);
                 //装货
                 track.waitForWrite(TaskEnum.Task, TaskEnum.Task, task);
             }
@@ -95,8 +100,8 @@ public class Rar2ZipFormOSS implements StartModule {
         Task
     }
     class TaskProcess extends Thread {
-        private TrackManager<Task> track;
-        public TaskProcess(TrackManager<Task> track) {
+        private TrackManager<AbstractTask> track;
+        public TaskProcess(TrackManager<AbstractTask> track) {
             this.track = track;
         }
         public void run() {
@@ -106,7 +111,7 @@ public class Rar2ZipFormOSS implements StartModule {
             }
         }
         private void doProcess() {
-            Task task = track.waitForRead(TaskEnum.Task, TaskEnum.Task);
+        	AbstractTask task = track.waitForRead(TaskEnum.Task, TaskEnum.Task);
             try {
                 task.doWork();
             } catch (Throwable e) {

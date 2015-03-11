@@ -44,21 +44,18 @@ public class ListOSSObject implements StartModule {
     public void loadModule(ApiBinder apiBinder) throws Throwable {}
     @Override
     public void onStart(AppContext appContext) throws Throwable {
-        String bucketName = "files-subtitle";
+        String bucketName = "files-subtitle-format-zip";
         OSSClient client = appContext.getInstance(OSSClient.class);
-        JdbcTemplate jdbc = appContext.getInstance(JdbcTemplate.class);
         ListObjectsRequest listQuery = new ListObjectsRequest(bucketName);
-        listQuery.setMaxKeys(1000);
-        jdbc.update("delete from `oss-subtitle-copy`");
+        listQuery.setMaxKeys(500);
         //
         long index = 0;
         while (true) {
             ObjectListing listData = client.listObjects(listQuery);
             List<OSSObjectSummary> objSummary = listData.getObjectSummaries();
-            final ArrayList<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
             for (OSSObjectSummary summary : objSummary) {
                 index++;
-                System.out.println(index + "\t from :" + summary.getKey());
+                //System.out.println(index + "\t from :" + summary.getKey());
                 //
                 ObjectMetadata omd = client.getObjectMetadata(bucketName, summary.getKey());
                 String contentDisposition = omd.getContentDisposition();
@@ -66,23 +63,10 @@ public class ListOSSObject implements StartModule {
                 newKey = newKey.substring(0, newKey.length() - ".rar".length()) + ".zip";
                 contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
                 //
-                HashMap<String, String> hashMap = new HashMap<String, String>();
-                hashMap.put("newKey", newKey);
-                hashMap.put("contentDisposition", contentDisposition);
-                dataList.add(hashMap);
                 //
             }
-            jdbc.batchUpdate("insert into `oss-subtitle-copy` (oss_key,files,ori_name,size,lastTime,doWork) values (?,null,?,-1,now(),0)", new BatchPreparedStatementSetter() {
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    Map<String,String> map =dataList.get(i);
-                    ps.setString(1, map.get("newKey"));
-                    ps.setString(2, map.get("contentDisposition"));
-                }
-                public int getBatchSize() {
-                    return dataList.size();
-                }
-            });
             //
+            System.out.println(index + "\t from :" );
             //
             listQuery.setMarker(listData.getNextMarker());
             if (StringUtils.isBlank(listData.getNextMarker())) {
@@ -92,7 +76,7 @@ public class ListOSSObject implements StartModule {
     }
     public static void main(String[] args) {
         AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml",//
-                new OneDataSourceWarp(), new OSSModule(), new ListOSSObject());
+              new OSSModule(), new ListOSSObject());
         System.out.println("end");
     }
 }

@@ -23,14 +23,17 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Iterator;
+
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.more.util.io.FileFilterUtils;
 import org.more.util.io.FileUtils;
 import org.more.util.io.IOUtils;
+
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
@@ -46,14 +49,12 @@ public class Task extends AbstractTask {
     private String         tempPath           = null;
     private JdbcTemplate   jdbc               = null;
     private OSSClient      client             = null;
-    private ObjectMetadata ossObject          = null;
     private String         newKey             = null;
     private String         oldKey             = null;
-    private String         contentDisposition = null;
     //
-    public Task(long index, String oldKey, AppContext appContext) throws SQLException {
+    public Task(long index, String newKey, AppContext appContext) throws SQLException {
         this.index = index;
-        System.out.println("init Task([" + index + "]from :" + oldKey + ")");
+        System.out.println("init Task([" + index + "]from :" + newKey + ")");
         //
         //OSS客户端，由 OSSModule 类初始化.
         this.client = appContext.getInstance(OSSClient.class);
@@ -62,12 +63,8 @@ public class Task extends AbstractTask {
         //临时文件目录
         this.tempPath = appContext.getEnvironment().envVar(Environment.HASOR_TEMP_PATH);
         //
-        this.oldKey = oldKey;
-        this.ossObject = client.getObjectMetadata("files-subtitle", oldKey);
-        //
-        this.newKey = oldKey.substring(0, oldKey.length() - ".rar".length()) + ".zip";
-        this.contentDisposition = ossObject.getContentDisposition();
-        this.contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
+        this.newKey = newKey;
+        this.oldKey = newKey.substring(0, newKey.length() - ".zip".length()) + ".rar";
     }
     //
     public void markError(Throwable errorMsg) {
@@ -75,7 +72,7 @@ public class Task extends AbstractTask {
             StringWriter sw = new StringWriter();
             errorMsg.printStackTrace(new PrintWriter(sw));
             //
-            int res = jdbc.update("update `oss-subtitle-copy` set files=? ,size=-1 ,lastTime=now() where oss_key =?", sw.toString(), newKey);
+            int res = jdbc.update("update `oss-subtitle` set files =null ,lastTime=now() where oss_key =?",newKey);
             System.out.println("\t dump to db -> " + res);
         } catch (Throwable e) {
             try {
@@ -131,20 +128,21 @@ public class Task extends AbstractTask {
         zipFileName = zipFileName.substring(0, zipFileName.length() - ".rar".length()) + ".zip";
         ZipArchiveOutputStream outStream = new ZipArchiveOutputStream(new File(zipFileName));
         outStream.setEncoding("GBK");
-        StringBuffer files = new StringBuffer();
         Iterator<File> itFile = FileUtils.iterateFiles(new File(toDir), FileFilterUtils.fileFileFilter(), FileFilterUtils.directoryFileFilter());
+        StringBuffer buffer = new StringBuffer();
         while (itFile.hasNext()) {
             File it = itFile.next();
             if (it.isDirectory())
                 continue;
             String entName = it.getAbsolutePath().substring(toDir.length() + 1);
-            outStream.putArchiveEntry(new ZipArchiveEntry(it, entName));
+            ZipArchiveEntry ent = new ZipArchiveEntry(it, entName);
+            outStream.putArchiveEntry(ent);
             InputStream itInStream = new FileInputStream(it);
             IOUtils.copy(itInStream, outStream);
             itInStream.close();
             outStream.flush();
             outStream.closeArchiveEntry();
-            files.append(entName + "\n");
+            buffer.append(ent.getName());
         }
         outStream.flush();
         outStream.close();
@@ -157,6 +155,8 @@ public class Task extends AbstractTask {
         //5.save to
         System.out.print("\t save to oss -> working... ");
         ObjectMetadata omd = ossObject.getObjectMetadata();
+        String contentDisposition = omd.getContentDisposition();
+        contentDisposition = contentDisposition.substring(0, contentDisposition.length() - ".rar".length()) + ".zip";
         omd.setContentDisposition(contentDisposition);
         omd.setContentLength(new File(zipFileName).length());
         InputStream zipInStream = new FileInputStream(zipFileName);
@@ -167,7 +167,7 @@ public class Task extends AbstractTask {
         System.out.print("-> finish.\n");
         //
         //6.save files info
-        int res = jdbc.update("update `oss-subtitle-copy` set files=? , size=? , lastTime=now() where oss_key =?", files.toString(), omd.getContentLength(), newKey);
+        int res = jdbc.update("update `oss-subtitle` set files=? , size=? , lastTime=now() where oss_key =?", buffer.toString(), omd.getContentLength(), newKey);
         System.out.println("\t save info to db -> " + res);
     }
 }
