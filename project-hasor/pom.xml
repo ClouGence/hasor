@@ -1,0 +1,35 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.5-SNAPSHOT</version>
+	</parent>
+
+	<!-- Maven Info -->
+	<groupId>net.hasor</groupId>
+	<artifactId>project-hasor</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<!-- Project Info -->
+	<name>Hasor-Parent</name>
+	<description>the parent pom for Hasor project.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春(Mr.Zhao)</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- Hasor 模块 -->
+	<modules>
+		<module>hasor-core</module>
+		<module>hasor-web</module>
+		<module>hasor-db</module>
+		<module>hasor-test</module>
+		<module>hasor-mvc</module>
+		<module>hasor-quick</module>
+	</modules>
+</project>

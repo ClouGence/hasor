@@ -13,10 +13,10 @@
 	<packaging>pom</packaging>
 
 	<!-- 项目信息 -->
-	<name>Hasor</name>
+	<name>Root</name>
 	<description>master POM</description>
 	<url>http://www.hasor.net/</url>
-	<inceptionYear>2014</inceptionYear>
+	<inceptionYear>2015</inceptionYear>
 
 	<!-- 授权协议 -->
 	<licenses>
@@ -185,16 +185,11 @@
 
 	<!-- Hasor 模块 -->
 	<modules>
-		<module>hasor-core</module>
-		<module>hasor-web</module>
-		<module>hasor-db</module>
-		<module>hasor-test</module>
-		<module>hasor-mvc</module>
-		<module>hasor-rsf</module>
-		<module>hasor-quick</module>
-		<module>hasor-search</module>
-		<module>hasor-search-client</module>
-		<module>hasor-scala</module>
+		<module>project-hasor</module>		<!-- 开发框架 -->
+		<module>project-scala</module>		<!-- Scala项目 -->
+		<module>project-rsf</module>		<!-- RPC 服务 -->
+		<module>project-search</module>		<!-- 搜索服务 -->
+		<module>project-depmanager</module>	<!-- 依赖管理服务 -->
 	</modules>
 
 	<!-- 公共依赖 -->

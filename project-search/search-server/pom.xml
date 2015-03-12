@@ -1,0 +1,97 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>project-search</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<!-- Maven Info -->
+	<groupId>net.hasor</groupId>
+	<artifactId>search-server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<!-- Project Info -->
+	<name>Search-Server</name>
+	<description>the Hasor Search project.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春(Mr.Zhao)</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- 属性 -->
+	<properties>
+		<slf4j.version>1.7.2</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
+	</properties>
+
+	<!-- 引用依赖 -->
+	<dependencies>
+		<!-- Hasor begin -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>search-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.hasor</groupId>
+					<artifactId>rsf-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>rsf-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-web</artifactId>
+			<version>0.0.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-mvc</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<!-- Hasor end -->
+
+		<!-- LOGGING begin -->
+		<!-- slf4j-log4j绑定 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- common-logging 实际调用slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- java.util.logging 实际调用slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- LOGGING end -->
+
+		<!-- Solr -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>4.10.1</version>
+		</dependency>
+	</dependencies>
+</project>

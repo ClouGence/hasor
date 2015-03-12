@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>project-hasor</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<!-- Maven Info -->
+	<groupId>net.hasor</groupId>
+	<artifactId>hasor-test</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<!-- Project Info -->
+	<name>Hasor-Test</name>
+	<description>the Hasor Test FrameWork.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春(Mr.Zhao)</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- 引用依赖 -->
+	<dependencies>
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+		</dependency>
+		<!-- Hasor-Core -->
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.10-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Hasor-Web -->
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-web</artifactId> -->
+		<!-- <version>0.0.6-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>net.hasor</groupId> -->
+		<!-- <artifactId>hasor-jetty</artifactId> -->
+		<!-- <version>0.0.1</version> -->
+		<!-- </dependency> -->
+		<!-- mockito -->
+
+	</dependencies>
+</project>
