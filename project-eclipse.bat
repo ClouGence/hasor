@@ -1,2 +1,2 @@
-call mvn eclipse:eclipse
+call mvn eclipse:eclipse -U
 pause

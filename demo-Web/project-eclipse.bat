@@ -1,2 +1,2 @@
-call mvn eclipse:eclipse -Dreleases=true
+call mvn eclipse:eclipse -Dreleases=true -U
 pause
