@@ -15,71 +15,53 @@
  */
 package net.hasor.mvc.support;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Set;
-import java.util.UUID;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.ModelController;
-import net.hasor.mvc.strategy.CallStrategyFactory;
-import net.hasor.mvc.strategy.DefaultCallStrategyFactory;
+import net.hasor.mvc.result.Forword;
+import net.hasor.mvc.result.ForwordResultProcess;
+import net.hasor.mvc.result.Include;
+import net.hasor.mvc.result.IncludeResultProcess;
+import net.hasor.mvc.result.Redirect;
+import net.hasor.mvc.result.RedirectResultProcess;
+import net.hasor.mvc.result.support.DefineList;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 import org.more.logger.LoggerHelper;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class ControllerModule implements Module {
-    /**通过位运算决定check是否在data里。*/
-    private static boolean checkIn(final int data, final int check) {
-        int or = data | check;
-        return or == data;
-    };
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+public abstract class ControllerModule extends WebModule {
+    //
+    protected abstract void loadController(LoadHellper hellper);
+    //
+    public void loadModule(final WebApiBinder apiBinder) throws Throwable {
         LoggerHelper.logInfo("work at ControllerModule.", this.getClass());
-        //1.搜索ModelController
-        Set<Class<?>> controllerSet = apiBinder.findClass(ModelController.class);
-        if (controllerSet == null || controllerSet.isEmpty() == true) {
-            LoggerHelper.logInfo("load Controller, controllerSet isEmpty.", this.getClass());
-            return;
-        }
-        CallStrategyFactory strategyFactory = this.createCallStrategyFactory(apiBinder);
-        LoggerHelper.logInfo("create CallStrategyFactory. type is " + strategyFactory.getClass());
-        //2.绑定到Hasor
-        for (Class<?> clazz : controllerSet) {
-            int modifier = clazz.getModifiers();
-            if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
-                continue;
+        //
+        //1.create LoadHellper
+        LoadHellper helper = new LoadHellper() {
+            protected ApiBinder apiBinder() {
+                return apiBinder;
             }
-            //
-            String newID = UUID.randomUUID().toString();
-            boolean hasMapping = false;
-            //
-            Method[] methodArrays = clazz.getMethods();
-            for (Method atMethod : methodArrays) {
-                if (atMethod.isAnnotationPresent(MappingTo.class) == false) {
-                    continue;
-                }
-                hasMapping = true;
-                //
-                MappingTo mto = atMethod.getAnnotation(MappingTo.class);
-                LoggerHelper.logInfo("method ‘%s’ mappingTo: ‘%s’, form Type :%s.", atMethod.getName(), mto.value(), clazz.getName());
-                apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(createMappingDefine(newID, atMethod, strategyFactory));
+            protected ControllerModule module() {
+                return ControllerModule.this;
             }
-            //
-            if (hasMapping == true) {
-                apiBinder.bindType(clazz).idWith(newID);
-            }
-        }
-        //3.安装服务
+        };
+        //
+        //2.load config
+        this.defaultConfig(helper);
+        this.loadController(helper);
+        //
+        //4.install
+        apiBinder.bindType(DefineList.class, apiBinder.autoAware(new DefineList()));
         apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
+        apiBinder.filter("/*").through(new ControllerFilter());
     }
-    /**创建 {@link CallStrategyFactory}*/
-    protected CallStrategyFactory createCallStrategyFactory(ApiBinder apiBinder) {
-        return new DefaultCallStrategyFactory(apiBinder);
+    //
+    protected void defaultConfig(LoadHellper hellper) {
+        hellper.loadResultProcess(Forword.class, ForwordResultProcess.class);
+        hellper.loadResultProcess(Include.class, IncludeResultProcess.class);
+        hellper.loadResultProcess(Redirect.class, RedirectResultProcess.class);
     }
     /**
      * 创建 {@link MappingDefine}
@@ -88,7 +70,7 @@ public class ControllerModule implements Module {
      * @param strategyFactory CallStrategy 工厂。
      * @return 返回mvc定义。
      */
-    protected MappingDefine createMappingDefine(String newID, Method atMethod, CallStrategyFactory strategyFactory) {
-        return new MappingDefine(newID, atMethod, strategyFactory);
+    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
+        return new MappingDefine(newID, atMethod);
     }
 }

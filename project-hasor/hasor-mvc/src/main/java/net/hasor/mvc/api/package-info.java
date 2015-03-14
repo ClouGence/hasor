@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Hasor Web MVC 框架。</p>
+ * <p>MVC Web 框架，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.api;

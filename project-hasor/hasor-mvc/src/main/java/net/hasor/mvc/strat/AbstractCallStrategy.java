@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.strat;
+import net.hasor.mvc.Call;
+import net.hasor.mvc.CallStrategy;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class FindMapping {
-    private String controllerPath = null;
-    private String httpMethod     = null;
+public abstract class AbstractCallStrategy implements CallStrategy {
     //
-    public FindMapping(String controllerPath, String httpMethod) {
-        this.controllerPath = controllerPath;
-        this.httpMethod = httpMethod;
-        //
-        if (httpMethod != null) {
-            this.httpMethod = httpMethod.trim().toUpperCase();
-        }
+    public Object exeCall(Call call) throws Throwable {
+        this.initCall(call);
+        Object[] args = this.resolveParams(call);
+        return this.returnCallBack(call.call(args), call);
     }
-    public boolean matching(MappingDefine invoke) {
-        boolean one = invoke.matchingMapping(this.controllerPath);
-        if (one == true) {
-            one = invoke.matchingMethod(this.httpMethod);
-        }
-        return one;
+    /**初始化调用。*/
+    protected abstract void initCall(Call call);
+    /**处理结果 */
+    protected Object returnCallBack(Object returnData, Call call) throws Throwable {
+        return returnData;
     }
+    /**准备参数*/
+    protected abstract Object[] resolveParams(Call call) throws Throwable;
 }

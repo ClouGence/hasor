@@ -25,7 +25,7 @@ import net.hasor.core.AppContextAware;
  * @version : 2014年8月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RootController implements AppContextAware {
+class RootController implements AppContextAware {
     private AppContext      appContext  = null;
     private MappingDefine[] invokeArray = new MappingDefine[0];
     private AtomicBoolean   inited      = new AtomicBoolean(false);

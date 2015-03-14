@@ -13,29 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class FindMapping {
-    private String controllerPath = null;
-    private String httpMethod     = null;
-    //
-    public FindMapping(String controllerPath, String httpMethod) {
-        this.controllerPath = controllerPath;
-        this.httpMethod = httpMethod;
-        //
-        if (httpMethod != null) {
-            this.httpMethod = httpMethod.trim().toUpperCase();
-        }
-    }
-    public boolean matching(MappingDefine invoke) {
-        boolean one = invoke.matchingMapping(this.controllerPath);
-        if (one == true) {
-            one = invoke.matchingMethod(this.httpMethod);
-        }
-        return one;
-    }
+public interface CallStrategy {
+    public Object exeCall(Call call) throws Throwable;
 }

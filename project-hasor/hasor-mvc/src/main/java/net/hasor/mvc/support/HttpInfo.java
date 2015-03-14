@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.mvc.support;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class FindMapping {
-    private String controllerPath = null;
-    private String httpMethod     = null;
-    //
-    public FindMapping(String controllerPath, String httpMethod) {
-        this.controllerPath = controllerPath;
-        this.httpMethod = httpMethod;
-        //
-        if (httpMethod != null) {
-            this.httpMethod = httpMethod.trim().toUpperCase();
-        }
-    }
-    public boolean matching(MappingDefine invoke) {
-        boolean one = invoke.matchingMapping(this.controllerPath);
-        if (one == true) {
-            one = invoke.matchingMethod(this.httpMethod);
-        }
-        return one;
-    }
+interface HttpInfo {
+    /**请求*/
+    public HttpServletRequest getHttpRequest();
+    /**响应*/
+    public HttpServletResponse getHttpResponse();
 }

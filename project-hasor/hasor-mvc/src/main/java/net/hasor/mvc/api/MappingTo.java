@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * <p>Hasor Web MVC 框架。</p>
+ * 控制器映射的地址。
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.mvc.support;
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface MappingTo {
+    /**请求地址*/
+    public String value();
+}

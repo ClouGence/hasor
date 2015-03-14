@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc.result.support;
+import java.util.ArrayList;
+import java.util.List;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 /**
- * <p>Hasor Web MVC 框架。</p>
+ * ResultDefine集合
+ * @version : 2013-5-10
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.mvc.support;
+public class DefineList extends ArrayList<ResultDefine> implements AppContextAware {
+    private static final long serialVersionUID = 5293997430939415693L;
+    public void setAppContext(AppContext appContext) {
+        List<ResultDefine> defineList = appContext.findBindingBean(ResultDefine.class);
+        this.addAll(defineList);
+    }
+}

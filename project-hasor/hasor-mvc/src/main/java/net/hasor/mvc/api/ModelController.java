@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc.api;
 /**
- * <p>Hasor Web MVC 框架。</p>
+ * Controller
+ * @version : 2013-8-14
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.mvc.support;
+public interface ModelController {}

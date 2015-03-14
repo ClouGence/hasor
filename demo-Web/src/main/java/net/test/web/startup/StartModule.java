@@ -19,9 +19,11 @@ import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Settings;
 import net.hasor.db.provider.SimpleDBModule;
-import net.hasor.mvc.web.support.WebControllerModule;
+import net.hasor.mvc.support.ControllerModule;
+import net.hasor.mvc.support.LoadHellper;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import net.test.web.biz.user.action.UserAction;
 import org.more.logger.LoggerHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
@@ -34,10 +36,13 @@ public class StartModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //1.启用Hasor-DB 插件（使用c3p0连接池）
         apiBinder.installModule(new SimpleDBModule("default", buildC3p0(apiBinder)));
-        //2.启用Hasor-AR
-        //        apiBinder.installModule(new SimpleDBModule("default", buildC3p0(apiBinder)));
-        //3.Web MVC
-        apiBinder.installModule(new WebControllerModule());
+        //2.Web MVC
+        apiBinder.installModule(new ControllerModule() {
+            protected void loadController(LoadHellper hellper) {
+                hellper.loadType(UserAction.class);
+            }
+        });
+        //3.
     }
     //
     //

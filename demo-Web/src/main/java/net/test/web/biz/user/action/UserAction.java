@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.test.web.biz.user.action;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.web.AbstractWebController;
-import net.hasor.mvc.web.restful.Get;
-import net.hasor.mvc.web.restful.Post;
-import net.hasor.mvc.web.restful.QueryParam;
-import net.hasor.mvc.web.result.Forword;
-import net.hasor.mvc.web.result.Redirect;
+import net.hasor.mvc.api.AbstractWebController;
+import net.hasor.mvc.api.Get;
+import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.api.Post;
+import net.hasor.mvc.api.QueryParam;
+import net.hasor.mvc.result.Forword;
+import net.hasor.mvc.result.Redirect;
 /**
  * View层控制器
  * http://localhost:8080/user/execute.do

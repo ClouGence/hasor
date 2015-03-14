@@ -3,9 +3,8 @@
 	<!-- 启动模块配置：方式2 -->
 	<!-- <hasor> <modules>...<modules> <hasor> 下面是简便写法： -->
 	<hasor.modules>
-		<module class="net.test.web.startup.StartModule" />
+		<module>net.test.web.startup.StartModule</module>
 	</hasor.modules>
-
 
 	<!-- MySQL -->
 	<demo-jdbc-mysql>

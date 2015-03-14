@@ -16,18 +16,23 @@
 package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.ModelController;
-import net.hasor.mvc.strategy.CallStrategy;
-import net.hasor.mvc.strategy.CallStrategyFactory;
+import net.hasor.mvc.Call;
+import net.hasor.mvc.CallStrategy;
+import net.hasor.mvc.MappingInfo;
+import net.hasor.mvc.api.HttpMethod;
+import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.api.ModelController;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -37,40 +42,63 @@ import org.more.util.StringUtils;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MappingDefine {
-    private String                    bindID           = null;
-    private Provider<ModelController> targetProvider   = null;
-    private Method                    targetMethod     = null;
-    private Class<?>[]                targetParamTypes = null;
-    private Annotation[][]            targetParamAnno  = null;
-    private Annotation[]              targetMethodAnno = null;
-    private MappingInfo               mappingInfo      = null;
-    private CallStrategyFactory       strategyFactory  = null;
-    private AtomicBoolean             inited           = new AtomicBoolean(false);
+class MappingDefine implements MappingInfo {
+    private String                    bindID;
+    private Provider<ModelController> targetProvider;
+    private Method                    targetMethod;
+    private Class<?>[]                targetParamTypes;
+    private Annotation[][]            targetParamAnno;
+    private Annotation[]              targetMethodAnno;
+    private String                    mappingTo;
+    private String                    mappingToMatches;
+    private String[]                  httpMethod;
+    private CallStrategy              callStrategy;
+    private AtomicBoolean             inited = new AtomicBoolean(false);
     //
-    protected MappingDefine(String bindID, Method targetMethod, CallStrategyFactory strategyFactory) {
+    protected MappingDefine(String bindID, Method targetMethod) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
-        if (pathAnno == null)
+        if (pathAnno == null) {
             throw new UndefinedException("is not a valid Mapping Service.");
+        }
         String servicePath = pathAnno.value();
-        if (StringUtils.isBlank(servicePath))
+        if (StringUtils.isBlank(servicePath)) {
             throw new NullPointerException("Service path is empty.");
-        if (!servicePath.matches("/.+"))
+        }
+        if (!servicePath.matches("/.+")) {
             throw new IllegalStateException("Service path format error");
+        }
         //
         this.bindID = bindID;
         this.targetMethod = targetMethod;
         this.targetParamTypes = targetMethod.getParameterTypes();
         this.targetParamAnno = targetMethod.getParameterAnnotations();
         this.targetMethodAnno = targetMethod.getAnnotations();
-        this.mappingInfo = new MappingInfo();
-        this.mappingInfo.setMappingTo(servicePath);
-        this.mappingInfo.setMappingToMatches(servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})"));
-        this.strategyFactory = strategyFactory;
+        this.mappingTo = servicePath;
+        this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
+        //
+        /*HttpMethod*/
+        Annotation[] annos = targetMethod.getAnnotations();
+        ArrayList<String> allHttpMethod = new ArrayList<String>();
+        if (annos != null) {
+            for (Annotation anno : annos) {
+                HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
+                if (httpMethodAnno != null) {
+                    String bindMethod = httpMethodAnno.value();
+                    if (StringUtils.isBlank(bindMethod) == false)
+                        allHttpMethod.add(bindMethod);
+                }
+            }
+        }
+        if (allHttpMethod.isEmpty())
+            allHttpMethod.add("ANY");
+        this.httpMethod = allHttpMethod.toArray(new String[allHttpMethod.size()]);
     }
     /**@return 获取映射的地址*/
     public String getMappingTo() {
-        return this.mappingInfo.getMappingTo();
+        return this.mappingTo;
+    }
+    public String getMappingToMatches() {
+        return this.mappingToMatches;
     }
     /**
      * 测试路径是否匹配
@@ -79,8 +107,25 @@ public class MappingDefine {
      */
     public boolean matchingMapping(String requestPath) {
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
-        return requestPath.matches(this.mappingInfo.getMappingToMatches());
+        return requestPath.matches(this.mappingToMatches);
     }
+    public String[] getHttpMethod() {
+        return this.httpMethod;
+    }
+    /**判断Restful实例是否支持这个 请求方法。*/
+    public boolean matchingMethod(String httpMethod) {
+        for (String m : this.httpMethod) {
+            if (StringUtils.equalsIgnoreCase(httpMethod, m)) {
+                return true;
+            } else if (StringUtils.equalsIgnoreCase(m, "ANY")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    //
+    //
+    //
     /**
      * 执行初始化
      * @param appContext appContext
@@ -94,44 +139,17 @@ public class MappingDefine {
         this.targetProvider = appContext.getProvider(controllerInfo);
     }
     /**
-     * 创建 CallStrategy 对象。
-     * @param parentCall 父parentCall
-     * @return 返回CallStrategy
-     */
-    protected CallStrategy createCallStrategy(CallStrategy parentCall) {
-        return this.strategyFactory.createStrategy(parentCall);
-    }
-    //
-    /**
-     * 调用目标并返回结果
-     * @return 返回调用结果
-     * @throws Throwable 异常抛出
-     */
-    public Object invoke() throws Throwable {
-        return this.invoke(null, null);
-    }
-    /**
-     * 调用目标并返回结果
-     * @param params 执行控制器时用到的参数。
-     * @return 返回调用结果
-     * @throws Throwable 异常抛出
-     */
-    public Object invoke(Map<String, ?> params) throws Throwable {
-        return this.invoke(null, params);
-    }
-    /**
      * 调用目标
      * @param call 执行策略
      * @param params 执行控制器时用到的参数。
      * @return 返回调用结果
      * @throws Throwable 异常抛出
      */
-    public Object invoke(CallStrategy call, Map<String, ?> params) throws Throwable {
-        final CallStrategy alCall = this.createCallStrategy(call);
-        final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;
-        //
+    public final Object invoke(final HttpInfo httpInfo, CallStrategy callStrategy, Map<String, ?> params) throws Throwable {
+        Hasor.assertIsNotNull(callStrategy);
         final ModelController mc = this.targetProvider.get();
-        return alCall.exeCall(new Call() {
+        final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;
+        final Call call = new Call() {
             public Set<String> getParamKeys() {
                 return atParams.keySet();
             }
@@ -154,12 +172,20 @@ public class MappingDefine {
                 return mc;
             }
             public MappingInfo getMappingInfo() {
-                return mappingInfo;
+                return MappingDefine.this;
             }
             public Object call(Object... objects) throws Throwable {
                 return targetMethod.invoke(mc, objects);
             }
-        });
+            public HttpServletRequest getHttpRequest() {
+                return httpInfo.getHttpRequest();
+            }
+            public HttpServletResponse getHttpResponse() {
+                return httpInfo.getHttpResponse();
+            }
+        };
+        //
+        return callStrategy.exeCall(call);
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

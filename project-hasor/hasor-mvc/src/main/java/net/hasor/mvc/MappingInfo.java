@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc;
 /**
- * <p>Hasor Web MVC 框架。</p>
+ * 映射信息
+ * @version : 2014年8月28日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.mvc.support;
+public interface MappingInfo {
+    public String getMappingTo();
+    public String getMappingToMatches();
+}

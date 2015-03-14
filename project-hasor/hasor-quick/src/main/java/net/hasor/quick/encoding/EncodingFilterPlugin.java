@@ -56,7 +56,7 @@ public class EncodingFilterPlugin extends WebModule {
         String[] patterns = StringUtils.isBlank(urlPatternsConfig) ? new String[0] : urlPatternsConfig.split(";");
         LoggerHelper.logConfig("EncodingFilterPlugin -> urlPatterns = %s.", new Object[] { patterns });
         //
-        apiBinder.filter(patterns).through(Integer.MIN_VALUE, EncodingFilter.class, initParams);
+        apiBinder.filter(patterns).through(Integer.MIN_VALUE, new EncodingFilter(), initParams);
     }
 }
 class EncodingFilter implements Filter {

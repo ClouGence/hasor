@@ -16,16 +16,13 @@
 package org.more.util;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import org.more.asm.AnnotationVisitor;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
@@ -44,11 +41,11 @@ public class ScanClassPath {
     //
     private ScanClassPath(final String[] scanPackages) {
         this(scanPackages, null);
-    };
+    }
     private ScanClassPath(final String[] scanPackages, final ClassLoader classLoader) {
         this.scanPackages = scanPackages;
         this.classLoader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
-    };
+    }
     //
     public static ScanClassPath newInstance(final String[] scanPackages) {
         return new ScanClassPath(scanPackages) {};
@@ -65,6 +62,12 @@ public class ScanClassPath {
     public static Set<Class<?>> getClassSet(final String packagePath, final Class<?> compareType) {
         return ScanClassPath.getClassSet(new String[] { packagePath }, compareType);
     }
+    /**
+     * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
+     * @param packagePath 要扫描的包名。
+     * @param compareType 要查找的特征。
+     * @return 返回扫描结果。
+     */
     public static Set<Class<?>> getClassSet(final String[] loadPackages, final Class<?> featureType) {
         return ScanClassPath.newInstance(loadPackages).getClassSet(featureType);
     }
@@ -116,7 +119,9 @@ public class ScanClassPath {
                         }
                     }
                 });
-            } catch (Throwable e) { /**/ }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
         //3.缓存
         returnData = new HashSet<Class<?>>();
@@ -124,13 +129,13 @@ public class ScanClassPath {
             try {
                 Class<?> clazz = Class.forName(atClass, false, this.classLoader);
                 returnData.add(clazz);
-            } catch (Throwable e) { /**/ }
+            } catch (Throwable e) { /**/}
         }
         this.cacheMap.put(compareType, returnData);
         return returnData;
     }
     //
-    private Map<String, ClassInfo> classInfoMap = new HashMap<String, ClassInfo>();
+    private Map<String, ClassInfo> classInfoMap = new ConcurrentHashMap<String, ClassInfo>();
     /**分析类的字节码，分析过程中会递归解析父类和实现的接口*/
     private ClassInfo loadClassInfo(String className, final InputStream inStream, final ClassLoader loader) throws IOException {
         /*一、检查类是否已经被加载过，避免重复扫描同一个类*/
@@ -188,45 +193,38 @@ public class ScanClassPath {
             }
         }
         //六、类型链
-        List<String> superLink = new ArrayList<String>();/*父类练*/
         Set<String> castTypeList = new TreeSet<String>();/*可转换的类型*/
         String superName = info.superName;
+        addCastTypeList(info, castTypeList);//this
+        //
         if (superName != null) {
             while (true) {
+                if (superName == null || this.classInfoMap.containsKey(superName) == false) {
+                    break;
+                }
                 ClassInfo superInfo = this.classInfoMap.get(superName);
-                if (superInfo == null) {
-                    break;
-                }
-                superLink.add(superName);
+                addCastTypeList(superInfo, castTypeList);//super
                 superName = superInfo.superName;
-                //
-                String[] castType = superInfo.castType;
-                if (castType != null) {
-                    for (String faces : castType) {
-                        castTypeList.add(faces);
-                    }
-                    break;
-                }
             }
-        }
-        info.superLink = superLink.toArray(new String[superLink.size()]);
-        //七、取得接口链
-        castTypeList.add(className);
-        for (String faces : info.interFaces) {
-            castTypeList.add(faces);
         }
         info.castType = castTypeList.toArray(new String[castTypeList.size()]);
         //
         this.classInfoMap.put(info.className, info);
         return info;
     }
-    private void addFaces(final ClassInfo info, final Set<String> addTo) {
+    private void addCastTypeList(final ClassInfo info, final Set<String> addTo) {
         if (info == null) {
             return;
         }
-        addTo.addAll(Arrays.asList(info.interFaces));
-        for (String atFaces : info.interFaces) {
-            this.addFaces(this.classInfoMap.get(atFaces), addTo);
+        addTo.add(info.className);
+        if (info.superName != null) {
+            addTo.add(info.superName);
+        }
+        if (info.interFaces != null) {
+            for (String atFaces : info.interFaces) {
+                addTo.add(atFaces);
+                this.addCastTypeList(this.classInfoMap.get(atFaces), addTo);
+            }
         }
     }
     //
@@ -236,8 +234,6 @@ public class ScanClassPath {
         public String   className  = null;
         /*继承的父类*/
         public String   superName  = null;
-        /*继承的父类链*/
-        public String[] superLink  = new String[0];
         /*直接实现的接口*/
         public String[] interFaces = new String[0];
         /*可以转换的类型*/
