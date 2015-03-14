@@ -3,14 +3,29 @@
 	<!-- 启动模块配置：方式2 -->
 	<!-- <hasor> <modules>...<modules> <hasor> 下面是简便写法： -->
 	<hasor.modules>
-		<module>net.test.web.startup.StartModule</module>
+		<module>net.test.web.startup.DemoStartModule</module>
 	</hasor.modules>
+
+	<!-- 搜索服务器地址 -->
+	<demo-searchServer>
+		<host>localhost</host>
+		<port>8000</port>
+		<coreName>collection1</coreName>
+	</demo-searchServer>
 
 	<!-- MySQL -->
 	<demo-jdbc-mysql>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</url>
+		<url>jdbc:mysql://mysql.hasor.net/r4lwh9g5081zz0pg?useUnicode=true&amp;characterEncoding=utf8</url>
 		<user>htest</user>
 		<password>htest_1234</password>
 	</demo-jdbc-mysql>
+
+	<!-- HSQL -->
+	<demo-jdbc-hsql>
+		<driver>org.hsqldb.jdbcDriver</driver>
+		<url>jdbc:hsqldb:mem:aname</url>
+		<user>sa</user>
+		<password></password>
+	</demo-jdbc-hsql>
 </config>

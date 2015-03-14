@@ -17,8 +17,7 @@ package net.hasor.db.orm;
 import java.sql.SQLException;
 import java.util.Map;
 import javax.sql.DataSource;
-import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.JdbcOperations;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.orm.ar.DataBase;
 import net.hasor.db.orm.ar.Record;
 import net.hasor.db.orm.ar.Sechma;
@@ -31,29 +30,44 @@ import org.more.util.ClassUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AbstractDao<ENT> {
-    private DataBase dataBase = null;
-    public AbstractDao(DataSource dataSource, SQLBuilderEnum dialect) {
-        this.dataBase = new DataBase(dataSource, dialect);
+    private SQLBuilderEnum dialect      = SQLBuilderEnum.MySql;
+    private JdbcTemplate   jdbcTemplate = new JdbcTemplate();
+    public AbstractDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
-    public AbstractDao(DataBase dataSource) {
-        this.dataBase = Hasor.assertIsNotNull(dataSource);
+    public AbstractDao(DataSource dataSource) {
+        this.jdbcTemplate.setDataSource(dataSource);
+    }
+    public AbstractDao() {}
+    //
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate.setDataSource(dataSource);
+    }
+    public DataSource getDataSource() {
+        return this.jdbcTemplate.getDataSource();
+    }
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+    public JdbcTemplate getJdbcTemplate() {
+        return this.jdbcTemplate;
+    }
+    public void setDialect(SQLBuilderEnum dialect) {
+        this.dialect = dialect;
+    }
+    public SQLBuilderEnum getDialect() {
+        return this.dialect;
     }
     //
-    public void setDataBase(DataBase dataBase) {
-        this.dataBase = dataBase;
-    }
     public DataBase getDataBase() {
-        return this.dataBase;
-    }
-    protected JdbcOperations getJdbc() {
-        return getDataBase().getJdbc();
+        return new DataBase(this.getDataSource(), this.dialect);
     }
     //
     protected Class<ENT> getRecordType() {
         return (Class<ENT>) ClassUtils.getSuperClassGenricType(this.getClass(), 0);
     }
     protected Record newRecord(ENT record) {
-        Sechma sechma = this.dataBase.loadSechma(getRecordType());
+        Sechma sechma = this.getDataBase().loadSechma(getRecordType());
         return new ObjectRecord<ENT>(sechma, record);
     }
     /**保存为新增。*/

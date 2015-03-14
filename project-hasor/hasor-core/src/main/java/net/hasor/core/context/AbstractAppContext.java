@@ -15,6 +15,7 @@
  */
 package net.hasor.core.context;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import net.hasor.core.ApiBinder;
@@ -261,6 +262,10 @@ public abstract class AbstractAppContext implements AppContext {
     };
     //
     /*------------------------------------------------------------------------------------Process*/
+    /**查找Module。*/
+    protected Module[] findModules() throws Throwable {
+        return new Module[0];
+    }
     /**开始进入初始化过程.*/
     protected void doInitialize() throws Throwable {
         BindInfoFactory registerFactory = this.getBindInfoFactory();
@@ -367,10 +372,11 @@ public abstract class AbstractAppContext implements AppContext {
         LoggerHelper.logInfo("doInitialize now.");
         appContext.doInitialize();
         /*2.Bind*/
-        if (modules != null && modules.length > 0) {
-            for (Module module : modules) {
-                this.installModule(module);
-            }
+        ArrayList<Module> findModules = new ArrayList<Module>();
+        findModules.addAll(Arrays.asList(this.findModules()));
+        findModules.addAll(Arrays.asList(modules));
+        for (Module module : findModules) {
+            this.installModule(module);
         }
         ApiBinder apiBinder = appContext.newApiBinder(null);
         LoggerHelper.logInfo("AppContext doBind.");
@@ -395,11 +401,9 @@ public abstract class AbstractAppContext implements AppContext {
         LoggerHelper.logInfo("doStartCompleted now.");
         appContext.doStartCompleted();/*用于扩展*/
         //
-        if (modules != null && modules.length > 0) {
-            for (Module module : modules) {
-                if (module instanceof StartModule) {
-                    ((StartModule) module).onStart(this);
-                }
+        for (Module module : findModules) {
+            if (module instanceof StartModule) {
+                ((StartModule) module).onStart(this);
             }
         }
         /*3.打印状态*/

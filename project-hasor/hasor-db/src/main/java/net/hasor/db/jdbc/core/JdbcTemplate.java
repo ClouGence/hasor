@@ -209,7 +209,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                 } catch (SQLException ex) {
                     throw ex;
                 } finally {
-                    stmt.close();
+                    if (stmt != null) {
+                        stmt.close();
+                    }
                 }
             }
         });
@@ -239,7 +241,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     if (psc instanceof ParameterDisposer) {
                         ((ParameterDisposer) psc).cleanupParameters();
                     }
-                    ps.close();
+                    if (ps != null) {
+                        ps.close();
+                    }
                 }
             }
         });
@@ -269,7 +273,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                     if (csc instanceof ParameterDisposer) {
                         ((ParameterDisposer) csc).cleanupParameters();
                     }
-                    cs.close();
+                    if (cs != null) {
+                        cs.close();
+                    }
                 }
             }
         });

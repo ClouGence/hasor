@@ -14,21 +14,63 @@
  * limitations under the License.
  */
 package net.test.web.biz.user.dao;
-import java.sql.SQLException;
 import javax.sql.DataSource;
+import net.hasor.core.AppContext;
+import net.hasor.core.InjectMembers;
 import net.hasor.db.orm.AbstractDao;
+import net.hasor.db.orm.PageResult;
+import net.hasor.db.orm.Paginator;
 import net.hasor.db.orm.ar.dialect.SQLBuilderEnum;
 import net.test.web.biz.user.entity.UserBean;
+import org.more.bizcommon.ResultDO;
 /**
- * Dao层类
+ * Dao
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserDao extends AbstractDao<UserBean> {
-    public UserDao(DataSource dataSource) {
-        super(dataSource, SQLBuilderEnum.MySql);
+public class UserDao extends AbstractDao<UserBean> implements InjectMembers {
+    public void doInject(AppContext appContext) {
+        DataSource dataSource = appContext.findBindingBean("default", DataSource.class);
+        this.setDataSource(dataSource);
+        this.setDialect(SQLBuilderEnum.HSQL);
     }
-    public void createUser(UserBean user) throws SQLException {
-        this.saveAsNew(user);
+    //
+    /*增*/
+    public ResultDO<Boolean> createUser(UserBean user) {
+        try {
+            boolean res = this.saveAsNew(user);
+            return new ResultDO<Boolean>(true).setResult(res);
+        } catch (Exception e) {
+            return new ResultDO<Boolean>(false).setThrowable(e);
+        }
+    }
+    //
+    /*删*/
+    public ResultDO<Boolean> deleteUser(UserBean user) {
+        try {
+            int res = this.delete(user);
+            return new ResultDO<Boolean>(true).setResult(res != 0);
+        } catch (Exception e) {
+            return new ResultDO<Boolean>(false).setThrowable(e);
+        }
+    }
+    //
+    /*改*/
+    public ResultDO<Boolean> updateUser(UserBean user) {
+        try {
+            int res = this.update(user);
+            return new ResultDO<Boolean>(true).setResult(res != 0);
+        } catch (Exception e) {
+            return new ResultDO<Boolean>(false).setThrowable(e);
+        }
+    }
+    //
+    /*查*/
+    public PageResult<UserBean> userList(Paginator page) {
+        try {
+            return this.listByExample(new UserBean(), page);
+        } catch (Exception e) {
+            return new PageResult<UserBean>(page).setThrowable(e);
+        }
     }
 }

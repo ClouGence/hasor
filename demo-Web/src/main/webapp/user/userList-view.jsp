@@ -22,18 +22,26 @@
         <td width="120px;">姓名</td>
         <td width="290px;">帐号</td>
         <td>邮箱</td>
+        <td>操作</td>
       </tr>
     </thead>
-    <tbody>
-      <hs:defineBean bean="UserService" var="userService"/>
-      <c:forEach var="user" items="${userService.userList}">
+    <tbody> 
+      <c:if test="${pageData.success eq false}">
+      <tr>
+        <td colspan="4">Error:${pageData.message}</td>
+      </tr>
+      </c:if>
+      <c:if test="${pageData.success eq true}">
+      <c:forEach var="user" items="${pageData.result}">
       <tr>
         <td>${user.userUUID}</td>
         <td>${user.name}</td>
         <td>${user.loginName}</td>
         <td>${user.email}</td>
+        <td>[修改]&nbsp;&nbsp;[删除]</td>
       </tr>
       </c:forEach>
+      </c:if>
     </tbody>
   </table>
 </div>

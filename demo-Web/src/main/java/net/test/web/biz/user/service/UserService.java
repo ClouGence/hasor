@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 package net.test.web.biz.user.service;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
+import net.hasor.db.orm.PageResult;
+import net.hasor.db.orm.Paginator;
 import net.test.web.biz.user.dao.UserDao;
+import net.test.web.biz.user.entity.UserBean;
+import org.more.bizcommon.Result;
 /**
  * 服务层类。
  * @version : 2014年8月27日
@@ -27,5 +34,51 @@ public class UserService implements InjectMembers {
     //
     public void doInject(AppContext appContext) {
         this.userDao = appContext.getInstance(UserDao.class);
+    }
+    //
+    /**列表查询*/
+    public PageResult<UserBean> userList(int pageSize, int pageIndex) {
+        Paginator page = new Paginator();
+        page.setCurrentPage(pageIndex);
+        page.setPageSize(pageSize);
+        page.setEnable(true);
+        //
+        try {
+            return this.userDao.userList(page);
+        } catch (Exception e) {
+            return new PageResult<UserBean>(page).setSuccess(false).setMessage(e.getMessage());
+        }
+    }
+    //
+    /**新增用户*/
+    public Result<Boolean> addUser(String name, String loginName, String loginPassword, String email) {
+        UserBean userBean = new UserBean();
+        userBean.setName(loginName);
+        userBean.setLoginName(loginName);
+        userBean.setLoginPassword(loginPassword);
+        userBean.setEmail(email);
+        //
+        userBean.setRegisterTime(new Date());
+        userBean.setUserUUID(UUID.randomUUID().toString());
+        //
+        return this.userDao.createUser(userBean);
+    }
+    //
+    /**删除用户*/
+    public Result<Boolean> deleteUser(String userUUID) {
+        UserBean userBean = new UserBean();
+        userBean.setUserUUID(userUUID);
+        return this.userDao.deleteUser(userBean);
+    }
+    //
+    /**更新用户信息*/
+    public Result<Boolean> updateUser(String userUUID, Map<String, String> userMap) {
+        UserBean userBean = new UserBean();
+        userBean.setUserUUID(userUUID);
+        userBean.setName(userMap.get("name"));
+        userBean.setLoginPassword(userMap.get("password"));
+        userBean.setEmail(userMap.get("email"));
+        //
+        return this.userDao.updateUser(userBean);
     }
 }

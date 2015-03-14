@@ -16,6 +16,8 @@
 package net.test.web.biz.user.entity;
 import java.util.Date;
 import net.hasor.db.orm.ar.anno.Table;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * User 实体类
  * @version : 2014年9月24日
@@ -65,5 +67,8 @@ public class UserBean {
     }
     public void setRegisterTime(Date registerTime) {
         this.registerTime = registerTime;
+    }
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

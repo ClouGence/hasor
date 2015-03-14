@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.mvc._01_simple;
-import net.hasor.mvc.MappingTo;
-import net.hasor.mvc.ModelController;
+package net.test.web.biz.user.remote;
 /**
- * 
- * @version : 2014年8月27日
+ * 远程服务
+ * @version : 2014年10月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OperAction implements ModelController {
-    @MappingTo("/oper/add")
-    public void doAdd() {
-        System.out.println("add called.");
-    }
-    @MappingTo("/oper/del")
-    public void doDelete() {
-        System.out.println("del called.");
-    }
-}
+public class UserList {}

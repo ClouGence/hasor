@@ -99,7 +99,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         StringBuffer deleteSQL = new StringBuffer();
         deleteSQL.append(dia(Dialect.DELETE));
         deleteSQL.append(dia(Dialect.FROM));
-        deleteSQL.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
+        deleteSQL.append(dia(Dialect.LEFT_TABLE_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_TABLE_QUOTE));
         deleteSQL.append(dia(Dialect.WHERE));
         deleteSQL.append(whereData.getSQL());
         return new ArrayBuilderData(deleteSQL.toString(), whereData.getData());
@@ -118,7 +118,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         }
         //
         sqlSelect.append(dia(Dialect.FROM));
-        sqlSelect.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
+        sqlSelect.append(dia(Dialect.LEFT_TABLE_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_TABLE_QUOTE));
         BuilderData whereData = buildWhere(sechma, whereColumn, whereParams, Oper.Select);
         sqlSelect.append(dia(Dialect.WHERE) + whereData.getSQL());
         return new ArrayBuilderData(sqlSelect.toString(), whereData.getData());
@@ -152,7 +152,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         //
         StringBuffer updateSQL = new StringBuffer("");
         updateSQL.append(dia(Dialect.UPDATE));
-        updateSQL.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
+        updateSQL.append(dia(Dialect.LEFT_TABLE_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_TABLE_QUOTE));
         updateSQL.append(dia(Dialect.SET));
         updateSQL.append(updateSet);
         //
@@ -170,7 +170,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         countSQL.append(dia(Dialect.SELECT));
         countSQL.append(dia(Dialect.COUNT_1));
         countSQL.append(dia(Dialect.FROM));
-        countSQL.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
+        countSQL.append(dia(Dialect.LEFT_TABLE_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_TABLE_QUOTE));
         countSQL.append(dia(Dialect.WHERE));
         countSQL.append(whereData.getSQL());
         //
@@ -206,7 +206,7 @@ public abstract class AbstractSQLBuilder implements SQLBuilder {
         //
         StringBuffer insertSQL = new StringBuffer("");
         insertSQL.append(dia(Dialect.INSERT));
-        insertSQL.append(dia(Dialect.LEFT_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_QUOTE));
+        insertSQL.append(dia(Dialect.LEFT_TABLE_QUOTE) + sechma.getName() + dia(Dialect.RIGHT_TABLE_QUOTE));
         insertSQL.append(dia(Dialect.LEFT_ANGLE) + insertColumn + dia(Dialect.RIGHT_ANGLE));
         insertSQL.append(dia(Dialect.VALUES));
         insertSQL.append(dia(Dialect.LEFT_ANGLE) + insertValue + dia(Dialect.RIGHT_ANGLE));

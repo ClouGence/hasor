@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
@@ -81,8 +82,8 @@ public class StandardAppContext extends AbstractAppContext {
         return new StandardEnvironment(this.mainSettings);
     }
     //
-    protected void doInitialize() throws Throwable {
-        //1.预先加载Module
+    protected Module[] findModules() throws Throwable {
+        ArrayList<Module> moduleList = new ArrayList<Module>();
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
         if (loadModule) {
@@ -97,13 +98,12 @@ public class StandardAppContext extends AbstractAppContext {
                         }
                         ClassLoader loader = Thread.currentThread().getContextClassLoader();
                         Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
-                        this.installModule((Module) moduleType.newInstance());
+                        moduleList.add((Module) moduleType.newInstance());
                     }
                 }
             }
         }
-        //2.继续init
-        super.doInitialize();
+        return moduleList.toArray(new Module[moduleList.size()]);
     }
     //
     //

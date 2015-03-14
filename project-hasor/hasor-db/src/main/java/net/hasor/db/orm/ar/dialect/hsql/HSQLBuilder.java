@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.orm.ar.dialect.mysql;
+package net.hasor.db.orm.ar.dialect.hsql;
 import java.util.Map;
 import net.hasor.db.orm.Paginator;
 import net.hasor.db.orm.ar.dialect.AbstractSQLBuilder;
@@ -25,7 +25,7 @@ import net.hasor.db.orm.ar.dialect.MapBuilderData;
  * @version : 2015年2月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MySqlBuilder extends AbstractSQLBuilder {
+public class HSQLBuilder extends AbstractSQLBuilder {
     @Override
     protected void fillDialect(Map<Dialect, String> dialectData) {
         dialectData.put(Dialect.AND, " and ");
@@ -48,10 +48,10 @@ public class MySqlBuilder extends AbstractSQLBuilder {
         dialectData.put(Dialect.SPACE, " ");
         dialectData.put(Dialect.LEFT_ANGLE, " (");
         dialectData.put(Dialect.RIGHT_ANGLE, ") ");
-        dialectData.put(Dialect.LEFT_QUOTE, " `");
-        dialectData.put(Dialect.RIGHT_QUOTE, "` ");
-        dialectData.put(Dialect.LEFT_TABLE_QUOTE, " `");
-        dialectData.put(Dialect.RIGHT_TABLE_QUOTE, "` ");
+        dialectData.put(Dialect.LEFT_QUOTE, " ");
+        dialectData.put(Dialect.RIGHT_QUOTE, " ");
+        dialectData.put(Dialect.LEFT_TABLE_QUOTE, " ");
+        dialectData.put(Dialect.RIGHT_TABLE_QUOTE, " ");
         //
         dialectData.put(Dialect.NULL, "null");
         dialectData.put(Dialect.PARAM, "?");
