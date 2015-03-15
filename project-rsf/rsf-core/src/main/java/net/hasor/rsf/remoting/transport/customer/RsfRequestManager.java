@@ -93,7 +93,7 @@ public class RsfRequestManager extends AbstractRequestManager {
     public void putResponse(long requestID, RsfResponse response) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            LoggerHelper.logInfo("received response(%s) status = %s", requestID, response.getResponseStatus());
+            LoggerHelper.logFinest("received response(%s) status = %s", requestID, response.getResponseStatus());
             rsfFuture.completed(response);
         } else {
             LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", requestID);

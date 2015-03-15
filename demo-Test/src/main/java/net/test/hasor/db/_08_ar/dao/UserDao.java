@@ -29,7 +29,8 @@ import net.test.hasor.db._08_ar.entity.TB_User;
  */
 public class UserDao extends AbstractDao<TB_User> {
     public UserDao(DataSource dataSource) {
-        super(dataSource, SQLBuilderEnum.MySql);
+        super(dataSource);
+        this.setDialect(SQLBuilderEnum.MySql);
     }
     //
     public PageResult<TB_User> queryList1() throws SQLException {

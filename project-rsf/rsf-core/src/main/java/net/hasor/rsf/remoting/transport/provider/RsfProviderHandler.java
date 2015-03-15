@@ -46,7 +46,7 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
         //创建request、response
         RequestMsg requestMsg = (RequestMsg) msg;
         requestMsg.setReceiveTime(System.currentTimeMillis());
-        LoggerHelper.logInfo("received request(%s) full = %s", requestMsg.getRequestID(), requestMsg);
+        LoggerHelper.logFinest("received request(%s) full = %s", requestMsg.getRequestID(), requestMsg);
         //放入业务线程准备执行
         try {
             Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());

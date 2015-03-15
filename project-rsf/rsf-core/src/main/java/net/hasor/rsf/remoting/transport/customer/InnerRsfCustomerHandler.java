@@ -43,7 +43,7 @@ class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ResponseMsg == false)
             return;
         ResponseMsg responseMsg = (ResponseMsg) msg;
-        LoggerHelper.logInfo("received response(%s) full = %s", responseMsg.getRequestID(), responseMsg);
+        LoggerHelper.logFinest("received response(%s) full = %s", responseMsg.getRequestID(), responseMsg);
         //
         RsfFuture rsfFuture = this.requestManager.getRequest(responseMsg.getRequestID());
         if (rsfFuture == null) {

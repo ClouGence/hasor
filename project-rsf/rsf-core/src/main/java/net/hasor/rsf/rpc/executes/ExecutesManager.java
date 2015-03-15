@@ -22,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 /**
- * 
+ * 业务线程
  * @version : 2014年11月11日
  * @author 赵永春(zyc@hasor.net)
  */
