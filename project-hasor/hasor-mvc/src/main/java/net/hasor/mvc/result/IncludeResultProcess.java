@@ -33,9 +33,11 @@ public class IncludeResultProcess implements ResultProcess {
         }
         HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
-        LoggerHelper.logFine("include %s.", result);
         //
-        request.getRequestDispatcher(result.toString()).include(request, response);
+        if (response.isCommitted() == false) {
+            LoggerHelper.logFine("include %s.", result);
+            request.getRequestDispatcher(result.toString()).include(request, response);
+        }
         return result;
     }
 }

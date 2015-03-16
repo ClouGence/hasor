@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.remoting.transport.provider;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
@@ -39,9 +40,14 @@ class InnerInvokeHandler implements RsfFilterChain {
             response.sendStatus(ProtocolStatus.Forbidden, "failed to get service.");
             return;
         }
-        Method method = request.getServiceMethod();
-        Object[] pObjects = request.getParameterObject();
-        Object resData = method.invoke(targetObj, pObjects);
-        response.sendData(resData);
+        //
+        try {
+            Method method = request.getServiceMethod();
+            Object[] pObjects = request.getParameterObject();
+            Object resData = method.invoke(targetObj, pObjects);
+            response.sendData(resData);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
 }

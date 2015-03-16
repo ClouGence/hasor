@@ -15,6 +15,7 @@
  */
 package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,7 +176,11 @@ class MappingDefine implements MappingInfo {
                 return MappingDefine.this;
             }
             public Object call(Object... objects) throws Throwable {
-                return targetMethod.invoke(mc, objects);
+                try {
+                    return targetMethod.invoke(mc, objects);
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                }
             }
             public HttpServletRequest getHttpRequest() {
                 return httpInfo.getHttpRequest();

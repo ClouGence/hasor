@@ -15,6 +15,7 @@
  */
 package net.hasor.mvc.support;
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.ApiBinder;
 import net.hasor.mvc.result.Forword;
 import net.hasor.mvc.result.ForwordResultProcess;
@@ -32,8 +33,7 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class ControllerModule extends WebModule {
-    //
-    protected abstract void loadController(LoadHellper hellper);
+    private static AtomicBoolean initController = new AtomicBoolean(false);
     //
     public void loadModule(final WebApiBinder apiBinder) throws Throwable {
         LoggerHelper.logInfo("work at ControllerModule.", this.getClass());
@@ -49,20 +49,21 @@ public abstract class ControllerModule extends WebModule {
         };
         //
         //2.load config
-        this.defaultConfig(helper);
         this.loadController(helper);
         //
-        //4.install
-        apiBinder.bindType(DefineList.class, apiBinder.autoAware(new DefineList()));
-        apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
-        apiBinder.filter("/*").through(new ControllerFilter());
+        //3.install-避免初始化多次
+        if (initController.compareAndSet(false, true)) {
+            helper.loadResultProcess(Forword.class, ForwordResultProcess.class);
+            helper.loadResultProcess(Include.class, IncludeResultProcess.class);
+            helper.loadResultProcess(Redirect.class, RedirectResultProcess.class);
+            //
+            apiBinder.bindType(DefineList.class, apiBinder.autoAware(new DefineList()));
+            apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
+            apiBinder.filter("/*").through(new ControllerFilter());
+        }
     }
     //
-    protected void defaultConfig(LoadHellper hellper) {
-        hellper.loadResultProcess(Forword.class, ForwordResultProcess.class);
-        hellper.loadResultProcess(Include.class, IncludeResultProcess.class);
-        hellper.loadResultProcess(Redirect.class, RedirectResultProcess.class);
-    }
+    protected abstract void loadController(LoadHellper helper);
     /**
      * 创建 {@link MappingDefine}
      * @param newID 唯一ID

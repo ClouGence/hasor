@@ -33,9 +33,11 @@ public class ForwordResultProcess implements ResultProcess {
         }
         HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
-        LoggerHelper.logFine("forword to %s.", result);
         //
-        request.getRequestDispatcher(result.toString()).forward(request, response);
+        if (response.isCommitted() == false) {
+            LoggerHelper.logFine("forword to %s.", result);
+            request.getRequestDispatcher(result.toString()).forward(request, response);
+        }
         return result;
     }
 }

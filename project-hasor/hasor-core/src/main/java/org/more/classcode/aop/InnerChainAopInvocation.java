@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.classcode.aop;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 /**
  * 
@@ -48,7 +49,11 @@ public class InnerChainAopInvocation implements AopInvocation {
         Class<?> targetClass = this.targetMethod.getDeclaringClass();
         Method invokeMethod = targetClass.getDeclaredMethod(AopClassAdapter.AopPrefix + this.targetMethod.getName(), this.paramTypes);
         invokeMethod.setAccessible(true);
-        return invokeMethod.invoke(this.targetObject, this.paramObjects);
+        try {
+            return invokeMethod.invoke(this.targetObject, this.paramObjects);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
     }
     public Object getThis() {
         return this.targetObject;

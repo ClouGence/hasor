@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.plugins.local;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
@@ -30,19 +31,23 @@ public class LocalPrefPlugin implements RsfFilter {
         if (request.isLocal() == true) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
             Object serviceBean = request.getContext().getBean(bindInfo);
-            //
             if (serviceBean != null) {
                 String rMethod = request.getMethod();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();
                 //
                 Method m = serviceBean.getClass().getMethod(rMethod, rParams);
-                response.sendData(m.invoke(serviceBean, rObjects));
+                try {
+                    response.sendData(m.invoke(serviceBean, rObjects));
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                }
                 return;
             }
         }
-        chain.doFilter(request, response);
         //
+        //
+        chain.doFilter(request, response);
         return;
     }
 }
