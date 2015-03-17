@@ -29,7 +29,7 @@
 		<!-- Hasor -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-rsf</artifactId>
+			<artifactId>rsf-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
