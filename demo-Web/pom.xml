@@ -14,30 +14,28 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Hasor-MVC -->
+		<!-- Hasor begin -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-mvc</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-db</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-RSF -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>rsf-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- Hasor-Search -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>search-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Hasor end -->
 
 
 		<!-- J2EE begin -->
@@ -59,6 +57,7 @@
 		</dependency>
 		<!-- J2EE end -->
 
+
 		<!-- Logging begin -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -72,6 +71,7 @@
 		</dependency>
 		<!-- Logging end -->
 
+
 		<!-- JDBC begin -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -84,6 +84,7 @@
 			<version>0.9.1.2</version>
 		</dependency>
 		<!-- JDBC end -->
+
 
 		<!-- Jetty Test -->
 		<dependency>

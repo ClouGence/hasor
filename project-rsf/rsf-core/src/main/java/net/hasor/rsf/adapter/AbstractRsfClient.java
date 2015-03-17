@@ -17,8 +17,8 @@ package net.hasor.rsf.adapter;
 import io.netty.channel.Channel;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
@@ -53,7 +53,6 @@ public abstract class AbstractRsfClient implements RsfClient {
     public AbstractRsfContext getRsfContext() {
         return this.getRequestManager().getRsfContext();
     }
-    private Map<String, Class<?>> wrapperMap = new ConcurrentHashMap<String, Class<?>>();
     /**
      * 根据服务ID，获取远程服务对象
      * @param serviceID 服务ID
@@ -152,6 +151,9 @@ public abstract class AbstractRsfClient implements RsfClient {
             return null;
         return this.wrapper(bindInfo, interFace);
     }
+    //
+    private ConcurrentMap<String, Class<?>> wrapperMap  = new ConcurrentHashMap<String, Class<?>>();
+    private final static Object             LOCK_OBJECT = new Object();
     /**
      * 将服务包装为另外一个接口。
      * @param bindInfo rsf服务注册信息。
@@ -164,15 +166,22 @@ public abstract class AbstractRsfClient implements RsfClient {
             throw new NullPointerException();
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
-        Class<?> wrapperType = this.wrapperMap.get(bindInfo.getBindID());
+        //
         try {
-            if (wrapperType == null) {
-                MethodClassConfig mcc = new MethodClassConfig();
-                mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
-                wrapperType = mcc.toClass();
-                this.wrapperMap.put(bindInfo.getBindID(), wrapperType);
+            //
+            String bindID = bindInfo.getBindID();
+            Class<?> wrapperType = this.wrapperMap.get(bindID);
+            if (wrapperType == null) synchronized (LOCK_OBJECT) {
+                wrapperType = this.wrapperMap.get(bindID);
+                if (wrapperType == null){
+                    MethodClassConfig mcc = new MethodClassConfig();
+                    mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
+                    wrapperType = mcc.toClass();
+                    this.wrapperMap.put(bindID, wrapperType);
+                }
             }
             return (T) wrapperType.newInstance();
+            //
         } catch (Exception e) {
             throw new RsfException(e.getMessage(), e);
         }

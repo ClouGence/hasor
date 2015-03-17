@@ -47,7 +47,7 @@ public class UserAction extends AbstractWebController implements InjectMembers {
         }
         //
         PageResult<UserBean> pageData = userService.userList(pageSize, pageIndex);
-        if (pageData.isSuccess() ==false ){
+        if (pageData.isSuccess() == false) {
             pageData.setMessage(pageData.getThrowable().getMessage());
         }
         //
