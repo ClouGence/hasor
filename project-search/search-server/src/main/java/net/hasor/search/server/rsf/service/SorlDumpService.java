@@ -25,7 +25,7 @@ import net.hasor.search.domain.OptionConstant;
 import net.hasor.search.domain.SearchDocument;
 import net.hasor.search.domain.UpdateSearchResult;
 import net.hasor.search.utils.StrUtils;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.more.logger.LoggerHelper;
@@ -133,11 +133,11 @@ public class SorlDumpService extends AbstractSearchService implements DumpServic
         //
         return this.doExecute(new ExecuteService() {
             @Override
-            public UpdateResponse doExecute(SolrServer solrServer) throws Throwable {
+            public UpdateResponse doExecute(SolrClient solrClient) throws Throwable {
                 if (commitWithinMs == null) {
-                    return solrServer.add(solrDocs);
+                    return solrClient.add(solrDocs);
                 } else {
-                    return solrServer.add(solrDocs, commitWithinMs.intValue());
+                    return solrClient.add(solrDocs, commitWithinMs.intValue());
                 }
             }
         });
@@ -153,11 +153,11 @@ public class SorlDumpService extends AbstractSearchService implements DumpServic
         //
         return this.doExecute(new ExecuteService() {
             @Override
-            public UpdateResponse doExecute(SolrServer solrServer) throws Throwable {
+            public UpdateResponse doExecute(SolrClient solrClient) throws Throwable {
                 if (commitWithinMs == null) {
-                    return solrServer.deleteById(ids);
+                    return solrClient.deleteById(ids);
                 } else {
-                    return solrServer.deleteById(ids, commitWithinMs.intValue());
+                    return solrClient.deleteById(ids, commitWithinMs.intValue());
                 }
             }
         });
@@ -173,27 +173,27 @@ public class SorlDumpService extends AbstractSearchService implements DumpServic
         //
         return this.doExecute(new ExecuteService() {
             @Override
-            public UpdateResponse doExecute(SolrServer solrServer) throws Throwable {
+            public UpdateResponse doExecute(SolrClient solrClient) throws Throwable {
                 if (commitWithinMs == null) {
-                    return solrServer.deleteByQuery(queryString);
+                    return solrClient.deleteByQuery(queryString);
                 } else {
-                    return solrServer.deleteByQuery(queryString, commitWithinMs.intValue());
+                    return solrClient.deleteByQuery(queryString, commitWithinMs.intValue());
                 }
             }
         });
     }
     private UpdateSearchResult doExecute(ExecuteService exec) {
         try {
-            SolrServer solrServer = this.getSolrServer();
+            SolrClient solrClient = this.getSolrClient();
             RsfOptionSet optionSet = this.getRsfOptionSet();
             String commit = optionSet.getOption(OptionConstant.COMMIT_KEY);
             //
-            UpdateResponse res = exec.doExecute(solrServer);
+            UpdateResponse res = exec.doExecute(solrClient);
             if (StringUtils.equalsBlankIgnoreCase(commit, OptionConstant.COMMIT_VALUE)) {
                 boolean waitFlush = StrUtils.parseBool(optionSet.getOption(OptionConstant.WAIT_FLUSH_KEY), true);
                 boolean waitSearcher = StrUtils.parseBool(optionSet.getOption(OptionConstant.WAIT_SEARCHER_KEY), true);
                 boolean softCommit = StrUtils.parseBool(optionSet.getOption(OptionConstant.SOFT_COMMIT_KEY), false);
-                res = solrServer.commit(waitFlush, waitSearcher, softCommit);
+                res = solrClient.commit(waitFlush, waitSearcher, softCommit);
             }
             //
             UpdateSearchResult result = new UpdateSearchResult();

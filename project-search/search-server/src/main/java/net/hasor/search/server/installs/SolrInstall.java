@@ -62,7 +62,7 @@ public class SolrInstall implements Module {
         }
         //
         ConfigSolr config = ConfigSolr.fromSolrHome(loader, searchHome);
-        CoreContainer cores = new CoreContainer(loader, config);
+        CoreContainer cores = new CoreContainer(config);
         cores.load();
         return cores;
     }

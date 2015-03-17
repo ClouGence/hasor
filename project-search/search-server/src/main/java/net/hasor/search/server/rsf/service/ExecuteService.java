@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.search.server.rsf.service;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 /**
  * 
@@ -22,5 +22,5 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ExecuteService {
-    public UpdateResponse doExecute(SolrServer solrServer) throws Throwable;
+    public UpdateResponse doExecute(SolrClient solrClient) throws Throwable;
 }

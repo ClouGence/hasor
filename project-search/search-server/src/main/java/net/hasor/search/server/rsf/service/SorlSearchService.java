@@ -35,7 +35,7 @@ public class SorlSearchService extends AbstractSearchService implements SearchSe
     public QuerySearchResult query(SearchQuery searchQuery) throws Throwable {
         SolrQuery solrQuery = new SolrQuery();
         solrQuery.add(new MultiMapSolrParams(searchQuery.toMap()));
-        QueryResponse response = getSolrServer().query(solrQuery);
+        QueryResponse response = getSolrClient().query(solrQuery);
         SolrDocumentList docList = response.getResults();
         //
         List<SearchDocument> documentList = new ArrayList<SearchDocument>();

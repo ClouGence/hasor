@@ -22,7 +22,7 @@ import net.hasor.core.InjectMembers;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.rpc.warp.RsfRequestLocal;
 import net.hasor.search.domain.SearchDocument;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
@@ -45,7 +45,7 @@ public abstract class AbstractSearchService implements InjectMembers {
     protected RsfOptionSet getRsfOptionSet() {
         return this.rsfRequest;
     }
-    protected SolrServer getSolrServer() {
+    protected SolrClient getSolrClient() {
         String coreName = this.rsfRequest.getBindInfo().getBindGroup();
         return new EmbeddedSolrServer(this.container, coreName);
     }
