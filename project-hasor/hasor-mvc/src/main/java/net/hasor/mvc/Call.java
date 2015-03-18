@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.mvc.api.ModelController;
 /**
  * 
  * @version : 2014年8月27日

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.AppContext;
+import net.hasor.mvc.ModelController;
 import net.hasor.web.startup.RuntimeFilter;
 /**
  * Controller <br>

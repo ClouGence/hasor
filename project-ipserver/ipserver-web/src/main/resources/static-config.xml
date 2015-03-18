@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
+	<hasor>
+		<modules>
+			<module>net.hasor.search.server.installs.SolrInstall</module>
+			<module>net.hasor.search.server.installs.RsfInstall</module>
+		</modules>
+
+		<searchConfig>
+			<!-- coreName 刷新 RSF时间间隔 -->
+			<coreMonitor refreshTime="5" />
+		</searchConfig>
+
+		<environmentVar>
+			<!-- RSF 服务地址 -->
+			<SEARCH-HOST>local</SEARCH-HOST>
+			<!-- RSF 服务端口 -->
+			<SEARCH-PORT>8000</SEARCH-PORT>
+			<!-- Solr Home -->
+			<SEARCH-HOME>%WORK_HOME%/search-home</SEARCH-HOME>
+		</environmentVar>
+	</hasor>
+</config>

@@ -20,9 +20,9 @@ import java.lang.reflect.Modifier;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.ModelController;
 import net.hasor.mvc.result.support.ResultDefine;
 import org.more.logger.LoggerHelper;
 /***

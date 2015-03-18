@@ -185,10 +185,11 @@
 
 	<!-- Hasor 模块 -->
 	<modules>
-		<module>project-hasor</module>		<!-- 开发框架 -->
 		<module>project-scala</module>		<!-- Scala项目 -->
+		<module>project-hasor</module>		<!-- Hasor 框架 -->
 		<module>project-rsf</module>		<!-- RPC 服务 -->
-		<module>project-search</module>		<!-- 搜索服务 -->
+		<module>project-search</module>		<!-- Search 服务 -->
+		<module>project-ipserver</module>	<!-- IP 服务 -->
 		<!-- module>project-depmanager</module -->	<!-- 依赖管理服务 -->
 	</modules>
 

@@ -20,5 +20,6 @@ package net.hasor.mvc;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface CallStrategy {
+    /**执行调用*/
     public Object exeCall(Call call) throws Throwable;
 }

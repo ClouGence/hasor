@@ -31,11 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import net.hasor.mvc.Call;
 import net.hasor.mvc.CallStrategy;
 import net.hasor.mvc.MappingInfo;
+import net.hasor.mvc.ModelController;
 import net.hasor.mvc.api.AbstractWebController;
 import net.hasor.mvc.api.AttributeParam;
 import net.hasor.mvc.api.CookieParam;
 import net.hasor.mvc.api.HeaderParam;
-import net.hasor.mvc.api.ModelController;
 import net.hasor.mvc.api.Param;
 import net.hasor.mvc.api.PathParam;
 import net.hasor.mvc.api.Produces;
@@ -49,16 +49,23 @@ import org.more.util.StringUtils;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultCallStrategy extends AbstractCallStrategy {
+public class DefaultCallStrategy implements CallStrategy {
     public static final CallStrategy Instance = new DefaultCallStrategy();
-    /**初始化*/
+    //
+    /**初始化调用。*/
     protected void initCall(Call call) {
         ModelController controller = call.getTarget();
         if (controller instanceof AbstractWebController) {
             ((AbstractWebController) controller).initController(call.getHttpRequest(), call.getHttpResponse());
         }
     }
-    /**处理 @Produces 注解。*/
+    /** 执行调用 */
+    public Object exeCall(Call call) throws Throwable {
+        this.initCall(call);
+        Object[] args = this.resolveParams(call);
+        return this.returnCallBack(call.call(args), call);
+    }
+    /**处理结果 */
     protected Object returnCallBack(Object returnData, Call call) {
         Method targetMethod = call.getMethod();
         if (targetMethod.isAnnotationPresent(Produces.class) == true) {
@@ -72,7 +79,7 @@ public class DefaultCallStrategy extends AbstractCallStrategy {
         return returnData;
     }
     /**准备参数*/
-    protected Object[] resolveParams(Call call) throws Throwable {
+    protected final Object[] resolveParams(Call call) throws Throwable {
         Method targetMethod = call.getMethod();
         //
         Class<?>[] targetParamClass = call.getParameterTypes();
@@ -96,7 +103,7 @@ public class DefaultCallStrategy extends AbstractCallStrategy {
         return invokeParams;
     }
     /**准备参数*/
-    protected Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, Call call) {
+    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, Call call) {
         for (Annotation pAnno : paramAnno) {
             Object finalValue = resolveParam(paramClass, pAnno, call);
             if (finalValue != null) {
