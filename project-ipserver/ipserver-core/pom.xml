@@ -15,7 +15,7 @@
 
 	<!-- Project Info -->
 	<name>IPServer-core</name>
-	<description>the Client for Hasor Search project.</description>
+	<description>the IPServer project.</description>
 
 	<developers>
 		<developer>
@@ -26,11 +26,10 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Hasor -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>rsf-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>hasor-db</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

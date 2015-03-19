@@ -11,57 +11,11 @@
 	<groupId>net.hasor</groupId>
 	<artifactId>ipserver-web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<!-- Project Info -->
-	<name>IPServer-web</name>
-	<description>the Client for Hasor Search project.</description>
-
-	<developers>
-		<developer>
-			<name>赵永春(Mr.Zhao)</name>
-			<email>zyc@hasor.net</email>
-		</developer>
-	</developers>
-
-	<!-- 引用依赖 -->
-	<dependencies>
-		<!-- Hasor -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>ipserver-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-</project>
-
-
-
-
-
-
-
-
-
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>net.hasor</groupId>
-		<artifactId>project-search</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-
-	<!-- Maven Info -->
-	<groupId>net.hasor</groupId>
-	<artifactId>search-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<!-- Project Info -->
-	<name>Search-Server</name>
-	<description>the Hasor Search project.</description>
+	<name>IPServer-web</name>
+	<description>the web Site for IPServer.</description>
 
 	<developers>
 		<developer>
@@ -78,29 +32,12 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Hasor begin -->
+		<!-- Hasor -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>search-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.hasor</groupId>
-					<artifactId>rsf-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>rsf-core</artifactId>
+			<artifactId>ipserver-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- Hasor end -->
 
 		<!-- LOGGING begin -->
 		<!-- slf4j-log4j绑定 -->
@@ -123,62 +60,19 @@
 		</dependency>
 		<!-- LOGGING end -->
 
-		<!-- Solr -->
+		<!-- JDBC begin -->
 		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
-			<version>5.0.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-continuation</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-deploy</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-http</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-io</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-jmx</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-security</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-servlet</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-util</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-webapp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-xml</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.orbit</groupId>
-					<artifactId>javax.servlet</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.1</version>
 		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
+		<!-- JDBC end -->
+
 		<!-- Jetty Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
