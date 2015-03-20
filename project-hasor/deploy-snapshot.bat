@@ -1,2 +1,2 @@
-call mvn clean deploy  -P release
+call mvn clean deploy
 pause
