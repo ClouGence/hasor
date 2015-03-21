@@ -1,6 +1,0 @@
-#Written by CorePropertiesLocator
-#Fri Jan 23 12:36:33 CST 2015
-name=collection1
-config=solrconfig.xml
-schema=schema.xml
-dataDir=data
