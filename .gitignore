@@ -1,0 +1,8 @@
+.settings
+target
+.classpath
+.cache
+.project
+*.iml
+.idea
+test-work

@@ -1,0 +1,40 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.5</version>
+	</parent>
+
+	<!-- Maven Info -->
+	<groupId>net.hasor</groupId>
+	<artifactId>rsf-core</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<!-- Project Info -->
+	<name>RSF-Core</name>
+	<description>the Hasor Remote Service Framework project.</description>
+
+	<developers>
+		<developer>
+			<name>赵永春(Mr.Zhao)</name>
+			<email>zyc@hasor.net</email>
+		</developer>
+	</developers>
+
+	<!-- 引用依赖 -->
+	<dependencies>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.10-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.23.Final</version>
+		</dependency>
+	</dependencies>
+</project>
