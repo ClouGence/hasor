@@ -6,7 +6,7 @@
 
 &emsp;&emsp;项目配置参考：[http://git.oschina.net/zycgit/hasor-configuration](http://git.oschina.net/zycgit/hasor-configuration)
 
-&emsp;&emsp;RoadMap：
+&emsp;&emsp;RoadMap：（详见roadmap.pdf）
 
 ----------
 ### 功能介绍
