@@ -1,3 +1,0 @@
-﻿===== Hasor-Search-Client v0.0.1
-* 新增:
-    01.Hasor-Search的客户端。
