@@ -17,6 +17,13 @@
 	<name>Hasor-Quick</name>
 	<description>the Hasor Quick project.</description>
 
+	<!-- SCM -->
+	<scm>
+		<connection>         scm:git@git.oschina.net:zycgit/hasor.git</connection>
+		<developerConnection>scm:git@git.oschina.net:zycgit/hasor.git</developerConnection>
+		<url>                    git@git.oschina.net:zycgit/hasor.git</url>
+	</scm>
+
 	<developers>
 		<developer>
 			<name>赵永春(Mr.Zhao)</name>
