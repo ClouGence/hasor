@@ -17,6 +17,13 @@
 	<name>RSF-Core</name>
 	<description>the Hasor Remote Service Framework project.</description>
 
+	<!-- SCM -->
+	<scm>
+		<connection>         scm:git@git.oschina.net:zycgit/rsf.git</connection>
+		<developerConnection>scm:git@git.oschina.net:zycgit/rsf.git</developerConnection>
+		<url>                    git@git.oschina.net:zycgit/rsf.git</url>
+	</scm>
+
 	<developers>
 		<developer>
 			<name>赵永春(Mr.Zhao)</name>
