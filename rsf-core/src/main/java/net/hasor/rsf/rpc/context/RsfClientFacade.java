@@ -18,10 +18,9 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.adapter.AbstractClientManager;
-import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.binder.RsfServiceInfo;
+import net.hasor.rsf.rpc.client.InnerClientManager;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.future.FutureCallback;
 import org.more.logger.LoggerHelper;
@@ -53,7 +52,7 @@ class RsfClientFacade implements RsfClient {
             LoggerHelper.logSevere(npe.getMessage(), npe);
             throw npe;
         }
-        AbstractClientManager clientManager = this.rsfContext.getRequestManager().getClientManager();
+        InnerClientManager clientManager = this.rsfContext.getRequestManager().getClientManager();
         return clientManager.getClient(bindInfo);
     }
     //

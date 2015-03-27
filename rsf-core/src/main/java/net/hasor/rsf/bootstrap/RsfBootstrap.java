@@ -35,7 +35,7 @@ import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 import net.hasor.rsf.remoting.transport.provider.RsfProviderHandler;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import net.hasor.rsf.rpc.executes.NameThreadFactory;
+import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.URLUtils;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;

@@ -22,6 +22,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.constants.ProtocolVersion;
+import net.hasor.rsf.manager.OptionManager;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**

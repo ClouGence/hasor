@@ -27,9 +27,10 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.adapter.AbstractRsfContext;
 import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.domain.ServiceDomain;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.URLUtils;
 import org.more.FormatException;
 import org.more.util.StringUtils;
@@ -172,7 +173,7 @@ public class RsfBindBuilder implements RsfBinder {
             domain.setClientTimeout(this.clientTimeout);
             domain.setSerializeType(this.serializeType);
             //
-            ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext, this.meFilterMap, this.rsfProvider);
+            ServiceDefine<T> define = new ServiceDefine<T>(domain, this.rsfContext);
             //
             this.rsfContext.getBindCenter().publishService(define);
             this.rsfContext.getAddressCenter().updateAddress(define, this.hostAddressList);;

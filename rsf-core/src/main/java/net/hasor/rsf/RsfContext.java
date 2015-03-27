@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.core.Provider;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
@@ -28,6 +29,12 @@ public interface RsfContext {
      * @return 服务对象
      */
     public <T> T getBean(RsfBindInfo<T> bindInfo);
+    /**
+     * 获取元信息所描述的服务对象
+     * @param bindInfo 元信息所描述对象
+     * @return 服务对象
+     */
+    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo);
     /** @return 获取配置*/
     public RsfSettings getSettings();
     /** @return 获取客户端*/

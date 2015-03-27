@@ -21,13 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import net.hasor.core.Provider;
+import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.adapter.AbstractBindCenter;
-import net.hasor.rsf.adapter.AbstractRsfContext;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 /**
@@ -35,7 +35,7 @@ import org.more.util.StringUtils;
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultBindCenter extends AbstractBindCenter {
+public class DefaultBindCenter implements BindCenter {
     /* Group -> Name -> Version*/
     private final ConcurrentMap<String, Provider<? extends RsfFilter>>                                rsfFilter1;
     private final List<Provider<? extends RsfFilter>>                                                 rsfFilter2;
@@ -131,12 +131,17 @@ public class DefaultBindCenter extends AbstractBindCenter {
         versionMap.put(version, bindInfo);
         this.rsfService2Map.put(bindInfo.getBindID(), bindInfo);
     }
+    //
+    /**获取全局{@link RsfFilter}*/
     public Provider<RsfFilter>[] publicFilters() {
         return this.rsfFilter2.toArray(new Provider[this.rsfFilter2.size()]);
     }
+    //
+    /**查找一个Filter*/
     public <T extends RsfFilter> T findFilter(String filterID) {
         return (T) this.rsfFilter1.get(filterID).get();
     }
+    /**发布一个Filter*/
     public synchronized void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
         if (this.rsfFilter1.containsKey(filterID) == true) {
             throw new RepeateException("repeate filterID " + filterID);

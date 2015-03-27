@@ -29,5 +29,6 @@
 	<!-- 模块 -->
 	<modules>
 		<module>rsf-core</module>
+		<module>demo-rsf</module>
 	</modules>
 </project>

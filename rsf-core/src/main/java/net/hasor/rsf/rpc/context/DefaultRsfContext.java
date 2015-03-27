@@ -22,14 +22,10 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.adapter.AbstracAddressCenter;
-import net.hasor.rsf.adapter.AbstractBindCenter;
-import net.hasor.rsf.adapter.AbstractRequestManager;
-import net.hasor.rsf.adapter.AbstractRsfContext;
-import net.hasor.rsf.remoting.address.DefaultAddressCenter;
+import net.hasor.rsf.address.DefaultAddressCenter;
+import net.hasor.rsf.manager.ExecutesManager;
 import net.hasor.rsf.remoting.binder.DefaultBindCenter;
-import net.hasor.rsf.remoting.transport.customer.RsfRequestManager;
-import net.hasor.rsf.rpc.executes.ExecutesManager;
+import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
 import net.hasor.rsf.rpc.warp.InnerLocalWarpRsfFilter;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -39,14 +35,14 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfContext extends AbstractRsfContext {
-    private final AbstractBindCenter     bindCenter;
-    private final AbstracAddressCenter   addressCenter;
-    private final AbstractRequestManager requestManager;
+    private final DefaultBindCenter    bindCenter;
+    private final DefaultAddressCenter addressCenter;
+    private final RsfRequestManager    requestManager;
     //
-    private final SerializeFactory       serializeFactory;
-    private final ExecutesManager        executesManager;
-    private final EventLoopGroup         loopGroup;
-    private final RsfSettings            rsfSettings;
+    private final SerializeFactory     serializeFactory;
+    private final ExecutesManager      executesManager;
+    private final EventLoopGroup       loopGroup;
+    private final RsfSettings          rsfSettings;
     //
     //
     public DefaultRsfContext(Settings settings) throws IOException {
@@ -93,15 +89,15 @@ public class DefaultRsfContext extends AbstractRsfContext {
         return this.serializeFactory;
     }
     /**获取注册中心。*/
-    public AbstractBindCenter getBindCenter() {
+    public DefaultBindCenter getBindCenter() {
         return this.bindCenter;
     }
     /**获取注册中心。*/
-    public AbstracAddressCenter getAddressCenter() {
+    public DefaultAddressCenter getAddressCenter() {
         return this.addressCenter;
     }
     /**获取请求管理中心*/
-    public AbstractRequestManager getRequestManager() {
+    public RsfRequestManager getRequestManager() {
         return this.requestManager;
     }
     /**获取客户端*/

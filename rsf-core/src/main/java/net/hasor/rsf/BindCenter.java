@@ -32,4 +32,7 @@ public interface BindCenter {
     public <T> RsfBindInfo<T> getService(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
     public String[] getServiceNames();
+    //
+    /**回收已经发布的服务*/
+    public void recoverService(RsfBindInfo<?> bindInfo);
 }

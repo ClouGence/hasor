@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.remoting.transport.protocol.message;
 import net.hasor.rsf.constants.RSFConstants;
-import net.hasor.rsf.rpc.context.OptionManager;
+import net.hasor.rsf.manager.OptionManager;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
