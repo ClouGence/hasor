@@ -34,5 +34,6 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-quick</module>
+		<module>demo-hasor</module>
 	</modules>
 </project>

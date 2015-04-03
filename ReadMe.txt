@@ -1,7 +1,7 @@
 Hasor
 
-    Hasor 是一款轻量级Java应用程序开发框架。Hasor 的本质与 Struts,Hibernate 等单层框架不同，它的功能更小、更方便、功能更加集中。通过它的一个及其微小的核心扩展更多的插件。下面是Hasor已经具有的一些基本模块
-
+    Hasor 是一款轻量级Java应用程序开发框架。Hasor 的本质与 Struts,Hibernate 等单层框架不同，它的功能更小、更方便、功能更加集中。通过它的一个及其微小的核心扩展更多的插件。
+它包括了core、Web、DB、MVC、Test、Quick。几个部分。
 
 Core
 	Hasor的核心软件包，几乎所有Hasor扩展模块都会依赖到它。包含工具和 Hasor 两个部分。提供了：配置文件解析、事件、容器、IoC/Aop等核心功能。
