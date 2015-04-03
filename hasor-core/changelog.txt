@@ -1,4 +1,8 @@
-﻿===== Hasor-Core v0.0.10
+﻿===== Hasor-Core v0.0.11
+* 修复:
+    01.LoggerHelper,修复当多次调用log输出时产生堆栈溢出问题。
+
+===== Hasor-Core v0.0.10
 * 新增:
     01.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
     02.新增一个 ApiBinderWrap类。

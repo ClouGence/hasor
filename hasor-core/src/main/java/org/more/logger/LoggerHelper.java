@@ -77,7 +77,9 @@ public class LoggerHelper {
         StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
         StackTraceElement onCode = stackElements[3];
         Logger logger = Logger.getLogger(onCode.getClassName());
-        logger.setFilter(new CallerFilter(logger.getFilter(), onCode));
+        if (logger.getFilter() == null || logger.getFilter() instanceof CallerFilter == false) {
+            logger.setFilter(new CallerFilter(logger.getFilter(), onCode));
+        }
         return logger;
     }
     /**是否启用 Severe 级日志。*/
