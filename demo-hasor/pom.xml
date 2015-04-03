@@ -1,9 +1,14 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.hasor</groupId>
+		<artifactId>hasor-parent</artifactId>
+		<version>0.0.5</version>
+	</parent>
+
 	<groupId>net.hasor</groupId>
 	<artifactId>demo-Test</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 
 	<!-- 不进行 deploy -->
@@ -32,25 +37,30 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-web</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>0.0.8</version>
 		</dependency>
 		<!-- Hasor-Quick -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-quick</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- Hasor-DB -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-db</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3</version>
 		</dependency>
 		<!-- Hasor-Test -->
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-test</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
 		</dependency>
 
 
@@ -85,4 +95,8 @@
 		</dependency>
 		<!-- JDBC end -->
 	</dependencies>
+
+  <scm>
+    <tag>Release.Hasor-0.0.10</tag>
+  </scm>
 </project>

@@ -6,3 +6,4 @@ target
 *.iml
 .idea
 test-work
+bin

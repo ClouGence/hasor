@@ -1,5 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.hasor</groupId>
@@ -10,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-test</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
@@ -19,10 +18,11 @@
 
 	<!-- SCM -->
 	<scm>
-		<connection>         scm:git@git.oschina.net:zycgit/hasor.git</connection>
-		<developerConnection>scm:git@git.oschina.net:zycgit/hasor.git</developerConnection>
-		<url>                    git@git.oschina.net:zycgit/hasor.git</url>
-	</scm>
+		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
+		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
+		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
+	  <tag>Release.Hasor-0.0.10</tag>
+  </scm>
 
 	<developers>
 		<developer>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.10-SNAPSHOT</version>
+			<version>0.0.10</version>
 		</dependency>
 	</dependencies>
 </project>
