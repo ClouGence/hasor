@@ -12,6 +12,14 @@
 	<name>RSF-Parent</name>
 	<description>the parent pom for Hasor rsf project.</description>
 
+	<!-- SCM -->
+	<scm>
+		<connection>         scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
+		<developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
+		<url>                        git@git.oschina.net:zycgit/rsf.git</url>
+		<tag>project-rsf-0.0.1</tag>
+	</scm>
+
 	<!-- 不进行 deploy -->
 	<build>
 		<plugins>
