@@ -37,6 +37,7 @@ public class RandomFlowControl extends AbstractRule {
         this.random = new Random(System.currentTimeMillis());
     }
     //
+    /**使用随机规则选取备选地址中的一个地址。*/
     public InterAddress getServiceAddress(List<InterAddress> addresses) {
         if ((addresses == null) || (addresses.size() == 0)) {
             return null;
