@@ -20,18 +20,19 @@ import io.netty.util.concurrent.Future;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import net.hasor.rsf.address.InterAddress;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkConnection {
-    private URL               hostAddress;
+    private InterAddress      hostAddress;
     private InetSocketAddress remoteAddress = null;
     private InetSocketAddress localAddress  = null;
     private Channel           socketChanne  = null;
     //
-    private NetworkConnection(URL hostAddress, Channel socketChanne) throws MalformedURLException {
+    private NetworkConnection(InterAddress hostAddress, Channel socketChanne) throws MalformedURLException {
         this.hostAddress = hostAddress;
         this.socketChanne = socketChanne;
     }
@@ -75,7 +76,7 @@ public class NetworkConnection {
         return this.socketChanne;
     }
     /**获取远程主机地址*/
-    public URL getHostAddress() {
+    public InterAddress getHostAddress() {
         return this.hostAddress;
     }
     public String toString() {
@@ -90,7 +91,7 @@ public class NetworkConnection {
     public static NetworkConnection getConnection(Channel channel) {
         return channel.attr(NettyKey).get();
     }
-    public static void initConnection(URL hostAddress, Channel channel) throws MalformedURLException {
+    public static void initConnection(InterAddress hostAddress, Channel channel) throws MalformedURLException {
         channel.attr(NettyKey).set(new NetworkConnection(hostAddress, channel));
     }
 }

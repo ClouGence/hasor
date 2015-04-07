@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.flowcontrol.room;
+package net.hasor.rsf.route.flowcontrol.unit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.hasor.core.Settings;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.route.rule.AbstractRule;
+import org.more.util.StringUtils;
 /**
- * 机房流量控制规则，用来控制跨机房调用。
- * <pre>
+ * 机房流量控制规则，用来控制跨机房调用。<p>
+ * <pre>例：
  * 配置实例：
- * &lt;flowControl enable="true|false" type="LocalPreferred"&gt;
+ * &lt;flowControl enable="true|false" type="unit"&gt;
  *   &lt;threshold&gt;0.3&lt;/threshold&gt;
  *   &lt;exclusions&gt;172.23.*,172.19.*&lt;/exclusions&gt;
  * &lt;/flowControl&gt;
@@ -31,7 +34,7 @@ import net.hasor.rsf.route.rule.AbstractRule;
  * 但当本机房内的可用机器的数量占服务地址全部数量的比例小于0.3时，本机房优先调用策略失效，启用跨机房调用。
  * 该规则对以下网段的服务消费者不生效：172.23.*,172.19.*
  */
-public class RoomFlowControl extends AbstractRule {
+public class UnitFlowControl extends AbstractRule {
     private float        threshold;
     private List<String> exclusions;
     //
@@ -53,7 +56,7 @@ public class RoomFlowControl extends AbstractRule {
      * @param allAmount 所有可用地址数量
      * @param localAmount 本地机房地址数量
      */
-    public boolean isLocalPreferred(int allAmount, int localAmount) {
+    public boolean isLocalUnit(int allAmount, int localAmount) {
         if (localAmount == 0 || !this.enable()) {
             return false;
         }
@@ -64,4 +67,17 @@ public class RoomFlowControl extends AbstractRule {
         return false;
     }
     //
+    /**筛选本机房地址*/
+    public List<InterAddress> siftUnitAddress(String unitName, List<InterAddress> address) {
+        if (address == null || address.isEmpty())
+            return null;
+        //
+        List<InterAddress> local = new ArrayList<InterAddress>();
+        for (InterAddress inter : address) {
+            if (StringUtils.equalsBlankIgnoreCase(inter.getFormUnit(), unitName)) {
+                local.add(inter);
+            }
+        }
+        return local;
+    }
 }

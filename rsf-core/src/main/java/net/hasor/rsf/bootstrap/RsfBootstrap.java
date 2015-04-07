@@ -24,19 +24,18 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
 import net.hasor.rsf.remoting.transport.netty.RSFCodec;
 import net.hasor.rsf.remoting.transport.provider.RsfProviderHandler;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.utils.NameThreadFactory;
-import net.hasor.rsf.utils.URLUtils;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
@@ -128,7 +127,7 @@ public class RsfBootstrap {
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
         LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
         //Netty
-        final URL hostAddress = URLUtils.toURL(localAddress.getHostAddress(), bindSocket);
+        final InterAddress hostAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "local");
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(bossGroup, rsfContext.getLoopGroup());

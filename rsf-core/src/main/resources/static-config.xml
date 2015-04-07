@@ -6,32 +6,27 @@
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- Hasor-RSF 专用 -->
 		<rsfConfig address="local" port="8000">
+			<!--用于更新服务列表的配置服务器
+					如果配置 loadType = auto，表示从现有网络上自动发现。
+					如果配置 loadType = host，表示从指定的服务器上获取更新（60秒）
+			-->
+			<configServer loadType="auto" address="local" port="8000" interval="60000" />
 
-			<!--
-				用于设置默认情况下RSF服务的一些基本信息。
+			<!--用于设置默认情况下RSF服务的一些基本信息。
 					version = 在未指定注册服务的版本信息时使用下面这个配置。
 					group   = 在未指定注册服务的分组信息时使用下面这个配置。
 					timeout = 在未指定注册服务的超时时间情况下使用下面这个配置。
 			-->
 			<defaultServiceValue version="1.0.0" group="RSF" timeout="6000"/>
 
-			<!--
-				用于更新服务列表的配置服务器
-					如果配置 loadType = auto，表示从现有网络上自动发现。
-					如果配置 loadType = host，表示从指定的服务器上获取更新（60秒）
-			-->
-			<configServer loadType="auto" address="local" port="8000" interval="60000" />
-
-			<!--
-				通用配置
+			<!--通用配置
 					defaultTimeout	客户端请求超时时间
 					maximumRequest	最大并发请求数
 					sendLimitPolicy	并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
 			-->
 			<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject"/>
 
-			<!--
-				处理队列配置（用于配置ExecutesManager）
+			<!--处理队列配置（用于配置ExecutesManager）
 					maxSize
 						处理任务队列的最小大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。
 					minPoolSize
@@ -43,8 +38,7 @@
 			-->
 			<queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300" />
 
-			<!--
-				网络数据包线程配置（）
+			<!--网络数据包线程配置
 					workerThread	处理网络IO数据包的线程数。
 					listenThread	处理网络监听请求的线程数。
 			-->
@@ -71,6 +65,14 @@
 				<!-- BlackHole-黑洞序列化 -->
 				<serialize name="BlackHole">net.hasor.rsf.serialize.coder.BlackHoleSerializeCoder</serialize>
 			</serializeType>
+
+			<!-- 流控 & 路由规则 -->
+			<route.flowcontrol>
+				<random>net.hasor.rsf.route.flowcontrol.random.RandomFlowControl</random>
+				<speed>net.hasor.rsf.route.flowcontrol.speed.SpeedFlowControl</speed>
+				<network>net.hasor.rsf.route.flowcontrol.network.NetworkFlowControl</network>
+				<unit>net.hasor.rsf.route.flowcontrol.unit.UnitFlowControl</unit>
+			</route.flowcontrol>
 		</rsfConfig>
 	</hasor>
 </config>

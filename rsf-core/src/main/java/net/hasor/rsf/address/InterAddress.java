@@ -28,11 +28,12 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterAddress {
-    public static final String SECHMA      = "rsf";
-    private String             formUnit    = null; //所属单元
-    private String             hostAddress = null; //地址
-    private int                hostPort    = 8000; //端口
-    private URI                uriFormat   = null;
+    public static final String SECHMA          = "rsf";
+    private String             formUnit        = null; //所属单元
+    private String             hostAddress     = null; //地址
+    private int                hostAddressData = 0;    //地址数值表现形式
+    private int                hostPort        = 8000; //端口
+    private URI                uriFormat       = null;
     //
     public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
@@ -49,12 +50,24 @@ public class InterAddress {
             formPath = formPath.substring(1);
         }
         this.formUnit = formPath.split("/")[0];
+        this.initIP(this.hostAddress);
     }
     public InterAddress(String hostAddress, int hostPort, String formUnit) throws URISyntaxException {
         this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
         this.hostPort = hostPort;
         this.formUnit = Hasor.assertIsNotNull(formUnit, "formUnit is null.");
         this.uriFormat = this.createURL();
+        this.initIP(this.hostAddress);
+    }
+    private void initIP(String hostIP) {
+        int ipInt = 0;
+        String[] ipParts = hostIP.split("\\.");
+        for (int i = 0; i < ipParts.length; i++) {
+            int ipPartData = Integer.parseInt(ipParts[i]);
+            ipInt = ipInt | (ipPartData << ((3 - i) * 8));
+        }
+        //
+        this.hostAddressData = ipInt;
     }
     //
     /** @return 地址*/
@@ -68,6 +81,10 @@ public class InterAddress {
     /** @return 所属单元*/
     public String getFormUnit() {
         return this.formUnit;
+    }
+    /** @return 获取IP的int值*/
+    public int getHostAddressData() {
+        return this.hostAddressData;
     }
     /**
      * 两个 Address 可以比较是否相等

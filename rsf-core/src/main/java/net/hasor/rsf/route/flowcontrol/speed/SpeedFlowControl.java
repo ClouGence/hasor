@@ -58,6 +58,7 @@ public class SpeedFlowControl extends AbstractRule {
         if (!this.enable()) {
             return;
         }
+        LoggerHelper.logConfig("init default QoS.");
         QoSBucket qosBucket = this.createQoSBucket();
         if (!qosBucket.validate()) {
             this.enable(false);
@@ -88,15 +89,14 @@ public class SpeedFlowControl extends AbstractRule {
         QoSBucket qos = this.qosBucketMap.get(key);
         if (qos == null) {
             qos = this.qosBucketMap.putIfAbsent(key, this.createQoSBucket());
+            qos = this.qosBucketMap.get(key);
         }
         return qos.check();
     }
     //
     protected QoSBucket createQoSBucket() {
-        QoSBucket defaultQoSBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
-        if (!this.defaultQoSBucket.validate()) {
-            LoggerHelper.logConfig("QoS config validate fail. -> %s", this.defaultQoSBucket);
-        }
-        return defaultQoSBucket;
+        QoSBucket qosBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
+        LoggerHelper.logConfig("create Qos at %s", qosBucket);
+        return qosBucket;
     }
 }

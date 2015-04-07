@@ -57,7 +57,7 @@ public class AddressBucketTest {
         int i=1000;
         while (true) {
             try { Thread.sleep(10); } catch (InterruptedException e) { }
-            List<InterAddress> localList = bucket.getLocalAddresses();
+            List<InterAddress> localList = bucket.getLocalUnitAddresses();
             List<InterAddress> availList = bucket.getAvailableAddresses();
             i++;
             if (i<1000){

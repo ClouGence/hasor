@@ -19,14 +19,16 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import net.hasor.rsf.route.flowcontrol.room.RoomFlowControl;
+import net.hasor.rsf.route.flowcontrol.network.NetworkFlowControl;
+import net.hasor.rsf.route.flowcontrol.unit.UnitFlowControl;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
  * <ol>
- *  <li>本地服务地址</li>
+ *  <li>同单元服务地址</li>
+ *  <li>同一网络服务地址</li>
  *  <li>有效服务地址</li>
  *  <li>不可用服务地址</li>
  *  <li>全部服务地址</li>
@@ -42,18 +44,21 @@ public class AddressBucket {
     private final String                       unitName;          //服务所属单元
     private final List<InterAddress>           allAddressList;    //所有备选地址
     private CopyOnWriteArrayList<InterAddress> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
-    private RoomFlowControl                    roomFlowControl;   //机房流控规则
+    private NetworkFlowControl                 networkFlowControl; //机房流控规则(路由)
+    private UnitFlowControl                    unitFlowControl;   //机房流控规则(单元划分)
     //
     //计算的可用地址
-    private List<InterAddress>                 localAddresses;    //本地单元地址
+    private List<InterAddress>                 localUnitAddresses; //本单元地址
+    private List<InterAddress>                 localNetAddresses; //同网段地址
     private List<InterAddress>                 availableAddresses; //所有可用地址（包括本地单元）
     //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
         this.allAddressList = new ArrayList<InterAddress>();
-        this.localAddresses = new ArrayList<InterAddress>();
         this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
+        this.localUnitAddresses = new ArrayList<InterAddress>();
+        this.localNetAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
     }
     //
@@ -69,9 +74,13 @@ public class AddressBucket {
     public synchronized List<InterAddress> getInvalidAddresses() {
         return new ArrayList<InterAddress>(invalidAddresses);
     }
-    /**获取计算之后本地地址。*/
-    public synchronized List<InterAddress> getLocalAddresses() {
-        return new ArrayList<InterAddress>(localAddresses);
+    /**获取计算之后同一单元地址。*/
+    public synchronized List<InterAddress> getLocalUnitAddresses() {
+        return this.localUnitAddresses;
+    }
+    /**获取计算之后同一网段地址。*/
+    public synchronized List<InterAddress> getLocalNetAddresses() {
+        return this.localNetAddresses;
     }
     //
     /**新增地址支持动态新增*/
@@ -126,11 +135,25 @@ public class AddressBucket {
         }
     }
     //
+    /**设置新单元流控规则*/
+    public void setUnitFlowControl(UnitFlowControl unitFlowControl) {
+        synchronized (this) {
+            this.unitFlowControl = unitFlowControl;
+            refreshAvailableAddress();
+        }
+    }
+    /**设置新网络流控规则*/
+    public void setNetworkFlowControl(NetworkFlowControl networkFlowControl) {
+        synchronized (this) {
+            this.networkFlowControl = networkFlowControl;
+            refreshAvailableAddress();
+        }
+    }
+    //
     /**刷新地址*/
     private void refreshAvailableAddress() {
         //
-        //同时计算出：本地地址、有效的地址。
-        List<InterAddress> localList = new ArrayList<InterAddress>();
+        //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();
         for (InterAddress addressInfo : this.allAddressList) {
             boolean doAdd = true;
@@ -140,23 +163,37 @@ public class AddressBucket {
                     break;
                 }
             }
-            //
-            availableList.add(addressInfo);//有效的
-            if (doAdd && StringUtils.equalsBlankIgnoreCase(unitName, addressInfo.getFormUnit())) {
-                localList.add(addressInfo);//本地的
+            if (doAdd) {
+                availableList.add(addressInfo);//有效的
             }
         }
         //
-        if (this.roomFlowControl != null) {
-            boolean enableLocal = roomFlowControl.isLocalPreferred(availableList.size(), localList.size());
-            if (!enableLocal) {
-                localList = availableList;
+        //2.机房单元化过滤
+        List<InterAddress> unitList = availableList;
+        if (this.unitFlowControl != null) {
+            unitList = this.unitFlowControl.siftUnitAddress(unitName, availableList);
+            if (unitList == null || unitList.isEmpty()) {
+                unitList = availableList;
             }
-        } else {
-            localList = availableList;
+            if (this.unitFlowControl.isLocalUnit(availableList.size(), unitList.size()) == false) {
+                unitList = availableList;
+            }
         }
         //
-        this.localAddresses = localList;
+        //3.网段过滤
+        List<InterAddress> networkList = availableList;
+        if (this.networkFlowControl != null) {
+            networkList = this.networkFlowControl.siftNetworkAddress(availableList);
+            if (networkList == null || networkList.isEmpty()) {
+                networkList = availableList;
+            }
+            if (this.networkFlowControl.isLocalNetwork(availableList.size(), networkList.size()) == false) {
+                unitList = availableList;
+            }
+        }
+        //
         this.availableAddresses = availableList;
+        this.localNetAddresses = networkList;
+        this.localUnitAddresses = unitList;
     }
 }
