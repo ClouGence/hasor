@@ -14,64 +14,91 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.net.URL;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import net.hasor.rsf.route.flowcontrol.room.RoomFlowControl;
+import org.more.logger.LoggerHelper;
+import org.more.util.StringUtils;
 /**
- * 服务地址管理，所有服务地址的进一步处理都需要通过地址路由处理。
- * 用于接收地址更新同时也用来计算有效和无效地址。
+ * 描述：用于接收地址更新同时也用来计算有效和无效地址。
+ * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
+ * <ol>
+ *  <li>本地服务地址</li>
+ *  <li>有效服务地址</li>
+ *  <li>不可用服务地址</li>
+ *  <li>全部服务地址</li>
+ * </ol>
+ * 所有对服务地址的进一 步处理都需要使用{@link #getAvailableAddresses()}获得的地址列表。
+ * 如果应用了本地机房策略，则本地
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket {
     //原始数据
-    private final String                      serviceID;         //服务ID
-    private final String                      unitName;          //服务所属单元
-    private final List<AddressInfo>           allAddressList;    //所有备选地址
-    private CopyOnWriteArrayList<AddressInfo> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
+    private final String                       serviceID;         //服务ID
+    private final String                       unitName;          //服务所属单元
+    private final List<InterAddress>           allAddressList;    //所有备选地址
+    private CopyOnWriteArrayList<InterAddress> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
+    private RoomFlowControl                    roomFlowControl;   //机房流控规则
     //
     //计算的可用地址
-    private List<AddressInfo>                 localAddresses;    //本地单元地址
-    private List<AddressInfo>                 availableAddresses; //所有可用地址（包括本地单元）
+    private List<InterAddress>                 localAddresses;    //本地单元地址
+    private List<InterAddress>                 availableAddresses; //所有可用地址（包括本地单元）
     //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
-        this.allAddressList = new ArrayList<AddressInfo>();
-        this.localAddresses = new ArrayList<AddressInfo>();
-        this.invalidAddresses = new CopyOnWriteArrayList<AddressInfo>();
-        this.availableAddresses = new ArrayList<AddressInfo>();
+        this.allAddressList = new ArrayList<InterAddress>();
+        this.localAddresses = new ArrayList<InterAddress>();
+        this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
+        this.availableAddresses = new ArrayList<InterAddress>();
     }
     //
+    /**获取所有地址（包括本地的和无效的）。*/
+    public synchronized List<InterAddress> getAllAddresses() {
+        return new ArrayList<InterAddress>(this.allAddressList);
+    }
     /**获取计算之后可用的地址。*/
-    public synchronized List<AddressInfo> getAvailableAddresses() {
-        return new ArrayList<AddressInfo>(availableAddresses);
+    public synchronized List<InterAddress> getAvailableAddresses() {
+        return new ArrayList<InterAddress>(availableAddresses);
     }
     /**失效地址。*/
-    public synchronized List<AddressInfo> getInvalidAddresses() {
-        return new ArrayList<AddressInfo>(invalidAddresses);
+    public synchronized List<InterAddress> getInvalidAddresses() {
+        return new ArrayList<InterAddress>(invalidAddresses);
     }
     /**获取计算之后本地地址。*/
-    public synchronized List<AddressInfo> getLocalAddresses() {
-        return new ArrayList<AddressInfo>(localAddresses);
+    public synchronized List<InterAddress> getLocalAddresses() {
+        return new ArrayList<InterAddress>(localAddresses);
     }
     //
     /**新增地址支持动态新增*/
-    public void newAddress(List<URL> hostAddress) {
-        if (hostAddress == null || hostAddress.isEmpty()) {
+    public void newAddress(List<URI> newHostList) throws MalformedURLException {
+        if (newHostList == null || newHostList.isEmpty()) {
             return;
         }
         //
-        ArrayList<AddressInfo> newAddress = new ArrayList<AddressInfo>();
-        for (URL newURLs : hostAddress) {
-            for (AddressInfo hasAddress : this.allAddressList) {
-                if (hasAddress.equals(newURLs) == true) {
-                    continue;
+        List<InterAddress> newAddress = new ArrayList<InterAddress>();
+        for (URI hostURI : newHostList) {
+            boolean doAdd = true;
+            InterAddress newHost = null;
+            try {
+                newHost = new InterAddress(hostURI);
+                for (InterAddress hasAddress : this.allAddressList) {
+                    if (newHost.equals(hasAddress) == true) {
+                        doAdd = false;
+                        break;
+                    }
                 }
+            } catch (Throwable e) {
+                LoggerHelper.logSevere("%s append new host '%s' format error.", serviceID, hostURI);
             }
-            AddressInfo address = new AddressInfo(newURLs.getHost(), newURLs.getPort());
-            newAddress.add(address);
+            //
+            if (doAdd) {
+                newAddress.add(newHost);
+            }
         }
         //
         this.allAddressList.addAll(newAddress);
@@ -79,77 +106,57 @@ public class AddressBucket {
     }
     //
     /**将地址置为失效的。*/
-    public void invalidAddress(AddressInfo hostAddress) {
-        if (this.invalidAddresses.addIfAbsent(hostAddress)) {
-            synchronized (this) {
-                refreshAvailableAddress();
+    public void invalidAddress(URI newInvalid) {
+        for (InterAddress invalid : this.invalidAddresses) {
+            String strInvalid = invalid.toString();
+            String strInvalidNew = newInvalid.toString();
+            if (StringUtils.equalsBlankIgnoreCase(strInvalid, strInvalidNew)) {
+                return;
             }
+        }
+        try {
+            InterAddress invalid = new InterAddress(newInvalid);
+            if (this.invalidAddresses.addIfAbsent(invalid)) {
+                synchronized (this) {
+                    refreshAvailableAddress();
+                }
+            }
+        } catch (Exception e) {
+            LoggerHelper.logWarn("invalid Address error.", e);
         }
     }
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
         //
-        //从全部地址中筛选本地地址，同时剔除掉无效的地址。
-        List<AddressInfo>   newLocalAddresses=new ArrayList<AddressInfo>();
-        for (AddressInfo addressInfo :this.allAddressList){
-            boolean doAdd=false;
-            for (AddressInfo invalid :this.invalidAddresses){
-                if (addressInfo.equals(invalid)){
-                    doAdd=true;
+        //同时计算出：本地地址、有效的地址。
+        List<InterAddress> localList = new ArrayList<InterAddress>();
+        List<InterAddress> availableList = new ArrayList<InterAddress>();
+        for (InterAddress addressInfo : this.allAddressList) {
+            boolean doAdd = true;
+            for (InterAddress invalid : this.invalidAddresses) {
+                if (addressInfo.equals(invalid)) {
+                    doAdd = false;
                     break;
                 }
             }
-            if (doAdd){
-                newLocalAddresses.add(addressInfo);
+            //
+            availableList.add(addressInfo);//有效的
+            if (doAdd && StringUtils.equalsBlankIgnoreCase(unitName, addressInfo.getFormUnit())) {
+                localList.add(addressInfo);//本地的
             }
         }
-        
-        
         //
-        //从全部地址中剔除无效的地址。
-        
-        
-        try {
-            int index = activeHostAddressList.indexOf(hostAddress);
-            if (index<0){
-                return;
+        if (this.roomFlowControl != null) {
+            boolean enableLocal = roomFlowControl.isLocalPreferred(availableList.size(), localList.size());
+            if (!enableLocal) {
+                localList = availableList;
             }
-            ArrayList<AddressInfo> activeSnapshot = new ArrayList<AddressInfo>(this.activeHostAddressList);
-            for (AddressInfo active: activeSnapshot ){
-                if (active.equals(hostAddress)){
-                    
-                }
-                refreshAvailableAddress
-                activeSnapshot.
-                activeHostAddressList.remove(index);
-
-            }
-            
-            
-            //invalidHostAddressList
-            int index = this.hostAddressList.indexOf(hostAddress);
-            if (index > -1) {
-                AddressInfo add = this.hostAddressList.get(index);
-                add.removeListener(this);
-                this.hostAddressList.remove(index);
-            }
-        } finally {
-            lock.unlock();
+        } else {
+            localList = availableList;
         }
-    }
-    /** 从列表中去掉invalid address */
-    private List<String> getAvailableAddresses(final List<String> addresses) {
-        List<String> result = new ArrayList<String>();
-        if (this.invalidAddresses.isEmpty()) {
-            result.addAll(addresses);
-            return result;
-        }
-        for (String address : addresses) {
-            if (this.invalidAddresses.contains(address) == false) {
-                result.add(address);
-            }
-        }
-        return result;
+        //
+        this.localAddresses = localList;
+        this.availableAddresses = availableList;
     }
 }

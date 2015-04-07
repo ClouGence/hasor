@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import net.hasor.rsf.manager.ComfitManager;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 /**
  * 
- * @version : 2015年3月28日
+ * @version : 2015年4月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressManager extends ComfitManager<AddressInfo> {
-    
-    
-    
-    
-    
-    
+public class RsfURLStreamHandler extends URLStreamHandler {
+    protected URLConnection openConnection(URL url) throws IOException {
+        throw new UnsupportedOperationException("Method not implemented.");
+    }
 }

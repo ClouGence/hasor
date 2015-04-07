@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import net.hasor.rsf.RsfBindInfo;
+package net.hasor.rsf.route.flowcontrol.speed;
 /**
- * 地址管理中心，负责维护服务的远程服务提供者列表。
- * （线程安全）
- * @version : 2014年12月15日
+ * 
+ * @version : 2015年4月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultAddressCenter {s}
+public enum QoSActionEnum {
+    Service, Method, Address
+}
