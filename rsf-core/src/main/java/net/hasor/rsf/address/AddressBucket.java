@@ -46,20 +46,35 @@ public class AddressBucket {
     private CopyOnWriteArrayList<InterAddress> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
     private NetworkFlowControl                 networkFlowControl; //机房流控规则(路由)
     private UnitFlowControl                    unitFlowControl;   //机房流控规则(单元划分)
+    private final AddressPool                  forAddressPool;
     //
     //计算的可用地址
     private List<InterAddress>                 localUnitAddresses; //本单元地址
     private List<InterAddress>                 localNetAddresses; //同网段地址
     private List<InterAddress>                 availableAddresses; //所有可用地址（包括本地单元）
     //
+    //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
+        this.forAddressPool = null;
         this.allAddressList = new ArrayList<InterAddress>();
         this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
         this.localNetAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
+        this.refreshAddress();
+    }
+    public AddressBucket(String serviceID, AddressPool forAddressPool) {
+        this.serviceID = serviceID;
+        this.unitName = forAddressPool.getUnitName();
+        this.forAddressPool = forAddressPool;
+        this.allAddressList = new ArrayList<InterAddress>();
+        this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
+        this.localUnitAddresses = new ArrayList<InterAddress>();
+        this.localNetAddresses = new ArrayList<InterAddress>();
+        this.availableAddresses = new ArrayList<InterAddress>();
+        this.refreshAddress();
     }
     //
     /**获取所有地址（包括本地的和无效的）。*/
@@ -86,6 +101,7 @@ public class AddressBucket {
     /**新增地址支持动态新增*/
     public void newAddress(List<URI> newHostList) throws MalformedURLException {
         if (newHostList == null || newHostList.isEmpty()) {
+            LoggerHelper.logSevere("%s - newHostList is empty.", serviceID);
             return;
         }
         //
@@ -134,24 +150,19 @@ public class AddressBucket {
             LoggerHelper.logWarn("invalid Address error.", e);
         }
     }
-    //
-    /**设置新单元流控规则*/
-    public void setUnitFlowControl(UnitFlowControl unitFlowControl) {
+    /**强制刷新地址计算结果*/
+    public void refreshAddress() {
         synchronized (this) {
-            this.unitFlowControl = unitFlowControl;
-            refreshAvailableAddress();
-        }
-    }
-    /**设置新网络流控规则*/
-    public void setNetworkFlowControl(NetworkFlowControl networkFlowControl) {
-        synchronized (this) {
-            this.networkFlowControl = networkFlowControl;
             refreshAvailableAddress();
         }
     }
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
+        if (this.forAddressPool != null) {
+            this.networkFlowControl = this.forAddressPool.getNetworkFlowControl();
+            this.unitFlowControl = this.forAddressPool.getUnitFlowControl();
+        }
         //
         //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();

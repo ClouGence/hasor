@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.manager;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,4 +27,4 @@ import net.hasor.rsf.RsfBindInfo;
  * @version : 2014年12月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultAddressCenter {s}
+public class AddressManager {s}

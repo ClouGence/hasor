@@ -13,16 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address.route.rule;
-import java.lang.reflect.Method;
+package net.hasor.rsf.address;
 import java.util.List;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.address.InterAddress;
 /**
  * 路由计算结果缓存
  * @version : 2015年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RulerCacheResult {
-    public List<InterAddress> getAddressList(RsfBindInfo<?> info, Method doCallMethod, Object[] args);
+class AddressCacheResult {
+    private final AddressPool addressPool;
+    public AddressCacheResult(AddressPool addressPool) {
+        this.addressPool = addressPool;
+    }
+    //
+    /**从全部地址中计算执行动态计算并缓存计算结果.*/
+    public List<InterAddress> getAddressList(RsfBindInfo<?> info, String methodSign, Object[] args) {
+        //        addressPool.
+        //        
+        //        bucket.getAvailableAddresses();
+        //        bucket.getAvailableAddresses();
+        return null;
+    }
+    /**重置缓存结果*/
+    public void reset() {
+        
+        
+        
+        
+        
+        return;
+    }
 }

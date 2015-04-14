@@ -15,7 +15,6 @@
  */
 package test.net.hasor.rsf.address.route.flowcontrol;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,13 +94,13 @@ public class FlowControlTest {
         //
         SpeedFlowControl rule = (SpeedFlowControl) ruleParser.ruleSettings(speedBody);
         InterAddress doCallAddress = addressList().get(0);
-        Method m = FlowControlTest.class.getMethods()[0];
+        String m = FlowControlTest.class.getMethods()[0].toString();
         RsfBindInfo<?> info = new ServiceDomain<FlowControlTest>(FlowControlTest.class);
         //
         int run = 0;
         long startTime = System.currentTimeMillis() / 1000;
         Thread.sleep(1000);
-        for (int i = 0; i < 500000; i++) {
+        for (int i = 0; i < 300000; i++) {
             if (rule.callCheck(info, m, doCallAddress) == true) {
                 run++;
                 long checkTime = System.currentTimeMillis() / 1000;

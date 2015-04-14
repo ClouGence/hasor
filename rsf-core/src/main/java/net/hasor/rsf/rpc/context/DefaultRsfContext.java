@@ -22,7 +22,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.address.DefaultAddressCenter;
+import net.hasor.rsf.manager.DefaultAddressCenter;
 import net.hasor.rsf.manager.ExecutesManager;
 import net.hasor.rsf.remoting.binder.DefaultBindCenter;
 import net.hasor.rsf.rpc.client.RsfRequestManager;

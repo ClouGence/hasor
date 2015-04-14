@@ -27,6 +27,7 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.more.logger.LoggerHelper;
+import org.more.util.MatchUtils;
 import org.more.util.StringUtils;
 /**
  * 跨路由调用流量控制规则，用来控制跨路由调用。<p>
@@ -52,9 +53,8 @@ import org.more.util.StringUtils;
  * <p>需要JDK1.8以上,原因低版本JDK在获取子网掩码时存在缺陷.
  */
 public class NetworkFlowControl extends AbstractRule {
-    public static final String TYPE = "network";
-    private float              threshold;
-    private List<String>       exclusions;
+    private float        threshold;
+    private List<String> exclusions;
     //
     public void paserControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
@@ -66,7 +66,7 @@ public class NetworkFlowControl extends AbstractRule {
         if (StringUtils.isBlank(version) || version.matches("1\\.8\\..*") == false) {
             if (this.enable()) {
                 this.enable(false);
-                LoggerHelper.logWarn("please replace the JDK 1.8+");
+                LoggerHelper.logWarn("init NetworkFlowControl fail. please replace the JDK 1.8+");
             }
         }
     }
@@ -100,12 +100,32 @@ public class NetworkFlowControl extends AbstractRule {
             return null;
         //
         List<InterAddress> local = new ArrayList<InterAddress>();
+        List<String> exclusions = getExclusions();
         for (InterAddress inter : address) {
-            for (Integer netID : networkIDs) {
-                int ipData = inter.getHostAddressData();
-                if (ipData == (ipData | netID)) {
-                    local.add(inter);
+            boolean appendMark = false;
+            //A.如果位于规则排除名单中,则直接标记appendMark为 true
+            if (exclusions != null && exclusions.isEmpty() == false) {
+                String hostIP = inter.getHostAddress();
+                for (String ipPattern : exclusions) {
+                    if (MatchUtils.matchWild(ipPattern, hostIP)) {
+                        appendMark = true;
+                        break;
+                    }
                 }
+            }
+            //B.如果匹配规则,则直接标记appendMark为 true
+            if (appendMark == false) {
+                for (Integer netID : networkIDs) {
+                    int ipData = inter.getHostAddressData();
+                    if (ipData == (ipData | netID)) {
+                        appendMark = true;
+                        break;
+                    }
+                }
+            }
+            //
+            if (appendMark) {
+                local.add(inter);
             }
         }
         return local;

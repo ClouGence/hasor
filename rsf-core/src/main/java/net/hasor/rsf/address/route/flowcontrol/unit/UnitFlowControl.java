@@ -20,6 +20,7 @@ import java.util.List;
 import net.hasor.core.Settings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
+import org.more.util.MatchUtils;
 import org.more.util.StringUtils;
 /**
  * 单元流量控制规则，用来控制跨单元调用。<p>
@@ -35,9 +36,8 @@ import org.more.util.StringUtils;
  * 该规则对以下网段的服务消费者不生效：172.23.*,172.19.*
  */
 public class UnitFlowControl extends AbstractRule {
-    public static final String TYPE = "unit";
-    private float              threshold;
-    private List<String>       exclusions;
+    private float        threshold;
+    private List<String> exclusions;
     //
     public void paserControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
@@ -74,8 +74,25 @@ public class UnitFlowControl extends AbstractRule {
             return null;
         //
         List<InterAddress> local = new ArrayList<InterAddress>();
+        List<String> exclusions = getExclusions();
         for (InterAddress inter : address) {
-            if (StringUtils.equalsBlankIgnoreCase(inter.getFormUnit(), unitName)) {
+            boolean appendMark = false;
+            //A.如果位于规则排除名单中,则直接标记appendMark为 true
+            if (exclusions != null && exclusions.isEmpty() == false) {
+                String hostIP = inter.getHostAddress();
+                for (String ipPattern : exclusions) {
+                    if (MatchUtils.matchWild(ipPattern, hostIP)) {
+                        appendMark = true;
+                        break;
+                    }
+                }
+            }
+            //B.如果匹配规则,则直接标记appendMark为 true
+            if (appendMark == false) {
+                appendMark = StringUtils.equalsBlankIgnoreCase(inter.getFormUnit(), unitName);
+            }
+            //
+            if (appendMark) {
                 local.add(inter);
             }
         }

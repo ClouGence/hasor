@@ -6,11 +6,8 @@
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- Hasor-RSF 专用 -->
 		<rsfConfig address="local" port="8000">
-			<!--用于更新服务列表的配置服务器
-					如果配置 loadType = auto，表示从现有网络上自动发现。
-					如果配置 loadType = host，表示从指定的服务器上获取更新（60秒）
-			-->
-			<configServer loadType="auto" address="local" port="8000" interval="60000" />
+			<!--用于更新服务列表的配置服务器 -->
+			<!-- <configServer loadType="auto" address="local" port="8000" interval="60000" /> -->
 
 			<!--用于设置默认情况下RSF服务的一些基本信息。
 					version = 在未指定注册服务的版本信息时使用下面这个配置。
@@ -66,12 +63,20 @@
 				<serialize name="BlackHole">net.hasor.rsf.serialize.coder.BlackHoleSerializeCoder</serialize>
 			</serializeType>
 
+			<!-- 默认QoS流控规则,该配置仅当没有配置任何QoS规则时才启用 -->
+			<defaultSpeedFlowControl>
+				<action>service</action>    <!-- 速率控制方式：每服务、每方法、每地址 -->
+				<rate>20</rate>             <!-- 稳态速率 -->
+				<peak>100</peak>            <!-- 峰值速率 -->
+				<timeWindow>10</timeWindow> <!-- 时间窗口 -->
+			</defaultSpeedFlowControl>
+
 			<!-- 流控 & 路由规则 -->
 			<route.flowcontrol>
-				<random>net.hasor.rsf.route.flowcontrol.random.RandomFlowControl</random>
-				<speed>net.hasor.rsf.route.flowcontrol.speed.SpeedFlowControl</speed>
-				<network>net.hasor.rsf.route.flowcontrol.network.NetworkFlowControl</network>
-				<unit>net.hasor.rsf.route.flowcontrol.unit.UnitFlowControl</unit>
+				<random>net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl</random>
+				<speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
+				<network>net.hasor.rsf.address.route.flowcontrol.network.NetworkFlowControl</network>
+				<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
 			</route.flowcontrol>
 		</rsfConfig>
 	</hasor>

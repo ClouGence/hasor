@@ -30,8 +30,7 @@ import net.hasor.rsf.address.route.rule.AbstractRule;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RandomFlowControl extends AbstractRule {
-    public static final String TYPE   = "random";
-    private Random             random = new Random();
+    private Random random = new Random();
     //
     @Override
     public void paserControl(Settings settings) {

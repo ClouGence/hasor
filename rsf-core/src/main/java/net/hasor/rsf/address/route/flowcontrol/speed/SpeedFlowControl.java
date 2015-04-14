@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.flowcontrol.speed;
-import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
 import org.more.logger.LoggerHelper;
@@ -36,7 +36,6 @@ import org.more.logger.LoggerHelper;
  * 解释：根据action的配置决定RPC调用速率。
  */
 public class SpeedFlowControl extends AbstractRule {
-    public static final String               TYPE       = "speed";
     private QoSActionEnum                    action;
     private int                              rate       = 20;
     private int                              peak       = 200;
@@ -69,7 +68,7 @@ public class SpeedFlowControl extends AbstractRule {
         defaultQoSBucket = qosBucket;
     }
     //
-    public boolean callCheck(RsfBindInfo<?> info, Method m, InterAddress doCallAddress) {
+    public boolean callCheck(RsfBindInfo<?> info, String methodSign, InterAddress doCallAddress) {
         if (!this.enable()) {
             return true;
         }
@@ -80,7 +79,7 @@ public class SpeedFlowControl extends AbstractRule {
             key = doCallAddress.toString();
             break;
         case Method:
-            key = m.toString();
+            key = methodSign;
             break;
         case Service:
             key = info.getBindID();
@@ -99,5 +98,14 @@ public class SpeedFlowControl extends AbstractRule {
         QoSBucket qosBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
         LoggerHelper.logConfig("create Qos at %s", qosBucket);
         return qosBucket;
+    }
+    //
+    public static SpeedFlowControl defaultControl(RsfSettings rsfSettings) {
+        SpeedFlowControl flowControl = new SpeedFlowControl();
+        flowControl.action = rsfSettings.getEnum("hasor.rsfConfig.defaultSpeedFlowControl.action", QoSActionEnum.class);
+        flowControl.rate = rsfSettings.getInteger("hasor.rsfConfig.defaultSpeedFlowControl.rate");
+        flowControl.peak = rsfSettings.getInteger("hasor.rsfConfig.defaultSpeedFlowControl.peak");
+        flowControl.timeWindow = rsfSettings.getInteger("hasor.rsfConfig.defaultSpeedFlowControl.timeWindow");
+        return flowControl;
     }
 }

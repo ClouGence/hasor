@@ -36,6 +36,9 @@ public class QosTest {
                 long checkTime = System.currentTimeMillis() / 1000;
                 System.out.println("Count:" + i + "\tSpeed(s):" + (i / (checkTime - startTime)));
             }
+            if (i == 300) {
+                break;
+            }
         }
     }
 }

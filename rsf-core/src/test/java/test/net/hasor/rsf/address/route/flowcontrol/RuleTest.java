@@ -47,9 +47,9 @@ public class RuleTest {
     @Test
     public void roomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("room-flow.xml"));
+        String unitBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("unit-flow.xml"));
         //
-        Rule rule = ruleParser.ruleSettings(roomBody);
+        Rule rule = ruleParser.ruleSettings(unitBody);
         System.out.println(rule);
     }
     @Test
