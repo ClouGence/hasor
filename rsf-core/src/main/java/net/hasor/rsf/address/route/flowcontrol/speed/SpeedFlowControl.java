@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.flowcontrol.speed;
+package net.hasor.rsf.address.route.flowcontrol.speed;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.route.rule.AbstractRule;
+import net.hasor.rsf.address.route.rule.AbstractRule;
 import org.more.logger.LoggerHelper;
 /**
  * 基于QoS的速率控制规则。
  * <pre>
  * 配置实例：
- * &lt;flowControl enable="true|false" type="Speed"&gt;
+ * &lt;flowControl enable="true|false" type="speed"&gt;
  *   &lt;action&gt;service|method|address&lt;/action&gt;
  *   &lt;rate&gt;20&lt;/rate&gt;             &lt;!-- 稳态速率 --&gt
  *   &lt;peak&gt;100&lt;/peak&gt;            &lt;!-- 峰值速率 --&gt
@@ -36,6 +36,7 @@ import org.more.logger.LoggerHelper;
  * 解释：根据action的配置决定RPC调用速率。
  */
 public class SpeedFlowControl extends AbstractRule {
+    public static final String               TYPE       = "speed";
     private QoSActionEnum                    action;
     private int                              rate       = 20;
     private int                              peak       = 200;

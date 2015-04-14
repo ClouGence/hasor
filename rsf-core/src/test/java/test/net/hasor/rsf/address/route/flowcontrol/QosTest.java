@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.route.flowcontrol;
-import net.hasor.rsf.route.flowcontrol.speed.QoSBucket;
+package test.net.hasor.rsf.address.route.flowcontrol;
+import net.hasor.rsf.address.route.flowcontrol.speed.QoSBucket;
 import org.junit.Test;
 /**
  * 

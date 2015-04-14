@@ -1,0 +1,25 @@
+<controlSet>
+	<!-- 单元化规则 -->
+	<flowControl enable="true" type="unit">
+		<threshold>0.3</threshold>                  <!-- 本地机房占比低于这个数时启用跨机房 -->
+		<exclusions>172.23.*,172.19.*</exclusions>  <!-- 当本机IP属于下面这个网段时则不生效 -->
+	</flowControl>
+
+	<!-- 本地网路规则 -->
+	<flowControl enable="true" type="network">
+		<threshold>0.3</threshold>                  <!-- 本地网络中机器数占比低于这个数时启用跨路由器 -->
+		<exclusions>172.23.*,172.19.*</exclusions>  <!-- 当本机IP属于下面这个网段时则不生效 -->
+	</flowControl>
+
+	<!-- 服务地址选取规则 -->
+	<flowControl enable="true" type="random">
+	</flowControl>
+
+	<!-- QoS流量控制规则 -->
+	<flowControl enable="true" type="Speed">
+		<action>service</action>    				<!-- 速率控制方式：每服务、每方法、每地址 -->
+		<rate>20</rate>             				<!-- 稳态速率 -->
+		<peak>100</peak>            				<!-- 峰值速率 -->
+		<timeWindow>10</timeWindow> 				<!-- 时间窗口 -->
+	</flowControl>
+</controlSet>

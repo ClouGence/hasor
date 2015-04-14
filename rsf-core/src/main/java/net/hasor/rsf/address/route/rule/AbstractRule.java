@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.rule;
+package net.hasor.rsf.address.route.rule;
 import net.hasor.core.Settings;
 /**
  * 路由规则，配置模版实例：

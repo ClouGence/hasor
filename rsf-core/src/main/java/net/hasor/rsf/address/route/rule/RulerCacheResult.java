@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.rule;
+package net.hasor.rsf.address.route.rule;
+import java.lang.reflect.Method;
+import java.util.List;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.address.InterAddress;
 /**
- * 路由规则
+ * 路由计算结果缓存
  * @version : 2015年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Rule {
-    /**路由规则ID*/
-    public String routeID();
-    /**路由规则原文*/
-    public String rawRoute();
-    /**规则是否启用*/
-    public boolean enable();
+public interface RulerCacheResult {
+    public List<InterAddress> getAddressList(RsfBindInfo<?> info, Method doCallMethod, Object[] args);
 }

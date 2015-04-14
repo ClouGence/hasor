@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.rule;
+package net.hasor.rsf.address.route.rule;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +55,7 @@ public class RuleParser {
         }
     }
     //
+    //
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(String rawRoute) {
         if (StringUtils.isBlank(rawRoute) || !StringUtils.startsWithIgnoreCase(rawRoute, "<flowControl") || !StringUtils.endsWithIgnoreCase(rawRoute, "</flowControl>")) {
@@ -62,11 +63,25 @@ public class RuleParser {
             return null;
         }
         //
-        AbstractRule ruleObject = null;
         try {
             ReaderInputStream ris = new ReaderInputStream(new StringReader("<xml>" + rawRoute + "</xml>"));
             InputStreamSettings ruleSettings = new InputStreamSettings(ris);
             ruleSettings.loadSettings();
+            return ruleSettings(ruleSettings);
+        } catch (Exception e) {
+            LoggerHelper.logConfig("rule raw format error.", e);
+        }
+        return null;
+    }
+    /**解析规则文本为{@link Settings}*/
+    public Rule ruleSettings(Settings ruleSettings) {
+        if (ruleSettings == null) {
+            LoggerHelper.logConfig("ruleSettings is null.");
+            return null;
+        }
+        //
+        AbstractRule ruleObject = null;
+        try {
             String ruleID = ruleSettings.getString("flowControl.type");
             boolean ruleEnable = ruleSettings.getBoolean("flowControl.enable", false);
             //
@@ -85,7 +100,7 @@ public class RuleParser {
             //
             ruleObject = (AbstractRule) ruleClass.newInstance();
             ruleObject.setRouteID(ruleID);
-            ruleObject.setRoutebody(rawRoute);
+            ruleObject.setRoutebody(ruleSettings.getXmlNode("flowControl").getXmlText());
             ruleObject.enable(ruleEnable);
             ruleObject.paserControl(ruleSettings);
             //

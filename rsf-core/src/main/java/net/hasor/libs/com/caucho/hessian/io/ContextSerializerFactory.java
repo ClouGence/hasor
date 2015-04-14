@@ -45,9 +45,7 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -63,121 +61,74 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.hasor.libs.com.caucho.hessian.HessianException;
-
 /**
  * The classloader-specific Factory for returning serialization
  */
-public class ContextSerializerFactory
-{
-  private static final Logger log
-    = Logger.getLogger(ContextSerializerFactory.class.getName());
-
-  private static Deserializer OBJECT_DESERIALIZER
-    = new BasicDeserializer(BasicDeserializer.OBJECT);
-
-  private static final WeakHashMap<ClassLoader,SoftReference<ContextSerializerFactory>>
-    _contextRefMap
-    = new WeakHashMap<ClassLoader,SoftReference<ContextSerializerFactory>>();
-
-  private static final ClassLoader _systemClassLoader;
-
-  private static HashMap<String,Serializer> _staticSerializerMap;
-  private static HashMap<String,Deserializer> _staticDeserializerMap;
-  private static HashMap _staticClassNameMap;
-
-  private ContextSerializerFactory _parent;
-  private WeakReference<ClassLoader> _loaderRef;
-
-  private final HashSet<String> _serializerFiles = new HashSet<String>();
-  private final HashSet<String> _deserializerFiles = new HashSet<String>();
-
-  private final HashMap<String,Serializer> _serializerClassMap
-    = new HashMap<String,Serializer>();
-
-  private final ConcurrentHashMap<String,Serializer> _customSerializerMap
-    = new ConcurrentHashMap<String,Serializer>();
-
-  private final HashMap<Class<?>,Serializer> _serializerInterfaceMap
-    = new HashMap<Class<?>,Serializer>();
-
-  private final HashMap<String,Deserializer> _deserializerClassMap
-    = new HashMap<String,Deserializer>();
-
-  private final HashMap<String,Deserializer> _deserializerClassNameMap
-    = new HashMap<String,Deserializer>();
-
-  private final ConcurrentHashMap<String,Deserializer> _customDeserializerMap
-    = new ConcurrentHashMap<String,Deserializer>();
-
-  private final HashMap<Class<?>,Deserializer> _deserializerInterfaceMap
-    = new HashMap<Class<?>,Deserializer>();
-
-  public ContextSerializerFactory(ContextSerializerFactory parent,
-                                  ClassLoader loader)
-  {
+public class ContextSerializerFactory {
+  private static final Logger                                                            log                       = Logger
+                                                                                                                       .getLogger(ContextSerializerFactory.class
+                                                                                                                           .getName());
+  private static Deserializer                                                            OBJECT_DESERIALIZER       = new BasicDeserializer(
+                                                                                                                       BasicDeserializer.OBJECT);
+  private static final WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>> _contextRefMap            = new WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>>();
+  private static final ClassLoader                                                       _systemClassLoader;
+  private static HashMap<String, Serializer>                                             _staticSerializerMap;
+  private static HashMap<String, Deserializer>                                           _staticDeserializerMap;
+  private static HashMap                                                                 _staticClassNameMap;
+  private ContextSerializerFactory                                                       _parent;
+  private WeakReference<ClassLoader>                                                     _loaderRef;
+  private final HashSet<String>                                                          _serializerFiles          = new HashSet<String>();
+  private final HashSet<String>                                                          _deserializerFiles        = new HashSet<String>();
+  private final HashMap<String, Serializer>                                              _serializerClassMap       = new HashMap<String, Serializer>();
+  private final ConcurrentHashMap<String, Serializer>                                    _customSerializerMap      = new ConcurrentHashMap<String, Serializer>();
+  private final HashMap<Class<?>, Serializer>                                            _serializerInterfaceMap   = new HashMap<Class<?>, Serializer>();
+  private final HashMap<String, Deserializer>                                            _deserializerClassMap     = new HashMap<String, Deserializer>();
+  private final HashMap<String, Deserializer>                                            _deserializerClassNameMap = new HashMap<String, Deserializer>();
+  private final ConcurrentHashMap<String, Deserializer>                                  _customDeserializerMap    = new ConcurrentHashMap<String, Deserializer>();
+  private final HashMap<Class<?>, Deserializer>                                          _deserializerInterfaceMap = new HashMap<Class<?>, Deserializer>();
+  public ContextSerializerFactory(ContextSerializerFactory parent, ClassLoader loader) {
     if (loader == null)
       loader = _systemClassLoader;
-
     _loaderRef = new WeakReference<ClassLoader>(loader);
-
     init();
   }
-
-  public static ContextSerializerFactory create()
-  {
+  public static ContextSerializerFactory create() {
     return create(Thread.currentThread().getContextClassLoader());
   }
-
-  public static ContextSerializerFactory create(ClassLoader loader)
-  {
+  public static ContextSerializerFactory create(ClassLoader loader) {
     synchronized (_contextRefMap) {
-      SoftReference<ContextSerializerFactory> factoryRef
-        = _contextRefMap.get(loader);
-
+      SoftReference<ContextSerializerFactory> factoryRef = _contextRefMap.get(loader);
       ContextSerializerFactory factory = null;
-
       if (factoryRef != null)
         factory = factoryRef.get();
-
       if (factory == null) {
         ContextSerializerFactory parent = null;
-
         if (loader != null)
           parent = create(loader.getParent());
-
         factory = new ContextSerializerFactory(parent, loader);
         factoryRef = new SoftReference<ContextSerializerFactory>(factory);
-
         _contextRefMap.put(loader, factoryRef);
       }
-
       return factory;
     }
   }
-
-  public ClassLoader getClassLoader()
-  {
+  public ClassLoader getClassLoader() {
     WeakReference<ClassLoader> loaderRef = _loaderRef;
-    
     if (loaderRef != null)
       return loaderRef.get();
     else
       return null;
   }
-
   /**
    * Returns the serializer for a given class.
    */
-  public Serializer getSerializer(String className)
-  {
+  public Serializer getSerializer(String className) {
     Serializer serializer = _serializerClassMap.get(className);
-
     if (serializer == AbstractSerializer.NULL)
       return null;
     else
       return serializer;
   }
-
   /**
    * Returns a custom serializer the class
    *
@@ -185,48 +136,36 @@ public class ContextSerializerFactory
    *
    * @return a serializer object for the serialization.
    */
-  public Serializer getCustomSerializer(Class cl)
-  {
+  public Serializer getCustomSerializer(Class<?> cl) {
     Serializer serializer = _customSerializerMap.get(cl.getName());
-
     if (serializer == AbstractSerializer.NULL)
       return null;
     else if (serializer != null)
       return serializer;
-
     try {
-      Class serClass = Class.forName(cl.getName() + "HessianSerializer",
-                                       false, cl.getClassLoader());
-
+      Class<?> serClass = Class.forName(cl.getName() + "HessianSerializer", false,
+          cl.getClassLoader());
       Serializer ser = (Serializer) serClass.newInstance();
-
       _customSerializerMap.put(cl.getName(), ser);
-
       return ser;
     } catch (ClassNotFoundException e) {
       log.log(Level.ALL, e.toString(), e);
     } catch (Exception e) {
       throw new HessianException(e);
     }
-
     _customSerializerMap.put(cl.getName(), AbstractSerializer.NULL);
-
     return null;
   }
-
   /**
    * Returns the deserializer for a given class.
    */
-  public Deserializer getDeserializer(String className)
-  {
+  public Deserializer getDeserializer(String className) {
     Deserializer deserializer = _deserializerClassMap.get(className);
-
     if (deserializer == AbstractDeserializer.NULL)
       return null;
     else
       return deserializer;
   }
-
   /**
    * Returns a custom deserializer the class
    *
@@ -234,66 +173,48 @@ public class ContextSerializerFactory
    *
    * @return a deserializer object for the deserialization.
    */
-  public Deserializer getCustomDeserializer(Class cl)
-  {
+  public Deserializer getCustomDeserializer(Class cl) {
     Deserializer deserializer = _customDeserializerMap.get(cl.getName());
-
     if (deserializer == AbstractDeserializer.NULL)
       return null;
     else if (deserializer != null)
       return deserializer;
-
     try {
-      Class serClass = Class.forName(cl.getName() + "HessianDeserializer",
-                                       false, cl.getClassLoader());
-
+      Class serClass = Class.forName(cl.getName() + "HessianDeserializer", false,
+          cl.getClassLoader());
       Deserializer ser = (Deserializer) serClass.newInstance();
-
       _customDeserializerMap.put(cl.getName(), ser);
-
       return ser;
     } catch (ClassNotFoundException e) {
       log.log(Level.ALL, e.toString(), e);
     } catch (Exception e) {
       throw new HessianException(e);
     }
-
     _customDeserializerMap.put(cl.getName(), AbstractDeserializer.NULL);
-
     return null;
   }
-
   /**
    * Initialize the factory
    */
-  private void init()
-  {
+  private void init() {
     if (_parent != null) {
       _serializerFiles.addAll(_parent._serializerFiles);
       _deserializerFiles.addAll(_parent._deserializerFiles);
-
       _serializerClassMap.putAll(_parent._serializerClassMap);
       _deserializerClassMap.putAll(_parent._deserializerClassMap);
     }
-
     if (_parent == null) {
       _serializerClassMap.putAll(_staticSerializerMap);
       _deserializerClassMap.putAll(_staticDeserializerMap);
       _deserializerClassNameMap.putAll(_staticClassNameMap);
     }
-
-    HashMap<Class,Class> classMap;
-
-    classMap = new HashMap<Class,Class>();
-    initSerializerFiles("META-INF/hessian/serializers",
-                        _serializerFiles,
-                        classMap,
-                        Serializer.class);
-
-    for (Map.Entry<Class,Class> entry : classMap.entrySet()) {
+    HashMap<Class, Class> classMap;
+    classMap = new HashMap<Class, Class>();
+    initSerializerFiles("META-INF/hessian/serializers", _serializerFiles, classMap,
+        Serializer.class);
+    for (Map.Entry<Class, Class> entry : classMap.entrySet()) {
       try {
         Serializer ser = (Serializer) entry.getValue().newInstance();
-
         if (entry.getKey().isInterface())
           _serializerInterfaceMap.put(entry.getKey(), ser);
         else
@@ -302,17 +223,12 @@ public class ContextSerializerFactory
         throw new HessianException(e);
       }
     }
-
-    classMap = new HashMap<Class,Class>();
-    initSerializerFiles("META-INF/hessian/deserializers",
-                        _deserializerFiles,
-                        classMap,
-                        Deserializer.class);
-
-    for (Map.Entry<Class,Class> entry : classMap.entrySet()) {
+    classMap = new HashMap<Class, Class>();
+    initSerializerFiles("META-INF/hessian/deserializers", _deserializerFiles, classMap,
+        Deserializer.class);
+    for (Map.Entry<Class, Class> entry : classMap.entrySet()) {
       try {
         Deserializer ser = (Deserializer) entry.getValue().newInstance();
-
         if (entry.getKey().isInterface())
           _deserializerInterfaceMap.put(entry.getKey(), ser);
         else {
@@ -323,62 +239,48 @@ public class ContextSerializerFactory
       }
     }
   }
-
-  private void initSerializerFiles(String fileName,
-                                   HashSet<String> fileList,
-                                   HashMap<Class,Class> classMap,
-                                   Class type)
-  {
+  private void initSerializerFiles(String fileName, HashSet<String> fileList,
+      HashMap<Class, Class> classMap, Class type) {
     try {
       ClassLoader classLoader = getClassLoader();
-      
       // on systems with the security manager enabled, the system classloader
       // is null
       if (classLoader == null)
         return;
-
       Enumeration iter;
-      
       iter = classLoader.getResources(fileName);
       while (iter.hasMoreElements()) {
         URL url = (URL) iter.nextElement();
-
         if (fileList.contains(url.toString()))
           continue;
-
         fileList.add(url.toString());
-
         InputStream is = null;
         try {
           is = url.openStream();
-
           Properties props = new Properties();
           props.load(is);
-
           for (Map.Entry entry : props.entrySet()) {
             String apiName = (String) entry.getKey();
             String serializerName = (String) entry.getValue();
-
             Class apiClass = null;
             Class serializerClass = null;
-
             try {
               apiClass = Class.forName(apiName, false, classLoader);
             } catch (ClassNotFoundException e) {
-              log.fine(url + ": " + apiName + " is not available in this context: " + getClassLoader());
+              log.fine(url + ": " + apiName + " is not available in this context: "
+                  + getClassLoader());
               continue;
             }
-
             try {
               serializerClass = Class.forName(serializerName, false, classLoader);
             } catch (ClassNotFoundException e) {
-              log.fine(url + ": " + serializerName + " is not available in this context: " + getClassLoader());
+              log.fine(url + ": " + serializerName + " is not available in this context: "
+                  + getClassLoader());
               continue;
             }
-
-            if (! type.isAssignableFrom(serializerClass))
-              throw new HessianException(url + ": " + serializerClass.getName() + " is invalid because it does not implement " + type.getName());
-
+            if (!type.isAssignableFrom(serializerClass))
+              throw new HessianException(url + ": " + serializerClass.getName()
+                  + " is invalid because it does not implement " + type.getName());
             classMap.put(apiClass, serializerClass);
           }
         } finally {
@@ -392,23 +294,18 @@ public class ContextSerializerFactory
       throw new HessianException(e);
     }
   }
-
-  private static void addBasic(Class cl, String typeName, int type)
-  {
+  private static void addBasic(Class cl, String typeName, int type) {
     _staticSerializerMap.put(cl.getName(), new BasicSerializer(type));
-
     Deserializer deserializer = new BasicDeserializer(type);
     _staticDeserializerMap.put(cl.getName(), deserializer);
     _staticClassNameMap.put(typeName, deserializer);
   }
-
   static {
-    _staticSerializerMap = new HashMap();
+    _staticSerializerMap = new HashMap<String, Serializer>();
     _staticDeserializerMap = new HashMap();
-    _staticClassNameMap = new HashMap();
-
+    _staticClassNameMap = new HashMap<String, Serializer>();
+    //
     addBasic(void.class, "void", BasicSerializer.NULL);
-
     addBasic(Boolean.class, "boolean", BasicSerializer.BOOLEAN);
     addBasic(Byte.class, "byte", BasicSerializer.BYTE);
     addBasic(Short.class, "short", BasicSerializer.SHORT);
@@ -420,7 +317,6 @@ public class ContextSerializerFactory
     addBasic(String.class, "string", BasicSerializer.STRING);
     addBasic(Object.class, "object", BasicSerializer.OBJECT);
     addBasic(java.util.Date.class, "date", BasicSerializer.DATE);
-
     addBasic(boolean.class, "boolean", BasicSerializer.BOOLEAN);
     addBasic(byte.class, "byte", BasicSerializer.BYTE);
     addBasic(short.class, "short", BasicSerializer.SHORT);
@@ -429,7 +325,6 @@ public class ContextSerializerFactory
     addBasic(float.class, "float", BasicSerializer.FLOAT);
     addBasic(double.class, "double", BasicSerializer.DOUBLE);
     addBasic(char.class, "char", BasicSerializer.CHARACTER);
-
     addBasic(boolean[].class, "[boolean", BasicSerializer.BOOLEAN_ARRAY);
     addBasic(byte[].class, "[byte", BasicSerializer.BYTE_ARRAY);
     _staticSerializerMap.put(byte[].class.getName(), ByteArraySerializer.SER);
@@ -441,15 +336,12 @@ public class ContextSerializerFactory
     addBasic(char[].class, "[char", BasicSerializer.CHARACTER_ARRAY);
     addBasic(String[].class, "[string", BasicSerializer.STRING_ARRAY);
     addBasic(Object[].class, "[object", BasicSerializer.OBJECT_ARRAY);
-
     Deserializer objectDeserializer = new JavaDeserializer(Object.class);
     _staticDeserializerMap.put("object", objectDeserializer);
     _staticClassNameMap.put("object", objectDeserializer);
-
     _staticSerializerMap.put(Class.class.getName(), new ClassSerializer());
-
-    _staticDeserializerMap.put(Number.class.getName(), new BasicDeserializer(BasicSerializer.NUMBER));
-
+    _staticDeserializerMap.put(Number.class.getName(),
+        new BasicDeserializer(BasicSerializer.NUMBER));
     /*
     for (Class cl : new Class[] { BigDecimal.class, File.class, ObjectName.class }) {
       _staticSerializerMap.put(cl, StringValueSerializer.SER);
@@ -463,35 +355,23 @@ public class ContextSerializerFactory
     } catch (Throwable e) {
     }
     */
-    
-    _staticSerializerMap.put(InetAddress.class.getName(),
-                             InetAddressSerializer.create());
-
-    _staticSerializerMap.put(java.sql.Date.class.getName(),
-                             new SqlDateSerializer());
-    _staticSerializerMap.put(java.sql.Time.class.getName(),
-                             new SqlDateSerializer());
-    _staticSerializerMap.put(java.sql.Timestamp.class.getName(),
-                             new SqlDateSerializer());
-
-    _staticDeserializerMap.put(java.sql.Date.class.getName(),
-                               new SqlDateDeserializer(java.sql.Date.class));
-    _staticDeserializerMap.put(java.sql.Time.class.getName(),
-                               new SqlDateDeserializer(java.sql.Time.class));
-    _staticDeserializerMap.put(java.sql.Timestamp.class.getName(),
-                               new SqlDateDeserializer(java.sql.Timestamp.class));
-
+    _staticSerializerMap.put(InetAddress.class.getName(), InetAddressSerializer.create());
+    _staticSerializerMap.put(java.sql.Date.class.getName(), new SqlDateSerializer());
+    _staticSerializerMap.put(java.sql.Time.class.getName(), new SqlDateSerializer());
+    _staticSerializerMap.put(java.sql.Timestamp.class.getName(), new SqlDateSerializer());
+    _staticDeserializerMap.put(java.sql.Date.class.getName(), new SqlDateDeserializer(
+        java.sql.Date.class));
+    _staticDeserializerMap.put(java.sql.Time.class.getName(), new SqlDateDeserializer(
+        java.sql.Time.class));
+    _staticDeserializerMap.put(java.sql.Timestamp.class.getName(), new SqlDateDeserializer(
+        java.sql.Timestamp.class));
     // hessian/3bb5
     _staticDeserializerMap.put(StackTraceElement.class.getName(),
-                               new StackTraceElementDeserializer());
-
+        new StackTraceElementDeserializer());
     ClassLoader systemClassLoader = null;
     try {
       systemClassLoader = ClassLoader.getSystemClassLoader();
-    } catch (Exception e) {
-    }
-
+    } catch (Exception e) {}
     _systemClassLoader = systemClassLoader;
   }
 }
-

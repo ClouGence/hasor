@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.address.route.flowcontrol.speed;
 /**
- * RSF 流控。
+ * 
+ * @version : 2015年4月6日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.route.flowcontrol;
+public enum QoSActionEnum {
+    Service, Method, Address
+}

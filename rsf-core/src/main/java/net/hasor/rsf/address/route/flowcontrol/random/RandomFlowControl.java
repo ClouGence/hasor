@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.flowcontrol.random;
+package net.hasor.rsf.address.route.flowcontrol.random;
 import java.util.List;
 import java.util.Random;
 import net.hasor.core.Settings;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.route.rule.AbstractRule;
+import net.hasor.rsf.address.route.rule.AbstractRule;
 /**
  * 对于一组备选地址，通过随机的方式选取其中一个地址。
  * <pre>
  * 配置实例：
- * &lt;flowControl enable="true|false" type="Random"&gt;
+ * &lt;flowControl enable="true|false" type="random"&gt;
  * &lt;/flowControl&gt;
  * </pre>
  * @version : 2015年4月6日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RandomFlowControl extends AbstractRule {
-    private Random random = new Random();
+    public static final String TYPE   = "random";
+    private Random             random = new Random();
     //
     @Override
     public void paserControl(Settings settings) {

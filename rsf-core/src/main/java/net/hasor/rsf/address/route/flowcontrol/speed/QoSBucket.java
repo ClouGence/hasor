@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.route.flowcontrol.speed;
+package net.hasor.rsf.address.route.flowcontrol.speed;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.more.logger.LoggerHelper;
 /**

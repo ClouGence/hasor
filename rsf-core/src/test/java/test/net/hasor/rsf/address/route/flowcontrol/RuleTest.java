@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.route.flowcontrol;
+package test.net.hasor.rsf.address.route.flowcontrol;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.route.rule.Rule;
-import net.hasor.rsf.route.rule.RuleParser;
+import net.hasor.rsf.address.route.rule.Rule;
+import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;

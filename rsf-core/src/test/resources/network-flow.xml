@@ -1,4 +1,4 @@
 <flowControl enable="true" type="network">
-	<threshold>0.3</threshold>                  <!-- 本地机房占比低于这个数时启用跨机房 -->
+	<threshold>0.3</threshold>                  <!-- 本地网络中机器数占比低于这个数时启用跨路由器 -->
 	<exclusions>172.23.*,172.19.*</exclusions>  <!-- 当本机IP属于下面这个网段时则不生效 -->
 </flowControl>
