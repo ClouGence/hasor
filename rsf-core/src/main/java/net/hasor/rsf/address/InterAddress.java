@@ -28,12 +28,12 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterAddress {
-    public static final String SECHMA          = "rsf";
-    private String             formUnit        = null; //所属单元
-    private String             hostAddress     = null; //地址
-    private int                hostAddressData = 0;    //地址数值表现形式
-    private int                hostPort        = 8000; //端口
-    private URI                uriFormat       = null;
+    public static final String SECHMA = "rsf";
+    private final String       formUnit;       //所属单元
+    private final String       hostAddress;    //地址
+    private final int          hostAddressData; //地址数值表现形式
+    private final int          hostPort;       //端口
+    private final URI          uriFormat;
     //
     public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
@@ -50,24 +50,23 @@ public class InterAddress {
             formPath = formPath.substring(1);
         }
         this.formUnit = formPath.split("/")[0];
-        this.initIP(this.hostAddress);
+        this.hostAddressData = this.initIP(this.hostAddress);
     }
     public InterAddress(String hostAddress, int hostPort, String formUnit) throws URISyntaxException {
         this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
         this.hostPort = hostPort;
         this.formUnit = Hasor.assertIsNotNull(formUnit, "formUnit is null.");
         this.uriFormat = this.createURL();
-        this.initIP(this.hostAddress);
+        this.hostAddressData = this.initIP(this.hostAddress);
     }
-    private void initIP(String hostIP) {
+    private int initIP(String hostIP) {
         int ipInt = 0;
         String[] ipParts = hostIP.split("\\.");
         for (int i = 0; i < ipParts.length; i++) {
             int ipPartData = Integer.parseInt(ipParts[i]);
             ipInt = ipInt | (ipPartData << ((3 - i) * 8));
         }
-        //
-        this.hostAddressData = ipInt;
+        return ipInt;
     }
     //
     /** @return 地址*/
@@ -85,6 +84,10 @@ public class InterAddress {
     /** @return 获取IP的int值*/
     public int getHostAddressData() {
         return this.hostAddressData;
+    }
+    /**转换地址为URL形式*/
+    public URI toURI() throws URISyntaxException {
+        return this.uriFormat;
     }
     /**
      * 两个 Address 可以比较是否相等
@@ -106,17 +109,11 @@ public class InterAddress {
         }
         return false;
     }
+    //
+    //
     public String toString() {
         return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
     }
-    /**转换地址为URL形式*/
-    public URI toURI() throws URISyntaxException {
-        if (this.uriFormat == null) {
-            this.uriFormat = this.createURL();
-        }
-        return this.uriFormat;
-    }
-    //
     protected URI createURL() throws URISyntaxException {
         return new URI(SECHMA, null, this.getHostAddress(), this.getHostPort(), "/" + this.formUnit, null, null);
     }

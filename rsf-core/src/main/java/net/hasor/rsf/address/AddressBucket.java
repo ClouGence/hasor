@@ -19,7 +19,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import net.hasor.rsf.address.route.flowcontrol.network.NetworkFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
@@ -28,7 +27,6 @@ import org.more.util.StringUtils;
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
  * <ol>
  *  <li>同单元服务地址</li>
- *  <li>同一网络服务地址</li>
  *  <li>有效服务地址</li>
  *  <li>不可用服务地址</li>
  *  <li>全部服务地址</li>
@@ -44,13 +42,11 @@ public class AddressBucket {
     private final String                       unitName;          //服务所属单元
     private final List<InterAddress>           allAddressList;    //所有备选地址
     private CopyOnWriteArrayList<InterAddress> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
-    private NetworkFlowControl                 networkFlowControl; //机房流控规则(路由)
     private UnitFlowControl                    unitFlowControl;   //机房流控规则(单元划分)
     private final AddressPool                  forAddressPool;
     //
     //计算的可用地址
     private List<InterAddress>                 localUnitAddresses; //本单元地址
-    private List<InterAddress>                 localNetAddresses; //同网段地址
     private List<InterAddress>                 availableAddresses; //所有可用地址（包括本地单元）
     //
     //
@@ -61,7 +57,6 @@ public class AddressBucket {
         this.allAddressList = new ArrayList<InterAddress>();
         this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
-        this.localNetAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
     }
@@ -72,7 +67,6 @@ public class AddressBucket {
         this.allAddressList = new ArrayList<InterAddress>();
         this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
-        this.localNetAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
     }
@@ -92,10 +86,6 @@ public class AddressBucket {
     /**获取计算之后同一单元地址。*/
     public synchronized List<InterAddress> getLocalUnitAddresses() {
         return this.localUnitAddresses;
-    }
-    /**获取计算之后同一网段地址。*/
-    public synchronized List<InterAddress> getLocalNetAddresses() {
-        return this.localNetAddresses;
     }
     //
     /**新增地址支持动态新增*/
@@ -160,7 +150,7 @@ public class AddressBucket {
     /**刷新地址*/
     private void refreshAvailableAddress() {
         if (this.forAddressPool != null) {
-            this.networkFlowControl = this.forAddressPool.getNetworkFlowControl();
+            //this.networkFlowControl = this.forAddressPool.getNetworkFlowControl();
             this.unitFlowControl = this.forAddressPool.getUnitFlowControl();
         }
         //
@@ -191,20 +181,8 @@ public class AddressBucket {
             }
         }
         //
-        //3.网段过滤
-        List<InterAddress> networkList = availableList;
-        if (this.networkFlowControl != null) {
-            networkList = this.networkFlowControl.siftNetworkAddress(availableList);
-            if (networkList == null || networkList.isEmpty()) {
-                networkList = availableList;
-            }
-            if (this.networkFlowControl.isLocalNetwork(availableList.size(), networkList.size()) == false) {
-                unitList = availableList;
-            }
-        }
         //
         this.availableAddresses = availableList;
-        this.localNetAddresses = networkList;
         this.localUnitAddresses = unitList;
     }
 }

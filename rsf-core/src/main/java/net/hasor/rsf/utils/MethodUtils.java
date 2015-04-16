@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MethodCacheUtils {
+public class MethodUtils {
     private static Map<String, Method> methodMap = new ConcurrentHashMap<String, Method>();
     public static Method getServiceMethod(Class<?> serviceType, String methodName, Class<?>[] parameterTypes) {
         StringBuffer key = new StringBuffer(methodName);
@@ -39,5 +39,10 @@ public class MethodCacheUtils {
             }
         }
         return methodMap.get(mKey);
+    }
+    //
+    //
+    public static String evalMethodSign(Method targetMethod) {
+        return targetMethod.toString();
     }
 }

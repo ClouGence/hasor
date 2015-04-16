@@ -33,9 +33,9 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterServiceAddress extends InterAddress {
-    private String group   = null; //:服务分组
-    private String name    = null; //:服务名称
-    private String version = null; //:服务版
+    private final String group;  //:服务分组
+    private final String name;   //:服务名称
+    private final String version; //:服务版
     //
     //
     public InterServiceAddress(String serviceURL) throws URISyntaxException {

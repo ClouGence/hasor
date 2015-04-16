@@ -18,14 +18,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.address.route.flowcontrol.network.NetworkFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
@@ -40,22 +43,20 @@ import org.more.util.StringUtils;
  */
 public class AddressPool {
     private final RsfSettings                          rsfSettings;
-    private final ConcurrentMap<String, AddressBucket> addressPool;               //服务地址池Map.
-    private final String                               unitName;                  //本机所处单元.
+    private final ConcurrentMap<String, AddressBucket> addressPool;          //服务地址池Map.
+    private final String                               unitName;             //本机所处单元.
     //
     private final AddressCacheResult                   rulerCache;
-    private TreeSet<String>                            flowControlSequence = null; //规则应用顺序.
-    private RuleParser                                 ruleParser          = null;
-    private volatile FlowControlRef                    flowControlRef      = null; //流控规则引用
+    private RuleParser                                 ruleParser     = null;
+    private volatile FlowControlRef                    flowControlRef = null; //流控规则引用
     private final Object                               poolLock;
     //
     //
-    public AddressPool(String unitName, RsfSettings rsfSettings) {
+    public AddressPool(String unitName, BindCenter bindCenter, RsfSettings rsfSettings) {
         this.rsfSettings = rsfSettings;
         this.addressPool = new ConcurrentHashMap<String, AddressBucket>();
         this.unitName = unitName;
-        this.rulerCache = new AddressCacheResult(this);
-        this.flowControlSequence = new TreeSet<String>();
+        this.rulerCache = new AddressCacheResult(this, bindCenter);
         this.ruleParser = new RuleParser(rsfSettings);
         this.poolLock = new Object();
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
@@ -65,10 +66,6 @@ public class AddressPool {
     /**获取本机所属单元*/
     public String getUnitName() {
         return this.unitName;
-    }
-    /**获取网络流控规则*/
-    public NetworkFlowControl getNetworkFlowControl() {
-        return this.flowControlRef.networkFlowControl;
     }
     /**获取单元化流控规则*/
     public UnitFlowControl getUnitFlowControl() {
@@ -82,9 +79,40 @@ public class AddressPool {
     public SpeedFlowControl getSpeedFlowControl() {
         return this.flowControlRef.speedFlowControl;
     }
+    /**
+     * 所有服务地址快照功能，该接口获得的数据不可以进行写操作。通过这个接口可以获得到，此刻地址池中所有服务的
+     * <ol>
+     * <li>原始服务地址列表，以serviceID_ALL作为key</li>
+     * <li>本单元服务地址列表，以serviceID_UNIT作为key</li>
+     * <li>不可用服务地址列表，以serviceID_INVALID作为key</li>
+     * <li>所有可用服务地址列表，以serviceID作为key</li>
+     * <ol>
+     * 并不是单元化的列表中是单元化规则计算的结果,规则如果失效单元化列表中讲等同于 all
+     */
+    public Map<String, List<InterAddress>> allServicesSnapshot() {
+        Map<String, List<InterAddress>> snapshot = new HashMap<String, List<InterAddress>>();
+        synchronized (this.poolLock) {
+            for (String key : this.addressPool.keySet()) {
+                AddressBucket bucket = this.addressPool.get(key);
+                snapshot.put(key + "_ALL", bucket.getAllAddresses());
+                snapshot.put(key + "_UNIT", bucket.getLocalUnitAddresses());
+                snapshot.put(key + "_INVALID", bucket.getInvalidAddresses());
+                snapshot.put(key, bucket.getAvailableAddresses());
+            }
+        }
+        return snapshot;
+    }
+    /**返回地址池中所有已注册的服务列表*/
+    public Collection<String> listServices() {
+        Set<String> duplicate = new HashSet<String>();
+        synchronized (this.poolLock) {
+            duplicate.addAll(this.addressPool.keySet());
+        }
+        return duplicate;
+    }
     //
     //
-    /**新增地址支持动态新增*/
+    /**新增地址支持动态新增,在地址池中标识这个Service的AddressBucket key为bindInfo.getBindID()*/
     public void newAddress(RsfBindInfo<?> bindInfo, List<URI> newHostList) throws MalformedURLException {
         //1.AddressBucket
         String serviceID = bindInfo.getBindID();
@@ -113,6 +141,7 @@ public class AddressPool {
             if (bucket == null) {
                 return;
             }
+            bucket.invalidAddress(newInvalid);
         }
         this.rulerCache.reset();
     }
@@ -153,17 +182,13 @@ public class AddressPool {
             }
             String simpleName = rule.getClass().getSimpleName();
             LoggerHelper.logConfig("setup flowControl -> %s.", simpleName);
-            /*  */if (rule instanceof NetworkFlowControl) {
-                flowControlRef.networkFlowControl = (NetworkFlowControl) rule;/*网络规则*/
-            } else if (rule instanceof UnitFlowControl) {
+            /*  */if (rule instanceof UnitFlowControl) {
                 flowControlRef.unitFlowControl = (UnitFlowControl) rule; /*单元规则*/
             } else if (rule instanceof RandomFlowControl) {
                 flowControlRef.randomFlowControl = (RandomFlowControl) rule;/*选址规则*/
             } else if (rule instanceof SpeedFlowControl) {
                 flowControlRef.speedFlowControl = (SpeedFlowControl) rule; /*速率规则*/
             }
-            //
-            this.flowControlSequence.add(simpleName);
         }
         //3.引用切换
         this.flowControlRef = flowControlRef;
@@ -213,10 +238,9 @@ public class AddressPool {
     }
 }
 class FlowControlRef {
-    public NetworkFlowControl networkFlowControl = null; //网络规则
-    public UnitFlowControl    unitFlowControl    = null; //单元规则
-    public RandomFlowControl  randomFlowControl  = null; //地址选取规则
-    public SpeedFlowControl   speedFlowControl   = null; //QoS速率规则
+    public UnitFlowControl   unitFlowControl   = null; //单元规则
+    public RandomFlowControl randomFlowControl = null; //地址选取规则
+    public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
     //
     private FlowControlRef() {}
     //

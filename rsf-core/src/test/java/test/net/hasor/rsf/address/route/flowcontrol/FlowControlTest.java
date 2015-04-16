@@ -21,7 +21,6 @@ import java.util.List;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.address.route.flowcontrol.network.NetworkFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
@@ -65,17 +64,17 @@ public class FlowControlTest {
             System.out.println(i + "\t" + addr);
         }
     }
-    @Test
-    public void networkTest() throws Throwable {
-        RuleParser ruleParser = getRuleParser();
-        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("network-flow.xml"));
-        //
-        NetworkFlowControl rule = (NetworkFlowControl) ruleParser.ruleSettings(roomBody);
-        List<InterAddress> address = addressList();
-        //
-        List<InterAddress> addrList = rule.siftNetworkAddress(address);
-        System.out.println(addrList);
-    }
+    //    @Test
+    //    public void networkTest() throws Throwable {
+    //        RuleParser ruleParser = getRuleParser();
+    //        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("network-flow.xml"));
+    //        //
+    //        NetworkFlowControl rule = (NetworkFlowControl) ruleParser.ruleSettings(roomBody);
+    //        List<InterAddress> address = addressList();
+    //        //
+    //        List<InterAddress> addrList = rule.siftNetworkAddress(address);
+    //        System.out.println(addrList);
+    //    }
     @Test
     public void unitTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();

@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
-import net.hasor.rsf.utils.MethodCacheUtils;
+import net.hasor.rsf.utils.MethodUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -100,7 +100,7 @@ public class RsfRequestImpl implements RsfRequest {
     private Method serviceMethod = null;
     public Method getServiceMethod() {
         if (this.serviceMethod == null)
-            this.serviceMethod = MethodCacheUtils.getServiceMethod(//
+            this.serviceMethod = MethodUtils.getServiceMethod(//
                     this.bindInfo.getBindType(), this.requestMsg.getTargetMethod(), this.parameterTypes);
         return this.serviceMethod;
     }
