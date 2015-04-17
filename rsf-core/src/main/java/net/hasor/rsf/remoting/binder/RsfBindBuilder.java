@@ -31,7 +31,6 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.URLUtils;
 import org.more.FormatException;
 import org.more.util.StringUtils;
 /**

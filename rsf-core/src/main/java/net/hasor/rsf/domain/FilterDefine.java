@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
 /**
  * 获取服务上配置有效的过滤器。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FilterDefine implements Provider<RsfFilter> {
+public class FilterDefine implements Provider<RsfFilter>, RsfFilter {
     private String                        filterID;
     private String                        forServiceID;
     private Provider<? extends RsfFilter> filterProvider;
     //
     public FilterDefine(String filterID, String forServiceID, RsfFilter provider) {
-        this(filterID, forServiceID, new InstanceProvider<RsfFilter>(provider));
+        this(filterID, forServiceID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(provider)));
     }
     public FilterDefine(String filterID, String forServiceID, Provider<? extends RsfFilter> provider) {
         this.filterID = filterID;
         this.forServiceID = forServiceID;
-        this.filterProvider = provider;
+        this.filterProvider = Hasor.assertIsNotNull(provider);
     }
     /**过滤器ID*/
     public String filterID() {
@@ -49,5 +53,9 @@ public class FilterDefine implements Provider<RsfFilter> {
     }
     public String toString() {
         return "[" + filterID + "]";
+    }
+    //
+    public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
+        this.get().doFilter(request, response, chain);
     }
 }

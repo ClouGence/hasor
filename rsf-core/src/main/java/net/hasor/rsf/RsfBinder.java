@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import net.hasor.core.Provider;
 /**
  * 服务注册器
@@ -22,13 +23,6 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBinder {
-    /**
-     * 绑定远程服务地址和端口。
-     * @param remoteHost 远程服务地址
-     * @param remotePort 远程服务端口
-     * @throws MalformedURLException remoteHost 和 remotePort 在转换为 URL 时出错。
-     */
-    public void bindAddress(String remoteHost, int remotePort) throws MalformedURLException;
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
@@ -139,13 +133,15 @@ public interface RsfBinder {
     /**绑定元信息*/
     public interface RegisterBuilder<T> {
         /**
-         * 绑定远程服务地址和端口。
-         * @param remoteHost 远程服务地址
-         * @param remotePort 远程服务端口
-         * @return 返回RegisterBuilder。
-         * @throws MalformedURLException remoteHost 和 remotePort 在转换为 URL 时出错。
+         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
+         * @param rsfURI 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(String remoteHost, int remotePort) throws MalformedURLException;
+        public RegisterBuilder<T> bindAddress(String rsfURI) throws URISyntaxException;
+        /**
+         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
+         * @param rsfURI 远程服务地址
+         */
+        public RegisterBuilder<T> bindAddress(URI rsfURI);
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register();
     }

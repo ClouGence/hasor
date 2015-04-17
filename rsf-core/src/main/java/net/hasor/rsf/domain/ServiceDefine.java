@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfBinder.RegisterReference;
-import net.hasor.rsf.manager.FilterManager;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.util.StringUtils;
 /**
  * 获取服务上配置有效的过滤器。
@@ -26,36 +28,39 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceDefine<T> implements RegisterReference<T>, CustomerProvider<T> {
-    private ServiceDomain<T>   domain;
-    private AbstractRsfContext rsfContext;
+    private final ServiceDomain<T>   domain;
+    private final List<FilterDefine> filterDefine;
+    private final List<URI>          providerList;
     //
-    public ServiceDefine(ServiceDomain<T> domain, AbstractRsfContext rsfContext) {
+    public ServiceDefine(ServiceDomain<T> domain) {
         this.domain = domain;
-        this.rsfContext = rsfContext;
+        this.filterDefine = new ArrayList<FilterDefine>();
+        this.providerList = new ArrayList<URI>();
     }
     //
     protected ServiceDomain<T> getDomain() {
         return this.domain;
     }
-    protected AbstractRsfContext getRsfContext() {
-        return this.rsfContext;
-    }
-    protected FilterManager getFilterManager() {
-        return this.getRsfContext().getFilterManager();
-    }
     //
-    //
-    /**获取服务上配置有效的过滤器*/
-    protected Provider<FilterDefine>[] getFilters() {
-        return getFilterManager().findAllComfitByObjectID(this.getBindID());
+    public void addRsfFilter(String filterID,RsfFilter rsfFilter){
+        
     }
-    /**获取Provider对象，可以直接取得对象实例。*/
-    public Provider<T> getCustomerProvider() {
-        return rsfContext.getProvider(getDomain());
+    public void addRsfFilter(String filterID,Provider<RsfFilter> rsfFilter){
+        
     }
-    public void unRegister() {
-        this.getRsfContext().getBindCenter().recoverService(this.getDomain());
-    }
+
+    
+//    /**获取服务上配置有效的过滤器*/
+//    protected Provider<FilterDefine>[] getFilters() {
+//        return getFilterManager().findAllComfitByObjectID(this.getBindID());
+//    }
+//    /**获取Provider对象，可以直接取得对象实例。*/
+//    public Provider<T> getCustomerProvider() {
+//        return rsfContext.getProvider(getDomain());
+//    }
+//    public void unRegister() {
+//        this.getRsfContext().getBindCenter().recoverService(this.getDomain());
+//    }
     //
     /**查找注册的Filter*/
     public Provider<FilterDefine> getFilter(String filterID) {

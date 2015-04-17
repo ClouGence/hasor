@@ -66,7 +66,7 @@
 			<!-- 默认QoS流控规则,该配置仅当没有配置任何QoS规则时才启用 -->
 			<defaultSpeedFlowControl>
 				<action>service</action>    <!-- 速率控制方式：每服务、每方法、每地址 -->
-				<rate>20</rate>             <!-- 稳态速率 -->
+				<rate>200</rate>            <!-- 稳态速率 -->
 				<peak>100</peak>            <!-- 峰值速率 -->
 				<timeWindow>10</timeWindow> <!-- 时间窗口 -->
 			</defaultSpeedFlowControl>
@@ -75,7 +75,6 @@
 			<route.flowcontrol>
 				<random>net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl</random>
 				<speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
-				<network>net.hasor.rsf.address.route.flowcontrol.network.NetworkFlowControl</network>
 				<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
 			</route.flowcontrol>
 		</rsfConfig>
