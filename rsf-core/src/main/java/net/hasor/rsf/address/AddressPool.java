@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.address;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -113,7 +112,7 @@ public class AddressPool {
     //
     //
     /**新增地址支持动态新增,在地址池中标识这个Service的AddressBucket key为bindInfo.getBindID()*/
-    public void newAddress(RsfBindInfo<?> bindInfo, List<URI> newHostList) throws MalformedURLException {
+    public void newAddress(RsfBindInfo<?> bindInfo, Collection<URI> newHostList) {
         //1.AddressBucket
         String serviceID = bindInfo.getBindID();
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -142,6 +141,15 @@ public class AddressPool {
                 return;
             }
             bucket.invalidAddress(newInvalid);
+        }
+        this.rulerCache.reset();
+    }
+    /**回收已经发布的服务*/
+    public void recoverService(RsfBindInfo<?> bindInfo) {
+        /*在并发情况下,newAddress可能正在创建AddressBucket,因此要锁住poolLock*/
+        synchronized (this.poolLock) {
+            String serviceID = bindInfo.getBindID();
+            this.addressPool.remove(serviceID);
         }
         this.rulerCache.reset();
     }

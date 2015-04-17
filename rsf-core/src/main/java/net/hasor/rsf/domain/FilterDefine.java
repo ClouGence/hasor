@@ -28,24 +28,18 @@ import net.hasor.rsf.RsfResponse;
  */
 public class FilterDefine implements Provider<RsfFilter>, RsfFilter {
     private String                        filterID;
-    private String                        forServiceID;
     private Provider<? extends RsfFilter> filterProvider;
     //
-    public FilterDefine(String filterID, String forServiceID, RsfFilter provider) {
-        this(filterID, forServiceID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(provider)));
+    public FilterDefine(String filterID, RsfFilter provider) {
+        this(filterID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(provider)));
     }
-    public FilterDefine(String filterID, String forServiceID, Provider<? extends RsfFilter> provider) {
+    public FilterDefine(String filterID, Provider<? extends RsfFilter> provider) {
         this.filterID = filterID;
-        this.forServiceID = forServiceID;
         this.filterProvider = Hasor.assertIsNotNull(provider);
     }
     /**过滤器ID*/
     public String filterID() {
         return this.filterID;
-    }
-    /**所属Services，可以为空*/
-    public String serviceID() {
-        return this.forServiceID;
     }
     @Override
     public RsfFilter get() {

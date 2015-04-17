@@ -97,8 +97,8 @@ public class InterServiceAddress extends InterAddress {
         String path = String.format("/%s/%s/%s/%s", this.getFormUnit(), this.getGroup(), this.getName(), this.getVersion());
         return new URI(SECHMA, null, this.getHostAddress(), this.getHostPort(), "/" + path, null, null);
     }
-    protected boolean checkFormat(URI serviceURL) {
-        if (super.checkFormat(serviceURL)) {
+    public static boolean checkFormat(URI serviceURL) {
+        if (InterAddress.checkFormat(serviceURL)) {
             String REG = "[A-Za-z0-9_\\.]+";
             Matcher mat = Pattern.compile("(/" + REG + ")").matcher(serviceURL.getPath());
             List<String> result = new ArrayList<String>();

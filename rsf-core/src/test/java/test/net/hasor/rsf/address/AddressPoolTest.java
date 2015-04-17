@@ -55,7 +55,7 @@ public class AddressPoolTest {
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
         rsfSettings.refresh();
         final AddressPool pool = new AddressPool("etc3", bindCenter, rsfSettings);
-        final RsfBindInfo<?> domain = bindCenter.getServiceByName("AddressPoolTest");
+        final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-flow.xml"));
         pool.refreshFlowControl(flowControlBody);
@@ -127,7 +127,7 @@ public class AddressPoolTest {
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
         rsfSettings.refresh();
         final AddressPool pool = new AddressPool("etc3", bindCenter, rsfSettings);
-        final RsfBindInfo<?> domain = bindCenter.getServiceByName("AddressPoolTest");
+        final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-performance-flow.xml"));
         pool.refreshFlowControl(flowControlBody);

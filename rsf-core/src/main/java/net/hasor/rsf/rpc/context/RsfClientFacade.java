@@ -18,8 +18,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.binder.AnnoRsfServiceValue;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.remoting.binder.RsfServiceInfo;
 import net.hasor.rsf.rpc.client.InnerClientManager;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.future.FutureCallback;
@@ -67,7 +67,7 @@ class RsfClientFacade implements RsfClient {
         return this.wrapper(bindInfo, interFace);
     }
     public <T> T wrapper(Class<T> interFace) throws RsfException {
-        RsfServiceInfo info = new RsfServiceInfo(this.rsfContext, interFace);
+        AnnoRsfServiceValue info = new AnnoRsfServiceValue(this.rsfContext, interFace);
         RsfBindInfo<?> bindInfo = this.findBindInfo(info.group(), info.name(), info.version());
         return this.wrapper(bindInfo, interFace);
     }

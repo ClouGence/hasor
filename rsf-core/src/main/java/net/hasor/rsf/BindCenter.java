@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.util.List;
 /**
  * 注册中心
  * @version : 2014年11月30日
@@ -25,13 +26,11 @@ public interface BindCenter {
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceByID(String serviceID);
     /**根据服务名获取服务描述。*/
-    public <T> RsfBindInfo<T> getServiceByName(String serviceName);
-    /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getService(Class<T> serviceType);
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getService(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
-    public String[] getServiceNames();
+    public List<String> getServiceIDs();
     //
     /**回收已经发布的服务*/
     public void recoverService(RsfBindInfo<?> bindInfo);

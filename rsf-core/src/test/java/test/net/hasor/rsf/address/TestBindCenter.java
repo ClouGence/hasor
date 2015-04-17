@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.address;
+import java.util.List;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
@@ -47,12 +48,6 @@ public class TestBindCenter<T> implements BindCenter {
         return null;
     }
     @Override
-    public <T> RsfBindInfo<T> getServiceByName(String serviceName) {
-        if (StringUtils.equalsBlankIgnoreCase(serviceName, this.rsfBindInfo.getBindName()))
-            return (RsfBindInfo<T>) rsfBindInfo;
-        return null;
-    }
-    @Override
     public <T> RsfBindInfo<T> getService(Class<T> serviceType) {
         if (this.target == serviceType)
             return (RsfBindInfo<T>) rsfBindInfo;
@@ -64,8 +59,8 @@ public class TestBindCenter<T> implements BindCenter {
         return null;
     }
     @Override
-    public String[] getServiceNames() {
-        return new String[] { name };
+    public List<String> getServiceIDs() {
+        return null;
     }
     @Override
     public void recoverService(RsfBindInfo<?> bindInfo) {

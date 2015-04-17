@@ -117,7 +117,7 @@ public class InterAddress {
     protected URI createURL() throws URISyntaxException {
         return new URI(SECHMA, null, this.getHostAddress(), this.getHostPort(), "/" + this.formUnit, null, null);
     }
-    protected boolean checkFormat(URI rsfAddress) {
+    public static boolean checkFormat(URI rsfAddress) {
         if (StringUtils.equalsBlankIgnoreCase(SECHMA, rsfAddress.getScheme()) == true) {
             if (StringUtils.isBlank(rsfAddress.getHost()) == false) {
                 if (rsfAddress.getPort() != 0) {

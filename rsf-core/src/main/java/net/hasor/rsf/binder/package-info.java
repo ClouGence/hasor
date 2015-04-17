@@ -16,4 +16,4 @@
 /**
  * RSF Bind 机制实现。
  */
-package net.hasor.rsf.remoting.binder;
+package net.hasor.rsf.binder;

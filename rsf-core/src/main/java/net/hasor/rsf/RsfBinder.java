@@ -49,7 +49,7 @@ public interface RsfBinder {
      * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
      * @see #rsfService(Class)
      */
-    public <T> NamedBuilder<T> rsfService(Class<T> type, T instance);
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance);
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).to(implementation);</code>”
@@ -58,7 +58,7 @@ public interface RsfBinder {
      * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
      * @see #rsfService(Class)
      */
-    public <T> NamedBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
     /**
      * 绑定一个类型并且为这个类型指定一个Provider。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).toProvider(provider);</code>”
@@ -67,42 +67,51 @@ public interface RsfBinder {
      * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
      * @see #rsfService(Class)
      */
-    public <T> NamedBuilder<T> rsfService(Class<T> type, Provider<T> provider);
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider);
+    //
+    //
     //
     /**处理类型和实现的绑定。*/
-    public interface LinkedBuilder<T> extends NamedBuilder<T> {
+    public interface LinkedBuilder<T> extends ConfigurationBuilder<T> {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类
          * @return 返回 NamedBuilder。
          */
-        public NamedBuilder<T> to(Class<? extends T> implementation);
+        public ConfigurationBuilder<T> to(Class<? extends T> implementation);
         /**
          * 为绑定设置一个实例。
          * @param instance 实例对象
          * @return 返回 NamedBuilder。
          */
-        public NamedBuilder<T> toInstance(T instance);
+        public ConfigurationBuilder<T> toInstance(T instance);
         /**
          * 为绑定设置一个 {@link Provider}。
          * @param provider provider
          * @return 返回 NamedBuilder。
          */
-        public NamedBuilder<T> toProvider(Provider<T> provider);
+        public ConfigurationBuilder<T> toProvider(Provider<T> provider);
     }
     /**设置服务名。*/
-    public interface NamedBuilder<T> extends ConfigurationBuilder<T> {
+    public interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {
         /**
-         * 设置服务注册信息
+         * 设置服务分组信息
          * @param group 所属分组
+         * @return 返回ConfigurationBuilder
+         */
+        public ConfigurationBuilder<T> group(String group);
+        /**
+         * 设置服务名称信息
          * @param name 名称
+         * @return 返回ConfigurationBuilder
+         */
+        public ConfigurationBuilder<T> name(String name);
+        /**
+         * 设置服务版本信息
          * @param version 版本
          * @return 返回ConfigurationBuilder
          */
-        public ConfigurationBuilder<T> ngv(String group, String name, String version);
-    }
-    /**设置参数。*/
-    public interface ConfigurationBuilder<T> extends RegisterBuilder<T> {
+        public ConfigurationBuilder<T> version(String version);
         /**
          * 设置超时时间
          * @param clientTimeout 超时时间
@@ -115,22 +124,27 @@ public interface RsfBinder {
          * @return 返回ConfigurationBuilder
          */
         public ConfigurationBuilder<T> serialize(String serializeType);
+    }
+    //
+    /**设置过滤器*/
+    public interface FilterBindBuilder<T> extends RegisterBuilder<T> {
         /**
          * 为服务添加一个专有的RsfFilter。
          * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
          * @param instance Rsffilter实例
          * @return 返回ConfigurationBuilder
          */
-        public ConfigurationBuilder<T> bindFilter(String subFilterID, RsfFilter instance);
+        public FilterBindBuilder<T> bindFilter(String subFilterID, RsfFilter instance);
         /**
          * 为服务添加一个专有的RsfFilter。
          * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
          * @param provider provider for Rsffilter.
          * @return 返回ConfigurationBuilder
          */
-        public ConfigurationBuilder<T> bindFilter(String subFilterID, Provider<? extends RsfFilter> provider);
+        public FilterBindBuilder<T> bindFilter(String subFilterID, Provider<? extends RsfFilter> provider);
     }
-    /**绑定元信息*/
+    //
+    /**发布地址*/
     public interface RegisterBuilder<T> {
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
@@ -145,7 +159,8 @@ public interface RsfBinder {
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register();
     }
-    /**可以用于解除注册的接口。*/
+    //
+    /**接口解除*/
     public interface RegisterReference<T> extends RsfBindInfo<T> {
         /**解除注册。*/
         public void unRegister();

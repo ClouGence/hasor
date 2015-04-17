@@ -14,71 +14,80 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.info.CustomerProvider;
+import net.hasor.core.binder.InstanceProvider;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfBinder.RegisterReference;
 import org.more.util.StringUtils;
 /**
- * 获取服务上配置有效的过滤器。
+ * 一个完整的RSF上下文中可识别的服务对象，封装了服务挂载的 Filter和服务元信息
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceDefine<T> implements RegisterReference<T>, CustomerProvider<T> {
+public class ServiceDefine<T> implements RsfBindInfo<T> {
     private final ServiceDomain<T>   domain;
     private final List<FilterDefine> filterDefine;
-    private final List<URI>          providerList;
     //
     public ServiceDefine(ServiceDomain<T> domain) {
         this.domain = domain;
         this.filterDefine = new ArrayList<FilterDefine>();
-        this.providerList = new ArrayList<URI>();
     }
     //
-    protected ServiceDomain<T> getDomain() {
-        return this.domain;
+    //
+    /**添加Filter*/
+    public void addRsfFilter(String filterID, RsfFilter rsfFilter) {
+        this.addRsfFilter(filterID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(rsfFilter)));
+    }
+    /**添加Filter*/
+    public void addRsfFilter(String filterID, Provider<? extends RsfFilter> rsfFilter) {
+        this.addRsfFilter(new FilterDefine(filterID, Hasor.assertIsNotNull(rsfFilter)));
+    }
+    /**添加Filter*/
+    public void addRsfFilter(FilterDefine filterDefine) {
+        synchronized (this.filterDefine) {
+            for (FilterDefine filterDef : this.filterDefine) {
+                if (StringUtils.equals(filterDef.filterID(), filterDefine.filterID())) {
+                    return;
+                }
+            }
+            this.filterDefine.add(filterDefine);
+        }
     }
     //
-    public void addRsfFilter(String filterID,RsfFilter rsfFilter){
-        
-    }
-    public void addRsfFilter(String filterID,Provider<RsfFilter> rsfFilter){
-        
-    }
-
-    
-//    /**获取服务上配置有效的过滤器*/
-//    protected Provider<FilterDefine>[] getFilters() {
-//        return getFilterManager().findAllComfitByObjectID(this.getBindID());
-//    }
-//    /**获取Provider对象，可以直接取得对象实例。*/
-//    public Provider<T> getCustomerProvider() {
-//        return rsfContext.getProvider(getDomain());
-//    }
-//    public void unRegister() {
-//        this.getRsfContext().getBindCenter().recoverService(this.getDomain());
-//    }
     //
+    /**获取服务上配置有效的过滤器*/
+    protected List<FilterDefine> getFilterDefineList() {
+        return new ArrayList<FilterDefine>(this.filterDefine);
+    }
+    /**获取服务上配置有效的过滤器*/
+    protected List<RsfFilter> getFilters() {
+        return new ArrayList<RsfFilter>(getFilterDefineList());
+    }
     /**查找注册的Filter*/
-    public Provider<FilterDefine> getFilter(String filterID) {
+    public RsfFilter getFilter(String filterID) {
         if (StringUtils.isBlank(filterID)) {
             return null;
         }
-        Provider<FilterDefine>[] defines = getFilters();
-        if (defines == null || defines.length == 0) {
+        List<FilterDefine> defines = getFilterDefineList();
+        if (defines == null || defines.isEmpty()) {
             return null;
         }
-        for (Provider<FilterDefine> defineProvider : defines) {
-            if (StringUtils.equals(filterID, defineProvider.get().filterID())) {
+        for (FilterDefine defineProvider : defines) {
+            if (StringUtils.equals(filterID, defineProvider.filterID())) {
                 return defineProvider;
             }
         }
         return null;
     }
     //
+    //
+    /**获取domain*/
+    protected ServiceDomain<T> getDomain() {
+        return this.domain;
+    }
     public String getBindID() {
         return this.getDomain().getBindID();
     }
@@ -104,15 +113,16 @@ public class ServiceDefine<T> implements RegisterReference<T>, CustomerProvider<
         return this.getDomain().getMetaData(key);
     }
     //
+    //
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer("");
-        Provider<FilterDefine>[] defines = getFilters();
+        List<FilterDefine> defines = getFilterDefineList();
         if (defines == null) {
             buffer.append(" null");
         } else {
-            for (Provider<FilterDefine> define : defines) {
-                buffer.append(define.get().filterID() + ",");
+            for (FilterDefine define : defines) {
+                buffer.append(define.filterID() + ",");
             }
         }
         return "ServiceDefine[Domain=" + this.getDomain() + ",Filters=" + buffer.toString() + "]";

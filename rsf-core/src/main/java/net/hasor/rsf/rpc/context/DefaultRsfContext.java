@@ -22,9 +22,9 @@ import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.manager.DefaultAddressCenter;
 import net.hasor.rsf.manager.ExecutesManager;
-import net.hasor.rsf.remoting.binder.DefaultBindCenter;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
 import net.hasor.rsf.rpc.warp.InnerLocalWarpRsfFilter;
@@ -35,7 +35,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfContext extends AbstractRsfContext {
-    private final DefaultBindCenter    bindCenter;
+    private final RsfBindCenter    bindCenter;
     private final DefaultAddressCenter addressCenter;
     private final RsfRequestManager    requestManager;
     //
@@ -50,7 +50,7 @@ public class DefaultRsfContext extends AbstractRsfContext {
     }
     public DefaultRsfContext(RsfSettings settings) {
         this.rsfSettings = settings;
-        this.bindCenter = new DefaultBindCenter(this);
+        this.bindCenter = new RsfBindCenter(this);
         this.addressCenter = new DefaultAddressCenter();
         this.requestManager = new RsfRequestManager(this);
         //
@@ -89,7 +89,7 @@ public class DefaultRsfContext extends AbstractRsfContext {
         return this.serializeFactory;
     }
     /**获取注册中心。*/
-    public DefaultBindCenter getBindCenter() {
+    public RsfBindCenter getBindCenter() {
         return this.bindCenter;
     }
     /**获取注册中心。*/

@@ -16,18 +16,16 @@
 package net.hasor.rsf.rpc.context;
 import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.Executor;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.FilterDefine;
+import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.domain.ServiceDefine;
-import net.hasor.rsf.manager.DefaultAddressCenter;
 import net.hasor.rsf.manager.FilterManager;
-import net.hasor.rsf.remoting.binder.DefaultBindCenter;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.util.StringUtils;
@@ -44,14 +42,14 @@ public abstract class AbstractRsfContext implements RsfContext {
      * @return 服务对象
      */
     public <T> T getBean(RsfBindInfo<T> bindInfo) {
-        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
-        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
-        if (bindInfo != null && bindInfo instanceof ServiceDefine == true) {
-            Provider<T> provider = ((ServiceDefine<T>) bindInfo).getCustomerProvider();
-            if (provider != null)
-                return provider.get();
-        }
+        //        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
+        //        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
+        //        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
+        //        if (bindInfo != null && bindInfo instanceof ServiceDefine == true) {
+        //            Provider<T> provider = ((ServiceDefine<T>) bindInfo).getCustomerProvider();
+        //            if (provider != null)
+        //                return provider.get();
+        //        }
         return null;
     }
     /**
@@ -60,7 +58,8 @@ public abstract class AbstractRsfContext implements RsfContext {
      * @return 返回{@link RsfFilter}
      */
     public <T extends RsfFilter> T findFilter(String filterID) {
-        return this.getBindCenter().findFilter(filterID);
+        //        return this.getBindCenter().findFilter(filterID);
+        return null;
     }
     /**
      * 获取服务上的{@link RsfFilter}
@@ -101,27 +100,6 @@ public abstract class AbstractRsfContext implements RsfContext {
         String serviceID = String.format("[%s]%s-%s", serviceGroup, serviceName, serviceVersion);
         return this.findFilter(serviceID, filterID);
     }
-    /**
-     * 获取服务上配置有效的过滤器
-     * @param bindInfo 元信息所描述对象
-     * @return 返回{@link RsfFilter}
-     */
-    public <T> Provider<RsfFilter>[] getFilters(RsfBindInfo<T> bindInfo) {
-        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
-        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
-        if (bindInfo != null) {
-            Provider<FilterDefine>[] defines = this.getFilterManager().findAllComfitByObjectID(bindInfo.getBindID());
-            Provider<RsfFilter>[] pubFilters = this.getBindCenter().publicFilters();
-            Provider<RsfFilter>[] subFilters = ((ServiceDefine<T>) bindInfo).getFilterProvider();
-            Provider<RsfFilter>[] mergeFilters = new Provider[pubFilters.length + subFilters.length];
-            System.arraycopy(pubFilters, 0, mergeFilters, 0, pubFilters.length);
-            System.arraycopy(subFilters, 0, mergeFilters, pubFilters.length, subFilters.length);
-            //
-            return mergeFilters;
-        }
-        return null;
-    }
     //
     /**
      * 获取{@link Executor}用于安排执行任务。
@@ -133,11 +111,9 @@ public abstract class AbstractRsfContext implements RsfContext {
     public abstract SerializeFactory getSerializeFactory();
     /** @return 获取Netty事件处理工具*/
     public abstract EventLoopGroup getLoopGroup();
-    /** @return 获取地址管理中心*/
-    public abstract DefaultAddressCenter getAddressCenter();
     /** @return 获取服务注册中心*/
-    public abstract DefaultBindCenter getBindCenter();
+    public abstract RsfBindCenter getBindCenter();
     /** @return 获取请求管理中心*/
     public abstract RsfRequestManager getRequestManager();
-    public abstract FilterManager getFilterManager();
+    public abstract AddressPool getAddressPool();
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
@@ -89,7 +89,7 @@ public class AddressBucket {
     }
     //
     /**新增地址支持动态新增*/
-    public void newAddress(List<URI> newHostList) throws MalformedURLException {
+    public void newAddress(Collection<URI> newHostList) {
         if (newHostList == null || newHostList.isEmpty()) {
             LoggerHelper.logSevere("%s - newHostList is empty.", serviceID);
             return;
