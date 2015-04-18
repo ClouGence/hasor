@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfOptionSet;
@@ -22,13 +24,14 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.remoting.transport.component.RsfRequestImpl;
-import net.hasor.rsf.remoting.transport.component.RsfResponseImpl;
-import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
-import net.hasor.rsf.remoting.transport.protocol.message.RequestMsg;
-import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
+import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
+import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.component.RsfRequestImpl;
+import net.hasor.rsf.rpc.component.RsfResponseImpl;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.message.RequestMsg;
+import net.hasor.rsf.rpc.message.ResponseMsg;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
@@ -114,4 +117,76 @@ public class RuntimeUtils {
     public static String bindID(String group, String name, String version) {
         return String.format("[%s]%s-%s", group, name, version);
     }
+    /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
+    public static Class<?> toJavaType(final String tType, final ClassLoader loader) throws ClassNotFoundException {
+        char atChar = tType.charAt(0);
+        if (/*   */'I' == atChar) {
+            return int.class;
+        } else if ('B' == atChar) {
+            return byte.class;
+        } else if ('C' == atChar) {
+            return char.class;
+        } else if ('D' == atChar) {
+            return double.class;
+        } else if ('F' == atChar) {
+            return float.class;
+        } else if ('J' == atChar) {
+            return long.class;
+        } else if ('S' == atChar) {
+            return short.class;
+        } else if ('Z' == atChar) {
+            return boolean.class;
+        } else if ('V' == atChar) {
+            return void.class;
+        } else if (atChar == '[') {
+            int length = 0;
+            while (true) {
+                if (tType.charAt(length) != '[') {
+                    break;
+                }
+                length++;
+            }
+            String arrayType = tType.substring(length, tType.length());
+            Class<?> returnType = toJavaType(arrayType, loader);
+            for (int i = 0; i < length; i++) {
+                Object obj = Array.newInstance(returnType, length);
+                returnType = obj.getClass();
+            }
+            return returnType;
+        } else {
+            Class<?> cache = loadClassCache.get(tType);
+            if (cache == null) {
+                cache = loader.loadClass(tType);
+                loadClassCache.put(tType, cache);
+            }
+            return cache;
+        }
+    }
+    /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
+    public static String toAsmType(final Class<?> classType) {
+        if (classType == int.class) {
+            return "I";
+        } else if (classType == byte.class) {
+            return "B";
+        } else if (classType == char.class) {
+            return "C";
+        } else if (classType == double.class) {
+            return "D";
+        } else if (classType == float.class) {
+            return "F";
+        } else if (classType == long.class) {
+            return "J";
+        } else if (classType == short.class) {
+            return "S";
+        } else if (classType == boolean.class) {
+            return "Z";
+        } else if (classType == void.class) {
+            return "V";
+        } else if (classType.isArray() == true) {
+            return "[" + toAsmType(classType.getComponentType());
+        } else {
+            return classType.getName();
+        }
+    }
+    private static Map<String, Class<?>> loadClassCache = new java.util.concurrent.ConcurrentHashMap<String, Class<?>>();
 }

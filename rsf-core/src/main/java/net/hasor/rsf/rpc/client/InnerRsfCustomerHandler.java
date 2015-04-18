@@ -20,8 +20,8 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.remoting.transport.connection.NetworkConnection;
-import net.hasor.rsf.remoting.transport.protocol.message.ResponseMsg;
+import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.message.ResponseMsg;
 import net.hasor.rsf.utils.RuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
