@@ -16,17 +16,25 @@
 package net.hasor.rsf.rpc.utils;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
-import net.hasor.rsf.rpc.message.RequestMsg;
-import net.hasor.rsf.rpc.message.ResponseMsg;
+import net.hasor.rsf.rpc.component.RequestMsg;
+import net.hasor.rsf.rpc.component.ResponseMsg;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 负责{@link RequestMsg}、{@link ResponseMsg}到{@link RequestSocketBlock}、{@link ResponseSocketBlock}的类型转换。
  * @version : 2014年11月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class TransferUtils {
+    /**将请求参数转换为对象。*/
+    public static Object toParameter(String serializeType, byte[] dataBytes, SerializeFactory serializeFactory) throws Throwable {
+        SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
+        return coder.decode(dataBytes);
+    }
+    //
     /**将{@link RequestMsg}转换为{@link RequestSocketBlock}消息。*/
     public static RequestSocketBlock requestToBlock(RequestMsg msg) {
         RequestSocketBlock socketMsg = new RequestSocketBlock();

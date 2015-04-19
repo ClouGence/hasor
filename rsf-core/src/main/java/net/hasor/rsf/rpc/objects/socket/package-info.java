@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 通用部件，例如request/response对象。
+ * Request/Response对象，数据来自于Socket
  */
-package net.hasor.rsf.rpc.component;
+package net.hasor.rsf.rpc.objects.socket;

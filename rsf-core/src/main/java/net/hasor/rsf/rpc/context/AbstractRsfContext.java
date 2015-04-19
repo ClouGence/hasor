@@ -25,7 +25,6 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.domain.ServiceDefine;
-import net.hasor.rsf.manager.FilterManager;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.util.StringUtils;
@@ -116,4 +115,8 @@ public abstract class AbstractRsfContext implements RsfContext {
     /** @return 获取请求管理中心*/
     public abstract RsfRequestManager getRequestManager();
     public abstract AddressPool getAddressPool();
+    //
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
 }

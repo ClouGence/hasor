@@ -20,10 +20,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
 import net.hasor.rsf.constants.ProtocolVersion;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 100W 打印一次，证明还活着
  * @version : 2014年11月4日

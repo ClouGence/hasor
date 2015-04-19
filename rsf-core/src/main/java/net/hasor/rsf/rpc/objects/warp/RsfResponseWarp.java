@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.warp;
+package net.hasor.rsf.rpc.objects.warp;
 import net.hasor.rsf.RsfResponse;
 /**
- * {@link RsfResponse}接口包装器（当前线程绑定）。
+ * {@link RsfResponse}接口包装器。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseLocal extends AbstractRsfResponseWarp {
-    private static final ThreadLocal<RsfResponse> LOCAL_RESPONSE = new ThreadLocal<RsfResponse>();
+public class RsfResponseWarp extends AbstractRsfResponseWarp {
+    private final RsfResponse response;
+    public RsfResponseWarp(RsfResponse response) {
+        this.response = response;
+    }
     @Override
-    protected final RsfResponse getRsfResponse() {
-        return LOCAL_RESPONSE.get();
-    }
-    //
-    static void removeLocal() {
-        if (LOCAL_RESPONSE.get() != null) {
-            LOCAL_RESPONSE.remove();
-        }
-    }
-    static void updateLocal(RsfResponse rsfResponse) {
-        removeLocal();
-        if (rsfResponse != null) {
-            LOCAL_RESPONSE.set(rsfResponse);
-        }
+    protected RsfResponse getRsfResponse() {
+        return this.response;
     }
 }

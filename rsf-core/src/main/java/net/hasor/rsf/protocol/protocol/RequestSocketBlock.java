@@ -141,19 +141,19 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
         this.paramData = ArrayUtils.add(this.paramData, mergeData);
     }
     /**获取请求参数类型列表。*/
-    public int[] getParameterTypes() {
-        int[] pTypes = new int[this.paramData.length];
+    public short[] getParameterTypes() {
+        short[] pTypes = new short[this.paramData.length];
         for (int i = 0; i < this.paramData.length; i++) {
             int mergeData = this.paramData[i];
-            pTypes[i] = (mergeData >>> 16);
+            pTypes[i] = (short) (mergeData >>> 16);
         }
         return pTypes;
     }
     /**获取请求参数类型列表。*/
-    public int[] getParameterValues() {
-        int[] pDatas = new int[this.paramData.length];
+    public short[] getParameterValues() {
+        short[] pDatas = new short[this.paramData.length];
         for (int i = 0; i < this.paramData.length; i++) {
-            pDatas[i] = 0x0000FFFF & this.paramData[i];
+            pDatas[i] = (short) (PoolSocketBlock.PoolMaxSize & this.paramData[i]);
         }
         return pDatas;
     }

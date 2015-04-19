@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.rpc.objects.warp;
+import net.hasor.rsf.RsfRequest;
 /**
- * RSF 请求响应消息。
+ * {@link RsfRequest}接口包装器。
+ * @version : 2014年10月25日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.rpc.message;
+public class RsfRequestWarp extends AbstractRsfRequestWarp {
+    private final RsfRequest request;
+    public RsfRequestWarp(RsfRequest request) {
+        this.request = request;
+    }
+    @Override
+    protected RsfRequest getRsfRequest() {
+        return this.request;
+    }
+}

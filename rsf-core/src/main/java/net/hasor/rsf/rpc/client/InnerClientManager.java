@@ -33,7 +33,7 @@ import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.manager.DefaultAddressCenter;
 import net.hasor.rsf.protocol.netty.RSFCodec;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.logger.LoggerHelper;
 /**

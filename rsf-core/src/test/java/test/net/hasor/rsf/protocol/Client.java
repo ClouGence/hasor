@@ -12,9 +12,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import net.hasor.rsf.constants.ProtocolVersion;
 import net.hasor.rsf.protocol.netty.RSFCodec;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
  * @version : 2014年9月12日

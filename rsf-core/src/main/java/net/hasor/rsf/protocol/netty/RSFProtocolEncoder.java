@@ -18,9 +18,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 编码器
  * @version : 2014年10月10日

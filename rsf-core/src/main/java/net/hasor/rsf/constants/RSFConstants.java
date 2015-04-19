@@ -16,7 +16,7 @@
 package net.hasor.rsf.constants;
 import java.nio.charset.Charset;
 /**
- * 
+ * 协议版本 0
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */

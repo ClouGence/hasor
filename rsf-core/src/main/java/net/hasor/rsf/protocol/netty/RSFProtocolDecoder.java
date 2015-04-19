@@ -21,9 +21,9 @@ import java.io.IOException;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.ProtocolType;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 解码器
  * @version : 2014年10月10日

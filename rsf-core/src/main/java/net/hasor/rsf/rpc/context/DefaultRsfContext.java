@@ -27,7 +27,7 @@ import net.hasor.rsf.manager.DefaultAddressCenter;
 import net.hasor.rsf.manager.ExecutesManager;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.rpc.executes.NameThreadFactory;
-import net.hasor.rsf.rpc.warp.InnerLocalWarpRsfFilter;
+import net.hasor.rsf.rpc.objects.warp.InnerLocalWarpRsfFilter;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 

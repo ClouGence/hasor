@@ -13,75 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.warp;
+package net.hasor.rsf.rpc.objects.local;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.manager.OptionManager;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractRsfResponseWarp implements RsfResponse {
-    protected abstract RsfResponse getRsfResponse();
+public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
+    private final RsfRequest rsfRequest;
+    private short            responseStatus;
+    private Class<?>         returnType;
+    private Object           returnObject;
+    private boolean          committed;
+    //
+    public RsfResponseFormLocal(RsfRequest rsfRequest) {
+        this.rsfRequest = rsfRequest;
+    }
+    //
     //
     @Override
+    public String toString() {
+        return "responseID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
+    }
+    @Override
     public RsfBindInfo<?> getBindInfo() {
-        return this.getRsfResponse().getBindInfo();
+        return this.rsfRequest.getBindInfo();
     }
     @Override
     public byte getProtocol() {
-        return this.getRsfResponse().getProtocol();
+        return this.rsfRequest.getProtocol();
     }
     @Override
     public long getRequestID() {
-        return this.getRsfResponse().getRequestID();
+        return this.rsfRequest.getRequestID();
     }
     @Override
     public String getSerializeType() {
-        return this.getRsfResponse().getSerializeType();
-    }
-    @Override
-    public String[] getOptionKeys() {
-        return this.getRsfResponse().getOptionKeys();
-    }
-    @Override
-    public String getOption(String key) {
-        return this.getRsfResponse().getOption(key);
-    }
-    @Override
-    public void addOption(String key, String value) {
-        this.getRsfResponse().addOption(key, value);
-    }
-    @Override
-    public void removeOption(String key) {
-        this.getRsfResponse().removeOption(key);
+        return this.rsfRequest.getSerializeType();
     }
     @Override
     public Object getResponseData() {
-        return this.getRsfResponse().getResponseData();
+        return this.returnObject;
     }
     @Override
     public Class<?> getResponseType() {
-        return this.getRsfResponse().getResponseType();
+        return this.returnType;
     }
     @Override
     public short getResponseStatus() {
-        return this.getRsfResponse().getResponseStatus();
+        return this.responseStatus;
     }
+    //
     @Override
     public void sendData(Object returnObject) {
-        this.getRsfResponse().sendData(returnObject);
+        updateReturn(ProtocolStatus.OK, returnObject);
     }
     @Override
     public void sendStatus(short status) {
-        this.getRsfResponse().sendStatus(status);
+        updateReturn(status, null);
     }
     @Override
     public void sendStatus(short status, Object messageBody) {
-        this.getRsfResponse().sendStatus(status, messageBody);
+        updateReturn(status, messageBody);
+    }
+    private void updateReturn(short status, Object messageBody) {
+        this.returnObject = messageBody;
+        this.responseStatus = status;
+        this.committed = true;
     }
     @Override
     public boolean isResponse() {
-        return this.getRsfResponse().isResponse();
+        return this.committed;
     }
 }

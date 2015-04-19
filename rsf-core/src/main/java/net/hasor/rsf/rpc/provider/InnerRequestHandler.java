@@ -19,13 +19,13 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.RsfFilterHandler;
-import net.hasor.rsf.rpc.RsfRequestImpl;
-import net.hasor.rsf.rpc.RsfResponseImpl;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.component.RequestMsg;
+import net.hasor.rsf.rpc.component.ResponseMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.message.RequestMsg;
-import net.hasor.rsf.rpc.message.ResponseMsg;
+import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
+import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.utils.TransferUtils;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
@@ -47,12 +47,12 @@ class InnerRequestHandler implements Runnable {
         this.connection = connection;
     }
     public void run() {
-        RsfResponseImpl response = this.doRequest();
+        RsfResponseFormLocal response = this.doRequest();
         sendResponse(response);
     }
-    private RsfResponseImpl doRequest() {
-        RsfRequestImpl request = null;
-        RsfResponseImpl response = null;
+    private RsfResponseFormLocal doRequest() {
+        RsfRequestFormLocal request = null;
+        RsfResponseFormLocal response = null;
         try {
             request = RsfRuntimeUtils.recoverRequest(//
                     requestMsg, connection, this.rsfContext);
@@ -92,7 +92,7 @@ class InnerRequestHandler implements Runnable {
         }
         return response;
     }
-    private void sendResponse(RsfResponseImpl response) {
+    private void sendResponse(RsfResponseFormLocal response) {
         if (response == null)
             return;
         //给予默认值

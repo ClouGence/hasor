@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.protocol;
+package net.hasor.rsf.utils;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
+import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日

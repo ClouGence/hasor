@@ -35,10 +35,10 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.constants.RsfTimeoutException;
 import net.hasor.rsf.manager.TimerManager;
 import net.hasor.rsf.rpc.RsfFilterHandler;
-import net.hasor.rsf.rpc.RsfRequestImpl;
-import net.hasor.rsf.rpc.RsfResponseImpl;
+import net.hasor.rsf.rpc.component.RequestMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.message.RequestMsg;
+import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
+import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import org.more.future.FutureCallback;
 import org.more.logger.LoggerHelper;
 /**
@@ -125,7 +125,7 @@ public class RsfRequestManager {
     private void startRequest(RsfFuture rsfFuture) {
         this.requestCount.incrementAndGet();// i++;
         this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
-        final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
+        final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
@@ -150,8 +150,8 @@ public class RsfRequestManager {
      */
     public RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener) {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
-        RsfRequestImpl req = (RsfRequestImpl) rsfFuture.getRequest();
-        RsfResponseImpl res = req.buildResponse();
+        RsfRequestFormLocal req = (RsfRequestFormLocal) rsfFuture.getRequest();
+        RsfResponseFormLocal res = req.buildResponse();
         //
         try {
             RsfBindInfo<?> bindInfo = req.getBindInfo();
@@ -188,7 +188,7 @@ public class RsfRequestManager {
             }
         }
         //RsfFilter
-        final RsfRequestImpl request = (RsfRequestImpl) rsfFuture.getRequest();
+        final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
         final RequestMsg rsfMessage = request.getMsg();
         //查找远程服务地址
         final AbstractRsfClient rsfClient = this.getClientManager().getClient(request.getBindInfo());

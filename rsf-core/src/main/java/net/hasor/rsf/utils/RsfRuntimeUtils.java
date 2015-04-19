@@ -16,17 +16,21 @@
 package net.hasor.rsf.utils;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import net.hasor.rsf.constants.RsfException;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
-    private static AtomicLong requestID = new AtomicLong(1);
-    //
-    //
+    private static AtomicLong                      requestID        = new AtomicLong(1);
+    private static ConcurrentMap<String, Class<?>> classCacheByName = new ConcurrentHashMap<String, Class<?>>();
+    private static ConcurrentMap<byte[], Class<?>> classCacheByByte = new ConcurrentHashMap<byte[], Class<?>>();
+    private static ConcurrentMap<String, Method>   methodMap        = new ConcurrentHashMap<String, Method>();
     //
     public static String evalMethodSign(Method targetMethod) {
         return targetMethod.toString();
@@ -79,10 +83,10 @@ public class RsfRuntimeUtils {
             }
             return returnType;
         } else {
-            Class<?> cache = loadClassCache.get(tType);
+            Class<?> cache = classCacheByName.get(tType);
             if (cache == null) {
                 cache = loader.loadClass(tType);
-                loadClassCache.put(tType, cache);
+                classCacheByName.put(tType, cache);
             }
             return cache;
         }
@@ -115,5 +119,43 @@ public class RsfRuntimeUtils {
         }
     }
     //
-    private static Map<String, Class<?>> loadClassCache = new java.util.concurrent.ConcurrentHashMap<String, Class<?>>();
+    public static Method getServiceMethod(Class<?> serviceType, String methodName, Class<?>[] parameterTypes) {
+        StringBuffer key = new StringBuffer(methodName);
+        for (Class<?> pt : parameterTypes) {
+            key.append(pt.getName() + ";");
+        }
+        String mKey = key.toString();
+        Method method = methodMap.get(mKey);
+        if (method == null) {
+            try {
+                Method newMethod = serviceType.getMethod(methodName, parameterTypes);
+                method = methodMap.putIfAbsent(mKey, newMethod);
+                if (method == null) {
+                    method = newMethod;
+                }
+            } catch (Exception e) {
+                LoggerHelper.logSevere(e.getMessage(), e);
+                throw new RsfException(e.getMessage(), e);
+            }
+        }
+        return method;
+    }
+    //
+    public static Class<?> getType(byte[] keyData, ClassLoader classLoader) {
+        Class<?> type = classCacheByByte.get(keyData);
+        if (type == null) {
+            try {
+                String typeName = new String(keyData);
+                Class<?> newType = classLoader.loadClass(typeName);
+                type = classCacheByByte.putIfAbsent(keyData, newType);
+                if (type == null) {
+                    type = newType;
+                }
+            } catch (Exception e) {
+                LoggerHelper.logSevere(e.getMessage(), e);
+                throw new RsfException(e.getMessage(), e);
+            }
+        }
+        return type;
+    }
 }

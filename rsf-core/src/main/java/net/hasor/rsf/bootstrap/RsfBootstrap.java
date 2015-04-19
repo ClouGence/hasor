@@ -31,7 +31,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.protocol.netty.RSFCodec;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.provider.RsfProviderHandler;
@@ -54,7 +54,7 @@ public class RsfBootstrap {
     //
     //
     public RsfBootstrap bindSettings(Settings settings) throws IOException {
-        if (settings == null)a
+        if (settings == null)
             throw new NullPointerException();
         this.settings = new DefaultRsfSettings(settings);
         return this;
@@ -104,7 +104,7 @@ public class RsfBootstrap {
         }
         if (this.settings.getXmlNode("hasor.rsfConfig") == null) {
             throw new IOException("settings is not load.");
-        }
+        }s
         //
         //RsfContext
         LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);

@@ -24,16 +24,16 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.protocol.protocol.ProtocolUtils;
-import net.hasor.rsf.rpc.RsfRequestImpl;
-import net.hasor.rsf.rpc.RsfResponseImpl;
+import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.component.RequestMsg;
+import net.hasor.rsf.rpc.component.ResponseMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.message.RequestMsg;
-import net.hasor.rsf.rpc.message.ResponseMsg;
+import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
+import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
  * @version : 2014年11月17日
@@ -43,7 +43,7 @@ public class RuntimeUtils {
     private static AtomicLong requestID = new AtomicLong(1);
     //
     /**根据元信息创建一个{@link RsfRequest}对象。*/
-    public static RsfRequestImpl buildRequest(RsfBindInfo<?> bindInfo, RsfRequestManager rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
+    public static RsfRequestFormLocal buildRequest(RsfBindInfo<?> bindInfo, RsfRequestManager rsfClient, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws RsfException {
         //1.基本信息
         AbstractRsfContext rsfContext = rsfClient.getRsfContext();
         RequestMsg requestMsg = new RequestMsg();
@@ -75,11 +75,11 @@ public class RuntimeUtils {
             requestMsg.addOption(optKey, optVar);
         }
         //4.RsfRequest
-        return new RsfRequestImpl(true, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
+        return new RsfRequestFormLocal(true, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
     }
     //
     /**从请求数据包中恢复{@link RsfRequest}对象。*/
-    public static RsfRequestImpl recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
+    public static RsfRequestFormLocal recoverRequest(RequestMsg requestMsg, NetworkConnection connection, AbstractRsfContext rsfContext) throws RsfException {
         //1.获取MetaData
         RsfBindInfo<?> bindInfo = rsfContext.getBindCenter().getService(//
                 requestMsg.getServiceGroup(), requestMsg.getServiceName(), requestMsg.getServiceVersion());
@@ -104,14 +104,14 @@ public class RuntimeUtils {
             throw new RsfException(ProtocolStatus.SerializeError, e);
         }
         //4.RsfRequest and check Forbidden
-        return new RsfRequestImpl(false, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
+        return new RsfRequestFormLocal(false, parameterTypes, parameterObjects, bindInfo, requestMsg, rsfContext);
     }
     /**从响应数据包中恢复{@link RsfResponse}对象。*/
     public static RsfResponse recoverResponse(ResponseMsg responseMsg, RsfRequest rsfRequest, AbstractRsfContext rsfContext) throws Throwable {
         RsfBindInfo<?> metaData = rsfRequest.getBindInfo();
         Class<?> returnType = rsfRequest.getServiceMethod().getReturnType();
         Object returnObject = responseMsg.getReturnData(rsfContext.getSerializeFactory());
-        return new RsfResponseImpl(metaData, responseMsg, returnObject, returnType);
+        return new RsfResponseFormLocal(metaData, responseMsg, returnObject, returnType);
     }
     /**生成BindID*/
     public static String bindID(String group, String name, String version) {

@@ -19,10 +19,10 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.NetworkConnection;
+import net.hasor.rsf.rpc.component.RequestMsg;
+import net.hasor.rsf.rpc.component.ResponseMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.message.RequestMsg;
-import net.hasor.rsf.rpc.message.ResponseMsg;
 import net.hasor.rsf.rpc.utils.TransferUtils;
 import org.more.logger.LoggerHelper;
 /**

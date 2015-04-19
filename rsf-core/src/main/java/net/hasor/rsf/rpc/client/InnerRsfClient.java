@@ -16,7 +16,7 @@
 package net.hasor.rsf.rpc.client;
 import io.netty.channel.Channel;
 import java.net.URL;
-import net.hasor.rsf.rpc.component.NetworkConnection;
+import net.hasor.rsf.rpc.NetworkConnection;
 /**
  * 为{@link InnerRsfCustomerHandler}提供{@link RsfRequestManager}列表维护。
  * 同时负责创建和销毁{@link RsfRequestManager}的功能。

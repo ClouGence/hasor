@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * RSF 协议的数据结构。
+ * RSF 协议的底层Socket传输数据结构。
+ * 这里封装的数据结构是由 Netty 直接解析网络数据得来。
  */
 package net.hasor.rsf.protocol.protocol;
