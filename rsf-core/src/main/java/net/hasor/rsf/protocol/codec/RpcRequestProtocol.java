@@ -137,8 +137,8 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
             req.addOption(mergeData);
         }
         //* --------------------------------------------------------bytes =6 ~ 8192
-        //* byte[2]  attrPool-size (Max = 2047)           池大小
-        short attrPoolSize = buf.readShort();
+        //* byte[2]  attrPool-size (Max = 65535)           池大小
+        int attrPoolSize = 0x0000FFFF & buf.readShort();
         for (int i = 0; i < attrPoolSize; i++) {
             //* byte[4] att-length                        属性1大小
             int length = buf.readInt();

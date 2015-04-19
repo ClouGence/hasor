@@ -23,7 +23,7 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.route.rule.ArgsKey;
-import net.hasor.rsf.utils.MethodUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 路由计算结果缓存
@@ -106,7 +106,7 @@ class AddressCacheResult {
             for (Method m : mArrays) {
                 List<InterAddress> methodCache = evalMethodLevel(binderInfo, m, all, unit);
                 if (methodCache != null && methodCache.isEmpty() == false) {
-                    String key = MethodUtils.evalMethodSign(m);
+                    String key = RsfRuntimeUtils.evalMethodSign(m);
                     methodLevelResult.put(key, methodCache);
                 }
             }
@@ -119,7 +119,7 @@ class AddressCacheResult {
             for (Method m : mArrays) {
                 Map<Object, List<InterAddress>> methodCache = evalArgsLevel(binderInfo, m, all, unit);
                 if (methodCache != null && methodCache.isEmpty() == false) {
-                    String key = MethodUtils.evalMethodSign(m);
+                    String key = RsfRuntimeUtils.evalMethodSign(m);
                     argsLevelResult.put(key, methodCache);
                 }
             }

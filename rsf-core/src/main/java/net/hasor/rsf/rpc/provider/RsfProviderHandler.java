@@ -19,11 +19,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.rpc.TransferUtils;
 import net.hasor.rsf.rpc.component.NetworkConnection;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.message.RequestMsg;
 import net.hasor.rsf.rpc.message.ResponseMsg;
+import net.hasor.rsf.rpc.utils.TransferUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。

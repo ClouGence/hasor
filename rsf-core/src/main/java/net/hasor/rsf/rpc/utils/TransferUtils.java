@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc;
-import net.hasor.rsf.RsfOptionSet;
+package net.hasor.rsf.rpc.utils;
 import net.hasor.rsf.constants.RSFConstants;
-import net.hasor.rsf.protocol.protocol.BaseSocketBlock;
+import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
 import net.hasor.rsf.protocol.protocol.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
@@ -74,7 +73,7 @@ public class TransferUtils {
         }
         return socketMsg;
     };
-    private static short pushString(BaseSocketBlock socketMessage, String attrData) {
+    private static short pushString(PoolSocketBlock socketMessage, String attrData) {
         return socketMessage.pushData(attrData.getBytes());
     }
     //
@@ -133,26 +132,26 @@ public class TransferUtils {
         }
         return resMetaData;
     };
-    private static String getString(BaseSocketBlock socketMessage, int attrIndex) {
+    private static String getString(PoolSocketBlock socketMessage, short attrIndex) {
         byte[] byteDatas = socketMessage.readPool(attrIndex);
         return (byteDatas == null) ? null : new String(byteDatas);
     }
     //
     //
     //
-//    /**生成指定状态的的响应包*/
-//    public static ResponseMsg buildStatus(byte version, long requestID, short status, String serializeType, RsfOptionSet optMap) {
-//        ResponseMsg ack = new ResponseMsg();
-//        ack.setVersion(ProtocolUtils.finalVersionForResponse(version));
-//        ack.setRequestID(requestID);
-//        ack.setStatus(status);
-//        ack.setSerializeType(serializeType);
-//        //
-//        if (optMap != null) {
-//            for (String optKey : optMap.getOptionKeys())
-//                ack.addOption(optKey, optMap.getOption(optKey));
-//        }
-//        //
-//        return ack;
-//    }
+    //    /**生成指定状态的的响应包*/
+    //    public static ResponseMsg buildStatus(byte version, long requestID, short status, String serializeType, RsfOptionSet optMap) {
+    //        ResponseMsg ack = new ResponseMsg();
+    //        ack.setVersion(ProtocolUtils.finalVersionForResponse(version));
+    //        ack.setRequestID(requestID);
+    //        ack.setStatus(status);
+    //        ack.setSerializeType(serializeType);
+    //        //
+    //        if (optMap != null) {
+    //            for (String optKey : optMap.getOptionKeys())
+    //                ack.addOption(optKey, optMap.getOption(optKey));
+    //        }
+    //        //
+    //        return ack;
+    //    }
 }

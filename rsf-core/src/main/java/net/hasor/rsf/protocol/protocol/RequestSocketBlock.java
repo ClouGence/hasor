@@ -51,7 +51,7 @@ import org.more.util.ArrayUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestSocketBlock extends BaseSocketBlock {
+public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
     private byte  version        = 0; //byte[1]  RSF版本(0xC1 or 0x81)
     private long  requestID      = 0; //byte[8]  请求ID
     private short serviceName    = 0; //byte[2]  远程服务名

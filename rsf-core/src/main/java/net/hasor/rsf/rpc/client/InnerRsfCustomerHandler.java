@@ -22,7 +22,7 @@ import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.component.NetworkConnection;
 import net.hasor.rsf.rpc.message.ResponseMsg;
-import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
@@ -96,7 +96,7 @@ class ResponseHandler implements Runnable {
         //恢复response
         RsfResponse response = null;
         try {
-            response = RuntimeUtils.recoverResponse(responseMsg, rsfFuture.getRequest(), requestManager.getRsfContext());
+            response = RsfRuntimeUtils.recoverResponse(responseMsg, rsfFuture.getRequest(), requestManager.getRsfContext());
             if (resStatus == ProtocolStatus.OK) {
                 requestManager.putResponse(responseMsg.getRequestID(), response);
             } else {

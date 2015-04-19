@@ -24,7 +24,7 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 /**
@@ -78,7 +78,7 @@ public class RsfBindCenter implements BindCenter {
     }
     //
     public <T> RsfBindInfo<T> getService(String group, String name, String version) {
-        String serviceID = RuntimeUtils.bindID(group, name, version);
+        String serviceID = RsfRuntimeUtils.bindID(group, name, version);
         return (RsfBindInfo<T>) this.rsfServiceMap.get(serviceID);
     }
     //

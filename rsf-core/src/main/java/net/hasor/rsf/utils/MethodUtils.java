@@ -40,9 +40,4 @@ public class MethodUtils {
         }
         return methodMap.get(mKey);
     }
-    //
-    //
-    public static String evalMethodSign(Method targetMethod) {
-        return targetMethod.toString();
-    }
 }

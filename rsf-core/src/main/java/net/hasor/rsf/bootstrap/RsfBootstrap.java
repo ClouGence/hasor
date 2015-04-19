@@ -54,7 +54,7 @@ public class RsfBootstrap {
     //
     //
     public RsfBootstrap bindSettings(Settings settings) throws IOException {
-        if (settings == null)
+        if (settings == null)a
             throw new NullPointerException();
         this.settings = new DefaultRsfSettings(settings);
         return this;

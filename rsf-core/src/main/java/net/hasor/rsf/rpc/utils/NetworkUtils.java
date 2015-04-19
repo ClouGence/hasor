@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.rpc.utils;
 /**
  * 
  * @version : 2014年11月17日

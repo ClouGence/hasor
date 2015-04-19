@@ -16,7 +16,7 @@
 package net.hasor.rsf.domain;
 import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 /**
@@ -36,7 +36,7 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
         this.bindType = bindType;
     }
     public String getBindID() {
-        return RuntimeUtils.bindID(this.bindGroup, this.bindName, this.bindVersion);
+        return RsfRuntimeUtils.bindID(this.bindGroup, this.bindName, this.bindVersion);
     }
     /**获取发布服务的名称。*/
     public String getBindName() {

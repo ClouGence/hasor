@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.binder.AnnoRsfServiceValue;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.client.InnerClientManager;
-import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.future.FutureCallback;
 import org.more.logger.LoggerHelper;
 /**
@@ -37,7 +37,7 @@ class RsfClientFacade implements RsfClient {
     }
     //
     protected <T> RsfBindInfo<T> findBindInfo(String group, String name, String version) {
-        String serviceID = RuntimeUtils.bindID(group, name, version);
+        String serviceID = RsfRuntimeUtils.bindID(group, name, version);
         return this.findBindInfoByID(serviceID);
     }
     protected <T> RsfBindInfo<T> findBindInfoByID(String serviceID) {

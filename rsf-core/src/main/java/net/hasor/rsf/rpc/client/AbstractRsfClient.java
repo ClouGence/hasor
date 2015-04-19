@@ -27,7 +27,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.RuntimeUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -202,7 +202,7 @@ public abstract class AbstractRsfClient implements RsfClient {
         RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
         int timeout = validateTimeout(bindInfo.getClientTimeout());
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         RsfFuture rsfFuture = reqManager.sendRequest(request, null);
         //3.返回数据
@@ -220,7 +220,7 @@ public abstract class AbstractRsfClient implements RsfClient {
     public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         return reqManager.sendRequest(request, null);
     }
@@ -256,7 +256,7 @@ public abstract class AbstractRsfClient implements RsfClient {
     public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
         RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         reqManager.sendRequest(request, listener);
     }

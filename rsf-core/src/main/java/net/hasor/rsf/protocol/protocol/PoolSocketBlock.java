@@ -18,14 +18,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.more.util.ArrayUtils;
 /**
+ * 
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BaseSocketBlock {
-    public static final int NULL_Mark = 0x80000000;                           //
-    public static int       MaxSize   = 16777215;                             //0x00FFFFFF
-    private int[]           poolMap   = {};
-    private ByteBuf         poolData  = ByteBufAllocator.DEFAULT.heapBuffer();
+public class PoolSocketBlock {
+    public static final int NULL_Mark = 0x80000000;
+    public static int       MaxSize   = 0xFFFF;    //最大值为 FFFF.
+    private int[]           poolMap   = {};        //每一个元素的最大值为 FFFF.
+    private ByteBuf         poolData  = null;
+    //
+    public PoolSocketBlock() {
+        poolData = ByteBufAllocator.DEFAULT.heapBuffer();
+    }
     //
     public void fillFrom(ByteBuf formData) {
         if (formData == null)
@@ -39,19 +44,25 @@ public class BaseSocketBlock {
     }
     /**添加请求参数。*/
     public short pushData(byte[] dataArray) {
-        if (this.poolMap.length == MaxSize)
+        if (this.poolMap.length >= MaxSize) {
             throw new IndexOutOfBoundsException("max size is " + MaxSize);
+        }
         //
         int datalength = (dataArray == null) ? NULL_Mark : dataArray.length;
         this.poolMap = ArrayUtils.add(this.poolMap, datalength);
         //
-        if (datalength > 0)
+        if (datalength > 0) {
             this.poolData.writeBytes(dataArray);
+        }
         return (short) (this.poolMap.length - 1);
     }
     //
     /**添加池数据。*/
     public void addPoolData(int poolMapping) {
+        if (poolMapping >= MaxSize) {
+            throw new IndexOutOfBoundsException("max value is " + MaxSize);
+        }
+        //
         this.poolMap = ArrayUtils.add(this.poolMap, poolMapping);
     }
     /**池长度*/
