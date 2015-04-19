@@ -39,7 +39,7 @@ public interface RsfSocketBlock {
     public int[] getOptions();
     //
     /**内容所处起始位置*/
-    public byte[] readPool(int attrIndex);
+    public byte[] readPool(short attrIndex);
     /**添加请求参数。*/
     public short pushData(byte[] dataArray);
 }

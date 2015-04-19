@@ -40,7 +40,7 @@ import org.more.util.ArrayUtils;
  *     byte[4]  attr-1-(attr-index,attr-index)   选项参数2
  *     ...
  * --------------------------------------------------------bytes =6 ~ 8192
- * byte[2]  attrPool-size (Max = 2047)           池大小 0x07FF
+ * byte[2]  attrPool-size (0~4095)               池大小 0x0FFF
  *     byte[4] att-length                        属性1大小
  *     byte[4] att-length                        属性2大小
  *     ...
@@ -141,19 +141,19 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
         this.paramData = ArrayUtils.add(this.paramData, mergeData);
     }
     /**获取请求参数类型列表。*/
-    public short[] getParameterTypes() {
-        short[] pTypes = new short[this.paramData.length];
+    public int[] getParameterTypes() {
+        int[] pTypes = new int[this.paramData.length];
         for (int i = 0; i < this.paramData.length; i++) {
             int mergeData = this.paramData[i];
-            pTypes[i] = (short) (mergeData >>> 16);
+            pTypes[i] = (mergeData >>> 16);
         }
         return pTypes;
     }
     /**获取请求参数类型列表。*/
-    public short[] getParameterValues() {
-        short[] pDatas = new short[this.paramData.length];
+    public int[] getParameterValues() {
+        int[] pDatas = new int[this.paramData.length];
         for (int i = 0; i < this.paramData.length; i++) {
-            pDatas[i] = (short) this.paramData[i];
+            pDatas[i] = 0x0000FFFF & this.paramData[i];
         }
         return pDatas;
     }
@@ -182,7 +182,7 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
     public short[] getOptionValues() {
         short[] optDatas = new short[this.optionMap.length];
         for (int i = 0; i < this.optionMap.length; i++) {
-            optDatas[i] = (short) this.optionMap[i];
+            optDatas[i] = (short) (0x0000FFFF & this.optionMap[i]);
         }
         return optDatas;
     }

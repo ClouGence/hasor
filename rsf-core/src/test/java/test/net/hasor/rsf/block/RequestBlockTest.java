@@ -38,7 +38,7 @@ public class RequestBlockTest {
         System.err.println("\nbegin write...");
         writeblock.pushData(null);//0
         writeblock.pushData(new byte[0]);//1
-        for (int i = 2; i < 0xFFFF; i++) {
+        for (short i = 2; i < 0x0FFF; i++) {
             String msg = String.format(messageTmp, i);
             writeblock.pushData(msg.getBytes());
         }
@@ -49,7 +49,7 @@ public class RequestBlockTest {
         //
         System.err.println("\nbegin read...");
         PoolSocketBlock readblock = reqProtocol.decode(buf);
-        for (int i = 0; i < 0xFFFF; i++) {
+        for (short i = 0; i < 0x0FFF; i++) {
             byte[] msgByte = readblock.readPool(i);
             if (i == 0) {
                 if (msgByte == null) {

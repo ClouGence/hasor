@@ -75,17 +75,8 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
             //* byte[4]  ptype-1-(attr-index,attr-index)  选项参数2
             bodyBuf.writeInt(optionMapping[i]);
         }
-        //* --------------------------------------------------------bytes =6 ~ 8192
-        //* byte[2]  attrPool-size (Max = 2047)           池大小 0x07FF
-        int[] poolData = reqMsg.getPoolData();
-        bodyBuf.writeShort(poolData.length);
-        for (int i = 0; i < poolData.length; i++) {
-            //* byte[4]  ptype-0-(attr-index,attr-index)  属性1大小
-            //* byte[4]  ptype-1-(attr-index,attr-index)  属性1大小
-            bodyBuf.writeInt(poolData[i]);
-        }
-        //* --------------------------------------------------------bytes =n
-        //* dataBody                                      数据内容
+        //* --------------------------------------------------------数据池
+        //* dataBody                                      数据池
         reqMsg.fillTo(bodyBuf);
         return bodyBuf;
     }
@@ -136,17 +127,9 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
             int mergeData = buf.readInt();
             req.addOption(mergeData);
         }
-        //* --------------------------------------------------------bytes =6 ~ 8192
-        //* byte[2]  attrPool-size (Max = 65535)           池大小
-        int attrPoolSize = 0x0000FFFF & buf.readShort();
-        for (int i = 0; i < attrPoolSize; i++) {
-            //* byte[4] att-length                        属性1大小
-            int length = buf.readInt();
-            req.addPoolData(length);
-        }
         //* --------------------------------------------------------bytes =n
-        //* dataBody                                      数据内容
-        req.fillFrom(buf.readBytes(req.getPoolSize()));
+        //* dataBody                                      数据池
+        req.fillFrom(buf);
         return req;
     }
 }

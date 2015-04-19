@@ -32,7 +32,7 @@ public class PoolSocketBlockTest {
         System.err.println("\nbegin write...");
         block.pushData(null);//0
         block.pushData(new byte[0]);//1
-        for (int i = 2; i < 0xFFFF; i++) {
+        for (short i = 2; i < 0x0FFF; i++) {
             String msg = String.format(messageTmp, i);
             block.pushData(msg.getBytes());
         }
@@ -45,7 +45,7 @@ public class PoolSocketBlockTest {
         }
         //
         System.err.println("\nbegin read...");
-        for (int i = 0; i < 0xFFFF; i++) {
+        for (short i = 0; i < 0x0FFF; i++) {
             byte[] msgByte = block.readPool(i);
             if (i == 0) {
                 if (msgByte == null) {

@@ -65,17 +65,8 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
             //* byte[4]  ptype-1-(attr-index,attr-index)  选项参数2
             bodyBuf.writeInt(optionMapping[i]);
         }
-        //* --------------------------------------------------------bytes =6 ~ 8192
-        //* byte[2]  attrPool-size (Max = 2047)           池大小 0x07FF
-        int[] poolData = resMsg.getPoolData();
-        bodyBuf.writeShort(poolData.length);
-        for (int i = 0; i < poolData.length; i++) {
-            //* byte[4]  ptype-0-(attr-index,attr-index)  属性1大小
-            //* byte[4]  ptype-1-(attr-index,attr-index)  属性2大小
-            bodyBuf.writeInt(poolData[i]);
-        }
         //* --------------------------------------------------------bytes =n
-        //* dataBody                                      数据内容
+        //* dataBody                                      数据池
         resMsg.fillTo(bodyBuf);
         return bodyBuf;
     }
@@ -114,17 +105,9 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
             int mergeData = buf.readInt();
             res.addOption(mergeData);
         }
-        //* --------------------------------------------------------bytes =6 ~ 8192
-        //* byte[2]  attrPool-size (Max = 2047)           池大小
-        short attrPoolSize = buf.readShort();
-        for (int i = 0; i < attrPoolSize; i++) {
-            //* byte[4] att-length                        属性1大小
-            int length = buf.readInt();
-            res.addPoolData(length);
-        }
         //* --------------------------------------------------------bytes =n
-        //* dataBody                                      数据内容
-        res.fillFrom(buf.readBytes(res.getPoolSize()));
+        //* dataBody                                      数据池
+        res.fillFrom(buf);
         return res;
     }
 }

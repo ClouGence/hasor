@@ -18,53 +18,67 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.more.util.ArrayUtils;
 /**
- * 
+ * 池上限为 0~4095条数据，单条数据最大约16MB。
+ * 下面是数据格式：<pre>
+ * ---------------------------------bytes =6 ~ 8192
+ * byte[2]  attrPool-size (0~4095)  池大小 0x0FFF
+ *     byte[4] att-length           属性1大小
+ *     byte[4] att-length           属性2大小
+ *     ...
+ * ---------------------------------bytes =n
+ * dataBody                         数据内容
+ *     bytes[...]
+ * </pre>
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class PoolSocketBlock {
-    public static final int NULL_Mark = 0x80000000;
-    public static int       MaxSize   = 0xFFFF;    //最大值为 FFFF.
-    private int[]           poolMap   = {};        //每一个元素的最大值为 FFFF.
-    private ByteBuf         poolData  = null;
+    public static final int NULL_MARK   = 0xFFFFFFFF; //表示NULL
+    public static int       DataMaxSize = 0x00FFFFFF; //单条数据最大约16MB
+    public static short     PoolMaxSize = 0x0FFF;    //池上限为 0~4095条
+    private int[]           poolMap     = {};
+    private ByteBuf         poolData    = null;
     //
     public PoolSocketBlock() {
         poolData = ByteBufAllocator.DEFAULT.heapBuffer();
     }
-    //
     public void fillFrom(ByteBuf formData) {
-        if (formData == null)
+        if (formData == null) {
             return;
+        }
+        //
+        short attrPoolSize = (short) (PoolMaxSize & formData.readShort());
+        for (int i = 0; i < attrPoolSize; i++) {
+            int length = formData.readInt();
+            this.poolMap = ArrayUtils.add(this.poolMap, length);
+        }
         this.poolData.writeBytes(formData);
     }
     public void fillTo(ByteBuf toData) {
         if (toData == null)
             return;
+        //
+        toData.writeShort(poolMap.length);
+        for (int i = 0; i < poolMap.length; i++) {
+            toData.writeInt(poolMap[i]);
+        }
         toData.writeBytes(this.poolData);
     }
+    //
     /**添加请求参数。*/
     public short pushData(byte[] dataArray) {
-        if (this.poolMap.length >= MaxSize) {
-            throw new IndexOutOfBoundsException("max size is " + MaxSize);
+        if (this.poolMap.length >= PoolMaxSize) {
+            throw new IndexOutOfBoundsException("poolMax size is " + PoolMaxSize);
         }
         //
-        int datalength = (dataArray == null) ? NULL_Mark : dataArray.length;
+        int datalength = (dataArray == null) ? NULL_MARK : dataArray.length;
         this.poolMap = ArrayUtils.add(this.poolMap, datalength);
-        //
         if (datalength > 0) {
             this.poolData.writeBytes(dataArray);
         }
         return (short) (this.poolMap.length - 1);
     }
     //
-    /**添加池数据。*/
-    public void addPoolData(int poolMapping) {
-        if (poolMapping >= MaxSize) {
-            throw new IndexOutOfBoundsException("max value is " + MaxSize);
-        }
-        //
-        this.poolMap = ArrayUtils.add(this.poolMap, poolMapping);
-    }
     /**池长度*/
     public int getPoolLength() {
         return this.poolMap.length;
@@ -85,8 +99,8 @@ public class PoolSocketBlock {
         return this.poolMap;
     }
     /**内容所处起始位置*/
-    public byte[] readPool(int attrIndex) {
-        if (this.poolMap[attrIndex] == NULL_Mark) {
+    public byte[] readPool(short attrIndex) {
+        if (this.poolMap[attrIndex] == NULL_MARK) {
             return null;
         }
         //
@@ -94,11 +108,11 @@ public class PoolSocketBlock {
         for (int i = 0; i < this.poolMap.length; i++) {
             if (i == attrIndex)
                 break;
-            if (this.poolMap[i] != NULL_Mark)
+            if (this.poolMap[i] != NULL_MARK)
                 rawIndex += this.poolMap[i];
         }
         int readLength = this.poolMap[attrIndex];//内容长度
-        if (readLength == NULL_Mark)
+        if (readLength == NULL_MARK)
             return null;
         //
         byte[] data = new byte[readLength];
