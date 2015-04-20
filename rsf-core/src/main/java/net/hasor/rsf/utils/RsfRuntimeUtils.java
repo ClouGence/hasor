@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import io.netty.channel.Channel;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.constants.RsfException;
 import org.more.logger.LoggerHelper;
 /**
@@ -155,5 +159,11 @@ public class RsfRuntimeUtils {
             }
         }
         return type;
+    }
+    public static InterAddress getAddress(Channel channel) {
+        return channel.attr(RSFConstants.AddressKey).get();
+    }
+    public static void setAddress(InterAddress hostAddress, Channel channel) throws MalformedURLException {
+        channel.attr(RSFConstants.AddressKey).set(hostAddress);
     }
 }

@@ -21,7 +21,7 @@ import net.hasor.core.setting.SettingsWarp;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.constants.ProtocolVersion;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.manager.OptionManager;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
@@ -71,7 +71,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         return this.clientOptionManager;
     }
     public byte getVersion() {
-        return ProtocolVersion.V_1_0.value();
+        return RSFConstants.Version_1;
     }
     public String getDefaultGroup() {
         return this.defaultGroup;

@@ -21,6 +21,12 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfContext {
+    /**停止工作*/
+    public void shutdown();
+    /** @return 获取RSF配置*/
+    public RsfSettings getSettings();
+    /** @return 发起远程调用的客户端接口*/
+    public RsfClient getRsfClient();
     /** @return 获取注册中心*/
     public BindCenter getBindCenter();
     /**
@@ -35,31 +41,4 @@ public interface RsfContext {
      * @return 服务对象
      */
     public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo);
-    /** @return 获取配置*/
-    public RsfSettings getSettings();
-    /** @return 获取客户端*/
-    public RsfClient getRsfClient();
-    /**
-     * 查找一个{@link RsfFilter}
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(String filterID);
-    /**
-     * 获取服务上的{@link RsfFilter}
-     * @param serviceID 服务ID
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(String serviceID, String filterID);
-    /**
-     * 查找一个{@link RsfFilter}<br>
-     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。
-     * @param servicetType 服务类型
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID);
-    /**停止工作*/
-    public void shutdown();
 }

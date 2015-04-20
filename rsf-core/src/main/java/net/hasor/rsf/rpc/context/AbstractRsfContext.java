@@ -17,23 +17,39 @@ package net.hasor.rsf.rpc.context;
 import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.Executor;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
-import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
-import org.more.util.StringUtils;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
+    /**
+     * 获取{@link Executor}用于安排执行任务。
+     * @param serviceName 服务名
+     * @return 返回Executor
+     */
+    public abstract Executor getCallExecute(String serviceName);
+    /** @return 获取序列化管理器。*/
+    public abstract SerializeFactory getSerializeFactory();
+    /** @return 获取Netty事件处理工具*/
+    public abstract EventLoopGroup getLoopGroup();
+    /** @return 获取服务注册中心*/
+    public abstract RsfBindCenter getBindCenter();
+    /** @return 获取请求管理中心*/
+    public abstract RsfRequestManager getRequestManager();
+    //
+    public abstract AddressPool getAddressPool();
+    //
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+    //
+    //
     //
     /**
      * 获取元信息所描述的服务对象
@@ -50,73 +66,5 @@ public abstract class AbstractRsfContext implements RsfContext {
         //                return provider.get();
         //        }
         return null;
-    }
-    /**
-     * 查找一个{@link RsfFilter}
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(String filterID) {
-        //        return this.getBindCenter().findFilter(filterID);
-        return null;
-    }
-    /**
-     * 获取服务上的{@link RsfFilter}
-     * @param serviceID 服务ID
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(String serviceID, String filterID) {
-        RsfBindInfo<?> bindInfo = this.getBindCenter().getServiceByID(serviceID);
-        if (bindInfo != null && bindInfo instanceof ServiceDefine == true) {
-            ServiceDefine<?> rsfDefine = (ServiceDefine<?>) bindInfo;
-            return (T) rsfDefine.getFilter(filterID);
-        }
-        return null;
-    }
-    /**
-     * 查找一个{@link RsfFilter}<br>
-     *  如果在Binder阶段注册的服务通过{@link RsfBinder}指定过Group、Name、Version任意一个值则该方法不确定会成功返回。
-     * @param servicetType 服务类型
-     * @param filterID filter ID
-     * @return 返回{@link RsfFilter}
-     */
-    public <T extends RsfFilter> T findFilter(Class<?> servicetType, String filterID) {
-        RsfSettings settings = getSettings();
-        String serviceName = servicetType.getName();
-        String serviceGroup = settings.getDefaultGroup();
-        String serviceVersion = settings.getDefaultVersion();
-        //覆盖
-        RsfService serviceInfo = servicetType.getAnnotation(RsfService.class);
-        if (serviceInfo != null) {
-            if (StringUtils.isBlank(serviceInfo.group()) == false)
-                serviceGroup = serviceInfo.group();
-            if (StringUtils.isBlank(serviceInfo.name()) == false)
-                serviceName = serviceInfo.name();
-            if (StringUtils.isBlank(serviceInfo.version()) == false)
-                serviceVersion = serviceInfo.version();
-        }
-        String serviceID = String.format("[%s]%s-%s", serviceGroup, serviceName, serviceVersion);
-        return this.findFilter(serviceID, filterID);
-    }
-    //
-    /**
-     * 获取{@link Executor}用于安排执行任务。
-     * @param serviceName 服务名
-     * @return 返回Executor
-     */
-    public abstract Executor getCallExecute(String serviceName);
-    /** @return 获取序列化管理器。*/
-    public abstract SerializeFactory getSerializeFactory();
-    /** @return 获取Netty事件处理工具*/
-    public abstract EventLoopGroup getLoopGroup();
-    /** @return 获取服务注册中心*/
-    public abstract RsfBindCenter getBindCenter();
-    /** @return 获取请求管理中心*/
-    public abstract RsfRequestManager getRequestManager();
-    public abstract AddressPool getAddressPool();
-    //
-    public ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
     }
 }

@@ -132,15 +132,17 @@ public class AddressPool {
         this.rulerCache.reset();
     }
     /**将地址置为失效的。*/
-    public void invalidAddress(RsfBindInfo<?> bindInfo, URI newInvalid) {
+    public void invalidAddress(URI newInvalid) {
         /*在并发情况下,newAddress可能正在创建AddressBucket,因此要锁住poolLock*/
         synchronized (this.poolLock) {
-            String serviceID = bindInfo.getBindID();
-            AddressBucket bucket = this.addressPool.get(serviceID);
-            if (bucket == null) {
-                return;
+            for (String bucketKey : this.addressPool.keySet()) {
+                AddressBucket bucket = this.addressPool.get(bucketKey);
+                if (bucket == null) {
+                    return;
+                }
+                bucket.invalidAddress(newInvalid);
+                bucket.refreshAddress();
             }
-            bucket.invalidAddress(newInvalid);
         }
         this.rulerCache.reset();
     }
