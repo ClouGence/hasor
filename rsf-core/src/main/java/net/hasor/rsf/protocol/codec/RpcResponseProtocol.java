@@ -17,6 +17,7 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 /**
  * Protocol Interface,for custom network protocol
@@ -29,7 +30,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         //
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0x81)
-        buf.writeByte(resMsg.getVersion());
+        buf.writeByte(RSFConstants.RSF_Response);
         //* byte[8]  requestID                            请求ID
         buf.writeLong(resMsg.getRequestID());
         //* byte[1]  keepData                             保留区
@@ -76,7 +77,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
     /**decode stream to object*/
     public ResponseSocketBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
-        //* byte[1]  version                              RSF版本(0x80)
+        //* byte[1]  version                              RSF版本
         byte version = buf.readByte();
         //* byte[8]  requestID                            包含的请求ID
         long requestID = buf.readLong();
@@ -86,7 +87,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         buf.skipBytes(3);//.readUnsignedMedium()
         //
         ResponseSocketBlock res = new ResponseSocketBlock();
-        res.setVersion(version);
+        res.setHead(version);
         res.setRequestID(requestID);
         //* --------------------------------------------------------bytes =8
         //* byte[2]  status                               响应状态

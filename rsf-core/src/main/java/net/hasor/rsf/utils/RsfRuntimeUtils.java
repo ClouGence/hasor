@@ -27,10 +27,9 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
-    private static AtomicLong                      requestID        = new AtomicLong(1);
-    private static ConcurrentMap<String, Class<?>> classCacheByName = new ConcurrentHashMap<String, Class<?>>();
-    private static ConcurrentMap<byte[], Class<?>> classCacheByByte = new ConcurrentHashMap<byte[], Class<?>>();
-    private static ConcurrentMap<String, Method>   methodMap        = new ConcurrentHashMap<String, Method>();
+    private static AtomicLong                      requestID  = new AtomicLong(1);
+    private static ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<String, Class<?>>();
+    private static ConcurrentMap<String, Method>   methodMap  = new ConcurrentHashMap<String, Method>();
     //
     public static String evalMethodSign(Method targetMethod) {
         return targetMethod.toString();
@@ -83,10 +82,10 @@ public class RsfRuntimeUtils {
             }
             return returnType;
         } else {
-            Class<?> cache = classCacheByName.get(tType);
+            Class<?> cache = classCache.get(tType);
             if (cache == null) {
                 cache = loader.loadClass(tType);
-                classCacheByName.put(tType, cache);
+                classCache.put(tType, cache);
             }
             return cache;
         }
@@ -141,13 +140,12 @@ public class RsfRuntimeUtils {
         return method;
     }
     //
-    public static Class<?> getType(byte[] keyData, ClassLoader classLoader) {
-        Class<?> type = classCacheByByte.get(keyData);
+    public static Class<?> getType(String typeName, ClassLoader classLoader) {
+        Class<?> type = classCache.get(typeName);
         if (type == null) {
             try {
-                String typeName = new String(keyData);
                 Class<?> newType = classLoader.loadClass(typeName);
-                type = classCacheByByte.putIfAbsent(keyData, newType);
+                type = classCache.putIfAbsent(typeName, newType);
                 if (type == null) {
                     type = newType;
                 }

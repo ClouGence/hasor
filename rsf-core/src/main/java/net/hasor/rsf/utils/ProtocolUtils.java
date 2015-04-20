@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Request;
+import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Response;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RSFConstants;
@@ -29,23 +31,19 @@ import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProtocolUtils {
-    private static Protocol<RequestSocketBlock>[]  reqProtocolPool = new Protocol[63];
-    private static Protocol<ResponseSocketBlock>[] resProtocolPool = new Protocol[63];
+    private static Protocol<RequestSocketBlock>[]  reqProtocolPool = new Protocol[16];
+    private static Protocol<ResponseSocketBlock>[] resProtocolPool = new Protocol[16];
     //
     static {
-        reqProtocolPool[0] = new RpcRequestProtocol();
-        resProtocolPool[0] = new RpcResponseProtocol();
-    }
-    /**获取协议版本。*/
-    private static byte version(byte version) {
-        return (byte) (0x3F & version);
+        reqProtocolPool[1] = new RpcRequestProtocol();
+        resProtocolPool[1] = new RpcResponseProtocol();
     }
     //
-    public static Protocol<RequestSocketBlock> requestProtocol(byte ver) {
-        return reqProtocolPool[version(ver) - 1];
+    public static Protocol<RequestSocketBlock> requestProtocol(byte rsfHead) {
+        return reqProtocolPool[getVersion(rsfHead)];
     }
-    public static Protocol<ResponseSocketBlock> responseProtocol(byte ver) {
-        return resProtocolPool[version(ver) - 1];
+    public static Protocol<ResponseSocketBlock> responseProtocol(byte rsfHead) {
+        return resProtocolPool[getVersion(rsfHead)];
     }
     //
     //
@@ -56,29 +54,24 @@ public class ProtocolUtils {
     }
     /**是否为Request消息。*/
     public static boolean isRequest(byte version) {
-        return (0xC1 | version) == version;
+        return (RSF_Packet_Request | version) == version;
     }
     /**是否为Response消息。*/
     public static boolean isResponse(byte version) {
-        return (0x81 | version) == version;
+        return (RSF_Packet_Response | version) == version;
     }
     /**获取协议版本。*/
-    public static byte getVersion(byte version) {
-        return (byte) (0x3F & version);
-    }
-    /**生成 request 的 version 信息。*/
-    public static byte finalVersionForRequest(byte version) {
-        return (byte) (RSFConstants.RSF_Request | version);
-    }
-    /**生成 response 的 version 信息。*/
-    public static byte finalVersionForResponse(byte version) {
-        return (byte) (RSFConstants.RSF_Response | version);
+    public static byte getVersion(byte rsfHead) {
+        return (byte) (rsfHead & 0x0F);
     }
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildStatus(byte version, long requestID, short status, String serializeType, RsfOptionSet optMap) {
+    public static ResponseSocketBlock buildStatus(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
+        long reqID = requestBlock.getRequestID();//请求ID
+        String serializeType = "";//序列化类型
+        //
         ResponseSocketBlock block = new ResponseSocketBlock();
-        block.setVersion(ProtocolUtils.finalVersionForResponse(version));
-        block.setRequestID(requestID);
+        block.setHead(RSFConstants.RSF_Response);
+        block.setRequestID(reqID);
         block.setStatus(status);
         block.setSerializeType(pushString(block, serializeType));
         //

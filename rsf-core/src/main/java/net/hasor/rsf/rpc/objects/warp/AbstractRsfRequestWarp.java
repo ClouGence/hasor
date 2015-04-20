@@ -31,8 +31,8 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
         return getRsfRequest().getBindInfo();
     }
     @Override
-    public byte getProtocol() {
-        return getRsfRequest().getProtocol();
+    public byte getVersion() {
+        return getRsfRequest().getVersion();
     }
     @Override
     public long getRequestID() {

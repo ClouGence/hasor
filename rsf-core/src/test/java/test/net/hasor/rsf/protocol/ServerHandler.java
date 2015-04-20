@@ -44,8 +44,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RequestSocketBlock req = (RequestSocketBlock) msg;
         //
-        byte version = ProtocolUtils.getVersion(req.getVersion());
-        ResponseSocketBlock response = ProtocolUtils.buildStatus(version, req.getRequestID(), ProtocolStatus.Accepted, "BlackHole", null);
+        ResponseSocketBlock response = ProtocolUtils.buildStatus(req, ProtocolStatus.Accepted, null);
         //
         ctx.channel().writeAndFlush(response).addListener(sendListener);
         //

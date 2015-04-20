@@ -38,15 +38,15 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
     //
     @Override
     public String toString() {
-        return "responseID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
+        return "responseID:" + this.getRequestID() + " from Local," + this.getBindInfo();
     }
     @Override
     public RsfBindInfo<?> getBindInfo() {
         return this.rsfRequest.getBindInfo();
     }
     @Override
-    public byte getProtocol() {
-        return this.rsfRequest.getProtocol();
+    public byte getVersion() {
+        return this.rsfRequest.getVersion();
     }
     @Override
     public long getRequestID() {

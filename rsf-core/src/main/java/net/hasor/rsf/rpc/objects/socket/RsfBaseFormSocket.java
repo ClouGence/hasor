@@ -17,7 +17,6 @@ package net.hasor.rsf.rpc.objects.socket;
 import net.hasor.rsf.manager.OptionManager;
 import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
 import net.hasor.rsf.protocol.protocol.RsfSocketBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -26,7 +25,6 @@ import net.hasor.rsf.utils.ProtocolUtils;
 public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
     private OptionManager optionManager = new OptionManager();
     private DATA          rsfBlock;
-    private byte          protocoVersion;
     private long          requestID;
     private String        serializeType;
     //
@@ -48,8 +46,8 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
         this.optionManager.removeOption(key);
     }
     /**获取协议版本。*/
-    public byte getProtocol() {
-        return this.protocoVersion;
+    public byte getVersion() {
+        return this.getRsfBlock().getVersion();
     }
     /**请求ID。*/
     public long getRequestID() {
@@ -67,12 +65,6 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
     public void recovery(DATA rsfBlock) {
         //
         //1.基本数据
-        byte ver = rsfBlock.getVersion();
-        if (ProtocolUtils.isRequest(ver)) {
-            this.protocoVersion = ProtocolUtils.finalVersionForRequest(ver);
-        } else {
-            this.protocoVersion = ProtocolUtils.finalVersionForResponse(ver);
-        }
         this.requestID = rsfBlock.getRequestID();
         short serializeType = rsfBlock.getSerializeType();
         this.serializeType = new String(rsfBlock.readPool(serializeType));

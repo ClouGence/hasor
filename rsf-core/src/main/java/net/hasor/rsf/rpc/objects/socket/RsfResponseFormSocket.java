@@ -56,7 +56,8 @@ public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext,
         byte[] returnDataData = rsfBlock.readPool(rsfBlock.getReturnData());
         //
         try {
-            this.returnType = RsfRuntimeUtils.getType(returnTypeData, this.rsfContext.getClassLoader());
+            String returnType = new String(returnTypeData);
+            this.returnType = RsfRuntimeUtils.getType(returnType, this.rsfContext.getClassLoader());
             this.returnObject = coder.decode(returnDataData);
         } catch (Throwable e) {
             LoggerHelper.logSevere(e.getMessage(), e);

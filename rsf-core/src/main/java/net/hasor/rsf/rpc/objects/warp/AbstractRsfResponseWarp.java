@@ -29,8 +29,8 @@ public abstract class AbstractRsfResponseWarp implements RsfResponse {
         return this.getRsfResponse().getBindInfo();
     }
     @Override
-    public byte getProtocol() {
-        return this.getRsfResponse().getProtocol();
+    public byte getVersion() {
+        return this.getRsfResponse().getVersion();
     }
     @Override
     public long getRequestID() {

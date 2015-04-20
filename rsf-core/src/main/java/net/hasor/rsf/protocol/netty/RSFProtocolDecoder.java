@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.netty;
+import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Request;
+import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import java.io.IOException;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.ProtocolType;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
@@ -48,20 +50,20 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         }
         //
-        //* byte[1]  version                              RSF版本(0xC1)
-        byte version = frame.getByte(0);
+        //* byte[1]  version RSF版本(0xC1)
+        byte rsfHead = frame.getByte(0);
         short status = 0;
         //decode
         try {
-            status = this.doDecode(version, ctx, frame);//协议解析
+            status = this.doDecode(rsfHead, ctx, frame);//协议解析
         } catch (Throwable e) {
             status = ProtocolStatus.ProtocolError;
         } finally {
             if (status == ProtocolStatus.OK)
                 return null;
-            /*                    错误情况*/
+            /*错误情况*/
             frame = frame.resetReaderIndex().skipBytes(1);
-            this.fireProtocolError(ctx, version, frame.readLong(), ProtocolStatus.ProtocolError);
+            this.fireProtocolError(ctx, rsfHead, frame.readLong(), ProtocolStatus.ProtocolError);
         }
         return null;
     }
@@ -70,22 +72,23 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     /**协议解析*/
-    private short doDecode(byte version, ChannelHandlerContext ctx, ByteBuf frame) throws IOException {
-        ProtocolType pType = ProtocolType.valueOf(version);
-        if (pType == ProtocolType.Request) {
+    private short doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) throws IOException {
+        if ((RSF_Packet_Request | rsfHead) == rsfHead) {
             //request
-            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(version);
+            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(rsfHead);
             if (requestProtocol != null) {
                 RequestSocketBlock block = requestProtocol.decode(frame);
+                block.setReceiveTime(System.currentTimeMillis());
                 ctx.fireChannelRead(block);
                 return ProtocolStatus.OK;/*正常处理后返回*/
             }
         }
-        if (pType == ProtocolType.Response) {
+        if ((RSF_Packet_Response | rsfHead) == rsfHead) {
             //response
-            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(version);
+            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(rsfHead);
             if (responseProtocol != null) {
                 ResponseSocketBlock block = responseProtocol.decode(frame);
+                block.setReceiveTime(System.currentTimeMillis());
                 ctx.fireChannelRead(block);
                 return ProtocolStatus.OK;/*正常处理后返回*/
             }
@@ -94,9 +97,12 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     /**发送错误 */
-    private void fireProtocolError(ChannelHandlerContext ctx, byte oriVersion, long requestID, short status) {
-        byte version = ProtocolUtils.getVersion(oriVersion);
-        ResponseSocketBlock error = ProtocolUtils.buildStatus(version, requestID, status, "BlackHole", null);
-        ctx.pipeline().writeAndFlush(error);
+    private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status) {
+        ResponseSocketBlock block = new ResponseSocketBlock();
+        block.setHead(RSFConstants.RSF_Response);
+        block.setRequestID(requestID);
+        block.setStatus(status);
+        block.setSerializeType(block.pushData("BlackHole".getBytes()));
+        ctx.pipeline().writeAndFlush(block);
     }
 }

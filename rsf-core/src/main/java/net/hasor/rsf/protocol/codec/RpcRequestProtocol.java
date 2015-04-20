@@ -17,6 +17,7 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 /**
  * Protocol Interface,for custom network protocol
@@ -27,8 +28,8 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
     /**encode Message to byte & write to network framework*/
     public void encode(RequestSocketBlock reqMsg, ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
-        //* byte[1]  version                              RSF版本(0xC1)
-        buf.writeByte(reqMsg.getVersion());
+        //* byte[1]  version                              RSF版本
+        buf.writeByte(RSFConstants.RSF_Request);
         //* byte[8]  requestID                            请求ID
         buf.writeLong(reqMsg.getRequestID());
         //* byte[1]  keepData                             保留区
@@ -87,7 +88,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
     public RequestSocketBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0xC1)
-        byte version = buf.readByte();
+        byte rsfHead = buf.readByte();
         //* byte[8]  requestID                            包含的请求ID
         long requestID = buf.readLong();
         //* byte[1]  keepData                             保留区
@@ -96,7 +97,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
         buf.skipBytes(3);//.readUnsignedMedium()
         //
         RequestSocketBlock req = new RequestSocketBlock();
-        req.setVersion(version);
+        req.setHead(rsfHead);
         req.setRequestID(requestID);
         //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名

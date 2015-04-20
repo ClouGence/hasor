@@ -23,7 +23,7 @@ public interface RsfHeader extends RsfOptionSet {
     /**获取元信息*/
     public RsfBindInfo<?> getBindInfo();
     /**获取协议版本。*/
-    public byte getProtocol();
+    public byte getVersion();
     /**请求ID。*/
     public long getRequestID();
     /**客户端希望的序列化方式*/

@@ -19,7 +19,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
-import net.hasor.rsf.constants.ProtocolVersion;
+import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
@@ -55,7 +55,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     private RequestSocketBlock getData() throws IOException {
         HessianSerializeCoder coder = new HessianSerializeCoder();
         RequestSocketBlock request = new RequestSocketBlock();
-        request.setVersion(ProtocolUtils.finalVersionForRequest(ProtocolVersion.V_1_0.value()));
+        request.setHead(RSFConstants.RSF_Request);
         request.setRequestID(reqID++);
         //
         request.setServiceName(ProtocolUtils.pushString(request, "net.hasor.rsf._test.TestServices"));

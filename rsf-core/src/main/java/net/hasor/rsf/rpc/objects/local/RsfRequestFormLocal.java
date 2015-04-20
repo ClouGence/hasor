@@ -35,6 +35,7 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
     private final Method             targetMethod;
     private final Class<?>[]         parameterTypes;
     private final Object[]           parameterObjects;
+    private final long               receiveTime;
     //
     public RsfRequestFormLocal(RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, AbstractRsfContext rsfContext) throws RsfException {
         this.requestID = RsfRuntimeUtils.genRequestID();
@@ -43,6 +44,7 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
         this.parameterTypes = targetMethod.getParameterTypes();
         this.parameterObjects = parameterObjects;
         this.rsfContext = rsfContext;
+        this.receiveTime = System.currentTimeMillis();
     }
     @Override
     public String toString() {
@@ -54,8 +56,8 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
         return this.bindInfo;
     }
     @Override
-    public byte getProtocol() {
-        return RSFConstants.RSF;
+    public byte getVersion() {
+        return RSFConstants.Version_1;
     }
     @Override
     public long getRequestID() {
@@ -79,8 +81,7 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
     }
     @Override
     public long getReceiveTime() {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.receiveTime;
     }
     @Override
     public int getTimeout() {

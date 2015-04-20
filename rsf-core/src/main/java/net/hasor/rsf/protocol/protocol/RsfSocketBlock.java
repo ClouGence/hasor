@@ -26,6 +26,8 @@ public interface RsfSocketBlock {
     public long getRequestID();
     /**获取序列化类型*/
     public short getSerializeType();
+    /**请求到达时间（非协议数据包中的数据）*/
+    public long getReceiveTime();
     //
     /**添加选项。*/
     public void addOption(short paramType, short paramData);

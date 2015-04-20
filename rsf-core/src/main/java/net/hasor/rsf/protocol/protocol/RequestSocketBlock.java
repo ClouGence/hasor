@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.protocol;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Request 协议
@@ -52,7 +53,7 @@ import org.more.util.ArrayUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
-    private byte  version        = 0; //byte[1]  RSF版本(0xC1 or 0x81)
+    private byte  rsfHead        = 0; //byte[1]  RSF头
     private long  requestID      = 0; //byte[8]  请求ID
     private short serviceName    = 0; //byte[2]  远程服务名
     private short serviceGroup   = 0; //byte[2]  远程服务分组
@@ -63,14 +64,27 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
     //
+    private long  receiveTime    = 0;
     //
-    /**获取协议版本。*/
+    //
+    public void setReceiveTime(long receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+    /**数据包到达时间*/
+    public long getReceiveTime() {
+        return receiveTime;
+    }
+    @Override
     public byte getVersion() {
-        return this.version;
+        return ProtocolUtils.getVersion(this.rsfHead);
+    }
+    /**获取协议版本。*/
+    public byte getHead() {
+        return this.rsfHead;
     }
     /**设置协议版本。*/
-    public void setVersion(byte version) {
-        this.version = version;
+    public void setHead(byte rsfHead) {
+        this.rsfHead = rsfHead;
     }
     /**获取请求ID。*/
     public long getRequestID() {

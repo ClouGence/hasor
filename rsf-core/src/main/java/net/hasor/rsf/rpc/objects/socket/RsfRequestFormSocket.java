@@ -71,7 +71,8 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
             byte[] valData = rsfBlock.readPool(paramVal);
             //
             try {
-                this.parameterTypes[i] = RsfRuntimeUtils.getType(keyData, this.rsfContext.getClassLoader());
+                String keyName = new String(keyData);
+                this.parameterTypes[i] = RsfRuntimeUtils.getType(keyName, this.rsfContext.getClassLoader());
                 this.parameterObjects[i] = coder.decode(valData);
             } catch (Throwable e) {
                 LoggerHelper.logSevere(e.getMessage(), e);
@@ -116,8 +117,7 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
     }
     @Override
     public long getReceiveTime() {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.getRsfBlock().getReceiveTime();
     }
     @Override
     public int getTimeout() {
