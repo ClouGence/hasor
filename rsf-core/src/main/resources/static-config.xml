@@ -5,7 +5,7 @@
 		<!-- 包扫描范围 -->
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- Hasor-RSF 专用 -->
-		<rsfConfig address="local" port="8000">
+		<rsfConfig address="local" port="8000" unitName="local">
 			<!--用于更新服务列表的配置服务器 -->
 			<!-- <configServer loadType="auto" address="local" port="8000" interval="60000" /> -->
 

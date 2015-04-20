@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.provider;
-import net.hasor.core.Provider;
+import io.netty.channel.Channel;
+import java.util.List;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.rpc.NetworkConnection;
+import net.hasor.rsf.domain.ServiceDefine;
+import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.RsfFilterHandler;
-import net.hasor.rsf.rpc.component.RequestMsg;
-import net.hasor.rsf.rpc.component.ResponseMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
-import net.hasor.rsf.rpc.utils.TransferUtils;
-import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
+import net.hasor.rsf.rpc.objects.socket.RsfRequestFormSocket;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 /**
@@ -37,84 +36,81 @@ import org.more.util.BeanUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerRequestHandler implements Runnable {
-    private AbstractRsfContext rsfContext;
-    private RequestMsg         requestMsg;
-    private NetworkConnection  connection;
+    private final AbstractRsfContext rsfContext;
+    private final RequestSocketBlock requestBlock;
+    private final Channel            nettyChannel;
     //
-    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestMsg requestMsg, NetworkConnection connection) {
+    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestSocketBlock requestBlock, Channel nettyChannel) {
         this.rsfContext = rsfContext;
-        this.requestMsg = requestMsg;
-        this.connection = connection;
+        this.requestBlock = requestBlock;
+        this.nettyChannel = nettyChannel;
     }
     public void run() {
         RsfResponseFormLocal response = this.doRequest();
         sendResponse(response);
     }
     private RsfResponseFormLocal doRequest() {
-        RsfRequestFormLocal request = null;
-        RsfResponseFormLocal response = null;
+        RsfRequestFormSocket rsfRequest = null;
+        RsfResponseFormLocal rsfResponse = null;
+        //
+        //1.构建Response.
         try {
-            request = RsfRuntimeUtils.recoverRequest(//
-                    requestMsg, connection, this.rsfContext);
-            response = request.buildResponse();
-            //
-        } catch (RsfException e) {
-            String logMsg = String.format("recoverRequest fail, requestID(%s) , %s.", requestMsg.getRequestID(), e.getMessage());
-            LoggerHelper.logSevere(logMsg);
-            //
-            ResponseMsg pack = TransferUtils.buildStatus(//
-                    requestMsg.getVersion(), //协议版本
-                    requestMsg.getRequestID(),//请求ID
-                    e.getStatus(),//响应状态
-                    requestMsg.getSerializeType(),//序列化类型
-                    this.rsfContext.getSettings().getServerOption());//选项参数
-            try {
-                pack.setReturnData(logMsg, rsfContext.getSerializeFactory());
-            } catch (Throwable e1) { /**/}
-            this.connection.getChannel().writeAndFlush(pack);
-            return null;
+            rsfRequest = new RsfRequestFormSocket(rsfContext, requestBlock);
+            rsfResponse = rsfRequest.buildResponse();
+        } catch (Throwable e) {
+            String errorMessage = "buildResponse fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
+            LoggerHelper.logSevere(errorMessage);
+            rsfResponse.sendStatus(ProtocolStatus.BuildResponse, errorMessage);
+            return rsfResponse;
         }
+        //
         //1.检查timeout
-        long lostTime = System.currentTimeMillis() - requestMsg.getReceiveTime();
-        int timeout = validateTimeout(requestMsg.getClientTimeout(), request.getBindInfo());
+        long lostTime = System.currentTimeMillis() - requestBlock.getReceiveTime();
+        int timeout = validateTimeout(requestBlock.getClientTimeout(), rsfRequest.getBindInfo());
         if (lostTime > timeout) {
-            response.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
-            return response;
+            LoggerHelper.logSevere("request timeout. (client parameter)., requestID:" + requestBlock.getRequestID());
+            rsfResponse.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
+            return rsfResponse;
         }
+        //
         //2.执行调用
         try {
-            Provider<RsfFilter>[] rsfFilters = this.rsfContext.getFilters(request.getBindInfo());
-            new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(request, response);
+            String binderID = rsfRequest.getBindInfo().getBindID();
+            ServiceDefine<?> define = this.rsfContext.getBindCenter().getService(binderID);
+            List<RsfFilter> rsfFilters = define.getFilters();
+            new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {
-            //500 InternalServerError
-            response.sendStatus(ProtocolStatus.InternalServerError, e.getMessage());
-            return response;
+            String errorMessage = "invoke fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
+            LoggerHelper.logSevere(errorMessage);
+            rsfResponse.sendStatus(ProtocolStatus.InvokeError, errorMessage);
+            return rsfResponse;
         }
-        return response;
+        return rsfResponse;
     }
-    private void sendResponse(RsfResponseFormLocal response) {
-        if (response == null)
-            return;
-        //给予默认值
-        if (response.isResponse() == false) {
-            Object defaultValue = BeanUtils.getDefaultValue(response.getResponseType());
-            response.sendData(defaultValue);
-        }
-        //回写Socket
-        ResponseMsg responseMsg = response.getMsg();
-        try {
-            Object responseData = response.getResponseData();
-            if (responseData != null) {
-                SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
-                responseMsg.setReturnData(responseData, serializeFactory);
+    //
+    private void sendResponse(RsfResponseFormLocal rsfResponse) {
+        ResponseSocketBlock socketBlock = null;
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        //
+        if (rsfResponse != null) {
+            //1.默认值
+            if (rsfResponse.isResponse() == false) {
+                Object defaultValue = BeanUtils.getDefaultValue(rsfResponse.getResponseType());
+                rsfResponse.sendData(defaultValue);
             }
-        } catch (Throwable e) {
-            String msg = e.getClass().getName() + ":" + e.getMessage();
-            responseMsg.setStatus(ProtocolStatus.SerializeError);;
-            responseMsg.setReturnData(msg.getBytes());;
-            responseMsg.setReturnType(String.class.getName());
+            //2.buildResponseSocketBlock
+            try {
+                socketBlock = rsfResponse.buildSocketBlock(this.rsfContext.getSerializeFactory());
+            } catch (Throwable e) {
+                String errorMessage = "buildResponseSocketBlock fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
+                LoggerHelper.logSevere(errorMessage);
+                socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.BuildSocketBlock, optMap);
+            }
+        } else {
+            LoggerHelper.logSevere("response is null.");
+            socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ResponseNullError, optMap);
         }
-        this.connection.getChannel().writeAndFlush(responseMsg);
+        this.nettyChannel.writeAndFlush(socketBlock);
     }
     private int validateTimeout(int timeout, RsfBindInfo<?> bindInfo) {
         if (timeout <= 0)

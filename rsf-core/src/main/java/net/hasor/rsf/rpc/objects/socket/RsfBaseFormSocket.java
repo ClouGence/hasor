@@ -30,7 +30,7 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
     //
     public RsfBaseFormSocket(Context context, DATA rsfBlock) {
         this.rsfBlock = rsfBlock;
-        this.recovery(rsfBlock);
+        this.recovery(context, rsfBlock);
     }
     //
     public String[] getOptionKeys() {
@@ -62,7 +62,7 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
         return this.rsfBlock;
     }
     //
-    public void recovery(DATA rsfBlock) {
+    public void recovery(Context context, DATA rsfBlock) {
         //
         //1.基本数据
         this.requestID = rsfBlock.getRequestID();

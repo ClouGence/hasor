@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.util.List;
+import net.hasor.core.Provider;
 /**
  * 注册中心
  * @version : 2014年11月30日
@@ -23,8 +24,10 @@ import java.util.List;
 public interface BindCenter {
     /**获取RsfBinder*/
     public RsfBinder getRsfBinder();
+    /**获取服务对象*/
+    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo);
     /**根据服务名获取服务描述。*/
-    public <T> RsfBindInfo<T> getServiceByID(String serviceID);
+    public <T> RsfBindInfo<T> getService(String serviceID);
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getService(Class<T> serviceType);
     /**根据服务名获取服务描述。*/

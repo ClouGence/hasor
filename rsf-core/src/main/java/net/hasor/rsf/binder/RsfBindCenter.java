@@ -18,14 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import net.hasor.core.Provider;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.RepeateException;
+import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
  * 本地服务注册中心
@@ -34,24 +37,27 @@ import org.more.util.StringUtils;
  */
 public class RsfBindCenter implements BindCenter {
     /* Group -> Name -> Version*/
-    private final ConcurrentMap<String, RsfBindInfo<?>> rsfServiceMap;
-    private final AbstractRsfContext                    rsfContext;
+    private final ConcurrentMap<String, ServiceDefine<?>> rsfServiceMap;
+    private final ConcurrentMap<String, Provider<?>>      providerMap;
+    private final AbstractRsfContext                      rsfContext;
     //
     //
     public RsfBindCenter(AbstractRsfContext rsfContext) {
+        LoggerHelper.logConfig("create RsfBindCenter.");
         this.rsfContext = rsfContext;
-        this.rsfServiceMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
+        this.rsfServiceMap = new ConcurrentHashMap<String, ServiceDefine<?>>();
+        this.providerMap = new ConcurrentHashMap<String, Provider<?>>();
     }
     //
     public RsfBinder getRsfBinder() {
         return new RsfBindBuilder(this.rsfContext);
     }
     //
-    public <T> RsfBindInfo<T> getServiceByID(String serviceID) {
-        return (RsfBindInfo<T>) this.rsfServiceMap.get(serviceID);
+    public <T> ServiceDefine<T> getService(String serviceID) {
+        return (ServiceDefine<T>) this.rsfServiceMap.get(serviceID);
     }
     //
-    public <T> RsfBindInfo<T> getService(Class<T> serviceType) {
+    public <T> ServiceDefine<T> getService(Class<T> serviceType) {
         RsfSettings rsfSettings = this.rsfContext.getSettings();
         String serviceGroup = rsfSettings.getDefaultGroup();
         String serviceName = serviceType.getName();
@@ -72,14 +78,14 @@ public class RsfBindCenter implements BindCenter {
         return getService(serviceGroup, serviceName, serviceVersion);
     }
     //
-    public <T> RsfBindInfo<T> getServiceByName(String serviceName) {
+    public <T> ServiceDefine<T> getServiceByName(String serviceName) {
         RsfSettings rsfSettings = this.rsfContext.getSettings();
         return getService(rsfSettings.getDefaultGroup(), serviceName, rsfSettings.getDefaultVersion());
     }
     //
-    public <T> RsfBindInfo<T> getService(String group, String name, String version) {
+    public <T> ServiceDefine<T> getService(String group, String name, String version) {
         String serviceID = RsfRuntimeUtils.bindID(group, name, version);
-        return (RsfBindInfo<T>) this.rsfServiceMap.get(serviceID);
+        return (ServiceDefine<T>) this.rsfServiceMap.get(serviceID);
     }
     //
     /**获取已经注册的所有服务名称。*/
@@ -93,11 +99,18 @@ public class RsfBindCenter implements BindCenter {
         this.rsfServiceMap.remove(serviceID);
     }
     /**发布服务*/
-    public void publishService(RsfBindInfo<?> bindInfo) {
+    public void publishService(ServiceDefine<?> bindInfo, Provider<?> provider) {
         String serviceID = bindInfo.getBindID();
         if (this.rsfServiceMap.containsKey(serviceID) == true) {
             throw new RepeateException("Repeate:" + serviceID); /*重复检查*/
         }
         this.rsfServiceMap.putIfAbsent(serviceID, bindInfo);
+        if (provider != null) {
+            this.providerMap.putIfAbsent(serviceID, provider);
+        }
+    }
+    /**获取服务对象*/
+    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
+        return (Provider<T>) this.providerMap.get(bindInfo.getBindID());
     }
 }

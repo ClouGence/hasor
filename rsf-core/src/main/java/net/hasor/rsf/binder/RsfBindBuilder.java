@@ -69,7 +69,11 @@ public class RsfBindBuilder implements RsfBinder {
     }
     //
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
-        return new LinkedBuilderImpl<T>(type);
+        LinkedBuilder<T> builder = new LinkedBuilderImpl<T>(type);
+        for (FilterDefine filter : filterList) {
+            builder.bindFilter(filter.filterID(), filter.getProvider());
+        }
+        return builder;
     }
     //
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance) {
@@ -203,7 +207,7 @@ public class RsfBindBuilder implements RsfBinder {
         }
         //
         public RegisterReference<T> register() {
-            getContext().getBindCenter().publishService(this.serviceDefine);
+            getContext().getBindCenter().publishService(this.serviceDefine, this.serviceDefine.getCustomerProvider());
             getContext().getAddressPool().newAddress(this.serviceDefine, this.hostAddressSet);
             return this.serviceDefine;
         }

@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.context;
+package test.net.hasor.rsf.rpc.provider;
 import java.io.IOException;
-import net.hasor.core.Settings;
+import java.net.URISyntaxException;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
 /**
- * 
- * @version : 2014年11月12日
+ * 100W 打印一次，证明还活着
+ * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultRsfContext extends AbstractRsfContext {
-    public DefaultRsfContext(Settings settings) throws IOException {
-        this(new DefaultRsfSettings(settings));
-    }
-    public DefaultRsfContext(RsfSettings settings) {
+public class TestClientRsfContext extends AbstractRsfContext {
+    public TestClientRsfContext(RsfSettings settings) throws IOException, URISyntaxException {
         this.initContext(settings);
-        //        this.bindCenter.bindFilter(InnerLocalWarpRsfFilter.class.getName(),//
-        //                new InstanceProvider<InnerLocalWarpRsfFilter>(new InnerLocalWarpRsfFilter()));
     }
 }

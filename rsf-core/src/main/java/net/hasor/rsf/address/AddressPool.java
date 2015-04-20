@@ -52,6 +52,8 @@ public class AddressPool {
     //
     //
     public AddressPool(String unitName, BindCenter bindCenter, RsfSettings rsfSettings) {
+        LoggerHelper.logConfig("init AddressPool unitName = " + unitName);
+        //
         this.rsfSettings = rsfSettings;
         this.addressPool = new ConcurrentHashMap<String, AddressBucket>();
         this.unitName = unitName;

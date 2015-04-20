@@ -67,13 +67,14 @@ public class ProtocolUtils {
     /**生成指定状态的的响应包*/
     public static ResponseSocketBlock buildStatus(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
         long reqID = requestBlock.getRequestID();//请求ID
-        String serializeType = "";//序列化类型
+        String serializeType = "BlackHole";//序列化类型
         //
         ResponseSocketBlock block = new ResponseSocketBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(reqID);
         block.setStatus(status);
         block.setSerializeType(pushString(block, serializeType));
+        block.setReturnData(block.pushData(null));
         //
         if (optMap != null) {
             for (String optKey : optMap.getOptionKeys()) {

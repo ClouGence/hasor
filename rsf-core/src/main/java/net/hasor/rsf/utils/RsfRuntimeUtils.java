@@ -138,6 +138,8 @@ public class RsfRuntimeUtils {
                 }
             } catch (Exception e) {
                 LoggerHelper.logSevere(e.getMessage(), e);
+                if (e instanceof RuntimeException)
+                    throw (RuntimeException) e;
                 throw new RsfException(e.getMessage(), e);
             }
         }
@@ -148,13 +150,15 @@ public class RsfRuntimeUtils {
         Class<?> type = classCache.get(typeName);
         if (type == null) {
             try {
-                Class<?> newType = classLoader.loadClass(typeName);
+                Class<?> newType = toJavaType(typeName, classLoader);
                 type = classCache.putIfAbsent(typeName, newType);
                 if (type == null) {
                     type = newType;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LoggerHelper.logSevere(e.getMessage(), e);
+                if (e instanceof RuntimeException)
+                    throw (RuntimeException) e;
                 throw new RsfException(e.getMessage(), e);
             }
         }

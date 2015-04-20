@@ -17,12 +17,14 @@ package net.hasor.rsf.rpc.objects.socket;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
@@ -45,19 +47,19 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
         this.rsfContext = rsfContext;
     }
     @Override
-    public void recovery(RequestSocketBlock rsfBlock) {
-        super.recovery(rsfBlock);
+    public void recovery(AbstractRsfContext context, RequestSocketBlock rsfBlock) {
+        super.recovery(context, rsfBlock);
         //
         this.targetMethodName = new String(rsfBlock.readPool(rsfBlock.getTargetMethod()));
         String group = new String(rsfBlock.readPool(rsfBlock.getServiceGroup()));
         String name = new String(rsfBlock.readPool(rsfBlock.getServiceName()));
         String version = new String(rsfBlock.readPool(rsfBlock.getServiceVersion()));
-        this.bindInfo = this.rsfContext.getBindCenter().getService(group, name, version);
+        this.bindInfo = context.getBindCenter().getService(group, name, version);
         if (bindInfo == null) {
             throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
         }
         //
-        SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
+        SerializeFactory serializeFactory = context.getSerializeFactory();
         SerializeCoder coder = serializeFactory.getSerializeCoder(this.getSerializeType());
         //
         int[] paramDatas = rsfBlock.getParameters();
@@ -72,7 +74,7 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
             //
             try {
                 String keyName = new String(keyData);
-                this.parameterTypes[i] = RsfRuntimeUtils.getType(keyName, this.rsfContext.getClassLoader());
+                this.parameterTypes[i] = RsfRuntimeUtils.getType(keyName, context.getClassLoader());
                 this.parameterObjects[i] = coder.decode(valData);
             } catch (Throwable e) {
                 LoggerHelper.logSevere(e.getMessage(), e);
@@ -130,5 +132,14 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
     @Override
     public Object[] getParameterObject() {
         return this.parameterObjects;
+    }
+    //
+    public RsfResponseFormLocal buildResponse() {
+        RsfResponseFormLocal rsfResponse = new RsfResponseFormLocal(this);
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        for (String optKey : optMap.getOptionKeys()) {
+            rsfResponse.addOption(optKey, optMap.getOption(optKey));
+        }
+        return rsfResponse;
     }
 }

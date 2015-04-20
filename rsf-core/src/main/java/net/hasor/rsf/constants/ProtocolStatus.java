@@ -22,32 +22,38 @@ package net.hasor.rsf.constants;
  */
 public class ProtocolStatus {
     /**未定义*/
-    public static final short Unknown             = 0;
+    public static final short Unknown           = 0;
     //-----------------------------------------------------
     /**内容正确返回。*/
-    public static final short OK                  = 200;
+    public static final short OK                = 200;
     /**已经接受请求处理正在进行中。*/
-    public static final short Accepted            = 202;
+    public static final short Accepted          = 202;
     //-----------------------------------------------------
     /**服务器要求客户端选择其它服务提供者处理该请求。*/
-    public static final short ChooseOther         = 302;
+    public static final short ChooseOther       = 302;
     //-----------------------------------------------------
     /**试图调用受保护的服务。*/
-    public static final short Unauthorized        = 401;
+    public static final short Unauthorized      = 401;
     /**服务资源不可用。*/
-    public static final short Forbidden           = 403;
+    public static final short Forbidden         = 403;
     /**找不到服务*/
-    public static final short NotFound            = 404;
+    public static final short NotFound          = 404;
     /**调用服务超时*/
-    public static final short RequestTimeout      = 408;
+    public static final short RequestTimeout    = 408;
     //-----------------------------------------------------
-    /**序列化异常。*/
-    public static final short SerializeError      = 503;
     /**调用服务执行出错，通常是遭到异常抛出。*/
-    public static final short InternalServerError = 500;
+    public static final short InvokeError       = 500;
     /**协议错误。*/
-    public static final short ProtocolError       = 502;
+    public static final short ProtocolError     = 502;
+    /**序列化异常。*/
+    public static final short SerializeError    = 503;
+    /**buildResponse错误。*/
+    public static final short BuildResponse     = 504;
+    /***/
+    public static final short BuildSocketBlock  = 505;
+    /***/
+    public static final short ResponseNullError = 506;
     //-----------------------------------------------------
     /**客户端错误。*/
-    public static final short ClientError         = 600;
+    public static final short ClientError       = 600;
 }

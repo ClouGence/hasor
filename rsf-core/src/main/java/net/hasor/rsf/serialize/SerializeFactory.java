@@ -20,6 +20,7 @@ import java.util.Map;
 import net.hasor.core.XmlNode;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.constants.RsfException;
+import org.more.logger.LoggerHelper;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
@@ -42,12 +43,15 @@ public class SerializeFactory {
         SerializeFactory factory = new SerializeFactory();
         XmlNode[] atNode = settings.getXmlNodeArray("hasor.rsfConfig.serializeType");
         //
+        String types = "";
         for (XmlNode e : atNode) {
             List<XmlNode> serList = e.getChildren("serialize");
             for (XmlNode s : serList) {
                 initSerialize(factory, s);
+                types += (s.getAttribute("name") + ",");
             }
         }
+        LoggerHelper.logConfig("SerializeFactory init. -> [%s]", types);
         return factory;
     }
     private static void initSerialize(SerializeFactory factory, XmlNode atNode) {

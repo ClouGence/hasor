@@ -63,7 +63,7 @@ public class ServiceDefine<T> implements RsfBindInfo<T> {
         return new ArrayList<FilterDefine>(this.filterDefine);
     }
     /**获取服务上配置有效的过滤器*/
-    protected List<RsfFilter> getFilters() {
+    public List<RsfFilter> getFilters() {
         return new ArrayList<RsfFilter>(getFilterDefineList());
     }
     /**查找注册的Filter*/

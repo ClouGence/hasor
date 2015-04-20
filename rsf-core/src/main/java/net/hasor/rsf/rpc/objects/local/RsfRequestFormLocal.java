@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.objects.local;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.constants.RsfException;
@@ -99,23 +100,13 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
     public Object[] getParameterObject() {
         return this.parameterObjects;
     }
-    //    //
-    //    private RsfResponseImpl response = null;
-    //    /**根据{@link RsfRequest}创建对应的Response。*/
-    //    public RsfResponseImpl buildResponse() {
-    //        if (this.response == null) {
-    //            this.response = new RsfResponseImpl(this);
-    //            RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
-    //            for (String optKey : optMap.getOptionKeys())
-    //                response.addOption(optKey, optMap.getOption(optKey));
-    //        }
-    //        return this.response;
-    //    }
-    //    public RequestMsg getMsg() {
-    //        return this.requestMsg;
-    //    }
-    //    @Override
-    //    public String toString() {
-    //        return this.bindInfo.toString() + " - " + this.requestMsg.toString();
-    //    }
+    //
+    public RsfResponseFormLocal buildResponse() {
+        RsfResponseFormLocal rsfResponse = new RsfResponseFormLocal(this);
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        for (String optKey : optMap.getOptionKeys()) {
+            rsfResponse.addOption(optKey, optMap.getOption(optKey));
+        }
+        return rsfResponse;
+    }
 }

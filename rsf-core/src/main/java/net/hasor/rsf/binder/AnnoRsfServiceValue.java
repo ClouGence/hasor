@@ -22,7 +22,7 @@ import org.more.util.StringUtils;
  * @version : 2014年11月10日
  * @author 赵永春(zyc@hasor.net)
  */
-class AnnoRsfServiceValue implements RsfService {
+public class AnnoRsfServiceValue implements RsfService {
     private String serviceGroup   = null;
     private String serviceName    = null;
     private String serviceVersion = null;

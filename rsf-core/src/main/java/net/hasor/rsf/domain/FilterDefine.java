@@ -45,6 +45,9 @@ public class FilterDefine implements Provider<RsfFilter>, RsfFilter {
     public RsfFilter get() {
         return filterProvider.get();
     }
+    public Provider<? extends RsfFilter> getProvider() {
+        return filterProvider;
+    }
     public String toString() {
         return "[" + filterID + "]";
     }

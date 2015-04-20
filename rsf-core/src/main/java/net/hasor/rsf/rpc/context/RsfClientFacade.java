@@ -41,7 +41,7 @@ class RsfClientFacade implements RsfClient {
         return this.findBindInfoByID(serviceID);
     }
     protected <T> RsfBindInfo<T> findBindInfoByID(String serviceID) {
-        return this.rsfContext.getBindCenter().getServiceByID(serviceID);
+        return this.rsfContext.getBindCenter().getService(serviceID);
     }
     protected <T> RsfBindInfo<T> findBindInfoByName(String serviceName) {
         return this.rsfContext.getBindCenter().getServiceByName(serviceName);
@@ -67,7 +67,7 @@ class RsfClientFacade implements RsfClient {
         return this.wrapper(bindInfo, interFace);
     }
     public <T> T wrapper(Class<T> interFace) throws RsfException {
-        AnnoRsfServiceValue info = new AnnoRsfServiceValue(this.rsfContext, interFace);
+        AnnoRsfServiceValue info = new AnnoRsfServiceValue(this.rsfContext.getSettings(), interFace);
         RsfBindInfo<?> bindInfo = this.findBindInfo(info.group(), info.name(), info.version());
         return this.wrapper(bindInfo, interFace);
     }

@@ -15,6 +15,7 @@
  */
 package test.net.hasor.rsf.address;
 import java.util.List;
+import net.hasor.core.Provider;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
@@ -42,7 +43,7 @@ public class TestBindCenter<T> implements BindCenter {
         return null;
     }
     @Override
-    public <T> RsfBindInfo<T> getServiceByID(String serviceID) {
+    public <T> RsfBindInfo<T> getService(String serviceID) {
         if (StringUtils.equalsBlankIgnoreCase(serviceID, this.rsfBindInfo.getBindID()))
             return (RsfBindInfo<T>) rsfBindInfo;
         return null;
@@ -65,5 +66,10 @@ public class TestBindCenter<T> implements BindCenter {
     @Override
     public void recoverService(RsfBindInfo<?> bindInfo) {
         // TODO Auto-generated method stub
+    }
+    @Override
+    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

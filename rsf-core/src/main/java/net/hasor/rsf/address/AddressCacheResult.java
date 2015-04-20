@@ -90,7 +90,7 @@ class AddressCacheResult {
             /*计算使用的地址列表(所有可用的/本单元的/本地网络的)*/
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
-            RsfBindInfo<Object> binderInfo = this.bindCenter.getServiceByID(serviceID);
+            RsfBindInfo<Object> binderInfo = this.bindCenter.getService(serviceID);
             if (binderInfo == null) {
                 continue;
             }

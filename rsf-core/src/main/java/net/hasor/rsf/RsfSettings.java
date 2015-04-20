@@ -63,4 +63,7 @@ public interface RsfSettings extends Settings {
     public String getBindAddress();
     /**获取本地服务绑定端口*/
     public int getBindPort();
+    //
+    /**获取本机所属单元*/
+    public String getUnitName();
 }

@@ -31,11 +31,11 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.protocol.netty.RSFCodec;
-import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.provider.RsfProviderHandler;
 import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
 /**
@@ -104,7 +104,7 @@ public class RsfBootstrap {
         }
         if (this.settings.getXmlNode("hasor.rsfConfig") == null) {
             throw new IOException("settings is not load.");
-        }s
+        }
         //
         //RsfContext
         LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);
@@ -135,7 +135,7 @@ public class RsfBootstrap {
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                NetworkConnection.initConnection(hostAddress, channel);
+                RsfRuntimeUtils.setAddress(hostAddress, channel);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new RsfProviderHandler(rsfContext));
             }

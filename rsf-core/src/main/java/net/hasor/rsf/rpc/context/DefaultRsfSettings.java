@@ -53,6 +53,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     //
     private String          bindAddress          = "local";
     private int             bindPort             = 8000;
+    private String          unitName             = "local";
     //
     //
     //
@@ -115,6 +116,10 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     public int getBindPort() {
         return this.bindPort;
     }
+    public String getUnitName() {
+        return this.unitName;
+    }
+    //
     public void refresh() throws IOException {
         super.refresh();
         this.loadRsfConfig();
@@ -164,6 +169,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
+        this.unitName = getString("hasor.rsfConfig.unitName", "local");
         LoggerHelper.logInfo("loadRsfConfig complete!");
     }
 }

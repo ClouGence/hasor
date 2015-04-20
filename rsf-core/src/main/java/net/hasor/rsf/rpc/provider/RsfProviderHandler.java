@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.provider;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import net.hasor.rsf.RsfOptionSet;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.rpc.NetworkConnection;
-import net.hasor.rsf.rpc.component.RequestMsg;
-import net.hasor.rsf.rpc.component.ResponseMsg;
+import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.utils.TransferUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
@@ -32,60 +35,53 @@ import org.more.logger.LoggerHelper;
  */
 public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
     private AbstractRsfContext rsfContext;
-    private String             serializeType;
     //
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.serializeType = rsfContext.getSettings().getDefaultSerializeType();
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof RequestMsg == false) {
+        if (msg instanceof RequestSocketBlock == false) {
             return;
         }
+        //
         //创建request、response
-        RequestMsg requestMsg = (RequestMsg) msg;
-        requestMsg.setReceiveTime(System.currentTimeMillis());
-        LoggerHelper.logFinest("received request(%s) full = %s", requestMsg.getRequestID(), requestMsg);
+        RequestSocketBlock requestBlock = (RequestSocketBlock) msg;
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        //
         //放入业务线程准备执行
+        ResponseSocketBlock readyWrite = null;
         try {
-            Executor exe = this.rsfContext.getCallExecute(requestMsg.getServiceName());
-            NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
-            exe.execute(new InnerRequestHandler(this.rsfContext, requestMsg, conn));
+            LoggerHelper.logFinest("received request(%s) full = %s", requestBlock.getRequestID(), requestBlock);
+            String serviceName = new String(requestBlock.readPool(requestBlock.getServiceName()));
+            Executor exe = this.rsfContext.getCallExecute(serviceName);
+            Channel nettyChannel = ctx.channel();
+            exe.execute(new InnerRequestHandler(this.rsfContext, requestBlock, nettyChannel));
             //
-            ResponseMsg pack = TransferUtils.buildStatus(//
-                    requestMsg.getVersion(), //协议版本
-                    requestMsg.getRequestID(),//请求ID
-                    ProtocolStatus.Accepted,//响应状态
-                    this.serializeType,//序列化类型
-                    this.rsfContext.getSettings().getServerOption());//选项参数
-            ctx.pipeline().writeAndFlush(pack);
+            readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.Accepted, optMap);
         } catch (RejectedExecutionException e) {
-            ResponseMsg pack = TransferUtils.buildStatus(//
-                    requestMsg.getVersion(), //协议版本
-                    requestMsg.getRequestID(),//请求ID
-                    ProtocolStatus.ChooseOther,//服务器资源紧张
-                    this.serializeType,//序列化类型
-                    this.rsfContext.getSettings().getServerOption());//选项参数
-            ctx.pipeline().writeAndFlush(pack);
+            LoggerHelper.logWarn("task pool is full ->RejectedExecutionException.");
+            readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ChooseOther, optMap);
         }
+        //
+        ctx.pipeline().writeAndFlush(readyWrite);
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.channel().close();
-        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
-        if (conn != null) {
-            LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", conn.getHostAddress(), cause.getMessage());
-            this.rsfContext.getRequestManager().getClientManager().unRegistered(conn.getHostAddress());
+        InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
+        if (address != null) {
+            LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", address, cause.getMessage());
+            this.rsfContext.getAddressPool().invalidAddress(address.toURI());
         }
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         ctx.channel().close();
-        NetworkConnection conn = NetworkConnection.getConnection(ctx.channel());
-        if (conn != null) {
-            LoggerHelper.logInfo("remote close, host = %s.", conn.getHostAddress());
-            this.rsfContext.getRequestManager().getClientManager().unRegistered(conn.getHostAddress());
+        InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
+        if (address != null) {
+            LoggerHelper.logSevere("remote close, host = %s.", address);
+            this.rsfContext.getAddressPool().invalidAddress(address.toURI());
         }
     }
 }

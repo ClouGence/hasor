@@ -15,56 +15,107 @@
  */
 package net.hasor.rsf.rpc.context;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import java.util.concurrent.Executor;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
+import net.hasor.rsf.manager.ExecutesManager;
 import net.hasor.rsf.rpc.client.RsfRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.NameThreadFactory;
+import org.more.logger.LoggerHelper;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
+    private RsfSettings      rsfSettings;
+    private AddressPool      addressPool;
+    private RsfBindCenter    bindCenter;
+    private SerializeFactory serializeFactory;
+    private ExecutesManager  executesManager;
+    private EventLoopGroup   loopGroup;
+    //
+    //
+    //
+    protected void initContext(RsfSettings rsfSettings) {
+        LoggerHelper.logConfig("rsfContext init.");
+        this.rsfSettings = rsfSettings;
+        //
+        this.bindCenter = new RsfBindCenter(this);
+        this.addressPool = new AddressPool(rsfSettings.getUnitName(), bindCenter, rsfSettings);
+        this.serializeFactory = SerializeFactory.createFactory(this.rsfSettings);
+        //
+        int queueSize = this.rsfSettings.getQueueMaxSize();
+        int minCorePoolSize = this.rsfSettings.getQueueMinPoolSize();
+        int maxCorePoolSize = this.rsfSettings.getQueueMaxPoolSize();
+        long keepAliveTime = this.rsfSettings.getQueueKeepAliveTime();
+        this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        //
+        int workerThread = this.rsfSettings.getNetworkWorker();
+        LoggerHelper.logConfig("nioEventLoopGroup, workerThread = " + workerThread);
+        this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
+    }
+    /**序列化反序列化使用的类加载器*/
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+    /**获取配置*/
+    public RsfSettings getSettings() {
+        return this.rsfSettings;
+    }
+    /** @return 获取服务注册中心*/
+    public RsfBindCenter getBindCenter() {
+        return this.bindCenter;
+    }
+    public AddressPool getAddressPool() {
+        return this.addressPool;
+    }
+    /** @return 获取序列化管理器。*/
+    public SerializeFactory getSerializeFactory() {
+        return this.serializeFactory;
+    }
     /**
      * 获取{@link Executor}用于安排执行任务。
      * @param serviceName 服务名
      * @return 返回Executor
      */
-    public abstract Executor getCallExecute(String serviceName);
-    /** @return 获取序列化管理器。*/
-    public abstract SerializeFactory getSerializeFactory();
-    /** @return 获取Netty事件处理工具*/
-    public abstract EventLoopGroup getLoopGroup();
-    /** @return 获取服务注册中心*/
-    public abstract RsfBindCenter getBindCenter();
-    /** @return 获取请求管理中心*/
-    public abstract RsfRequestManager getRequestManager();
-    //
-    public abstract AddressPool getAddressPool();
-    //
-    public ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+    public Executor getCallExecute(String serviceName) {
+        return this.executesManager.getExecute(serviceName);
     }
-    //
-    //
-    //
+    /** @return 获取Netty事件处理工具*/
+    public EventLoopGroup getLoopGroup() {
+        return this.loopGroup;
+    }
+    /**停止工作*/
+    public void shutdown() {
+        this.loopGroup.shutdownGracefully();
+    }
+    /**获取客户端*/
+    public RsfClient getRsfClient() {
+        return new RsfClientFacade(this);
+    }
     /**
      * 获取元信息所描述的服务对象
      * @param bindInfo 元信息所描述对象
      * @return 服务对象
      */
     public <T> T getBean(RsfBindInfo<T> bindInfo) {
-        //        //根据bindInfo 的 id 从 BindCenter 中心取得本地  RsfBindInfo
-        //        //   （该操作的目的是为了排除传入参数的干扰，确保可以根据BindInfo id 取得本地的BindInfo。因为外部传入进来的RsfBindInfo极有可能是包装过后的）
-        //        bindInfo = this.getBindCenter().getServiceByID(bindInfo.getBindID());
-        //        if (bindInfo != null && bindInfo instanceof ServiceDefine == true) {
-        //            Provider<T> provider = ((ServiceDefine<T>) bindInfo).getCustomerProvider();
-        //            if (provider != null)
-        //                return provider.get();
-        //        }
-        return null;
+        Provider<T> provider = getProvider(bindInfo);
+        return (provider != null) ? provider.get() : null;
+    }
+    @Override
+    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
+        return this.getBindCenter().getProvider(bindInfo);
+    }
+    /** @return 获取请求管理中心*/
+    public RsfRequestManager getRequestManager() {
+        return null;s
     }
 }

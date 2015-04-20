@@ -30,25 +30,23 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext, ResponseSocketBlock> implements RsfResponse {
-    private AbstractRsfContext rsfContext;
-    private RsfBindInfo<?>     bindInfo;
-    private short              responseStatus;
-    private Class<?>           returnType;
-    private Object             returnObject;
-    private boolean            committed;
+    private RsfBindInfo<?> bindInfo;
+    private short          responseStatus;
+    private Class<?>       returnType;
+    private Object         returnObject;
+    private boolean        committed;
     //
     //
     public RsfResponseFormSocket(AbstractRsfContext rsfContext, RsfBindInfo<?> bindInfo, ResponseSocketBlock rsfBlock) {
         super(rsfContext, rsfBlock);
-        this.rsfContext = rsfContext;
         this.bindInfo = bindInfo;
         this.committed = false;
     }
     @Override
-    public void recovery(ResponseSocketBlock rsfBlock) {
-        super.recovery(rsfBlock);
+    public void recovery(AbstractRsfContext context, ResponseSocketBlock rsfBlock) {
+        super.recovery(context, rsfBlock);
         //
-        SerializeFactory serializeFactory = this.rsfContext.getSerializeFactory();
+        SerializeFactory serializeFactory = context.getSerializeFactory();
         SerializeCoder coder = serializeFactory.getSerializeCoder(this.getSerializeType());
         this.responseStatus = rsfBlock.getStatus();
         //
@@ -57,7 +55,7 @@ public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext,
         //
         try {
             String returnType = new String(returnTypeData);
-            this.returnType = RsfRuntimeUtils.getType(returnType, this.rsfContext.getClassLoader());
+            this.returnType = RsfRuntimeUtils.getType(returnType, context.getClassLoader());
             this.returnObject = coder.decode(returnDataData);
         } catch (Throwable e) {
             LoggerHelper.logSevere(e.getMessage(), e);
