@@ -16,20 +16,20 @@
 package net.hasor.rsf.rpc.client;
 import io.netty.channel.Channel;
 import java.net.URL;
-import net.hasor.rsf.rpc.NetworkConnection;
+import net.hasor.rsf.address.InterAddress;
 /**
- * 为{@link InnerRsfCustomerHandler}提供{@link RsfRequestManager}列表维护。
- * 同时负责创建和销毁{@link RsfRequestManager}的功能。
+ * 为{@link InnerRsfCustomerHandler}提供{@link RsfClientRequestManager}列表维护。
+ * 同时负责创建和销毁{@link RsfClientRequestManager}的功能。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerRsfClient extends AbstractRsfClient {
-    private RsfRequestManager requestManager;
-    private NetworkConnection networkConnection;
+    private RsfClientRequestManager requestManager;
+    private InterAddress            hostAddress;
     //
-    public InnerRsfClient(RsfRequestManager requestManager, NetworkConnection networkConnection) {
+    public InnerRsfClient(RsfClientRequestManager requestManager, InterAddress hostAddress) {
         this.requestManager = requestManager;
-        this.networkConnection = networkConnection;
+        this.hostAddress = hostAddress;
     }
     public boolean isActive() {
         return networkConnection.isActive();
@@ -40,7 +40,7 @@ class InnerRsfClient extends AbstractRsfClient {
     public Channel getChannel() {
         return networkConnection.getChannel();
     }
-    public RsfRequestManager getRequestManager() {
+    public RsfClientRequestManager getRequestManager() {
         return this.requestManager;
     }
     public URL getHostAddress() {

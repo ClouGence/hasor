@@ -18,9 +18,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
@@ -33,9 +33,9 @@ import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.constants.RsfTimeoutException;
+import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.manager.TimerManager;
 import net.hasor.rsf.rpc.RsfFilterHandler;
-import net.hasor.rsf.rpc.component.RequestMsg;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
@@ -46,14 +46,14 @@ import org.more.logger.LoggerHelper;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestManager {
+public class RsfClientRequestManager {
     private final AbstractRsfContext                 rsfContext;
     private final InnerClientManager                 clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
     private final TimerManager                       timerManager;
     private final AtomicInteger                      requestCount;
     //
-    public RsfRequestManager(AbstractRsfContext rsfContext) {
+    public RsfClientRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.clientManager = new InnerClientManager(this);
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
@@ -129,14 +129,14 @@ public class RsfRequestManager {
         TimerTask timeTask = new TimerTask() {
             public void run(Timeout timeoutObject) throws Exception {
                 //超时检测
-                RsfFuture rsfCallBack = RsfRequestManager.this.getRequest(request.getRequestID());
+                RsfFuture rsfCallBack = RsfClientRequestManager.this.getRequest(request.getRequestID());
                 if (rsfCallBack == null)
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
                 LoggerHelper.logWarn(errorInfo);
                 //回应Response
-                RsfRequestManager.this.putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
+                RsfClientRequestManager.this.putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
         };
         //
@@ -148,20 +148,21 @@ public class RsfRequestManager {
      * @param listener FutureCallback回调监听器。
      * @return 返回RsfFuture。
      */
-    public RsfFuture sendRequest(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener) {
+    public RsfFuture sendRequest(RsfRequestFormLocal rsfRequest, FutureCallback<RsfResponse> listener) {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
-        RsfRequestFormLocal req = (RsfRequestFormLocal) rsfFuture.getRequest();
-        RsfResponseFormLocal res = req.buildResponse();
+        RsfResponseFormLocal res = rsfRequest.buildResponse();
         //
         try {
-            RsfBindInfo<?> bindInfo = req.getBindInfo();
-            Provider<RsfFilter>[] rsfFilter = this.getRsfContext().getFilters(bindInfo);
+            RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
+            ServiceDefine<?> rsfDefine = this.getRsfContext().getBindCenter().getService(bindInfo.getBindID());
+            List<RsfFilter> rsfFilterList = rsfDefine.getFilters();
+            //
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
-            new InnterRsfFilterHandler(rsfFilter, new RsfFilterChain() {
+            new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     sendRequest(rsfFuture);//发送请求到远方
                 }
-            }).doFilter(req, res);
+            }).doFilter(rsfRequest, res);
         } catch (Throwable e) {
             rsfFuture.failed(e);
         }
@@ -188,12 +189,11 @@ public class RsfRequestManager {
             }
         }
         //RsfFilter
-        final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
-        final RequestMsg rsfMessage = request.getMsg();
+        final RsfRequest rsfRequest = rsfFuture.getRequest();
         //查找远程服务地址
-        final AbstractRsfClient rsfClient = this.getClientManager().getClient(request.getBindInfo());
+        final AbstractRsfClient rsfClient = this.getClientManager().getClient(rsfRequest.getBindInfo());
         final long beginTime = System.currentTimeMillis();
-        final long timeout = rsfMessage.getClientTimeout();
+        final long timeout = rsfRequest.getTimeout();
         //
         if (rsfClient == null) {
             rsfFuture.failed(new IllegalStateException("The lack of effective service provider."));
@@ -215,11 +215,11 @@ public class RsfRequestManager {
                 String errorMsg = null;
                 //超时
                 if (System.currentTimeMillis() - beginTime >= timeout) {
-                    errorMsg = "send request too long time(" + (System.currentTimeMillis() - beginTime) + "),requestID:" + rsfMessage.getRequestID();
+                    errorMsg = "send request too long time(" + (System.currentTimeMillis() - beginTime) + "),requestID:" + rsfRequest.getRequestID();
                 }
                 //用户取消
                 if (future.isCancelled()) {
-                    errorMsg = "send request to cancelled by user,requestID:" + rsfMessage.getRequestID();
+                    errorMsg = "send request to cancelled by user,requestID:" + rsfRequest.getRequestID();
                 }
                 //异常状况
                 if (!future.isSuccess()) {
@@ -229,21 +229,10 @@ public class RsfRequestManager {
                     }
                     errorMsg = "send request error " + future.cause();
                 }
-                LoggerHelper.logSevere(RsfRequestManager.this + ":" + errorMsg);
+                LoggerHelper.logSevere(RsfClientRequestManager.this + ":" + errorMsg);
                 //回应Response
-                putResponse(request.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
+                putResponse(rsfRequest.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
             }
         });
-    }
-    //
-    private class InnterRsfFilterHandler extends RsfFilterHandler {
-        public InnterRsfFilterHandler(Provider<RsfFilter>[] rsfFilters, RsfFilterChain rsfChain) {
-            super(rsfFilters, rsfChain);
-        }
-        public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
-            try {
-                super.doFilter(request, response);
-            } finally {}
-        }
     }
 }

@@ -25,7 +25,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.manager.ExecutesManager;
-import net.hasor.rsf.rpc.client.RsfRequestManager;
+import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
 import org.more.logger.LoggerHelper;
@@ -35,12 +35,13 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
-    private RsfSettings      rsfSettings;
-    private AddressPool      addressPool;
-    private RsfBindCenter    bindCenter;
-    private SerializeFactory serializeFactory;
-    private ExecutesManager  executesManager;
-    private EventLoopGroup   loopGroup;
+    private RsfSettings             rsfSettings;
+    private AddressPool             addressPool;
+    private RsfBindCenter           bindCenter;
+    private SerializeFactory        serializeFactory;
+    private ExecutesManager         executesManager;
+    private EventLoopGroup          loopGroup;
+    private RsfClientRequestManager requestManager;
     //
     //
     //
@@ -61,6 +62,8 @@ public abstract class AbstractRsfContext implements RsfContext {
         int workerThread = this.rsfSettings.getNetworkWorker();
         LoggerHelper.logConfig("nioEventLoopGroup, workerThread = " + workerThread);
         this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
+        //
+        this.requestManager = new RsfClientRequestManager(this);
     }
     /**序列化反序列化使用的类加载器*/
     public ClassLoader getClassLoader() {
@@ -115,7 +118,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.getBindCenter().getProvider(bindInfo);
     }
     /** @return 获取请求管理中心*/
-    public RsfRequestManager getRequestManager() {
-        return null;s
+    public RsfClientRequestManager getRequestManager() {
+        return this.requestManager;
     }
 }

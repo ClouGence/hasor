@@ -23,11 +23,10 @@ import java.util.concurrent.TimeUnit;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
+import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -46,7 +45,7 @@ public abstract class AbstractRsfClient implements RsfClient {
     /** @return 远程服务地址*/
     public abstract URL getHostAddress();
     /** @return 获取请求管理器*/
-    public abstract RsfRequestManager getRequestManager();
+    public abstract RsfClientRequestManager getRequestManager();
     //
     //
     //
@@ -61,7 +60,7 @@ public abstract class AbstractRsfClient implements RsfClient {
      * @throws RsfException rsf异常
      */
     public <T> T getRemoteByID(String serviceID) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(serviceID);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, bindInfo.getBindType());
@@ -109,7 +108,7 @@ public abstract class AbstractRsfClient implements RsfClient {
      * @throws RsfException rsf异常
      */
     public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getServiceByID(serviceID);
+        RsfBindInfo<T> bindInfo = this.getRsfContext().getBindCenter().getService(serviceID);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
@@ -199,11 +198,12 @@ public abstract class AbstractRsfClient implements RsfClient {
      * @throws Throwable 同步执行期间遇到的错误。
      */
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {
-        RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
         int timeout = validateTimeout(bindInfo.getClientTimeout());
-        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        Method targetMethod = bindInfo.getBindType().getMethod(methodName, parameterTypes);
+        RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.getRsfContext());
         //2.发起Request
+        RsfClientRequestManager reqManager = this.getRequestManager();
         RsfFuture rsfFuture = reqManager.sendRequest(request, null);
         //3.返回数据
         RsfResponse response = rsfFuture.get(timeout, TimeUnit.MILLISECONDS);
@@ -218,10 +218,11 @@ public abstract class AbstractRsfClient implements RsfClient {
      * @return 返回异步执行结果
      */
     public RsfFuture asyncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
-        RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        Method targetMethod = bindInfo.getBindType().getMethod(methodName, parameterTypes);
+        RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.getRsfContext());
         //2.发起Request
+        RsfClientRequestManager reqManager = this.getRequestManager();
         return reqManager.sendRequest(request, null);
     }
     /**
@@ -254,10 +255,11 @@ public abstract class AbstractRsfClient implements RsfClient {
      * @param listener 回调监听器。
      */
     public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<RsfResponse> listener) {
-        RsfRequestManager reqManager = this.getRequestManager();
         //1.准备Request
-        RsfRequest request = RsfRuntimeUtils.buildRequest(bindInfo, reqManager, methodName, parameterTypes, parameterObjects);
+        Method targetMethod = bindInfo.getBindType().getMethod(methodName, parameterTypes);
+        RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.getRsfContext());
         //2.发起Request
+        RsfClientRequestManager reqManager = this.getRequestManager();
         reqManager.sendRequest(request, listener);
     }
     //

@@ -20,8 +20,8 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.constants.RsfException;
-import net.hasor.rsf.rpc.NetworkConnection;
 import net.hasor.rsf.rpc.component.ResponseMsg;
+import net.hasor.rsf.rpc.utils.NetworkConnection;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
@@ -32,8 +32,8 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
-    private RsfRequestManager requestManager = null;
-    public InnerRsfCustomerHandler(RsfRequestManager requestManager) {
+    private RsfClientRequestManager requestManager = null;
+    public InnerRsfCustomerHandler(RsfClientRequestManager requestManager) {
         this.requestManager = requestManager;
     }
     //
@@ -74,10 +74,10 @@ class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
 /**负责处理客户端 Response 回应逻辑。*/
 class ResponseHandler implements Runnable {
     private ResponseMsg       responseMsg;
-    private RsfRequestManager requestManager;
+    private RsfClientRequestManager requestManager;
     private RsfFuture         rsfFuture;
     //
-    public ResponseHandler(ResponseMsg responseMsg, RsfRequestManager requestManager, RsfFuture rsfFuture) {
+    public ResponseHandler(ResponseMsg responseMsg, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
         this.responseMsg = responseMsg;
         this.requestManager = requestManager;
         this.rsfFuture = rsfFuture;

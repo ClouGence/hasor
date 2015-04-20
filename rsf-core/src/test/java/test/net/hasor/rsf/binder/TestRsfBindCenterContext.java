@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
-import net.hasor.rsf.rpc.client.RsfRequestManager;
+import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -85,7 +85,7 @@ public class TestRsfBindCenterContext extends AbstractRsfContext {
         return null;
     }
     @Override
-    public RsfRequestManager getRequestManager() {
+    public RsfClientRequestManager getRequestManager() {
         // TODO Auto-generated method stub
         return null;
     }
