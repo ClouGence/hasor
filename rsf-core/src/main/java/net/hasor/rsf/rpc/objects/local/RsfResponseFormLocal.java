@@ -99,6 +99,7 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
         return this.committed;
     }
     public ResponseSocketBlock buildSocketBlock(SerializeFactory serializeFactory) {
+        SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
         ResponseSocketBlock block = new ResponseSocketBlock();
         //
         //1.基本信息
@@ -108,7 +109,6 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
         //
         //2.returnData
         try {
-            SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
             Object result = getResponseData();
             byte[] contentByte = coder.encode(result);
             block.setReturnType(ProtocolUtils.pushString(block, RsfRuntimeUtils.toAsmType(getResponseType())));//返回类型

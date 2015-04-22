@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.objects.socket;
 import net.hasor.rsf.manager.OptionManager;
 import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
 import net.hasor.rsf.protocol.protocol.RsfSocketBlock;
+import net.hasor.rsf.utils.ByteStringCachelUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -67,15 +68,15 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
         //1.基本数据
         this.requestID = rsfBlock.getRequestID();
         short serializeType = rsfBlock.getSerializeType();
-        this.serializeType = new String(rsfBlock.readPool(serializeType));
+        this.serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeType));
         //
         //2.Opt参数
         int[] optionArray = rsfBlock.getOptions();
         for (int optItem : optionArray) {
             short optKey = (short) (optItem >>> 16);
             short optVal = (short) (optItem & PoolSocketBlock.PoolMaxSize);
-            String optKeyStr = new String(rsfBlock.readPool(optKey));
-            String optValStr = new String(rsfBlock.readPool(optVal));
+            String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
+            String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
             this.optionManager.addOption(optKeyStr, optValStr);
         }
     }

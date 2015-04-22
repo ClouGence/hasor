@@ -35,12 +35,12 @@ import org.more.util.BeanUtils;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRequestHandler implements Runnable {
+class ProviderProcessing implements Runnable {
     private final AbstractRsfContext rsfContext;
     private final RequestSocketBlock requestBlock;
     private final Channel            nettyChannel;
     //
-    public InnerRequestHandler(AbstractRsfContext rsfContext, RequestSocketBlock requestBlock, Channel nettyChannel) {
+    public ProviderProcessing(AbstractRsfContext rsfContext, RequestSocketBlock requestBlock, Channel nettyChannel) {
         this.rsfContext = rsfContext;
         this.requestBlock = requestBlock;
         this.nettyChannel = nettyChannel;
@@ -78,7 +78,7 @@ class InnerRequestHandler implements Runnable {
             String binderID = rsfRequest.getBindInfo().getBindID();
             ServiceDefine<?> define = this.rsfContext.getBindCenter().getService(binderID);
             List<RsfFilter> rsfFilters = define.getFilters();
-            new RsfFilterHandler(rsfFilters, InnerInvokeHandler.Default).doFilter(rsfRequest, rsfResponse);
+            new RsfFilterHandler(rsfFilters, InvokeRsfFilterChain.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {
             String errorMessage = "invoke fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
             LoggerHelper.logSevere(errorMessage);

@@ -86,7 +86,7 @@ public class InterAddress {
         return this.hostAddressData;
     }
     /**转换地址为URL形式*/
-    public URI toURI() throws URISyntaxException {
+    public URI toURI() {
         return this.uriFormat;
     }
     /**
@@ -109,7 +109,17 @@ public class InterAddress {
         }
         return false;
     }
-    //
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((formUnit == null) ? 0 : formUnit.hashCode());
+        result = prime * result + ((hostAddress == null) ? 0 : hostAddress.hashCode());
+        result = prime * result + hostAddressData;
+        result = prime * result + hostPort;
+        result = prime * result + ((uriFormat == null) ? 0 : uriFormat.hashCode());
+        return result;
+    }
     //
     public String toString() {
         return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);

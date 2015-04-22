@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.manager;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -29,8 +30,8 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
-    private ThreadPoolExecutor                    defaultExecutor  = null;
-    private final Map<String, ThreadPoolExecutor> servicePoolCache = new HashMap<String, ThreadPoolExecutor>();
+    private ThreadPoolExecutor                     defaultExecutor  = null;
+    private final Map<Integer, ThreadPoolExecutor> servicePoolCache = new HashMap<Integer, ThreadPoolExecutor>();
     //
     public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
         LoggerHelper.logConfig("executesManager init -> {minCorePoolSize =%s, maxCorePoolSize =%s, queueSize =%s, keepAliveTime =%s}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
@@ -41,9 +42,10 @@ public class ExecutesManager {
                 new NameThreadFactory("RSF-Biz-%s"), new ThreadPoolExecutor.AbortPolicy());
     }
     //
-    public Executor getExecute(String serviceUniqueName) {
+    public Executor getExecute(byte[] serviceUniqueName) {
         if (this.servicePoolCache.isEmpty() == false) {
-            ThreadPoolExecutor executor = this.servicePoolCache.get(serviceUniqueName);
+            int nameHashCode = Arrays.hashCode(serviceUniqueName);
+            ThreadPoolExecutor executor = this.servicePoolCache.get(nameHashCode);
             if (executor != null) {
                 return executor;
             }

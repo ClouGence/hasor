@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.Timeout;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
@@ -35,10 +37,12 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.constants.RsfTimeoutException;
 import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.manager.TimerManager;
+import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
+import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.future.FutureCallback;
 import org.more.logger.LoggerHelper;
 /**
@@ -48,25 +52,30 @@ import org.more.logger.LoggerHelper;
  */
 public class RsfClientRequestManager {
     private final AbstractRsfContext                 rsfContext;
-    private final InnerClientManager                 clientManager;
+    private final RsfClientChannelManager            clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
     private final TimerManager                       timerManager;
     private final AtomicInteger                      requestCount;
+    private final RsfClientWrappe                    rsfClientWrappe;
     //
     public RsfClientRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.clientManager = new InnerClientManager(this);
+        this.clientManager = new RsfClientChannelManager(this);
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = new TimerManager(getRsfContext().getSettings().getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
+        this.rsfClientWrappe = new RsfClientWrappe(rsfContext);
     }
     /** @return 获取{@link RsfContext}*/
     public AbstractRsfContext getRsfContext() {
         return this.rsfContext;
     }
     /** @return 获取客户端管理器*/
-    public InnerClientManager getClientManager() {
+    public RsfClientChannelManager getClientManager() {
         return this.clientManager;
+    }
+    public RsfClient getClientWrappe() {
+        return this.rsfClientWrappe;
     }
     /**
      * 获取正在进行中的调用请求。
@@ -173,7 +182,7 @@ public class RsfClientRequestManager {
         return rsfFuture;
     }
     /**将请求发送到远端服务器。*/
-    private void sendRequest(RsfFuture rsfFuture) {
+    private void sendRequest(RsfFuture rsfFuture) throws Throwable {
         //发送之前的检查
         RsfSettings rsfSettings = this.getRsfContext().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
@@ -189,9 +198,9 @@ public class RsfClientRequestManager {
             }
         }
         //RsfFilter
-        final RsfRequest rsfRequest = rsfFuture.getRequest();
+        final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
         //查找远程服务地址
-        final AbstractRsfClient rsfClient = this.getClientManager().getClient(rsfRequest.getBindInfo());
+        final Channel rsfClient = this.getClientManager().getChannel(rsfRequest);
         final long beginTime = System.currentTimeMillis();
         final long timeout = rsfRequest.getTimeout();
         //
@@ -199,13 +208,13 @@ public class RsfClientRequestManager {
             rsfFuture.failed(new IllegalStateException("The lack of effective service provider."));
             return;
         }
-        if (rsfClient.isActive() == false) {
-            rsfFuture.failed(new IllegalStateException("client is closed."));
-            return;
-        }
-        this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
         //
-        ChannelFuture future = rsfClient.getChannel().writeAndFlush(rsfMessage);
+        SerializeFactory factory = this.rsfContext.getSerializeFactory();
+        RequestSocketBlock block = rsfRequest.buildSocketBlock(factory);
+        //
+        this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
+        ChannelFuture future = rsfClient.writeAndFlush(block);
+        //
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
@@ -223,10 +232,6 @@ public class RsfClientRequestManager {
                 }
                 //异常状况
                 if (!future.isSuccess()) {
-                    if (rsfClient.isActive()) {
-                        // maybe some exception, so close the channel
-                        getClientManager().unRegistered(rsfClient.getHostAddress());
-                    }
                     errorMsg = "send request error " + future.cause();
                 }
                 LoggerHelper.logSevere(RsfClientRequestManager.this + ":" + errorMsg);

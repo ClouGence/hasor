@@ -87,6 +87,6 @@ public class ProtocolUtils {
         return block;
     }
     public static short pushString(PoolSocketBlock socketMessage, String attrData) {
-        return socketMessage.pushData(attrData.getBytes());
+        return socketMessage.pushData(ByteStringCachelUtils.fromCache(attrData));
     }
 }

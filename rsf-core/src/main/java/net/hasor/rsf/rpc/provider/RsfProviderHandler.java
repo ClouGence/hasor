@@ -53,10 +53,10 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
         ResponseSocketBlock readyWrite = null;
         try {
             LoggerHelper.logFinest("received request(%s) full = %s", requestBlock.getRequestID(), requestBlock);
-            String serviceName = new String(requestBlock.readPool(requestBlock.getServiceName()));
-            Executor exe = this.rsfContext.getCallExecute(serviceName);
+            byte[] serviceUniqueName = requestBlock.readPool(requestBlock.getServiceName());
+            Executor exe = this.rsfContext.getCallExecute(serviceUniqueName);
             Channel nettyChannel = ctx.channel();
-            exe.execute(new InnerRequestHandler(this.rsfContext, requestBlock, nettyChannel));
+            exe.execute(new ProviderProcessing(this.rsfContext, requestBlock, nettyChannel));
             //
             readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.Accepted, optMap);
         } catch (RejectedExecutionException e) {
@@ -72,7 +72,7 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
         InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
         if (address != null) {
             LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", address, cause.getMessage());
-            this.rsfContext.getAddressPool().invalidAddress(address.toURI());
+            this.rsfContext.getAddressPool().invalidAddress(address);
         }
     }
     @Override
@@ -81,7 +81,7 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
         InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
         if (address != null) {
             LoggerHelper.logSevere("remote close, host = %s.", address);
-            this.rsfContext.getAddressPool().invalidAddress(address.toURI());
+            this.rsfContext.getAddressPool().invalidAddress(address);
         }
     }
 }

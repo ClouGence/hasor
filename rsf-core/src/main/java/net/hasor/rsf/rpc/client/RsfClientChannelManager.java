@@ -23,12 +23,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.constants.ProtocolStatus;
@@ -38,59 +36,56 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
- * 为{@link InnerRsfCustomerHandler}提供{@link AbstractRsfClient}列表维护。
+ * 维护RSF同其它RSF的连接。
  * 同时负责创建和销毁{@link AbstractRsfClient}的功能。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InnerClientManager {
-    private final RsfClientRequestManager                  rsfRequestManager;
-    private final AbstractRsfContext                       rsfContext;
-    private final ConcurrentMap<String, AbstractRsfClient> clientMapping;
+public class RsfClientChannelManager {
+    private final AbstractRsfContext             rsfContext;
+    private final ConcurrentMap<String, Channel> channelMapping;
     //
-    public InnerClientManager(RsfClientRequestManager rsfRequestManager) {
-        this.rsfRequestManager = rsfRequestManager;
+    public RsfClientChannelManager(RsfClientRequestManager rsfRequestManager) {
         this.rsfContext = rsfRequestManager.getRsfContext();
-        this.clientMapping = new ConcurrentHashMap<String, AbstractRsfClient>();
+        this.channelMapping = new ConcurrentHashMap<String, Channel>();
     }
     //
-    /** @return 获取{@link RsfContext}*/
-    public AbstractRsfContext getRsfContext() {
-        return this.rsfContext;
-    }
-    private RsfClientRequestManager getRequestManager() {
-        return rsfRequestManager;
-    }
     /**
      * 获取或创建一个连接
-     * @param rsfBindInfo 服务注册信息。
+     * @param rsfRequest 发起的请求
      * @return 返回远程服务所处的客户端连接。
      */
-    public AbstractRsfClient getClient(RsfBindInfo<?> bindInfo, String methodSign, Object[] args) throws URISyntaxException {
-        if (bindInfo == null)
+    public Channel getChannel(RsfRequest rsfRequest) {
+        if (rsfRequest == null)
             return null;
-        AddressPool addressPool = this.rsfContext.getAddressPool();
-        InterAddress refereeAddress = addressPool.nextAddress(bindInfo, methodSign, args);
+        //
+        final RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
+        final String methodSign = RsfRuntimeUtils.evalMethodSign(rsfRequest.getServiceMethod());
+        final Object[] methodArgs = rsfRequest.getParameterObject();
+        final AddressPool addressPool = this.rsfContext.getAddressPool();
+        final InterAddress refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
+        //
         /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
         if (refereeAddress == null) {
             return null;
         }
+        //
         String addrStr = refereeAddress.toString();
-        synchronized (this.clientMapping) {
-            AbstractRsfClient client = this.clientMapping.get(addrStr);
+        synchronized (this.channelMapping) {
+            Channel client = this.channelMapping.get(addrStr);
             if (client != null && client.isActive() == false) {
-                this.clientMapping.remove(addrStr);
+                this.channelMapping.remove(addrStr);
             }
             if (client == null) {
                 if ((client = connSocket(refereeAddress)) != null) {
-                    this.clientMapping.putIfAbsent(addrStr, client);
+                    this.channelMapping.putIfAbsent(addrStr, client);
                     return client;
                 }
             } else {
                 return client;
             }
         }
-        addressPool.invalidAddress(refereeAddress.toURI());
+        addressPool.invalidAddress(refereeAddress);
         //
         throw new RsfException(ProtocolStatus.ClientError, "there is not invalid address.");
     }
@@ -98,22 +93,19 @@ public class InnerClientManager {
      * 关闭这个连接并解除注册。
      * @param hostAddress 主机地址
      */
-    public void unRegistered(URL hostAddress) {
+    public void closeChannel(String hostAddress) {
         if (hostAddress == null)
             return;
         //
-        synchronized (this.clientMapping) {
-            AbstractRsfClient localClient = this.clientMapping.get(hostAddress);
+        synchronized (this.channelMapping) {
+            Channel localClient = this.channelMapping.remove(hostAddress);
             if (localClient != null) {
-                if (hostAddress.equals(localClient.getHostAddress()) == false) {
-                    throw new RsfException(ProtocolStatus.ClientError, "target is not form me.");
-                }
-                this.clientMapping.remove(hostAddress).close();
+                localClient.close();
             }
         }
     }
     //
-    private synchronized AbstractRsfClient connSocket(final InterAddress hostAddress) {
+    private synchronized Channel connSocket(final InterAddress hostAddress) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getLoopGroup());
         boot.channel(NioSocketChannel.class);
@@ -121,10 +113,10 @@ public class InnerClientManager {
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
-                RsfRuntimeUtils.setAddress(hostAddress, channel);;
+                RsfRuntimeUtils.setAddress(hostAddress, channel);
                 LoggerHelper.logInfo("initConnection connect %s.", hostAddress);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new InnerRsfCustomerHandler(getRequestManager()));
+                ch.pipeline().addLast(new RSFCodec(), new InnerRsfCustomerHandler(rsfContext));
             }
         });
         ChannelFuture future = null;
@@ -139,7 +131,7 @@ public class InnerClientManager {
         }
         if (future.isSuccess() == true) {
             LoggerHelper.logInfo("remote %s connected.", hostAddress);
-            return new InnerRsfClient(this.getRequestManager(), hostAddress);
+            return future.channel();
         }
         //
         try {

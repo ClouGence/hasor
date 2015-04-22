@@ -70,7 +70,7 @@ public class TestRsfBindCenterContext extends AbstractRsfContext {
         // TODO Auto-generated method stub
     }
     @Override
-    public Executor getCallExecute(String serviceName) {
+    public Executor getCallExecute(byte[] serviceName) {
         // TODO Auto-generated method stub
         return null;
     }

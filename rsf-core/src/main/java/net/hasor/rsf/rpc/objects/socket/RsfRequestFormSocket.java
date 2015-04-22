@@ -27,6 +27,7 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ByteStringCachelUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
@@ -50,10 +51,10 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
     public void recovery(AbstractRsfContext context, RequestSocketBlock rsfBlock) {
         super.recovery(context, rsfBlock);
         //
-        this.targetMethodName = new String(rsfBlock.readPool(rsfBlock.getTargetMethod()));
-        String group = new String(rsfBlock.readPool(rsfBlock.getServiceGroup()));
-        String name = new String(rsfBlock.readPool(rsfBlock.getServiceName()));
-        String version = new String(rsfBlock.readPool(rsfBlock.getServiceVersion()));
+        this.targetMethodName = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getTargetMethod()));
+        String group = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceGroup()));
+        String name = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceName()));
+        String version = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceVersion()));
         this.bindInfo = context.getBindCenter().getService(group, name, version);
         if (bindInfo == null) {
             throw new RsfException(ProtocolStatus.NotFound, "service was not found.");
@@ -73,7 +74,7 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
             byte[] valData = rsfBlock.readPool(paramVal);
             //
             try {
-                String keyName = new String(keyData);
+                String keyName = ByteStringCachelUtils.fromCache(keyData);
                 this.parameterTypes[i] = RsfRuntimeUtils.getType(keyName, context.getClassLoader());
                 this.parameterObjects[i] = coder.decode(valData);
             } catch (Throwable e) {

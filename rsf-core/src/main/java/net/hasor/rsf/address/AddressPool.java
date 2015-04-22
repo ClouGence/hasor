@@ -134,7 +134,11 @@ public class AddressPool {
         this.rulerCache.reset();
     }
     /**将地址置为失效的。*/
-    public void invalidAddress(URI newInvalid) {
+    public void invalidAddress(URI uri) {
+        this.invalidAddress(new InterAddress(uri));
+    }
+    /**将地址置为失效的。*/
+    public void invalidAddress(InterAddress address) {
         /*在并发情况下,newAddress可能正在创建AddressBucket,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             for (String bucketKey : this.addressPool.keySet()) {
@@ -142,7 +146,7 @@ public class AddressPool {
                 if (bucket == null) {
                     return;
                 }
-                bucket.invalidAddress(newInvalid);
+                bucket.invalidAddress(address);
                 bucket.refreshAddress();
             }
         }

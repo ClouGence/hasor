@@ -121,7 +121,7 @@ public class AddressBucket {
     }
     //
     /**将地址置为失效的。*/
-    public void invalidAddress(URI newInvalid) {
+    public void invalidAddress(InterAddress newInvalid) {
         for (InterAddress invalid : this.invalidAddresses) {
             String strInvalid = invalid.toString();
             String strInvalidNew = newInvalid.toString();
@@ -129,9 +129,8 @@ public class AddressBucket {
                 return;
             }
         }
-        try {
-            InterAddress invalid = new InterAddress(newInvalid);
-            if (this.invalidAddresses.addIfAbsent(invalid)) {
+        try {//hashCode
+            if (this.invalidAddresses.addIfAbsent(newInvalid)) {
                 synchronized (this) {
                     refreshAvailableAddress();
                 }

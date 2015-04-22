@@ -90,6 +90,15 @@ public class InterServiceAddress extends InterAddress {
         //
         return false;
     }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((group == null) ? 0 : group.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        return result;
+    }
     public String toString() {
         return super.toString() + String.format("/%s/%s/%s", this.group, this.name, this.version);
     }

@@ -22,7 +22,12 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.manager.OptionManager;
+import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * RSF请求
@@ -108,5 +113,43 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
             rsfResponse.addOption(optKey, optMap.getOption(optKey));
         }
         return rsfResponse;
+    }
+    public RequestSocketBlock buildSocketBlock(SerializeFactory serializeFactory) throws Throwable {
+        SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
+        RsfBindInfo<?> rsfBindInfo = this.getBindInfo();
+        RequestSocketBlock block = new RequestSocketBlock();
+        //
+        //1.基本信息
+        block.setHead(RSFConstants.RSF_Request);
+        block.setRequestID(getRequestID());//请求ID
+        block.setServiceGroup(ProtocolUtils.pushString(block, rsfBindInfo.getBindGroup()));//序列化策略
+        block.setServiceName(ProtocolUtils.pushString(block, rsfBindInfo.getBindName()));//序列化策略
+        block.setServiceVersion(ProtocolUtils.pushString(block, rsfBindInfo.getBindVersion()));//序列化策略
+        block.setTargetMethod(ProtocolUtils.pushString(block, getMethod()));//序列化策略
+        block.setSerializeType(ProtocolUtils.pushString(block, getSerializeType()));//序列化策略
+        block.setClientTimeout(getTimeout());
+        //
+        //2.params
+        Class<?>[] pTypes = getParameterTypes();
+        Object[] pObjects = getParameterObject();
+        for (int i = 0; i < pTypes.length; i++) {
+            byte[] typeByte = ByteStringCachelUtils.fromCache(RsfRuntimeUtils.toAsmType(pTypes[i]));
+            byte[] paramByte = coder.encode(pObjects[i]);
+            //
+            short paramType = block.pushData(typeByte);
+            short paramData = block.pushData(paramByte);
+            //
+            block.addParameter(paramType, paramData);
+        }
+        //
+        //3.Opt参数
+        String[] optKeys = getOptionKeys();
+        for (int i = 0; i < optKeys.length; i++) {
+            short optKey = ProtocolUtils.pushString(block, optKeys[i]);
+            short optVal = ProtocolUtils.pushString(block, getOption(optKeys[i]));
+            block.addOption(optKey, optVal);
+        }
+        //
+        return block;
     }
 }

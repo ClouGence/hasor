@@ -18,6 +18,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import net.hasor.rsf.utils.NameThreadFactory;
 /**
  * 
  * @version : 2015年3月28日
@@ -29,7 +30,7 @@ public class TimerManager {
     //
     public TimerManager(int defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
-        this.timer = new HashedWheelTimer();
+        this.timer = new HashedWheelTimer(new NameThreadFactory("RSF-Timer-%s"));
     }
     public void atTime(TimerTask timeTask, int timeout) {
         int reqTimeout = validateTimeout(timeout);

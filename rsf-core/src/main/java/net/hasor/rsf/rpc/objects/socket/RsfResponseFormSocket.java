@@ -22,6 +22,7 @@ import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.utils.ByteStringCachelUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
@@ -54,7 +55,7 @@ public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext,
         byte[] returnDataData = rsfBlock.readPool(rsfBlock.getReturnData());
         //
         try {
-            String returnType = new String(returnTypeData);
+            String returnType = ByteStringCachelUtils.fromCache(returnTypeData);
             this.returnType = RsfRuntimeUtils.getType(returnType, context.getClassLoader());
             this.returnObject = coder.decode(returnDataData);
         } catch (Throwable e) {

@@ -43,8 +43,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     private EventLoopGroup          loopGroup;
     private RsfClientRequestManager requestManager;
     //
-    //
-    //
     protected void initContext(RsfSettings rsfSettings) {
         LoggerHelper.logConfig("rsfContext init.");
         this.rsfSettings = rsfSettings;
@@ -89,8 +87,8 @@ public abstract class AbstractRsfContext implements RsfContext {
      * @param serviceName 服务名
      * @return 返回Executor
      */
-    public Executor getCallExecute(String serviceName) {
-        return this.executesManager.getExecute(serviceName);
+    public Executor getCallExecute(byte[] serviceUniqueName) {
+        return this.executesManager.getExecute(serviceUniqueName);
     }
     /** @return 获取Netty事件处理工具*/
     public EventLoopGroup getLoopGroup() {
@@ -102,7 +100,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     /**获取客户端*/
     public RsfClient getRsfClient() {
-        return new RsfClientFacade(this);
+        return this.requestManager.getClientWrappe();
     }
     /**
      * 获取元信息所描述的服务对象

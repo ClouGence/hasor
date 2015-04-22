@@ -30,9 +30,9 @@ import org.more.logger.LoggerHelper;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfCustomerHandler extends ChannelInboundHandlerAdapter {
+class InvokeCustomerHandler extends ChannelInboundHandlerAdapter {
     private RsfClientRequestManager requestManager = null;
-    public InnerRsfCustomerHandler(AbstractRsfContext rsfContext) {
+    public InvokeCustomerHandler(AbstractRsfContext rsfContext) {
         this.requestManager = rsfContext;
     }
     //
