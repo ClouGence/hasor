@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.rpc.provider;
+package test.net.hasor.rsf.rpc.customer;
 import java.util.ArrayList;
 import java.util.List;
 import test.net.hasor.rsf.rpc.Monitor;
@@ -27,7 +27,7 @@ import net.hasor.rsf.bootstrap.WorkMode;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProviderServer {
+public class CustomerServer {
     public void start(String host, int port) throws Throwable {
         RsfBootstrap boot = new RsfBootstrap();
         RsfContext rsfContext = boot.doBinder(new RsfStart() {
@@ -49,7 +49,7 @@ public class ProviderServer {
         System.out.println(rsfContext);
     }
     public static void main(String[] args) throws Throwable {
-        ProviderServer server = new ProviderServer();
+        CustomerServer server = new CustomerServer();
         server.start("127.0.0.1", 8001);
     }
 }

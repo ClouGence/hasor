@@ -25,6 +25,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.manager.ExecutesManager;
+import net.hasor.rsf.rpc.client.RsfClientChannelManager;
 import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
@@ -42,6 +43,8 @@ public abstract class AbstractRsfContext implements RsfContext {
     private ExecutesManager         executesManager;
     private EventLoopGroup          loopGroup;
     private RsfClientRequestManager requestManager;
+    private RsfClientChannelManager channelManager;
+    //
     //
     protected void initContext(RsfSettings rsfSettings) {
         LoggerHelper.logConfig("rsfContext init.");
@@ -62,6 +65,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
         this.requestManager = new RsfClientRequestManager(this);
+        this.channelManager = new RsfClientChannelManager(this);
     }
     /**序列化反序列化使用的类加载器*/
     public ClassLoader getClassLoader() {
@@ -75,8 +79,17 @@ public abstract class AbstractRsfContext implements RsfContext {
     public RsfBindCenter getBindCenter() {
         return this.bindCenter;
     }
+    /** @return 获取地址管理中心*/
     public AddressPool getAddressPool() {
         return this.addressPool;
+    }
+    /** @return 获取请求管理中心*/
+    public RsfClientRequestManager getRequestManager() {
+        return this.requestManager;
+    }
+    /** @return 获取网络连接管理中心*/
+    public RsfClientChannelManager getChannelManager() {
+        return this.channelManager;
     }
     /** @return 获取序列化管理器。*/
     public SerializeFactory getSerializeFactory() {
@@ -114,9 +127,5 @@ public abstract class AbstractRsfContext implements RsfContext {
     @Override
     public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
         return this.getBindCenter().getProvider(bindInfo);
-    }
-    /** @return 获取请求管理中心*/
-    public RsfClientRequestManager getRequestManager() {
-        return this.requestManager;
     }
 }

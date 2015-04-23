@@ -60,7 +60,7 @@ public class RsfClientRequestManager {
     //
     public RsfClientRequestManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        this.clientManager = new RsfClientChannelManager(this);
+        this.clientManager = new RsfClientChannelManager(rsfContext);
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = new TimerManager(getRsfContext().getSettings().getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);

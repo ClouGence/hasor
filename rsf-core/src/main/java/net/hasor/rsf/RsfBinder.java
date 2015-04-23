@@ -147,6 +147,11 @@ public interface RsfBinder {
     /**发布地址*/
     public interface RegisterBuilder<T> {
         /**
+         * @param rsfHost 远程服务地址
+         * @param port 远程服务端口
+         */
+        public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException;
+        /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */

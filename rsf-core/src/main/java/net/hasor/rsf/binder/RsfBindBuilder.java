@@ -193,6 +193,11 @@ public class RsfBindBuilder implements RsfBinder {
         }
         //
         @Override
+        public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException {
+            String unitName = getContext().getSettings().getUnitName();
+            return this.bindAddress(new InterAddress(rsfHost, port, unitName).toURI());
+        }
+        @Override
         public RegisterBuilder<T> bindAddress(String rsfURI) throws URISyntaxException {
             return this.bindAddress(new URI(rsfURI));
         }

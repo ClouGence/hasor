@@ -45,8 +45,8 @@ public class RsfClientChannelManager {
     private final AbstractRsfContext             rsfContext;
     private final ConcurrentMap<String, Channel> channelMapping;
     //
-    public RsfClientChannelManager(RsfClientRequestManager rsfRequestManager) {
-        this.rsfContext = rsfRequestManager.getRsfContext();
+    public RsfClientChannelManager(AbstractRsfContext rsfContext) {
+        this.rsfContext = rsfContext;
         this.channelMapping = new ConcurrentHashMap<String, Channel>();
     }
     //
@@ -91,14 +91,15 @@ public class RsfClientChannelManager {
     }
     /**
      * 关闭这个连接并解除注册。
-     * @param hostAddress 主机地址
+     * @param channel 主机地址
      */
-    public void closeChannel(String hostAddress) {
-        if (hostAddress == null)
+    public void closeChannel(Channel channel) {
+        if (channel == null) {
             return;
+        }
         //
         synchronized (this.channelMapping) {
-            Channel localClient = this.channelMapping.remove(hostAddress);
+            Channel localClient = this.channelMapping.remove(channel);
             if (localClient != null) {
                 localClient.close();
             }
@@ -116,7 +117,7 @@ public class RsfClientChannelManager {
                 RsfRuntimeUtils.setAddress(hostAddress, channel);
                 LoggerHelper.logInfo("initConnection connect %s.", hostAddress);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new InnerRsfCustomerHandler(rsfContext));
+                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(rsfContext));
             }
         });
         ChannelFuture future = null;
