@@ -19,6 +19,7 @@ import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
 import net.test.hasor.rsf.EchoService;
 import net.test.hasor.rsf.EchoServiceImpl;
+import net.test.hasor.rsf.Monitor;
 /**
  * 
  * @version : 2014年9月19日
@@ -34,6 +35,6 @@ public class RsfProvider extends RsfModule {
     }
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         RsfBinder rsfBinder = apiBinder.getRsfBinder();
-        rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).register();
+        rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).bindFilter("QPS", new Monitor()).register();
     }
 }

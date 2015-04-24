@@ -37,6 +37,7 @@
 	<!-- 模块 -->
 	<modules>
 		<module>rsf-core</module>
+		<module>rsf-center</module>
 		<module>demo-rsf</module>
 	</modules>
 </project>

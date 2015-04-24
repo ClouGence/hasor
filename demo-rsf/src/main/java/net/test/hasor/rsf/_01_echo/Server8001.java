@@ -18,11 +18,9 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
-import net.hasor.rsf.plugins.local.LocalPrefPlugin;
-import net.hasor.rsf.plugins.qps.QPSPlugin;
 import net.test.hasor.rsf.EchoService;
 import net.test.hasor.rsf.EchoServiceImpl;
-import net.test.hasor.rsf.Utils;
+import net.test.hasor.rsf.Monitor;
 /**
  * 
  * @version : 2014年9月12日
@@ -33,13 +31,14 @@ public class Server8001 {
         RsfBootstrap bootstrap = new RsfBootstrap();
         bootstrap.doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) throws Throwable {
-                rsfBinder.bindFilter("QPS", new QPSPlugin());
-                rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
-                //
-                rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).register();
+                rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).bindFilter("QPS", new Monitor()).register();
             }
         }).socketBind(8001);
         RsfContext rsfContext = bootstrap.sync();
-        Utils.startQPS(rsfContext);/*启动QPS实时报告*/
+        System.out.println("...");
+        //
+        while (true) {
+            Thread.sleep(100);
+        }
     }
 }

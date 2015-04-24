@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.rsf._02_hasor;
-import java.net.InetAddress;
+import java.net.URI;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
 import net.test.hasor.rsf.EchoService;
+import net.test.hasor.rsf.Monitor;
 /**
  * 负责注册远程服务
  * @version : 2014年9月19日
@@ -27,12 +28,11 @@ import net.test.hasor.rsf.EchoService;
  */
 public class RsfConsumer extends RsfModule {
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        URI host1 = new URI("rsf://192.168.137.1:8001/local");
+        URI host2 = new URI("rsf://192.168.137.1:8002/local");
         //1.声明RSF服务
         RsfBinder rsfBinder = apiBinder.getRsfBinder();
-        String hostAddress = InetAddress.getLocalHost().getHostAddress();
-        rsfBinder.bindAddress(hostAddress, 8001);//分布式的远程服务提供者：1
-        rsfBinder.bindAddress(hostAddress, 8002);//分布式的远程服务提供者：2
-        RsfBindInfo<EchoService> bindInfo = rsfBinder.rsfService(EchoService.class).register();
+        RsfBindInfo<EchoService> bindInfo = rsfBinder.rsfService(EchoService.class).bindFilter("QPS", new Monitor()).bindAddress(host1).bindAddress(host2).register();
         //
         //2.将服务注册到Hasor容器中
         apiBinder.bindType(EchoService.class, toProvider(apiBinder, bindInfo));

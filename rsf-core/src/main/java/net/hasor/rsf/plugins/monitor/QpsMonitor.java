@@ -13,35 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.rpc;
+package net.hasor.rsf.plugins.monitor;
 import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import org.more.logger.LoggerHelper;
 /**
  * 
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Monitor implements RsfFilter {
+public class QpsMonitor implements RsfFilter {
     private AtomicLong sendCount = new AtomicLong(0);
-    private long       startTime = System.currentTimeMillis() / 1000;
+    private long       startTime = System.currentTimeMillis();
+    private long       lastTime  = System.currentTimeMillis();
+    //
     //
     public void printInfo() {
-        long checkTime = System.currentTimeMillis() / 1000;
+        long checkTime = System.currentTimeMillis();
         if (checkTime - startTime == 0) {
             return;
         }
-        long qps = (sendCount.get() / (checkTime - startTime));
-        System.out.println("count:" + sendCount + "\tQPS:" + qps);
+        //
+        if (checkTime - lastTime < 10000) {
+            return;//10秒打印一条
+        }
+        lastTime = System.currentTimeMillis();
+        long qpsSecnd = (sendCount.get() / ((checkTime - startTime) / 1000));
+        LoggerHelper.logInfo("count:" + sendCount + " , QPS:" + qpsSecnd);
+        //
+        /*1000亿次调用之后重置统计数据*/
+        if (sendCount.get() >= 100000000000L) {
+            sendCount.set(0);
+            startTime = System.currentTimeMillis() / 1000;
+            lastTime = System.currentTimeMillis();
+        }
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         sendCount.getAndIncrement();
-        if (sendCount.get() % 10000 == 0) {
-            printInfo();
-        }
+        printInfo();
+        //
         chain.doFilter(request, response);
     }
 }

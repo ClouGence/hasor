@@ -16,12 +16,12 @@
 package test.net.hasor.rsf.rpc.provider;
 import java.util.ArrayList;
 import java.util.List;
-import test.net.hasor.rsf.rpc.Monitor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
 import net.hasor.rsf.bootstrap.WorkMode;
+import net.hasor.rsf.plugins.monitor.QpsMonitor;
 /**
  * 
  * @version : 2014年9月12日
@@ -33,7 +33,7 @@ public class ProviderServer {
         RsfContext rsfContext = boot.doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) throws Throwable {
                 //监控
-                rsfBinder.bindFilter("Monitor", new Monitor());
+                rsfBinder.bindFilter("Monitor", new QpsMonitor());
                 //发布一个服务
                 List<String> list = new ArrayList<String>();
                 list.add("AAA");

@@ -16,7 +16,6 @@
 package net.test.hasor.rsf._02_hasor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.test.hasor.rsf.Utils;
 /**
  * 
  * @version : 2014年9月12日
@@ -26,6 +25,5 @@ public class Server8002 {
     public static void main(String[] args) throws Throwable {
         //创建并启动环境
         AppContext appContext = Hasor.createAppContext(new RsfProvider(8002));
-        Utils.startQPS(appContext);/*启动QPS实时报告*/
     }
 }
