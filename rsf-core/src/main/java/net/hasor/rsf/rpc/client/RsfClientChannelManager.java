@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.AddressPool;
@@ -44,10 +45,12 @@ import org.more.logger.LoggerHelper;
 public class RsfClientChannelManager {
     private final AbstractRsfContext             rsfContext;
     private final ConcurrentMap<String, Channel> channelMapping;
+    private final int                            connectTimeout;
     //
     public RsfClientChannelManager(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.channelMapping = new ConcurrentHashMap<String, Channel>();
+        this.connectTimeout = rsfContext.getSettings().getConnectTimeout();
     }
     //
     /**
@@ -59,34 +62,36 @@ public class RsfClientChannelManager {
         if (rsfRequest == null)
             return null;
         //
-        final RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
-        final String methodSign = RsfRuntimeUtils.evalMethodSign(rsfRequest.getServiceMethod());
-        final Object[] methodArgs = rsfRequest.getParameterObject();
-        final AddressPool addressPool = this.rsfContext.getAddressPool();
-        final InterAddress refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
-        //
-        /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
-        if (refereeAddress == null) {
-            return null;
-        }
-        //
-        String addrStr = refereeAddress.toString();
-        synchronized (this.channelMapping) {
-            Channel client = this.channelMapping.get(addrStr);
-            if (client != null && client.isActive() == false) {
-                this.channelMapping.remove(addrStr);
+        while (true) {
+            final RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
+            final String methodSign = RsfRuntimeUtils.evalMethodSign(rsfRequest.getServiceMethod());
+            final Object[] methodArgs = rsfRequest.getParameterObject();
+            final AddressPool addressPool = this.rsfContext.getAddressPool();
+            final InterAddress refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
+            //
+            /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
+            if (refereeAddress == null) {
+                break;
             }
-            if (client == null) {
-                if ((client = connSocket(refereeAddress)) != null) {
-                    this.channelMapping.putIfAbsent(addrStr, client);
+            //
+            String addrStr = refereeAddress.toString();
+            synchronized (this.channelMapping) {
+                Channel client = this.channelMapping.get(addrStr);
+                if (client != null && client.isActive() == false) {
+                    this.channelMapping.remove(addrStr);
+                }
+                if (client == null) {
+                    if ((client = connSocket(refereeAddress)) != null) {
+                        this.channelMapping.putIfAbsent(addrStr, client);
+                        return client;
+                    }
+                } else {
                     return client;
                 }
-            } else {
-                return client;
             }
+            addressPool.invalidAddress(refereeAddress);
+            //
         }
-        addressPool.invalidAddress(refereeAddress);
-        //
         throw new RsfException(ProtocolStatus.ClientError, "there is not invalid address.");
     }
     /**
@@ -125,8 +130,9 @@ public class RsfClientChannelManager {
         LoggerHelper.logInfo("connect to %s ...", hostAddress);
         future = boot.connect(remote);
         try {
-            future.await();
+            future.await(this.connectTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
+            future.channel().close();
             LoggerHelper.logSevere("connect to %s failure , %s", hostAddress, e.getMessage());
             return null;
         }

@@ -50,6 +50,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     private int             requestTimeout       = 6000;
     private int             maximumRequest       = 200;
     private SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
+    private int             connectTimeout       = 100;
     //
     private String          bindAddress          = "local";
     private int             bindPort             = 8000;
@@ -116,6 +117,10 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     public int getBindPort() {
         return this.bindPort;
     }
+    @Override
+    public int getConnectTimeout() {
+        return this.connectTimeout;
+    }
     public String getUnitName() {
         return this.unitName;
     }
@@ -166,6 +171,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.requestTimeout = getInteger("hasor.rsfConfig.client.defaultTimeout", 6000);
         this.maximumRequest = getInteger("hasor.rsfConfig.client.maximumRequest", 200);
         this.sendLimitPolicy = getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
+        this.connectTimeout = getInteger("hasor.rsfConfig.client.connectTimeout", 100);
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);

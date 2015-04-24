@@ -58,6 +58,8 @@ public interface RsfSettings extends Settings {
     public int getMaximumRequest();
     /** 并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）*/
     public SendLimitPolicy getSendLimitPolicy();
+    /**客户端发起一个连接请求所允许的最大耗时（单位毫秒）*/
+    public int getConnectTimeout();
     //
     /**获取本地服务绑定地址*/
     public String getBindAddress();

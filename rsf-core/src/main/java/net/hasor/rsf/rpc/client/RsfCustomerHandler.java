@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
@@ -30,10 +27,9 @@ import org.more.logger.LoggerHelper;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfCustomerHandler extends ChannelInboundHandlerAdapter {
-    private final AbstractRsfContext rsfContext;
+class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
     public RsfCustomerHandler(AbstractRsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+        super(rsfContext);
     }
     //
     @Override
@@ -51,19 +47,5 @@ class RsfCustomerHandler extends ChannelInboundHandlerAdapter {
         }
         LoggerHelper.logFine("doResponse.");
         new CustomerProcessing(block, requestManager, rsfFuture).run();
-    }
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        Channel channel = ctx.channel();
-        InterAddress address = RsfRuntimeUtils.getAddress(channel);
-        rsfContext.getChannelManager().closeChannel(channel);
-        LoggerHelper.logSevere("exceptionCaught, host = " + address, cause);
-    }
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
-        InterAddress address = RsfRuntimeUtils.getAddress(channel);
-        rsfContext.getChannelManager().closeChannel(channel);
-        LoggerHelper.logSevere("channelInactive, host = " + address);
     }
 }

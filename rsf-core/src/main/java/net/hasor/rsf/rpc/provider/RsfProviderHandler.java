@@ -16,28 +16,24 @@
 package net.hasor.rsf.rpc.provider;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.constants.ProtocolStatus;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.ProtocolUtils;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
-    private AbstractRsfContext rsfContext;
-    //
+public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+        super(rsfContext);
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -65,23 +61,5 @@ public class RsfProviderHandler extends ChannelInboundHandlerAdapter {
         }
         //
         ctx.pipeline().writeAndFlush(readyWrite);
-    }
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.channel().close();
-        InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
-        if (address != null) {
-            LoggerHelper.logSevere("exceptionCaught, host = %s. , msg = %s.", address, cause.getMessage());
-            this.rsfContext.getAddressPool().invalidAddress(address);
-        }
-    }
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        ctx.channel().close();
-        InterAddress address = RsfRuntimeUtils.getAddress(ctx.channel());
-        if (address != null) {
-            LoggerHelper.logSevere("remote close, host = %s.", address);
-            this.rsfContext.getAddressPool().invalidAddress(address);
-        }
     }
 }
