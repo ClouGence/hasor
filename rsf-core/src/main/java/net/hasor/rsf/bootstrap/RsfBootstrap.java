@@ -30,6 +30,7 @@ import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.client.InstallCenterClient;
 import net.hasor.rsf.protocol.netty.RSFCodec;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
@@ -130,7 +131,7 @@ public class RsfBootstrap {
         final InterAddress hostAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "local");
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
         ServerBootstrap boot = new ServerBootstrap();
-        boot.group(bossGroup, rsfContext.getLoopGroup());
+        boot.group(bossGroup, rsfContext.getWorkLoopGroup());
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
@@ -152,6 +153,7 @@ public class RsfBootstrap {
             }
         };
         //
+        InstallCenterClient.initCenter(rsfContext);
         return doBinder(rsfContext);
     }
     private RsfContext doBinder(RsfContext rsfContext) throws Throwable {

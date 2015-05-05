@@ -66,6 +66,13 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定端口*/
     public int getBindPort();
     //
+    /**获取注册中心服务地址*/
+    public String getCenterAddress();
+    /**获取注册中心服务端口号地址*/
+    public int getCenterPort();
+    /**获取于注册中心的心跳频率*/
+    public int getCenterInterval();
+    //
     /**获取本机所属单元*/
     public String getUnitName();
 }

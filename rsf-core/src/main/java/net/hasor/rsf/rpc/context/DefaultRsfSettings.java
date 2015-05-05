@@ -54,6 +54,11 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     //
     private String          bindAddress          = "local";
     private int             bindPort             = 8000;
+    //
+    private String          centerAddress        = "local";
+    private int             centerPort           = 8000;
+    private int             centerInterval       = 60000;
+    //
     private String          unitName             = "local";
     //
     //
@@ -117,7 +122,15 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     public int getBindPort() {
         return this.bindPort;
     }
-    @Override
+    public String getCenterAddress() {
+        return this.centerAddress;
+    }
+    public int getCenterPort() {
+        return this.centerPort;
+    }
+    public int getCenterInterval() {
+        return this.centerInterval;
+    }
     public int getConnectTimeout() {
         return this.connectTimeout;
     }
@@ -175,6 +188,11 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
+        //
+        this.centerAddress = getString("hasor.rsfConfig.centerServer.address", "local");
+        this.centerPort = getInteger("hasor.rsfConfig.centerServer.port", 8000);
+        this.centerInterval = getInteger("hasor.rsfConfig.centerServer.interval", 60000);;
+        //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
         LoggerHelper.logInfo("loadRsfConfig complete!");
     }

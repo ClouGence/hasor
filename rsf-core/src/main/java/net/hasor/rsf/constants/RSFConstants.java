@@ -26,13 +26,13 @@ public interface RSFConstants {
     // RSF数据包   -（1000 0000）
     public static final byte                       RSF_Packet          = (byte) (0x80);
     // RSF心跳包   -（1000 0000）
-    public static final byte                       RSF_Packet_Heart    = RSF_Packet | 0x00;
+    //public static final byte                       RSF_Packet_Heart    = RSF_Packet | 0x00;
     // RSF请求包   -（1001 0000）
     public static final byte                       RSF_Packet_Request  = RSF_Packet | 0x10;
     // RSF响应包   -（1010 0000）
     public static final byte                       RSF_Packet_Response = RSF_Packet | 0x20;
     // RSF备用包   -（1011 0000）
-    public static final byte                       RSF_Packet_xxxx     = RSF_Packet | 0x30;
+    //public static final byte                       RSF_Packet_xxxx     = RSF_Packet | 0x30;
     //
     //
     // 协议1.0

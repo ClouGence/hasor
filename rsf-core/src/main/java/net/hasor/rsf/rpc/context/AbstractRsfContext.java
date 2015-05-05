@@ -41,7 +41,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     private RsfBindCenter           bindCenter;
     private SerializeFactory        serializeFactory;
     private ExecutesManager         executesManager;
-    private EventLoopGroup          loopGroup;
+    private EventLoopGroup          workLoopGroup;
     private RsfClientRequestManager requestManager;
     private RsfClientChannelManager channelManager;
     //
@@ -62,7 +62,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         //
         int workerThread = this.rsfSettings.getNetworkWorker();
         LoggerHelper.logConfig("nioEventLoopGroup, workerThread = " + workerThread);
-        this.loopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
+        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
         this.requestManager = new RsfClientRequestManager(this);
         this.channelManager = new RsfClientChannelManager(this);
@@ -104,12 +104,12 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.executesManager.getExecute(serviceUniqueName);
     }
     /** @return 获取Netty事件处理工具*/
-    public EventLoopGroup getLoopGroup() {
-        return this.loopGroup;
+    public EventLoopGroup getWorkLoopGroup() {
+        return this.workLoopGroup;
     }
     /**停止工作*/
     public void shutdown() {
-        this.loopGroup.shutdownGracefully();
+        this.workLoopGroup.shutdownGracefully();
     }
     /**获取客户端*/
     public RsfClient getRsfClient() {

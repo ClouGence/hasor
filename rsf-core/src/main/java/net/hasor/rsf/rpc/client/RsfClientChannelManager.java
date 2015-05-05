@@ -113,7 +113,7 @@ public class RsfClientChannelManager {
     //
     private synchronized Channel connSocket(final InterAddress hostAddress) {
         Bootstrap boot = new Bootstrap();
-        boot.group(this.rsfContext.getLoopGroup());
+        boot.group(this.rsfContext.getWorkLoopGroup());
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
         boot.handler(new ChannelInitializer<SocketChannel>() {

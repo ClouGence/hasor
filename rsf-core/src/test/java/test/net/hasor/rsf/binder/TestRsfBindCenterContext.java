@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.binder;
-import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.Executor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
@@ -76,11 +75,6 @@ public class TestRsfBindCenterContext extends AbstractRsfContext {
     }
     @Override
     public SerializeFactory getSerializeFactory() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public EventLoopGroup getLoopGroup() {
         // TODO Auto-generated method stub
         return null;
     }
