@@ -1,9 +1,19 @@
 ﻿Hasor-Core
 
 介绍：
+core---
 	Hasor的核心软件包，几乎所有Hasor扩展模块都会依赖到它。包含工具和 Hasor 两个部分，它是整个Hasor蓝图的基础。
 	该软件包提供了：配置文件解析、事件、容器、IoC/Aop等核心功能。
-
+db---
+	Hasor的数据库操作框架，该框架主要目的是为Hasor提供关系型数据库访问功能。最新版本：0.0.3。
+	前身是Hasor-JDBC项目，该项目中包含了“Transaction”、“JDBC”、“DataSource”、“ORM”四个部分。
+	这四个组建又互相成为一个体系。整个Hasor-DB，可以被独立使用。其中“Transaction”、“JDBC”两个重要部件
+	参考了SpringJDB做的设计，可以说Hasor-DB是缩小版的SpringJDBC。拥有SpringJDBC绝大部分功能。
+web---
+	Hasor-Web 是参照 guice-servlet进行的仿制，其中Hasor在仿制过程中做了大量改进优化。
+	这使得Hasor-Web具有了更多很多优越的特性。同时它也是Hasor作为Web上开发框架的一个基石。
+	几乎后续所有的Web模块都会依赖到它。开发者使用它可以通过编码形式动态注册 Servlet/Filter。
+	Hasor-Web 为它们建立了统一的 Dispatcher入口。
 
 IoC机制：
 	  Hasor 的 Ioc 是通过递归的方式实现，在 0.0.10 版本中要想实依赖注入必须要实现 InjectMembers接口。
@@ -35,4 +45,21 @@ Config配置文件解析：
 	 您需要它保存一些数据，读取 XML 配置信息也极其简单。Hasor 通过 Settings 接口提供了各种类型数据返回。
 	  Hasor 在读取 XML 的时候会将整个 XML 配置文件转换为 “element.element”这种形式的 K/V 集合方便开发读取。
 	同时 Hasor 的配置文件还支持命名空间，这样一来相同配置的不同 Value 还可以被配置到不同命名空间以方便读取。它还可以
-	做简单的 XML 解析成 DOM 的工作。	
+	做简单的 XML 解析成 DOM 的工作。
+
+
+DataSource：
+	  DS 是一个简易的数据源管理工具，它位于“net.hasor.db.datasource”软件包。开发者可以通过
+	“DataSourceUtils”工具类静态的获取和释放数据库连接。DataSourceHelper是它的核心接口。
+	它的工作机制是为每个线程根据数据源绑定唯一的数据库连接。它内部通过引用计数来保证在释放连接的真正时机。
+	Transaction组件就是通过它管理数据库事务连接的。
+
+JDBC：
+	  JDBC操作封装，这套软件包可以独立使用。通过它可以简化针对JDBC接口的使用。该接口原型是SpringJDBC
+	  你可以简单的理解为它就是轻量化的SpringJDBC框架。
+
+Transaction：
+	  Hasor提供的操作数据库事务的接口，提供了7个不同的事务隔离级别。其实现思想来源于Spring。
+
+ORM：
+	  AR模式的数据库操作接口，基于JDBC。	

@@ -34,6 +34,18 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- 零依赖 -->
+		<!-- 零依赖！下面是Web环境下的编译依赖，最终由web容器提供支持 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.2</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
