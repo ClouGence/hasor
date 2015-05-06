@@ -16,6 +16,8 @@
 package net.hasor.rsf.center.client;
 import java.util.HashMap;
 import net.hasor.core.EventListener;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
 import org.more.logger.LoggerHelper;
@@ -28,46 +30,19 @@ public class CenterClient extends Thread implements EventListener {
     private final int        centerInterval;
     private final HttpClient httpClient;
     private boolean          online;
+    //
     public CenterClient(AbstractRsfContext rsfContext) {
-        this.httpClient = new HttpClient(rsfContext);
         this.centerInterval = rsfContext.getSettings().getCenterInterval();
+        this.httpClient = new HttpClient(rsfContext);
+        this.online = false;
         this.setDaemon(true);
         this.setName("CenterClient-[Beat=" + getCenterInterval() + "]");
-        this.online = false;
     }
+    //
     /**获取心跳时间*/
     public int getCenterInterval() {
         return this.centerInterval;
     }
-    //
-    //
-    /**终端上线*/
-    public void onLine() throws Throwable {
-        this.online = true;
-        this.httpClient.request("/apis/online", new HashMap<String, String>());
-    }
-    /**终端下线*/
-    public void offLine() throws Throwable {
-        this.online = false;
-        this.httpClient.request("/apis/offline", new HashMap<String, String>());
-    }
-    /**服务消费者*/
-    public void serviceCustomer() throws Throwable {
-        this.httpClient.request("/apis/customer", new HashMap<String, String>());
-    }
-    /**服务提供者*/
-    public void serviceProvider() throws Throwable {
-        this.httpClient.request("/apis/provider", new HashMap<String, String>());
-    }
-    /**终端服务声明注销*/
-    public void unService() throws Throwable {
-        this.httpClient.request("/apis/unregistered", new HashMap<String, String>());
-    }
-    /**与注册中心的心跳*/
-    public void heartbeat() throws Throwable {
-        this.httpClient.request("/apis/heartbeat", new HashMap<String, String>());
-    }
-    //
     //
     public void run() {
         while (true) {
@@ -85,28 +60,54 @@ public class CenterClient extends Thread implements EventListener {
         }
     }
     //
-    //
     public void onEvent(String event, Object[] params) throws Throwable {
         try {
             LoggerHelper.logInfo("rsf event -> " + event);
             /*  */if (Events.StartUp.equals(event)) {
                 //
-                this.onLine();
+                this.onLine((RsfContext) params[0]);
             } else if (Events.Shutdown.equals(event)) {
                 //
-                this.offLine();
+                this.offLine((RsfContext) params[0]);
             } else if (Events.ServiceCustomer.equals(event)) {
                 //
-                this.serviceCustomer();
+                this.serviceCustomer((RsfBindInfo<?>) params[0]);
             } else if (Events.ServiceProvider.equals(event)) {
                 //
-                this.serviceProvider();
+                this.serviceProvider((RsfBindInfo<?>) params[0]);
             } else if (Events.UnService.equals(event)) {
                 //
-                this.unService();
+                this.unService((RsfBindInfo<?>) params[0]);
             }
         } catch (Exception e) {
             LoggerHelper.logSevere(e.getMessage(), e);
         }
+    }
+    //
+    /**终端上线*/
+    public void onLine(RsfContext rsfContext) throws Throwable {
+        this.online = true;
+        this.httpClient.request("/apis/online", new HashMap<String, String>());
+    }
+    /**终端下线*/
+    public void offLine(RsfContext rsfContext) throws Throwable {
+        this.online = false;
+        this.httpClient.request("/apis/offline", new HashMap<String, String>());
+    }
+    /**服务消费者*/
+    public void serviceCustomer(RsfBindInfo<?> bindInfo) throws Throwable {
+        this.httpClient.request("/apis/customer", new HashMap<String, String>());
+    }
+    /**服务提供者*/
+    public void serviceProvider(RsfBindInfo<?> bindInfo) throws Throwable {
+        this.httpClient.request("/apis/provider", new HashMap<String, String>());
+    }
+    /**终端服务声明注销*/
+    public void unService(RsfBindInfo<?> bindInfo) throws Throwable {
+        this.httpClient.request("/apis/unregistered", new HashMap<String, String>());
+    }
+    /**与注册中心的心跳*/
+    public void heartbeat() throws Throwable {
+        this.httpClient.request("/apis/heartbeat", new HashMap<String, String>());
     }
 }
