@@ -28,7 +28,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
 import net.hasor.rsf.bootstrap.WorkMode;
-import net.hasor.rsf.plugins.local.LocalPrefPlugin;
+import net.hasor.rsf.plugins.local.LocalPref;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
@@ -42,7 +42,7 @@ public abstract class RsfModule implements Module {
         bootstrap.bindSettings(env.getSettings());
         bootstrap.doBinder(new RsfStart() {
             public void onBind(RsfBinder rsfBinder) throws Throwable {
-                rsfBinder.bindFilter("LocalPre", new LocalPrefPlugin());
+                rsfBinder.bindFilter("LocalPre", new LocalPref());
             }
         });
         bootstrap.socketBind(this.bindAddress(env), this.bindPort(env));

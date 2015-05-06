@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server;
-import net.hasor.rsf.center.client.HostType;
-import net.hasor.rsf.center.client.ProxyInterface;
-import net.hasor.rsf.center.client.ServiceMetaInfo;
+package net.hasor.rsf.center.web.apis;
+import net.hasor.mvc.api.AbstractWebController;
+import net.hasor.mvc.api.MappingTo;
 /**
  * 
- * @version : 2015年4月28日
+ * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProxyInterfaceImpl implements ProxyInterface {
-    @Override
-    public boolean onLine(ServiceMetaInfo serviceInfo, HostType hostType) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public boolean offLine(ServiceMetaInfo serviceInfo, HostType hostType) {
-        // TODO Auto-generated method stub
-        return false;
+public class Provider extends AbstractWebController {
+    @MappingTo("/apis/provider")
+    public void execute() {
+        System.out.println("/apis/provider");
     }
 }

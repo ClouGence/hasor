@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import net.hasor.rsf.center.client.http.CenterClient;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.event.Events;
 import org.more.logger.LoggerHelper;
 /***
  * 
@@ -25,6 +25,13 @@ import org.more.logger.LoggerHelper;
 public class InstallCenterClient {
     public static void initCenter(AbstractRsfContext rsfContext) {
         LoggerHelper.logInfo("initCenter.");
-        new CenterClient(rsfContext).start();
+        //
+        CenterClient client = new CenterClient(rsfContext);
+        client.start();
+        rsfContext.getEventContext().addListener(Events.StartUp, client);
+        rsfContext.getEventContext().addListener(Events.Shutdown, client);
+        rsfContext.getEventContext().addListener(Events.ServiceCustomer, client);
+        rsfContext.getEventContext().addListener(Events.ServiceProvider, client);
+        rsfContext.getEventContext().addListener(Events.UnService, client);
     }
 }

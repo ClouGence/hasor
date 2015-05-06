@@ -25,6 +25,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import net.hasor.core.EventListener;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfContext;
@@ -32,8 +33,10 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.client.InstallCenterClient;
 import net.hasor.rsf.protocol.netty.RSFCodec;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.rpc.provider.RsfProviderHandler;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
@@ -52,7 +55,6 @@ public class RsfBootstrap {
     private WorkMode           workMode           = WorkMode.None;
     private int                bindSocket         = 0;
     private Runnable           shutdownHook       = null;
-    //
     //
     public RsfBootstrap bindSettings(Settings settings) throws IOException {
         if (settings == null)
@@ -109,13 +111,26 @@ public class RsfBootstrap {
         //
         //RsfContext
         LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);
-        final DefaultRsfContext rsfContext = new DefaultRsfContext(this.settings) {
-            public void shutdown() {
+        AbstractRsfContext newRsfContext = null;
+        if (this.rsfStart instanceof RsfContextCreater) {
+            newRsfContext = ((RsfContextCreater) this.rsfStart).create(this.settings);
+        }
+        if (newRsfContext == null) {
+            newRsfContext = new DefaultRsfContext(this.settings);
+        }
+        final AbstractRsfContext rsfContext = newRsfContext;
+        InstallCenterClient.initCenter(rsfContext);
+        //
+        //Shutdown Event
+        rsfContext.getEventContext().addListener(Events.Shutdown, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
                 LoggerHelper.logInfo("shutdown rsf.");
-                super.shutdown();
-                doShutdown();
+                if (shutdownHook != null) {
+                    LoggerHelper.logInfo("shutdownHook run.");
+                    shutdownHook.run();
+                }
             }
-        };
+        });
         if (this.workMode == WorkMode.Customer) {
             return doBinder(rsfContext);
         }
@@ -127,6 +142,7 @@ public class RsfBootstrap {
         }
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
         LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
+        //
         //Netty
         final InterAddress hostAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "local");
         final NioEventLoopGroup bossGroup = new NioEventLoopGroup(this.settings.getNetworkListener(), new NameThreadFactory("RSF-Listen-%s"));
@@ -144,26 +160,30 @@ public class RsfBootstrap {
         ChannelFuture future = boot.bind(localAddress, bindSocket);
         final Channel serverChannel = future.channel();
         LoggerHelper.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
-        //add
+        //
+        //shutdownHook
         this.shutdownHook = new Runnable() {
             public void run() {
                 LoggerHelper.logInfo("shutdown rsf server.");
                 bossGroup.shutdownGracefully();
-                serverChannel.close();
+                try {
+                    serverChannel.close().sync();
+                } catch (InterruptedException e) {
+                    LoggerHelper.logSevere(e.getMessage(), e);
+                }
             }
         };
         //
-        InstallCenterClient.initCenter(rsfContext);
+        //doBinder
         return doBinder(rsfContext);
     }
-    private RsfContext doBinder(RsfContext rsfContext) throws Throwable {
+    private RsfContext doBinder(AbstractRsfContext rsfContext) throws Throwable {
+        rsfContext.getEventContext().fireSyncEvent(Events.StartUp, rsfContext);
+        //
         LoggerHelper.logInfo("do RsfBinder.");
         this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
         LoggerHelper.logInfo("rsf work at %s.", this.workMode);
+        //
         return rsfContext;
-    }
-    private void doShutdown() {
-        if (this.shutdownHook != null)
-            this.shutdownHook.run();
     }
 }

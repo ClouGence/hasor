@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.sync;
-import java.net.URL;
+package net.hasor.rsf.center.web.apis;
+import net.hasor.mvc.api.AbstractWebController;
+import net.hasor.mvc.api.MappingTo;
 /**
- * 服务的描述信息，包括了服务的发布和订阅信息。
- * @version : 2014年9月12日
+ * 
+ * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SyncRegister {
-    /**拉取位于远端某个服务的可用地址列表。*/
-    public URL[] pullAddress(String serviceID, String groupName, String version);
-    /**获取远程注册中心最后同步更新时间（远端Server时间戳）。*/
-    public long lastSynchronizationTime();
+public class UnRegistered extends AbstractWebController {
+    @MappingTo("/apis/unregistered")
+    public void execute() {
+        System.out.println("/apis/unregistered");
+    }
 }

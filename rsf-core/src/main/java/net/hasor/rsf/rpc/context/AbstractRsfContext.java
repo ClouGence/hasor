@@ -17,7 +17,9 @@ package net.hasor.rsf.rpc.context;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import java.util.concurrent.Executor;
+import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
+import net.hasor.core.event.StandardEventManager;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
@@ -27,6 +29,7 @@ import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.manager.ExecutesManager;
 import net.hasor.rsf.rpc.client.RsfClientChannelManager;
 import net.hasor.rsf.rpc.client.RsfClientRequestManager;
+import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
 import org.more.logger.LoggerHelper;
@@ -44,7 +47,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     private EventLoopGroup          workLoopGroup;
     private RsfClientRequestManager requestManager;
     private RsfClientChannelManager channelManager;
-    //
+    private EventContext            eventContext;
     //
     protected void initContext(RsfSettings rsfSettings) {
         LoggerHelper.logConfig("rsfContext init.");
@@ -66,6 +69,9 @@ public abstract class AbstractRsfContext implements RsfContext {
         //
         this.requestManager = new RsfClientRequestManager(this);
         this.channelManager = new RsfClientChannelManager(this);
+        //
+        int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
+        this.eventContext = new StandardEventManager(eventThreadPoolSize);
     }
     /**序列化反序列化使用的类加载器*/
     public ClassLoader getClassLoader() {
@@ -95,6 +101,10 @@ public abstract class AbstractRsfContext implements RsfContext {
     public SerializeFactory getSerializeFactory() {
         return this.serializeFactory;
     }
+    /** @return 获取事件管理器。*/
+    public EventContext getEventContext() {
+        return this.eventContext;
+    }
     /**
      * 获取{@link Executor}用于安排执行任务。
      * @param serviceName 服务名
@@ -109,6 +119,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     /**停止工作*/
     public void shutdown() {
+        this.getEventContext().fireSyncEvent(Events.Shutdown, this);
         this.workLoopGroup.shutdownGracefully();
     }
     /**获取客户端*/

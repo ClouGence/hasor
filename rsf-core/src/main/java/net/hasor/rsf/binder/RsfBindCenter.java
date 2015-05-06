@@ -26,6 +26,7 @@ import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.RepeateException;
 import org.more.logger.LoggerHelper;
@@ -40,7 +41,6 @@ public class RsfBindCenter implements BindCenter {
     private final ConcurrentMap<String, ServiceDefine<?>> rsfServiceMap;
     private final ConcurrentMap<String, Provider<?>>      providerMap;
     private final AbstractRsfContext                      rsfContext;
-    //
     //
     public RsfBindCenter(AbstractRsfContext rsfContext) {
         LoggerHelper.logConfig("create RsfBindCenter.");
@@ -95,6 +95,7 @@ public class RsfBindCenter implements BindCenter {
     //
     /**回收已经发布的服务*/
     public void recoverService(RsfBindInfo<?> bindInfo) {
+        this.rsfContext.getEventContext().fireSyncEvent(Events.UnService, bindInfo);
         String serviceID = bindInfo.getBindID();
         this.rsfServiceMap.remove(serviceID);
     }
@@ -105,9 +106,14 @@ public class RsfBindCenter implements BindCenter {
             throw new RepeateException("Repeate:" + serviceID); /*重复检查*/
         }
         this.rsfServiceMap.putIfAbsent(serviceID, bindInfo);
+        String eventName = null;
         if (provider != null) {
             this.providerMap.putIfAbsent(serviceID, provider);
+            eventName = Events.ServiceProvider;
+        } else {
+            eventName = Events.ServiceCustomer;
         }
+        this.rsfContext.getEventContext().fireSyncEvent(eventName, bindInfo);
     }
     /**获取服务对象*/
     public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {

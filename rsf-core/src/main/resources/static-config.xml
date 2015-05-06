@@ -7,7 +7,7 @@
 		<!-- Hasor-RSF 专用 -->
 		<rsfConfig address="local" port="8000" unitName="local">
 			<!--注册中心，用于更新服务列表的配置服务器 -->
-			<centerServer address="local" port="8000" interval="60000"/>
+			<centerServer address="127.0.0.1" port="8082" interval="60000"/>
 
 			<!--用于设置默认情况下RSF服务的一些基本信息。
 					version = 在未指定注册服务的版本信息时使用下面这个配置。

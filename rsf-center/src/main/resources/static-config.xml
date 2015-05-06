@@ -3,8 +3,7 @@
 	xmlns="http://project.hasor.net/hasor/schema/hasor-search">
 	<hasor>
 		<modules>
-			<module>net.hasor.rsf.center.client.server.installs.SolrInstall</module>
-			<module>net.hasor.rsf.center.client.server.installs.RsfInstall</module>
+			<module>net.hasor.rsf.center.startup.CenterStartup</module>
 		</modules>
 	</hasor>
 </config>

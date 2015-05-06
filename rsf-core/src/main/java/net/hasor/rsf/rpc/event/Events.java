@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.bootstrap;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.context.DefaultRsfContext;
+package net.hasor.rsf.rpc.event;
 /**
- * Rsf启动引导程序。
- * @version : 2014年12月22日
+ * 事件名
+ * @version : 2015年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerRsfStart implements RsfStart, RsfContextCreater {
-    public void onBind(RsfBinder rsfBinder) throws Throwable {
-        //
-    }
-    public AbstractRsfContext create(RsfSettings settings) throws Throwable {
-        return new DefaultRsfContext(settings);
-    }
+public interface Events {
+    /**同步事件*/
+    public static final String ServiceProvider = "ServiceProvider";
+    /**同步事件*/
+    public static final String ServiceCustomer = "ServiceCustomer";
+    /**同步事件*/
+    public static final String UnService       = "UnService";
+    /**同步事件*/
+    public static final String Shutdown        = "Shutdown";
+    /**同步事件*/
+    public static final String StartUp         = "StartUp";
 }

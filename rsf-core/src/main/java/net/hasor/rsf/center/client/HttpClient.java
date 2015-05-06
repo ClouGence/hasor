@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client.http;
+package net.hasor.rsf.center.client;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
@@ -31,10 +30,14 @@ import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
 import java.net.URL;
 import java.util.Map;
+import net.hasor.rsf.manager.TimerManager;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.future.BasicFuture;
+import org.more.logger.LoggerHelper;
 /***
  * 
  * @version : 2015年5月5日
@@ -43,15 +46,17 @@ import org.more.future.BasicFuture;
 public class HttpClient {
     private final String         centerHost;
     private final int            centerPort;
+    private final TimerManager   timerManager;
     private final EventLoopGroup workerGroup;
     //
     public HttpClient(AbstractRsfContext rsfContext) {
         this.centerHost = rsfContext.getSettings().getCenterAddress();
         this.centerPort = rsfContext.getSettings().getCenterPort();
         this.workerGroup = rsfContext.getWorkLoopGroup();
+        this.timerManager = new TimerManager(12000, "CenterClient");
     }
     //
-    public BasicFuture<HttpResponse> request(String requestPath, Map<String, String> reqParams) throws Exception {
+    public BasicFuture<HttpResponse> request(final String requestPath, Map<String, String> reqParams) throws Exception {
         //
         // 初始化Netty
         final Bootstrap b = new Bootstrap();
@@ -70,7 +75,7 @@ public class HttpClient {
         });
         //
         // 连接Server
-        ChannelFuture f = b.connect(this.centerHost, this.centerPort).sync();
+        final ChannelFuture f = b.connect(this.centerHost, this.centerPort).sync();
         //
         // 构建http请求
         URL reqPath = new URL("http", this.centerHost, this.centerPort, requestPath);
@@ -80,16 +85,18 @@ public class HttpClient {
         request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, request.content().readableBytes());
         //
         // 发送http请求
+        LoggerHelper.logInfo("center request ->" + requestPath);
         request.content().writeBytes("Are you ok?".getBytes("UTF-8"));
         f.channel().write(request);
         f.channel().flush();
         //
-        // 返回异步对象
-        f.channel().closeFuture().addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture nettyFuture) throws Exception {
-                future.cancel();//因连接关闭而取消
+        timerManager.atTime(new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                LoggerHelper.logSevere("center '" + requestPath + "' response timeout.");
+                f.channel().close().sync();
             }
         });
+        //
         return future;
     }
 }
@@ -103,6 +110,8 @@ class ResponseRead extends ChannelInboundHandlerAdapter {
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
             future.completed(response);
+            LoggerHelper.logInfo("center response status ->" + response.getStatus().code());
+            ctx.close().sync();
         }
     }
 }

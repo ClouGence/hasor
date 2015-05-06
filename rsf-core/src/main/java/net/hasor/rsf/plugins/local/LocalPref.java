@@ -26,7 +26,7 @@ import net.hasor.rsf.RsfResponse;
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LocalPrefPlugin implements RsfFilter {
+public class LocalPref implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal() == true) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
