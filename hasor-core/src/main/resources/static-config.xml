@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main"
-	xmlns="http://project.hasor.net/hasor/schema/hasor-core">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
 	<!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
 	<root:config>
 		<root:hasor.loadPackages>net.*,org.*,com.*</root:hasor.loadPackages>
@@ -9,23 +8,24 @@
 	<!-- 框架配置 -->
 	<hasor debug="false">
 		<!-- 包扫描覆盖范围，逗号间隔 -->
-		<loadPackages>
-			net.hasor.core.*,net.hasor.web.*,net.hasor.db.*
-		</loadPackages>
+		<loadPackages>net.hasor.*</loadPackages>
 
-		<!-- Hasor-Web 专用 -->
-		<webConfig></webConfig>
-		<!-- Hasor-DB 专用 -->
-		<dbConfig></dbConfig>
+		<!-- 默认要装载的模块 -->
+		<modules loadModule="true">
+			<module>net.hasor.plugins.aop.AopModule</module>
+			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
+			<module>net.hasor.plugins.encoding.EncodingFilterModule</module>
+			<module>net.hasor.plugins.resource.ResourceLoaderModule</module>
+		</modules>
+
+		<!-- 插件模块的配置 -->
+		<modConfig>
+			<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
+		</modConfig>
 
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
-		<!-- 配置文件改变监视线程检查时间间隔(毫秒) -->
-		<settingsMonitor interval="15000" />
-		<!-- 默认要装载的模块 -->
-		<modules loadModule="true">
-			<!-- <module class="" /> -->
-		</modules>
+
 		<!-- 工作空间设置 -->
 		<environmentVar>
 			<!-- 程序目录 -->

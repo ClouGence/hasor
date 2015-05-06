@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import net.hasor.core.Environment;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.Settings;
-import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 /**
  * 标准事件处理器接口的实现类
@@ -38,35 +32,33 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEventManager implements EventContext {
-    private static final EmptyEventCallBackHook    EMPTY_CALLBACK   = new EmptyEventCallBackHook();
+    private static final EmptyEventCallBackHook      EMPTY_CALLBACK  = new EmptyEventCallBackHook();
     //
-    private Settings                               settings         = null;
-    private ScheduledExecutorService               executorService  = null;
-    private Map<String, EventListener[]>           listenerMap      = new ConcurrentHashMap<String, EventListener[]>();
-    private ReadWriteLock                          listenerRWLock   = new ReentrantReadWriteLock();
-    private Map<String, LinkedList<EventListener>> onceListenerMap  = new ConcurrentHashMap<String, LinkedList<EventListener>>();
-    private Lock                                   onceListenerLock = new ReentrantLock();
+    private ScheduledExecutorService                 executorService = null;
+    private ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
     //
-    public StandardEventManager(Environment env) {
-        env = Hasor.assertIsNotNull(env, "Environment type parameter is empty!");
-        this.settings = env.getSettings();
-        this.executorService = Executors.newScheduledThreadPool(1);
-        this.updateSettings();
-    }
-    private void updateSettings() {
-        //更新ThreadPoolExecutor
-        int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
+    //
+    public StandardEventManager(int eventThreadPoolSize) {
+        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize);
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
-    /**获取{@link Settings}接口对象*/
-    public Settings getSettings() {
-        return this.settings;
-    }
     /**获取执行事件使用的{@link ScheduledExecutorService}接口对象。*/
     protected ScheduledExecutorService getExecutorService() {
         return this.executorService;
+    }
+    //
+    private EventListenerPool getListenerPool(String eventType) {
+        EventListenerPool pool = listenerMap.get(eventType);
+        if (pool == null) {
+            EventListenerPool newPool = new EventListenerPool();
+            pool = listenerMap.putIfAbsent(eventType, newPool);
+            if (pool == null) {
+                pool = newPool;
+            }
+        }
+        return pool;
     }
     //
     @Override
@@ -74,49 +66,21 @@ public class StandardEventManager implements EventContext {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
         }
-        this.onceListenerLock.lock();//加锁
-        LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
-        if (eventList == null) {
-            eventList = new LinkedList<EventListener>();
-            this.onceListenerMap.put(eventType, eventList);
-        }
-        if (eventList.contains(eventListener) == false) {
-            eventList.addLast(eventListener);
-        }
-        this.onceListenerLock.unlock();//解锁
+        this.getListenerPool(eventType).pushOnceListener(eventListener);
     }
     @Override
     public void addListener(final String eventType, final EventListener eventListener) {
-        this.listenerRWLock.writeLock().lock();//加锁(写)
-        //
-        Hasor.assertIsNotNull(eventListener, "add EventListener object is null.");
-        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        if (eventListenerArray == null) {
-            eventListenerArray = new EventListener[] { eventListener };
-            this.listenerMap.put(eventType, eventListenerArray);
-        } else {
-            if (ArrayUtils.contains(eventListenerArray, eventListener) == false) {
-                eventListenerArray = (EventListener[]) ArrayUtils.add(eventListenerArray, eventListener);
-                this.listenerMap.put(eventType, eventListenerArray);
-            }
+        if (StringUtils.isBlank(eventType) || eventListener == null) {
+            return;
         }
-        //
-        this.listenerRWLock.writeLock().unlock();//解锁(写)
+        this.getListenerPool(eventType).addListener(eventListener);
     }
     @Override
     public void removeListener(final String eventType, final EventListener eventListener) {
-        this.listenerRWLock.writeLock().lock();//加锁(写)
-        //
-        Hasor.assertIsNotNull(eventType, "remove eventType is null.");
-        Hasor.assertIsNotNull(eventListener, "remove EventListener object is null.");
-        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        if (!ArrayUtils.isEmpty(eventListenerArray)) {
-            int index = ArrayUtils.indexOf(eventListenerArray, eventListener);
-            eventListenerArray = (EventListener[]) (index == ArrayUtils.INDEX_NOT_FOUND ? eventListenerArray : ArrayUtils.remove(eventListenerArray, index));
-            this.listenerMap.put(eventType, eventListenerArray);
+        if (StringUtils.isBlank(eventType) || eventListener == null) {
+            return;
         }
-        //
-        this.listenerRWLock.writeLock().unlock();//解锁(写)
+        this.getListenerPool(eventType).removeListener(eventListener);
     }
     //
     @Override
@@ -169,12 +133,11 @@ public class StandardEventManager implements EventContext {
             return;
         }
         //
-        //1.引发事务.
-        this.listenerRWLock.readLock().lock();//加锁(读)
-        EventListener[] eventListenerArray = this.listenerMap.get(eventType);
-        this.listenerRWLock.readLock().unlock();//解锁(读)
-        if (eventListenerArray != null) {
-            for (EventListener listener : eventListenerArray) {
+        //1.引发事件.
+        EventListenerPool listenerPool = this.getListenerPool(eventType);
+        if (listenerPool != null) {
+            List<EventListener> snapshot = listenerPool.getListenerSnapshot();
+            for (EventListener listener : snapshot) {
                 try {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {
@@ -185,12 +148,10 @@ public class StandardEventManager implements EventContext {
             }
         }
         //
-        //2.处理Once事务.
-        this.onceListenerLock.lock();//加锁
-        LinkedList<EventListener> eventList = this.onceListenerMap.get(eventType);
-        if (eventList != null) {
-            EventListener listener = null;
-            while ((listener = eventList.pollLast()) != null) {
+        //2.处理Once事件.
+        List<EventListener> onceList = listenerPool.popOnceListener();
+        if (onceList != null) {
+            for (EventListener listener : onceList) {
                 try {
                     listener.onEvent(eventType, objects);
                 } catch (Throwable e) {
@@ -200,20 +161,45 @@ public class StandardEventManager implements EventContext {
                 }
             }
         }
-        this.onceListenerLock.unlock();//解锁
     };
     //
     public void release() {
-        this.onceListenerLock.lock();//加锁
-        this.onceListenerMap.clear();
-        this.onceListenerLock.unlock();//解锁
-        //
         this.executorService.shutdownNow();
-        this.executorService = Executors.newScheduledThreadPool(1);
-        this.updateSettings();
-        //
-        this.listenerRWLock.writeLock().lock();//加锁
         this.listenerMap.clear();
-        this.listenerRWLock.writeLock().unlock();//解锁
+    }
+}
+//
+class EventListenerPool {
+    private final Object                              ONCE_LOCK = new Object();
+    private ArrayList<EventListener>                  onceListener;
+    private final CopyOnWriteArrayList<EventListener> listenerList;
+    //
+    public EventListenerPool() {
+        onceListener = new ArrayList<EventListener>();
+        listenerList = new CopyOnWriteArrayList<EventListener>();
+    }
+    //
+    public void pushOnceListener(EventListener eventListener) {
+        synchronized (ONCE_LOCK) {
+            onceListener.add(eventListener);
+        }
+    }
+    public void addListener(EventListener eventListener) {
+        listenerList.add(eventListener);
+    }
+    //
+    public List<EventListener> popOnceListener() {
+        List<EventListener> onceList = null;
+        synchronized (ONCE_LOCK) {
+            onceList = this.onceListener;
+            this.onceListener = new ArrayList<EventListener>();
+        }
+        return onceList;
+    }
+    public List<EventListener> getListenerSnapshot() {
+        return new ArrayList<EventListener>(this.listenerList);
+    }
+    public void removeListener(EventListener eventListener) {
+        listenerList.remove(eventListener);
     }
 }

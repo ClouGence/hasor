@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
+package net.hasor.plugins.aop;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import net.hasor.core.MethodInterceptor;
 /**
- * Bean测试
- * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * 标记在类或方法上，为类或方法指定拦截器。
+ * @version : 2013-3-20
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface Aop {
+    public Class<? extends MethodInterceptor>[] value();
 }

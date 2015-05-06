@@ -15,8 +15,8 @@
  */
 package net.test.hasor.web._01_mime;
 import net.hasor.core.Hasor;
-import net.hasor.web.mime.MimeType;
-import net.hasor.web.mime.MimeTypeModule;
+import net.hasor.plugins.mimetype.MimeType;
+import net.hasor.plugins.mimetype.MimeTypeModule;
 import org.junit.Test;
 /**
  * 

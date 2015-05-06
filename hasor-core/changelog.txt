@@ -1,6 +1,6 @@
 ﻿===== Hasor-Core v0.0.12
 * 新增:
-    01.all-in行动，db和web项目被合并到core。
+    01.all-in行动，db和web项目被合并到core，同时合并一些quick插件。
     --DB--
     02.新增 orm 工具包，携带了一个及其简易的数据库操作框架。
     03.新增 SimpleDBModule 工具类，便于为一个数据源配置 事务管理器。
@@ -24,6 +24,12 @@
     20.AnnoWebAppContext 类中增加，下面几个接口的绑定。
         ServletRequest、HttpServletRequest、ServletResponse、HttpServletResponse、HttpSession、ServletContext
     21.新增 JSP Tag 标签库，通过 Hasor JSP 标签库可以方便基于 jsp 的 Hasor 开发。
+    --Quick--
+    22.新增@Aop注解插件，用于简化Aop声明，只要类通过binder绑定到系统中就会支持。
+    23.新增Web请求响应编码设置，默认为UTF-8。
+    24.新增资源插件，可以从classpath\path\zip中提取资源作为web响应。
+* 改进:
+    25.StandardEventManager 改为无锁方式实现。
     
 ===== Hasor-Core v0.0.11
 * 修复:

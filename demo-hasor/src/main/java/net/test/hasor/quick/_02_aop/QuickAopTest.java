@@ -16,9 +16,10 @@
 package net.test.hasor.quick._02_aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.quick.bean.Beans;
+import net.hasor.core.Module;
 import net.test.hasor.quick.example.AopBean;
 import org.junit.Test;
 /**
@@ -31,19 +32,13 @@ public class QuickAopTest {
     public void startTest1() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>startTest1<<--");
         //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext();
-        Beans beans = appContext.getInstance(Beans.class);
-        //
-        AopBean aopBean = beans.getBean("aopBean");
-        aopBean.print();
-    }
-    @Test
-    public void startTest2() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>startTest2<<--");
-        //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext();
-        //
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                apiBinder.bindType(AopBean.class);
+            }
+        });
         AopBean aopBean = appContext.getInstance(AopBean.class);
+        //
         aopBean.print();
     }
 }

@@ -1,3 +1,0 @@
-===== Hasor-Quick v0.0.1
-* 新增:
-    1.迁移 aop、bean、datasource、encoding、event、jdbc、resource、servlet3、setting 插件。

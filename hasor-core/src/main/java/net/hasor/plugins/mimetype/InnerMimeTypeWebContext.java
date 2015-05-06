@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
+package net.hasor.plugins.mimetype;
+import javax.servlet.ServletContext;
+import org.more.util.StringUtils;
 /**
- * Bean测试
- * @version : 2015年1月12日
+ * 
+ * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
+class InnerMimeTypeWebContext extends InnerMimeTypeContext {
+    private static final long serialVersionUID = -174159036966050326L;
+    private ServletContext    sc               = null;
+    public InnerMimeTypeWebContext(Object content) {
+        super(content);
+        this.sc = (ServletContext) content;
+    }
+    public String getMimeType(String suffix) {
+        String mimeType = sc.getMimeType(suffix);
+        if (StringUtils.isBlank(mimeType) == false)
+            return mimeType;
+        return super.getMimeType(suffix);
     }
 }

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
+package net.hasor.plugins.resource;
+import net.hasor.core.AppContext;
 /**
- * Bean测试
- * @version : 2015年1月12日
+ * 
+ * @version : 2013-10-29
  * @author 赵永春(zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
+public interface ResourceLoaderFactory {
+    public ResourceLoader[] loaderArray(AppContext appContext);
 }

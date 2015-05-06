@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package net.test.more.asm.returns;
-import net.hasor.quick.bean.Bean;
 /**
  * 
  * @version : 2013-9-20
  * @author 赵永春 (zyc@byshell.org)
  */
-@Bean({ "" })
 @TestAnno
 public class TestBean {
     public <T> String halloAop(T abc, int aaa) throws Throwable, Exception {

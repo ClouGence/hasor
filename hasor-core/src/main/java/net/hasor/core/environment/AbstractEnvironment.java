@@ -16,21 +16,16 @@
 package net.hasor.core.environment;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
-import net.hasor.core.SettingsListener;
 import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.logger.LoggerHelper;
-import org.more.util.ResourceWatch;
 import org.more.util.StringUtils;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
@@ -73,7 +68,8 @@ public abstract class AbstractEnvironment implements Environment {
     @Override
     public EventContext getEventContext() {
         if (this.eventManager == null) {
-            this.eventManager = new StandardEventManager(this);
+            int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
+            this.eventManager = new StandardEventManager(eventThreadPoolSize);
         }
         return this.eventManager;
     }
@@ -83,7 +79,6 @@ public abstract class AbstractEnvironment implements Environment {
     protected final void initEnvironment() {
         LoggerHelper.logInfo("init Environment.");
         //
-        this.settingListenerList = new ArrayList<SettingsListener>();
         try {
             this.settings = this.createSettings();
             this.settings.refresh();
@@ -95,7 +90,6 @@ public abstract class AbstractEnvironment implements Environment {
         }
         this.envVars = this.createEnvVars();
         this.envVars.reload(getSettings());
-        this.addSettingsListener(this.envVars);
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
@@ -117,12 +111,6 @@ public abstract class AbstractEnvironment implements Environment {
         if (this.getSettingURI() == null) {
             LoggerHelper.logWarn("no need to monitor configuration file.");
             return;
-        }
-        this.settingWatch = this.createSettingWatch();
-        if (this.settingWatch != null) {
-            this.settingWatch.setDaemon(true);
-            LoggerHelper.logInfo("configuration monitor thread(%s) is start.", this.settingWatch.getId());
-            this.settingWatch.start();
         }
     }
     /**创建{@link Settings}接口对象*/
@@ -157,94 +145,6 @@ public abstract class AbstractEnvironment implements Environment {
             number = c;
         } while (c > 0);
         return buffer.reverse().toString();
-    }
-    //
-    /*-----------------------------------------------------------------------HasorSettingListener*/
-    private SettingWatch           settingWatch        = null;
-    private List<SettingsListener> settingListenerList = null;
-    /**触发配置文件重载事件。*/
-    protected void onSettingChangeEvent() {
-        for (SettingsListener listener : this.settingListenerList) {
-            listener.reload(this.getSettings());
-        }
-    }
-    /**添加配置文件变更监听器。*/
-    @Override
-    public void addSettingsListener(final SettingsListener settingsListener) {
-        if (this.settingListenerList.contains(settingsListener) == false) {
-            this.settingListenerList.add(settingsListener);
-        }
-    }
-    /**删除配置文件监听器。*/
-    @Override
-    public void removeSettingsListener(final SettingsListener settingsListener) {
-        if (this.settingListenerList.contains(settingsListener) == true) {
-            this.settingListenerList.remove(settingsListener);
-        }
-    }
-    /**获得所有配置文件改变事件监听器。*/
-    public SettingsListener[] getSettingListeners() {
-        return this.settingListenerList.toArray(new SettingsListener[this.settingListenerList.size()]);
-    }
-    //
-    /*------------------------------------------------------------------------------ResourceWatch*/
-    /**创建{@link SettingWatch}对象，该方法可以返回null表示不需要监视器。*/
-    protected SettingWatch createSettingWatch() {
-        final SettingWatch settingWatch = new SettingWatch(this) {};
-        /*设置监听器检测间隔*/
-        long interval = this.getSettings().getLong("hasor.settingsMonitor.interval", 15000L);
-        settingWatch.setCheckSeepTime(interval);
-        /*注册一个配置文件监听器，当配置文件更新时通知监听器更新检测间隔*/
-        this.addSettingsListener(new SettingsListener() {
-            @Override
-            public void reload(final Settings newConfig) {
-                long interval = newConfig.getLong("hasor.settingsMonitor.interval", 15000L);
-                if (interval != settingWatch.getCheckSeepTime()) {
-                    LoggerHelper.logInfo("monitor interval update, new value is %s", interval);
-                    settingWatch.setCheckSeepTime(interval);
-                }
-            }
-        });
-        return settingWatch;
-    }
-    /** 该类负责主配置文件的监听工作，以及引发配置文件重载事件。*/
-    protected abstract static class SettingWatch extends ResourceWatch {
-        private AbstractEnvironment env = null;
-        //
-        public SettingWatch(final AbstractEnvironment env) {
-            this.env = env;
-        }
-        @Override
-        public void firstStart(final URI resourceURI) throws IOException {}
-        /**当配置文件被检测到有修改迹象时，调用刷新进行重载。*/
-        @Override
-        public final void onChange(final URI resourceURI) throws IOException {
-            this.env.getSettings().refresh();
-            this.env.onSettingChangeEvent();
-        }
-        /**检测主配置文件是否被修改*/
-        @Override
-        public long lastModify(final URI resourceURI) throws IOException {
-            if ("file".equals(resourceURI.getScheme()) == true) {
-                return new File(resourceURI).lastModified();
-            }
-            return 0;
-        }
-        @Override
-        public synchronized void start() {
-            this.setName("ConfigurationMonitor-" + this.getId());
-            LoggerHelper.logInfo("configuration monitor thread(%s) begin start, name is %s.", this.getId(), this.getName());
-            this.setDaemon(true);
-            URI mainConfig = this.env.getSettingURI();
-            //2.启动监听器
-            if (mainConfig == null) {
-                LoggerHelper.logWarn("no need to monitor configuration file, monitor exit!");
-                return;
-            }
-            this.setResourceURI(this.env.getSettingURI());
-            super.start();
-            LoggerHelper.logInfo("configuration monitor thread(%s) started.", this.getId(), this.getName());
-        }
     }
     //
     /*-----------------------------------------------------------------------------------Env Vars*/

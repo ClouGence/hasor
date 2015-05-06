@@ -38,10 +38,6 @@ public interface Environment {
     /*-----------------------------------------------------------------------------------Settings*/
     /** @return 获取应用程序配置。*/
     public Settings getSettings();
-    /**添加配置文件变更监听器。*/
-    public void addSettingsListener(SettingsListener settingsListener);
-    /**删除配置文件监听器。*/
-    public void removeSettingsListener(SettingsListener settingsListener);
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.WORK_HOME</b>”节点上配置。*/

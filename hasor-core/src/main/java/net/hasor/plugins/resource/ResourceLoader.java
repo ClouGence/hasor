@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
+package net.hasor.plugins.resource;
+import java.io.IOException;
+import java.io.InputStream;
 /**
- * Bean测试
- * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * 
+ * @version : 2013-6-6
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
+public interface ResourceLoader {
+    /**装载指定资源。*/
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
+    /**装载指定资源。*/
+    public void close(Object resource) throws IOException;
+    /**测试资源是否可能被改变。*/
+    public boolean canModify(String resourcePath) throws IOException;
+    /**测试资源是否存在。*/
+    public boolean exist(String resourcePath) throws IOException;
 }

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
+package net.hasor.plugins.mimetype;
 /**
- * Bean测试
- * @version : 2015年1月12日
+ * 
+ * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
+public interface MimeType {
+    /**获取MimeType类型*/
+    public String getMimeType(String suffix);
 }

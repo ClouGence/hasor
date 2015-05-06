@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.core.SettingsListener;
 import net.hasor.core.XmlNode;
 import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
@@ -34,7 +33,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class EnvVars implements SettingsListener {
+public class EnvVars {
     private Environment                       environment;
     /*最终使用的环境变量Map*/
     private ConcurrentHashMap<String, String> envMap;
@@ -92,7 +91,6 @@ public class EnvVars implements SettingsListener {
      * SettingListener 接口实现
      *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
      */
-    @Override
     public void reload(final Settings newConfig) {
         //1.系统环境变量 & Java系统属性
         Map<String, String> envMap = System.getenv();

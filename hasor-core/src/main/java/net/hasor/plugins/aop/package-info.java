@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
 /**
- * Bean测试
- * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * 软件包 for net.hasor.plugins.aop
+ * <p>Provide <code>{@link net.hasor.plugins.aop.Aop}</code>
+ *  annotation way as the class or method statement Aop interceptors.</p>
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
-}
+package net.hasor.plugins.aop;

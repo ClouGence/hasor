@@ -365,7 +365,7 @@ public abstract class Record implements Cloneable, Serializable {
     //
     /**将某个字段转换为{@link Enum}形式格式返回。*/
     public <T extends Enum<?>> T asEnum(String column, Class<T> enmType) {
-        return this.toType(this.get(column), enmType, null);
+        return (T) this.toType(this.get(column), enmType, null);
     }
     /**将某个字段转换为{@link Enum}形式格式返回，第三个参数为默认值。*/
     public <T extends Enum<?>> T asEnum(String column, Class<T> enmType, T defaultValue) {
@@ -373,7 +373,7 @@ public abstract class Record implements Cloneable, Serializable {
     }
     /**将某个字段转换为{@link Enum}形式格式返回。*/
     public <T extends Enum<?>> T asEnum(int column, Class<T> enmType) {
-        return this.toType(this.get(column), enmType, null);
+        return (T) this.toType(this.get(column), enmType, null);
     }
     /**将某个字段转换为{@link Enum}形式格式返回，第三个参数为默认值。*/
     public <T extends Enum<?>> T asEnum(int column, Class<T> enmType, T defaultValue) {

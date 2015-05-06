@@ -37,26 +37,8 @@
 		<!-- Hasor-Web -->
 		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>hasor-web</artifactId>
-			<version>0.0.9-SNAPSHOT</version>
-		</dependency>
-		<!-- Hasor-Quick -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-quick</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- Hasor-DB -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-db</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
-		</dependency>
-		<!-- Hasor-Test -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-test</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
