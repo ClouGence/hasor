@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkUtils {
+    public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
+        return StringUtils.equalsIgnoreCase("local", hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
+    }
     //
     /**根据掩码长度获取掩码字符串形式.*/
     public static String maskToStringByPrefixLength(int length) {

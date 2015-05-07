@@ -142,7 +142,7 @@ public class RsfClientChannelManager {
         }
         //
         try {
-            LoggerHelper.logSevere("connect to %s failure , %s", hostAddress, future.cause().getMessage());
+            LoggerHelper.logSevere("connect to %s failure , %s", hostAddress, future.cause());
             future.channel().close().await();
         } catch (InterruptedException e) {
             LoggerHelper.logSevere("close connect(%s) failure , %s", hostAddress, e.getMessage());

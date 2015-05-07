@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.web.apis;
 import net.hasor.mvc.api.AbstractWebController;
 import net.hasor.mvc.api.MappingTo;
+import net.hasor.rsf.center.client.CenterParams;
 /**
  * 
  * @version : 2015年5月5日
@@ -24,6 +25,14 @@ import net.hasor.mvc.api.MappingTo;
 public class OnLine extends AbstractWebController {
     @MappingTo("/apis/online")
     public void execute() {
+        String hostName = this.getPara(CenterParams.Terminal_HostName);
+        String hostPort = this.getPara(CenterParams.Terminal_HostPort);
+        String version = this.getPara(CenterParams.Terminal_Version);
+        //
+        String terminalID = hostName + ":" + hostPort + ":" + System.currentTimeMillis();
+        String terminalAccessKey = hostName + ":" + hostPort + ":" + System.currentTimeMillis();
+        this.setHeader(CenterParams.Terminal_ID, terminalID);
+        this.setHeader(CenterParams.Terminal_AccessKey, terminalAccessKey);
         System.out.println("/apis/online");
     }
 }

@@ -21,7 +21,7 @@ import net.hasor.rsf.center.web.apis.Heartbeat;
 import net.hasor.rsf.center.web.apis.OffLine;
 import net.hasor.rsf.center.web.apis.OnLine;
 import net.hasor.rsf.center.web.apis.Provider;
-import net.hasor.rsf.center.web.apis.UnRegistered;
+import net.hasor.rsf.center.web.apis.UnService;
 /**
  * 
  * @version : 2015年5月5日
@@ -34,7 +34,7 @@ public class CenterStartup extends ControllerModule {
         helper.loadType(OnLine.class);
         helper.loadType(Customer.class);
         helper.loadType(Provider.class);
-        helper.loadType(UnRegistered.class);
+        helper.loadType(UnService.class);
         helper.loadType(Heartbeat.class);
     }
 }

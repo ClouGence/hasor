@@ -21,9 +21,9 @@ import net.hasor.mvc.api.MappingTo;
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UnRegistered extends AbstractWebController {
-    @MappingTo("/apis/unregistered")
+public class UnService extends AbstractWebController {
+    @MappingTo("/apis/unservice")
     public void execute() {
-        System.out.println("/apis/unregistered");
+        System.out.println("/apis/unservice");
     }
 }

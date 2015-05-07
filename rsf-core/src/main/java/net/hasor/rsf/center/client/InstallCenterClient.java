@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import java.net.UnknownHostException;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
 import org.more.logger.LoggerHelper;
@@ -23,10 +25,10 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InstallCenterClient {
-    public static void initCenter(AbstractRsfContext rsfContext) {
+    public static void initCenter(AbstractRsfContext rsfContext, InterAddress centerAddress) throws UnknownHostException {
         LoggerHelper.logInfo("initCenter.");
         //
-        CenterClient client = new CenterClient(rsfContext);
+        CenterClient client = new CenterClient(rsfContext, centerAddress);
         client.start();
         rsfContext.getEventContext().addListener(Events.StartUp, client);
         rsfContext.getEventContext().addListener(Events.Shutdown, client);

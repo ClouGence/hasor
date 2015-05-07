@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import io.netty.handler.codec.http.HttpResponse;
+import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
+import org.more.future.BasicFuture;
 import org.more.logger.LoggerHelper;
+import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
 /***
  * 
  * @version : 2015年5月5日
@@ -29,12 +38,18 @@ import org.more.logger.LoggerHelper;
 public class CenterClient extends Thread implements EventListener {
     private final int        centerInterval;
     private final HttpClient httpClient;
+    private RsfContext       rsfContext;
     private boolean          online;
+    private String           terminalID;
+    private String           terminalAccessKey;
+    private InterAddress     centerAddress;
     //
-    public CenterClient(AbstractRsfContext rsfContext) {
+    public CenterClient(AbstractRsfContext rsfContext, InterAddress centerAddress) throws UnknownHostException {
         this.centerInterval = rsfContext.getSettings().getCenterInterval();
         this.httpClient = new HttpClient(rsfContext);
+        this.rsfContext = rsfContext;
         this.online = false;
+        this.centerAddress = centerAddress;
         this.setDaemon(true);
         this.setName("CenterClient-[Beat=" + getCenterInterval() + "]");
     }
@@ -66,7 +81,11 @@ public class CenterClient extends Thread implements EventListener {
             /*  */if (Events.StartUp.equals(event)) {
                 //
                 this.onLine((RsfContext) params[0]);
-            } else if (Events.Shutdown.equals(event)) {
+            }
+            if (this.online == false) {
+                return;
+            }
+            if (Events.Shutdown.equals(event)) {
                 //
                 this.offLine((RsfContext) params[0]);
             } else if (Events.ServiceCustomer.equals(event)) {
@@ -86,28 +105,92 @@ public class CenterClient extends Thread implements EventListener {
     //
     /**终端上线*/
     public void onLine(RsfContext rsfContext) throws Throwable {
-        this.online = true;
-        this.httpClient.request("/apis/online", new HashMap<String, String>());
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_HostName, this.centerAddress.getHostAddress());
+        reqParam.put(CenterParams.Terminal_HostPort, String.valueOf(this.centerAddress.getHostPort()));
+        reqParam.put(CenterParams.Terminal_HostUnit, String.valueOf(this.rsfContext.getSettings().getUnitName()));
+        reqParam.put(CenterParams.Terminal_Version, IOUtils.toString(ResourcesUtils.getResourceAsStream("/META-INF/rsf-core.version")));
+        //
+        BasicFuture<HttpResponse> response = this.httpClient.request("/apis/online", reqParam);
+        this.terminalID = response.get().headers().get(CenterParams.Terminal_ID);
+        this.terminalAccessKey = response.get().headers().get(CenterParams.Terminal_AccessKey);
+        if (!StringUtils.isBlank(this.terminalID)) {
+            LoggerHelper.logInfo("onLine to center, terminalID-> " + this.terminalID);
+            this.online = true;
+        }
     }
     /**终端下线*/
     public void offLine(RsfContext rsfContext) throws Throwable {
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
+        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
+        //
         this.online = false;
-        this.httpClient.request("/apis/offline", new HashMap<String, String>());
+        this.terminalID = null;
+        this.httpClient.request("/apis/offline", reqParam);
     }
     /**服务消费者*/
     public void serviceCustomer(RsfBindInfo<?> bindInfo) throws Throwable {
-        this.httpClient.request("/apis/customer", new HashMap<String, String>());
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
+        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
+        reqParam.put(CenterParams.Service_BindID, bindInfo.getBindID());
+        reqParam.put(CenterParams.Service_BindName, bindInfo.getBindName());
+        reqParam.put(CenterParams.Service_BindGroup, bindInfo.getBindGroup());
+        reqParam.put(CenterParams.Service_BindVersion, bindInfo.getBindVersion());
+        reqParam.put(CenterParams.Service_BindType, bindInfo.getBindType().getName());
+        reqParam.put(CenterParams.Service_ClientTimeout, String.valueOf(bindInfo.getClientTimeout()));
+        reqParam.put(CenterParams.Service_SerializeType, bindInfo.getSerializeType());
+        reqParam.put(CenterParams.Service_Persona, "customer");
+        //
+        updateAddress(this.httpClient.request("/apis/customer", reqParam));
     }
     /**服务提供者*/
     public void serviceProvider(RsfBindInfo<?> bindInfo) throws Throwable {
-        this.httpClient.request("/apis/provider", new HashMap<String, String>());
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
+        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
+        reqParam.put(CenterParams.Service_BindID, bindInfo.getBindID());
+        reqParam.put(CenterParams.Service_BindName, bindInfo.getBindName());
+        reqParam.put(CenterParams.Service_BindGroup, bindInfo.getBindGroup());
+        reqParam.put(CenterParams.Service_BindVersion, bindInfo.getBindVersion());
+        reqParam.put(CenterParams.Service_BindType, bindInfo.getBindType().getName());
+        reqParam.put(CenterParams.Service_ClientTimeout, String.valueOf(bindInfo.getClientTimeout()));
+        reqParam.put(CenterParams.Service_SerializeType, bindInfo.getSerializeType());
+        reqParam.put(CenterParams.Service_Persona, "provider");
+        //
+        updateAddress(this.httpClient.request("/apis/provider", reqParam));
     }
     /**终端服务声明注销*/
     public void unService(RsfBindInfo<?> bindInfo) throws Throwable {
-        this.httpClient.request("/apis/unregistered", new HashMap<String, String>());
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
+        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
+        reqParam.put(CenterParams.Service_BindID, bindInfo.getBindID());
+        //
+        this.httpClient.request("/apis/unservice", reqParam);
     }
     /**与注册中心的心跳*/
     public void heartbeat() throws Throwable {
-        this.httpClient.request("/apis/heartbeat", new HashMap<String, String>());
+        Map<String, String> reqParam = new HashMap<String, String>();
+        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
+        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
+        //
+        StringBuffer buffer = new StringBuffer("");
+        List<String> ids = this.rsfContext.getBindCenter().getServiceIDs();
+        for (String id : ids) {
+            buffer.append("," + id);
+        }
+        if (buffer.length() > 1) {
+            buffer.deleteCharAt(0);
+        }
+        reqParam.put(CenterParams.HeartBeat, buffer.toString());
+        //
+        updateAddress(this.httpClient.request("/apis/heartbeat", reqParam));
+    }
+    //
+    private void updateAddress(BasicFuture<HttpResponse> response) {
+        //TODO
+        System.out.println();
     }
 }

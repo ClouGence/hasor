@@ -39,9 +39,9 @@ import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.rpc.provider.RsfProviderHandler;
 import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.logger.LoggerHelper;
-import org.more.util.StringUtils;
 /**
  * Rsf启动引导程序。
  * @version : 2014年12月22日
@@ -91,10 +91,6 @@ public class RsfBootstrap {
         return this;
     }
     //
-    private InetAddress finalBindAddress(RsfContext rsfContext) throws UnknownHostException {
-        String bindAddress = rsfContext.getSettings().getBindAddress();
-        return StringUtils.equalsIgnoreCase("local", bindAddress) ? InetAddress.getLocalHost() : InetAddress.getByName(bindAddress);
-    }
     public RsfContext sync() throws Throwable {
         LoggerHelper.logInfo("initialize rsfBootstrap。");
         if (this.rsfStart == null) {
@@ -119,7 +115,17 @@ public class RsfBootstrap {
             newRsfContext = new DefaultRsfContext(this.settings);
         }
         final AbstractRsfContext rsfContext = newRsfContext;
-        InstallCenterClient.initCenter(rsfContext);
+        //
+        //localAddress & bindSocket
+        InetAddress localAddress = this.localAddress;
+        if (localAddress == null) {
+            localAddress = NetworkUtils.finalBindAddress(rsfContext.getSettings().getBindAddress());
+        }
+        int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
+        LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
+        //
+        InterAddress centerAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "");
+        InstallCenterClient.initCenter(rsfContext, centerAddress);
         //
         //Shutdown Event
         rsfContext.getEventContext().addListener(Events.Shutdown, new EventListener() {
@@ -134,14 +140,6 @@ public class RsfBootstrap {
         if (this.workMode == WorkMode.Customer) {
             return doBinder(rsfContext);
         }
-        //
-        //localAddress & bindSocket
-        InetAddress localAddress = this.localAddress;
-        if (localAddress == null) {
-            localAddress = finalBindAddress(rsfContext);
-        }
-        int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
-        LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
         //
         //Netty
         final InterAddress hostAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "local");
