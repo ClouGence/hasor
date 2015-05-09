@@ -16,10 +16,19 @@ public class AsyncMain {
         StandardContextSettings setting = new StandardContextSettings("rsf-config.xml");
         setting.refresh();
         //获取准备启动的客户端数量
-        int clientCount = setting.getInteger("testConfig.clientCount");
+        final int clientCount = setting.getInteger("testConfig.clientCount");
         for (int chientID = 0; chientID < clientCount; chientID++) {
-            RsfContext rsfContext = RsfCustomer.build(qps, setting);
-            new AsyncClient(chientID, rsfContext).syncRun();
+            final int id = chientID;
+            final RsfContext rsfContext = RsfCustomer.build(qps, setting);
+            new Thread() {
+                public void run() {
+                    new AsyncClient(id, rsfContext).syncRun();
+                };
+            }.start();
+        }
+        //
+        while (true) {
+            Thread.sleep(1000);
         }
     }
 }
