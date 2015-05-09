@@ -99,7 +99,7 @@ public class CenterClient extends Thread implements EventListener {
                 this.unService((RsfBindInfo<?>) params[0]);
             }
         } catch (Exception e) {
-            LoggerHelper.logSevere(e.getMessage(), e);
+            LoggerHelper.logSevere("rsf event fail -> " + event, e);
         }
     }
     //

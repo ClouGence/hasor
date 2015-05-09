@@ -134,4 +134,14 @@ class ResponseRead extends ChannelInboundHandlerAdapter {
             ctx.close().sync();
         }
     }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LoggerHelper.logWarn("center connection exception ->" + cause.getMessage());
+        this.future.failed(cause);
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        LoggerHelper.logWarn("center remote close.");
+        this.future.cancel();
+    }
 }
