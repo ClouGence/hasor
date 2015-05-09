@@ -1,4 +1,14 @@
-﻿===== Hasor-Core v0.0.12
+﻿===== Hasor-Core v0.0.14
+* 改进:
+    01.fix 日志输出了格式化字符。
+    02.fix 多配置文件时候，主配置文件失效问题。
+
+===== Hasor-Core v0.0.13
+* 改进:
+    01.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
+    02.修改测试用例，取消log的封装。
+
+===== Hasor-Core v0.0.12
 * 新增:
     01.all-in行动，db和web项目被合并到core，同时合并一些quick插件。
     --DB--

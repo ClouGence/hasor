@@ -134,7 +134,7 @@ public abstract class AbstractSettings implements Settings {
         if (settingvar == null || settingvar.length == 0) {
             return defaultValue;
         }
-        return converTo(settingvar[0].getDefaultVar(), toType, defaultValue);
+        return converTo(settingvar[settingvar.length - 1].getDefaultVar(), toType, defaultValue);
     };
     public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {
         SettingValue[] varArrays = this.findSettingValue(name);
