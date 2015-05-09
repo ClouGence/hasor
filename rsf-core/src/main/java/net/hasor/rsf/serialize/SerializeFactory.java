@@ -20,13 +20,15 @@ import java.util.Map;
 import net.hasor.core.XmlNode;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.constants.RsfException;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
 public class SerializeFactory {
+    protected static Logger             logger   = LoggerFactory.getLogger(SerializeFactory.class);
     private Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
     //
     /**获取序列化（编码/解码）器。*/
@@ -51,7 +53,7 @@ public class SerializeFactory {
                 types += (s.getAttribute("name") + ",");
             }
         }
-        LoggerHelper.logConfig("SerializeFactory init. -> [%s]", types);
+        logger.info("SerializeFactory init. -> [{}]", types);
         return factory;
     }
     private static void initSerialize(SerializeFactory factory, XmlNode atNode) {

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Settings;
 /**
  * 路由规则，配置模版实例：
@@ -26,9 +28,10 @@ import net.hasor.core.Settings;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRule implements Rule {
-    private String  routeID;
-    private String  routebody;
-    private boolean enable;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private String   routeID;
+    private String   routebody;
+    private boolean  enable;
     //
     /**路由规则ID*/
     public String routeID() {

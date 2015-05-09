@@ -32,13 +32,15 @@ import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
+    protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfSettings             rsfSettings;
     private AddressPool             addressPool;
     private RsfBindCenter           bindCenter;
@@ -50,7 +52,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     private EventContext            eventContext;
     //
     protected void initContext(RsfSettings rsfSettings) {
-        LoggerHelper.logConfig("rsfContext init.");
+        logger.info("rsfContext init.");
         this.rsfSettings = rsfSettings;
         //
         this.bindCenter = new RsfBindCenter(this);
@@ -64,7 +66,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
         int workerThread = this.rsfSettings.getNetworkWorker();
-        LoggerHelper.logConfig("nioEventLoopGroup, workerThread = " + workerThread);
+        logger.info("nioEventLoopGroup, workerThread = " + workerThread);
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
         this.requestManager = new RsfClientRequestManager(this);

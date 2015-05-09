@@ -23,16 +23,18 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.rsf.RsfSettings;
-import org.more.logger.LoggerHelper;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.input.ReaderInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 路由规则解析器
  * @version : 2015年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RuleParser {
+    protected Logger              logger      = LoggerFactory.getLogger(getClass());
     private Map<String, Class<?>> ruleTypeMap = null;
     public RuleParser(RsfSettings rsfSettings) {
         this.ruleTypeMap = new HashMap<String, Class<?>>();
@@ -48,7 +50,7 @@ public class RuleParser {
                         Class<?> ruleClass = ClassUtils.getClass(ruleClassName);
                         ruleTypeMap.put(ruleID, ruleClass);
                     } catch (Throwable e) {
-                        LoggerHelper.logSevere("rule %s load type error -> %s", ruleID, e.getMessage());
+                        logger.error("rule {} load type error -> {}", ruleID, e.getMessage());
                     }
                 }
             }
@@ -59,7 +61,7 @@ public class RuleParser {
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(String rawRoute) {
         if (StringUtils.isBlank(rawRoute) || !StringUtils.startsWithIgnoreCase(rawRoute, "<flowControl") || !StringUtils.endsWithIgnoreCase(rawRoute, "</flowControl>")) {
-            LoggerHelper.logConfig("rule raw format error.");
+            logger.info("rule raw format error.");
             return null;
         }
         //
@@ -69,14 +71,14 @@ public class RuleParser {
             ruleSettings.loadSettings();
             return ruleSettings(ruleSettings);
         } catch (Exception e) {
-            LoggerHelper.logConfig("rule raw format error.", e);
+            logger.error("rule raw format error. -> {}", e);
         }
         return null;
     }
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(Settings ruleSettings) {
         if (ruleSettings == null) {
-            LoggerHelper.logConfig("ruleSettings is null.");
+            logger.info("ruleSettings is null.");
             return null;
         }
         //
@@ -86,15 +88,15 @@ public class RuleParser {
             boolean ruleEnable = ruleSettings.getBoolean("flowControl.enable", false);
             //
             if (StringUtils.isBlank(ruleID)) {
-                LoggerHelper.logConfig("flowControl.type is null.");
+                logger.info("flowControl.type is null.");
                 return null;
             }
             //
             ruleID = ruleID.trim().toLowerCase();
-            LoggerHelper.logConfig("process rule '%s' -> %s.", ruleID, ruleEnable);
+            logger.info("process rule '{}' -> {}.", ruleID, ruleEnable);
             Class<?> ruleClass = ruleTypeMap.get(ruleID);
             if (ruleClass == null) {
-                LoggerHelper.logConfig("rule type of '%s' is undefined.", ruleID);
+                logger.info("rule type of '{}' is undefined.", ruleID);
                 return null;
             }
             //
@@ -105,7 +107,7 @@ public class RuleParser {
             ruleObject.paserControl(ruleSettings);
             //
         } catch (Exception e) {
-            LoggerHelper.logConfig("rule raw format error.", e);
+            logger.error("rule raw format error -> {}", e);
         }
         return ruleObject;
     }

@@ -25,13 +25,15 @@ import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
         super(rsfContext);
     }
@@ -48,7 +50,7 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
         //放入业务线程准备执行
         ResponseSocketBlock readyWrite = null;
         try {
-            LoggerHelper.logFinest("received request(%s) full = %s", requestBlock.getRequestID(), requestBlock);
+            logger.debug("received request({}) full = {}", requestBlock.getRequestID(), requestBlock);
             byte[] serviceUniqueName = requestBlock.readPool(requestBlock.getServiceName());
             Executor exe = this.rsfContext.getCallExecute(serviceUniqueName);
             Channel nettyChannel = ctx.channel();
@@ -56,7 +58,7 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
             //
             readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.Accepted, optMap);
         } catch (RejectedExecutionException e) {
-            LoggerHelper.logWarn("task pool is full ->RejectedExecutionException.");
+            logger.warn("task pool is full ->RejectedExecutionException.");
             readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ChooseOther, optMap);
         }
         //

@@ -23,18 +23,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import net.hasor.rsf.utils.NameThreadFactory;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 业务线程
  * @version : 2014年11月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
+    protected Logger                               logger           = LoggerFactory.getLogger(getClass());
     private ThreadPoolExecutor                     defaultExecutor  = null;
     private final Map<Integer, ThreadPoolExecutor> servicePoolCache = new HashMap<Integer, ThreadPoolExecutor>();
     //
     public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
-        LoggerHelper.logConfig("executesManager init -> {minCorePoolSize =%s, maxCorePoolSize =%s, queueSize =%s, keepAliveTime =%s}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
         this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//

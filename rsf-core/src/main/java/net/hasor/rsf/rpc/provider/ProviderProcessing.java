@@ -29,14 +29,16 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.objects.socket.RsfRequestFormSocket;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责处理 Request 调用逻辑，和response写入逻辑。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 class ProviderProcessing implements Runnable {
+    protected Logger                 logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext rsfContext;
     private final RequestSocketBlock requestBlock;
     private final Channel            nettyChannel;
@@ -64,7 +66,7 @@ class ProviderProcessing implements Runnable {
             rsfResponse = rsfRequest.buildResponse();
         } catch (Throwable e) {
             String errorMessage = "buildResponse fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
-            LoggerHelper.logSevere(errorMessage);
+            logger.error(errorMessage);
             throw new RsfException(ProtocolStatus.BuildResponse, errorMessage);
         }
         //
@@ -72,7 +74,7 @@ class ProviderProcessing implements Runnable {
         long lostTime = System.currentTimeMillis() - requestBlock.getReceiveTime();
         int timeout = validateTimeout(requestBlock.getClientTimeout(), rsfRequest.getBindInfo());
         if (lostTime > timeout) {
-            LoggerHelper.logSevere("request timeout. (client parameter)., requestID:" + requestBlock.getRequestID());
+            logger.error("request timeout. (client parameter)., requestID:" + requestBlock.getRequestID());
             rsfResponse.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
             return rsfResponse;
         }
@@ -85,7 +87,7 @@ class ProviderProcessing implements Runnable {
             new RsfFilterHandler(rsfFilters, InvokeRsfFilterChain.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {
             String errorMessage = "invoke fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
-            LoggerHelper.logSevere(errorMessage);
+            logger.error(errorMessage);
             rsfResponse.sendStatus(ProtocolStatus.InvokeError, errorMessage);
             return rsfResponse;
         }
@@ -107,11 +109,11 @@ class ProviderProcessing implements Runnable {
                 socketBlock = rsfResponse.buildSocketBlock(this.rsfContext.getSerializeFactory());
             } catch (Throwable e) {
                 String errorMessage = "buildResponseSocketBlock fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
-                LoggerHelper.logSevere(errorMessage);
+                logger.error(errorMessage);
                 socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.BuildSocketBlock, optMap);
             }
         } else {
-            LoggerHelper.logSevere("response is null.");
+            logger.error("response is null.");
             socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ResponseNullError, optMap);
         }
         this.nettyChannel.writeAndFlush(socketBlock);

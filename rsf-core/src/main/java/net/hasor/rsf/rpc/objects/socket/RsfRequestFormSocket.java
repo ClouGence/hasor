@@ -29,13 +29,15 @@ import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, RequestSocketBlock> implements RsfRequest {
+    protected Logger           logger = LoggerFactory.getLogger(getClass());
     private AbstractRsfContext rsfContext;
     private RsfBindInfo<?>     bindInfo;
     private String             targetMethodName;
@@ -78,7 +80,7 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
                 this.parameterTypes[i] = RsfRuntimeUtils.getType(keyName, context.getClassLoader());
                 this.parameterObjects[i] = coder.decode(valData);
             } catch (Throwable e) {
-                LoggerHelper.logSevere(e.getMessage(), e);
+                logger.error("recovery form Socket > " + e.getMessage(), e);
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else {

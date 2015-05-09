@@ -19,13 +19,15 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class QpsMonitor implements RsfFilter {
+    protected Logger   logger    = LoggerFactory.getLogger(getClass());
     private AtomicLong sendCount = new AtomicLong(0);
     private long       startTime = System.currentTimeMillis();
     private long       lastTime  = System.currentTimeMillis();
@@ -42,7 +44,7 @@ public class QpsMonitor implements RsfFilter {
         }
         lastTime = System.currentTimeMillis();
         long qpsSecnd = (sendCount.get() / ((checkTime - startTime) / 1000));
-        LoggerHelper.logInfo("count:" + sendCount + " , QPS:" + qpsSecnd);
+        logger.info("count:" + sendCount + " , QPS:" + qpsSecnd);
         //
         /*1000亿次调用之后重置统计数据*/
         if (sendCount.get() >= 100000000000L) {

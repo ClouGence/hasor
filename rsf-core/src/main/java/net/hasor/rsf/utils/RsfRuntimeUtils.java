@@ -24,13 +24,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.constants.RsfException;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
+    protected static Logger                        logger     = LoggerFactory.getLogger(RsfRuntimeUtils.class);
     private static AtomicLong                      requestID  = new AtomicLong(1);
     private static ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<String, Class<?>>();
     private static ConcurrentMap<String, Method>   methodMap  = new ConcurrentHashMap<String, Method>();
@@ -137,7 +139,7 @@ public class RsfRuntimeUtils {
                     method = newMethod;
                 }
             } catch (Exception e) {
-                LoggerHelper.logSevere(e.getMessage(), e);
+                logger.error("find method {} of type {} fail -> {}", methodName, serviceType, e);
                 if (e instanceof RuntimeException)
                     throw (RuntimeException) e;
                 throw new RsfException(e.getMessage(), e);
@@ -156,7 +158,7 @@ public class RsfRuntimeUtils {
                     type = newType;
                 }
             } catch (Throwable e) {
-                LoggerHelper.logSevere(e.getMessage(), e);
+                logger.error("find of type {} fail -> {}", typeName, e);
                 if (e instanceof RuntimeException)
                     throw (RuntimeException) e;
                 throw new RsfException(e.getMessage(), e);

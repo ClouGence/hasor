@@ -18,15 +18,17 @@ import java.net.UnknownHostException;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /***
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class InstallCenterClient {
+    protected static Logger logger = LoggerFactory.getLogger(InstallCenterClient.class);
     public static void initCenter(AbstractRsfContext rsfContext, InterAddress centerAddress) throws UnknownHostException {
-        LoggerHelper.logInfo("initCenter.");
+        logger.info("initCenter.");
         //
         CenterClient client = new CenterClient(rsfContext, centerAddress);
         client.start();

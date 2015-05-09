@@ -25,13 +25,15 @@ import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
+    protected Logger         logger = LoggerFactory.getLogger(getClass());
     private final RsfRequest rsfRequest;
     private short            responseStatus;
     private Class<?>         returnType;
@@ -116,8 +118,8 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
             block.setStatus(getResponseStatus());//响应状态
             //
         } catch (Throwable e) {
-            String msg = e.getClass().getName() + ":" + e.getMessage();
-            LoggerHelper.logSevere(e.getMessage(), e);
+            String msg = "buildSocketBlock " + e.getClass().getName() + ":" + e.getMessage();
+            logger.error(e.getMessage(), e);
             block.setReturnType(ProtocolUtils.pushString(block, RsfRuntimeUtils.toAsmType(java.lang.String.class)));//返回类型
             block.setReturnData(block.pushData(msg.getBytes()));
             block.setStatus(ProtocolStatus.SerializeError);//响应状态

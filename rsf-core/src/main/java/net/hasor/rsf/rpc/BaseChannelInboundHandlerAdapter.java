@@ -20,13 +20,15 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 基类
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class BaseChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
+    protected Logger                   logger = LoggerFactory.getLogger(getClass());
     protected final AbstractRsfContext rsfContext;
     public BaseChannelInboundHandlerAdapter(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
@@ -36,13 +38,13 @@ public class BaseChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapt
         Channel channel = ctx.channel();
         InterAddress address = RsfRuntimeUtils.getAddress(channel);
         rsfContext.getChannelManager().closeChannel(channel);
-        LoggerHelper.logSevere("exceptionCaught, host = " + address, cause);
+        logger.error("exceptionCaught, host = " + address, cause);
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         InterAddress address = RsfRuntimeUtils.getAddress(channel);
         rsfContext.getChannelManager().closeChannel(channel);
-        LoggerHelper.logWarn("channelInactive, host = " + address);
+        logger.warn("channelInactive, host = " + address);
     }
 }

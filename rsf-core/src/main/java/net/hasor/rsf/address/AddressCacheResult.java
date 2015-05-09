@@ -24,7 +24,8 @@ import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 路由计算结果缓存
  * 
@@ -33,9 +34,10 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 class AddressCacheResult {
+    protected Logger             logger = LoggerFactory.getLogger(getClass());
     private final BindCenter     bindCenter;
     private final AddressPool    addressPool;
-    private volatile CacheResult cacheResultRef; //做引用切换
+    private volatile CacheResult cacheResultRef;                              //做引用切换
     private ArgsKey              argsKey;
     //
     public AddressCacheResult(AddressPool addressPool, BindCenter bindCenter) {
@@ -46,7 +48,7 @@ class AddressCacheResult {
     /**从全部地址中计算执行动态计算并缓存计算结果.*/
     public List<InterAddress> getAddressList(RsfBindInfo<?> info, String methodSign, Object[] args) {
         if (cacheResultRef == null) {
-            LoggerHelper.logSevere("getAddressList fail. resultRef is null.");
+            logger.warn("getAddressList fail. resultRef is null.");
             return null;
         }
         String serviceID = info.getBindID();
@@ -130,9 +132,6 @@ class AddressCacheResult {
         }
         this.cacheResultRef = cacheResultRef;
     }
-    //
-    //
-    //
     //
     //
     //

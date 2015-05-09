@@ -39,5 +39,7 @@
 		<module>rsf-core</module>
 		<module>rsf-center</module>
 		<module>demo-rsf</module>
+		<module>test-rsf-server</module>
+		<module>test-rsf-client</module>
 	</modules>
 </project>

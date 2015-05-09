@@ -41,13 +41,15 @@ import net.hasor.rsf.rpc.provider.RsfProviderHandler;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Rsf启动引导程序。
  * @version : 2014年12月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBootstrap {
+    protected Logger           logger             = LoggerFactory.getLogger(getClass());
     public static final String DEFAULT_RSF_CONFIG = "rsf-config.xml";
     private RsfSettings        settings           = null;
     private RsfStart           rsfStart           = null;
@@ -92,9 +94,9 @@ public class RsfBootstrap {
     }
     //
     public RsfContext sync() throws Throwable {
-        LoggerHelper.logInfo("initialize rsfBootstrap。");
+        logger.info("initialize rsfBootstrap。");
         if (this.rsfStart == null) {
-            LoggerHelper.logInfo("create RsfStart.");
+            logger.info("create RsfStart.");
             this.rsfStart = new InnerRsfStart();
         }
         if (this.settings == null) {
@@ -103,7 +105,7 @@ public class RsfBootstrap {
         }
         //
         //RsfContext
-        LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);
+        logger.info("agent shutdown method on DefaultRsfContext config is '{}'", DEFAULT_RSF_CONFIG);
         AbstractRsfContext newRsfContext = null;
         if (this.rsfStart instanceof RsfContextCreater) {
             newRsfContext = ((RsfContextCreater) this.rsfStart).create(this.settings);
@@ -119,7 +121,7 @@ public class RsfBootstrap {
             localAddress = NetworkUtils.finalBindAddress(rsfContext.getSettings().getBindAddress());
         }
         int bindSocket = (this.bindSocket < 1) ? this.settings.getBindPort() : this.bindSocket;
-        LoggerHelper.logInfo("bind to address = %s , port = %s.", localAddress, bindSocket);
+        logger.info("bind to address = {} , port = {}.", localAddress, bindSocket);
         //
         InterAddress centerAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, "");
         InstallCenterClient.initCenter(rsfContext, centerAddress);
@@ -127,9 +129,9 @@ public class RsfBootstrap {
         //Shutdown Event
         rsfContext.getEventContext().addListener(Events.Shutdown, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
-                LoggerHelper.logInfo("shutdown rsf.");
+                logger.info("shutdown rsf.");
                 if (shutdownHook != null) {
-                    LoggerHelper.logInfo("shutdownHook run.");
+                    logger.info("shutdownHook run.");
                     shutdownHook.run();
                 }
             }
@@ -154,17 +156,17 @@ public class RsfBootstrap {
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = boot.bind(localAddress, bindSocket);
         final Channel serverChannel = future.channel();
-        LoggerHelper.logInfo("rsf Server started at :%s:%s", localAddress, bindSocket);
+        logger.info("rsf Server started at :{}:{}", localAddress, bindSocket);
         //
         //shutdownHook
         this.shutdownHook = new Runnable() {
             public void run() {
-                LoggerHelper.logInfo("shutdown rsf server.");
+                logger.info("shutdown rsf server.");
                 bossGroup.shutdownGracefully();
                 try {
                     serverChannel.close().sync();
                 } catch (InterruptedException e) {
-                    LoggerHelper.logSevere(e.getMessage(), e);
+                    logger.error("close Channel ：" + e.getMessage(), e);
                 }
             }
         };
@@ -175,9 +177,9 @@ public class RsfBootstrap {
     private RsfContext doBinder(AbstractRsfContext rsfContext) throws Throwable {
         rsfContext.getEventContext().fireSyncEvent(Events.StartUp, rsfContext);
         //
-        LoggerHelper.logInfo("do RsfBinder.");
+        logger.info("do RsfBinder.");
         this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
-        LoggerHelper.logInfo("rsf work at %s.", this.workMode);
+        logger.info("rsf work at {}.", this.workMode);
         //
         return rsfContext;
     }

@@ -26,16 +26,18 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
 import org.more.future.BasicFuture;
-import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /***
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class CenterClient extends Thread implements EventListener {
+    protected Logger         logger = LoggerFactory.getLogger(getClass());
     private final int        centerInterval;
     private final HttpClient httpClient;
     private RsfContext       rsfContext;
@@ -66,7 +68,7 @@ public class CenterClient extends Thread implements EventListener {
                     heartbeat();
                 }
             } catch (Throwable e) {
-                LoggerHelper.logSevere("client heartbeat error ->", e.getMessage());
+                logger.error("client heartbeat error ->", e.getMessage());
             } finally {
                 try {
                     sleep(centerInterval);
@@ -77,7 +79,9 @@ public class CenterClient extends Thread implements EventListener {
     //
     public void onEvent(String event, Object[] params) throws Throwable {
         try {
-            LoggerHelper.logInfo("rsf event -> " + event);
+            if (logger.isInfoEnabled()) {
+                logger.info("rsf event -> " + event);
+            }
             /*  */if (Events.StartUp.equals(event)) {
                 //
                 this.onLine((RsfContext) params[0]);
@@ -99,7 +103,7 @@ public class CenterClient extends Thread implements EventListener {
                 this.unService((RsfBindInfo<?>) params[0]);
             }
         } catch (Exception e) {
-            LoggerHelper.logSevere("rsf event fail -> " + event + " :", e.getLocalizedMessage());
+            logger.error("rsf event fail -> " + event + " :", e.getLocalizedMessage());
         }
     }
     //
@@ -115,7 +119,7 @@ public class CenterClient extends Thread implements EventListener {
         this.terminalID = response.get().headers().get(CenterParams.Terminal_ID);
         this.terminalAccessKey = response.get().headers().get(CenterParams.Terminal_AccessKey);
         if (!StringUtils.isBlank(this.terminalID)) {
-            LoggerHelper.logInfo("onLine to center, terminalID-> " + this.terminalID);
+            logger.info("onLine to center, terminalID-> {}", this.terminalID);
             this.online = true;
         }
     }

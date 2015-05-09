@@ -20,19 +20,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.hasor.core.Hasor;
 import org.more.FormatException;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务地址例：“rsf://127.0.0.1:8000/unit”
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterAddress {
+    protected static Logger    logger = LoggerFactory.getLogger(InterAddress.class);
     public static final String SECHMA = "rsf";
-    private final String       formUnit;       //所属单元
-    private final String       hostAddress;    //地址
-    private final int          hostAddressData; //地址数值表现形式
-    private final int          hostPort;       //端口
+    private final String       formUnit;                                            //所属单元
+    private final String       hostAddress;                                         //地址
+    private final int          hostAddressData;                                     //地址数值表现形式
+    private final int          hostPort;                                            //端口
     private final URI          uriFormat;
     //
     public InterAddress(String newAddressURL) throws URISyntaxException {
@@ -141,7 +143,9 @@ public class InterAddress {
                 }
             }
         }
-        LoggerHelper.logFinest("'%s' rsfAddress format error.", rsfAddress);
+        if (logger.isDebugEnabled()) {
+            logger.debug("'{}' rsfAddress format error.", rsfAddress);
+        }
         return false;
     }
 }

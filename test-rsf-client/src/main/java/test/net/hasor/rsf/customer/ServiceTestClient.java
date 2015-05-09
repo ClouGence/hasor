@@ -9,8 +9,9 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
 import net.hasor.rsf.bootstrap.RsfStart;
 import net.hasor.rsf.bootstrap.WorkMode;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import test.net.hasor.rsf.service.EchoService;
 /**
  * 一个客户端打开200个线程进行同步远程调用。
@@ -18,6 +19,7 @@ import test.net.hasor.rsf.service.EchoService;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceTestClient {
+    protected Logger          logger = LoggerFactory.getLogger(getClass());
     private final RsfFilter[] rsfFilter;
     public ServiceTestClient(RsfFilter[] rsfFilter) {
         this.rsfFilter = (rsfFilter == null) ? new RsfFilter[0] : rsfFilter;
@@ -26,7 +28,7 @@ public class ServiceTestClient {
     public void startClient(final int chientID, final Settings settings) throws Throwable {
         //获取服务地址
         final String serverURL = settings.getString("testServerURL");
-        LoggerHelper.logInfo("serverURL:" + serverURL);
+        logger.info("serverURL:" + serverURL);
         //启动客户端
         RsfBootstrap boot = new RsfBootstrap();
         final RsfContext rsfContext = boot.bindSettings(settings).doBinder(new RsfStart() {

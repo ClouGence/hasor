@@ -33,26 +33,28 @@ import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务地址池
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool {
+    protected Logger                                   logger         = LoggerFactory.getLogger(getClass());
     private final RsfSettings                          rsfSettings;
-    private final ConcurrentMap<String, AddressBucket> addressPool;          //服务地址池Map.
-    private final String                               unitName;             //本机所处单元.
+    private final ConcurrentMap<String, AddressBucket> addressPool;                                         //服务地址池Map.
+    private final String                               unitName;                                            //本机所处单元.
     //
     private final AddressCacheResult                   rulerCache;
     private RuleParser                                 ruleParser     = null;
-    private volatile FlowControlRef                    flowControlRef = null; //流控规则引用
+    private volatile FlowControlRef                    flowControlRef = null;                               //流控规则引用
     private final Object                               poolLock;
     //
     //
     public AddressPool(String unitName, BindCenter bindCenter, RsfSettings rsfSettings) {
-        LoggerHelper.logConfig("init AddressPool unitName = " + unitName);
+        logger.info("init AddressPool unitName = " + unitName);
         //
         this.rsfSettings = rsfSettings;
         this.addressPool = new ConcurrentHashMap<String, AddressBucket>();
@@ -165,7 +167,7 @@ public class AddressPool {
     /**用新的路由规则刷新地址池*/
     public void refreshFlowControl(String flowControl) throws IOException {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
-            LoggerHelper.logSevere("flowControl body format error.");
+            logger.error("flowControl body format error.");
             return;
         }
         //
@@ -187,7 +189,7 @@ public class AddressPool {
             ruleBodyList.add(flowControlBody);
         }
         if (ruleBodyList.isEmpty()) {
-            LoggerHelper.logWarn("flowControl is empty -> use default settings.");
+            logger.warn("flowControl is empty -> use default settings.");
         }
         //2.解析路由配置
         for (int i = 0; i < ruleBodyList.size(); i++) {
@@ -197,7 +199,7 @@ public class AddressPool {
                 continue;
             }
             String simpleName = rule.getClass().getSimpleName();
-            LoggerHelper.logConfig("setup flowControl -> %s.", simpleName);
+            logger.info("setup flowControl -> {}.", simpleName);
             /*  */if (rule instanceof UnitFlowControl) {
                 flowControlRef.unitFlowControl = (UnitFlowControl) rule; /*单元规则*/
             } else if (rule instanceof RandomFlowControl) {

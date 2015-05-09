@@ -19,7 +19,8 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
  *  -- 根据 {@link ResponseMsg}中包含的 requestID 找到对应的{@link RsfFuture}。
@@ -28,6 +29,7 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public RsfCustomerHandler(AbstractRsfContext rsfContext) {
         super(rsfContext);
     }
@@ -37,15 +39,15 @@ class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
         if (msg instanceof ResponseSocketBlock == false)
             return;
         ResponseSocketBlock block = (ResponseSocketBlock) msg;
-        LoggerHelper.logFinest("received response(%s) full = %s", block.getRequestID(), block);
+        logger.debug("received response({}) full = {}", block.getRequestID(), block);
         //
         RsfClientRequestManager requestManager = this.rsfContext.getRequestManager();
         RsfFuture rsfFuture = requestManager.getRequest(block.getRequestID());
         if (rsfFuture == null) {
-            LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", block.getRequestID());
+            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", block.getRequestID());
             return;//或许它已经超时了。
         }
-        LoggerHelper.logFine("doResponse.");
+        logger.debug("doResponse.");
         new CustomerProcessing(block, requestManager, rsfFuture).run();
     }
 }

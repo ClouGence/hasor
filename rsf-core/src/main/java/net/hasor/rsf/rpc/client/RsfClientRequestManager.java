@@ -44,13 +44,15 @@ import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeFactory;
 import org.more.future.FutureCallback;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientRequestManager {
+    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext                 rsfContext;
     private final RsfClientChannelManager            clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
@@ -101,10 +103,10 @@ public class RsfClientRequestManager {
     public void putResponse(long requestID, RsfResponse response) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            LoggerHelper.logFinest("received response(%s) status = %s", requestID, response.getResponseStatus());
+            logger.debug("received response({}) status = {}", requestID, response.getResponseStatus());
             rsfFuture.completed(response);
         } else {
-            LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", requestID);
+            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
         }
     }
     /**
@@ -115,10 +117,10 @@ public class RsfClientRequestManager {
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            LoggerHelper.logSevere("received error ,requestID(%s) status = %s", requestID, e.getMessage());
+            logger.error("received error ,requestID({}) status = {}", requestID, e.getMessage());
             rsfFuture.failed(e);
         } else {
-            LoggerHelper.logWarn("give up the response,requestID(%s) ,maybe because timeout! ", requestID);
+            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
         }
     }
     /**
@@ -143,7 +145,7 @@ public class RsfClientRequestManager {
                     return;
                 //引发超时Response
                 String errorInfo = "timeout is reached on client side:" + request.getTimeout();
-                LoggerHelper.logWarn(errorInfo);
+                logger.warn(errorInfo);
                 //回应Response
                 RsfClientRequestManager.this.putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
@@ -188,7 +190,7 @@ public class RsfClientRequestManager {
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
             SendLimitPolicy sendPolicy = rsfSettings.getSendLimitPolicy();
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
-            LoggerHelper.logWarn(errorMessage);
+            logger.warn(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
                 throw new RsfException(ProtocolStatus.ClientError, errorMessage);
             } else {
@@ -234,7 +236,7 @@ public class RsfClientRequestManager {
                 if (!future.isSuccess()) {
                     errorMsg = "send request error " + future.cause();
                 }
-                LoggerHelper.logSevere(RsfClientRequestManager.this + ":" + errorMsg);
+                logger.error(RsfClientRequestManager.this + ":" + errorMsg);
                 //回应Response
                 putResponse(rsfRequest.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
             }

@@ -35,7 +35,8 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.protocol.netty.RSFCodec;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 维护RSF同其它RSF的连接。
  * 同时负责创建和销毁{@link AbstractRsfClient}的功能。
@@ -43,6 +44,7 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfClientChannelManager {
+    protected Logger                             logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext             rsfContext;
     private final ConcurrentMap<String, Channel> channelMapping;
     private final int                            connectTimeout;
@@ -120,32 +122,32 @@ public class RsfClientChannelManager {
             public void initChannel(SocketChannel ch) throws Exception {
                 Channel channel = ch.pipeline().channel();
                 RsfRuntimeUtils.setAddress(hostAddress, channel);
-                LoggerHelper.logInfo("initConnection connect %s.", hostAddress);
+                logger.info("initConnection connect {}.", hostAddress);
                 //
                 ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(rsfContext));
             }
         });
         ChannelFuture future = null;
         SocketAddress remote = new InetSocketAddress(hostAddress.getHostAddress(), hostAddress.getHostPort());
-        LoggerHelper.logInfo("connect to %s ...", hostAddress);
+        logger.info("connect to {} ...", hostAddress);
         future = boot.connect(remote);
         try {
             future.await(this.connectTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             future.channel().close();
-            LoggerHelper.logSevere("connect to %s failure , %s", hostAddress, e.getMessage());
+            logger.error("connect to {} failure , {}", hostAddress, e.getMessage());
             return null;
         }
         if (future.isSuccess() == true) {
-            LoggerHelper.logInfo("remote %s connected.", hostAddress);
+            logger.info("remote {} connected.", hostAddress);
             return future.channel();
         }
         //
         try {
-            LoggerHelper.logSevere("connect to %s failure , %s", hostAddress, future.cause());
+            logger.error("connect to {} failure , {}", hostAddress, future.cause());
             future.channel().close().await();
         } catch (InterruptedException e) {
-            LoggerHelper.logSevere("close connect(%s) failure , %s", hostAddress, e.getMessage());
+            logger.error("close connect({}) failure , {}", hostAddress, e.getMessage());
         }
         return null;
     }

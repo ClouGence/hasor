@@ -22,13 +22,15 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.socket.RsfResponseFormSocket;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责处理客户端 Response 回应逻辑。
  * @version : 2015年4月23日
  * @author 赵永春(zyc@hasor.net)
  */
 class CustomerProcessing implements Runnable {
+    protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfFuture               rsfFuture;
     private ResponseSocketBlock     responseBlock;
     private RsfClientRequestManager requestManager;
@@ -44,11 +46,11 @@ class CustomerProcessing implements Runnable {
         short resStatus = responseBlock.getStatus();
         if (resStatus == ProtocolStatus.Accepted) {
             //
-            LoggerHelper.logFine("requestID:%s , received Accepted.", requestID);
+            logger.debug("requestID:{} , received Accepted.", requestID);
             return;
         } else if (resStatus == ProtocolStatus.ChooseOther) {
             //
-            LoggerHelper.logInfo("requestID:%s , received ChooseOther -> do tryAgain.", requestID);
+            logger.info("requestID:{} , received ChooseOther -> do tryAgain.", requestID);
             this.requestManager.tryAgain(requestID);
             return;
         }
@@ -57,7 +59,7 @@ class CustomerProcessing implements Runnable {
             RsfBindInfo<?> bindInfo = rsfFuture.getRequest().getBindInfo();
             AbstractRsfContext rsfContext = this.requestManager.getRsfContext();
             RsfResponse response = new RsfResponseFormSocket(rsfContext, bindInfo, this.responseBlock);
-            LoggerHelper.logInfo("requestID:%s , received protocolStatus=%s.", requestID, resStatus);
+            logger.info("requestID:{} , received protocolStatus={}.", requestID, resStatus);
             if (resStatus == ProtocolStatus.OK) {
                 requestManager.putResponse(requestID, response);
             } else {
@@ -65,7 +67,7 @@ class CustomerProcessing implements Runnable {
                 requestManager.putResponse(requestID, new RsfException(resStatus, errorMessage));
             }
         } catch (Throwable e) {
-            LoggerHelper.logSevere("requestID:%s , recovery response ERROR, -> %s", requestID, e.getMessage());
+            logger.error("requestID:{} , recovery response ERROR, -> {}", requestID, e.getMessage());
             requestManager.putResponse(requestID, e);
             return;
         }

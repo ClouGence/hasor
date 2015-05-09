@@ -23,14 +23,16 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.constants.RSFConstants;
 import net.hasor.rsf.manager.OptionManager;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
+    protected Logger        logger               = LoggerFactory.getLogger(getClass());
     private int             defaultTimeout       = 6000;
     private String          defaultGroup         = "RSF";
     private String          defaultVersion       = "1.0.0";
@@ -194,6 +196,6 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.centerInterval = getInteger("hasor.rsfConfig.centerServer.interval", 60000);;
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
-        LoggerHelper.logInfo("loadRsfConfig complete!");
+        logger.info("loadRsfConfig complete!");
     }
 }

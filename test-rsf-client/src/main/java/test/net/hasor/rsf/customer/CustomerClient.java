@@ -2,6 +2,8 @@ package test.net.hasor.rsf.customer;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.plugins.monitor.QpsMonitor;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 /**
  * 
  * @version : 2014年9月12日
@@ -9,6 +11,14 @@ import net.hasor.rsf.plugins.monitor.QpsMonitor;
  */
 public class CustomerClient {
     public static void main(String[] args) throws Throwable {
+        main(args, new ClassWorld());
+    }
+    public static void main(String[] args, ClassWorld classWorld) throws Throwable {
+        ClassRealm realm = classWorld.getClassRealm("plexus.core");
+        if (realm != null) {
+            Thread.currentThread().setContextClassLoader(realm);
+        }
+        //
         //因为没有注册中心，由配置文件来代替。
         StandardContextSettings setting = new StandardContextSettings("rsf-config.xml");
         setting.refresh();

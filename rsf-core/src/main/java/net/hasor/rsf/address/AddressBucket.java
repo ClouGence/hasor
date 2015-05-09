@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -37,17 +38,18 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket {
+    protected Logger                           logger = LoggerFactory.getLogger(getClass());
     //原始数据
-    private final String                       serviceID;         //服务ID
-    private final String                       unitName;          //服务所属单元
-    private final List<InterAddress>           allAddressList;    //所有备选地址
-    private CopyOnWriteArrayList<InterAddress> invalidAddresses;  //不可用地址（可能包含本机房及其它机房的地址）
-    private UnitFlowControl                    unitFlowControl;   //机房流控规则(单元划分)
+    private final String                       serviceID;                                   //服务ID
+    private final String                       unitName;                                    //服务所属单元
+    private final List<InterAddress>           allAddressList;                              //所有备选地址
+    private CopyOnWriteArrayList<InterAddress> invalidAddresses;                            //不可用地址（可能包含本机房及其它机房的地址）
+    private UnitFlowControl                    unitFlowControl;                             //机房流控规则(单元划分)
     private final AddressPool                  forAddressPool;
     //
     //计算的可用地址
-    private List<InterAddress>                 localUnitAddresses; //本单元地址
-    private List<InterAddress>                 availableAddresses; //所有可用地址（包括本地单元）
+    private List<InterAddress>                 localUnitAddresses;                          //本单元地址
+    private List<InterAddress>                 availableAddresses;                          //所有可用地址（包括本地单元）
     //
     //
     public AddressBucket(String serviceID, String unitName) {
@@ -91,7 +93,7 @@ public class AddressBucket {
     /**新增地址支持动态新增*/
     public void newAddress(Collection<URI> newHostList) {
         if (newHostList == null || newHostList.isEmpty()) {
-            LoggerHelper.logSevere("%s - newHostList is empty.", serviceID);
+            logger.error("{} - newHostList is empty.", serviceID);
             return;
         }
         //
@@ -108,7 +110,7 @@ public class AddressBucket {
                     }
                 }
             } catch (Throwable e) {
-                LoggerHelper.logSevere("%s append new host '%s' format error.", serviceID, hostURI);
+                logger.error("{} append new host '{}' format error.", serviceID, hostURI);
             }
             //
             if (doAdd) {
@@ -136,7 +138,7 @@ public class AddressBucket {
                 }
             }
         } catch (Exception e) {
-            LoggerHelper.logWarn("invalid Address error.", e);
+            logger.error("invalid Address error -> {}.", e);
         }
     }
     /**强制刷新地址计算结果*/

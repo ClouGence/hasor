@@ -44,13 +44,15 @@ import net.hasor.rsf.manager.TimerManager;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.more.future.BasicFuture;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /***
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class HttpClient {
+    protected Logger             logger = LoggerFactory.getLogger(getClass());
     private final String         centerHost;
     private final int            centerPort;
     private final TimerManager   timerManager;
@@ -93,7 +95,7 @@ public class HttpClient {
         request.headers().set("RSF", "RSF");
         //
         // 发送http请求
-        LoggerHelper.logInfo("center request ->" + requestPath);
+        logger.info("center request -> {}", requestPath);
         HttpDataFactory factory = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); // Disk if MINSIZE exceed
         HttpPostRequestEncoder bodyRequestEncoder = new HttpPostRequestEncoder(factory, request, false); // false => not multipart
         if (reqParams != null && !reqParams.isEmpty()) {
@@ -110,7 +112,7 @@ public class HttpClient {
         timerManager.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
                 if (!future.isDone()) {
-                    LoggerHelper.logSevere("center '" + requestPath + "' response timeout.");
+                    logger.error("center '" + requestPath + "' response timeout.");
                     future.cancel();
                 }
                 f.channel().close().sync();
@@ -121,6 +123,7 @@ public class HttpClient {
     }
 }
 class ResponseRead extends ChannelInboundHandlerAdapter {
+    protected Logger                  logger = LoggerFactory.getLogger(getClass());
     private BasicFuture<HttpResponse> future;
     public ResponseRead(BasicFuture<HttpResponse> future) {
         this.future = future;
@@ -130,18 +133,18 @@ class ResponseRead extends ChannelInboundHandlerAdapter {
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
             future.completed(response);
-            LoggerHelper.logInfo("center response status ->" + response.getStatus().code());
+            logger.info("center response status -> {}", response.getStatus().code());
             ctx.close().sync();
         }
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LoggerHelper.logWarn("center connection exception ->" + cause.getLocalizedMessage());
+        logger.warn("center connection exception -> {}", cause.getLocalizedMessage());
         this.future.failed(cause);
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LoggerHelper.logWarn("center remote close.");
+        logger.warn("center remote close.");
         this.future.cancel();
     }
 }

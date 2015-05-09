@@ -29,21 +29,23 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.RepeateException;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 本地服务注册中心
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBindCenter implements BindCenter {
+    protected Logger                                      logger = LoggerFactory.getLogger(getClass());
     /* Group -> Name -> Version*/
     private final ConcurrentMap<String, ServiceDefine<?>> rsfServiceMap;
     private final ConcurrentMap<String, Provider<?>>      providerMap;
     private final AbstractRsfContext                      rsfContext;
     //
     public RsfBindCenter(AbstractRsfContext rsfContext) {
-        LoggerHelper.logConfig("create RsfBindCenter.");
+        logger.info("create RsfBindCenter.");
         this.rsfContext = rsfContext;
         this.rsfServiceMap = new ConcurrentHashMap<String, ServiceDefine<?>>();
         this.providerMap = new ConcurrentHashMap<String, Provider<?>>();

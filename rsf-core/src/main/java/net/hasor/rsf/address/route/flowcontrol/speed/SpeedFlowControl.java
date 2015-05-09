@@ -21,7 +21,6 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
-import org.more.logger.LoggerHelper;
 /**
  * 基于QoS的速率控制规则。
  * <pre>
@@ -53,16 +52,16 @@ public class SpeedFlowControl extends AbstractRule {
         //
         if (this.action == null) {
             this.enable(false);
-            LoggerHelper.logConfig("action fail. config is null.");
+            logger.info("action fail. config is null.");
         }
         if (!this.enable()) {
             return;
         }
-        LoggerHelper.logConfig("init default QoS.");
+        logger.info("init default QoS.");
         QoSBucket qosBucket = this.createQoSBucket();
         if (!qosBucket.validate()) {
             this.enable(false);
-            LoggerHelper.logConfig("QoS config validate fail. -> %s", this.defaultQoSBucket);
+            logger.info("QoS config validate fail. -> %s", this.defaultQoSBucket);
             return;
         }
         defaultQoSBucket = qosBucket;
@@ -96,7 +95,7 @@ public class SpeedFlowControl extends AbstractRule {
     //
     protected QoSBucket createQoSBucket() {
         QoSBucket qosBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
-        LoggerHelper.logConfig("create Qos at %s", qosBucket);
+        logger.info("create Qos at %s", qosBucket);
         return qosBucket;
     }
     //
