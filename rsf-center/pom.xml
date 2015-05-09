@@ -22,7 +22,6 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/rsf.git</url>
-
 	</scm>
 
 	<developers>
@@ -63,15 +62,9 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-db</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<!-- Hasor end -->
-
 
 		<!-- JDBC begin -->
 		<dependency>
