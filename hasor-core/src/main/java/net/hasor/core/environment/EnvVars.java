@@ -50,12 +50,12 @@ public class EnvVars {
     public void addEnvVar(final String envName, final String envValue) {
         if (StringUtils.isBlank(envName)) {
             if (logger.isWarnEnabled()) {
-                logger.warn(envName + "%s env, name is empty.");
+                logger.warn(envName + "{} env, name is empty.");
             }
             return;
         }
         if (logger.isInfoEnabled()) {
-            logger.info("var -> %s = %s.", envName, envValue);
+            logger.info("var -> {} = {}.", envName, envValue);
         }
         this.userEnvMap.put(envName.toUpperCase(), StringUtils.isBlank(envValue) ? "" : envValue);
     }
@@ -137,7 +137,7 @@ public class EnvVars {
             String var = mapData.get(key);
             var = var != null ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
             outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
-            outLog.append(String.format(" %s : %s", key, var));
+            outLog.append(String.format(" {} : {}", key, var));
             outLog.append('\n');
         }
         if (outLog.length() > 1) {
