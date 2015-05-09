@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.rsf._02_hasor;
-import java.net.URI;
-import net.hasor.rsf.RsfBindInfo;
+package test.net.hasor.rsf.provider._02_hasor;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.plugins.hasor.RsfApiBinder;
 import net.hasor.rsf.plugins.hasor.RsfModule;
-import net.test.hasor.rsf.EchoService;
-import net.test.hasor.rsf.Monitor;
+import net.hasor.rsf.plugins.monitor.QpsMonitor;
+import test.net.hasor.rsf.service.EchoService;
+import test.net.hasor.rsf.service.EchoServiceImpl;
 /**
- * 负责注册远程服务
+ * 通过Hasor插件形式发布 RSF 服务
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfConsumer extends RsfModule {
+public class HasorProvider extends RsfModule {
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-        URI host1 = new URI("rsf://192.168.137.1:8001/local");
-        URI host2 = new URI("rsf://192.168.137.1:8002/local");
-        //1.声明RSF服务
         RsfBinder rsfBinder = apiBinder.getRsfBinder();
-        RsfBindInfo<EchoService> bindInfo = rsfBinder.rsfService(EchoService.class).bindFilter("QPS", new Monitor()).bindAddress(host1).bindAddress(host2).register();
+        rsfBinder.bindFilter("QPS", new QpsMonitor());//QpS统计
+        rsfBinder.rsfService(EchoService.class, new EchoServiceImpl()).register(); //发布服务
+    }
+    //
+    public static void main(String[] args) throws Throwable {
+        AppContext appContext = Hasor.createAppContext("rsf-config.xml", new HasorProvider());
         //
-        //2.将服务注册到Hasor容器中
-        apiBinder.bindType(EchoService.class, toProvider(apiBinder, bindInfo));
+        System.out.println(appContext);
+        while (true) {
+            Thread.sleep(1000);
+        }
     }
 }

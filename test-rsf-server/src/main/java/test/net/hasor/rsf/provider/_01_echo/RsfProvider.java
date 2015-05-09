@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.provider;
+package test.net.hasor.rsf.provider._01_echo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
@@ -23,11 +23,11 @@ import net.hasor.rsf.plugins.monitor.QpsMonitor;
 import test.net.hasor.rsf.service.EchoService;
 import test.net.hasor.rsf.service.EchoServiceImpl;
 /**
- * 
+ * 原始方式启动RSF，并发布服务
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CustomerServer {
+public class RsfProvider {
     public static void main(String[] args) throws Throwable {
         RsfBootstrap boot = new RsfBootstrap();
         RsfContext rsfContext = boot.doBinder(new RsfStart() {

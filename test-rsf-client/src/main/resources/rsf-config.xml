@@ -8,8 +8,8 @@
 	</testServerURL>
 
 	<!-- 一个进程启动200个客户端，每个客户端启动200个并发调用线程。 -->
-	<testConfig clientCount="20" threadCount="200" />
+	<testConfig clientCount="1" threadCount="4000" />
 
 	<!-- 考虑到测试并发压力，连接超时改为 500毫秒 -->
-	<hasor.rsfConfig.client connectTimeout="500" />
+	<hasor.rsfConfig.client connectTimeout="500" maximumRequest="20000" />
 </config>

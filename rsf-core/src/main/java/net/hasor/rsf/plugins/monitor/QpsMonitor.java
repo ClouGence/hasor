@@ -33,7 +33,7 @@ public class QpsMonitor implements RsfFilter {
     private long       lastTime  = System.currentTimeMillis();
     //
     //
-    public void printInfo() {
+    public void printInfo(long rtTime) {
         long checkTime = System.currentTimeMillis();
         if (checkTime - startTime == 0) {
             return;
@@ -44,7 +44,7 @@ public class QpsMonitor implements RsfFilter {
         }
         lastTime = System.currentTimeMillis();
         long qpsSecnd = (sendCount.get() / ((checkTime - startTime) / 1000));
-        logger.info("count:" + sendCount + " , QPS:" + qpsSecnd);
+        logger.info("count:{} , QPS:{} , RT:{}", sendCount, qpsSecnd, rtTime);
         //
         /*1000亿次调用之后重置统计数据*/
         if (sendCount.get() >= 100000000000L) {
@@ -56,8 +56,8 @@ public class QpsMonitor implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         sendCount.getAndIncrement();
-        printInfo();
-        //
+        long startTime = System.currentTimeMillis();
         chain.doFilter(request, response);
+        printInfo(System.currentTimeMillis() - startTime);
     }
 }

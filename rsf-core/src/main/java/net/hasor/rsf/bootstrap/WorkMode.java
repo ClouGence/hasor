@@ -22,6 +22,6 @@ package net.hasor.rsf.bootstrap;
 public enum WorkMode {
     /**RSF 仅作为客户端启动，本地任何注册的服务均不会对外发布。*/
     Customer,
-    /**正常模式*/
+    /**常规模式*/
     None,
 }
