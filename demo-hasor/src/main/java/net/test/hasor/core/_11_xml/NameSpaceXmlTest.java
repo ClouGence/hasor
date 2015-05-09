@@ -20,14 +20,16 @@ import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
-import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 对带有命名空间的Xml文件执行读取操作。
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class NameSpaceXmlTest {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
     public void nameSpaceXmlTest() throws IOException {
         System.out.println("--->>nameSpaceXmlTest<<--");
@@ -42,8 +44,8 @@ public class NameSpaceXmlTest {
         String ns2_local = ns2_settings.getString("appSettings.serverLocal.url");
         String[] all_local = settings.getStringArray("appSettings.serverLocal.url");
         //
-        LoggerHelper.logInfo("ns1 is %s.", ns1_local);
-        LoggerHelper.logInfo("ns2 is %s.", ns2_local);
-        LoggerHelper.logInfo("ns is %s.", ReflectionToStringBuilder.toString(all_local, ToStringStyle.SIMPLE_STYLE));//同时取得全部命名空间下的相同配置节点配置信息。
+        logger.info("ns1 is {}.", ns1_local);
+        logger.info("ns2 is {}.", ns2_local);
+        logger.info("ns is {}.", ReflectionToStringBuilder.toString(all_local, ToStringStyle.SIMPLE_STYLE));//同时取得全部命名空间下的相同配置节点配置信息。
     }
 }

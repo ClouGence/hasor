@@ -25,19 +25,21 @@ import net.test.hasor.core._05_plugins.mods.Mod_3;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Hasor 添加多个模块的演示程序
  * @version : 2014-1-10
  * @author 赵永春(zyc@hasor.net)
  */
 public class ModuleTest {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
     public void moduleTest() throws IOException, URISyntaxException {
         System.out.println("--->>moduleTest<<--");
         AppContext appContext = Hasor.createAppContext(new Mod_1(), new Mod_2(), new Mod_3());
         //
         List<String> says = appContext.findBindingBean(String.class);
-        LoggerHelper.logInfo("all modules say:%s.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
+        logger.info("all modules say:%s.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
     }
 }

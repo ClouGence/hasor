@@ -22,14 +22,16 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Module;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 提供 <code>@Listener</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
 public class ListenerPlugin implements Module {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
         final Set<Class<?>> eventSet = env.findClass(Listener.class);
@@ -47,10 +49,10 @@ public class ListenerPlugin implements Module {
                 /*注册AppContextAware*/
                 EventContext ec = apiBinder.getEnvironment().getEventContext();
                 ec.addListener(eventName, apiBinder.autoAware(new EventListenerPropxy(eventClass)));
-                LoggerHelper.logInfo("event ‘%s’ binding to ‘%s’", eventName, eventClass);
+                logger.info("event ‘{}’ binding to ‘{}’", eventName, eventClass);
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
-            LoggerHelper.logInfo("event binding finish.");
+            logger.info("event binding finish.");
         }
     }
     //

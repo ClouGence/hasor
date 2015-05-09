@@ -44,12 +44,6 @@ public abstract class AbstractSettings implements Settings {
     protected abstract Map<String, Map<String, SettingValue>> getFullSettingsMap();
     protected abstract Map<String, SettingValue> getLocalSettingData();
     //
-    //
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(Settings.class);
-        logger.info("aaa {} bbb {}",12,34);
-    }
-    //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {
         if (featureType == null) {

@@ -22,13 +22,15 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import org.junit.Test;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 本示列演示带有名字的绑定。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
 public class NameBindTest {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
     public void nameBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>nameBindTest<<--");
@@ -44,11 +46,11 @@ public class NameBindTest {
         System.out.println();
         String modeSay = null;
         modeSay = appContext.findBindingBean("ModuleA", String.class);
-        LoggerHelper.logInfo(modeSay.toString());
+        logger.info(modeSay.toString());
         modeSay = appContext.findBindingBean("ModuleB", String.class);
-        LoggerHelper.logInfo(modeSay.toString());
+        logger.info(modeSay.toString());
         //
         List<String> says = appContext.findBindingBean(String.class);//查找绑定
-        LoggerHelper.logInfo("say %s.", says);
+        logger.info("say %s.", says);
     }
 }

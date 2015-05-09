@@ -20,14 +20,16 @@ import java.net.URISyntaxException;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
 import org.junit.Test;
-import org.more.logger.LoggerHelper;
 import org.more.util.ResourcesUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 读取一般性Xml文件
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ReadXmlTest {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
     public void readXmlTest() throws IOException, URISyntaxException {
         System.out.println("--->>readXmlTest<<--");
@@ -41,7 +43,7 @@ public class ReadXmlTest {
             String menuCode = sub.getAttribute("code");
             String menuName = sub.getAttribute("name");
             String menuURL = sub.getAttribute("url");
-            LoggerHelper.logInfo("%s[%s] to %s.", menuName, menuCode, menuURL);
+            logger.info("{}[{}] to {}.", menuName, menuCode, menuURL);
         }
     }
 }
