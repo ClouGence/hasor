@@ -41,7 +41,6 @@
 	<!-- 模块 -->
 	<modules>
 		<module>hasor-core</module>
-		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>demo-hasor</module>
 	</modules>
