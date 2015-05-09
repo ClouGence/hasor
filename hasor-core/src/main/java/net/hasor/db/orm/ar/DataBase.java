@@ -31,13 +31,15 @@ import net.hasor.db.orm.ar.SQLBuilder.BuilderData;
 import net.hasor.db.orm.ar.SQLBuilder.BuilderMapData;
 import net.hasor.db.orm.ar.dialect.SQLBuilderEnum;
 import net.hasor.db.orm.ar.record.MapRecord;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 用来表示数据库。
  * @version : 2014年10月27日
  * @author 赵永春(zyc@hasor.net)
  */
 public final class DataBase {
+    protected Logger                         logger          = LoggerFactory.getLogger(getClass());
     private static final Map<String, Object> Empty           = new HashMap<String, Object>();
     private static final ArConfiguration     arConfiguration = new ArConfiguration();
     //
@@ -97,11 +99,11 @@ public final class DataBase {
         BuilderData queryData = builder.buildPaginator(sqlQuery, paginator, params);
         //
         if (recType == Record.class) {
-            LoggerHelper.logInfo("selectSQL:%s", queryData);
+            logger.info("selectSQL:{}", queryData);
             List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
-            LoggerHelper.logInfo("selectSQL:%s", queryData);
+            logger.info("selectSQL:{}", queryData);
             List<T> entList = this.getJdbc().queryForList(queryData.getSQL(), queryData.getData(), recType);
             return new PageResult<T>(paginator, entList);
         }
@@ -112,11 +114,11 @@ public final class DataBase {
         BuilderMapData queryData = builder.buildPaginator(sqlQuery, paginator, params);
         //
         if (recType == Record.class) {
-            LoggerHelper.logInfo("selectSQL:%s", queryData);
+            logger.info("selectSQL:{}", queryData);
             List<T> entList = (List<T>) this.getJdbc().query(queryData.getSQL(), queryData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
-            LoggerHelper.logInfo("selectSQL:%s", queryData);
+            logger.info("selectSQL:{}", queryData);
             List<T> entList = this.getJdbc().queryForList(queryData.getSQL(), queryData.getData(), recType);
             return new PageResult<T>(paginator, entList);
         }
@@ -133,7 +135,7 @@ public final class DataBase {
         //
         BuilderData loadData = builder.buildSelect(sechma, idColumn, idValue);
         //
-        LoggerHelper.logInfo("selectSQL:%s", loadData);
+        logger.info("selectSQL:{}", loadData);
         Map<String, Object> dataContainer = this.getJdbc().queryForMap(loadData.getSQL(), loadData.getData());
         ent.setMap(dataContainer);
         return ent;
@@ -148,7 +150,7 @@ public final class DataBase {
         Object[] idValue = as(ent.getID());
         BuilderData deleteData = builder.buildDelete(sechma, idColumn, idValue);
         //
-        LoggerHelper.logInfo("deleteSQL:%s", deleteData);
+        logger.info("deleteSQL:{}", deleteData);
         return this.getJdbc().update(deleteData.getSQL(), deleteData.getData());
     }
     /**仅保存，如果目标记录不存在则引发异常。*/
@@ -167,7 +169,7 @@ public final class DataBase {
             Object[] updateData = ent.columnValues(updateColumn);
             BuilderData updateSqlData = builder.buildUpdate(sechma, idColumn, idValue, updateColumn, updateData);
             //
-            LoggerHelper.logInfo("updateSQL:%s", updateSqlData);
+            logger.info("updateSQL:{}", updateSqlData);
             return jdbc.update(updateSqlData.getSQL(), updateSqlData.getData());
         }
         throw new SQLException("record does not exist.");
@@ -201,7 +203,7 @@ public final class DataBase {
         SQLBuilder builder = this.getSQLBuilder();
         final BuilderData insertData = builder.buildInsert(sechma, insertColumn, insertParam);
         //
-        LoggerHelper.logInfo("insertSQL:%s", insertData);
+        logger.info("insertSQL:{}", insertData);
         return jdbc.update(insertData.getSQL(), insertData.getData()) > 0;
     }
     /**根据ID判断记录在数据库中是否存在。*/
@@ -214,7 +216,7 @@ public final class DataBase {
         Object[] idValue = as(ent.getID());
         BuilderData countData = builder.buildCount(sechma, idColumn, idValue);
         //
-        LoggerHelper.logInfo("countSQL:%s", countData);
+        logger.info("countSQL:{}", countData);
         return this.getJdbc().queryForInt(countData.getSQL(), countData.getData()) > 0;
     }
     /**记录在数据库中是否存在。*/
@@ -225,7 +227,7 @@ public final class DataBase {
         Object[] dataArrays = example.columnValues(allColumn);
         BuilderData countData = builder.buildCount(sechma, allColumn, dataArrays);
         //
-        LoggerHelper.logInfo("countSQL:%s", countData);
+        logger.info("countSQL:{}", countData);
         return this.getJdbc().queryForInt(countData.getSQL(), countData.getData());
     }
     /**删除数据库中满足该对象特征的。*/
@@ -237,7 +239,7 @@ public final class DataBase {
         Object[] dataArrays = example.columnValues(allColumn);
         BuilderData deleteData = builder.buildDelete(sechma, allColumn, dataArrays);
         //
-        LoggerHelper.logInfo("deleteSQL:%s", deleteData);
+        logger.info("deleteSQL:{}", deleteData);
         return this.getJdbc().update(deleteData.getSQL(), deleteData.getData());
     }
     /**更新数据库中满足该对象特征的。*/
@@ -262,7 +264,7 @@ public final class DataBase {
         //
         BuilderData updateData = builder.buildUpdate(sechma, whereColumn, whereArrays, dataColumn, dataArrays);
         //
-        LoggerHelper.logInfo("updateSQL:%s", updateData);
+        logger.info("updateSQL:{}", updateData);
         return this.getJdbc().update(updateData.getSQL(), updateData.getData());
     }
     /**从数据库中查询满足该对象特征的。*/
@@ -291,12 +293,11 @@ public final class DataBase {
         BuilderData selectData = builder.buildSelect(sechma, whereColumn, whereArrays);
         /*        */selectData = builder.buildPaginator(selectData.getSQL(), paginator, selectData.getData());
         //
+        logger.info("selectSQL:{}", selectData);
         if (recType == Record.class) {
-            LoggerHelper.logInfo("selectSQL:%s", selectData);
             List<T> entList = (List<T>) this.getJdbc().query(selectData.getSQL(), selectData.getData(), getRecordRowMapper(useSechma));
             return new PageResult<T>(paginator, entList);
         } else {
-            LoggerHelper.logInfo("selectSQL:%s", selectData);
             List<T> entList = this.getJdbc().queryForList(selectData.getSQL(), recType, selectData.getData());
             return new PageResult<T>(paginator, entList);
         }

@@ -19,19 +19,21 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopModule implements Module {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //Aop拦截器
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
         //
-        LoggerHelper.logConfig("Aops -> matcherClass = %s, matcherMethod =%s.", matcherClass, matcherMethod);
+        logger.info("Aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
         apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor(apiBinder));
     }
 }

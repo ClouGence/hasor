@@ -24,14 +24,15 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.result.support.ResultDefine;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class LoadHellper {
-    LoadHellper() {}
+    protected static Logger logger = LoggerFactory.getLogger(LoadHellper.class);
     protected abstract ControllerModule module();
     protected abstract ApiBinder apiBinder();
     //
@@ -39,7 +40,7 @@ public abstract class LoadHellper {
     public void loadResultProcess(Class<? extends Annotation> annoType, Class<? extends ResultProcess> processType) {
         ApiBinder apiBinder = apiBinder();
         //
-        LoggerHelper.logInfo("loadResultDefine annoType is %s toInstance %s", annoType, processType);
+        logger.info("loadResultDefine annoType is {} toInstance {}", annoType, processType);
         //
         BindInfo<ResultProcess> processBindInfo = apiBinder.bindType(ResultProcess.class).uniqueName()//
                 .to(processType).asEagerSingleton().toInfo();/*单例*/
@@ -66,7 +67,7 @@ public abstract class LoadHellper {
             hasMapping = true;
             //
             MappingTo mto = atMethod.getAnnotation(MappingTo.class);
-            LoggerHelper.logInfo("method ‘%s’ mappingTo: ‘%s’, form Type :%s.", atMethod.getName(), mto.value(), clazz.getName());
+            logger.info("method ‘{}’ mappingTo: ‘{}’, form Type :{}.", atMethod.getName(), mto.value(), clazz.getName());
             MappingDefine define = module().createMappingDefine(newID, atMethod);
             apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(define);
         }

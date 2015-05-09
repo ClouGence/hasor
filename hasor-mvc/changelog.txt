@@ -1,4 +1,11 @@
-﻿===== Hasor-MVC v0.0.2
+﻿===== Hasor-MVC v0.0.4
+* 改进:
+    01.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
+
+===== Hasor-MVC v0.0.3
+(无)
+
+===== Hasor-MVC v0.0.2
 * 新增:
     01.合并Hasor-MVC-Web项目。
 * 改进:

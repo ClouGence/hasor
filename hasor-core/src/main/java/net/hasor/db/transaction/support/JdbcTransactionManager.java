@@ -32,7 +32,8 @@ import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 某一个数据源的事务管理器
  * 
@@ -45,6 +46,7 @@ import org.more.logger.LoggerHelper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTransactionManager implements TransactionManager {
+    protected Logger                          logger       = LoggerFactory.getLogger(getClass());
     private LinkedList<JdbcTransactionStatus> tStatusStack = new LinkedList<JdbcTransactionStatus>();
     private DataSource                        dataSource   = null;
     protected JdbcTransactionManager(final DataSource dataSource) {
@@ -165,8 +167,8 @@ public class JdbcTransactionManager implements TransactionManager {
         }
         /*回滚情况*/
         if (defStatus.isReadOnly() || defStatus.isRollbackOnly()) {
-            if (LoggerHelper.isEnableFineLoggable()) {
-                LoggerHelper.logFine("Transactional code has requested rollback");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Transactional code has requested rollback");
             }
             this.rollBack(defStatus);
             return;

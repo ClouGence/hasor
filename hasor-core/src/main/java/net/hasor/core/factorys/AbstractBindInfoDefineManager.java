@@ -35,15 +35,17 @@ import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.more.RepeateException;
-import org.more.logger.LoggerHelper;
 import org.more.util.Iterators;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * RegisterFactory接口的默认实现，包含了一些检查过程。
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
 public abstract class AbstractBindInfoDefineManager implements BindInfoDefineManager {
+    protected Logger                                                logger             = LoggerFactory.getLogger(getClass());
     private Map<Class<?>, List<AbstractBindInfoProviderAdapter<?>>> registerDataSource = new HashMap<Class<?>, List<AbstractBindInfoProviderAdapter<?>>>();
     private Map<String, AbstractBindInfoProviderAdapter<?>>         idDataSource       = new HashMap<String, AbstractBindInfoProviderAdapter<?>>();
     //
@@ -128,7 +130,9 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
     /*---------------------------------------------------------------------------------------Util*/
     public <T> AbstractBindInfoProviderAdapter<T> getBindInfoByID(String bindID) {
         AbstractBindInfoProviderAdapter<?> info = this.idDataSource.get(bindID);
-        LoggerHelper.logFinest("bindID is %s. bindInfo = %s", bindID, info);
+        if (logger.isDebugEnabled()) {
+            logger.debug("bindID is {}. bindInfo = {}", bindID, info);
+        }
         return (AbstractBindInfoProviderAdapter<T>) info;
     }
     /**根据Type查找RegisterInfo迭代器*/
@@ -147,7 +151,9 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
             }
         });
         //
-        LoggerHelper.logFinest("bindType is %s. iterator = %s", bindType, adapterIterator);
+        if (logger.isDebugEnabled()) {
+            logger.debug("bindType is {}. iterator = {}", bindType, adapterIterator);
+        }
         return adapterIterator;
     }
     /**查找所有RegisterInfo迭代器*/
@@ -200,7 +206,9 @@ public abstract class AbstractBindInfoDefineManager implements BindInfoDefineMan
             }
         };
         //
-        LoggerHelper.logFinest("all bindType ,iterator = %s", adapterIterator);
+        if (logger.isDebugEnabled()) {
+            logger.debug("all bindType ,iterator = {}", adapterIterator);
+        }
         return adapterIterator;
     }
 }

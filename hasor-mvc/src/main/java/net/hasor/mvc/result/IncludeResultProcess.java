@@ -20,13 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.Call;
 import net.hasor.mvc.ResultProcess;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 public class IncludeResultProcess implements ResultProcess {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object returnData(Object result, Call call) throws ServletException, IOException {
         if (result == null) {
             return result;
@@ -35,7 +37,9 @@ public class IncludeResultProcess implements ResultProcess {
         HttpServletResponse response = call.getHttpResponse();
         //
         if (response.isCommitted() == false) {
-            LoggerHelper.logFine("include %s.", result);
+            if (logger.isDebugEnabled()) {
+                logger.debug("include %s.", result);
+            }
             request.getRequestDispatcher(result.toString()).include(request, response);
         }
         return result;

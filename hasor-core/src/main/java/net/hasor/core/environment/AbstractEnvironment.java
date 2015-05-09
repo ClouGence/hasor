@@ -25,14 +25,16 @@ import net.hasor.core.event.StandardEventManager;
 import org.more.UnhandledException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
+    protected Logger     logger       = LoggerFactory.getLogger(getClass());
     private String[]     spanPackage  = null;
     private Settings     settings     = null;
     private Object       context      = null;
@@ -77,7 +79,7 @@ public abstract class AbstractEnvironment implements Environment {
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected final void initEnvironment() {
-        LoggerHelper.logInfo("init Environment.");
+        logger.info("init Environment.");
         //
         try {
             this.settings = this.createSettings();
@@ -106,12 +108,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
-        LoggerHelper.logInfo("loadPackages : %s", ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
-        //
-        if (this.getSettingURI() == null) {
-            LoggerHelper.logWarn("no need to monitor configuration file.");
-            return;
-        }
+        logger.info("loadPackages : " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
     }
     /**创建{@link Settings}接口对象*/
     protected abstract Settings createSettings() throws IOException;
@@ -126,7 +123,9 @@ public abstract class AbstractEnvironment implements Environment {
         File tmpFile = new File(this.envVar(Environment.HASOR_TEMP_PATH), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
-        LoggerHelper.logInfo("create Temp File at %s.", tmpFile);
+        if (logger.isInfoEnabled()) {
+            logger.info("create Temp File at :" + tmpFile);
+        }
         return tmpFile;
     }
     /**

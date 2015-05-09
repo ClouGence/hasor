@@ -19,13 +19,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.Call;
 import net.hasor.mvc.ResultProcess;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RedirectResultProcess implements ResultProcess {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object returnData(Object result, Call call) throws ServletException, IOException {
         if (result == null) {
             return result;
@@ -33,10 +35,15 @@ public class RedirectResultProcess implements ResultProcess {
         HttpServletResponse response = call.getHttpResponse();
         //
         if (response.isCommitted() == false) {
-            LoggerHelper.logFine("redirect to %s.", result);
+            if (logger.isDebugEnabled()) {
+                logger.debug("redirect to %s.", result);
+            }
             response.sendRedirect(result.toString());
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("no redirect, response isCommitted!");
+            }
         }
-        LoggerHelper.logFine("no redirect, response isCommitted!");
         return result;
     }
 }

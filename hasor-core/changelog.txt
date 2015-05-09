@@ -30,6 +30,7 @@
     24.新增资源插件，可以从classpath\path\zip中提取资源作为web响应。
 * 改进:
     25.StandardEventManager 改为无锁方式实现。
+    26.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
     
 ===== Hasor-Core v0.0.11
 * 修复:

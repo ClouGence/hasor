@@ -26,7 +26,6 @@ import net.hasor.mvc.result.RedirectResultProcess;
 import net.hasor.mvc.result.support.DefineList;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import org.more.logger.LoggerHelper;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
@@ -36,7 +35,7 @@ public abstract class ControllerModule extends WebModule {
     private static AtomicBoolean initController = new AtomicBoolean(false);
     //
     public void loadModule(final WebApiBinder apiBinder) throws Throwable {
-        LoggerHelper.logInfo("work at ControllerModule.", this.getClass());
+        logger.info("work at ControllerModule. -> {}", this.getClass());
         //
         //1.create LoadHellper
         LoadHellper helper = new LoadHellper() {

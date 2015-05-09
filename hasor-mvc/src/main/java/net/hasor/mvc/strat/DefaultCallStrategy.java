@@ -41,15 +41,17 @@ import net.hasor.mvc.api.PathParam;
 import net.hasor.mvc.api.Produces;
 import net.hasor.mvc.api.QueryParam;
 import org.more.convert.ConverterUtils;
-import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultCallStrategy implements CallStrategy {
+    protected Logger                 logger   = LoggerFactory.getLogger(getClass());
     public static final CallStrategy Instance = new DefaultCallStrategy();
     //
     /**初始化调用。*/
@@ -227,7 +229,7 @@ public class DefaultCallStrategy implements CallStrategy {
                     oriData = URLDecoder.decode(pData, encoding);
                 }
             } catch (Exception e) {
-                LoggerHelper.logWarn("use ‘%s’ decode ‘%s’ error.", encoding, pData);
+                logger.warn("use ‘{}’ decode ‘{}’ error.", encoding, pData);
                 continue;
             }
             String[] kv = oriData.split("=");

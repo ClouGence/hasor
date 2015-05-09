@@ -26,14 +26,16 @@ import java.util.regex.Pattern;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 该类负责处理环境变量相关操作。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public class EnvVars {
+    protected Logger                          logger = LoggerFactory.getLogger(getClass());
     private Environment                       environment;
     /*最终使用的环境变量Map*/
     private ConcurrentHashMap<String, String> envMap;
@@ -47,25 +49,24 @@ public class EnvVars {
     }
     public void addEnvVar(final String envName, final String envValue) {
         if (StringUtils.isBlank(envName)) {
-            LoggerHelper.logWarn("%s env, name is empty.", envName);
+            if (logger.isWarnEnabled()) {
+                logger.warn(envName + "%s env, name is empty.");
+            }
             return;
         }
-        //
-        if (StringUtils.isBlank(envValue)) {
-            LoggerHelper.logWarn("%s env, value is empty.", envName);
-        } else {
-            LoggerHelper.logInfo("%s = %s.", envName, envValue);
+        if (logger.isInfoEnabled()) {
+            logger.info("var -> %s = %s.", envName, envValue);
         }
-        //
         this.userEnvMap.put(envName.toUpperCase(), StringUtils.isBlank(envValue) ? "" : envValue);
     }
     public void remoteEnvVar(final String varName) {
         if (StringUtils.isBlank(varName)) {
-            LoggerHelper.logWarn("%s env, name is empty.");
             return;
         }
         this.userEnvMap.remove(varName.toUpperCase());
-        LoggerHelper.logInfo("%s env removed.", varName);
+        if (logger.isInfoEnabled()) {
+            logger.info(varName + " env removed.");
+        }
     }
     //
     /**特殊配置的环境变量*/
@@ -110,7 +111,7 @@ public class EnvVars {
         this.configEnvironment(this.envMap);
         //
         /*日志输出*/
-        if (LoggerHelper.isEnableInfoLoggable()) {
+        if (logger.isInfoEnabled()) {
             int keyMaxSize = 0;
             for (String key : this.envMap.keySet()) {
                 keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
@@ -126,7 +127,7 @@ public class EnvVars {
                 sb.append("\n" + this.formatMap4log(keyMaxSize, this.userEnvMap));
                 sb.append("\n" + StringUtils.fixedString('-', 50));
             }
-            LoggerHelper.logInfo(sb.toString());
+            logger.info(sb.toString());
         }
     }
     private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
@@ -174,7 +175,9 @@ public class EnvVars {
             }
         }
         String returnData = sb.toString();
-        LoggerHelper.logFiner("evalString '%s' eval to '%s'.", evalString, returnData);
+        if (logger.isInfoEnabled()) {
+            logger.info("evalString '{}' eval to '{}'.", evalString, returnData);
+        }
         return returnData;
     }
     private String evalEnvVar(String varName, final Map<String, String> paramMap) {

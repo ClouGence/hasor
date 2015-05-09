@@ -16,22 +16,23 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class WebModule implements Module {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
         if (apiBinder instanceof WebApiBinder == false) {
-            String errorMsg = String.format("need web environment ,WebModule=‘%s’", this.getClass());
-            LoggerHelper.logWarn(errorMsg);
+            logger.warn("need web environment ,WebModule=‘{}’", this.getClass());
             return;
         }
         this.loadModule((WebApiBinder) apiBinder);
-        LoggerHelper.logInfo("‘%s’ Plug-in loaded successfully", this.getClass());
+        logger.info("‘{}’ Plug-in loaded successfully", this.getClass());
     }
     public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

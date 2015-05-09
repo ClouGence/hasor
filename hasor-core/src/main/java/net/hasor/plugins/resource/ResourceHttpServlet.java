@@ -32,17 +32,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
-import org.more.logger.LoggerHelper;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.StringUtils;
 import org.more.util.io.FileUtils;
 import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责装载jar包或zip包中的资源
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ResourceHttpServlet extends HttpServlet {
+    protected static Logger                                  logger           = LoggerFactory.getLogger(ResourceHttpServlet.class);
     private static final long                                serialVersionUID = 2470188139577613256L;
     private static ContextClassLoaderLocal<ResourceLoader[]> LoaderList       = new ContextClassLoaderLocal<ResourceLoader[]>();
     private static ContextClassLoaderLocal<File>             CacheDir         = new ContextClassLoaderLocal<File>();
@@ -67,7 +69,7 @@ public class ResourceHttpServlet extends HttpServlet {
         FileUtils.deleteDir(cacheDir);
         cacheDir.mkdirs();
         CacheDir.set(cacheDir);
-        LoggerHelper.logInfo("use cacheDir %s", cacheDir);
+        logger.info("use cacheDir " + cacheDir);
     }
     //
     //
@@ -83,7 +85,9 @@ public class ResourceHttpServlet extends HttpServlet {
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
         String typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
         if (StringUtils.isBlank(typeMimeType)) {
-            LoggerHelper.logSevere("%s not mapping MimeType!", requestURI); //typeMimeType = this.getMimeType().get(fileExt.substring(1).toLowerCase());
+            if (logger.isInfoEnabled()) {
+                logger.info(requestURI + " not mapping MimeType!");
+            }
         }
         //
         if (typeMimeType != null) {
@@ -118,7 +122,7 @@ public class ResourceHttpServlet extends HttpServlet {
         try {
             requestURI = URLDecoder.decode(requestURI, "utf-8");
         } catch (Exception e) {
-            LoggerHelper.logWarn("URLDecoder.decode error ->" + requestURI);
+            logger.warn("URLDecoder.decode error ->" + requestURI);
         }
         //2.如果为调试模式每次都重新加载资源（不缓存）
         File cacheFile = new File(CacheDir.get(), requestURI);

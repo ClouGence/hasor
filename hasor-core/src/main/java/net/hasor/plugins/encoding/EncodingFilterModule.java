@@ -27,8 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.Settings;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import org.more.logger.LoggerHelper;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 提供请求相应编码设置。
  * @version : 2013-9-13
@@ -43,8 +44,8 @@ public class EncodingFilterModule extends WebModule {
         Settings settings = apiBinder.getEnvironment().getSettings();
         String requestEncoding = settings.getString(REQUEST_ENCODING);
         String responseEncoding = settings.getString(RESPONSE_ENCODING);
-        LoggerHelper.logConfig("EncodingFilterPlugin -> requestEncoding = %s.", requestEncoding);
-        LoggerHelper.logConfig("EncodingFilterPlugin -> responseEncoding = %s.", responseEncoding);
+        logger.info("EncodingFilterPlugin -> requestEncoding = " + requestEncoding);
+        logger.info("EncodingFilterPlugin -> responseEncoding = " + responseEncoding);
         //
         HashMap<String, String> initParams = new HashMap<String, String>();
         initParams.put(REQUEST_ENCODING, requestEncoding);
@@ -52,20 +53,19 @@ public class EncodingFilterModule extends WebModule {
         //
         String urlPatternsConfig = settings.getString(URL_PATTERNS_ENCODING);
         String[] patterns = StringUtils.isBlank(urlPatternsConfig) ? new String[0] : urlPatternsConfig.split(";");
-        LoggerHelper.logConfig("EncodingFilterModule -> urlPatterns = %s.", new Object[] { patterns });
+        logger.info("EncodingFilterModule -> urlPatterns = {}.", new Object[] { patterns });
         //
         apiBinder.filter(patterns).through(Integer.MIN_VALUE, new EncodingFilter(), initParams);
     }
 }
 class EncodingFilter implements Filter {
-    private String requestEncoding  = null;
-    private String responseEncoding = null;
+    protected Logger logger           = LoggerFactory.getLogger(getClass());
+    private String   requestEncoding  = null;
+    private String   responseEncoding = null;
     public void init(FilterConfig filterConfig) throws ServletException {
         /*获取请求响应编码*/
         this.requestEncoding = filterConfig.getInitParameter(EncodingFilterModule.REQUEST_ENCODING);
         this.responseEncoding = filterConfig.getInitParameter(EncodingFilterModule.RESPONSE_ENCODING);
-        LoggerHelper.logConfig("EncodingFilter.init -> requestEncoding = %s.", requestEncoding);
-        LoggerHelper.logConfig("EncodingFilter.init -> responseEncoding = %s.", responseEncoding);
     }
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
@@ -75,7 +75,7 @@ class EncodingFilter implements Filter {
         if (this.requestEncoding != null)
             httpRes.setCharacterEncoding(this.responseEncoding);
         //
-        LoggerHelper.logFine("at http(%s/%s) request : %s", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+        logger.info("at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         chain.doFilter(request, response);
     }
     public void destroy() {}

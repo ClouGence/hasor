@@ -36,11 +36,10 @@ import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.factorys.BindInfoDefineManager;
 import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.logger.LoggerHelper;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -50,25 +49,19 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractAppContext implements AppContext {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public Class<?> getBeanType(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        LoggerHelper.logFinest("bindID is %s.", bindID);
-        //
         BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
         AbstractBindInfoProviderAdapter<?> bindInfo = defineManager.getBindInfoByID(bindID);
         //
         if (bindInfo != null) {
-            Class<?> bindType = bindInfo.getBindType();
-            LoggerHelper.logFinest("bindID(%s) is %s.", bindType);
-            return bindType;
+            return bindInfo.getBindType();
         }
-        LoggerHelper.logFine("bindID(%s) does not exist.", bindID);
         return null;
     }
     public boolean containsBindID(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        LoggerHelper.logFinest("bindID is %s.", bindID);
-        //
         BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
         AbstractBindInfoProviderAdapter<?> bindInfo = defineManager.getBindInfoByID(bindID);
         return bindInfo != null;
@@ -77,7 +70,6 @@ public abstract class AbstractAppContext implements AppContext {
         BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
         Iterator<? extends AbstractBindInfoProviderAdapter<?>> adapterList = defineManager.getBindInfoIterator();
         if (adapterList == null || adapterList.hasNext() == false) {
-            LoggerHelper.logFine("bindIDs is empty");
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         List<String> names = new ArrayList<String>();
@@ -88,9 +80,7 @@ public abstract class AbstractAppContext implements AppContext {
                 names.add(name);
             }
         }
-        String[] nameArray = names.toArray(new String[names.size()]);
-        LoggerHelper.logFinest("bindIDs is %s", ReflectionToStringBuilder.toString(nameArray, ToStringStyle.SIMPLE_STYLE));
-        return nameArray;
+        return names.toArray(new String[names.size()]);
     }
     public <T> BindInfo<T> getBindInfo(String bindID) {
         BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
@@ -98,8 +88,6 @@ public abstract class AbstractAppContext implements AppContext {
     }
     public <T> T getInstance(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        LoggerHelper.logFinest("bindIDs is %s", bindID);
-        //
         BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
         AbstractBindInfoProviderAdapter<T> bindInfo = defineManager.getBindInfoByID(bindID);
         if (bindInfo != null) {
@@ -111,19 +99,15 @@ public abstract class AbstractAppContext implements AppContext {
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        //
         String[] returnData = this.getBindInfoFactory().getNamesOfType(targetClass);
         if (returnData == null) {
-            LoggerHelper.logFine("names of %s is empty.", targetClass);
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        LoggerHelper.logFinest("names of %s = %s.", targetClass, ReflectionToStringBuilder.toString(returnData, ToStringStyle.SIMPLE_STYLE));
         return returnData;
     }
     /**创建Bean。*/
     public <T> T getInstance(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        LoggerHelper.logFinest("instance type is %s.", targetClass);
         //
         BindInfoFactory factory = this.getBindInfoFactory();
         BindInfo<T> info = factory.getBindInfo(null, targetClass);
@@ -131,11 +115,7 @@ public abstract class AbstractAppContext implements AppContext {
             Provider<T> provider = this.getProvider(info);
             if (provider != null) {
                 return provider.get();
-            } else {
-                LoggerHelper.logFine("instance type(%s) bindInfo(%s), but provider is null.", targetClass, info);
             }
-        } else {
-            LoggerHelper.logFine("instance type(%s) bindInfo is null.", targetClass);
         }
         return factory.getDefaultInstance(targetClass);
     };
@@ -349,27 +329,27 @@ public abstract class AbstractAppContext implements AppContext {
     }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {
-        LoggerHelper.logFine("installModule %s.", module);
         if (this.isStart()) {
             throw new IllegalStateException("AppContent is started.");
         }
         if (module == null) {
             return;
         }
-        LoggerHelper.logInfo("loadModule %s.", module);
+        if (logger.isInfoEnabled()) {
+            logger.info("loadModule " + module);
+        }
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
     }
     public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
-            LoggerHelper.logWarn("Hasor Started!");
+            logger.info("Hasor started , modules is empty.");
             return;
         }
         final AbstractAppContext appContext = this;
         EventContext ec = appContext.getEnvironment().getEventContext();
         /*1.Init*/
-        LoggerHelper.logInfo("begin start.");
-        LoggerHelper.logInfo("doInitialize now.");
+        logger.info("begin start , doInitialize now.");
         appContext.doInitialize();
         /*2.Bind*/
         ArrayList<Module> findModules = new ArrayList<Module>();
@@ -379,15 +359,16 @@ public abstract class AbstractAppContext implements AppContext {
             this.installModule(module);
         }
         ApiBinder apiBinder = appContext.newApiBinder(null);
-        LoggerHelper.logInfo("AppContext doBind.");
+        logger.info("AppContext doBind.");
         appContext.doBind(apiBinder);
         /*3.引发事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
         appContext.doInitializeCompleted();
-        LoggerHelper.logInfo("doInitialize completed!");
+        logger.info("doInitialize completed!");
         //
         /*3.Start*/
-        LoggerHelper.logInfo("doStart now.");
+        logger.info("doInitialize completed!");
+        logger.info("doStart now.");
         appContext.doStart();
         /*2.执行Aware通知*/
         List<AppContextAware> awareList = appContext.findBindingBean(AppContextAware.class);
@@ -398,7 +379,7 @@ public abstract class AbstractAppContext implements AppContext {
         }
         /*3.发送启动事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Started, appContext);
-        LoggerHelper.logInfo("doStartCompleted now.");
+        logger.info("doStartCompleted now.");
         appContext.doStartCompleted();/*用于扩展*/
         //
         for (Module module : findModules) {
@@ -408,8 +389,8 @@ public abstract class AbstractAppContext implements AppContext {
         }
         /*3.打印状态*/
         this.startState = true;
-        LoggerHelper.logInfo("doStart completed!");
-        LoggerHelper.logInfo("Hasor Started!");
+        logger.info("doStart completed!");
+        logger.info("Hasor Started!");
     }
     public synchronized final void shutdown() {
         if (!this.isStart()) {
@@ -418,13 +399,13 @@ public abstract class AbstractAppContext implements AppContext {
         final AbstractAppContext appContext = this;
         EventContext ec = appContext.getEnvironment().getEventContext();
         /*1.Init*/
-        LoggerHelper.logInfo("doShutdown now.");
+        logger.info("doShutdown now.");
         appContext.doShutdown();
         /*3.引发事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
-        LoggerHelper.logInfo("doShutdownCompleted now.");
+        logger.info("doShutdownCompleted now.");
         appContext.doShutdownCompleted();
         this.startState = false;
-        LoggerHelper.logInfo("doShutdown completed!");
+        logger.info("doShutdown completed!");
     }
 }

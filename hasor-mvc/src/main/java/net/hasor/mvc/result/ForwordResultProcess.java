@@ -20,13 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.Call;
 import net.hasor.mvc.ResultProcess;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
 * 
 * @version : 2013-6-5
 * @author 赵永春 (zyc@hasor.net)
 */
 public class ForwordResultProcess implements ResultProcess {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object returnData(Object result, Call call) throws ServletException, IOException {
         if (result == null) {
             return result;
@@ -35,7 +37,9 @@ public class ForwordResultProcess implements ResultProcess {
         HttpServletResponse response = call.getHttpResponse();
         //
         if (response.isCommitted() == false) {
-            LoggerHelper.logFine("forword to %s.", result);
+            if (logger.isDebugEnabled()) {
+                logger.debug("forword to %s.", result);
+            }
             request.getRequestDispatcher(result.toString()).forward(request, response);
         }
         return result;

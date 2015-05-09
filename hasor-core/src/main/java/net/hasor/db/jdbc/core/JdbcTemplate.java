@@ -58,30 +58,32 @@ import net.hasor.db.jdbc.StatementCallback;
 import net.hasor.db.jdbc.core.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
-import org.more.logger.LoggerHelper;
 import org.more.util.ArrayUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
+    protected static Logger logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*是否忽略出现的 SQL 警告*/
-    private boolean ignoreWarnings         = true;
+    private boolean         ignoreWarnings         = true;
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 fetchSize 属性。*/
-    private int     fetchSize              = 0;
+    private int             fetchSize              = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 maxRows 属性。*/
-    private int     maxRows                = 0;
+    private int             maxRows                = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
-    private int     queryTimeout           = 0;
+    private int             queryTimeout           = 0;
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
-    private boolean resultsCaseInsensitive = false;
+    private boolean         resultsCaseInsensitive = false;
     //
     //
     //
@@ -220,9 +222,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T execute(final PreparedStatementCreator psc, final PreparedStatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(psc, "PreparedStatementCreator must not be null");
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        if (LoggerHelper.isEnableFineLoggable()) {
+        if (logger.isDebugEnabled()) {
             String sql = JdbcTemplate.getSql(psc);
-            LoggerHelper.logFine("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
+            logger.debug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
         }
         //
         return this.execute(new ConnectionCallback<T>() {
@@ -252,9 +254,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T execute(final CallableStatementCreator csc, final CallableStatementCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(csc, "CallableStatementCreator must not be null");
         Hasor.assertIsNotNull(action, "Callback object must not be null");
-        if (LoggerHelper.isEnableFineLoggable()) {
+        if (logger.isDebugEnabled()) {
             String sql = JdbcTemplate.getSql(csc);
-            LoggerHelper.logFine("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
+            logger.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
         }
         //
         return this.execute(new ConnectionCallback<T>() {
@@ -301,7 +303,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     @Override
     public boolean execute(final String sql) throws SQLException {
-        LoggerHelper.logFine("Executing SQL statement [%s].", sql);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing SQL statement [{}].", sql);
+        }
         class ExecuteStatementCallback implements StatementCallback<Boolean>, SqlProvider {
             @Override
             public Boolean doInStatement(final Statement stmt) throws SQLException {
@@ -320,7 +324,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     /***/
     public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
         Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
-        LoggerHelper.logFine("Executing prepared SQL query");
+        if (logger.isDebugEnabled()) {
+            logger.debug("executing prepared SQL query");
+        }
         return this.execute(psc, new PreparedStatementCallback<T>() {
             @Override
             public T doInPreparedStatement(final PreparedStatement ps) throws SQLException {
@@ -350,7 +356,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     public <T> T query(final String sql, final ResultSetExtractor<T> rse) throws SQLException {
         Hasor.assertIsNotNull(sql, "SQL must not be null.");
         Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
-        LoggerHelper.logFine("Executing SQL query [%s].", sql);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing SQL query [{}].", sql);
+        }
         class QueryStatementCallback implements StatementCallback<T>, SqlProvider {
             @Override
             public T doInStatement(final Statement stmt) throws SQLException {
@@ -623,7 +631,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     //
     /***/
     public int update(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws SQLException {
-        LoggerHelper.logFine("Executing prepared SQL update");
+        if (logger.isDebugEnabled()) {
+            logger.debug("executing prepared SQL update");
+        }
         return this.execute(psc, new PreparedStatementCallback<Integer>() {
             @Override
             public Integer doInPreparedStatement(final PreparedStatement ps) throws SQLException {
@@ -632,7 +642,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
                         pss.setValues(ps);
                     }
                     int rows = ps.executeUpdate();
-                    LoggerHelper.logFine("SQL update affected %s rows", rows);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("SQL update affected {} rows", rows);
+                    }
                     return rows;
                 } finally {
                     if (pss instanceof ParameterDisposer) {
@@ -649,13 +661,17 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     @Override
     public int update(final String sql) throws SQLException {
         Hasor.assertIsNotNull(sql, "SQL must not be null");
-        LoggerHelper.logFine("Executing SQL update [%s]", sql);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing SQL update [{}]", sql);
+        }
         //
         class UpdateStatementCallback implements StatementCallback<Integer>, SqlProvider {
             @Override
             public Integer doInStatement(final Statement stmt) throws SQLException {
                 int rows = stmt.executeUpdate(sql);
-                LoggerHelper.logFine("SQL update affected %s rows.", rows);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("SQL update affected {} rows.", rows);
+                }
                 return rows;
             }
             @Override
@@ -689,7 +705,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
         if (ArrayUtils.isEmpty(sql)) {
             throw new NullPointerException(sql + "SQL array must not be empty");
         }
-        LoggerHelper.logFine("Executing SQL batch update of %s statements", sql.length);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing SQL batch update of {} statements", sql.length);
+        }
         //
         class BatchUpdateStatementCallback implements StatementCallback<int[]>, SqlProvider {
             private String currSql;
@@ -742,7 +760,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     }
     @Override
     public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
-        LoggerHelper.logFine("Executing SQL batch update [%s].", sql);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing SQL batch update [{}].", sql);
+        }
         final ParsedSql parsedSql = getParsedSql(sql);
         sql = ParsedSql.buildSql(parsedSql, null);
         //
@@ -866,10 +886,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
     /**处理潜在的 SQL 警告。当要求不忽略 SQL 警告时，检测到 SQL 警告抛出 SQL 异常。*/
     private void handleWarnings(final Statement stmt) throws SQLException {
         if (this.isIgnoreWarnings()) {
-            if (LoggerHelper.isEnableFineLoggable()) {
+            if (logger.isDebugEnabled()) {
                 SQLWarning warningToLog = stmt.getWarnings();
                 while (warningToLog != null) {
-                    LoggerHelper.logFine("SQLWarning ignored: SQL state '%s', error code '%s', message [%s].", warningToLog.getSQLState(), warningToLog.getErrorCode(), warningToLog.getMessage());
+                    logger.debug("SQLWarning ignored: SQL state '{}', error code '{}', message [{}].", warningToLog.getSQLState(), warningToLog.getErrorCode(), warningToLog.getMessage());
                     warningToLog = warningToLog.getNextWarning();
                 }
             }

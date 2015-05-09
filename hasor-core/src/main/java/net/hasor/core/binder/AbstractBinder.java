@@ -33,11 +33,10 @@ import net.hasor.core.Scope;
 import net.hasor.core.StartModule;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.factorys.BindInfoDefineManager;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.logger.LoggerHelper;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #getBuilderRegister()} ,会返回一个接口( {@link net.hasor.core.factorys.BindInfoDefineManager BindInfoDefineManager} )
@@ -46,6 +45,7 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
+    private Logger      logger      = LoggerFactory.getLogger(getClass());
     private Environment environment = null;
     //
     protected AbstractBinder(final Environment envContext) {
@@ -56,21 +56,20 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     public <T extends AppContextAware> T autoAware(final T aware) {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
-        LoggerHelper.logFiner("registered autoAware(%s).", aware);
+        if (logger.isDebugEnabled()) {
+            logger.debug("registered autoAware ->" + aware);
+        }
         return aware;
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
-        LoggerHelper.logFinest("findClass %s.", featureType);
         if (featureType == null) {
             return null;
         }
         Set<Class<?>> res = this.getEnvironment().findClass(featureType);
-        LoggerHelper.logFinest("findClass % result is %s.",//
-                ReflectionToStringBuilder.toString(res, ToStringStyle.SIMPLE_STYLE));
         return res;
     }
     public void installModule(final Module module) throws Throwable {
-        LoggerHelper.logFinest("installModule %s.", module);
+        logger.info("installModule ->" + module);
         module.loadModule(this);
         //
         Hasor.addStartListener(this.getEnvironment().getEventContext(), new EventListener() {

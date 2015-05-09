@@ -31,13 +31,15 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import org.more.logger.LoggerHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
+    protected Logger       logger         = LoggerFactory.getLogger(getClass());
     private WebAppContext  appContext     = null;
     private FilterPipeline filterPipeline = null;
     //
@@ -61,13 +63,13 @@ public class RuntimeFilter implements Filter {
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         //
-        LoggerHelper.logInfo("PlatformFilter started.");
+        logger.info("RuntimeFilter started.");
     }
     //
     /** 销毁 */
     @Override
     public void destroy() {
-        LoggerHelper.logInfo("executeCycle destroyCycle.");
+        logger.info("executeCycle destroyCycle.");
         if (this.filterPipeline != null) {
             this.filterPipeline.destroyPipeline(this.appContext);
         }

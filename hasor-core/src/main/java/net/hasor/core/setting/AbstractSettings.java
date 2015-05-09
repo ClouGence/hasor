@@ -31,17 +31,24 @@ import net.hasor.core.XmlNode;
 import org.more.convert.ConverterUtils;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Settings接口的抽象实现。
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     /**获取一个 Map，该Map中保存了所有配置信息。*/
     protected abstract Map<String, Map<String, SettingValue>> getFullSettingsMap();
     protected abstract Map<String, SettingValue> getLocalSettingData();
     //
     //
+    public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(Settings.class);
+        logger.info("aaa {} bbb {}",12,34);
+    }
     //
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类）*/
     public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {

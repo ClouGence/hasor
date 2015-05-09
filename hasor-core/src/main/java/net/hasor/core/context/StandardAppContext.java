@@ -29,7 +29,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.factorys.HasorRegisterFactory;
-import org.more.logger.LoggerHelper;
 import org.more.util.ClassUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
@@ -60,7 +59,7 @@ public class StandardAppContext extends AbstractAppContext {
     public StandardAppContext(final String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
         if (resURL == null) {
-            LoggerHelper.logWarn("can't find %s.", mainSettings);
+            logger.warn("can't find " + mainSettings);
         } else {
             this.mainSettings = resURL.toURI();
         }
@@ -78,7 +77,7 @@ public class StandardAppContext extends AbstractAppContext {
     }
     /**创建环境对象*/
     protected Environment createEnvironment() {
-        LoggerHelper.logInfo("MainSettings is %s.", mainSettings);
+        logger.info("mainSettings is " + mainSettings);
         return new StandardEnvironment(this.mainSettings);
     }
     //
