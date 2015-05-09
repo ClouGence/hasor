@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+
+	<!-- 测试服务地址 -->
+	<testServerURL>
+		rsf://192.168.31.226:8000/unit,
+		rsf://192.168.31.226:8000/unit,
+	</testServerURL>
+
+	<!-- 一个进程启动200个客户端，每个客户端启动200个并发调用线程。 -->
+	<testConfig clientCount="20" threadCount="200" />
+
+	<!-- 考虑到测试并发压力，连接超时改为 500毫秒 -->
+	<hasor.rsfConfig.client connectTimeout="500" />
+</config>

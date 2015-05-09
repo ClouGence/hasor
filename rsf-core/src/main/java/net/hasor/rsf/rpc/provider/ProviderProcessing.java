@@ -20,6 +20,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
@@ -46,8 +47,12 @@ class ProviderProcessing implements Runnable {
         this.nettyChannel = nettyChannel;
     }
     public void run() {
-        RsfResponseFormLocal response = this.doRequest();
-        sendResponse(response);
+        try {
+            RsfResponseFormLocal response = this.doRequest();
+            sendResponse(response);
+        } catch (Throwable e) {
+            sendError(e);
+        }
     }
     private RsfResponseFormLocal doRequest() {
         RsfRequestFormSocket rsfRequest = null;
@@ -60,8 +65,7 @@ class ProviderProcessing implements Runnable {
         } catch (Throwable e) {
             String errorMessage = "buildResponse fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
             LoggerHelper.logSevere(errorMessage);
-            rsfResponse.sendStatus(ProtocolStatus.BuildResponse, errorMessage);
-            return rsfResponse;
+            throw new RsfException(ProtocolStatus.BuildResponse, errorMessage);
         }
         //
         //1.检查timeout
@@ -109,6 +113,15 @@ class ProviderProcessing implements Runnable {
         } else {
             LoggerHelper.logSevere("response is null.");
             socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ResponseNullError, optMap);
+        }
+        this.nettyChannel.writeAndFlush(socketBlock);
+    }
+    //
+    private void sendError(Throwable exception) {
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        ResponseSocketBlock socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.BuildSocketBlock, optMap);
+        if (exception instanceof RsfException) {
+            socketBlock.setStatus(((RsfException) exception).getStatus());
         }
         this.nettyChannel.writeAndFlush(socketBlock);
     }

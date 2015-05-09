@@ -101,9 +101,6 @@ public class RsfBootstrap {
             this.settings = new DefaultRsfSettings(new StandardContextSettings(DEFAULT_RSF_CONFIG));
             this.settings.refresh();
         }
-        if (this.settings.getXmlNode("hasor.rsfConfig") == null) {
-            throw new IOException("settings is not load.");
-        }
         //
         //RsfContext
         LoggerHelper.logInfo("agent shutdown method on DefaultRsfContext.", DEFAULT_RSF_CONFIG);

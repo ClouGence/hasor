@@ -136,7 +136,7 @@ class ResponseRead extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LoggerHelper.logWarn("center connection exception ->" + cause.getMessage());
+        LoggerHelper.logWarn("center connection exception ->" + cause.getLocalizedMessage());
         this.future.failed(cause);
     }
     @Override
