@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-core</artifactId>
-	<version>0.0.13</version>
+	<version>0.0.14-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
@@ -21,7 +21,7 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
-		<tag>Release.Hasor-0.0.13</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>

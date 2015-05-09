@@ -8,7 +8,7 @@
 
 	<groupId>net.hasor</groupId>
 	<artifactId>demo-hasor</artifactId>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<!-- 不进行 deploy -->
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>hasor-core</artifactId>
-			<version>0.0.13</version>
+			<version>0.0.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -72,8 +72,4 @@
 		</dependency>
 		<!-- JDBC end -->
 	</dependencies>
-
-  <scm>
-    <tag>Release.Hasor-0.0.13</tag>
-  </scm>
 </project>
