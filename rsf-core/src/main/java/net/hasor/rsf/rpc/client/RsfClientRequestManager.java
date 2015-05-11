@@ -175,11 +175,19 @@ public class RsfClientRequestManager {
                 }
             }).doFilter(rsfRequest, res);
         } catch (Throwable e) {
-            rsfFuture.failed(e);
+            try {
+                rsfFuture.failed(e);
+            } catch (Throwable e2) {
+                logger.error("do callback for failed error->" + e.getMessage(), e);
+            }
         }
         //
         if (res.isResponse()) {
-            rsfFuture.completed(res);
+            try {
+                rsfFuture.completed(res);
+            } catch (Throwable e) {
+                logger.error("do callback for completed error->" + e.getMessage(), e);
+            }
         }
         return rsfFuture;
     }

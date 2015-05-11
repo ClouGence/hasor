@@ -26,8 +26,12 @@ import test.net.hasor.rsf.service.EchoService;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AsyncClient {
-    private int        chientID;
-    private RsfContext rsfContext;
+    static final AtomicLong callCount      = new AtomicLong(0);
+    static final AtomicLong failCount      = new AtomicLong(0);
+    static final AtomicLong completedCount = new AtomicLong(0);
+    //
+    private int             chientID;
+    private RsfContext      rsfContext;
     public AsyncClient(int chientID, RsfContext rsfContext) {
         this.chientID = chientID;
         this.rsfContext = rsfContext;
@@ -38,17 +42,24 @@ public class AsyncClient {
         final AtomicLong atomicLong = new AtomicLong(threadCount);
         final RsfClient rsfClient = rsfContext.getRsfClient();
         RsfBindInfo<EchoService> bindInfo = rsfContext.getBindCenter().getService(EchoService.class);
-        Class<?>[] parameterTypes = new Class<?>[] { String.class, Integer.class };
+        Class<?>[] parameterTypes = new Class<?>[] { String.class, Long.TYPE };
         //
         FutureCallback<Object> listener = new FutureCallback<Object>() {
             @Override
             public void failed(Throwable ex) {
                 atomicLong.incrementAndGet();
-                System.out.print("err" + ex.getMessage());
+                failCount.incrementAndGet();
             }
             @Override
             public void completed(Object result) {
                 atomicLong.incrementAndGet();
+                completedCount.incrementAndGet();
+                String resultStr = (String) result;
+                long sendTime = Long.parseLong(resultStr.split(",")[1]);
+                if (completedCount.get() % 5000 == 0) {
+                    System.err.println("completed/all = " + completedCount.get() + "/" + callCount.get() + //
+                            " failCount=" + failCount + " ,RT = " + (System.currentTimeMillis() - sendTime));
+                }
             }
             @Override
             public void cancelled() {
@@ -57,17 +68,14 @@ public class AsyncClient {
         };
         //
         //
-        int i = 0;
         while (true) {
             String sayMessage = "sayData:" + chientID;
-            Object[] parameterObjects = new Object[] { sayMessage, i };
+            Object[] parameterObjects = new Object[] { sayMessage, System.currentTimeMillis() };
             //
             if (atomicLong.get() > 0) {
                 atomicLong.getAndDecrement();
+                callCount.incrementAndGet();
                 rsfClient.doCallBackInvoke(bindInfo, "echo", parameterTypes, parameterObjects, listener);
-                if (i % 1000000 == 0) {
-                    System.out.println(i + "\t call...");
-                }
             }
         }
     }

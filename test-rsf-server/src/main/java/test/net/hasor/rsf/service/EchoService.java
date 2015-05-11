@@ -20,5 +20,5 @@ package test.net.hasor.rsf.service;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface EchoService {
-    public String echo(String sayMessage, Integer i);
+    public String echo(String sayMessage, long i);
 }
