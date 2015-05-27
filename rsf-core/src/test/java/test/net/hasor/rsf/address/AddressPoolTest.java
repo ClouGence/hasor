@@ -58,18 +58,29 @@ public class AddressPoolTest {
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-flow.xml"));
-        pool.refreshFlowControl(flowControlBody);
+        pool.refreshDefaultFlowControl(flowControlBody);
         //
         System.err.println("\n\n start 3 Threads for doNextAddress.");
         //
-        new Thread() { public void run() { doNextAddress("T1", domain, pool ,1); }; }.start();
-        new Thread() { public void run() { doNextAddress("T2", domain, pool ,1); }; }.start();
-        new Thread() { public void run() { doNextAddress("T3", domain, pool ,1); }; }.start();
+        new Thread() {
+            public void run() {
+                doNextAddress("T1", domain, pool, 1);
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                doNextAddress("T2", domain, pool, 1);
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                doNextAddress("T3", domain, pool, 1);
+            };
+        }.start();
         //
         //
         System.out.println("QoS = 5/s , Threads = 3.");
         Thread.sleep(3000);
-        
         System.err.println("1s after start..");
         Thread.sleep(1000);
         System.err.println("newAddress.. unit = enable , only 'etc3'..");
@@ -97,29 +108,26 @@ public class AddressPoolTest {
         //
         Thread.sleep(5000);
     }
-    
-    long startTime =0;
+    long                                   startTime  = 0;
     java.util.concurrent.atomic.AtomicLong atomicLong = new AtomicLong(0);
-    public void doNextAddress(final String tName, RsfBindInfo<?> domain, AddressPool pool,int showMod) {
+    public void doNextAddress(final String tName, RsfBindInfo<?> domain, AddressPool pool, int showMod) {
         while (true) {
             InterAddress address = pool.nextAddress(domain, "methodssss", new Object[0]);
             if (address != null) {
-                long i=atomicLong.getAndIncrement();
-                if (i % showMod ==0){
+                long i = atomicLong.getAndIncrement();
+                if (i % showMod == 0) {
                     long checkTime = System.currentTimeMillis() / 1000;
                     long speed = 0;
-                    if (checkTime - startTime ==0){
+                    if (checkTime - startTime == 0) {
                         speed = 0;
-                    }else{
+                    } else {
                         speed = (i / (checkTime - startTime));
                     }
-                    System.out.println("["+tName+"]\t" + i + "\tSpeed(s):" + speed + "\t" + address);
+                    System.out.println("[" + tName + "]\t" + i + "\tSpeed(s):" + speed + "\t" + address);
                 }
             }
         }
     }
-    
-    
     /**性能测试*/
     @Test
     public void performanceTest() throws URISyntaxException, IOException, InterruptedException {
@@ -130,21 +138,24 @@ public class AddressPoolTest {
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-performance-flow.xml"));
-        pool.refreshFlowControl(flowControlBody);
+        pool.refreshDefaultFlowControl(flowControlBody);
         //
         //
         //
         int threadCount = 400;
         System.out.println("\n\n QoS = false , Threads = " + threadCount + ".");
         Thread.sleep(5000);
-        
         System.err.println("1s after start..");
         Thread.sleep(1000);
         //
-        for (int i =0;i<threadCount;i++){
+        for (int i = 0; i < threadCount; i++) {
             final int index = i;
-            new Thread() { public void run() { doNextAddress("T-" + index, domain, pool , 10000); }; }.start();
-            System.err.println("["+ i +"]Thread start..");
+            new Thread() {
+                public void run() {
+                    doNextAddress("T-" + index, domain, pool, 10000);
+                };
+            }.start();
+            System.err.println("[" + i + "]Thread start..");
         }
         System.err.println("all Thread start..");
         //
@@ -154,6 +165,5 @@ public class AddressPoolTest {
         startTime = System.currentTimeMillis() / 1000;//在这里设置启动时间用来测试 QoS 还是比较公平的.
         //
         Thread.sleep(20000);
-        
     }
 }

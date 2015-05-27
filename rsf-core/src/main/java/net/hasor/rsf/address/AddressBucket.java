@@ -38,34 +38,24 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket {
-    protected Logger                           logger = LoggerFactory.getLogger(getClass());
+    protected Logger                           logger         = LoggerFactory.getLogger(getClass());
     //原始数据
-    private final String                       serviceID;                                   //服务ID
-    private final String                       unitName;                                    //服务所属单元
-    private final List<InterAddress>           allAddressList;                              //所有备选地址
-    private CopyOnWriteArrayList<InterAddress> invalidAddresses;                            //不可用地址（可能包含本机房及其它机房的地址）
-    private UnitFlowControl                    unitFlowControl;                             //机房流控规则(单元划分)
-    private final AddressPool                  forAddressPool;
+    private final String                       serviceID;                                           //服务ID
+    private final String                       unitName;                                            //服务所属单元
+    private final List<InterAddress>           allAddressList;                                      //所有备选地址
+    private CopyOnWriteArrayList<InterAddress> invalidAddresses;                                    //不可用地址（可能包含本机房及其它机房的地址）
+    //
+    //流控规则
+    private volatile FlowControlRef            flowControlRef = null;                               //默认流控规则引用
     //
     //计算的可用地址
-    private List<InterAddress>                 localUnitAddresses;                          //本单元地址
-    private List<InterAddress>                 availableAddresses;                          //所有可用地址（包括本地单元）
+    private List<InterAddress>                 localUnitAddresses;                                  //本单元地址
+    private List<InterAddress>                 availableAddresses;                                  //所有可用地址（包括本地单元）
     //
     //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
-        this.forAddressPool = null;
-        this.allAddressList = new ArrayList<InterAddress>();
-        this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
-        this.localUnitAddresses = new ArrayList<InterAddress>();
-        this.availableAddresses = new ArrayList<InterAddress>();
-        this.refreshAddress();
-    }
-    public AddressBucket(String serviceID, AddressPool forAddressPool) {
-        this.serviceID = serviceID;
-        this.unitName = forAddressPool.getUnitName();
-        this.forAddressPool = forAddressPool;
         this.allAddressList = new ArrayList<InterAddress>();
         this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
@@ -150,10 +140,6 @@ public class AddressBucket {
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
-        if (this.forAddressPool != null) {
-            //this.networkFlowControl = this.forAddressPool.getNetworkFlowControl();
-            this.unitFlowControl = this.forAddressPool.getUnitFlowControl();
-        }
         //
         //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();
@@ -172,12 +158,13 @@ public class AddressBucket {
         //
         //2.机房单元化过滤
         List<InterAddress> unitList = availableList;
-        if (this.unitFlowControl != null) {
-            unitList = this.unitFlowControl.siftUnitAddress(unitName, availableList);
+        if (this.flowControlRef != null && this.flowControlRef.unitFlowControl != null) {
+            UnitFlowControl unitFlowControl = this.flowControlRef.unitFlowControl;
+            unitList = unitFlowControl.siftUnitAddress(unitName, availableList);
             if (unitList == null || unitList.isEmpty()) {
                 unitList = availableList;
             }
-            if (this.unitFlowControl.isLocalUnit(availableList.size(), unitList.size()) == false) {
+            if (unitFlowControl.isLocalUnit(availableList.size(), unitList.size()) == false) {
                 unitList = availableList;
             }
         }
@@ -185,5 +172,14 @@ public class AddressBucket {
         //
         this.availableAddresses = availableList;
         this.localUnitAddresses = unitList;
+    }
+    //
+    /**获取流控规则*/
+    public FlowControlRef getFlowControlRef() {
+        return this.flowControlRef;
+    }
+    /**设置流控规则*/
+    public void setFlowControlRef(FlowControlRef flowControlRef) {
+        this.flowControlRef = flowControlRef;
     }
 }

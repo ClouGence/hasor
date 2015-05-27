@@ -49,7 +49,7 @@ public class AddressPool {
     //
     private final AddressCacheResult                   rulerCache;
     private RuleParser                                 ruleParser     = null;
-    private volatile FlowControlRef                    flowControlRef = null;                               //流控规则引用
+    private volatile FlowControlRef                    flowControlRef = null;                               //默认流控规则引用
     private final Object                               poolLock;
     //
     //
@@ -69,18 +69,6 @@ public class AddressPool {
     /**获取本机所属单元*/
     public String getUnitName() {
         return this.unitName;
-    }
-    /**获取单元化流控规则*/
-    public UnitFlowControl getUnitFlowControl() {
-        return this.flowControlRef.unitFlowControl;
-    }
-    /**获取地址选取规则*/
-    public RandomFlowControl getRandomFlowControl() {
-        return this.flowControlRef.randomFlowControl;
-    }
-    /**获取QoS速率规则*/
-    public SpeedFlowControl getSpeedFlowControl() {
-        return this.flowControlRef.speedFlowControl;
     }
     /**
      * 所有服务地址快照功能，该接口获得的数据不可以进行写操作。通过这个接口可以获得到，此刻地址池中所有服务的
@@ -123,7 +111,7 @@ public class AddressPool {
         if (bucket == null) {
             /*在并发情况下,invalidAddress可能正打算读取AddressBucket,因此要锁住poolLock*/
             synchronized (this.poolLock) {
-                AddressBucket newBucket = new AddressBucket(serviceID, this);
+                AddressBucket newBucket = new AddressBucket(serviceID, this.unitName);
                 bucket = this.addressPool.putIfAbsent(serviceID, newBucket);
                 if (bucket == null) {
                     bucket = newBucket;
@@ -165,10 +153,23 @@ public class AddressPool {
     }
     //
     /**用新的路由规则刷新地址池*/
-    public void refreshFlowControl(String flowControl) throws IOException {
+    public void refreshDefaultFlowControl(String flowControl) throws IOException {
+        this.flowControlRef = paselowControl(flowControl);
+    }
+    /**用新的路由规则刷新地址池*/
+    public void refreshFlowControl(String serviceID, String flowControl) throws IOException {
+        FlowControlRef flowControlRef = paselowControl(flowControl);
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket != null) {
+            bucket.setFlowControlRef(flowControlRef);
+        }
+        //4.刷新缓存
+        this.refreshCache();
+    }
+    private FlowControlRef paselowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
             logger.error("flowControl body format error.");
-            return;
+            return null;
         }
         //
         FlowControlRef flowControlRef = FlowControlRef.defaultRef(rsfSettings);
@@ -209,9 +210,7 @@ public class AddressPool {
             }
         }
         //3.引用切换
-        this.flowControlRef = flowControlRef;
-        //4.刷新缓存
-        this.refreshCache();
+        return flowControlRef;
     }
     //
     /**刷新缓存*/
@@ -239,9 +238,13 @@ public class AddressPool {
         List<InterAddress> addresses = this.rulerCache.getAddressList(info, methodSign, args);
         InterAddress doCallAddress = null;
         //
-        doCallAddress = this.flowControlRef.randomFlowControl.getServiceAddress(addresses);
+        FlowControlRef flowControlRef = bucket.getFlowControlRef();
+        if (flowControlRef == null) {
+            flowControlRef = this.flowControlRef;
+        }
+        doCallAddress = flowControlRef.randomFlowControl.getServiceAddress(addresses);
         while (true) {
-            boolean check = this.flowControlRef.speedFlowControl.callCheck(info, methodSign, doCallAddress);//QoS
+            boolean check = flowControlRef.speedFlowControl.callCheck(info, methodSign, doCallAddress);//QoS
             if (check) {
                 break;
             }
@@ -253,19 +256,5 @@ public class AddressPool {
     @Override
     public String toString() {
         return "AddressPool[" + this.unitName + "]";
-    }
-}
-class FlowControlRef {
-    public UnitFlowControl   unitFlowControl   = null; //单元规则
-    public RandomFlowControl randomFlowControl = null; //地址选取规则
-    public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
-    //
-    private FlowControlRef() {}
-    //
-    public static final FlowControlRef defaultRef(RsfSettings rsfSettings) {
-        FlowControlRef flowControlRef = new FlowControlRef();
-        flowControlRef.randomFlowControl = new RandomFlowControl();
-        flowControlRef.speedFlowControl = SpeedFlowControl.defaultControl(rsfSettings);
-        return flowControlRef;
     }
 }
