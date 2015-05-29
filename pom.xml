@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.hasor</groupId>
@@ -9,11 +9,11 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>project-hasor</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.11</version>
 	<packaging>pom</packaging>
 
 	<!-- Project Info -->
-	<name>Hasor-Parent</name>
+	<name>Hasor</name>
 	<description>the parent pom for Hasor project.</description>
 
 	<!-- SCM -->
@@ -46,6 +46,5 @@
 		<module>hasor-test</module>
 		<module>hasor-mvc</module>
 		<module>hasor-quick</module>
-		<module>demo-hasor</module>
 	</modules>
 </project>
