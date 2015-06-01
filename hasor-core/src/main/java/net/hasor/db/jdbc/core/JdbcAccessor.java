@@ -16,12 +16,15 @@
 package net.hasor.db.jdbc.core;
 import java.sql.Connection;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2013-10-16
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcAccessor {
+    protected Logger   logger = LoggerFactory.getLogger(getClass());
     private DataSource dataSource;
     private Connection connection;
     /**Set the JDBC DataSource to obtain connections from.*/

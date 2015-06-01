@@ -17,7 +17,7 @@ package net.hasor.db.transaction.interceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.TransactionStatus;
 /**
- * 
+ * 充当TransactionTemplate作用
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */

@@ -2,6 +2,7 @@
 * 改进:
     01.fix 日志输出了格式化字符。
     02.fix 多配置文件时候，主配置文件失效问题。
+    03.JdbcTemplate 类中的公共方法分离出一个新的基类JdbcConnection
 
 ===== Hasor-Core v0.0.13
 * 改进:

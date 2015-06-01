@@ -36,6 +36,9 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private Provider<Scope>    scopeProvider    = null;
     //
     public String getBindID() {
+        if (this.bindID == null) {
+            this.bindID = this.bindType.getName() + "#" + this.bindName;
+        }
         return this.bindID;
     }
     public void setBindID(String newID) {

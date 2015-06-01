@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>project-hasor</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.14</version>
 	<packaging>pom</packaging>
 
 	<!-- Project Info -->
