@@ -65,6 +65,12 @@
 		</dependency>
 		<!-- Hasor end -->
 
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
 		<!-- JDBC begin -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>

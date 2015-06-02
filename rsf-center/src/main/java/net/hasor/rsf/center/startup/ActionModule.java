@@ -23,11 +23,11 @@ import net.hasor.rsf.center.web.apis.OnLine;
 import net.hasor.rsf.center.web.apis.Provider;
 import net.hasor.rsf.center.web.apis.UnService;
 /**
- * 
+ * WebMVC
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CenterStartup extends ControllerModule {
+public class ActionModule extends ControllerModule {
     @Override
     protected void loadController(LoadHellper helper) {
         helper.loadType(OffLine.class);

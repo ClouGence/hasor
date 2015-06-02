@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
+	<hasor>
+		<modules>
+			<module>net.hasor.rsf.center.startup.ActionModule</module>
+			<module>net.hasor.rsf.center.startup.DataBaseModule</module>
+		</modules>
+	</hasor>
+	<rsfCenter>
+		<!-- 持久化数据库 -->
+		<jdbcConfig>
+			<driver></driver>
+			<url></url>
+			<username></username>
+			<password></password>
+		</jdbcConfig>
+	</rsfCenter>
+</config>
