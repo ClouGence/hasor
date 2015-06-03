@@ -1,8 +1,11 @@
 ﻿===== Hasor-Core v0.0.14
 * 改进:
-    01.fix 日志输出了格式化字符。
-    02.fix 多配置文件时候，主配置文件失效问题。
-    03.JdbcTemplate 类中的公共方法分离出一个新的基类JdbcConnection
+    01.JdbcTemplate 类中的公共方法分离出一个新的基类JdbcConnection。
+    02.Result - 添加Message消息传输机制。
+* 修复:
+    01.Fix 日志输出了格式化字符。
+    02.Fix 多配置文件时候，主配置文件失效问题。
+    03.Fix 相同模块在不同的“static-config.xml”配置文件中出现时，解决重复加载问题。
 
 ===== Hasor-Core v0.0.13
 * 改进:

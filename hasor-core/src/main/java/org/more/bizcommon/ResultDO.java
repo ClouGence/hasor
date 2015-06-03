@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import java.util.ArrayList;
+import java.util.List;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 /**
@@ -25,8 +27,8 @@ public class ResultDO<T> implements Result<T> {
     private static final long serialVersionUID = -4678893554960623786L;
     private T                 result           = null;
     private Throwable         throwable        = null;
-    private String            message          = null;
     private boolean           success          = true;
+    private List<Message>     messageList      = new ArrayList<Message>();
     //
     public ResultDO() {}
     public ResultDO(T result) {
@@ -58,10 +60,53 @@ public class ResultDO<T> implements Result<T> {
     public Throwable getThrowable() {
         return this.throwable;
     }
+    //
+    /**获取第一条消息，如果没有返回null。*/
     @Override
-    public String getMessage() {
-        return message;
+    public String firstMessage() {
+        if (this.messageList.isEmpty() == false) {
+            return this.messageList.get(0).getMessage();
+        }
+        return null;
     }
+    /**获取消息列表。*/
+    public List<Message> getMessageList() {
+        return this.messageList;
+    }
+    /**添加一条消息。*/
+    public ResultDO<T> addMessage(String message, Object... params) {
+        this.messageList.add(new Message(message, params));
+        return this;
+    }
+    /**添加一条消息。*/
+    public ResultDO<T> addMessage(Message msgList) {
+        if (msgList != null) {
+            this.messageList.add(msgList);
+        }
+        return this;
+    }
+    /**添加多条消息。*/
+    public ResultDO<T> addMessage(List<Message> msgList) {
+        if (msgList != null && !msgList.isEmpty()) {
+            for (Message msg : msgList) {
+                this.messageList.add(msg);
+            }
+        }
+        return this;
+    }
+    /**添加多条消息。*/
+    public ResultDO<T> addMessage(ResultDO<T> result) {
+        if (result != null) {
+            this.addMessage(result.getMessageList());
+        }
+        return this;
+    }
+    /**判断消息池是否为空。*/
+    public boolean isEmptyMessage() {
+        return this.messageList.isEmpty();
+    }
+    //
+    //
     //
     public ResultDO<T> setResult(T result) {
         this.result = result;
@@ -73,10 +118,6 @@ public class ResultDO<T> implements Result<T> {
     }
     public ResultDO<T> setSuccess(boolean success) {
         this.success = success;
-        return this;
-    }
-    public ResultDO<T> setMessage(String message) {
-        this.message = message;
         return this;
     }
 }

@@ -82,7 +82,7 @@ public class StandardAppContext extends AbstractAppContext {
     }
     //
     protected Module[] findModules() throws Throwable {
-        ArrayList<Module> moduleList = new ArrayList<Module>();
+        ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
         if (loadModule) {
@@ -95,12 +95,19 @@ public class StandardAppContext extends AbstractAppContext {
                         if (StringUtils.isBlank(moduleTypeString)) {
                             continue;
                         }
-                        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                        Class<?> moduleType = ClassUtils.getClass(loader, moduleTypeString);
-                        moduleList.add((Module) moduleType.newInstance());
+                        if (!moduleTyleList.contains(moduleTypeString)){
+                            moduleTyleList.add(moduleTypeString);
+                        }
                     }
                 }
             }
+        }
+        //
+        ArrayList<Module> moduleList = new ArrayList<Module>();
+        for (String modStr : moduleTyleList){
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Class<?> moduleType = ClassUtils.getClass(loader, modStr);
+            moduleList.add((Module) moduleType.newInstance());
         }
         return moduleList.toArray(new Module[moduleList.size()]);
     }

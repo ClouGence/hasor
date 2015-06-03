@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.orm;
-import java.util.ArrayList;
 import java.util.List;
 import org.more.bizcommon.Result;
+import org.more.bizcommon.ResultDO;
 /**
  * 带有翻页信息的结果集
  * @version : 2014年10月25日
@@ -24,10 +24,7 @@ import org.more.bizcommon.Result;
  */
 public class PageResult<T> extends Paginator implements Result<List<T>> {
     private static final long serialVersionUID = -4678893554960623786L;
-    private List<T>           result           = new ArrayList<T>(0);
-    private Throwable         throwable        = null;
-    private String            message          = "";
-    private boolean           success          = true;
+    private ResultDO<List<T>> result           = new ResultDO<List<T>>();
     //
     public PageResult(Paginator pageInfo) {
         this(pageInfo, null);
@@ -37,7 +34,7 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
     }
     public PageResult(Paginator pageInfo, List<T> result) {
         if (result != null) {
-            this.result = result;
+            this.result.setResult(result);
         }
         if (pageInfo != null) {
             this.setPageSize(pageInfo.getPageSize());
@@ -49,35 +46,40 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
     /**获取分页结果集。*/
     @Override
     public List<T> getResult() {
-        return this.result;
+        return this.result.getResult();
     }
     @Override
     public boolean isSuccess() {
-        return this.success;
+        return this.result.isSuccess();
     }
     @Override
     public Throwable getThrowable() {
-        return this.throwable;
-    }
-    @Override
-    public String getMessage() {
-        return this.message;
+        return this.result.getThrowable();
     }
     //
     public PageResult<T> setResult(List<T> result) {
-        this.result = result;
+        this.result.setResult(result);
         return this;
     }
     public PageResult<T> setThrowable(Throwable throwable) {
-        this.throwable = throwable;
+        this.result.setThrowable(throwable);
         return this;
     }
     public PageResult<T> setSuccess(boolean success) {
-        this.success = success;
+        this.result.setSuccess(success);
         return this;
     }
-    public PageResult<T> setMessage(String message) {
-        this.message = message;
+    /**(如果有)返回消息。*/
+    public String firstMessage() {
+        return this.result.firstMessage();
+    }
+    /**判断消息池是否为空。*/
+    public boolean isEmptyMessage() {
+        return this.result.isEmptyMessage();
+    }
+    /**添加一条消息。*/
+    public PageResult<T> addMessage(String message, Object... params) {
+        this.result.addMessage(message, params);
         return this;
     }
 }

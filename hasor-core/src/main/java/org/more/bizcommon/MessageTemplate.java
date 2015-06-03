@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
-import java.io.Serializable;
 /**
- * 用于封装结果集
- * @version : 2015年1月8日
+ * 业务文本消息。
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Result<T> extends Serializable {
-    /**返回操作是否成功。*/
-    public boolean isSuccess();
-    /**(如果有)返回如果操作失败反馈的异常信息。*/
-    public Throwable getThrowable();
-    /**获取返回的结果集。*/
-    public T getResult();
-    //
-    /**(如果有)返回消息。*/
-    public String firstMessage();
-    /**添加一条消息。*/
-    public <E extends Result<T>> E addMessage(String message, Object... params);
-    /**判断消息池是否为空。*/
-    public boolean isEmptyMessage();
+public interface MessageTemplate {
+    /**获取消息模版信息。*/
+    public String getMessageTemplate();
 }
