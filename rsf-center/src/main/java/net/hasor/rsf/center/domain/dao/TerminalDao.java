@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.RegisterInfoDO;
+import net.hasor.rsf.center.domain.entity.TerminalDO;
 /**
- * 
+ * 终端
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RegisterInfoDao extends CommonDao<RegisterInfoDO> {}
+public class TerminalDao extends CommonDao<TerminalDO> {}

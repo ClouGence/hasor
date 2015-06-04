@@ -19,21 +19,14 @@ package net.hasor.rsf.center.domain.entity;
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TerminalInfoDO {
-    private String appID          = null; //所属应用ID
-    private String terminalID     = null; //终端ID
-    private String terminalSecret = null; //终端授权密钥
-    private String remoteIP       = null; //终端IP
-    private String remotePort     = null; //终端端口
-    private String remoteUnit     = null; //终端所属单元
-    private String remoteVersion  = null; //终端版本
+public class TerminalDO {
+    private String terminalID;
+    private String terminalSecret;
+    private String remoteIP;
+    private int    remotePort;
+    private String remoteUnit;
+    private String remoteVersion;
     //
-    public String getAppID() {
-        return appID;
-    }
-    public void setAppID(String appID) {
-        this.appID = appID;
-    }
     public String getTerminalID() {
         return terminalID;
     }
@@ -52,10 +45,10 @@ public class TerminalInfoDO {
     public void setRemoteIP(String remoteIP) {
         this.remoteIP = remoteIP;
     }
-    public String getRemotePort() {
+    public int getRemotePort() {
         return remotePort;
     }
-    public void setRemotePort(String remotePort) {
+    public void setRemotePort(int remotePort) {
         this.remotePort = remotePort;
     }
     public String getRemoteUnit() {

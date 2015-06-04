@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.AppInfoDO;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AppInfoDao extends CommonDao<AppInfoDO> {
+public class AppDao extends CommonDao<AppDO> {
 }

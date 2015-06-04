@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="sp_rsf_class">
+
+	<resultMap id="serviceInfoDOMap" type="net.hasor.rsf.center.domain.entity.ServiceInfoDO">
+		<result property="appID"       column="si_appID" />
+		<result property="bindID"      column="si_bindID" />
+		<result property="bindName"    column="si_bindName" />
+		<result property="bindGroup"   column="si_bindGroup" />
+		<result property="bindVersion" column="si_bindVersion" />
+		<result property="bindType"    column="si_bindType" />
+		<result property="onwer"       column="si_onwer" />
+		<result property="hashCode"    column="si_hashCode" />
+	</resultMap>
+
+	<sql id="serviceInfoDO_allColumns">
+		si_appID,
+		si_bindID,
+		si_bindName,
+		si_bindGroup,
+		si_bindVersion,
+		si_bindType,
+		si_onwer,
+		si_hashCode
+	</sql>
+
+	<select id="serviceInfoDO_getALL" resultMap="serviceInfoDOMap">
+		select
+			<include refid="serviceInfoDO_allColumns" />
+		from RSF_ServiceInfo
+	</select>
+
+</mapper>

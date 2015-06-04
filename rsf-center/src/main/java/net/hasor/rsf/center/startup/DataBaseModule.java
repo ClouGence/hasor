@@ -47,7 +47,7 @@ public class DataBaseModule extends WebModule {
         {
             //HSQL
             String driverString = "org.hsqldb.jdbcDriver";
-            String urlString = "jdbc:hsqldb:mem:aname";
+            String urlString = "jdbc:hsqldb:mem:rsf_memdb";
             String userString = "sa";
             String pwdString = "";
             DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
@@ -86,7 +86,7 @@ public class DataBaseModule extends WebModule {
         dataSource.setPassword(pwdString);
         dataSource.setMaxPoolSize(poolMaxSize);
         dataSource.setInitialPoolSize(1);
-        //dataSource.setAutomaticTestTable("DB_TEST_ATest001");
+        dataSource.setAutomaticTestTable("DB_TEST_ATest001");
         dataSource.setIdleConnectionTestPeriod(18000);
         dataSource.setCheckoutTimeout(3000);
         dataSource.setTestConnectionOnCheckin(true);

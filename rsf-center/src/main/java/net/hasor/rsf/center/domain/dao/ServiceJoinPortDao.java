@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.TerminalInfoDO;
+import net.hasor.rsf.center.domain.entity.ServiceJoinPortDO;
 /**
- * 终端
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TerminalInfoDao extends CommonDao<TerminalInfoDO> {}
+public class ServiceJoinPortDao extends CommonDao<ServiceJoinPortDO> {}

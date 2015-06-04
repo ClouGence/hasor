@@ -19,18 +19,18 @@ package net.hasor.rsf.center.domain.entity;
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AppInfoDO {
-    private String appID        = null; //应用ID
-    private String appName      = null; //应用名称
-    private String appDesc      = null; //应用描述
-    private String accessKey    = null; //授权KEY
-    private String accessSecret = null; //授权密钥
-    private String developers   = null; //责任人
+public class AppDO {
+    private long   appID;       //应用ID
+    private String appName;     //应用名称
+    private String accessKey;   //应用描述
+    private String accessSecret; //授权KEY
+    private String onwer;       //授权密钥
+    private String description; //责任人
     //
-    public String getAppID() {
+    public long getAppID() {
         return appID;
     }
-    public void setAppID(String appID) {
+    public void setAppID(long appID) {
         this.appID = appID;
     }
     public String getAppName() {
@@ -38,12 +38,6 @@ public class AppInfoDO {
     }
     public void setAppName(String appName) {
         this.appName = appName;
-    }
-    public String getAppDesc() {
-        return appDesc;
-    }
-    public void setAppDesc(String appDesc) {
-        this.appDesc = appDesc;
     }
     public String getAccessKey() {
         return accessKey;
@@ -57,10 +51,16 @@ public class AppInfoDO {
     public void setAccessSecret(String accessSecret) {
         this.accessSecret = accessSecret;
     }
-    public String getDevelopers() {
-        return developers;
+    public String getOnwer() {
+        return onwer;
     }
-    public void setDevelopers(String developers) {
-        this.developers = developers;
+    public void setOnwer(String onwer) {
+        this.onwer = onwer;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

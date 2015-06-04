@@ -19,13 +19,20 @@ package net.hasor.rsf.center.domain.entity;
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RegisterInfoDO {
-    private String serviceID     = null; //服务ID
-    private String terminalID    = null; //终端ID
-    private String timeout       = null; //超时时间
-    private String serializeType = null; //序列化策略
-    private String persona       = null; //身份
+public class ServiceJoinPortDO {
+    private long   appID;        //服务ID
+    private String serviceID;    //服务ID
+    private String terminalID;   //终端ID
+    private int    timeout;      //超时时间
+    private String serializeType; //序列化策略
+    private char   persona;      //身份
     //
+    public long getAppID() {
+        return appID;
+    }
+    public void setAppID(long appID) {
+        this.appID = appID;
+    }
     public String getServiceID() {
         return serviceID;
     }
@@ -38,10 +45,10 @@ public class RegisterInfoDO {
     public void setTerminalID(String terminalID) {
         this.terminalID = terminalID;
     }
-    public String getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
-    public void setTimeout(String timeout) {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
     public String getSerializeType() {
@@ -50,10 +57,10 @@ public class RegisterInfoDO {
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
-    public String getPersona() {
+    public char getPersona() {
         return persona;
     }
-    public void setPersona(String persona) {
+    public void setPersona(char persona) {
         this.persona = persona;
     }
 }

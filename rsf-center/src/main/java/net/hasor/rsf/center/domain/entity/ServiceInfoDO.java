@@ -20,18 +20,19 @@ package net.hasor.rsf.center.domain.entity;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceInfoDO {
-    private String appID       = null; //所属应用ID
-    private String bindID      = null; //服务ID
-    private String bindName    = null;
-    private String bindGroup   = null;
-    private String bindVersion = null;
-    private String bindType    = null;
-    private String hashCode    = null;
+    private long   appID;
+    private String bindID;
+    private String bindName;
+    private String bindGroup;
+    private String bindVersion;
+    private String bindType;
+    private String onwer;
+    private String hashCode;
     //
-    public String getAppID() {
+    public long getAppID() {
         return appID;
     }
-    public void setAppID(String appID) {
+    public void setAppID(long appID) {
         this.appID = appID;
     }
     public String getBindID() {
@@ -63,6 +64,12 @@ public class ServiceInfoDO {
     }
     public void setBindType(String bindType) {
         this.bindType = bindType;
+    }
+    public String getOnwer() {
+        return onwer;
+    }
+    public void setOnwer(String onwer) {
+        this.onwer = onwer;
     }
     public String getHashCode() {
         return hashCode;

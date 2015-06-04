@@ -4,15 +4,23 @@
 		<modules>
 			<module>net.hasor.rsf.center.startup.ActionModule</module>
 			<module>net.hasor.rsf.center.startup.DataBaseModule</module>
+			<module>net.hasor.rsf.center.startup.InitializeHSQLModule</module>
 		</modules>
 	</hasor>
 	<rsfCenter>
 		<!-- 持久化数据库 -->
 		<jdbcConfig>
-			<driver></driver>
-			<url></url>
-			<username></username>
-			<password></password>
+			<driver>com.mysql.jdbc.Driver</driver>
+			<url>jdbc:mysql://rdsjj73ymbjfmmf.mysql.rds.aliyuncs.com/rdsjj73ymbjfmmf?useUnicode=true&amp;characterEncoding=utf8</url>
+			<username>configure_user</username>
+			<password>configure_user_r4lwh9g5081zz0pg</password>
 		</jdbcConfig>
+		<!-- 内存数据库Sechma -->
+		<memInitialize>
+			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
+		</memInitialize>
 	</rsfCenter>
 </config>

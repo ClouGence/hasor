@@ -2,9 +2,9 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<mappers>
-		<mapper resource="META-INF/sqlmap/app_info_sqlmap.xml" />
-		<mapper resource="META-INF/sqlmap/register_info_sqlmap.xml" />
-		<mapper resource="META-INF/sqlmap/service_info_sqlmap.xml" />
-		<mapper resource="META-INF/sqlmap/terminal_info_sqlmap.xml" />
+		<mapper resource="META-INF/sqlmap/rsf_app_sqlmap.xml" />
+		<mapper resource="META-INF/sqlmap/rsf_service_info_sqlmap.xml" />
+		<mapper resource="META-INF/sqlmap/rsf_service_joinport_sqlmap.xml" />
+		<mapper resource="META-INF/sqlmap/rsf_terminal_sqlmap.xml" />
 	</mappers>
 </configuration>

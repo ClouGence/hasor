@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sp_rsf_class">
+
+	<resultMap id="appDOMap" type="net.hasor.rsf.center.domain.entity.AppDO">
+		<result property="appID"        column="app_id" />
+		<result property="appName"      column="app_name" />
+		<result property="accessKey"    column="app_accessKey" />
+		<result property="accessSecret" column="app_accessSecret" />
+		<result property="onwer"        column="app_onwer" />
+		<result property="description"  column="app_desc" />
+	</resultMap>
+
+	<sql id="appDO_allColumns">
+		app_id,
+		app_name,
+		app_accessKey,
+		app_accessSecret,
+		app_onwer,
+		app_desc
+	</sql>
+
+	<select id="appDO_getALL" resultMap="appDOMap">
+		select
+			<include refid="appDO_allColumns" />
+		from RSF_APP
+	</select>
+
+</mapper>
