@@ -107,12 +107,14 @@ public class AnnotationSerializer extends AbstractSerializer {
     }
     private void init(Class<?> cl) {
         synchronized (this) {
-            if (_annType != null)
+            if (_annType != null) {
                 return;
+            }
             _annType = cl;
             ArrayList<Method> methods = new ArrayList<Method>();
-            if (_annType == null)
-                throw new IllegalStateException(cl.getName() + " is invalid because it does not have a valid annotationType()");
+            if (_annType == null) {
+                throw new IllegalStateException("cl params is null.");
+            }
             //
             for (Method method : _annType.getDeclaredMethods()) {
                 if (method.getName().equals("hashCode") || method.getName().equals("toString") || method.getName().equals("annotationType")) {

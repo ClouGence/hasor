@@ -19,8 +19,6 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
  *  -- 根据 {@link ResponseMsg}中包含的 requestID 找到对应的{@link RsfFuture}。
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
     public RsfCustomerHandler(AbstractRsfContext rsfContext) {
         super(rsfContext);
     }

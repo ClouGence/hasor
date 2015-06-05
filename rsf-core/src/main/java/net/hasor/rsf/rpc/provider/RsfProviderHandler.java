@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
     public RsfProviderHandler(AbstractRsfContext rsfContext) {
         super(rsfContext);
     }

@@ -107,10 +107,14 @@ public class RsfBindCenter implements BindCenter {
         if (this.rsfServiceMap.containsKey(serviceID) == true) {
             throw new RepeateException("Repeate:" + serviceID); /*重复检查*/
         }
-        this.rsfServiceMap.putIfAbsent(serviceID, bindInfo);
+        ServiceDefine<?> serviceDefine = this.rsfServiceMap.putIfAbsent(serviceID, bindInfo);
+        if (serviceDefine != null) {
+            throw new RepeateException("Repeate:" + serviceID); /*重复检查*/
+        }
+        //
         String eventName = null;
         if (provider != null) {
-            this.providerMap.putIfAbsent(serviceID, provider);
+            this.providerMap.put(serviceID, provider);
             eventName = Events.ServiceProvider;
         } else {
             eventName = Events.ServiceCustomer;

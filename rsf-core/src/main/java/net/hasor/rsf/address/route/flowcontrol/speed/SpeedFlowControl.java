@@ -85,6 +85,9 @@ public class SpeedFlowControl extends AbstractRule {
             break;
         }
         //
+        if (key == null) {
+            return true;
+        }
         QoSBucket qos = this.qosBucketMap.get(key);
         if (qos == null) {
             qos = this.qosBucketMap.putIfAbsent(key, this.createQoSBucket());

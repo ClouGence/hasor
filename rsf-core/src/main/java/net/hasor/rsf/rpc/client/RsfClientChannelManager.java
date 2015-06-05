@@ -23,6 +23,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -77,19 +79,17 @@ public class RsfClientChannelManager {
             }
             //
             String addrStr = refereeAddress.toString();
-            synchronized (this.channelMapping) {
-                Channel client = this.channelMapping.get(addrStr);
-                if (client != null && client.isActive() == false) {
-                    this.channelMapping.remove(addrStr);
-                }
-                if (client == null) {
-                    if ((client = connSocket(refereeAddress)) != null) {
-                        this.channelMapping.putIfAbsent(addrStr, client);
-                        return client;
-                    }
-                } else {
+            Channel client = this.channelMapping.get(addrStr);
+            if (client != null && client.isActive() == false) {
+                this.channelMapping.remove(addrStr);
+            }
+            if (client == null) {
+                if ((client = connSocket(refereeAddress)) != null) {
+                    this.channelMapping.putIfAbsent(addrStr, client);
                     return client;
                 }
+            } else {
+                return client;
             }
             addressPool.invalidAddress(refereeAddress);
             //
@@ -105,11 +105,18 @@ public class RsfClientChannelManager {
             return;
         }
         //
-        synchronized (this.channelMapping) {
-            Channel localClient = this.channelMapping.remove(channel);
-            if (localClient != null) {
-                localClient.close();
+        String findKey = null;
+        Set<Entry<String, Channel>> entrySet = this.channelMapping.entrySet();
+        for (Entry<String, Channel> entry : entrySet) {
+            if (entry.getValue() == channel) {
+                findKey = entry.getKey();
             }
+        }
+        if (findKey != null) {
+            this.channelMapping.remove(findKey);
+        }
+        if (channel != null) {
+            channel.close();
         }
     }
     //

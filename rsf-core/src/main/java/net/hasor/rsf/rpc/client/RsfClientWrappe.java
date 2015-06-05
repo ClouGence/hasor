@@ -119,7 +119,7 @@ class RsfClientWrappe implements RsfClient {
                         MethodClassConfig mcc = new MethodClassConfig();
                         mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
                         wrapperType = mcc.toClass();
-                        this.wrapperMap.putIfAbsent(bindID, wrapperType);
+                        this.wrapperMap.put(bindID, wrapperType);
                     }
                 }
             return (T) wrapperType.newInstance();
