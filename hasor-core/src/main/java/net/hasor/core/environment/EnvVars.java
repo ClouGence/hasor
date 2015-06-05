@@ -137,7 +137,7 @@ public class EnvVars {
             String var = mapData.get(key);
             var = var != null ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
             outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
-            outLog.append(String.format(" {} : {}", key, var));
+            outLog.append(String.format("%s = %s", key, var));
             outLog.append('\n');
         }
         if (outLog.length() > 1) {

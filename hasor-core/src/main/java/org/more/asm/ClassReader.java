@@ -30,6 +30,7 @@
 package org.more.asm;
 import java.io.IOException;
 import java.io.InputStream;
+import org.more.util.ArrayUtils;
 /**
  * A Java class parser to make a {@link ClassVisitor} visit an existing class.
  * This class parses a byte array conforming to the Java class file format and
@@ -744,9 +745,9 @@ public class ClassReader {
          */
         if (WRITER && mv instanceof MethodWriter) {
             MethodWriter mw = (MethodWriter) mv;
-            if (mw.cw.cr == this && signature == mw.signature) {
+            if (mw.cw.cr.equals(this) && signature.equals(mw.signature)) {
                 boolean sameExceptions = false;
-                if (exceptions == null) {
+                if (ArrayUtils.isEmpty(exceptions)) {
                     sameExceptions = mw.exceptionCount == 0;
                 } else if (exceptions.length == mw.exceptionCount) {
                     sameExceptions = true;

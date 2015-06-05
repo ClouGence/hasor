@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.orm.ar;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Types;
 import org.more.builder.ReflectionToStringBuilder;
@@ -24,23 +23,22 @@ import org.more.builder.ToStringStyle;
  * @version : 2014年10月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class Column implements Serializable {
-    private static final long serialVersionUID = 7779635033083814425L;
-    private String            name             = null;                //字段名
-    private String            title            = null;                //字段title
-    private int               sqlType          = Types.NULL;          //SQL类型
-    private Field             beanField        = null;                //字段类型
+public final class Column {
+    private String  name         = null;      //字段名
+    private String  title        = null;      //字段title
+    private int     sqlType      = Types.NULL; //SQL类型
+    private Field   beanField    = null;      //字段类型
     //
-    private boolean           primaryKey       = false;               //主键约束
-    private Integer           maxSize          = null;                //字段值大小限制
-    private boolean           identify         = false;               //具有自增标识属性的列。
-    private boolean           empty            = true;                //非空约束
-    private Object            defaultValue     = null;                //默认约束
-    private boolean           insert           = true;                //是否允许用于数据新增
-    private boolean           update           = true;                //是否允许用于数据更新
-    private boolean           deleteWhere      = true;                //是否允许作为删除条件
-    private boolean           updateWhere      = true;                //是否允许作为更新条件
-    private boolean           ignoreUnset      = true;                //没有给它设置任何值的情况下忽略它作为查询条件
+    private boolean primaryKey   = false;     //主键约束
+    private Integer maxSize      = null;      //字段值大小限制
+    private boolean identify     = false;     //具有自增标识属性的列。
+    private boolean empty        = true;      //非空约束
+    private Object  defaultValue = null;      //默认约束
+    private boolean insert       = true;      //是否允许用于数据新增
+    private boolean update       = true;      //是否允许用于数据更新
+    private boolean deleteWhere  = true;      //是否允许作为删除条件
+    private boolean updateWhere  = true;      //是否允许作为更新条件
+    private boolean ignoreUnset  = true;      //没有给它设置任何值的情况下忽略它作为查询条件
     //
     public Column(String colName, int colSQLType) {
         this.name = colName;

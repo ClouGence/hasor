@@ -22,7 +22,7 @@ import net.hasor.core.Provider;
  */
 public class SingleProvider<T> implements Provider<T> {
     private Provider<T>  provider = null;
-    private T            instance = null;
+    private volatile T   instance = null;
     private final Object lock     = new Object();
     //
     public SingleProvider(Provider<T> provider) {

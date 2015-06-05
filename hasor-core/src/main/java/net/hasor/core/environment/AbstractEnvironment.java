@@ -112,12 +112,21 @@ public abstract class AbstractEnvironment implements Environment {
     }
     /**创建{@link Settings}接口对象*/
     protected abstract Settings createSettings() throws IOException;
+    //
+    private static volatile long lastLong = 0;
+    private static long nextLong() {
+        long lastLongTemp = System.currentTimeMillis();
+        while (true) {
+            if (lastLongTemp != lastLong) {
+                lastLong = lastLongTemp;
+                break;
+            }
+        }
+        return lastLong;
+    }
     /**在缓存目录内创建一个不重名的临时文件名。 */
     public synchronized File uniqueTempFile() throws IOException {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {}
-        long markTime = System.currentTimeMillis();
+        long markTime = nextLong();
         String atPath = this.genPath(markTime, 512);
         String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
         File tmpFile = new File(this.envVar(Environment.HASOR_TEMP_PATH), fileName);

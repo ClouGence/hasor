@@ -24,13 +24,12 @@ import java.util.Map;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class Sechma implements Serializable {
-    private static final long   serialVersionUID = 8496566657601059017L;
-    private String              name             = null;
-    private boolean             ignoreUnset      = true;
-    private Column              keyColumn        = null;
-    private Column[]            columnArray      = new Column[0];
-    private Map<String, Column> columnMap        = new HashMap<String, Column>();
+public final class Sechma {
+    private String              name        = null;
+    private boolean             ignoreUnset = true;
+    private Column              keyColumn   = null;
+    private Column[]            columnArray = new Column[0];
+    private Map<String, Column> columnMap   = new HashMap<String, Column>();
     //
     /**创建表记录对象。*/
     protected Sechma(String sechmaName) {

@@ -28,7 +28,7 @@ import org.more.util.StringUtils;
  * @version : 2013-4-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultXmlNode implements XmlNode, FieldProperty {
+public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     private String              elementName       = null;
     private String              textString        = null;
     private Map<String, String> arrMap            = new HashMap<String, String>();

@@ -46,13 +46,14 @@ public class MoreClassLoader extends ClassLoader {
     protected final Class<?> findClass(final String className) throws ClassNotFoundException {
         ClassInfo acc = this.classMap.get(className);
         if (acc != null) {
-            if (acc.classInfo == null)
+            if (acc.classInfo == null) {
                 synchronized (localLocl.get()) {
                     if (acc.classInfo == null) {
                         byte[] bs = acc.classConfig.getBytes();
                         acc.classInfo = this.defineClass(className, bs, 0, bs.length);
                     }
                 }
+            }
             return acc.classInfo;
         }
         return super.findClass(className);
@@ -79,6 +80,6 @@ public class MoreClassLoader extends ClassLoader {
     }
 }
 class ClassInfo {
-    public AbstractClassConfig classConfig;
-    public Class<?>            classInfo;
+    public volatile AbstractClassConfig classConfig;
+    public volatile Class<?>            classInfo;
 }

@@ -649,7 +649,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     @Override
     public int[] batchUpdate(final String[] sql) throws SQLException {
         if (ArrayUtils.isEmpty(sql)) {
-            throw new NullPointerException(sql + "SQL array must not be empty");
+            throw new NullPointerException("SQL array must not be empty");
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL batch update of {} statements", sql.length);
