@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.orm;
+package org.more.bizcommon;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.db.orm.Paginator.Order.OrderBy;
+import org.more.bizcommon.Paginator.Order.OrderBy;
 /**
  * 翻页
  * @version : 2014年10月25日

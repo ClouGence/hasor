@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.orm;
+package org.more.bizcommon;
 import java.util.List;
-import org.more.bizcommon.Result;
-import org.more.bizcommon.ResultDO;
 /**
  * 带有翻页信息的结果集
  * @version : 2014年10月25日

@@ -2,6 +2,8 @@
 * 改进:
     01.JdbcTemplate 类中的公共方法分离出一个新的基类JdbcConnection。
     02.Result - 添加Message消息传输机制。
+    03.放弃Hasor-AR项目，删除AR相关的软件包，目前为止Hasor-DB原生不支持ORM。后续扩展可以支持Hibernate，ibatis，mybatis。
+    04.保留Hasor-AR项目中，PageResult、Paginator两个工具类
 * 修复:
     01.Fix 日志输出了格式化字符。
     02.Fix 多配置文件时候，主配置文件失效问题。
