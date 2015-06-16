@@ -16,7 +16,6 @@
 package net.hasor.mvc;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /**
@@ -25,10 +24,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Call {
-    /**参数Keys*/
-    public Set<String> getParamKeys();
-    /**获取参数*/
-    public Object getParam(String key);
     /**目标方法*/
     public Method getMethod();
     /**目标方法参数*/

@@ -23,7 +23,6 @@ import net.hasor.core.BindInfo;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.result.support.ResultDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /***
@@ -68,8 +67,8 @@ public abstract class LoadHellper {
             //
             MappingTo mto = atMethod.getAnnotation(MappingTo.class);
             logger.info("method ‘{}’ mappingTo: ‘{}’, form Type :{}.", atMethod.getName(), mto.value(), clazz.getName());
-            MappingDefine define = module().createMappingDefine(newID, atMethod);
-            apiBinder.bindType(MappingDefine.class).uniqueName().toInstance(define);
+            MappingInfoDefine define = module().createMappingDefine(newID, atMethod);
+            apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
         }
         //
         if (hasMapping == true) {

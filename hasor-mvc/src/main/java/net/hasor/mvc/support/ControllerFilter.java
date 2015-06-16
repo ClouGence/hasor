@@ -26,9 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.result.support.DefineList;
-import net.hasor.mvc.result.support.ResultCallStrategy;
-import net.hasor.mvc.strat.DefaultCallStrategy;
+import net.hasor.mvc.support.caller.ExecuteCallStrategy;
+import net.hasor.mvc.support.caller.ResultCallStrategy;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
@@ -55,7 +54,7 @@ class ControllerFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        MappingDefine define = this.rootController.findMapping(new FindMapping(actionPath, request.getMethod()));
+        MappingInfoDefine define = this.rootController.findMapping(new MappingMatching(actionPath, request.getMethod()));
         if (define == null) {
             chain.doFilter(request, resp);
             return;
@@ -63,7 +62,7 @@ class ControllerFilter implements Filter {
         //2.执行调用
         this.doInvoke(define, request, resp);
     }
-    private void doInvoke(MappingDefine define, ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(MappingInfoDefine define, ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         try {
             HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
             httpReq = new HttpServletRequestWrapper(httpReq) {
@@ -81,10 +80,9 @@ class ControllerFilter implements Filter {
                 public HttpServletRequest getHttpRequest() {
                     return infoHttpReq;
                 }
-            }, new ResultCallStrategy(new DefaultCallStrategy(), this.defineList), null);
+            }, new ResultCallStrategy(new ExecuteCallStrategy(), this.defineList));
             //
         } catch (Throwable target) {
-            //
             if (target instanceof ServletException)
                 throw (ServletException) target;
             if (target instanceof IOException)
@@ -100,7 +98,7 @@ class ControllerFilter implements Filter {
     public RequestDispatcher getReqDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final MappingDefine define = this.rootController.findMapping(new FindMapping(newRequestUri, request.getMethod()));
+        final MappingInfoDefine define = this.rootController.findMapping(new MappingMatching(newRequestUri, request.getMethod()));
         if (define == null)
             return null;
         //

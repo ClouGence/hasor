@@ -19,11 +19,11 @@ package net.hasor.mvc.support;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class FindMapping {
+class MappingMatching {
     private String controllerPath = null;
     private String httpMethod     = null;
     //
-    public FindMapping(String controllerPath, String httpMethod) {
+    public MappingMatching(String controllerPath, String httpMethod) {
         this.controllerPath = controllerPath;
         this.httpMethod = httpMethod;
         //
@@ -31,7 +31,7 @@ class FindMapping {
             this.httpMethod = httpMethod.trim().toUpperCase();
         }
     }
-    public boolean matching(MappingDefine invoke) {
+    public boolean matching(MappingInfoDefine invoke) {
         boolean one = invoke.matchingMapping(this.controllerPath);
         if (one == true) {
             one = invoke.matchingMethod(this.httpMethod);

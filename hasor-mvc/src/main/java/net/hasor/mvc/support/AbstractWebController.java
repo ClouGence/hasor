@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.api;
+package net.hasor.mvc.support;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.http.Cookie;

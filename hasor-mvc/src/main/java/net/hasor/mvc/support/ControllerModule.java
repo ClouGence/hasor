@@ -17,13 +17,12 @@ package net.hasor.mvc.support;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.ApiBinder;
-import net.hasor.mvc.result.Forword;
-import net.hasor.mvc.result.ForwordResultProcess;
-import net.hasor.mvc.result.Include;
-import net.hasor.mvc.result.IncludeResultProcess;
-import net.hasor.mvc.result.Redirect;
-import net.hasor.mvc.result.RedirectResultProcess;
-import net.hasor.mvc.result.support.DefineList;
+import net.hasor.mvc.api.result.Forword;
+import net.hasor.mvc.api.result.Include;
+import net.hasor.mvc.api.result.Redirect;
+import net.hasor.mvc.support.result.ForwordResultProcess;
+import net.hasor.mvc.support.result.IncludeResultProcess;
+import net.hasor.mvc.support.result.RedirectResultProcess;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /***
@@ -64,13 +63,13 @@ public abstract class ControllerModule extends WebModule {
     //
     protected abstract void loadController(LoadHellper helper);
     /**
-     * 创建 {@link MappingDefine}
+     * 创建 {@link MappingInfoDefine}
      * @param newID 唯一ID
      * @param atMethod 映射的方法
      * @param strategyFactory CallStrategy 工厂。
      * @return 返回mvc定义。
      */
-    protected MappingDefine createMappingDefine(String newID, Method atMethod) {
-        return new MappingDefine(newID, atMethod);
+    protected MappingInfoDefine createMappingDefine(String newID, Method atMethod) {
+        return new MappingInfoDefine(newID, atMethod);
     }
 }

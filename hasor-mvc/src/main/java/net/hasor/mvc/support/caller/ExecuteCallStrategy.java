@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.strat;
+package net.hasor.mvc.support.caller;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -32,14 +32,13 @@ import net.hasor.mvc.Call;
 import net.hasor.mvc.CallStrategy;
 import net.hasor.mvc.MappingInfo;
 import net.hasor.mvc.ModelController;
-import net.hasor.mvc.api.AbstractWebController;
 import net.hasor.mvc.api.AttributeParam;
 import net.hasor.mvc.api.CookieParam;
 import net.hasor.mvc.api.HeaderParam;
-import net.hasor.mvc.api.Param;
 import net.hasor.mvc.api.PathParam;
 import net.hasor.mvc.api.Produces;
 import net.hasor.mvc.api.QueryParam;
+import net.hasor.mvc.support.AbstractWebController;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -50,9 +49,9 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultCallStrategy implements CallStrategy {
+public class ExecuteCallStrategy implements CallStrategy {
     protected Logger                 logger   = LoggerFactory.getLogger(getClass());
-    public static final CallStrategy Instance = new DefaultCallStrategy();
+    public static final CallStrategy Instance = new ExecuteCallStrategy();
     //
     /**初始化调用。*/
     protected void initCall(Call call) {
@@ -124,8 +123,6 @@ public class DefaultCallStrategy implements CallStrategy {
         if (atData == null) {
             /*   */if (pAnno instanceof AttributeParam) {
                 atData = this.getAttributeParam(call, paramClass, (AttributeParam) pAnno);
-            } else if (pAnno instanceof Param) {
-                atData = call.getParam(((Param) pAnno).value());
             } else if (pAnno instanceof CookieParam) {
                 atData = this.getCookieParam(call, paramClass, (CookieParam) pAnno);
             } else if (pAnno instanceof HeaderParam) {

@@ -18,9 +18,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +40,7 @@ import org.more.util.StringUtils;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class MappingDefine implements MappingInfo {
+class MappingInfoDefine implements MappingInfo {
     private String                    bindID;
     private Provider<ModelController> targetProvider;
     private Method                    targetMethod;
@@ -56,7 +53,7 @@ class MappingDefine implements MappingInfo {
     private CallStrategy              callStrategy;
     private AtomicBoolean             inited = new AtomicBoolean(false);
     //
-    protected MappingDefine(String bindID, Method targetMethod) {
+    protected MappingInfoDefine(String bindID, Method targetMethod) {
         MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
         if (pathAnno == null) {
             throw new UndefinedException("is not a valid Mapping Service.");
@@ -146,17 +143,10 @@ class MappingDefine implements MappingInfo {
      * @return 返回调用结果
      * @throws Throwable 异常抛出
      */
-    public final Object invoke(final HttpInfo httpInfo, CallStrategy callStrategy, Map<String, ?> params) throws Throwable {
+    public final Object invoke(final HttpInfo httpInfo, CallStrategy callStrategy) throws Throwable {
         Hasor.assertIsNotNull(callStrategy);
         final ModelController mc = this.targetProvider.get();
-        final Map<String, ?> atParams = (params == null) ? new HashMap<String, Object>() : params;
         final Call call = new Call() {
-            public Set<String> getParamKeys() {
-                return atParams.keySet();
-            }
-            public Object getParam(String key) {
-                return atParams.get(key);
-            }
             public Method getMethod() {
                 return targetMethod;
             }
@@ -173,7 +163,7 @@ class MappingDefine implements MappingInfo {
                 return mc;
             }
             public MappingInfo getMappingInfo() {
-                return MappingDefine.this;
+                return MappingInfoDefine.this;
             }
             public Object call(Object... objects) throws Throwable {
                 try {

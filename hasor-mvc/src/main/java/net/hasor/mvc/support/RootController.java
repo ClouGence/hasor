@@ -26,9 +26,9 @@ import net.hasor.core.AppContextAware;
  * @author 赵永春(zyc@hasor.net)
  */
 class RootController implements AppContextAware {
-    private AppContext      appContext  = null;
-    private MappingDefine[] invokeArray = new MappingDefine[0];
-    private AtomicBoolean   inited      = new AtomicBoolean(false);
+    private AppContext          appContext  = null;
+    private MappingInfoDefine[] invokeArray = new MappingInfoDefine[0];
+    private AtomicBoolean       inited      = new AtomicBoolean(false);
     //
     public void setAppContext(AppContext appContext) {
         if (!this.inited.compareAndSet(false, true)) {
@@ -36,17 +36,17 @@ class RootController implements AppContextAware {
         }
         this.appContext = appContext;
         //1.find
-        List<MappingDefine> mappingList = this.appContext.findBindingBean(MappingDefine.class);
-        Collections.sort(mappingList, new Comparator<MappingDefine>() {
-            public int compare(MappingDefine o1, MappingDefine o2) {
+        List<MappingInfoDefine> mappingList = this.appContext.findBindingBean(MappingInfoDefine.class);
+        Collections.sort(mappingList, new Comparator<MappingInfoDefine>() {
+            public int compare(MappingInfoDefine o1, MappingInfoDefine o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
         //2.init
-        for (MappingDefine define : mappingList) {
+        for (MappingInfoDefine define : mappingList) {
             this.initDefine(define);
         }
-        MappingDefine[] defineArrays = mappingList.toArray(new MappingDefine[mappingList.size()]);
+        MappingInfoDefine[] defineArrays = mappingList.toArray(new MappingInfoDefine[mappingList.size()]);
         if (defineArrays != null) {
             this.invokeArray = defineArrays;
         }
@@ -56,21 +56,21 @@ class RootController implements AppContextAware {
         return this.appContext;
     }
     /**
-     * 初始化 {@link MappingDefine}
+     * 初始化 {@link MappingInfoDefine}
      * @param define 等待初始化的MappingDefine
      */
-    protected void initDefine(MappingDefine define) {
+    protected void initDefine(MappingInfoDefine define) {
         if (define != null) {
             define.init(this.appContext);
         }
     }
     /**
-     * 查找符合路径的 {@link MappingDefine}
+     * 查找符合路径的 {@link MappingInfoDefine}
      * @param controllerPath 匹配的路径
      * @return 返回匹配的MappingDefine。
      */
-    public final MappingDefine findMapping(String controllerPath) {
-        for (MappingDefine invoke : this.invokeArray) {
+    public final MappingInfoDefine findMapping(String controllerPath) {
+        for (MappingInfoDefine invoke : this.invokeArray) {
             if (this.matchingMapping(controllerPath, invoke) == true) {
                 return invoke;
             }
@@ -78,12 +78,12 @@ class RootController implements AppContextAware {
         return null;
     }
     /**
-     * 查找符合 {@link FindMapping}要求的 {@link MappingDefine}
+     * 查找符合 {@link MappingMatching}要求的 {@link MappingInfoDefine}
      * @param findMapping 匹配器
      * @return 返回匹配的MappingDefine。
      */
-    public MappingDefine findMapping(FindMapping findMapping) {
-        for (MappingDefine invoke : this.invokeArray) {
+    public MappingInfoDefine findMapping(MappingMatching findMapping) {
+        for (MappingInfoDefine invoke : this.invokeArray) {
             if (findMapping.matching(invoke) == true) {
                 return invoke;
             }
@@ -93,10 +93,10 @@ class RootController implements AppContextAware {
     /**
      * 执行匹配
      * @param controllerPath 匹配的路径
-     * @param atInvoke 匹配的{@link MappingDefine}
+     * @param atInvoke 匹配的{@link MappingInfoDefine}
      * @return 返回是否匹配成功。
      */
-    protected boolean matchingMapping(String controllerPath, MappingDefine atInvoke) {
+    protected boolean matchingMapping(String controllerPath, MappingInfoDefine atInvoke) {
         if (atInvoke == null) {
             return false;
         }

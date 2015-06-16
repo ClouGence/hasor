@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
+package net.hasor.mvc.support.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +34,7 @@ public class RedirectResultProcess implements ResultProcess {
         }
         HttpServletResponse response = call.getHttpResponse();
         //
-        if (response.isCommitted() == false) {
+        if (response != null && response.isCommitted() == false) {
             if (logger.isDebugEnabled()) {
                 logger.debug("redirect to %s.", result);
             }

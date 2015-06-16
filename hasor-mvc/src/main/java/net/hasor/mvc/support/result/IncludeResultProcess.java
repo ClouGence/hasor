@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
+package net.hasor.mvc.support.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +23,11 @@ import net.hasor.mvc.ResultProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
-* 
-* @version : 2013-6-5
-* @author 赵永春 (zyc@hasor.net)
-*/
-public class ForwordResultProcess implements ResultProcess {
+ * 
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class IncludeResultProcess implements ResultProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object returnData(Object result, Call call) throws ServletException, IOException {
         if (result == null) {
@@ -36,11 +36,11 @@ public class ForwordResultProcess implements ResultProcess {
         HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
         //
-        if (response.isCommitted() == false) {
+        if (request != null && response != null && response.isCommitted() == false) {
             if (logger.isDebugEnabled()) {
-                logger.debug("forword to %s.", result);
+                logger.debug("include %s.", result);
             }
-            request.getRequestDispatcher(result.toString()).forward(request, response);
+            request.getRequestDispatcher(result.toString()).include(request, response);
         }
         return result;
     }
