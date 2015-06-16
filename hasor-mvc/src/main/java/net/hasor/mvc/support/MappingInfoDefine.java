@@ -17,12 +17,13 @@ package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.mvc.Call;
@@ -34,6 +35,7 @@ import net.hasor.mvc.api.MappingTo;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
+import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 /**
  * 线程安全
@@ -41,20 +43,16 @@ import org.more.util.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 class MappingInfoDefine implements MappingInfo {
-    private String                    bindID;
-    private Provider<ModelController> targetProvider;
-    private Method                    targetMethod;
-    private Class<?>[]                targetParamTypes;
-    private Annotation[][]            targetParamAnno;
-    private Annotation[]              targetMethodAnno;
-    private String                    mappingTo;
-    private String                    mappingToMatches;
-    private String[]                  httpMethod;
-    private CallStrategy              callStrategy;
-    private AtomicBoolean             inited = new AtomicBoolean(false);
+    private Class<? extends ModelController> targetType;
+    private Provider<ModelController>        targetProvider;
+    private String                           mappingTo;
+    private String                           mappingToMatches;
+    private Map<String, MethodInfo>          httpMapping;
+    private AtomicBoolean                    inited = new AtomicBoolean(false);
     //
-    protected MappingInfoDefine(String bindID, Method targetMethod) {
-        MappingTo pathAnno = targetMethod.getAnnotation(MappingTo.class);
+    protected MappingInfoDefine(Class<? extends ModelController> targetType) {
+        this.targetType = targetType;
+        MappingTo pathAnno = targetType.getAnnotation(MappingTo.class);
         if (pathAnno == null) {
             throw new UndefinedException("is not a valid Mapping Service.");
         }
@@ -66,31 +64,34 @@ class MappingInfoDefine implements MappingInfo {
             throw new IllegalStateException("Service path format error");
         }
         //
-        this.bindID = bindID;
-        this.targetMethod = targetMethod;
-        this.targetParamTypes = targetMethod.getParameterTypes();
-        this.targetParamAnno = targetMethod.getParameterAnnotations();
-        this.targetMethodAnno = targetMethod.getAnnotations();
-        this.mappingTo = servicePath;
-        this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
-        //
-        /*HttpMethod*/
-        Annotation[] annos = targetMethod.getAnnotations();
-        ArrayList<String> allHttpMethod = new ArrayList<String>();
-        if (annos != null) {
-            for (Annotation anno : annos) {
-                HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
-                if (httpMethodAnno != null) {
-                    String bindMethod = httpMethodAnno.value();
-                    if (StringUtils.isBlank(bindMethod) == false)
-                        allHttpMethod.add(bindMethod);
+        this.httpMapping = new HashMap<String, MethodInfo>();
+        List<Method> mList = BeanUtils.getMethods(targetType);
+        if (mList != null && !mList.isEmpty()) {
+            for (Method targetMethod : mList) {
+                /*HttpMethod*/
+                Annotation[] annos = targetMethod.getAnnotations();
+                if (annos != null) {
+                    for (Annotation anno : annos) {
+                        HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
+                        if (httpMethodAnno != null) {
+                            String bindMethod = httpMethodAnno.value();
+                            if (StringUtils.isBlank(bindMethod) == false) {
+                                this.httpMapping.put(bindMethod.toUpperCase(), new MethodInfo(targetMethod));
+                            }
+                        }
+                    }
+                }
+                /*default*/
+                if (targetMethod.getName().equals("execute") && !this.httpMapping.containsKey("execute")) {
+                    this.httpMapping.put(HttpMethod.ANY, new MethodInfo(targetMethod));
                 }
             }
         }
-        if (allHttpMethod.isEmpty())
-            allHttpMethod.add("ANY");
-        this.httpMethod = allHttpMethod.toArray(new String[allHttpMethod.size()]);
+        this.mappingTo = servicePath;
+        this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
     }
+    //
+    //
     /**@return 获取映射的地址*/
     public String getMappingTo() {
         return this.mappingTo;
@@ -99,23 +100,18 @@ class MappingInfoDefine implements MappingInfo {
         return this.mappingToMatches;
     }
     /**
-     * 测试路径是否匹配
-     * @param requestPath 要测试的路径。
+     * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。
      */
-    public boolean matchingMapping(String requestPath) {
+    public boolean matchingMapping(String httpMethod, String requestPath) {
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
-        return requestPath.matches(this.mappingToMatches);
-    }
-    public String[] getHttpMethod() {
-        return this.httpMethod;
-    }
-    /**判断Restful实例是否支持这个 请求方法。*/
-    public boolean matchingMethod(String httpMethod) {
-        for (String m : this.httpMethod) {
-            if (StringUtils.equalsIgnoreCase(httpMethod, m)) {
+        if (requestPath.matches(this.mappingToMatches) == false) {
+            return false;
+        }
+        for (String m : this.httpMapping.keySet()) {
+            if (StringUtils.equals(httpMethod, m)) {
                 return true;
-            } else if (StringUtils.equalsIgnoreCase(m, "ANY")) {
+            } else if (StringUtils.equals(m, HttpMethod.ANY)) {
                 return true;
             }
         }
@@ -128,13 +124,16 @@ class MappingInfoDefine implements MappingInfo {
      * 执行初始化
      * @param appContext appContext
      */
-    protected void init(AppContext appContext) {
+    protected void init(final AppContext appContext) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
         Hasor.assertIsNotNull(appContext, "appContext is null.");
-        BindInfo<ModelController> controllerInfo = appContext.getBindInfo(this.bindID);
-        this.targetProvider = appContext.getProvider(controllerInfo);
+        this.targetProvider = new Provider<ModelController>() {
+            public ModelController get() {
+                return appContext.getInstance(targetType);
+            }
+        };;
     }
     /**
      * 调用目标
@@ -145,19 +144,28 @@ class MappingInfoDefine implements MappingInfo {
      */
     public final Object invoke(final HttpInfo httpInfo, CallStrategy callStrategy) throws Throwable {
         Hasor.assertIsNotNull(callStrategy);
+        String httpMethod = httpInfo.getHttpRequest().getMethod();
+        MethodInfo methodInfo = this.httpMapping.get(httpMethod);
+        if (methodInfo == null) {
+            methodInfo = this.httpMapping.get(HttpMethod.ANY);
+        }
+        //
+        Hasor.assertIsNotNull(methodInfo, "not font mapping Method.");
+        final MethodInfo method = methodInfo;
+        //
         final ModelController mc = this.targetProvider.get();
         final Call call = new Call() {
             public Method getMethod() {
-                return targetMethod;
+                return method.targetMethod;
             }
             public Class<?>[] getParameterTypes() {
-                return targetParamTypes;
+                return method.targetParamTypes;
             }
             public Annotation[][] getMethodParamAnnos() {
-                return targetParamAnno;
+                return method.targetParamAnno;
             }
             public Annotation[] getAnnotations() {
-                return targetMethodAnno;
+                return method.targetMethodAnno;
             }
             public ModelController getTarget() {
                 return mc;
@@ -167,7 +175,7 @@ class MappingInfoDefine implements MappingInfo {
             }
             public Object call(Object... objects) throws Throwable {
                 try {
-                    return targetMethod.invoke(mc, objects);
+                    return method.targetMethod.invoke(mc, objects);
                 } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }
@@ -184,5 +192,23 @@ class MappingInfoDefine implements MappingInfo {
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+    //
+    //
+    //
+    private static class MethodInfo {
+        public Class<?>       targetType;
+        public Method         targetMethod;
+        public Class<?>[]     targetParamTypes;
+        public Annotation[][] targetParamAnno;
+        public Annotation[]   targetMethodAnno;
+        //
+        public MethodInfo(Method targetMethod) {
+            this.targetType = targetMethod.getDeclaringClass();
+            this.targetMethod = targetMethod;
+            this.targetParamTypes = targetMethod.getParameterTypes();
+            this.targetParamAnno = targetMethod.getParameterAnnotations();
+            this.targetMethodAnno = targetMethod.getAnnotations();
+        }
     }
 }

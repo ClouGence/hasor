@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ ElementType.TYPE })
 public @interface MappingTo {
     /**请求地址*/
     public String value();

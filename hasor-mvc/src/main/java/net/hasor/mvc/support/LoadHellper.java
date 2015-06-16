@@ -15,9 +15,7 @@
  */
 package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.UUID;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.mvc.ModelController;
@@ -54,26 +52,16 @@ public abstract class LoadHellper {
             return;
         }
         //
-        String newID = UUID.randomUUID().toString();
-        boolean hasMapping = false;
         ApiBinder apiBinder = apiBinder();
-        //
-        Method[] methodArrays = clazz.getMethods();
-        for (Method atMethod : methodArrays) {
-            if (atMethod.isAnnotationPresent(MappingTo.class) == false) {
-                continue;
-            }
-            hasMapping = true;
-            //
-            MappingTo mto = atMethod.getAnnotation(MappingTo.class);
-            logger.info("method ‘{}’ mappingTo: ‘{}’, form Type :{}.", atMethod.getName(), mto.value(), clazz.getName());
-            MappingInfoDefine define = module().createMappingDefine(newID, atMethod);
-            apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
+        if (clazz.isAnnotationPresent(MappingTo.class) == false) {
+            return;
         }
         //
-        if (hasMapping == true) {
-            apiBinder.bindType(clazz).idWith(newID);
-        }
+        MappingTo mto = clazz.getAnnotation(MappingTo.class);
+        logger.info("type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        MappingInfoDefine define = module().createMappingDefine(clazz);
+        apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
+        apiBinder.bindType(clazz);
     }
     //
     /**通过位运算决定check是否在data里。*/

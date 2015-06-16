@@ -15,6 +15,7 @@
  */
 package net.hasor.mvc.support.caller;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -35,9 +36,11 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.api.AttributeParam;
 import net.hasor.mvc.api.CookieParam;
 import net.hasor.mvc.api.HeaderParam;
+import net.hasor.mvc.api.Params;
 import net.hasor.mvc.api.PathParam;
 import net.hasor.mvc.api.Produces;
 import net.hasor.mvc.api.QueryParam;
+import net.hasor.mvc.api.ReqParam;
 import net.hasor.mvc.support.AbstractWebController;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
@@ -81,7 +84,6 @@ public class ExecuteCallStrategy implements CallStrategy {
     }
     /**准备参数*/
     protected final Object[] resolveParams(Call call) throws Throwable {
-        Method targetMethod = call.getMethod();
         //
         Class<?>[] targetParamClass = call.getParameterTypes();
         Annotation[][] targetParamAnno = call.getMethodParamAnnos();
@@ -92,12 +94,6 @@ public class ExecuteCallStrategy implements CallStrategy {
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
             Object paramObject = this.resolveParam(paramClass, targetParamAnno[i], call);//获取参数
-            /*获取到的参数需要做一个类型转换，以防止method.invoke时发生异常。*/
-            if (paramObject == null) {
-                paramObject = BeanUtils.getDefaultValue(paramClass);
-            } else {
-                paramObject = ConverterUtils.convert(paramClass, paramObject);
-            }
             paramsArray.add(paramObject);
         }
         Object[] invokeParams = paramsArray.toArray();
@@ -107,6 +103,7 @@ public class ExecuteCallStrategy implements CallStrategy {
     private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, Call call) {
         for (Annotation pAnno : paramAnno) {
             Object finalValue = resolveParam(paramClass, pAnno, call);
+            finalValue = ConverterUtils.convert(paramClass, finalValue);
             if (finalValue != null) {
                 return finalValue;
             }
@@ -122,32 +119,60 @@ public class ExecuteCallStrategy implements CallStrategy {
         //
         if (atData == null) {
             /*   */if (pAnno instanceof AttributeParam) {
-                atData = this.getAttributeParam(call, paramClass, (AttributeParam) pAnno);
+                atData = this.getAttributeParam(call, (AttributeParam) pAnno);
             } else if (pAnno instanceof CookieParam) {
-                atData = this.getCookieParam(call, paramClass, (CookieParam) pAnno);
+                atData = this.getCookieParam(call, (CookieParam) pAnno);
             } else if (pAnno instanceof HeaderParam) {
-                atData = this.getHeaderParam(call, paramClass, (HeaderParam) pAnno);
+                atData = this.getHeaderParam(call, (HeaderParam) pAnno);
             } else if (pAnno instanceof QueryParam) {
-                atData = this.getQueryParam(call, paramClass, (QueryParam) pAnno);
+                atData = this.getQueryParam(call, (QueryParam) pAnno);
             } else if (pAnno instanceof PathParam) {
-                atData = this.getPathParam(call, paramClass, (PathParam) pAnno, call.getMappingInfo());
+                atData = this.getPathParam(call, (PathParam) pAnno, call.getMappingInfo());
+            } else if (pAnno instanceof ReqParam) {
+                atData = call.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
+            } else if (pAnno instanceof Params) {
+                atData = this.getParamsParam(call, paramClass);
             }
         }
         //
         return atData;
     }
     /**/
-    private Object getPathParam(Call call, Class<?> paramClass, PathParam pAnno, MappingInfo mappingInfo) {
+    private Object getParamsParam(Call call, Class<?> paramClass) {
+        Object paramObject = null;
+        try {
+            paramObject = paramClass.newInstance();
+        } catch (Throwable e) {
+            logger.error(paramClass.getName() + "newInstance error.", e.getMessage());
+            return paramObject;
+        }
+        List<Field> fieldList = BeanUtils.findALLFields(paramClass);
+        if (fieldList == null || fieldList.isEmpty()) {
+            return paramObject;
+        }
+        for (Field field : fieldList) {
+            try {
+                Object fieldValue = resolveParam(field.getType(), field.getAnnotations(), call);
+                field.setAccessible(true);
+                field.set(paramObject, fieldValue);
+            } catch (Exception e) {
+                logger.error(field + "set new Value error.", e.getMessage());
+            }
+        }
+        return paramObject;
+    }
+    /**/
+    private Object getPathParam(Call call, PathParam pAnno, MappingInfo mappingInfo) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(call, mappingInfo).get(paramName);
     }
     /**/
-    private Object getQueryParam(Call call, Class<?> paramClass, QueryParam pAnno) {
+    private Object getQueryParam(Call call, QueryParam pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(call).get(paramName);
     }
     /**/
-    private Object getHeaderParam(Call call, Class<?> paramClass, HeaderParam pAnno) {
+    private Object getHeaderParam(Call call, HeaderParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -169,7 +194,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return null;
     }
     /**/
-    private Object getCookieParam(Call call, Class<?> paramClass, CookieParam pAnno) {
+    private Object getCookieParam(Call call, CookieParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -188,7 +213,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return cookieList;
     }
     /**/
-    private Object getAttributeParam(Call call, Class<?> paramClass, AttributeParam pAnno) {
+    private Object getAttributeParam(Call call, AttributeParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;

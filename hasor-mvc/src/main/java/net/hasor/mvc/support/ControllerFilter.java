@@ -35,8 +35,8 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ControllerFilter implements Filter {
-    private RootController rootController = null;
-    private DefineList     defineList     = null;
+    private RootController   rootController = null;
+    private ResultDefineList defineList     = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -44,7 +44,7 @@ class ControllerFilter implements Filter {
         if (this.rootController == null) {
             throw new NullPointerException("RootController is null.");
         }
-        this.defineList = appContext.getInstance(DefineList.class);
+        this.defineList = appContext.getInstance(ResultDefineList.class);
     }
     public void destroy() {}
     //

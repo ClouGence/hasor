@@ -65,19 +65,6 @@ class RootController implements AppContextAware {
         }
     }
     /**
-     * 查找符合路径的 {@link MappingInfoDefine}
-     * @param controllerPath 匹配的路径
-     * @return 返回匹配的MappingDefine。
-     */
-    public final MappingInfoDefine findMapping(String controllerPath) {
-        for (MappingInfoDefine invoke : this.invokeArray) {
-            if (this.matchingMapping(controllerPath, invoke) == true) {
-                return invoke;
-            }
-        }
-        return null;
-    }
-    /**
      * 查找符合 {@link MappingMatching}要求的 {@link MappingInfoDefine}
      * @param findMapping 匹配器
      * @return 返回匹配的MappingDefine。
@@ -89,17 +76,5 @@ class RootController implements AppContextAware {
             }
         }
         return null;
-    }
-    /**
-     * 执行匹配
-     * @param controllerPath 匹配的路径
-     * @param atInvoke 匹配的{@link MappingInfoDefine}
-     * @return 返回是否匹配成功。
-     */
-    protected boolean matchingMapping(String controllerPath, MappingInfoDefine atInvoke) {
-        if (atInvoke == null) {
-            return false;
-        }
-        return atInvoke.matchingMapping(controllerPath);
     }
 }

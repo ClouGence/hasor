@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.api;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.mvc.support;
+import java.util.ArrayList;
+import java.util.List;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 /**
- * Request中的属性值
- * @version : 2013-5-9
+ * ResultDefine集合
+ * @version : 2013-5-10
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
-@Documented
-public @interface AttributeParam {
-    /**参数名称。*/
-    public String value();
+class ResultDefineList extends ArrayList<ResultDefine> implements AppContextAware {
+    private static final long serialVersionUID = 5293997430939415693L;
+    public void setAppContext(AppContext appContext) {
+        List<ResultDefine> defineList = appContext.findBindingBean(ResultDefine.class);
+        this.addAll(defineList);
+    }
 }

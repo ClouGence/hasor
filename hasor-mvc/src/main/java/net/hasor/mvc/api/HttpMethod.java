@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
  * for a method to be annotated with more than one annotation that is annotated
  * with {@code HttpMethod}.
  *
+ * @see net.hasor.mvc.api.HttpMethod#ANY
  * @see net.hasor.mvc.api.HttpMethod#GET
  * @see net.hasor.mvc.api.HttpMethod#POST
  * @see net.hasor.mvc.api.HttpMethod#PUT
@@ -37,6 +38,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HttpMethod {
+    /** HTTP ANY method */
+    public static final String ANY     = "ANY";
     /** HTTP GET method */
     public static final String GET     = "GET";
     /** HTTP POST method */

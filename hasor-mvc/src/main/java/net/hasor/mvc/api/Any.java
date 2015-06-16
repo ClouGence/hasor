@@ -26,5 +26,5 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@HttpMethod("ANY")
+@HttpMethod(HttpMethod.ANY)
 public @interface Any {}

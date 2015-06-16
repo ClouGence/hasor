@@ -32,10 +32,7 @@ class MappingMatching {
         }
     }
     public boolean matching(MappingInfoDefine invoke) {
-        boolean one = invoke.matchingMapping(this.controllerPath);
-        if (one == true) {
-            one = invoke.matchingMethod(this.httpMethod);
-        }
+        boolean one = invoke.matchingMapping(this.httpMethod, this.controllerPath);
         return one;
     }
 }

@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 请求头的中的值查询字符串的值
+ * 查询参数
  * @version : 2013-5-9
  * @author 赵永春 (zyc@hasor.net)
  */

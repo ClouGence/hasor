@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 路径中的值
+ * 路径中映射的值
  * @version : 2013-5-9
  * @author 赵永春 (zyc@hasor.net)
  */
