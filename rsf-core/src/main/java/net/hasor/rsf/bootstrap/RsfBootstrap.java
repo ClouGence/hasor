@@ -94,7 +94,7 @@ public class RsfBootstrap {
     }
     //
     public RsfContext sync() throws Throwable {
-        logger.info("initialize rsfBootstrap。");
+        logger.info("initialize rsfBootstrap.");
         if (this.rsfStart == null) {
             logger.info("create RsfStart.");
             this.rsfStart = new InnerRsfStart();

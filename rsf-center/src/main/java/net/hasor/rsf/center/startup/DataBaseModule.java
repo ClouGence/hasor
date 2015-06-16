@@ -86,7 +86,7 @@ public class DataBaseModule extends WebModule {
         dataSource.setPassword(pwdString);
         dataSource.setMaxPoolSize(poolMaxSize);
         dataSource.setInitialPoolSize(1);
-        dataSource.setAutomaticTestTable("DB_TEST_ATest001");
+        //dataSource.setAutomaticTestTable("DB_TEST_ATest001");
         dataSource.setIdleConnectionTestPeriod(18000);
         dataSource.setCheckoutTimeout(3000);
         dataSource.setTestConnectionOnCheckin(true);

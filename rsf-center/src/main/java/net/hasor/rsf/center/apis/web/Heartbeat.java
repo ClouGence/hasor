@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web.apis;
-import net.hasor.mvc.api.AbstractWebController;
+package net.hasor.rsf.center.apis.web;
 import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.api.Params;
+import net.hasor.mvc.support.AbstractWebController;
+import net.hasor.rsf.center.apis.form.HeartBeatForm;
 /**
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Provider extends AbstractWebController {
-    @MappingTo("/apis/provider")
-    public void execute() {
-        System.out.println("/apis/provider");
+@MappingTo("/apis/heartbeat")
+public class Heartbeat extends AbstractWebController {
+    public void execute(@Params HeartBeatForm heartBeatForm) {
+        System.out.println("/apis/heartbeat");
     }
 }

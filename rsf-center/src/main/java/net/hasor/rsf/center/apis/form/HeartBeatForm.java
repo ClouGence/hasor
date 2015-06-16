@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web.apis;
-import java.io.IOException;
-import net.hasor.mvc.api.AbstractWebController;
-import net.hasor.mvc.api.MappingTo;
+package net.hasor.rsf.center.apis.form;
+import net.hasor.mvc.api.ReqParam;
 /**
  * 
- * @version : 2015年5月5日
+ * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OffLine extends AbstractWebController {
-    @MappingTo("/apis/offline")
-    public void execute() throws IOException {
-        getResponse().getWriter().write("abc");
-        System.out.println("/apis/offline");
+public class HeartBeatForm {
+    @ReqParam("Terminal_ID")
+    private String terminalID;
+    @ReqParam("Terminal_AccessKey")
+    private String accessKey;
+    //
+    public String getTerminalID() {
+        return terminalID;
+    }
+    public void setTerminalID(String terminalID) {
+        this.terminalID = terminalID;
+    }
+    public String getAccessKey() {
+        return accessKey;
+    }
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
     }
 }
