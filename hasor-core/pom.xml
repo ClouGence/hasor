@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>hasor-core</artifactId>
-	<version>0.0.14</version>
+	<version>0.0.15-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
@@ -21,7 +21,7 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
-		<tag>Release.Hasor-0.0.14</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
@@ -53,6 +53,8 @@
 			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Test -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
