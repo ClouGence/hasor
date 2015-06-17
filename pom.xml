@@ -42,6 +42,5 @@
 	<modules>
 		<module>hasor-core</module>
 		<module>hasor-mvc</module>
-		<module>demo-hasor</module>
 	</modules>
 </project>
