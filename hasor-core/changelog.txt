@@ -1,4 +1,6 @@
 ﻿===== Hasor-Core v0.0.14
+* 新增:
+	01.Settings接口增加merageXmlNode方法用于汇聚XmlNode。
 * 改进:
     01.JdbcTemplate 类中的公共方法分离出一个新的基类JdbcConnection。
     02.Result - 添加Message消息传输机制。

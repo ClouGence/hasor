@@ -86,25 +86,20 @@ public class StandardAppContext extends AbstractAppContext {
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
         if (loadModule) {
-            XmlNode[] allModules = env.getSettings().getXmlNodeArray("hasor.modules");
-            if (allModules != null) {
-                for (XmlNode modules : allModules) {
-                    List<XmlNode> moduleArrays = modules.getChildren("module");
-                    for (XmlNode module : moduleArrays) {
-                        String moduleTypeString = module.getText();
-                        if (StringUtils.isBlank(moduleTypeString)) {
-                            continue;
-                        }
-                        if (!moduleTyleList.contains(moduleTypeString)){
-                            moduleTyleList.add(moduleTypeString);
-                        }
-                    }
+            List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
+            for (XmlNode module : allModules) {
+                String moduleTypeString = module.getText();
+                if (StringUtils.isBlank(moduleTypeString)) {
+                    continue;
+                }
+                if (!moduleTyleList.contains(moduleTypeString)) {
+                    moduleTyleList.add(moduleTypeString);
                 }
             }
         }
         //
         ArrayList<Module> moduleList = new ArrayList<Module>();
-        for (String modStr : moduleTyleList){
+        for (String modStr : moduleTyleList) {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             Class<?> moduleType = ClassUtils.getClass(loader, modStr);
             moduleList.add((Module) moduleType.newInstance());
