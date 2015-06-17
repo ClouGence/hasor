@@ -1,11 +1,13 @@
 ﻿===== Hasor-MVC v0.0.4
+* 新增:
+    01.新增，Params 注解用于将多个请求参数包装到一个类中。
 * 改进:
     01.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
     02.软件结构重新设计，吸收WebX的设计精华。
     03.MappingTo注解改为只能标记到Class上。
     04.AttributeParam、CookieParam、HeaderParam、PathParam、QueryParam、ReqParam。可以标记到字段和参数上。
-    05.新增，Params 注解用于将多个请求参数包装到一个类中。
-    06.一个类只能用于表述一个action。
+    05.一个类只能用于表述一个action。
+    06.Forword、Include、Redirect插件化。
 
 ===== Hasor-MVC v0.0.3
 (无)

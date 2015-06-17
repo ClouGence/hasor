@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.result;
+package net.hasor.mvc.plugins.result;
 import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.Call;
 import net.hasor.mvc.ResultProcess;
@@ -26,23 +27,20 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RedirectResultProcess implements ResultProcess {
+public class IncludeResultProcess implements ResultProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object returnData(Object result, Call call) throws ServletException, IOException {
         if (result == null) {
             return result;
         }
+        HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
         //
-        if (response != null && response.isCommitted() == false) {
+        if (request != null && response != null && response.isCommitted() == false) {
             if (logger.isDebugEnabled()) {
-                logger.debug("redirect to %s.", result);
+                logger.debug("include %s.", result);
             }
-            response.sendRedirect(result.toString());
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("no redirect, response isCommitted!");
-            }
+            request.getRequestDispatcher(result.toString()).include(request, response);
         }
         return result;
     }

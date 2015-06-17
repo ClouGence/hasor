@@ -16,4 +16,4 @@
 /**
  * <p>提供 WebMVC 下 action 返回值的处理。</p>
  */
-package net.hasor.mvc.api.result;
+package net.hasor.mvc.plugins.result;

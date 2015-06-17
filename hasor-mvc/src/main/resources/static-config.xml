@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc">
-	<!-- 框架配置 -->
 	<hasor>
-		<!-- 包扫描范围 -->
-		<loadPackages>net.hasor.mvc.*</loadPackages>
-		<!-- Hasor-MVC 专用 -->
-		<mvcConfig></mvcConfig>
+		<mvcConfig>
+			<resultProcess>
+				<resultProces annoType="net.hasor.mvc.plugins.result.Forword" processType="net.hasor.mvc.plugins.result.ForwordResultProcess" />
+				<resultProces annoType="net.hasor.mvc.plugins.result.Include" processType="net.hasor.mvc.plugins.result.IncludeResultProcess" />
+				<resultProces annoType="net.hasor.mvc.plugins.result.Redirect" processType="net.hasor.mvc.plugins.result.RedirectResultProcess" />
+			</resultProcess>
+		</mvcConfig>
 	</hasor>
 </config>

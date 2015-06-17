@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.mvc.support;
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.XmlNode;
 import net.hasor.mvc.ModelController;
-import net.hasor.mvc.api.result.Forword;
-import net.hasor.mvc.api.result.Include;
-import net.hasor.mvc.api.result.Redirect;
-import net.hasor.mvc.support.result.ForwordResultProcess;
-import net.hasor.mvc.support.result.IncludeResultProcess;
-import net.hasor.mvc.support.result.RedirectResultProcess;
+import net.hasor.mvc.ResultProcess;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.more.util.ClassUtils;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
@@ -52,9 +50,22 @@ public abstract class ControllerModule extends WebModule {
         //
         //3.install-避免初始化多次
         if (initController.compareAndSet(false, true)) {
-            helper.loadResultProcess(Forword.class, ForwordResultProcess.class);
-            helper.loadResultProcess(Include.class, IncludeResultProcess.class);
-            helper.loadResultProcess(Redirect.class, RedirectResultProcess.class);
+            //
+            List<XmlNode> allResultProcess = apiBinder.getEnvironment().getSettings().merageXmlNode("hasor.mvcConfig.resultProcess", "resultProces");
+            for (XmlNode atNode : allResultProcess) {
+                String annoTypeStr = atNode.getAttribute("annoType");
+                String processTypeStr = atNode.getAttribute("processType");
+                try {
+                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                    Class<? extends Annotation> annoType = (Class<? extends Annotation>) ClassUtils.getClass(loader, annoTypeStr);
+                    Class<? extends ResultProcess> processType = (Class<? extends ResultProcess>) ClassUtils.getClass(loader, processTypeStr);
+                    //
+                    helper.loadResultProcess(annoType, processType);
+                    logger.info("resultProcess: anno[{}] to:{}", annoTypeStr, processTypeStr);
+                } catch (Exception e) {
+                    logger.error("resultProcess: anno[{}] to:{} ,error -> {}", annoTypeStr, processTypeStr, e);
+                }
+            }
             //
             apiBinder.bindType(ResultDefineList.class, apiBinder.autoAware(new ResultDefineList()));
             apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
