@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.apis.form;
+package net.hasor.rsf.center.domain.form;
 import net.hasor.mvc.api.ReqParam;
 /**
  * 
  * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OffLineForm {
+public class HeartBeatForm {
     @ReqParam("Terminal_ID")
     private String terminalID;
     @ReqParam("Terminal_AccessKey")

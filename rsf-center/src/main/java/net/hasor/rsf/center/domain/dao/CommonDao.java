@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao;
-import static net.hasor.rsf.center.startup.DataBaseModule.DataSource_MEM;
+import static net.hasor.rsf.center.core.startup.DataBaseModule.DataSource_MEM;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;

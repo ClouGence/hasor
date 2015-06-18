@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.apis.web;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.apis.form.PushServiceForm;
+package net.hasor.rsf.center.domain.form;
+import net.hasor.mvc.api.ReqParam;
 /**
  * 
- * @version : 2015年5月5日
+ * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/customer")
-public class Customer extends AbstractWebController {
-    public void execute(@Params PushServiceForm pushServiceForm) {
-        System.out.println("/apis/customer");
+public class OffLineForm {
+    @ReqParam("Terminal_ID")
+    private String terminalID;
+    @ReqParam("Terminal_AccessKey")
+    private String accessKey;
+    //
+    public String getTerminalID() {
+        return terminalID;
+    }
+    public void setTerminalID(String terminalID) {
+        this.terminalID = terminalID;
+    }
+    public String getAccessKey() {
+        return accessKey;
+    }
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
     }
 }

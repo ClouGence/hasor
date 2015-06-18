@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.startup;
+package net.hasor.rsf.center.core.startup;
 import java.io.IOException;
 import java.util.List;
 import net.hasor.core.AppContext;
