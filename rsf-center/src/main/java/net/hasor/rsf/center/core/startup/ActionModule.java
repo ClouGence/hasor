@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.startup;
+import java.util.Set;
+import net.hasor.mvc.ModelController;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
-import net.hasor.rsf.center.web.Customer;
-import net.hasor.rsf.center.web.Heartbeat;
-import net.hasor.rsf.center.web.OffLine;
-import net.hasor.rsf.center.web.OnLine;
-import net.hasor.rsf.center.web.Provider;
-import net.hasor.rsf.center.web.UnService;
+import net.hasor.web.WebApiBinder;
 /**
  * WebMVC
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ActionModule extends ControllerModule {
+    private Set<Class<?>> appController = null;
+    @Override
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        appController = apiBinder.getEnvironment().findClass(ModelController.class);
+        super.loadModule(apiBinder);
+    }
     @Override
     protected void loadController(LoadHellper helper) {
-        helper.loadType(OffLine.class);
-        helper.loadType(OnLine.class);
-        helper.loadType(Customer.class);
-        helper.loadType(Provider.class);
-        helper.loadType(UnService.class);
-        helper.loadType(Heartbeat.class);
+        if (appController == null || appController.isEmpty()) {
+            return;
+        }
+        for (Class<?> targetClass : appController) {
+            helper.loadType((Class<? extends ModelController>) targetClass);
+        }
     }
 }
