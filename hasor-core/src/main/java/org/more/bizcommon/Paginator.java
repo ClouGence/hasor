@@ -16,7 +16,6 @@
 package org.more.bizcommon;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.bizcommon.Paginator.Order.OrderBy;
 /**
  * 翻页
  * @version : 2014年10月25日
@@ -29,10 +28,8 @@ public class Paginator {
     private int               pageSize    = 15;
     /**当前页号*/
     private int               currentPage = 0;
-    /**是否启用分页*/
-    private boolean           enable      = true;
     /**排序方式 */
-    private final List<Order> orderBy     = new ArrayList<Paginator.Order>(0);
+    private final List<Order> orderBy     = new ArrayList<Order>(0);
     //
     //
     /**获取排序字段*/
@@ -45,11 +42,8 @@ public class Paginator {
         this.orderBy.addAll(orderBy);
     }
     /**设置排序字段*/
-    public void addOrderBy(String sortField, OrderBy orderBy) {
-        Order order = new Order();
-        order.sortField = sortField;
-        order.orderBy = orderBy;
-        this.orderBy.add(order);
+    public void addOrderBy(Order orderBy) {
+        this.orderBy.add(orderBy);
     }
     /**获取分页的页大小。*/
     public int getPageSize() {
@@ -70,14 +64,6 @@ public class Paginator {
         if (totalCount < 0)
             totalCount = 0;
         this.totalCount = totalCount;
-    }
-    /**是否启用分页*/
-    public boolean isEnable() {
-        return enable;
-    }
-    /**是否启用分页*/
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
     //
     /**当前是否是第一页。*/
@@ -144,31 +130,7 @@ public class Paginator {
         return (assumeLast > totalCount) ? totalCount : assumeLast;
     }
     //
-    public final static class Order {
-        /**排序方式*/
-        public static enum OrderBy {
-            ASC, DESC
-        }
-        /** 排序字段 */
-        private String  sortField = "";
-        /** 排序方式 */
-        private OrderBy orderBy   = OrderBy.ASC;
-        //
-        /**获取排序字段。*/
-        public String getSortField() {
-            return this.sortField;
-        }
-        /**设置排序字段。*/
-        public void setSortField(String sortField) {
-            this.sortField = sortField;
-        }
-        /**获取排序方式。*/
-        public OrderBy getOrderBy() {
-            return this.orderBy;
-        }
-        /**设置排序方式。*/
-        public void setOrderBy(OrderBy orderBy) {
-            this.orderBy = orderBy;
-        }
-    }
+    //
+    /**分页排序条件基础接口。*/
+    public static interface Order {}
 }
