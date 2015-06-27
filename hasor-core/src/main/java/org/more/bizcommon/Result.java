@@ -31,7 +31,7 @@ public interface Result<T> extends Serializable {
     /**(如果有)返回消息。*/
     public String firstMessage();
     /**添加一条消息。*/
-    public <E extends Result<T>> E addMessage(String message, Object... params);
+    public Result<T> addMessage(String message, Object... params);
     /**判断消息池是否为空。*/
     public boolean isEmptyMessage();
 }

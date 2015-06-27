@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.context.StandardAppContext;
+import net.hasor.core.context.ContextData;
+import net.hasor.core.context.TemplateAppContext;
+import net.hasor.core.environment.StandardEnvironment;
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
@@ -36,11 +38,11 @@ public abstract class Hasor {
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return Hasor.createAppContext(StandardAppContext.DefaultSettings, new Module[0]);
+        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final Module... modules) {
-        return Hasor.createAppContext(StandardAppContext.DefaultSettings, modules);
+        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, modules);
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
@@ -50,9 +52,19 @@ public abstract class Hasor {
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String config, final Module... modules) {
         try {
-            StandardAppContext app = new StandardAppContext(config);
-            app.start(modules);
-            return app;
+            final Environment dev = new StandardEnvironment(config);
+            final ContextData contextData = new ContextData() {
+                public Environment getEnvironment() {
+                    return dev;
+                }
+            };
+            final AppContext appContext = new TemplateAppContext() {
+                protected ContextData getContextData() {
+                    return contextData;
+                }
+            };
+            appContext.start(modules);
+            return appContext;
         } catch (Throwable e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;

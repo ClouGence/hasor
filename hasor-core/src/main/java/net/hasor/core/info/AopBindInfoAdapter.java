@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.factorys;
+package net.hasor.core.info;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.MethodInterceptor;
@@ -24,12 +24,12 @@ import org.more.classcode.aop.AopInvocation;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-class AopMatcherMethodInterceptor implements MethodInterceptor, org.more.classcode.aop.AopInterceptor {
+public class AopBindInfoAdapter implements MethodInterceptor, org.more.classcode.aop.AopInterceptor {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;
     //
-    public AopMatcherMethodInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
+    public AopBindInfoAdapter(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
         this.matcherClass = matcherClass;
         this.matcherMethod = matcherMethod;
         this.interceptor = interceptor;

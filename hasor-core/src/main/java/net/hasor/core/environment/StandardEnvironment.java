@@ -34,7 +34,9 @@ public class StandardEnvironment extends AbstractEnvironment {
     //
     public StandardEnvironment(final String mainSettings) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(mainSettings);
-        this.settingURI = resURL.toURI();
+        if (resURL != null) {
+            this.settingURI = resURL.toURI();
+        }
         this.initEnvironment();
     }
     public StandardEnvironment(final File mainSettings) {

@@ -79,7 +79,7 @@ public abstract class AbstractEnvironment implements Environment {
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected final void initEnvironment() {
-        logger.info("init Environment.");
+        logger.info("init Environment - settings is " + this.getSettingURI());
         //
         try {
             this.settings = this.createSettings();

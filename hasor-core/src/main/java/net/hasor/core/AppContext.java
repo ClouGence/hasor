@@ -40,7 +40,7 @@ public interface AppContext {
     /*---------------------------------------------------------------------------------------Bean*/
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID);
-    /** @return 获取已经注册的Bean名称。*/
+    /** @return 获取已经注册的BeanID。*/
     public String[] getBindIDs();
     /** @return 如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(Class<?> targetClass);
@@ -48,7 +48,7 @@ public interface AppContext {
     public boolean containsBindID(String bindID);
     /**创建Bean。*/
     public <T> Provider<T> getProvider(BindInfo<T> info);
-    /**创建Bean。*/
+    /**根据ID获取{@link BindInfo}。*/
     public <T> BindInfo<T> getBindInfo(String bindID);
     /**创建Bean。*/
     public <T> T getInstance(String bindID);

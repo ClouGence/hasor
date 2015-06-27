@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context.listener;
-import net.hasor.core.context.AbstractAppContext;
+import net.hasor.core.AppContext;
 /**
  * 用于容器启动事件接收
  * @version : 2014-5-10
@@ -22,7 +22,7 @@ import net.hasor.core.context.AbstractAppContext;
  */
 public interface ContextStartListener {
     /**开始进入容器启动过程。*/
-    public void doStart(AbstractAppContext appContext);
+    public void doStart(AppContext appContext);
     /**容器启动完成。*/
-    public void doStartCompleted(AbstractAppContext appContext);
+    public void doStartCompleted(AppContext appContext);
 }

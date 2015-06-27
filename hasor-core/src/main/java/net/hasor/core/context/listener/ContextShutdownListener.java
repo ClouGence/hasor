@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context.listener;
-import net.hasor.core.context.AbstractAppContext;
+import net.hasor.core.AppContext;
 /**
  * 用于容器销毁事件接收
  * @version : 2014-5-10
@@ -22,7 +22,7 @@ import net.hasor.core.context.AbstractAppContext;
  */
 public interface ContextShutdownListener {
     /**开始进入容器销毁过程。*/
-    public void doShutdown(AbstractAppContext appContext);
+    public void doShutdown(AppContext appContext);
     /**容器销毁完成。*/
-    public void doShutdownCompleted(AbstractAppContext appContext);
+    public void doShutdownCompleted(AppContext appContext);
 }

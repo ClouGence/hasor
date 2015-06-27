@@ -35,10 +35,6 @@ import org.more.util.ArrayUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractWebApiBinder extends AbstractBinder implements WebApiBinder {
-    //
-    protected AbstractWebApiBinder(final WebEnvironment envContext) {
-        super(envContext);
-    }
     @Override
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();

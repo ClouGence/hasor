@@ -23,7 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
-import net.hasor.web.context.WebStandardAppContext;
+import net.hasor.web.context.WebTemplateAppContext;
 import org.more.util.ContextClassLoaderLocal;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -45,7 +45,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     /**创建{@link WebAppContext}对象*/
     protected WebAppContext createAppContext(final ServletContext sc) throws Throwable {
-        return new WebStandardAppContext("hasor-config.xml", sc);
+        return new WebTemplateAppContext("hasor-config.xml", sc);
     }
     //
     /**获取启动模块*/

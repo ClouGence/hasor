@@ -16,7 +16,7 @@
 package net.hasor.core.context;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -29,14 +29,13 @@ import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.core.StartModule;
+import net.hasor.core.XmlNode;
 import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.context.listener.ContextInitializeListener;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
-import net.hasor.core.factorys.BindInfoDefineManager;
-import net.hasor.core.factorys.BindInfoFactory;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,48 +47,46 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractAppContext implements AppContext {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public abstract class TemplateAppContext implements AppContext {
+    public static final String DefaultSettings = "hasor-config.xml";
+    protected Logger           logger          = LoggerFactory.getLogger(getClass());
+    //
+    /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
-        AbstractBindInfoProviderAdapter<?> bindInfo = defineManager.getBindInfoByID(bindID);
-        //
+        DefineContainer container = getContextData().getBindInfoContainer();
+        BindInfo<?> bindInfo = container.getBindInfoByID(bindID);
         if (bindInfo != null) {
             return bindInfo.getBindType();
         }
         return null;
     }
+    /** @return 判断是否存在某个ID的绑定。*/
     public boolean containsBindID(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
-        AbstractBindInfoProviderAdapter<?> bindInfo = defineManager.getBindInfoByID(bindID);
+        DefineContainer container = getContextData().getBindInfoContainer();
+        BindInfo<?> bindInfo = container.getBindInfoByID(bindID);
         return bindInfo != null;
     }
+    /** @return 获取已经注册的BeanID。*/
     public String[] getBindIDs() {
-        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
-        Iterator<? extends AbstractBindInfoProviderAdapter<?>> adapterList = defineManager.getBindInfoIterator();
-        if (adapterList == null || adapterList.hasNext() == false) {
+        DefineContainer container = getContextData().getBindInfoContainer();
+        Collection<String> nameList = container.getBindInfoIDs();
+        if (nameList == null || nameList.isEmpty() == true) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        List<String> names = new ArrayList<String>();
-        while (adapterList.hasNext()) {
-            AbstractBindInfoProviderAdapter<?> adapter = adapterList.next();
-            String name = adapter.getBindName();
-            if (StringUtils.isBlank(name) == false) {
-                names.add(name);
-            }
-        }
-        return names.toArray(new String[names.size()]);
+        return nameList.toArray(new String[nameList.size()]);
     }
+    /**根据ID获取{@link BindInfo}。*/
     public <T> BindInfo<T> getBindInfo(String bindID) {
-        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
-        return defineManager.getBindInfoByID(bindID);
+        DefineContainer container = getContextData().getBindInfoContainer();
+        return container.getBindInfoByID(bindID);
     }
+    /**创建Bean。*/
     public <T> T getInstance(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        BindInfoDefineManager defineManager = this.getBindInfoFactory().getManager();
-        AbstractBindInfoProviderAdapter<T> bindInfo = defineManager.getBindInfoByID(bindID);
+        DefineContainer container = getContextData().getBindInfoContainer();
+        BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
         if (bindInfo != null) {
             return this.getInstance(bindInfo);
         }
@@ -99,29 +96,35 @@ public abstract class AbstractAppContext implements AppContext {
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        String[] returnData = this.getBindInfoFactory().getNamesOfType(targetClass);
-        if (returnData == null) {
+        DefineContainer container = getContextData().getBindInfoContainer();
+        Collection<String> nameList = container.getBindInfoNamesByType(targetClass);
+        if (nameList == null || nameList.isEmpty() == true) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        return returnData;
+        return nameList.toArray(new String[nameList.size()]);
     }
     /**创建Bean。*/
     public <T> T getInstance(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         //
-        BindInfoFactory factory = this.getBindInfoFactory();
-        BindInfo<T> info = factory.getBindInfo(null, targetClass);
-        if (info != null) {
-            Provider<T> provider = this.getProvider(info);
-            if (provider != null) {
-                return provider.get();
+        DefineContainer container = getContextData().getBindInfoContainer();
+        List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
+        if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
+            for (BindInfo<T> adapter : typeRegisterList) {
+                if (adapter.getBindName() == null) {
+                    Provider<T> provider = this.getProvider(adapter);//取最后一个
+                    if (provider != null) {
+                        return provider.get();
+                    }
+                }
             }
         }
-        return factory.getDefaultInstance(targetClass);
+        return getBeanBuilder().getDefaultInstance(targetClass, container, this);
     };
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
-        return this.getBindInfoFactory().getInstance(info);
+        DefineContainer container = getContextData().getBindInfoContainer();
+        return this.getBeanBuilder().getInstance(info, container, this);
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {
@@ -135,35 +138,36 @@ public abstract class AbstractAppContext implements AppContext {
                 return provider;
             }
         }
+        final AppContext appContext = this;
+        final DefineContainer container = getContextData().getBindInfoContainer();
         return new Provider<T>() {
             public T get() {
-                return getBindInfoFactory().getInstance(info);
+                return getBeanBuilder().getInstance(info, container, appContext);
             }
         };
     };
-    /**获取用于创建Bean对象的{@link BindInfoFactory}接口*/
-    protected abstract BindInfoFactory getBindInfoFactory();
     //
+    /**获取用于创建Bean的{@link BeanBuilder}*/
+    protected BeanBuilder getBeanBuilder() {
+        return getContextData().getBeanBuilder();
+    }
+    /**获取用于创建Bean对象的{@link ContextData}接口*/
+    protected abstract ContextData getContextData();
+    // 
     /*------------------------------------------------------------------------------------Binding*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<T> findBindingBean(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfoFactory infoFactory = this.getBindInfoFactory();
-        String[] namesOfType = this.getBindInfoFactory().getNamesOfType(bindType);
-        if (namesOfType == null || namesOfType.length == 0) {
+        DefineContainer container = getContextData().getBindInfoContainer();
+        List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
+        if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return new ArrayList<T>(0);
         }
         ArrayList<T> returnData = new ArrayList<T>();
-        for (String name : namesOfType) {
-            BindInfo<T> info = infoFactory.getBindInfo(name, bindType);
-            Provider<T> provider = this.getProvider(info);
-            if (provider != null) {
-                T obj = provider.get();
-                if (obj != null) {
-                    returnData.add(obj);
-                }
-            }
+        for (BindInfo<T> adapter : typeRegisterList) {
+            T instance = this.getInstance(adapter);
+            returnData.add(instance);
         }
         return returnData;
     };
@@ -171,137 +175,149 @@ public abstract class AbstractAppContext implements AppContext {
     public <T> List<Provider<T>> findBindingProvider(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfoFactory infoFactory = this.getBindInfoFactory();
-        String[] namesOfType = this.getBindInfoFactory().getNamesOfType(bindType);
-        if (namesOfType == null || namesOfType.length == 0) {
+        DefineContainer container = getContextData().getBindInfoContainer();
+        List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
+        if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return new ArrayList<Provider<T>>(0);
         }
         ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>();
-        for (String name : namesOfType) {
-            BindInfo<T> info = infoFactory.getBindInfo(name, bindType);
-            Provider<T> provider = this.getProvider(info);
-            if (provider != null) {
-                returnData.add(provider);
-            }
+        for (BindInfo<T> adapter : typeRegisterList) {
+            Provider<T> provider = this.getProvider(adapter);
+            returnData.add(provider);
         }
         return returnData;
-    };
+    }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> T findBindingBean(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfo<T> info = this.getBindInfoFactory().getBindInfo(withName, bindType);
-        if (info != null) {
-            Provider<T> provider = this.getProvider(info);
-            if (provider != null) {
-                return provider.get();
-            }
+        BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
+        if (typeRegister != null) {
+            return this.getInstance(typeRegister);
         }
         return null;
-    };
+    }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> Provider<T> findBindingProvider(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfo<T> typeRegister = this.getBindInfoFactory().getBindInfo(withName, bindType);
+        BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
         if (typeRegister != null) {
             return this.getProvider(typeRegister);
         }
         return null;
-    };
+    }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<BindInfo<T>> findBindingRegister(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfoFactory infoFactory = this.getBindInfoFactory();
-        String[] namesOfType = this.getBindInfoFactory().getNamesOfType(bindType);
-        if (namesOfType == null || namesOfType.length == 0) {
+        DefineContainer container = getContextData().getBindInfoContainer();
+        List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
+        if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return new ArrayList<BindInfo<T>>(0);
         }
         ArrayList<BindInfo<T>> returnData = new ArrayList<BindInfo<T>>();
-        for (String name : namesOfType) {
-            BindInfo<T> info = infoFactory.getBindInfo(name, bindType);
-            if (info != null) {
-                returnData.add(info);
-            }
+        for (BindInfo<T> adapter : typeRegisterList) {
+            returnData.add(adapter);
         }
         return returnData;
-    };
+    }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> BindInfo<T> findBindingRegister(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        BindInfo<T> typeRegister = this.getBindInfoFactory().getBindInfo(withName, bindType);
-        if (typeRegister != null) {
-            return typeRegister;
+        DefineContainer container = getContextData().getBindInfoContainer();
+        List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
+        if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
+            for (BindInfo<T> adapter : typeRegisterList) {
+                if (StringUtils.equals(adapter.getBindName(), withName)) {
+                    return adapter;
+                }
+            }
         }
         return null;
-    };
+    }
     //
     /*------------------------------------------------------------------------------------Process*/
     /**查找Module。*/
     protected Module[] findModules() throws Throwable {
-        return new Module[0];
+        ArrayList<String> moduleTyleList = new ArrayList<String>();
+        Environment env = this.getEnvironment();
+        boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
+        if (loadModule) {
+            List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
+            for (XmlNode module : allModules) {
+                String moduleTypeString = module.getText();
+                if (StringUtils.isBlank(moduleTypeString)) {
+                    continue;
+                }
+                if (!moduleTyleList.contains(moduleTypeString)) {
+                    moduleTyleList.add(moduleTypeString);
+                }
+            }
+        }
+        //
+        ArrayList<Module> moduleList = new ArrayList<Module>();
+        for (String modStr : moduleTyleList) {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Class<?> moduleType = ClassUtils.getClass(loader, modStr);
+            moduleList.add((Module) moduleType.newInstance());
+        }
+        return moduleList.toArray(new Module[moduleList.size()]);
     }
     /**开始进入初始化过程.*/
     protected void doInitialize() throws Throwable {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextInitializeListener) {
-            ApiBinder apiBinder = this.newApiBinder(null);
-            ((ContextInitializeListener) registerFactory).doInitialize(apiBinder);
-        }
+        //
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextInitializeListener) {
-            ((ContextInitializeListener) registerFactory).doInitializeCompleted(this);
-        }
+        this.getContextData().doInitializeCompleted(this);
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextStartListener) {
-            ((ContextStartListener) registerFactory).doStart(this);
+        List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
+        for (ContextStartListener listener : listenerList) {
+            listener.doStart(this);
         }
     }
     /**容器启动完成。*/
     protected void doStartCompleted() {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextStartListener) {
-            ((ContextStartListener) registerFactory).doStartCompleted(this);
+        List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
+        for (ContextStartListener listener : listenerList) {
+            listener.doStartCompleted(this);
         }
     }
     /**开始进入容器停止.*/
     protected void doShutdown() {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextShutdownListener) {
-            ((ContextShutdownListener) registerFactory).doShutdown(this);
+        List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
+        for (ContextShutdownListener listener : listenerList) {
+            listener.doShutdown(this);
         }
     }
     /**容器启动停止。*/
     protected void doShutdownCompleted() {
-        BindInfoFactory registerFactory = this.getBindInfoFactory();
-        if (registerFactory instanceof ContextShutdownListener) {
-            ((ContextShutdownListener) registerFactory).doShutdownCompleted(this);
+        List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
+        for (ContextShutdownListener listener : listenerList) {
+            listener.doShutdownCompleted(this);
         }
+        this.getContextData().doShutdownCompleted(this);
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder(final Module forModule) {
-        return new AbstractBinder(this.getEnvironment()) {
-            protected BindInfoDefineManager getBuilderRegister() {
-                return getBindInfoFactory().getManager();
+        return new AbstractBinder() {
+            protected ContextData contextData() {
+                return getContextData();
             }
         };
     }
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {
-        final AbstractAppContext appContet = this;
+        final AppContext appContet = this;
         /*绑定Environment对象的Provider*/
         apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
             public Environment get() {
@@ -323,9 +339,16 @@ public abstract class AbstractAppContext implements AppContext {
     }
     //
     /*------------------------------------------------------------------------------------Creater*/
-    private boolean startState = false;
+    /**
+     * 确定 AppContext 目前状态是否处于启动状态。
+     * @return 返回 true 表示已经完成初始化并且启动完成。false表示尚未完成启动过程。
+     */
     public boolean isStart() {
-        return this.startState;
+        return this.getContextData().isStart();
+    }
+    /**获取环境接口。*/
+    public Environment getEnvironment() {
+        return this.getContextData().getEnvironment();
     }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {
@@ -341,16 +364,19 @@ public abstract class AbstractAppContext implements AppContext {
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
     }
+    /**
+     * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
+     * @param modules 启动时使用的模块。
+     * @throws Throwable 启动过程中引发的异常。
+     */
     public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
             logger.info("Hasor started , modules is empty.");
             return;
         }
-        final AbstractAppContext appContext = this;
-        EventContext ec = appContext.getEnvironment().getEventContext();
         /*1.Init*/
         logger.info("begin start , doInitialize now.");
-        appContext.doInitialize();
+        doInitialize();
         /*2.Bind*/
         ArrayList<Module> findModules = new ArrayList<Module>();
         findModules.addAll(Arrays.asList(this.findModules()));
@@ -358,29 +384,30 @@ public abstract class AbstractAppContext implements AppContext {
         for (Module module : findModules) {
             this.installModule(module);
         }
-        ApiBinder apiBinder = appContext.newApiBinder(null);
+        ApiBinder apiBinder = newApiBinder(null);
         logger.info("AppContext doBind.");
-        appContext.doBind(apiBinder);
+        doBind(apiBinder);
         /*3.引发事件*/
+        EventContext ec = getEnvironment().getEventContext();
         ec.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
-        appContext.doInitializeCompleted();
+        doInitializeCompleted();
         logger.info("doInitialize completed!");
         //
         /*3.Start*/
         logger.info("doInitialize completed!");
         logger.info("doStart now.");
-        appContext.doStart();
+        doStart();
         /*2.执行Aware通知*/
-        List<AppContextAware> awareList = appContext.findBindingBean(AppContextAware.class);
+        List<AppContextAware> awareList = findBindingBean(AppContextAware.class);
         if (awareList.isEmpty() == false) {
             for (AppContextAware weak : awareList) {
-                weak.setAppContext(appContext);
+                weak.setAppContext(this);
             }
         }
         /*3.发送启动事件*/
-        ec.fireSyncEvent(EventContext.ContextEvent_Started, appContext);
+        ec.fireSyncEvent(EventContext.ContextEvent_Started, this);
         logger.info("doStartCompleted now.");
-        appContext.doStartCompleted();/*用于扩展*/
+        doStartCompleted();/*用于扩展*/
         //
         for (Module module : findModules) {
             if (module instanceof StartModule) {
@@ -388,24 +415,22 @@ public abstract class AbstractAppContext implements AppContext {
             }
         }
         /*3.打印状态*/
-        this.startState = true;
         logger.info("doStart completed!");
         logger.info("Hasor Started!");
     }
+    /**发送停止通知*/
     public synchronized final void shutdown() {
         if (!this.isStart()) {
             return;
         }
-        final AbstractAppContext appContext = this;
-        EventContext ec = appContext.getEnvironment().getEventContext();
+        EventContext ec = getEnvironment().getEventContext();
         /*1.Init*/
         logger.info("doShutdown now.");
-        appContext.doShutdown();
+        doShutdown();
         /*3.引发事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
         logger.info("doShutdownCompleted now.");
-        appContext.doShutdownCompleted();
-        this.startState = false;
+        doShutdownCompleted();
         logger.info("doShutdown completed!");
     }
 }

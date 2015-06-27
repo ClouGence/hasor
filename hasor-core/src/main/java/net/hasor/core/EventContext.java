@@ -21,13 +21,13 @@ package net.hasor.core;
  */
 public interface EventContext {
     /**容器事件，在所有模块初始化之后引发。
-     * @see net.hasor.core.context.AbstractAppContext*/
+     * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Initialized = "ContextEvent_Initialized";
     /**容器事件，在所有模块 start 阶段之后引发。
-     * @see net.hasor.core.context.AbstractAppContext*/
+     * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Started     = "ContextEvent_Started";
     /**容器事件，在所有模块 start 阶段之后引发。
-     * @see net.hasor.core.context.AbstractAppContext*/
+     * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Shutdown    = "ContextEvent_Shutdown";
     //
     /**

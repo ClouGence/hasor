@@ -32,7 +32,9 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.StartModule;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.core.factorys.BindInfoDefineManager;
+import net.hasor.core.context.BeanBuilder;
+import net.hasor.core.context.ContextData;
+import net.hasor.core.info.AopBindInfoAdapter;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -45,14 +47,10 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    private Logger      logger      = LoggerFactory.getLogger(getClass());
-    private Environment environment = null;
+    private Logger logger = LoggerFactory.getLogger(getClass());
     //
-    protected AbstractBinder(final Environment envContext) {
-        this.environment = envContext;
-    }
     public Environment getEnvironment() {
-        return this.environment;
+        return this.contextData().getEnvironment();
     }
     public <T extends AppContextAware> T autoAware(final T aware) {
         this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
@@ -83,10 +81,11 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
-    protected abstract BindInfoDefineManager getBuilderRegister();
+    protected abstract ContextData contextData();
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BindInfoBuilder<T> typeBuilder = this.getBuilderRegister().createBuilder(type);
+        BeanBuilder builder = this.contextData().getBeanBuilder();
+        BindInfoBuilder<T> typeBuilder = this.contextData().getBindInfoContainer().createBuilder(type, builder);
         typeBuilder.setBindID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }
@@ -119,7 +118,12 @@ public abstract class AbstractBinder implements ApiBinder {
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     public void bindInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
-        this.getBuilderRegister().addAop(matcherClass, matcherMethod, interceptor);
+        Hasor.assertIsNotNull(matcherClass, "matcherClass is null.");
+        Hasor.assertIsNotNull(matcherMethod, "matcherMethod is null.");
+        Hasor.assertIsNotNull(interceptor, "interceptor is null.");
+        //
+        AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
+        this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -143,7 +147,6 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         public NamedBindingBuilder<T> idWith(String newID) {
             if (StringUtils.isBlank(newID) == false) {
-                this.typeBuilder.setBindName(newID);
                 this.typeBuilder.setBindID(newID);
             }
             return this;
