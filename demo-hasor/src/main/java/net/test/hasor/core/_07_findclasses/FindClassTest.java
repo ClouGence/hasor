@@ -20,7 +20,7 @@ import java.util.Set;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.AbstractAppContext;
+import net.hasor.core.context.TemplateAppContext;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -47,7 +47,7 @@ public class FindClassTest {
         Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
         logger.info("find %s.", ReflectionToStringBuilder.toString(facesFeature, ToStringStyle.SIMPLE_STYLE));
         //2.查找AbstractAppContext的子类
-        Set<Class<?>> subFeature = appContext.getEnvironment().findClass(AbstractAppContext.class);
+        Set<Class<?>> subFeature = appContext.getEnvironment().findClass(TemplateAppContext.class);
         logger.info("find %s.", ReflectionToStringBuilder.toString(subFeature, ToStringStyle.SIMPLE_STYLE));
     }
 }
