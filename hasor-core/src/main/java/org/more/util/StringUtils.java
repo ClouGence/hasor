@@ -5280,7 +5280,7 @@ public class StringUtils {
      * @since 2.0
      */
     public static int indexOfDifference(final String str1, final String str2) {
-        if (str1.equals(str2)) {
+        if (str1 != null && str1.equals(str2)) {
             return StringUtils.INDEX_NOT_FOUND;
         }
         if (str1 == null || str2 == null) {

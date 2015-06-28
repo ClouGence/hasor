@@ -19,4 +19,4 @@ package org.more.classcode;
  * @version : 2014年11月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Object extends java.lang.Object {}
+public class ClassCodeObject extends java.lang.Object {}

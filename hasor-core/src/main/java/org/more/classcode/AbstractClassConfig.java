@@ -24,10 +24,10 @@ import org.more.asm.ClassVisitor;
  */
 public abstract class AbstractClassConfig {
     /**默认超类java.lang.Object。*/
-    public static final Class<?> DefaultSuperClass = org.more.classcode.Object.class;
+    public static final Class<?> DefaultSuperClass = org.more.classcode.ClassCodeObject.class;
     private Class<?>             superClass        = DefaultSuperClass;
-    private String               className         = null;                           //新类名称
-    private byte[]               classBytes        = null;                           //新类字节码
+    private String               className         = null;                                    //新类名称
+    private byte[]               classBytes        = null;                                    //新类字节码
     private MoreClassLoader      parentLoader      = new MoreClassLoader();
     //
     /**创建{@link AbstractClassConfig}类型对象。 */
