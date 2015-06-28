@@ -37,8 +37,10 @@ public class OnesSyncEventTest {
         //1.添加事件监听器
         ec.pushListener(EventName, new MyListener());
         //2.引发异步事件，虽然引发了10次事件但只有一次会被执行。
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
+            System.out.println("fireSyncEvent - " + i);
             ec.fireSyncEvent(EventName, i);
+        }
         //3.由于事件引发一次是同步事件，因此下面这条日志会在事件处理完毕之后喷出
         System.out.println("after Event do sth...");
     }

@@ -22,8 +22,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.context.TemplateAppContext;
 import org.junit.Test;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -45,9 +43,9 @@ public class FindClassTest {
         //
         //1.查找所有Hasor模块（实现了Module接口的类）。
         Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
-        logger.info("find %s.", ReflectionToStringBuilder.toString(facesFeature, ToStringStyle.SIMPLE_STYLE));
+        logger.info("find " + facesFeature);
         //2.查找AbstractAppContext的子类
         Set<Class<?>> subFeature = appContext.getEnvironment().findClass(TemplateAppContext.class);
-        logger.info("find %s.", ReflectionToStringBuilder.toString(subFeature, ToStringStyle.SIMPLE_STYLE));
+        logger.info("find " + subFeature);
     }
 }

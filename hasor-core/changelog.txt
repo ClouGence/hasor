@@ -2,10 +2,12 @@
 * 新增:
     01.新增DateUtils，时间日期方面的工具类。
 * 改进:
-    01.Paginator 类中Order子类，提升为接口，原始的类实现通过SortFieldOrder提供。
+    02.Paginator 类中Order子类，提升为接口，原始的类实现通过SortFieldOrder提供。
         --此项更改有助于分页工具类应用到更广的场景下。
-    02.修改Result接口的addMessage方法，使其子类在重写的时候减少警告的发生。
-    03.Hasor内部实现factory相关的简化重构。
+    03.修改Result接口的addMessage方法，使其子类在重写的时候减少警告的发生。
+    04.Hasor内部实现factory相关的简化重构。
+* 修复:
+    05.修复使用“apiBinder.bindType(PojoBean.class).asEagerSingleton()”方式声明单例失效的问题。
 
 ===== Hasor-Core v0.0.14
 * 新增:

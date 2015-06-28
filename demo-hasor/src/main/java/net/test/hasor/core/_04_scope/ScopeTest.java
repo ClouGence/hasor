@@ -16,14 +16,14 @@
 package net.test.hasor.core._04_scope;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.binder.SingleProvider;
 import net.test.hasor.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**
@@ -41,6 +41,7 @@ public class ScopeTest {
                 MyScope myScope1 = new MyScope();
                 //
                 apiBinder.bindType(PojoBean.class).nameWith("myBean1").toScope(myScope1);
+                apiBinder.bindType(PojoBean.class).nameWith("myBean2");
             }
         });
         //
@@ -49,23 +50,21 @@ public class ScopeTest {
         System.out.println("Scope 1 : " + myBean.getName() + myBean);
         myBean = appContext.findBindingBean("myBean1", PojoBean.class);
         System.out.println("Scope 1 : " + myBean.getName() + myBean);
+        myBean = appContext.findBindingBean("myBean2", PojoBean.class);
+        System.out.println("Scope 2 : " + myBean.getName() + myBean);
     }
 }
 /**一个自定义 Scope ，实现了Scope内的单例.*/
 class MyScope implements Scope {
-    private Map<Object, Provider<?>> scopeMap = new HashMap<Object, Provider<?>>();
+    private ConcurrentHashMap<Object, Provider<?>> scopeMap = new ConcurrentHashMap<Object, Provider<?>>();
     public <T> Provider<T> scope(Object key, final Provider<T> provider) {
         Provider<?> returnData = this.scopeMap.get(key);
-        if (provider != null) {
-            returnData = new Provider<T>() {
-                private T instance;
-                public T get() {
-                    if (instance == null)
-                        this.instance = provider.get();
-                    return instance;
-                }
-            };
-            this.scopeMap.put(key, returnData);
+        if (returnData == null) {
+            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
+            returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
+            if (returnData == null) {
+                returnData = newSingleProvider;
+            }
         }
         return (Provider<T>) returnData;
     }

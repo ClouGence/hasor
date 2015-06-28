@@ -37,21 +37,21 @@ public class SimpleSettingsTest {
         Settings settings = appContext.getEnvironment().getSettings();
         //
         String myName = settings.getString("mySelf.myName");
-        logger.info("my Name is %s.", myName);
+        logger.info("my Name is {}.", myName);
         //
         int myAge = settings.getInteger("mySelf.myAge");
-        logger.info("my Age is %s.", myAge);
+        logger.info("my Age is {}.", myAge);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday");
-        logger.info("my Birthday is %s.", myBirthday);//TODO 需要解决通用格式转换问题
+        logger.info("my Birthday is {}.", myBirthday);//TODO 需要解决通用格式转换问题
         //
         String myWork = settings.getString("mySelf.myWork");
-        logger.info("my Work is %s.", myWork);
+        logger.info("my Work is {}.", myWork);
         //
         String myProjectURL = settings.getString("mySelf.myProjectURL");
-        logger.info("my Project is %s.", myProjectURL);
+        logger.info("my Project is {}.", myProjectURL);
         //
         String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
-        logger.info("my packages is %s.", (Object) packages);
+        logger.info("my packages is {}.", (Object) packages);
     }
 }

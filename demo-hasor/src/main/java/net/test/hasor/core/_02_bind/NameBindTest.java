@@ -46,11 +46,11 @@ public class NameBindTest {
         System.out.println();
         String modeSay = null;
         modeSay = appContext.findBindingBean("ModuleA", String.class);
-        logger.info(modeSay.toString());
+        logger.info("1." + modeSay.toString());
         modeSay = appContext.findBindingBean("ModuleB", String.class);
-        logger.info(modeSay.toString());
+        logger.info("2." + modeSay.toString());
         //
         List<String> says = appContext.findBindingBean(String.class);//查找绑定
-        logger.info("say %s.", says);
+        logger.info("say {}.", says);
     }
 }

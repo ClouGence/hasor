@@ -27,7 +27,7 @@ import org.junit.Test;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class NameBindTest {
+public class IDBindTest {
     @Test
     public void nameBindTest() throws IOException, URISyntaxException, InterruptedException {
         System.out.println("--->>nameBindTest<<--");
@@ -44,8 +44,8 @@ public class NameBindTest {
         });
         //
         PojoBean myBean1 = appContext.getInstance("myBean1");
-        System.out.println(myBean1.getName() + "\t" + myBean1);
+        System.out.println("1." + myBean1.getName() + "\t" + myBean1);
         PojoBean myBean2 = appContext.getInstance("myBean2");
-        System.out.println(myBean2.getName() + "\t" + myBean2);
+        System.out.println("2." + myBean2.getName() + "\t" + myBean2);
     }
 }

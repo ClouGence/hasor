@@ -27,6 +27,7 @@ import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
+import net.hasor.core.Scope;
 import net.hasor.core.Settings;
 import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
@@ -110,9 +111,10 @@ public abstract class TemplateAppContext implements AppContext {
         DefineContainer container = getContextData().getBindInfoContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
         if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
-            for (BindInfo<T> adapter : typeRegisterList) {
+            for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
+                BindInfo<T> adapter = typeRegisterList.get(i);
                 if (adapter.getBindName() == null) {
-                    Provider<T> provider = this.getProvider(adapter);//取最后一个
+                    Provider<T> provider = this.getProvider(adapter);
                     if (provider != null) {
                         return provider.get();
                     }
@@ -123,28 +125,37 @@ public abstract class TemplateAppContext implements AppContext {
     };
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
-        DefineContainer container = getContextData().getBindInfoContainer();
-        return this.getBeanBuilder().getInstance(info, container, this);
+        Provider<T> provider = this.getProvider(info);
+        return provider.get();
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {
         if (info == null) {
             return null;
         }
+        Provider<T> provider = null;
+        Provider<Scope> scope = null;
+        //
         if (info instanceof AbstractBindInfoProviderAdapter) {
             AbstractBindInfoProviderAdapter<T> adapter = (AbstractBindInfoProviderAdapter<T>) info;
-            Provider<T> provider = adapter.getCustomerProvider();
-            if (provider != null) {
-                return provider;
-            }
+            provider = adapter.getCustomerProvider();
+            scope = adapter.getScopeProvider();
         }
-        final AppContext appContext = this;
-        final DefineContainer container = getContextData().getBindInfoContainer();
-        return new Provider<T>() {
-            public T get() {
-                return getBeanBuilder().getInstance(info, container, appContext);
-            }
-        };
+        //
+        if (provider == null) {
+            final AppContext appContext = this;
+            final DefineContainer container = getContextData().getBindInfoContainer();
+            provider = new Provider<T>() {
+                public T get() {
+                    return getBeanBuilder().getInstance(info, container, appContext);
+                }
+            };
+        }
+        //
+        if (scope != null) {
+            provider = scope.get().scope(info, provider);
+        }
+        return provider;
     };
     //
     /**获取用于创建Bean的{@link BeanBuilder}*/
@@ -359,7 +370,7 @@ public abstract class TemplateAppContext implements AppContext {
             return;
         }
         if (logger.isInfoEnabled()) {
-            logger.info("loadModule " + module);
+            logger.info("loadModule " + module.getClass());
         }
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
@@ -394,7 +405,6 @@ public abstract class TemplateAppContext implements AppContext {
         logger.info("doInitialize completed!");
         //
         /*3.Start*/
-        logger.info("doInitialize completed!");
         logger.info("doStart now.");
         doStart();
         /*2.执行Aware通知*/

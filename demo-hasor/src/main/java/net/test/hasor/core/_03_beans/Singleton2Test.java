@@ -38,9 +38,9 @@ public class Singleton2Test {
             }
         });
         //
-        PojoBean myBean1 = appContext.getInstance("PojoBean");
-        System.out.println(myBean1);
-        PojoBean myBean2 = appContext.getInstance("PojoBean");
-        System.out.println(myBean2);
+        PojoBean myBean1 = appContext.getInstance(PojoBean.class);
+        System.out.println("1." + myBean1);
+        PojoBean myBean2 = appContext.getInstance(PojoBean.class);
+        System.out.println("2." + myBean2);
     }
 }

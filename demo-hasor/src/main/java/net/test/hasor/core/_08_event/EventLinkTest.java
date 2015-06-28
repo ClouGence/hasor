@@ -37,7 +37,7 @@ public class EventLinkTest {
         //
         final String EventName = "MyEvent";//事件链的终端
         final String SeedEvent = "SeedEvent";//种子事件
-        //1.添加事件监听器F
+        //1.添加事件监听器
         ec.addListener(EventName, new MyListener());
         ec.addListener(SeedEvent, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
@@ -50,7 +50,7 @@ public class EventLinkTest {
         });
         //2.引发种子事件
         ec.fireAsyncEvent(SeedEvent, appContext);
-        //3.由于是同步事件，因此下面这条日志会在事件处理完毕之后喷出
+        //3.由于是异步事件，因此下面这条日志会在所有事件之前喷出
         System.out.println("before All Event.");
         Thread.sleep(1000);
     }

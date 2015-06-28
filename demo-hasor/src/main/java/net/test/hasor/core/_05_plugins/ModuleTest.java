@@ -40,6 +40,6 @@ public class ModuleTest {
         AppContext appContext = Hasor.createAppContext(new Mod_1(), new Mod_2(), new Mod_3());
         //
         List<String> says = appContext.findBindingBean(String.class);
-        logger.info("all modules say:%s.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
+        logger.info("all modules say:{}.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
     }
 }

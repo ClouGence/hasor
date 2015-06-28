@@ -22,7 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
+import net.hasor.core.Provider;
+import net.hasor.core.Scope;
+import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+import net.hasor.core.scope.SingletonScope;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefineContainer {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
+    private Provider<Scope>                         singletonScope   = new InstanceProvider<Scope>(new SingletonScope());
     private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
     private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
@@ -111,7 +116,6 @@ public class DefineContainer {
             }
             typeList.add(bindID);
             //
-            //
             String bindName = info.getBindName();
             bindName = StringUtils.isBlank(bindName) ? "" : bindName;
             List<String> newNameList = new ArrayList<String>();
@@ -121,6 +125,15 @@ public class DefineContainer {
             }
             nameList.add(bindName);
             //
+            if (info instanceof AbstractBindInfoProviderAdapter) {
+                AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
+                if (infoAdapter.isSingleton() == true) {
+                    if (infoAdapter.getScopeProvider() != null) {
+                        throw new IllegalStateException("Single mode cannot be set scope.");
+                    }
+                    infoAdapter.setScopeProvider(this.singletonScope);
+                }
+            }
         }
         this.tempBindInfoList.clear();
     }
@@ -129,5 +142,6 @@ public class DefineContainer {
         this.indexTypeMapping.clear();
         this.indexNameMapping.clear();
         this.idDataSource.clear();
+        this.singletonScope = new InstanceProvider<Scope>(new SingletonScope());
     }
 }

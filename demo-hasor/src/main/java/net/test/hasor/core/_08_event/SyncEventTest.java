@@ -37,8 +37,9 @@ public class SyncEventTest {
         //1.添加事件监听器
         ec.addListener(EventName, new MyListener());
         //2.引发异步事件
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             ec.fireSyncEvent(EventName, i);
+        }
         //3.由于是同步事件，因此下面这条日志会在事件处理完毕之后喷出
         System.out.println("before Event do sth...");
     }
