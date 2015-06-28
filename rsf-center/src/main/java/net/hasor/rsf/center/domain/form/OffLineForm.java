@@ -15,12 +15,13 @@
  */
 package net.hasor.rsf.center.domain.form;
 import net.hasor.mvc.api.ReqParam;
+import net.hasor.rsf.center.domain.valid.AccessInfo;
 /**
  * 
  * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OffLineForm {
+public class OffLineForm implements AccessInfo {
     @ReqParam("Terminal_ID")
     private String terminalID;
     @ReqParam("Terminal_AccessKey")

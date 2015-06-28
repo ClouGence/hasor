@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.web;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.Valid;
 import net.hasor.mvc.support.AbstractWebController;
 import net.hasor.rsf.center.domain.form.UnServiceForm;
 /**
@@ -25,7 +26,7 @@ import net.hasor.rsf.center.domain.form.UnServiceForm;
  */
 @MappingTo("/apis/unservice")
 public class UnService extends AbstractWebController {
-    public void execute(@Params UnServiceForm unServiceForm) {
+    public void execute(@Valid("Access") @Params UnServiceForm unServiceForm) {
         System.out.println("/apis/unservice");
     }
 }

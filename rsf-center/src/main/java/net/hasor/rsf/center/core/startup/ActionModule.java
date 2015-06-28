@@ -16,8 +16,10 @@
 package net.hasor.rsf.center.core.startup;
 import java.util.Set;
 import net.hasor.mvc.ModelController;
+import net.hasor.mvc.Validation;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.rsf.center.domain.valid.AccessValid;
 import net.hasor.web.WebApiBinder;
 /**
  * WebMVC
@@ -29,6 +31,7 @@ public class ActionModule extends ControllerModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         appController = apiBinder.getEnvironment().findClass(ModelController.class);
+        apiBinder.bindType("Access", Validation.class, AccessValid.class);
         super.loadModule(apiBinder);
     }
     @Override

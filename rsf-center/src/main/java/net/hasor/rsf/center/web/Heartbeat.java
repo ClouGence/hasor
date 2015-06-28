@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.web;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.Valid;
 import net.hasor.mvc.support.AbstractWebController;
 import net.hasor.rsf.center.domain.form.HeartBeatForm;
 /**
@@ -25,7 +26,7 @@ import net.hasor.rsf.center.domain.form.HeartBeatForm;
  */
 @MappingTo("/apis/heartbeat")
 public class Heartbeat extends AbstractWebController {
-    public void execute(@Params HeartBeatForm heartBeatForm) {
+    public void execute(@Valid("Access") @Params HeartBeatForm heartBeatForm) {
         System.out.println("/apis/heartbeat");
     }
 }

@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.web;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.Valid;
 import net.hasor.mvc.support.AbstractWebController;
 import net.hasor.rsf.center.domain.form.PushServiceForm;
 /**
@@ -25,7 +26,7 @@ import net.hasor.rsf.center.domain.form.PushServiceForm;
  */
 @MappingTo("/apis/customer")
 public class Customer extends AbstractWebController {
-    public void execute(@Params PushServiceForm pushServiceForm) {
+    public void execute(@Valid("Access") @Params PushServiceForm pushServiceForm) {
         System.out.println("/apis/customer");
     }
 }

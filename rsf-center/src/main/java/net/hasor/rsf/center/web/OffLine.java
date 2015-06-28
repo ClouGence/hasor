@@ -17,6 +17,7 @@ package net.hasor.rsf.center.web;
 import java.io.IOException;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.Valid;
 import net.hasor.mvc.support.AbstractWebController;
 import net.hasor.rsf.center.domain.form.OffLineForm;
 /**
@@ -26,7 +27,7 @@ import net.hasor.rsf.center.domain.form.OffLineForm;
  */
 @MappingTo("/apis/offline")
 public class OffLine extends AbstractWebController {
-    public void execute(@Params OffLineForm offLineForm) throws IOException {
+    public void execute(@Valid("Access") @Params OffLineForm offLineForm) throws IOException {
         getResponse().getWriter().write("abc");
         System.out.println("/apis/offline");
     }
