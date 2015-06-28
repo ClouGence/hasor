@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Valid {
-    public String[] value();
+    public String[] value() default {};
 }

@@ -16,8 +16,6 @@
 package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Map.Entry;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.MetaDataBindingBuilder;
 import net.hasor.core.BindInfo;
@@ -50,17 +48,8 @@ public abstract class LoadHellper {
     //
     /**装载拦截器*/
     public void loadInterceptor(Class<? extends WebCallInterceptor> interceptor) {
-        this.loadInterceptor(interceptor, null);
-    }
-    /**装载拦截器*/
-    public void loadInterceptor(Class<? extends WebCallInterceptor> interceptor, Map<String, ?> params) {
         logger.info("loadInterceptor type is {}", interceptor);
         MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
-        if (params != null) {
-            for (Entry<String, ?> ent : params.entrySet()) {
-                metaDatainfo.metaData(ent.getKey(), ent.getValue());
-            }
-        }
         WebCallInterceptorDefine define = new WebCallInterceptorDefine(metaDatainfo.toInfo());
         apiBinder().autoAware(define);
         apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);

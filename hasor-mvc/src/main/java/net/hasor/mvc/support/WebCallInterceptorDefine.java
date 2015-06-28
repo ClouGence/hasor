@@ -33,6 +33,9 @@ class WebCallInterceptorDefine implements WebCallInterceptor, AppContextAware {
     }
     public void setAppContext(AppContext appContext) {
         this.callInterceptor = appContext.getInstance(this.targetBindInfo);
+        if (this.callInterceptor instanceof AppContextAware) {
+            ((AppContextAware) this.callInterceptor).setAppContext(appContext);
+        }
     }
     public Object exeCall(Object[] args, WebCall call) throws Throwable {
         if (this.callInterceptor == null) {
