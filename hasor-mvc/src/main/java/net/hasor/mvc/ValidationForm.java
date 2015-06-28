@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.plugins.validation;
-import net.hasor.mvc.WebCall;
-import net.hasor.mvc.WebCallInterceptor;
+package net.hasor.mvc;
 import org.more.bizcommon.ResultDO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
- * 
+ * 验证表单，如果验证失败返回验证消息。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ValidationCallInterceptor implements WebCallInterceptor {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    //
-    /** 执行调用 */
-    public Object exeCall(Object[] args, WebCall call) throws Throwable {
-        if (args != null && args.length != 0) {
-            for (Object obj : args) {
-                if (obj instanceof Validation) {
-                    ResultDO<String> result = ((Validation) obj).doValidation();
-                }
-            }
-        }
-        return call.call(args);
-    }
+public interface ValidationForm {
+    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
+    public ResultDO<String> doValidation();
 }

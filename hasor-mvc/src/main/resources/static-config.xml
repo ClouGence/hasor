@@ -2,6 +2,9 @@
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-mvc">
 	<hasor>
 		<mvcConfig>
+			<!-- 请求验证 -->
+			<validAttrName>valid</validAttrName>
+			<!-- 结果处理 -->
 			<resultProcess>
 				<resultProces annoType="net.hasor.mvc.plugins.result.Forword" processType="net.hasor.mvc.plugins.result.ForwordResultProcess" />
 				<resultProces annoType="net.hasor.mvc.plugins.result.Include" processType="net.hasor.mvc.plugins.result.IncludeResultProcess" />

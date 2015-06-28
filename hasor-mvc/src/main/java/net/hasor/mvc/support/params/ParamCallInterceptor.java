@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.inner;
+package net.hasor.mvc.support.params;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -42,7 +42,6 @@ import net.hasor.mvc.api.Produces;
 import net.hasor.mvc.api.QueryParam;
 import net.hasor.mvc.api.ReqParam;
 import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.mvc.support.WebCallWrap;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;

@@ -71,7 +71,11 @@ public class FactoryBeanBuilder implements BeanBuilder {
                 } else {
                     newType = cc.getSuperClass();
                 }
-                return (T) createObject(newType, container, appContext);
+                Object targetBean = createObject(newType, container, appContext);
+                //                if (targetBean instanceof BindInfoAware) {
+                //                    ((BindInfoAware) targetBean).setBindInfo(bindInfo);;
+                //                }
+                return (T) targetBean;
             } catch (Exception e) {
                 throw ExceptionUtils.toRuntimeException(e);
             }

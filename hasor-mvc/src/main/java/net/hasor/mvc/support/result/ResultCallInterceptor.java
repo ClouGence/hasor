@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.inner;
+package net.hasor.mvc.support.result;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
     //
     public Object exeCall(Object[] args, WebCall call) throws Throwable {
         Object returnData = call.call(args);
-        //
         if (this.defineList == null) {
             return returnData;
         }
@@ -45,7 +44,6 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
         if (annos == null || annos.length == 0) {
             return returnData;
         }
-        //
         for (Annotation atAnno : annos) {
             for (ResultProcessDefine atDefine : this.defineList) {
                 if (atDefine.getResultType().isInstance(atAnno) == false) {
@@ -54,7 +52,6 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
                 returnData = atDefine.returnData(returnData, call);
             }
         }
-        //
         return returnData;
     }
 }

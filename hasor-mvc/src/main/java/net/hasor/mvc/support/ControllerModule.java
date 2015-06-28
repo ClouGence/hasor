@@ -15,15 +15,17 @@
  */
 package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.XmlNode;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
-import net.hasor.mvc.plugins.validation.ValidationCallInterceptor;
-import net.hasor.mvc.support.inner.ParamCallInterceptor;
-import net.hasor.mvc.support.inner.ResultCallInterceptor;
+import net.hasor.mvc.support.params.ParamCallInterceptor;
+import net.hasor.mvc.support.result.ResultCallInterceptor;
+import net.hasor.mvc.support.valid.ValidationCallInterceptor;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.util.ClassUtils;
@@ -66,7 +68,10 @@ public abstract class ControllerModule extends WebModule {
             //内置插件
             helper.loadInterceptor(ParamCallInterceptor.class);
             helper.loadInterceptor(ValidationCallInterceptor.class);
-            helper.loadInterceptor(ResultCallInterceptor.class);
+            String validAttrName = apiBinder.getEnvironment().getSettings().getString("hasor.mvcConfig.validAttrName", "valid");
+            Map<String, String> paramMap = new HashMap<String, String>();
+            paramMap.put("valid", validAttrName);
+            helper.loadInterceptor(ResultCallInterceptor.class, paramMap);
             //
             //框架初始化
             apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));

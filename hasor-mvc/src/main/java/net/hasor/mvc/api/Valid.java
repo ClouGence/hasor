@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.plugins.validation;
-import org.more.bizcommon.ResultDO;
+package net.hasor.mvc.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 验证表单，如果验证失败返回验证消息。
- * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * 验证参数
+ * @see net.hasor.mvc.Validation
+ * @see net.hasor.mvc.ValidationForm
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface Validation {
-    public ResultDO<String> doValidation();
+@Target({ ElementType.PARAMETER, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Valid {
+    public String[] value();
 }
