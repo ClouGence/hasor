@@ -83,17 +83,6 @@ public abstract class TemplateAppContext implements AppContext {
         DefineContainer container = getContextData().getBindInfoContainer();
         return container.getBindInfoByID(bindID);
     }
-    /**创建Bean。*/
-    public <T> T getInstance(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
-        DefineContainer container = getContextData().getBindInfoContainer();
-        BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
-        if (bindInfo != null) {
-            return this.getInstance(bindInfo);
-        }
-        return null;
-    }
-    /*---------------------------------------------------------------------------------------Bean*/
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
@@ -104,11 +93,49 @@ public abstract class TemplateAppContext implements AppContext {
         }
         return nameList.toArray(new String[nameList.size()]);
     }
+    /*---------------------------------------------------------------------------------------Bean*/
+    /**创建Bean。*/
+    public <T> T getInstance(String bindID) {
+        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        DefineContainer container = getContextData().getBindInfoContainer();
+        BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
+        if (bindInfo != null) {
+            return this.getInstance(bindInfo);
+        }
+        return null;
+    }
     /**创建Bean。*/
     public <T> T getInstance(final Class<T> targetClass) {
+        Provider<T> provider = this.getProvider(targetClass);
+        if (provider != null) {
+            return provider.get();
+        }
+        DefineContainer container = getContextData().getBindInfoContainer();
+        return getBeanBuilder().getDefaultInstance(targetClass, container, this);
+    }
+    /**创建Bean。*/
+    public <T> T getInstance(final BindInfo<T> info) {
+        Provider<T> provider = this.getProvider(info);
+        if (provider != null) {
+            return provider.get();
+        }
+        return null;
+    }
+    /**创建Bean。*/
+    public <T> Provider<T> getProvider(String bindID) {
+        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        DefineContainer container = getContextData().getBindInfoContainer();
+        BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
+        if (bindInfo != null) {
+            return this.getProvider(bindInfo);
+        }
+        return null;
+    }
+    /**创建Bean。*/
+    public <T> Provider<T> getProvider(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         //
-        DefineContainer container = getContextData().getBindInfoContainer();
+        final DefineContainer container = getContextData().getBindInfoContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
         if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
             for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
@@ -116,17 +143,17 @@ public abstract class TemplateAppContext implements AppContext {
                 if (adapter.getBindName() == null) {
                     Provider<T> provider = this.getProvider(adapter);
                     if (provider != null) {
-                        return provider.get();
+                        return provider;
                     }
                 }
             }
         }
-        return getBeanBuilder().getDefaultInstance(targetClass, container, this);
-    };
-    /**创建Bean。*/
-    public <T> T getInstance(final BindInfo<T> info) {
-        Provider<T> provider = this.getProvider(info);
-        return provider.get();
+        final AppContext appContext = this;
+        return new Provider<T>() {
+            public T get() {
+                return getBeanBuilder().getDefaultInstance(targetClass, container, appContext);
+            }
+        };
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {

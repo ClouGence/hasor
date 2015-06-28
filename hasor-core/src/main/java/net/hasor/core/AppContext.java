@@ -46,8 +46,6 @@ public interface AppContext {
     public String[] getNames(Class<?> targetClass);
     /** @return 判断是否存在某个ID的绑定。*/
     public boolean containsBindID(String bindID);
-    /**创建Bean。*/
-    public <T> Provider<T> getProvider(BindInfo<T> info);
     /**根据ID获取{@link BindInfo}。*/
     public <T> BindInfo<T> getBindInfo(String bindID);
     /**创建Bean。*/
@@ -56,6 +54,12 @@ public interface AppContext {
     public <T> T getInstance(Class<T> targetClass);
     /**创建Bean。*/
     public <T> T getInstance(BindInfo<T> info);
+    /**创建Bean{@link Provider}。*/
+    public <T> Provider<T> getProvider(String bindID);
+    /**创建Bean{@link Provider}。*/
+    public <T> Provider<T> getProvider(Class<T> targetClass);
+    /**创建Bean{@link Provider}。*/
+    public <T> Provider<T> getProvider(BindInfo<T> info);
     //
     /*-------------------------------------------------------------------------------------Binder*/
     /**
