@@ -166,18 +166,15 @@ class MappingInfoDefine implements MappingInfo {
             public Annotation[] getAnnotations() {
                 return method.targetMethodAnno;
             }
-            public Object[] getArgs() {
-                return method.targetDefaultValues;
-            }
             public ModelController getTarget() {
                 return mc;
             }
             public MappingInfo getMappingInfo() {
                 return MappingInfoDefine.this;
             }
-            public Object call() throws Throwable {
+            public Object call(Object[] args) throws Throwable {
                 try {
-                    return method.targetMethod.invoke(mc, getArgs());
+                    return method.targetMethod.invoke(mc, args);
                 } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }
@@ -189,7 +186,7 @@ class MappingInfoDefine implements MappingInfo {
                 return httpInfo.getHttpResponse();
             }
         };
-        return new WebCallInvocation(call, callInterceptor).call();
+        return new WebCallInvocation(call, callInterceptor).call(method.targetDefaultValues);
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

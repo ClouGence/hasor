@@ -28,15 +28,14 @@ public class ValidationCallInterceptor implements WebCallInterceptor {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
     /** 执行调用 */
-    public Object exeCall(WebCall call) throws Throwable {
-        Object[] params = call.getArgs();
-        if (params != null && params.length != 0) {
-            for (Object obj : params) {
+    public Object exeCall(Object[] args, WebCall call) throws Throwable {
+        if (args != null && args.length != 0) {
+            for (Object obj : args) {
                 if (obj instanceof Validation) {
                     ResultDO<String> result = ((Validation) obj).doValidation();
                 }
             }
         }
-        return call.call();
+        return call.call(args);
     }
 }

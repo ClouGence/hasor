@@ -36,10 +36,8 @@ public interface WebCall {
     public MappingInfo getMappingInfo();
     /**目标类*/
     public ModelController getTarget();
-    /**获取调用参数*/
-    public Object[] getArgs();
     /**执行最终的调用并传入参数。*/
-    public Object call() throws Throwable;
+    public Object call(Object[] args) throws Throwable;
     /**请求*/
     public HttpServletRequest getHttpRequest();
     /**响应*/

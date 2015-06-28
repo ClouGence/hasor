@@ -64,15 +64,12 @@ class WebCallInvocation implements WebCall {
     public HttpServletResponse getHttpResponse() {
         return targetWebCall.getHttpResponse();
     }
-    public Object call() throws Throwable {
+    public Object call(Object[] args) throws Throwable {
         this.index++;
         if (this.index < this.webCallInterceptor.length) {
-            return this.webCallInterceptor[this.index].exeCall(this);
+            return this.webCallInterceptor[this.index].exeCall(args, this);
         } else {
-            return this.targetWebCall.call();
+            return this.targetWebCall.call(args);
         }
-    }
-    public Object[] getArgs() {
-        return this.targetWebCall.getArgs();
     }
 }

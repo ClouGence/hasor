@@ -56,8 +56,8 @@ public class WebCallWrap implements WebCall {
         return this.call.getTarget();
     }
     @Override
-    public Object call() throws Throwable {
-        return this.call.call();
+    public Object call(Object[] args) throws Throwable {
+        return this.call.call(args);
     }
     @Override
     public HttpServletRequest getHttpRequest() {
@@ -66,9 +66,5 @@ public class WebCallWrap implements WebCall {
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.call.getHttpResponse();
-    }
-    @Override
-    public Object[] getArgs() {
-        return this.call.getArgs();
     }
 }

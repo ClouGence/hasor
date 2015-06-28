@@ -21,5 +21,5 @@ package net.hasor.mvc;
  */
 public interface WebCallInterceptor {
     /**执行调用*/
-    public Object exeCall(WebCall call) throws Throwable;
+    public Object exeCall(Object[] args, WebCall call) throws Throwable;
 }

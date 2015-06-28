@@ -56,17 +56,12 @@ import org.slf4j.LoggerFactory;
 public class ParamCallInterceptor implements WebCallInterceptor {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     /** 执行调用 */
-    public Object exeCall(WebCall call) throws Throwable {
+    public Object exeCall(Object[] args, WebCall call) throws Throwable {
         this.initCall(call);
-        final Object[] args = this.resolveParams(call);
-        call = new WebCallWrap(call) {
-            public Object[] callParams() {
-                return args;
-            }
-        };
+        args = this.resolveParams(call);
         //
         this.doProduces(call);
-        return call.call();
+        return call.call(args);
     }
     /**初始化调用。*/
     protected void initCall(WebCall call) {

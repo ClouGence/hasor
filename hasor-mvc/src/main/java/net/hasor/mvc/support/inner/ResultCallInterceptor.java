@@ -35,8 +35,8 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
         }
     }
     //
-    public Object exeCall(WebCall call) throws Throwable {
-        Object returnData = call.call();
+    public Object exeCall(Object[] args, WebCall call) throws Throwable {
+        Object returnData = call.call(args);
         //
         if (this.defineList == null) {
             return returnData;
