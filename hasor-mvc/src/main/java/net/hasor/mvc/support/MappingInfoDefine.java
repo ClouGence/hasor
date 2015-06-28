@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.mvc.Call;
-import net.hasor.mvc.CallStrategy;
 import net.hasor.mvc.MappingInfo;
 import net.hasor.mvc.ModelController;
+import net.hasor.mvc.WebCall;
+import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.HttpMethod;
 import net.hasor.mvc.api.MappingTo;
 import org.more.UndefinedException;
@@ -142,8 +142,7 @@ class MappingInfoDefine implements MappingInfo {
      * @return 返回调用结果
      * @throws Throwable 异常抛出
      */
-    public final Object invoke(final HttpInfo httpInfo, CallStrategy callStrategy) throws Throwable {
-        Hasor.assertIsNotNull(callStrategy);
+    public final Object invoke(final HttpInfo httpInfo, WebCallInterceptor[] callInterceptor) throws Throwable {
         String httpMethod = httpInfo.getHttpRequest().getMethod();
         MethodInfo methodInfo = this.httpMapping.get(httpMethod);
         if (methodInfo == null) {
@@ -154,7 +153,7 @@ class MappingInfoDefine implements MappingInfo {
         final MethodInfo method = methodInfo;
         //
         final ModelController mc = this.targetProvider.get();
-        final Call call = new Call() {
+        final WebCall call = new WebCall() {
             public Method getMethod() {
                 return method.targetMethod;
             }
@@ -167,15 +166,18 @@ class MappingInfoDefine implements MappingInfo {
             public Annotation[] getAnnotations() {
                 return method.targetMethodAnno;
             }
+            public Object[] getArgs() {
+                return method.targetDefaultValues;
+            }
             public ModelController getTarget() {
                 return mc;
             }
             public MappingInfo getMappingInfo() {
                 return MappingInfoDefine.this;
             }
-            public Object call(Object... objects) throws Throwable {
+            public Object call() throws Throwable {
                 try {
-                    return method.targetMethod.invoke(mc, objects);
+                    return method.targetMethod.invoke(mc, getArgs());
                 } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }
@@ -187,8 +189,7 @@ class MappingInfoDefine implements MappingInfo {
                 return httpInfo.getHttpResponse();
             }
         };
-        //
-        return callStrategy.exeCall(call);
+        return new WebCallInvocation(call, callInterceptor).call();
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -200,6 +201,7 @@ class MappingInfoDefine implements MappingInfo {
         public Class<?>       targetType;
         public Method         targetMethod;
         public Class<?>[]     targetParamTypes;
+        public Object[]       targetDefaultValues;
         public Annotation[][] targetParamAnno;
         public Annotation[]   targetMethodAnno;
         //
@@ -209,6 +211,12 @@ class MappingInfoDefine implements MappingInfo {
             this.targetParamTypes = targetMethod.getParameterTypes();
             this.targetParamAnno = targetMethod.getParameterAnnotations();
             this.targetMethodAnno = targetMethod.getAnnotations();
+            //
+            this.targetDefaultValues = new Object[this.targetParamTypes.length];
+            for (int i = 0; i < this.targetParamTypes.length; i++) {
+                Class<?> type = this.targetParamTypes[i];
+                this.targetDefaultValues[i] = BeanUtils.getDefaultValue(type);
+            }
         }
     }
 }

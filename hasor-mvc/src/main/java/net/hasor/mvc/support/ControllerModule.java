@@ -21,6 +21,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.XmlNode;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
+import net.hasor.mvc.plugins.validation.ValidationCallInterceptor;
+import net.hasor.mvc.support.inner.ParamCallInterceptor;
+import net.hasor.mvc.support.inner.ResultCallInterceptor;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.util.ClassUtils;
@@ -34,23 +37,17 @@ public abstract class ControllerModule extends WebModule {
     //
     public void loadModule(final WebApiBinder apiBinder) throws Throwable {
         logger.info("work at ControllerModule. -> {}", this.getClass());
-        //
         //1.create LoadHellper
         LoadHellper helper = new LoadHellper() {
-            protected ApiBinder apiBinder() {
+            public ApiBinder apiBinder() {
                 return apiBinder;
             }
             protected ControllerModule module() {
                 return ControllerModule.this;
             }
         };
-        //
-        //2.load config
-        this.loadController(helper);
-        //
-        //3.install-避免初始化多次
+        //2.install-避免初始化多次
         if (initController.compareAndSet(false, true)) {
-            //
             List<XmlNode> allResultProcess = apiBinder.getEnvironment().getSettings().merageXmlNode("hasor.mvcConfig.resultProcess", "resultProces");
             for (XmlNode atNode : allResultProcess) {
                 String annoTypeStr = atNode.getAttribute("annoType");
@@ -66,11 +63,18 @@ public abstract class ControllerModule extends WebModule {
                     logger.error("resultProcess: anno[{}] to:{} ,error -> {}", annoTypeStr, processTypeStr, e);
                 }
             }
+            //内置插件
+            helper.loadInterceptor(ParamCallInterceptor.class);
+            helper.loadInterceptor(ValidationCallInterceptor.class);
+            helper.loadInterceptor(ResultCallInterceptor.class);
             //
-            apiBinder.bindType(ResultDefineList.class, apiBinder.autoAware(new ResultDefineList()));
+            //框架初始化
             apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
             apiBinder.filter("/*").through(new ControllerFilter());
         }
+        //
+        //3.load config
+        this.loadController(helper);
     }
     //
     protected abstract void loadController(LoadHellper helper);

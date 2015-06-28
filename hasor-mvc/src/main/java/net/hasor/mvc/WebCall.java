@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Call {
+public interface WebCall {
     /**目标方法*/
     public Method getMethod();
     /**目标方法参数*/
@@ -36,8 +36,10 @@ public interface Call {
     public MappingInfo getMappingInfo();
     /**目标类*/
     public ModelController getTarget();
+    /**获取调用参数*/
+    public Object[] getArgs();
     /**执行最终的调用并传入参数。*/
-    public Object call(Object... params) throws Throwable;
+    public Object call() throws Throwable;
     /**请求*/
     public HttpServletRequest getHttpRequest();
     /**响应*/

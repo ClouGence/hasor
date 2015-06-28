@@ -20,5 +20,5 @@ package net.hasor.mvc;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ResultProcess {
-    public Object returnData(Object returnData, Call call) throws Throwable;
+    public Object returnData(Object returnData, WebCall call) throws Throwable;
 }

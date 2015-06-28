@@ -15,6 +15,7 @@
  */
 package net.hasor.mvc.support;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,8 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.support.caller.ExecuteCallStrategy;
-import net.hasor.mvc.support.caller.ResultCallStrategy;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
@@ -35,8 +34,8 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ControllerFilter implements Filter {
-    private RootController   rootController = null;
-    private ResultDefineList defineList     = null;
+    private RootController             rootController = null;
+    private WebCallInterceptorDefine[] defineList     = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -44,10 +43,12 @@ class ControllerFilter implements Filter {
         if (this.rootController == null) {
             throw new NullPointerException("RootController is null.");
         }
-        this.defineList = appContext.getInstance(ResultDefineList.class);
+        List<WebCallInterceptorDefine> defineList = appContext.findBindingBean(WebCallInterceptorDefine.class);
+        this.defineList = defineList.toArray(new WebCallInterceptorDefine[defineList.size()]);
     }
-    public void destroy() {}
-    //
+    public void destroy() {
+        //
+    }
     //
     //
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -80,7 +81,7 @@ class ControllerFilter implements Filter {
                 public HttpServletRequest getHttpRequest() {
                     return infoHttpReq;
                 }
-            }, new ResultCallStrategy(new ExecuteCallStrategy(), this.defineList));
+            }, this.defineList);
             //
         } catch (Throwable target) {
             if (target instanceof ServletException)

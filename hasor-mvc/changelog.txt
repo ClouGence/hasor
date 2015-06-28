@@ -1,4 +1,9 @@
-﻿===== Hasor-MVC v0.0.4
+﻿===== Hasor-MVC v0.0.6
+* 改进:
+    01.优化扩展机制的设计。
+    02.进一步模块化设计。
+
+===== Hasor-MVC v0.0.5
 * 新增:
     01.新增，Params 注解用于将多个请求参数包装到一个类中。
 * 改进:
@@ -8,6 +13,9 @@
     04.AttributeParam、CookieParam、HeaderParam、PathParam、QueryParam、ReqParam。可以标记到字段和参数上。
     05.一个类只能用于表述一个action。
     06.Forword、Include、Redirect插件化。
+
+===== Hasor-MVC v0.0.4
+(无)
 
 ===== Hasor-MVC v0.0.3
 (无)

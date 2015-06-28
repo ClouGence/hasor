@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.caller;
+package net.hasor.mvc.support.inner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,10 +29,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import net.hasor.mvc.Call;
-import net.hasor.mvc.CallStrategy;
 import net.hasor.mvc.MappingInfo;
 import net.hasor.mvc.ModelController;
+import net.hasor.mvc.WebCall;
+import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.AttributeParam;
 import net.hasor.mvc.api.CookieParam;
 import net.hasor.mvc.api.HeaderParam;
@@ -42,35 +42,41 @@ import net.hasor.mvc.api.Produces;
 import net.hasor.mvc.api.QueryParam;
 import net.hasor.mvc.api.ReqParam;
 import net.hasor.mvc.support.AbstractWebController;
+import net.hasor.mvc.support.WebCallWrap;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
+ * 内置插件，负责处理参数映射。   
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ExecuteCallStrategy implements CallStrategy {
-    protected Logger                 logger   = LoggerFactory.getLogger(getClass());
-    public static final CallStrategy Instance = new ExecuteCallStrategy();
-    //
+public class ParamCallInterceptor implements WebCallInterceptor {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    /** 执行调用 */
+    public Object exeCall(WebCall call) throws Throwable {
+        this.initCall(call);
+        final Object[] args = this.resolveParams(call);
+        call = new WebCallWrap(call) {
+            public Object[] callParams() {
+                return args;
+            }
+        };
+        //
+        this.doProduces(call);
+        return call.call();
+    }
     /**初始化调用。*/
-    protected void initCall(Call call) {
+    protected void initCall(WebCall call) {
         ModelController controller = call.getTarget();
         if (controller instanceof AbstractWebController) {
             ((AbstractWebController) controller).initController(call.getHttpRequest(), call.getHttpResponse());
         }
     }
-    /** 执行调用 */
-    public Object exeCall(Call call) throws Throwable {
-        this.initCall(call);
-        Object[] args = this.resolveParams(call);
-        return this.returnCallBack(call.call(args), call);
-    }
-    /**处理结果 */
-    protected Object returnCallBack(Object returnData, Call call) {
+    /**处理结果(Produces) */
+    protected void doProduces(WebCall call) throws Throwable {
         Method targetMethod = call.getMethod();
         if (targetMethod.isAnnotationPresent(Produces.class) == true) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
@@ -79,11 +85,9 @@ public class ExecuteCallStrategy implements CallStrategy {
                 call.getHttpResponse().setContentType(proValue);
             }
         }
-        //
-        return returnData;
     }
     /**准备参数*/
-    protected final Object[] resolveParams(Call call) throws Throwable {
+    protected final Object[] resolveParams(WebCall call) throws Throwable {
         //
         Class<?>[] targetParamClass = call.getParameterTypes();
         Annotation[][] targetParamAnno = call.getMethodParamAnnos();
@@ -100,7 +104,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return invokeParams;
     }
     /**准备参数*/
-    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, Call call) {
+    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, WebCall call) {
         for (Annotation pAnno : paramAnno) {
             Object finalValue = resolveParam(paramClass, pAnno, call);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
@@ -112,9 +116,8 @@ public class ExecuteCallStrategy implements CallStrategy {
     }
     //
     //
-    //
     /**/
-    protected Object resolveParam(Class<?> paramClass, Annotation pAnno, Call call) {
+    protected Object resolveParam(Class<?> paramClass, Annotation pAnno, WebCall call) {
         Object atData = null;
         //
         if (atData == null) {
@@ -138,7 +141,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return atData;
     }
     /**/
-    private Object getParamsParam(Call call, Class<?> paramClass) {
+    private Object getParamsParam(WebCall call, Class<?> paramClass) {
         Object paramObject = null;
         try {
             paramObject = paramClass.newInstance();
@@ -162,17 +165,17 @@ public class ExecuteCallStrategy implements CallStrategy {
         return paramObject;
     }
     /**/
-    private Object getPathParam(Call call, PathParam pAnno, MappingInfo mappingInfo) {
+    private Object getPathParam(WebCall call, PathParam pAnno, MappingInfo mappingInfo) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(call, mappingInfo).get(paramName);
     }
     /**/
-    private Object getQueryParam(Call call, QueryParam pAnno) {
+    private Object getQueryParam(WebCall call, QueryParam pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(call).get(paramName);
     }
     /**/
-    private Object getHeaderParam(Call call, HeaderParam pAnno) {
+    private Object getHeaderParam(WebCall call, HeaderParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -194,7 +197,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return null;
     }
     /**/
-    private Object getCookieParam(Call call, CookieParam pAnno) {
+    private Object getCookieParam(WebCall call, CookieParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -213,7 +216,7 @@ public class ExecuteCallStrategy implements CallStrategy {
         return cookieList;
     }
     /**/
-    private Object getAttributeParam(Call call, AttributeParam pAnno) {
+    private Object getAttributeParam(WebCall call, AttributeParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -230,7 +233,7 @@ public class ExecuteCallStrategy implements CallStrategy {
     }
     /**/
     private Map<String, List<String>> queryParamLocal;
-    private Map<String, List<String>> getQueryParamMap(Call call) {
+    private Map<String, List<String>> getQueryParamMap(WebCall call) {
         if (queryParamLocal != null) {
             return queryParamLocal;
         }
@@ -272,7 +275,7 @@ public class ExecuteCallStrategy implements CallStrategy {
     }
     /**/
     private Map<String, Object> pathParamsLocal;
-    private Map<String, Object> getPathParamMap(Call call, MappingInfo mappingInfo) {
+    private Map<String, Object> getPathParamMap(WebCall call, MappingInfo mappingInfo) {
         if (this.pathParamsLocal != null) {
             return this.pathParamsLocal;
         }

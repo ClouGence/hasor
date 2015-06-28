@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.support.inner;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.mvc.Call;
 import net.hasor.mvc.ResultProcess;
+import net.hasor.mvc.WebCall;
 /**
  * 
  * @version : 2014年8月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ResultDefine implements ResultProcess, AppContextAware {
+public class ResultProcessDefine implements ResultProcess, AppContextAware {
     private Class<?>                resultType = null;
     private BindInfo<ResultProcess> bindInfo   = null;
     private AppContext              appContext = null;
@@ -32,14 +32,14 @@ public class ResultDefine implements ResultProcess, AppContextAware {
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
-    public ResultDefine(Class<?> resultType, BindInfo<ResultProcess> bindInfo) {
+    public ResultProcessDefine(Class<?> resultType, BindInfo<ResultProcess> bindInfo) {
         this.resultType = resultType;
         this.bindInfo = bindInfo;
     }
     public Class<?> getResultType() {
         return resultType;
     }
-    public Object returnData(Object returnData, Call call) throws Throwable {
+    public Object returnData(Object returnData, WebCall call) throws Throwable {
         ResultProcess exe = this.appContext.getInstance(this.bindInfo);
         return exe.returnData(returnData, call);
     }

@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
-import java.util.ArrayList;
-import java.util.List;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+package net.hasor.mvc.plugins.validation;
+import org.more.bizcommon.ResultDO;
 /**
- * ResultDefine集合
- * @version : 2013-5-10
- * @author 赵永春 (zyc@hasor.net)
+ * 验证表单，如果验证失败返回验证消息。
+ * @version : 2014年8月27日
+ * @author 赵永春(zyc@hasor.net)
  */
-class ResultDefineList extends ArrayList<ResultDefine> implements AppContextAware {
-    private static final long serialVersionUID = 5293997430939415693L;
-    public void setAppContext(AppContext appContext) {
-        List<ResultDefine> defineList = appContext.findBindingBean(ResultDefine.class);
-        this.addAll(defineList);
-    }
+public interface Validation {
+    public ResultDO<String> doValidation();
 }

@@ -20,6 +20,8 @@ package net.hasor.mvc;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface MappingInfo {
+    /**映射的路径。*/
     public String getMappingTo();
+    /**映射路径正则表达式匹配字符串。*/
     public String getMappingToMatches();
 }

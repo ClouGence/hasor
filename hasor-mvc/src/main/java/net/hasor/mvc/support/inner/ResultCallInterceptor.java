@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.caller;
+package net.hasor.mvc.support.inner;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
-import net.hasor.mvc.Call;
-import net.hasor.mvc.CallStrategy;
-import net.hasor.mvc.support.ResultDefine;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.mvc.WebCall;
+import net.hasor.mvc.WebCallInterceptor;
 /**
  * 代理CallStrategy已增加结果处理功能。
  * @version : 2013-5-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ResultCallStrategy implements CallStrategy {
-    private List<ResultDefine> defineList;
-    private CallStrategy       parentStrategy;
-    //
-    public ResultCallStrategy(CallStrategy parentStrategy, List<ResultDefine> defineList) {
-        this.defineList = defineList;
-        this.parentStrategy = parentStrategy;
+public class ResultCallInterceptor implements WebCallInterceptor, AppContextAware {
+    private List<ResultProcessDefine> defineList;
+    public void setAppContext(AppContext appContext) {
+        this.defineList = appContext.findBindingBean(ResultProcessDefine.class);
+        if (this.defineList == null) {
+            this.defineList = new ArrayList<ResultProcessDefine>();
+        }
     }
     //
-    public Object exeCall(Call call) throws Throwable {
-        Object returnData = this.parentStrategy.exeCall(call);
+    public Object exeCall(WebCall call) throws Throwable {
+        Object returnData = call.call();
         //
         if (this.defineList == null) {
             return returnData;
@@ -45,7 +47,7 @@ public class ResultCallStrategy implements CallStrategy {
         }
         //
         for (Annotation atAnno : annos) {
-            for (ResultDefine atDefine : this.defineList) {
+            for (ResultProcessDefine atDefine : this.defineList) {
                 if (atDefine.getResultType().isInstance(atAnno) == false) {
                     continue;
                 }

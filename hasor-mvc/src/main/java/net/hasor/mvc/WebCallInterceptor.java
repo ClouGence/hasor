@@ -19,7 +19,7 @@ package net.hasor.mvc;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface CallStrategy {
+public interface WebCallInterceptor {
     /**执行调用*/
-    public Object exeCall(Call call) throws Throwable;
+    public Object exeCall(WebCall call) throws Throwable;
 }

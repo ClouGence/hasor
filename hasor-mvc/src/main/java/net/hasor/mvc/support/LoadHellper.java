@@ -20,7 +20,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
+import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.support.inner.ResultProcessDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /***
@@ -31,21 +33,27 @@ import org.slf4j.LoggerFactory;
 public abstract class LoadHellper {
     protected static Logger logger = LoggerFactory.getLogger(LoadHellper.class);
     protected abstract ControllerModule module();
-    protected abstract ApiBinder apiBinder();
+    public abstract ApiBinder apiBinder();
     //
-    //
+    /**结果处理器*/
     public void loadResultProcess(Class<? extends Annotation> annoType, Class<? extends ResultProcess> processType) {
-        ApiBinder apiBinder = apiBinder();
-        //
         logger.info("loadResultDefine annoType is {} toInstance {}", annoType, processType);
         //
-        BindInfo<ResultProcess> processBindInfo = apiBinder.bindType(ResultProcess.class).uniqueName()//
-                .to(processType).asEagerSingleton().toInfo();/*单例*/
-        //
-        ResultDefine define = apiBinder.autoAware(new ResultDefine(annoType, processBindInfo));
-        apiBinder.bindType(ResultDefine.class).uniqueName().toInstance(define);
+        BindInfo<ResultProcess> info = this.apiBinder().bindType(ResultProcess.class).uniqueName().to(processType).toInfo();
+        ResultProcessDefine define = new ResultProcessDefine(annoType, info);
+        apiBinder().autoAware(define);
+        apiBinder().bindType(ResultProcessDefine.class).uniqueName().toInstance(define);
     }
     //
+    /**装载拦截器*/
+    public void loadInterceptor(Class<? extends WebCallInterceptor> interceptor) {
+        logger.info("loadInterceptor type is {}", interceptor);
+        BindInfo<WebCallInterceptor> info = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor).toInfo();
+        WebCallInterceptorDefine define = new WebCallInterceptorDefine(info);
+        apiBinder().autoAware(define);
+        apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
+    }
+    /**装载控制器*/
     public void loadType(Class<? extends ModelController> clazz) {
         int modifier = clazz.getModifiers();
         if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
@@ -63,7 +71,6 @@ public abstract class LoadHellper {
         apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
         apiBinder.bindType(clazz);
     }
-    //
     /**通过位运算决定check是否在data里。*/
     private static boolean checkIn(final int data, final int check) {
         int or = data | check;
