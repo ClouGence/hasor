@@ -26,7 +26,6 @@ import net.hasor.mvc.WebCall;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.Valid;
 import org.more.bizcommon.ResultDO;
-import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +62,9 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
                 if (dataList != null && dataList.isEmpty() == false) {
                     for (ValidData data : dataList) {
                         validList.put(data.getKey(), data);
+                        if (data.isValid() == false) {
+                            validResult = false;
+                        }
                     }
                 }
                 break;
@@ -72,20 +74,18 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
         if (StringUtils.isBlank(this.validAttrName) == false) {
             call.getHttpRequest().setAttribute(this.validAttrName, validList);
         }
-        //
         if (validResult == false) {
-            return BeanUtils.getDefaultValue(call.getMethod().getReturnType());
+            throw new ValidationException(validList);
         } else {
             return call.call(args);
         }
     }
     //
-    /** 执行调用 */
     private List<ValidData> doValidData(Object paramObj, Valid valid) throws Throwable {
         List<ValidData> validList = new ArrayList<ValidData>();
         if (paramObj instanceof ValidationForm) {
             ResultDO<String> result = ((ValidationForm) paramObj).doValidation();
-            ValidData vData = this.converResult(result);
+            ValidData vData = this.converResult(ValidationForm.class.getSimpleName(), result);
             if (vData != null) {
                 validList.add(vData);
             }
@@ -99,7 +99,7 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
                     continue;
                 }
                 ResultDO<String> result = validApp.doValidation(paramObj);
-                ValidData vData = this.converResult(result);
+                ValidData vData = this.converResult(validName, result);
                 if (vData != null) {
                     validList.add(vData);
                 }
@@ -107,7 +107,10 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
         }
         return validList;
     }
-    private ValidData converResult(ResultDO<String> result) {
-        return null;
+    private ValidData converResult(String validName, ResultDO<String> result) {
+        ValidData validData = new ValidData(validName, result.isSuccess());
+        validData.addValidString(result.getResult());
+        validData.addValidMessage(result.getMessageList());
+        return validData;
     }
 }

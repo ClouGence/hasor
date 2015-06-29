@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.mvc.plugins.result;
-import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.WebCall;
@@ -28,7 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 public class RedirectResultProcess implements ResultProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    public Object returnData(Object result, WebCall call) throws ServletException, IOException {
+    public Object onThrowable(Throwable throwable, WebCall call) throws Throwable {
+        throw throwable;
+    }
+    public Object onResult(Object result, WebCall call) throws Throwable {
         if (result == null) {
             return result;
         }

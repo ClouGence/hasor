@@ -27,10 +27,10 @@ import net.hasor.mvc.WebCall;
 public class ResultProcessDefine implements ResultProcess, AppContextAware {
     private Class<?>                resultType = null;
     private BindInfo<ResultProcess> bindInfo   = null;
-    private AppContext              appContext = null;
+    private ResultProcess           proc       = null;
     //
     public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
+        this.proc = appContext.getInstance(this.bindInfo);
     }
     public ResultProcessDefine(Class<?> resultType, BindInfo<ResultProcess> bindInfo) {
         this.resultType = resultType;
@@ -39,11 +39,13 @@ public class ResultProcessDefine implements ResultProcess, AppContextAware {
     public Class<?> getResultType() {
         return resultType;
     }
-    public Object returnData(Object returnData, WebCall call) throws Throwable {
-        ResultProcess exe = this.appContext.getInstance(this.bindInfo);
-        return exe.returnData(returnData, call);
-    }
     public String toString() {
         return this.resultType.getName() + "-[BindType: " + bindInfo.getBindType() + "]";
+    }
+    public Object onResult(Object result, WebCall call) throws Throwable {
+        return proc.onResult(result, call);
+    }
+    public Object onThrowable(Throwable throwable, WebCall call) throws Throwable {
+        return proc.onResult(throwable, call);
     }
 }

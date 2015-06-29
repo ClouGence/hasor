@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc;
+package net.hasor.mvc.support.valid;
+import java.util.Map;
 /**
  * 
- * @version : 2014年8月29日
+ * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ResultProcess {
-    public Object onResult(Object result, WebCall call) throws Throwable;
-    public Object onThrowable(Throwable throwable, WebCall call) throws Throwable;
+public class ValidationException extends RuntimeException {
+    private static final long      serialVersionUID = 18182020433905673L;
+    private Map<String, ValidData> validList;
+    //
+    public ValidationException(Map<String, ValidData> validList) {
+        this.validList = validList;
+    }
+    public Map<String, ValidData> getValidList() {
+        return this.validList;
+    }
 }

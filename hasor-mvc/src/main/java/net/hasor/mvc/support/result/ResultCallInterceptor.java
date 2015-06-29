@@ -34,12 +34,18 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
             this.defineList = new ArrayList<ResultProcessDefine>();
         }
     }
-    //
     public Object exeCall(Object[] args, WebCall call) throws Throwable {
-        Object returnData = call.call(args);
-        if (this.defineList == null) {
-            return returnData;
+        Throwable throwable = null;
+        Object returnData = null;
+        try {
+            returnData = call.call(args);
+            if (this.defineList == null) {
+                return returnData;
+            }
+        } catch (Throwable e) {
+            throwable = e;
         }
+        //
         Annotation[] annos = call.getAnnotations();
         if (annos == null || annos.length == 0) {
             return returnData;
@@ -49,7 +55,11 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
                 if (atDefine.getResultType().isInstance(atAnno) == false) {
                     continue;
                 }
-                returnData = atDefine.returnData(returnData, call);
+                if (throwable != null) {
+                    returnData = atDefine.onThrowable(throwable, call);
+                } else {
+                    returnData = atDefine.onResult(returnData, call);
+                }
             }
         }
         return returnData;

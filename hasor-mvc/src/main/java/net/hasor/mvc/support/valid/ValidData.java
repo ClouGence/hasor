@@ -16,15 +16,17 @@
 package net.hasor.mvc.support.valid;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.bizcommon.Message;
 /**
  * 
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ValidData {
-    private String       key;
-    private boolean      valid;
-    private List<String> validString;
+    private String        key;
+    private boolean       valid;
+    private List<String>  validString;
+    private List<Message> validMessage;
     //
     public ValidData(String key, boolean valid) {
         this.key = key;
@@ -47,7 +49,16 @@ public class ValidData {
     public List<String> getValidString() {
         return validString;
     }
+    public List<String> getValidMessage() {
+        return validString;
+    }
     public void addValidString(String validString) {
         this.validString.add(validString);
+    }
+    public void addValidMessage(Message validMessage) {
+        this.validMessage.add(validMessage);
+    }
+    public void addValidMessage(List<Message> validMessage) {
+        this.validMessage.addAll(validMessage);
     }
 }
