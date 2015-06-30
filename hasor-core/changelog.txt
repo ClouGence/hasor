@@ -2,6 +2,7 @@
 * 新增:
     01.新增DateUtils，时间日期方面的工具类。
     02.增添了一组getProvider方法方法，可以通过String或Class来获取Bean的Provider。
+    03.AopMatchers类的expressionClass和expressionMethod方法开放使用。
 * 改进:
     01.Paginator 类中Order子类，提升为接口，原始的类实现通过SortFieldOrder提供。
         --此项更改有助于分页工具类应用到更广的场景下。

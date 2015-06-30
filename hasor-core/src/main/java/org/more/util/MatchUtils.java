@@ -20,6 +20,9 @@ package org.more.util;
  * @author 赵永春(zyc@hasor.net)
  */
 public class MatchUtils {
+    public static enum MatchTypeEnum {
+        Wild, Regex
+    }
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(final String wild) {
         if (wild == null) {
@@ -69,5 +72,15 @@ public class MatchUtils {
             return false;
         }
         return str.matches(MatchUtils.wildToRegex(pattern));
+    }
+    //
+    /**将通配符转换成正则表达式。*/
+    public static boolean wildToRegex(final String pattern, final String str, MatchTypeEnum matchType) {
+        if (MatchTypeEnum.Regex == matchType) {
+            return str.matches(pattern);
+        } else if (MatchTypeEnum.Wild == matchType) {
+            return matchWild(pattern, str);
+        }
+        return false;
     }
 }

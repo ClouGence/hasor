@@ -112,7 +112,17 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*----------------------------------------------------------------------------------------Aop*/
+    //    static {
+    //        final String tmpWordReg = "[^\\s,]+";
+    //        final String tmpParamsReg = "(?:(?:W *, *){0,}W)?";
+    //        final String tmpMethodReg = "(W) (W.W)\\((P)\\)";
+    //        String methodReg = tmpMethodReg.replace("P", tmpParamsReg).replace("W", tmpWordReg);
+    //        InterceptorPattern = java.util.regex.Pattern.compile(methodReg);
+    //    }
+    //    private static final Pattern InterceptorPattern;
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
+        //
+        //
         Matcher<Class<?>> matcherClass = AopMatchers.expressionClass(matcherExpression);
         Matcher<Method> matcherMethod = AopMatchers.expressionMethod(matcherExpression);
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);

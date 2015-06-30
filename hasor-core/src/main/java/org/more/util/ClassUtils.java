@@ -992,26 +992,17 @@ public class ClassUtils {
             return "void ";
         } else if (type.isPrimitive()) {
             return ClassUtils.getShortCanonicalName(type);
+        } else if (type.isArray()) {
+            return type.getComponentType().getName() + "[]";
         } else {
             return type.getName();
         }
     }
     /**获取方法的标识代码，在不考虑其所属类的情况下。
      * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
-    public static String getDescName(final Method method) {
+    public static String getDescNameWithOutModifiers(final Method method) {
         //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
         StringBuffer str = new StringBuffer("");
-        //1.访问修饰符
-        int modifiers = method.getModifiers();
-        if (Modifier.isPublic(modifiers)) {
-            str.append("public ");
-        } else if (Modifier.isPrivate(modifiers)) {
-            str.append("private ");
-        } else if (Modifier.isProtected(modifiers)) {
-            str.append("protected ");
-        } else {
-            str.append("friendly ");
-        }
         //2.返回值
         Class<?> returnType = method.getReturnType();
         str.append(ClassUtils.getDescName(returnType) + " ");
@@ -1032,6 +1023,26 @@ public class ClassUtils {
             }
         }
         str.append(")");
+        //
+        return str.toString();
+    }
+    /**获取方法的标识代码，在不考虑其所属类的情况下。
+     * 格式为：<code>&lt;修饰符&gt;&nbsp;&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>*/
+    public static String getDescName(final Method method) {
+        //public void addChild(org.noe.safety.services.SYS_TB_MenuTree)
+        StringBuffer str = new StringBuffer("");
+        //1.访问修饰符
+        int modifiers = method.getModifiers();
+        if (Modifier.isPublic(modifiers)) {
+            str.append("public ");
+        } else if (Modifier.isPrivate(modifiers)) {
+            str.append("private ");
+        } else if (Modifier.isProtected(modifiers)) {
+            str.append("protected ");
+        } else {
+            str.append("friendly ");
+        }
+        str.append(getDescNameWithOutModifiers(method));
         //
         return str.toString();
     }

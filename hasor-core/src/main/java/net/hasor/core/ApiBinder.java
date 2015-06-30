@@ -52,6 +52,15 @@ public interface ApiBinder {
     /*----------------------------------------------------------------------------------------Aop*/
     /**
      * 使用表达式配置Aop。
+     * <p>例：<pre>格式：&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)
+     *  * *.*()                  匹配：任意无参方法
+     *  * *.*(*)                 匹配：任意方法
+     *  * *.add*(*)              匹配：任意add开头的方法
+     *  * *.add*(*,*)            匹配：任意add开头并且具有两个参数的方法。
+     *  * net.test.hasor.*(*)    匹配：包“net.test.hasor”下的任意类，任意方法。
+     *  * net.test.hasor.add*(*) 匹配：包“net.test.hasor”下的任意类，任意add开头的方法。
+     *  java.lang.String *.*(*)  匹配：任意返回值为String类型的方法。
+     * </pre>
      * @param matcherExpression 格式为“<code>&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>”
      * @param interceptor 拦截器对象
      */

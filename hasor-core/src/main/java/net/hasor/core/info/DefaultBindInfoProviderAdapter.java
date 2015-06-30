@@ -22,7 +22,11 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
-    public DefaultBindInfoProviderAdapter() {}
+    //
+    //
+    public DefaultBindInfoProviderAdapter() {
+        //
+    }
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this.setBindType(bindingType);
     }
