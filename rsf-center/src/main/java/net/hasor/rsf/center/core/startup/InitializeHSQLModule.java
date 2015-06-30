@@ -29,7 +29,6 @@ import net.hasor.web.WebModule;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InitializeHSQLModule extends WebModule implements StartModule {
-    public static final String DataSource_MEM = "mem";
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {

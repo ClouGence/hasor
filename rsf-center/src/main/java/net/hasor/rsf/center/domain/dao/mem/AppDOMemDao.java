@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.ServiceJoinPortDO;
+package net.hasor.rsf.center.domain.dao.mem;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceJoinPortDao extends CommonDao<ServiceJoinPortDO> {}
+public class AppDOMemDao extends MemDao<AppDO> {}

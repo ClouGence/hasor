@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao;
-import static net.hasor.rsf.center.core.startup.DataBaseModule.DataSource_MEM;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
+import net.hasor.rsf.center.core.mybatis.SqlExecutorOperations;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +25,21 @@ import org.slf4j.LoggerFactory;
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class CommonDao<T> implements InjectMembers {
+public abstract class AbstractDao<T> implements InjectMembers {
     protected Logger            logger = LoggerFactory.getLogger(getClass());
     private SqlExecutorTemplate executorTemplate;
     @Override
     public void doInject(AppContext appContext) {
-        this.executorTemplate = appContext.findBindingBean(DataSource_MEM, SqlExecutorTemplate.class);
+        this.executorTemplate = appContext.findBindingBean(dataSource(), SqlExecutorTemplate.class);
     }
     //
+    protected SqlExecutorOperations getSqlExecutor() {
+        return this.executorTemplate;
+    }
+    /**
+     * 数据来源
+     * @see net.hasor.rsf.center.core.startup.DataBaseModule#DataSource_DB
+     * @see net.hasor.rsf.center.core.startup.DataBaseModule#DataSource_MEM
+     */
+    protected abstract String dataSource();
 }

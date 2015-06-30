@@ -42,8 +42,6 @@ public class DataBaseModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //MyBatis
-        Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
-        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         {
             //HSQL
             String driverString = "org.hsqldb.jdbcDriver";
@@ -51,6 +49,8 @@ public class DataBaseModule extends WebModule {
             String userString = "sa";
             String pwdString = "";
             DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
+            Reader reader = Resources.getResourceAsReader("ibatis-mem-sqlmap.xml");
+            SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
             this.configDataSource(apiBinder, dataSource, DataSource_MEM, sessionFactory);
         }
         {
@@ -61,6 +61,8 @@ public class DataBaseModule extends WebModule {
             String userString = settings.getString("rsfCenter.jdbcConfig.username");
             String pwdString = settings.getString("rsfCenter.jdbcConfig.password");
             DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
+            Reader reader = Resources.getResourceAsReader("ibatis-db-sqlmap.xml");
+            SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
             this.configDataSource(apiBinder, dataSource, DataSource_DB, sessionFactory);
         }
     }
@@ -78,7 +80,7 @@ public class DataBaseModule extends WebModule {
     //
     public DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
-        logger.info("C3p0 Pool Info maxSize is ‘%s’ driver is ‘%s’ jdbcUrl is‘%s’", poolMaxSize, driverString, urlString);
+        logger.info("C3p0 Pool Info maxSize is ‘{}’ driver is ‘{}’ jdbcUrl is‘{}’", poolMaxSize, driverString, urlString);
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setDriverClass(driverString);
         dataSource.setJdbcUrl(urlString);

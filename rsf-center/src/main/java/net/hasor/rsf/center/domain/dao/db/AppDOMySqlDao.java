@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.TerminalDO;
+package net.hasor.rsf.center.domain.dao.db;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
- * 终端
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TerminalDao extends CommonDao<TerminalDO> {}
+public class AppDOMySqlDao extends MySqlDao<AppDO> {}

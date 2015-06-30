@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao;
-import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
+package net.hasor.rsf.center.domain.dao.mem;
+import net.hasor.rsf.center.domain.dao.AbstractDao;
 /**
- * 表示为一个Service
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceInfoDao extends CommonDao<ServiceInfoDO> {}
+public class MemDao<T> extends AbstractDao<T> {
+    protected String dataSource() {
+        return net.hasor.rsf.center.core.startup.DataBaseModule.DataSource_MEM;
+    }
+}
