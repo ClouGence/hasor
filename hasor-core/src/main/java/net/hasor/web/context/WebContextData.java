@@ -26,6 +26,9 @@ import net.hasor.web.env.WebStandardEnvironment;
 public class WebContextData extends ContextData {
     private WebStandardEnvironment environment;
     //
+    public WebContextData(ServletContext servletContext) {
+        this.environment = new WebStandardEnvironment(servletContext);
+    }
     public WebContextData(URI settingURI, ServletContext servletContext) {
         this.environment = new WebStandardEnvironment(settingURI, servletContext);
     }

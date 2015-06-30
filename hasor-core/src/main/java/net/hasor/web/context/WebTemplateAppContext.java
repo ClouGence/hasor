@@ -40,7 +40,11 @@ public class WebTemplateAppContext extends TemplateAppContext implements WebAppC
     private WebContextData contextData = null;
     public WebTemplateAppContext(String config, ServletContext servletContext) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(config);
-        this.contextData = new WebContextData(resURL.toURI(), servletContext);
+        if (resURL != null) {
+            this.contextData = new WebContextData(resURL.toURI(), servletContext);
+        } else {
+            this.contextData = new WebContextData(servletContext);
+        }
     }
     //
     protected WebContextData getContextData() {
