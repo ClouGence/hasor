@@ -99,9 +99,12 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
                     continue;
                 }
                 ResultDO<String> result = validApp.doValidation(paramObj);
-                ValidData vData = this.converResult(validName, result);
-                if (vData != null) {
-                    validList.add(vData);
+                if (result != null) {
+                    logger.info("doValidation {},result = {}", validName, result);
+                    ValidData vData = this.converResult(validName, result);
+                    if (vData != null) {
+                        validList.add(vData);
+                    }
                 }
             }
         }
