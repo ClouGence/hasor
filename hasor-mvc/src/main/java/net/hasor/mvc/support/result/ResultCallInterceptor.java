@@ -21,12 +21,15 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.mvc.WebCall;
 import net.hasor.mvc.WebCallInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 代理CallStrategy已增加结果处理功能。
  * @version : 2013-5-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ResultCallInterceptor implements WebCallInterceptor, AppContextAware {
+    protected Logger                  logger = LoggerFactory.getLogger(getClass());
     private List<ResultProcessDefine> defineList;
     public void setAppContext(AppContext appContext) {
         this.defineList = appContext.findBindingBean(ResultProcessDefine.class);
@@ -55,6 +58,7 @@ public class ResultCallInterceptor implements WebCallInterceptor, AppContextAwar
                 if (atDefine.getResultType().isInstance(atAnno) == false) {
                     continue;
                 }
+                logger.info("doResultProcess at {}", atDefine.toString());
                 if (throwable != null) {
                     returnData = atDefine.onThrowable(throwable, call);
                 } else {
