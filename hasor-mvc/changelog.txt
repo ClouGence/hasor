@@ -5,6 +5,7 @@
 * 改进:
     03.优化扩展机制的设计，进一步模块化设计。
     04.LoadHellper类的apiBinder方法，获取的ApiBinder类型改为返回WebApiBinder类型。
+    05.loadController方法增加异常抛出。
 
 ===== Hasor-MVC v0.0.5
 * 新增:

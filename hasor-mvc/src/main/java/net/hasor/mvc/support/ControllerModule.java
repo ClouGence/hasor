@@ -76,7 +76,7 @@ public abstract class ControllerModule extends WebModule {
         this.loadController(helper);
     }
     //
-    protected abstract void loadController(LoadHellper helper);
+    protected abstract void loadController(LoadHellper helper) throws Throwable;
     /**
      * 创建 {@link MappingInfoDefine}
      * @param atMethod 映射的方法
