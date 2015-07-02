@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
 	<hasor>
+		<loadPackages>net.hasor.rsf.center.*</loadPackages>
 		<modules>
 			<module>net.hasor.rsf.center.core.startup.StartAppModule</module>
 		</modules>

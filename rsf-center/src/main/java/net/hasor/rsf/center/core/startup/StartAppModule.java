@@ -62,9 +62,9 @@ public class StartAppModule extends ControllerModule implements StartModule {
         //2.Valid
         Set<Class<?>> validSet = apiBinder.getEnvironment().findClass(ValidDefine.class);
         for (Class<?> validType : validSet) {
-            if (validType.isAssignableFrom(Validation.class)) {
+            if (Validation.class.isAssignableFrom(validType)) {
                 ValidDefine validDefine = validType.getAnnotation(ValidDefine.class);
-                apiBinder.bindType(validDefine.value(), Validation.class, (Class<Validation>) validType);
+                helper.loadValidation(validDefine.value(), (Class<Validation>) validType);
             }
         }
         //3.Controller

@@ -46,12 +46,6 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- MVC -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-mvc</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
