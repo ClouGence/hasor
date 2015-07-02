@@ -24,6 +24,7 @@ import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.result.ResultProcessDefine;
+import net.hasor.web.WebApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /***
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public abstract class LoadHellper {
     protected static Logger logger = LoggerFactory.getLogger(LoadHellper.class);
     protected abstract ControllerModule module();
-    public abstract ApiBinder apiBinder();
+    public abstract WebApiBinder apiBinder();
     //
     /**结果处理器*/
     public void loadResultProcess(Class<? extends Annotation> annoType, Class<? extends ResultProcess> processType) {

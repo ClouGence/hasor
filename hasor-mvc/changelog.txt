@@ -3,7 +3,8 @@
     01.新增验证机制，使用Validation接口。
     02.ResultProcess新增对异常的处理方法。
 * 改进:
-    02.优化扩展机制的设计，进一步模块化设计。
+    03.优化扩展机制的设计，进一步模块化设计。
+    04.LoadHellper类的apiBinder方法，获取的ApiBinder类型改为返回WebApiBinder类型。
 
 ===== Hasor-MVC v0.0.5
 * 新增:

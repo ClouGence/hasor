@@ -17,7 +17,6 @@ package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.XmlNode;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
@@ -39,7 +38,7 @@ public abstract class ControllerModule extends WebModule {
         logger.info("work at ControllerModule. -> {}", this.getClass());
         //1.create LoadHellper
         LoadHellper helper = new LoadHellper() {
-            public ApiBinder apiBinder() {
+            public WebApiBinder apiBinder() {
                 return apiBinder;
             }
             protected ControllerModule module() {
