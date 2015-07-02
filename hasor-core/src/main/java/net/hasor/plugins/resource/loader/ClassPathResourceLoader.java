@@ -76,4 +76,8 @@ public class ClassPathResourceLoader implements ResourceLoader {
         URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
         return !(url == null);
     }
+    public URL getResource(String resourcePath) throws IOException {
+        URL url = this.classLoader.getResource(formatResourcePath(resourcePath));
+        return url;
+    }
 }

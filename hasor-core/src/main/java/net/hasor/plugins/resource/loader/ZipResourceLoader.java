@@ -17,6 +17,7 @@ package net.hasor.plugins.resource.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,6 +69,17 @@ public class ZipResourceLoader implements ResourceLoader {
     public boolean exist(String resourcePath) throws IOException {
         resourcePath = formatResourcePath(resourcePath);
         return this.zipEntrySet.contains(resourcePath);
+    }
+    public URL getResource(String resourcePath) throws IOException {
+        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false) {
+            return null;
+        }
+        //
+        resourcePath = formatResourcePath(resourcePath);
+        if (!this.zipEntrySet.contains(resourcePath)) {
+            return null;
+        }
+        return new URL(this.zipFile.toURI().toURL(), "@" + resourcePath);
     }
     private class ZipEntryInputStream extends InputStream {
         private InputStream targetInput;

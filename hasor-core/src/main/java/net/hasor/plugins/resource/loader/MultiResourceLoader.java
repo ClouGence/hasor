@@ -16,7 +16,10 @@
 package net.hasor.plugins.resource.loader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.hasor.plugins.resource.ResourceLoader;
 /**
@@ -25,7 +28,8 @@ import net.hasor.plugins.resource.ResourceLoader;
  * @author 赵永春(zyc@hasor.net)
  */
 public class MultiResourceLoader implements ResourceLoader {
-    private final List<ResourceLoader> loaders = new CopyOnWriteArrayList<ResourceLoader>();
+    private final List<ResourceLoader>                  loaders           = new CopyOnWriteArrayList<ResourceLoader>();
+    private final ConcurrentMap<String, ResourceLoader> lastLoaderForName = new ConcurrentHashMap<String, ResourceLoader>();
     /** Creates a new empty multi resource Loader. */
     public MultiResourceLoader() {
         this(new ResourceLoader[0]);
@@ -46,20 +50,49 @@ public class MultiResourceLoader implements ResourceLoader {
         }
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
-        for (ResourceLoader loader : this.loaders) {
-            if (loader.exist(resourcePath)) {
-                InputStream inStream = loader.getResourceAsStream(resourcePath);
-                return inStream;
+        ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
+        if (loader == null) {
+            for (ResourceLoader loads : this.loaders) {
+                if (loads.exist(resourcePath)) {
+                    lastLoaderForName.putIfAbsent(resourcePath, loader);
+                    loader = loads;
+                }
             }
+        }
+        if (loader != null) {
+            InputStream inStream = loader.getResourceAsStream(resourcePath);
+            return inStream;
         }
         return null;
     }
+    //
     public boolean exist(String resourcePath) throws IOException {
-        for (ResourceLoader loader : this.loaders) {
-            if (loader.exist(resourcePath)) {
-                return true;
+        ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
+        if (loader == null) {
+            for (ResourceLoader loads : this.loaders) {
+                if (loads.exist(resourcePath)) {
+                    lastLoaderForName.putIfAbsent(resourcePath, loader);
+                    loader = loads;
+                }
             }
         }
-        return false;
+        return loader != null;
+    }
+    //
+    public URL getResource(String resourcePath) throws IOException {
+        ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
+        if (loader == null) {
+            for (ResourceLoader loads : this.loaders) {
+                if (loads.exist(resourcePath)) {
+                    lastLoaderForName.putIfAbsent(resourcePath, loader);
+                    loader = loads;
+                }
+            }
+        }
+        if (loader != null) {
+            URL url = loader.getResource(resourcePath);
+            return url;
+        }
+        return null;
     }
 }

@@ -16,12 +16,14 @@
 package net.hasor.plugins.resource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 /**
  * 
  * @version : 2013-6-6
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ResourceLoader {
+    public URL getResource(String resourcePath) throws IOException;
     /**装载指定资源。*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
     /**测试资源是否存在。*/
