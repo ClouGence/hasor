@@ -21,6 +21,7 @@ import net.hasor.core.ApiBinder.MetaDataBindingBuilder;
 import net.hasor.core.BindInfo;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
+import net.hasor.mvc.Validation;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.result.ResultProcessDefine;
@@ -55,6 +56,7 @@ public abstract class LoadHellper {
         apiBinder().autoAware(define);
         apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
     }
+    //
     /**装载控制器*/
     public void loadType(Class<? extends ModelController> clazz) {
         int modifier = clazz.getModifiers();
@@ -73,6 +75,13 @@ public abstract class LoadHellper {
         apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
         apiBinder.bindType(clazz);
     }
+    //
+    /**装载验证器*/
+    public void loadValidation(String valid, Class<? extends Validation> clazz) {
+        logger.info("Validation name ‘{}’ typeof ‘{}’.", valid, clazz);
+        this.apiBinder().bindType(Validation.class).nameWith(valid).to(clazz);
+    }
+    //
     /**通过位运算决定check是否在data里。*/
     private static boolean checkIn(final int data, final int check) {
         int or = data | check;
