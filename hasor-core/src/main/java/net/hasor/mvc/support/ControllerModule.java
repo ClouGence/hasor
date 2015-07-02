@@ -47,7 +47,7 @@ public abstract class ControllerModule extends WebModule {
         };
         //2.install-避免初始化多次
         if (initController.compareAndSet(false, true)) {
-            List<XmlNode> allResultProcess = apiBinder.getEnvironment().getSettings().merageXmlNode("hasor.mvcConfig.resultProcess", "resultProces");
+            List<XmlNode> allResultProcess = apiBinder.getEnvironment().getSettings().merageXmlNode("hasor.mvcConfig", "resultProces");
             for (XmlNode atNode : allResultProcess) {
                 String annoTypeStr = atNode.getAttribute("annoType");
                 String processTypeStr = atNode.getAttribute("processType");

@@ -3,6 +3,16 @@
     01.新增DateUtils，时间日期方面的工具类。
     02.增添了一组getProvider方法方法，可以通过String或Class来获取Bean的Provider。
     03.AopMatchers类的expressionClass和expressionMethod方法开放使用。
+    04.合并Hasor-MVC框架
+    --MVC--
+    05.迁移 controller、result 插件。
+    06.支持 Action 返回值自定义处理。
+    07.新增验证机制，使用Validation接口。
+    08.ResultProcess新增对异常的处理方法。
+    09.优化扩展机制的设计，进一步模块化设计。
+    10.LoadHellper类的apiBinder方法，获取的ApiBinder类型改为返回WebApiBinder类型。
+    11.loadController方法增加异常抛出。
+    12.LoadHellper，增加注册表单验证器的方法。
 * 改进:
     01.Paginator 类中Order子类，提升为接口，原始的类实现通过SortFieldOrder提供。
         --此项更改有助于分页工具类应用到更广的场景下。
