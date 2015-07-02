@@ -34,27 +34,17 @@ public class PathResourceLoader implements ResourceLoader {
         $resourcePath = $resourcePath.replaceAll("/{2}", "/");
         return $resourcePath;
     }
-    public InputStream getResourceAsStream(String resourcePath) {
+    public InputStream getResourceAsStream(String resourcePath) throws IOException {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
-        try {
-            if (file.exists() && file.isFile())
-                return new FileInputStream(file);
-        } catch (Exception e) {}
+        if (file.exists() && file.isFile()) {
+            return new FileInputStream(file);
+        }
         return null;
-    }
-    public boolean canModify(String resourcePath) throws IOException {
-        return true;
     }
     public boolean exist(String resourcePath) throws IOException {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
         return (file.exists() && file.isFile()) ? true : false;
-    }
-    public void close(Object resource) throws IOException {
-        if (resource == null)
-            return;
-        if (resource instanceof InputStream)
-            ((InputStream) resource).close();
     }
 }

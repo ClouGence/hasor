@@ -54,10 +54,10 @@ public class RuntimeFilter implements Filter {
         }
         /*1.初始化执行周期管理器。*/
         Map<String, String> filterConfigMap = new HashMap<String, String>();
-        Enumeration<String> names = filterConfig.getInitParameterNames();
+        Enumeration<?> names = filterConfig.getInitParameterNames();
         if (names != null) {
             while (names.hasMoreElements()) {
-                String name = names.nextElement();
+                String name = names.nextElement().toString();
                 filterConfigMap.put(name, filterConfig.getInitParameter(name));
             }
         }

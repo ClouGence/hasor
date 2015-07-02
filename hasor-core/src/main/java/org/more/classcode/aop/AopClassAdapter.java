@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.asm.ClassVisitor;
+import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
@@ -54,6 +55,9 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         this.superClassName = name;
         this.visitBegin();
         super.visit(version, access, this.thisClassName, signature, this.superClassName, interfaces);
+    }
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        return null;
     }
     //
     private void visitBegin() {

@@ -168,25 +168,20 @@ public class ResourceHttpServlet extends HttpServlet {
     }
     /*资源缓存*/
     private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response) throws IOException, ServletException {
-        //3.尝试载入资源 
-        ResourceLoader inLoader = null;
         InputStream inStream = null;
         ResourceLoader[] loaderList = LoaderList.get();
         if (loaderList == null || loaderList.length == 0) {
             return false;
+        }
+        //如果debug模式，无论目标是否已经被缓存都重新缓存。
+        if (this.isDebug == false && cacheFile.exists()) {
+            return true;
         }
         //
         for (ResourceLoader loader : loaderList) {
             if (loader.exist(requestURI) == false) {
                 continue;
             }
-            if (this.isDebug) {
-                if (!loader.canModify(requestURI) && cacheFile.exists()) {
-                    return true;
-                }
-            }
-            //
-            inLoader = loader;
             inStream = loader.getResourceAsStream(requestURI);
             if (inStream != null) {
                 break;
@@ -199,7 +194,7 @@ public class ResourceHttpServlet extends HttpServlet {
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
         IOUtils.copy(inStream, out);
-        inLoader.close(inStream);
+        inStream.close();
         out.flush();
         out.close();
         return true;

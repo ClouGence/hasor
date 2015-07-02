@@ -24,10 +24,6 @@ import java.io.InputStream;
 public interface ResourceLoader {
     /**装载指定资源。*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
-    /**装载指定资源。*/
-    public void close(Object resource) throws IOException;
-    /**测试资源是否可能被改变。*/
-    public boolean canModify(String resourcePath) throws IOException;
     /**测试资源是否存在。*/
     public boolean exist(String resourcePath) throws IOException;
 }

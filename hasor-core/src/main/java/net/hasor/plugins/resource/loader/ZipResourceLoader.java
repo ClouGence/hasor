@@ -35,8 +35,9 @@ public class ZipResourceLoader implements ResourceLoader {
         this.zipFile = new File(zipFile);
         ZipFile zipFileObj = new ZipFile(this.zipFile);
         Enumeration<? extends ZipEntry> entEnum = zipFileObj.entries();
-        while (entEnum.hasMoreElements())
+        while (entEnum.hasMoreElements()) {
             this.zipEntrySet.add(entEnum.nextElement().getName());
+        }
         zipFileObj.close();
     }
     /**获取资源获取的包路径。*/
@@ -44,37 +45,29 @@ public class ZipResourceLoader implements ResourceLoader {
         return this.zipFile.getAbsolutePath();
     }
     private String formatResourcePath(String resourcePath) {
-        if (resourcePath.charAt(0) == '/')
+        if (resourcePath.charAt(0) == '/') {
             resourcePath = resourcePath.substring(1);
+        }
         resourcePath = resourcePath.replaceAll("/{2}", "/");
         return resourcePath;
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
-        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false)
+        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false) {
             return null;
+        }
         //
         resourcePath = formatResourcePath(resourcePath);
-        if (!this.zipEntrySet.contains(resourcePath))
+        if (!this.zipEntrySet.contains(resourcePath)) {
             return null;
+        }
         //
         ZipFile zipFileObj = new ZipFile(this.zipFile);
         ZipEntry entry = zipFileObj.getEntry(resourcePath);
-        if (entry == null)
-            return null;
         return new ZipEntryInputStream(zipFileObj, zipFileObj.getInputStream(entry));
-    }
-    public boolean canModify(String resourcePath) throws IOException {
-        return false;
     }
     public boolean exist(String resourcePath) throws IOException {
         resourcePath = formatResourcePath(resourcePath);
         return this.zipEntrySet.contains(resourcePath);
-    }
-    public void close(Object resource) throws IOException {
-        if (resource == null)
-            return;
-        if (resource instanceof InputStream)
-            ((InputStream) resource).close();
     }
     private class ZipEntryInputStream extends InputStream {
         private InputStream targetInput;
