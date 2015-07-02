@@ -15,33 +15,66 @@
  */
 package net.hasor.rsf.center.core.startup;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
+import net.hasor.core.StartModule;
+import net.hasor.core.XmlNode;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
+import net.hasor.mvc.ModelController;
+import net.hasor.mvc.Validation;
+import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.support.ControllerModule;
+import net.hasor.mvc.support.LoadHellper;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
+import net.hasor.rsf.center.domain.dao.Dao;
+import net.hasor.rsf.center.domain.valid.ValidDefine;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
- * DB，数据源
+ * WebMVC
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DataBaseModule extends WebModule {
+public class StartAppModule extends ControllerModule implements StartModule {
     public static final String DataSource_MEM = "mem";
     public static final String DataSource_DB  = "db";
     //
     @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //MyBatis
+    protected void loadController(LoadHellper helper) throws Throwable {
+        WebApiBinder apiBinder = helper.apiBinder();
+        //1.Dao
+        Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
+        for (Class<?> daoType : daoSet) {
+            apiBinder.bindType(daoType);
+        }
+        //2.Valid
+        Set<Class<?>> validSet = apiBinder.getEnvironment().findClass(ValidDefine.class);
+        for (Class<?> validType : validSet) {
+            if (validType.isAssignableFrom(Validation.class)) {
+                ValidDefine validDefine = validType.getAnnotation(ValidDefine.class);
+                apiBinder.bindType(validDefine.value(), Validation.class, (Class<Validation>) validType);
+            }
+        }
+        //3.Controller
+        Set<Class<?>> controllerSet = apiBinder.getEnvironment().findClass(ModelController.class);
+        for (Class<?> controllerType : controllerSet) {
+            if (controllerType.isAnnotationPresent(MappingTo.class)) {
+                helper.loadType((Class<? extends ModelController>) controllerType);
+            }
+        }
+        //4.MyBatis
         {
             //HSQL
             String driverString = "org.hsqldb.jdbcDriver";
@@ -66,6 +99,32 @@ public class DataBaseModule extends WebModule {
             this.configDataSource(apiBinder, dataSource, DataSource_DB, sessionFactory);
         }
     }
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        Settings settings = appContext.getEnvironment().getSettings();
+        XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
+        if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
+            throw new IOException("read config error,`rsfCenter.memInitialize` node is not exist.");
+        }
+        List<XmlNode> xmlNodes = xmlNode.getChildren("sqlScript");
+        if (xmlNodes != null) {
+            logger.info("sqlScript count = {}", xmlNodes.size());
+            JdbcTemplate jdbcTemplate = appContext.findBindingBean(DataSource_MEM, JdbcTemplate.class);
+            for (XmlNode node : xmlNodes) {
+                String scriptName = node.getText().trim();
+                try {
+                    logger.info("sqlScript `{}` do...", scriptName);
+                    jdbcTemplate.loadSQL(scriptName);
+                    logger.info("sqlScript `{}` finish.", scriptName);
+                } catch (Throwable e) {
+                    logger.error("sqlScript `{}` run error =>{}.", scriptName, e);
+                    throw e;
+                }
+            }
+        }
+    }
+    //
+    //
     //
     protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, String dsName, SqlSessionFactory sessionFactory) throws Throwable {
         //1.绑定DataSource接口实现
@@ -78,7 +137,7 @@ public class DataBaseModule extends WebModule {
         apiBinder.bindType(SqlExecutorTemplate.class).nameWith(dsName).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
     }
     //
-    public DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
+    private DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
         logger.info("C3p0 Pool Info maxSize is ‘{}’ driver is ‘{}’ jdbcUrl is‘{}’", poolMaxSize, driverString, urlString);
         ComboPooledDataSource dataSource = new ComboPooledDataSource();

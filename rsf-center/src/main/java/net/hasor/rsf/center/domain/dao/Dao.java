@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.manager;
+package net.hasor.rsf.center.domain.dao;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2015年6月8日
+ * @version : 2015年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface CenterService {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface Dao {}

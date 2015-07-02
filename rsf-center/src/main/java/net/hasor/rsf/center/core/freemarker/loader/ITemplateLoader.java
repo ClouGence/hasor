@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao.mem;
-import net.hasor.rsf.center.domain.dao.Dao;
-import net.hasor.rsf.center.domain.entity.AppDO;
+package net.hasor.rsf.center.core.freemarker.loader;
+import freemarker.cache.TemplateLoader;
 /**
  * 
- * @version : 2015年5月22日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2012-5-15
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Dao
-public class AppDOMemDao extends MemDao<AppDO> {}
+public interface ITemplateLoader extends TemplateLoader {
+    /**获取类型*/
+    public String getType();
+}

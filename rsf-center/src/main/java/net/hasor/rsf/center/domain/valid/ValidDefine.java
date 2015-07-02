@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao.mem;
-import net.hasor.rsf.center.domain.dao.Dao;
-import net.hasor.rsf.center.domain.entity.AppDO;
+package net.hasor.rsf.center.domain.valid;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2015年5月22日
+ * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
-@Dao
-public class AppDOMemDao extends MemDao<AppDO> {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface ValidDefine {
+    public String value();
+}

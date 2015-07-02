@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao.db;
+import net.hasor.rsf.center.core.startup.StartAppModule;
 import net.hasor.rsf.center.domain.dao.AbstractDao;
 /**
  * 
@@ -22,6 +23,6 @@ import net.hasor.rsf.center.domain.dao.AbstractDao;
  */
 public class MySqlDao<T> extends AbstractDao<T> {
     protected String dataSource() {
-        return net.hasor.rsf.center.core.startup.DataBaseModule.DataSource_DB;
+        return StartAppModule.DataSource_DB;
     }
 }

@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao.mem;
-import net.hasor.rsf.center.domain.dao.Dao;
-import net.hasor.rsf.center.domain.entity.AppDO;
+package net.hasor.rsf.center.manager;
 /**
  * 
- * @version : 2015年5月22日
+ * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */
-@Dao
-public class AppDOMemDao extends MemDao<AppDO> {}
+public interface CenterService {}

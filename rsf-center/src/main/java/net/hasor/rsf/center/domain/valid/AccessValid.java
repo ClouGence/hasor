@@ -17,15 +17,18 @@ package net.hasor.rsf.center.domain.valid;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.hasor.mvc.Validation;
+import net.hasor.rsf.center.domain.dao.DaoProvider;
 import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
+@ValidDefine("Access")
 public class AccessValid implements Validation, InjectMembers {
+    private DaoProvider daoProvider;
     public void doInject(AppContext appContext) {
-        // TODO Auto-generated method stub
+        this.daoProvider = appContext.getInstance(DaoProvider.class);
     }
     public ResultDO<String> doValidation(Object data) {
         // TODO Auto-generated method stub

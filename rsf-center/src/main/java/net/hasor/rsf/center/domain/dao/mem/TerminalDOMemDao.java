@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao.mem;
+import net.hasor.rsf.center.domain.dao.Dao;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 /**
  * 终端
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Dao
 public class TerminalDOMemDao extends MemDao<TerminalDO> {}

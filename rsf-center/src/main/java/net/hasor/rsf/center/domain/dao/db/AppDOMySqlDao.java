@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao.db;
+import net.hasor.rsf.center.domain.dao.Dao;
 import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Dao
 public class AppDOMySqlDao extends MySqlDao<AppDO> {}

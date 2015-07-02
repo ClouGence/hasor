@@ -44,12 +44,6 @@
 		</plugins>
 	</build>
 
-	<!-- 属性 -->
-	<properties>
-		<slf4j.version>1.7.2</slf4j.version>
-		<log4j.version>1.2.17</log4j.version>
-	</properties>
-
 	<!-- 引用依赖 -->
 	<dependencies>
 		<!-- MVC -->
@@ -68,8 +62,11 @@
 			<artifactId>rsf-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
 
 		<!-- DB begin -->
 		<dependency>
@@ -93,29 +90,6 @@
 			<version>0.9.1.2</version>
 		</dependency>
 		<!-- DB end -->
-
-
-		<!-- LOGGING begin -->
-		<!-- slf4j-log4j绑定 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<!-- common-logging 实际调用slf4j -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<!-- java.util.logging 实际调用slf4j -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<!-- LOGGING end -->
-
 
 		<!-- Jetty Test -->
 		<dependency>
