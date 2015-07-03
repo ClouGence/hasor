@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.quick.event;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.test.hasor.core._08_event.listener;
 import net.hasor.core.EventListener;
+import net.test.hasor.core._08_event.custom.Listener;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
- * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
- * @version : 2013-3-12
- * @author 赵永春 (zyc@hasor.net)
+ * 收到事件，同时线程沉睡500毫秒延迟。
+ * @version : 2014-1-11
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface Listener {
-    /**要监听的事件名，同名注册会被覆盖。*/
-    public String[] value();
-}
+@Listener("TestEvent")
+public class MyListener2 implements EventListener {
+    public void onEvent(String event, Object[] params) throws InterruptedException {
+        Thread.sleep(500);
+        System.out.println("Receive Message:" + ReflectionToStringBuilder.toString(params, ToStringStyle.SIMPLE_STYLE));
+    }
+};

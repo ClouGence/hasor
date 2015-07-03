@@ -13,16 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.plugins.aop.Aop;
 /**
- * Bean测试
- * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * 基于 JUnit4 的测试框架。
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
-    }
-}
+package net.test.hasor.test.junit;

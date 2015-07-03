@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.runner;
+package net.test.hasor.test.runner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,9 +25,9 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.context.TemplateAppContext;
-import net.hasor.test.junit.ContextConfiguration;
-import net.hasor.test.junit.DaemonThread;
-import net.hasor.test.junit.TestOrder;
+import net.test.hasor.test.junit.ContextConfiguration;
+import net.test.hasor.test.junit.DaemonThread;
+import net.test.hasor.test.junit.TestOrder;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;

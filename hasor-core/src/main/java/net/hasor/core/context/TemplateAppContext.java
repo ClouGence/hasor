@@ -281,7 +281,7 @@ public abstract class TemplateAppContext implements AppContext {
     //
     /*------------------------------------------------------------------------------------Process*/
     /**查找Module。*/
-    protected Module[] findModules() throws Throwable {
+    protected Module[] findModules() {
         ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
@@ -300,9 +300,13 @@ public abstract class TemplateAppContext implements AppContext {
         //
         ArrayList<Module> moduleList = new ArrayList<Module>();
         for (String modStr : moduleTyleList) {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            Class<?> moduleType = ClassUtils.getClass(loader, modStr);
-            moduleList.add((Module) moduleType.newInstance());
+            try {
+                ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                Class<?> moduleType = ClassUtils.getClass(loader, modStr);
+                moduleList.add((Module) moduleType.newInstance());
+            } catch (Throwable e) {
+                logger.warn("load module Type {} is failure. -> {}:{}", modStr, e.getClass(), e.getMessage());
+            }
         }
         return moduleList.toArray(new Module[moduleList.size()]);
     }

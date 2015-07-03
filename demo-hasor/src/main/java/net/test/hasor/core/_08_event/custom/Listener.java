@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.test.hasor.core._08_event.custom;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import net.hasor.core.EventListener;
 /**
- * 软件包 net.hasor.quick.event
- * <p>提供注解方式声明事件监听器.</p>
- * <p>Provide <code>{@link net.hasor.quick.event.Listener}</code>
- * annotation way to event listeners.</p>
+ * 声明一个事件监听器，标记了该接口的类必须要求实现{@link EventListener}接口。
+ * @version : 2013-3-12
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.quick.event;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Listener {
+    /**要监听的事件名，同名注册会被覆盖。*/
+    public String[] value();
+}

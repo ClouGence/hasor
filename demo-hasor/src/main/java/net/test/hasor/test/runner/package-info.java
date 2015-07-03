@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Hasor-Test 提供的测试工具。
+ * Hasor-Test BlockJUnit4ClassRunner。
  */
-package net.hasor.test.utils;
+package net.test.hasor.test.runner;

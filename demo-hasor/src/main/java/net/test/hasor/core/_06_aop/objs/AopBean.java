@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick.example;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
+package net.test.hasor.core._06_aop.objs;
+import net.hasor.plugins.aop.Aop;
 /**
- * 一个 Aop 拦截器
- * @version : 2013-8-11
- * @author 赵永春 (zyc@hasor.net)
+ * Bean测试
+ * @version : 2015年1月12日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class SimpleInterceptor implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        try {
-            System.out.println("before...");
-            Object returnData = invocation.proceed();
-            System.out.println("after...");
-            return returnData;
-        } catch (Exception e) {
-            System.out.println("throw...");
-            throw e;
-        }
+@Aop(SimpleInterceptor.class)
+public class AopBean {
+    public void print() {
+        System.out.println("say hello.");
     }
 }

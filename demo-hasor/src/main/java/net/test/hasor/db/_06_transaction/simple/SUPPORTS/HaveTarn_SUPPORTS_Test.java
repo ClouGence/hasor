@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction.simple.SUPPORTS;
-import static net.hasor.test.utils.HasorUnit.newID;
+import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.interceptor.simple.Transactional;
-import net.hasor.test.junit.ContextConfiguration;
-import net.hasor.test.runner.HasorUnitRunner;
 import net.test.hasor.db._06_transaction.simple.AbstractSimpleJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.test.junit.ContextConfiguration;
+import net.test.hasor.test.runner.HasorUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**

@@ -1,4 +1,8 @@
 ﻿===== Hasor-Core v1.0.0
+* 修复:
+    01.修复TemplateAppContext中在加载模块的时候，没有拦截住因为引入依赖而导致的报错。
+
+===== Hasor-Core v1.0.0
 * 新增:
     01.新增DateUtils，时间日期方面的工具类。
     02.增添了一组getProvider方法方法，可以通过String或Class来获取Bean的Provider。

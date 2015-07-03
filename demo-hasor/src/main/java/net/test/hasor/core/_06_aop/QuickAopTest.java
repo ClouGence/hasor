@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.quick._02_aop;
+package net.test.hasor.core._06_aop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.test.hasor.quick.example.AopBean;
+import net.test.hasor.core._06_aop.objs.AopBean;
 import org.junit.Test;
 /**
  * 

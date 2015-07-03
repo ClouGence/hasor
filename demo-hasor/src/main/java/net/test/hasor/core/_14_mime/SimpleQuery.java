@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web._01_mime;
+package net.test.hasor.core._14_mime;
 import net.hasor.core.Hasor;
 import net.hasor.plugins.mimetype.MimeType;
 import net.hasor.plugins.mimetype.MimeTypeModule;
@@ -36,6 +36,10 @@ public class SimpleQuery {
         suffix = "zip";
         System.out.println(suffix + " :" + mimeType.getMimeType(suffix));
         suffix = "jpeg";
+        System.out.println(suffix + " :" + mimeType.getMimeType(suffix));
+        //
+        //test是定义在  mime.types.xml 配置文件中。
+        suffix = "test";
         System.out.println(suffix + " :" + mimeType.getMimeType(suffix));
     }
 }
