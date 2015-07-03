@@ -284,7 +284,7 @@ public abstract class TemplateAppContext implements AppContext {
     protected Module[] findModules() throws Throwable {
         ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
-        boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule");
+        boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
         if (loadModule) {
             List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
             for (XmlNode module : allModules) {
