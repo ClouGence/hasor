@@ -1,6 +1,10 @@
-﻿===== Hasor-Core v1.0.0
+﻿===== Hasor-Core v1.0.1
 * 修复:
     01.修复TemplateAppContext中在加载模块的时候，没有拦截住因为引入依赖而导致的报错。
+    02.修复ValidData类中validMessage字段未初始化引发的空指针异常。
+    03.修复MultiResourceLoader类在向map插入值时插入空指针的问题。
+* 改进:
+    01.ResourceLoader接口的exist方法不在抛出IO异常。
 
 ===== Hasor-Core v1.0.0
 * 新增:

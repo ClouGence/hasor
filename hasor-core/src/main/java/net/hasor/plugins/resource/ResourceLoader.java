@@ -27,5 +27,5 @@ public interface ResourceLoader {
     /**装载指定资源。*/
     public InputStream getResourceAsStream(String resourcePath) throws IOException;
     /**测试资源是否存在。*/
-    public boolean exist(String resourcePath) throws IOException;
+    public boolean exist(String resourcePath);
 }

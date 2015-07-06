@@ -50,15 +50,7 @@ public class MultiResourceLoader implements ResourceLoader {
         }
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
-        ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
-        if (loader == null) {
-            for (ResourceLoader loads : this.loaders) {
-                if (loads.exist(resourcePath)) {
-                    lastLoaderForName.putIfAbsent(resourcePath, loader);
-                    loader = loads;
-                }
-            }
-        }
+        ResourceLoader loader = findLoader(resourcePath);
         if (loader != null) {
             InputStream inStream = loader.getResourceAsStream(resourcePath);
             return inStream;
@@ -66,32 +58,29 @@ public class MultiResourceLoader implements ResourceLoader {
         return null;
     }
     //
-    public boolean exist(String resourcePath) throws IOException {
+    protected ResourceLoader findLoader(String resourcePath) {
         ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
         if (loader == null) {
             for (ResourceLoader loads : this.loaders) {
-                if (loads.exist(resourcePath)) {
-                    lastLoaderForName.putIfAbsent(resourcePath, loader);
-                    loader = loads;
+                if (loads != null && loads.exist(resourcePath)) {
+                    loader = lastLoaderForName.putIfAbsent(resourcePath, loads);
+                    if (loader == null) {
+                        loader = loads;
+                    }
                 }
             }
         }
-        return loader != null;
+        return loader;
+    }
+    //
+    public boolean exist(String resourcePath) {
+        return findLoader(resourcePath) != null;
     }
     //
     public URL getResource(String resourcePath) throws IOException {
-        ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
-        if (loader == null) {
-            for (ResourceLoader loads : this.loaders) {
-                if (loads.exist(resourcePath)) {
-                    lastLoaderForName.putIfAbsent(resourcePath, loader);
-                    loader = loads;
-                }
-            }
-        }
+        ResourceLoader loader = findLoader(resourcePath);
         if (loader != null) {
-            URL url = loader.getResource(resourcePath);
-            return url;
+            return loader.getResource(resourcePath);
         }
         return null;
     }

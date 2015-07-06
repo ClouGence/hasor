@@ -32,6 +32,7 @@ public class ValidData {
         this.key = key;
         this.valid = valid;
         this.validString = new ArrayList<String>();
+        this.validMessage = new ArrayList<Message>();
     }
     //
     public String getKey() {

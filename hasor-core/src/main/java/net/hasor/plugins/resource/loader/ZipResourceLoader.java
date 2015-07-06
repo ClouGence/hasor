@@ -66,7 +66,7 @@ public class ZipResourceLoader implements ResourceLoader {
         ZipEntry entry = zipFileObj.getEntry(resourcePath);
         return new ZipEntryInputStream(zipFileObj, zipFileObj.getInputStream(entry));
     }
-    public boolean exist(String resourcePath) throws IOException {
+    public boolean exist(String resourcePath) {
         resourcePath = formatResourcePath(resourcePath);
         return this.zipEntrySet.contains(resourcePath);
     }

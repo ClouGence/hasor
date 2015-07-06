@@ -43,7 +43,7 @@ public class PathResourceLoader implements ResourceLoader {
         }
         return null;
     }
-    public boolean exist(String resourcePath) throws IOException {
+    public boolean exist(String resourcePath) {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
         return (file.exists() && file.isFile()) ? true : false;

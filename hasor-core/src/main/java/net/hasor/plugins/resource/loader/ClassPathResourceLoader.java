@@ -69,7 +69,7 @@ public class ClassPathResourceLoader implements ResourceLoader {
         }
         return false;
     }
-    public boolean exist(String resourcePath) throws IOException {
+    public boolean exist(String resourcePath) {
         if (StringUtils.isBlank(resourcePath)) {
             return false;
         }
