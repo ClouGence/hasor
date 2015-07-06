@@ -23,7 +23,17 @@
 	<select id="terminalDO_getALL" resultMap="terminalDOMap">
 		select
 			<include refid="terminalDO_allColumns" />
-		from RSF_Terminal
+		from
+			RSF_Terminal
 	</select>
 
+	<select id="queryTerminalByIDAndSecret" resultMap="terminalDOMap">
+		select
+			<include refid="terminalDO_allColumns" />
+		from
+			RSF_Terminal
+		where
+			ter_terminalID     = #{terminalID} and
+			ter_terminalSecret = #{accessKey}
+	</select>
 </mapper>

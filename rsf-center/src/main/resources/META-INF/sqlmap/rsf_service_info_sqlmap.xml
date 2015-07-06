@@ -27,7 +27,8 @@
 	<select id="serviceInfoDO_getALL" resultMap="serviceInfoDOMap">
 		select
 			<include refid="serviceInfoDO_allColumns" />
-		from RSF_ServiceInfo
+		from
+			RSF_ServiceInfo
 	</select>
 
 </mapper>

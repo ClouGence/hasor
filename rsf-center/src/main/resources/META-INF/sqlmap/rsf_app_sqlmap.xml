@@ -23,7 +23,8 @@
 	<select id="appDO_getALL" resultMap="appDOMap">
 		select
 			<include refid="appDO_allColumns" />
-		from RSF_APP
+		from
+			RSF_APP
 	</select>
 
 </mapper>

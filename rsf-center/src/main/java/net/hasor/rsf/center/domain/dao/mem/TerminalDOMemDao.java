@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.dao.mem;
+import java.util.HashMap;
 import net.hasor.rsf.center.domain.dao.Dao;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
+import org.more.bizcommon.ResultDO;
 /**
  * 终端
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class TerminalDOMemDao extends MemDao<TerminalDO> {}
+public class TerminalDOMemDao extends MemDao<TerminalDO> {
+    public ResultDO<TerminalDO> queryTerminalByIDAndSecret(String terminalID, String secretKey) {
+        ResultDO<TerminalDO> resultDO = new ResultDO<TerminalDO>();
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("terminalID", terminalID);
+            params.put("accessKey", secretKey);
+            TerminalDO terminalDO = this.getSqlExecutor().selectOne("queryTerminalByIDAndSecret", params);
+            //
+            resultDO.setSuccess(true).setResult(terminalDO);
+        } catch (Exception e) {
+            resultDO.setSuccess(false).setThrowable(e);
+        }
+        return resultDO;
+    }
+}

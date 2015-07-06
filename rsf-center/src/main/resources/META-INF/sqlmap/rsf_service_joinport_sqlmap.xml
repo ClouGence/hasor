@@ -23,7 +23,8 @@
 	<select id="serviceJoinPortDO_getALL" resultMap="serviceJoinPortMap">
 		select
 			<include refid="serviceJoinPortDO_allColumns" />
-		from RSF_ServiceJoinPort
+		from
+			RSF_ServiceJoinPort
 	</select>
 
 </mapper>

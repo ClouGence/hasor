@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.constant;
+import net.hasor.rsf.center.utils.CustomToStringStyle;
 import org.more.builder.ToStringBuilder;
 /**
  * 错误码
