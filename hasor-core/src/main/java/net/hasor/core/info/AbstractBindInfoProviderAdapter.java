@@ -24,7 +24,7 @@ import org.more.util.StringUtils;
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T> {
+public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
     //1.基本属性
     private String             bindID           = null;
     private String             bindName         = null;

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.info;
+import net.hasor.core.Provider;
+import net.hasor.core.Scope;
 /**
- * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将容器自身注入进来。
- * @version : 2013-11-8
+ * 
+ * @version : 2014年12月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface AppContextAware {
-    /**
-     * 注入AppContext。
-     * @param appContext 注入的AppContext。
-     */
-    public void setAppContext(AppContext appContext);
+public interface ScopeProvider {
+    /**获取Provider对象，可以直接取得对象实例。*/
+    public Provider<Scope> getScopeProvider();
 }

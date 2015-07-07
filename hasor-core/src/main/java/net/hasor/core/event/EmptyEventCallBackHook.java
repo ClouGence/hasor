@@ -26,7 +26,7 @@ class EmptyEventCallBackHook implements EventCallBackHook {
     protected static Logger logger = LoggerFactory.getLogger(EmptyEventCallBackHook.class);
     @Override
     public void handleException(final String eventType, final Object[] objects, final Throwable e) {
-        logger.warn("during the execution of Event ‘{}’ throw an error ->{}", eventType, e.getMessage());
+        logger.error("during the execution of Event ‘{}’ throw an error ->{}", eventType, e.getMessage(), e);
     }
     @Override
     public void handleComplete(final String eventType, final Object[] objects) {}

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.mvc.support;
+import java.util.HashMap;
 /**
- * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将容器自身注入进来。
- * @version : 2013-11-8
+ * 
+ * @version : 2015年7月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface AppContextAware {
-    /**
-     * 注入AppContext。
-     * @param appContext 注入的AppContext。
-     */
-    public void setAppContext(AppContext appContext);
+public class ContextMap extends HashMap<String, Object> {
+    private static final long serialVersionUID = -1974995747636704779L;
 }

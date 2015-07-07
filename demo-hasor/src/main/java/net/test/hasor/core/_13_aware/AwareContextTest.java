@@ -33,9 +33,7 @@ public class AwareContextTest {
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 //由于init过程中无法取得 appContext对象，因此让Hasor在适当的时机将自身注入进去。
-                AwareBean aware = apiBinder.autoAware(new AwareBean());
-                //
-                apiBinder.bindType(AwareBean.class).toInstance(aware);
+                apiBinder.bindType(AwareBean.class);
                 apiBinder.bindType(String.class).nameWith("say").toInstance("Say Hello.");
             }
         });

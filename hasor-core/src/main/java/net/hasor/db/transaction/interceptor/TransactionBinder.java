@@ -37,8 +37,7 @@ public class TransactionBinder {
         this.apiBinder = apiBinder;
         /*下面代码只初始化一次，因为它是通用的。*/
         if (initInterceptor.get() == false) {
-            TranInterceptor tranInterceptor = this.apiBinder.autoAware(new TranInterceptor());
-            this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
+            this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new TranInterceptor());
             initInterceptor.set(true);
         }
     }

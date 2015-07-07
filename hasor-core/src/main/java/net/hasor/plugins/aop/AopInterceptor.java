@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.MethodInterceptor;
@@ -29,12 +28,8 @@ import net.hasor.core.MethodInvocation;
  * @author 赵永春(zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
-    private AppContext                                                    appContext           = null;
     private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
-    //
-    public AopInterceptor(ApiBinder apiBinder) {
-        apiBinder.autoAware(this);
-    }
+    private AppContext                                                    appContext           = null;
     //
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;

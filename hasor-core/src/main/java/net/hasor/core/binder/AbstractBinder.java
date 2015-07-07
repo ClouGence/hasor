@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Environment;
@@ -51,13 +50,6 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     public Environment getEnvironment() {
         return this.contextData().getEnvironment();
-    }
-    public <T extends AppContextAware> T autoAware(final T aware) {
-        this.bindType(AppContextAware.class).uniqueName().toInstance(aware);
-        if (logger.isDebugEnabled()) {
-            logger.debug("registered autoAware ->" + aware);
-        }
-        return aware;
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
         if (featureType == null) {

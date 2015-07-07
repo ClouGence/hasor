@@ -506,12 +506,20 @@ public abstract class AbstractWebController implements ModelController {
         return this;
     }
     /** @return Get model from AppContext. */
+    protected Object getModelByName(Class<?> modelClass, String modelName) {
+        return this.getAppContext().findBindingBean(modelName, modelClass);
+    }
+    /** @return Get model from AppContext. */
     protected Object getModel(Class<?> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
     /** @return Get model from AppContext. */
     protected Object getModel(String bindID) {
         return this.getAppContext().getInstance(bindID);
+    }
+    /** @return Get model from AppContext. */
+    protected ContextMap getContextMap() {
+        return this.getAppContext().getInstance(ContextMap.class);
     }
     // --------
     //    private MultipartRequest multipartRequest;

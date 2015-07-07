@@ -20,21 +20,18 @@ import java.util.Collection;
 import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.Scope;
 import net.hasor.core.Settings;
 import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
-import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
@@ -134,6 +131,7 @@ public abstract class TemplateAppContext implements AppContext {
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        Provider<T> targetProvider = null;
         //
         final DefineContainer container = getContextData().getBindInfoContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
@@ -143,45 +141,34 @@ public abstract class TemplateAppContext implements AppContext {
                 if (adapter.getBindName() == null) {
                     Provider<T> provider = this.getProvider(adapter);
                     if (provider != null) {
-                        return provider;
+                        targetProvider = provider;
+                        break;
                     }
                 }
             }
         }
-        final AppContext appContext = this;
-        return new Provider<T>() {
-            public T get() {
-                return getBeanBuilder().getDefaultInstance(targetClass, container, appContext);
-            }
-        };
+        if (targetProvider == null) {
+            final AppContext appContext = this;
+            targetProvider = new Provider<T>() {
+                public T get() {
+                    return getBeanBuilder().getDefaultInstance(targetClass, container, appContext);
+                }
+            };
+        }
+        return targetProvider;
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(final BindInfo<T> info) {
         if (info == null) {
             return null;
         }
-        Provider<T> provider = null;
-        Provider<Scope> scope = null;
-        //
-        if (info instanceof AbstractBindInfoProviderAdapter) {
-            AbstractBindInfoProviderAdapter<T> adapter = (AbstractBindInfoProviderAdapter<T>) info;
-            provider = adapter.getCustomerProvider();
-            scope = adapter.getScopeProvider();
-        }
-        //
-        if (provider == null) {
-            final AppContext appContext = this;
-            final DefineContainer container = getContextData().getBindInfoContainer();
-            provider = new Provider<T>() {
-                public T get() {
-                    return getBeanBuilder().getInstance(info, container, appContext);
-                }
-            };
-        }
-        //
-        if (scope != null) {
-            provider = scope.get().scope(info, provider);
-        }
+        final AppContext appContext = this;
+        final DefineContainer container = getContextData().getBindInfoContainer();
+        Provider<T> provider = new Provider<T>() {
+            public T get() {
+                return getBeanBuilder().getInstance(info, container, appContext);
+            }
+        };
         return provider;
     };
     //
@@ -438,14 +425,7 @@ public abstract class TemplateAppContext implements AppContext {
         /*3.Start*/
         logger.info("doStart now.");
         doStart();
-        /*2.执行Aware通知*/
-        List<AppContextAware> awareList = findBindingBean(AppContextAware.class);
-        if (awareList.isEmpty() == false) {
-            for (AppContextAware weak : awareList) {
-                weak.setAppContext(this);
-            }
-        }
-        /*3.发送启动事件*/
+        /*4.发送启动事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Started, this);
         logger.info("doStartCompleted now.");
         doStartCompleted();/*用于扩展*/
@@ -455,7 +435,7 @@ public abstract class TemplateAppContext implements AppContext {
                 ((StartModule) module).onStart(this);
             }
         }
-        /*3.打印状态*/
+        /*5.打印状态*/
         logger.info("doStart completed!");
         logger.info("Hasor Started!");
     }
@@ -468,7 +448,7 @@ public abstract class TemplateAppContext implements AppContext {
         /*1.Init*/
         logger.info("doShutdown now.");
         doShutdown();
-        /*3.引发事件*/
+        /*2.引发事件*/
         ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
         logger.info("doShutdownCompleted now.");
         doShutdownCompleted();

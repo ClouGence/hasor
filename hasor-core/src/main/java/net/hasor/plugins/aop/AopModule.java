@@ -34,6 +34,6 @@ public class AopModule implements Module {
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
         //
         logger.info("Aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
-        apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor(apiBinder));
+        apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor());
     }
 }

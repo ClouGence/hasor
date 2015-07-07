@@ -1,10 +1,16 @@
-﻿===== Hasor-Core v1.0.1
+﻿===== Hasor-Core v1.1.0
+* 新增:
+    01.增加ContextMap类，该类可以为WebMVC提供request作用域范围的数据存储。可以通过AbstractWebController或者AppContext获取到它。
 * 修复:
     01.修复TemplateAppContext中在加载模块的时候，没有拦截住因为引入依赖而导致的报错。
-    02.修复ValidData类中validMessage字段未初始化引发的空指针异常。
-    03.修复MultiResourceLoader类在向map插入值时插入空指针的问题。
+    02.修复mvc验证框架ValidData类中validMessage字段未初始化引发的空指针异常。
+    03.修复资源加载器插件，MultiResourceLoader类在向map插入值时插入空指针的问题。
 * 改进:
     01.ResourceLoader接口的exist方法不在抛出IO异常。
+    02.AbstractWebController增加getModelByName方法。
+    03.AppContextAware接口的使用不再依赖ApiBinder接口的声明，此项改进去掉了ApiBinder接口中的autoAware方法。
+    04.TemplateAppContext 在 start过程中不再需要处理AppContextAware相关初始化工作。
+    05.BindInfoProvider去掉构造方法ApiBinder类型参数，相关AppContextAware工作不再需要特殊声明。
 
 ===== Hasor-Core v1.0.0
 * 新增:

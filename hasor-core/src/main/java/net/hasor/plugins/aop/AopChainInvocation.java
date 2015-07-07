@@ -33,8 +33,9 @@ class AopChainInvocation implements MethodInvocation {
     public AopChainInvocation(AppContext appContext, List<Class<? extends MethodInterceptor>> interTypeList, MethodInvocation invocation) {
         List<MethodInterceptor> beforeList = new ArrayList<MethodInterceptor>();
         for (Class<? extends MethodInterceptor> interType : interTypeList) {
-            if (interType != null)
+            if (interType != null) {
                 beforeList.add(appContext.getInstance(interType));
+            }
         }
         this.beforeInterceptor = beforeList.toArray(new MethodInterceptor[beforeList.size()]);
         this.invocation = invocation;

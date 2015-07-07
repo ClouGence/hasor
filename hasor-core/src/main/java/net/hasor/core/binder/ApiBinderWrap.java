@@ -17,7 +17,6 @@ package net.hasor.core.binder;
 import java.lang.reflect.Method;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.Environment;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
@@ -35,9 +34,6 @@ public class ApiBinderWrap implements ApiBinder {
     }
     public Environment getEnvironment() {
         return this.apiBinder.getEnvironment();
-    }
-    public <T extends AppContextAware> T autoAware(final T aware) {
-        return this.apiBinder.autoAware(aware);
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.apiBinder.findClass(featureType);

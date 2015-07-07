@@ -36,12 +36,6 @@ public interface ApiBinder {
      */
     public Set<Class<?>> findClass(Class<?> featureType);
     /**
-     * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
-     * @param aware 需要被注册的 AppContextAware 接口实现对象。
-     * @return 返回 aware 参数本身。
-     */
-    public <T extends AppContextAware> T autoAware(T aware);
-    /**
      * 安装其它插件。
      * @param module 新安装的插件
      * @throws Throwable 在执行loadModule方法期间发生异常的。
@@ -268,7 +262,7 @@ public interface ApiBinder {
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends MetaDataBindingBuilder<T> {
         /**
-         * 注册为单例。
+         * 注册为单例，该方法会覆盖toScope方法的设置。
          * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> asEagerSingleton();

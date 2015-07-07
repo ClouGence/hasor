@@ -68,8 +68,14 @@ public abstract class ControllerModule extends WebModule {
             helper.loadInterceptor(ResultCallInterceptor.class);
             //
             //框架初始化
-            apiBinder.bindType(RootController.class).toInstance(apiBinder.autoAware(new RootController()));
+            RequestScope scope = new RequestScope();
+            apiBinder.bindType(RequestScope.class).toInstance(scope);
+            apiBinder.bindType(RootController.class).toInstance(new RootController());
+            //
+            apiBinder.filter("/*").through(scope);
             apiBinder.filter("/*").through(new ControllerFilter());
+            //
+            apiBinder.bindType(ContextMap.class).toScope(scope);
         }
         //
         //3.load config

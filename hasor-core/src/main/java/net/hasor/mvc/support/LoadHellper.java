@@ -44,7 +44,6 @@ public abstract class LoadHellper {
         //
         BindInfo<ResultProcess> info = this.apiBinder().bindType(ResultProcess.class).uniqueName().to(processType).toInfo();
         ResultProcessDefine define = new ResultProcessDefine(annoType, info);
-        apiBinder().autoAware(define);
         apiBinder().bindType(ResultProcessDefine.class).uniqueName().toInstance(define);
     }
     //
@@ -53,7 +52,6 @@ public abstract class LoadHellper {
         logger.info("loadInterceptor type is {}", interceptor);
         MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
         WebCallInterceptorDefine define = new WebCallInterceptorDefine(metaDatainfo.toInfo());
-        apiBinder().autoAware(define);
         apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
     }
     //
