@@ -70,10 +70,10 @@ public abstract class ControllerModule extends WebModule {
             //框架初始化
             RequestScope scope = new RequestScope();
             apiBinder.bindType(RequestScope.class).toInstance(scope);
-            apiBinder.bindType(RootController.class).toInstance(new RootController());
+            apiBinder.bindType(RootController.class);
             //
             apiBinder.filter("/*").through(scope);
-            apiBinder.filter("/*").through(new ControllerFilter());
+            apiBinder.filter("/*").through(ControllerFilter.class);
             //
             apiBinder.bindType(ContextMap.class).toScope(scope);
         }

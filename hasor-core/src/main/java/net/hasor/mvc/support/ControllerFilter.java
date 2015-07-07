@@ -15,7 +15,9 @@
  */
 package net.hasor.mvc.support;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
+import org.more.util.StringUtils;
 /**
  * action功能的入口。
  * @version : 2013-5-11
@@ -36,6 +39,7 @@ import net.hasor.web.startup.RuntimeListener;
 class ControllerFilter implements Filter {
     private RootController             rootController = null;
     private WebCallInterceptorDefine[] defineList     = null;
+    private String[]                   interceptNames = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -45,6 +49,15 @@ class ControllerFilter implements Filter {
         }
         List<WebCallInterceptorDefine> defineList = appContext.findBindingBean(WebCallInterceptorDefine.class);
         this.defineList = defineList.toArray(new WebCallInterceptorDefine[defineList.size()]);
+        //
+        String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.modConfig.mvc.interceptFiles", "do;");
+        Set<String> names = new HashSet<String>();
+        for (String name : interceptNames.split(";")) {
+            if (StringUtils.isBlank(name) == false) {
+                names.add(name);
+            }
+        }
+        this.interceptNames = names.toArray(new String[names.size()]);
     }
     public void destroy() {
         //
@@ -54,6 +67,20 @@ class ControllerFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
+        boolean matchingOK = false;
+        for (int i = 0; i < this.interceptNames.length; i++) {
+            String name = this.interceptNames[i];
+            if (actionPath.endsWith(name)) {
+                matchingOK = true;
+                actionPath = actionPath.substring(0, actionPath.length() - name.length() - 1);
+                break;
+            }
+        }
+        if (!matchingOK) {
+            chain.doFilter(request, resp);
+            return;
+        }
+        //
         //1.获取 ActionInvoke
         MappingInfoDefine define = this.rootController.findMapping(new MappingMatching(actionPath, request.getMethod()));
         if (define == null) {

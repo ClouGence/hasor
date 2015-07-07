@@ -20,6 +20,7 @@
 
 		<!-- 插件模块的配置 -->
 		<modConfig>
+			<mvc interceptFiles="htm;html;do;" />
 			<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
 		</modConfig>
 

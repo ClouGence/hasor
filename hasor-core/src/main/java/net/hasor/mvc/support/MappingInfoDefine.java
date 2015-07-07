@@ -68,7 +68,6 @@ class MappingInfoDefine implements MappingInfo {
         List<Method> mList = BeanUtils.getMethods(targetType);
         if (mList != null && !mList.isEmpty()) {
             for (Method targetMethod : mList) {
-                /*HttpMethod*/
                 Annotation[] annos = targetMethod.getAnnotations();
                 if (annos != null) {
                     for (Annotation anno : annos) {
@@ -87,6 +86,7 @@ class MappingInfoDefine implements MappingInfo {
                 }
             }
         }
+        //
         this.mappingTo = servicePath;
         this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
     }
