@@ -27,6 +27,10 @@ public abstract class Hasor {
         env.pushListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;
     }
+    public static <T extends EventListener> T pushShutdownListener(EventContext env, T eventListener) {
+        env.pushListener(EventContext.ContextEvent_Shutdown, eventListener);
+        return eventListener;
+    }
     public static <T extends EventListener> T addStartListener(EventContext env, T eventListener) {
         env.addListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;

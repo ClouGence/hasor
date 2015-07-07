@@ -17,6 +17,8 @@ package net.hasor.mvc.support;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
@@ -69,11 +71,13 @@ public abstract class ControllerModule extends WebModule {
             //
             //框架初始化
             RequestScope scope = new RequestScope();
+            EventContext env = apiBinder.getEnvironment().getEventContext();
+            RootController rootController = Hasor.pushStartListener(env, new RootController());
             apiBinder.bindType(RequestScope.class).toInstance(scope);
-            apiBinder.bindType(RootController.class);
+            apiBinder.bindType(RootController.class).toInstance(rootController);
             //
             apiBinder.filter("/*").through(scope);
-            apiBinder.filter("/*").through(ControllerFilter.class);
+            apiBinder.filter("/*").through(new ControllerFilter());
             //
             apiBinder.bindType(ContextMap.class).toScope(scope);
         }

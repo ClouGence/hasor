@@ -19,18 +19,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
 /**
  * 根控制器
  * @version : 2014年8月28日
  * @author 赵永春(zyc@hasor.net)
  */
-class RootController implements AppContextAware {
+class RootController implements EventListener {
     private AppContext          appContext  = null;
     private MappingInfoDefine[] invokeArray = new MappingInfoDefine[0];
     private AtomicBoolean       inited      = new AtomicBoolean(false);
     //
-    public void setAppContext(AppContext appContext) {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
