@@ -25,7 +25,6 @@ import net.hasor.core.BindInfoAware;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.context.BeanBuilder;
 import net.hasor.core.context.DefineContainer;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
@@ -49,7 +48,7 @@ public class FactoryBeanBuilder implements BeanBuilder {
         return new FactoryBindInfoProviderAdapter<T>(bindType, masterLosder);
     }
     /** 通过{@link BindInfo}创建Bean。 */
-    public <T> T getInstance(BindInfo<T> bindInfo, DefineContainer container, AppContext appContext) {
+    public <T> T getInstance(final BindInfo<T> bindInfo, final DefineContainer container, final AppContext appContext) {
         Provider<?> instanceProvider = null;
         Provider<Scope> scopeProvider = null;
         //
@@ -65,35 +64,28 @@ public class FactoryBeanBuilder implements BeanBuilder {
         }
         //create Provider.
         if (instanceProvider == null && bindInfo instanceof FactoryBindInfoProviderAdapter == true) {
-            FactoryBindInfoProviderAdapter<T> infoAdapter = (FactoryBindInfoProviderAdapter<T>) bindInfo;
-            try {
-                List<BindInfo<AopBindInfoAdapter>> aopBindList = container.getBindInfoByType(AopBindInfoAdapter.class);
-                List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
-                for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
-                    aopList.add(this.getInstance(info, container, appContext));
+            final FactoryBindInfoProviderAdapter<T> infoAdapter = (FactoryBindInfoProviderAdapter<T>) bindInfo;
+            instanceProvider = new Provider<Object>() {
+                public Object get() {
+                    Object object = createProvider(infoAdapter, bindInfo, container, appContext);
+                    return doAfter(object, bindInfo, appContext);
                 }
-                AopClassConfig cc = infoAdapter.buildEngine(aopList);
-                Class<?> newType = null;
-                if (cc.hasChange() == true) {
-                    newType = cc.toClass();
-                } else {
-                    newType = cc.getSuperClass();
-                }
-                Object targetBean = createObject(newType, container, appContext);
-                instanceProvider = new InstanceProvider<Object>(targetBean);
-            } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
-            }
+            };
         } else if (instanceProvider == null) {
-            Object targetBean = getDefaultInstance(bindInfo.getBindType(), container, appContext);
-            instanceProvider = new InstanceProvider<Object>(targetBean);
+            instanceProvider = new Provider<Object>() {
+                public Object get() {
+                    Object object = getDefaultInstance(bindInfo.getBindType(), container, appContext);
+                    return doAfter(object, bindInfo, appContext);
+                }
+            };
         }
         //scope
         if (scopeProvider != null) {
             instanceProvider = scopeProvider.get().scope(bindInfo, instanceProvider);
         }
-        return doAfter((T) instanceProvider.get(), bindInfo, appContext);
+        return (T) instanceProvider.get();
     }
+    //
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(final Class<T> oriType, DefineContainer container, AppContext appContext) {
         if (oriType == null) {
@@ -111,17 +103,39 @@ public class FactoryBeanBuilder implements BeanBuilder {
                 Class<?> comType = oriType.getComponentType();
                 return (T) Array.newInstance(comType, 0);
             }
-            return doAfter(createObject(oriType, container, appContext), null, appContext);
+            return (T) doAfter(createObject(oriType, container, appContext), null, appContext);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    //
+    //
+    //
+    private Object createProvider(FactoryBindInfoProviderAdapter<?> infoAdapter, BindInfo<?> bindInfo, DefineContainer container, AppContext appContext) {
+        try {
+            List<BindInfo<AopBindInfoAdapter>> aopBindList = container.getBindInfoByType(AopBindInfoAdapter.class);
+            List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
+            for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
+                aopList.add(this.getInstance(info, container, appContext));
+            }
+            AopClassConfig cc = infoAdapter.buildEngine(aopList);
+            Class<?> newType = null;
+            if (cc.hasChange() == true) {
+                newType = cc.toClass();
+            } else {
+                newType = cc.getSuperClass();
+            }
+            return createObject(newType, container, appContext);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
     /**创建对象*/
-    protected <T> T createObject(Class<T> targetType, DefineContainer container, AppContext appContext) throws Exception {
-        T targetBean = targetType.newInstance();
+    private Object createObject(Class<?> targetType, DefineContainer container, AppContext appContext) throws Exception {
+        Object targetBean = targetType.newInstance();
         return targetBean;
     }
-    protected <T> T doAfter(T targetBean, BindInfo<T> bindInfo, AppContext appContext) {
+    private Object doAfter(Object targetBean, BindInfo<?> bindInfo, AppContext appContext) {
         if (targetBean instanceof BindInfoAware) {
             ((BindInfoAware) targetBean).setBindInfo(bindInfo);
         }
