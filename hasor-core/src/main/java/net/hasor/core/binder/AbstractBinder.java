@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>抽象方法 {@link #getBuilderRegister()} ,会返回一个接口( {@link net.hasor.core.factorys.BindInfoDefineManager BindInfoDefineManager} )
+ * <p>抽象方法 {@link #contextData()} ,会返回一个类( {@link ContextData} )
  * 用于配置Bean信息。
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)

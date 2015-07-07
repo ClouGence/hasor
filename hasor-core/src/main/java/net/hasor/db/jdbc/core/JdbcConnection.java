@@ -61,9 +61,9 @@ public class JdbcConnection extends JdbcAccessor {
         this.setDataSource(dataSource);
     }
     /**
-     * Construct a new JdbcConnection, given a DataSource to obtain connections from.
+     * Construct a new JdbcConnection, given a Connection to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
-     * @param dataSource the JDBC DataSource to obtain connections from
+     * @param conn the JDBC Connection
      */
     public JdbcConnection(final Connection conn) {
         this.setConnection(conn);

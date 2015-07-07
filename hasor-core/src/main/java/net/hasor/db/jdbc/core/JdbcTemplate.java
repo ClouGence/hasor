@@ -86,9 +86,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         super(dataSource);
     }
     /**
-     * Construct a new JdbcTemplate, given a DataSource to obtain connections from.
+     * Construct a new JdbcTemplate, given a Connection to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
-     * @param dataSource the JDBC DataSource to obtain connections from
+     * @param conn the JDBC Connection
      */
     public JdbcTemplate(final Connection conn) {
         super(conn);

@@ -85,8 +85,7 @@ public abstract class ControllerModule extends WebModule {
     protected abstract void loadController(LoadHellper helper) throws Throwable;
     /**
      * 创建 {@link MappingInfoDefine}
-     * @param atMethod 映射的方法
-     * @param strategyFactory CallStrategy 工厂。
+     * @param clazz 目标控制器类型。
      * @return 返回mvc定义。
      */
     public MappingInfoDefine createMappingDefine(Class<? extends ModelController> clazz) {
