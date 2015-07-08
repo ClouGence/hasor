@@ -34,7 +34,7 @@ import net.hasor.mvc.Validation;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
-import net.hasor.rsf.center.core.freemarker.FreemarkerViewFilter;
+import net.hasor.rsf.center.core.freemarker.FreemarkerHttpServlet;
 import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
@@ -86,7 +86,7 @@ public class StartAppModule extends ControllerModule implements StartModule {
         configuration.setLocalizedLookup(true);
         configuration.setTemplateLoader(new DirTemplateLoader(new File(realPath)));
         helper.apiBinder().bindType(Configuration.class).toInstance(configuration);
-        helper.apiBinder().filter("/*").through(FreemarkerViewFilter.class);
+        helper.apiBinder().serve("*.htm", "*.html").with(FreemarkerHttpServlet.class);
         //5.MyBatis
         {
             //HSQL

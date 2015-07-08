@@ -28,7 +28,6 @@ import net.hasor.rsf.center.domain.form.OffLineForm;
 @MappingTo("/apis/offline")
 public class OffLine extends AbstractWebController {
     public void execute(@Valid("Access") @Params OffLineForm offLineForm) throws IOException {
-        getResponse().getWriter().write("abc");
         this.getContextMap().put("var", "abc");
         System.out.println("/apis/offline");
     }
