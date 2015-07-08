@@ -125,6 +125,7 @@ public abstract class AbstractBinder implements ApiBinder {
         Hasor.assertIsNotNull(interceptor, "interceptor is null.");
         //
         AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
+        aopAdapter = Hasor.pushStartListener(this.getEnvironment().getEventContext(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
     //

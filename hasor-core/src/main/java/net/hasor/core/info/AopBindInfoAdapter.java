@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import org.more.classcode.aop.AopInvocation;
@@ -26,7 +27,7 @@ import org.more.classcode.aop.AopInvocation;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopBindInfoAdapter implements MethodInterceptor, org.more.classcode.aop.AopInterceptor, AppContextAware {
+public class AopBindInfoAdapter implements MethodInterceptor, org.more.classcode.aop.AopInterceptor, EventListener {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;
@@ -69,7 +70,8 @@ public class AopBindInfoAdapter implements MethodInterceptor, org.more.classcode
             return this.invocation.getThis();
         }
     }
-    public void setAppContext(AppContext appContext) {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         if (this.interceptor instanceof AppContextAware) {
             ((AppContextAware) this.interceptor).setAppContext(appContext);
         }

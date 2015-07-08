@@ -70,8 +70,8 @@ public abstract class ControllerModule extends WebModule {
             helper.loadInterceptor(ResultCallInterceptor.class);
             //
             //框架初始化
-            RequestScope scope = new RequestScope();
             EventContext env = apiBinder.getEnvironment().getEventContext();
+            RequestScope scope = Hasor.pushStartListener(env, new RequestScope());
             RootController rootController = Hasor.pushStartListener(env, new RootController());
             apiBinder.bindType(RequestScope.class).toInstance(scope);
             apiBinder.bindType(RootController.class).toInstance(rootController);

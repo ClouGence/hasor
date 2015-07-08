@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
@@ -37,7 +38,9 @@ public class TransactionBinder {
         this.apiBinder = apiBinder;
         /*下面代码只初始化一次，因为它是通用的。*/
         if (initInterceptor.get() == false) {
-            this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), new TranInterceptor());
+            EventContext env = apiBinder.getEnvironment().getEventContext();
+            TranInterceptor tranInterceptor = Hasor.pushStartListener(env, new TranInterceptor());
+            this.apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInterceptor);
             initInterceptor.set(true);
         }
     }

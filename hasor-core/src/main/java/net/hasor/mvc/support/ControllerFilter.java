@@ -76,19 +76,16 @@ class ControllerFilter implements Filter {
                 break;
             }
         }
-        if (!matchingOK) {
-            chain.doFilter(request, resp);
-            return;
+        if (matchingOK) {
+            MappingInfoDefine define = this.rootController.findMapping(new MappingMatching(actionPath, request.getMethod()));
+            if (define != null) {
+                this.doInvoke(define, request, resp);
+            }
         }
         //
-        //1.获取 ActionInvoke
-        MappingInfoDefine define = this.rootController.findMapping(new MappingMatching(actionPath, request.getMethod()));
-        if (define == null) {
+        if (resp.isCommitted() == false) {
             chain.doFilter(request, resp);
-            return;
         }
-        //2.执行调用
-        this.doInvoke(define, request, resp);
     }
     private void doInvoke(MappingInfoDefine define, ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         try {

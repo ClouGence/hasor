@@ -75,7 +75,10 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
             call.getHttpRequest().setAttribute(this.validAttrName, validList);
         }
         if (validResult == false) {
-            throw new ValidationException(validList);
+            if (appContext.getEnvironment().isDebug()) {
+                throw new ValidationException(validList);
+            }
+            return null;
         } else {
             return call.call(args);
         }

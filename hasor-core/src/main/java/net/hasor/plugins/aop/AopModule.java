@@ -17,6 +17,7 @@ package net.hasor.plugins.aop;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class AopModule implements Module {
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
         //
         logger.info("Aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
-        apiBinder.bindInterceptor(matcherClass, matcherMethod, new AopInterceptor());
+        AopInterceptor aopInterceptor = Hasor.pushStartListener(apiBinder.getEnvironment().getEventContext(), new AopInterceptor());
+        apiBinder.bindInterceptor(matcherClass, matcherMethod, aopInterceptor);
     }
 }

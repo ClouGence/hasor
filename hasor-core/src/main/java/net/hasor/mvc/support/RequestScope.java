@@ -23,15 +23,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.binder.SingleProvider;
 /**
  * 
  * @version : 2015年7月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestScope implements Scope, Filter, AppContextAware {
+public class RequestScope implements Scope, Filter, EventListener {
     public void init(FilterConfig filterConfig) throws ServletException {}
     public void destroy() {}
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -47,7 +48,8 @@ public class RequestScope implements Scope, Filter, AppContextAware {
     //
     private ThreadLocal<HttpServletRequest> httpRequest = new ThreadLocal<HttpServletRequest>();
     private AppContext                      appContext;
-    public void setAppContext(AppContext appContext) {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         this.appContext = appContext;
     }
     public <T> Provider<T> scope(Object key, Provider<T> provider) {
@@ -57,6 +59,7 @@ public class RequestScope implements Scope, Filter, AppContextAware {
             String keyAttr = "RequestScope#" + key.toString();
             Object cacheProvider = request.getAttribute(keyAttr);
             if (cacheProvider == null) {
+                provider = new SingleProvider<T>(provider);
                 request.setAttribute(keyAttr, provider);
             } else {
                 provider = (Provider<T>) cacheProvider;

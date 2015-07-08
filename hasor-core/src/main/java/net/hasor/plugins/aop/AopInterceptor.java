@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 /**
@@ -27,11 +27,12 @@ import net.hasor.core.MethodInvocation;
  * @version : 2013-11-8
  * @author 赵永春(zyc@hasor.net)
  */
-class AopInterceptor implements MethodInterceptor, AppContextAware {
+class AopInterceptor implements MethodInterceptor, EventListener {
     private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
     private AppContext                                                    appContext           = null;
     //
-    public void setAppContext(AppContext appContext) {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         this.appContext = appContext;
     }
     //

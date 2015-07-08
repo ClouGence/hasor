@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.EventListener;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.Isolation;
@@ -31,9 +31,9 @@ import net.hasor.db.transaction.TransactionStatus;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-class TranInterceptor implements MethodInterceptor, AppContextAware {
-    @Override
-    public void setAppContext(final AppContext appContext) {
+class TranInterceptor implements MethodInterceptor, EventListener {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         List<StrategyDefinition> defineList = appContext.findBindingBean(StrategyDefinition.class);
         if (defineList != null && defineList.isEmpty() == false) {
             this.definitionArray = defineList.toArray(new StrategyDefinition[defineList.size()]);

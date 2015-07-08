@@ -17,6 +17,7 @@ package net.hasor.mvc.support;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
+import net.hasor.core.EventListener;
 import net.hasor.mvc.WebCall;
 import net.hasor.mvc.WebCallInterceptor;
 /**
@@ -24,14 +25,15 @@ import net.hasor.mvc.WebCallInterceptor;
  * @version 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
-class WebCallInterceptorDefine implements WebCallInterceptor, AppContextAware {
+class WebCallInterceptorDefine implements WebCallInterceptor, EventListener {
     private WebCallInterceptor           callInterceptor;
     private BindInfo<WebCallInterceptor> targetBindInfo;
     //
     public WebCallInterceptorDefine(BindInfo<WebCallInterceptor> targetBindInfo) {
         this.targetBindInfo = targetBindInfo;
     }
-    public void setAppContext(AppContext appContext) {
+    public void onEvent(String event, Object[] params) throws Throwable {
+        AppContext appContext = (AppContext) params[0];
         this.callInterceptor = appContext.getInstance(this.targetBindInfo);
         if (this.callInterceptor instanceof AppContextAware) {
             ((AppContextAware) this.callInterceptor).setAppContext(appContext);

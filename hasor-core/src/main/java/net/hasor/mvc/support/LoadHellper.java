@@ -19,6 +19,8 @@ import java.lang.reflect.Modifier;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.MetaDataBindingBuilder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.Validation;
@@ -42,16 +44,19 @@ public abstract class LoadHellper {
     public void loadResultProcess(Class<? extends Annotation> annoType, Class<? extends ResultProcess> processType) {
         logger.info("loadResultDefine annoType is {} toInstance {}", annoType, processType);
         //
+        EventContext env = this.apiBinder().getEnvironment().getEventContext();
         BindInfo<ResultProcess> info = this.apiBinder().bindType(ResultProcess.class).uniqueName().to(processType).toInfo();
-        ResultProcessDefine define = new ResultProcessDefine(annoType, info);
+        ResultProcessDefine define = Hasor.pushStartListener(env, new ResultProcessDefine(annoType, info));
         apiBinder().bindType(ResultProcessDefine.class).uniqueName().toInstance(define);
     }
     //
     /**装载拦截器*/
     public void loadInterceptor(Class<? extends WebCallInterceptor> interceptor) {
         logger.info("loadInterceptor type is {}", interceptor);
+        EventContext env = this.apiBinder().getEnvironment().getEventContext();
+        //
         MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
-        WebCallInterceptorDefine define = new WebCallInterceptorDefine(metaDatainfo.toInfo());
+        WebCallInterceptorDefine define = Hasor.pushStartListener(env, new WebCallInterceptorDefine(metaDatainfo.toInfo()));
         apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
     }
     //
