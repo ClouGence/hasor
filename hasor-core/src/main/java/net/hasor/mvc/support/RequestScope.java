@@ -23,16 +23,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.SingleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2015年7月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestScope implements Scope, Filter, EventListener {
+public class RequestScope implements Scope, Filter, AppContextAware {
     public void init(FilterConfig filterConfig) throws ServletException {}
     public void destroy() {}
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -46,21 +49,24 @@ public class RequestScope implements Scope, Filter, EventListener {
         }
     }
     //
+    protected Logger                        logger      = LoggerFactory.getLogger(getClass());
     private ThreadLocal<HttpServletRequest> httpRequest = new ThreadLocal<HttpServletRequest>();
     private AppContext                      appContext;
-    public void onEvent(String event, Object[] params) throws Throwable {
-        AppContext appContext = (AppContext) params[0];
+    public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
     public <T> Provider<T> scope(Object key, Provider<T> provider) {
-        key = (key == null) ? "RequestScope#" : key;
+        BindInfo<?> infoKey = (BindInfo<?>) key;
+        String keyStr = "RequestScope#" + infoKey.getBindID();
         HttpServletRequest request = httpRequest.get();
         if (request != null) {
-            String keyAttr = "RequestScope#" + key.toString();
-            Object cacheProvider = request.getAttribute(keyAttr);
+            Object cacheProvider = request.getAttribute(keyStr);
             if (cacheProvider == null) {
                 provider = new SingleProvider<T>(provider);
-                request.setAttribute(keyAttr, provider);
+                request.setAttribute(keyStr, provider);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("request scope, attribute key={},value={}", keyStr, provider);
+                }
             } else {
                 provider = (Provider<T>) cacheProvider;
             }

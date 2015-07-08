@@ -38,4 +38,7 @@ public class SingleProvider<T> implements Provider<T> {
         }
         return this.instance;
     }
+    public String toString() {
+        return "SingleProvider->" + provider.toString();
+    }
 }

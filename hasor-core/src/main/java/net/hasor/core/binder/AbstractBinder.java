@@ -62,7 +62,7 @@ public abstract class AbstractBinder implements ApiBinder {
         logger.info("installModule ->" + module);
         module.loadModule(this);
         //
-        Hasor.addStartListener(this.getEnvironment().getEventContext(), new EventListener() {
+        Hasor.addStartListener(this.getEnvironment(), new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
                 if (module instanceof StartModule) {
                     ((StartModule) module).onStart((AppContext) params[0]);
@@ -125,7 +125,7 @@ public abstract class AbstractBinder implements ApiBinder {
         Hasor.assertIsNotNull(interceptor, "interceptor is null.");
         //
         AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
-        aopAdapter = Hasor.pushStartListener(this.getEnvironment().getEventContext(), aopAdapter);
+        aopAdapter = Hasor.autoAware(this.getEnvironment(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
     //

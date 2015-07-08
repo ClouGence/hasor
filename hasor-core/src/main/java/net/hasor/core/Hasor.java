@@ -23,20 +23,37 @@ import net.hasor.core.environment.StandardEnvironment;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Hasor {
-    public static <T extends EventListener> T pushStartListener(EventContext env, T eventListener) {
-        env.pushListener(EventContext.ContextEvent_Started, eventListener);
+    /**
+     * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
+     * @param aware 需要被注册的 AppContextAware 接口实现对象。
+     * @return 返回 aware 参数本身。
+     */
+    public static <T extends AppContextAware> T autoAware(Environment env, final T aware) {
+        if (aware == null) {
+            return aware;
+        }
+        Hasor.assertIsNotNull(env, "EventContext is null.");
+        env.getEventContext().pushListener(EventContext.ContextEvent_Started, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                aware.setAppContext((AppContext) params[0]);
+            }
+        });
+        return aware;
+    }
+    public static <T extends EventListener> T pushStartListener(Environment env, T eventListener) {
+        env.getEventContext().pushListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;
     }
-    public static <T extends EventListener> T pushShutdownListener(EventContext env, T eventListener) {
-        env.pushListener(EventContext.ContextEvent_Shutdown, eventListener);
+    public static <T extends EventListener> T pushShutdownListener(Environment env, T eventListener) {
+        env.getEventContext().pushListener(EventContext.ContextEvent_Shutdown, eventListener);
         return eventListener;
     }
-    public static <T extends EventListener> T addStartListener(EventContext env, T eventListener) {
-        env.addListener(EventContext.ContextEvent_Started, eventListener);
+    public static <T extends EventListener> T addStartListener(Environment env, T eventListener) {
+        env.getEventContext().addListener(EventContext.ContextEvent_Started, eventListener);
         return eventListener;
     }
-    public static <T extends EventListener> T addShutdownListener(EventContext env, T eventListener) {
-        env.addListener(EventContext.ContextEvent_Shutdown, eventListener);
+    public static <T extends EventListener> T addShutdownListener(Environment env, T eventListener) {
+        env.getEventContext().addListener(EventContext.ContextEvent_Shutdown, eventListener);
         return eventListener;
     }
     //

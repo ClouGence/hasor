@@ -15,8 +15,8 @@
  */
 package net.hasor.mvc.support.result;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.core.EventListener;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.WebCall;
 /**
@@ -24,13 +24,12 @@ import net.hasor.mvc.WebCall;
  * @version : 2014年8月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ResultProcessDefine implements ResultProcess, EventListener {
+public class ResultProcessDefine implements ResultProcess, AppContextAware {
     private Class<?>                resultType = null;
     private BindInfo<ResultProcess> bindInfo   = null;
     private ResultProcess           proc       = null;
     //
-    public void onEvent(String event, Object[] params) throws Throwable {
-        AppContext appContext = (AppContext) params[0];
+    public void setAppContext(AppContext appContext) {
         this.proc = appContext.getInstance(this.bindInfo);
     }
     public ResultProcessDefine(Class<?> resultType, BindInfo<ResultProcess> bindInfo) {

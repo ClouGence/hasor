@@ -2,6 +2,7 @@
 * 新增:
     01.增加ContextMap类，该类可以为WebMVC提供request作用域范围的数据存储。可以通过AbstractWebController或者AppContext获取到它。
     02.mvc框架增加请求文件名尾缀匹配，默认配置：“htm;html;do;”，配置项为：“hasor.modConfig.mvc.interceptFiles”。
+    03.Hasor增加autoAware方法用以冲抵ApiBinder中删除的autoAware方法。
 * 修复:
     01.修复TemplateAppContext中在加载模块的时候，没有拦截住因为引入依赖而导致的报错。
     02.修复mvc验证框架ValidData类中validMessage字段未初始化引发的空指针异常。
