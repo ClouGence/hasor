@@ -25,10 +25,12 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ErrorCode {
-    ;
+    /**1, "SQL{}，执行出错. ->{}"*/
+    DAO_SELECT(1, "SQL{}，执行出错. ->{}"),
     //
     //
     //---------------------------------------------
+    ;
     private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
     private int           codeType;
     private String        messageTemplate;

@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web;
-import java.io.IOException;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
-import net.hasor.mvc.api.Valid;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.domain.form.OffLineForm;
+package net.hasor.rsf.center.utils;
+import net.hasor.rsf.center.domain.constant.ErrorCodeObject;
+import org.more.bizcommon.ResultDO;
 /**
  * 
- * @version : 2015年5月5日
+ * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/offline")
-public class OffLine extends AbstractWebController {
-    public void execute(@Valid("Access") @Params OffLineForm offLineForm) throws IOException {
-        getResponse().getWriter().write("abc");
-        this.getContextMap().put("var", "abc");
-        System.out.println("/apis/offline");
+public class CodeResultDO<T> extends ResultDO<T> {
+    private static final long serialVersionUID = -6535714269265915519L;
+    private ErrorCodeObject   errorCode;
+    //
+    public CodeResultDO() {}
+    public ErrorCodeObject getErrorCode() {
+        return this.errorCode;
+    }
+    public CodeResultDO<T> setErrorCode(ErrorCodeObject errorCode) {
+        this.errorCode = errorCode;
+        return this;
     }
 }

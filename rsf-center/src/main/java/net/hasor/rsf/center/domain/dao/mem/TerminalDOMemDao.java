@@ -15,9 +15,10 @@
  */
 package net.hasor.rsf.center.domain.dao.mem;
 import java.util.HashMap;
+import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.dao.Dao;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
-import org.more.bizcommon.ResultDO;
+import net.hasor.rsf.center.utils.CodeResultDO;
 /**
  * 终端
  * @version : 2015年5月22日
@@ -25,8 +26,8 @@ import org.more.bizcommon.ResultDO;
  */
 @Dao
 public class TerminalDOMemDao extends MemDao<TerminalDO> {
-    public ResultDO<TerminalDO> queryTerminalByIDAndSecret(String terminalID, String secretKey) {
-        ResultDO<TerminalDO> resultDO = new ResultDO<TerminalDO>();
+    public CodeResultDO<TerminalDO> queryTerminalByIDAndSecret(String terminalID, String secretKey) {
+        CodeResultDO<TerminalDO> resultDO = new CodeResultDO<TerminalDO>();
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("terminalID", terminalID);
@@ -35,6 +36,8 @@ public class TerminalDOMemDao extends MemDao<TerminalDO> {
             //
             resultDO.setSuccess(true).setResult(terminalDO);
         } catch (Exception e) {
+            resultDO.setErrorCode(ErrorCode.DAO_SELECT.setParams("queryTerminalByIDAndSecret",//
+                    "terminalID= " + terminalID + ",secretKey=" + secretKey + ",errorMessage = " + e.getMessage()));
             resultDO.setSuccess(false).setThrowable(e);
         }
         return resultDO;

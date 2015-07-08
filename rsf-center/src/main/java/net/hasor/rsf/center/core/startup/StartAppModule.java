@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.center.core.startup;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
@@ -33,6 +34,8 @@ import net.hasor.mvc.Validation;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.rsf.center.core.freemarker.FreemarkerViewFilter;
+import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.domain.dao.Dao;
@@ -42,8 +45,9 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import freemarker.template.Configuration;
 /**
- * WebMVC
+ * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -74,7 +78,16 @@ public class StartAppModule extends ControllerModule implements StartModule {
                 helper.loadType((Class<? extends ModelController>) controllerType);
             }
         }
-        //4.MyBatis
+        //4.Freemarker
+        String realPath = helper.apiBinder().getServletContext().getRealPath("/");
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
+        configuration.setDefaultEncoding("utf-8");
+        configuration.setOutputEncoding("utf-8");
+        configuration.setLocalizedLookup(true);
+        configuration.setTemplateLoader(new DirTemplateLoader(new File(realPath)));
+        helper.apiBinder().bindType(Configuration.class).toInstance(configuration);
+        helper.apiBinder().filter("/*").through(FreemarkerViewFilter.class);
+        //5.MyBatis
         {
             //HSQL
             String driverString = "org.hsqldb.jdbcDriver";

@@ -19,6 +19,7 @@ import net.hasor.core.InjectMembers;
 import net.hasor.mvc.Validation;
 import net.hasor.rsf.center.domain.dao.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
+import net.hasor.rsf.center.utils.CodeResultDO;
 import net.hasor.rsf.center.utils.SecretUtils;
 import org.more.bizcommon.ResultDO;
 /**
@@ -38,16 +39,15 @@ public class AccessValid implements Validation, InjectMembers {
         }
         AccessInfo accInfo = (AccessInfo) data;
         String secretKey = SecretUtils.toSecretKey(accInfo);
-        ResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
-        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
-            if (terminalResultDO.isSuccess() == false || terminalResultDO.getResult() == null) {
-                terminalResultDO.getThrowable().printStackTrace();
-                return new ResultDO<String>().setSuccess(false).setThrowable(terminalResultDO.getThrowable());
-            } else {
-                return new ResultDO<String>().setSuccess(true);
-            }
-        }
+        CodeResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
+//        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
+//            if (terminalResultDO.isSuccess() == false) {
+//                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());
+//            } else {
+//                return new ResultDO<String>().setSuccess(false);
+//            }
+//        }
         // TODO Auto-generated method stub
-        return null;
+        return new ResultDO<String>().setSuccess(true);
     }
 }

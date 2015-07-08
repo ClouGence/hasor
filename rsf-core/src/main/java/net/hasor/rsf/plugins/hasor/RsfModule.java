@@ -15,14 +15,10 @@
  */
 package net.hasor.rsf.plugins.hasor;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Module;
-import net.hasor.core.Provider;
-import net.hasor.core.binder.BindInfoProvider;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.bootstrap.RsfBootstrap;
@@ -81,15 +77,6 @@ public abstract class RsfModule implements Module {
     /**用于覆盖 rsf 配置文件中的配置。*/
     protected WorkMode workMode(Environment env) {
         return WorkMode.None;
-    }
-    //
-    /**转换{@link RsfBindInfo}为 Hasor{@link Provider}*/
-    protected <T> Provider<T> toProvider(RsfApiBinder apiBinder, RsfBindInfo<T> bindInfo) {
-        return new RsfBindInfoProvider<T>(apiBinder, bindInfo);
-    }
-    /**转换{@link BindInfo}为 Hasor{@link Provider}*/
-    protected <T> Provider<T> toProvider(ApiBinder apiBinder, BindInfo<T> bindInfo) {
-        return new BindInfoProvider<T>(apiBinder, bindInfo);
     }
     //
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
