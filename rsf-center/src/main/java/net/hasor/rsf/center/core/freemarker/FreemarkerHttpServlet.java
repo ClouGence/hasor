@@ -17,7 +17,6 @@ package net.hasor.rsf.center.core.freemarker;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -48,17 +47,23 @@ public class FreemarkerHttpServlet extends HttpServlet implements InjectMembers 
         String layoutBasePath = req.getServletContext().getRealPath("/layout");
         String tempBasePath = ("/templates/" + req.getRequestURI()).replace("//", "/");
         //
-        String layoutFileStr = null;
+        File findLayoutFile = null;
         File layoutFile = new File(layoutBasePath, req.getRequestURI());
         if (layoutFile.exists() == false) {
-            while (layoutFile.getPath().startsWith(layoutBasePath)) {
-                layoutFile = new File(layoutFile.getParentFile().getParent(), "default.htm");
-                if (layoutFile.exists()) {
-                    layoutFileStr = "/layout/" + layoutFile.getPath().substring(layoutBasePath.length());
-                    layoutFileStr = layoutFileStr.replace("\\", "/").replace("//", "/");
-                    break;
+            layoutFile = new File(layoutFile.getParent(), "default.htm");
+            if (layoutFile.exists() == false) {
+                while (layoutFile.getPath().startsWith(layoutBasePath)) {
+                    layoutFile = new File(layoutFile.getParentFile().getParent(), "default.htm");
+                    if (layoutFile.exists()) {
+                        findLayoutFile = layoutFile;
+                        break;
+                    }
                 }
+            } else {
+                findLayoutFile = layoutFile;
             }
+        } else {
+            findLayoutFile = layoutFile;
         }
         //
         try {
@@ -66,18 +71,21 @@ public class FreemarkerHttpServlet extends HttpServlet implements InjectMembers 
             if (dataModel == null) {
                 dataModel = new HashMap<String, Object>();
             }
-            Template bodyTemp = this.configuration.getTemplate(tempBasePath, req.getCharacterEncoding());
-            Template layoutTemp = this.configuration.getTemplate(layoutFileStr, req.getCharacterEncoding());
             //body
+            Template bodyTemp = this.configuration.getTemplate(tempBasePath, req.getCharacterEncoding());
             StringWriter cacheWriter = new StringWriter();
             bodyTemp.process(dataModel, cacheWriter);
             //layout
-            if (layoutTemp != null) {
+            if (findLayoutFile != null) {
                 dataModel.put("content_placeholder", cacheWriter.toString());
+                //
+                String layoutFileStr = "/layout/" + layoutFile.getPath().substring(layoutBasePath.length());
+                layoutFileStr = layoutFileStr.replace("\\", "/").replace("//", "/");
+                Template layoutTemp = this.configuration.getTemplate(layoutFileStr, req.getCharacterEncoding());
+                layoutTemp.process(dataModel, resp.getWriter());
+            } else {
+                resp.getWriter().write(cacheWriter.toString());
             }
-            //
-            Writer respWriter = resp.getWriter();
-            bodyTemp.process(dataModel, respWriter);
             //
         } catch (TemplateException e) {
             e.printStackTrace(resp.getWriter());
