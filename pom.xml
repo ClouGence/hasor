@@ -9,7 +9,7 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>project-hasor</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- Project Info -->
@@ -21,7 +21,7 @@
 		<connection>         scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
 		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
 		<url>                        git@git.oschina.net:zycgit/hasor.git</url>
-	  <tag>Release.Hasor-1.1.0</tag>
+	  <tag>Release.Hasor-0.0.14</tag>
   </scm>
 
 	<!-- 不进行 deploy -->
