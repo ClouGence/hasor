@@ -14,21 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.entity;
+import java.util.Date;
 /**
  * 表示为一个Service
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceInfoDO {
-    private long   appID;
-    private String bindID;
-    private String bindName;
-    private String bindGroup;
-    private String bindVersion;
-    private String bindType;
-    private String onwer;
-    private String hashCode;
+    private long   serviceID;   //服务编号（PK、自增）
+    private long   appID;       //所属应用
+    private String bindID;      //服务ID（唯一）
+    private String bindGroup;   //服务分组（Group、Name、Version，联合唯一索引）
+    private String bindName;    //服务名称（Group、Name、Version，联合唯一索引）
+    private String bindVersion; //服务版本（Group、Name、Version，联合唯一索引）
+    private String bindType;    //接口名称
+    private String onwer;       //接口人（创建应用的人）
+    private String contactUsers; //接口人（多个人）
+    private String hashCode;    //一致性校验Code（Group、Name、Version做一致性校验）
+    private Date   createTime;  //创建时间
+    private Date   modifyTime;  //修改时间
     //
+    public long getServiceID() {
+        return serviceID;
+    }
+    public void setServiceID(long serviceID) {
+        this.serviceID = serviceID;
+    }
     public long getAppID() {
         return appID;
     }
@@ -41,17 +52,17 @@ public class ServiceInfoDO {
     public void setBindID(String bindID) {
         this.bindID = bindID;
     }
-    public String getBindName() {
-        return bindName;
-    }
-    public void setBindName(String bindName) {
-        this.bindName = bindName;
-    }
     public String getBindGroup() {
         return bindGroup;
     }
     public void setBindGroup(String bindGroup) {
         this.bindGroup = bindGroup;
+    }
+    public String getBindName() {
+        return bindName;
+    }
+    public void setBindName(String bindName) {
+        this.bindName = bindName;
     }
     public String getBindVersion() {
         return bindVersion;
@@ -71,10 +82,28 @@ public class ServiceInfoDO {
     public void setOnwer(String onwer) {
         this.onwer = onwer;
     }
+    public String getContactUsers() {
+        return contactUsers;
+    }
+    public void setContactUsers(String contactUsers) {
+        this.contactUsers = contactUsers;
+    }
     public String getHashCode() {
         return hashCode;
     }
     public void setHashCode(String hashCode) {
         this.hashCode = hashCode;
+    }
+    public Date getCreateTime() {
+        return createTime;
+    }
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    public Date getModifyTime() {
+        return modifyTime;
+    }
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 }

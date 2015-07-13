@@ -1,9 +1,13 @@
 create table RSF_APP (
 	app_id				BIGINT			NOT NULL,
+	app_code			VARCHAR(100)	NOT NULL,
 	app_name			VARCHAR(100)	NOT NULL,
 	app_accessKey		VARCHAR(50)		NOT NULL,
 	app_accessSecret	VARCHAR(128)	NULL,
-	app_onwer			VARCHAR(200)	NULL,
+	app_onwer			VARCHAR(50)		NULL,
+	app_contactUsers	VARCHAR(200)	NULL,
 	app_desc			VARCHAR(1000)	NULL,
+	app_create_time		DATETIME		NULL,
+	app_modify_time		DATETIME		NULL,
 	PRIMARY KEY (app_id)
 );
