@@ -78,6 +78,7 @@
 
 1. 在添加应用的时候可以通过指定`accessKey`、`accessSecret`授权信息来完成设置。
 2. 应用详情页可以修改授权信息以完成设置。
+
 #
     String accessKey;   //授权KEY（预授权KEY）
     String accessSecret;//授权密钥（预授权密码）
@@ -103,6 +104,7 @@
 1. 根据应用ID查询应用信息并显示到页面上。
 2. 在详情页可以激活编辑模式进行修改。
 3. 可以修改的应用字段如下，其中 owner 必须是由应用 owner 修改。
+
 #
     String appName;     //应用名称
     String accessKey;   //授权KEY
@@ -115,6 +117,7 @@
 1. 根据应用ID查询应用信息并显示到页面上。
 2. 在详情页可以激活编辑模式进行修改。
 3. 可以修改的应用字段如下，其中 owner 必须是由应用 owner 修改。
+
 #
     String bindGroup;   //服务分组
     String bindName;    //服务名称
@@ -130,7 +133,8 @@
 1. 配置项，目前先写入配置文件。
 2. 目前不支持在线设置，要想修改配置只能修改配置文件并且重起注册中心（`二期考虑支持`）。
 
-全局配置信息，包含如下三个数据：
+保存在rsf-config.xml中的全局配置信息，该配置数据要求封装成Bean成为系统全局唯一对象。包含如下三个数据：
+
 #
     boolean anonymousApp;//是否启用匿名app，默认值：true
     String  accessKey;   //授权KEY
