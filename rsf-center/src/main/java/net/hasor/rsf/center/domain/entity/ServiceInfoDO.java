@@ -23,7 +23,6 @@ import java.util.Date;
 public class ServiceInfoDO {
     private long   serviceID;   //服务编号（PK、自增）
     private long   appID;       //所属应用
-    private String bindID;      //服务ID（唯一）
     private String bindGroup;   //服务分组（Group、Name、Version，联合唯一索引）
     private String bindName;    //服务名称（Group、Name、Version，联合唯一索引）
     private String bindVersion; //服务版本（Group、Name、Version，联合唯一索引）
@@ -31,6 +30,7 @@ public class ServiceInfoDO {
     private String onwer;       //接口人（创建应用的人）
     private String contactUsers; //接口人（多个人）
     private String hashCode;    //一致性校验Code（Group、Name、Version做一致性校验）
+    private String description; //接口描述
     private Date   createTime;  //创建时间
     private Date   modifyTime;  //修改时间
     //
@@ -45,12 +45,6 @@ public class ServiceInfoDO {
     }
     public void setAppID(long appID) {
         this.appID = appID;
-    }
-    public String getBindID() {
-        return bindID;
-    }
-    public void setBindID(String bindID) {
-        this.bindID = bindID;
     }
     public String getBindGroup() {
         return bindGroup;
@@ -93,6 +87,12 @@ public class ServiceInfoDO {
     }
     public void setHashCode(String hashCode) {
         this.hashCode = hashCode;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Date getCreateTime() {
         return createTime;

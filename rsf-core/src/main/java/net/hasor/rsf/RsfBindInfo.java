@@ -21,7 +21,7 @@ import net.hasor.core.BindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBindInfo<T> extends BindInfo<T> {
-    /** @return 唯一标识。*/
+    /** @return 唯一标识（客户端唯一标识）。*/
     public String getBindID();
     /** @return 服务名称。*/
     public String getBindName();

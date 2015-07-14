@@ -7,7 +7,7 @@ create table RSF_APP (
 	app_onwer			VARCHAR(50)		NULL,
 	app_contactUsers	VARCHAR(200)	NULL,
 	app_desc			VARCHAR(1000)	NULL,
-	app_create_time		DATETIME		NULL,
-	app_modify_time		DATETIME		NULL,
+	app_create_time		DATETIME		NOT NULL,
+	app_modify_time		DATETIME		NOT NULL,
 	PRIMARY KEY (app_id)
 );
