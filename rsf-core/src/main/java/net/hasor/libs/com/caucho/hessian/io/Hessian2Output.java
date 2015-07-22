@@ -49,6 +49,7 @@ package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import net.hasor.libs.com.caucho.hessian.util.IdentityIntMap;
 /**
@@ -601,7 +602,9 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             }
         }
         int mills = (int) (value * 1000);
-        if (0.001d * mills == value) {
+        BigDecimal bigDec1 = BigDecimal.valueOf(0.001D * mills);
+        BigDecimal bigDec2 = BigDecimal.valueOf(value);
+        if (bigDec1.equals(bigDec2)) {
             buffer[offset + 0] = (byte) (BC_DOUBLE_MILL);
             buffer[offset + 1] = (byte) (mills >> 24);
             buffer[offset + 2] = (byte) (mills >> 16);

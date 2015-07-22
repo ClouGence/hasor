@@ -83,7 +83,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
     protected SerializerFactory           _defaultSerializerFactory;
     // factory for deserializing objects in the input stream
     protected SerializerFactory           _serializerFactory;
-    private static boolean                _isCloseStreamOnClose;
+    private boolean                       _isCloseStreamOnClose;
     protected ArrayList<Object>           _refs       = new ArrayList<Object>();
     protected ArrayList<ObjectDefinition> _classDefs  = new ArrayList<ObjectDefinition>();
     protected ArrayList<String>           _types      = new ArrayList<String>();

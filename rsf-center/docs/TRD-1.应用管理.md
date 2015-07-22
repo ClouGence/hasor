@@ -2,7 +2,7 @@
 
 &emsp;&emsp;RSF注册中心，目的是维护一个RSF服务列表，并为所有连接到注册中心上的RSF客户端提供服务的发布和订阅支持。
 
-&emsp;&emsp;本文是RSF注册中心“应用管理”模块的技术文档。
+&emsp;&emsp;本文是RSF注册中心“应用管理”模块的技术要求文档。
 
 ##一、模块设计
 
@@ -123,7 +123,6 @@
     String  accessSecret;//授权密钥（密码，显示时候需要显示为“***”）
 
 ##数据表
-###HSQL
 ####表`RSF_APP`，实体`AppDO`
     appID        bigint;       //应用ID
     appName      nvarchar(200);//应用名称
@@ -146,8 +145,8 @@
     createTime  datetime;      //创建时间
     modifyTime  datetime;      //修改时间
 
-###MySQL
 &emsp;&emsp;需要额外配置主键、索引。
+
 ####表`RSF_APP`
 	PRIMARY KEY (`appID`)
 	UNIQUE KEY `UK_RSF_APP_APP_CODE` (`appCode`)
