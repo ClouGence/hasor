@@ -102,11 +102,11 @@ public class HessianSerializerInput extends Hessian2Input {
      * Reads an object from the input stream.  cl is known not to be
      * a Map.
      */
-    protected Object readObjectImpl(Class cl) throws IOException {
+    protected Object readObjectImpl(Class<?> cl) throws IOException {
         try {
             Object obj = cl.newInstance();
             if (_refs == null)
-                _refs = new ArrayList();
+                _refs = new ArrayList<Object>();
             _refs.add(obj);
             HashMap<String, Field> fieldMap = getFieldMap(cl);
             int code = read();

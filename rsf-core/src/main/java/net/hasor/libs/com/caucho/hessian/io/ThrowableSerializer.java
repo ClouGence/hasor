@@ -45,28 +45,18 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-
 /**
  * Serializing an object for known object types.
  */
 public class ThrowableSerializer extends JavaSerializer {
-  public ThrowableSerializer(Class<?> cl, ClassLoader loader)
-  {
-    super(cl);
-  }
-  
-  @Override
-  public void writeObject(Object obj, AbstractHessianOutput out)
-    throws IOException
-  {
-    Throwable e = (Throwable) obj;
-
-    e.getStackTrace();
-
-    super.writeObject(obj, out);
-  }
+    public ThrowableSerializer(Class<?> cl, ClassLoader loader) {
+        super(cl);
+    }
+    public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
+        Throwable e = (Throwable) obj;
+        e.getStackTrace();
+        super.writeObject(obj, out);
+    }
 }

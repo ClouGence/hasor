@@ -52,19 +52,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  * Serializing an object for known object types.
  */
 public class BeanSerializer extends AbstractSerializer {
-    private static final Logger log = Logger.getLogger(BeanSerializer.class.getName());
-    //private static final Object[] NULL_ARGS = new Object[0];
-    private Method[]            _methods;
-    private String[]            _names;
-    private Object              _writeReplaceFactory;
-    private Method              _writeReplace;
+    private static final Object[] NULL_ARGS = new Object[0];
+    private Method[]              _methods;
+    private String[]              _names;
+    private Object                _writeReplaceFactory;
+    private Method                _writeReplace;
     public BeanSerializer(Class<?> cl, ClassLoader loader) {
         introspectWriteReplace(cl, loader);
         ArrayList<Method> primitiveMethods = new ArrayList<Method>();
@@ -106,9 +102,9 @@ public class BeanSerializer extends AbstractSerializer {
             int j = 0;
             for (; j < name.length() && Character.isUpperCase(name.charAt(j)); j++) {}
             if (j == 1)
-                name = name.substring(0, j).toLowerCase(Locale.ENGLISH) + name.substring(j);
+                name = name.substring(0, j).toLowerCase() + name.substring(j);
             else if (j > 1)
-                name = name.substring(0, j - 1).toLowerCase(Locale.ENGLISH) + name.substring(j - 1);
+                name = name.substring(0, j - 1).toLowerCase() + name.substring(j - 1);
             _names[i] = name;
         }
     }
@@ -123,8 +119,10 @@ public class BeanSerializer extends AbstractSerializer {
                 _writeReplace = writeReplace;
                 return;
             }
-        } catch (ClassNotFoundException e) {} catch (Exception e) {
-            log.log(Level.FINER, e.toString(), e);
+        } catch (ClassNotFoundException e) {
+            //
+        } catch (Exception e) {
+            log.debug(e.toString(), e);
         }
         _writeReplace = getWriteReplace(cl);
     }
@@ -171,18 +169,18 @@ public class BeanSerializer extends AbstractSerializer {
                 return;
             }
         } catch (Exception e) {
-            log.log(Level.FINER, e.toString(), e);
+            log.debug(e.toString(), e);
         }
         int ref = out.writeObjectBegin(cl.getName());
         if (ref < -1) {
             // Hessian 1.1 uses a map
             for (int i = 0; i < _methods.length; i++) {
-                //Method method = _methods[i];
+                Method method = _methods[i];
                 Object value = null;
                 try {
                     value = _methods[i].invoke(obj, (Object[]) null);
                 } catch (Exception e) {
-                    log.log(Level.FINE, e.toString(), e);
+                    log.debug(e.toString(), e);
                 }
                 out.writeString(_names[i]);
                 out.writeObject(value);
@@ -196,12 +194,12 @@ public class BeanSerializer extends AbstractSerializer {
                 out.writeObjectBegin(cl.getName());
             }
             for (int i = 0; i < _methods.length; i++) {
-                //Method method = _methods[i];
+                Method method = _methods[i];
                 Object value = null;
                 try {
                     value = _methods[i].invoke(obj, (Object[]) null);
                 } catch (Exception e) {
-                    log.log(Level.FINER, e.toString(), e);
+                    log.debug(e.toString(), e);
                 }
                 out.writeObject(value);
             }
@@ -224,7 +222,7 @@ public class BeanSerializer extends AbstractSerializer {
         }
         return null;
     }
-    class MethodNameCmp implements Comparator<Method> {
+    static class MethodNameCmp implements Comparator<Method> {
         public int compare(Method a, Method b) {
             return a.getName().compareTo(b.getName());
         }

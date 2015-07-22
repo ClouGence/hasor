@@ -49,16 +49,14 @@ package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  * Serializing an object for known object types.
  */
 public class WriteReplaceSerializer extends AbstractSerializer {
-    private static final Logger log = Logger.getLogger(WriteReplaceSerializer.class.getName());
-    private Object              _writeReplaceFactory;
-    private Method              _writeReplace;
-    private Serializer          _baseSerializer;
+    private static Object[] NULL_ARGS = new Object[0];
+    private Object          _writeReplaceFactory;
+    private Method          _writeReplace;
+    private Serializer      _baseSerializer;
     public WriteReplaceSerializer(Class<?> cl, ClassLoader loader, Serializer baseSerializer) {
         introspectWriteReplace(cl, loader);
         _baseSerializer = baseSerializer;
@@ -73,8 +71,10 @@ public class WriteReplaceSerializer extends AbstractSerializer {
                 _writeReplaceFactory = serializerObject;
                 _writeReplace = writeReplace;
             }
-        } catch (ClassNotFoundException e) {} catch (Exception e) {
-            log.log(Level.FINER, e.toString(), e);
+        } catch (ClassNotFoundException e) {
+            //
+        } catch (Exception e) {
+            log.debug(e.toString(), e);
         }
         _writeReplace = getWriteReplace(cl);
         if (_writeReplace != null)
@@ -106,7 +106,6 @@ public class WriteReplaceSerializer extends AbstractSerializer {
         }
         return null;
     }
-    @Override
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         int ref = out.getRef(obj);
         if (ref >= 0) {
@@ -117,8 +116,8 @@ public class WriteReplaceSerializer extends AbstractSerializer {
             Object repl;
             repl = writeReplace(obj);
             if (obj == repl) {
-                if (log.isLoggable(Level.FINE)) {
-                    log.fine(this + ": Hessian writeReplace error.  The writeReplace method (" + _writeReplace + ") must not return the same object: " + obj);
+                if (log.isDebugEnabled()) {
+                    log.debug(this + ": Hessian writeReplace error.  The writeReplace method (" + _writeReplace + ") must not return the same object: " + obj);
                 }
                 _baseSerializer.writeObject(obj, out);
                 return;

@@ -58,7 +58,7 @@ public class SqlDateDeserializer extends AbstractDeserializer {
     public SqlDateDeserializer(Class<?> cl) {
         try {
             _cl = cl;
-            _constructor = cl.getConstructor(new Class[] { long.class });
+            _constructor = cl.getConstructor(new Class<?>[] { long.class });
         } catch (NoSuchMethodException e) {
             throw new HessianException(e);
         }

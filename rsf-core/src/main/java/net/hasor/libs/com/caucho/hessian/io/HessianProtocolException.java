@@ -54,26 +54,18 @@ import java.io.IOException;
 public class HessianProtocolException extends IOException {
     private static final long serialVersionUID = 5763311518659268483L;
     private Throwable         rootCause;
-    /**
-     * Zero-arg constructor.
-     */
+    /** Zero-arg constructor. */
     public HessianProtocolException() {}
-    /**
-     * Create the exception.
-     */
+    /** Create the exception. */
     public HessianProtocolException(String message) {
         super(message);
     }
-    /**
-     * Create the exception.
-     */
+    /** Create the exception. */
     public HessianProtocolException(String message, Throwable rootCause) {
         super(message);
         this.rootCause = rootCause;
     }
-    /**
-     * Create the exception.
-     */
+    /** Create the exception. */
     public HessianProtocolException(Throwable rootCause) {
         super(String.valueOf(rootCause));
         this.rootCause = rootCause;

@@ -45,26 +45,18 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
-import java.io.IOException;
 import java.io.File;
-import net.hasor.libs.com.caucho.hessian.HessianException;
-
 /**
  * Deserializing a File
  */
 public class FileDeserializer extends AbstractStringValueDeserializer {
-  @Override
-  public Class getType()
-  {
-    return File.class;
-  }
-
-  @Override
-  protected Object create(String value)
-  {
-    return new File(value);
-  }
+    @Override
+    public Class<?> getType() {
+        return File.class;
+    }
+    @Override
+    protected Object create(String value) {
+        return new File(value);
+    }
 }

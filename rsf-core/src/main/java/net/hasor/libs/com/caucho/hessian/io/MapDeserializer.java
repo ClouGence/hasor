@@ -61,9 +61,8 @@ public class MapDeserializer extends AbstractMapDeserializer {
         _type = type;
         Constructor<?>[] ctors = type.getConstructors();
         for (int i = 0; i < ctors.length; i++) {
-            if (ctors[i].getParameterTypes().length == 0) {
+            if (ctors[i].getParameterTypes().length == 0)
                 _ctor = ctors[i];
-            }
         }
         if (_ctor == null) {
             try {
@@ -80,16 +79,16 @@ public class MapDeserializer extends AbstractMapDeserializer {
             return HashMap.class;
     }
     public Object readMap(AbstractHessianInput in) throws IOException {
-        Map map;
+        Map<Object, Object> map;
         if (_type == null)
-            map = new HashMap();
+            map = new HashMap<Object, Object>();
         else if (_type.equals(Map.class))
-            map = new HashMap();
+            map = new HashMap<Object, Object>();
         else if (_type.equals(SortedMap.class))
-            map = new TreeMap();
+            map = new TreeMap<Object, Object>();
         else {
             try {
-                map = (Map) _ctor.newInstance();
+                map = (Map<Object, Object>) _ctor.newInstance();
             } catch (Exception e) {
                 throw new IOExceptionWrapper(e);
             }
@@ -112,16 +111,16 @@ public class MapDeserializer extends AbstractMapDeserializer {
         }
         return map;
     }
-    private Map createMap() throws IOException {
+    private Map<Object, Object> createMap() throws IOException {
         if (_type == null)
-            return new HashMap();
+            return new HashMap<Object, Object>();
         else if (_type.equals(Map.class))
-            return new HashMap();
+            return new HashMap<Object, Object>();
         else if (_type.equals(SortedMap.class))
-            return new TreeMap();
+            return new TreeMap<Object, Object>();
         else {
             try {
-                return (Map) _ctor.newInstance();
+                return (Map<Object, Object>) _ctor.newInstance();
             } catch (Exception e) {
                 throw new IOExceptionWrapper(e);
             }

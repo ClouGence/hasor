@@ -63,10 +63,6 @@ import javax.crypto.SecretKey;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Input;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Output;
 import net.hasor.libs.com.caucho.hessian.io.HessianEnvelope;
-/**
- * 
- * @version : 2015年1月11日
- */
 public class X509Encryption extends HessianEnvelope {
     private String          _algorithm = "AES";
     // certificate for encryption/decryption
@@ -138,7 +134,7 @@ public class X509Encryption extends HessianEnvelope {
             throw new IOException("X509Encryption.unwrap requires a private key");
         if (_cert == null)
             throw new IOException("X509Encryption.unwrap requires a certificate");
-        //int version = in.readEnvelope();
+        int version = in.readEnvelope();
         String method = in.readMethod();
         if (!method.equals(getClass().getName()))
             throw new IOException("expected hessian Envelope method '" + getClass().getName() + "' at '" + method + "'");

@@ -45,18 +45,14 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-
 /**
  * Looks up remote objects.  The default just returns a HessianRemote object.
  */
 public interface HessianRemoteResolver {
-  /**
-   * Looks up a proxy object.
-   */
-  public Object lookup(String type, String url)
-    throws IOException;
+    /**
+     * Looks up a proxy object.
+     */
+    public Object lookup(String type, String url) throws IOException;
 }

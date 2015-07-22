@@ -45,13 +45,9 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
-import java.util.logging.*;
-
-public class EnvelopeFactory
-{
-  private static final Logger log
-    = Logger.getLogger(EnvelopeFactory.class.getName());
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+public class EnvelopeFactory {
+    private static final Logger log = LoggerFactory.getLogger(EnvelopeFactory.class);
 }

@@ -45,49 +45,33 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-
 /**
  * Deserializing a string valued object
  */
 abstract public class ValueDeserializer extends AbstractDeserializer {
-  public Object readMap(AbstractHessianInput in)
-    throws IOException
-  {
-    String initValue = null;
-    
-    while (! in.isEnd()) {
-      String key = in.readString();
-
-      if (key.equals("value"))
-        initValue = in.readString();
-      else
-        in.readObject();
+    public Object readMap(AbstractHessianInput in) throws IOException {
+        String initValue = null;
+        while (!in.isEnd()) {
+            String key = in.readString();
+            if (key.equals("value"))
+                initValue = in.readString();
+            else
+                in.readObject();
+        }
+        in.readMapEnd();
+        return create(initValue);
     }
-
-    in.readMapEnd();
-
-    return create(initValue);
-  }
-  
-  public Object readObject(AbstractHessianInput in, String []fieldNames)
-    throws IOException
-  {
-    String initValue = null;
-
-    for (int i = 0; i < fieldNames.length; i++) {
-      if ("value".equals(fieldNames[i]))
-        initValue = in.readString();
-      else
-        in.readObject();
+    public Object readObject(AbstractHessianInput in, String[] fieldNames) throws IOException {
+        String initValue = null;
+        for (int i = 0; i < fieldNames.length; i++) {
+            if ("value".equals(fieldNames[i]))
+                initValue = in.readString();
+            else
+                in.readObject();
+        }
+        return create(initValue);
     }
-
-    return create(initValue);
-  }
-
-  abstract Object create(String value)
-    throws IOException;
+    abstract Object create(String value) throws IOException;
 }

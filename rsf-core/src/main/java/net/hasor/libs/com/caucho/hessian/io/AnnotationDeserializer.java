@@ -50,11 +50,14 @@ import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import net.hasor.libs.com.caucho.hessian.HessianException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Deserializing a java annotation for known object types.
  */
 public class AnnotationDeserializer extends AbstractMapDeserializer {
-    private Class<?> _annType;
+    private static final Logger log = LoggerFactory.getLogger(AnnotationDeserializer.class);
+    private Class<?>            _annType;
     public AnnotationDeserializer(Class<?> annType) {
         _annType = annType;
     }
@@ -63,6 +66,7 @@ public class AnnotationDeserializer extends AbstractMapDeserializer {
     }
     public Object readMap(AbstractHessianInput in) throws IOException {
         try {
+            int ref = in.addRef(null);
             HashMap<String, Object> valueMap = new HashMap<String, Object>(8);
             while (!in.isEnd()) {
                 String key = in.readString();
@@ -80,7 +84,7 @@ public class AnnotationDeserializer extends AbstractMapDeserializer {
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         try {
-            in.addRef(null);
+            int ref = in.addRef(null);
             HashMap<String, Object> valueMap = new HashMap<String, Object>(8);
             for (int i = 0; i < fieldNames.length; i++) {
                 String name = fieldNames[i];

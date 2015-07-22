@@ -45,26 +45,15 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * Serializing a stream object.
  */
 public class InputStreamDeserializer extends AbstractDeserializer {
-  public static final InputStreamDeserializer DESER
-    = new InputStreamDeserializer();
-  
-  public InputStreamDeserializer()
-  {
-  }
-  
-  public Object readObject(AbstractHessianInput in)
-    throws IOException
-  {
-    return in.readInputStream();
-  }
+    public static final InputStreamDeserializer DESER = new InputStreamDeserializer();
+    public InputStreamDeserializer() {}
+    public Object readObject(AbstractHessianInput in) throws IOException {
+        return in.readInputStream();
+    }
 }

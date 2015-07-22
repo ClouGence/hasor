@@ -45,11 +45,8 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 /**
  * Marks a type as a handle
  */
-public interface HessianHandle {
-}
+public interface HessianHandle {}

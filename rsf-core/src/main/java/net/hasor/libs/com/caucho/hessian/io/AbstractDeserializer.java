@@ -94,13 +94,12 @@ public class AbstractDeserializer implements Deserializer {
      * Creates a field value class. The default
      * implementation returns the String.
      *
-     * @param name name of items in the array
+     * @param len number of items in the array
      * @return the new empty array
      */
     public Object createField(String name) {
         return name;
     }
-    @Override
     public Object readObject(AbstractHessianInput in, String[] fieldNames) throws IOException {
         return readObject(in, (Object[]) fieldNames);
     }

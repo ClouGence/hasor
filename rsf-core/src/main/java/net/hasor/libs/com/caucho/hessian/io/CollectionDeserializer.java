@@ -74,26 +74,30 @@ public class CollectionDeserializer extends AbstractListDeserializer {
             list.add(in.readObject());
         return list;
     }
-    private Collection createList() throws IOException {
-        Collection list = null;
+    private Collection<?> createList() throws IOException {
+        Collection<?> list = null;
         if (_type == null)
-            list = new ArrayList();
+            list = new ArrayList<Object>();
         else if (!_type.isInterface()) {
             try {
-                list = (Collection) _type.newInstance();
-            } catch (Exception e) {}
+                list = (Collection<?>) _type.newInstance();
+            } catch (Exception e) {
+                //
+            }
         }
-        if (list != null) {} else if (SortedSet.class.isAssignableFrom(_type))
-            list = new TreeSet();
+        if (list != null) {
+            //nothing
+        } else if (SortedSet.class.isAssignableFrom(_type))
+            list = new TreeSet<Object>();
         else if (Set.class.isAssignableFrom(_type))
-            list = new HashSet();
+            list = new HashSet<Object>();
         else if (List.class.isAssignableFrom(_type))
-            list = new ArrayList();
+            list = new ArrayList<Object>();
         else if (Collection.class.isAssignableFrom(_type))
-            list = new ArrayList();
+            list = new ArrayList<Object>();
         else {
             try {
-                list = (Collection) _type.newInstance();
+                list = (Collection<?>) _type.newInstance();
             } catch (Exception e) {
                 throw new IOExceptionWrapper(e);
             }

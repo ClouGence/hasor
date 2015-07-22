@@ -130,7 +130,6 @@ public class JavaDeserializer extends AbstractMapDeserializer {
     public Object[] createFields(int len) {
         return new FieldDeserializer[len];
     }
-    @Override
     public Object createField(String name) {
         Object reader = _fieldMap.get(name);
         if (reader == null)
@@ -337,9 +336,8 @@ public class JavaDeserializer extends AbstractMapDeserializer {
     abstract static class FieldDeserializer {
         abstract void deserialize(AbstractHessianInput in, Object obj) throws IOException;
     }
-    static class NullFieldDeserializer extends FieldDeserializer {
+    static class NullFieldDeserializer {
         static NullFieldDeserializer DESER = new NullFieldDeserializer();
-        @Override
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             in.readObject();
         }
@@ -488,12 +486,8 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             java.sql.Date value = null;
             try {
                 java.util.Date date = (java.util.Date) in.readObject();
-                if (date != null) {
-                    value = new java.sql.Date(date.getTime());
-                    _field.set(obj, value);
-                } else {
-                    _field.set(obj, null);
-                }
+                value = new java.sql.Date(date.getTime());
+                _field.set(obj, value);
             } catch (Exception e) {
                 logDeserializeError(_field, obj, value, e);
             }
@@ -508,12 +502,8 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             java.sql.Timestamp value = null;
             try {
                 java.util.Date date = (java.util.Date) in.readObject();
-                if (date != null) {
-                    value = new java.sql.Timestamp(date.getTime());
-                    _field.set(obj, value);
-                } else {
-                    _field.set(obj, null);
-                }
+                value = new java.sql.Timestamp(date.getTime());
+                _field.set(obj, value);
             } catch (Exception e) {
                 logDeserializeError(_field, obj, value, e);
             }
@@ -528,12 +518,8 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             java.sql.Time value = null;
             try {
                 java.util.Date date = (java.util.Date) in.readObject();
-                if (date != null) {
-                    value = new java.sql.Time(date.getTime());
-                    _field.set(obj, value);
-                } else {
-                    _field.set(obj, null);
-                }
+                value = new java.sql.Time(date.getTime());
+                _field.set(obj, value);
             } catch (Exception e) {
                 logDeserializeError(_field, obj, value, e);
             }

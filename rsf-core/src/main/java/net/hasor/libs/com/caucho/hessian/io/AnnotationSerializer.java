@@ -51,15 +51,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.hasor.libs.com.caucho.hessian.HessianException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Serializing a Java annotation
  */
 public class AnnotationSerializer extends AbstractSerializer {
-    private static final Logger log = Logger.getLogger(AnnotationSerializer.class.getName());
-    //    private static Object[]     NULL_ARGS = new Object[0];
+    private static final Logger log       = LoggerFactory.getLogger(AnnotationSerializer.class);
+    private static Object[]     NULL_ARGS = new Object[0];
     private Class<?>            _annType;
     private Method[]            _methods;
     private MethodSerializer[]  _methodSerializers;
@@ -106,16 +106,15 @@ public class AnnotationSerializer extends AbstractSerializer {
         }
     }
     private void init(Class<?> cl) {
+        if (cl == null) {
+            return;
+        }
         synchronized (this) {
             if (_annType != null) {
                 return;
             }
             _annType = cl;
             ArrayList<Method> methods = new ArrayList<Method>();
-            if (_annType == null) {
-                throw new IllegalStateException("cl params is null.");
-            }
-            //
             for (Method method : _annType.getDeclaredMethods()) {
                 if (method.getName().equals("hashCode") || method.getName().equals("toString") || method.getName().equals("annotationType")) {
                     continue;
@@ -125,7 +124,8 @@ public class AnnotationSerializer extends AbstractSerializer {
                 methods.add(method);
                 method.setAccessible(true);
             }
-            //
+            if (_annType == null)
+                throw new IllegalStateException(cl.getName() + " is invalid because it does not have a valid annotationType()");
             _methods = new Method[methods.size()];
             methods.toArray(_methods);
             _methodSerializers = new MethodSerializer[_methods.length];
@@ -180,7 +180,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             try {
                 out.writeObject(value);
@@ -198,7 +198,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             out.writeBoolean(value);
         }
@@ -212,7 +212,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             out.writeInt(value);
         }
@@ -226,7 +226,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             out.writeLong(value);
         }
@@ -240,7 +240,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             out.writeDouble(value);
         }
@@ -254,7 +254,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             out.writeString(value);
         }
@@ -268,7 +268,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             } catch (InvocationTargetException e) {
                 throw error(method, e.getCause());
             } catch (IllegalAccessException e) {
-                log.log(Level.FINE, e.toString(), e);
+                log.debug(e.toString(), e);
             }
             if (value == null)
                 out.writeNull();

@@ -221,7 +221,7 @@ public class BasicDeserializer extends AbstractDeserializer {
                 in.readInt();
                 return readLengthList(in, length);
             default:
-                //String type = in.readType();
+                String type = in.readType();
                 length = in.readLength();
                 return readList(in, length);
             }
@@ -242,14 +242,13 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Boolean> list = new ArrayList<Boolean>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(Boolean.valueOf(in.readBoolean()));
-                }
                 in.readEnd();
                 boolean[] data = new boolean[list.size()];
                 in.addRef(data);
                 for (int i = 0; i < data.length; i++)
-                    data[i] = ((Boolean) list.get(i)).booleanValue();
+                    data[i] = list.get(i).booleanValue();
                 return data;
             }
         }
@@ -263,13 +262,12 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Short> list = new ArrayList<Short>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(Short.valueOf((short) in.readInt()));
-                }
                 in.readEnd();
                 short[] data = new short[list.size()];
                 for (int i = 0; i < data.length; i++)
-                    data[i] = ((Short) list.get(i)).shortValue();
+                    data[i] = list.get(i).shortValue();
                 in.addRef(data);
                 return data;
             }
@@ -284,9 +282,8 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Integer> list = new ArrayList<Integer>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(Integer.valueOf(in.readInt()));
-                }
                 in.readEnd();
                 int[] data = new int[list.size()];
                 for (int i = 0; i < data.length; i++)
@@ -305,13 +302,12 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Long> list = new ArrayList<Long>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(Long.valueOf(in.readLong()));
-                }
                 in.readEnd();
                 long[] data = new long[list.size()];
                 for (int i = 0; i < data.length; i++)
-                    data[i] = ((Long) list.get(i)).longValue();
+                    data[i] = list.get(i).longValue();
                 in.addRef(data);
                 return data;
             }
@@ -326,13 +322,12 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Float> list = new ArrayList<Float>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(new Float(in.readDouble()));
-                }
                 in.readEnd();
                 float[] data = new float[list.size()];
                 for (int i = 0; i < data.length; i++)
-                    data[i] = ((Float) list.get(i)).floatValue();
+                    data[i] = list.get(i).floatValue();
                 in.addRef(data);
                 return data;
             }
@@ -347,14 +342,13 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<Double> list = new ArrayList<Double>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(new Double(in.readDouble()));
-                }
                 in.readEnd();
                 double[] data = new double[list.size()];
                 in.addRef(data);
                 for (int i = 0; i < data.length; i++)
-                    data[i] = ((Double) list.get(i)).doubleValue();
+                    data[i] = list.get(i).doubleValue();
                 return data;
             }
         }
@@ -368,14 +362,13 @@ public class BasicDeserializer extends AbstractDeserializer {
                 return data;
             } else {
                 ArrayList<String> list = new ArrayList<String>();
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(in.readString());
-                }
                 in.readEnd();
                 String[] data = new String[list.size()];
                 in.addRef(data);
                 for (int i = 0; i < data.length; i++)
-                    data[i] = (String) list.get(i);
+                    data[i] = list.get(i);
                 return data;
             }
         }
@@ -383,21 +376,19 @@ public class BasicDeserializer extends AbstractDeserializer {
             if (length >= 0) {
                 Object[] data = new Object[length];
                 in.addRef(data);
-                for (int i = 0; i < data.length; i++) {
+                for (int i = 0; i < data.length; i++)
                     data[i] = in.readObject();
-                }
                 in.readEnd();
                 return data;
             } else {
                 ArrayList<Object> list = new ArrayList<Object>();
                 in.addRef(list); // XXX: potential issues here
-                while (!in.isEnd()) {
+                while (!in.isEnd())
                     list.add(in.readObject());
-                }
                 in.readEnd();
                 Object[] data = new Object[list.size()];
                 for (int i = 0; i < data.length; i++)
-                    data[i] = (Object) list.get(i);
+                    data[i] = list.get(i);
                 return data;
             }
         }

@@ -101,9 +101,6 @@ abstract public class AbstractHessianOutput {
      * Initialize the output with a new underlying stream.
      */
     public void init(OutputStream os) {}
-    public boolean setUnshared(boolean isUnshared) {
-        throw new UnsupportedOperationException(getClass().getSimpleName());
-    }
     /**
      * Writes a complete method call.
      */
@@ -120,6 +117,8 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * C
      * </pre></code>
+     *
+     * @param method the method name to call.
      */
     abstract public void startCall() throws IOException;
     /**
@@ -132,6 +131,14 @@ abstract public class AbstractHessianOutput {
      * @param method the method name to call.
      */
     abstract public void startCall(String method, int length) throws IOException;
+    /**
+     * For Hessian 2.0, use the Header envelope instead
+     *
+     * @deprecated
+     */
+    public void writeHeader(String name) throws IOException {
+        throw new UnsupportedOperationException(getClass().getSimpleName());
+    }
     /**
      * Writes the method tag.
      *
@@ -211,6 +218,8 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
+     *
+     * @param value the string value to write.
      */
     abstract public void writeNull() throws IOException;
     /**
@@ -243,6 +252,8 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
+     *
+     * @param value the string value to write.
      */
     abstract public void writeString(char[] buffer, int offset, int length) throws IOException;
     /**
@@ -259,7 +270,7 @@ abstract public class AbstractHessianOutput {
      * N
      * </pre></code>
      *
-     * @param buffer the bytes value to write.
+     * @param value the string value to write.
      */
     abstract public void writeBytes(byte[] buffer) throws IOException;
     /**
@@ -276,6 +287,7 @@ abstract public class AbstractHessianOutput {
      * N
      * </pre></code>
      *
+     * @param value the string value to write.
      */
     abstract public void writeBytes(byte[] buffer, int offset, int length) throws IOException;
     /**
@@ -288,6 +300,8 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * b b16 b18 bytes
      * </pre></code>
+     *
+     * @param value the string value to write.
      */
     abstract public void writeByteBufferPart(byte[] buffer, int offset, int length) throws IOException;
     /**
@@ -296,6 +310,8 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * b b16 b18 bytes
      * </pre></code>
+     *
+     * @param value the string value to write.
      */
     abstract public void writeByteBufferEnd(byte[] buffer, int offset, int length) throws IOException;
     /**
@@ -326,6 +342,7 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * Q int
      * </pre></code>
+     *
      * @param value the integer value to write.
      */
     abstract protected void writeRef(int value) throws IOException;
@@ -349,12 +366,13 @@ abstract public class AbstractHessianOutput {
      * </pre></code>
      *
      * @param object the object to add as a reference.
+     *
      * @return true if the object has already been written.
      */
     abstract public boolean addRef(Object object) throws IOException;
     /**
-     * @param obj target Objcet
-     * @return ref
+     * @param obj
+     * @return
      */
     abstract public int getRef(Object obj);
     /**

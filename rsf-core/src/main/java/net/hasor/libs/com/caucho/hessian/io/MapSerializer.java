@@ -70,29 +70,15 @@ public class MapSerializer extends AbstractSerializer {
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj))
             return;
-        Map map = (Map) obj;
+        Map<Object, Object> map = (Map<Object, Object>) obj;
         Class<?> cl = obj.getClass();
-        if (cl.equals(HashMap.class) || !(obj instanceof java.io.Serializable))
+        if (cl.equals(HashMap.class) || !_isSendJavaType || !(obj instanceof java.io.Serializable))
             out.writeMapBegin(null);
-        else if (!_isSendJavaType) {
-            // hessian/3a19
-            for (; cl != null; cl = cl.getSuperclass()) {
-                if (cl.equals(HashMap.class)) {
-                    out.writeMapBegin(null);
-                    break;
-                } else if (cl.getName().startsWith("java.")) {
-                    out.writeMapBegin(cl.getName());
-                    break;
-                }
-            }
-            if (cl == null)
-                out.writeMapBegin(null);
-        } else {
-            out.writeMapBegin(cl.getName());
-        }
-        Iterator iter = map.entrySet().iterator();
+        else
+            out.writeMapBegin(obj.getClass().getName());
+        Iterator<?> iter = map.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
+            Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) iter.next();
             out.writeObject(entry.getKey());
             out.writeObject(entry.getValue());
         }

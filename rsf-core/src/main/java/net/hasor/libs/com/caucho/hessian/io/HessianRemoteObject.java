@@ -45,13 +45,11 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 /**
  * Interface for any hessian remote object.
  */
 public interface HessianRemoteObject {
-  public String getHessianType();
-  public String getHessianURL();
+    public String getHessianType();
+    public String getHessianURL();
 }

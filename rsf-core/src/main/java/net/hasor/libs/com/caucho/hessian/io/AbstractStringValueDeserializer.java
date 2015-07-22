@@ -57,11 +57,10 @@ abstract public class AbstractStringValueDeserializer extends AbstractDeserializ
         String value = null;
         while (!in.isEnd()) {
             String key = in.readString();
-            if (key.equals("value")) {
+            if (key.equals("value"))
                 value = in.readString();
-            } else {
+            else
                 in.readObject();
-            }
         }
         in.readMapEnd();
         Object object = create(value);

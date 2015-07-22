@@ -45,44 +45,26 @@
  *
  * @author Scott Ferguson
  */
-
 package net.hasor.libs.com.caucho.hessian.io;
-
 import net.hasor.libs.com.caucho.hessian.HessianException;
-
 /**
  * Exception for faults when the fault doesn't return a java exception.
  * This exception is required for MicroHessianInput.
  */
 public class HessianMethodSerializationException extends HessianException {
-  /**
-   * Zero-arg constructor.
-   */
-  public HessianMethodSerializationException()
-  {
-  }
-  
-  /**
-   * Create the exception.
-   */
-  public HessianMethodSerializationException(String message)
-  {
-    super(message);
-  }
-  
-  /**
-   * Create the exception.
-   */
-  public HessianMethodSerializationException(String message, Throwable cause)
-  {
-    super(message, cause);
-  }
-  
-  /**
-   * Create the exception.
-   */
-  public HessianMethodSerializationException(Throwable cause)
-  {
-    super(cause);
-  }
+    private static final long serialVersionUID = 2666434387932585147L;
+    /** Zero-arg constructor. */
+    public HessianMethodSerializationException() {}
+    /** Create the exception. */
+    public HessianMethodSerializationException(String message) {
+        super(message);
+    }
+    /** Create the exception. */
+    public HessianMethodSerializationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    /** Create the exception. */
+    public HessianMethodSerializationException(Throwable cause) {
+        super(cause);
+    }
 }

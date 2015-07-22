@@ -55,7 +55,6 @@ abstract public class AbstractStreamDeserializer extends AbstractDeserializer {
     /**
      * Reads the Hessian 1.0 style map.
      */
-    @Override
     public Object readMap(AbstractHessianInput in) throws IOException {
         Object value = null;
         while (!in.isEnd()) {
@@ -68,17 +67,14 @@ abstract public class AbstractStreamDeserializer extends AbstractDeserializer {
         in.readMapEnd();
         return value;
     }
-    @Override
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         Object value = null;
         for (int i = 0; i < fieldNames.length; i++) {
-            if ("value".equals(fieldNames[i])) {
+            if ("value".equals(fieldNames[i]))
                 value = readStreamValue(in);
-                in.addRef(value);
-            } else {
+            else
                 in.readObject();
-            }
         }
         return value;
     }

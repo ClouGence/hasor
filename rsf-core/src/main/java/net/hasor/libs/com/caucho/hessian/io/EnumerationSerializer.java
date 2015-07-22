@@ -59,13 +59,14 @@ public class EnumerationSerializer extends AbstractSerializer {
         return _serializer;
     }
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
-        Enumeration iter = (Enumeration) obj;
+        Enumeration<?> iter = (Enumeration<?>) obj;
         boolean hasEnd = out.writeListBegin(-1, null);
         while (iter.hasMoreElements()) {
             Object value = iter.nextElement();
             out.writeObject(value);
         }
-        if (hasEnd)
+        if (hasEnd) {
             out.writeListEnd();
+        }
     }
 }
