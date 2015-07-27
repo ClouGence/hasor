@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao.mem;
+package net.hasor.rsf.center.domain.daos;
 import java.util.HashMap;
+import net.hasor.rsf.center.core.dao.AbstractDao;
+import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
-import net.hasor.rsf.center.domain.dao.Dao;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 import net.hasor.rsf.center.utils.CodeResultDO;
 /**
@@ -25,7 +26,7 @@ import net.hasor.rsf.center.utils.CodeResultDO;
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class TerminalDOMemDao extends MemDao<TerminalDO> {
+public class TerminalDOMemDao extends AbstractDao<TerminalDO> {
     public CodeResultDO<TerminalDO> queryTerminalByIDAndSecret(String terminalID, String secretKey) {
         CodeResultDO<TerminalDO> resultDO = new CodeResultDO<TerminalDO>();
         try {

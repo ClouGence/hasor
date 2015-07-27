@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao;
+package net.hasor.rsf.center.domain.daos;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
-import net.hasor.rsf.center.domain.dao.db.AppDOMySqlDao;
-import net.hasor.rsf.center.domain.dao.db.ServiceInfoDOMySqlDao;
-import net.hasor.rsf.center.domain.dao.mem.AppDOMemDao;
-import net.hasor.rsf.center.domain.dao.mem.ServiceInfoDOMemDao;
-import net.hasor.rsf.center.domain.dao.mem.ServiceJoinPortDOMemDao;
-import net.hasor.rsf.center.domain.dao.mem.TerminalDOMemDao;
+import net.hasor.rsf.center.core.dao.Dao;
 /**
  * 
  * @version : 2015年6月30日
@@ -29,39 +24,27 @@ import net.hasor.rsf.center.domain.dao.mem.TerminalDOMemDao;
  */
 @Dao
 public class DaoProvider implements InjectMembers {
-    private AppDOMySqlDao           appDOMySqlDao;
-    private ServiceInfoDOMySqlDao   serviceInfoDOMySqlDao;
-    //
     private AppDOMemDao             appDOMemDao;
     private ServiceInfoDOMemDao     serviceInfoDOMemDao;
     private ServiceJoinPortDOMemDao serviceJoinPortDOMemDao;
     private TerminalDOMemDao        terminalDOMemDao;
     //
     public void doInject(AppContext appContext) {
-        appDOMySqlDao = appContext.getInstance(AppDOMySqlDao.class);
-        serviceInfoDOMySqlDao = appContext.getInstance(ServiceInfoDOMySqlDao.class);
-        //
-        appDOMemDao = appContext.getInstance(AppDOMemDao.class);
-        serviceInfoDOMemDao = appContext.getInstance(ServiceInfoDOMemDao.class);
-        serviceJoinPortDOMemDao = appContext.getInstance(ServiceJoinPortDOMemDao.class);
-        terminalDOMemDao = appContext.getInstance(TerminalDOMemDao.class);
-    }
-    public AppDOMySqlDao getAppDOMySqlDao() {
-        return appDOMySqlDao;
-    }
-    public ServiceInfoDOMySqlDao getServiceInfoDOMySqlDao() {
-        return serviceInfoDOMySqlDao;
+        this.appDOMemDao = appContext.getInstance(AppDOMemDao.class);
+        this.serviceInfoDOMemDao = appContext.getInstance(ServiceInfoDOMemDao.class);
+        this.serviceJoinPortDOMemDao = appContext.getInstance(ServiceJoinPortDOMemDao.class);
+        this.terminalDOMemDao = appContext.getInstance(TerminalDOMemDao.class);
     }
     public AppDOMemDao getAppDOMemDao() {
-        return appDOMemDao;
+        return this.appDOMemDao;
     }
     public ServiceInfoDOMemDao getServiceInfoDOMemDao() {
-        return serviceInfoDOMemDao;
+        return this.serviceInfoDOMemDao;
     }
     public ServiceJoinPortDOMemDao getServiceJoinPortDOMemDao() {
-        return serviceJoinPortDOMemDao;
+        return this.serviceJoinPortDOMemDao;
     }
     public TerminalDOMemDao getTerminalDOMemDao() {
-        return terminalDOMemDao;
+        return this.terminalDOMemDao;
     }
 }

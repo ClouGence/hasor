@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao.mem;
-import net.hasor.rsf.center.core.startup.StartAppModule;
-import net.hasor.rsf.center.domain.dao.AbstractDao;
+package net.hasor.rsf.center.domain.daos;
+import net.hasor.rsf.center.core.dao.AbstractDao;
+import net.hasor.rsf.center.core.dao.Dao;
+import net.hasor.rsf.center.domain.entity.ServiceJoinPortDO;
 /**
  * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MemDao<T> extends AbstractDao<T> {
-    protected String dataSource() {
-        return StartAppModule.DataSource_MEM;
-    }
-}
+@Dao
+public class ServiceJoinPortDOMemDao extends AbstractDao<ServiceJoinPortDO> {}

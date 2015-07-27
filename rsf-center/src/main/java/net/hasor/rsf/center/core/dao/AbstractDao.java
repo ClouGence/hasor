@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.dao;
+package net.hasor.rsf.center.core.dao;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorOperations;
@@ -30,16 +30,10 @@ public abstract class AbstractDao<T> implements InjectMembers {
     private SqlExecutorTemplate executorTemplate;
     @Override
     public void doInject(AppContext appContext) {
-        this.executorTemplate = appContext.findBindingBean(dataSource(), SqlExecutorTemplate.class);
+        this.executorTemplate = appContext.getInstance(SqlExecutorTemplate.class);
     }
     //
     protected SqlExecutorOperations getSqlExecutor() {
         return this.executorTemplate;
     }
-    /**
-     * 数据来源
-     * @see net.hasor.rsf.center.core.startup.DataBaseModule#DataSource_DB
-     * @see net.hasor.rsf.center.core.startup.DataBaseModule#DataSource_MEM
-     */
-    protected abstract String dataSource();
 }

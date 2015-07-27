@@ -7,18 +7,22 @@
 		</modules>
 	</hasor>
 	<rsfCenter>
-		<!-- 工作模式： master or slave -->
-		<workAt>master/slave</workAt>
+		<!--工作模式：
+				master	：集群主机模式，在集群中请确保每一台从属机都可以访问到它。
+				slave	：集群从属机器。
+				memory	：内存模式，当服务停止运行一切数据全部丢失。
+		-->
+		<workAt>Memory</workAt>
 
 		<!-- 内存数据库Sechma -->
-		<memInitialize>
+		<memInitialize >
 			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
 			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
 			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
 			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
 		</memInitialize>
 
-		<!-- 关键数据 -->
+		<!-- 关键数据（内存模式下无效） -->
 		<jdbcConfig>
 			<driver>com.mysql.jdbc.Driver</driver>
 			<url>jdbc:mysql://rdsjj73ymbjfmmf.mysql.rds.aliyuncs.com/rdsjj73ymbjfmmf?useUnicode=true&amp;characterEncoding=utf8</url>

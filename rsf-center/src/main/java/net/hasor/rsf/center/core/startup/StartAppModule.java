@@ -34,16 +34,18 @@ import net.hasor.mvc.Validation;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.core.freemarker.FreemarkerHttpServlet;
 import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
-import net.hasor.rsf.center.domain.dao.Dao;
+import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.rsf.center.domain.valid.ValidDefine;
 import net.hasor.web.WebApiBinder;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.more.util.StringUtils;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import freemarker.template.Configuration;
 /**
@@ -52,9 +54,7 @@ import freemarker.template.Configuration;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StartAppModule extends ControllerModule implements StartModule {
-    public static final String DataSource_MEM = "mem";
-    public static final String DataSource_DB  = "db";
-    //
+    public static final String WorkAt = "WorkAt";
     @Override
     protected void loadController(LoadHellper helper) throws Throwable {
         WebApiBinder apiBinder = helper.apiBinder();
@@ -87,69 +87,30 @@ public class StartAppModule extends ControllerModule implements StartModule {
         configuration.setTemplateLoader(new DirTemplateLoader(new File(realPath)));
         helper.apiBinder().bindType(Configuration.class).toInstance(configuration);
         helper.apiBinder().serve("*.htm", "*.html").with(FreemarkerHttpServlet.class);
-        //5.MyBatis
-        {
-            //HSQL
-            String driverString = "org.hsqldb.jdbcDriver";
-            String urlString = "jdbc:hsqldb:mem:rsf_memdb";
-            String userString = "sa";
-            String pwdString = "";
-            DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
-            Reader reader = Resources.getResourceAsReader("ibatis-mem-sqlmap.xml");
-            SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
-            this.configDataSource(apiBinder, dataSource, DataSource_MEM, sessionFactory);
+        //
+        //5.WorkAt
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        String workAt = settings.getString("rsfCenter.workAt", WorkMode.Memory.getCodeString());
+        logger.info("rsf work mode at : " + workAt);
+        apiBinder.bindType(String.class).nameWith(WorkAt).toInstance(workAt);
+        //
+        //6.DataSource
+        String driverString = settings.getString("rsfCenter.jdbcConfig.driver");
+        String urlString = settings.getString("rsfCenter.jdbcConfig.url");
+        String userString = settings.getString("rsfCenter.jdbcConfig.username");
+        String pwdString = settings.getString("rsfCenter.jdbcConfig.password");
+        //
+        if (StringUtils.equalsBlankIgnoreCase(WorkMode.Memory.getCodeString(), workAt)) {
+            driverString = "org.hsqldb.jdbcDriver";
+            urlString = "jdbc:hsqldb:mem:rsf_memdb";
+            userString = "sa";
+            pwdString = "";
         }
-        {
-            //MySQL
-            Settings settings = apiBinder.getEnvironment().getSettings();
-            String driverString = settings.getString("rsfCenter.jdbcConfig.driver");
-            String urlString = settings.getString("rsfCenter.jdbcConfig.url");
-            String userString = settings.getString("rsfCenter.jdbcConfig.username");
-            String pwdString = settings.getString("rsfCenter.jdbcConfig.password");
-            DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
-            Reader reader = Resources.getResourceAsReader("ibatis-db-sqlmap.xml");
-            SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
-            this.configDataSource(apiBinder, dataSource, DataSource_DB, sessionFactory);
-        }
+        DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
+        Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
+        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        this.configDataSource(apiBinder, dataSource, sessionFactory);
     }
-    @Override
-    public void onStart(AppContext appContext) throws Throwable {
-        Settings settings = appContext.getEnvironment().getSettings();
-        XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
-        if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
-            throw new IOException("read config error,`rsfCenter.memInitialize` node is not exist.");
-        }
-        List<XmlNode> xmlNodes = xmlNode.getChildren("sqlScript");
-        if (xmlNodes != null) {
-            logger.info("sqlScript count = {}", xmlNodes.size());
-            JdbcTemplate jdbcTemplate = appContext.findBindingBean(DataSource_MEM, JdbcTemplate.class);
-            for (XmlNode node : xmlNodes) {
-                String scriptName = node.getText().trim();
-                try {
-                    logger.info("sqlScript `{}` do...", scriptName);
-                    jdbcTemplate.loadSQL(scriptName);
-                    logger.info("sqlScript `{}` finish.", scriptName);
-                } catch (Throwable e) {
-                    logger.error("sqlScript `{}` run error =>{}.", scriptName, e);
-                    throw e;
-                }
-            }
-        }
-    }
-    //
-    //
-    //
-    protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, String dsName, SqlSessionFactory sessionFactory) throws Throwable {
-        //1.绑定DataSource接口实现
-        apiBinder.bindType(DataSource.class).nameWith(dsName).toInstance(dataSource);
-        //2.绑定JdbcTemplate接口实现
-        apiBinder.bindType(JdbcTemplate.class).nameWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
-        //3.启用默认事务拦截器
-        apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
-        //4.绑定myBatis接口实现
-        apiBinder.bindType(SqlExecutorTemplate.class).nameWith(dsName).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
-    }
-    //
     private DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
         logger.info("C3p0 Pool Info maxSize is ‘{}’ driver is ‘{}’ jdbcUrl is‘{}’", poolMaxSize, driverString, urlString);
@@ -169,5 +130,48 @@ public class StartAppModule extends ControllerModule implements StartModule {
         dataSource.setAcquireIncrement(1);
         dataSource.setMaxIdleTime(25000);
         return dataSource;
+    }
+    protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, SqlSessionFactory sessionFactory) throws Throwable {
+        //1.绑定DataSource接口实现
+        apiBinder.bindType(DataSource.class).toInstance(dataSource);
+        //2.绑定JdbcTemplate接口实现
+        apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
+        //3.启用默认事务拦截器
+        apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
+        //4.绑定myBatis接口实现
+        apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
+    }
+    //
+    //
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        Settings settings = appContext.getEnvironment().getSettings();
+        String workAt = appContext.findBindingBean(WorkAt, String.class);
+        //
+        //1.Memory模式
+        if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
+            XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
+            if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
+                throw new IOException("read config error,`rsfCenter.memInitialize` node is not exist.");
+            }
+            List<XmlNode> xmlNodes = xmlNode.getChildren("sqlScript");
+            if (xmlNodes != null) {
+                logger.info("sqlScript count = {}", xmlNodes.size());
+                JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+                for (XmlNode node : xmlNodes) {
+                    String scriptName = node.getText().trim();
+                    try {
+                        logger.info("sqlScript `{}` do...", scriptName);
+                        jdbcTemplate.loadSQL("UTF-8", scriptName);
+                        logger.info("sqlScript `{}` finish.", scriptName);
+                    } catch (Throwable e) {
+                        logger.error("sqlScript `{}` run error =>{}.", scriptName, e);
+                        throw e;
+                    }
+                }
+            }
+        }
+        //
+        //2....
     }
 }
