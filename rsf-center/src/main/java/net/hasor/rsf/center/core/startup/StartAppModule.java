@@ -37,6 +37,7 @@ import net.hasor.mvc.support.LoadHellper;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.core.freemarker.FreemarkerHttpServlet;
 import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
+import net.hasor.rsf.center.core.jump.RootJumpFilter;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.domain.constant.WorkMode;
@@ -58,6 +59,8 @@ public class StartAppModule extends ControllerModule implements StartModule {
     @Override
     protected void loadController(LoadHellper helper) throws Throwable {
         WebApiBinder apiBinder = helper.apiBinder();
+        //0.Jump
+        apiBinder.filter("/*").through(new RootJumpFilter());
         //1.Dao
         Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
         for (Class<?> daoType : daoSet) {
@@ -87,13 +90,11 @@ public class StartAppModule extends ControllerModule implements StartModule {
         configuration.setTemplateLoader(new DirTemplateLoader(new File(realPath)));
         helper.apiBinder().bindType(Configuration.class).toInstance(configuration);
         helper.apiBinder().serve("*.htm", "*.html").with(FreemarkerHttpServlet.class);
-        //
         //5.WorkAt
         Settings settings = apiBinder.getEnvironment().getSettings();
         String workAt = settings.getString("rsfCenter.workAt", WorkMode.Memory.getCodeString());
         logger.info("rsf work mode at : " + workAt);
         apiBinder.bindType(String.class).nameWith(WorkAt).toInstance(workAt);
-        //
         //6.DataSource
         String driverString = settings.getString("rsfCenter.jdbcConfig.driver");
         String urlString = settings.getString("rsfCenter.jdbcConfig.url");
