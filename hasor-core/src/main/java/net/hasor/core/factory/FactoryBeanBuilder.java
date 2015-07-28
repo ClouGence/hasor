@@ -144,6 +144,8 @@ public class FactoryBeanBuilder implements BeanBuilder {
         }
         if (targetBean instanceof InjectMembers) {
             ((InjectMembers) targetBean).doInject(appContext);
+        } else {
+            //
         }
         return targetBean;
     }

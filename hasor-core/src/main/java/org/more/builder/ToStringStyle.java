@@ -1399,7 +1399,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param cls  the <code>Class</code> to get the short name of
      * @return the short name
      */
-    protected String getShortClassName(Class cls) {
+    protected String getShortClassName(Class<?> cls) {
         return ClassUtils.getShortClassName(cls);
     }
     // Setters and getters for the customizable parts of the style
