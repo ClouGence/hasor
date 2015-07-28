@@ -131,7 +131,7 @@ public abstract class BeanUtils {
                 fList.add(field);
             }
         }
-        Class<?> superType = target.getDeclaringClass();
+        Class<?> superType = target.getSuperclass();
         if (superType == null || superType == target) {
             return;
         }
@@ -160,7 +160,7 @@ public abstract class BeanUtils {
                 mList.add(method);
             }
         }
-        Class<?> superType = target.getDeclaringClass();
+        Class<?> superType = target.getSuperclass();
         if (superType == null || superType == target) {
             return;
         }
