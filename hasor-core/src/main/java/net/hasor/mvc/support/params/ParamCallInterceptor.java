@@ -36,6 +36,7 @@ import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.AttributeParam;
 import net.hasor.mvc.api.CookieParam;
 import net.hasor.mvc.api.HeaderParam;
+import net.hasor.mvc.api.IgnoreParam;
 import net.hasor.mvc.api.Params;
 import net.hasor.mvc.api.PathParam;
 import net.hasor.mvc.api.Produces;
@@ -148,8 +149,18 @@ public class ParamCallInterceptor implements WebCallInterceptor {
             return paramObject;
         }
         for (Field field : fieldList) {
+            if (field.isAnnotationPresent(IgnoreParam.class) == true) {
+                logger.debug(field + " -> Ignore.");
+                continue;
+            }
             try {
                 Object fieldValue = resolveParam(field.getType(), field.getAnnotations(), call);
+                if (fieldValue == null) {
+                    fieldValue = call.getHttpRequest().getParameterValues(field.getName());
+                    if (fieldValue != null) {
+                        fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
+                    }
+                }
                 field.setAccessible(true);
                 field.set(paramObject, fieldValue);
             } catch (Exception e) {
