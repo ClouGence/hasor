@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.valid;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.rsf.center.core.controller;
+import net.hasor.mvc.support.AbstractWebController;
 /**
  * 
- * @version : 2015年6月28日
+ * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-@Documented
-public @interface ValidDefine {
-    public String value();
-}
+public class BaseController extends AbstractWebController {}

@@ -16,15 +16,15 @@
 package net.hasor.rsf.center.web.apps;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.domain.form.PushServiceForm;
+import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.domain.form.apis.PushServiceForm;
 /**
  * 
  * @version : 2015年7月27日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apps/appManager")
-public class AppManager extends AbstractWebController {
+public class AppManager extends BaseController {
     public void execute(@Params PushServiceForm pushServiceForm) {
         System.out.println("/apis/customer");
     }

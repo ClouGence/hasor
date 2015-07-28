@@ -17,15 +17,15 @@ package net.hasor.rsf.center.web.apis;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.mvc.api.Valid;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.domain.form.UnServiceForm;
+import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.domain.form.apis.UnServiceForm;
 /**
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apis/unservice")
-public class UnService extends AbstractWebController {
+public class UnService extends BaseController {
     public void execute(@Valid("Access") @Params UnServiceForm unServiceForm) {
         System.out.println("/apis/unservice");
     }

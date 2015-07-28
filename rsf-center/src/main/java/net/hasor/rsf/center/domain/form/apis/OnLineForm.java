@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.form;
+package net.hasor.rsf.center.domain.form.apis;
 import net.hasor.mvc.api.ReqParam;
 /**
  * 

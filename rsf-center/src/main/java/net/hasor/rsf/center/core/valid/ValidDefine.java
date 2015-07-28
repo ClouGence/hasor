@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web.apis;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
-import net.hasor.mvc.api.Valid;
-import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.domain.form.apis.HeartBeatForm;
+package net.hasor.rsf.center.core.valid;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
  * 
- * @version : 2015年5月5日
+ * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/heartbeat")
-public class Heartbeat extends BaseController {
-    public void execute(@Valid("Access") @Params HeartBeatForm heartBeatForm) {
-        System.out.println("/apis/heartbeat");
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface ValidDefine {
+    public String value();
 }

@@ -15,16 +15,16 @@
  */
 package net.hasor.rsf.center.web.apps;
 import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.domain.form.PushServiceForm;
+import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
  * @version : 2015年7月27日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apps/registerApp")
-public class RegisterApp extends AbstractWebController {
-    public void execute(PushServiceForm pushServiceForm) {
+public class RegisterApp extends BaseController {
+    public void execute(AppDO appDO) {
         System.out.println("/apis/customer");
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.form;
+package net.hasor.rsf.center.domain.form.apis;
 import net.hasor.mvc.api.ReqParam;
 import net.hasor.rsf.center.domain.valid.AccessInfo;
 /**
@@ -21,7 +21,7 @@ import net.hasor.rsf.center.domain.valid.AccessInfo;
  * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HeartBeatForm implements AccessInfo {
+public class OffLineForm implements AccessInfo {
     @ReqParam("Terminal_ID")
     private String terminalID;
     @ReqParam("Terminal_AccessKey")

@@ -18,15 +18,15 @@ import java.io.IOException;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.mvc.api.Valid;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.rsf.center.domain.form.OffLineForm;
+import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.domain.form.apis.OffLineForm;
 /**
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apis/offline")
-public class OffLine extends AbstractWebController {
+public class OffLine extends BaseController {
     public void execute(@Valid("Access") @Params OffLineForm offLineForm) throws IOException {
         this.getContextMap().put("var", "abc");
         System.out.println("/apis/offline");

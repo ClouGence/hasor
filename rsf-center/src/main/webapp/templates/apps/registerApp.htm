@@ -1,3 +1,10 @@
 <#assign pageTitle="应用注册">
-
-【<a href="#">应用注册</a>】<br/>
+<form action="/apps/registerApp.do" target="_blank">
+	-应用Code：			<input type="text" name="appCode"><br/>
+	-应用名称：				<input type="text" name="appName"><br/>
+	-授权KEY（预授权KEY）：	<input type="text" name="accessKey"><br/>
+	-授权密钥（预授权密码）：	<input type="password" name="accessSecret"><br/>
+	-接口人（多人）：			<input type="text" name="contactUsers"><br/>
+	-应用描述：				<textarea name="description" rows="4" cols="20"></textarea>
+	<input type="submit" value="新增应用">
+</form>

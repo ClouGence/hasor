@@ -16,16 +16,16 @@
 package net.hasor.rsf.center.web.apis;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
-import net.hasor.mvc.support.AbstractWebController;
 import net.hasor.rsf.center.client.CenterParams;
-import net.hasor.rsf.center.domain.form.OnLineForm;
+import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.domain.form.apis.OnLineForm;
 /**
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apis/online")
-public class OnLine extends AbstractWebController {
+public class OnLine extends BaseController {
     public void execute(@Params OnLineForm onLineForm) {
         //
         String terminalID = onLineForm.getHostName() + ":" + onLineForm.getHostPort() + ":" + System.currentTimeMillis();
