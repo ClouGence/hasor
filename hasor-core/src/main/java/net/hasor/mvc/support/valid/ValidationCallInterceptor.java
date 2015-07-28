@@ -26,6 +26,7 @@ import net.hasor.mvc.WebCall;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.Valid;
 import org.more.bizcommon.ResultDO;
+import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,21 +98,37 @@ public class ValidationCallInterceptor implements WebCallInterceptor, AppContext
         String[] values = valid.value();
         if (values != null && values.length != 0) {
             for (String validName : values) {
-                Validation validApp = this.appContext.findBindingBean(validName, Validation.class);
-                if (validApp == null) {
-                    continue;
-                }
-                ResultDO<String> result = validApp.doValidation(paramObj);
-                if (result != null) {
-                    logger.info("doValidation {},result = {}", validName, result);
-                    ValidData vData = this.converResult(validName, result);
-                    if (vData != null) {
-                        validList.add(vData);
-                    }
+                ValidData vData = doValid(validName, paramObj);
+                if (vData != null) {
+                    validList.add(vData);
                 }
             }
         }
         return validList;
+    }
+    private ValidData doValid(String validName, Object paramObj) {
+        Validation<?> validApp = this.appContext.findBindingBean(validName, Validation.class);
+        if (validApp == null) {
+            return null;
+        }
+        //
+        Class<?> genricType = ClassUtils.getSuperClassGenricType(validApp.getClass(), 0);
+        ValidData vData;
+        //
+        if (paramObj != null && genricType.isInstance(paramObj) == true) {
+            ResultDO<String> result = ((Validation<Object>) validApp).doValidation(paramObj);
+            vData = this.converResult(validName, result);
+        } else if (paramObj == null) {
+            ResultDO<String> result = validApp.doValidation(null);
+            vData = this.converResult(validName, result);
+        } else {
+            String validStringMsg = "Validation genricType Class Cast error, paramType‘" + paramObj.getClass() + "’ to ‘" + genricType + "’ fail.";
+            vData = new ValidData(validName, false);
+            vData.addValidString(validStringMsg);
+        }
+        //
+        logger.info("doValidation {},result = {}", validName, vData);
+        return vData;
     }
     private ValidData converResult(String validName, ResultDO<String> result) {
         ValidData validData = new ValidData(validName, result.isSuccess());

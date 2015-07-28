@@ -20,7 +20,7 @@ import org.more.bizcommon.ResultDO;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Validation {
+public interface Validation<T> {
     /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
-    public ResultDO<String> doValidation(Object data);
+    public ResultDO<String> doValidation(T data);
 }
