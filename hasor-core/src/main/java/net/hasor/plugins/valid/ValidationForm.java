@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.api;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.plugins.valid;
+import org.more.bizcommon.ResultDO;
 /**
- * 验证参数
- * @see net.hasor.mvc.Validation
- * @see net.hasor.mvc.ValidationForm
- * @version : 2013-3-26
- * @author 赵永春 (zyc@hasor.net)
+ * 验证表单，如果验证失败返回验证消息。
+ * @version : 2014年8月27日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Target({ ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Valid {
-    public String[] value() default {};
+public interface ValidationForm {
+    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
+    public ResultDO<String> doValidation();
 }

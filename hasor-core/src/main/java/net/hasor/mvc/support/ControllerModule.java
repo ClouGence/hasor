@@ -24,7 +24,6 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.support.params.ParamCallInterceptor;
 import net.hasor.mvc.support.result.ResultCallInterceptor;
-import net.hasor.mvc.support.valid.ValidationCallInterceptor;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.util.ClassUtils;
@@ -66,7 +65,6 @@ public abstract class ControllerModule extends WebModule {
             }
             //内置插件
             helper.loadInterceptor(ParamCallInterceptor.class);
-            helper.loadInterceptor(ValidationCallInterceptor.class);
             helper.loadInterceptor(ResultCallInterceptor.class);
             //
             //框架初始化

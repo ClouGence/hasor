@@ -16,6 +16,7 @@
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 			<module>net.hasor.plugins.encoding.EncodingFilterModule</module>
 			<module>net.hasor.plugins.resource.ResourceLoaderModule</module>
+			<module>net.hasor.plugins.valid.ValidUtils.ValidationModule</module>
 		</modules>
 
 		<!-- 插件模块的配置 -->

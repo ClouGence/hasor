@@ -72,6 +72,7 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String config, final Module... modules) {
+        //
         try {
             final Environment dev = new StandardEnvironment(config);
             final ContextData contextData = new ContextData() {

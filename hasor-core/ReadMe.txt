@@ -61,5 +61,5 @@ JDBC：
 Transaction：
 	  Hasor提供的操作数据库事务的接口，提供了7个不同的事务隔离级别。其实现思想来源于Spring。
 
-ORM：
+Valid 验证机制：
 	  AR模式的数据库操作接口，基于JDBC。	

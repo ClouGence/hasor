@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.valid;
+package net.hasor.plugins.valid;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.bizcommon.Message;

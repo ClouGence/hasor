@@ -23,7 +23,6 @@ import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.ResultProcess;
-import net.hasor.mvc.Validation;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.result.ResultProcessDefine;
@@ -77,12 +76,6 @@ public abstract class LoadHellper {
         MappingInfoDefine define = module().createMappingDefine(clazz);
         apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
         apiBinder.bindType(clazz);
-    }
-    //
-    /**装载验证器*/
-    public void loadValidation(String valid, Class<? extends Validation> clazz) {
-        logger.info("Validation name ‘{}’ typeof ‘{}’.", valid, clazz);
-        this.apiBinder().bindType(Validation.class).nameWith(valid).to(clazz);
     }
     //
     /**通过位运算决定check是否在data里。*/

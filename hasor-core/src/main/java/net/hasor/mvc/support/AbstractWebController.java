@@ -36,7 +36,6 @@ public abstract class AbstractWebController implements ModelController {
     private ThreadLocal<HttpServletRequest>  httpRequest  = new ThreadLocal<HttpServletRequest>();
     private ThreadLocal<HttpServletResponse> httpResponse = new ThreadLocal<HttpServletResponse>();
     //
-    //
     public void initController(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         if (this.httpRequest.get() != null) {
             this.httpRequest.remove();

@@ -293,6 +293,8 @@ public abstract class TemplateAppContext implements AppContext {
                 moduleList.add((Module) moduleType.newInstance());
             } catch (Throwable e) {
                 logger.warn("load module Type {} is failure. -> {}:{}", modStr, e.getClass(), e.getMessage());
+                if (this.getEnvironment().isDebug())
+                    logger.error(e.getMessage(), e);
             }
         }
         return moduleList.toArray(new Module[moduleList.size()]);

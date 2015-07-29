@@ -37,7 +37,6 @@ public class SimpleTranInterceptorModule implements Module {
     public SimpleTranInterceptorModule(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    @Override
     public void loadModule(final ApiBinder apiBinder) throws Throwable {
         TransactionBinder it = new TransactionBinder(apiBinder);
         it.bind(this.dataSource)/*设置到数据源*/
@@ -49,7 +48,6 @@ public class SimpleTranInterceptorModule implements Module {
 }
 /**事务执行行为控制*/
 class TransactionOperation implements TranOperations {
-    @Override
     public Object execute(final TransactionStatus tranStatus, final MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod();
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
@@ -118,7 +116,6 @@ class TransactionOperation implements TranOperations {
 }
 /**决定传播属性*/
 class PropagationStrategy implements TranStrategy<Propagation> {
-    @Override
     public Propagation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         if (tranAnno == null) {
@@ -129,7 +126,6 @@ class PropagationStrategy implements TranStrategy<Propagation> {
 }
 /**决定隔离级别*/
 class IsolationStrategy implements TranStrategy<Isolation> {
-    @Override
     public Isolation getStrategy(final Method targetMethod) {
         Transactional tranAnno = targetMethod.getAnnotation(Transactional.class);
         if (tranAnno == null) {
