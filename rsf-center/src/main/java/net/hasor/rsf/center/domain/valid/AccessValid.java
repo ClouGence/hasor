@@ -16,7 +16,7 @@
 package net.hasor.rsf.center.domain.valid;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
-import net.hasor.mvc.Validation;
+import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
@@ -34,20 +34,18 @@ public class AccessValid implements Validation, InjectMembers {
     public void doInject(AppContext appContext) {
         this.daoProvider = appContext.getInstance(DaoProvider.class);
     }
-    public ResultDO<String> doValidation(Object data) {
-        if (data instanceof AccessInfo == false) {
-            return new ResultDO<String>().setSuccess(false);
-        }
-        AccessInfo accInfo = (AccessInfo) data;
+    public ResultDO<String> doValidation(Object dataForm) {
+        AccessInfo accInfo = (AccessInfo) dataForm;
+        //
         String secretKey = SecretUtils.toSecretKey(accInfo);
         CodeResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
-//        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
-//            if (terminalResultDO.isSuccess() == false) {
-//                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());
-//            } else {
-//                return new ResultDO<String>().setSuccess(false);
-//            }
-//        }
+        //        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
+        //            if (terminalResultDO.isSuccess() == false) {
+        //                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());
+        //            } else {
+        //                return new ResultDO<String>().setSuccess(false);
+        //            }
+        //        }
         // TODO Auto-generated method stub
         return new ResultDO<String>().setSuccess(true);
     }

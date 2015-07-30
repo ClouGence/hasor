@@ -25,8 +25,13 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ErrorCode {
+    /**0, "Success"*/
+    OK(0, "Success"),
+    //
     /**1, "SQL{}，执行出错. ->{}"*/
-    DAO_SELECT(1, "SQL{}，执行出错. ->{}"),
+    DAO_SELECT(1, "Select SQL{}，执行出错. ->{}"),
+    /**2, "Insert SQL{}，执行出错. ->{}"*/
+    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"),
     //
     //
     //---------------------------------------------
@@ -44,7 +49,7 @@ public enum ErrorCode {
     public String getMessageTemplate() {
         return this.messageTemplate;
     }
-    public Message getErrorMessage(Object[] msgParams) {
+    public Message getErrorMessage(Object... msgParams) {
         return new Message(this.messageTemplate, msgParams);
     }
     public static ErrorCode getErrorByCodeType(int codeType) {

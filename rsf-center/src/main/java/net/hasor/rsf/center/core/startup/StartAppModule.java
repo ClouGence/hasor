@@ -30,10 +30,11 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
 import net.hasor.mvc.ModelController;
-import net.hasor.mvc.Validation;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.plugins.valid.ValidUtils;
+import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.core.freemarker.FreemarkerHttpServlet;
 import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
@@ -71,7 +72,7 @@ public class StartAppModule extends ControllerModule implements StartModule {
         for (Class<?> validType : validSet) {
             if (Validation.class.isAssignableFrom(validType)) {
                 ValidDefine validDefine = validType.getAnnotation(ValidDefine.class);
-                helper.loadValidation(validDefine.value(), (Class<Validation>) validType);
+                ValidUtils.installValid(apiBinder, validDefine.value(), (Class<Validation>) validType);
             }
         }
         //3.Controller

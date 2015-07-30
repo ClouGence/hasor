@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.queue;
-import java.util.Queue;
+package net.hasor.rsf.center.core.ioc;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 一个先进先出的队列。
- * @version : 2015年6月23日
+ * 依赖注入
+ * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MessageManager {
-    private Queue<Object> messageQueue;
-    //
-    //
-    
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD })
+@Documented
+public @interface Inject {}

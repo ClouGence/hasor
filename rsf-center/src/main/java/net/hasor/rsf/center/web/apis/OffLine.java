@@ -17,7 +17,7 @@ package net.hasor.rsf.center.web.apis;
 import java.io.IOException;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
-import net.hasor.mvc.api.Valid;
+import net.hasor.plugins.valid.Valid;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.form.apis.OffLineForm;
 /**

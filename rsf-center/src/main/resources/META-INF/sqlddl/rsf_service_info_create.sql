@@ -1,5 +1,5 @@
 create table RSF_ServiceInfo (
-	si_serviceID	BIGINT			NOT NULL,
+	si_serviceID	BIGINT			NOT NULL IDENTITY,
 	si_appID		BIGINT			NOT NULL,
 	si_bindName		VARCHAR(200)	NOT NULL,
 	si_bindGroup	VARCHAR(100)	NOT NULL,

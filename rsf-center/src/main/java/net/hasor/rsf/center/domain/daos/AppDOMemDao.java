@@ -16,11 +16,27 @@
 package net.hasor.rsf.center.domain.daos;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
+import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.AppDO;
+import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class AppDOMemDao extends AbstractDao<AppDO> {}
+public class AppDOMemDao extends AbstractDao<AppDO> {
+    public ResultDO<Integer> saveAsNew(AppDO appDO) {
+        ResultDO<Integer> resultDO = new ResultDO<Integer>();
+        try {
+            int result = this.getSqlExecutor().insert("createByAppDO", appDO);
+            resultDO.setResult(result);
+            resultDO.setSuccess(true);
+        } catch (Exception e) {
+            resultDO.setThrowable(e);
+            resultDO.setSuccess(false);
+            resultDO.addMessage(ErrorCode.DAO_INSERT.getErrorMessage());
+        }
+        return resultDO;
+    }
+}

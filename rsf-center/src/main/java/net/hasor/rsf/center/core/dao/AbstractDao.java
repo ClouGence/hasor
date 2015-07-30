@@ -16,6 +16,8 @@
 package net.hasor.rsf.center.core.dao;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
+import net.hasor.rsf.center.core.ioc.Inject;
+import net.hasor.rsf.center.core.ioc.InjectUtils;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorOperations;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import org.slf4j.Logger;
@@ -27,12 +29,16 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractDao<T> implements InjectMembers {
     protected Logger            logger = LoggerFactory.getLogger(getClass());
+    @Inject
     private SqlExecutorTemplate executorTemplate;
-    @Override
-    public void doInject(AppContext appContext) {
-        this.executorTemplate = appContext.getInstance(SqlExecutorTemplate.class);
-    }
     //
+    public void doInject(AppContext appContext) {
+        try {
+            InjectUtils.inject(this, appContext);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
     protected SqlExecutorOperations getSqlExecutor() {
         return this.executorTemplate;
     }

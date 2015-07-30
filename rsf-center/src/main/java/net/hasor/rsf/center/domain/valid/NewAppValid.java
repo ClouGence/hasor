@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web.apis;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
-import net.hasor.plugins.valid.Valid;
-import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.domain.form.apis.HeartBeatForm;
+package net.hasor.rsf.center.domain.valid;
+import net.hasor.plugins.valid.Validation;
+import net.hasor.rsf.center.core.valid.ValidDefine;
+import net.hasor.rsf.center.domain.entity.AppDO;
+import org.more.bizcommon.ResultDO;
 /**
  * 
- * @version : 2015年5月5日
+ * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/heartbeat")
-public class Heartbeat extends BaseController {
-    public void execute(@Valid("Access") @Params HeartBeatForm heartBeatForm) {
-        System.out.println("/apis/heartbeat");
+@ValidDefine("NewApp")
+public class NewAppValid implements Validation {
+    public ResultDO<String> doValidation(Object dataForm) {
+        AppDO appDO = (AppDO) dataForm;
+        //
+        return new ResultDO<String>().setSuccess(true);
     }
 }

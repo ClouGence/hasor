@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apps;
+import java.util.Date;
 import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.api.Params;
+import net.hasor.plugins.valid.ValidData;
 import net.hasor.rsf.center.core.controller.BaseController;
+import net.hasor.rsf.center.core.ioc.Inject;
+import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
+import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年7月27日
@@ -24,7 +30,26 @@ import net.hasor.rsf.center.domain.entity.AppDO;
  */
 @MappingTo("/apps/registerApp")
 public class RegisterApp extends BaseController {
-    public void execute(AppDO appDO) {
-        System.out.println("/apis/customer");
+    @Inject
+    private DaoProvider daoProvider;
+    //
+    public void execute(@Params AppDO appDO) {
+        logger.info("request :" + getRequestURI());
+        if (!this.getRequestURI().endsWith(".do")) {
+            return;
+        }
+        //
+        appDO.setCreateTime(new Date());
+        appDO.setModifyTime(new Date());
+        appDO.setOnwer(this.getLoginUser().getUserName());
+        //
+        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
+        if (validData.isValid()) {
+            ResultDO<Integer> resultDO = daoProvider.getAppDOMemDao().saveAsNew(appDO);
+            if (!resultDO.isSuccess()) {
+                logger.error("registerApp error->", resultDO.getThrowable());
+            }
+        }
+        System.out.println("/apps/registerApp - " + validData.isValid());
     }
 }

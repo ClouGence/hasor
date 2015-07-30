@@ -1,5 +1,5 @@
 create table RSF_APP (
-	app_id				BIGINT			NOT NULL,
+	app_id				BIGINT			NOT NULL IDENTITY,
 	app_code			VARCHAR(100)	NOT NULL,
 	app_name			VARCHAR(100)	NOT NULL,
 	app_accessKey		VARCHAR(50)		NOT NULL,

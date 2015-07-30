@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.queue;
-import java.util.Date;
+package net.hasor.rsf.center.core.login;
 /**
- * 消息事件。
- * @version : 2015年6月23日
+ * 
+ * @version : 2015年7月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MessageEvent {
-    private Date atTime;
+public class UserInfo {
+    public String getUserName() {
+        return null;
+    }
 }

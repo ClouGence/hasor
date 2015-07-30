@@ -33,5 +33,33 @@
 		from
 			RSF_APP
 	</select>
-
+	
+	<insert id="createByAppDO" useGeneratedKeys="true" keyProperty="appID" parameterType="net.hasor.rsf.center.domain.entity.AppDO">
+		insert into RSF_APP(
+			app_id,
+			app_code,
+			app_name,
+			app_accessKey,
+			app_accessSecret,
+			app_onwer,
+			app_contactUsers,
+			app_desc,
+			app_create_time,
+			app_modify_time
+		) values(
+			#{appID},
+			#{appCode},
+			#{appName},
+			#{accessKey},
+			#{accessSecret},
+			#{onwer},
+			#{contactUsers},
+			#{description},
+			now(),
+			now()
+		);
+		<selectKey keyProperty="appID" resultType="long">
+			CALL IDENTITY()
+		</selectKey> 
+	</insert>
 </mapper>

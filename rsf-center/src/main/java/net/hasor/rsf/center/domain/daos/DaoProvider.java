@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.daos;
-import net.hasor.core.AppContext;
-import net.hasor.core.InjectMembers;
+import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
+import net.hasor.rsf.center.core.ioc.Inject;
 /**
  * 
  * @version : 2015年6月30日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class DaoProvider implements InjectMembers {
+public class DaoProvider extends AbstractDao<Object> {
+    @Inject
     private AppDOMemDao             appDOMemDao;
+    @Inject
     private ServiceInfoDOMemDao     serviceInfoDOMemDao;
+    @Inject
     private ServiceJoinPortDOMemDao serviceJoinPortDOMemDao;
+    @Inject
     private TerminalDOMemDao        terminalDOMemDao;
     //
-    public void doInject(AppContext appContext) {
-        this.appDOMemDao = appContext.getInstance(AppDOMemDao.class);
-        this.serviceInfoDOMemDao = appContext.getInstance(ServiceInfoDOMemDao.class);
-        this.serviceJoinPortDOMemDao = appContext.getInstance(ServiceJoinPortDOMemDao.class);
-        this.terminalDOMemDao = appContext.getInstance(TerminalDOMemDao.class);
-    }
     public AppDOMemDao getAppDOMemDao() {
         return this.appDOMemDao;
     }
