@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +29,7 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.classcode.delegate.faces.MethodClassConfig;
-import org.more.classcode.delegate.faces.MethodDelegate;
+import org.more.classcode.MoreClassLoader;
 import org.more.future.FutureCallback;
 /**
  * 
@@ -36,16 +37,16 @@ import org.more.future.FutureCallback;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfClientWrappe implements RsfClient {
-    private final AbstractRsfContext              rsfContext;
-    private final RsfBindCenter                   rsfBindCenter;
-    private final Object                          LOCK_OBJECT;
-    private final ConcurrentMap<String, Class<?>> wrapperMap;
+    private final AbstractRsfContext            rsfContext;
+    private final RsfBindCenter                 rsfBindCenter;
+    private final Object                        LOCK_OBJECT;
+    private final ConcurrentMap<String, Object> wrapperMap;
     //
     public RsfClientWrappe(AbstractRsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.rsfBindCenter = rsfContext.getBindCenter();
         this.LOCK_OBJECT = new Object();
-        this.wrapperMap = new ConcurrentHashMap<String, Class<?>>();
+        this.wrapperMap = new ConcurrentHashMap<String, Object>();
     }
     //
     @Override
@@ -109,20 +110,18 @@ class RsfClientWrappe implements RsfClient {
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         //
         try {
-            //
             String bindID = bindInfo.getBindID();
-            Class<?> wrapperType = this.wrapperMap.get(bindID);
-            if (wrapperType == null)
+            Object wrapperObject = this.wrapperMap.get(bindID);
+            if (wrapperObject == null)
                 synchronized (LOCK_OBJECT) {
-                    wrapperType = this.wrapperMap.get(bindID);
-                    if (wrapperType == null) {
-                        MethodClassConfig mcc = new MethodClassConfig();
-                        mcc.addDelegate(interFace, new RemoteWrapper(bindInfo, this));
-                        wrapperType = mcc.toClass();
-                        this.wrapperMap.put(bindID, wrapperType);
+                    wrapperObject = this.wrapperMap.get(bindID);
+                    if (wrapperObject == null) {
+                        ClassLoader loader = new MoreClassLoader();
+                        wrapperObject = Proxy.newProxyInstance(loader, new Class<?>[] { interFace }, new RemoteWrapper(bindInfo, this));
+                        this.wrapperMap.put(bindID, wrapperObject);
                     }
                 }
-            return (T) wrapperType.newInstance();
+            return (T) wrapperObject;
             //
         } catch (Exception e) {
             throw new RsfException(e.getMessage(), e);
@@ -178,7 +177,7 @@ class RsfClientWrappe implements RsfClient {
             timeout = this.rsfContext.getSettings().getDefaultTimeout();
         return timeout;
     }
-    private static class RemoteWrapper implements MethodDelegate {
+    private static class RemoteWrapper implements InvocationHandler {
         private RsfBindInfo<?> bindInfo = null;
         private RsfClient      client   = null;
         //
@@ -186,8 +185,8 @@ class RsfClientWrappe implements RsfClient {
             this.bindInfo = bindInfo;
             this.client = client;
         }
-        public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
-            return this.client.syncInvoke(this.bindInfo, callMethod.getName(), callMethod.getParameterTypes(), params);
+        public Object invoke(Object proxy, Method callMethod, Object[] args) throws Throwable {
+            return this.client.syncInvoke(this.bindInfo, callMethod.getName(), callMethod.getParameterTypes(), args);
         }
     }
 }
