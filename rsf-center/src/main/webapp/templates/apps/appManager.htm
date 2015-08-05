@@ -1,12 +1,17 @@
 <#assign pageTitle="应用管理">
-<#list 0..10 as i>
-	<div class="media">
-	  <div class="media-left">
-	    <a href="#"><img class="media-object" src="..." alt="..."></a>
-	  </div>
-	  <div class="media-body">
-	    <h4 class="media-heading">Media heading</h4>
-	    ...
-	  </div>
-	</div>
-</#list>
+
+<#if message.type == 0>
+	<#list resultList.result as appDO>
+		<div class="media">
+		  <div class="media-left">
+		    <a href="#"><img class="media-object" src="..." alt="..."></a>
+		  </div>
+		  <div class="media-body">
+		    <h4 class="media-heading">${appDO.appName}</h4>
+		    ...
+		  </div>
+		</div>
+	</#list>
+<#else>
+	出现错误：${message.type} - ${message.string}
+</#if>

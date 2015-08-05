@@ -14,18 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apps;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.Paginator;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.domain.form.apis.PushServiceForm;
+import net.hasor.rsf.center.core.ioc.Inject;
+import net.hasor.rsf.center.domain.constant.ErrorCode;
+import net.hasor.rsf.center.domain.daos.DaoProvider;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
- * @version : 2015年7月27日
+ * @version : 2015年7月27日	ˆ	
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/apps/appManager")
 public class AppManager extends BaseController {
-    public void execute(@Params PushServiceForm pushServiceForm) {
+    @Inject
+    private DaoProvider daoProvider;
+    //
+    public void execute(@Params Paginator pageInfo) {
+        if (pageInfo == null) {
+            pageInfo = new Paginator();
+            pageInfo.setCurrentPage(0);
+            pageInfo.setPageSize(20);
+        }
+        PageResult<AppDO> pageResult = daoProvider.getAppDOMemDao().queryList(pageInfo);
+        if (!pageResult.isSuccess()) {
+            this.getContextMap().put("message", pageResult.firstMessage());
+        } else {
+            this.getContextMap().put("resultList", pageResult);
+            this.getContextMap().put("message", ErrorCode.OK.setParams());
+        }
         System.out.println("/apis/customer");
     }
 }

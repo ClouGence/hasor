@@ -17,6 +17,7 @@ package net.hasor.rsf.center.domain.constant;
 import java.util.HashSet;
 import java.util.Set;
 import org.more.bizcommon.Message;
+import org.more.bizcommon.MessageTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -29,28 +30,32 @@ public enum ErrorCode {
     OK(0, "Success"),
     //
     /**1, "SQL{}，执行出错. ->{}"*/
-    DAO_SELECT(1, "Select SQL{}，执行出错. ->{}"),
+    DAO_SELECT(1, "Select SQL{}，执行出错. ->{}"), //
     /**2, "Insert SQL{}，执行出错. ->{}"*/
-    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"),
+    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"),//
     //
     //
     //---------------------------------------------
     ;
     private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
-    private int           codeType;
-    private String        messageTemplate;
-    ErrorCode(int codeType, String messageTemplate) {
+    private final int codeType;
+    private final MessageTemplate messageTemplate;
+    ErrorCode(final int codeType, final String messageTemplate) {
         this.codeType = codeType;
-        this.messageTemplate = messageTemplate;
+        this.messageTemplate = new MessageTemplate() {
+            public String getMessageTemplate() {
+                return messageTemplate;
+            }
+            public int getMessageType() {
+                return codeType;
+            }
+        };
     }
     public int getCodeType() {
         return codeType;
     }
     public String getMessageTemplate() {
-        return this.messageTemplate;
-    }
-    public Message getErrorMessage(Object... msgParams) {
-        return new Message(this.messageTemplate, msgParams);
+        return this.messageTemplate.getMessageTemplate();
     }
     public static ErrorCode getErrorByCodeType(int codeType) {
         for (ErrorCode a : ErrorCode.values()) {
@@ -61,11 +66,11 @@ public enum ErrorCode {
         logger.error("errorCode = " + codeType);
         throw new RuntimeException("not found errorCode: " + codeType);
     }
-    public ErrorCodeObject setParams() {
+    public Message setParams() {
         return setParams("");
     }
-    public ErrorCodeObject setParams(Object... params) {
-        return new ErrorCodeObject(this, params);
+    public Message setParams(Object... params) {
+        return new Message(this.messageTemplate, params);
     }
     static {
         checkErrorCode();
