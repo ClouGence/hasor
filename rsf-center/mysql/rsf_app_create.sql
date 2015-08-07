@@ -2,6 +2,7 @@ create table `RSF_APP` (
 	`app_id`			BIGINT			NOT NULL AUTO_INCREMENT	COMMENT '应用ID（PK，自增）',
 	`app_code`			VARCHAR(100)	NOT NULL				COMMENT '应用Code（唯一）',
 	`app_name`			VARCHAR(100)	NOT NULL				COMMENT '程序名称',
+	`app_icon`			VARCHAR(200)	NOT NULL				COMMENT '图片',
 	`app_accessKey`		VARCHAR(50)		NOT NULL				COMMENT '授权Key',
 	`app_accessSecret`	VARCHAR(128)	NULL DEFAULT NULL		COMMENT '授权密钥',
 	`app_onwer`			VARCHAR(50)		NULL DEFAULT NULL		COMMENT '应用Owner（应用创建人）',

@@ -4,14 +4,14 @@
 	<#list resultList.result as appDO>
 		<div class="media">
 		  <div class="media-left">
-		    <a href="#"><img class="media-object" src="..." alt="..."></a>
+		    <a href="#"><img class="media-object" src="${appDO.icon}" alt="..."></a>
 		  </div>
 		  <div class="media-body">
 		    <h4 class="media-heading">${appDO.appName}</h4>
-		    ...
+		    ${appDO.appID}
 		  </div>
 		</div>
 	</#list>
 <#else>
-	出现错误：${message.type} - ${message.string}
+	出现错误：${message.type} - ${message.message}
 </#if>

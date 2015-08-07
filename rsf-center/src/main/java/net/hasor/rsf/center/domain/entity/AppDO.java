@@ -24,6 +24,7 @@ public class AppDO {
     private long   appID;       //应用ID（PK，自增）
     private String appCode;     //应用Code（唯一）
     private String appName;     //应用名称
+    private String icon;        //应用图标
     private String accessKey;   //授权KEY
     private String accessSecret; //授权密钥
     private String onwer;       //接口人（创建应用的人）
@@ -49,6 +50,12 @@ public class AppDO {
     }
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+    public String getIcon() {
+        return icon;
+    }
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
     public String getAccessKey() {
         return accessKey;

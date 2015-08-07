@@ -6,6 +6,7 @@
 		<result property="appID"        column="app_id" />
 		<result property="appCode"      column="app_code" />
 		<result property="appName"      column="app_name" />
+		<result property="icon"      	column="app_icon" />
 		<result property="accessKey"    column="app_accessKey" />
 		<result property="accessSecret" column="app_accessSecret" />
 		<result property="onwer"        column="app_onwer" />
@@ -14,10 +15,12 @@
 		<result property="createTime"   column="app_create_time" />
 		<result property="modifyTime"   column="app_modify_time" />
 	</resultMap>
+	
 	<sql id="appDO_allColumns">
 		app_id,
 		app_code,
 		app_name,
+		app_icon,
 		app_accessKey,
 		app_accessSecret,
 		app_onwer,
@@ -34,11 +37,11 @@
 			RSF_APP
 	</select>
 	
-	<insert id="createByAppDO" useGeneratedKeys="true" keyProperty="appID" parameterType="net.hasor.rsf.center.domain.entity.AppDO">
+	<insert id="createByAppDO" parameterType="net.hasor.rsf.center.domain.entity.AppDO">
 		insert into RSF_APP(
-			app_id,
 			app_code,
 			app_name,
+			app_icon,
 			app_accessKey,
 			app_accessSecret,
 			app_onwer,
@@ -47,9 +50,9 @@
 			app_create_time,
 			app_modify_time
 		) values(
-			#{appID},
 			#{appCode},
 			#{appName},
+			#{icon},
 			#{accessKey},
 			#{accessSecret},
 			#{onwer},
@@ -59,7 +62,7 @@
 			now()
 		);
 		<selectKey keyProperty="appID" resultType="long">
-			CALL IDENTITY()
-		</selectKey> 
+            CALL IDENTITY() <!-- HSQL -->
+        </selectKey>
 	</insert>
 </mapper>

@@ -32,16 +32,14 @@ public enum ErrorCode {
     /**1, "SQL{}，执行出错. ->{}"*/
     DAO_SELECT(1, "Select SQL{}，执行出错. ->{}"), //
     /**2, "Insert SQL{}，执行出错. ->{}"*/
-    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"),//
+    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"), //
     //
     //
     //---------------------------------------------
     ;
-    private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
-    private final int codeType;
+    private static Logger         logger = LoggerFactory.getLogger(ErrorCode.class);
     private final MessageTemplate messageTemplate;
     ErrorCode(final int codeType, final String messageTemplate) {
-        this.codeType = codeType;
         this.messageTemplate = new MessageTemplate() {
             public String getMessageTemplate() {
                 return messageTemplate;
@@ -52,7 +50,7 @@ public enum ErrorCode {
         };
     }
     public int getCodeType() {
-        return codeType;
+        return this.messageTemplate.getMessageType();
     }
     public String getMessageTemplate() {
         return this.messageTemplate.getMessageTemplate();
