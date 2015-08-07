@@ -11,5 +11,4 @@ create table RSF_ServiceInfo (
 	si_hashCode		VARCHAR(36)		NOT NULL,
 	si_create_time		DATETIME	NOT NULL,
 	si_modify_time		DATETIME	NOT NULL,
-	PRIMARY KEY (si_serviceID)
 );

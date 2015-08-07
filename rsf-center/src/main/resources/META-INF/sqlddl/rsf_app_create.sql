@@ -9,5 +9,4 @@ create table RSF_APP (
 	app_desc			VARCHAR(1000)	NULL,
 	app_create_time		DATETIME		NOT NULL,
 	app_modify_time		DATETIME		NOT NULL,
-	PRIMARY KEY (app_id)
 );

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.valid;
+import org.more.bizcommon.ResultDO;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
-import net.hasor.rsf.center.utils.CodeResultDO;
 import net.hasor.rsf.center.utils.SecretUtils;
-import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年6月28日
@@ -38,7 +37,7 @@ public class AccessValid implements Validation, InjectMembers {
         AccessInfo accInfo = (AccessInfo) dataForm;
         //
         String secretKey = SecretUtils.toSecretKey(accInfo);
-        CodeResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
+        ResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
         //        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
         //            if (terminalResultDO.isSuccess() == false) {
         //                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());

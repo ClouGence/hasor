@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.daos;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.Paginator;
+import org.more.bizcommon.ResultDO;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.AppDO;
-import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年5月22日
@@ -26,6 +31,7 @@ import org.more.bizcommon.ResultDO;
  */
 @Dao
 public class AppDOMemDao extends AbstractDao<AppDO> {
+    /**新增应用*/
     public ResultDO<Integer> saveAsNew(AppDO appDO) {
         ResultDO<Integer> resultDO = new ResultDO<Integer>();
         try {
@@ -35,7 +41,22 @@ public class AppDOMemDao extends AbstractDao<AppDO> {
         } catch (Exception e) {
             resultDO.setThrowable(e);
             resultDO.setSuccess(false);
-            resultDO.addMessage(ErrorCode.DAO_INSERT.getErrorMessage());
+            resultDO.addMessage(ErrorCode.DAO_INSERT.setParams());
+        }
+        return resultDO;
+    }
+    /**查询应用列表*/
+    public PageResult<AppDO> queryList(Paginator pageInfo) {
+        PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            List<AppDO> result = this.getSqlExecutor().selectList("appDO_getALL", parameter);
+            resultDO.setResult(result);
+            resultDO.setSuccess(true);
+        } catch (Exception e) {
+            resultDO.setThrowable(e);
+            resultDO.setSuccess(false);
+            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams());
         }
         return resultDO;
     }
