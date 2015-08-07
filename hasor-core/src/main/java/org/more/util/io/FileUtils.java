@@ -37,6 +37,7 @@ public abstract class FileUtils {
     public static boolean deleteDir(final File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
+            children = (children == null) ? new String[0] : children;
             //递归删除目录中的子目录下
             for (String element : children) {
                 boolean success = FileUtils.deleteDir(new File(dir, element));

@@ -244,7 +244,9 @@ public abstract class ResourcesUtils {
             return;
         }
         //----------
-        for (File f : dirFile.listFiles()) {
+        File[] files = dirFile.listFiles();
+        files = (files == null) ? new File[0] : files;
+        for (File f : files) {
             //1)去除上下文目录
             String dirPath = f.getAbsolutePath().replace("\\", "/");
             if (dirPath.startsWith(contextPath) == true) {
