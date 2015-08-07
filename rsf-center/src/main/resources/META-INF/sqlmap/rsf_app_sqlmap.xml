@@ -35,6 +35,8 @@
 			<include refid="appDO_allColumns" />
 		from
 			RSF_APP
+		order by
+			app_modify_time desc
 	</select>
 	
 	<insert id="createByAppDO" parameterType="net.hasor.rsf.center.domain.entity.AppDO">

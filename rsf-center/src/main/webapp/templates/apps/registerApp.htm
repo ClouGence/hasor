@@ -1,11 +1,38 @@
 <#assign pageTitle="应用注册">
-<form action="/apps/registerApp.do" target="_blank">
-	-应用Code：			<input type="text" name="appCode"><br/>
-	-应用名称：				<input type="text" name="appName"><br/>
-	-应用图标：				<input type="file" name="appName"><br/>
-	-授权KEY（预授权KEY）：	<input type="text" name="accessKey"><br/>
-	-授权密钥（预授权密码）：	<input type="password" name="accessSecret"><br/>
-	-接口人（多人）：			<input type="text" name="contactUsers"><br/>
-	-应用描述：				<textarea name="description" rows="4" cols="20"></textarea>
+<script src="/static/rsf/apps/registerApp.js"></script>
+<style type="text/css">
+.input-group-addon {text-align: right; }
+</style>
+
+<form id="registerForm" action="/apps/registerApp.do" target="_blank">
+<fieldset>
+  <legend>关键信息</legend>
+  <div class="form-group">
+	<label for="appCode" class="col-sm-2 control-label">唯一码：</label>
+	<div class="col-md-10"><input id="appCode" name="appCode" type="text" class="form-control" placeholder="应用的唯一识别码，只允许数字字母和下划线" onchange="checkNull(this,'submitButton')"></div>
+	<label for="appName" class="col-sm-2 control-label">应用名称：</label>
+	<div class="col-md-10"><input id="appName" name="appName" type="text" class="form-control" placeholder="应用名称" onchange="checkNull(this,'submitButton')"></div>
+	<label for="contactUsers" class="col-sm-2 control-label">接口人：</label>
+	<div class="col-md-10"><input id="contactUsers" name="contactUsers" type="text" class="form-control" placeholder="除了owner之外的应用开发维护者" onchange="checkNull(this,'submitButton')"></div>
+  </div>
+</fieldset>
+<fieldset>
+  <legend>安全信息</legend>
+  <div class="form-group">
+	<label for="appCode" class="col-sm-2 control-label">授权Key：</label>
+	<div class="col-md-10"><input id="accessKey" name="accessKey" type="text" class="form-control" placeholder="配置在应用端的授权Key，用于登陆RSF注册中心"></div>
+	<label for="accessSecret" class="col-sm-2 control-label">应用密钥：</label>
+	<div class="col-md-10"><input id="accessSecret" name="accessSecret" type="password" class="form-control" placeholder="配置在应用端的授权秘钥，用于登陆RSF注册中心"></div>
+  </div>
+</fieldset>
+<fieldset>
+  <legend>补充信息</legend>
+  <div class="form-group">
+	<label for="icon" class="col-sm-2 control-label">应用图标：</label>
+	<div class="col-md-10"><input id="icon" name="icon" type="file" class="form-control" placeholder="icon"></div>
+	<label for="description" class="col-sm-2 control-label">应用描述：</label>
+	<div class="col-md-10"><textarea id="description" name="description" rows="4" cols="20" class="form-control" placeholder="应用描述信息" rows="4" cols="20"></textarea></textarea></div>
+  </div>
+</fieldset>
 	<input type="submit" value="新增应用">
 </form>

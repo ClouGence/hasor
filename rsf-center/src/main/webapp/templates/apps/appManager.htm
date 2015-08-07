@@ -1,17 +1,55 @@
 <#assign pageTitle="应用管理">
+<script src="/static/rsf/apps/appManager.js"></script>
+<style type="text/css">
+.paddingBottom {padding-bottom: 75px; }
+</style>
 
-<#if message.type == 0>
-	<#list resultList.result as appDO>
-		<div class="media">
-		  <div class="media-left">
-		    <a href="#"><img class="media-object" src="${appDO.icon}" alt="..."></a>
-		  </div>
-		  <div class="media-body">
-		    <h4 class="media-heading">${appDO.appName}</h4>
-		    ${appDO.appID}
-		  </div>
-		</div>
-	</#list>
-<#else>
-	出现错误：${message.type} - ${message.message}
+<#if message.type == 0><div class="list-group paddingBottom"><#list resultList.result as appDO>
+  <div class="list-group-item" appID="${appDO.appID!}">
+    <div class="media-left">
+      <a href="#"><img class="media-object" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading"><a href="#">[${appDO.appCode!}] - ${appDO.appName!}</a></h4>
+      <div class="table-responsive"> 
+        <table class="table table-striped">
+            <tr>
+              <td>应用授权Key：</td>
+              <td>${appDO.accessKey!}</td>
+              <td>应用秘钥：</td>
+              <td>${appDO.accessSecret!}</td>
+              <td>创建时间：</td>
+              <td>${appDO.createTime?string("yyyy-MM-dd a")}</td>
+            </tr>
+            <tr>
+              <td>负责人：</td>
+              <td>${appDO.onwer!}</td>
+              <td>接口人：</td>
+              <td>${appDO.contactUsers!}</td>
+              <td>更新时间：</td>
+              <td>${appDO.modifyTime?string("yyyy-MM-dd a")}</td>
+            </tr>
+            <tr>
+              <td>应用描述：</td>
+              <td colspan="5">${appDO.description!}</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+      <ul class="pagination">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        <#list 1..resultList.getTotalPage() as pageIndex>
+        <li><a href="#">${pageIndex}</a></li>
+        </#list>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+      </ul>
+    </div>
+  </nav>
+</#list><#else>
+  <div class="panel panel-default">
+    <div class="panel-body">出现错误：${message.type} - ${message.message}</div>
+  </div>
 </#if>
