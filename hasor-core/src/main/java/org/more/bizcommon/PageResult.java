@@ -80,4 +80,9 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
         this.result.addMessage(message, params);
         return this;
     }
+    /**添加一条消息。*/
+    public PageResult<T> addMessage(Message message) {
+        this.result.addMessage(message);
+        return this;
+    }
 }
