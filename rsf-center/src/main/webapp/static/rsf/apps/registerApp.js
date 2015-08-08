@@ -35,12 +35,21 @@ var formValidators = {
         }
       }
     },
+    contactUsers : {
+      validators : {
+        stringLength : {
+          min : 0,
+          max : 200,
+          message : '最多可以输入200个字符！'
+        }
+      }
+    },
     accessKey : {
       validators : {
         stringLength : {
           min : 0,
           max : 50,
-          message : '请输入0～50个字符数据！'
+          message : '最多可以输入50个字符！'
         }
       }
     },
@@ -49,25 +58,24 @@ var formValidators = {
         stringLength : {
           min : 0,
           max : 128,
-          message : '请输入0～128个字符数据！'
+          message : '最多可以输入128个字符！'
         }
       }
     }
   }
 };
-$(document).ready(
-    function() {
-      $('#registerForm').bootstrapValidator(formValidators).on('success.form.bv',
-          function(e) {
-            // Prevent form submission
-            e.preventDefault();
-            // Get the form instance
-            var $form = $(e.target);
-            // Get the BootstrapValidator instance
-            var bv = $form.data('bootstrapValidator');
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function(result) {
-              console.log(result);
-            }, 'json');
-          });
-    });
+$(function() {
+  $('#registerForm').bootstrapValidator(formValidators).on('success.form.bv',
+      function(e) {
+        // Prevent form submission
+        e.preventDefault();
+        // Get the form instance
+        var $form = $(e.target);
+        // Get the BootstrapValidator instance
+        var bv = $form.data('bootstrapValidator');
+        // Use Ajax to submit form data
+        $.post($form.attr('action'), $form.serialize(), function(result) {
+          console.log(result);
+        }, 'json');
+      });
+});
