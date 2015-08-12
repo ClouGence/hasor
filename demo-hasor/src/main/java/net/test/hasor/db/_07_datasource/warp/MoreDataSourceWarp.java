@@ -20,7 +20,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
+import net.hasor.plugins.tran.interceptor.TranInterceptorModule;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
@@ -58,6 +58,6 @@ public class MoreDataSourceWarp implements Module {
         apiBinder.bindType(JdbcTemplate.class).nameWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
         apiBinder.bindType(JdbcTemplate.class).idWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
         //3.启用默认事务拦截器
-        apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
+        apiBinder.installModule(new TranInterceptorModule(dataSource));
     }
 }

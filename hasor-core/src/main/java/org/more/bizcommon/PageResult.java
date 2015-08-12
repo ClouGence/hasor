@@ -42,15 +42,12 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
     }
     //
     /**获取分页结果集。*/
-    @Override
     public List<T> getResult() {
         return this.result.getResult();
     }
-    @Override
     public boolean isSuccess() {
         return this.result.isSuccess();
     }
-    @Override
     public Throwable getThrowable() {
         return this.result.getThrowable();
     }
@@ -68,14 +65,18 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
         return this;
     }
     /**(如果有)返回消息。*/
-    public String firstMessage() {
+    public Message firstMessage() {
         return this.result.firstMessage();
+    }
+    /**(如果有)返回消息。*/
+    public List<Message> getMessageList() {
+        return this.result.getMessageList();
     }
     /**判断消息池是否为空。*/
     public boolean isEmptyMessage() {
         return this.result.isEmptyMessage();
     }
-    /**添加一条消息。*/
+    /**添加一条消息（消息类型为：0）。*/
     public PageResult<T> addMessage(String message, Object... params) {
         this.result.addMessage(message, params);
         return this;

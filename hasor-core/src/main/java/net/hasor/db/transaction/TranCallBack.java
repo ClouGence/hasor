@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.db.transaction;
 /**
- * 提供了基于 @Transactional 注解的事务管理器。
+ * 
+ * @version : 2015年8月11日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.db.transaction.interceptor.simple;
+public interface TranCallBack<T> {
+    public T doTransaction(TransactionStatus tranStatus) throws Throwable;
+}

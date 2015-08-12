@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
+package net.hasor.plugins.tran;
 import java.lang.reflect.Method;
 /**
- * 策略固定值
- * @version : 2014-7-19
+ * 
+ * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
-class FixedValueStrategy<T> implements TranStrategy<T> {
-    private T value = null;
-    public FixedValueStrategy(final T value) {
-        this.value = value;
-    }
-    @Override
-    public T getStrategy(final Method targetMethod) {
-        return this.value;
-    }
+public interface TranStrategy<T> {
+    public T getStrategy(Method targetMethod);
 }

@@ -469,7 +469,7 @@ public abstract class AbstractSettings implements Settings {
         }
         for (XmlNode atNode : nodeArray) {
             List<XmlNode> list = atNode.getChildren(elementNode);
-            if (list==null || list.isEmpty()){
+            if (list == null || list.isEmpty()) {
                 continue;
             }
             result.addAll(list);

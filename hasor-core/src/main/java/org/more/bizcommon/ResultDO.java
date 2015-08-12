@@ -41,31 +41,26 @@ public class ResultDO<T> implements Result<T> {
         this.success = false;
         this.throwable = throwable;
     }
-    @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     //
     //
     /**获取分页结果集。*/
-    @Override
     public T getResult() {
         return this.result;
     }
-    @Override
     public boolean isSuccess() {
         return this.success;
     }
-    @Override
     public Throwable getThrowable() {
         return this.throwable;
     }
     //
     /**获取第一条消息，如果没有返回null。*/
-    @Override
-    public String firstMessage() {
+    public Message firstMessage() {
         if (this.messageList.isEmpty() == false) {
-            return this.messageList.get(0).getMessage();
+            return this.messageList.get(0);
         }
         return null;
     }
@@ -73,9 +68,9 @@ public class ResultDO<T> implements Result<T> {
     public List<Message> getMessageList() {
         return this.messageList;
     }
-    /**添加一条消息。*/
+    /**添加一条消息（消息类型为：0）。*/
     public ResultDO<T> addMessage(String message, Object... params) {
-        this.messageList.add(new Message(message, params));
+        this.messageList.add(new Message(0, message, params));
         return this;
     }
     /**添加一条消息。*/

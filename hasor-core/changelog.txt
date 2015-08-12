@@ -1,11 +1,14 @@
 ﻿===== Hasor-Core v1.2.0
 * 新增:
     01.增加 @IgnoreParam注解，用于Form表单注入忽略。
+    02.net.hasor.db.transaction.Manager新增回调方式执行事务的方法。
+    03.事务拦截器部分分离出独立的事务插件，不再属于db的一部分。
 * 修复:
     02.修复BeanUtils在获取所有字段、所有方法时无法获取到父类中数据的问题。
 * 改进:
     03.Validation验证类传入的参数改为泛型，ValidationCallInterceptor增加了对泛型判断的逻辑。
     04.Valid验证框架分离出MVC成为一个独立的验证框架。
+    05.改进ResultDO相关Message方面的功能，使其用起来更爽。
 
 ===== Hasor-Core v1.1.0
 * 新增:

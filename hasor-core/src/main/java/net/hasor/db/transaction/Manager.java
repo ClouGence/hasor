@@ -42,6 +42,24 @@ public class Manager {
         Manager.managerMap.get().put(dataSource, manager);
         return manager;
     }
+    //
+    /**执行事务*/
+    public static <T> T doTran(DataSource dataSource, Propagation behavior, Isolation level, TranCallBack<T> tranCallback) throws Throwable {
+        TransactionManager manager = Manager.getTransactionManager(dataSource);
+        TransactionStatus tranStatus = manager.getTransaction(behavior, level);
+        //
+        try {
+            tranStatus = manager.getTransaction(behavior, level);
+            return tranCallback.doTransaction(tranStatus);
+        } catch (Throwable e) {
+            tranStatus.setRollbackOnly();
+            throw e;
+        } finally {
+            if (tranStatus.isCompleted() == false) {
+                manager.commit(tranStatus);
+            }
+        }
+    }
 }
 class DefaultTransactionManager extends JdbcTransactionManager {
     public DefaultTransactionManager(final DataSource dataSource) {

@@ -15,6 +15,7 @@
  */
 package org.more.bizcommon;
 import java.io.Serializable;
+import java.util.List;
 /**
  * 用于封装结果集
  * @version : 2015年1月8日
@@ -29,7 +30,11 @@ public interface Result<T> extends Serializable {
     public T getResult();
     //
     /**(如果有)返回消息。*/
-    public String firstMessage();
+    public Message firstMessage();
+    /**(如果有)返回所有消息。*/
+    public List<Message> getMessageList();
+    /**添加一条消息。*/
+    public Result<T> addMessage(Message message);
     /**添加一条消息。*/
     public Result<T> addMessage(String message, Object... params);
     /**判断消息池是否为空。*/

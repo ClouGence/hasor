@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
+package net.hasor.plugins.tran;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;

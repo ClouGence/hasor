@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供了{@link net.hasor.db.provider.SimpleDBModule SimpleDBModule}类可以快速的将 Hasor-DB 集成到开发环境中。
+ * 提供了基于 Aop 的事务拦截器实现，通过它可以自定义拦截器行为以及如何拦截事务。
  */
-package net.hasor.db.provider;
+package net.hasor.plugins.tran;

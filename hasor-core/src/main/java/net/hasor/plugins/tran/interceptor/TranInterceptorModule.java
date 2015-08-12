@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor.simple;
+package net.hasor.plugins.tran.interceptor;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
@@ -23,18 +23,18 @@ import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.interceptor.TranOperations;
-import net.hasor.db.transaction.interceptor.TranStrategy;
-import net.hasor.db.transaction.interceptor.TransactionBinder;
+import net.hasor.plugins.tran.TranOperations;
+import net.hasor.plugins.tran.TranStrategy;
+import net.hasor.plugins.tran.TransactionBinder;
 /**
  * 事务策略：用于决定数据源的事务策略。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-public class SimpleTranInterceptorModule implements Module {
+public class TranInterceptorModule implements Module {
     private DataSource dataSource = null;
     //
-    public SimpleTranInterceptorModule(final DataSource dataSource) {
+    public TranInterceptorModule(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
     public void loadModule(final ApiBinder apiBinder) throws Throwable {

@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor.simple;
 /**
- * 
- * @version : 2014-7-19
- * @author 赵永春(zyc@hasor.net)
+ * 提供了基于 @Transactional 注解的事务管理器。
  */
-public class RollBackSQLException extends Exception {
-    private static final long serialVersionUID = 2602926046968358899L;
-}
+package net.hasor.plugins.tran.interceptor;

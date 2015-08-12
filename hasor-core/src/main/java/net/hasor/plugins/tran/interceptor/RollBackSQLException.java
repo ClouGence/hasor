@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction.interceptor;
-import net.hasor.core.MethodInvocation;
-import net.hasor.db.transaction.TransactionStatus;
+package net.hasor.plugins.tran.interceptor;
 /**
- * 充当TransactionTemplate作用
+ * 
+ * @version : 2014-7-19
  * @author 赵永春(zyc@hasor.net)
- * @version : 2013-10-30
  */
-public interface TranOperations {
-    /** 事务执行拦截器*/
-    public Object execute(TransactionStatus tranStatus, MethodInvocation invocation) throws Throwable;
+public class RollBackSQLException extends Exception {
+    private static final long serialVersionUID = 2602926046968358899L;
 }

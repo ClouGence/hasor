@@ -22,24 +22,18 @@ package org.more.bizcommon;
 public class Message {
     private MessageTemplate messageTemplate = null;
     private Object[]        messageParams   = null;
-    //
-    public Message(final String message) {
-        this(new MessageTemplateString(message), new Object[0]);
-    }
-    public Message(final String message, Object[] messageParams) {
-        this(new MessageTemplateString(message), messageParams);
+    public Message(int messageType, String messageTemplate, Object[] messageParams) {
+        this(new MessageTemplateString(messageType, messageTemplate), messageParams);
     }
     public Message(MessageTemplate messageTemplate, Object[] messageParams) {
         this.messageTemplate = messageTemplate;
         this.messageParams = messageParams == null ? new Object[0] : messageParams;
     }
+    //
+    //
     /**获取消息模版信息。*/
-    public String getMessageTemplate() {
-        return this.messageTemplate.getMessageTemplate();
-    }
-    /**获取参数*/
-    public Object[] getParameters() {
-        return this.messageParams;
+    public MessageTemplate getMessageTemplate() {
+        return this.messageTemplate;
     }
     /**获取消息*/
     public String getMessage() {
@@ -50,7 +44,14 @@ public class Message {
             return messageTemplate;
         }
     }
-    @Override
+    /**获取消息类型*/
+    public int getType() {
+        return this.messageTemplate.getMessageType();
+    }
+    /**获取参数*/
+    public Object[] getParameters() {
+        return this.messageParams;
+    }
     public String toString() {
         return this.getMessage();
     }
@@ -58,10 +59,15 @@ public class Message {
 /***/
 class MessageTemplateString implements MessageTemplate {
     private String messageTemplate;
-    public MessageTemplateString(String messageTemplate) {
+    private int    messageType;
+    public MessageTemplateString(int messageType, String messageTemplate) {
         this.messageTemplate = messageTemplate;
+        this.messageType = messageType;
     }
     public String getMessageTemplate() {
         return this.messageTemplate;
+    }
+    public int getMessageType() {
+        return this.messageType;
     }
 }
