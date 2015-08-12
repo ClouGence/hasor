@@ -32,11 +32,17 @@
 		si_modify_time
 	</sql>
 
-	<select id="serviceInfoDO_getALL" resultMap="serviceInfoDOMap">
+	<select id="queryServiceInfoByAppID" resultMap="serviceInfoDOMap">
 		select
 			<include refid="serviceInfoDO_allColumns" />
 		from
 			RSF_ServiceInfo
+		where
+			si_appID = #{pageInfo.appID}
+		order by
+			si_modify_time desc
+		limit
+			#{pageInfo.firstItem} , #{pageInfo.pageSize}
 	</select>
 
 </mapper>

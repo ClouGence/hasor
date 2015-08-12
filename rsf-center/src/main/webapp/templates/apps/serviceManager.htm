@@ -1,16 +1,16 @@
-<#assign pageTitle="应用管理">
+<#assign pageTitle="应用服务管理">
 <script src="/static/rsf/apps/appManager.js"></script>
 <style type="text/css">
 .paddingBottom {padding-bottom: 75px; }
 </style>
 
-<#if message.type == 0><div class="list-group paddingBottom"><#list resultList.result as appDO>
-  <div class="list-group-item">
+<#if message.type == 0><div class="list-group paddingBottom"><#list resultList.result as serviceDO>
+  <div class="list-group-item" appID="${appDO.appID!}">
     <div class="media-left">
-      <a href="/apps/serviceManager.htm?appID=${appDO.appID!}"><img class="media-object" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
+      <a href="#"><img class="media-object" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
     </div>
     <div class="media-body">
-      <h4 class="media-heading"><a href="/apps/serviceManager.htm?appID=${appDO.appID!}">[${appDO.appCode!}] - ${appDO.appName!}</a></h4>
+      <h4 class="media-heading"><a href="#">[${appDO.appCode!}] - ${appDO.appName!}</a></h4>
       <div class="table-responsive"> 
         <table class="table table-striped">
             <tr>

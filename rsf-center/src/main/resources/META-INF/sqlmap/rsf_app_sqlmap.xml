@@ -30,13 +30,15 @@
 		app_modify_time
 	</sql>
 
-	<select id="appDO_getALL" resultMap="appDOMap">
+	<select id="appDO_getALL" resultMap="appDOMap" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
 		select
 			<include refid="appDO_allColumns" />
 		from
 			RSF_APP
 		order by
 			app_modify_time desc
+		limit
+			#{pageInfo.firstItem} , #{pageInfo.pageSize}
 	</select>
 	
 	<insert id="createByAppDO" parameterType="net.hasor.rsf.center.domain.entity.AppDO">

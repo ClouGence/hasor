@@ -50,6 +50,7 @@ public class AppDOMemDao extends AbstractDao<AppDO> {
         PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("pageInfo", pageInfo);
             List<AppDO> result = this.getSqlExecutor().selectList("appDO_getALL", parameter);
             resultDO.setResult(result);
             resultDO.setSuccess(true);

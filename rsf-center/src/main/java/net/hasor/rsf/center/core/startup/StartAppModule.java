@@ -21,6 +21,12 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.more.util.StringUtils;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import freemarker.template.Configuration;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
@@ -28,11 +34,11 @@ import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.transaction.interceptor.simple.SimpleTranInterceptorModule;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.plugins.tran.interceptor.TranInterceptorModule;
 import net.hasor.plugins.valid.ValidUtils;
 import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.core.dao.Dao;
@@ -44,12 +50,6 @@ import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.more.util.StringUtils;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import freemarker.template.Configuration;
 /**
  * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
@@ -139,7 +139,7 @@ public class StartAppModule extends ControllerModule implements StartModule {
         //2.绑定JdbcTemplate接口实现
         apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
         //3.启用默认事务拦截器
-        apiBinder.installModule(new SimpleTranInterceptorModule(dataSource));
+        apiBinder.installModule(new TranInterceptorModule(dataSource));
         //4.绑定myBatis接口实现
         apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
     }
