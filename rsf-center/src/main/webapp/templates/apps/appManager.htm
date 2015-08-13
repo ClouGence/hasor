@@ -41,6 +41,7 @@
     <div class="container">
       <ul class="pagination">
         <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        ${resultList.getTotalPage()}
         <#list 1..resultList.getTotalPage() as pageIndex>
         <li><a href="#">${pageIndex}</a></li>
         </#list>

@@ -38,9 +38,12 @@ public class AppManager extends BaseController {
         if (queryForm == null) {
             queryForm = new AppQueryForm();
             queryForm.setCurrentPage(0);
+        }
+        if (queryForm.getPageSize() == 0) {
             queryForm.setPageSize(10);
         }
-        PageResult<AppDO> pageResult = daoProvider.getAppDOMemDao().queryAppDOByForm(queryForm);
+        //
+        PageResult<AppDO> pageResult = daoProvider.getAppDao().queryAppDOByForm(queryForm);
         if (!pageResult.isSuccess()) {
             this.getContextMap().put("message", pageResult.firstMessage());
         } else {

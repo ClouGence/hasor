@@ -37,7 +37,7 @@ public class AccessValid implements Validation, InjectMembers {
         AccessInfo accInfo = (AccessInfo) dataForm;
         //
         String secretKey = SecretUtils.toSecretKey(accInfo);
-        ResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDOMemDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
+        ResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
         //        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
         //            if (terminalResultDO.isSuccess() == false) {
         //                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());

@@ -45,7 +45,7 @@ public class RegisterService extends BaseController {
         //
         ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
         if (validData.isValid()) {
-            ResultDO<Integer> resultDO = daoProvider.getAppDOMemDao().saveAsNew(appDO);
+            ResultDO<Integer> resultDO = daoProvider.getAppDao().saveAsNew(appDO);
             if (!resultDO.isSuccess()) {
                 logger.error("registerApp error->", resultDO.getThrowable());
             }

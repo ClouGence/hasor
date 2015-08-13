@@ -23,4 +23,4 @@ import net.hasor.rsf.center.domain.entity.ServiceJoinPortDO;
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class ServiceJoinPortDOMemDao extends AbstractDao<ServiceJoinPortDO> {}
+public class ServiceJoinPortDODao extends AbstractDao<ServiceJoinPortDO> {}

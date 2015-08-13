@@ -38,9 +38,12 @@ public class ServiceManager extends BaseController {
         if (queryForm == null) {
             queryForm = new ServiceQueryForm();
             queryForm.setCurrentPage(0);
+        }
+        if (queryForm.getPageSize() == 0) {
             queryForm.setPageSize(10);
         }
-        PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDOMemDao().queryServiceInfoDOByForm(queryForm);
+        //
+        PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDao().queryServiceInfoDOByForm(queryForm);
         if (!pageResult.isSuccess()) {
             this.getContextMap().put("message", pageResult.firstMessage());
         } else {

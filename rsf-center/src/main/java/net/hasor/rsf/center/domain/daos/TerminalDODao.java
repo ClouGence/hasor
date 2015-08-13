@@ -26,7 +26,7 @@ import net.hasor.rsf.center.domain.entity.TerminalDO;
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class TerminalDOMemDao extends AbstractDao<TerminalDO> {
+public class TerminalDODao extends AbstractDao<TerminalDO> {
     public ResultDO<TerminalDO> queryTerminalByIDAndSecret(String terminalID, String secretKey) {
         ResultDO<TerminalDO> resultDO = new ResultDO<TerminalDO>();
         try {

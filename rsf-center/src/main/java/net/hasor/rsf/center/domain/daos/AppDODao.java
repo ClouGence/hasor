@@ -17,26 +17,44 @@ package net.hasor.rsf.center.domain.daos;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.bizcommon.PageResult;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
-import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
-import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
+import net.hasor.rsf.center.domain.entity.AppDO;
+import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.ResultDO;
 /**
- * 表示为一个Service
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class ServiceInfoDOMemDao extends AbstractDao<ServiceInfoDO> {
-    /**查询应用列表*/
-    public PageResult<ServiceInfoDO> queryServiceInfoDOByForm(ServiceQueryForm pageInfo) {
-        PageResult<ServiceInfoDO> resultDO = new PageResult<ServiceInfoDO>(pageInfo);
+public class AppDODao extends AbstractDao<AppDO> {
+    /**新增应用*/
+    public ResultDO<Integer> saveAsNew(AppDO appDO) {
+        ResultDO<Integer> resultDO = new ResultDO<Integer>();
         try {
+            int result = this.getSqlExecutor().insert("createByAppDO", appDO);
+            resultDO.setResult(result);
+            resultDO.setSuccess(true);
+        } catch (Exception e) {
+            resultDO.setThrowable(e);
+            resultDO.setSuccess(false);
+            resultDO.addMessage(ErrorCode.DAO_INSERT.setParams());
+        }
+        return resultDO;
+    }
+    /**查询应用列表*/
+    public PageResult<AppDO> queryAppDOByForm(AppQueryForm pageInfo) {
+        PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
+        try {
+            if (pageInfo.getPageSize() == 0) {
+                pageInfo.setPageSize(10);
+            }
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("pageInfo", pageInfo);
-            List<ServiceInfoDO> result = this.getSqlExecutor().selectList("queryServiceInfoDOByForm", parameter);
+            List<AppDO> result = this.getSqlExecutor().selectList("queryAppDOByForm", parameter);
             resultDO.setResult(result);
             resultDO.setSuccess(true);
         } catch (Exception e) {

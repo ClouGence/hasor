@@ -25,24 +25,24 @@ import net.hasor.rsf.center.core.ioc.Inject;
 @Dao
 public class DaoProvider extends AbstractDao<Object> {
     @Inject
-    private AppDOMemDao             appDOMemDao;
+    private AppDODao             appDao;
     @Inject
-    private ServiceInfoDOMemDao     serviceInfoDOMemDao;
+    private ServiceInfoDODao     serviceInfoDao;
     @Inject
-    private ServiceJoinPortDOMemDao serviceJoinPortDOMemDao;
+    private ServiceJoinPortDODao serviceJoinPortDao;
     @Inject
-    private TerminalDOMemDao        terminalDOMemDao;
+    private TerminalDODao        terminalDao;
     //
-    public AppDOMemDao getAppDOMemDao() {
-        return this.appDOMemDao;
+    public AppDODao getAppDao() {
+        return appDao;
     }
-    public ServiceInfoDOMemDao getServiceInfoDOMemDao() {
-        return this.serviceInfoDOMemDao;
+    public ServiceInfoDODao getServiceInfoDao() {
+        return serviceInfoDao;
     }
-    public ServiceJoinPortDOMemDao getServiceJoinPortDOMemDao() {
-        return this.serviceJoinPortDOMemDao;
+    public ServiceJoinPortDODao getServiceJoinPortDao() {
+        return serviceJoinPortDao;
     }
-    public TerminalDOMemDao getTerminalDOMemDao() {
-        return this.terminalDOMemDao;
+    public TerminalDODao getTerminalDao() {
+        return terminalDao;
     }
 }
