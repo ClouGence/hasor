@@ -31,12 +31,12 @@ import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
 @Dao
 public class ServiceInfoDOMemDao extends AbstractDao<ServiceInfoDO> {
     /**查询应用列表*/
-    public PageResult<ServiceInfoDO> queryServiceInfoByAppID(ServiceQueryForm pageInfo) {
+    public PageResult<ServiceInfoDO> queryServiceInfoDOByForm(ServiceQueryForm pageInfo) {
         PageResult<ServiceInfoDO> resultDO = new PageResult<ServiceInfoDO>(pageInfo);
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("pageInfo", pageInfo);
-            List<ServiceInfoDO> result = this.getSqlExecutor().selectList("queryServiceInfoByAppID", parameter);
+            List<ServiceInfoDO> result = this.getSqlExecutor().selectList("queryServiceInfoDOByForm", parameter);
             resultDO.setResult(result);
             resultDO.setSuccess(true);
         } catch (Exception e) {

@@ -17,13 +17,13 @@ package net.hasor.rsf.center.domain.daos;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.bizcommon.PageResult;
-import org.more.bizcommon.Paginator;
-import org.more.bizcommon.ResultDO;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.AppDO;
+import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年5月22日
@@ -46,12 +46,12 @@ public class AppDOMemDao extends AbstractDao<AppDO> {
         return resultDO;
     }
     /**查询应用列表*/
-    public PageResult<AppDO> queryList(Paginator pageInfo) {
+    public PageResult<AppDO> queryAppDOByForm(AppQueryForm pageInfo) {
         PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("pageInfo", pageInfo);
-            List<AppDO> result = this.getSqlExecutor().selectList("appDO_getALL", parameter);
+            List<AppDO> result = this.getSqlExecutor().selectList("queryAppDOByForm", parameter);
             resultDO.setResult(result);
             resultDO.setSuccess(true);
         } catch (Exception e) {

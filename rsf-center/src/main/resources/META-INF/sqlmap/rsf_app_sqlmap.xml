@@ -30,7 +30,7 @@
 		app_modify_time
 	</sql>
 
-	<select id="appDO_getALL" resultMap="appDOMap" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
+	<select id="queryAppDOByForm" resultMap="appDOMap" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
 		select
 			<include refid="appDO_allColumns" />
 		from

@@ -1,12 +1,8 @@
-package net.hasor.rsf.center;
+package test.net.hasor.rsf.center;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 public class WebServer {
-    /**
-     * @param args
-     * @throws Exception 
-     */
     public static void main(String[] args) throws Exception {
         Server server = new Server();
         SelectChannelConnector connector8082 = new SelectChannelConnector();

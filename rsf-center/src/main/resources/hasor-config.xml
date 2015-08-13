@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-search">
-	<hasor debug="true">
-		<loadPackages>net.hasor.rsf.center.*</loadPackages>
-		<modules>
-			<module>net.hasor.rsf.center.core.startup.StartAppModule</module>
-		</modules>
-	</hasor>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
 	<rsfCenter>
 		<!--工作模式：
 				master		：集群主机模式，在集群中请确保每一台从属机都可以访问到它。
@@ -14,14 +8,6 @@
 				memory		：单机内存模式，当服务重启丢失一切数据。
 		-->
 		<workAt>Memory</workAt>
-
-		<!-- 内存数据库Sechma -->
-		<memInitialize >
-			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
-		</memInitialize>
 
 		<!-- 关键数据（内存模式下无效） -->
 		<jdbcConfig>

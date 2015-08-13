@@ -33,14 +33,14 @@ public class ServiceManager extends BaseController {
     @Inject
     private DaoProvider daoProvider;
     //
-    public void execute(@Params ServiceQueryForm query) {
+    public void execute(@Params ServiceQueryForm queryForm) {
         logger.info("requestUIL:" + getRequestURI());
-        if (query == null) {
-            query = new ServiceQueryForm();
-            query.setCurrentPage(0);
-            query.setPageSize(20);
+        if (queryForm == null) {
+            queryForm = new ServiceQueryForm();
+            queryForm.setCurrentPage(0);
+            queryForm.setPageSize(10);
         }
-        PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDOMemDao().queryServiceInfoByAppID(query);
+        PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDOMemDao().queryServiceInfoDOByForm(queryForm);
         if (!pageResult.isSuccess()) {
             this.getContextMap().put("message", pageResult.firstMessage());
         } else {

@@ -21,8 +21,8 @@ import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
+import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
 import org.more.bizcommon.PageResult;
-import org.more.bizcommon.Paginator;
 /**
  * 
  * @version : 2015年7月27日	ˆ	
@@ -33,14 +33,14 @@ public class AppManager extends BaseController {
     @Inject
     private DaoProvider daoProvider;
     //
-    public void execute(@Params Paginator pageInfo) {
+    public void execute(@Params AppQueryForm queryForm) {
         logger.info("requestUIL:" + getRequestURI());
-        if (pageInfo == null) {
-            pageInfo = new Paginator();
-            pageInfo.setCurrentPage(0);
-            pageInfo.setPageSize(20);
+        if (queryForm == null) {
+            queryForm = new AppQueryForm();
+            queryForm.setCurrentPage(0);
+            queryForm.setPageSize(10);
         }
-        PageResult<AppDO> pageResult = daoProvider.getAppDOMemDao().queryList(pageInfo);
+        PageResult<AppDO> pageResult = daoProvider.getAppDOMemDao().queryAppDOByForm(queryForm);
         if (!pageResult.isSuccess()) {
             this.getContextMap().put("message", pageResult.firstMessage());
         } else {

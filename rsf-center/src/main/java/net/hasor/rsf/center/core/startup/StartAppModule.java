@@ -21,14 +21,9 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.more.util.StringUtils;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import freemarker.template.Configuration;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
@@ -50,13 +45,20 @@ import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.more.util.StringUtils;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import freemarker.template.Configuration;
 /**
  * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class StartAppModule extends ControllerModule implements StartModule {
-    public static final String WorkAt = "WorkAt";
+    public static final String WorkAt           = "WorkAt";
+    public static final String CenterStartEvent = "CenterStartEvent";
     @Override
     protected void loadController(LoadHellper helper) throws Throwable {
         WebApiBinder apiBinder = helper.apiBinder();
@@ -147,11 +149,13 @@ public class StartAppModule extends ControllerModule implements StartModule {
     //
     @Override
     public void onStart(AppContext appContext) throws Throwable {
-        Settings settings = appContext.getEnvironment().getSettings();
+        Environment env = appContext.getEnvironment();
+        Settings settings = env.getSettings();
         String workAt = appContext.findBindingBean(WorkAt, String.class);
         //
         //1.Memory模式
         if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
+            logger.info("rsf workAt {} , initialize memdb.", workAt);
             XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
             if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
                 throw new IOException("read config error,`rsfCenter.memInitialize` node is not exist.");
@@ -175,5 +179,6 @@ public class StartAppModule extends ControllerModule implements StartModule {
         }
         //
         //2....
+        env.getEventContext().fireSyncEvent(CenterStartEvent, appContext);
     }
 }

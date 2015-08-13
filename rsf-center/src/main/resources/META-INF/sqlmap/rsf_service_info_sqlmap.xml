@@ -32,7 +32,7 @@
 		si_modify_time
 	</sql>
 
-	<select id="queryServiceInfoByAppID" resultMap="serviceInfoDOMap">
+	<select id="queryServiceInfoDOByForm" resultMap="serviceInfoDOMap">
 		select
 			<include refid="serviceInfoDO_allColumns" />
 		from
