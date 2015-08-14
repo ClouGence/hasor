@@ -4,6 +4,10 @@
 .input-group-addon {text-align: right; }
 </style>
 
+<div class="list-group paddingBottom">
+<#include "../block/app_info.htm">
+</div>
+<div class="list-group paddingBottom">
 <form id="registerForm" action="/apps/registerApp.do" target="_blank">
 <fieldset>
   <legend>关键信息</legend>
@@ -36,3 +40,4 @@
 </fieldset>
 <input type="submit" value="新增应用">
 </form>
+</div>

@@ -33,11 +33,13 @@ public enum ErrorCode {
     DAO_SELECT(1, "Select SQL{}，执行出错. ->{%s}"), //
     /**2, "Insert SQL{}，执行出错. ->{}"*/
     DAO_INSERT(2, "Insert SQL{}，执行出错. ->{%s}"), //
+    /**3, "不存在ID为 %s 的数据记录。"*/
+    DAO_SELECT_NODATA(3, "不存在ID为 %s 的数据记录。"),//
     //
     //
     //---------------------------------------------
     ;
-    private static Logger         logger = LoggerFactory.getLogger(ErrorCode.class);
+    private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
     private final MessageTemplate messageTemplate;
     ErrorCode(final int codeType, final String messageTemplate) {
         this.messageTemplate = new MessageTemplate() {

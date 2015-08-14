@@ -66,4 +66,25 @@ public class AppDODao extends AbstractDao<AppDO> {
         }
         return resultDO;
     }
+    /**新增应用*/
+    public ResultDO<AppDO> queryAppDOByID(Long appID) {
+        ResultDO<AppDO> resultDO = new ResultDO<AppDO>();
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("appID", appID);
+            AppDO result = this.getSqlExecutor().selectOne("queryAppDOByID", parameter);
+            if (result == null) {
+                resultDO.setSuccess(false);
+                resultDO.addMessage(ErrorCode.DAO_SELECT_NODATA.setParams(appID));
+                return resultDO;
+            }
+            resultDO.setResult(result);
+            resultDO.setSuccess(true);
+        } catch (Exception e) {
+            resultDO.setThrowable(e);
+            resultDO.setSuccess(false);
+            resultDO.addMessage(ErrorCode.DAO_INSERT.setParams(e.getMessage()));
+        }
+        return resultDO;
+    }
 }

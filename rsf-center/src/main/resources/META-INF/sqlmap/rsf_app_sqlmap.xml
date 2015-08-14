@@ -47,6 +47,15 @@
 		from
 			RSF_APP
 	</select>
+
+	<select id="queryAppDOByID" resultMap="appDOMap" parameterType="java.util.Map">
+		select
+			<include refid="appDO_allColumns" />
+		from
+			RSF_APP
+		where
+			app_id = #{appID}
+	</select>
 	
 	<insert id="createByAppDO" parameterType="net.hasor.rsf.center.domain.entity.AppDO">
 		insert into RSF_APP(

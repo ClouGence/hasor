@@ -1,0 +1,32 @@
+<div class="list-group-item">
+  <div class="media-left">
+    <a href="/apps/registerService.htm?appID=${appDO.appID!}"><img class="media-object" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading"><a href="/apps/registerService.htm?appID=${appDO.appID!}">[${appDO.appCode!}] - ${appDO.appName!}</a></h4>
+    <div class="table-responsive"> 
+      <table class="table table-striped">
+          <tr>
+            <td>应用授权Key：</td>
+            <td>${appDO.accessKey!}</td>
+            <td>应用秘钥：</td>
+            <td>${appDO.accessSecret!}</td>
+            <td>创建时间：</td>
+            <td>${appDO.createTime?string("yyyy-MM-dd a")}</td>
+          </tr>
+          <tr>
+            <td>负责人：</td>
+            <td>${appDO.onwer!}</td>
+            <td>接口人：</td>
+            <td>${appDO.contactUsers!}</td>
+            <td>更新时间：</td>
+            <td>${appDO.modifyTime?string("yyyy-MM-dd a")}</td>
+          </tr>
+          <tr>
+            <td>应用描述：</td>
+            <td colspan="5">${appDO.description!}</td>
+          </tr>
+      </table>
+    </div>
+  </div>
+</div>

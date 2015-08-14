@@ -18,7 +18,7 @@
 	</resultMap>
 
 	<sql id="serviceInfoDO_allColumns">
-		serviceID,
+		si_serviceID,
 		si_appID,
 		si_bindName,
 		si_bindGroup,

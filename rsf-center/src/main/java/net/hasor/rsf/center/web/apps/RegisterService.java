@@ -15,14 +15,15 @@
  */
 package net.hasor.rsf.center.web.apps;
 import java.util.Date;
+import org.more.bizcommon.ResultDO;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.ReqParam;
 import net.hasor.plugins.valid.ValidData;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
-import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年7月27日
@@ -33,23 +34,25 @@ public class RegisterService extends BaseController {
     @Inject
     private DaoProvider daoProvider;
     //
-    public void execute(@Params AppDO appDO) {
+    public void execute(@ReqParam("appID") Long appID) {
         logger.info("request :" + getRequestURI());
         if (!this.getRequestURI().endsWith(".do")) {
+            ResultDO<AppDO> appDO = daoProvider.getAppDao().queryAppDOByID(appID);
+            getContextMap().put("appDO", appDO.getResult());
             return;
         }
         //
-        appDO.setCreateTime(new Date());
-        appDO.setModifyTime(new Date());
-        appDO.setOnwer(this.getLoginUser().getUserName());
+        //        appDO.setCreateTime(new Date());
+        //        appDO.setModifyTime(new Date());
+        //        appDO.setOnwer(this.getLoginUser().getUserName());
         //
-        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
-        if (validData.isValid()) {
-            ResultDO<Integer> resultDO = daoProvider.getAppDao().saveAsNew(appDO);
-            if (!resultDO.isSuccess()) {
-                logger.error("registerApp error->", resultDO.getThrowable());
-            }
-        }
-        System.out.println("/apps/registerApp - " + validData.isValid());
+        //        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
+        //        if (validData.isValid()) {
+        //            ResultDO<Integer> resultDO = daoProvider.getAppDao().saveAsNew(appDO);
+        //            if (!resultDO.isSuccess()) {
+        //                logger.error("registerApp error->", resultDO.getThrowable());
+        //            }
+        //        }
+        //        System.out.println("/apps/registerApp - " + validData.isValid());
     }
 }
