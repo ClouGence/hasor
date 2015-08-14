@@ -40,6 +40,13 @@
 		limit
 			#{pageInfo.firstItem} , #{pageInfo.pageSize}
 	</select>
+
+	<select id="queryAppDOCountByForm" resultType="int" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
+		select
+			count(1)
+		from
+			RSF_APP
+	</select>
 	
 	<insert id="createByAppDO" parameterType="net.hasor.rsf.center.domain.entity.AppDO">
 		insert into RSF_APP(

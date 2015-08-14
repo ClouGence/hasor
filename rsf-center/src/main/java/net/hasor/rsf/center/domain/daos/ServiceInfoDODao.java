@@ -45,7 +45,7 @@ public class ServiceInfoDODao extends AbstractDao<ServiceInfoDO> {
         } catch (Exception e) {
             resultDO.setThrowable(e);
             resultDO.setSuccess(false);
-            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams());
+            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams(e.getMessage()));
         }
         return resultDO;
     }

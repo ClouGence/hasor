@@ -30,9 +30,9 @@ public enum ErrorCode {
     OK(0, "Success"),
     //
     /**1, "SQL{}，执行出错. ->{}"*/
-    DAO_SELECT(1, "Select SQL{}，执行出错. ->{}"), //
+    DAO_SELECT(1, "Select SQL{}，执行出错. ->{%s}"), //
     /**2, "Insert SQL{}，执行出错. ->{}"*/
-    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{}"), //
+    DAO_INSERT(2, "Insert SQL{}，执行出错. ->{%s}"), //
     //
     //
     //---------------------------------------------

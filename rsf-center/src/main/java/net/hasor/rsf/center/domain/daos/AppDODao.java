@@ -41,7 +41,7 @@ public class AppDODao extends AbstractDao<AppDO> {
         } catch (Exception e) {
             resultDO.setThrowable(e);
             resultDO.setSuccess(false);
-            resultDO.addMessage(ErrorCode.DAO_INSERT.setParams());
+            resultDO.addMessage(ErrorCode.DAO_INSERT.setParams(e.getMessage()));
         }
         return resultDO;
     }
@@ -55,12 +55,14 @@ public class AppDODao extends AbstractDao<AppDO> {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("pageInfo", pageInfo);
             List<AppDO> result = this.getSqlExecutor().selectList("queryAppDOByForm", parameter);
+            int resultCount = this.getSqlExecutor().selectOne("queryAppDOCountByForm", parameter);
+            resultDO.setTotalCount(resultCount);
             resultDO.setResult(result);
             resultDO.setSuccess(true);
         } catch (Exception e) {
             resultDO.setThrowable(e);
             resultDO.setSuccess(false);
-            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams());
+            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams(e.getMessage()));
         }
         return resultDO;
     }

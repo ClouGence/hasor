@@ -18,7 +18,7 @@
 	</appender>
 
 	<!-- 日志输出级别 -->
-	<root level="DEBUG">
+	<root level="Info">
 		<appender-ref ref="consoleOut" />
 		<appender-ref ref="fileOut" />
 	</root>

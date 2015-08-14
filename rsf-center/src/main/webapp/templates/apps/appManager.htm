@@ -40,12 +40,13 @@
   <nav class="navbar navbar-default navbar-fixed-bottom">
     <div class="container">
       <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        ${resultList.getTotalPage()}
-        <#list 1..resultList.getTotalPage() as pageIndex>
-        <li><a href="#">${pageIndex}</a></li>
-        </#list>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        <li><a href="appManager.htm?currentPage=<#if resultList.currentPage gt 0 >${resultList.currentPage - 1}<#else>0</#if>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        <#list 0..resultList.getTotalPage()-1 as pageIndex><#if pageIndex == resultList.currentPage>
+        <li class="active"><a href="appManager.htm?currentPage=${pageIndex}">${pageIndex + 1}</a></li>
+        <#else>
+        <li><a href="appManager.htm?currentPage=${pageIndex}">${pageIndex + 1}</a></li>
+        </#if></#list>
+        <li><a href="appManager.htm?currentPage=<#if resultList.currentPage lt resultList.getTotalPage()-1 >${resultList.currentPage + 1}<#else>${resultList.getTotalPage()-1}</#if>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
       </ul>
     </div>
   </nav>
