@@ -4,7 +4,7 @@
 .input-group-addon {text-align: right; }
 </style>
 <div class="list-group paddingBottom">
-  <#include "../block/app_info.htm">
+  <#include "control/app_info.htm">
   <div class="list-group-item">
 <form class="media-body" id="registerForm" action="/apps/registerService.do" target="_blank">
 <input name="appID" type="hidden" value="${appDO.appID!}">

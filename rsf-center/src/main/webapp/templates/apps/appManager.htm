@@ -5,9 +5,9 @@
 </style>
 <#if message.type == 0>
   <div class="list-group paddingBottom"><#list resultList.result as appDO>
-    <#include "../block/app_info.htm">
+    <#include "/control/app_info.htm">
     <#assign pageBaseURL="appManager.htm?1=1">
-    <#include "../block/pageInfo.htm">
+    <#include "/control/pageInfo.htm">
   </#list></div>
 <#else>
   <div class="panel panel-default">

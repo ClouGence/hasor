@@ -12,7 +12,7 @@
 		<result property="onwer"        column="si_onwer" />
 		<result property="contactUsers" column="si_contactUsers" />
 		<result property="description"  column="si_desc" />
-		<result property="hashCode"     column="si_hashCode" />
+		<result property="consistency"  column="si_hashCode" />
 		<result property="createTime"   column="si_create_time" />
 		<result property="modifyTime"   column="si_modify_time" />
 	</resultMap>
@@ -44,5 +44,36 @@
 		limit
 			#{pageInfo.firstItem} , #{pageInfo.pageSize}
 	</select>
+	
+	<insert id="createServiceInfoDO" parameterType="net.hasor.rsf.center.domain.entity.ServiceInfoDO">
+		insert into RSF_ServiceInfo(
+			si_appID,
+			si_bindName,
+			si_bindGroup,
+			si_bindVersion,
+			si_bindType,
+			si_onwer,
+			si_desc,
+			si_contactUsers,
+			si_hashCode,
+			si_create_time,
+			si_modify_time
+		) values(
+			#{appID},
+			#{bindName},
+			#{bindGroup},
+			#{bindVersion},
+			#{bindType},
+			#{onwer},
+			#{description},
+			#{contactUsers},
+			#{consistency},
+			now(),
+			now()
+		);
+		<selectKey keyProperty="serviceID" resultType="long">
+            CALL IDENTITY() <!-- HSQL -->
+        </selectKey>
+	</insert>
 
 </mapper>

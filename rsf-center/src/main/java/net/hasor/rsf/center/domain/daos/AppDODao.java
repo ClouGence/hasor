@@ -35,7 +35,7 @@ public class AppDODao extends AbstractDao<AppDO> {
     public ResultDO<Integer> saveAsNew(AppDO appDO) {
         ResultDO<Integer> resultDO = new ResultDO<Integer>();
         try {
-            int result = this.getSqlExecutor().insert("createByAppDO", appDO);
+            int result = this.getSqlExecutor().insert("createAppDO", appDO);
             resultDO.setResult(result);
             resultDO.setSuccess(true);
         } catch (Exception e) {

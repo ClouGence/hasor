@@ -68,13 +68,12 @@ insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,ap
 	values('appCode_33','appName_33','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
 insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
 	values('appCode_34','appName_34','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
-insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
-	values('appCode_35','appName_35','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
-insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
-	values('appCode_36','appName_36','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
-insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
-	values('appCode_37','appName_37','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
-insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
-	values('appCode_38','appName_38','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
-insert into RSF_APP(app_code,app_name,app_icon,app_accessKey,app_accessSecret,app_onwer,app_contactUsers,app_desc,app_create_time,app_modify_time)
-	values('appCode_39','appName_39','app_icon','accessKey','accessSecret','onwer','contactUsers','description',now(),now());
+--------
+insert into RSF_ServiceInfo(si_appID,si_bindName,si_bindGroup,si_bindVersion,si_bindType,si_onwer,si_desc,si_contactUsers,si_hashCode,si_create_time,si_modify_time)
+	values(0,'bindName_01','bindGroup','bindVersion','bindType','onwer','description','contactUsers','hashCode_01',now(),now());
+insert into RSF_ServiceInfo(si_appID,si_bindName,si_bindGroup,si_bindVersion,si_bindType,si_onwer,si_desc,si_contactUsers,si_hashCode,si_create_time,si_modify_time)
+	values(0,'bindName_02','bindGroup','bindVersion','bindType','onwer','description','contactUsers','hashCode_02',now(),now());
+insert into RSF_ServiceInfo(si_appID,si_bindName,si_bindGroup,si_bindVersion,si_bindType,si_onwer,si_desc,si_contactUsers,si_hashCode,si_create_time,si_modify_time)
+	values(0,'bindName_03','bindGroup','bindVersion','bindType','onwer','description','contactUsers','hashCode_03',now(),now());
+insert into RSF_ServiceInfo(si_appID,si_bindName,si_bindGroup,si_bindVersion,si_bindType,si_onwer,si_desc,si_contactUsers,si_hashCode,si_create_time,si_modify_time)
+	values(0,'bindName_04','bindGroup','bindVersion','bindType','onwer','description','contactUsers','hashCode_04',now(),now());
