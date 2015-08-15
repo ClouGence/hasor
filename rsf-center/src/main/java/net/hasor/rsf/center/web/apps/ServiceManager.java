@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apps;
+import java.util.Date;
 import org.more.bizcommon.PageResult;
+import org.more.bizcommon.ResultDO;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
+import net.hasor.mvc.api.ReqParam;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
+import net.hasor.rsf.center.domain.entity.AppDO;
 import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
 import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
 /**
@@ -33,22 +37,40 @@ public class ServiceManager extends BaseController {
     @Inject
     private DaoProvider daoProvider;
     //
-    public void execute(@Params ServiceQueryForm queryForm) {
-        logger.info("requestUIL:" + getRequestURI());
-        if (queryForm == null) {
-            queryForm = new ServiceQueryForm();
-            queryForm.setCurrentPage(0);
-        }
-        if (queryForm.getPageSize() == 0) {
-            queryForm.setPageSize(10);
-        }
-        //
-        PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDao().queryServiceInfoDOByForm(queryForm);
-        if (!pageResult.isSuccess()) {
-            this.getContextMap().put("message", pageResult.firstMessage());
+    public void execute(@Params ServiceInfoDO serviceInfo, @Params ServiceQueryForm serviceForm) {
+        logger.info("request :" + getRequestURI());
+        if (!this.getRequestURI().endsWith(".do")) {
+            //查询
+            ResultDO<AppDO> appDO = daoProvider.getAppDao().queryAppDOByID(serviceForm.getAppID());
+            getContextMap().put("appDO", appDO.getResult());
+            //
+            PageResult<ServiceInfoDO> pageResult = daoProvider.getServiceInfoDao().queryServiceInfoDOByForm(serviceForm);
+            if (pageResult.getResult() == null || pageResult.getResult().isEmpty()) {
+                pageResult.setSuccess(false);
+                pageResult.addMessage(ErrorCode.DAO_SELECT_EMPTY.setParams());
+            }
+            //
+            if (!pageResult.isSuccess()) {
+                this.getContextMap().put("message", pageResult.firstMessage());
+            } else {
+                this.getContextMap().put("resultList", pageResult);
+                this.getContextMap().put("message", ErrorCode.OK.setParams());
+            }
+            return;
         } else {
-            this.getContextMap().put("resultList", pageResult);
-            this.getContextMap().put("message", ErrorCode.OK.setParams());
+            //新增
+            serviceInfo.setCreateTime(new Date());
+            serviceInfo.setModifyTime(new Date());
+            serviceInfo.setOnwer(this.getLoginUser().getUserName());
+            //
+            //        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
+            //        if (validData.isValid()) {
+            //            ResultDO<Integer> resultDO = daoProvider.getAppDao().saveAsNew(appDO);
+            //            if (!resultDO.isSuccess()) {
+            //                logger.error("registerApp error->", resultDO.getThrowable());
+            //            }
+            //        }
+            //        System.out.println("/apps/registerApp - " + validData.isValid());
         }
     }
 }

@@ -1,43 +1,41 @@
 <#assign pageTitle="应用注册">
-<script src="/static/rsf/apps/registerApp.js"></script>
+<script src="/static/rsf/apps/registerService.js"></script>
 <style type="text/css">
 .input-group-addon {text-align: right; }
 </style>
-
 <div class="list-group paddingBottom">
-<#include "../block/app_info.htm">
-</div>
-<div class="list-group paddingBottom">
-<form id="registerForm" action="/apps/registerApp.do" target="_blank">
+  <#include "../block/app_info.htm">
+  <div class="list-group-item">
+<form class="media-body" id="registerForm" action="/apps/registerService.do" target="_blank">
+<input name="appID" type="hidden" value="${appDO.appID!}">
 <fieldset>
-  <legend>关键信息</legend>
+  <legend>基本信息</legend>
   <div class="form-group">
-	<label for="appCode" class="col-sm-2 control-label">唯一码：</label>
-	<div class="col-md-10"><input id="appCode" name="appCode" type="text" class="form-control" placeholder="应用的唯一识别码，只允许数字字母和下划线"></div>
-	<label for="appName" class="col-sm-2 control-label">应用名称：</label>
-	<div class="col-md-10"><input id="appName" name="appName" type="text" class="form-control" placeholder="应用名称"></div>
-	<label for="contactUsers" class="col-sm-2 control-label">接口人：</label>
-	<div class="col-md-10"><input id="contactUsers" name="contactUsers" type="text" class="form-control" placeholder="除了owner之外的应用开发维护者"></div>
+	<label for="bindGroup" class="col-sm-2 control-label">分组(Group)：</label>
+	<div class="col-md-10"><input id="bindGroup" name="bindGroup" type="text" class="form-control" placeholder="服务分组"></div>
+	<label for="bindName" class="col-sm-2 control-label">名称(Name)：</label>
+	<div class="col-md-10"><input id="bindName" name="bindName" type="text" class="form-control" placeholder="服务名"></div>
+	<label for="bindType" class="col-sm-2 control-label">接口类型(Type)：</label>
+	<div class="col-md-10"><input id="bindType" name="bindType" type="text" class="form-control" placeholder="服务接口"></div>
+	<label for="bindVersion" class="col-sm-2 control-label">版本(Version)：</label>
+	<div class="col-md-10"><input id="bindVersion" name="bindVersion" type="text" class="form-control" placeholder="服务版本"></div>
   </div>
 </fieldset>
 <fieldset>
-  <legend>安全信息</legend>
+  <legend>接口人</legend>
   <div class="form-group">
-	<label for="appCode" class="col-sm-2 control-label">授权Key：</label>
-	<div class="col-md-10"><input id="accessKey" name="accessKey" type="text" class="form-control" placeholder="配置在应用端的授权Key，用于登陆RSF注册中心"></div>
-	<label for="accessSecret" class="col-sm-2 control-label">应用密钥：</label>
-	<div class="col-md-10"><input id="accessSecret" name="accessSecret" type="password" class="form-control" placeholder="配置在应用端的授权秘钥，用于登陆RSF注册中心"></div>
+	<label for="contactUsers" class="col-sm-2 control-label">接口人：</label>
+	<div class="col-md-10"><input id="contactUsers" name="contactUsers" type="text" class="form-control" placeholder="除了owner之外的应用开发维护者。"></div>
   </div>
 </fieldset>
 <fieldset>
   <legend>补充信息</legend>
   <div class="form-group">
-	<label for="icon" class="col-sm-2 control-label">应用图标：</label>
-	<div class="col-md-10"><input id="icon" name="icon" type="file" class="form-control" placeholder="icon"></div>
 	<label for="description" class="col-sm-2 control-label">应用描述：</label>
 	<div class="col-md-10"><textarea id="description" name="description" rows="4" cols="20" class="form-control" placeholder="应用描述信息" rows="4" cols="20"></textarea></textarea></div>
   </div>
 </fieldset>
 <input type="submit" value="新增应用">
 </form>
+  </div>
 </div>

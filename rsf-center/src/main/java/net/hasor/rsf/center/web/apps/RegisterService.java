@@ -19,11 +19,11 @@ import org.more.bizcommon.ResultDO;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.mvc.api.ReqParam;
-import net.hasor.plugins.valid.ValidData;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
+import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
 /**
  * 
  * @version : 2015年7月27日
@@ -34,7 +34,7 @@ public class RegisterService extends BaseController {
     @Inject
     private DaoProvider daoProvider;
     //
-    public void execute(@ReqParam("appID") Long appID) {
+    public void execute(@ReqParam("appID") Long appID, @Params ServiceInfoDO serviceInfo) {
         logger.info("request :" + getRequestURI());
         if (!this.getRequestURI().endsWith(".do")) {
             ResultDO<AppDO> appDO = daoProvider.getAppDao().queryAppDOByID(appID);
@@ -42,9 +42,9 @@ public class RegisterService extends BaseController {
             return;
         }
         //
-        //        appDO.setCreateTime(new Date());
-        //        appDO.setModifyTime(new Date());
-        //        appDO.setOnwer(this.getLoginUser().getUserName());
+        serviceInfo.setCreateTime(new Date());
+        serviceInfo.setModifyTime(new Date());
+        serviceInfo.setOnwer(this.getLoginUser().getUserName());
         //
         //        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
         //        if (validData.isValid()) {

@@ -3,28 +3,14 @@
 <style type="text/css">
 .paddingBottom {padding-bottom: 75px; }
 </style>
-<#if message.type == 0><div class="list-group paddingBottom">
-  <#if resultList.totalCount gt 0><#list resultList.result as appDO>
-  <#include "../block/app_info.htm">
-  <nav class="navbar navbar-default navbar-fixed-bottom">
-    <div class="container">
-      <ul class="pagination">
-        <li><a href="appManager.htm?currentPage=<#if resultList.currentPage gt 0 >${resultList.currentPage - 1}<#else>0</#if>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <#list 0..resultList.getTotalPage()-1 as pageIndex><#if pageIndex == resultList.currentPage>
-        <li class="active"><a href="appManager.htm?currentPage=${pageIndex}">${pageIndex + 1}</a></li>
-        <#else>
-        <li><a href="appManager.htm?currentPage=${pageIndex}">${pageIndex + 1}</a></li>
-        </#if></#list>
-        <li><a href="appManager.htm?currentPage=<#if resultList.currentPage lt resultList.getTotalPage()-1 >${resultList.currentPage + 1}<#else>${resultList.getTotalPage()-1}</#if>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-      </ul>
-    </div>
-  </nav>
-  </#list><#else>
+<#if message.type == 0>
+  <div class="list-group paddingBottom"><#list resultList.result as appDO>
+    <#include "../block/app_info.htm">
+    <#assign pageBaseURL="appManager.htm?1=1">
+    <#include "../block/pageInfo.htm">
+  </#list></div>
+<#else>
   <div class="panel panel-default">
-    <div class="panel-body">对不起没有记录。</div>
-  </div>
-  </#if></div><#else>
-  <div class="panel panel-default">
-    <div class="panel-body">出现错误：${message.type} - ${message.message}</div>
+    <div class="panel-body">消息：${message.type} - ${message.message}</div>
   </div>
 </#if>

@@ -34,7 +34,9 @@ public enum ErrorCode {
     /**2, "Insert SQL{}，执行出错. ->{}"*/
     DAO_INSERT(2, "Insert SQL{}，执行出错. ->{%s}"), //
     /**3, "不存在ID为 %s 的数据记录。"*/
-    DAO_SELECT_NODATA(3, "不存在ID为 %s 的数据记录。"),//
+    DAO_SELECT_NODATA(3, "不存在ID为 %s 的数据记录。"), //
+    /**4, "对不起没有记录。"*/
+    DAO_SELECT_EMPTY(4, "对不起没有匹配到任何记录。"),//
     //
     //
     //---------------------------------------------

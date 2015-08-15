@@ -44,6 +44,11 @@ public class AppManager extends BaseController {
         }
         //
         PageResult<AppDO> pageResult = daoProvider.getAppDao().queryAppDOByForm(queryForm);
+        if (pageResult.getResult() == null || pageResult.getResult().isEmpty()) {
+            pageResult.setSuccess(false);
+            pageResult.addMessage(ErrorCode.DAO_SELECT_EMPTY.setParams());
+        }
+        //
         if (!pageResult.isSuccess()) {
             this.getContextMap().put("message", pageResult.firstMessage());
         } else {
