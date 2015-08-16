@@ -5,33 +5,49 @@
 </style>
 <div class="list-group paddingBottom">
 <#include "/control/app_info.htm">
-<#if message.type == 0><#list resultList.result as serviceInfoDO>
-  <table class="list-group-item table table-striped">
+<#if message.type == 0>
+<table class="list-group-item table table-striped">
+  <thead>
+  	<tr>
+  	  <th>分组</th>
+  	  <th>名称</th>
+  	  <th>版本</th>
+  	  <th>&nbsp;</th>
+  	</tr>
+  </thead>
+  <tbody>
+    <#list resultList.result as serviceInfoDO>
     <tr>
-      <td>服务分组：</td>
-      <td>${serviceInfoDO.bindGroup!}</td>
-      <td>服务名称：</td>
-      <td>${serviceInfoDO.bindName!}</td>
-      <td>服务接口：</td>
-      <td>${serviceInfoDO.bindType!}</td>
-      <td>服务版本：</td>
-      <td>${serviceInfoDO.bindVersion!}</td>
+      <td>&nbsp;${serviceInfoDO.bindGroup!}</td>
+      <td>&nbsp;${serviceInfoDO.bindName!}</td>
+      <td>&nbsp;${serviceInfoDO.bindVersion!}</td>
     </tr>
     <tr>
-      <td>负责人：</td>
-      <td>${serviceInfoDO.onwer!}</td>
-      <td>接口人：</td>
-      <td>${serviceInfoDO.contactUsers!}</td>
-      <td>一致性：</td>
-      <td>${serviceInfoDO.consistency!}</td>
-      <td>更新时间：</td>
-      <td>${serviceInfoDO.modifyTime?string("yyyy-MM-dd a")}</td>
+      <td></td>
+      <td></td>
+      <td>[详情]</td>
     </tr>
-    <tr>
-      <td>接口描述：</td>
-      <td colspan="7">${serviceInfoDO.description!}</td>
-    </tr>
-  </table></#list>
+<!--     <tr> -->
+<!--       <td>服务接口：</td> -->
+<!--       <td>${serviceInfoDO.bindType!}</td> -->
+<!--     </tr> -->
+<!--     <tr> -->
+<!--       <td>负责人：</td> -->
+<!--       <td>${serviceInfoDO.onwer!}</td> -->
+<!--       <td>接口人：</td> -->
+<!--       <td>${serviceInfoDO.contactUsers!}</td> -->
+<!--       <td>一致性：</td> -->
+<!--       <td>${serviceInfoDO.consistency!}</td> -->
+<!--       <td>更新时间：</td> -->
+<!--       <td>${serviceInfoDO.modifyTime?string("yyyy-MM-dd a")}</td> -->
+<!--     </tr> -->
+<!--     <tr> -->
+<!--       <td>接口描述：</td> -->
+<!--       <td colspan="7">${serviceInfoDO.description!}</td> -->
+<!--     </tr> -->
+    </#list>
+  </tbody>  
+  </table>
 <#else>
   <div class="list-group-item panel panel-default">
     <div class="panel-body">消息：${message.type} - ${message.message}</div>

@@ -1,32 +1,38 @@
+<style type="text/css">
+.appInfo ul{
+	list-style: none;
+}
+.appInfo li{
+	list-style: none;float: left;width: 33%;
+}
+.appInfo label{
+	float: left; width: 70px; display: block;text-align: right;
+}
+.appInfo p{
+	width: 200px; display: block;text-align: left;
+}
+</style>
 <div class="list-group-item">
   <div class="media-left">
-    <a href="/apps/serviceManager.htm?appID=${appDO.appID!}"><img class="media-object" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
+    <a href="/apps/serviceManager.htm?appID=${appDO.appID!}"><img class="img-rounded" src="${appDO.icon!}" alt="..." width="64" height="64"></a>
   </div>
   <div class="media-body">
     <h4 class="media-heading"><a href="/apps/serviceManager.htm?appID=${appDO.appID!}">[${appDO.appCode!}] - ${appDO.appName!}</a></h4>
-    <div class="table-responsive"> 
-      <table class="table table-striped">
-          <tr>
-            <td>应用授权Key：</td>
-            <td>${appDO.accessKey!}</td>
-            <td>应用秘钥：</td>
-            <td>${appDO.accessSecret!}</td>
-            <td>创建时间：</td>
-            <td>${appDO.createTime?string("yyyy-MM-dd a")}</td>
-          </tr>
-          <tr>
-            <td>负责人：</td>
-            <td>${appDO.onwer!}</td>
-            <td>接口人：</td>
-            <td>${appDO.contactUsers!}</td>
-            <td>更新时间：</td>
-            <td>${appDO.modifyTime?string("yyyy-MM-dd a")}</td>
-          </tr>
-          <tr>
-            <td>应用描述：</td>
-            <td colspan="5">${appDO.description!}</td>
-          </tr>
-      </table>
+    <hr>
+    <div class="appInfo">
+    	<ul>
+    		<li><label>接入Key：</label><p>${appDO.accessKey!}</p></li>
+    		<li><label>接入秘钥：</label><p>${appDO.accessSecret!}</p></li>
+    		<li><label>创建时间：</label><p>${appDO.createTime?string("yyyy-MM-dd a")}</p></li>
+    	</ul>
+    	<ul>
+    		<li><label>负责人：</label><p>${appDO.onwer!}</p></li>
+    		<li><label>接口人：</label><p>${appDO.contactUsers!}</p></li>
+    		<li><label>更新时间：</label><p>${appDO.modifyTime?string("yyyy-MM-dd a")}</p></li>
+    	</ul>
+    	<ul>
+    		<li><label>应用描述：</label><p>${appDO.description!}</p></li>
+    	</ul>
     </div>
   </div>
 </div>
