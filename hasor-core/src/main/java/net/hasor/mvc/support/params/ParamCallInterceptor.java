@@ -154,16 +154,17 @@ public class ParamCallInterceptor implements WebCallInterceptor {
                 continue;
             }
             try {
-                Object fieldValue = BeanUtils.getDefaultValue(field.getType());
+                Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
                 if (annos == null || annos.length == 0) {
                     fieldValue = call.getHttpRequest().getParameterValues(field.getName());
                 } else {
                     fieldValue = resolveParam(field.getType(), annos, call);
-                    if (fieldValue != null) {
-                        fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
-                    }
                 }
+                if (fieldValue == null) {
+                    fieldValue = BeanUtils.getDefaultValue(field.getType());
+                }
+                fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
                 field.setAccessible(true);
                 field.set(paramObject, fieldValue);
             } catch (Exception e) {
