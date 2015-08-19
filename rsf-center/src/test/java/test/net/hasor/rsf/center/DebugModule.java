@@ -37,7 +37,7 @@ public class DebugModule extends WebModule implements EventListener {
     }
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("################### Dev ###################");
-        String workAt = appContext.findBindingBean(StartAppModule.WorkAt, String.class);
+        String workAt = StartAppModule.workAt();
         if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
             JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
             jdbcTemplate.loadSQL("UTF-8", "init_sql.sql");
