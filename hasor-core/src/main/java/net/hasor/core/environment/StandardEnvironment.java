@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.more.util.ResourcesUtils;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
-import org.more.util.ResourcesUtils;
 /**
  * {@link Environment}接口实现类，继承自{@link AbstractEnvironment}。
  * @version : 2013-9-11
@@ -49,11 +49,9 @@ public class StandardEnvironment extends AbstractEnvironment {
     }
     //---------------------------------------------------------------------------------Basic Method
     protected URI settingURI = null;
-    @Override
     public URI getSettingURI() {
         return this.settingURI;
     }
-    @Override
     protected Settings createSettings() throws IOException {
         return new StandardContextSettings(this.getSettingURI());
     }

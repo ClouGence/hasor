@@ -76,6 +76,18 @@ public abstract class AbstractEnvironment implements Environment {
         return this.eventManager;
     }
     //
+    /*----------------------------------------------------------------------------------------Dir*/
+    public String getPluginDir(Class<?> pluginType) {
+        String subName = "_";
+        if (pluginType != null) {
+            subName = pluginType.getPackage().getName();
+        }
+        return evalString("%" + HASOR_PLUGIN_PATH + "%/" + subName + "/");
+    }
+    public String getWorkSpaceDir() {
+        return evalString("%" + WORK_HOME + "%/");
+    }
+    //
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected final void initEnvironment() {

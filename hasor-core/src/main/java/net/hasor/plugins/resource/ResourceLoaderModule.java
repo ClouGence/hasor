@@ -28,7 +28,7 @@ public class ResourceLoaderModule extends WebModule {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();
         //3.缓存路径
-        String cacheSubPath = "%HASOR_PLUGIN_PATH%/" + ResourceLoaderModule.class.getPackage().getName() + "/";
+        String cacheSubPath = env.getPluginDir(ResourceLoaderModule.class);
         File cacheDir = new File(env.evalString(cacheSubPath));
         if (!chekcCacheDir(cacheDir)) {
             int i = 0;

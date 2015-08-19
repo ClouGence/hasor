@@ -35,6 +35,11 @@ public interface Environment {
     /** @return 事件上下文*/
     public EventContext getEventContext();
     //
+    /**插件目录*/
+    public String getPluginDir(Class<?> pluginType);
+    /**工作目录*/
+    public String getWorkSpaceDir();
+    //
     /*-----------------------------------------------------------------------------------Settings*/
     /** @return 获取应用程序配置。*/
     public Settings getSettings();
