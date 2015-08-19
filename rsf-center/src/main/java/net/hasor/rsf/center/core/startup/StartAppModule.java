@@ -21,6 +21,17 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.zookeeper.server.DataTree;
+import org.apache.zookeeper.server.ZKDatabase;
+import org.apache.zookeeper.server.ZooKeeperServer;
+import org.apache.zookeeper.server.ZooKeeperServer.DataTreeBuilder;
+import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import org.more.util.StringUtils;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import freemarker.template.Configuration;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
@@ -45,12 +56,6 @@ import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.more.util.StringUtils;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import freemarker.template.Configuration;
 /**
  * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
@@ -94,7 +99,8 @@ public class StartAppModule extends ControllerModule implements StartModule {
         helper.apiBinder().bindType(Configuration.class).toInstance(configuration);
         helper.apiBinder().serve("*.htm", "*.html").with(FreemarkerHttpServlet.class);
         //5.WorkAt
-        Settings settings = apiBinder.getEnvironment().getSettings();
+        Environment env = apiBinder.getEnvironment();
+        Settings settings = env.getSettings();
         String workAt = settings.getString("rsfCenter.workAt", WorkMode.Memory.getCodeString());
         logger.info("rsf work mode at : " + workAt);
         apiBinder.bindType(String.class).nameWith(WorkAt).toInstance(workAt);
@@ -114,6 +120,21 @@ public class StartAppModule extends ControllerModule implements StartModule {
         Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         this.configDataSource(apiBinder, dataSource, sessionFactory);
+        //7.zookeeper
+        File dataDir = new File(env.envVar(env.WORK_HOME));
+        File snapDir = new File(env.envVar(env.WORK_HOME + "snap"));
+        FileTxnSnapLog snapLog = new FileTxnSnapLog(dataDir, snapDir);
+        ZKDatabase zkDB = new ZKDatabase(snapLog);
+        int tickTime = 10;
+        int minSessionTimeout = 10;
+        int maxSessionTimeout = 10;
+        DataTreeBuilder treeBuilder = new DataTreeBuilder() {
+            public DataTree build() {
+                return new DataTree();
+            }
+        };
+        ZooKeeperServer server = new ZooKeeperServer(snapLog, tickTime, minSessionTimeout, maxSessionTimeout, treeBuilder, zkDB);
+        server.startup();
     }
     private DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
