@@ -17,13 +17,6 @@ package net.hasor.rsf.center.core.zookeeper;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.StartModule;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -33,6 +26,14 @@ import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.ZooKeeperServer.DataTreeBuilder;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.Settings;
+import net.hasor.core.StartModule;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2015年8月19日
@@ -41,15 +42,16 @@ import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 public class ZooKeeperModule extends WebModule implements StartModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         Environment env = apiBinder.getEnvironment();
+        Settings settings = env.getSettings();
         String workDir = env.getWorkSpaceDir();
         FileTxnSnapLog txnLog = new FileTxnSnapLog(new File(workDir, "data"), new File(workDir, "snap"));
-        int serverTickTime = 500;
-        int serverMinSessionTimeout = 500;
-        int serverMaxSessionTimeout = 1000;
-        int serverMaxClientCnxns = 100;//最大客户端连接数
-        int serverPort = 1230;
-        int clientSessionTimeout = 500;
-        String zkServerIPs = "127.0.0.1:1230";
+        int tickTime = settings.getInteger("rsfCenter.zooKeeper.tickTime", 1000);
+        int minSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.minSessionTimeout", 4000);
+        int maxSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.maxSessionTimeout", 15000);
+        int serverMaxClientCnxns = settings.getInteger("rsfCenter.zooKeeper.maxSessionTimeout", 15000);//最大客户端连接数
+        int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 15000);;
+        int clientSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.bindPort", 15000);;
+        String zkServerIPs = settings.getInteger("rsfCenter.zooKeeper.maxSessionTimeout", 15000);;
         //
         //logs
         StringWriter writer = new StringWriter();
