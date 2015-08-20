@@ -23,6 +23,7 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkUtils {
+    /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return StringUtils.equalsIgnoreCase("local", hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }

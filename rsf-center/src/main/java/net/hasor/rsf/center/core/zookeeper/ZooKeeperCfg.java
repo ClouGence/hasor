@@ -15,9 +15,9 @@
  */
 package net.hasor.rsf.center.core.zookeeper;
 import java.io.File;
+import java.net.UnknownHostException;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 
  * @version : 2015年8月19日
@@ -36,7 +36,7 @@ public class ZooKeeperCfg {
     private int    clientTimeout;
     private String zkServers;
     //
-    public ZooKeeperCfg(Environment env) {
+    public ZooKeeperCfg(Environment env) throws UnknownHostException {
         Settings settings = env.getSettings();
         this.workDir = env.getWorkSpaceDir();
         this.dataDir = new File(workDir, "data").getAbsolutePath();
@@ -44,7 +44,7 @@ public class ZooKeeperCfg {
         this.tickTime = settings.getInteger("rsfCenter.zooKeeper.tickTime", 1000);
         this.minSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.minSessionTimeout", 4000);
         this.maxSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.maxSessionTimeout", 15000);//
-        this.bindAddress = settings.getInteger("rsfCenter.zooKeeper.bindAddress", NetworkUtils.localHost());//绑定的端口
+        this.bindAddress = settings.getString("rsfCenter.zooKeeper.bindAddress", "local");
         this.bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2180);//绑定的端口
         this.clientCnxns = settings.getInteger("rsfCenter.zooKeeper.clientCnxns", 100);//最大客户端连接数
         this.clientTimeout = settings.getInteger("rsfCenter.zooKeeper.clientTimeout", 15000);

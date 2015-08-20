@@ -46,12 +46,65 @@ public class ZooKeeperModule extends WebModule implements StartModule {
         this.workAt = workAt;
     }
     //
-    private ZooKeeperCfg startZooKeeperServer(Environment env) throws IOException, InterruptedException {
-        ZooKeeperCfg cfg = new ZooKeeperCfg(env);
+    private ZooKeeperCfg startZooKeeperServer(ZooKeeperCfg cfg, Environment env) throws IOException, InterruptedException {
+        FileTxnSnapLog txnLog = new FileTxnSnapLog(new File(cfg.getDataDir()), new File(cfg.getSnapDir()));
+        DataTreeBuilder treeBuilder = new DataTreeBuilder() {
+            public DataTree build() {
+                return new DataTree();
+            }
+        };
+        final ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, cfg.getTickTime(), cfg.getMinSessionTimeout(), cfg.getMaxSessionTimeout(), treeBuilder, new ZKDatabase(txnLog));
+        ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
+        cnxnFactory.configure(new InetSocketAddress(cfg.getBindAddress(), cfg.getBindPort()), cfg.getClientCnxns());
+        logger.info("zkServer starting...");
+        cnxnFactory.startup(zkServer);
+        //
+        //watch server start.
+        long curTime = System.currentTimeMillis();
+        while (true) {
+            if (!zkServer.isRunning()) {
+                Thread.sleep(100);
+                long passTime = System.currentTimeMillis() - curTime;
+                long second = passTime / 1000;
+                if (second > 15) {
+                    throw new InterruptedException("15s, zkServer start fail.");/*15秒没起来*/
+                } else if (second > 0) {
+                    logger.info("zkServer starting {} second pass.", second);
+                }
+                continue;
+            }
+            break;
+        }
+        //
+        //保证系统关闭的时候zk被停止
+        logger.info("zkServer addShutdownListener.");
+        Hasor.addShutdownListener(env, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                if (zkServer.isRunning()) {
+                    zkServer.shutdown();
+                }
+            }
+        });
+        //
+        return cfg;
+    }
+    //
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        Environment env = apiBinder.getEnvironment();
         StringWriter writer = new StringWriter();
         writer.append("\n----------- ZooKeeper -----------");
         writer.append("\n              dataDir = " + cfg.getDataDir());
         writer.append("\n              snapDir = " + cfg.getSnapDir());
+        switch (workAt) {
+        case Alone://单机模式
+            break;
+        case Master://集群下主机模式
+            break;
+        case Slave://集群下丛机模式
+            break;
+        default:
+            throw new InterruptedException("undefined workMode : " + workAt.getCodeString());
+        }
         writer.append("\n             bindPort = " + cfg.getBindPort());
         writer.append("\n             tickTime = " + cfg.getTickTime());
         writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
@@ -61,50 +114,6 @@ public class ZooKeeperModule extends WebModule implements StartModule {
         writer.append("\n            zkServers = " + cfg.getZkServers());
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
-        //
-        FileTxnSnapLog txnLog = new FileTxnSnapLog(new File(cfg.getDataDir()), new File(cfg.getSnapDir()));
-        //create Object
-        DataTreeBuilder treeBuilder = new DataTreeBuilder() {
-            public DataTree build() {
-                return new DataTree();
-            }
-        };
-        //
-        final ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, cfg.getTickTime(), cfg.getMinSessionTimeout(), cfg.getMaxSessionTimeout(), treeBuilder, new ZKDatabase(txnLog));
-        ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
-        cnxnFactory.configure(new InetSocketAddress("127.0.0.1", cfg.getBindPort()), cfg.getClientCnxns());
-        logger.info("ZooKeeperServer starting...");
-        cnxnFactory.startup(zkServer);
-        //
-        //保证系统关闭的时候zk被停止
-        logger.info("ZooKeeperServer addShutdownListener.");
-        Hasor.addShutdownListener(env, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                if (zkServer.isRunning()) {
-                    zkServer.shutdown();
-                }
-            }
-        });
-        //
-        //watch server start.
-        long curTime = System.currentTimeMillis();
-        while (true) {
-            if (!zkServer.isRunning()) {
-                Thread.sleep(100);
-                long passTime = System.currentTimeMillis() - curTime;
-                if (passTime / 1000 > 15) {
-                    throw new InterruptedException("15s, zkServer start fail.");/*15秒没起来*/
-                }
-                continue;
-            }
-            break;
-        }
-        //
-        return cfg;
-    }
-    //
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        Environment env = apiBinder.getEnvironment();
         //zk客户端
         logger.info("ZooKeeper connection to shelf.");
         ZooKeeper zooKeeper = new ZooKeeper(zkServers, clientTimeout, new Watcher() {
