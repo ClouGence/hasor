@@ -18,14 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.StartModule;
-import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -35,6 +27,14 @@ import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.ZooKeeperServer.DataTreeBuilder;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.StartModule;
+import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2015年8月19日
@@ -90,30 +90,35 @@ public class ZooKeeperModule extends WebModule implements StartModule {
     }
     //
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        Environment env = apiBinder.getEnvironment();
+        ZooKeeperCfg cfg = new ZooKeeperCfg(apiBinder.getEnvironment());
         StringWriter writer = new StringWriter();
         writer.append("\n----------- ZooKeeper -----------");
         writer.append("\n              dataDir = " + cfg.getDataDir());
         writer.append("\n              snapDir = " + cfg.getSnapDir());
         switch (workAt) {
         case Alone://单机模式
+            cfg.setBindAddress("127.0.0.1");
+            cfg.setBindPort(bindPort);
+            cfg.setClientCnxns(2);
+            cfg.setZkServers(cfg.getBindAddress() + ":" + cfg.getBindPort());
             break;
         case Master://集群下主机模式
+            writer.append("\n             bindPort = " + cfg.getBindPort());
+            writer.append("\n             tickTime = " + cfg.getTickTime());
+            writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
+            writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
+            writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
             break;
         case Slave://集群下丛机模式
+            writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
+            writer.append("\n            zkServers = " + cfg.getZkServers());
             break;
         default:
             throw new InterruptedException("undefined workMode : " + workAt.getCodeString());
         }
-        writer.append("\n             bindPort = " + cfg.getBindPort());
-        writer.append("\n             tickTime = " + cfg.getTickTime());
-        writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
-        writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
-        writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
-        writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
-        writer.append("\n            zkServers = " + cfg.getZkServers());
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
+        //
         //zk客户端
         logger.info("ZooKeeper connection to shelf.");
         ZooKeeper zooKeeper = new ZooKeeper(zkServers, clientTimeout, new Watcher() {
