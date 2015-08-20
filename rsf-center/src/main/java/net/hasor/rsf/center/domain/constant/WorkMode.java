@@ -22,13 +22,15 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum WorkMode {
+    /**0, "none", "未指定"*/
+    None(0, "none", "未指定，异常模式"),
     //
     /**1, "集群主机模式"*/
     Master(1, "master", "集群主机模式"),
     /**2, "集群从机模式"*/
     Slave(2, "slave", "集群从机模式"),
-    /**3, "内存模式"*/
-    Memory(3, "memory", "内存模式"), ;
+    /**3, "alone", "单机模式"*/
+    Alone(3, "alone", "单机模式"), ;
     //
     //
     //

@@ -19,6 +19,7 @@ import net.hasor.mvc.ModelController;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
+import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 /**
  * 
@@ -26,6 +27,7 @@ import net.hasor.web.WebApiBinder;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfControllerModule extends ControllerModule {
+    public RsfControllerModule(WorkMode workAt) {}
     protected void loadController(LoadHellper helper) throws Throwable {
         WebApiBinder apiBinder = helper.apiBinder();
         Set<Class<?>> controllerSet = apiBinder.getEnvironment().findClass(ModelController.class);

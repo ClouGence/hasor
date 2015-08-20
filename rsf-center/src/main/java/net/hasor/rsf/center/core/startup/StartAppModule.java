@@ -16,7 +16,6 @@
 package net.hasor.rsf.center.core.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.Settings;
 import net.hasor.core.StartModule;
 import net.hasor.mvc.support.ControllerModule;
 import net.hasor.mvc.support.LoadHellper;
@@ -34,33 +33,26 @@ import net.hasor.web.WebApiBinder;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StartAppModule extends ControllerModule implements StartModule {
-    private static String      workAt;
     public static final String CenterStartEvent = "CenterStartEvent";
-    public static String workAt() {
-        return workAt;
-    }
     @Override
     protected void loadController(LoadHellper helper) throws Throwable {
         //WorkAt
         WebApiBinder apiBinder = helper.apiBinder();
-        workAt = apiBinder.getEnvironment().getSettings().getString("rsfCenter.workAt", WorkMode.Memory.getCodeString());
-        Environment env = apiBinder.getEnvironment();
-        Settings settings = env.getSettings();
-        String workAt = settings.getString("rsfCenter.workAt", WorkMode.Memory.getCodeString());
-        logger.info("rsf work mode at : " + workAt);
+        WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.None);
+        logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
         //
         //Jump
-        apiBinder.installModule(new JumpModule());
+        apiBinder.installModule(new JumpModule(workAt));
         //Valid
-        apiBinder.installModule(new ValidModule());
+        apiBinder.installModule(new ValidModule(workAt));
         //Controller
-        apiBinder.installModule(new RsfControllerModule());
+        apiBinder.installModule(new RsfControllerModule(workAt));
         //Freemarker
-        apiBinder.installModule(new FreemarkerModule());
+        apiBinder.installModule(new FreemarkerModule(workAt));
         //DataSource
-        apiBinder.installModule(new DaoModule());
+        apiBinder.installModule(new DaoModule(workAt));
         //Zookeeper
-        apiBinder.installModule(new ZooKeeperModule());
+        apiBinder.installModule(new ZooKeeperModule(workAt));
     }
     //
     //

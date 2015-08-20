@@ -31,14 +31,12 @@ import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.plugins.tran.interceptor.TranInterceptorModule;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
-import net.hasor.rsf.center.core.startup.StartAppModule;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.more.util.StringUtils;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * 
@@ -46,6 +44,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DaoModule extends WebModule implements StartModule {
+    private WorkMode workAt = null;
+    public DaoModule(WorkMode workAt) {
+        this.workAt = workAt;
+    }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //Dao
         Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
@@ -58,8 +60,7 @@ public class DaoModule extends WebModule implements StartModule {
         String urlString = settings.getString("rsfCenter.jdbcConfig.url");
         String userString = settings.getString("rsfCenter.jdbcConfig.username");
         String pwdString = settings.getString("rsfCenter.jdbcConfig.password");
-        String workAt = StartAppModule.workAt();
-        if (StringUtils.equalsBlankIgnoreCase(WorkMode.Memory.getCodeString(), workAt)) {
+        if (WorkMode.Alone == workAt) {
             driverString = "org.hsqldb.jdbcDriver";
             urlString = "jdbc:hsqldb:mem:rsf_memdb";
             userString = "sa";
@@ -73,10 +74,9 @@ public class DaoModule extends WebModule implements StartModule {
     public void onStart(AppContext appContext) throws Throwable {
         Environment env = appContext.getEnvironment();
         Settings settings = env.getSettings();
-        String workAt = StartAppModule.workAt();
         //
-        //Memory模式
-        if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
+        //Alone模式
+        if (WorkMode.Alone == workAt) {
             logger.info("rsf workAt {} , initialize memdb.", workAt);
             XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
             if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
