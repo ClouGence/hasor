@@ -33,6 +33,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.StartModule;
 import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -98,7 +99,12 @@ public class ZooKeeperModule extends WebModule implements StartModule {
         switch (workAt) {
         case Alone://单机模式
             cfg.setBindAddress("127.0.0.1");
-            cfg.setBindPort(bindPort);
+            for (int port = 50000; port < 65535; port++) {
+                if (NetworkUtils.isPortAvailable(port)) {
+                    cfg.setBindPort(port);
+                    break;
+                }
+            }
             cfg.setClientCnxns(2);
             cfg.setZkServers(cfg.getBindAddress() + ":" + cfg.getBindPort());
             break;
@@ -121,7 +127,7 @@ public class ZooKeeperModule extends WebModule implements StartModule {
         //
         //zk客户端
         logger.info("ZooKeeper connection to shelf.");
-        ZooKeeper zooKeeper = new ZooKeeper(zkServers, clientTimeout, new Watcher() {
+        ZooKeeper zooKeeper = new ZooKeeper(cfg.getZkServers(), cfg.getClientTimeout(), new Watcher() {
             public void process(WatchedEvent event) {
                 logger.info(event.getPath());
             }

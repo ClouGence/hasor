@@ -15,6 +15,8 @@
  */
 package net.hasor.rsf.utils;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import org.more.util.StringUtils;
 /**
@@ -23,6 +25,21 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkUtils {
+    private static void bindPort(String host, int port) throws Exception {
+        Socket s = new Socket();
+        s.bind(new InetSocketAddress(host, port));
+        s.close();
+    }
+    /**测试端口是否被占用*/
+    public static boolean isPortAvailable(int port) {
+        try {
+            bindPort("0.0.0.0", port);
+            bindPort(InetAddress.getLocalHost().getHostAddress(), port);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
     /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return StringUtils.equalsIgnoreCase("local", hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
