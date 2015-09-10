@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Hasor 事务管理器，支持 7 种传播属性。
+ * Hasor的数据库操作框架，该框架主要目的是为Hasor提供关系型数据库访问功能。参考了SpringJDB做的设计。
+ * 
  */
-package net.hasor.db.transaction;
+package net.hasor.db.jdbc;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Hasor 核心软件包，该软件包中定义了所有基于 Hasor 开发的标准  API 接口。
- * 所有基于 Hasor 的应用程序在开发的时候只需要关注这个软件包提供的接口功能即可。
+ * <p>Hasor Web 开发框架。</p>
  */
-package net.hasor.core;
+package net.hasor.web;

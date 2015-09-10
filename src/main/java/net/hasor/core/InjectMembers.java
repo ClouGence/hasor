@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * 初始化注入接口。
+ * 初始化注入接口。Hasor 的 Ioc 是通过递归的方式实现，版本中要想实依赖注入必须要实现 InjectMembers接口。
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */

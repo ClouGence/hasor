@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * Hasor模块。
+ * Hasor模块，任何扩展功能都是通过 Module 接口进行，这是 Hasor 开发的主要入口。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */

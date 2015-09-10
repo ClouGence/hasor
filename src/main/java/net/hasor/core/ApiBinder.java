@@ -19,6 +19,9 @@ import java.lang.reflect.Method;
 import java.util.Set;
 /**
  * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
+ * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
+ * 这样一种设计并不是指 Hasor 抛弃配置文件和注解的优势，开发者可以根据项目的特征自行选择。
+ * Hasor 的开发者可以将某一个类使用 ApiBinder 接口的 bindType 方法注册到容器中。这个工作与 Spring 配置文件中 Bean 配置的作用并无不同。
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */

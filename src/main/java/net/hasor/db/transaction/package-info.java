@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Hasor Web 的 API 规范文档。</p>
+ * Hasor 事务管理器，支持 7 种传播属性。提供的操作数据库事务的接口，提供了7个不同的事务隔离级别。其实现思想来源于Spring。
  */
-package net.hasor.web;
+package net.hasor.db.transaction;

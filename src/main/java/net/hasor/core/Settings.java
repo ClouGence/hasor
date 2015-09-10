@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 /**
- * 配置文件设置
+ * <p>配置文件设置</p>
  * @version : 2013-4-23
  * @author 赵永春 (zyc@hasor.net)
  */
