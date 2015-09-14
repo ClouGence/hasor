@@ -15,6 +15,7 @@
  */
 package net.hasor.core.factory;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoAware;
+import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
@@ -131,7 +133,7 @@ public class FactoryBeanBuilder implements BeanBuilder {
         }
     }
     /**创建对象*/
-    private Object createObject(Class<?> targetType, DefineContainer container, AppContext appContext) throws Exception {
+    private Object createObject(Class<?> targetType, DefineContainer container, AppContext appContext) throws Throwable {
         Object targetBean = targetType.newInstance();
         return targetBean;
     }
@@ -142,10 +144,25 @@ public class FactoryBeanBuilder implements BeanBuilder {
         if (targetBean instanceof AppContextAware) {
             ((AppContextAware) targetBean).setAppContext(appContext);
         }
-        if (targetBean instanceof InjectMembers) {
-            ((InjectMembers) targetBean).doInject(appContext);
-        } else {
-            //
+        //
+        try {
+            if (targetBean instanceof InjectMembers) {
+                ((InjectMembers) targetBean).doInject(appContext);
+            } else {
+                List<Field> fieldList = BeanUtils.findALLFields(bindInfo.getBindType());
+                for (Field field : fieldList) {
+                    if (field.isAnnotationPresent(Inject.class) == false) {
+                        continue;
+                    }
+                    field.setAccessible(true);
+                    Object obj = appContext.getInstance(field.getType());
+                    if (obj != null) {
+                        field.set(targetBean, obj);
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
         }
         return targetBean;
     }

@@ -18,10 +18,10 @@ Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
 
 ----------
 ### 功能介绍
-&emsp;&emsp;`Core` 是核心软件包，几乎所有 Hasor 扩展模块都会依赖到它。包含工具和 Hasor 两个部分，它是整个 Hasor 蓝图的基础。该软件包主要提供了：`ApiBinder`、`Settings`、`Event`、`AppContext`、`IoC/Aop` 功能。
+&emsp;&emsp;`Core` 核心包.提供了IoC、Aop、事件、配置文件、AppContext、ApiBinder、自动注入、插件等核心功能。
 
-&emsp;&emsp;`db` 是数据库操作框架，该框架主要目的是为 `Hasor` 提供 `JDBC` 数据库访问接口。它是 `Spring JDBC` 的浓缩版，可以说Hasor-DB拥有 `SpringJDBC` 绝大部分功能。此外在 `Hasor-DB` 下还提供了一个与Spring同功能的事务管理器。
+&emsp;&emsp;`db` 是数据库操作框架。它是 `Spring JDBC` 的浓缩版，此外在它下面下还提供了一个与Spring同功能的事务管理器。
 
-&emsp;&emsp;`web` 是参照 `guice-servlet` 进行的仿制，在仿制过程中 `Hasor` 做了大量针对性的改进和优化。同时它也是作为 `Web` 上开发框架的一个基石。开发者使用它可以通过编码形式动态注册 `Servlet/Filter`。Hasor-Web 会为它们建立统一的 `Dispatcher` 入口。
+&emsp;&emsp;`web` 使用它可以通过编码形式动态注册 `Servlet/Filter`。Web 会为它们建立统一的 `Dispatcher` 入口。
 
 &emsp;&emsp;`mvc` 是基于 `web` 模块的MVC框架，它吸收了淘宝WebX，Jfinal，SpringMVC等框架的精华，但不臃肿，而且它还支持 `RESTful`、`表单验证`、`参数映射` 等功能来简化开发者开发。

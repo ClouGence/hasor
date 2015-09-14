@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original author or authors.
+ * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 初始化注入接口。Hasor 的 Ioc 是通过递归的方式实现，版本中要想实依赖注入必须要实现 InjectMembers接口。
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * 依赖注入
+ * @version : 2015年7月28日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface InjectMembers {
-    /**
-     * 执行注入
-     * @param appContext appContext对象
-     */
-    public void doInject(AppContext appContext) throws Throwable;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD })
+@Documented
+public @interface Inject {
+    /**如果同类型有多个注册可以使用该值进行指定。*/
+    public String value() default "";
 }
