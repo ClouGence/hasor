@@ -37,6 +37,7 @@ public class AopTest {
         //
         FooBean fooBean = appContext.getInstance(FooBean.class);
         fooBean.fooCall();
+        System.out.println(fooBean.echo("sayMessage",123));
     }
 }
 class WarpAop implements Module {

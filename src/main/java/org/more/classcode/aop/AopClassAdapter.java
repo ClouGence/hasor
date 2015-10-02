@@ -291,34 +291,34 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         {//try {
             mv.visitLabel(tryBegin);
             this.codeBuilder_2(mv, asmParams);//Class<?>[] pTypes = new Class[] { int.class, Object.class, boolean.class, short.class };
-            mv.visitVarInsn(ASTORE, paramCount + 1);
-            this.codeBuilder_1(mv, asmParams);//Object[] pObjects = new Object[] { abc, abcc, abcc };
             mv.visitVarInsn(ASTORE, paramCount + 2);
+            this.codeBuilder_1(mv, asmParams);//Object[] pObjects = new Object[] { abc, abcc, abcc };
+            mv.visitVarInsn(ASTORE, paramCount + 3);
             //
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, this.thisClassName, "getClass", "()Ljava/lang/Class;");
             mv.visitLdcInsn(name);
-            mv.visitVarInsn(ALOAD, paramCount + 1);
+            mv.visitVarInsn(ALOAD, paramCount + 2);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-            mv.visitVarInsn(ASTORE, paramCount + 3);
+            mv.visitVarInsn(ASTORE, paramCount + 4);
             //
             mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainAopInvocation.class));
             mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, paramCount + 3);
+            mv.visitVarInsn(ALOAD, paramCount + 4);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, paramCount + 2);
+            mv.visitVarInsn(ALOAD, paramCount + 3);
             mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainAopInvocation.class), "<init>", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)V");
-            mv.visitVarInsn(ASTORE, paramCount + 4);
+            mv.visitVarInsn(ASTORE, paramCount + 5);
             //
             mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerAopInvocation.class));
             mv.visitInsn(DUP);
             mv.visitLdcInsn(name + desc);
-            mv.visitVarInsn(ALOAD, paramCount + 3);
             mv.visitVarInsn(ALOAD, paramCount + 4);
+            mv.visitVarInsn(ALOAD, paramCount + 5);
             mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerAopInvocation.class), "<init>", "(Ljava/lang/String;Ljava/lang/reflect/Method;" + ASMEngineToos.toAsmType(AopInvocation.class) + ")V");//
             mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineToos.replaceClassName(InnerAopInvocation.class), "proceed", "()Ljava/lang/Object;");
-            mv.visitVarInsn(ASTORE, paramCount + 5);
-            mv.visitVarInsn(ALOAD, paramCount + 5);
+            mv.visitVarInsn(ASTORE, paramCount + 6);
+            mv.visitVarInsn(ALOAD, paramCount + 6);
             mv.visitLabel(tryEnd);
             this.codeBuilder_3(mv, asmReturns);
         }

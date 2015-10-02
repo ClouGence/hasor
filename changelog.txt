@@ -3,6 +3,7 @@
     01.新增 @Inject 注解方式自动注入。
 * 改进:
     01.使用JDK1.7重新编译。
+    02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
 
 ===== Hasor-Core v1.2.0
 * 新增:

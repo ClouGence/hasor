@@ -22,12 +22,17 @@ public class TT {
     public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
         MethodClassConfig ce = new MethodClassConfig();
         ce.addDelegate(EchoService.class, new Propxy_InterfaceDelegate());
+        {
+            //            FileOutputStream fos = new FileOutputStream(ce.getSimpleName() + ".class");
+            //            fos.write(ce.buildBytes());
+            //            fos.flush();
+            //            fos.close();
+        }
         EchoService obj = (EchoService) ce.toClass().newInstance();
-        System.out.println(obj);
+        System.out.println(obj.echo("aaaa", 234));
     }
 }
-
-class Propxy_InterfaceDelegate implements MethodDelegate{
+class Propxy_InterfaceDelegate implements MethodDelegate {
     public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {
         // TODO Auto-generated method stub
         return "adsf";

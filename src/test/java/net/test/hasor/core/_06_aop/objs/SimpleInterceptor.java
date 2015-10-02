@@ -24,7 +24,7 @@ import net.hasor.core.MethodInvocation;
 public class SimpleInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            System.out.println("before...");
+            System.out.println("before... " + invocation.getMethod().getName());
             Object returnData = invocation.proceed();
             System.out.println("after...");
             return returnData;

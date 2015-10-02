@@ -133,39 +133,39 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitLabel(tryBegin);
             //Class<?>[] pTypes = new Class[] { int.class, Object.class, boolean.class, short.class };
             this.codeBuilder_2(mv, asmParams);
-            mv.visitVarInsn(ASTORE, paramCount + 1);
+            mv.visitVarInsn(ASTORE, paramCount + 2);
             //Object[] pObjects = new Object[] { abc, abcc, abcc };
             this.codeBuilder_1(mv, asmParams);
-            mv.visitVarInsn(ASTORE, paramCount + 2);
+            mv.visitVarInsn(ASTORE, paramCount + 3);
             //
             //List.class.getMethod("getNames", arrayOfClass);
             mv.visitLdcInsn(Type.getType(ASMEngineToos.toAsmType(faceType)));
             mv.visitLdcInsn(name);
-            mv.visitVarInsn(ALOAD, paramCount + 1);
+            mv.visitVarInsn(ALOAD, paramCount + 2);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-            mv.visitVarInsn(ASTORE, paramCount + 3);
+            mv.visitVarInsn(ASTORE, paramCount + 4);
             //
             //ClassLoader localLoader = getClass().getClassLoader();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getClassLoader", "()Ljava/lang/ClassLoader;");
-            mv.visitVarInsn(ASTORE, paramCount + 4);
+            mv.visitVarInsn(ASTORE, paramCount + 5);
             //
             //Object target = new InnerChainMethodDelegate("xxxx", localLoader).invoke(localMethod, this, arrayOfObject);
             mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class));
             mv.visitInsn(DUP);
             mv.visitLdcInsn(this.classConfig.getClassName());
             mv.visitLdcInsn(faceType.getName());
-            mv.visitVarInsn(ALOAD, paramCount + 4);
+            mv.visitVarInsn(ALOAD, paramCount + 5);
             mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
-            mv.visitVarInsn(ALOAD, paramCount + 3);
+            mv.visitVarInsn(ALOAD, paramCount + 4);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, paramCount + 2);
+            mv.visitVarInsn(ALOAD, paramCount + 3);
             mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineToos.replaceClassName(InnerChainMethodDelegate.class), "invoke", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-            mv.visitVarInsn(ASTORE, paramCount + 5);
+            mv.visitVarInsn(ASTORE, paramCount + 6);
             //
             //return
-            mv.visitVarInsn(ALOAD, paramCount + 5);
+            mv.visitVarInsn(ALOAD, paramCount + 6);
             mv.visitLabel(tryEnd);
             this.codeBuilder_3(mv, asmReturns);
         }

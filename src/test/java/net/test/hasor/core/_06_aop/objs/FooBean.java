@@ -20,6 +20,9 @@ package net.test.hasor.core._06_aop.objs;
  * @author 赵永春(zyc@hasor.net)
  */
 public class FooBean {
+    public String echo(String sayMessage, long i) {
+        return "echo :" + sayMessage + " - " + i;
+    }
     public void fooCall() {
         System.out.println("fooCall");
     }
