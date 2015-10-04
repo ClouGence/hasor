@@ -32,27 +32,28 @@ public class StandardEnvironment extends AbstractEnvironment {
     /**子类需要自己调用{@link #initEnvironment()}方法初始化。*/
     protected StandardEnvironment() {}
     //
-    public StandardEnvironment(final String mainSettings) throws IOException, URISyntaxException {
-        URL resURL = ResourcesUtils.getResource(mainSettings);
-        if (resURL != null) {
-            this.settingURI = resURL.toURI();
+    public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
+        this(ResourcesUtils.getResource(mainSettings));
+    }
+    public StandardEnvironment(File mainSettings) throws IOException {
+        this((mainSettings == null) ? null : mainSettings.toURI());
+    }
+    public StandardEnvironment(URL mainSettings) throws URISyntaxException, IOException {
+        this((mainSettings == null) ? null : mainSettings.toURI());
+    }
+    public StandardEnvironment(URI mainSettings) throws IOException {
+        this(createSettings(mainSettings));
+    }
+    public StandardEnvironment(final Settings settings) throws IOException {
+        super();
+        if (settings == null) {
+            this.initEnvironment(createSettings(null));
+        } else {
+            this.initEnvironment(settings);
         }
-        this.initEnvironment();
-    }
-    public StandardEnvironment(final File mainSettings) {
-        this.settingURI = mainSettings.toURI();
-        this.initEnvironment();
-    }
-    public StandardEnvironment(final URI mainSettings) {
-        this.settingURI = mainSettings;
-        this.initEnvironment();
     }
     //---------------------------------------------------------------------------------Basic Method
-    protected URI settingURI = null;
-    public URI getSettingURI() {
-        return this.settingURI;
-    }
-    protected Settings createSettings() throws IOException {
-        return new StandardContextSettings(this.getSettingURI());
+    protected static Settings createSettings(final URI mainSettingURI) throws IOException {
+        return new StandardContextSettings(mainSettingURI);
     }
 }

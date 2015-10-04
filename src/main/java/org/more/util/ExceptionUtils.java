@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.more.util;
+import org.more.UnhandledException;
 /**
  * 异常工具类
  * @version : 2014年9月25日
@@ -25,6 +26,6 @@ public class ExceptionUtils {
         if (proxy instanceof RuntimeException) {
             return (RuntimeException) proxy;
         }
-        return new RuntimeException(proxy);
+        return new UnhandledException(proxy);
     }
 }

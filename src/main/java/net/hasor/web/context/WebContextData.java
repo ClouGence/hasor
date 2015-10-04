@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.context;
+import java.io.IOException;
 import java.net.URI;
 import javax.servlet.ServletContext;
 import net.hasor.core.context.ContextData;
@@ -29,7 +30,7 @@ public class WebContextData extends ContextData {
     public WebContextData(ServletContext servletContext) {
         this.environment = new WebStandardEnvironment(servletContext);
     }
-    public WebContextData(URI settingURI, ServletContext servletContext) {
+    public WebContextData(URI settingURI, ServletContext servletContext) throws IOException {
         this.environment = new WebStandardEnvironment(settingURI, servletContext);
     }
     //

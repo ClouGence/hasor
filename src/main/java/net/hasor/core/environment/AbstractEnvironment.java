@@ -18,16 +18,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.event.StandardEventManager;
-import org.more.UnhandledException;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
@@ -90,17 +90,13 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
-    protected final void initEnvironment() {
-        logger.info("init Environment - settings is " + this.getSettingURI());
+    protected final void initEnvironment(Settings settings) {
+        logger.info("init Environment - settings is " + settings);
         //
         try {
-            this.settings = this.createSettings();
             this.settings.refresh();
-        } catch (Exception e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }
-            throw new UnhandledException(e);
+        } catch (IOException e) {
+            throw ExceptionUtils.toRuntimeException(e);
         }
         this.envVars = this.createEnvVars();
         this.envVars.reload(getSettings());
@@ -122,8 +118,6 @@ public abstract class AbstractEnvironment implements Environment {
         this.spanPackage = allPack.toArray(new String[allPack.size()]);
         logger.info("loadPackages : " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
     }
-    /**创建{@link Settings}接口对象*/
-    protected abstract Settings createSettings() throws IOException;
     //
     private static volatile long lastLong = 0;
     private static long nextLong() {

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import org.more.util.ExceptionUtils;
 import net.hasor.core.context.ContextData;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
@@ -75,24 +76,19 @@ public abstract class Hasor {
         //
         try {
             final Environment dev = new StandardEnvironment(config);
-            final ContextData contextData = new ContextData() {
-                public Environment getEnvironment() {
-                    return dev;
-                }
-            };
             final AppContext appContext = new TemplateAppContext() {
                 protected ContextData getContextData() {
-                    return contextData;
+                    return new ContextData() {
+                        public Environment getEnvironment() {
+                            return dev;
+                        }
+                    };
                 }
             };
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            } else {
-                throw new RuntimeException(e);
-            }
+            throw ExceptionUtils.toRuntimeException(e);
         }
     }
     //

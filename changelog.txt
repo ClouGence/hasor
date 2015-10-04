@@ -4,6 +4,8 @@
 * 改进:
     01.使用JDK1.7重新编译。
     02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
+    03.AbstractEnvironment类的initEnvironment方法增加Settings类型参数。createSettings方法不再属于AbstractEnvironment的抽象方法。
+    04.StandardEnvironment类增加Settings类型参数的构造方法。
 
 ===== Hasor-Core v1.2.0
 * 新增:

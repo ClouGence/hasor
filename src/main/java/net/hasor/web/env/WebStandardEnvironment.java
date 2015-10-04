@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.env;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import javax.servlet.ServletContext;
@@ -31,14 +32,11 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
         super();
         this.servletContext = servletContext;
         this.setContext(servletContext);
-        this.initEnvironment();
     }
-    public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) {
-        super();
-        this.settingURI = settingURI;
+    public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) throws IOException {
+        super(settingURI);
         this.servletContext = servletContext;
         this.setContext(servletContext);
-        this.initEnvironment();
     }
     @Override
     public ServletContext getServletContext() {

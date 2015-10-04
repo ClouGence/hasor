@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.net.URI;
 import java.util.Set;
 /**
  * 环境支持
@@ -22,8 +21,6 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Environment {
-    /** @return 获取配置文件URI*/
-    public URI getSettingURI();
     /** @return 获取扫描路径*/
     public String[] getSpanPackage();
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
