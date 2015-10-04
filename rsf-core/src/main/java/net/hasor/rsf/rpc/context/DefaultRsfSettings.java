@@ -62,6 +62,8 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     private int             centerInterval       = 60000;
     //
     private String          unitName             = "local";
+    private int             invalidWaitTime      = 30000;
+    private int             invalidTryCount      = 480;
     //
     //
     //
@@ -139,6 +141,16 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     public String getUnitName() {
         return this.unitName;
     }
+    public int getInvalidTryCount() {
+        return this.invalidTryCount;
+    }
+    public int getInvalidWaitTime() {
+        return this.invalidWaitTime;
+    }
+    //
+    public OptionManager getServerOptionManager() {
+        return serverOptionManager;
+    }
     //
     public void refresh() throws IOException {
         super.refresh();
@@ -196,6 +208,8 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.centerInterval = getInteger("hasor.rsfConfig.centerServer.interval", 60000);;
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
+        this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 30000);
+        this.invalidTryCount = getInteger("hasor.rsfConfig.addressPool.invalidTryCount", 480);
         logger.info("loadRsfConfig complete!");
     }
 }

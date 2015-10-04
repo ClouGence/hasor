@@ -18,11 +18,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -38,26 +39,27 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket {
-    protected Logger                           logger         = LoggerFactory.getLogger(getClass());
-    //原始数据
-    private final String                       serviceID;                                           //服务ID
-    private final String                       unitName;                                            //服务所属单元
-    private final List<InterAddress>           allAddressList;                                      //所有备选地址
-    private CopyOnWriteArrayList<InterAddress> invalidAddresses;                                    //不可用地址（可能包含本机房及其它机房的地址）
-    //
+    protected Logger                                 logger         = LoggerFactory.getLogger(getClass());
     //流控规则
-    private volatile FlowControlRef            flowControlRef = null;                               //默认流控规则引用
+    private volatile FlowControlRef                  flowControlRef = null;                               //默认流控规则引用
+    private int                                      invalidTryCount;                                     //失效连接重试最大允许次数
+    //原始数据
+    private final String                             serviceID;                                           //服务ID
+    private final String                             unitName;                                            //服务所属单元
+    private final List<InterAddress>                 allAddressList;                                      //所有备选地址
+    private ConcurrentMap<InterAddress, InvalidInfo> invalidAddresses;                                    //失效状态统计信息
     //
-    //计算的可用地址
-    private List<InterAddress>                 localUnitAddresses;                                  //本单元地址
-    private List<InterAddress>                 availableAddresses;                                  //所有可用地址（包括本地单元）
+    //下面时计算出来的数据
+    private List<InterAddress>                       localUnitAddresses;                                  //本单元地址
+    private List<InterAddress>                       availableAddresses;                                  //所有可用地址（包括本地单元）
     //
     //
-    public AddressBucket(String serviceID, String unitName) {
+    public AddressBucket(String serviceID, String unitName, int invalidTryCount) {
         this.serviceID = serviceID;
         this.unitName = unitName;
+        this.invalidTryCount = invalidTryCount;
         this.allAddressList = new ArrayList<InterAddress>();
-        this.invalidAddresses = new CopyOnWriteArrayList<InterAddress>();
+        this.invalidAddresses = new ConcurrentHashMap<InterAddress, InvalidInfo>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
@@ -69,11 +71,11 @@ public class AddressBucket {
     }
     /**获取计算之后可用的地址。*/
     public synchronized List<InterAddress> getAvailableAddresses() {
-        return new ArrayList<InterAddress>(availableAddresses);
+        return new ArrayList<InterAddress>(this.availableAddresses);
     }
     /**失效地址。*/
     public synchronized List<InterAddress> getInvalidAddresses() {
-        return new ArrayList<InterAddress>(invalidAddresses);
+        return new ArrayList<InterAddress>(this.invalidAddresses.keySet());
     }
     /**获取计算之后同一单元地址。*/
     public synchronized List<InterAddress> getLocalUnitAddresses() {
@@ -113,22 +115,25 @@ public class AddressBucket {
     }
     //
     /**将地址置为失效的。*/
-    public void invalidAddress(InterAddress newInvalid) {
-        for (InterAddress invalid : this.invalidAddresses) {
+    public void invalidAddress(InterAddress newInvalid, long timeout) {
+        for (InterAddress invalid : this.invalidAddresses.keySet()) {
             String strInvalid = invalid.toString();
             String strInvalidNew = newInvalid.toString();
             if (StringUtils.equalsBlankIgnoreCase(strInvalid, strInvalidNew)) {
                 return;
             }
         }
-        try {//hashCode
-            if (this.invalidAddresses.addIfAbsent(newInvalid)) {
+        InvalidInfo invalidInfo = null;
+        if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InvalidInfo(timeout, this.invalidTryCount))) != null) {
+            invalidInfo.invalid(timeout);
+        } else {
+            try {
                 synchronized (this) {
                     refreshAvailableAddress();
                 }
+            } catch (Exception e) {
+                logger.error("invalid Address error -> {}.", e);
             }
-        } catch (Exception e) {
-            logger.error("invalid Address error -> {}.", e);
         }
     }
     /**强制刷新地址计算结果*/
@@ -145,11 +150,17 @@ public class AddressBucket {
         List<InterAddress> availableList = new ArrayList<InterAddress>();
         for (InterAddress addressInfo : this.allAddressList) {
             boolean doAdd = true;
-            for (InterAddress invalid : this.invalidAddresses) {
+            for (InterAddress invalid : this.invalidAddresses.keySet()) {
                 if (addressInfo.equals(invalid)) {
                     doAdd = false;
                     break;
                 }
+            }
+            //
+            //当失效的地址达到重试时间之后，再次刷新地址时候不被列入失效名单。
+            InvalidInfo info = this.invalidAddresses.get(addressInfo);
+            if (info != null && info.reTry()) {
+                doAdd = true;
             }
             if (doAdd) {
                 availableList.add(addressInfo);//有效的

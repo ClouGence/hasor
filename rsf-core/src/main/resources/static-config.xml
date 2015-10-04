@@ -57,6 +57,14 @@
 				<speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
 				<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
 			</route.flowcontrol>
+			
+			<!-- 地址池配置 -->
+			<addressPool>
+				<!-- 获取地址失效之后，等待重新尝试连接的时间(毫秒)。 -->
+				<invalidWaitTime>30000</invalidWaitTime>
+				<!-- 获取当地址失效之后重试的次数(每次重试都要等待一段时间)。 -->
+				<invalidTryCount>480</invalidTryCount>
+			</addressPool>
 		</rsfConfig>
 	</hasor>
 </config>

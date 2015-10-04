@@ -111,7 +111,8 @@ public class AddressPool {
         if (bucket == null) {
             /*在并发情况下,invalidAddress可能正打算读取AddressBucket,因此要锁住poolLock*/
             synchronized (this.poolLock) {
-                AddressBucket newBucket = new AddressBucket(serviceID, this.unitName);
+                int invalidTryCount = this.rsfSettings.getInvalidTryCount();
+                AddressBucket newBucket = new AddressBucket(serviceID, this.unitName, invalidTryCount);
                 bucket = this.addressPool.putIfAbsent(serviceID, newBucket);
                 if (bucket == null) {
                     bucket = newBucket;
@@ -136,7 +137,8 @@ public class AddressPool {
                 if (bucket == null) {
                     return;
                 }
-                bucket.invalidAddress(address);
+                long invalidWaitTime = rsfSettings.getInvalidWaitTime();
+                bucket.invalidAddress(address, invalidWaitTime);
                 bucket.refreshAddress();
             }
         }
