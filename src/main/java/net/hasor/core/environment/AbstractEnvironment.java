@@ -29,7 +29,7 @@ import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.event.StandardEventManager;
 /**
- * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Settings)}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -49,7 +49,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
     @Override
     public boolean isDebug() {
-        return this.settings.getBoolean("hasor.debug", false);
+        return this.getSettings().getBoolean("hasor.debug", false);
     }
     /**设置扫描路径*/
     public void setSpanPackage(final String[] spanPackage) {
@@ -91,10 +91,11 @@ public abstract class AbstractEnvironment implements Environment {
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected final void initEnvironment(Settings settings) {
+        this.settings = settings;
         logger.info("init Environment - settings is " + settings);
         //
         try {
-            this.settings.refresh();
+            this.getSettings().refresh();
         } catch (IOException e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
