@@ -64,6 +64,7 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     private String          unitName             = "local";
     private int             invalidWaitTime      = 30000;
     private int             invalidTryCount      = 480;
+    private long            refreshCacheTime     = 360000;
     //
     //
     //
@@ -147,6 +148,9 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     public int getInvalidWaitTime() {
         return this.invalidWaitTime;
     }
+    public long getRefreshCacheTime() {
+        return this.refreshCacheTime;
+    }
     //
     public OptionManager getServerOptionManager() {
         return serverOptionManager;
@@ -208,8 +212,9 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.centerInterval = getInteger("hasor.rsfConfig.centerServer.interval", 60000);;
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
-        this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 30000);
-        this.invalidTryCount = getInteger("hasor.rsfConfig.addressPool.invalidTryCount", 480);
+        this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);
+        this.invalidTryCount = getInteger("hasor.rsfConfig.addressPool.invalidTryCount", 240);
+        this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
         logger.info("loadRsfConfig complete!");
     }
 }

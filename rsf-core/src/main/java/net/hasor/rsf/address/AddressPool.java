@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
@@ -33,15 +36,12 @@ import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 服务地址池
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressPool {
+public class AddressPool implements Runnable {
     protected Logger                                   logger         = LoggerFactory.getLogger(getClass());
     private final RsfSettings                          rsfSettings;
     private final ConcurrentMap<String, AddressBucket> addressPool;                                         //服务地址池Map.
@@ -51,7 +51,24 @@ public class AddressPool {
     private RuleParser                                 ruleParser     = null;
     private volatile FlowControlRef                    flowControlRef = null;                               //默认流控规则引用
     private final Object                               poolLock;
+    private final Thread                               timer;
     //
+    //
+    //
+    public void run() {
+        Thread.currentThread().setName("RSF-AddressPool-RefreshCache-Thread");
+        Thread.currentThread().setDaemon(true);
+        long refreshCacheTime = this.rsfSettings.getRefreshCacheTime();
+        while (true) {
+            try {
+                this.wait(refreshCacheTime);
+                logger.info("refreshCacheTime({}) timeup -> refreshCache.", refreshCacheTime);
+                this.refreshCache();
+            } catch (InterruptedException e) {
+                /**/
+            }
+        }
+    }
     //
     public AddressPool(String unitName, BindCenter bindCenter, RsfSettings rsfSettings) {
         logger.info("init AddressPool unitName = " + unitName);
@@ -62,6 +79,8 @@ public class AddressPool {
         this.rulerCache = new AddressCacheResult(this, bindCenter);
         this.ruleParser = new RuleParser(rsfSettings);
         this.poolLock = new Object();
+        this.timer = new Thread(this);
+        this.timer.start();
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
         this.rulerCache.reset();
     }

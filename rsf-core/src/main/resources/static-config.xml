@@ -60,10 +60,12 @@
 			
 			<!-- 地址池配置 -->
 			<addressPool>
+				<!-- 自动刷新地址本缓存的时间，默认6分钟。 -->
+				<refreshCacheTime>360000</refreshCacheTime>
 				<!-- 获取地址失效之后，等待重新尝试连接的时间(毫秒)。 -->
-				<invalidWaitTime>30000</invalidWaitTime>
+				<invalidWaitTime>60000</invalidWaitTime>
 				<!-- 获取当地址失效之后重试的次数(每次重试都要等待一段时间)。 -->
-				<invalidTryCount>480</invalidTryCount>
+				<invalidTryCount>240</invalidTryCount>
 			</addressPool>
 		</rsfConfig>
 	</hasor>

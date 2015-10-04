@@ -75,9 +75,11 @@ public interface RsfSettings extends Settings {
     //
     /**获取本机所属单元*/
     public String getUnitName();
-    /**获取地址失效之后，等待重新尝试连接的时间(毫秒)。默认30秒。*/
+    /**获取地址失效之后，等待重新尝试连接的时间(毫秒)。默认60秒。*/
     public int getInvalidWaitTime();
     /**获取当地址失效之后重试的次数(每次重试都要等待一段时间)。
      * @see #getInvalidWaitTime()*/
     public int getInvalidTryCount();
+    /**自动刷新地址本缓存的时间，默认6分钟。*/
+    public long getRefreshCacheTime();
 }
