@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
+import java.io.IOException;
+import java.util.concurrent.Executor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import java.util.concurrent.Executor;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.core.event.StandardEventManager;
@@ -32,8 +35,6 @@ import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
@@ -41,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractRsfContext implements RsfContext {
     protected Logger                logger = LoggerFactory.getLogger(getClass());
-    private RsfSettings             rsfSettings;
+    private RsfEnvironment          rsfEnvironment;
     private AddressPool             addressPool;
     private RsfBindCenter           bindCenter;
     private SerializeFactory        serializeFactory;
@@ -51,21 +52,21 @@ public abstract class AbstractRsfContext implements RsfContext {
     private RsfClientChannelManager channelManager;
     private EventContext            eventContext;
     //
-    protected void initContext(RsfSettings rsfSettings) {
+    protected void initContext(RsfSettings rsfSettings) throws IOException {
         logger.info("rsfContext init.");
-        this.rsfSettings = rsfSettings;
+        this.rsfEnvironment = new RsfEnvironment(rsfSettings);
         //
         this.bindCenter = new RsfBindCenter(this);
-        this.addressPool = new AddressPool(rsfSettings.getUnitName(), bindCenter, rsfSettings);
-        this.serializeFactory = SerializeFactory.createFactory(this.rsfSettings);
+        this.addressPool = new AddressPool(rsfSettings.getUnitName(), bindCenter, this.rsfEnvironment);
+        this.serializeFactory = SerializeFactory.createFactory(rsfSettings);
         //
-        int queueSize = this.rsfSettings.getQueueMaxSize();
-        int minCorePoolSize = this.rsfSettings.getQueueMinPoolSize();
-        int maxCorePoolSize = this.rsfSettings.getQueueMaxPoolSize();
-        long keepAliveTime = this.rsfSettings.getQueueKeepAliveTime();
+        int queueSize = rsfSettings.getQueueMaxSize();
+        int minCorePoolSize = rsfSettings.getQueueMinPoolSize();
+        int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
+        long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
-        int workerThread = this.rsfSettings.getNetworkWorker();
+        int workerThread = rsfSettings.getNetworkWorker();
         logger.info("nioEventLoopGroup, workerThread = " + workerThread);
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
@@ -81,7 +82,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     /**获取配置*/
     public RsfSettings getSettings() {
-        return this.rsfSettings;
+        return this.rsfEnvironment.getSettings();
     }
     /** @return 获取服务注册中心*/
     public RsfBindCenter getBindCenter() {

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.binder;
+import java.io.IOException;
 import java.util.concurrent.Executor;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
@@ -24,6 +25,7 @@ import net.hasor.rsf.binder.RsfBindCenter;
 import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.rpc.context.RsfEnvironment;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 
@@ -34,10 +36,10 @@ public class TestRsfBindCenterContext extends AbstractRsfContext {
     DefaultRsfSettings rsfSettings;
     AddressPool        addressPool;
     RsfBindCenter      bindCenter;
-    public TestRsfBindCenterContext(DefaultRsfSettings rsfSettings, String unitName ) {
+    public TestRsfBindCenterContext(DefaultRsfSettings rsfSettings, String unitName) throws IOException {
         this.rsfSettings = rsfSettings;
         this.bindCenter = new RsfBindCenter(this);
-        this.addressPool = new AddressPool(unitName, bindCenter, rsfSettings);
+        this.addressPool = new AddressPool(unitName, bindCenter, new RsfEnvironment(rsfSettings));
     }
     @Override
     public RsfBindCenter getBindCenter() {

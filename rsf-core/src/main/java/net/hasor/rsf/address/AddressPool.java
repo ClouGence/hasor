@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,9 +28,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import org.more.util.StringUtils;
+import org.more.util.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Environment;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
@@ -36,50 +43,109 @@ import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
+import net.hasor.rsf.rpc.context.RsfEnvironment;
 /**
  * 服务地址池
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements Runnable {
-    protected Logger                                   logger         = LoggerFactory.getLogger(getClass());
+    private static final String                        CharsetName = "UTF-8";
+    protected Logger                                   logger      = LoggerFactory.getLogger(getClass());
     private final RsfSettings                          rsfSettings;
-    private final ConcurrentMap<String, AddressBucket> addressPool;                                         //服务地址池Map.
-    private final String                               unitName;                                            //本机所处单元.
+    private final RsfEnvironment                       rsfEnvironment;
+    private final ConcurrentMap<String, AddressBucket> addressPool;                                      //服务地址池Map.
+    private final String                               unitName;                                         //本机所处单元.
     //
     private final AddressCacheResult                   rulerCache;
-    private RuleParser                                 ruleParser     = null;
-    private volatile FlowControlRef                    flowControlRef = null;                               //默认流控规则引用
+    private RuleParser                                 ruleParser;
+    private volatile FlowControlRef                    flowControlRef;                                   //默认流控规则引用
     private final Object                               poolLock;
     private final Thread                               timer;
     //
     //
     //
     public void run() {
-        Thread.currentThread().setName("RSF-AddressPool-RefreshCache-Thread");
         Thread.currentThread().setDaemon(true);
         long refreshCacheTime = this.rsfSettings.getRefreshCacheTime();
+        long nextCheckSavePoint = 0;
         while (true) {
             try {
                 this.wait(refreshCacheTime);
                 logger.info("refreshCacheTime({}) timeup -> refreshCache.", refreshCacheTime);
                 this.refreshCache();
+                //
+                if (nextCheckSavePoint < System.currentTimeMillis()) {
+                    nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);//1小时
+                    try {
+                        this.saveAddress();
+                    } catch (IOException e) {
+                        logger.error("saveAddress error {} -> {}", e.getMessage(), e);
+                        e.printStackTrace();
+                    }
+                }
             } catch (InterruptedException e) {
                 /**/
             }
         }
     }
+    /**保存地址列表到zip流中(每小时保存一次)。*/
+    public void saveAddress() throws IOException {
+        String workDir = rsfEnvironment.evalString("%" + Environment.WORK_HOME + "%/rsf/");
+        File writeFile = new File(workDir, "address-" + System.currentTimeMillis() + ".zip");
+        try {
+            FileOutputStream fos = new FileOutputStream(writeFile);
+            ZipOutputStream zipStream = new ZipOutputStream(fos);
+            synchronized (this.poolLock) {
+                for (AddressBucket bucket : this.addressPool.values()) {
+                    if (bucket != null) {
+                        bucket.saveTo(zipStream, CharsetName);
+                    }
+                }
+            }
+            zipStream.flush();
+            zipStream.close();
+            //
+            FileWriter fw = new FileWriter(new File(workDir, "address.index"), false);
+            fw.write(writeFile.getName());
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            logger.error("saveAddress to {} error -> {}", writeFile, e);
+            throw e;
+        }
+    }
+    /**从保存的地址本中恢复数据。*/
+    public void readAddress(AddressBucket bucker) {
+        try {
+            String workDir = rsfEnvironment.evalString("%" + Environment.WORK_HOME + "%/rsf/");
+            String index = FileUtils.readFileToString(new File(workDir, "address.index"), CharsetName);
+            File readFile = new File(workDir, index);
+            //
+            if (readFile.exists()) {
+                ZipFile zipFile = new ZipFile(readFile);
+                bucker.readFrom(zipFile, CharsetName);
+            } else {
+                logger.error("file {} is not exists.", readFile);
+            }
+        } catch (Throwable e) {
+            logger.error("readAddress to {} error -> {}", bucker.getServiceID(), e);
+        }
+    }
     //
-    public AddressPool(String unitName, BindCenter bindCenter, RsfSettings rsfSettings) {
+    public AddressPool(String unitName, BindCenter bindCenter, RsfEnvironment rsfEnvironment) {
         logger.info("init AddressPool unitName = " + unitName);
         //
-        this.rsfSettings = rsfSettings;
+        this.rsfEnvironment = rsfEnvironment;
+        this.rsfSettings = rsfEnvironment.getSettings();
         this.addressPool = new ConcurrentHashMap<String, AddressBucket>();
         this.unitName = unitName;
         this.rulerCache = new AddressCacheResult(this, bindCenter);
         this.ruleParser = new RuleParser(rsfSettings);
         this.poolLock = new Object();
         this.timer = new Thread(this);
+        this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
+        logger.info("start refreshCacheTime[{}] Thread.", this.timer.getName());
         this.timer.start();
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
         this.rulerCache.reset();
@@ -135,11 +201,14 @@ public class AddressPool implements Runnable {
                 bucket = this.addressPool.putIfAbsent(serviceID, newBucket);
                 if (bucket == null) {
                     bucket = newBucket;
+                    this.readAddress(newBucket);
                 }
+                logger.info("newBucket {}", bucket);
             }
         }
         //2.新增服务
         bucket.newAddress(newHostList);
+        logger.info("newAddress: {}", newHostList);
         bucket.refreshAddress();//局部更新
         this.rulerCache.reset();
     }

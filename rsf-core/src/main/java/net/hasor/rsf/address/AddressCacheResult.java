@@ -84,6 +84,7 @@ class AddressCacheResult {
     }
     /**重置缓存结果*/
     public void reset() {
+        this.logger.info("reset addressCache.");
         Map<String, List<InterAddress>> allAddress = this.addressPool.allServicesSnapshot();
         Collection<String> allServiceIDs = this.addressPool.listServices();
         CacheResult cacheResultRef = new CacheResult();
@@ -130,6 +131,7 @@ class AddressCacheResult {
             }
             //
         }
+        logger.info("switch cacheResultRef.");
         this.cacheResultRef = cacheResultRef;
     }
     //
@@ -149,8 +151,8 @@ class AddressCacheResult {
 //
 class CacheResult {
     public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
-    public final Map<String, Map<String, List<InterAddress>>>              methodLevel; //方法级
-    public final Map<String, Map<String, Map<Object, List<InterAddress>>>> argsLevel;   //参数级
+    public final Map<String, Map<String, List<InterAddress>>>              methodLevel;  //方法级
+    public final Map<String, Map<String, Map<Object, List<InterAddress>>>> argsLevel;    //参数级
     //
     public CacheResult() {
         this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级

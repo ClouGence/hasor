@@ -26,6 +26,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.rpc.context.RsfEnvironment;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
@@ -54,7 +55,7 @@ public class AddressPoolTest {
         BindCenter bindCenter = new TestBindCenter(AddressPoolTest.class);
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
         rsfSettings.refresh();
-        final AddressPool pool = new AddressPool("etc3", bindCenter, rsfSettings);
+        final AddressPool pool = new AddressPool("etc3", bindCenter, new RsfEnvironment(rsfSettings));
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-flow.xml"));
@@ -134,7 +135,7 @@ public class AddressPoolTest {
         BindCenter bindCenter = new TestBindCenter(AddressPoolTest.class);
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
         rsfSettings.refresh();
-        final AddressPool pool = new AddressPool("etc3", bindCenter, rsfSettings);
+        final AddressPool pool = new AddressPool("etc3", bindCenter, new RsfEnvironment(rsfSettings));
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-performance-flow.xml"));

@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,19 +49,19 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket {
-    protected Logger                                 logger         = LoggerFactory.getLogger(getClass());
+    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
     //流控规则
-    private volatile FlowControlRef                  flowControlRef = null;                               //默认流控规则引用
-    private int                                      invalidTryCount;                                     //失效连接重试最大允许次数
+    private volatile FlowControlRef                  flowControlRef;                              //默认流控规则引用
+    private int                                      invalidTryCount;                             //失效连接重试最大允许次数
     //原始数据
-    private final String                             serviceID;                                           //服务ID
-    private final String                             unitName;                                            //服务所属单元
-    private final List<InterAddress>                 allAddressList;                                      //所有备选地址
-    private ConcurrentMap<InterAddress, InvalidInfo> invalidAddresses;                                    //失效状态统计信息
+    private final String                             serviceID;                                   //服务ID
+    private final String                             unitName;                                    //服务所属单元
+    private final List<InterAddress>                 allAddressList;                              //所有备选地址
+    private ConcurrentMap<InterAddress, InvalidInfo> invalidAddresses;                            //失效状态统计信息
     //
     //下面时计算出来的数据
-    private List<InterAddress>                       localUnitAddresses;                                  //本单元地址
-    private List<InterAddress>                       availableAddresses;                                  //所有可用地址（包括本地单元）
+    private List<InterAddress>                       localUnitAddresses;                          //本单元地址
+    private List<InterAddress>                       availableAddresses;                          //所有可用地址（包括本地单元）
     //
     //
     public AddressBucket(String serviceID, String unitName, int invalidTryCount) {
@@ -64,7 +74,60 @@ public class AddressBucket {
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
     }
+    /**保存地址列表到zip流中。*/
+    public void saveTo(ZipOutputStream outStream, String charsetName) throws IOException {
+        ZipEntry entry = new ZipEntry(this.serviceID);
+        entry.setComment("the address List of [" + this.serviceID + "] service.");
+        outStream.putNextEntry(entry);
+        logger.info("bucket save to entry -> {}", this.serviceID);
+        {
+            StringBuffer strBuffer = new StringBuffer("");
+            OutputStreamWriter writer = new OutputStreamWriter(outStream, charsetName);
+            BufferedWriter bfwriter = new BufferedWriter(writer);
+            for (InterAddress inter : this.allAddressList) {
+                strBuffer.append(inter.toString() + " , ");
+                bfwriter.write(inter.toString());
+                bfwriter.newLine();
+            }
+            logger.info("bucket save list -> {}", strBuffer.toString());
+            bfwriter.flush();
+            writer.flush();
+            outStream.flush();
+        }
+        logger.info("bucket save to entry -> {} , finish.", this.serviceID);
+        outStream.closeEntry();
+    }
+    /**保存地址列表到zip流中。*/
+    public void readFrom(ZipFile zipFile, String charsetName) throws IOException {
+        ZipEntry entry = zipFile.getEntry(this.serviceID);
+        if (entry != null) {
+            logger.info("bucket read form {}", zipFile.getName());
+            InputStream inStream = zipFile.getInputStream(entry);
+            InputStreamReader reader = new InputStreamReader(inStream, charsetName);
+            BufferedReader bfreader = new BufferedReader(reader);
+            String line = null;
+            StringBuffer strBuffer = new StringBuffer("");
+            ArrayList<URI> newHostList = new ArrayList<URI>();
+            while ((line = bfreader.readLine()) != null) {
+                try {
+                    newHostList.add(new URI(line));
+                    strBuffer.append(line + " , ");
+                } catch (URISyntaxException e) {
+                    logger.info("read address '{}' has URISyntaxException.", line);
+                }
+            }
+            this.newAddress(newHostList);
+            logger.info("bucket read list -> {}", strBuffer.toString());
+        } else {
+            logger.info("bucket read empty , not match record");
+        }
+    }
     //
+    //
+    //
+    public String getServiceID() {
+        return serviceID;
+    }
     /**获取所有地址（包括本地的和无效的）。*/
     public synchronized List<InterAddress> getAllAddresses() {
         return new ArrayList<InterAddress>(this.allAddressList);
@@ -145,6 +208,7 @@ public class AddressBucket {
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
+        logger.info("refreshAvailableAddress.");
         //
         //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();
