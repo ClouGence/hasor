@@ -66,12 +66,11 @@ public class AddressPool implements Runnable {
     //
     //
     public void run() {
-        Thread.currentThread().setDaemon(true);
         long refreshCacheTime = this.rsfSettings.getRefreshCacheTime();
         long nextCheckSavePoint = 0;
         while (true) {
             try {
-                this.wait(refreshCacheTime);
+                Thread.sleep(refreshCacheTime);
                 logger.info("refreshCacheTime({}) timeup -> refreshCache.", refreshCacheTime);
                 this.refreshCache();
                 //
@@ -94,6 +93,7 @@ public class AddressPool implements Runnable {
         String workDir = rsfEnvironment.evalString("%" + Environment.WORK_HOME + "%/rsf/");
         File writeFile = new File(workDir, "address-" + System.currentTimeMillis() + ".zip");
         try {
+            writeFile.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(writeFile);
             ZipOutputStream zipStream = new ZipOutputStream(fos);
             synchronized (this.poolLock) {
@@ -119,6 +119,10 @@ public class AddressPool implements Runnable {
     public void readAddress(AddressBucket bucker) {
         try {
             String workDir = rsfEnvironment.evalString("%" + Environment.WORK_HOME + "%/rsf/");
+            File indexFile = new File(workDir, "address.index");
+            if (!indexFile.exists()) {
+                return;
+            }
             String index = FileUtils.readFileToString(new File(workDir, "address.index"), CharsetName);
             File readFile = new File(workDir, index);
             //
@@ -145,6 +149,7 @@ public class AddressPool implements Runnable {
         this.poolLock = new Object();
         this.timer = new Thread(this);
         this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
+        this.timer.setDaemon(true);
         logger.info("start refreshCacheTime[{}] Thread.", this.timer.getName());
         this.timer.start();
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);

@@ -50,6 +50,6 @@ public class CustomerServer {
     }
     public static void main(String[] args) throws Throwable {
         CustomerServer server = new CustomerServer();
-        server.start("192.168.31.226", 8001);
+        server.start("127.0.0.1", 8001);
     }
 }

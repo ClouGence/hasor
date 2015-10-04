@@ -116,8 +116,8 @@ public class AddressBucket {
                     logger.info("read address '{}' has URISyntaxException.", line);
                 }
             }
-            this.newAddress(newHostList);
             logger.info("bucket read list -> {}", strBuffer.toString());
+            this.newAddress(newHostList);
         } else {
             logger.info("bucket read empty , not match record");
         }
