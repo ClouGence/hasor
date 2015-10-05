@@ -27,7 +27,7 @@ public interface RsfContext {
     public RsfSettings getSettings();
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
-    /** @return 获取注册中心*/
+    /** @return 获取注册中心。*/
     public BindCenter getBindCenter();
     /**
      * 获取元信息所描述的服务对象

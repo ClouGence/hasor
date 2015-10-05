@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map.Entry;
@@ -28,6 +21,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.AddressPool;
@@ -37,8 +39,6 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.protocol.netty.RSFCodec;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 维护RSF同其它RSF的连接。
  * 同时负责创建和销毁{@link AbstractRsfClient}的功能。
@@ -71,7 +71,8 @@ public class RsfClientChannelManager {
             final String methodSign = RsfRuntimeUtils.evalMethodSign(rsfRequest.getServiceMethod());
             final Object[] methodArgs = rsfRequest.getParameterObject();
             final AddressPool addressPool = this.rsfContext.getAddressPool();
-            final InterAddress refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
+            InterAddress refereeAddress = null;
+            refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
             //
             /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
             if (refereeAddress == null) {
@@ -125,7 +126,7 @@ public class RsfClientChannelManager {
         }
     }
     //
-    private synchronized Channel connSocket(final InterAddress hostAddress) {
+    public synchronized Channel connSocket(final InterAddress hostAddress) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.rsfContext.getWorkLoopGroup());
         boot.channel(NioSocketChannel.class);

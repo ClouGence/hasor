@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import net.hasor.core.Provider;
 /**
@@ -34,6 +37,13 @@ public interface BindCenter {
     public <T> RsfBindInfo<T> getService(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
     public List<String> getServiceIDs();
+    //
+    /**更新本地默认路由策略。*/
+    public void updateDefaultRoute(String flowControl) throws IOException;
+    /**更新本地服务路由策略*/
+    public void updateRoute(String serviceID, String flowControl) throws IOException;
+    /**更新本地地址本*/
+    public void updateAddress(String serviceID, Collection<URI> newAddress);
     //
     /**回收已经发布的服务*/
     public void recoverService(RsfBindInfo<?> bindInfo);

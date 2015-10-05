@@ -59,7 +59,7 @@ public class AddressPoolTest {
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-flow.xml"));
-        pool.refreshDefaultFlowControl(flowControlBody);
+        pool.refreshFlowControl(flowControlBody, null);
         //
         System.err.println("\n\n start 3 Threads for doNextAddress.");
         //
@@ -139,7 +139,7 @@ public class AddressPoolTest {
         final RsfBindInfo<?> domain = bindCenter.getService(AddressPoolTest.class);
         //
         String flowControlBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("full-performance-flow.xml"));
-        pool.refreshDefaultFlowControl(flowControlBody);
+        pool.refreshFlowControl(flowControlBody, null);
         //
         //
         //

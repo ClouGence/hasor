@@ -252,19 +252,28 @@ public class AddressPool implements Runnable {
         this.rulerCache.reset();
     }
     //
-    /**用新的路由规则刷新地址池*/
+    /**用新的路由规则覆盖默认路由规则。
+     * @param flowControl 路由规则
+     */
     public void refreshDefaultFlowControl(String flowControl) throws IOException {
-        this.flowControlRef = paselowControl(flowControl);
-    }
-    /**用新的路由规则刷新地址池*/
-    public void refreshFlowControl(String serviceID, String flowControl) throws IOException {
         FlowControlRef flowControlRef = paselowControl(flowControl);
-        AddressBucket bucket = this.addressPool.get(serviceID);
-        if (bucket != null) {
-            bucket.setFlowControlRef(flowControlRef);
-        }
-        //4.刷新缓存
+        this.flowControlRef = flowControlRef;
         this.refreshCache();
+    }
+    //
+    /**用新的路由规则覆盖指定服务的路由规则。
+     * @param flowControl 路由规则
+     * @param serviceID 应用到的服务。
+     */
+    public void refreshFlowControl(String flowControl, String serviceID) throws IOException {
+        if (!StringUtils.isBlank(serviceID)) {
+            AddressBucket bucket = this.addressPool.get(serviceID);
+            if (bucket != null) {
+                FlowControlRef flowControlRef = paselowControl(flowControl);
+                bucket.setFlowControlRef(flowControlRef);
+                this.refreshCache();
+            }
+        }
     }
     private FlowControlRef paselowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {

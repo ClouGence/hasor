@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.more.future.FutureCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
@@ -43,9 +46,6 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeFactory;
-import org.more.future.FutureCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
@@ -76,6 +76,7 @@ public class RsfClientRequestManager {
     public RsfClientChannelManager getClientManager() {
         return this.clientManager;
     }
+    /**获取远程客户端包装接口，返回形式为{@link RsfClient}类型。*/
     public RsfClient getClientWrappe() {
         return this.rsfClientWrappe;
     }

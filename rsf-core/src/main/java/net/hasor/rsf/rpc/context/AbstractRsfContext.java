@@ -77,10 +77,12 @@ public abstract class AbstractRsfContext implements RsfContext {
         return Thread.currentThread().getContextClassLoader();
     }
     /**获取配置*/
+    @Override
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();
     }
     /** @return 获取服务注册中心*/
+    @Override
     public RsfBindCenter getBindCenter() {
         return this.bindCenter;
     }
@@ -117,11 +119,13 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.workLoopGroup;
     }
     /**停止工作*/
+    @Override
     public void shutdown() {
         this.getEventContext().fireSyncEvent(Events.Shutdown, this);
         this.workLoopGroup.shutdownGracefully();
     }
     /**获取客户端*/
+    @Override
     public RsfClient getRsfClient() {
         return this.requestManager.getClientWrappe();
     }
@@ -130,6 +134,7 @@ public abstract class AbstractRsfContext implements RsfContext {
      * @param bindInfo 元信息所描述对象
      * @return 服务对象
      */
+    @Override
     public <T> T getBean(RsfBindInfo<T> bindInfo) {
         Provider<T> provider = getProvider(bindInfo);
         return (provider != null) ? provider.get() : null;

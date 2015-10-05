@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.address;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import net.hasor.core.Provider;
 import net.hasor.rsf.BindCenter;
@@ -71,5 +74,20 @@ public class TestBindCenter<T> implements BindCenter {
     public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public void updateDefaultRoute(String flowControl) throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public void updateRoute(String serviceID, String flowControl) throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public void updateAddress(String serviceID, Collection<URI> newAddress) {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.binder;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class RsfBindBuilder implements RsfBinder {
     public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
         private final BindServiceDefine<T> serviceDefine;
         private final Set<URI>             hostAddressSet;
+        private String                     flowControl;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
             this.serviceDefine = new BindServiceDefine<T>(serviceType, getContext());
@@ -211,10 +213,15 @@ public class RsfBindBuilder implements RsfBinder {
             throw new FormatException(rsfURI + " check fail.");
         }
         //
-        public RegisterReference<T> register() {
+        public RegisterReference<T> register() throws IOException {
             getContext().getBindCenter().publishService(this.serviceDefine, this.serviceDefine.getCustomerProvider());
             getContext().getAddressPool().newAddress(this.serviceDefine, this.hostAddressSet);
+            getContext().getAddressPool().refreshFlowControl(this.flowControl, this.serviceDefine.getBindID());
             return this.serviceDefine;
+        }
+        @Override
+        public void updateRoute(String flowControl) {
+            this.flowControl = flowControl;
         }
     }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import net.hasor.core.Provider;
@@ -162,7 +163,10 @@ public interface RsfBinder {
          */
         public RegisterBuilder<T> bindAddress(URI rsfURI);
         /** @return 将服务注册到{@link RsfContext}上。*/
-        public RegisterReference<T> register();
+        public RegisterReference<T> register() throws IOException;
+        //
+        /**更新本地默认路由策略*/
+        public void updateRoute(String flowControl);
     }
     //
     /**接口解除*/

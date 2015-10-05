@@ -20,6 +20,8 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import org.more.classcode.MoreClassLoader;
+import org.more.future.FutureCallback;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
@@ -29,8 +31,6 @@ import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.classcode.MoreClassLoader;
-import org.more.future.FutureCallback;
 /**
  * 
  * @version : 2014年12月22日
@@ -134,8 +134,7 @@ class RsfClientWrappe implements RsfClient {
         Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
         RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.rsfContext);
         //2.发起Request
-        RsfClientRequestManager reqManager = this.rsfContext.getRequestManager();
-        RsfFuture rsfFuture = reqManager.sendRequest(request, null);
+        RsfFuture rsfFuture = doSendRequest(request, null);
         //3.返回数据
         RsfResponse response = rsfFuture.get(timeout, TimeUnit.MILLISECONDS);
         return response.getResponseData();
@@ -146,8 +145,7 @@ class RsfClientWrappe implements RsfClient {
         Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
         RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.rsfContext);
         //2.发起Request
-        RsfClientRequestManager reqManager = this.rsfContext.getRequestManager();
-        return reqManager.sendRequest(request, null);
+        return doSendRequest(request, null);
     }
     @Override
     public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
@@ -169,8 +167,11 @@ class RsfClientWrappe implements RsfClient {
         Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
         RsfRequestFormLocal request = new RsfRequestFormLocal(bindInfo, targetMethod, parameterObjects, this.rsfContext);
         //2.发起Request
+        doSendRequest(request, listener);
+    }
+    protected RsfFuture doSendRequest(RsfRequestFormLocal request, FutureCallback<RsfResponse> listener) {
         RsfClientRequestManager reqManager = this.rsfContext.getRequestManager();
-        reqManager.sendRequest(request, listener);
+        return reqManager.sendRequest(request, listener);
     }
     private int validateTimeout(int timeout) {
         if (timeout <= 0)

@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.binder;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.more.RepeateException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Provider;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
@@ -28,10 +35,6 @@ import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.RepeateException;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 本地服务注册中心
  * @version : 2014年11月30日
@@ -124,5 +127,20 @@ public class RsfBindCenter implements BindCenter {
     /**获取服务对象*/
     public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
         return (Provider<T>) this.providerMap.get(bindInfo.getBindID());
+    }
+    @Override
+    public void updateDefaultRoute(String flowControl) throws IOException {
+        this.rsfContext.getAddressPool().refreshDefaultFlowControl(flowControl);
+    }
+    @Override
+    public void updateRoute(String serviceID, String flowControl) throws IOException {
+        this.rsfContext.getAddressPool().refreshFlowControl(flowControl, serviceID);
+    }
+    @Override
+    public void updateAddress(String serviceID, Collection<URI> newHostList) {
+        ServiceDefine<?> define = this.getService(serviceID);
+        if (define != null) {
+            this.rsfContext.getAddressPool().newAddress(define, newHostList);
+        }
     }
 }
