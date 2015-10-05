@@ -81,11 +81,16 @@ public class RsfClientChannelManager {
             String addrStr = refereeAddress.toString();
             Channel client = this.channelMapping.get(addrStr);
             if (client != null && client.isActive() == false) {
-                this.channelMapping.remove(addrStr);
+                this.channelMapping.remove(addrStr);//conect is bad.
+                client = null;
             }
             if (client == null) {
+                /*同步调用不存在并发*/
                 if ((client = connSocket(refereeAddress)) != null) {
-                    this.channelMapping.putIfAbsent(addrStr, client);
+                    Channel oldChannel = this.channelMapping.put(addrStr, client);
+                    if (oldChannel != client) {
+                        oldChannel.close();
+                    }
                     return client;
                 }
             } else {

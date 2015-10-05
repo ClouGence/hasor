@@ -52,7 +52,6 @@ public class AddressBucket {
     protected Logger                                 logger = LoggerFactory.getLogger(getClass());
     //流控规则
     private volatile FlowControlRef                  flowControlRef;                              //默认流控规则引用
-    private int                                      invalidTryCount;                             //失效连接重试最大允许次数
     //原始数据
     private final String                             serviceID;                                   //服务ID
     private final String                             unitName;                                    //服务所属单元
@@ -64,10 +63,9 @@ public class AddressBucket {
     private List<InterAddress>                       availableAddresses;                          //所有可用地址（包括本地单元）
     //
     //
-    public AddressBucket(String serviceID, String unitName, int invalidTryCount) {
+    public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
-        this.invalidTryCount = invalidTryCount;
         this.allAddressList = new ArrayList<InterAddress>();
         this.invalidAddresses = new ConcurrentHashMap<InterAddress, InvalidInfo>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
@@ -187,7 +185,7 @@ public class AddressBucket {
             }
         }
         InvalidInfo invalidInfo = null;
-        if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InvalidInfo(timeout, this.invalidTryCount))) != null) {
+        if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InvalidInfo(timeout))) != null) {
             invalidInfo.invalid(timeout);
         } else {
             try {

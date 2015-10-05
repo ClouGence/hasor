@@ -20,14 +20,14 @@ package net.hasor.rsf.rpc.event;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Events {
-    /**同步事件*/
+    /**服务发布*/
     public static final String ServiceProvider = "ServiceProvider";
-    /**同步事件*/
+    /**服务订阅*/
     public static final String ServiceCustomer = "ServiceCustomer";
-    /**同步事件*/
+    /**服务卸载*/
     public static final String UnService       = "UnService";
-    /**同步事件*/
+    /**应用下线*/
     public static final String Shutdown        = "Shutdown";
-    /**同步事件*/
+    /**应用启动*/
     public static final String StartUp         = "StartUp";
 }

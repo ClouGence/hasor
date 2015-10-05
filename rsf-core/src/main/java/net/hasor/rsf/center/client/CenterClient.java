@@ -83,23 +83,23 @@ public class CenterClient extends Thread implements EventListener {
                 logger.info("rsf event -> " + event);
             }
             /*  */if (Events.StartUp.equals(event)) {
-                //
+                //应用启动
                 this.onLine((RsfContext) params[0]);
             }
             if (this.online == false) {
                 return;
             }
             if (Events.Shutdown.equals(event)) {
-                //
+                //应用下线
                 this.offLine((RsfContext) params[0]);
             } else if (Events.ServiceCustomer.equals(event)) {
-                //
+                //服务订阅
                 this.serviceCustomer((RsfBindInfo<?>) params[0]);
             } else if (Events.ServiceProvider.equals(event)) {
-                //
+                //服务发布
                 this.serviceProvider((RsfBindInfo<?>) params[0]);
             } else if (Events.UnService.equals(event)) {
-                //
+                //服务卸载
                 this.unService((RsfBindInfo<?>) params[0]);
             }
         } catch (Exception e) {
@@ -194,7 +194,7 @@ public class CenterClient extends Thread implements EventListener {
     }
     //
     private void updateAddress(BasicFuture<HttpResponse> response) {
-        //TODO
+        //TODO 更新本地地址本
         System.out.println();
     }
 }

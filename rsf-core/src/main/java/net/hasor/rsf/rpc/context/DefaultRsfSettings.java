@@ -63,8 +63,8 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     //
     private String          unitName             = "local";
     private int             invalidWaitTime      = 30000;
-    private int             invalidTryCount      = 480;
     private long            refreshCacheTime     = 360000;
+    private boolean         localDiskCache       = true;
     //
     //
     //
@@ -73,83 +73,109 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         this.loadRsfConfig();
     }
     //
+    @Override
     public int getDefaultTimeout() {
         return this.defaultTimeout;
     }
+    @Override
     public RsfOptionSet getServerOption() {
         return this.serverOptionManager;
     }
+    @Override
     public RsfOptionSet getClientOption() {
         return this.clientOptionManager;
     }
+    @Override
     public byte getVersion() {
         return RSFConstants.Version_1;
     }
+    @Override
     public String getDefaultGroup() {
         return this.defaultGroup;
     }
+    @Override
     public String getDefaultVersion() {
         return this.defaultVersion;
     }
+    @Override
     public String getDefaultSerializeType() {
         return this.defaultSerializeType;
     }
+    @Override
     public int getNetworkWorker() {
         return this.networkWorker;
     }
+    @Override
     public int getNetworkListener() {
         return this.networkListener;
     }
+    @Override
     public int getQueueMaxSize() {
         return this.queueMaxSize;
     }
+    @Override
     public int getQueueMinPoolSize() {
         return this.queueMinPoolSize;
     }
+    @Override
     public int getQueueMaxPoolSize() {
         return this.queueMaxPoolSize;
     }
+    @Override
     public long getQueueKeepAliveTime() {
         return this.queueKeepAliveTime;
     }
+    @Override
     public int getRequestTimeout() {
         return this.requestTimeout;
     }
+    @Override
     public int getMaximumRequest() {
         return this.maximumRequest;
     }
+    @Override
     public SendLimitPolicy getSendLimitPolicy() {
         return this.sendLimitPolicy;
     }
+    @Override
     public String getBindAddress() {
         return this.bindAddress;
     }
+    @Override
     public int getBindPort() {
         return this.bindPort;
     }
+    @Override
     public String getCenterAddress() {
         return this.centerAddress;
     }
+    @Override
     public int getCenterPort() {
         return this.centerPort;
     }
+    @Override
     public int getCenterInterval() {
         return this.centerInterval;
     }
+    @Override
     public int getConnectTimeout() {
         return this.connectTimeout;
     }
+    @Override
     public String getUnitName() {
         return this.unitName;
     }
-    public int getInvalidTryCount() {
-        return this.invalidTryCount;
-    }
+    @Override
     public int getInvalidWaitTime() {
         return this.invalidWaitTime;
     }
+    @Override
     public long getRefreshCacheTime() {
         return this.refreshCacheTime;
+    }
+    @Override
+    public boolean islocalDiskCache() {
+        return this.localDiskCache;
     }
     //
     public OptionManager getServerOptionManager() {
@@ -213,8 +239,8 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
         this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);
-        this.invalidTryCount = getInteger("hasor.rsfConfig.addressPool.invalidTryCount", 240);
         this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
+        this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         logger.info("loadRsfConfig complete!");
     }
 }

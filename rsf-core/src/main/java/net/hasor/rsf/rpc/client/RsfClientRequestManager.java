@@ -129,7 +129,7 @@ public class RsfClientRequestManager {
      */
     public void tryAgain(long requestID) {
         this.putResponse(requestID, new RsfException(ProtocolStatus.ChooseOther, "Server response  ChooseOther!"));
-        System.out.println("RequestID:" + requestID + " -> ChooseOther"); //TODO
+        System.out.println("RequestID:" + requestID + " -> ChooseOther"); //TODO ChooseOther机制的实现
     }
     //
     /**负责客户端引发的超时逻辑。*/

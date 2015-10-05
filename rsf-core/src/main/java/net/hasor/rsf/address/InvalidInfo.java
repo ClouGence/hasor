@@ -22,27 +22,26 @@ package net.hasor.rsf.address;
 public class InvalidInfo {
     private long timeoutPoint;
     private int  tryCount;
-    private int  maxTryCount;
     //
-    public InvalidInfo(long timeout, int maxTryCount) {
+    public InvalidInfo(long timeout) {
         this.timeoutPoint = System.currentTimeMillis() + timeout;
         this.tryCount = 0;
-        this.maxTryCount = maxTryCount;
     }
     public void invalid(long timeout) {
-        if (this.tryCount >= this.maxTryCount) {
-            return;
-        }
         if (this.timeoutPoint > System.currentTimeMillis()) {
             this.tryCount++;
         }
         this.timeoutPoint = System.currentTimeMillis() + timeout;
     }
     public boolean reTry() {
-        if (this.tryCount >= this.maxTryCount || this.timeoutPoint > System.currentTimeMillis()) {
+        if (this.timeoutPoint > System.currentTimeMillis()) {
             return false;
         }
         this.tryCount = 0;
         return true;
+    }
+    @Override
+    public String toString() {
+        return "InvalidInfo[tryCount = " + this.tryCount + " ]";
     }
 }

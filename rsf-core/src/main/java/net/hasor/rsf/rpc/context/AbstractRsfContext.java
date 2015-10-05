@@ -22,7 +22,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
-import net.hasor.core.event.StandardEventManager;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
@@ -50,7 +49,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     private EventLoopGroup          workLoopGroup;
     private RsfClientRequestManager requestManager;
     private RsfClientChannelManager channelManager;
-    private EventContext            eventContext;
     //
     protected void initContext(RsfSettings rsfSettings) throws IOException {
         logger.info("rsfContext init.");
@@ -73,8 +71,6 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.requestManager = new RsfClientRequestManager(this);
         this.channelManager = new RsfClientChannelManager(this);
         //
-        int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
-        this.eventContext = new StandardEventManager(eventThreadPoolSize);
     }
     /**序列化反序列化使用的类加载器*/
     public ClassLoader getClassLoader() {
@@ -106,7 +102,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     /** @return 获取事件管理器。*/
     public EventContext getEventContext() {
-        return this.eventContext;
+        return this.rsfEnvironment.getEventContext();
     }
     /**
      * 获取{@link Executor}用于安排执行任务。

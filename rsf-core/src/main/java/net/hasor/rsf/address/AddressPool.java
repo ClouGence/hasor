@@ -35,6 +35,7 @@ import org.more.util.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
@@ -44,6 +45,7 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.rpc.context.RsfEnvironment;
+import net.hasor.rsf.rpc.event.Events;
 /**
  * 服务地址池
  * @version : 2014年9月12日
@@ -71,20 +73,19 @@ public class AddressPool implements Runnable {
         while (true) {
             try {
                 Thread.sleep(refreshCacheTime);
-                logger.info("refreshCacheTime({}) timeup -> refreshCache.", refreshCacheTime);
-                this.refreshCache();
-                //
-                if (nextCheckSavePoint < System.currentTimeMillis()) {
-                    nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);//1小时
-                    try {
-                        this.saveAddress();
-                    } catch (IOException e) {
-                        logger.error("saveAddress error {} -> {}", e.getMessage(), e);
-                        e.printStackTrace();
-                    }
-                }
             } catch (InterruptedException e) {
                 /**/
+            }
+            logger.info("refreshCacheTime({}) timeup -> refreshCache.", refreshCacheTime);
+            this.refreshCache();
+            //
+            if (this.rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
+                nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);//1小时
+                try {
+                    this.saveAddress();
+                } catch (IOException e) {
+                    logger.error("saveAddress error {} -> {}", e.getMessage(), e);
+                }
             }
         }
     }
@@ -150,10 +151,15 @@ public class AddressPool implements Runnable {
         this.timer = new Thread(this);
         this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
         this.timer.setDaemon(true);
-        logger.info("start refreshCacheTime[{}] Thread.", this.timer.getName());
-        this.timer.start();
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
         this.rulerCache.reset();
+        //
+        this.rsfEnvironment.getEventContext().pushListener(Events.StartUp, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                logger.info("start refreshCacheTime[{}] Thread.", timer.getName());
+                timer.start();
+            }
+        });
     }
     //
     /**获取本机所属单元*/
@@ -201,8 +207,7 @@ public class AddressPool implements Runnable {
         if (bucket == null) {
             /*在并发情况下,invalidAddress可能正打算读取AddressBucket,因此要锁住poolLock*/
             synchronized (this.poolLock) {
-                int invalidTryCount = this.rsfSettings.getInvalidTryCount();
-                AddressBucket newBucket = new AddressBucket(serviceID, this.unitName, invalidTryCount);
+                AddressBucket newBucket = new AddressBucket(serviceID, this.unitName);
                 bucket = this.addressPool.putIfAbsent(serviceID, newBucket);
                 if (bucket == null) {
                     bucket = newBucket;

@@ -28,7 +28,7 @@ import org.junit.Test;
 public class AddressBucketTest {
     @Test
     public void bucketTest() throws Throwable {
-        final AddressBucket bucket = new AddressBucket("myService", "wtc1",1000);
+        final AddressBucket bucket = new AddressBucket("myService", "wtc1");
         //
         new Thread() { public void run() { this.setName("T1"); printAddress(bucket); }; }.start();
         new Thread() { public void run() { this.setName("T2"); printAddress(bucket); }; }.start();

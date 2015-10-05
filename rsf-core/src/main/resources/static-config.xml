@@ -58,14 +58,14 @@
 				<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
 			</route.flowcontrol>
 			
-			<!-- 地址池配置 -->
+			<!-- 地址本 -->
 			<addressPool>
+				<!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇） -->
+				<localDiskCache>true</localDiskCache>
 				<!-- 自动刷新地址本缓存的时间，默认6分钟。 -->
 				<refreshCacheTime>360000</refreshCacheTime>
 				<!-- 获取地址失效之后，等待重新尝试连接的时间(毫秒)。 -->
 				<invalidWaitTime>60000</invalidWaitTime>
-				<!-- 获取当地址失效之后重试的次数(每次重试都要等待一段时间)。 -->
-				<invalidTryCount>240</invalidTryCount>
 			</addressPool>
 		</rsfConfig>
 	</hasor>
