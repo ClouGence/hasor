@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.netty;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.CombinedChannelDuplexHandler;
 /**
  * 
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
+@ChannelHandler.Sharable
 public final class RSFCodec extends CombinedChannelDuplexHandler<RSFProtocolDecoder, RSFProtocolEncoder> {
     public RSFCodec() {
         this(16777216);// 16MB
