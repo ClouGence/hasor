@@ -43,7 +43,7 @@ public class SimpleSettingsTest {
         logger.info("my Age is {}.", myAge);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday");
-        logger.info("my Birthday is {}.", myBirthday);//TODO 需要解决通用格式转换问题
+        logger.info("my Birthday is {}.", myBirthday);//需要解决通用格式转换问题
         //
         String myWork = settings.getString("mySelf.myWork");
         logger.info("my Work is {}.", myWork);

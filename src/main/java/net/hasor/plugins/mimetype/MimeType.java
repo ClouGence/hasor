@@ -20,6 +20,8 @@ package net.hasor.plugins.mimetype;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface MimeType {
+    /**获取上下文*/
+    public Object getContent();
     /**获取MimeType类型*/
     public String getMimeType(String suffix);
 }
