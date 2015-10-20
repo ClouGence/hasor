@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import org.more.util.ExceptionUtils;
+import static net.hasor.core.EventContext.ContextEvent_Shutdown;
+import static net.hasor.core.EventContext.ContextEvent_Started;
 import net.hasor.core.context.ContextData;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import org.more.util.ExceptionUtils;
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
@@ -34,7 +36,7 @@ public abstract class Hasor {
             return aware;
         }
         Hasor.assertIsNotNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(EventContext.ContextEvent_Started, new EventListener() {
+        env.getEventContext().pushListener(ContextEvent_Started, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
                 aware.setAppContext((AppContext) params[0]);
             }
@@ -42,19 +44,29 @@ public abstract class Hasor {
         return aware;
     }
     public static <T extends EventListener> T pushStartListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(EventContext.ContextEvent_Started, eventListener);
+        env.getEventContext().pushListener(ContextEvent_Started, eventListener);
         return eventListener;
     }
     public static <T extends EventListener> T pushShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(EventContext.ContextEvent_Shutdown, eventListener);
+        env.getEventContext().pushListener(ContextEvent_Shutdown, eventListener);
         return eventListener;
     }
     public static <T extends EventListener> T addStartListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(EventContext.ContextEvent_Started, eventListener);
+        env.getEventContext().addListener(ContextEvent_Started, eventListener);
         return eventListener;
     }
+    public static Module onStart(Environment env, final Module atModule) {
+        pushStartListener(env, new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                if (atModule instanceof StartModule) {
+                    ((StartModule) atModule).onStart((AppContext) params[0]);
+                }
+            }
+        });
+        return atModule;
+    }
     public static <T extends EventListener> T addShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(EventContext.ContextEvent_Shutdown, eventListener);
+        env.getEventContext().addListener(ContextEvent_Shutdown, eventListener);
         return eventListener;
     }
     //

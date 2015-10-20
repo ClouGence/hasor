@@ -27,7 +27,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Settings;
-import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextShutdownListener;
@@ -267,7 +266,7 @@ public abstract class TemplateAppContext implements AppContext {
     }
     //
     /*------------------------------------------------------------------------------------Process*/
-    /**查找Module。*/
+    /**查找Module（由Module初始化的子Module不再查找范围内）。*/
     protected Module[] findModules() {
         ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
@@ -394,6 +393,9 @@ public abstract class TemplateAppContext implements AppContext {
         }
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
+        //
+        /*确保由代码加载的module也可以接收到onStart方法的调用。*/
+        Hasor.onStart(this.getEnvironment(), module);
     }
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
@@ -432,11 +434,6 @@ public abstract class TemplateAppContext implements AppContext {
         logger.info("doStartCompleted now.");
         doStartCompleted();/*用于扩展*/
         //
-        for (Module module : findModules) {
-            if (module instanceof StartModule) {
-                ((StartModule) module).onStart(this);
-            }
-        }
         /*5.打印状态*/
         logger.info("doStart completed!");
         logger.info("Hasor Started!");

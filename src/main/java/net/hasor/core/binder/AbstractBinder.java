@@ -19,17 +19,14 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.StartModule;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.context.BeanBuilder;
 import net.hasor.core.context.ContextData;
@@ -61,14 +58,8 @@ public abstract class AbstractBinder implements ApiBinder {
     public void installModule(final Module module) throws Throwable {
         logger.info("installModule ->" + module);
         module.loadModule(this);
-        //
-        Hasor.addStartListener(this.getEnvironment(), new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                if (module instanceof StartModule) {
-                    ((StartModule) module).onStart((AppContext) params[0]);
-                }
-            }
-        });
+        /*确保由代码加载的module也可以接收到onStart方法的调用。*/
+        Hasor.onStart(this.getEnvironment(), module);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

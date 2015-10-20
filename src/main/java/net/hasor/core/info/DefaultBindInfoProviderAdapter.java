@@ -32,18 +32,18 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     @Override
     public void setInitParam(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();//TODO
     }
     @Override
     public void setInitParam(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();//TODO
     }
     @Override
     public void addInject(final String property, final Provider<?> valueProvider) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();//TODO
     }
     @Override
     public void addInject(final String property, final BindInfo<?> valueInfo) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();//TODO
     }
 }

@@ -7,6 +7,8 @@
     03.AbstractEnvironment类的initEnvironment方法增加Settings类型参数。createSettings方法不再属于AbstractEnvironment的抽象方法。
     04.StandardEnvironment类增加Settings类型参数的构造方法。
     05.MimeType接口增加getContent()方法。
+    06.原有模块在实现 StartModule 接口时，如果是通过启动参数或者配置方式的模块，器onStart调用时间点在“ContextEvent_Started”事件之后。
+        - 现改为引发“ContextEvent_Started”事件时。
 
 ===== Hasor-Core v1.2.0
 * 新增:
