@@ -30,10 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import org.more.util.StringUtils;
-import org.more.util.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.BindCenter;
@@ -42,10 +38,17 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
+import net.hasor.rsf.address.route.rule.ArgsKey;
+import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.rpc.context.RsfEnvironment;
 import net.hasor.rsf.rpc.event.Events;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.more.util.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务地址池
  * @version : 2014年9月12日
@@ -61,7 +64,9 @@ public class AddressPool implements Runnable {
     //
     private final AddressCacheResult                   rulerCache;
     private RuleParser                                 ruleParser;
+    private final ArgsKey                              argsKey;
     private volatile FlowControlRef                    flowControlRef;                                   //默认流控规则引用
+    private volatile ScriptResource                    scriptResourcesRef;
     private final Object                               poolLock;
     private final Thread                               timer;
     //
@@ -160,6 +165,23 @@ public class AddressPool implements Runnable {
                 timer.start();
             }
         });
+        //
+        String argsKeyType = this.rsfSettings.getString("hasor.rsfConfig.route.argsKey", DefaultArgsKey.class.getName());
+        logger.info("argsKey type is {}", argsKeyType);
+        try {
+            Class<?> type = Class.forName(argsKeyType);
+            this.argsKey = (ArgsKey) type.newInstance();
+        } catch (Throwable e) {
+            logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+        //
+        this.scriptResourcesRef = new ScriptResource();
+    }
+    //
+    /**获取环境*/
+    public RsfEnvironment getRsfEnvironment() {
+        return this.rsfEnvironment;
     }
     //
     /**获取本机所属单元*/
@@ -275,6 +297,37 @@ public class AddressPool implements Runnable {
             }
         }
     }
+    /**用新的路由地址计算脚本。
+     * @param serviceID 要更新的服务。
+     * @param scriptType 要更新的脚本类型。
+     * @param script 脚本资源位置。
+     */
+    public void refreshDefaultRouteScript(RouteScriptTypeEnum scriptType, String script) throws IOException {
+        if (scriptType == null || StringUtils.isBlank(script)) {
+            return;
+        }
+        ScriptResource resource = new ScriptResource(this.scriptResourcesRef);
+        RouteScriptTypeEnum.updateScript(scriptType, script, resource);
+        this.scriptResourcesRef = resource;
+        this.refreshCache();
+    }
+    /**用新的路由地址计算脚本。
+     * @param serviceID 要更新的服务。
+     * @param scriptType 要更新的脚本类型。
+     * @param script 脚本资源位置。
+     */
+    public void refreshRouteScript(String serviceID, RouteScriptTypeEnum scriptType, String script) throws IOException {
+        if (scriptType == null || StringUtils.isBlank(script) || StringUtils.isBlank(serviceID)) {
+            return;
+        }
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket != null) {
+            ScriptResource resource = new ScriptResource(bucket.getScriptResourcesRef());
+            RouteScriptTypeEnum.updateScript(scriptType, script, resource);
+            bucket.setScriptResourcesRef(resource);
+            this.refreshCache();
+        }
+    }
     private FlowControlRef paselowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
             logger.error("flowControl body format error.");
@@ -362,8 +415,19 @@ public class AddressPool implements Runnable {
         return doCallAddress;
     }
     //
+    public ArgsKey getArgsKey() {
+        return this.argsKey;
+    }
     @Override
     public String toString() {
         return "AddressPool[" + this.unitName + "]";
+    }
+    public ScriptResource getScriptResources(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        ScriptResource script = this.scriptResourcesRef;
+        if (bucket != null && bucket.getScriptResourcesRef() != null) {
+            script = bucket.getScriptResourcesRef();
+        }
+        return script;
     }
 }

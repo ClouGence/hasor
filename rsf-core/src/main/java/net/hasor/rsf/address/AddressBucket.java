@@ -52,6 +52,7 @@ public class AddressBucket {
     protected Logger                                 logger = LoggerFactory.getLogger(getClass());
     //流控规则
     private volatile FlowControlRef                  flowControlRef;                              //默认流控规则引用
+    private volatile ScriptResource                  scriptResourcesRef;
     //原始数据
     private final String                             serviceID;                                   //服务ID
     private final String                             unitName;                                    //服务所属单元
@@ -254,5 +255,11 @@ public class AddressBucket {
     /**设置流控规则*/
     public void setFlowControlRef(FlowControlRef flowControlRef) {
         this.flowControlRef = flowControlRef;
+    }
+    public ScriptResource getScriptResourcesRef() {
+        return scriptResourcesRef;
+    }
+    public void setScriptResourcesRef(ScriptResource scriptResourcesRef) {
+        this.scriptResourcesRef = scriptResourcesRef;
     }
 }

@@ -51,12 +51,19 @@
 				<timeWindow>10</timeWindow> <!-- 时间窗口 -->
 			</defaultSpeedFlowControl>
 
-			<!-- 流控 & 路由规则 -->
-			<route.flowcontrol>
-				<random>net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl</random>
-				<speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
-				<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
-			</route.flowcontrol>
+			<!-- 流控 & 路由 -->
+			<route>
+				<flowcontrol>
+					<!-- 随机选址 -->
+					<random>net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl</random>
+					<!-- QoS速率 -->
+					<speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
+					<!-- 单元化地址本计算 -->
+					<unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
+				</flowcontrol>
+				<!-- 参数级路由计算，参数key生成器 -->
+				<argsKey>net.hasor.rsf.address.route.rule.DefaultArgsKey</argsKey>
+			</route>
 			
 			<!-- 地址本 -->
 			<addressPool>
