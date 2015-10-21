@@ -66,7 +66,7 @@ public class AddressPool implements Runnable {
     private RuleParser                                 ruleParser;
     private final ArgsKey                              argsKey;
     private volatile FlowControlRef                    flowControlRef;                                   //默认流控规则引用
-    private volatile ScriptResource                    scriptResourcesRef;
+    private volatile ScriptResourceRef                 scriptResourcesRef;
     private final Object                               poolLock;
     private final Thread                               timer;
     //
@@ -176,7 +176,7 @@ public class AddressPool implements Runnable {
             throw ExceptionUtils.toRuntimeException(e);
         }
         //
-        this.scriptResourcesRef = new ScriptResource();
+        this.scriptResourcesRef = new ScriptResourceRef();
     }
     //
     /**获取环境*/
@@ -307,7 +307,7 @@ public class AddressPool implements Runnable {
         if (scriptType == null || StringUtils.isBlank(script)) {
             return;
         }
-        ScriptResource resource = new ScriptResource(this.scriptResourcesRef);
+        ScriptResourceRef resource = new ScriptResourceRef(this.scriptResourcesRef);
         RouteScriptTypeEnum.updateScript(scriptType, script, resource);
         this.scriptResourcesRef = resource;
         this.refreshCache();
@@ -324,7 +324,7 @@ public class AddressPool implements Runnable {
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket != null) {
             logger.info("service {} refreshRouteScript.", serviceID);
-            ScriptResource resource = new ScriptResource(bucket.getScriptResourcesRef());
+            ScriptResourceRef resource = new ScriptResourceRef(bucket.getScriptResourcesRef());
             RouteScriptTypeEnum.updateScript(scriptType, script, resource);
             bucket.setScriptResourcesRef(resource);
             this.refreshCache();
@@ -425,9 +425,9 @@ public class AddressPool implements Runnable {
     public String toString() {
         return "AddressPool[" + this.unitName + "]";
     }
-    public ScriptResource getScriptResources(String serviceID) {
+    public ScriptResourceRef getScriptResources(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
-        ScriptResource script = this.scriptResourcesRef;
+        ScriptResourceRef script = this.scriptResourcesRef;
         if (bucket != null && bucket.getScriptResourcesRef() != null) {
             script = bucket.getScriptResourcesRef();
         }

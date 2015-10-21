@@ -29,12 +29,15 @@ import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
+import net.hasor.rsf.address.RouteScriptTypeEnum;
+import net.hasor.rsf.address.ScriptResourceRef;
 import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.domain.FilterDefine;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.FormatException;
 import org.more.RepeateException;
+import org.more.util.StringUtils;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -95,6 +98,7 @@ public class RsfBindBuilder implements RsfBinder {
         private final BindServiceDefine<T> serviceDefine;
         private final Set<URI>             hostAddressSet;
         private String                     flowControl;
+        private ScriptResourceRef          scriptRef;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
             this.serviceDefine = new BindServiceDefine<T>(serviceType, getContext());
@@ -109,6 +113,7 @@ public class RsfBindBuilder implements RsfBinder {
             domain.setClientTimeout(serviceInfo.clientTimeout());
             //
             this.hostAddressSet = new HashSet<URI>();
+            this.scriptRef = new ScriptResourceRef();
         }
         //
         @Override
@@ -217,11 +222,29 @@ public class RsfBindBuilder implements RsfBinder {
             getContext().getBindCenter().publishService(this.serviceDefine, this.serviceDefine.getCustomerProvider());
             getContext().getAddressPool().newAddress(this.serviceDefine, this.hostAddressSet);
             getContext().getAddressPool().refreshFlowControl(this.flowControl, this.serviceDefine.getBindID());
+            if (StringUtils.isNotBlank(this.scriptRef.serviceLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ServiceLevel, this.scriptRef.serviceLevel);
+            if (StringUtils.isNotBlank(this.scriptRef.methodLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.MethodLevel, this.scriptRef.methodLevel);
+            if (StringUtils.isNotBlank(this.scriptRef.argsLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ArgsLevel, this.scriptRef.argsLevel);
             return this.serviceDefine;
         }
         @Override
         public void updateRoute(String flowControl) {
             this.flowControl = flowControl;
+        }
+        @Override
+        public void updateAddresServiceScript(String scriptBody) {
+            this.scriptRef.serviceLevel = scriptBody;
+        }
+        @Override
+        public void updateAddresMethodScript(String scriptBody) {
+            this.scriptRef.methodLevel = scriptBody;
+        }
+        @Override
+        public void updateAddresArgsScript(String scriptBody) {
+            this.scriptRef.argsLevel = scriptBody;
         }
     }
 }

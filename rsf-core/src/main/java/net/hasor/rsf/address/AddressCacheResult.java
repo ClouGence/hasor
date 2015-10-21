@@ -105,7 +105,7 @@ class AddressCacheResult {
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
             RsfBindInfo<Object> binderInfo = this.bindCenter.getService(serviceID);
-            ScriptResource scriptName = this.addressPool.getScriptResources(serviceID);
+            ScriptResourceRef scriptName = this.addressPool.getScriptResources(serviceID);
             if (binderInfo == null) {
                 continue;
             }

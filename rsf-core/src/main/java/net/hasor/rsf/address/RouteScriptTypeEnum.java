@@ -39,7 +39,7 @@ public enum RouteScriptTypeEnum {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
     //
-    public static void updateScript(RouteScriptTypeEnum scriptType, String script, ScriptResource data) {
+    public static void updateScript(RouteScriptTypeEnum scriptType, String script, ScriptResourceRef data) {
         /*  */if (RouteScriptTypeEnum.ServiceLevel.equals(scriptType)) {
             data.serviceLevel = script;
         } else if (RouteScriptTypeEnum.MethodLevel.equals(scriptType)) {
@@ -48,15 +48,4 @@ public enum RouteScriptTypeEnum {
             data.argsLevel = script;
         }
     }
-}
-class ScriptResource {
-    public ScriptResource() {}
-    public ScriptResource(ScriptResource scriptResourcesRef) {
-        this.serviceLevel = scriptResourcesRef.serviceLevel;
-        this.methodLevel = scriptResourcesRef.methodLevel;
-        this.argsLevel = scriptResourcesRef.argsLevel;
-    }
-    public String serviceLevel = null; //服务级
-    public String methodLevel  = null; //方法级
-    public String argsLevel    = null; //参数级
 }

@@ -165,7 +165,13 @@ public interface RsfBinder {
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
         //
-        /**更新本地默认路由策略*/
+        /**更新服务地址本计算规则（服务级）*/
+        public void updateAddresServiceScript(String scriptBody);
+        /**更新本地方法级地址计算脚本。*/
+        public void updateAddresMethodScript(String scriptBody);
+        /**更新本地参数级地址计算脚本。*/
+        public void updateAddresArgsScript(String scriptBody);
+        /**更新服务路由策略*/
         public void updateRoute(String flowControl);
     }
     //
