@@ -291,6 +291,7 @@ public class AddressPool implements Runnable {
         if (!StringUtils.isBlank(serviceID)) {
             AddressBucket bucket = this.addressPool.get(serviceID);
             if (bucket != null) {
+                logger.info("service {} refreshFlowControl.", serviceID);
                 FlowControlRef flowControlRef = paselowControl(flowControl);
                 bucket.setFlowControlRef(flowControlRef);
                 this.refreshCache();
@@ -322,6 +323,7 @@ public class AddressPool implements Runnable {
         }
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket != null) {
+            logger.info("service {} refreshRouteScript.", serviceID);
             ScriptResource resource = new ScriptResource(bucket.getScriptResourcesRef());
             RouteScriptTypeEnum.updateScript(scriptType, script, resource);
             bucket.setScriptResourcesRef(resource);
@@ -381,6 +383,7 @@ public class AddressPool implements Runnable {
         synchronized (this.poolLock) {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
+                logger.info("service {} refreshCache.", bucketKey);
                 this.addressPool.get(bucketKey).refreshAddress();//刷新地址计算结果
             }
             this.rulerCache.reset();

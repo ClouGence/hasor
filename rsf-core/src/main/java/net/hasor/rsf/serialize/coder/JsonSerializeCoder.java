@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address.route.rule;
+package net.hasor.rsf.serialize.coder;
+import java.io.IOException;
+import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.serialize.SerializeCoder;
 import org.more.json.JSON;
 /**
- * 将参数映射为一个Key.
- * @version : 2015年4月16日
+ * 
+ * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultArgsKey implements ArgsKey {
-    public Object eval(Object[] args) {
-        return JSON.toString(args);
+public class JsonSerializeCoder implements SerializeCoder {
+    public byte[] encode(Object object) throws IOException {
+        String text = JSON.toString(object);
+        return text.getBytes(RSFConstants.DEFAULT_CHARSET);
+    }
+    //
+    public Object decode(byte[] bytes) throws IOException {
+        return JSON.parse(new String(bytes));
     }
 }
