@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.plugins.result;
+package net.hasor.plugins.result;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.WebCall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
- * @version : 2013-6-5
- * @author 赵永春 (zyc@hasor.net)
- */
-public class RedirectResultProcess implements ResultProcess {
+* 
+* @version : 2013-6-5
+* @author 赵永春 (zyc@hasor.net)
+*/
+public class ForwordResultProcess implements ResultProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object onThrowable(Throwable throwable, WebCall call) throws Throwable {
         throw throwable;
@@ -33,17 +34,14 @@ public class RedirectResultProcess implements ResultProcess {
         if (result == null) {
             return result;
         }
+        HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
         //
-        if (response != null && response.isCommitted() == false) {
+        if (request != null && response != null && response.isCommitted() == false) {
             if (logger.isDebugEnabled()) {
-                logger.debug("redirect to %s.", result);
+                logger.debug("forword to %s.", result);
             }
-            response.sendRedirect(result.toString());
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("no redirect, response isCommitted!");
-            }
+            request.getRequestDispatcher(result.toString()).forward(request, response);
         }
         return result;
     }

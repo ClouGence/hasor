@@ -1,6 +1,7 @@
 ﻿===== Hasor-Core v1.2.1
 * 新增:
     01.新增 @Inject 注解方式自动注入。
+    02.将jetty的JSON解析器代码添加到Hasor工具代码中，位于包“org.more.json”。
 * 改进:
     01.使用JDK1.7重新编译。
     02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
@@ -9,6 +10,7 @@
     05.MimeType接口增加getContent()方法。
     06.原有模块在实现 StartModule 接口时，如果是通过启动参数或者配置方式的模块，器onStart调用时间点在“ContextEvent_Started”事件之后。
         - 现改为引发“ContextEvent_Started”事件时。
+    07.MVC的插件分离成独立插件。
 
 ===== Hasor-Core v1.2.0
 * 新增:

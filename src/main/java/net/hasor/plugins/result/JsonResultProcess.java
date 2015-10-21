@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.plugins.result;
-import javax.servlet.http.HttpServletRequest;
+package net.hasor.plugins.result;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.mvc.ResultProcess;
 import net.hasor.mvc.WebCall;
+import org.more.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
-* 
-* @version : 2013-6-5
-* @author 赵永春 (zyc@hasor.net)
-*/
-public class ForwordResultProcess implements ResultProcess {
+ * 
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class JsonResultProcess implements ResultProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public Object onThrowable(Throwable throwable, WebCall call) throws Throwable {
         throw throwable;
@@ -34,14 +35,20 @@ public class ForwordResultProcess implements ResultProcess {
         if (result == null) {
             return result;
         }
-        HttpServletRequest request = call.getHttpRequest();
         HttpServletResponse response = call.getHttpResponse();
         //
-        if (request != null && response != null && response.isCommitted() == false) {
+        if (response != null && response.isCommitted() == false) {
             if (logger.isDebugEnabled()) {
-                logger.debug("forword to %s.", result);
+                logger.debug("json to %s.", result);
             }
-            request.getRequestDispatcher(result.toString()).forward(request, response);
+            String jsonData = JSON.toString(result);
+            PrintWriter pw = response.getWriter();
+            pw.write(jsonData);
+            pw.flush();
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("no write, response isCommitted!");
+            }
         }
         return result;
     }
