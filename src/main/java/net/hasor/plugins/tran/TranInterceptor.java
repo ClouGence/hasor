@@ -22,9 +22,9 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.Manager;
+import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TranCallBack;
+import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 /**
  * 某一个数据源的事务管理器
@@ -63,26 +63,20 @@ class TranInterceptor implements MethodInterceptor, AppContextAware {
         Propagation behavior = atDefine.getPropagationStrategy().getStrategy(targetMethod);
         Isolation level = atDefine.getIsolationStrategy().getStrategy(targetMethod);
         final TranOperations around = atDefine.getAround();
-        return Manager.doTran(dataSource, behavior, level, new TranCallBack<Object>() {
-            public Object doTransaction(TransactionStatus tranStatus) throws Throwable {
-                return around.execute(tranStatus, invocation);
+        TransactionManager manager = TranManager.getManager(dataSource);
+        TransactionStatus tranStatus = null;
+        try {
+            tranStatus = manager.getTransaction(behavior, level);
+            return around.execute(tranStatus, invocation);
+        } catch (Throwable e) {
+            tranStatus.setRollbackOnly();
+            throw e;
+        } finally {
+            if (tranStatus.isCompleted() == false) {
+                manager.commit(tranStatus);
             }
-        });
+        }
         //
-        //        TransactionManager manager = Manager.getTransactionManager(dataSource);
-        //        TransactionStatus tranStatus = null;
-        //        try {
-        //            tranStatus = manager.getTransaction(propagation, isolation);
-        //            return around.execute(tranStatus, invocation);
-        //        } catch (Throwable e) {
-        //            if (tranStatus != null) {
-        //                tranStatus.setRollbackOnly();
-        //            }
-        //            throw e;
-        //        } finally {
-        //            if (tranStatus != null && !tranStatus.isCompleted()) {
-        //                manager.commit(tranStatus);
-        //            }
-        //        }
+        //
     }
 }

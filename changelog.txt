@@ -11,6 +11,8 @@
     06.原有模块在实现 StartModule 接口时，如果是通过启动参数或者配置方式的模块，器onStart调用时间点在“ContextEvent_Started”事件之后。
         - 现改为引发“ContextEvent_Started”事件时。
     07.MVC的插件分离成独立插件。
+    08.事务管理器入口类名“Manager”更名为“TranManager”。可以更好的让人理解。
+    09.事务管理增加“TransactionTemplate”接口。
 
 ===== Hasor-Core v1.2.0
 * 新增:

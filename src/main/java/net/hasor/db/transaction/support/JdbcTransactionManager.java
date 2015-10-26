@@ -32,6 +32,7 @@ import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.TransactionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -46,12 +47,14 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTransactionManager implements TransactionManager {
-    protected Logger                          logger       = LoggerFactory.getLogger(getClass());
-    private LinkedList<JdbcTransactionStatus> tStatusStack = new LinkedList<JdbcTransactionStatus>();
-    private DataSource                        dataSource   = null;
+    protected Logger                          logger              = LoggerFactory.getLogger(getClass());
+    private LinkedList<JdbcTransactionStatus> tStatusStack        = new LinkedList<JdbcTransactionStatus>();
+    private DataSource                        dataSource          = null;
+    private TransactionTemplateManager        transactionTemplate = null;
     protected JdbcTransactionManager(final DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;
+        this.transactionTemplate = new TransactionTemplateManager(this);
     }
     //
     //
@@ -370,6 +373,10 @@ public class JdbcTransactionManager implements TransactionManager {
         }
         //
         return new TransactionObject(holder, level, this.getDataSource());
+    }
+    /**获取对应的{@link TransactionTemplate}。*/
+    public TransactionTemplate getTransactionTemplate() {
+        return this.transactionTemplate;
     }
 }
 /** */
