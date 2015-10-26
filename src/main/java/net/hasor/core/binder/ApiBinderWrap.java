@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
@@ -30,7 +31,7 @@ public class ApiBinderWrap implements ApiBinder {
     private ApiBinder apiBinder = null;
     //
     public ApiBinderWrap(ApiBinder apiBinder) {
-        this.apiBinder = apiBinder;
+        this.apiBinder = Hasor.assertIsNotNull(apiBinder);
     }
     public Environment getEnvironment() {
         return this.apiBinder.getEnvironment();
