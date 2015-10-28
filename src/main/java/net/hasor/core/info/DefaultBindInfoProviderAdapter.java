@@ -16,6 +16,8 @@
 package net.hasor.core.info;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
@@ -58,6 +60,25 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Hasor.assertIsNotNull(property, "paramType parameter is null.");
         Hasor.assertIsNotNull(valueInfo, "valueInfo parameter is null.");
         this.injectProperty.put(property, new ParamInfo(null, valueInfo));
+    }
+    //
+    //
+    /**获得需要IoC的属性列表*/
+    public Map<String, Provider<?>> getPropertys(AppContext appContext) {
+        Map<String, Provider<?>> propertys = new HashMap<String, Provider<?>>();
+        for (Entry<String, ParamInfo> ent : injectProperty.entrySet()) {
+            String propKey = ent.getKey();
+            ParamInfo propVal = ent.getValue();
+            if (propVal == null) {
+                continue;
+            }
+            if (propVal.useProvider) {
+                propertys.put(propKey, propVal.valueProvider);
+            } else {
+                propertys.put(propKey, appContext.getProvider(propVal.valueInfo));
+            }
+        }
+        return propertys;
     }
 }
 class ParamInfo {

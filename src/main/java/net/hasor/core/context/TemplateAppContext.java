@@ -106,8 +106,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (provider != null) {
             return provider.get();
         }
-        DefineContainer container = getContextData().getBindInfoContainer();
-        return getBeanBuilder().getDefaultInstance(targetClass, container, this);
+        return getBeanBuilder().getDefaultInstance(targetClass, this);
     }
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
@@ -150,7 +149,7 @@ public abstract class TemplateAppContext implements AppContext {
             final AppContext appContext = this;
             targetProvider = new Provider<T>() {
                 public T get() {
-                    return getBeanBuilder().getDefaultInstance(targetClass, container, appContext);
+                    return getBeanBuilder().getDefaultInstance(targetClass, appContext);
                 }
             };
         }
@@ -162,10 +161,9 @@ public abstract class TemplateAppContext implements AppContext {
             return null;
         }
         final AppContext appContext = this;
-        final DefineContainer container = getContextData().getBindInfoContainer();
         Provider<T> provider = new Provider<T>() {
             public T get() {
-                return getBeanBuilder().getInstance(info, container, appContext);
+                return getBeanBuilder().getInstance(info, appContext);
             }
         };
         return provider;

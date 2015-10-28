@@ -32,7 +32,7 @@ public class FactoryBindInfoProviderAdapter<T> extends DefaultBindInfoProviderAd
         super(bindingType);
         this.masterLosder = masterLosder;
     }
-    private AopClassConfig engine = null;
+    private AopClassConfig engine = null;s
     /**获取用于创建Bean的 Engine。*/
     public AopClassConfig buildEngine(List<AopBindInfoAdapter> aopList) {
         if (this.engine == null) {

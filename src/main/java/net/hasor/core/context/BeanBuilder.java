@@ -30,7 +30,7 @@ public interface BeanBuilder {
      * @param bindInfo 绑定信息。
      * @return 创建并返回实例
      */
-    public <T> T getInstance(BindInfo<T> bindInfo, DefineContainer container, AppContext appContext);
+    public <T> T getInstance(BindInfo<T> bindInfo, AppContext appContext);
     /**创建一个未绑定过的类型*/
-    public <T> T getDefaultInstance(Class<T> bindType, DefineContainer container, AppContext appContext);
+    public <T> T getDefaultInstance(Class<T> bindType, AppContext appContext);
 }
