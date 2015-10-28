@@ -17,7 +17,6 @@ package net.hasor.core.scope;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.SingleProvider;
 /**
  * 单例
  * @version : 2015年6月28日

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Hasor的核心软件包，几乎所有Hasor扩展模块都会依赖到它。包含工具和 Hasor 两个部分，它是整个Hasor蓝图的基础。
- * 该软件包提供了：配置文件解析、事件、容器、IoC/Aop等核心功能。
+ * Hasor的核心软件包，所有Hasor扩展模块都会依赖到它。它提供了：Settings、Environment、Event、IoC、Aop、Scope、Binder、AppContext。
  */
 package net.hasor.core;

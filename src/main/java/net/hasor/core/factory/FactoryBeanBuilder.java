@@ -32,6 +32,7 @@ import net.hasor.core.context.DefineContainer;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.CustomerProvider;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.ScopeProvider;
 import org.more.classcode.MoreClassLoader;
 import org.more.classcode.aop.AopClassConfig;
@@ -115,11 +116,13 @@ public class FactoryBeanBuilder implements BeanBuilder {
     //
     private Object createProvider(FactoryBindInfoProviderAdapter<?> infoAdapter, BindInfo<?> bindInfo, DefineContainer container, AppContext appContext) {
         try {
+            //1.准备Aop
             List<BindInfo<AopBindInfoAdapter>> aopBindList = container.getBindInfoByType(AopBindInfoAdapter.class);
             List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
             for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
                 aopList.add(this.getInstance(info, container, appContext));
             }
+            //2.动态代理
             AopClassConfig cc = infoAdapter.buildEngine(aopList);
             Class<?> newType = null;
             if (cc.hasChange() == true) {
@@ -127,6 +130,7 @@ public class FactoryBeanBuilder implements BeanBuilder {
             } else {
                 newType = cc.getSuperClass();
             }
+            //3.创建对象
             return createObject(newType, container, appContext);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -138,17 +142,19 @@ public class FactoryBeanBuilder implements BeanBuilder {
         return targetBean;
     }
     private Object doAfter(Object targetBean, BindInfo<?> bindInfo, AppContext appContext) {
-        if (targetBean instanceof BindInfoAware) {
-            ((BindInfoAware) targetBean).setBindInfo(bindInfo);
-        }
-        if (targetBean instanceof AppContextAware) {
-            ((AppContextAware) targetBean).setAppContext(appContext);
-        }
-        //
         try {
+            //1.Aware接口的执行
+            if (targetBean instanceof BindInfoAware) {
+                ((BindInfoAware) targetBean).setBindInfo(bindInfo);
+            }
+            if (targetBean instanceof AppContextAware) {
+                ((AppContextAware) targetBean).setAppContext(appContext);
+            }
+            //2.依赖注入
             if (targetBean instanceof InjectMembers) {
                 ((InjectMembers) targetBean).doInject(appContext);
             } else {
+                /*注解注入*/
                 List<Field> fieldList = BeanUtils.findALLFields(bindInfo.getBindType());
                 for (Field field : fieldList) {
                     if (field.isAnnotationPresent(Inject.class) == false) {
@@ -159,6 +165,11 @@ public class FactoryBeanBuilder implements BeanBuilder {
                     if (obj != null) {
                         field.set(targetBean, obj);
                     }
+                }
+                /*配置注入*/
+                if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+                    DefaultBindInfoProviderAdapter
+                    //
                 }
             }
         } catch (Throwable e) {

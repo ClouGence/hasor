@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.scope;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -22,12 +22,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.SingleProvider;
+import net.hasor.core.scope.SingleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2015年7月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestScope implements Scope, Filter, AppContextAware {
+public class RequestScope implements Scope, Filter {
     public void init(FilterConfig filterConfig) throws ServletException {}
     public void destroy() {}
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -51,10 +49,7 @@ public class RequestScope implements Scope, Filter, AppContextAware {
     //
     protected Logger                        logger      = LoggerFactory.getLogger(getClass());
     private ThreadLocal<HttpServletRequest> httpRequest = new ThreadLocal<HttpServletRequest>();
-    private AppContext                      appContext;
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
+    //
     public <T> Provider<T> scope(Object key, Provider<T> provider) {
         BindInfo<?> infoKey = (BindInfo<?>) key;
         String keyStr = "RequestScope#" + infoKey.getBindID();

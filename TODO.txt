@@ -1,0 +1,4 @@
+﻿1. Hasor.createAppContext方法中创建 ContextData 对象的时机。
+2. DefaultBindInfoProviderAdapter定义的构造方法。
+3. DefaultBindInfoProviderAdapter定义的依赖注入，
+4. MVC框架的简化。

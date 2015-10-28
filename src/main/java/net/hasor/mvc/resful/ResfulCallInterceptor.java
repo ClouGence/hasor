@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support.params;
+package net.hasor.mvc.resful;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ParamCallInterceptor implements WebCallInterceptor {
+public class ResfulCallInterceptor implements WebCallInterceptor {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     /** 执行调用 */
     public Object exeCall(Object[] args, WebCall call) throws Throwable {

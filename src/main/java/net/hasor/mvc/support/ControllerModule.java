@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.mvc.support;
+import java.lang.reflect.Modifier;
 import java.util.concurrent.atomic.AtomicBoolean;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
+import net.hasor.core.ApiBinder.MetaDataBindingBuilder;
 import net.hasor.mvc.ModelController;
-import net.hasor.mvc.support.params.ParamCallInterceptor;
-import net.hasor.mvc.support.result.ResultCallInterceptor;
+import net.hasor.mvc.WebCallInterceptor;
+import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.resful.ResfulCallInterceptor;
+import net.hasor.mvc.scope.RequestScope;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /***
@@ -30,22 +35,13 @@ import net.hasor.web.WebModule;
 public abstract class ControllerModule extends WebModule {
     private static AtomicBoolean initController = new AtomicBoolean(false);
     //
-    public void loadModule(final WebApiBinder apiBinder) throws Throwable {
+    public final void loadModule(final WebApiBinder apiBinder) throws Throwable {
         logger.info("work at ControllerModule. -> {}", this.getClass());
         //1.create LoadHellper
-        LoadHellper helper = new LoadHellper() {
-            public WebApiBinder apiBinder() {
-                return apiBinder;
-            }
-            protected ControllerModule module() {
-                return ControllerModule.this;
-            }
-        };
         //2.install-避免初始化多次
         if (initController.compareAndSet(false, true)) {
             //内置插件
-            helper.loadInterceptor(ParamCallInterceptor.class);
-            helper.loadInterceptor(ResultCallInterceptor.class);
+            helper.loadInterceptor(ResfulCallInterceptor.class);
             //
             //框架初始化
             Environment env = apiBinder.getEnvironment();
@@ -72,5 +68,40 @@ public abstract class ControllerModule extends WebModule {
      */
     public MappingInfoDefine createMappingDefine(Class<? extends ModelController> clazz) {
         return new MappingInfoDefine(clazz);
+    }
+    //
+    /**装载拦截器*/
+    public void loadInterceptor(WebApiBinder apiBinder) {
+        logger.info("loadInterceptor type is {}", interceptor);
+        Environment env = this.apiBinder().getEnvironment();
+        //
+        MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
+        WebCallInterceptorDefine define = Hasor.autoAware(env, new WebCallInterceptorDefine(metaDatainfo.toInfo()));
+        apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
+    }
+    //
+    /**装载控制器*/
+    public void loadType(Class<? extends ModelController> clazz) {
+        int modifier = clazz.getModifiers();
+        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
+            return;
+        }
+        //
+        ApiBinder apiBinder = apiBinder();
+        if (clazz.isAnnotationPresent(MappingTo.class) == false) {
+            return;
+        }
+        //
+        MappingTo mto = clazz.getAnnotation(MappingTo.class);
+        logger.info("type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        MappingInfoDefine define = module().createMappingDefine(clazz);
+        apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
+        apiBinder.bindType(clazz);
+    }
+    //
+    /**通过位运算决定check是否在data里。*/
+    private static boolean checkIn(final int data, final int check) {
+        int or = data | check;
+        return or == data;
     }
 }

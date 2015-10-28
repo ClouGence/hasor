@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.core.scope;
 import net.hasor.core.Provider;
 /**
  * 单例对象的{@link Provider}封装形式。

@@ -15,6 +15,7 @@
  */
 package net.hasor.web.context;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletContext;
@@ -30,6 +31,7 @@ import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
+import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ResourcesUtils;
 /**
  * 
@@ -80,5 +82,23 @@ public class WebTemplateAppContext extends TemplateAppContext implements WebAppC
                 return getServletContext();
             }
         });
+    }
+}
+class WebContextData extends ContextData {
+    private WebStandardEnvironment environment;
+    //
+    public WebContextData(ServletContext servletContext) {
+        this.environment = new WebStandardEnvironment(servletContext);
+    }
+    public WebContextData(URI settingURI, ServletContext servletContext) throws IOException {
+        this.environment = new WebStandardEnvironment(settingURI, servletContext);
+    }
+    //
+    public WebStandardEnvironment getEnvironment() {
+        return this.environment;
+    }
+    /**获取{@link ServletContext}*/
+    public ServletContext getServletContext() {
+        return getEnvironment().getServletContext();
     }
 }
