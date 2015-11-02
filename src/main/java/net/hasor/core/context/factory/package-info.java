@@ -16,4 +16,4 @@
 /**
  * <p>Hasor创建Bean的工厂。</p>
  */
-package net.hasor.core.factory;
+package net.hasor.core.context.factory;

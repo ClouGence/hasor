@@ -378,6 +378,10 @@ public abstract class TemplateAppContext implements AppContext {
     public Environment getEnvironment() {
         return this.getContextData().getEnvironment();
     }
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader() {
+        return this.getContextData().getClassLoader();
+    }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {
         if (this.isStart()) {

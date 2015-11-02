@@ -76,6 +76,8 @@ public class MoreClassLoader extends ClassLoader {
             ci.classConfig = config;
             ci.classInfo = null;
             this.classMap.put(cname, ci);
+        } else {
+            //
         }
     }
 }

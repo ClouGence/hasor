@@ -23,6 +23,8 @@ import java.util.List;
 public interface AppContext {
     /** @return 获取 {@link Environment} */
     public Environment getEnvironment();
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader();
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
      * @param modules 启动时使用的模块。

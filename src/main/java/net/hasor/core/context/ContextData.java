@@ -17,16 +17,18 @@ package net.hasor.core.context;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.factory.FactoryBeanBuilder;
+import net.hasor.core.context.factory.FactoryBeanBuilder;
+import org.more.classcode.MoreClassLoader;
 /**
  * 负责承载Hasor {@link AppContext}的状态数据。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class ContextData {
-    private AtomicBoolean   inited    = new AtomicBoolean(false);
-    private DefineContainer container = new DefineContainer();
-    private BeanBuilder     builder   = new FactoryBeanBuilder();
+    private AtomicBoolean   inited     = new AtomicBoolean(false);
+    private DefineContainer container  = new DefineContainer();
+    private BeanBuilder     builder    = new FactoryBeanBuilder();
+    private ClassLoader     rootLosder = new MoreClassLoader();
     //
     public boolean isStart() {
         return this.inited.get();
@@ -37,6 +39,11 @@ public abstract class ContextData {
     public BeanBuilder getBeanBuilder() {
         return this.builder;
     }
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader() {
+        return this.rootLosder;
+    }
+    //
     public abstract Environment getEnvironment();
     /*---------------------------------------------------------------------------------------Life*/
     public void doInitializeCompleted(AppContext appContext) {

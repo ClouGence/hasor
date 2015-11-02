@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,6 +66,17 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     //
     //
+    /**获得需要IoC的属性列表*/
+    public Constructor<?> getConstructor(AppContext appContext) {
+        ArrayList<Integer> ints = new ArrayList<Integer>(constructorParams.keySet());
+        Collections.sort(ints);
+        int size = ints.size();
+        if (ints.isEmpty() == false && ints.get(size - 1) != (size - 1)) {
+            throw new java.lang.IllegalStateException("Constructor param index error.");
+        }
+        //TODO
+        return null;
+    }
     /**获得需要IoC的属性列表*/
     public Map<String, Provider<?>> getPropertys(AppContext appContext) {
         Map<String, Provider<?>> propertys = new HashMap<String, Provider<?>>();
