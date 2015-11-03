@@ -233,8 +233,6 @@ public interface ApiBinder {
     }
     /**属性依赖注入*/
     public interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
-        /* *启用自动装配*/
-        /* public LifeBindingBuilder autoWire();*/
         /**
          * 配置一个属性注入。
          * @param property 属性名
@@ -259,8 +257,9 @@ public interface ApiBinder {
     }
     /**负责启动之后的生命周期方法映射。*/
     public interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
-        /* *当容器启动时调用的方法*/
-        /*public LifeBindingBuilder initMethod(String methodName);*/
+        /**配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
+         * @see net.hasor.core.Init*/
+        public LifeBindingBuilder<T> initMethod(String methodName);
     }
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends MetaDataBindingBuilder<T> {

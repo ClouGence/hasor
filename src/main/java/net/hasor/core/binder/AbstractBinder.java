@@ -131,6 +131,11 @@ public abstract class AbstractBinder implements ApiBinder {
         public BindingBuilderImpl(final BindInfoBuilder<T> typeBuilder) {
             this.typeBuilder = typeBuilder;
         }
+        @Override
+        public LifeBindingBuilder<T> initMethod(String methodName) {
+            this.typeBuilder.initMethod(methodName);
+            return this;
+        }
         public MetaDataBindingBuilder<T> metaData(final String key, final Object value) {
             this.typeBuilder.setMetaData(key, value);
             return this;
@@ -172,7 +177,7 @@ public abstract class AbstractBinder implements ApiBinder {
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
                     Object defaultValue = BeanUtils.getDefaultValue(params[i]);//取得参数的默认值
-                    this.typeBuilder.setInitParam(i, params[i], new InstanceProvider<Object>(defaultValue));
+                    this.typeBuilder.setConstructor(i, params[i], new InstanceProvider<Object>(defaultValue));
                 }
                 this.initParams = params;
             }
@@ -207,14 +212,14 @@ public abstract class AbstractBinder implements ApiBinder {
             if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
             }
-            this.typeBuilder.setInitParam(index, this.initParams[index], valueInfo);
+            this.typeBuilder.setConstructor(index, this.initParams[index], valueInfo);
             return this;
         }
         public InjectConstructorBindingBuilder<T> inject(final int index, final Provider<?> valueProvider) {
             if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
             }
-            this.typeBuilder.setInitParam(index, this.initParams[index], valueProvider);
+            this.typeBuilder.setConstructor(index, this.initParams[index], valueProvider);
             return this;
         }
         public BindInfo<T> toInfo() {

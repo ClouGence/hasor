@@ -63,14 +63,14 @@ public interface BindInfoBuilder<T> {
      * @param paramType 参数类型
      * @param valueProvider 参数值
      */
-    public void setInitParam(int index, Class<?> paramType, Provider<?> valueProvider);
+    public void setConstructor(int index, Class<?> paramType, Provider<?> valueProvider);
     /**
      * 设置构造参数。
      * @param index 参数索引
      * @param paramType 参数类型
      * @param valueInfo 参数值
      */
-    public void setInitParam(int index, Class<?> paramType, BindInfo<?> valueInfo);
+    public void setConstructor(int index, Class<?> paramType, BindInfo<?> valueInfo);
     /**
      * 添加依赖注入。
      * @param property 属性名
@@ -89,4 +89,9 @@ public interface BindInfoBuilder<T> {
      * @return 返回{@link BindInfo}类型对象。
      */
     public BindInfo<T> toInfo();
+    /**
+     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
+     * @param methodName 方法名。
+     */
+    public void initMethod(String methodName);
 }

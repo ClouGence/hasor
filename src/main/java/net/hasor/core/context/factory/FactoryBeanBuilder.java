@@ -17,11 +17,14 @@ package net.hasor.core.context.factory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
@@ -78,7 +81,6 @@ public class FactoryBeanBuilder implements BeanBuilder {
                         targetType = superType;
                     }
                     T targetBean = createObject(targetType, bindInfo, appContext);
-                    doInject(targetBean, bindInfo, appContext);
                     return targetBean;
                 }
             };
@@ -86,7 +88,6 @@ public class FactoryBeanBuilder implements BeanBuilder {
             instanceProvider = new Provider<T>() {
                 public T get() {
                     T targetBean = getDefaultInstance(bindInfo.getBindType(), appContext);
-                    doInject(targetBean, bindInfo, appContext);
                     return targetBean;
                 }
             };
@@ -104,11 +105,25 @@ public class FactoryBeanBuilder implements BeanBuilder {
             return null;
         }
         T targetBean = createObject(oriType, null, appContext);
-        doInject(targetBean, null, appContext);
         return targetBean;
     }
     //
+    //
+    //
     private ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
+    /**获取用于创建Bean的 Engine。*/
+    public AopClassConfig buildEngine(Class<?> targetType, List<AopBindInfoAdapter> aopList, ClassLoader rootLosder) {
+        AopClassConfig engine = new AopClassConfig(targetType, rootLosder);
+        for (AopBindInfoAdapter aop : aopList) {
+            if (aop.getMatcherClass().matches(targetType) == false) {
+                continue;
+            }
+            AopMatcher aopMatcher = new FactoryBeanAopMatcher(aop.getMatcherMethod());
+            engine.addAopInterceptor(aopMatcher, aop);
+        }
+        return engine;
+    }
+    //
     /**创建对象*/
     private <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
         try {
@@ -151,23 +166,27 @@ public class FactoryBeanBuilder implements BeanBuilder {
             //
             //3.确定要调用的构造方法。
             Constructor<?> constructor = null;
-            Provider<?>[] params = null;
+            Provider<?>[] paramProviders = null;
             if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
                 DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-                constructor = defBinder.getConstructor(appContext);
-                constructor = newType.getConstructor(constructor.getParameterTypes());
-                params = null;//TODO xxxxx
+                constructor = defBinder.getConstructor(newType, appContext);
+                paramProviders = defBinder.getConstructorParams(newType, appContext);
             } else {
                 constructor = newType.getConstructor();
+                paramProviders = new Provider<?>[0];
             }
             //
             //4.创建对象。
-            if (params == null || params.length == 0) {
+            if (paramProviders == null || paramProviders.length == 0) {
                 T targetBean = (T) constructor.newInstance();
                 return targetBean;
             } else {
-                T targetBean = (T) constructor.newInstance(params);
-                return targetBean;
+                Object[] paramObjects = new Object[paramProviders.length];
+                for (int i = 0; i < paramProviders.length; i++) {
+                    paramObjects[i] = paramProviders[i].get();
+                }
+                T targetBean = (T) constructor.newInstance(paramObjects);
+                return doInject(targetBean, bindInfo, appContext);
             }
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -175,62 +194,65 @@ public class FactoryBeanBuilder implements BeanBuilder {
     }
     //
     /**执行依赖注入*/
-    private <T> void doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext) {
-        try {
-            //1.Aware接口的执行
-            if (targetBean instanceof BindInfoAware) {
-                ((BindInfoAware) targetBean).setBindInfo(bindInfo);
-            }
-            if (targetBean instanceof AppContextAware) {
-                ((AppContextAware) targetBean).setAppContext(appContext);
-            }
-            //2.依赖注入
-            Class<?> targetType = targetBean.getClass();
-            if (targetBean instanceof InjectMembers) {
-                ((InjectMembers) targetBean).doInject(appContext);
-            } else {
-                /*注解注入*/
-                List<Field> fieldList = BeanUtils.findALLFields(targetType);
-                for (Field field : fieldList) {
-                    if (field.isAnnotationPresent(Inject.class) == false) {
+    private <T> T doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext) throws Throwable {
+        //1.Aware接口的执行
+        if (targetBean instanceof BindInfoAware) {
+            ((BindInfoAware) targetBean).setBindInfo(bindInfo);
+        }
+        if (targetBean instanceof AppContextAware) {
+            ((AppContextAware) targetBean).setAppContext(appContext);
+        }
+        //2.依赖注入
+        Class<?> targetType = targetBean.getClass();
+        if (targetBean instanceof InjectMembers) {
+            ((InjectMembers) targetBean).doInject(appContext);
+        } else {
+            Set<String> injectFileds = new HashSet<String>();
+            /*a.配置注入*/
+            if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+                DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+                Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
+                for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {
+                    Field field = BeanUtils.getField(propItem.getKey(), targetType);
+                    Provider<?> provider = propItem.getValue();
+                    boolean noPprovider = provider == null;/*没有可注入的*/
+                    boolean hasInjected = injectFileds.contains(field.getName());/*已注入过的*/
+                    if (noPprovider || hasInjected) {
                         continue;
                     }
-                    field.setAccessible(true);
-                    Object obj = appContext.getInstance(field.getType());
-                    if (obj != null) {
-                        field.set(targetBean, obj);
-                    }
-                }
-                /*配置注入*/
-                if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
-                    DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-                    Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
-                    for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {
-                        Provider<?> provider = propItem.getValue();
-                        if (provider == null)
-                            continue;
-                        Field field = BeanUtils.getField(propItem.getKey(), targetType);
+                    if (field.isAccessible() == false) {
                         field.setAccessible(true);
-                        field.set(targetBean, ConverterUtils.convert(field.getType(), provider.get()));
                     }
+                    field.set(targetBean, ConverterUtils.convert(field.getType(), provider.get()));
+                    injectFileds.add(field.getName());
                 }
-                //
             }
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
-    }
-    //
-    /**获取用于创建Bean的 Engine。*/
-    public AopClassConfig buildEngine(Class<?> targetType, List<AopBindInfoAdapter> aopList, ClassLoader rootLosder) {
-        AopClassConfig engine = new AopClassConfig(targetType, rootLosder);
-        for (AopBindInfoAdapter aop : aopList) {
-            if (aop.getMatcherClass().matches(targetType) == false) {
-                continue;
+            /*b.注解注入*/
+            List<Field> fieldList = BeanUtils.findALLFields(targetType);
+            for (Field field : fieldList) {
+                boolean hasAnno = field.isAnnotationPresent(Inject.class);
+                boolean hasInjected = injectFileds.contains(field.getName());
+                if (hasAnno == false || hasInjected) {
+                    continue;
+                }
+                if (field.isAccessible() == false) {
+                    field.setAccessible(true);
+                }
+                Object obj = appContext.getInstance(field.getType());
+                if (obj != null) {
+                    field.set(targetBean, obj);
+                }
+                injectFileds.add(field.getName());
             }
-            AopMatcher aopMatcher = new FactoryBeanAopMatcher(aop.getMatcherMethod());
-            engine.addAopInterceptor(aopMatcher, aop);
         }
-        return engine;
+        //3.Init初始化方法。
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            Method initMethod = defBinder.getInitMethod(targetBean.getClass());
+            if (initMethod != null) {
+                initMethod.invoke(targetBean);
+            }
+        }
+        return targetBean;
     }
 }

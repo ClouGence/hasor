@@ -15,6 +15,7 @@
  */
 package net.hasor.core.info;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
 /**
  * 
  * @version : 2014年7月4日
@@ -32,6 +35,7 @@ import net.hasor.core.Provider;
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
     private Map<Integer, ParamInfo> constructorParams;
     private Map<String, ParamInfo>  injectProperty;
+    private String                  initMethod;
     //
     public DefaultBindInfoProviderAdapter() {
         this.injectProperty = new HashMap<String, ParamInfo>();
@@ -41,13 +45,13 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.setBindType(bindingType);
     }
     @Override
-    public void setInitParam(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
+    public void setConstructor(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
         Hasor.assertIsNotNull(paramType, "paramType parameter is null.");
         Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueProvider));
     }
     @Override
-    public void setInitParam(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
+    public void setConstructor(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
         Hasor.assertIsNotNull(paramType, "paramType parameter is null.");
         Hasor.assertIsNotNull(valueInfo, "valueInfo parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueInfo));
@@ -66,16 +70,36 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     //
     //
-    /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(AppContext appContext) {
+    private ConstructorInfo genConstructorInfo(AppContext appContext) throws NoSuchMethodException, SecurityException {
         ArrayList<Integer> ints = new ArrayList<Integer>(constructorParams.keySet());
         Collections.sort(ints);
+        //check
         int size = ints.size();
         if (ints.isEmpty() == false && ints.get(size - 1) != (size - 1)) {
             throw new java.lang.IllegalStateException("Constructor param index error.");
         }
-        //TODO
-        return null;
+        //
+        Class<?>[] types = new Class<?>[size];
+        Provider<?>[] providers = new Provider<?>[size];
+        for (Integer val : ints) {
+            ParamInfo pinfo = constructorParams.get(val);
+            types[val] = pinfo.paramType;
+            if (pinfo.useProvider) {
+                providers[val] = pinfo.valueProvider;
+            } else {
+                providers[val] = appContext.getProvider(pinfo.valueInfo);
+            }
+        }
+        return new ConstructorInfo(types, providers);
+    }
+    /**获得需要IoC的属性列表*/
+    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException, SecurityException {
+        Class<?>[] types = genConstructorInfo(appContext).types;
+        return targetClass.getConstructor(types);
+    }
+    /**获得需要IoC的属性列表*/
+    public Provider<?>[] getConstructorParams(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException, SecurityException {
+        return genConstructorInfo(appContext).providers;
     }
     /**获得需要IoC的属性列表*/
     public Map<String, Provider<?>> getPropertys(AppContext appContext) {
@@ -94,6 +118,31 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return propertys;
     }
+    @Override
+    public void initMethod(String methodName) {
+        this.initMethod = methodName;
+    }
+    /**获得初始化方法。*/
+    public Method getInitMethod(Class<?> targetClass) {
+        try {
+            if (StringUtils.isNotBlank(this.initMethod)) {
+                return targetClass.getMethod(this.initMethod);
+            }
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+        return null;
+    }
+}
+//
+//
+class ConstructorInfo {
+    public ConstructorInfo(Class<?>[] types, Provider<?>[] providers) {
+        this.types = types;
+        this.providers = providers;
+    }
+    public Class<?>[]    types;
+    public Provider<?>[] providers;
 }
 class ParamInfo {
     public ParamInfo(Class<?> paramType, Provider<?> valueProvider) {
