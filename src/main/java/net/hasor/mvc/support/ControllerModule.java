@@ -16,10 +16,8 @@
 package net.hasor.mvc.support;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.atomic.AtomicBoolean;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
-import net.hasor.core.ApiBinder.MetaDataBindingBuilder;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.WebCallInterceptor;
 import net.hasor.mvc.api.MappingTo;
@@ -27,6 +25,7 @@ import net.hasor.mvc.resful.ResfulCallInterceptor;
 import net.hasor.mvc.scope.RequestScope;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import net.hasor.web.binder.WebApiBinderWrap;
 /***
  * 创建MVC环境
  * @version : 2014-1-13
@@ -37,16 +36,16 @@ public abstract class ControllerModule extends WebModule {
     //
     public final void loadModule(final WebApiBinder apiBinder) throws Throwable {
         logger.info("work at ControllerModule. -> {}", this.getClass());
-        //1.create LoadHellper
+        ControllerApiBinder mvcApiBinder = new ControllerApiBinderImpl(apiBinder);
         //2.install-避免初始化多次
         if (initController.compareAndSet(false, true)) {
             //内置插件
-            helper.loadInterceptor(ResfulCallInterceptor.class);
+            mvcApiBinder.loadInterceptor(ResfulCallInterceptor.class);
             //
             //框架初始化
             Environment env = apiBinder.getEnvironment();
-            RequestScope scope = Hasor.autoAware(env, new RequestScope());
             RootController rootController = Hasor.autoAware(env, new RootController());
+            RequestScope scope = new RequestScope();
             apiBinder.bindType(RequestScope.class).toInstance(scope);
             apiBinder.bindType(RootController.class).toInstance(rootController);
             //
@@ -57,50 +56,48 @@ public abstract class ControllerModule extends WebModule {
         }
         //
         //3.load config
-        this.loadController(helper);
+        this.loadController(mvcApiBinder);
     }
     //
-    protected abstract void loadController(LoadHellper helper) throws Throwable;
-    /**
-     * 创建 {@link MappingInfoDefine}
-     * @param clazz 目标控制器类型。
-     * @return 返回mvc定义。
-     */
-    public MappingInfoDefine createMappingDefine(Class<? extends ModelController> clazz) {
-        return new MappingInfoDefine(clazz);
-    }
+    protected abstract void loadController(ControllerApiBinder apiBinder) throws Throwable;
     //
-    /**装载拦截器*/
-    public void loadInterceptor(WebApiBinder apiBinder) {
+    //
+    //
+    //
+}
+class ControllerApiBinderImpl extends WebApiBinderWrap implements ControllerApiBinder {
+    public ControllerApiBinderImpl(WebApiBinder apiBinder) {
+        super(apiBinder);
+    }
+    @Override
+    public void loadInterceptor(Class<? extends WebCallInterceptor> interceptor) {
         logger.info("loadInterceptor type is {}", interceptor);
-        Environment env = this.apiBinder().getEnvironment();
+        Environment env = this.getEnvironment();
         //
-        MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.apiBinder().bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
+        MetaDataBindingBuilder<WebCallInterceptor> metaDatainfo = this.bindType(WebCallInterceptor.class).uniqueName().to(interceptor);
         WebCallInterceptorDefine define = Hasor.autoAware(env, new WebCallInterceptorDefine(metaDatainfo.toInfo()));
-        apiBinder().bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
+        this.bindType(WebCallInterceptorDefine.class).uniqueName().toInstance(define);
     }
-    //
-    /**装载控制器*/
+    @Override
     public void loadType(Class<? extends ModelController> clazz) {
         int modifier = clazz.getModifiers();
         if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
             return;
         }
         //
-        ApiBinder apiBinder = apiBinder();
         if (clazz.isAnnotationPresent(MappingTo.class) == false) {
             return;
         }
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
         logger.info("type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        MappingInfoDefine define = module().createMappingDefine(clazz);
-        apiBinder.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
-        apiBinder.bindType(clazz);
+        MappingInfoDefine define = new MappingInfoDefine(clazz);
+        this.bindType(MappingInfoDefine.class).uniqueName().toInstance(define);
+        this.bindType(clazz);
     }
     //
     /**通过位运算决定check是否在data里。*/
-    private static boolean checkIn(final int data, final int check) {
+    private boolean checkIn(final int data, final int check) {
         int or = data | check;
         return or == data;
     }

@@ -23,7 +23,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.SingleProvider;
+import net.hasor.core.scope.SingleProvider;
 import net.test.hasor.core._03_beans.pojo.PojoBean;
 import org.junit.Test;
 /**

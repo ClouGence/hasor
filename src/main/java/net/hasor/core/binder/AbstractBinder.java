@@ -29,7 +29,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.context.BeanBuilder;
-import net.hasor.core.context.ContextData;
+import net.hasor.core.context.DataContext;
 import net.hasor.core.info.AopBindInfoAdapter;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>抽象方法 {@link #contextData()} ,会返回一个类( {@link ContextData} )
+ * <p>抽象方法 {@link #contextData()} ,会返回一个类( {@link DataContext} )
  * 用于配置Bean信息。
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
@@ -46,7 +46,7 @@ public abstract class AbstractBinder implements ApiBinder {
     private Logger logger = LoggerFactory.getLogger(getClass());
     //
     public Environment getEnvironment() {
-        return this.contextData().getEnvironment();
+        return this.dataContext().getEnvironment();
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
         if (featureType == null) {
@@ -64,11 +64,11 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
-    protected abstract ContextData contextData();
+    protected abstract DataContext dataContext();
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BeanBuilder builder = this.contextData().getBeanBuilder();
-        BindInfoBuilder<T> typeBuilder = this.contextData().getBindInfoContainer().createBuilder(type, builder);
+        BeanBuilder builder = this.dataContext().getBeanBuilder();
+        BindInfoBuilder<T> typeBuilder = this.dataContext().getBindInfoContainer().createBuilder(type, builder);
         typeBuilder.setBindID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }

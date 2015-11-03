@@ -16,7 +16,8 @@
 package net.hasor.core;
 import static net.hasor.core.EventContext.ContextEvent_Shutdown;
 import static net.hasor.core.EventContext.ContextEvent_Started;
-import net.hasor.core.context.ContextData;
+import net.hasor.core.context.DataContext;
+import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ExceptionUtils;
@@ -85,18 +86,14 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String config, final Module... modules) {
-        //
         try {
             final Environment dev = new StandardEnvironment(config);
-            final AppContext appContext = new TemplateAppContext() {
-                protected ContextData getContextData() {
-                    return new ContextData() {
-                        public Environment getEnvironment() {
-                            return dev;
-                        }
-                    };
+            final DataContext dataContext = new DataContext() {
+                public Environment getEnvironment() {
+                    return dev;
                 }
             };
+            final AppContext appContext = new StatusAppContext<DataContext>(dataContext);
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {

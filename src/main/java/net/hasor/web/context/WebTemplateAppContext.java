@@ -20,10 +20,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletContext;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.context.ContextData;
-import net.hasor.core.context.TemplateAppContext;
+import net.hasor.core.context.DataContext;
+import net.hasor.core.context.DataContextCreater;
+import net.hasor.core.context.StatusAppContext;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
@@ -38,29 +40,29 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebTemplateAppContext extends TemplateAppContext implements WebAppContext {
-    private WebContextData contextData = null;
-    public WebTemplateAppContext(String config, ServletContext servletContext) throws IOException, URISyntaxException {
-        URL resURL = ResourcesUtils.getResource(config);
-        if (resURL != null) {
-            this.contextData = new WebContextData(resURL.toURI(), servletContext);
-        } else {
-            this.contextData = new WebContextData(servletContext);
-        }
+public class WebTemplateAppContext extends StatusAppContext<WebDataContext> implements WebAppContext {
+    public WebTemplateAppContext(final String settingURI, final ServletContext servletContext) throws Throwable {
+        super(new DataContextCreater<WebDataContext>() {
+            public WebDataContext create(Environment env) throws IOException, URISyntaxException {
+                URL resURL = ResourcesUtils.getResource(settingURI);
+                if (resURL != null) {
+                    return new WebDataContext(resURL.toURI(), servletContext);
+                } else {
+                    return new WebDataContext(servletContext);
+                }
+            }
+        }, null);
     }
     //
-    protected WebContextData getContextData() {
-        return this.contextData;
-    }
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
-        return this.getContextData().getServletContext();
+        return this.getDataContext().getServletContext();
     }
     /**为模块创建ApiBinder*/
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder() {
-            protected ContextData contextData() {
-                return getContextData();
+            protected WebDataContext dataContext() {
+                return getDataContext();
             }
         };
     }
@@ -84,13 +86,13 @@ public class WebTemplateAppContext extends TemplateAppContext implements WebAppC
         });
     }
 }
-class WebContextData extends ContextData {
+class WebDataContext extends DataContext {
     private WebStandardEnvironment environment;
     //
-    public WebContextData(ServletContext servletContext) {
+    public WebDataContext(ServletContext servletContext) {
         this.environment = new WebStandardEnvironment(servletContext);
     }
-    public WebContextData(URI settingURI, ServletContext servletContext) throws IOException {
+    public WebDataContext(URI settingURI, ServletContext servletContext) throws IOException {
         this.environment = new WebStandardEnvironment(settingURI, servletContext);
     }
     //

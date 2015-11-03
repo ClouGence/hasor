@@ -16,6 +16,8 @@
 package net.hasor.core.binder;
 import java.lang.reflect.Method;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
@@ -28,6 +30,7 @@ import net.hasor.core.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderWrap implements ApiBinder {
+    protected Logger  logger    = LoggerFactory.getLogger(getClass());
     private ApiBinder apiBinder = null;
     //
     public ApiBinderWrap(ApiBinder apiBinder) {

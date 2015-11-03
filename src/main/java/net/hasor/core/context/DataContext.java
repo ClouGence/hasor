@@ -24,7 +24,7 @@ import org.more.classcode.MoreClassLoader;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ContextData {
+public abstract class DataContext {
     private AtomicBoolean   inited     = new AtomicBoolean(false);
     private DefineContainer container  = new DefineContainer();
     private BeanBuilder     builder    = new FactoryBeanBuilder();
