@@ -54,6 +54,7 @@ public class DefineContainer {
     public <T> List<BindInfo<T>> getBindInfoByType(Class<T> targetType) {
         List<String> idList = this.indexTypeMapping.get(targetType.getName());
         if (idList == null || idList.isEmpty()) {
+            logger.debug("getBindInfoByType , never define this type = {}", targetType);
             return Collections.EMPTY_LIST;
         }
         List<BindInfo<T>> resultList = new ArrayList<BindInfo<T>>();
@@ -61,6 +62,8 @@ public class DefineContainer {
             BindInfo<?> adapter = this.idDataSource.get(infoID);
             if (adapter != null) {
                 resultList.add((BindInfo<T>) adapter);
+            } else {
+                logger.debug("getBindInfoByType , cannot find {} BindInfo.", infoID);
             }
         }
         return resultList;

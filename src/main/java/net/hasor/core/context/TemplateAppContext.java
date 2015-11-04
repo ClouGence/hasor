@@ -48,6 +48,11 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     public static final String DefaultSettings = "hasor-config.xml";
     protected Logger           logger          = LoggerFactory.getLogger(getClass());
     //
+    public TemplateAppContext() {
+        /*无论容器启动关闭多少次，在虚拟机关闭的时候必须要触发一次。*/
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
+    }
+    //
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
@@ -101,12 +106,16 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         return null;
     }
     /**创建Bean。*/
-    public <T> T getInstance(final Class<T> targetClass) {
+    public <T> T getInstance(Class<T> targetClass) {
+        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         Provider<T> provider = this.getProvider(targetClass);
         if (provider != null) {
+            logger.debug("getInstance form getProvider, targetClass is {}.", targetClass);
             return provider.get();
+        } else {
+            logger.debug("getInstance form getDefaultInstance, targetClass is {}.", targetClass);
+            return getBeanBuilder().getDefaultInstance(targetClass, this);
         }
-        return getBeanBuilder().getDefaultInstance(targetClass, this);
     }
     /**创建Bean。*/
     public <T> T getInstance(final BindInfo<T> info) {
@@ -238,6 +247,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         DefineContainer container = getDataContext().getBindInfoContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
+            logger.debug("findBindingRegister , never define this bindType = {}", bindType);
             return new ArrayList<BindInfo<T>>(0);
         }
         ArrayList<BindInfo<T>> returnData = new ArrayList<BindInfo<T>>();
@@ -406,38 +416,40 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
      */
     public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
-            logger.info("Hasor started , modules is empty.");
+            logger.error("appContext is started.");
             return;
         }
         /*1.Init*/
-        logger.info("begin start , doInitialize now.");
+        logger.info("appContext -> doInitialize.");
         doInitialize();
         /*2.Bind*/
         ArrayList<Module> findModules = new ArrayList<Module>();
         findModules.addAll(Arrays.asList(this.findModules()));
         findModules.addAll(Arrays.asList(modules));
         for (Module module : findModules) {
+            logger.info("installModule -> {}", module);
             this.installModule(module);
         }
         ApiBinder apiBinder = newApiBinder(null);
-        logger.info("AppContext doBind.");
+        logger.info("appContext -> doBind.");
         doBind(apiBinder);
         /*3.引发事件*/
+        logger.info("appContext -> fireSyncEvent ,eventType = {}", EventContext.ContextEvent_Initialized);
         EventContext ec = getEnvironment().getEventContext();
         ec.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
+        logger.info("appContext -> doInitializeCompleted");
         doInitializeCompleted();
-        logger.info("doInitialize completed!");
         //
         /*3.Start*/
-        logger.info("doStart now.");
+        logger.info("appContext -> doStart");
         doStart();
         /*4.发送启动事件*/
+        logger.info("appContext -> fireSyncEvent ,eventType = {}", EventContext.ContextEvent_Started);
         ec.fireSyncEvent(EventContext.ContextEvent_Started, this);
-        logger.info("doStartCompleted now.");
+        logger.info("appContext -> doStartCompleted");
         doStartCompleted();/*用于扩展*/
         //
         /*5.打印状态*/
-        logger.info("doStart completed!");
         logger.info("Hasor Started!");
     }
     /**发送停止通知*/

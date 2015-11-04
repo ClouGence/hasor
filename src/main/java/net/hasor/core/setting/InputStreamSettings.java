@@ -62,15 +62,15 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
     @Override
     public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
-        this.cleanData();
         {
             if (this.pendingStream.isEmpty() == true) {
+                logger.info("loadSettings finish -> there is no need to be load.");
                 return;
             }
             //构建装载环境
             InputStream inStream = null;
-            //
             try {
+                logger.info("parsing...");
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
                 factory.setFeature("http://xml.org/sax/features/namespaces", true);
@@ -84,11 +84,14 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                     }
                 }
                 super.refresh();
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                logger.error("parsing failed -> " + e.getMessage(), e);
                 throw new IOException(e);
             }
         }
+        logger.info("parsing finish.");
         this.loadFinish();//完成装载
+        logger.info("loadSettings finish.");
     }
     /**准备装载*/
     protected void readyLoad() throws IOException {}

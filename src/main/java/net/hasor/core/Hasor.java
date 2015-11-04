@@ -21,12 +21,15 @@ import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import org.more.util.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Hasor {
+    protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
     /**
      * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
      * @param aware 需要被注册的 AppContextAware 接口实现对象。
@@ -87,6 +90,7 @@ public abstract class Hasor {
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String config, final Module... modules) {
         try {
+            logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
             final Environment dev = new StandardEnvironment(config);
             final DataContext dataContext = new DataContext() {
                 public Environment getEnvironment() {

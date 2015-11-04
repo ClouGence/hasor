@@ -474,7 +474,10 @@ public abstract class AbstractSettings implements Settings {
             }
             result.addAll(list);
         }
-        //F
+        //
         return result;
+    }
+    public String toString() {
+        return "Settings[" + this.getClass().getSimpleName() + "]";
     }
 }

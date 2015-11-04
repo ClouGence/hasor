@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.more.util.ResourcesUtils;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
@@ -33,27 +32,32 @@ public class StandardEnvironment extends AbstractEnvironment {
     protected StandardEnvironment() {}
     //
     public StandardEnvironment(String mainSettings) throws IOException, URISyntaxException {
-        this(ResourcesUtils.getResource(mainSettings));
+        super();
+        logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
+        Settings settings = new StandardContextSettings(mainSettings);
+        this.initEnvironment(settings);
     }
     public StandardEnvironment(File mainSettings) throws IOException {
-        this((mainSettings == null) ? null : mainSettings.toURI());
+        super();
+        logger.info("create Environment, type = StandardEnvironment, settingsType is [file] mode, mainSettings = {}", mainSettings);
+        Settings settings = new StandardContextSettings(mainSettings);
+        this.initEnvironment(settings);
     }
     public StandardEnvironment(URL mainSettings) throws URISyntaxException, IOException {
-        this((mainSettings == null) ? null : mainSettings.toURI());
+        super();
+        logger.info("create Environment, type = StandardEnvironment, settingsType is [url] mode, mainSettings = {}", mainSettings);
+        Settings settings = new StandardContextSettings(mainSettings.toURI());
+        this.initEnvironment(settings);
     }
     public StandardEnvironment(URI mainSettings) throws IOException {
-        this(createSettings(mainSettings));
+        super();
+        logger.info("create Environment, type = StandardEnvironment, settingsType is [uri] mode, mainSettings = {}", mainSettings);
+        Settings settings = new StandardContextSettings(mainSettings);
+        this.initEnvironment(settings);
     }
     public StandardEnvironment(final Settings settings) throws IOException {
         super();
-        if (settings == null) {
-            this.initEnvironment(createSettings(null));
-        } else {
-            this.initEnvironment(settings);
-        }
-    }
-    //---------------------------------------------------------------------------------Basic Method
-    protected static Settings createSettings(final URI mainSettingURI) throws IOException {
-        return new StandardContextSettings(mainSettingURI);
+        logger.info("create Environment, type = StandardEnvironment, settingsType is [Settings] mode, settings = {}", settings);
+        this.initEnvironment(settings);
     }
 }

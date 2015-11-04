@@ -87,6 +87,7 @@ public class EnvVars {
         /*单独处理RUN_PATH*/
         String runPath = new File("").getAbsolutePath();
         envMap.put("RUN_PATH", runPath);
+        logger.info("runPath at {}", runPath);
     }
     /*
      * SettingListener 接口实现
@@ -94,11 +95,13 @@ public class EnvVars {
      */
     public void reload(final Settings newConfig) {
         //1.系统环境变量 & Java系统属性
+        logger.debug("envVars.reload -> System.getenv().");
         Map<String, String> envMap = System.getenv();
         for (String key : envMap.keySet()) {
             this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
         //2.Java属性
+        logger.debug("envVars.reload -> System.getProperties().");
         Properties prop = System.getProperties();
         for (Object propKey : prop.keySet()) {
             String k = propKey.toString();
@@ -108,6 +111,7 @@ public class EnvVars {
             }
         }
         //3.Hasor 特有变量
+        logger.debug("envVars.reload -> configEnvironment().");
         this.configEnvironment(this.envMap);
         //
         /*日志输出*/

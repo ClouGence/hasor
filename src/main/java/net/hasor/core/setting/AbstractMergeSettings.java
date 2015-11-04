@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.more.json.JSON;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
 /***
@@ -43,6 +44,7 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
     }
     /**清空已经装载的所有数据。*/
     protected void cleanData() {
+        logger.info("cleanData -> clear all data.");
         this.getFullSettingsMap().clear();
         this.mergeSettings.removeAllMap();
     }
@@ -50,5 +52,10 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
         for (Map<String, SettingValue> atNS : this.namespaceSettings.values()) {
             this.mergeSettings.addMap(atNS);
         }
+    }
+    @Override
+    public String toString() {
+        String namespaces = JSON.toString(namespaceSettings.keySet());
+        return super.toString() + " , ns = " + namespaces;
     }
 }
