@@ -42,6 +42,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.constructorParams = new HashMap<Integer, ParamInfo>();
     }
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
+        this();
         this.setBindType(bindingType);
     }
     @Override

@@ -4,6 +4,7 @@
     02.新增 @Init 注解方式配置初始化方法。
     03.将jetty的JSON解析器代码添加到Hasor工具代码中，位于包“org.more.json”。
     04.新增WebApiBinderWrap类。
+    05.添加 ShutdownHook,用于处理当虚拟机关闭时{@link TemplateAppContext}的shutdown过程。
 * 改进:
     01.使用JDK1.7重新编译。
     02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
@@ -16,6 +17,8 @@
     08.事务管理器入口类名“Manager”更名为“TranManager”。可以更好的让人理解。
     09.事务管理增加“TransactionTemplate”接口。
     10.删除ResultModule类和其相关的功能，该功能不再是核心功能的一部分。
+    11.启动过程中增加了一些 log 的输出。
+    12..StandardEnvironment构造方法改进。
 
 ===== Hasor-Core v1.2.0
 * 新增:

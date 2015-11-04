@@ -37,6 +37,19 @@ public class StandardContextSettings extends InputStreamSettings {
     public static final String StaticSettingName = "static-config.xml";
     private URI                settingURI;
     //
+    private void outInitLog(String mode, Object oriResource) {
+        if (logger.isInfoEnabled()) {
+            if (this.settingURI != null) {
+                logger.info("create Settings, type = StandardContextSettings, settingsType is [{}] mode, mainSettings = {}", mode, this.settingURI);
+            } else {
+                if (oriResource == null) {
+                    logger.info("create Settings, type = StandardContextSettings, settingsType is [{}] mode, mainSettings is not specified.", mode);
+                } else {
+                    logger.error("create Settings, type = StandardContextSettings, settingsType is [{}] mode, mainSettings = {}, not found.", mode, oriResource);
+                }
+            }
+        }
+    }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings() throws IOException, URISyntaxException {
         this(StandardContextSettings.MainSettingName);
@@ -44,17 +57,24 @@ public class StandardContextSettings extends InputStreamSettings {
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
-        if (url != null)
+        if (url != null) {
             this.settingURI = url.toURI();
+        }
+        outInitLog("string", mainSettings);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final File mainSettings) throws IOException {
-        if (mainSettings != null)
+        if (mainSettings != null) {
             this.settingURI = mainSettings.toURI();
+        }
+        outInitLog("file", mainSettings);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final URI mainSettings) throws IOException {
-        this.settingURI = mainSettings;
+        if (mainSettings == null) {
+            this.settingURI = mainSettings;
+        }
+        outInitLog("uri", mainSettings);
     }
     /**获取配置文件{@link URI}。*/
     public URI getSettingURI() {
@@ -85,24 +105,34 @@ public class StandardContextSettings extends InputStreamSettings {
                 return 0;
             }
         });
-        if (streamList != null) {
+        if (streamList == null || streamList.isEmpty()) {
+            logger.warn("found nothing , use match {}", StandardContextSettings.StaticSettingName);
+        } else {
             for (URL resURL : streamList) {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
-                logger.info("load ‘{}’", resURL);
-                this.addStream(stream);
+                if (stream != null) {
+                    logger.info("found = {}", resURL);
+                    this.addStream(stream);
+                } else {
+                    logger.error("cannot be read {}", resURL);
+                }
             }
         }
         //2.装载hasor-config.xml
         URI settingConfig = getSettingURI();
         if (settingConfig != null) {
             InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
-            logger.info("load ‘{}’", settingConfig);
-            this.addStream(stream);
+            if (stream != null) {
+                logger.info("found = {}", settingConfig);
+                this.addStream(stream);
+            } else {
+                logger.error("cannot be read {}", settingConfig);
+            }
         }
     }
     @Override
     public void refresh() throws IOException {
-        logger.info("reload configuration.");
+        logger.info("refresh -> cleanData and loadSettings...");
         this.cleanData();
         this.loadSettings();
     }

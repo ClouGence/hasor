@@ -16,18 +16,20 @@
 package net.hasor.core.environment;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import net.hasor.core.Environment;
+import net.hasor.core.EventContext;
+import net.hasor.core.Settings;
+import net.hasor.core.event.StandardEventManager;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.Settings;
-import net.hasor.core.event.StandardEventManager;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Settings)}方法以初始化。
  * @version : 2013-4-9
@@ -91,15 +93,18 @@ public abstract class AbstractEnvironment implements Environment {
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
     protected final void initEnvironment(Settings settings) {
-        this.settings = settings;
-        logger.info("init Environment - settings is " + settings);
-        //
         try {
+            logger.debug("init Environment...");
+            this.settings = settings;
             this.getSettings().refresh();
+            logger.info("init Environment , use Settings = {}", settings);
         } catch (IOException e) {
+            logger.error("init Environment , has IOException -> " + e.getMessage(), e);
             throw ExceptionUtils.toRuntimeException(e);
         }
+        logger.debug("create envVars...");
         this.envVars = this.createEnvVars();
+        logger.debug("reload envVars...");
         this.envVars.reload(getSettings());
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
@@ -116,8 +121,10 @@ public abstract class AbstractEnvironment implements Environment {
                 allPack.add(pack.trim());
             }
         }
-        this.spanPackage = allPack.toArray(new String[allPack.size()]);
-        logger.info("loadPackages : " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
+        Collections.sort(spanPackagesArrays);
+        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
+        logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
     }
     //
     private static volatile long lastLong = 0;

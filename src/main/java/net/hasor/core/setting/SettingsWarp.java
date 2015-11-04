@@ -230,4 +230,8 @@ public class SettingsWarp implements Settings {
     public List<XmlNode> merageXmlNode(String parentNameSpace, String elementNode) {
         return this.settings.merageXmlNode(parentNameSpace, elementNode);
     }
+    @Override
+    public String toString() {
+        return "SettingsWarp -> " + this.settings.toString();
+    }
 }
