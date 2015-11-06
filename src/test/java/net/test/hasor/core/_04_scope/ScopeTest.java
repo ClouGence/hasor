@@ -24,7 +24,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.scope.SingleProvider;
-import net.test.hasor.core._03_beans.pojo.PojoBean;
+import net.test.hasor.core._01_bean.pojo.PojoBean;
 import org.junit.Test;
 /**
  * 本示列演示如何使用 Hasor 的Scope隔离Bean。

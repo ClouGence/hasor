@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.faces;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
-import org.more.asm.ClassWriter;
 import org.more.classcode.AbstractClassConfig;
 /**
  * 
@@ -47,25 +43,11 @@ public class MethodClassConfig extends AbstractClassConfig {
     protected String initClassName() {
         return this.getSuperClass().getName() + "$M_" + index();
     }
-    //
-    protected byte[] buildClass() throws IOException {
-        //1.基本信息
-        Class<?> superClass = this.getSuperClass();
-        //2.构建visitor环
-        //------第一环，写入
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        //------第二环，用户扩展
-        ClassVisitor visitor = this.acceptClass(writer);
-        visitor = (visitor == null) ? writer : visitor;
-        //------第三环，ClassAdapter
-        visitor = new MethodDelegateClassAdapter(visitor, this);
-        //3.Read
-        String resName = superClass.getName().replace(".", "/") + ".class";
-        InputStream inStream = superClass.getClassLoader().getResourceAsStream(resName);
-        ClassReader reader = new ClassReader(inStream);//创建ClassReader
-        reader.accept(visitor, ClassReader.SKIP_DEBUG);
-        return writer.toByteArray();
+    @Override
+    protected ClassVisitor buildClassVisitor(ClassVisitor parentVisitor) {
+        return new MethodDelegateClassAdapter(parentVisitor, this);
     }
+    //
     /**是否包含改变*/
     public boolean hasChange() {
         return (this.newDelegateMap == null) ? false : (!this.newDelegateMap.isEmpty());

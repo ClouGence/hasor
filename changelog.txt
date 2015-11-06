@@ -18,7 +18,8 @@
     09.事务管理增加“TransactionTemplate”接口。
     10.删除ResultModule类和其相关的功能，该功能不再是核心功能的一部分。
     11.启动过程中增加了一些 log 的输出。
-    12..StandardEnvironment构造方法改进。
+    12.StandardEnvironment构造方法改进。
+    13.AbstractClassConfig增加对 java javax 包类的排除，凡是这两个包的类都不进行aop。
 
 ===== Hasor-Core v1.2.0
 * 新增:

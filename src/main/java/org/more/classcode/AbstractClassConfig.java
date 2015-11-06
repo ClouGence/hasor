@@ -15,8 +15,11 @@
  */
 package org.more.classcode;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicLong;
+import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
+import org.more.asm.ClassWriter;
 /**
  * 
  * @version : 2014年9月7日
@@ -86,8 +89,46 @@ public abstract class AbstractClassConfig {
         }
         return this.classBytes;
     };
+    /**父类是否支持*/
+    public static boolean isSupport(Class<?> superClass) {
+        String resName = superClass.getName().replace(".", "/") + ".class";
+        if (resName.startsWith("java/") || resName.startsWith("javax/")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    /**父类是否支持*/
+    public boolean isSupport() {
+        return isSupport(this.getSuperClass());
+    }
     //
-    protected abstract byte[] buildClass() throws IOException;
+    protected final byte[] buildClass() throws IOException {
+        //1.基本信息
+        Class<?> superClass = this.getSuperClass();
+        String resName = superClass.getName().replace(".", "/") + ".class";
+        if (isSupport() == false) {
+            throw new IOException("class in package java or javax , does not support.");
+        }
+        //2.构建visitor环
+        //------第一环，写入
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        //------第二环，用户扩展
+        ClassVisitor visitor = this.acceptClass(writer);
+        visitor = (visitor == null) ? writer : visitor;
+        //------第三环，Aop
+        visitor = this.buildClassVisitor(visitor);
+        //3.Read
+        ClassLoader typeLoader = superClass.getClassLoader();
+        if (typeLoader == null) {
+            typeLoader = ClassLoader.getSystemClassLoader();
+        }
+        InputStream inStream = typeLoader.getResourceAsStream(resName);
+        ClassReader reader = new ClassReader(inStream);//创建ClassReader
+        reader.accept(visitor, ClassReader.SKIP_DEBUG);
+        return writer.toByteArray();
+    }
+    protected abstract ClassVisitor buildClassVisitor(ClassVisitor parentVisitor);
     /**是否包含改变*/
     public abstract boolean hasChange();
 }

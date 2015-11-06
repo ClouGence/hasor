@@ -234,24 +234,24 @@ public interface ApiBinder {
     /**属性依赖注入*/
     public interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
-         * 配置一个属性注入。
-         * @param property 属性名
+         * 值类型的属性注入。
+         * @param property 被注入Bean的属性名
          * @param value 属性值。
-         * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> injectValue(String property, Object value);
         /**
-         * 配置一个属性注入。
-         * @param property 属性名
-         * @param valueInfo 属性值来源于另外一个绑定。
-         * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+         * 注入另一个Bean对象。
+         * @param property 被注入Bean的属性名
+         * @param valueInfo Bean配置信息。
+         * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> inject(String property, BindInfo<?> valueInfo);
         /**
-         * 配置一个属性注入。
-         * @param property 属性名
-         * @param valueProvider provider 可以用来封装类型实例创建的细节。
-         * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+         * 工厂方式注入Bean。
+         * @param property 被注入Bean的属性名
+         * @param valueProvider 属性值提供者。
+         * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> inject(String property, Provider<?> valueProvider);
     }

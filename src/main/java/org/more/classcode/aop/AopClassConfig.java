@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 package org.more.classcode.aop;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
-import org.more.asm.ClassWriter;
 import org.more.classcode.ASMEngineToos;
 import org.more.classcode.AbstractClassConfig;
 /**
@@ -50,25 +46,11 @@ public class AopClassConfig extends AbstractClassConfig {
     protected String initClassName() {
         return this.getSuperClass().getName() + "$A_" + index();
     }
+    @Override
+    protected ClassVisitor buildClassVisitor(ClassVisitor parentVisitor) {
+        return new AopClassAdapter(parentVisitor, this);
+    };
     //
-    protected byte[] buildClass() throws IOException {
-        //1.基本信息
-        Class<?> superClass = this.getSuperClass();
-        //2.构建visitor环
-        //------第一环，写入
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        //------第二环，用户扩展
-        ClassVisitor visitor = this.acceptClass(writer);
-        visitor = (visitor == null) ? writer : visitor;
-        //------第三环，Aop
-        visitor = new AopClassAdapter(visitor, this);
-        //3.Read
-        String resName = superClass.getName().replace(".", "/") + ".class";
-        InputStream inStream = superClass.getClassLoader().getResourceAsStream(resName);
-        ClassReader reader = new ClassReader(inStream);//创建ClassReader
-        reader.accept(visitor, ClassReader.SKIP_DEBUG);
-        return writer.toByteArray();
-    }
     /**是否包含改变*/
     public boolean hasChange() {
         return (this.aopList == null) ? false : (!this.aopList.isEmpty());

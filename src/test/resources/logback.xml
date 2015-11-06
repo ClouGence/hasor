@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration>
+<configuration debug="false">
 	<!-- 控制台输出日志 -->
 	<appender name="consoleOut" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -17,8 +17,8 @@
 		</layout>
 	</appender>
 
-	<!-- 日志输出级别 -->
-	<root level="debug">
+	<root>
+		<level>INFO</level>
 		<appender-ref ref="consoleOut" />
 		<appender-ref ref="fileOut" />
 	</root>
