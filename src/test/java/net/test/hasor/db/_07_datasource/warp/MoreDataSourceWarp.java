@@ -19,8 +19,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.DBModule;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
@@ -52,11 +50,6 @@ public class MoreDataSourceWarp implements Module {
         }
     }
     protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, String dsName) throws Throwable {
-        //1.绑定DataSource接口实现
-        apiBinder.bindType(DataSource.class).nameWith(dsName).toInstance(dataSource);
-        //2.绑定JdbcTemplate接口实现
-        apiBinder.bindType(JdbcTemplate.class).nameWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
-        apiBinder.bindType(JdbcTemplate.class).idWith(dsName).toProvider(new JdbcTemplateProvider(dataSource));
         //3.启用默认事务拦截器
         apiBinder.installModule(new DBModule(dataSource));
     }

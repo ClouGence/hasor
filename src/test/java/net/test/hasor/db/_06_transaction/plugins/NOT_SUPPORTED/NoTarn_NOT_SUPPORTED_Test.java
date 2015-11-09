@@ -16,10 +16,10 @@
 package net.test.hasor.db._06_transaction.plugins.NOT_SUPPORTED;
 import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
+import net.hasor.db.Transactional;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.plugins.tran.Transactional;
 import net.test.hasor.db._06_transaction.plugins.AbstractSimpleJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;

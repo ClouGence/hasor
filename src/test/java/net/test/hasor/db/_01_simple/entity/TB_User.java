@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._02_select.entity;
+package net.test.hasor.db._01_simple.entity;
 import java.util.Date;
 /**
  * 

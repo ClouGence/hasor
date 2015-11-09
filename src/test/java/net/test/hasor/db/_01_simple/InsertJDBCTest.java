@@ -13,26 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._01_insert;
+package net.test.hasor.db._01_simple;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.utils.HasorUnit;
-import org.junit.Test;
 /***
  * 批量Insert语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class MapBatch_InsertJDBCTest {
+public class InsertJDBCTest {
+    //
     @Test
-    public void baseInsertJDBCTest() throws SQLException {
+    public void simpleInsertJDBCTest() throws SQLException {
+        System.out.println("--->>simple_InsertJDBCTest<<--");
+        //
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
+        //
+        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
+        //
+        String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        jdbc.execute(insertUser);//执行插入语句
+        //
+        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
+    }
+    //
+    @Test
+    public void batchInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
         //
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());

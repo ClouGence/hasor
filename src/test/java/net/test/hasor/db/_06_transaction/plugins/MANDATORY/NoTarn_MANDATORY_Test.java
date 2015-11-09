@@ -17,10 +17,10 @@ package net.test.hasor.db._06_transaction.plugins.MANDATORY;
 import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
 import java.sql.SQLException;
+import net.hasor.db.Transactional;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.plugins.tran.Transactional;
 import net.test.hasor.db._06_transaction.plugins.AbstractSimpleJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;
@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = OneDataSourceWarp.class)
+@ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
 public class NoTarn_MANDATORY_Test extends AbstractSimpleJDBCTest {
     @Test
     public void noTarn_MANDATORY_Test() throws Exception {

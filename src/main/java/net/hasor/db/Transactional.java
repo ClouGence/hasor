@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.tran;
+package net.hasor.db;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,7 +35,7 @@ public @interface Transactional {
     /**是否为只读事务。*/
     public boolean readOnly() default false;
     /**遇到下列异常继续事务递交。*/
-    public Class<? extends Throwable>[] noRollbackFor() default {};
+    public Class<? extends Throwable>[]noRollbackFor() default {};
     /**遇到下列异常继续事务递交。*/
-    public String[] noRollbackForClassName() default {};
+    public String[]noRollbackForClassName() default {};
 }

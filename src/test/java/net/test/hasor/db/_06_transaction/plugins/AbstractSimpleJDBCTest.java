@@ -21,21 +21,21 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.Isolation;
-import net.test.hasor.test.junit.DaemonThread;
-import net.test.hasor.test.utils.HasorUnit;
 import org.junit.Before;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
+import net.hasor.core.AppContext;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.TransactionTemplate;
+import net.test.hasor.test.junit.DaemonThread;
+import net.test.hasor.test.utils.HasorUnit;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractSimpleJDBCTest implements AppContextAware {
+public abstract class AbstractSimpleJDBCTest {
     /*--------------------------------------------------------------------------------WatchThread*/
     /**监控线程使用的事务隔离级别*/
     protected Isolation getWatchThreadTransactionLevel() {
@@ -53,7 +53,6 @@ public abstract class AbstractSimpleJDBCTest implements AppContextAware {
             return;
         //
         String hashValue = "";
-        DataSource dataSource = getDataSource();
         Connection conn = dataSource.getConnection();
         //设置隔离级别读取未提交的数据是不允许的。
         conn.setTransactionIsolation(getWatchThreadTransactionLevel().ordinal());
@@ -78,30 +77,19 @@ public abstract class AbstractSimpleJDBCTest implements AppContextAware {
         }
     }
     /*--------------------------------------------------------------------------------------Utils*/
-    //
-    private AppContext appContext = null;
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
-    public AppContext getAppContext() {
-        return appContext;
-    }
-    protected JdbcTemplate getJdbcTemplate() {
-        return appContext.getInstance(JdbcTemplate.class);
-    }
-    protected DataSource getDataSource() {
-        return appContext.getInstance(DataSource.class);
-    }
+    protected AppContext          appContext   = null;
+    protected TransactionTemplate tranTemplate = null;
+    protected JdbcTemplate        jdbcTemplate = null;
+    protected DataSource          dataSource   = null;
     /*-----------------------------------------------------------------------------------InitData*/
     //
     @Before
     public void initData() throws SQLException, IOException {
-        JdbcTemplate jdbc = this.getJdbcTemplate();
-        boolean hasTab = jdbc.tableExist("TB_User");
+        boolean hasTab = this.jdbcTemplate.tableExist("TB_User");
         /*装载 SQL 脚本文件*/
         if (hasTab == false) {
-            jdbc.loadSQL("net/test/simple/_10_jdbc/TB_User.sql");
+            jdbcTemplate.loadSQL("TB_User.sql");
         }
-        jdbc.execute("delete from TB_User;");
+        jdbcTemplate.execute("delete from TB_User;");
     }
 }

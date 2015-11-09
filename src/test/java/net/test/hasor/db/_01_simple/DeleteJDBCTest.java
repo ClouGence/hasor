@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._02_select;
+package net.test.hasor.db._01_simple;
 import java.sql.SQLException;
-import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._02_select.entity.TB_User;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.hasor.test.utils.HasorUnit;
 import org.junit.Test;
-/**
- * 
- * @version : 2013-12-10
+/***
+ * 基本的delete操作语句执行
+ * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class Entity_QueryTest {
+public class DeleteJDBCTest {
     @Test
-    public void entity_QueryTest() throws SQLException {
-        System.out.println("--->>entity_QueryTest<<--");
+    public void simple_DeleteJDBCTest() throws SQLException {
+        System.out.println("--->>simple_DeleteJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
-        List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
-        HasorUnit.printObjectList(userList);
     }
 }

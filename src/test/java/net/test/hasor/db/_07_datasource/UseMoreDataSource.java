@@ -31,7 +31,7 @@ public class UseMoreDataSource {
     @Test
     public void useMoreDataSource() throws SQLException, IOException {
         //1.构建AppContext
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new MoreDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new MoreDataSourceWarp());
         //2.取得JDBC操作接口
         JdbcTemplate mJDBC = app.getInstance("mysql");
         JdbcTemplate hJDBC = app.getInstance("hsql");
@@ -49,7 +49,7 @@ public class UseMoreDataSource {
         //
         //1.初始化MySQL
         if (mJDBC.tableExist("TB_User") == false) {
-            mJDBC.loadSQL("net/test/simple/db/TB_User.sql");
+            mJDBC.loadSQL("TB_User.sql");
         } else {
             mJDBC.execute("delete from TB_User");
         }
@@ -57,7 +57,7 @@ public class UseMoreDataSource {
         mJDBC.update(insertUser_2, newID());//执行插入语句
         //2.初始化HSQL
         if (hJDBC.tableExist("TB_User") == false) {
-            hJDBC.loadSQL("net/test/simple/db/TB_User.sql");
+            hJDBC.loadSQL("TB_User.sql");
         } else {
             hJDBC.execute("delete from TB_User");
         }

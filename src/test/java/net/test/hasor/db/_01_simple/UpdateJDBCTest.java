@@ -13,35 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._02_select;
-import java.io.IOException;
-import java.net.URISyntaxException;
+package net.test.hasor.db._01_simple;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.hasor.test.utils.HasorUnit;
 import org.junit.Test;
-/**
- * 
- * @version : 2013-12-10
+/***
+ * 基本的update操作语句执行
+ * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class MapParam_QueryTest {
+public class UpdateJDBCTest {
     @Test
-    public void mapParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
-        System.out.println("--->>mapParam_QueryTest<<--");
+    public void simple_UpdateJDBCTest() throws SQLException {
+        System.out.println("--->>simple_UpdateJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
-        Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put("id", "76%");
-        List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like :id", paramMap);
-        HasorUnit.printMapList(userList);
     }
 }

@@ -13,20 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.tran;
+package net.hasor.db;
 import java.lang.reflect.Method;
+import javax.sql.DataSource;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
+import net.hasor.core.Module;
+import net.hasor.core.Provider;
+import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 /**
- * 某一个数据源的事务管理器
+ * 
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
+public class TranModule implements Module {
+    private Provider<DataSource> dataSource = null;
+    //
+    public TranModule(DataSource dataSource) {
+        this(new InstanceProvider<DataSource>(Hasor.assertIsNotNull(dataSource, "dataSource is null.")));
+    }
+    public TranModule(Provider<DataSource> dataSource) {
+        Hasor.assertIsNotNull(dataSource, "dataSource is null.");
+        this.dataSource = dataSource;
+    }
+    //
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        TranInterceptor tranInter = new TranInterceptor(this.dataSource);
+        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInter);
+    }
+}
+/**
+ * 某一个数据源的事务管理器
+ * @version : 2015年11月9日
+ * @author 赵永春(zyc@hasor.net)
+ */
 class TranInterceptor implements MethodInterceptor {
+    private Provider<DataSource> dataSource = null;
+    public TranInterceptor(Provider<DataSource> dataSource) {
+        this.dataSource = Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");
+    }
+    //
     /*是否不需要回滚:true表示不要回滚*/
     private boolean testNoRollBackFor(Transactional tranAnno, Throwable e) {
         //1.test Class
@@ -55,19 +89,18 @@ class TranInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
         //0.准备事务环境
-        TransactionManager manager = atDefine.getTransactionManager();
-        TransactionStatus tranStatus = null;
+        DataSource dataSource = this.dataSource.get();
+        TransactionManager manager = TranManager.getManager(dataSource);
         Propagation behavior = tranInfo.propagation();
         Isolation level = tranInfo.isolation();
-        tranStatus = manager.getTransaction(behavior, level);
+        TransactionStatus tranStatus = manager.getTransaction(behavior, level);
         //1.只读事务
         if (tranInfo.readOnly()) {
             tranStatus.setReadOnly();
         }
         //2.事务行为控制
-        Object returnObj = null;
         try {
-            returnObj = invocation.proceed();
+            return invocation.proceed();
         } catch (Throwable e) {
             if (this.testNoRollBackFor(tranInfo, e) == false) {
                 tranStatus.setRollbackOnly();
@@ -78,6 +111,5 @@ class TranInterceptor implements MethodInterceptor {
                 manager.commit(tranStatus);
             }
         }
-        //
     }
 }

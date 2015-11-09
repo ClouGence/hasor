@@ -13,29 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._02_select;
+package net.test.hasor.db._01_simple;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.test.hasor.db._01_simple.entity.TB_User;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.utils.HasorUnit;
-import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
-public class SimpleParam_QueryTest {
+public class QueryJDBCTest {
+    //
+    @Test
+    public void entity_QueryTest() throws SQLException {
+        System.out.println("--->>entity_QueryTest<<--");
+        //
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
+        //
+        List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
+        HasorUnit.printObjectList(userList);
+    }
+    //
+    @Test
+    public void mapParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
+        System.out.println("--->>mapParam_QueryTest<<--");
+        //
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
+        //
+        Map<String, String> paramMap = new HashMap<String, String>();
+        paramMap.put("id", "76%");
+        List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like :id", paramMap);
+        HasorUnit.printMapList(userList);
+    }
+    //
     @Test
     public void simpleParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like ?", "76%");
