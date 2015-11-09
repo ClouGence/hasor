@@ -20,7 +20,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.plugins.tran.interceptor.TranInterceptorModule;
+import net.hasor.plugins.db.interceptor.TranInterceptorModule;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13

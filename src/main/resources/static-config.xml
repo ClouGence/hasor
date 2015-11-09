@@ -13,7 +13,6 @@
 		<!-- 默认要装载的模块 -->
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
-			<module>net.hasor.plugins.result.ResultModule</module>
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 			<module>net.hasor.plugins.encoding.EncodingFilterModule</module>
 			<module>net.hasor.plugins.resource.ResourceLoaderModule</module>

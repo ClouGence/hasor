@@ -21,9 +21,9 @@ import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.plugins.tran.TranStrategy;
-import net.hasor.plugins.tran.TransactionBinder;
-import net.hasor.plugins.tran.interceptor.Transactional;
+import net.hasor.plugins.db.TranStrategy;
+import net.hasor.plugins.db.TransactionBinder;
+import net.hasor.plugins.db.interceptor.Transactional;
 /**
  * 自定义声明式事务
  * @author 赵永春(zyc@hasor.net)

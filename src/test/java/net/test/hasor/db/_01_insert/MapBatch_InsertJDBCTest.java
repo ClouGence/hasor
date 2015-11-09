@@ -35,7 +35,7 @@ public class MapBatch_InsertJDBCTest {
     public void baseInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("net/test/simple/db/jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String batchInsert = "insert into TB_User values(:ID,:Name,:Account,:Pwd,:Email,:RegTime);";
