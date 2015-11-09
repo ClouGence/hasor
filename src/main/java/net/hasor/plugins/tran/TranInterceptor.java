@@ -15,14 +15,9 @@
  */
 package net.hasor.plugins.tran;
 import java.lang.reflect.Method;
-import java.util.List;
-import javax.sql.DataSource;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
@@ -31,52 +26,58 @@ import net.hasor.db.transaction.TransactionStatus;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-class TranInterceptor implements MethodInterceptor, AppContextAware {
-    public void setAppContext(AppContext appContext) {
-        List<StrategyDefinition> defineList = appContext.findBindingBean(StrategyDefinition.class);
-        if (defineList != null && defineList.isEmpty() == false) {
-            this.definitionArray = defineList.toArray(new StrategyDefinition[defineList.size()]);
-        }
-    }
-    //
-    private StrategyDefinition[] definitionArray = null;
-    @Override
-    public final Object invoke(final MethodInvocation invocation) throws Throwable {
-        //1.排除的情况
-        if (this.definitionArray == null || this.definitionArray.length == 0) {
-            return invocation.proceed();
-        }
-        //2.找到匹配的策略
-        Method targetMethod = invocation.getMethod();
-        StrategyDefinition atDefine = null;
-        for (StrategyDefinition define : this.definitionArray) {
-            if (define.matches(targetMethod) == true) {
-                atDefine = define;
-                break;
+class TranInterceptor implements MethodInterceptor {
+    /*是否不需要回滚:true表示不要回滚*/
+    private boolean testNoRollBackFor(Transactional tranAnno, Throwable e) {
+        //1.test Class
+        Class<? extends Throwable>[] noRollBackType = tranAnno.noRollbackFor();
+        for (Class<? extends Throwable> cls : noRollBackType) {
+            if (cls.isInstance(e) == true) {
+                return true;
             }
         }
-        if (atDefine == null) {
+        //2.test Name
+        String[] noRollBackName = tranAnno.noRollbackForClassName();
+        String errorType = e.getClass().getName();
+        for (String name : noRollBackName) {
+            if (errorType.equals(name) == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    //
+    @Override
+    public final Object invoke(final MethodInvocation invocation) throws Throwable {
+        Method targetMethod = invocation.getMethod();
+        Transactional tranInfo = targetMethod.getAnnotation(Transactional.class);
+        if (tranInfo == null) {
             return invocation.proceed();
         }
-        //3.执行事务
-        DataSource dataSource = atDefine.getDataSource();
-        Propagation behavior = atDefine.getPropagationStrategy().getStrategy(targetMethod);
-        Isolation level = atDefine.getIsolationStrategy().getStrategy(targetMethod);
-        final TranOperations around = atDefine.getAround();
-        TransactionManager manager = TranManager.getManager(dataSource);
+        //0.准备事务环境
+        TransactionManager manager = atDefine.getTransactionManager();
         TransactionStatus tranStatus = null;
+        Propagation behavior = tranInfo.propagation();
+        Isolation level = tranInfo.isolation();
+        tranStatus = manager.getTransaction(behavior, level);
+        //1.只读事务
+        if (tranInfo.readOnly()) {
+            tranStatus.setReadOnly();
+        }
+        //2.事务行为控制
+        Object returnObj = null;
         try {
-            tranStatus = manager.getTransaction(behavior, level);
-            return around.execute(tranStatus, invocation);
+            returnObj = invocation.proceed();
         } catch (Throwable e) {
-            tranStatus.setRollbackOnly();
+            if (this.testNoRollBackFor(tranInfo, e) == false) {
+                tranStatus.setRollbackOnly();
+            }
             throw e;
         } finally {
             if (tranStatus.isCompleted() == false) {
                 manager.commit(tranStatus);
             }
         }
-        //
         //
     }
 }

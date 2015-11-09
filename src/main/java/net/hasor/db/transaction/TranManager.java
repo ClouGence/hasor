@@ -38,8 +38,10 @@ public class TranManager {
     private static synchronized DefaultTransactionManager getDefaultTransactionManager(final DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
         DefaultTransactionManager manager = TranManager.managerMap.get().get(dataSource);
-        manager = new DefaultTransactionManager(dataSource);
-        TranManager.managerMap.get().put(dataSource, manager);
+        if (manager == null) {
+            manager = new DefaultTransactionManager(dataSource);
+            TranManager.managerMap.get().put(dataSource, manager);
+        }
         return manager;
     }
     public static synchronized TransactionManager getManager(DataSource dataSource) {

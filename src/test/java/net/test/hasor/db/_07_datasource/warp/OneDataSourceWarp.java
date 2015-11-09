@@ -18,9 +18,7 @@ import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.plugins.db.interceptor.TranInterceptorModule;
+import net.hasor.db.DBModule;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
@@ -36,11 +34,7 @@ public class OneDataSourceWarp implements Module {
         String pwdString = settings.getString("demo-jdbc-mysql.password");
         //2.创建数据库连接池
         DataSource dataSource = C3p0DataSourceFactory.createDataSource(driverString, urlString, userString, pwdString);
-        //3.绑定DataSource接口实现
-        apiBinder.bindType(DataSource.class).toInstance(dataSource);
-        //4.绑定JdbcTemplate接口实现
-        apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
         //5.启用默认事务拦截器
-        apiBinder.installModule(new TranInterceptorModule(dataSource));
+        apiBinder.installModule(new DBModule(dataSource));
     }
 }

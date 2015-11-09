@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供了基于 Aop 的事务拦截器实现，通过它可以自定义拦截器行为以及如何拦截事务。
+ * 简化事务操作提供注解方式的事务控制。
  */
 package net.hasor.plugins.tran;

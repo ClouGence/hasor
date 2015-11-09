@@ -16,17 +16,21 @@
 package net.hasor.db.jdbc.core;
 import javax.sql.DataSource;
 import net.hasor.core.Provider;
+import net.hasor.core.binder.InstanceProvider;
 /**
  * 
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTemplateProvider implements Provider<JdbcTemplate> {
-    private DataSource dataSource;
-    public JdbcTemplateProvider(final DataSource dataSource) {
+    private Provider<DataSource> dataSource;
+    public JdbcTemplateProvider(DataSource dataSource) {
+        this(new InstanceProvider<DataSource>(dataSource));
+    }
+    public JdbcTemplateProvider(Provider<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
     public JdbcTemplate get() {
-        return new JdbcTemplate(this.dataSource);
+        return new JdbcTemplate(this.dataSource.get());
     }
 }

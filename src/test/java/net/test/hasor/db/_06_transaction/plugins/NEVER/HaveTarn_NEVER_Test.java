@@ -20,8 +20,7 @@ import java.sql.SQLException;
 import net.hasor.db.datasource.DataSourceUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.plugins.db.interceptor.RollBackSQLException;
-import net.hasor.plugins.db.interceptor.Transactional;
+import net.hasor.plugins.tran.Transactional;
 import net.test.hasor.db._06_transaction.plugins.AbstractSimpleJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;
@@ -100,6 +99,6 @@ public class HaveTarn_NEVER_Test extends AbstractSimpleJDBCTest {
             this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
             Thread.sleep(1000);
         }
-        throw new RollBackSQLException();
+        throw new SQLException();
     }
 }
