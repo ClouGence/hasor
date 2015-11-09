@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop.objs;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.test.hasor.core._02_ioc.example;
+import net.hasor.core.Inject;
+import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
- * 
+ * 用名字区分Bean
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface MyAop {}
+public class NameIocBean {
+    @Inject("beanA")
+    private PojoInfo iocBeanA;
+    @Inject("beanB")
+    private PojoInfo iocBeanB;
+    //
+    //
+    public PojoInfo getIocBeanA() {
+        return iocBeanA;
+    }
+    public void setIocBeanA(PojoInfo iocBeanA) {
+        this.iocBeanA = iocBeanA;
+    }
+    public PojoInfo getIocBeanB() {
+        return iocBeanB;
+    }
+    public void setIocBeanB(PojoInfo iocBeanB) {
+        this.iocBeanB = iocBeanB;
+    }
+}

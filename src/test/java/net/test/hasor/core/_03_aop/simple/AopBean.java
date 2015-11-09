@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop.objs;
+package net.test.hasor.core._03_aop.simple;
 import net.hasor.plugins.aop.Aop;
 /**
  * Bean测试
@@ -22,7 +22,7 @@ import net.hasor.plugins.aop.Aop;
  */
 @Aop(SimpleInterceptor.class)
 public class AopBean {
-    public void print() {
-        System.out.println("say hello.");
+    public String echo(String sayMessage) {
+        return "echo :" + sayMessage;
     }
 }

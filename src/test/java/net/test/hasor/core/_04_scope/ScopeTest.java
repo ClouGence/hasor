@@ -16,56 +16,39 @@
 package net.test.hasor.core._04_scope;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.ConcurrentHashMap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
-import net.hasor.core.scope.SingleProvider;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
+import net.test.hasor.core._01_bean.pojo.PojoInfo;
+import net.test.hasor.core._04_scope.myscope.MyScope;
 import org.junit.Test;
+import org.more.json.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 本示列演示如何使用 Hasor 的Scope隔离Bean。
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ScopeTest {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
-    public void scopeTest() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>scopeTest<<--");
-        //1.创建一个标准的 Hasor 容器。
+    public void threadScopeTest() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>threadScopeTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                MyScope myScope1 = new MyScope();
-                //
-                apiBinder.bindType(PojoBean.class).nameWith("myBean1").toScope(myScope1);
-                apiBinder.bindType(PojoBean.class).nameWith("myBean2");
+                MyScope threadScope = new MyScope();
+                apiBinder.bindType(PojoBean.class).toScope(threadScope);
             }
         });
         //
-        PojoBean myBean = null;
-        myBean = appContext.findBindingBean("myBean1", PojoBean.class);
-        System.out.println("Scope 1 : " + myBean.getName() + myBean);
-        myBean = appContext.findBindingBean("myBean1", PojoBean.class);
-        System.out.println("Scope 1 : " + myBean.getName() + myBean);
-        myBean = appContext.findBindingBean("myBean2", PojoBean.class);
-        System.out.println("Scope 2 : " + myBean.getName() + myBean);
-    }
-}
-/**一个自定义 Scope ，实现了Scope内的单例.*/
-class MyScope implements Scope {
-    private ConcurrentHashMap<Object, Provider<?>> scopeMap = new ConcurrentHashMap<Object, Provider<?>>();
-    public <T> Provider<T> scope(Object key, final Provider<T> provider) {
-        Provider<?> returnData = this.scopeMap.get(key);
-        if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
-            returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
-            if (returnData == null) {
-                returnData = newSingleProvider;
-            }
-        }
-        return (Provider<T>) returnData;
+        //
+        PojoInfo objectA = appContext.getInstance(PojoBean.class);
+        PojoInfo objectB = appContext.getInstance(PojoBean.class);
+        //
+        logger.debug("objectBody :" + JSON.toString(objectA));
+        logger.debug("objectA eq objectB = " + (objectA == objectB));
     }
 }

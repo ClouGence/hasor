@@ -19,9 +19,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.test.hasor.core._05_plugins.mods.Mod_1;
-import net.test.hasor.core._05_plugins.mods.Mod_2;
-import net.test.hasor.core._05_plugins.mods.Mod_3;
+import net.test.hasor.core._05_plugins.mods.OnStartModule;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -35,9 +33,9 @@ import org.slf4j.LoggerFactory;
 public class ModuleTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
-    public void moduleTest() throws IOException, URISyntaxException {
-        System.out.println("--->>moduleTest<<--");
-        AppContext appContext = Hasor.createAppContext(new Mod_1(), new Mod_2(), new Mod_3());
+    public void loadModuleTest() throws IOException, URISyntaxException {
+        System.out.println("--->>loadModuleTest<<--");
+        AppContext appContext = Hasor.createAppContext(new OnStartModule());
         //
         List<String> says = appContext.findBindingBean(String.class);
         logger.info("all modules say:{}.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));

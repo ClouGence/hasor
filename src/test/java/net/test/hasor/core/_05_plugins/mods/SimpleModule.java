@@ -17,12 +17,12 @@ package net.test.hasor.core._05_plugins.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 /**
- * 模块3
- * @version : 2013-9-14
- * @author 赵永春 (zyc@byshell.org)
+ * 模块
+ * @version : 2015年11月9日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class Mod_3 implements Module {
+public class SimpleModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_3.");
+        apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_1.");
     }
 }

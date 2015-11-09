@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD })
 @Documented
 public @interface Inject {
-    /**如果同类型有多个注册可以使用该值进行指定。*/
+    /**如果同类型有多个注册可以使用该值进行指定Bean的ID。*/
     public String value() default "";
 }

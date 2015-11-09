@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop.objs;
+package net.test.hasor.core._02_ioc.example;
+import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
- * 
+ * 一般的Bean
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-@MyAop
-public class CustomAnnoFooBean extends FooBean {}
+public class IocBean {
+    protected PojoInfo iocBean;
+    public PojoInfo getIocBean() {
+        return iocBean;
+    }
+    public void setIocBean(PojoInfo iocBean) {
+        this.iocBean = iocBean;
+    }
+}

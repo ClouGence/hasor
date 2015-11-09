@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop.objs;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
+package net.test.hasor.core._02_ioc.aware;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
+import net.hasor.core.BindInfoAware;
 /**
- * 一个 Aop 拦截器
+ * 
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SimpleInterceptor implements MethodInterceptor {
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        try {
-            System.out.println("before... " + invocation.getMethod().getName());
-            Object returnData = invocation.proceed();
-            System.out.println("after...");
-            return returnData;
-        } catch (Exception e) {
-            System.out.println("throw...");
-            throw e;
-        }
+public class AwareBean implements AppContextAware, BindInfoAware {
+    private AppContext  appContext;
+    private BindInfo<?> bindInfo;
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
+    }
+    public void setBindInfo(BindInfo<?> bindInfo) {
+        this.bindInfo = bindInfo;
+    }
+    public void foo() {
+        Object sayBody = this.appContext.findBindingBean("say", String.class);
+        System.out.println("bindID=" + bindInfo.getBindID() + " -> " + sayBody);
     }
 }

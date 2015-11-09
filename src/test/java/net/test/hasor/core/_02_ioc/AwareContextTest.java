@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop;
+package net.test.hasor.core._02_ioc;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.test.hasor.core._06_aop.objs.AopBean;
+import net.test.hasor.core._02_ioc.aware.AwareBean;
 import org.junit.Test;
 /**
- * 
- * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * 本示列演示如何让 Hasor在启动时自动将AppContext注入到需要的地方。
+ * @version : 2013-8-11
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class QuickAopTest {
+public class AwareContextTest {
     @Test
-    public void startTest1() throws IOException, URISyntaxException, InterruptedException {
-        System.out.println("--->>startTest1<<--");
-        //1.创建一个标准的 Hasor 容器。
+    public void awareContextTest() throws IOException, URISyntaxException, InterruptedException {
+        System.out.println("--->>awareContextTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(AopBean.class);
+                //由于init过程中无法取得 appContext对象，因此让Hasor在适当的时机将自身注入进去。
+                apiBinder.bindType(AwareBean.class);
+                apiBinder.bindType(String.class).nameWith("say").toInstance("Say Hello.");
             }
         });
-        AopBean aopBean = appContext.getInstance(AopBean.class);
         //
-        aopBean.print();
+        AwareBean awareBean = appContext.getInstance(AwareBean.class);
+        awareBean.foo();
     }
 }

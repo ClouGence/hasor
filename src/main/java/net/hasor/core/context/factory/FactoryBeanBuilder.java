@@ -262,7 +262,7 @@ public class FactoryBeanBuilder implements BeanBuilder {
                 if (StringUtils.isBlank(inject.value())) {
                     obj = appContext.getInstance(field.getType());
                 } else {
-                    obj = appContext.findBindingBean(inject.value(), field.getType());
+                    obj = appContext.getInstance(inject.value());
                 }
                 if (obj != null) {
                     field.set(targetBean, obj);

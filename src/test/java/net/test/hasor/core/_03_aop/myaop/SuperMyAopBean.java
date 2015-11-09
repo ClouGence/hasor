@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._06_aop.objs;
+package net.test.hasor.core._03_aop.myaop;
 /**
- * 
+ * 继承
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-public class FooBean {
-    public String echo(String sayMessage, long i) {
-        return "echo :" + sayMessage + " - " + i;
-    }
-    public void fooCall() {
-        System.out.println("fooCall");
-    }
-}
+public class SuperMyAopBean extends MyAopBean {}

@@ -15,14 +15,25 @@
  */
 package net.test.hasor.core._05_plugins.mods;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
+import net.hasor.core.AppContext;
+import net.hasor.core.StartModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
- * 模块2
+ * 在模块中处理容器启动
  * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class Mod_2 implements Module {
+public class OnStartModule implements StartModule {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //
+        apiBinder.installModule(new SimpleModule());
+        //
         apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_2.");
+    }
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        logger.info("启动啦...");
     }
 }

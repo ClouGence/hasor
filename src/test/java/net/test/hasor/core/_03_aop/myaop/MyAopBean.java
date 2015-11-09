@@ -13,30 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.pojo;
-import net.hasor.core.Inject;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
+package net.test.hasor.core._03_aop.myaop;
 /**
- * 一个Bean
+ * 用了自定义Aop注解的Bean
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-public class NameAnnoIocBean {
-    @Inject("beanA")
-    private PojoInfo iocBeanA;
-    @Inject("beanB")
-    private PojoInfo iocBeanB;
-    //
-    public PojoInfo getIocBeanA() {
-        return iocBeanA;
-    }
-    public void setIocBeanA(PojoInfo iocBeanA) {
-        this.iocBeanA = iocBeanA;
-    }
-    public PojoInfo getIocBeanB() {
-        return iocBeanB;
-    }
-    public void setIocBeanB(PojoInfo iocBeanB) {
-        this.iocBeanB = iocBeanB;
+public class MyAopBean {
+    @MyAop
+    public String fooCall(String string) {
+        System.out.println("fooCall");
+        return "call back : " + string;
     }
 }

@@ -53,7 +53,7 @@ public abstract class DataContext {
         }
     }
     public void doShutdownCompleted(AppContext appContext) {
-        this.container.doInitializeCompleted(appContext);
+        this.container.doShutdownCompleted(appContext);
         if (!this.inited.compareAndSet(true, false)) {
             return;/*避免被销毁多次*/
         }

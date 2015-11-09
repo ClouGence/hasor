@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.pojo;
+package net.test.hasor.core._02_ioc.example;
+import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
+import net.hasor.core.InjectMembers;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
+import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
- * 一个Bean
+ * 通过{@link InjectMembers}接口进行注入。
  * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-public class AnnoIocBean {
+public class CustomIocBean implements InjectMembers {
     @Inject
-    private PojoBean iocBean;
-    public PojoBean getIocBean() {
-        return iocBean;
-    }
-    public void setIocBean(PojoBean iocBean) {
-        this.iocBean = iocBean;
+    protected PojoInfo iocBeanTest = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
+    protected PojoInfo iocBean     = null; //
+    //
+    public void doInject(AppContext appContext) throws Throwable {
+        this.iocBean = new PojoBean();
     }
 }

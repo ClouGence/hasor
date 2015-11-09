@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._12_ioc;
+package net.test.hasor.core._02_ioc.example;
+import net.hasor.core.Inject;
+import net.test.hasor.core._01_bean.pojo.PojoBean;
 /**
- * Bean
- * @version : 2014年9月1日
+ * 注解方式注入Bean。
+ * @version : 2014-1-3
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserTypeBean {
-    private String typeID = "4321";
-    private String name   = "测试用户类型";
+public class AnnoIocBean {
+    @Inject
+    private PojoBean iocBean      = null; // <- 自动创建 PojoBean 对象并注入进来。
+    @Inject
+    private PojoBean iocBeanField = null; // <- 自动创建 PojoBean 对象并注入进来。
     //
-    public String getTypeID() {
-        return typeID;
+    public PojoBean getIocBean() {
+        return iocBean;
     }
-    public void setTypeID(String typeID) {
-        this.typeID = typeID;
+    public PojoBean getIocBeanField() {
+        return iocBeanField;
     }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    public void setIocBean(PojoBean iocBean) {
+        this.iocBean = iocBean;
     }
 }

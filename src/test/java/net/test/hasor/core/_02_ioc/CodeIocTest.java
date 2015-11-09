@@ -22,7 +22,7 @@ import net.hasor.core.Module;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
-import net.test.hasor.core._02_ioc.pojo.IocBean;
+import net.test.hasor.core._02_ioc.example.IocBean;
 import org.junit.Test;
 import org.more.json.JSON;
 import org.slf4j.Logger;
@@ -34,8 +34,10 @@ import org.slf4j.LoggerFactory;
  *      值类型的属性注入。
  * 2.beanIocTest
  *      注入另一个Bean对象。
- * 3.nameBindTest
+ * 3.faceoryIocTest
  *      Bean的属性注入来自于工厂。
+ * 4.annoNameIocTest
+ *      当同一个类型声明了不同实例时候，你需要通过名称注入你想要的
  * 
  * @version : 2015年11月6日
  * @author 赵永春(zyc@hasor.net)
