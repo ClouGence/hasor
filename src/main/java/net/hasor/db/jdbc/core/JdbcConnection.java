@@ -24,7 +24,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
-import net.hasor.db.datasource.DataSourceUtils;
+import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.ConnectionCallback;
 /**
  * 
@@ -90,24 +90,25 @@ public class JdbcConnection extends JdbcAccessor {
     public <T> T execute(final ConnectionCallback<T> action) throws SQLException {
         Hasor.assertIsNotNull(action, "Callback object must not be null");
         //
-        Connection con = this.getConnection();
+        Connection localConn = this.getConnection();
+        DataSource localDS = this.getDataSource();//获取数据源
         boolean useLocal = false;
-        if (con == null) {
-            DataSource ds = this.getDataSource();//获取数据源
-            con = DataSourceUtils.getConnection(ds);//申请本地连接（和当前线程绑定的连接）
+        if (localConn != null) {
             useLocal = true;
-            con = this.newProxyConnection(con, ds);//代理连接
-        } else {
-            con = this.newProxyConnection(con, null);//代理连接
         }
         //
+        ConnectionProxy useConn = null;
         try {
-            return action.doInConnection(con);
-        } catch (SQLException ex) {
-            throw ex;
-        } finally {
             if (useLocal) {
-                DataSourceUtils.releaseConnection(con, this.getDataSource());//关闭或释放连接
+                useConn = this.newProxyConnection(localConn, null);//代理连接
+            } else {
+                localConn = DSManager.getConnection(localDS);//申请本地连接（和当前线程绑定的连接）
+                useConn = this.newProxyConnection(localConn, localDS);//代理连接
+            }
+            return action.doInConnection(useConn);
+        } finally {
+            if (useLocal == false) {
+                DSManager.releaseConnection(useConn.getTargetConnection(), localDS);//关闭或释放连接
             }
         }
     }
@@ -127,10 +128,10 @@ public class JdbcConnection extends JdbcAccessor {
         }
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
-    private Connection newProxyConnection(final Connection target, final DataSource targetSource) {
+    private ConnectionProxy newProxyConnection(final Connection target, final DataSource targetSource) {
         Hasor.assertIsNotNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
-        return (Connection) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {

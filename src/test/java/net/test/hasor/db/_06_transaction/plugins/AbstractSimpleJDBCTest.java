@@ -79,7 +79,6 @@ public abstract class AbstractSimpleJDBCTest {
     /*--------------------------------------------------------------------------------------Utils*/
     protected AppContext          appContext   = null;
     protected TransactionTemplate tranTemplate = null;
-    protected JdbcTemplate        jdbcTemplate = null;
     protected DataSource          dataSource   = null;
     /*-----------------------------------------------------------------------------------InitData*/
     //

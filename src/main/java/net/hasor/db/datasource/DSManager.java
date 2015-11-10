@@ -24,7 +24,7 @@ import org.more.util.ContextClassLoaderLocal;
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public class DataSourceUtils {
+public class DSManager {
     private static class ServiceLocal extends ContextClassLoaderLocal<DataSourceHelper> {
         @Override
         protected DataSourceHelper initialValue() {
@@ -35,7 +35,7 @@ public class DataSourceUtils {
     //
     /**申请连接*/
     public static Connection getConnection(final DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
+        DataSourceHelper utilService = DSManager.utilServiceLocal.get();
         Connection conn = utilService.getConnection(dataSource);
         if (conn == null)
             throw new SQLException("getConnection. return null.");
@@ -43,20 +43,20 @@ public class DataSourceUtils {
     };
     /**释放连接*/
     public static void releaseConnection(final Connection con, final DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
+        DataSourceHelper utilService = DSManager.utilServiceLocal.get();
         utilService.releaseConnection(con, dataSource);
     };
     /**获得某个数据源的当前连接*/
     public static Connection currentConnection(final DataSource dataSource) throws SQLException {
-        DataSourceHelper utilService = DataSourceUtils.utilServiceLocal.get();
+        DataSourceHelper utilService = DSManager.utilServiceLocal.get();
         return utilService.currentConnection(dataSource);
     };
     /**获取DataSourceHelper*/
     public static DataSourceHelper getDataSourceHelper() {
-        return DataSourceUtils.utilServiceLocal.get();
+        return DSManager.utilServiceLocal.get();
     }
     /**更换默认DataSourceHelper*/
     protected static void changeDataSourceUtilService(final DataSourceHelper utilService) {
-        DataSourceUtils.utilServiceLocal.set(utilService);
+        DSManager.utilServiceLocal.set(utilService);
     }
 }

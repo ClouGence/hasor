@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction;
+package net.hasor.db;
+import javax.sql.DataSource;
+import net.hasor.core.Provider;
+import net.hasor.db.transaction.TranManager;
+import net.hasor.db.transaction.TransactionManager;
 /**
  * 
- * @version : 2015年10月22日
+ * @version : 2015年11月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface TransactionTemplate {
-    public <T> T execute(TransactionCallback<T> callBack) throws Throwable;
-    public <T> T execute(TransactionCallback<T> callBack, Propagation behavior) throws Throwable;
-    public <T> T execute(TransactionCallback<T> callBack, Propagation behavior, Isolation level) throws Throwable;
+class TransactionManagerProvider implements Provider<TransactionManager> {
+    private Provider<DataSource> dataSource;
+    public TransactionManagerProvider(Provider<DataSource> dataSource) {
+        this.dataSource = dataSource;
+    }
+    public TransactionManager get() {
+        return TranManager.getManager(this.dataSource.get());
+    }
 }

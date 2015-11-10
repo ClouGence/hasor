@@ -20,10 +20,10 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.scope.SingleProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionTemplate;
 import org.more.util.StringUtils;
@@ -66,23 +66,7 @@ public class DBModule implements Module {
             apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
             apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(new JdbcTemplateProvider(this.dataSource));
         }
-    }
-}
-class TransactionManagerProvider implements Provider<TransactionManager> {
-    private Provider<DataSource> dataSource;
-    public TransactionManagerProvider(Provider<DataSource> dataSource) {
-        this.dataSource = dataSource;
-    }
-    public TransactionManager get() {
-        return TranManager.getManager(this.dataSource.get());
-    }
-}
-class TransactionTemplateProvider implements Provider<TransactionTemplate> {
-    private Provider<DataSource> dataSource;
-    public TransactionTemplateProvider(Provider<DataSource> dataSource) {
-        this.dataSource = dataSource;
-    }
-    public TransactionTemplate get() {
-        return TranManager.getTemplate(this.dataSource.get());
+        TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
+        apiBinder.bindInterceptor(AopMatchers.anyClass(), AopMatchers.anyMethod(), tranInter);
     }
 }

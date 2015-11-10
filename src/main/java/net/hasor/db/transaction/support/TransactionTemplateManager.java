@@ -35,6 +35,9 @@ class TransactionTemplateManager implements TransactionTemplate {
     public <T> T execute(TransactionCallback<T> callBack) throws Throwable {
         return this.execute(callBack, Propagation.REQUIRED, Isolation.DEFAULT);
     }
+    public <T> T execute(TransactionCallback<T> callBack, Propagation behavior) throws Throwable {
+        return this.execute(callBack, behavior, Isolation.DEFAULT);
+    }
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior, Isolation level) throws Throwable {
         TransactionStatus tranStatus = null;
         try {

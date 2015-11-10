@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
-import net.hasor.db.datasource.DataSourceUtils;
+import net.hasor.db.datasource.DSManager;
 import net.hasor.db.datasource.local.ConnectionHolder;
 import net.hasor.db.datasource.local.ConnectionSequence;
 import net.hasor.db.datasource.local.LocalDataSourceHelper;
@@ -357,7 +357,7 @@ public class JdbcTransactionManager implements TransactionManager {
     //
     /**获取数据库连接（线程绑定的）*/
     protected TransactionObject doGetConnection(final JdbcTransactionStatus defStatus) throws SQLException {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(this.getDataSource());
         ConnectionHolder holder = connSeq.currentHolder();
         if (holder.isOpen() == false || holder.hasTransaction() == false) {
@@ -382,12 +382,12 @@ public class JdbcTransactionManager implements TransactionManager {
 /** */
 class SyncTransactionManager {
     public static void setSync(final TransactionObject tranConn) {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(tranConn.getDataSource());
         connSeq.pop();
     }
     public static void clearSync(final DataSource dataSource) {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DataSourceUtils.getDataSourceHelper();
+        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
         ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
         connSeq.push(null);
     }

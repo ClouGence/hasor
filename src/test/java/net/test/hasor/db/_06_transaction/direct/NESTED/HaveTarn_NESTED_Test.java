@@ -16,7 +16,7 @@
 package net.test.hasor.db._06_transaction.direct.NESTED;
 import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
-import net.hasor.db.datasource.DataSourceUtils;
+import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionStatus;
@@ -48,7 +48,7 @@ public class HaveTarn_NESTED_Test extends AbstractNativesJDBCTest {
          *   T1   ，新建‘赵飞燕’用户               (不打印).
          *   T1   ，递交事务                                 (打印：默罕默德，赵飞燕).
          */
-        Connection conn = DataSourceUtils.getConnection(getDataSource());//申请连接
+        Connection conn = DSManager.getConnection(getDataSource());//申请连接
         {
             /*T1-Begin*/
             System.out.println("begin T1!");
@@ -81,7 +81,7 @@ public class HaveTarn_NESTED_Test extends AbstractNativesJDBCTest {
             conn.setAutoCommit(true);
             Thread.sleep(1000);
         }
-        DataSourceUtils.releaseConnection(conn, getDataSource());//释放连接
+        DSManager.releaseConnection(conn, getDataSource());//释放连接
     }
     //
     //

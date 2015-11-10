@@ -49,18 +49,20 @@ public class ConnectionHolder implements SavepointManager {
                 this.connection = null;
             }
     }
-    //
+    /**则表示当前数据库连接是否有被引用。*/
     public boolean isOpen() {
         if (this.referenceCount == 0)
             return false;
         return true;
     }
-    /**获取连接*/
+    /***/
     public synchronized Connection getConnection() throws SQLException {
-        if (this.isOpen() == false)
+        if (this.isOpen() == false) {
             return null;
-        if (this.connection == null)
+        }
+        if (this.connection == null) {
             this.connection = this.dataSource.getConnection();
+        }
         return this.connection;
     }
     /**是否存在事务*/
