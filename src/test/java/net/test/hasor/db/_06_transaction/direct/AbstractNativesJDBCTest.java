@@ -14,34 +14,62 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction.direct;
-import java.sql.SQLException;
+import static net.test.hasor.test.utils.HasorUnit.newID;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TranManager;
-import net.hasor.db.transaction.TransactionManager;
+import net.hasor.db.transaction.TransactionCallback;
 import net.hasor.db.transaction.TransactionStatus;
 import net.test.hasor.db._06_transaction.plugins.AbstractSimpleJDBCTest;
-import org.junit.Before;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractNativesJDBCTest extends AbstractSimpleJDBCTest {
-    private TransactionManager transactionManager = null;
-    @Before
-    public void initTran() {
-        this.transactionManager = TranManager.getManager(this.getDataSource());
+    protected abstract Propagation testPropagation();
+    //
+    // - 事务1
+    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
+        {
+            /*默罕默德*/
+            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘默罕默德’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        this.tranTemplate.execute(new TransactionCallback<Void>() {
+            /*安妮.贝隆、吴广*/
+            public Void doTransaction(TransactionStatus tranStatus) throws Throwable {
+                doTransactionalB(jdbcTemplate);
+                return null;
+            }
+        }, testPropagation());
+        {
+            /*赵飞燕*/
+            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘赵飞燕’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
     }
-    /**开始事物*/
-    protected TransactionStatus begin(Propagation behavior) throws SQLException {
-        return this.transactionManager.getTransaction(behavior);
-    }
-    /**递交事物*/
-    protected void commit(TransactionStatus status) throws SQLException {
-        this.transactionManager.commit(status);
-    }
-    /**回滚事物*/
-    protected void rollBack(TransactionStatus status) throws SQLException {
-        this.transactionManager.rollBack(status);
+    //
+    // - 事务2
+    protected void doTransactionalB(JdbcTemplate jdbcTemplate) throws Throwable {
+        System.out.println("begin T2!");
+        Thread.sleep(1000);
+        {
+            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘安妮.贝隆’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        {
+            String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘吴广’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        System.out.println("commit T2!");
+        Thread.sleep(1000);
     }
 }

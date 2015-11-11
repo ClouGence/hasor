@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction.direct.REQUIRES_NEW;
-import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.sql.Connection;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionStatus;
 import net.test.hasor.db._06_transaction.direct.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;
 import net.test.hasor.test.runner.HasorUnitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 /**
  * PROPAGATION_REQUIRES_NEW：独立事务
  *   -条件：环境中有事务，事务管理器会将当前事务挂起然后创建一个新的事务。
@@ -33,10 +31,14 @@ import org.junit.runner.RunWith;
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "net/test/simple/db/jdbc-config.xml", loadModules = OneDataSourceWarp.class)
+@ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
 public class HaveTarn_REQUIRED_New_Test extends AbstractNativesJDBCTest {
+    @Override
+    protected Propagation testPropagation() {
+        return Propagation.REQUIRES_NEW;
+    }
     @Test
-    public void haveTarn_REQUIRED_New_Test() throws Exception {
+    public void haveTarn_REQUIRED_New_Test() throws Throwable {
         System.out.println("--->>haveTarn_REQUIRED_New_Test<<--");
         Thread.sleep(1000);
         /* 执行步骤：
@@ -49,62 +51,27 @@ public class HaveTarn_REQUIRED_New_Test extends AbstractNativesJDBCTest {
          *   T1   ，新建‘赵飞燕’用户               (不打印).
          *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
          */
-        Connection conn = DSManager.getConnection(getDataSource());//申请连接
-        {
-            /*T1-Begin*/
-            System.out.println("begin T1!");
-            conn.setAutoCommit(false);
-            Thread.sleep(1000);
-        }
-        {
-            /*T1*/
-            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘默罕默德’...");
-            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
-            Thread.sleep(1000);
-        }
-        {
-            /*T2*/
-            this.executeTransactional();
-            Thread.sleep(1000);
-        }
-        {
-            /*T1*/
-            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘赵飞燕’...");
-            new JdbcTemplate(conn).update(insertUser, newID());//执行插入语句
-            Thread.sleep(1000);
-        }
-        {
-            /*T1-Commit*/
-            System.out.println("commit T1!");
-            conn.commit();
-            conn.setAutoCommit(true);
-            Thread.sleep(1000);
-        }
-        DSManager.releaseConnection(conn, getDataSource());//释放连接
+        Connection conn = DSManager.getConnection(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        doTransactionalA(jdbcTemplate);
+        DSManager.releaseConnection(conn, dataSource);
     }
     //
-    //
-    public void executeTransactional() throws Exception {
-        /*T2-Begin*/
-        System.out.println("begin T2!");
-        TransactionStatus tranStatus = begin(Propagation.REQUIRES_NEW);
+    @Test
+    public void tarn_REQUIRED_New_Test() throws Throwable {
+        System.out.println("--->>noTarn_REQUIRED_New_Test<<--");
         Thread.sleep(1000);
-        {
-            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘安妮.贝隆’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(1000);
-        }
-        {
-            String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-            System.out.println("insert new User ‘吴广’...");
-            this.getJdbcTemplate().update(insertUser, newID());//执行插入语句
-            Thread.sleep(1000);
-        }
-        /*T2-Commit*/
-        System.out.println("commit T2!");
-        commit(tranStatus);
+        /* 执行步骤：
+         *   T1   ，新建‘默罕默德’用户           (打印：默罕默德).
+         *      T2，开启事务                                 (不打印).
+         *      T2，新建‘安妮.贝隆’用户        (不打印).
+         *      T2，新建‘吴广’用户                   (不打印).
+         *      T2，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广).
+         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
+         */
+        Connection conn = DSManager.getConnection(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        doTransactionalA(jdbcTemplate);
+        DSManager.releaseConnection(conn, dataSource);
     }
 }
