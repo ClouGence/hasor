@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._06_transaction.direct.REQUIRED;
+package net.test.hasor.db._06_transaction.test;
 import java.sql.Connection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import net.hasor.db.Transactional;
 import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.test.hasor.db._06_transaction.direct.AbstractNativesJDBCTest;
+import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;
 import net.test.hasor.test.runner.HasorUnitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
  * 
  * @version : 2015年11月10日
@@ -31,10 +32,18 @@ import net.test.hasor.test.runner.HasorUnitRunner;
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
-public class RequiredTranTest extends AbstractNativesJDBCTest {
-    protected Propagation testPropagation() {
-        return Propagation.REQUIRED;
+public class REQUIRED_TranTest extends AbstractNativesJDBCTest {
+    // - 事务1
+    @Transactional(propagation = Propagation.REQUIRED)
+    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
+        super.doTransactionalA(jdbcTemplate);
     }
+    // - 事务2
+    @Transactional(propagation = Propagation.REQUIRED)
+    protected void doTransactionalB(final JdbcTemplate jdbcTemplate) throws Throwable {
+        super.doTransactionalB(jdbcTemplate);
+    }
+    //
     //
     /* PROPAGATION_REQUIRED：加入已有的事务
      *   -条件：环境中没有事务，事务管理器会创建一个事务。 */
@@ -54,7 +63,6 @@ public class RequiredTranTest extends AbstractNativesJDBCTest {
         doTransactionalA(jdbcTemplate);
         DSManager.releaseConnection(conn, dataSource);
     }
-    //
     /* PROPAGATION_REQUIRED：加入已有的事务
      * -条件：环境中有事务，事务管理器会将当前事务加入已有的事务中(commit,rollback均不生效)。*/
     @Test

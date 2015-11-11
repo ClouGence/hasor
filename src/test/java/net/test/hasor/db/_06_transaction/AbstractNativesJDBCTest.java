@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._06_transaction.plugins;
+package net.test.hasor.db._06_transaction;
+import static net.test.hasor.test.utils.HasorUnit.newID;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -21,21 +22,65 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
-import org.junit.Before;
-import org.more.util.CommonCodeUtils;
-import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.test.junit.DaemonThread;
 import net.test.hasor.test.utils.HasorUnit;
+import org.junit.Before;
+import org.more.util.CommonCodeUtils;
+import org.more.util.StringUtils;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractSimpleJDBCTest {
+public abstract class AbstractNativesJDBCTest {
+    //
+    // - 事务1
+    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
+        {
+            /*默罕默德*/
+            String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘默罕默德’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        {
+            /*安妮.贝隆、吴广*/
+            doTransactionalB(jdbcTemplate);
+        }
+        {
+            /*赵飞燕*/
+            String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘赵飞燕’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+    }
+    //
+    // - 事务2
+    protected void doTransactionalB(JdbcTemplate jdbcTemplate) throws Throwable {
+        System.out.println("begin T2!");
+        Thread.sleep(1000);
+        {
+            String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘安妮.贝隆’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        {
+            String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+            System.out.println("insert new User ‘吴广’...");
+            jdbcTemplate.update(insertUser, newID());//执行插入语句
+            Thread.sleep(1000);
+        }
+        System.out.println("commit T2!");
+        Thread.sleep(1000);
+    }
+    //
+    //
     /*--------------------------------------------------------------------------------WatchThread*/
     /**监控线程使用的事务隔离级别*/
     protected Isolation getWatchThreadTransactionLevel() {

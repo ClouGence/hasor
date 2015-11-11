@@ -13,30 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._06_transaction.direct.REQUIRES_NEW;
+package net.test.hasor.db._06_transaction.test;
 import java.sql.Connection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import net.hasor.db.Transactional;
 import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.test.hasor.db._06_transaction.direct.AbstractNativesJDBCTest;
+import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.test.junit.ContextConfiguration;
 import net.test.hasor.test.runner.HasorUnitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 /**
- * PROPAGATION_REQUIRES_NEW：独立事务
- *   -条件：环境中有事务，事务管理器会将当前事务挂起然后创建一个新的事务。
- * @version : 2013-12-10
- * @author 赵永春(zyc@hasor.net)
- */
+* PROPAGATION_SUPPORTS：跟随环境
+*   -条件：环境中有事务，事务管理器正常运行。
+* @version : 2013-12-10
+* @author 赵永春(zyc@hasor.net)
+*/
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
-public class HaveTarn_REQUIRED_New_Test extends AbstractNativesJDBCTest {
-    @Override
-    protected Propagation testPropagation() {
-        return Propagation.REQUIRES_NEW;
+public class MANDATORY_TranTest extends AbstractNativesJDBCTest {
+    // - 事务1
+    @Transactional(propagation = Propagation.MANDATORY)
+    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
+        super.doTransactionalA(jdbcTemplate);
     }
+    // - 事务2
+    @Transactional(propagation = Propagation.MANDATORY)
+    protected void doTransactionalB(final JdbcTemplate jdbcTemplate) throws Throwable {
+        super.doTransactionalB(jdbcTemplate);
+    }
+    //
+    //
     @Test
     public void haveTarn_REQUIRED_New_Test() throws Throwable {
         System.out.println("--->>haveTarn_REQUIRED_New_Test<<--");
@@ -46,28 +55,23 @@ public class HaveTarn_REQUIRED_New_Test extends AbstractNativesJDBCTest {
          *   T1   ，新建‘默罕默德’用户           (不打印).
          *      T2，开启事务                                 (不打印).
          *      T2，新建‘安妮.贝隆’用户        (不打印).
-         *      T2，新建‘吴广’用户                   (不打印).
-         *      T2，递交事务                                 (打印：安妮.贝隆、吴广).
+         *      T2，递交事务                                 (不打印).
          *   T1   ，新建‘赵飞燕’用户               (不打印).
-         *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
+         *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、赵飞燕).
          */
         Connection conn = DSManager.getConnection(dataSource);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         doTransactionalA(jdbcTemplate);
         DSManager.releaseConnection(conn, dataSource);
     }
-    //
     @Test
     public void tarn_REQUIRED_New_Test() throws Throwable {
         System.out.println("--->>noTarn_REQUIRED_New_Test<<--");
         Thread.sleep(1000);
         /* 执行步骤：
          *   T1   ，新建‘默罕默德’用户           (打印：默罕默德).
-         *      T2，开启事务                                 (不打印).
-         *      T2，新建‘安妮.贝隆’用户        (不打印).
-         *      T2，新建‘吴广’用户                   (不打印).
-         *      T2，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广).
-         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
+         *      T2，开启事务                                (打印：No existing transaction found for transaction marked with propagation 'mandatory').
+         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、赵飞燕).
          */
         Connection conn = DSManager.getConnection(dataSource);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
