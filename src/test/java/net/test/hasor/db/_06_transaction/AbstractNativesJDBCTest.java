@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import static net.test.hasor.test.utils.HasorUnit.newID;
+import static net.test.hasor.junit.HasorUnit.newID;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
+import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.TransactionTemplate;
-import net.test.hasor.test.junit.DaemonThread;
-import net.test.hasor.test.utils.HasorUnit;
+import net.test.hasor.junit.DaemonThread;
+import net.test.hasor.junit.HasorUnit;
 import org.junit.Before;
-import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
 /***
  * 数据库测试程序基类，监控线程
@@ -37,6 +37,23 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractNativesJDBCTest {
+    /*--------------------------------------------------------------------------------------Utils*/
+    @Inject
+    protected AppContext               appContext   = null;
+    @Inject
+    protected DataSource               dataSource   = null;
+    private static final AtomicInteger signalObject = new AtomicInteger(0);
+    /*-----------------------------------------------------------------------------------InitData*/
+    //
+    @Before
+    public void initData() throws SQLException, IOException {
+        JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        boolean hasTab = jdbcTemplate.tableExist("TB_User");
+        if (hasTab == false) {
+            jdbcTemplate.loadSQL("TB_User.sql");
+        }
+        jdbcTemplate.execute("delete from TB_User;");
+    }
     //
     // - 事务1
     protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
@@ -45,6 +62,7 @@ public abstract class AbstractNativesJDBCTest {
             String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘默罕默德’...");
             jdbcTemplate.update(insertUser, newID());//执行插入语句
+            signalObject.getAndIncrement();
             Thread.sleep(1000);
         }
         {
@@ -56,6 +74,7 @@ public abstract class AbstractNativesJDBCTest {
             String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘赵飞燕’...");
             jdbcTemplate.update(insertUser, newID());//执行插入语句
+            signalObject.getAndIncrement();
             Thread.sleep(1000);
         }
     }
@@ -68,12 +87,14 @@ public abstract class AbstractNativesJDBCTest {
             String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘安妮.贝隆’...");
             jdbcTemplate.update(insertUser, newID());//执行插入语句
+            signalObject.getAndIncrement();
             Thread.sleep(1000);
         }
         {
             String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
             System.out.println("insert new User ‘吴广’...");
             jdbcTemplate.update(insertUser, newID());//执行插入语句
+            signalObject.getAndIncrement();
             Thread.sleep(1000);
         }
         System.out.println("commit T2!");
@@ -82,58 +103,25 @@ public abstract class AbstractNativesJDBCTest {
     //
     //
     /*--------------------------------------------------------------------------------WatchThread*/
-    /**监控线程使用的事务隔离级别*/
-    protected Isolation getWatchThreadTransactionLevel() {
-        return Isolation.valueOf(Connection.TRANSACTION_READ_COMMITTED);
-    }
-    /**要监控的表名*/
-    protected String watchTable() {
-        return "TB_User";
-    }
     /**监视一张表的变化，当表的内容发生变化打印全表的内容。*/
     @DaemonThread
     public final void threadWatchTable() throws SQLException, NoSuchAlgorithmException, InterruptedException {
-        String tableName = watchTable();
+        String tableName = "TB_User";
         if (StringUtils.isBlank(tableName))
             return;
         //
-        String hashValue = "";
         Connection conn = dataSource.getConnection();
         //设置隔离级别读取未提交的数据是不允许的。
-        conn.setTransactionIsolation(getWatchThreadTransactionLevel().ordinal());
+        conn.setTransactionIsolation(Isolation.READ_COMMITTED.ordinal());
         while (true) {
-            String selectSQL = "select * from " + tableName;
-            String selectCountSQL = "select count(*) from " + tableName;
-            //
-            JdbcTemplate jdbc = new JdbcTemplate(conn);
-            List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
-            int rowCount = jdbc.queryForInt(selectCountSQL);
-            String logData = HasorUnit.printMapList(dataList, false);
-            String localHashValue = CommonCodeUtils.MD5.getMD5(logData);
-            if (!StringUtils.equals(hashValue, localHashValue)) {
-                System.out.println(String.format("watch : -->Table ‘%s’ rowCount = %s.", tableName, rowCount));
-                System.out.println(logData);
-                hashValue = localHashValue;
-            } else {
-                System.out.println("watch : table no change.");
+            Thread.sleep(100);
+            if (signalObject.get() % 2 == 1) {
+                String selectSQL = "select * from " + tableName;
+                JdbcTemplate jdbc = new JdbcTemplate(conn);
+                List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
+                HasorUnit.printMapList(dataList);
+                signalObject.getAndIncrement();
             }
-            //
-            Thread.sleep(500);
         }
-    }
-    /*--------------------------------------------------------------------------------------Utils*/
-    protected AppContext          appContext   = null;
-    protected TransactionTemplate tranTemplate = null;
-    protected DataSource          dataSource   = null;
-    /*-----------------------------------------------------------------------------------InitData*/
-    //
-    @Before
-    public void initData() throws SQLException, IOException {
-        boolean hasTab = this.jdbcTemplate.tableExist("TB_User");
-        /*装载 SQL 脚本文件*/
-        if (hasTab == false) {
-            jdbcTemplate.loadSQL("TB_User.sql");
-        }
-        jdbcTemplate.execute("delete from TB_User;");
     }
 }

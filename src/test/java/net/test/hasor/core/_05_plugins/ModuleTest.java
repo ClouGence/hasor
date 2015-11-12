@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._05_plugins;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -33,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class ModuleTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
-    public void loadModuleTest() throws IOException, URISyntaxException {
+    public void loadModuleTest() {
         System.out.println("--->>loadModuleTest<<--");
         AppContext appContext = Hasor.createAppContext(new OnStartModule());
         //

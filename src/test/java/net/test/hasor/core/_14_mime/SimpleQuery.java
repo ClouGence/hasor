@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class SimpleQuery {
     @Test
-    public void queryMime() throws Throwable {
+    public void queryMime() {
         MimeType mimeType = Hasor.createAppContext(new MimeTypeModule()).getInstance(MimeType.class);
         String suffix = "";
         //

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._02_ioc;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -29,7 +27,7 @@ import org.junit.Test;
  */
 public class AwareContextTest {
     @Test
-    public void awareContextTest() throws IOException, URISyntaxException, InterruptedException {
+    public void awareContextTest() {
         System.out.println("--->>awareContextTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {

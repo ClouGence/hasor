@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.test._02_thread;
-import net.test.hasor.test.junit.DaemonThread;
-import net.test.hasor.test.junit.TestOrder;
-import net.test.hasor.test.runner.HasorUnitRunner;
+package net.test.hasor.junit._02_thread;
+import net.test.hasor.junit.DaemonThread;
+import net.test.hasor.junit.HasorUnitRunner;
+import net.test.hasor.junit.TestOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

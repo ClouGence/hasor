@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
@@ -28,7 +26,7 @@ import org.junit.Test;
  */
 public class AnnoEventTest {
     @Test
-    public void annoEventTest() throws IOException, URISyntaxException, InterruptedException {
+    public void annoEventTest() throws InterruptedException {
         System.out.println("--->>annoEventTest<<--");
         AppContext appContext = Hasor.createAppContext(new ListenerPlugin());
         EventContext ec = appContext.getEnvironment().getEventContext();

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._04_scope;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class ScopeTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
-    public void threadScopeTest() throws IOException, URISyntaxException, InterruptedException {
+    public void threadScopeTest() {
         System.out.println("--->>threadScopeTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {

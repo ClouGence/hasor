@@ -21,8 +21,8 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
 import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.hasor.test.junit.ContextConfiguration;
-import net.test.hasor.test.runner.HasorUnitRunner;
+import net.test.hasor.junit.ContextConfiguration;
+import net.test.hasor.junit.HasorUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
@@ -47,7 +47,7 @@ public class NEVER_TranTest extends AbstractNativesJDBCTest {
     //
     //
     @Test
-    public void haveTarn_REQUIRED_New_Test() throws Throwable {
+    public void yesTarn_Test() throws Throwable {
         System.out.println("--->>haveTarn_REQUIRED_New_Test<<--");
         Thread.sleep(1000);
         /* 执行步骤：
@@ -63,7 +63,7 @@ public class NEVER_TranTest extends AbstractNativesJDBCTest {
         DSManager.releaseConnection(conn, dataSource);
     }
     @Test
-    public void tarn_REQUIRED_New_Test() throws Throwable {
+    public void noTarn_Test() throws Throwable {
         System.out.println("--->>noTarn_REQUIRED_New_Test<<--");
         Thread.sleep(1000);
         /* 执行步骤：

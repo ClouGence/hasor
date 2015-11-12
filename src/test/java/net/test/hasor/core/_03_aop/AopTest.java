@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._03_aop;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.core._03_aop.myaop.MyAopBean;
@@ -33,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class AopTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Test
-    public void simpleAopTest() throws IOException, URISyntaxException, InterruptedException {
+    public void simpleAopTest() {
         System.out.println("--->>simpleAopTest<<--");
         AppContext appContext = Hasor.createAppContext();
         //
@@ -42,7 +40,7 @@ public class AopTest {
     }
     //
     @Test
-    public void myAopTest() throws IOException, URISyntaxException, InterruptedException {
+    public void myAopTest() {
         System.out.println("--->>myaopAopTest<<--");
         AppContext appContext = Hasor.createAppContext(new MyAopSetup());
         //

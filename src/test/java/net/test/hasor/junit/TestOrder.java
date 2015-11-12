@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.test.hasor.junit;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 基于 JUnit4 的测试框架。
+ * 用于配置测试用例的启动顺序。
+ * @version : 2014年7月8日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.test.hasor.test.junit;
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TestOrder {
+    /**启动顺序，值越小约靠前。*/
+    public int value() default 0;
+}

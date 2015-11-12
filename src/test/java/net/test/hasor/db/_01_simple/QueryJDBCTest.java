@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 package net.test.hasor.db._01_simple;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._01_simple.entity.TB_User;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
-import net.test.hasor.test.utils.HasorUnit;
+import net.test.hasor.junit.HasorUnit;
+import org.junit.Test;
 /**
  * 
  * @version : 2013-12-10
@@ -46,7 +44,7 @@ public class QueryJDBCTest {
     }
     //
     @Test
-    public void mapParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
+    public void mapParam_QueryTest() throws SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");
         //
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
@@ -59,7 +57,7 @@ public class QueryJDBCTest {
     }
     //
     @Test
-    public void simpleParam_QueryTest() throws IOException, URISyntaxException, InterruptedException, SQLException {
+    public void simpleParam_QueryTest() throws SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());

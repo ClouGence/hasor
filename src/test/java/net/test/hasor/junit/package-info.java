@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.test.junit;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 当测试用例启动之后，Hasor测试框架会独立线程启动该方法，作为陪伴直到测试结束。
- * 注意该方法不能同时与@Test在一个方法上使用。
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * 基于 JUnit4 的测试框架。
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DaemonThread {}
+package net.test.hasor.junit;

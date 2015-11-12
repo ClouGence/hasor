@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.test.utils;
+package net.test.hasor.junit;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,14 +38,14 @@ public abstract class HasorUnit {
     }
     /**打印列表内容*/
     public static <T> String printObjectList(final List<T> dataList) {
-        return HasorUnit.printObjectList(dataList, true);
+        return HasorUnit.printObjectList(dataList, System.out);
     }
     /**打印列表内容*/
     public static String printMapList(final List<Map<String, Object>> dataList) {
-        return HasorUnit.printMapList(dataList, true);
+        return HasorUnit.printMapList(dataList, System.out);
     }
     /**打印列表内容*/
-    public static <T> String printObjectList(final List<T> dataList, final boolean print) {
+    public static <T> String printObjectList(final List<T> dataList, final PrintStream out) {
         List<Map<String, Object>> newDataList = new ArrayList<Map<String, Object>>();
         for (T obj : dataList) {
             List<String> keys = BeanUtils.getPropertysAndFields(obj.getClass());
@@ -55,10 +56,10 @@ public abstract class HasorUnit {
             //
             newDataList.add(newObj);
         }
-        return HasorUnit.printMapList(newDataList, print);
+        return HasorUnit.printMapList(newDataList, out);
     }
     /**打印列表内容*/
-    public static String printMapList(final List<Map<String, Object>> dataList, final boolean print) {
+    public static String printMapList(final List<Map<String, Object>> dataList, final PrintStream out) {
         List<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
         Map<String, Integer> titleConfig = new LinkedHashMap<String, Integer>();
         //1.转换
@@ -114,8 +115,8 @@ public abstract class HasorUnit {
             output.append(sb.toString() + "\n");
         }
         output.append(String.format("\\%s/", StringUtils.center("", titleLength - 2, "-")));
-        if (print) {
-            System.out.println(output);
+        if (out != null) {
+            out.println(output);
         }
         return output.toString();
     }

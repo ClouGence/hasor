@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
@@ -30,7 +28,7 @@ import org.junit.Test;
  */
 public class EventLinkTest {
     @Test
-    public void syncEventTest() throws IOException, URISyntaxException, InterruptedException {
+    public void syncEventTest() throws InterruptedException {
         System.out.println("--->>syncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
         EventContext ec = appContext.getEnvironment().getEventContext();

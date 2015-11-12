@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class CallableJDBCTest {
     @Test
-    public void testCallable() throws Throwable {
+    public void testCallable() throws SQLException {
         System.out.println("--->>testCallable<<--");
         //
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());

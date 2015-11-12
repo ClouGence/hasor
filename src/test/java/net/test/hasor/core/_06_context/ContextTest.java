@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.core._06_context;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Set;
 import net.hasor.core.AppContext;
@@ -43,7 +41,7 @@ public class ContextTest {
     //
     // - 类扫描
     @Test
-    public void findClassTest() throws IOException, URISyntaxException, InterruptedException {
+    public void findClassTest() {
         System.out.println("--->>findClassTest<<--");
         //1.创建一个标准的 Hasor 容器。
         AppContext appContext = Hasor.createAppContext();
@@ -58,7 +56,7 @@ public class ContextTest {
     //
     // - 环境变量的解析
     @Test
-    public void variablesTest() throws Exception {
+    public void variablesTest() {
         System.out.println("--->>variablesTest<<--");
         System.setProperty("MyVar", "hello");
         AppContext appContext = Hasor.createAppContext();
@@ -77,9 +75,9 @@ public class ContextTest {
     //
     // - 配置信息读取
     @Test
-    public void settingsTest() throws IOException, URISyntaxException {
+    public void settingsTest() {
         System.out.println("--->>settingsTest<<--");
-        AppContext appContext = Hasor.createAppContext("net/test/simple/core/_10_settings/simple-config.xml");
+        AppContext appContext = Hasor.createAppContext("simple-config.xml");
         Settings settings = appContext.getEnvironment().getSettings();
         //
         String myName = settings.getString("mySelf.myName");
