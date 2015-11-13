@@ -17,11 +17,12 @@ package net.test.hasor.core._08_event.custom;
 import java.util.Set;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.StartModule;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ListenerPlugin implements StartModule {
+public class ListenerPlugin implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
@@ -49,29 +50,28 @@ public class ListenerPlugin implements StartModule {
                     continue;
                 }
                 BindInfo<?> eventInfo = apiBinder.bindType(eventClass).uniqueName().toInfo();
-                EventContext ec = apiBinder.getEnvironment().getEventContext();
-                ec.addListener(eventName, new EventListenerPropxy(eventInfo));
+                EventListenerPropxy eventListener = new EventListenerPropxy(eventInfo);
+                eventListener = Hasor.autoAware(apiBinder.getEnvironment(), eventListener);
+                apiBinder.getEnvironment().getEventContext().addListener(eventName, eventListener);
                 logger.info("event ‘{}’ binding to ‘{}’", eventName, eventClass);
             }
             //当ContextEvent_Start事件到来时注册所有配置文件监听器。
             logger.info("event binding finish.");
         }
     }
-    private AppContext appContext = null;
-    public void onStart(AppContext appContext) throws Throwable {
-        this.appContext = appContext;
-    }
-    private class EventListenerPropxy implements EventListener {
-        private EventListener targetListener = null;
+    private class EventListenerPropxy implements EventListener, AppContextAware {
         private BindInfo<?>   targetInfo     = null;
+        private EventListener targetListener = null;
         //
         public EventListenerPropxy(BindInfo<?> targetInfo) {
             this.targetInfo = targetInfo;
         }
-        public void onEvent(String event, Object[] params) throws Throwable {
+        public void setAppContext(AppContext appContext) {
             if (this.targetListener == null) {
                 this.targetListener = (EventListener) appContext.getInstance(this.targetInfo);
             }
+        }
+        public void onEvent(String event, Object[] params) throws Throwable {
             this.targetListener.onEvent(event, params);
         }
     }

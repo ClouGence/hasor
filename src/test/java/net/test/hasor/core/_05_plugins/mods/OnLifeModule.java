@@ -16,7 +16,7 @@
 package net.test.hasor.core._05_plugins.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.StartModule;
+import net.hasor.core.LifeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
-public class OnStartModule implements StartModule {
+public class OnLifeModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
@@ -35,5 +35,9 @@ public class OnStartModule implements StartModule {
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("启动啦...");
+    }
+    @Override
+    public void onStop(AppContext appContext) throws Throwable {
+        logger.info("停止啦...");
     }
 }

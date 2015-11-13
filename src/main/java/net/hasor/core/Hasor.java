@@ -59,16 +59,6 @@ public abstract class Hasor {
         env.getEventContext().addListener(ContextEvent_Started, eventListener);
         return eventListener;
     }
-    public static Module onStart(Environment env, final Module atModule) {
-        pushStartListener(env, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                if (atModule instanceof StartModule) {
-                    ((StartModule) atModule).onStart((AppContext) params[0]);
-                }
-            }
-        });
-        return atModule;
-    }
     public static <T extends EventListener> T addShutdownListener(Environment env, T eventListener) {
         env.getEventContext().addListener(ContextEvent_Shutdown, eventListener);
         return eventListener;

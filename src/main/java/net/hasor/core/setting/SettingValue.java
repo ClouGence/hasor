@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.json.JSON;
 /**
  * 
  * @version : 2014年10月11日
@@ -37,5 +38,14 @@ public class SettingValue {
     }
     public List<Object> getVarList() {
         return this.varList;
+    }
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        for (Object obj : this.varList) {
+            if (obj != null) {
+                buffer.append(obj.toString());
+            }
+        }
+        return buffer.toString();
     }
 }

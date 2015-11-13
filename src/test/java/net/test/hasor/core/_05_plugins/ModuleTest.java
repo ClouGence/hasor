@@ -17,7 +17,7 @@ package net.test.hasor.core._05_plugins;
 import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.test.hasor.core._05_plugins.mods.OnStartModule;
+import net.test.hasor.core._05_plugins.mods.OnLifeModule;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -33,7 +33,7 @@ public class ModuleTest {
     @Test
     public void loadModuleTest() {
         System.out.println("--->>loadModuleTest<<--");
-        AppContext appContext = Hasor.createAppContext(new OnStartModule());
+        AppContext appContext = Hasor.createAppContext(new OnLifeModule());
         //
         List<String> says = appContext.findBindingBean(String.class);
         logger.info("all modules say:{}.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));

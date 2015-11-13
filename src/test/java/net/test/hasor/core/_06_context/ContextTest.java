@@ -83,7 +83,7 @@ public class ContextTest {
         String myName = settings.getString("mySelf.myName");
         logger.info("my Name is {}.", myName);
         //
-        int myAge = settings.getInteger("mySelf.myAge");
+        Integer myAge = settings.getInteger("mySelf.myAge");
         logger.info("my Age is {}.", myAge);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday");

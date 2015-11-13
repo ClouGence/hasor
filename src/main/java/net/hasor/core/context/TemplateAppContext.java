@@ -31,6 +31,7 @@ import net.hasor.core.XmlNode;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
+import net.hasor.core.module.ModuleHelper;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
@@ -406,8 +407,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
         //
-        /*确保由代码加载的module也可以接收到onStart方法的调用。*/
-        Hasor.onStart(this.getEnvironment(), module);
+        ModuleHelper.onInstall(this.getEnvironment(), module);
     }
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。

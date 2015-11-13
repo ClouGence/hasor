@@ -86,7 +86,11 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                 super.refresh();
             } catch (Throwable e) {
                 logger.error("parsing failed -> " + e.getMessage(), e);
-                throw new IOException(e);
+                if (e instanceof IOException) {
+                    throw (IOException) e;
+                } else {
+                    throw new IOException(e);
+                }
             }
         }
         logger.info("parsing finish.");

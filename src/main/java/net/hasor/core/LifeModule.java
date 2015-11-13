@@ -19,11 +19,17 @@ package net.hasor.core;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface StartModule extends Module {
+public interface LifeModule extends Module {
     /**
      * 启动过程。
      * @param appContext appContext
      * @throws Throwable init异常抛出
      */
     public void onStart(AppContext appContext) throws Throwable;
+    /**
+     * 终止过程。
+     * @param appContext appContext
+     * @throws Throwable init异常抛出
+     */
+    public void onStop(AppContext appContext) throws Throwable;
 }

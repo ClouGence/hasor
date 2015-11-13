@@ -31,6 +31,7 @@ import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.context.BeanBuilder;
 import net.hasor.core.context.DataContext;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.module.ModuleHelper;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -58,8 +59,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public void installModule(final Module module) throws Throwable {
         logger.info("installModule ->" + module);
         module.loadModule(this);
-        /*确保由代码加载的module也可以接收到onStart方法的调用。*/
-        Hasor.onStart(this.getEnvironment(), module);
+        ModuleHelper.onInstall(this.getEnvironment(), module);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

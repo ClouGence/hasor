@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 /**
  * PROPAGATION_REQUIRES_NEW：独立事务
  *   -条件：环境中有事务，事务管理器会将当前事务挂起然后创建一个新的事务。
+ *   -条件：环境中无事务，事务管理器会将当前事务挂起然后创建一个新的事务。
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */

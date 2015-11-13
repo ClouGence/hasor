@@ -17,6 +17,7 @@ package net.hasor.core.setting;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import org.more.json.JSON;
 import org.more.util.StringUtils;
@@ -50,6 +51,10 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
     }
     public void refresh() throws IOException {
         for (Map<String, SettingValue> atNS : this.namespaceSettings.values()) {
+            if (logger.isDebugEnabled()) {
+                for (Entry<String, SettingValue> nsEntry : atNS.entrySet())
+                    logger.debug("addSetting {}={}", nsEntry.getKey(), nsEntry.getValue());
+            }
             this.mergeSettings.addMap(atNS);
         }
     }

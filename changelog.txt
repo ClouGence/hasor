@@ -20,6 +20,7 @@
     11.启动过程中增加了一些 log 的输出。
     12.StandardEnvironment构造方法改进。
     13.AbstractClassConfig增加对 java javax 包类的排除，凡是这两个包的类都不进行aop。
+    14.StartModule接口更名为LifeModule，并新增了onStop方法。至此通过LifeModule接口可以得到模块整个生命周期。
 
 ===== Hasor-Core v1.2.0
 * 新增:

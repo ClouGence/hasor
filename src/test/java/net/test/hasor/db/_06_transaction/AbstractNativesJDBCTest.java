@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
@@ -37,13 +36,10 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractNativesJDBCTest {
-    /*--------------------------------------------------------------------------------------Utils*/
     @Inject
-    protected AppContext               appContext   = null;
+    protected AppContext appContext = null;
     @Inject
-    protected DataSource               dataSource   = null;
-    private static final AtomicInteger signalObject = new AtomicInteger(0);
-    /*-----------------------------------------------------------------------------------InitData*/
+    protected DataSource dataSource = null;
     //
     @Before
     public void initData() throws SQLException, IOException {
