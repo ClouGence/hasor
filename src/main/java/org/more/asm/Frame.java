@@ -431,23 +431,23 @@ final class Frame {
      * The label (i.e. basic block) to which these input and output stack map
      * frames correspond.
      */
-    Label                    owner;
+    Label         owner;
     /**
      * The input stack map frame locals.
      */
-    int[]                    inputLocals;
+    int[]         inputLocals;
     /**
      * The input stack map frame stack.
      */
-    int[]                    inputStack;
+    int[]         inputStack;
     /**
      * The output stack map frame locals.
      */
-    private int[]            outputLocals;
+    private int[] outputLocals;
     /**
      * The output stack map frame stack.
      */
-    private int[]            outputStack;
+    private int[] outputStack;
     /**
      * Relative size of the output stack. The exact semantics of this field
      * depends on the algorithm that is used.
@@ -458,13 +458,13 @@ final class Frame {
      * When the stack map frames are completely computed, this field is the
      * actual number of types in {@link #outputStack}.
      */
-    private int              outputStackTop;
+    private int   outputStackTop;
     /**
      * Number of types that are initialized in the basic block.
      * 
      * @see #initializations
      */
-    private int              initializationCount;
+    private int   initializationCount;
     /**
      * The types that are initialized in the basic block. A constructor
      * invocation on an UNINITIALIZED or UNINITIALIZED_THIS type must replace
@@ -478,7 +478,7 @@ final class Frame {
      * are relative to input locals or to the input stack (see below for the
      * description of the algorithm).
      */
-    private int[]            initializations;
+    private int[] initializations;
     /**
      * Returns the output frame local variable type at the given index.
      * 
@@ -598,7 +598,7 @@ final class Frame {
             // stores the internal name, not the descriptor!
             t = desc.substring(index + 1, desc.length() - 1);
             return OBJECT | cw.addType(t);
-            // case '[':
+        // case '[':
         default:
             // extracts the dimensions and the element type
             int data;

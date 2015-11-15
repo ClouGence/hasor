@@ -135,7 +135,7 @@ public class EqualsBuilder {
      * @param excludeFields  Collection of String field names to exclude from testing
      * @return <code>true</code> if the two Objects have tested equals.
      */
-    public static boolean reflectionEquals(Object lhs, Object rhs, Collection<?> /*String*/excludeFields) {
+    public static boolean reflectionEquals(Object lhs, Object rhs, Collection<?> /*String*/ excludeFields) {
         return reflectionEquals(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
     /**

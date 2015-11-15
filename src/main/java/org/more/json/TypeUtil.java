@@ -31,11 +31,11 @@ import java.util.List;
  * @since Jetty 4.1
  */
 class TypeUtil {
-    private static final Logger                    LOG         = Log.getLogger(TypeUtil.class);
-    public static int                              CR          = '\015';
-    public static int                              LF          = '\012';
+    private static final Logger                    LOG        = Log.getLogger(TypeUtil.class);
+    public static int                              CR         = '\015';
+    public static int                              LF         = '\012';
     /* ------------------------------------------------------------ */
-    private static final HashMap<String, Class<?>> name2Class  = new HashMap<String, Class<?>>();
+    private static final HashMap<String, Class<?>> name2Class = new HashMap<String, Class<?>>();
     static {
         name2Class.put("boolean", java.lang.Boolean.TYPE);
         name2Class.put("byte", java.lang.Byte.TYPE);
@@ -77,7 +77,7 @@ class TypeUtil {
         name2Class.put("java.lang.String", java.lang.String.class);
     }
     /* ------------------------------------------------------------ */
-    private static final HashMap<Class<?>, String> class2Name  = new HashMap<Class<?>, String>();
+    private static final HashMap<Class<?>, String> class2Name = new HashMap<Class<?>, String>();
     static {
         class2Name.put(java.lang.Boolean.TYPE, "boolean");
         class2Name.put(java.lang.Byte.TYPE, "byte");

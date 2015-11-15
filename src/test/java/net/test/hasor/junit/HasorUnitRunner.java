@@ -133,9 +133,6 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Object createTest() throws Exception {
         Object testUnit = this.appContext.getInstance(this.typeRegister);
-        if (testUnit != null && testUnit instanceof AppContextAware) {
-            ((AppContextAware) testUnit).setAppContext(this.appContext);
-        }
         return testUnit;
     }
     //

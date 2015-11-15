@@ -48,8 +48,8 @@ import java.util.Arrays;
  * other stream.</p>
  */
 public class Base64InputStream extends InputStream {
-    private static final int[]  IA   = new int[256];
-    private static final char[] CA   = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
+    private static final int[]  IA = new int[256];
+    private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
     static {
         Arrays.fill(Base64InputStream.IA, -1);
         for (int i = 0, iS = Base64InputStream.CA.length; i < iS; i++) {
@@ -65,7 +65,7 @@ public class Base64InputStream extends InputStream {
      * stream;  element <code>buf[pos]</code> is
      * the next byte to be read.
      */
-    protected byte              buf[];
+    protected byte buf[];
     /**
      * The index of the next character to read from the input stream buffer.
      * This value should always be nonnegative
@@ -73,7 +73,7 @@ public class Base64InputStream extends InputStream {
      * The next byte to be read from the input stream buffer
      * will be <code>buf[pos]</code>.
      */
-    protected int               pos;
+    protected int  pos;
     /**
      * The currently marked position in the stream.
      * ByteArrayInputStream objects are marked at position zero by
@@ -87,7 +87,7 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    protected int               mark = 0;
+    protected int  mark = 0;
     /**
      * The index one greater than the last valid character in the input
      * stream buffer.
@@ -97,7 +97,7 @@ public class Base64InputStream extends InputStream {
      * the last byte within <code>buf</code> that
      * can ever be read  from the input stream buffer.
      */
-    protected int               count;
+    protected int  count;
     /**
      * Creates a <code>Base64InputStream</code>.
      *

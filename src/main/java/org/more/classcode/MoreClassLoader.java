@@ -26,10 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MoreClassLoader extends ClassLoader {
     private Map<String, ClassInfo>       classMap  = new ConcurrentHashMap<String, ClassInfo>();
     private ThreadLocal<ClassCodeObject> localLocl = new ThreadLocal<ClassCodeObject>() {
-                                                       protected ClassCodeObject initialValue() {
-                                                           return new ClassCodeObject();
-                                                       }
-                                                   };
+        protected ClassCodeObject initialValue() {
+            return new ClassCodeObject();
+        }
+    };
     //
     public MoreClassLoader() {
         super(Thread.currentThread().getContextClassLoader());

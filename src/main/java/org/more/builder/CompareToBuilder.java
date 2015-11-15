@@ -193,7 +193,7 @@ public class CompareToBuilder {
      *  with <code>lhs</code>
      * @since 2.2
      */
-    public static int reflectionCompare(Object lhs, Object rhs, Collection<?> /*String*/excludeFields) {
+    public static int reflectionCompare(Object lhs, Object rhs, Collection<?> /*String*/ excludeFields) {
         return reflectionCompare(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
     /**

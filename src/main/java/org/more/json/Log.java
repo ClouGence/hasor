@@ -107,8 +107,8 @@ class Log {
             }
         });
     }
-    private static Logger                              LOG;
-    private static boolean                             __initialized;
+    private static Logger  LOG;
+    private static boolean __initialized;
     public static boolean initialized() {
         if (LOG != null) {
             return true;

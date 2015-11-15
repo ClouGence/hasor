@@ -266,30 +266,30 @@ public class JSONPojoConvertor implements JSON.Convertor {
         public Object getActualValue(Number number);
     }
     public static final NumberType SHORT   = new NumberType() {
-                                               public Object getActualValue(Number number) {
-                                                   return new Short(number.shortValue());
-                                               }
-                                           };
+        public Object getActualValue(Number number) {
+            return new Short(number.shortValue());
+        }
+    };
     public static final NumberType INTEGER = new NumberType() {
-                                               public Object getActualValue(Number number) {
-                                                   return new Integer(number.intValue());
-                                               }
-                                           };
+        public Object getActualValue(Number number) {
+            return new Integer(number.intValue());
+        }
+    };
     public static final NumberType FLOAT   = new NumberType() {
-                                               public Object getActualValue(Number number) {
-                                                   return new Float(number.floatValue());
-                                               }
-                                           };
+        public Object getActualValue(Number number) {
+            return new Float(number.floatValue());
+        }
+    };
     public static final NumberType LONG    = new NumberType() {
-                                               public Object getActualValue(Number number) {
-                                                   return number instanceof Long ? number : new Long(number.longValue());
-                                               }
-                                           };
+        public Object getActualValue(Number number) {
+            return number instanceof Long ? number : new Long(number.longValue());
+        }
+    };
     public static final NumberType DOUBLE  = new NumberType() {
-                                               public Object getActualValue(Number number) {
-                                                   return number instanceof Double ? number : new Double(number.doubleValue());
-                                               }
-                                           };
+        public Object getActualValue(Number number) {
+            return number instanceof Double ? number : new Double(number.doubleValue());
+        }
+    };
     static {
         __numberTypes.put(Short.class, SHORT);
         __numberTypes.put(Short.TYPE, SHORT);

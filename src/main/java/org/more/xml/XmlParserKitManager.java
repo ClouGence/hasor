@@ -210,8 +210,8 @@ public class XmlParserKitManager implements XmlAccept {
             }
             return;
         } else
-        //2.处理EndElementEvent
-        if (e instanceof EndElementEvent) {
+            //2.处理EndElementEvent
+            if (e instanceof EndElementEvent) {
             EndElementEvent ee = (EndElementEvent) e;
             NameSpace ns = this.activateStack.getNameSpace(ee.getPrefix());
             this.issueEvent(e, this.activateStack);
@@ -219,8 +219,8 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             return;
         } else
-        //3.处理AttributeEvent
-        if (e instanceof AttributeEvent) {
+                //3.处理AttributeEvent
+                if (e instanceof AttributeEvent) {
             this.activateStack.createStack();
             AttributeEvent ee = (AttributeEvent) e;
             String prefix = ee.getName().getPrefix();
@@ -237,12 +237,12 @@ public class XmlParserKitManager implements XmlAccept {
             this.activateStack.dropStack();
             return;
         } else
-        //4.处理StartDocumentEvent
-        if (e instanceof StartDocumentEvent) {
+                    //4.处理StartDocumentEvent
+                    if (e instanceof StartDocumentEvent) {
             this.activateStack.createStack();
             this.issueEvent(e, this.activateStack);
             return;
-        }//5.处理EndElementEvent
+        } //5.处理EndElementEvent
         if (e instanceof EndElementEvent) {
             this.activateStack.dropStack();
             this.issueEvent(e, this.activateStack);

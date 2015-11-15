@@ -15,6 +15,8 @@
  */
 package net.test.hasor.db._06_transaction.test;
 import java.sql.Connection;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import net.hasor.db.Transactional;
 import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -23,8 +25,6 @@ import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.junit.ContextConfiguration;
 import net.test.hasor.junit.HasorUnitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 /**
  * PROPAGATION_REQUIRES_NEW：独立事务
  *   -条件：环境中有事务，事务管理器会将当前事务挂起然后创建一个新的事务。
@@ -37,13 +37,14 @@ import org.junit.runner.RunWith;
 public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
     // - 事务1
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
-        super.doTransactionalA(jdbcTemplate);
+    public void doTransactionalA() throws Throwable {
+        super.doTransactionalA();
     }
     // - 事务2
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected void doTransactionalB(final JdbcTemplate jdbcTemplate) throws Throwable {
-        super.doTransactionalB(jdbcTemplate);
+    public void doTransactionalB() throws Throwable {
+        super.doTransactionalB();
+        throw new Exception();
     }
     //
     //
@@ -62,8 +63,8 @@ public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
          *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
          */
         Connection conn = DSManager.getConnection(dataSource);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        doTransactionalA(jdbcTemplate);
+        conn.setAutoCommit(false);
+        doTransactionalA();
         DSManager.releaseConnection(conn, dataSource);
     }
     @Test
@@ -78,9 +79,6 @@ public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
          *      T2，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广).
          *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
          */
-        Connection conn = DSManager.getConnection(dataSource);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        doTransactionalA(jdbcTemplate);
-        DSManager.releaseConnection(conn, dataSource);
+        doTransactionalA();
     }
 }

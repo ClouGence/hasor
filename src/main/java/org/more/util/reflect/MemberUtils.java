@@ -35,8 +35,8 @@ import org.more.util.SystemUtils;
  */
 abstract class MemberUtils {
     // TODO extract an interface to implement compareParameterSets(...)?
-    private static final int        ACCESS_TEST             = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
-    private static final Method     IS_SYNTHETIC;
+    private static final int    ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+    private static final Method IS_SYNTHETIC;
     static {
         Method isSynthetic = null;
         if (SystemUtils.isJavaVersionAtLeast(1.5f)) {

@@ -297,7 +297,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      *            The field names to exclude. Null excludes nothing.
      * @return The toString value.
      */
-    public static String toStringExclude(Object object, Collection<?> /*String*/excludeFieldNames) {
+    public static String toStringExclude(Object object, Collection<?> /*String*/ excludeFieldNames) {
         return toStringExclude(object, toNoNullStringArray(excludeFieldNames));
     }
     /**

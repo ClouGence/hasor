@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction.test;
-import java.sql.Connection;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import net.hasor.db.Transactional;
-import net.hasor.db.datasource.DSManager;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
 import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.junit.ContextConfiguration;
 import net.test.hasor.junit.HasorUnitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 /**
 * PROPAGATION_SUPPORTS：跟随环境
 *   -条件：环境中有事务，事务管理器正常运行。
@@ -34,48 +31,68 @@ import org.junit.runner.RunWith;
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
 public class NEVER_TranTest extends AbstractNativesJDBCTest {
-    // - 事务1
-    @Transactional(propagation = Propagation.NEVER)
-    protected void doTransactionalA(final JdbcTemplate jdbcTemplate) throws Throwable {
-        super.doTransactionalA(jdbcTemplate);
+    @Test
+    @Transactional /*该注解保证了测试方法的执行是在事物中*/
+    public void testHasTransactional() throws Throwable {
+        System.out.println("--->>NEVER －> 测试条件，环境中存在事物。");
+        System.out.println("--->>NEVER －>     数据库应存在：“默罕默德”、“赵飞燕”");
+        System.out.println("--->>NEVER －>     共计 2 条记录。");
+        System.out.println();
+        //
+        System.out.println("begin T1!");
+        /*T1 - 默罕默德*/
+        this.insertUser_MHMD();
+        /*T2 - 安妮.贝隆、吴广*/
+        try {
+            System.out.println("begin T2!");
+            doTransactional();
+            System.out.println("commit T2!");
+        } catch (Exception e) {
+            System.out.println("rollback T2! message = " + e.getMessage());
+        } finally {
+            printData();
+            Thread.sleep(1000);
+        }
+        /*T1 - 赵飞燕*/
+        insertUser_ZFY();
+        System.out.println("commit T1!");
     }
-    // - 事务2
-    @Transactional(propagation = Propagation.NEVER)
-    protected void doTransactionalB(final JdbcTemplate jdbcTemplate) throws Throwable {
-        super.doTransactionalB(jdbcTemplate);
+    @Test
+    public void testNoneTransactional() throws Throwable {
+        System.out.println("--->>NEVER －> 测试条件，环境不存在事物。");
+        System.out.println("--->>NEVER －>     数据库应存在：“默罕默德”、“安妮.贝隆”、“吴广”、“赵飞燕”");
+        System.out.println("--->>NEVER －>     共计 4 条记录。");
+        System.out.println();
+        //
+        System.out.println("begin T1!");
+        /*T1 - 默罕默德*/
+        this.insertUser_MHMD();
+        /*T2 - 安妮.贝隆、吴广*/
+        try {
+            System.out.println("begin T2!");
+            doTransactional();
+            System.out.println("commit T2!");
+        } catch (Exception e) {
+            System.out.println("rollback T2! message = " + e.getMessage());
+        } finally {
+            printData();
+            Thread.sleep(1000);
+        }
+        /*T1 - 赵飞燕*/
+        insertUser_ZFY();
+        System.out.println("commit T1!");
     }
     //
     //
-    @Test
-    public void yesTarn_Test() throws Throwable {
-        System.out.println("--->>haveTarn_REQUIRED_New_Test<<--");
-        Thread.sleep(1000);
-        /* 执行步骤：
-         *   T1   ，开启事务                                 (不打印).
-         *   T1   ，新建‘默罕默德’用户           (不打印).
-         *      T2，开启事务                                (打印：Existing transaction found for transaction marked with propagation 'never').
-         *   T1   ，新建‘赵飞燕’用户               (不打印).
-         *   T1   ，递交事务                                 (打印：默罕默德，赵飞燕).
-         */
-        Connection conn = DSManager.getConnection(dataSource);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        doTransactionalA(jdbcTemplate);
-        DSManager.releaseConnection(conn, dataSource);
-    }
-    @Test
-    public void noTarn_Test() throws Throwable {
-        System.out.println("--->>noTarn_REQUIRED_New_Test<<--");
-        Thread.sleep(1000);
-        /* 执行步骤：
-         *   T1   ，新建‘默罕默德’用户           (打印：默罕默德).
-         *      T2，开启事务                                (不打印).
-         *      T2，新建‘安妮.贝隆’用户        (打印：默罕默德、安妮.贝隆).
-         *      T2，回滚事务                                 (不打印).
-         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、赵飞燕).
-         */
-        Connection conn = DSManager.getConnection(dataSource);
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        doTransactionalA(jdbcTemplate);
-        DSManager.releaseConnection(conn, dataSource);
+    //
+    //
+    @Transactional(propagation = Propagation.NEVER)
+    public void doTransactional() throws Throwable {
+        System.out.println("--->>NEVER －> 测试条件，如果看到该日志代表环境中不存在事物。<<--");
+        //
+        /*安妮.贝隆*/
+        insertUser_ANBL();
+        /*吴广*/
+        insertUser_WG();
     }
 }

@@ -31,7 +31,7 @@ import org.more.xml.stream.XmlStreamEvent;
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements MimeType {
+class InnerMimeTypeContext extends ConcurrentHashMap<String, String>implements MimeType {
     private static final long serialVersionUID = -8955832291109288048L;
     private Object            content;
     public InnerMimeTypeContext(Object content) {
@@ -56,8 +56,8 @@ class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements 
     public void loadStream(InputStream inStream) throws XMLStreamException, IOException {
         new XmlReader(inStream).reader(new XmlAccept() {
             private StringBuffer stringBuffer = new StringBuffer();
-            private String       extension    = null;
-            private String       mimeType     = null;
+            private String extension = null;
+            private String mimeType = null;
             public void beginAccept() throws XMLStreamException {}
             public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
                 if (e instanceof TextEvent) {

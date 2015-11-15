@@ -72,7 +72,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
     }
     @Override
     public String toString() {
-        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s",//
+        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s", //
                 FilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     /*--------------------------------------------------------------------------------------------------------*/

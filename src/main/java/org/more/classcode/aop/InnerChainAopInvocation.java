@@ -37,7 +37,11 @@ public class InnerChainAopInvocation implements AopInvocation {
     public Method getMethod() {
         Class<?> superType = this.targetMethod.getDeclaringClass().getSuperclass();
         try {
-            return superType.getMethod(this.targetMethod.getName(), this.paramTypes);
+            try {
+                return superType.getDeclaredMethod(this.targetMethod.getName(), this.paramTypes);
+            } catch (Throwable e) {
+                return superType.getMethod(this.targetMethod.getName(), this.paramTypes);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

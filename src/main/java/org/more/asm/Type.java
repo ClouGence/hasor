@@ -237,7 +237,7 @@ public class Type {
                 return DOUBLE_TYPE;
             } else if (c == Float.TYPE) {
                 return FLOAT_TYPE;
-            } else /* if (c == Long.TYPE) */{
+            } else /* if (c == Long.TYPE) */ {
                 return LONG_TYPE;
             }
         } else {
@@ -426,7 +426,7 @@ public class Type {
                 ++len;
             }
             return new Type(OBJECT, buf, off + 1, len - 1);
-            // case '(':
+        // case '(':
         default:
             return new Type(METHOD, buf, off, buf.length - off);
         }
@@ -693,7 +693,7 @@ public class Type {
                     car = 'D';
                 } else if (d == Float.TYPE) {
                     car = 'F';
-                } else /* if (d == Long.TYPE) */{
+                } else /* if (d == Long.TYPE) */ {
                     car = 'J';
                 }
                 buf.append(car);

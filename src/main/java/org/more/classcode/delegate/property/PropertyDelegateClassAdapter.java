@@ -152,7 +152,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
             mv.visitInsn(ATHROW);
             mv.visitMaxs(4, 3);
-        }// }
+        } // }
     }
     //
     protected void buildSetMethod(MethodVisitor mv, String propertyName, String propertyAsmType) {
@@ -210,7 +210,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
             mv.visitInsn(ATHROW);
             mv.visitMaxs(5, 3);
-        }// }
+        } // }
     }
     //
     //Code Builder “return ...”

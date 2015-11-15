@@ -28,5 +28,5 @@ import net.hasor.core.EventListener;
 @Target({ ElementType.TYPE })
 public @interface Listener {
     /**要监听的事件名，同名注册会被覆盖。*/
-    public String[] value();
+    public String[]value();
 }

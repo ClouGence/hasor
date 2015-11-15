@@ -35,6 +35,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.more.util.ArrayUtils;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.BatchPreparedStatementSetter;
 import net.hasor.db.jdbc.CallableStatementCallback;
@@ -52,9 +55,6 @@ import net.hasor.db.jdbc.StatementCallback;
 import net.hasor.db.jdbc.core.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
-import org.more.util.ArrayUtils;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
@@ -127,18 +127,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         IOUtils.copy(sqlReader, outWriter);
         this.execute(outWriter.toString());
     }
-    /** 判断表是否已经存在*/
-    public boolean tableExist(final String name) throws SQLException {
-        return this.execute(new ConnectionCallback<Boolean>() {
-            @Override
-            public Boolean doInConnection(final Connection con) throws SQLException {
-                DatabaseMetaData metaData = con.getMetaData();
-                ResultSet rs = metaData.getTables(null, null, name.toUpperCase(), new String[] { "TABLE" });
-                return rs.next();
-            }
-        });
-    }
-    //
     //
     //
     @Override

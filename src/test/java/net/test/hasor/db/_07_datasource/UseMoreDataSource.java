@@ -48,19 +48,13 @@ public class UseMoreDataSource {
         String insertUser_3 = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
         //
         //1.初始化MySQL
-        if (mJDBC.tableExist("TB_User") == false) {
-            mJDBC.loadSQL("TB_User.sql");
-        } else {
-            mJDBC.execute("delete from TB_User");
-        }
+        mJDBC.execute("drop table TB_User");
+        mJDBC.loadSQL("TB_User.sql");
         mJDBC.update(insertUser_1, newID());//执行插入语句
         mJDBC.update(insertUser_2, newID());//执行插入语句
         //2.初始化HSQL
-        if (hJDBC.tableExist("TB_User") == false) {
-            hJDBC.loadSQL("TB_User.sql");
-        } else {
-            hJDBC.execute("delete from TB_User");
-        }
+        hJDBC.execute("drop table TB_User");
+        hJDBC.loadSQL("TB_User.sql");
         hJDBC.update(insertUser_3, newID());//执行插入语句
     }
 }

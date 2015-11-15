@@ -188,7 +188,7 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
             mv.visitInsn(ATHROW);
             mv.visitMaxs(maxStack, maxLocals);
-        }// }
+        } // }
     }
     //
     //Code Builder “new Object[] { abc, abcc, abcc };”

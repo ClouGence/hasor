@@ -39,12 +39,19 @@ public class InsertJDBCTest {
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
-        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
+        String quertCount = "select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'";
+        String insertData = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
+        String deleteData = "delete from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'";
         //
-        String insertUser = "insert into TB_User values('deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b','安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-        jdbc.execute(insertUser);//执行插入语句
+        int count = jdbc.queryForInt(quertCount);
+        if (count > 0) {
+            System.out.println("记录已经存在，删除该记录重新录入。");
+            jdbc.update(deleteData);
+        }
         //
-        System.out.println(jdbc.queryForInt("select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'"));
+        jdbc.update(insertData);//执行插入语句
+        count = jdbc.queryForInt(quertCount);
+        System.out.println("插入结果：" + count);
     }
     //
     @Test

@@ -155,7 +155,7 @@ public class ContextClassLoaderLocal<T> {
         if (!this.globalValueInitialized) {
             this.globalValue = this.initialValue();
             this.globalValueInitialized = true;
-        }//else already set
+        } //else already set
         return this.globalValue;
     }
     /** 

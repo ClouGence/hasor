@@ -29,11 +29,11 @@ import java.util.Properties;
  * "org.eclipse.jetty.util.log.LONG" is used as the default.
  */
 class StdErrLog extends AbstractLogger {
-    private static final String     EOL             = System.getProperty("line.separator");
+    private static final String     EOL      = System.getProperty("line.separator");
     private static DateCache        _dateCache;
-    private static final Properties __props         = new Properties();
-    private final static boolean    __source        = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.SOURCE", Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.SOURCE", "false")));
-    private final static boolean    __long          = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.LONG", "false"));
+    private static final Properties __props  = new Properties();
+    private final static boolean    __source = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.SOURCE", Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.SOURCE", "false")));
+    private final static boolean    __long   = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.LONG", "false"));
     static {
         __props.putAll(Log.__props);
         String deprecatedProperties[] = { "DEBUG", "org.eclipse.jetty.util.log.DEBUG", "org.eclipse.jetty.util.log.stderr.DEBUG" };
@@ -49,22 +49,22 @@ class StdErrLog extends AbstractLogger {
             x.printStackTrace(System.err);
         }
     }
-    public static final int         LEVEL_ALL       = 0;
-    public static final int         LEVEL_DEBUG     = 1;
-    public static final int         LEVEL_INFO      = 2;
-    public static final int         LEVEL_WARN      = 3;
-    private int                     _level          = LEVEL_INFO;
+    public static final int LEVEL_ALL       = 0;
+    public static final int LEVEL_DEBUG     = 1;
+    public static final int LEVEL_INFO      = 2;
+    public static final int LEVEL_WARN      = 3;
+    private int             _level          = LEVEL_INFO;
     // Level that this Logger was configured as (remembered in special case of .setDebugEnabled())
-    private int                     _configuredLevel;
-    private PrintStream             _stderr         = null;
-    private boolean                 _source         = __source;
+    private int             _configuredLevel;
+    private PrintStream     _stderr         = null;
+    private boolean         _source         = __source;
     // Print the long form names, otherwise use abbreviated
-    private boolean                 _printLongNames = __long;
+    private boolean         _printLongNames = __long;
     // The full log name, as provided by the system.
-    private final String            _name;
+    private final String    _name;
     // The abbreviated log name (used by default, unless _long is specified)
-    private final String            _abbrevname;
-    private boolean                 _hideStacks     = false;
+    private final String    _abbrevname;
+    private boolean         _hideStacks     = false;
     public StdErrLog() {
         this(null);
     }

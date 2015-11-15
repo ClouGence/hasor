@@ -408,7 +408,7 @@ public abstract class AbstractSettings implements Settings {
             String filePath = this.getSettings(url).getFilePath(name, defaultValue);
             if (filePath == null || filePath.length() == 0) {
                 continue;//空
-            }//
+            } //
             int length = filePath.length();
             if (filePath.charAt(length - 1) == File.separatorChar) {
                 filePaths.add(filePath.substring(0, length - 1));
@@ -427,7 +427,7 @@ public abstract class AbstractSettings implements Settings {
         String filePath = this.getToType(name, String.class);
         if (filePath == null || filePath.length() == 0) {
             return defaultValue;//空
-        }//
+        } //
         int length = filePath.length();
         if (filePath.charAt(length - 1) == File.separatorChar) {
             return filePath;

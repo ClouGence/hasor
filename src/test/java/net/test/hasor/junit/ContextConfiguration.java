@@ -30,5 +30,5 @@ public @interface ContextConfiguration {
     /**Hasor的主配置文件.*/
     public String value() default "";
     /**要装载的{@link Module}*/
-    public Class<? extends Module>[] loadModules() default {};
+    public Class<? extends Module>[]loadModules() default {};
 }

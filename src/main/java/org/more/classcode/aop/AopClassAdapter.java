@@ -36,11 +36,11 @@ import org.more.classcode.ASMEngineToos;
  */
 class AopClassAdapter extends ClassVisitor implements Opcodes {
     public final static String AopPrefix      = "$aopFun"; //生成的Aop方法前缀
-    private String             superClassName = null;     //父类类名
-    private String             thisClassName  = null;     //当前类名
-    private AopClassConfig     classConfig    = null;     //Aop筛选器
-    private List<Method>       aopMethodMap   = null;     //符合Aop的方法
-    private Set<String>        validMethod    = null;     //代理类自身方法
+    private String             superClassName = null;      //父类类名
+    private String             thisClassName  = null;      //当前类名
+    private AopClassConfig     classConfig    = null;      //Aop筛选器
+    private List<Method>       aopMethodMap   = null;      //符合Aop的方法
+    private Set<String>        validMethod    = null;      //代理类自身方法
     //
     public AopClassAdapter(final ClassVisitor visitor, AopClassConfig classConfig) {
         super(ASM4, visitor);
@@ -340,7 +340,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitVarInsn(ALOAD, 5);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
             mv.visitInsn(ATHROW);
-        }// }
+        } // }
         mv.visitMaxs(maxStack, maxLocals);
     }
     //

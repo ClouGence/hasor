@@ -41,7 +41,7 @@ class ContextListenerDefinition {
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s",//
+        return String.format("type %s listenerKey=%s", //
                 ContextListenerDefinition.class, this.listenerInstance);
     }
     /**/

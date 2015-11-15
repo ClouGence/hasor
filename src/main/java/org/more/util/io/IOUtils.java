@@ -121,11 +121,11 @@ public class IOUtils {
      * and
      * {@link #copyLarge(Reader, Writer)}
      */
-    private static final int   DEFAULT_BUFFER_SIZE    = 1024 * 4;
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
     /**
      * The default buffer size to use for the skip() methods.
      */
-    private static final int   SKIP_BUFFER_SIZE       = 2048;
+    private static final int SKIP_BUFFER_SIZE    = 2048;
     // Allocated in the relevant skip method if necessary.
     /*
      * N.B. no need to synchronize these because:
@@ -134,8 +134,8 @@ public class IOUtils {
      * (if the buffer size were variable, we would need to synch. to ensure some other thread
      * did not create a smaller one)
      */
-    private static char[]      SKIP_CHAR_BUFFER;
-    private static byte[]      SKIP_BYTE_BUFFER;
+    private static char[]    SKIP_CHAR_BUFFER;
+    private static byte[]    SKIP_BYTE_BUFFER;
     /**
      * Instances should NOT be constructed in standard programming.
      */

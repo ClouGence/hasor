@@ -447,7 +447,7 @@ public class HashCodeBuilder {
      * @throws IllegalArgumentException
      *             if the object is <code>null</code>
      */
-    public static int reflectionHashCode(Object object, Collection<?> /* String */excludeFields) {
+    public static int reflectionHashCode(Object object, Collection<?> /* String */ excludeFields) {
         return reflectionHashCode(object, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
     // -------------------------------------------------------------------------

@@ -40,7 +40,7 @@ class HttpSessionListenerDefinition {
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s",//
+        return String.format("type %s listenerKey=%s", //
                 HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /**/

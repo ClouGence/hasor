@@ -26,11 +26,11 @@ import net.hasor.db.transaction.TransactionStatus;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTransactionStatus implements TransactionStatus {
-    private Savepoint         savepoint     = null; //事务保存点
-    private TransactionObject tranConn      = null; //当前事务使用的数据库连接
-    private TransactionObject suspendConn   = null; //当前事务之前挂起的上一个数据库事务
-    private Propagation       behavior      = null; //传播属性
-    private Isolation         level         = null; //隔离级别
+    private Savepoint         savepoint     = null;  //事务保存点
+    private TransactionObject tranConn      = null;  //当前事务使用的数据库连接
+    private TransactionObject suspendConn   = null;  //当前事务之前挂起的上一个数据库事务
+    private Propagation       behavior      = null;  //传播属性
+    private Isolation         level         = null;  //隔离级别
     private boolean           completed     = false; //完成（true表示完成）
     private boolean           rollbackOnly  = false; //要求回滚（true表示回滚）
     private boolean           newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）

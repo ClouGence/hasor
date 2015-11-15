@@ -123,7 +123,7 @@ public abstract class AbstractBinder implements ApiBinder {
     /*------------------------------------------------------------------------------------Binding*/
     /** 一堆接口的实现 */
     private static class BindingBuilderImpl<T> implements //
-            InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>,//
+            InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>, //
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
         private BindInfoBuilder<T> typeBuilder = null;
         private Class<?>[]         initParams  = new Class<?>[0];
