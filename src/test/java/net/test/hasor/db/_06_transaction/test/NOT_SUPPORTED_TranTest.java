@@ -18,64 +18,63 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.hasor.db.Transactional;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.TransactionCallback;
+import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
 import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
 import net.test.hasor.junit.ContextConfiguration;
 import net.test.hasor.junit.HasorUnitRunner;
 /**
-* NOT_SUPPORTED：要求环境中不存在事物，如果存在事物就抛出异常
+* NOT_SUPPORTED：如果当前没有事务存在，就以非事务方式执行；如果有，就将当前事务挂起。
 * @version : 2013-12-10
 * @author 赵永春(zyc@hasor.net)
 */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
-public class NOT_SUPPORTED_TranTest extends AbstractNativesJDBCTest {s
+public class NOT_SUPPORTED_TranTest extends AbstractNativesJDBCTest {
     @Test
-    @Transactional /*该注解保证了测试方法的执行是在事物中*/
-    public void testHasTransactional() throws Throwable {
-        System.out.println("--->>NOT_SUPPORTED －> 测试条件，环境中存在事物，“安妮.贝隆”和“吴广”不能被录入到数据库中。<<--");
+    public void testHasTransactional() throws Throwable {x
+        System.out.println("--->>NOT_SUPPORTED －> 测试条件，环境中存在事物。");
+        System.out.println("--->>NOT_SUPPORTED －>     数据库应存在：“安妮.贝隆”、“吴广”");
+        System.out.println("--->>NOT_SUPPORTED －>     共计 2 条记录。");
+        System.out.println();
         //
+        TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
+        temp.execute(new TransactionCallback<Void>() {
+            public Void doTransaction(TransactionStatus tranStatus) throws Throwable {
+                System.out.println("begin T1!");
+                /*T1 - 默罕默德*/
+                insertUser_MHMD();
+                /*T2 - 安妮.贝隆、吴广*/
+                doTransactional();
+                /*T1 - 赵飞燕*/
+                insertUser_ZFY();
+                System.out.println("rollback T1!");
+                tranStatus.setRollbackOnly();
+                return null;
+            }
+        });
         //
-        System.out.println("begin T1!");
-        /*T1 - 默罕默德*/
-        this.insertUser_MHMD();
-        /*T2 - 安妮.贝隆、吴广*/
-        try {
-            System.out.println("begin T2!");
-            doTransactional();
-            System.out.println("commit T2!");
-        } catch (Exception e) {
-            System.out.println("rollback T2! message = " + e.getMessage());
-        } finally {
-            Thread.sleep(1000);
-            printData();
-        }
-        /*T1 - 赵飞燕*/
-        insertUser_ZFY();
-        System.out.println("commit T1!");
+        Thread.sleep(1000);
+        printData();
     }
     @Test
     public void testNoneTransactional() throws Throwable {
-        System.out.println("--->>NOT_SUPPORTED －> 测试条件，环境中不存在事物，“安妮.贝隆”和“吴广”可以被录入到数据库中。<<--");
+        System.out.println("--->>NOT_SUPPORTED －> 测试条件，环境不存在事物。");
+        System.out.println("--->>NOT_SUPPORTED －>     数据库应存在：“默罕默德”、“安妮.贝隆”、“吴广”、“赵飞燕”");
+        System.out.println("--->>NOT_SUPPORTED －>     共计 4 条记录。");
+        System.out.println();
         //
-        //
-        System.out.println("begin T1!");
         /*T1 - 默罕默德*/
         this.insertUser_MHMD();
         /*T2 - 安妮.贝隆、吴广*/
-        try {
-            System.out.println("begin T2!");
-            doTransactional();
-            System.out.println("commit T2!");
-        } catch (Exception e) {
-            System.out.println("rollback T2! message = " + e.getMessage());
-        } finally {
-            Thread.sleep(1000);
-            printData();
-        }
+        doTransactional();
         /*T1 - 赵飞燕*/
         insertUser_ZFY();
-        System.out.println("commit T1!");
+        //
+        Thread.sleep(1000);
+        printData();
     }
     //
     //
@@ -83,11 +82,11 @@ public class NOT_SUPPORTED_TranTest extends AbstractNativesJDBCTest {s
     //
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void doTransactional() throws Throwable {
-        System.out.println("--->>NOT_SUPPORTED －> 测试条件，如果看到该日志代表环境中不存在事物。<<--");
-        //
+        System.out.println("begin T2!");
         /*安妮.贝隆*/
         insertUser_ANBL();
         /*吴广*/
         insertUser_WG();
+        System.out.println("commit T2!");
     }
 }

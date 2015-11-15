@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import org.junit.Before;
-import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -60,8 +59,7 @@ public abstract class AbstractNativesJDBCTest {
         String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘默罕默德’...");
         jdbcTemplate.update(insertUser, newID());//执行插入语句
-        printData();
-        Thread.sleep(1000);
+        Thread.sleep(500);
     }
     /**新增用户：赵飞燕*/
     protected void insertUser_ZFY() throws SQLException, InterruptedException {
@@ -69,8 +67,7 @@ public abstract class AbstractNativesJDBCTest {
         String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘赵飞燕’...");
         jdbcTemplate.update(insertUser, newID());//执行插入语句
-        printData();
-        Thread.sleep(1000);
+        Thread.sleep(500);
     }
     /**新增用户：安妮.贝隆*/
     protected void insertUser_ANBL() throws SQLException, InterruptedException {
@@ -78,8 +75,7 @@ public abstract class AbstractNativesJDBCTest {
         String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘安妮.贝隆’...");
         jdbcTemplate.update(insertUser, newID());//执行插入语句
-        printData();
-        Thread.sleep(1000);
+        Thread.sleep(500);
     }
     /**新增用户：吴广*/
     protected void insertUser_WG() throws SQLException, InterruptedException {
@@ -87,22 +83,18 @@ public abstract class AbstractNativesJDBCTest {
         String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘吴广’...");
         jdbcTemplate.update(insertUser, newID());//执行插入语句
-        printData();
-        Thread.sleep(1000);
+        Thread.sleep(500);
     }
     //
     //
     /**通知监控线程打印数据*/
-    protected void printData() {
+    protected void printData() throws InterruptedException {
         signalObject.getAndIncrement();
+        Thread.sleep(1000);
     }
     /**监视一张表的变化，当表的内容发生变化打印全表的内容。*/
     @DaemonThread
     public final void threadWatchTable() throws SQLException, NoSuchAlgorithmException, InterruptedException {
-        String tableName = "TB_User";
-        if (StringUtils.isBlank(tableName))
-            return;
-        //
         try {
             Connection conn = dataSource.getConnection();
             //设置隔离级别读取未提交的数据是不允许的。
@@ -110,7 +102,7 @@ public abstract class AbstractNativesJDBCTest {
             while (true) {
                 Thread.sleep(100);
                 if (signalObject.get() % 2 == 1) {
-                    String selectSQL = "select * from " + tableName;
+                    String selectSQL = "select * from TB_User";
                     JdbcTemplate jdbc = new JdbcTemplate(conn);
                     List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
                     HasorUnit.printMapList(dataList);
