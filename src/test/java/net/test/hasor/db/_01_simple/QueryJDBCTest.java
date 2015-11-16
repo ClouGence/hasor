@@ -22,7 +22,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._01_simple.entity.TB_User;
-import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import net.test.hasor.junit.HasorUnit;
 import org.junit.Test;
 /**
@@ -36,7 +36,7 @@ public class QueryJDBCTest {
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
@@ -47,7 +47,7 @@ public class QueryJDBCTest {
     public void mapParam_QueryTest() throws SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         Map<String, String> paramMap = new HashMap<String, String>();
@@ -60,7 +60,7 @@ public class QueryJDBCTest {
     public void simpleParam_QueryTest() throws SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like ?", "76%");

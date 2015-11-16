@@ -14,41 +14,79 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
+import net.hasor.db.datasource.ConnectionHolder;
+import net.hasor.db.datasource.DataSourceManager;
 import net.hasor.db.transaction.support.JdbcTransactionManager;
-import org.more.util.ContextClassLoaderLocal;
 /**
  * 某一个数据源的事务管理器
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
-public class TranManager {
-    private final static ContextClassLoaderLocal<Map<DataSource, DefaultTransactionManager>> managerMap;
+public class TranManager extends DataSourceManager {
+    private final static ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>> managerMap;
+    private final static ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>          currentMap;
     static {
-        managerMap = new ContextClassLoaderLocal<Map<DataSource, DefaultTransactionManager>>() {
-            @Override
-            protected Map<DataSource, DefaultTransactionManager> initialValue() {
-                return new HashMap<DataSource, DefaultTransactionManager>();
+        managerMap = new ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>>() {
+            protected ConcurrentMap<DataSource, DefaultTransactionManager> initialValue() {
+                return new ConcurrentHashMap<DataSource, DefaultTransactionManager>();
+            }
+        };
+        currentMap = new ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>() {
+            protected ConcurrentMap<DataSource, ConnectionHolder> initialValue() {
+                return new ConcurrentHashMap<DataSource, ConnectionHolder>();
             }
         };
     }
-    private static synchronized DefaultTransactionManager getDefaultTransactionManager(final DataSource dataSource) {
+    //
+    public static ConnectionHolder currentConnectionHolder(DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
-        DefaultTransactionManager manager = TranManager.managerMap.get().get(dataSource);
+        ConcurrentMap<DataSource, ConnectionHolder> localMap = currentMap.get();
+        ConnectionHolder holder = localMap.get(dataSource);
+        if (holder == null) {
+            holder = localMap.putIfAbsent(dataSource, genConnectionHolder(dataSource));
+            holder = localMap.get(dataSource);
+        }
+        return holder;
+    }
+    public static Connection currentConnection(DataSource dataSource) {
+        ConnectionHolder holder = currentConnectionHolder(dataSource);
+        return newProxyConnection(holder);
+    }
+    /**改变当前{@link ConnectionHolder}*/
+    protected static void currentConnection(DataSource dataSource, ConnectionHolder holder) {
+        ConcurrentMap<DataSource, ConnectionHolder> localMap = currentMap.get();
+        if (holder == null) {
+            if (localMap.containsKey(dataSource)) {
+                localMap.remove(dataSource);
+            }
+        } else {
+            localMap.put(dataSource, holder);
+        }
+    }
+    //
+    /**获取事务管理器*/
+    private static synchronized DefaultTransactionManager getTransactionManager(final DataSource dataSource) {
+        Hasor.assertIsNotNull(dataSource);
+        ConcurrentMap<DataSource, DefaultTransactionManager> localMap = managerMap.get();
+        DefaultTransactionManager manager = localMap.get(dataSource);
         if (manager == null) {
-            manager = new DefaultTransactionManager(dataSource);
-            TranManager.managerMap.get().put(dataSource, manager);
+            manager = localMap.putIfAbsent(dataSource, new DefaultTransactionManager(dataSource));
+            manager = localMap.get(dataSource);
         }
         return manager;
     }
+    /**获取{@link TransactionManager}*/
     public static synchronized TransactionManager getManager(DataSource dataSource) {
-        return getDefaultTransactionManager(dataSource);
+        return getTransactionManager(dataSource);
     }
-    public static synchronized TransactionTemplate getTemplate(final DataSource dataSource) {
-        DefaultTransactionManager manager = getDefaultTransactionManager(dataSource);
+    /**获取{@link TransactionTemplate}*/
+    public static synchronized TransactionTemplate getTemplate(DataSource dataSource) {
+        DefaultTransactionManager manager = getTransactionManager(dataSource);
         if (manager == null) {
             return null;
         }

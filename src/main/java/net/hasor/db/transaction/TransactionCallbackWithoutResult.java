@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.db.transaction;
 /**
- * 提供了基于本地线程的数据库连接管理控制，该组建意图建立一种规则，该规则迫使不同数据源的数据库连接在一个线程中只能存在一份。
+ * 
+ * @version : 2015年8月11日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.db.datasource.local;
+public abstract class TransactionCallbackWithoutResult implements TransactionCallback<Void> {
+    public final Void doTransaction(TransactionStatus tranStatus) throws Throwable {
+        this.doTransactionWithoutResult(tranStatus);
+        return null;
+    }
+    public abstract void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable;
+}

@@ -23,7 +23,7 @@ import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import net.test.hasor.junit.HasorUnit;
 /***
  * 批量Insert语句执行
@@ -36,7 +36,7 @@ public class InsertJDBCTest {
     public void simpleInsertJDBCTest() throws SQLException {
         System.out.println("--->>simple_InsertJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String quertCount = "select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'";
@@ -58,7 +58,7 @@ public class InsertJDBCTest {
     public void batchInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String batchInsert = "insert into TB_User values(:ID,:Name,:Account,:Pwd,:Email,:RegTime);";

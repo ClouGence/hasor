@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._06_transaction.test;
+package net.test.hasor.db._06_transaction;
 import java.sql.Connection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.hasor.db.Transactional;
-import net.hasor.db.datasource.DSManager;
+import net.hasor.db.datasource.DataSourceManager;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
-import net.test.hasor.db._06_transaction.AbstractNativesJDBCTest;
-import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import net.test.hasor.junit.ContextConfiguration;
 import net.test.hasor.junit.HasorUnitRunner;
 /**
@@ -33,7 +32,7 @@ import net.test.hasor.junit.HasorUnitRunner;
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "jdbc-config.xml", loadModules = OneDataSourceWarp.class)
+@ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
     // - 事务1
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -62,10 +61,10 @@ public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
          *   T1   ，新建‘赵飞燕’用户               (不打印).
          *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
          */
-        Connection conn = DSManager.getConnection(dataSource);
+        Connection conn = DataSourceManager.getConnection(dataSource);
         conn.setAutoCommit(false);
         doTransactionalA();
-        DSManager.releaseConnection(conn, dataSource);
+        DataSourceManager.releaseConnection(conn, dataSource);
     }
     @Test
     public void noTarn_Test() throws Throwable {

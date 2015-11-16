@@ -24,12 +24,10 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
-import net.hasor.db.datasource.DSManager;
-import net.hasor.db.datasource.local.ConnectionHolder;
-import net.hasor.db.datasource.local.ConnectionSequence;
-import net.hasor.db.datasource.local.LocalDataSourceHelper;
+import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
@@ -136,10 +134,10 @@ public class JdbcTransactionManager implements TransactionManager {
         ===============================================================*/
         /*REQUIRED：加入已有事务*/
         if (behavior == REQUIRED ||
-                /*REQUIRES_NEW：独立事务*/
-                behavior == REQUIRES_NEW ||
-                /*NESTED：嵌套事务*/
-                behavior == NESTED) {
+        /*REQUIRES_NEW：独立事务*/
+        behavior == REQUIRES_NEW ||
+        /*NESTED：嵌套事务*/
+        behavior == NESTED) {
             this.doBegin(defStatus);/*开启新事务*/
         }
         /*MANDATORY：强制要求事务*/
@@ -313,11 +311,11 @@ public class JdbcTransactionManager implements TransactionManager {
         this.prepareCheckStack(defStatus);
         /*恢复挂起的事务*/
         if (defStatus.isSuspend() == true) {
-            SyncTransactionManager.clearSync(this.getDataSource());/*清除线程上的同步事务*/
             TransactionObject tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
             defStatus.setTranConn(tranConn);
             defStatus.setSuspendConn(null);
+            tranConn.getHolder().released();
         }
     }
     //
@@ -336,12 +334,13 @@ public class JdbcTransactionManager implements TransactionManager {
         defStatus.setCompleted();
         /*释放资源*/
         /*恢复当时的隔离级别*/
-        Isolation transactionIsolation = defStatus.getTranConn().getOriIsolationLevel();
+        TransactionObject tranObj = defStatus.getTranConn();
+        Isolation transactionIsolation = tranObj.getOriIsolationLevel();
         if (transactionIsolation != null) {
-            defStatus.getTranConn().getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
+            tranObj.getHolder().getConnection().setTransactionIsolation(transactionIsolation.ordinal());
         }
-        defStatus.getTranConn().getHolder().released();//ref--
-        defStatus.getTranConn().stopTransaction();
+        tranObj.getHolder().released();//ref--
+        tranObj.stopTransaction();
         /*恢复挂起的事务*/
         if (defStatus.isSuspend()) {
             this.resume(defStatus);
@@ -357,13 +356,11 @@ public class JdbcTransactionManager implements TransactionManager {
     //
     /**获取数据库连接（线程绑定的）*/
     protected TransactionObject doGetConnection(final JdbcTransactionStatus defStatus) throws SQLException {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
-        ConnectionSequence connSeq = localHelper.getConnectionSequence(this.getDataSource());
-        ConnectionHolder holder = connSeq.currentHolder();
+        ConnectionHolder holder = TranManager.currentConnectionHolder(dataSource);
         if (holder.isOpen() == false || holder.hasTransaction() == false) {
             defStatus.markNewConnection();/*新事物，新连接*/
         }
-        holder.requested();
+        holder.requested();//ref++
         //下面两行代码用于保存当前Connection的隔离级别，并且设置新的隔离级别。
         int isolationLevel = holder.getConnection().getTransactionIsolation();
         Isolation level = null;
@@ -380,15 +377,11 @@ public class JdbcTransactionManager implements TransactionManager {
     }
 }
 /** */
-class SyncTransactionManager {
-    public static void setSync(final TransactionObject tranConn) {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
-        ConnectionSequence connSeq = localHelper.getConnectionSequence(tranConn.getDataSource());
-        connSeq.pop();
+class SyncTransactionManager extends TranManager {
+    public static void setSync(TransactionObject tranConn) {
+        currentConnection(tranConn.getDataSource(), tranConn.getHolder());
     }
-    public static void clearSync(final DataSource dataSource) {
-        LocalDataSourceHelper localHelper = (LocalDataSourceHelper) DSManager.getDataSourceHelper();
-        ConnectionSequence connSeq = localHelper.getConnectionSequence(dataSource);
-        connSeq.push(null);
+    public static void clearSync(DataSource dataSource) {
+        currentConnection(dataSource, null);
     }
 }

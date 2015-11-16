@@ -22,7 +22,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import org.junit.Test;
 /**
  * 存储过程调用
@@ -34,7 +34,7 @@ public class CallableJDBCTest {
     public void testCallable() throws SQLException {
         System.out.println("--->>testCallable<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         //

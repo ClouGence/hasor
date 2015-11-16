@@ -16,7 +16,6 @@
 package net.hasor.core.setting;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.json.JSON;
 /**
  * 
  * @version : 2014年10月11日

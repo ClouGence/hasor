@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._07_datasource.warp;
+package net.test.hasor.db._02_datasource.warp;
 import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
@@ -24,7 +24,7 @@ import net.hasor.db.DBModule;
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class MoreDataSourceWarp implements Module {
+public class MultipleDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         {
             //MySQL

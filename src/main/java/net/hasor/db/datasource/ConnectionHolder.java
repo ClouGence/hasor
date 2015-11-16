@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.datasource.local;
+package net.hasor.db.datasource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
-import net.hasor.db.datasource.SavepointManager;
 /**
  * 
  * @version : 2014-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class ConnectionHolder implements SavepointManager {
+public class ConnectionHolder implements SavepointManager, ConnectionManager {
     private int        referenceCount;
     private DataSource dataSource;
     private Connection connection;
-    public ConnectionHolder(final DataSource dataSource) {
+    //
+    ConnectionHolder(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    /**增加引用计数,一个因为持有人已被请求。*/
+    //
     public synchronized void requested() {
         this.referenceCount++;
     }
-    /**减少引用计数,一个因为持有人已被释放。 */
     public synchronized void released() throws SQLException {
         this.referenceCount--;
         if (!this.isOpen() && this.connection != null)
@@ -49,13 +48,6 @@ public class ConnectionHolder implements SavepointManager {
                 this.connection = null;
             }
     }
-    /**则表示当前数据库连接是否有被引用。*/
-    public boolean isOpen() {
-        if (this.referenceCount == 0)
-            return false;
-        return true;
-    }
-    /***/
     public synchronized Connection getConnection() throws SQLException {
         if (this.isOpen() == false) {
             return null;
@@ -64,6 +56,15 @@ public class ConnectionHolder implements SavepointManager {
             this.connection = this.dataSource.getConnection();
         }
         return this.connection;
+    }
+    public boolean isOpen() {
+        if (this.referenceCount == 0)
+            return false;
+        return true;
+    }
+    /**则表示当前数据库连接是否有被引用。*/
+    public DataSource getDataSource() {
+        return dataSource;
     }
     /**是否存在事务*/
     public boolean hasTransaction() throws SQLException {

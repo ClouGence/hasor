@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.db._07_datasource;
+package net.test.hasor.db._02_datasource;
 import static net.test.hasor.junit.HasorUnit.newID;
 import java.io.IOException;
 import java.sql.SQLException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._07_datasource.warp.MoreDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.MultipleDataSourceWarp;
 import org.junit.Test;
 /**
  * 使用多数据源例子
  * @version : 2014年7月23日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UseMoreDataSource {
+public class MultipleDataSourceTest {
     @Test
     public void useMoreDataSource() throws SQLException, IOException {
         //1.构建AppContext
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new MoreDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new MultipleDataSourceWarp());
         //2.取得JDBC操作接口
         JdbcTemplate mJDBC = app.getInstance("mysql");
         JdbcTemplate hJDBC = app.getInstance("hsql");

@@ -24,8 +24,8 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
-import net.hasor.db.datasource.DSManager;
 import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.transaction.TranManager;
 /**
  * 
  * @version : 2013-10-16
@@ -41,10 +41,6 @@ public class JdbcConnection extends JdbcAccessor {
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
     private int queryTimeout = 0;
-    //
-    //
-    //
-    //
     //
     /**
      * Construct a new JdbcConnection for bean usage.
@@ -92,23 +88,25 @@ public class JdbcConnection extends JdbcAccessor {
         //
         Connection localConn = this.getConnection();
         DataSource localDS = this.getDataSource();//获取数据源
-        boolean useLocal = false;
-        if (localConn != null) {
-            useLocal = true;
+        boolean usingDS = localConn == null;
+        if (logger.isDebugEnabled()) {
+            logger.debug("database connection using DataSource = {}", usingDS);
         }
         //
         ConnectionProxy useConn = null;
         try {
-            if (useLocal) {
-                useConn = this.newProxyConnection(localConn, null);//代理连接
-            } else {
-                localConn = DSManager.getConnection(localDS);//申请本地连接（和当前线程绑定的连接）
+            if (usingDS) {
+                localConn = TranManager.currentConnection(localDS);
                 useConn = this.newProxyConnection(localConn, localDS);//代理连接
+            } else {
+                useConn = this.newProxyConnection(localConn, null);//代理连接
             }
             return action.doInConnection(useConn);
         } finally {
-            if (useLocal == false) {
-                DSManager.releaseConnection(useConn.getTargetConnection(), localDS);//关闭或释放连接
+            if (usingDS) {
+                if (localConn != null) {
+                    localConn.close();
+                }
             }
         }
     }

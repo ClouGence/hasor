@@ -18,9 +18,9 @@ import java.sql.SQLException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._07_datasource.warp.OneDataSourceWarp;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import org.junit.Test;
-/***
+/**
  * 基本的update操作语句执行
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
@@ -30,7 +30,7 @@ public class UpdateJDBCTest {
     public void simple_UpdateJDBCTest() throws SQLException {
         System.out.println("--->>simple_UpdateJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new OneDataSourceWarp());
+        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
     }

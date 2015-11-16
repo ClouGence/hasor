@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;

@@ -16,8 +16,8 @@
 package net.hasor.db.transaction.support;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.datasource.SavepointManager;
-import net.hasor.db.datasource.local.ConnectionHolder;
 import net.hasor.db.transaction.Isolation;
 /**
  * 
