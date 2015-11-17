@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class NESTED_TranTest extends AbstractNativesJDBCTest {
     @Test
-    public void testHasTransactional() throws Throwable {
+    public void testHasTransactional() throws Throwable {d
         System.out.println("--->>SUPPORTS －> 前提：T1处于一个事务中，T2跟随T1。");
         System.out.println("--->>SUPPORTS －> 执行：T2，在最后抛出一个异常最后导致T1，T2全部回滚。");
         System.out.println("--->>SUPPORTS －> 结论：T1开启了一个事务，T2策略为跟随T1，但是因为T2异常回滚导致T1，T2全部回滚。");
