@@ -105,6 +105,7 @@ public abstract class AbstractNativesJDBCTest {
                     String selectSQL = "select * from TB_User";
                     JdbcTemplate jdbc = new JdbcTemplate(conn);
                     List<Map<String, Object>> dataList = jdbc.queryForList(selectSQL);
+                    System.out.print("监控线程：");
                     HasorUnit.printMapList(dataList);
                     signalObject.getAndIncrement();
                 }
