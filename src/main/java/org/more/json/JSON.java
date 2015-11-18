@@ -379,6 +379,9 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     protected Object convertTo(Class type, Map map) {
+        if (type == null) {
+            throw new NullPointerException("type is null.");
+        }
         if (type != null && Convertible.class.isAssignableFrom(type)) {
             try {
                 Convertible conv = (Convertible) type.newInstance();
@@ -416,6 +419,9 @@ public class JSON {
      * @return a {@link JSON.Convertor} or null if none were found.
      */
     protected Convertor getConvertor(Class forClass) {
+        if (forClass == null) {
+            return null;
+        }
         Class cls = forClass;
         Convertor convertor = _convertors.get(cls.getName());
         if (convertor == null && this != DEFAULT)

@@ -27,7 +27,7 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     private WebApiBinder webApiBinder;
     public WebApiBinderWrap(WebApiBinder apiBinder) {
         super(apiBinder);
-        this.webApiBinder = Hasor.assertIsNotNull(webApiBinder);
+        this.webApiBinder = Hasor.assertIsNotNull(apiBinder);
     }
     public ServletContext getServletContext() {
         return this.webApiBinder.getServletContext();

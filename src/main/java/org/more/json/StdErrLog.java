@@ -72,9 +72,13 @@ class StdErrLog extends AbstractLogger {
         this(name, __props);
     }
     public StdErrLog(String name, Properties props) {
-        if (props != null && props != __props)
+        if (props == null) {
+            props = new Properties();
+        }
+        if (props != null && props != __props) {
             __props.putAll(props);
-        this._name = name == null ? "" : name;
+        }
+        this._name = (name == null ? "" : name);
         this._abbrevname = condensePackageString(this._name);
         this._level = getLoggingLevel(props, this._name);
         this._configuredLevel = this._level;
@@ -95,6 +99,9 @@ class StdErrLog extends AbstractLogger {
      * @return the logging level
      */
     public static int getLoggingLevel(Properties props, final String name) {
+        if (props == null) {
+            props = new Properties();
+        }
         // Calculate the level this named logger should operate under.
         // Checking with FQCN first, then each package segment from longest to shortest.
         String nameSegment = name;

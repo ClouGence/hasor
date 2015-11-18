@@ -47,7 +47,9 @@ public abstract class AbstractNativesJDBCTest {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         try {
             jdbcTemplate.execute("drop table TB_User");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         jdbcTemplate.loadSQL("TB_User.sql");
     }
     //

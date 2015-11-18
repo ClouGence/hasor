@@ -47,7 +47,7 @@ class TransactionTemplateManager implements TransactionTemplate {
             tranStatus.setRollbackOnly();
             throw e;
         } finally {
-            if (tranStatus.isCompleted() == false) {
+            if (tranStatus != null && tranStatus.isCompleted() == false) {
                 transactionManager.commit(tranStatus);
             }
         }
