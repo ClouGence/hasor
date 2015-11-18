@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 package net.test.hasor.core._01_bean;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.test.hasor.core._01_bean.pojo.PojoBean;
-import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
 import org.junit.Test;
 import org.more.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
+import net.test.hasor.core._01_bean.pojo.InitBean;
+import net.test.hasor.core._01_bean.pojo.InitBean2;
+import net.test.hasor.core._01_bean.pojo.PojoBean;
+import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
+import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
  * 1.beanTest
  *      基本的Bean用法。
@@ -164,5 +166,18 @@ public class BeanTest {
         //
         PojoInfo myBean = appContext.getInstance(PojoInfo.class);
         logger.debug(JSON.toString(myBean));
+    }
+    //
+    /* @init 注解  */
+    @Test
+    public void initBeanTest() {
+        System.out.println("--->>initBeanTest<<--");
+        AppContext appContext = Hasor.createAppContext();
+        //
+        InitBean myBean1 = appContext.getInstance(InitBean.class);
+        logger.debug(JSON.toString(myBean1));
+        //
+        InitBean2 myBean2 = appContext.getInstance(InitBean2.class);
+        logger.debug(JSON.toString(myBean2));
     }
 }

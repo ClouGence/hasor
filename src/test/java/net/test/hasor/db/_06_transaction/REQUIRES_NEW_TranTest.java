@@ -14,70 +14,99 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import java.sql.Connection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.hasor.db.Transactional;
-import net.hasor.db.datasource.DataSourceManager;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Propagation;
+import net.hasor.db.transaction.TransactionCallbackWithoutResult;
+import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import net.test.hasor.junit.ContextConfiguration;
 import net.test.hasor.junit.HasorUnitRunner;
 /**
- * PROPAGATION_REQUIRES_NEW：独立事务
- *   -条件：环境中有事务，事务管理器会将当前事务挂起然后创建一个新的事务。
- *   -条件：环境中无事务，事务管理器会将当前事务挂起然后创建一个新的事务。
+ * REQUIRES_NEW：将挂起当前存在的事务挂起（如果存在的话）。 并且开启一个全新的事务，新事务与已存在的事务之间彼此没有关系。
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
-    // - 事务1
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void doTransactionalA() throws Throwable {
-        super.doTransactionalA();
+    @Test
+    public void testHasTransactionalRollBackT1() throws Throwable {
+        System.out.println("--->>REQUIRES_NEW －> 前提：T1处于一个事务中，T2拥有自己的独立事务。");
+        System.out.println("--->>REQUIRES_NEW －> 执行：T1，在执行完T2，之后将T1自身进行了回滚。");
+        System.out.println("--->>REQUIRES_NEW －> 结论：因为T1，T2彼此都是独立事务，互不影响，因此T1虽然作为父事务但是并没有影响到T2。");
+        System.out.println("--->>REQUIRES_NEW －> 结果：数据库应存在：“安妮.贝隆”、“吴广”");
+        System.out.println("--->>REQUIRES_NEW －>  - 共计 2 条记录。");
+        System.out.println();
+        //
+        try {
+            TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
+            temp.execute(new TransactionCallbackWithoutResult() {
+                public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
+                    System.out.println("begin T1!");
+                    /*T1 - 默罕默德*/
+                    insertUser_MHMD();
+                    /*T2 - 安妮.贝隆、吴广*/
+                    doTransactional();
+                    /*T1 - 赵飞燕*/
+                    insertUser_ZFY();
+                    //
+                    tranStatus.setRollbackOnly();
+                    System.out.println("rollback T1!");
+                }
+            });
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        //
+        Thread.sleep(1000);
+        printData();
     }
-    // - 事务2
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void doTransactionalB() throws Throwable {
-        super.doTransactionalB();
-        throw new Exception();
+    @Test
+    public void testHasTransactionalRollBackT2() throws Throwable {
+        System.out.println("--->>REQUIRES_NEW －> 前提：T1处于一个事务中，T2开启一个子事务。");
+        System.out.println("--->>REQUIRES_NEW －> 执行：T2在执行完毕之后，通知监控线程打印数据库记录。2条数据“安妮.贝隆”、“吴广”");
+        System.out.println("--->>REQUIRES_NEW －> 结论：因为T1、分别位于自己独立的事务中。在T2递交了之后监控线程自然可以查询到。");
+        System.out.println("--->>REQUIRES_NEW －> 结果：T1在递交之前的数据查询有2条记录，之后则有 4 条。");
+        System.out.println();
+        //
+        TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
+        temp.execute(new TransactionCallbackWithoutResult() {
+            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
+                System.out.println("begin T1!");
+                /*T1 - 默罕默德*/
+                insertUser_MHMD();
+                /*T2 - 安妮.贝隆、吴广*/
+                doTransactional();
+                /*T1 - 赵飞燕*/
+                insertUser_ZFY();
+                //
+                Thread.sleep(1000);
+                System.out.println();
+                System.out.println();
+                System.out.print("触发一次监控线程的查询.");
+                printData();
+                System.out.println("commit T1!");
+            }
+        });
+        //
+        Thread.sleep(1000);
+        printData();
     }
     //
     //
-    @Test
-    public void yesTarn_Test() throws Throwable {
-        System.out.println("--->>haveTarn_REQUIRED_New_Test<<--");
-        Thread.sleep(1000);
-        /* 执行步骤：
-         *   T1   ，开启事务                                 (不打印).
-         *   T1   ，新建‘默罕默德’用户           (不打印).
-         *      T2，开启事务                                 (不打印).
-         *      T2，新建‘安妮.贝隆’用户        (不打印).
-         *      T2，新建‘吴广’用户                   (不打印).
-         *      T2，递交事务                                 (打印：安妮.贝隆、吴广).
-         *   T1   ，新建‘赵飞燕’用户               (不打印).
-         *   T1   ，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
-         */
-        Connection conn = DataSourceManager.getConnection(dataSource);
-        conn.setAutoCommit(false);
-        doTransactionalA();
-        DataSourceManager.releaseConnection(conn, dataSource);
-    }
-    @Test
-    public void noTarn_Test() throws Throwable {
-        System.out.println("--->>noTarn_REQUIRED_New_Test<<--");
-        Thread.sleep(1000);
-        /* 执行步骤：
-         *   T1   ，新建‘默罕默德’用户           (打印：默罕默德).
-         *      T2，开启事务                                 (不打印).
-         *      T2，新建‘安妮.贝隆’用户        (不打印).
-         *      T2，新建‘吴广’用户                   (不打印).
-         *      T2，递交事务                                 (打印：默罕默德、安妮.贝隆、吴广).
-         *   T1   ，新建‘赵飞燕’用户               (打印：默罕默德、安妮.贝隆、吴广、赵飞燕).
-         */
-        doTransactionalA();
+    //
+    //
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void doTransactional() throws Throwable {
+        System.out.println("begin T2!");
+        /*安妮.贝隆*/
+        insertUser_ANBL();
+        /*吴广*/
+        insertUser_WG();
+        //
+        System.out.println("commit T2.");
     }
 }

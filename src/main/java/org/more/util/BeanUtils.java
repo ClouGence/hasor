@@ -56,7 +56,17 @@ public abstract class BeanUtils {
             return null;
         }
         return null;
-    };
+    }
+    public static Object[] getDefaultValue(Class<?>[] paramArray) {
+        if (paramArray == null) {
+            return null;
+        }
+        Object[] objs = new Object[paramArray.length];
+        for (int i = 0; i < paramArray.length; i++) {
+            objs[i] = getDefaultValue(paramArray[i]);
+        }
+        return objs;
+    }
     /**
      * 该方法的作用是反射的形式调用目标的方法。
      * @param target 被调用的对象
@@ -369,7 +379,7 @@ public abstract class BeanUtils {
         } catch (Exception e) {
             return false;
         }
-    };
+    }
     /**执行字段注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writeField(final Object object, final String fieldName, final Object value) {
         if (object == null || fieldName == null) {
@@ -420,7 +430,7 @@ public abstract class BeanUtils {
         } catch (Exception e) {
             return null;
         }
-    };
+    }
     /**执行字段读取。*/
     public static Object readField(final Object object, final String fieldName) {
         if (object == null || fieldName == null) {
@@ -458,7 +468,7 @@ public abstract class BeanUtils {
         } catch (Exception e) {
             return null;
         }
-    };
+    }
     /***/
     public static Class<?> getFieldType(final Class<?> defineType, final String attName) {
         Field readField = BeanUtils.getField(attName, defineType);
@@ -466,7 +476,7 @@ public abstract class BeanUtils {
             return readField.getType();
         }
         return null;
-    };
+    }
     /***/
     public static Class<?> getPropertyOrFieldType(final Class<?> defineType, final String attName) {
         Class<?> propType = null;
@@ -480,7 +490,7 @@ public abstract class BeanUtils {
             return propType;
         }
         return null;
-    };
+    }
     /***/
     public static void copyProperties(final Object dest, final Object orig) {
         if (dest == null) {
@@ -538,4 +548,4 @@ public abstract class BeanUtils {
             ((Map) orig).put(propertyName, val);
         }
     }
-};
+}

@@ -17,6 +17,7 @@ package net.hasor.core.context.factory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -26,10 +27,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.more.classcode.aop.AopClassConfig;
+import org.more.classcode.aop.AopMatcher;
+import org.more.convert.ConverterUtils;
+import org.more.util.BeanUtils;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoAware;
+import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
@@ -40,14 +50,6 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.ScopeProvider;
-import org.more.classcode.aop.AopClassConfig;
-import org.more.classcode.aop.AopMatcher;
-import org.more.convert.ConverterUtils;
-import org.more.util.BeanUtils;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 负责根据Class或BindInfo创建Bean。
  * @version : 2015年6月26日
@@ -213,71 +215,96 @@ public class FactoryBeanBuilder implements BeanBuilder {
         if (targetBean instanceof InjectMembers) {
             ((InjectMembers) targetBean).doInject(appContext);
         } else {
-            Set<String> injectFileds = new HashSet<String>();
-            /*a.配置注入*/
+            injectObject(targetBean, bindInfo, appContext, targetType);
+        }
+        //3.Init初始化方法。
+        initObject(targetBean, bindInfo);
+        //
+        return targetBean;
+    }
+    private <T> void injectObject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
+        Set<String> injectFileds = new HashSet<String>();
+        /*a.配置注入*/
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
+            for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {
+                String propertyName = propItem.getKey();
+                Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
+                boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
+                //
+                if (canWrite == false) {
+                    String logMsg = "doInject, property " + propertyName + " can not write.";
+                    logger.error(logMsg);
+                    throw new IllegalStateException(logMsg);
+                }
+                Provider<?> provider = propItem.getValue();
+                if (provider == null) {
+                    String logMsg = "can't injection ,property " + propertyName + " data Provider is null.";
+                    logger.error(logMsg);
+                    throw new IllegalStateException(logMsg);
+                }
+                //
+                Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
+                BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
+                injectFileds.add(propertyName);
+            }
+        }
+        /*b.注解注入*/
+        List<Field> fieldList = BeanUtils.findALLFields(targetType);
+        for (Field field : fieldList) {
+            String name = field.getName();
+            boolean hasAnno = field.isAnnotationPresent(Inject.class);
+            boolean hasInjected = injectFileds.contains(name);
+            if (hasAnno == false) {
+                continue;
+            }
+            if (hasInjected) {
+                String logMsg = "doInject, property " + name + " duplicate.";
+                logger.warn(logMsg);
+                throw new IllegalStateException(logMsg);
+            }
+            if (field.isAccessible() == false) {
+                field.setAccessible(true);
+            }
+            Inject inject = field.getAnnotation(Inject.class);
+            Object obj = null;
+            if (StringUtils.isBlank(inject.value())) {
+                obj = appContext.getInstance(field.getType());
+            } else {
+                obj = appContext.getInstance(inject.value());
+            }
+            if (obj != null) {
+                field.set(targetBean, obj);
+            }
+            injectFileds.add(field.getName());
+        }
+    }
+    private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
+        try {
+            //a.可能存在的配置。
             if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
                 DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-                Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
-                for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {
-                    String propertyName = propItem.getKey();
-                    Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
-                    boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
-                    //
-                    if (canWrite == false) {
-                        String logMsg = "doInject, property " + propertyName + " can not write.";
-                        logger.error(logMsg);
-                        throw new IllegalStateException(logMsg);
-                    }
-                    Provider<?> provider = propItem.getValue();
-                    if (provider == null) {
-                        String logMsg = "can't injection ,property " + propertyName + " data Provider is null.";
-                        logger.error(logMsg);
-                        throw new IllegalStateException(logMsg);
-                    }
-                    //
-                    Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
-                    BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
-                    injectFileds.add(propertyName);
+                Method initMethod = defBinder.getInitMethod(targetBean.getClass());
+                if (initMethod != null) {
+                    initMethod.invoke(targetBean);
+                    return;
                 }
             }
-            /*b.注解注入*/
-            List<Field> fieldList = BeanUtils.findALLFields(targetType);
-            for (Field field : fieldList) {
-                String name = field.getName();
-                boolean hasAnno = field.isAnnotationPresent(Inject.class);
-                boolean hasInjected = injectFileds.contains(name);
+            //b.注解形式
+            List<Method> methodList = BeanUtils.getMethods(targetBean.getClass());
+            for (Method method : methodList) {
+                boolean hasAnno = method.isAnnotationPresent(Init.class);
                 if (hasAnno == false) {
                     continue;
                 }
-                if (hasInjected) {
-                    String logMsg = "doInject, property " + name + " duplicate.";
-                    logger.warn(logMsg);
-                    throw new IllegalStateException(logMsg);
-                }
-                if (field.isAccessible() == false) {
-                    field.setAccessible(true);
-                }
-                Inject inject = field.getAnnotation(Inject.class);
-                Object obj = null;
-                if (StringUtils.isBlank(inject.value())) {
-                    obj = appContext.getInstance(field.getType());
-                } else {
-                    obj = appContext.getInstance(inject.value());
-                }
-                if (obj != null) {
-                    field.set(targetBean, obj);
-                }
-                injectFileds.add(field.getName());
+                //
+                Class<?>[] paramArray = method.getParameterTypes();
+                Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
+                method.invoke(targetBean, paramObject);
             }
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
-        //3.Init初始化方法。
-        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
-            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-            Method initMethod = defBinder.getInitMethod(targetBean.getClass());
-            if (initMethod != null) {
-                initMethod.invoke(targetBean);
-            }
-        }
-        return targetBean;
     }
 }
