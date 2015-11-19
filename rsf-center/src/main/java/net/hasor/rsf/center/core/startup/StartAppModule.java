@@ -50,7 +50,7 @@ public class StartAppModule extends ControllerModule implements LifeModule {
         //DataSource
         apiBinder.installModule(new DaoModule(workAt));
         //Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(workAt));
+        //        apiBinder.installModule(new ZooKeeperModule(workAt));
     }
     //
     //

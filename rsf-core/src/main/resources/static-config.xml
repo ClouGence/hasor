@@ -64,7 +64,7 @@
 				<!-- 参数级路由计算，参数key生成器 -->
 				<argsKey>net.hasor.rsf.address.route.rule.DefaultArgsKey</argsKey>
 			</route>
-			
+
 			<!-- 地址本 -->
 			<addressPool>
 				<!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇） -->

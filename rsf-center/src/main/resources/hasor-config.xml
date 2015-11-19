@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 	<rsfCenter>
-		<!--工作模式：
-				master		：集群主机模式，在集群中请确保每一台从属机都可以访问到它。
-				slave		：集群从属机器。
-				standalone	：单机持久化模式，当服务重新启动数据不丢失。
-				memory		：单机内存模式，当服务重启丢失一切数据。
-		-->
+		<!--工作模式： master ：集群主机模式，在集群中请确保每一台从属机都可以访问到它。 slave ：集群从属机器。 standalone ：单机持久化模式，当服务重新启动数据不丢失。 memory ：单机内存模式，当服务重启丢失一切数据。 -->
 		<workAt>Memory</workAt>
 
 		<!-- 关键数据（内存模式下无效） -->
 		<jdbcConfig>
 			<driver>com.mysql.jdbc.Driver</driver>
-			<url>jdbc:mysql://rdsjj73ymbjfmmf.mysql.rds.aliyuncs.com/rdsjj73ymbjfmmf?useUnicode=true&amp;characterEncoding=utf8</url>
-			<username>configure_user</username>
-			<password>configure_user_r4lwh9g5081zz0pg</password>
+			<url>jdbc:mysql://db.test.hasor.net/hdm1250987_db?useUnicode=true&amp;characterEncoding=utf8</url>
+			<user>hdm1250987</user>
+			<password>c3ffb0ff5b32473c8881</password>
 		</jdbcConfig>
 	</rsfCenter>
 </config>
