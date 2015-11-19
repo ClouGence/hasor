@@ -16,12 +16,13 @@
 package net.hasor.mvc.support;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.WebCallInterceptor;
+import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2015年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ControllerApiBinder {
+public interface ControllerApiBinder extends WebApiBinder {
     /**装载拦截器*/
     public abstract void loadInterceptor(Class<? extends WebCallInterceptor> interceptor);
     /**装载控制器*/
