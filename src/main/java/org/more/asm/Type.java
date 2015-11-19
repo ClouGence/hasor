@@ -237,7 +237,7 @@ public class Type {
                 return DOUBLE_TYPE;
             } else if (c == Float.TYPE) {
                 return FLOAT_TYPE;
-            } else /* if (c == Long.TYPE) */ {
+            } else /* if (c == Long.TYPE) */{
                 return LONG_TYPE;
             }
         } else {
@@ -348,8 +348,8 @@ public class Type {
      * @return the size of the arguments of the method (plus one for the
      *         implicit this argument), argSize, and the size of its return
      *         value, retSize, packed into a single int i =
-     *         <tt>(argSize << 2) | retSize</tt> (argSize is therefore equal to
-     *         <tt>i >> 2</tt>, and retSize to <tt>i & 0x03</tt>).
+     *         <tt>(argSize &lt;&lt; 2) | retSize</tt> (argSize is therefore equal to
+     *         <tt>i &gt;&gt; 2</tt>, and retSize to <tt>i &amp; 0x03</tt>).
      */
     public static int getArgumentsAndReturnSizes(final String desc) {
         int n = 1;
@@ -426,7 +426,7 @@ public class Type {
                 ++len;
             }
             return new Type(OBJECT, buf, off + 1, len - 1);
-        // case '(':
+            // case '(':
         default:
             return new Type(METHOD, buf, off, buf.length - off);
         }
@@ -495,11 +495,11 @@ public class Type {
         case DOUBLE:
             return "double";
         case ARRAY:
-            StringBuffer b = new StringBuffer(getElementType().getClassName());
+            StringBuilder sb = new StringBuilder(getElementType().getClassName());
             for (int i = getDimensions(); i > 0; --i) {
-                b.append("[]");
+                sb.append("[]");
             }
-            return b.toString();
+            return sb.toString();
         case OBJECT:
             return new String(buf, off, len).replace('/', '.');
         default:
@@ -541,9 +541,10 @@ public class Type {
      * 
      * @return the size of the arguments (plus one for the implicit this
      *         argument), argSize, and the size of the return value, retSize,
-     *         packed into a single int i = <tt>(argSize << 2) | retSize</tt>
-     *         (argSize is therefore equal to <tt>i >> 2</tt>, and retSize to
-     *         <tt>i & 0x03</tt>).
+     *         packed into a single
+     *         int i = <tt>(argSize &lt;&lt; 2) | retSize</tt>
+     *         (argSize is therefore equal to <tt>i &gt;&gt; 2</tt>,
+     *         and retSize to <tt>i &amp; 0x03</tt>).
      */
     public int getArgumentsAndReturnSizes() {
         return getArgumentsAndReturnSizes(getDescriptor());
@@ -693,7 +694,7 @@ public class Type {
                     car = 'D';
                 } else if (d == Float.TYPE) {
                     car = 'F';
-                } else /* if (d == Long.TYPE) */ {
+                } else /* if (d == Long.TYPE) */{
                     car = 'J';
                 }
                 buf.append(car);

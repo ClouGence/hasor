@@ -27,20 +27,15 @@ import net.hasor.web.WebEnvironment;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
-    private ServletContext servletContext;
-    public WebStandardEnvironment(final ServletContext servletContext) {
-        super();
-        this.servletContext = servletContext;
-        this.setContext(servletContext);
+    public WebStandardEnvironment(ServletContext servletContext) {
+        super(servletContext);
     }
     public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) throws IOException {
-        super(settingURI);
-        this.servletContext = servletContext;
-        this.setContext(servletContext);
+        super(servletContext, settingURI);
     }
     @Override
     public ServletContext getServletContext() {
-        return this.servletContext;
+        return (ServletContext) this.getContext();
     }
     @Override
     protected EnvVars createEnvVars() {
@@ -56,6 +51,10 @@ class WebEnvVars extends EnvVars {
     @Override
     protected void configEnvironment(Map<String, String> envMap) {
         super.configEnvironment(envMap);
+        ServletContext sc = this.environment.getServletContext();
+        if (sc == null) {
+            throw new NullPointerException("miss of ServletContext.");
+        }
         String webContextDir = this.environment.getServletContext().getRealPath("/");
         envMap.put("HASOR_WEBROOT", webContextDir);
     }

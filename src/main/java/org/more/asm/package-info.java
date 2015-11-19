@@ -29,25 +29,26 @@
  */
 /**
 Provides a small and fast bytecode manipulation framework.
+
 <p>
 The <a href="http://www.objectweb.org/asm">ASM</a> framework is organized
-around the {@link org.more.asm.ClassVisitor ClassVisitor},
-{@link org.more.asm.FieldVisitor FieldVisitor},
-{@link org.more.asm.MethodVisitor MethodVisitor} and
-{@link org.more.asm.AnnotationVisitor AnnotationVisitor} abstract classes,
+around the {@link org.objectweb.asm.ClassVisitor ClassVisitor},
+{@link org.objectweb.asm.FieldVisitor FieldVisitor},
+{@link org.objectweb.asm.MethodVisitor MethodVisitor} and
+{@link org.objectweb.asm.AnnotationVisitor AnnotationVisitor} abstract classes,
 which allow one to visit the fields, methods and annotations of a class,
 including the bytecode instructions of each method.
 
 <p>
 In addition to these main abstract classes, ASM provides a {@link
-org.more.asm.ClassReader ClassReader} class, that can parse an
+org.objectweb.asm.ClassReader ClassReader} class, that can parse an
 existing class and make a given visitor visit it. ASM also provides
-a {@link org.more.asm.ClassWriter ClassWriter} class, which is
+a {@link org.objectweb.asm.ClassWriter ClassWriter} class, which is
 a visitor that generates Java class files.
 
 <p>
 In order to generate a class from scratch, only the {@link
-org.more.asm.ClassWriter ClassWriter} class is necessary. Indeed,
+org.objectweb.asm.ClassWriter ClassWriter} class is necessary. Indeed,
 in order to generate a class, one must just call its visit<i>Xxx</i>
 methods with the appropriate arguments to generate the desired fields
 and methods. See the "helloworld" example in the ASM distribution for
@@ -55,16 +56,16 @@ more details about class generation.
 
 <p>
 In order to modify existing classes, one must use a {@link
-org.more.asm.ClassReader ClassReader} class to analyze
-the original class, a class modifier, and a {@link org.more.asm.ClassWriter
+org.objectweb.asm.ClassReader ClassReader} class to analyze
+the original class, a class modifier, and a {@link org.objectweb.asm.ClassWriter
 ClassWriter} to construct the modified class. The class modifier
-is just a {@link org.more.asm.ClassVisitor ClassVisitor}
-that delegates most of the work to another {@link org.more.asm.ClassVisitor
+is just a {@link org.objectweb.asm.ClassVisitor ClassVisitor}
+that delegates most of the work to another {@link org.objectweb.asm.ClassVisitor
 ClassVisitor}, but that sometimes changes some parameter values,
 or call additional methods, in order to implement the desired
 modification process. In order to make it easier to implement such
-class modifiers, the {@link org.more.asm.ClassVisitor
-ClassVisitor} and {@link org.more.asm.MethodVisitor MethodVisitor}
+class modifiers, the {@link org.objectweb.asm.ClassVisitor
+ClassVisitor} and {@link org.objectweb.asm.MethodVisitor MethodVisitor}
 classes delegate by default all the method calls they receive to an
 optional visitor. See the "adapt" example in the ASM
 distribution for more details about class modification.

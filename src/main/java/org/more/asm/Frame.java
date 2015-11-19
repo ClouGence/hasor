@@ -68,8 +68,8 @@ final class Frame {
      * stack types. VALUE depends on KIND. For LOCAL types, it is an index in
      * the input local variable types. For STACK types, it is a position
      * relatively to the top of input frame stack. For BASE types, it is either
-     * one of the constants defined in FrameVisitor, or for OBJECT and
-     * UNINITIALIZED types, a tag and an index in the type table.
+     * one of the constants defined below, or for OBJECT and UNINITIALIZED
+     * types, a tag and an index in the type table.
      * 
      * Output frames can contain types of any kind and with a positive or
      * negative dimension (and even unassigned types, represented by 0 - which
@@ -431,23 +431,23 @@ final class Frame {
      * The label (i.e. basic block) to which these input and output stack map
      * frames correspond.
      */
-    Label         owner;
+    Label                    owner;
     /**
      * The input stack map frame locals.
      */
-    int[]         inputLocals;
+    int[]                    inputLocals;
     /**
      * The input stack map frame stack.
      */
-    int[]         inputStack;
+    int[]                    inputStack;
     /**
      * The output stack map frame locals.
      */
-    private int[] outputLocals;
+    private int[]            outputLocals;
     /**
      * The output stack map frame stack.
      */
-    private int[] outputStack;
+    private int[]            outputStack;
     /**
      * Relative size of the output stack. The exact semantics of this field
      * depends on the algorithm that is used.
@@ -458,13 +458,13 @@ final class Frame {
      * When the stack map frames are completely computed, this field is the
      * actual number of types in {@link #outputStack}.
      */
-    private int   outputStackTop;
+    private int              outputStackTop;
     /**
      * Number of types that are initialized in the basic block.
      * 
      * @see #initializations
      */
-    private int   initializationCount;
+    private int              initializationCount;
     /**
      * The types that are initialized in the basic block. A constructor
      * invocation on an UNINITIALIZED or UNINITIALIZED_THIS type must replace
@@ -478,7 +478,7 @@ final class Frame {
      * are relative to input locals or to the input stack (see below for the
      * description of the algorithm).
      */
-    private int[] initializations;
+    private int[]            initializations;
     /**
      * Returns the output frame local variable type at the given index.
      * 
@@ -598,7 +598,7 @@ final class Frame {
             // stores the internal name, not the descriptor!
             t = desc.substring(index + 1, desc.length() - 1);
             return OBJECT | cw.addType(t);
-        // case '[':
+            // case '[':
         default:
             // extracts the dimensions and the element type
             int data;
@@ -1351,6 +1351,7 @@ final class Frame {
                 // if t is the NULL type, merge(u,t)=u, so there is no change
                 return false;
             } else if ((t & (DIM | BASE_KIND)) == (u & (DIM | BASE_KIND))) {
+                // if t and u have the same dimension and same base kind
                 if ((u & BASE_KIND) == OBJECT) {
                     // if t is also a reference type, and if u and t have the
                     // same dimension merge(u,t) = dim(t) | common parent of the
@@ -1358,13 +1359,18 @@ final class Frame {
                     v = (t & DIM) | OBJECT | cw.getMergedType(t & BASE_VALUE, u & BASE_VALUE);
                 } else {
                     // if u and t are array types, but not with the same element
-                    // type, merge(u,t)=java/lang/Object
-                    v = OBJECT | cw.addType("java/lang/Object");
+                    // type, merge(u,t) = dim(u) - 1 | java/lang/Object
+                    int vdim = ELEMENT_OF + (u & DIM);
+                    v = vdim | OBJECT | cw.addType("java/lang/Object");
                 }
             } else if ((t & BASE_KIND) == OBJECT || (t & DIM) != 0) {
-                // if t is any other reference or array type,
-                // merge(u,t)=java/lang/Object
-                v = OBJECT | cw.addType("java/lang/Object");
+                // if t is any other reference or array type, the merged type
+                // is min(udim, tdim) | java/lang/Object, where udim is the
+                // array dimension of u, minus 1 if u is an array type with a
+                // primitive element type (and similarly for tdim).
+                int tdim = (((t & DIM) == 0 || (t & BASE_KIND) == OBJECT) ? 0 : ELEMENT_OF) + (t & DIM);
+                int udim = (((u & DIM) == 0 || (u & BASE_KIND) == OBJECT) ? 0 : ELEMENT_OF) + (u & DIM);
+                v = Math.min(tdim, udim) | OBJECT | cw.addType("java/lang/Object");
             } else {
                 // if t is any other type, merge(u,t)=TOP
                 v = TOP;

@@ -41,6 +41,11 @@ public abstract class AbstractEnvironment implements Environment {
     private Settings     settings     = null;
     private Object       context      = null;
     private EventContext eventManager = null;
+    //
+    //---------------------------------------------------------------------------------Basic Method
+    public AbstractEnvironment(Object context) {
+        this.context = context;
+    }
     //---------------------------------------------------------------------------------Basic Method
     @Override
     public Object getContext() {

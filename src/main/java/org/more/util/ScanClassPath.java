@@ -143,7 +143,12 @@ public class ScanClassPath {
             return this.classInfoMap.get(className);
         }
         /*二、使用 ClassReader 读取类的基本信息*/
-        ClassReader classReader = new ClassReader(inStream);
+        ClassReader classReader = null;
+        try {
+            classReader = new ClassReader(inStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //className = classReader.getClassName().replace('/', '.');
         /*三、读取类的（名称、父类、接口、注解）信息*/
         final ClassInfo info = new ClassInfo();

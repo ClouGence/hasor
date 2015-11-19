@@ -81,7 +81,7 @@ public abstract class Hasor {
     public static AppContext createAppContext(final String config, final Module... modules) {
         try {
             logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-            final Environment dev = new StandardEnvironment(config);
+            final Environment dev = new StandardEnvironment(null, config);
             final DataContext dataContext = new DataContext() {
                 public Environment getEnvironment() {
                     return dev;
