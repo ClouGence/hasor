@@ -18,10 +18,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.rsf.center.core.startup.StartAppModule;
-import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import org.more.util.StringUtils;
 /**
  * 
  * @version : 2015年8月13日
@@ -37,10 +35,10 @@ public class DebugModule extends WebModule implements EventListener {
     }
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("################### Dev ###################");
-//        String workAt = StartAppModule.workAt();
-//        if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
-            JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
-            jdbcTemplate.loadSQL("UTF-8", "init_sql.sql");
-//        }
+        //        String workAt = StartAppModule.workAt();
+        //        if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
+        JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        jdbcTemplate.loadSQL("UTF-8", "init_sql.sql");
+        //        }
     }
 }

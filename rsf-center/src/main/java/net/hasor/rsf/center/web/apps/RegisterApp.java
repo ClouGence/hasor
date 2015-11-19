@@ -15,11 +15,11 @@
  */
 package net.hasor.rsf.center.web.apps;
 import java.util.Date;
+import net.hasor.core.Inject;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.plugins.valid.ValidData;
 import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
 import org.more.bizcommon.ResultDO;

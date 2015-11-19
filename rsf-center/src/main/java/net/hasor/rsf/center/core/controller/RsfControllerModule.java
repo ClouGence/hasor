@@ -17,23 +17,19 @@ package net.hasor.rsf.center.core.controller;
 import java.util.Set;
 import net.hasor.mvc.ModelController;
 import net.hasor.mvc.api.MappingTo;
+import net.hasor.mvc.support.ControllerApiBinder;
 import net.hasor.mvc.support.ControllerModule;
-import net.hasor.mvc.support.LoadHellper;
-import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfControllerModule extends ControllerModule {
-    public RsfControllerModule(WorkMode workAt) {}
-    protected void loadController(LoadHellper helper) throws Throwable {
-        WebApiBinder apiBinder = helper.apiBinder();
+    protected void loadController(ControllerApiBinder apiBinder) throws Throwable {
         Set<Class<?>> controllerSet = apiBinder.getEnvironment().findClass(ModelController.class);
         for (Class<?> controllerType : controllerSet) {
             if (controllerType.isAnnotationPresent(MappingTo.class)) {
-                helper.loadType((Class<? extends ModelController>) controllerType);
+                apiBinder.loadType((Class<? extends ModelController>) controllerType);
             }
         }
     }

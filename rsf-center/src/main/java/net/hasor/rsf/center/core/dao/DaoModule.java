@@ -20,15 +20,13 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
+import net.hasor.core.LifeModule;
 import net.hasor.core.Settings;
-import net.hasor.core.StartModule;
 import net.hasor.core.XmlNode;
+import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.plugins.tran.interceptor.TranInterceptorModule;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.domain.constant.WorkMode;
@@ -43,18 +41,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DaoModule extends WebModule implements StartModule {
+public class DaoModule extends WebModule implements LifeModule {
     private WorkMode workAt = null;
     public DaoModule(WorkMode workAt) {
         this.workAt = workAt;
     }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //Dao
-        Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
-        for (Class<?> daoType : daoSet) {
-            apiBinder.bindType(daoType);
-        }
-        //DataSource
+        //
+        //1.初始化数据库
         Settings settings = apiBinder.getEnvironment().getSettings();
         String driverString = settings.getString("rsfCenter.jdbcConfig.driver");
         String urlString = settings.getString("rsfCenter.jdbcConfig.url");
@@ -67,9 +61,18 @@ public class DaoModule extends WebModule implements StartModule {
             pwdString = "";
         }
         DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
+        apiBinder.installModule(new DBModule(dataSource));
+        //
+        //2.绑定myBatis接口实现
         Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        this.configDataSource(apiBinder, dataSource, sessionFactory);
+        apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
+        //
+        //3.Dao
+        Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
+        for (Class<?> daoType : daoSet) {
+            apiBinder.bindType(daoType);
+        }
     }
     public void onStart(AppContext appContext) throws Throwable {
         Environment env = appContext.getEnvironment();
@@ -100,6 +103,11 @@ public class DaoModule extends WebModule implements StartModule {
             }
         }
     }
+    public void onStop(AppContext appContext) throws Throwable {
+        // TODO Auto-generated method stub
+    }
+    //
+    //
     private DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
         logger.info("C3p0 Pool Info maxSize is ‘{}’ driver is ‘{}’ jdbcUrl is‘{}’", poolMaxSize, driverString, urlString);
@@ -119,15 +127,5 @@ public class DaoModule extends WebModule implements StartModule {
         dataSource.setAcquireIncrement(1);
         dataSource.setMaxIdleTime(25000);
         return dataSource;
-    }
-    protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, SqlSessionFactory sessionFactory) throws Throwable {
-        //1.绑定DataSource接口实现
-        apiBinder.bindType(DataSource.class).toInstance(dataSource);
-        //2.绑定JdbcTemplate接口实现
-        apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(dataSource));
-        //3.启用默认事务拦截器
-        apiBinder.installModule(new TranInterceptorModule(dataSource));
-        //4.绑定myBatis接口实现
-        apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
     }
 }

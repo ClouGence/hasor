@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.daos;
+import net.hasor.core.Inject;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
-import net.hasor.rsf.center.core.ioc.Inject;
 /**
  * 
  * @version : 2015年6月30日

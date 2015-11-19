@@ -16,9 +16,9 @@
 package net.hasor.rsf.center.core.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.StartModule;
+import net.hasor.core.LifeModule;
+import net.hasor.mvc.support.ControllerApiBinder;
 import net.hasor.mvc.support.ControllerModule;
-import net.hasor.mvc.support.LoadHellper;
 import net.hasor.rsf.center.core.controller.RsfControllerModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
 import net.hasor.rsf.center.core.freemarker.FreemarkerModule;
@@ -26,29 +26,27 @@ import net.hasor.rsf.center.core.jump.JumpModule;
 import net.hasor.rsf.center.core.valid.ValidModule;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.web.WebApiBinder;
 /**
  * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartAppModule extends ControllerModule implements StartModule {
+public class StartAppModule extends ControllerModule implements LifeModule {
     public static final String CenterStartEvent = "CenterStartEvent";
     @Override
-    protected void loadController(LoadHellper helper) throws Throwable {
+    protected void loadController(ControllerApiBinder apiBinder) throws Throwable {
         //WorkAt
-        WebApiBinder apiBinder = helper.apiBinder();
         WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.None);
         logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
         //
         //Jump
-        apiBinder.installModule(new JumpModule(workAt));
+        apiBinder.installModule(new JumpModule());
         //Valid
-        apiBinder.installModule(new ValidModule(workAt));
+        apiBinder.installModule(new ValidModule());
         //Controller
-        apiBinder.installModule(new RsfControllerModule(workAt));
+        apiBinder.installModule(new RsfControllerModule());
         //Freemarker
-        apiBinder.installModule(new FreemarkerModule(workAt));
+        apiBinder.installModule(new FreemarkerModule());
         //DataSource
         apiBinder.installModule(new DaoModule(workAt));
         //Zookeeper
@@ -59,5 +57,8 @@ public class StartAppModule extends ControllerModule implements StartModule {
     public void onStart(AppContext appContext) throws Throwable {
         Environment env = appContext.getEnvironment();
         env.getEventContext().fireSyncEvent(CenterStartEvent, appContext);//fire Event
+    }
+    public void onStop(AppContext appContext) throws Throwable {
+        // TODO Auto-generated method stub
     }
 }

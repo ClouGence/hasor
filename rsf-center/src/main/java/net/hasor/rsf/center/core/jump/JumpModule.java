@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.jump;
-import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -23,7 +22,6 @@ import net.hasor.web.WebModule;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JumpModule extends WebModule {
-    public JumpModule(WorkMode workAt) {}
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.filter("/*").through(new RootJumpFilter());
     }

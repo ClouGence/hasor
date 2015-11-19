@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apps;
+import net.hasor.core.Inject;
 import net.hasor.mvc.api.MappingTo;
 import net.hasor.mvc.api.Params;
 import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.core.ioc.Inject;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;

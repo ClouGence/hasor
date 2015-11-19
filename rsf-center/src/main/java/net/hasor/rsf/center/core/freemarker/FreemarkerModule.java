@@ -16,7 +16,6 @@
 package net.hasor.rsf.center.core.freemarker;
 import java.io.File;
 import net.hasor.rsf.center.core.freemarker.loader.DirTemplateLoader;
-import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import freemarker.template.Configuration;
@@ -26,7 +25,6 @@ import freemarker.template.Configuration;
  * @author 赵永春(zyc@hasor.net)
  */
 public class FreemarkerModule extends WebModule {
-    public FreemarkerModule(WorkMode workAt) {}
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         String realPath = apiBinder.getServletContext().getRealPath("/");
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);

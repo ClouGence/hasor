@@ -17,7 +17,6 @@ package net.hasor.rsf.center.core.valid;
 import java.util.Set;
 import net.hasor.plugins.valid.ValidUtils;
 import net.hasor.plugins.valid.Validation;
-import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -26,7 +25,6 @@ import net.hasor.web.WebModule;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ValidModule extends WebModule {
-    public ValidModule(WorkMode workAt) {}
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         Set<Class<?>> validSet = apiBinder.getEnvironment().findClass(ValidDefine.class);
         for (Class<?> validType : validSet) {

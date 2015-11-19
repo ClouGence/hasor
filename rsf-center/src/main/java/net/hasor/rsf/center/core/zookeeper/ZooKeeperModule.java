@@ -18,6 +18,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.LifeModule;
+import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.rsf.utils.NetworkUtils;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -27,21 +36,12 @@ import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.ZooKeeperServer.DataTreeBuilder;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.StartModule;
-import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.rsf.utils.NetworkUtils;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ZooKeeperModule extends WebModule implements StartModule {
+public class ZooKeeperModule extends WebModule implements LifeModule {
     private WorkMode workAt;
     public ZooKeeperModule(WorkMode workAt) {
         this.workAt = workAt;
@@ -143,5 +143,8 @@ public class ZooKeeperModule extends WebModule implements StartModule {
         zooKeeper.create("/root", "data".getBytes(), null, null);
         zooKeeper.setData("/", "data".getBytes(), 0);
         zooKeeper.getState().isAlive();
+    }
+    public void onStop(AppContext appContext) throws Throwable {
+        // TODO Auto-generated method stub
     }
 }
