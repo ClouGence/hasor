@@ -20,6 +20,7 @@
     09.事务管理器模块大量优化，同时“Manager”更名为“TranManager”。可以更好的让人理解。
     10.事务管理器负责提供数据库连接与当前线程的绑定关系。
     11.删除ResultModule类和其相关的功能，该功能不再是核心功能的一部分。
+    12.MVC框架被迁出 Hasor框架成为一个独立的Web开发框架名为“haweb”。
 * 修复:
     01.大量优化。。
     02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
