@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EncodingFilterModule extends WebModule {
-    public static final String REQUEST_ENCODING      = "hasor.modConfig.encoding.requestEncoding";
-    public static final String RESPONSE_ENCODING     = "hasor.modConfig.encoding.responseEncoding";
-    public static final String URL_PATTERNS_ENCODING = "hasor.modConfig.encoding.urlPatterns";
+    public static final String REQUEST_ENCODING      = "hasor.encoding.requestEncoding";
+    public static final String RESPONSE_ENCODING     = "hasor.encoding.responseEncoding";
+    public static final String URL_PATTERNS_ENCODING = "hasor.encoding.urlPatterns";
     //
     public void loadModule(WebApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
