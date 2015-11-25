@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class TemplateAppContext<CD extends DataContext> implements AppContext {
+public abstract class TemplateAppContext<C extends BeanContainer> implements AppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     protected Logger           logger          = LoggerFactory.getLogger(getClass());
     //
@@ -57,7 +57,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         BindInfo<?> bindInfo = container.getBindInfoByID(bindID);
         if (bindInfo != null) {
             return bindInfo.getBindType();
@@ -67,13 +67,13 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     /** @return 判断是否存在某个ID的绑定。*/
     public boolean containsBindID(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         BindInfo<?> bindInfo = container.getBindInfoByID(bindID);
         return bindInfo != null;
     }
     /** @return 获取已经注册的BeanID。*/
     public String[] getBindIDs() {
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoIDs();
         if (nameList == null || nameList.isEmpty() == true) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
@@ -82,13 +82,13 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     }
     /**根据ID获取{@link BindInfo}。*/
     public <T> BindInfo<T> getBindInfo(String bindID) {
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         return container.getBindInfoByID(bindID);
     }
     /**如果存在目标类型的Bean则返回Bean的名称。*/
     public String[] getNames(final Class<?> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoNamesByType(targetClass);
         if (nameList == null || nameList.isEmpty() == true) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
@@ -99,7 +99,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     /**创建Bean。*/
     public <T> T getInstance(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
         if (bindInfo != null) {
             return this.getInstance(bindInfo);
@@ -129,7 +129,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     /**创建Bean。*/
     public <T> Provider<T> getProvider(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         BindInfo<T> bindInfo = container.getBindInfoByID(bindID);
         if (bindInfo != null) {
             return this.getProvider(bindInfo);
@@ -141,7 +141,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         Provider<T> targetProvider = null;
         //
-        final DefineContainer container = getDataContext().getBindInfoContainer();
+        final BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
         if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
             for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
@@ -181,17 +181,17 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     //
     /**获取用于创建Bean的{@link BeanBuilder}*/
     protected BeanBuilder getBeanBuilder() {
-        return getDataContext().getBeanBuilder();
+        return getContainer();
     }
     /**获取用于创建Bean对象的{@link DataContext}接口*/
-    protected abstract CD getDataContext();
+    protected abstract C getContainer();
     // 
     /*------------------------------------------------------------------------------------Binding*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<T> findBindingBean(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return new ArrayList<T>(0);
@@ -207,7 +207,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     public <T> List<Provider<T>> findBindingProvider(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return new ArrayList<Provider<T>>(0);
@@ -245,7 +245,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     public <T> List<BindInfo<T>> findBindingRegister(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             logger.debug("findBindingRegister , never define this bindType = {}", bindType);
@@ -262,7 +262,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
-        DefineContainer container = getDataContext().getBindInfoContainer();
+        BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
         if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
             for (BindInfo<T> adapter : typeRegisterList) {
@@ -313,7 +313,7 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        this.getDataContext().doInitializeCompleted(this);
+        this.getContainer().doInitializeCompleted(this);
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
@@ -342,15 +342,15 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
         for (ContextShutdownListener listener : listenerList) {
             listener.doShutdownCompleted(this);
         }
-        this.getDataContext().doShutdownCompleted(this);
+        this.getContainer().doShutdownCompleted(this);
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder(final Module forModule) {
-        return new AbstractBinder() {
-            protected DataContext dataContext() {
-                return getDataContext();
+        return new AbstractBinder(this.getEnvironment()) {
+            protected BeanBuilder getBeanBuilder() {
+                return getContainer();
             }
         };
     }
@@ -383,15 +383,13 @@ public abstract class TemplateAppContext<CD extends DataContext> implements AppC
      * @return 返回 true 表示已经完成初始化并且启动完成。false表示尚未完成启动过程。
      */
     public boolean isStart() {
-        return this.getDataContext().isStart();
+        return this.getContainer().isInit();
     }
     /**获取环境接口。*/
-    public Environment getEnvironment() {
-        return this.getDataContext().getEnvironment();
-    }
+    public abstract Environment getEnvironment();
     /**获取当创建Bean时使用的{@link ClassLoader}*/
     public ClassLoader getClassLoader() {
-        return this.getDataContext().getClassLoader();
+        return this.getContainer().getClassLoader();
     }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {

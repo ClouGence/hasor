@@ -45,7 +45,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     /**创建{@link WebAppContext}对象*/
     protected WebAppContext createAppContext(final ServletContext sc) throws Throwable {
-        return new WebTemplateAppContext("hasor-config.xml", sc);
+        return WebTemplateAppContext.create("hasor-config.xml", sc);
     }
     //
     /**获取启动模块*/

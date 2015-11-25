@@ -29,7 +29,6 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.context.BeanBuilder;
-import net.hasor.core.context.DataContext;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.module.ModuleHelper;
 import org.more.util.BeanUtils;
@@ -44,10 +43,14 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger      logger = LoggerFactory.getLogger(getClass());
+    private Environment environment;
+    public AbstractBinder(Environment environment) {
+        this.environment = Hasor.assertIsNotNull(environment);
+    }
     //
     public Environment getEnvironment() {
-        return this.dataContext().getEnvironment();
+        return this.environment;
     }
     public Set<Class<?>> findClass(final Class<?> featureType) {
         if (featureType == null) {
@@ -64,11 +67,11 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
-    protected abstract DataContext dataContext();
+    protected abstract BeanBuilder getBeanBuilder();
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BeanBuilder builder = this.dataContext().getBeanBuilder();
-        BindInfoBuilder<T> typeBuilder = this.dataContext().getBindInfoContainer().createBuilder(type, builder);
+        BeanBuilder builder = this.getBeanBuilder();
+        BindInfoBuilder<T> typeBuilder = builder.createBindInfoByType(type);
         typeBuilder.setBindID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }

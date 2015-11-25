@@ -15,18 +15,18 @@
  */
 package net.hasor.web.context;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletContext;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.context.DataContext;
+import net.hasor.core.context.BeanBuilder;
+import net.hasor.core.context.BeanContainer;
 import net.hasor.core.context.DataContextCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.web.WebAppContext;
+import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.binder.support.AbstractWebApiBinder;
@@ -40,29 +40,40 @@ import org.more.util.ResourcesUtils;
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebTemplateAppContext extends StatusAppContext<WebDataContext>implements WebAppContext {
-    public WebTemplateAppContext(final String settingURI, final ServletContext servletContext) throws Throwable {
-        super(new DataContextCreater<WebDataContext>() {
-            public WebDataContext create(Environment env) throws IOException, URISyntaxException {
-                URL resURL = ResourcesUtils.getResource(settingURI);
-                if (resURL != null) {
-                    return new WebDataContext(resURL.toURI(), servletContext);
-                } else {
-                    return new WebDataContext(servletContext);
-                }
-            }
-        }, null);
+public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppContext<C> implements WebAppContext {
+    public static WebTemplateAppContext<? extends BeanContainer> create(String settingURI, ServletContext servletContext) throws IOException, URISyntaxException {
+        URL resURL = ResourcesUtils.getResource(settingURI);
+        WebEnvironment webEnv = null;
+        if (resURL != null) {
+            webEnv = new WebStandardEnvironment(resURL.toURI(), servletContext);
+        } else {
+            webEnv = new WebStandardEnvironment(servletContext);
+        }
+        BeanContainer container = new BeanContainer();
+        WebTemplateAppContext<?> appContext = new WebTemplateAppContext<BeanContainer>(webEnv, container);
+        return appContext;
+    }
+    //
+    //
+    private ServletContext servletContext = null;
+    protected WebTemplateAppContext(WebEnvironment environment, C container) {
+        super(environment, container);
+        this.servletContext = environment.getServletContext();
+    }
+    protected WebTemplateAppContext(WebEnvironment environment, DataContextCreater<C> creater) throws Throwable {
+        super(environment, creater);
+        this.servletContext = environment.getServletContext();
     }
     //
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext() {
-        return this.getDataContext().getServletContext();
+        return this.servletContext;
     }
     /**为模块创建ApiBinder*/
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
-        return new AbstractWebApiBinder() {
-            protected WebDataContext dataContext() {
-                return getDataContext();
+        return new AbstractWebApiBinder(this.getEnvironment()) {
+            protected BeanBuilder getBeanBuilder() {
+                return getContainer();
             }
         };
     }
@@ -84,23 +95,5 @@ public class WebTemplateAppContext extends StatusAppContext<WebDataContext>imple
                 return getServletContext();
             }
         });
-    }
-}
-class WebDataContext extends DataContext {
-    private WebStandardEnvironment environment;
-    //
-    public WebDataContext(ServletContext servletContext) {
-        this.environment = new WebStandardEnvironment(servletContext);
-    }
-    public WebDataContext(URI settingURI, ServletContext servletContext) throws IOException {
-        this.environment = new WebStandardEnvironment(settingURI, servletContext);
-    }
-    //
-    public WebStandardEnvironment getEnvironment() {
-        return this.environment;
-    }
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext() {
-        return getEnvironment().getServletContext();
     }
 }

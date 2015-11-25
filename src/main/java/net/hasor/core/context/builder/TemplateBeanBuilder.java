@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factory;
+package net.hasor.core.context.builder;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -26,15 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import org.more.classcode.aop.AopClassConfig;
-import org.more.classcode.aop.AopMatcher;
-import org.more.convert.ConverterUtils;
-import org.more.util.BeanUtils;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
@@ -50,13 +41,19 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.ScopeProvider;
+import org.more.convert.ConverterUtils;
+import org.more.util.BeanUtils;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 负责根据Class或BindInfo创建Bean。
  * @version : 2015年6月26日
  * @author 赵永春(zyc@hasor.net)
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class FactoryBeanBuilder implements BeanBuilder {
+public class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     /**创建一个AbstractBindInfoProviderAdapter*/
     public <T> AbstractBindInfoProviderAdapter<T> createBindInfoByType(Class<T> bindType) {
@@ -116,19 +113,6 @@ public class FactoryBeanBuilder implements BeanBuilder {
     //
     //
     //
-    private ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
-    /**获取用于创建Bean的 Engine。*/
-    public AopClassConfig buildEngine(Class<?> targetType, List<AopBindInfoAdapter> aopList, ClassLoader rootLosder) {
-        AopClassConfig engine = new AopClassConfig(targetType, rootLosder);
-        for (AopBindInfoAdapter aop : aopList) {
-            if (aop.getMatcherClass().matches(targetType) == false) {
-                continue;
-            }
-            AopMatcher aopMatcher = new FactoryBeanAopMatcher(aop.getMatcherMethod());
-            engine.addAopInterceptor(aopMatcher, aop);
-        }
-        return engine;
-    }
     //
     /**创建对象*/
     private <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
@@ -155,22 +139,8 @@ public class FactoryBeanBuilder implements BeanBuilder {
             }
             //
             //2.动态代理
-            Class<?> newType = targetType;
-            if (AopClassConfig.isSupport(targetType)) {
-                AopClassConfig cc = this.buildEngineMap.get(targetType);
-                if (cc == null) {
-                    AopClassConfig newCC = buildEngine(targetType, aopList, appContext.getClassLoader());
-                    cc = this.buildEngineMap.putIfAbsent(targetType, newCC);
-                    if (cc == null) {
-                        cc = newCC;
-                    }
-                }
-                if (cc.hasChange() == true) {
-                    newType = cc.toClass();
-                } else {
-                    newType = cc.getSuperClass();
-                }
-            }
+            ClassLoader rootLosder = appContext.getClassLoader();
+            Class<?> newType = ClassEngine.buildType(targetType, rootLosder, aopList);
             //
             //3.确定要调用的构造方法。
             Constructor<?> constructor = null;

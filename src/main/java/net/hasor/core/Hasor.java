@@ -16,7 +16,7 @@
 package net.hasor.core;
 import static net.hasor.core.EventContext.ContextEvent_Shutdown;
 import static net.hasor.core.EventContext.ContextEvent_Started;
-import net.hasor.core.context.DataContext;
+import net.hasor.core.context.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
@@ -81,13 +81,9 @@ public abstract class Hasor {
     public static AppContext createAppContext(final String config, final Module... modules) {
         try {
             logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-            final Environment dev = new StandardEnvironment(null, config);
-            final DataContext dataContext = new DataContext() {
-                public Environment getEnvironment() {
-                    return dev;
-                }
-            };
-            final AppContext appContext = new StatusAppContext<DataContext>(dataContext);
+            Environment dev = new StandardEnvironment(null, config);
+            BeanContainer container = new BeanContainer();
+            AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {

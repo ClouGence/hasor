@@ -19,15 +19,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.context.builder.TemplateBeanBuilder;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
 import org.more.RepeateException;
+import org.more.classcode.MoreClassLoader;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +39,10 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefineContainer {
+public class BeanContainer extends TemplateBeanBuilder {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
+    private AtomicBoolean                           inited           = new AtomicBoolean(false);
+    private ClassLoader                             rootLosder       = new MoreClassLoader();
     private Provider<Scope>                         singletonScope   = new InstanceProvider<Scope>(new SingletonScope());
     private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
     private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
@@ -46,6 +51,13 @@ public class DefineContainer {
     //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader() {
+        return this.rootLosder;
+    }
+    public boolean isInit() {
+        return this.inited.get();
+    }
     /**根据ID查找{@link BindInfo}*/
     public <T> BindInfo<T> getBindInfoByID(String infoID) {
         return (BindInfo<T>) this.idDataSource.get(infoID);
@@ -96,13 +108,17 @@ public class DefineContainer {
      * @param bindType 绑定类型
      * @return 返回 BindInfoBuilder。
      */
-    public <T> BindInfoBuilder<T> createBuilder(final Class<T> bindType, BeanBuilder builder) {
-        AbstractBindInfoProviderAdapter<T> adapter = builder.createBindInfoByType(bindType);
+    public <T> AbstractBindInfoProviderAdapter<T> createBindInfoByType(Class<T> bindType) {
+        AbstractBindInfoProviderAdapter<T> adapter = super.createBindInfoByType(bindType);
         this.tempBindInfoList.add(adapter);
         return adapter;
     }
     /*---------------------------------------------------------------------------------------Life*/
     public void doInitializeCompleted(AppContext context) {
+        if (!this.inited.compareAndSet(false, true)) {
+            return;/*避免被初始化多次*/
+        }
+        //
         for (BindInfo<?> info : this.tempBindInfoList) {
             String bindID = info.getBindID();
             //只有ID做重复检查
@@ -141,6 +157,9 @@ public class DefineContainer {
         this.tempBindInfoList.clear();
     }
     public void doShutdownCompleted(AppContext appContext) {
+        if (!this.inited.compareAndSet(true, false)) {
+            return;/*避免被销毁多次*/
+        }
         this.tempBindInfoList.clear();
         this.indexTypeMapping.clear();
         this.indexNameMapping.clear();

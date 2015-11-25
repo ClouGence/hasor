@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factory;
-import java.lang.reflect.Method;
-import net.hasor.core.ApiBinder.Matcher;
-import org.more.classcode.aop.AopMatcher;
 /**
- * 负责根据Class或BindInfo创建Bean。
- * @version : 2015年6月26日
- * @author 赵永春(zyc@hasor.net)
+ * <p>Hasor创建Bean的工厂。</p>
  */
-class FactoryBeanAopMatcher implements AopMatcher {
-    private Matcher<Method> matcherMethod = null;
-    public FactoryBeanAopMatcher(Matcher<Method> matcherMethod) {
-        this.matcherMethod = matcherMethod;
-    }
-    public boolean matcher(Method target) {
-        return this.matcherMethod.matches(target);
-    }
-}
+package net.hasor.core.context.builder;

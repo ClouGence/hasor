@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 /**
@@ -23,16 +21,24 @@ import net.hasor.core.Hasor;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StatusAppContext<CD extends DataContext> extends TemplateAppContext<CD> {
-    private CD dataContext = null;
-    public StatusAppContext(CD dataContext) throws IOException, URISyntaxException {
-        this.dataContext = Hasor.assertIsNotNull(dataContext);
+public class StatusAppContext<C extends BeanContainer> extends TemplateAppContext<C> {
+    private C           container   = null;
+    private Environment environment = null;
+    //
+    public StatusAppContext(Environment environment, C container) {
+        this.environment = environment;
+        this.container = Hasor.assertIsNotNull(container);
     }
-    public StatusAppContext(DataContextCreater<CD> creater, Environment env) throws Throwable {
-        this.dataContext = Hasor.assertIsNotNull(creater.create(env));
+    public StatusAppContext(Environment environment, DataContextCreater<C> creater) throws Throwable {
+        this.environment = environment;
+        this.container = Hasor.assertIsNotNull(creater.create(environment));
     }
     @Override
-    protected CD getDataContext() {
-        return this.dataContext;
+    protected C getContainer() {
+        return this.container;
+    }
+    @Override
+    public Environment getEnvironment() {
+        return this.environment;
     }
 }

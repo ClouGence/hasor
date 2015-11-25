@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.web.WebApiBinder;
@@ -35,6 +36,9 @@ import org.more.util.ArrayUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractWebApiBinder extends AbstractBinder implements WebApiBinder {
+    public AbstractWebApiBinder(Environment environment) {
+        super(environment);
+    }
     @Override
     public ServletContext getServletContext() {
         return this.getEnvironment().getServletContext();
