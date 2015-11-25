@@ -28,7 +28,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.core.context.BeanBuilder;
+import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.module.ModuleHelper;
 import org.more.util.BeanUtils;

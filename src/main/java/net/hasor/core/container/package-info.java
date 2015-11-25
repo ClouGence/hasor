@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.builder;
-import java.lang.reflect.Method;
-import net.hasor.core.ApiBinder.Matcher;
-import org.more.classcode.aop.AopMatcher;
 /**
- * 负责根据Class或BindInfo创建Bean。
- * @version : 2015年6月26日
- * @author 赵永春(zyc@hasor.net)
+ * <p>Hasor最核心功能，AppContext的所有功能都是围绕这个软件包打造的。它完成了IoC、Aop、Bean容器。</p>
  */
-class ClassAopMatcher implements AopMatcher {
-    private Matcher<Method> matcherMethod = null;
-    public ClassAopMatcher(Matcher<Method> matcherMethod) {
-        this.matcherMethod = matcherMethod;
-    }
-    public boolean matcher(Method target) {
-        return this.matcherMethod.matches(target);
-    }
-}
+package net.hasor.core.container;

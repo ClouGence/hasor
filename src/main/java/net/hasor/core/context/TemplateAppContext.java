@@ -29,6 +29,8 @@ import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.container.BeanBuilder;
+import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.module.ModuleHelper;

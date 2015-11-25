@@ -16,7 +16,7 @@
 package net.hasor.core;
 import static net.hasor.core.EventContext.ContextEvent_Shutdown;
 import static net.hasor.core.EventContext.ContextEvent_Started;
-import net.hasor.core.context.BeanContainer;
+import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;

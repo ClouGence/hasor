@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>提供标准的 <code>{@link net.hasor.core.AppContext AppContext}</code> 接口实现.</p>
- * <p>Standard implementations of the <code>{@link net.hasor.core.AppContext AppContext}</code> interface.</p>
+ * 负责通过{@link net.hasor.core.container.BeanContainer}类实现 <code>{@link net.hasor.core.AppContext}</code>接口。
  */
 package net.hasor.core.context;

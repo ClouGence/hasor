@@ -16,6 +16,7 @@
 package net.hasor.core.context;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
+import net.hasor.core.container.BeanContainer;
 /**
  * 负责创建和维护{@link DataContext}。
  * @version : 2013-4-9

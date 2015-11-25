@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.builder;
+package net.hasor.core.container;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -35,7 +35,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.context.BeanBuilder;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.CustomerProvider;

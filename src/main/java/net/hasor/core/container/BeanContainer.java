@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +25,6 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.core.context.builder.TemplateBeanBuilder;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
 import org.more.RepeateException;
