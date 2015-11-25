@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * 用于配置 bean 信息。
+ * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日
  * @author 赵永春(zyc@hasor.net)
  */

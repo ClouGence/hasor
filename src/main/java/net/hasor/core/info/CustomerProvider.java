@@ -16,7 +16,7 @@
 package net.hasor.core.info;
 import net.hasor.core.Provider;
 /**
- * 
+ * 如果Bean配置了{@link Provider}，那么Hasor容器需要通过该接口获取到这个Provider。
  * @version : 2014年12月2日
  * @author 赵永春(zyc@hasor.net)
  */

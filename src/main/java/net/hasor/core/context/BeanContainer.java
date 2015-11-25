@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.InstanceProvider;
@@ -35,9 +34,15 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 负责承载Hasor {@link AppContext}的状态数据。
- * @version : 2013-4-9
- * @author 赵永春 (zyc@hasor.net)
+ * 整个Hasor将围绕这个类构建！！
+ * <br/>它，完成了Bean容器的功能。
+ * <br/>它，完成了依赖注入的功能。
+ * <br/>它，完成了Aop的功能。
+ * <br/>它，支持了{@link Scope}作用域功能。
+ * <br/>它，支持了{@link AppContext}接口功能。
+ * <br/>它，是万物之母，一切生命的源泉。
+ * @version : 2015年11月25日
+ * @author 赵永春(zyc@hasor.net)
  */
 public class BeanContainer extends TemplateBeanBuilder {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
@@ -99,22 +104,28 @@ public class BeanContainer extends TemplateBeanBuilder {
     public Collection<String> getBindInfoIDs() {
         return this.idDataSource.keySet();
     }
-    /**获取类型下所有Name。*/
+    /**
+     * 获取类型下所有Name
+     * @param targetClass 类型
+     * @return
+     */
     public Collection<String> getBindInfoNamesByType(Class<?> targetClass) {
         return this.indexNameMapping.keySet();
     }
     /**
-     * 创建一个{@link BindInfoBuilder}。
-     * @param bindType 绑定类型
-     * @return 返回 BindInfoBuilder。
+     * 创建{@link AbstractBindInfoProviderAdapter}，交给外层用于Bean定义。
+     * @param bindType 声明的类型。
      */
-    public <T> AbstractBindInfoProviderAdapter<T> createBindInfoByType(Class<T> bindType) {
-        AbstractBindInfoProviderAdapter<T> adapter = super.createBindInfoByType(bindType);
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
+        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType);
         this.tempBindInfoList.add(adapter);
         return adapter;
     }
     /*---------------------------------------------------------------------------------------Life*/
-    public void doInitializeCompleted(AppContext context) {
+    /**
+     * 当容器启动时，需要做Bean注册的重复性检查。
+     */
+    public void doInitializeCompleted() {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
@@ -156,7 +167,10 @@ public class BeanContainer extends TemplateBeanBuilder {
         }
         this.tempBindInfoList.clear();
     }
-    public void doShutdownCompleted(AppContext appContext) {
+    /**
+     * 当容器停止运行时，需要做Bean清理工作。
+     */
+    public void doShutdownCompleted() {
         if (!this.inited.compareAndSet(true, false)) {
             return;/*避免被销毁多次*/
         }

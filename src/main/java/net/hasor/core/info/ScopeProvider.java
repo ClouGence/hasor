@@ -17,7 +17,7 @@ package net.hasor.core.info;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 /**
- * 
+ * 如果Bean配置了{@link Scope}，那么Hasor容器需要通过该接口获取到这个Scope。
  * @version : 2014年12月2日
  * @author 赵永春(zyc@hasor.net)
  */

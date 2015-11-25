@@ -313,7 +313,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        this.getContainer().doInitializeCompleted(this);
+        this.getContainer().doInitializeCompleted();
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
@@ -342,7 +342,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         for (ContextShutdownListener listener : listenerList) {
             listener.doShutdownCompleted(this);
         }
-        this.getContainer().doShutdownCompleted(this);
+        this.getContainer().doShutdownCompleted();
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/

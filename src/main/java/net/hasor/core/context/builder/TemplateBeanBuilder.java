@@ -48,15 +48,14 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 负责根据Class或BindInfo创建Bean。
+ * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
  * @author 赵永春(zyc@hasor.net)
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     /**创建一个AbstractBindInfoProviderAdapter*/
-    public <T> AbstractBindInfoProviderAdapter<T> createBindInfoByType(Class<T> bindType) {
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
         return new DefaultBindInfoProviderAdapter<T>(bindType);
     }
     /** 通过{@link BindInfo}创建Bean。 */

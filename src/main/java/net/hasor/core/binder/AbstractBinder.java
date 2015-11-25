@@ -71,7 +71,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
-        BindInfoBuilder<T> typeBuilder = builder.createBindInfoByType(type);
+        BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type);
         typeBuilder.setBindID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }

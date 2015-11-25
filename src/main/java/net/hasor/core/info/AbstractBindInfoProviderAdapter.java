@@ -20,7 +20,8 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import org.more.util.StringUtils;
 /**
- * 用于表示一个 Hasor 的 bean 定义信息，同时实现了 {@link BindInfoBuilder} 接口。可以用于配置 bean 。
+ * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
+ * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */

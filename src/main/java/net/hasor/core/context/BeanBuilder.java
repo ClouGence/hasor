@@ -18,13 +18,17 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 /**
- * 
+ * Bean构建接口，负责创建和定义Bean对象。
  * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */
 public interface BeanBuilder {
-    /**创建一个AbstractBindInfoProviderAdapter*/
-    public <T> AbstractBindInfoProviderAdapter<T> createBindInfoByType(Class<T> bindType);
+    /**
+     * 
+     * @param bindType
+     * @return
+     */
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType);
     /**
      * 通过{@link BindInfo}创建Bean。
      * @param bindInfo 绑定信息。
