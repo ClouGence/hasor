@@ -25,6 +25,6 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
  */
 public class TestClientRsfContext extends AbstractRsfContext {
     public TestClientRsfContext(RsfSettings settings) throws IOException, URISyntaxException {
-        this.initContext(settings);
+        this.initContext(this, settings);
     }
 }

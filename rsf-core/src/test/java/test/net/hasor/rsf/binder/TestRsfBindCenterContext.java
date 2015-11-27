@@ -39,7 +39,7 @@ public class TestRsfBindCenterContext extends AbstractRsfContext {
     public TestRsfBindCenterContext(DefaultRsfSettings rsfSettings, String unitName) throws IOException {
         this.rsfSettings = rsfSettings;
         this.bindCenter = new RsfBindCenter(this);
-        this.addressPool = new AddressPool(unitName, bindCenter, new RsfEnvironment(rsfSettings));
+        this.addressPool = new AddressPool(unitName, bindCenter, new RsfEnvironment(this, rsfSettings));
     }
     @Override
     public RsfBindCenter getBindCenter() {

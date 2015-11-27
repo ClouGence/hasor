@@ -24,7 +24,11 @@ import net.hasor.rsf.RsfSettings;
  */
 public class RsfEnvironment extends StandardEnvironment {
     public RsfEnvironment(RsfSettings rsfSettings) throws IOException {
-        super(rsfSettings);
+        this(null, rsfSettings);
+    }
+    public RsfEnvironment(Object context, RsfSettings rsfSettings) throws IOException {
+        super(context);
+        this.initEnvironment(rsfSettings);
     }
     @Override
     public RsfSettings getSettings() {

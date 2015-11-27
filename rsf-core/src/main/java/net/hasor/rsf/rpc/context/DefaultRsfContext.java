@@ -24,10 +24,16 @@ import net.hasor.rsf.RsfSettings;
  */
 public class DefaultRsfContext extends AbstractRsfContext {
     public DefaultRsfContext(Settings settings) throws IOException {
-        this(new DefaultRsfSettings(settings));
+        this(null, new DefaultRsfSettings(settings));
     }
     public DefaultRsfContext(RsfSettings settings) throws IOException {
-        this.initContext(settings);
+        this(null, new DefaultRsfSettings(settings));
+    }
+    public DefaultRsfContext(Object context, Settings settings) throws IOException {
+        this(context, new DefaultRsfSettings(settings));
+    }
+    public DefaultRsfContext(Object context, RsfSettings settings) throws IOException {
+        this.initContext(context, settings);
         //        this.bindCenter.bindFilter(InnerLocalWarpRsfFilter.class.getName(),//
         //                new InstanceProvider<InnerLocalWarpRsfFilter>(new InnerLocalWarpRsfFilter()));
     }

@@ -50,9 +50,9 @@ public abstract class AbstractRsfContext implements RsfContext {
     private RsfClientRequestManager requestManager;
     private RsfClientChannelManager channelManager;
     //
-    protected void initContext(RsfSettings rsfSettings) throws IOException {
+    protected void initContext(Object context, RsfSettings rsfSettings) throws IOException {
         logger.info("rsfContext init.");
-        this.rsfEnvironment = new RsfEnvironment(rsfSettings);
+        this.rsfEnvironment = new RsfEnvironment(context, rsfSettings);
         //
         this.bindCenter = new RsfBindCenter(this);
         this.addressPool = new AddressPool(rsfSettings.getUnitName(), bindCenter, this.rsfEnvironment);
