@@ -89,7 +89,7 @@ public class RsfClientChannelManager {
                 /*同步调用不存在并发*/
                 if ((client = connSocket(refereeAddress)) != null) {
                     Channel oldChannel = this.channelMapping.put(addrStr, client);
-                    if (oldChannel != client) {
+                    if (oldChannel != null && oldChannel != client) {
                         oldChannel.close();
                     }
                     return client;
