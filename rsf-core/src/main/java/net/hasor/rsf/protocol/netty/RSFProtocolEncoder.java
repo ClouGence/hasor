@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.protocol.netty;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.protocol.codec.Protocol;
@@ -27,7 +26,6 @@ import net.hasor.rsf.utils.ProtocolUtils;
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@ChannelHandler.Sharable
 public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (msg instanceof RequestSocketBlock) {

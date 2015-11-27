@@ -17,7 +17,6 @@ package net.hasor.rsf.protocol.netty;
 import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Request;
 import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Response;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import net.hasor.rsf.utils.ProtocolUtils;
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@ChannelHandler.Sharable
 public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     public RSFProtocolDecoder() {
         this(Integer.MAX_VALUE);
