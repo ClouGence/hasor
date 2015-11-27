@@ -185,7 +185,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     protected BeanBuilder getBeanBuilder() {
         return getContainer();
     }
-    /**获取用于创建Bean对象的{@link DataContext}接口*/
+    /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract C getContainer();
     // 
     /*------------------------------------------------------------------------------------Binding*/

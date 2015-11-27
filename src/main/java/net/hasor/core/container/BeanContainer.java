@@ -106,7 +106,7 @@ public class BeanContainer extends TemplateBeanBuilder {
     /**
      * 获取类型下所有Name
      * @param targetClass 类型
-     * @return
+     * @return 返回声明类型下有效的名称。
      */
     public Collection<String> getBindInfoNamesByType(Class<?> targetClass) {
         return this.indexNameMapping.keySet();

@@ -24,9 +24,9 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
  */
 public interface BeanBuilder {
     /**
-     * 
-     * @param bindType
-     * @return
+     * 创建{@link AbstractBindInfoProviderAdapter}并注册到容器中。
+     * @param bindType 声明的类型。
+     * @return 返回容器中新建的{@link AbstractBindInfoProviderAdapter}。
      */
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType);
     /**

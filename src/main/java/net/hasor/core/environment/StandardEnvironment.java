@@ -28,7 +28,7 @@ import net.hasor.core.setting.StandardContextSettings;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    /**子类需要自己调用{@link #initEnvironment()}方法初始化。*/
+    /**子类自己决定是否需要调用{@link #initEnvironment(Settings)}方法初始化。*/
     protected StandardEnvironment(Object context) {
         super(context);
     }
