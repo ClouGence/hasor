@@ -52,6 +52,7 @@ import java.util.ArrayList;
 /**
  * Debugging input stream for Hessian requests.
  */
+@SuppressWarnings("unused")
 public class HessianDebugState implements Hessian2Constants {
     private PrintWriter          _dbg;
     private State                _state;

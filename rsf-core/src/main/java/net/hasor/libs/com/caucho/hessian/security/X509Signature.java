@@ -63,6 +63,7 @@ import javax.crypto.SecretKey;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Input;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Output;
 import net.hasor.libs.com.caucho.hessian.io.HessianEnvelope;
+@SuppressWarnings("unused")
 public class X509Signature extends HessianEnvelope {
     private String          _algorithm = "HmacSHA256";
     private X509Certificate _cert;

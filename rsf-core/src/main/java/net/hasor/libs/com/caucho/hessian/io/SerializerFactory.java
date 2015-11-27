@@ -66,6 +66,7 @@ import java.util.logging.Logger;
 /**
  * Factory for returning serialization methods.
  */
+@SuppressWarnings({ "unused" })
 public class SerializerFactory extends AbstractSerializerFactory {
     private static final Logger                                                     log                        = Logger.getLogger(SerializerFactory.class.getName());
     private static final Deserializer                                               OBJECT_DESERIALIZER        = new BasicDeserializer(BasicDeserializer.OBJECT);

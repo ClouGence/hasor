@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Serializing a Java annotation
  */
+@SuppressWarnings({ "unused" })
 public class AnnotationSerializer extends AbstractSerializer {
     private static final Logger log       = LoggerFactory.getLogger(AnnotationSerializer.class);
     private static Object[]     NULL_ARGS = new Object[0];

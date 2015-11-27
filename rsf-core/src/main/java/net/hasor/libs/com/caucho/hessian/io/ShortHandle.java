@@ -50,6 +50,7 @@ import java.io.Serializable;
 /**
  * Handle for Java Short objects.
  */
+@SuppressWarnings({ "unused" })
 public class ShortHandle implements Serializable {
     private static final long serialVersionUID = -775343009253609394L;
     private short             _value;

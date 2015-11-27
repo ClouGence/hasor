@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Deserializing a java annotation for known object types.
  */
+@SuppressWarnings({ "unused" })
 public class AnnotationDeserializer extends AbstractMapDeserializer {
     private static final Logger log = LoggerFactory.getLogger(AnnotationDeserializer.class);
     private Class<?>            _annType;

@@ -58,6 +58,7 @@ import sun.misc.Unsafe;
 /**
  * Serializing an object for known object types.
  */
+@SuppressWarnings("restriction")
 public class UnsafeDeserializer extends AbstractMapDeserializer {
     private static final Logger                log = Logger.getLogger(JavaDeserializer.class.getName());
     private static boolean                     _isEnabled;

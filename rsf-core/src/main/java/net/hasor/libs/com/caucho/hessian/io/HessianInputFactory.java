@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+@SuppressWarnings("unused")
 public class HessianInputFactory {
     public static final Logger log      = LoggerFactory.getLogger(HessianInputFactory.class);
     private HessianFactory     _factory = new HessianFactory();

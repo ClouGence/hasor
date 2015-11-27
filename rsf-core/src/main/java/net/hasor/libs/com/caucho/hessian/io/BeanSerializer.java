@@ -55,6 +55,7 @@ import java.util.Comparator;
 /**
  * Serializing an object for known object types.
  */
+@SuppressWarnings({ "unused" })
 public class BeanSerializer extends AbstractSerializer {
     private static final Object[] NULL_ARGS = new Object[0];
     private Method[]              _methods;

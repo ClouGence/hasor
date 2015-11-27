@@ -62,6 +62,7 @@ import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * The classloader-specific Factory for returning serialization
  */
+@SuppressWarnings({ "unused" })
 public class ContextSerializerFactory {
     private static final Logger                                                            log                       = Logger.getLogger(ContextSerializerFactory.class.getName());
     private static Deserializer                                                            OBJECT_DESERIALIZER       = new BasicDeserializer(BasicDeserializer.OBJECT);
@@ -325,7 +326,7 @@ public class ContextSerializerFactory {
           _staticSerializerMap.put(cl, StringValueSerializer.SER);
           _staticDeserializerMap.put(cl, new StringValueDeserializer(cl));
         }
-
+        
         _staticSerializerMap.put(ObjectName.class, StringValueSerializer.SER);
         try {
           _staticDeserializerMap.put(ObjectName.class,

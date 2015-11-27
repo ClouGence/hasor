@@ -82,6 +82,7 @@ import java.util.HashMap;
  * in.completeReply();      // read reply footer
  * </pre>
  */
+@SuppressWarnings("unused")
 public class HessianSerializerInput extends Hessian2Input {
     /**
      * Creates a new Hessian input stream, initialized with an

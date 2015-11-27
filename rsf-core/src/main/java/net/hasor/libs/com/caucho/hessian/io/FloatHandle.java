@@ -50,6 +50,7 @@ import java.io.Serializable;
 /**
  * Handle for Java Float objects.
  */
+@SuppressWarnings({ "unused" })
 public class FloatHandle implements Serializable {
     private static final long serialVersionUID = 8731285394276861381L;
     private float             _value;

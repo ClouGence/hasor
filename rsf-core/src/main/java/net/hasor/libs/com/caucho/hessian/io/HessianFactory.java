@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory for creating HessianInput and HessianOutput streams.
  */
+@SuppressWarnings({ "unused" })
 public class HessianFactory {
     public static final Logger                    log                 = LoggerFactory.getLogger(HessianFactory.class);
     private SerializerFactory                     _serializerFactory;
@@ -93,9 +94,9 @@ public class HessianFactory {
         /*
         if (in == null)
           return;
-
+        
         in.free();
-
+        
         _freeHessian2Input.free(in);
         */
     }

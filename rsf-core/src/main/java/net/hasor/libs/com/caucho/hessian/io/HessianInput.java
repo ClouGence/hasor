@@ -70,6 +70,7 @@ import java.util.HashMap;
  * in.completeReply();      // read reply footer
  * </pre>
  */
+@SuppressWarnings("unused")
 public class HessianInput extends AbstractHessianInput {
     private static int          END_OF_DATA = -2;
     private static Field        _detailMessageField;

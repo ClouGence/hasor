@@ -73,6 +73,7 @@ import org.slf4j.LoggerFactory;
  * in.completeReply();      // read reply footer
  * </pre>
  */
+@SuppressWarnings({ "rawtypes", "unused" })
 public class Hessian2Input extends AbstractHessianInput implements Hessian2Constants {
     private static final Logger           log         = LoggerFactory.getLogger(Hessian2Input.class);
     private static final int              END_OF_DATA = -2;
@@ -411,7 +412,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return true;
         case 'F':
             return false;
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -477,10 +478,10 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return tag != BC_INT_ZERO;
-            // INT_BYTE = 0
+        // INT_BYTE = 0
         case 0xc8:
             return read() != 0;
-            // INT_BYTE != 0
+        // INT_BYTE != 0
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -498,10 +499,10 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xcf:
             read();
             return true;
-            // INT_SHORT = 0
+        // INT_SHORT = 0
         case 0xd4:
             return (256 * read() + read()) != 0;
-            // INT_SHORT != 0
+        // INT_SHORT != 0
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -539,10 +540,10 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return tag != BC_LONG_ZERO;
-            // LONG_BYTE = 0
+        // LONG_BYTE = 0
         case 0xf8:
             return read() != 0;
-            // LONG_BYTE != 0
+        // LONG_BYTE != 0
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -560,10 +561,10 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xff:
             read();
             return true;
-            // INT_SHORT = 0
+        // INT_SHORT = 0
         case 0x3c:
             return (256 * read() + read()) != 0;
-            // INT_SHORT != 0
+        // INT_SHORT != 0
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -625,7 +626,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return 0;
         case 'T':
             return 1;
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -691,7 +692,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return tag - BC_INT_ZERO;
-            /* byte int */
+        /* byte int */
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -709,7 +710,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xce:
         case 0xcf:
             return ((tag - BC_INT_BYTE_ZERO) << 8) + read();
-            /* short int */
+        /* short int */
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -722,7 +723,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 'I':
         case BC_LONG_INT:
             return ((read() << 24) + (read() << 16) + (read() << 8) + read());
-            // direct long
+        // direct long
         case 0xd8:
         case 0xd9:
         case 0xda:
@@ -748,7 +749,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return tag - BC_LONG_ZERO;
-            /* byte long */
+        /* byte long */
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -766,7 +767,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xfe:
         case 0xff:
             return ((tag - BC_LONG_BYTE_ZERO) << 8) + read();
-            /* short long */
+        /* short long */
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -782,11 +783,11 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return 0;
         case BC_DOUBLE_ONE:
             return 1;
-            //case LONG_BYTE:
+        //case LONG_BYTE:
         case BC_DOUBLE_BYTE:
             return (byte) (_offset < _length ? _buffer[_offset++] : read());
-            //case INT_SHORT:
-            //case LONG_SHORT:
+        //case INT_SHORT:
+        //case LONG_SHORT:
         case BC_DOUBLE_SHORT:
             return (short) (256 * read() + read());
         case BC_DOUBLE_MILL: {
@@ -815,7 +816,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return 0;
         case 'T':
             return 1;
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -881,7 +882,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return tag - BC_INT_ZERO;
-            /* byte int */
+        /* byte int */
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -899,7 +900,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xce:
         case 0xcf:
             return ((tag - BC_INT_BYTE_ZERO) << 8) + read();
-            /* short int */
+        /* short int */
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -909,17 +910,17 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xd6:
         case 0xd7:
             return ((tag - BC_INT_SHORT_ZERO) << 16) + 256 * read() + read();
-            //case LONG_BYTE:
+        //case LONG_BYTE:
         case BC_DOUBLE_BYTE:
             return (byte) (_offset < _length ? _buffer[_offset++] : read());
-            //case INT_SHORT:
-            //case LONG_SHORT:
+        //case INT_SHORT:
+        //case LONG_SHORT:
         case BC_DOUBLE_SHORT:
             return (short) (256 * read() + read());
         case 'I':
         case BC_LONG_INT:
             return parseInt();
-            // direct long
+        // direct long
         case 0xd8:
         case 0xd9:
         case 0xda:
@@ -945,7 +946,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return tag - BC_LONG_ZERO;
-            /* byte long */
+        /* byte long */
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -963,7 +964,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xfe:
         case 0xff:
             return ((tag - BC_LONG_BYTE_ZERO) << 8) + read();
-            /* short long */
+        /* short long */
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -1015,7 +1016,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return 0;
         case 'T':
             return 1;
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -1081,7 +1082,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return tag - 0x90;
-            /* byte int */
+        /* byte int */
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -1099,7 +1100,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xce:
         case 0xcf:
             return ((tag - BC_INT_BYTE_ZERO) << 8) + read();
-            /* short int */
+        /* short int */
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -1112,7 +1113,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 'I':
         case BC_LONG_INT:
             return parseInt();
-            // direct long
+        // direct long
         case 0xd8:
         case 0xd9:
         case 0xda:
@@ -1138,7 +1139,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return tag - BC_LONG_ZERO;
-            /* byte long */
+        /* byte long */
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -1156,7 +1157,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xfe:
         case 0xff:
             return ((tag - BC_LONG_BYTE_ZERO) << 8) + read();
-            /* short long */
+        /* short long */
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -1392,7 +1393,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return "true";
         case 'F':
             return "false";
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -1458,7 +1459,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return String.valueOf((tag - 0x90));
-            /* byte int */
+        /* byte int */
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -1476,7 +1477,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xce:
         case 0xcf:
             return String.valueOf(((tag - BC_INT_BYTE_ZERO) << 8) + read());
-            /* short int */
+        /* short int */
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -1489,7 +1490,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 'I':
         case BC_LONG_INT:
             return String.valueOf(parseInt());
-            // direct long
+        // direct long
         case 0xd8:
         case 0xd9:
         case 0xda:
@@ -1515,7 +1516,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return String.valueOf(tag - BC_LONG_ZERO);
-            /* byte long */
+        /* byte long */
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -1533,7 +1534,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xfe:
         case 0xff:
             return String.valueOf(((tag - BC_LONG_BYTE_ZERO) << 8) + read());
-            /* short long */
+        /* short long */
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -1568,7 +1569,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             while ((ch = parseChar()) >= 0)
                 _sbuf.append((char) ch);
             return _sbuf.toString();
-            // 0-byte string
+        // 0-byte string
         case 0x00:
         case 0x01:
         case 0x02:
@@ -2007,7 +2008,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return Boolean.valueOf(true);
         case 'F':
             return Boolean.valueOf(false);
-            // direct integer
+        // direct integer
         case 0x80:
         case 0x81:
         case 0x82:
@@ -2073,7 +2074,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xbe:
         case 0xbf:
             return Integer.valueOf(tag - BC_INT_ZERO);
-            /* byte int */
+        /* byte int */
         case 0xc0:
         case 0xc1:
         case 0xc2:
@@ -2091,7 +2092,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xce:
         case 0xcf:
             return Integer.valueOf(((tag - BC_INT_BYTE_ZERO) << 8) + read());
-            /* short int */
+        /* short int */
         case 0xd0:
         case 0xd1:
         case 0xd2:
@@ -2103,7 +2104,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return Integer.valueOf(((tag - BC_INT_SHORT_ZERO) << 16) + 256 * read() + read());
         case 'I':
             return Integer.valueOf(parseInt());
-            // direct long
+        // direct long
         case 0xd8:
         case 0xd9:
         case 0xda:
@@ -2129,7 +2130,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xee:
         case 0xef:
             return Long.valueOf(tag - BC_LONG_ZERO);
-            /* byte long */
+        /* byte long */
         case 0xf0:
         case 0xf1:
         case 0xf2:
@@ -2147,7 +2148,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         case 0xfe:
         case 0xff:
             return Long.valueOf(((tag - BC_LONG_BYTE_ZERO) << 8) + read());
-            /* short long */
+        /* short long */
         case 0x38:
         case 0x39:
         case 0x3a:
@@ -2311,7 +2312,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             reader = findSerializerFactory().getListDeserializer(null, null);
             return reader.readLengthList(this, length);
         }
-        // compact fixed list
+            // compact fixed list
         case 0x70:
         case 0x71:
         case 0x72:
@@ -2327,7 +2328,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             reader = findSerializerFactory().getListDeserializer(type, null);
             return reader.readLengthList(this, length);
         }
-        // compact fixed untyped list
+            // compact fixed untyped list
         case 0x78:
         case 0x79:
         case 0x7a:

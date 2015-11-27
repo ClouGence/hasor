@@ -54,6 +54,7 @@ import java.util.HashMap;
 /**
  * Serializing an object for known object types.
  */
+@SuppressWarnings("unused")
 public class BeanDeserializer extends AbstractMapDeserializer {
     private Class<?>                _type;
     private HashMap<String, Method> _methodMap;

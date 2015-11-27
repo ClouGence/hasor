@@ -58,6 +58,7 @@ import sun.misc.Unsafe;
 /**
  * Serializing an object for known object types.
  */
+@SuppressWarnings({ "restriction", "unused" })
 public class UnsafeSerializer extends AbstractSerializer {
     private static final Logger                                                 log            = LoggerFactory.getLogger(UnsafeSerializer.class);
     private static boolean                                                      _isEnabled;
