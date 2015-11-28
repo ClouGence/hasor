@@ -38,12 +38,15 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.FormatException;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务注册器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBindBuilder implements RsfBinder {
+    protected Logger                      logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext      rsfContext;
     private final ArrayList<FilterDefine> filterList;
     private final Set<String>             filterIDs;
@@ -228,6 +231,7 @@ public class RsfBindBuilder implements RsfBinder {
                 getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.MethodLevel, this.scriptRef.methodLevel);
             if (StringUtils.isNotBlank(this.scriptRef.argsLevel))
                 getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ArgsLevel, this.scriptRef.argsLevel);
+            logger.info("service to public, {}", this.serviceDefine);
             return this.serviceDefine;
         }
         @Override

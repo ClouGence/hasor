@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import org.more.future.BasicFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -22,9 +31,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import net.hasor.core.EventListener;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
@@ -41,8 +47,6 @@ import net.hasor.rsf.rpc.provider.RsfProviderHandler;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Rsf启动引导程序。
  * @version : 2014年12月22日
@@ -92,8 +96,17 @@ public class RsfBootstrap {
         this.bindSocket = bindSocket;
         return this;
     }
+    private RsfContext doBinder(AbstractRsfContext rsfContext) throws Throwable {
+        rsfContext.getEventContext().fireSyncEvent(Events.StartUp, rsfContext);
+        //
+        logger.info("do RsfBinder.");
+        this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
+        logger.info("rsf work at {}.", this.workMode);
+        //
+        return rsfContext;
+    }
     //
-    public RsfContext sync() throws Throwable {
+    private RsfContext doBuildRsf() throws Throwable {
         logger.info("initialize rsfBootstrap.");
         if (this.rsfStart == null) {
             logger.info("create RsfStart.");
@@ -174,13 +187,44 @@ public class RsfBootstrap {
         //doBinder
         return doBinder(rsfContext);
     }
-    private RsfContext doBinder(AbstractRsfContext rsfContext) throws Throwable {
-        rsfContext.getEventContext().fireSyncEvent(Events.StartUp, rsfContext);
-        //
-        logger.info("do RsfBinder.");
-        this.rsfStart.onBind(rsfContext.getBindCenter().getRsfBinder());
-        logger.info("rsf work at {}.", this.workMode);
-        //
-        return rsfContext;
+    //
+    //-------------------------------------------------------------------------
+    //
+    /**异步方式启动RSF。*/
+    public Future<RsfContext> aync() {
+        final BasicFuture<RsfContext> futureContext = new BasicFuture<RsfContext>();
+        Thread startThread = new Thread() {
+            public void run() {
+                try {
+                    futureContext.completed(doBuildRsf());
+                } catch (Throwable e) {
+                    futureContext.failed(e);
+                } finally {
+                    if (!futureContext.isCancelled() && !futureContext.isDone()) {
+                        futureContext.failed(new IllegalStateException("not performing initialization"));
+                    }
+                }
+            }
+        };
+        startThread.setName("RSF-BuildeRSF");
+        startThread.setDaemon(true);
+        startThread.start();
+        return futureContext;
+    }
+    /**同步方式启动RSF。*/
+    public RsfContext sync() throws Throwable {
+        try {
+            return aync().get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
+    }
+    /**同步方式启动RSF。*/
+    public RsfContext sync(long timeout, TimeUnit unit) throws Throwable {
+        try {
+            return aync().get(timeout, unit);
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 }

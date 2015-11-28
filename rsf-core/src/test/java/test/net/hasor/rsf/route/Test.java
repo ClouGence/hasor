@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.rpc.provider;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-/**
- * 100W 打印一次，证明还活着
- * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
- */
-public class TestClientRsfContext extends AbstractRsfContext {
-    public TestClientRsfContext(RsfSettings settings) throws IOException, URISyntaxException {
-        this.initContext(this, settings);
+package test.net.hasor.rsf.route;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.bootstrap.RsfBootstrap;
+import net.hasor.rsf.bootstrap.WorkMode;
+public class Test {
+    public static void main(String[] args) throws Throwable {
+        RsfContext rsfContext = new RsfBootstrap().workAt(WorkMode.Customer).sync();
+        //
+        //
+        rsfContext.shutdown();
+        //
+        System.in.read();
+        System.out.println(rsfContext);
     }
 }
