@@ -37,7 +37,6 @@ public class InterServiceAddress extends InterAddress {
     private final String name;   //:服务名称
     private final String version; //:服务版
     //
-    //
     public InterServiceAddress(String serviceURL) throws URISyntaxException {
         this(new URI(serviceURL));
     }

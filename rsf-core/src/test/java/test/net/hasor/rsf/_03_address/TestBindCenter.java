@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.address;
+package test.net.hasor.rsf._03_address;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
@@ -78,16 +78,13 @@ public class TestBindCenter<T> implements BindCenter {
     @Override
     public void updateDefaultRoute(String flowControl) throws IOException {
         // TODO Auto-generated method stub
-        
     }
     @Override
     public void updateRoute(String serviceID, String flowControl) throws IOException {
         // TODO Auto-generated method stub
-        
     }
     @Override
     public void updateAddress(String serviceID, Collection<URI> newAddress) {
         // TODO Auto-generated method stub
-        
     }
 }

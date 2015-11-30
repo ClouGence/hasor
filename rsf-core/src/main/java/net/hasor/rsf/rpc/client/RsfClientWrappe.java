@@ -27,7 +27,7 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.binder.RsfBindCenter;
-import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.utils.RsfRuntimeUtils;

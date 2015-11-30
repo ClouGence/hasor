@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.address;
 /**
- * RSF 常量定义。
+ * 方便引用切换。
+ * @version : 2014年9月12日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.constants;
+class InnerScriptResourceRef {
+    public InnerScriptResourceRef() {}
+    public InnerScriptResourceRef(InnerScriptResourceRef scriptResourcesRef) {
+        this.serviceLevel = scriptResourcesRef.serviceLevel;
+        this.methodLevel = scriptResourcesRef.methodLevel;
+        this.argsLevel = scriptResourcesRef.argsLevel;
+    }
+    public String serviceLevel = null; //服务级
+    public String methodLevel  = null; //方法级
+    public String argsLevel    = null; //参数级
+}

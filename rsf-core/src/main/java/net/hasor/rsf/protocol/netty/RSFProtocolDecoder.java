@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.netty;
-import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Request;
-import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Request;
+import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Response;
 import java.io.IOException;
-import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;

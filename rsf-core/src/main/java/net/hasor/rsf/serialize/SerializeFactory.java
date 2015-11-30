@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import net.hasor.core.XmlNode;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.RsfException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

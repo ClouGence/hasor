@@ -20,7 +20,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * 负责处理服务的调用。
  * @version : 2014年11月4日

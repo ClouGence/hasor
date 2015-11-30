@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -28,16 +26,12 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.BindCenter;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.route.rule.ArgsKey;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 路由计算结果缓存
- * 
+ * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
  * @version : 2015年3月29日
  * @author 赵永春(zyc@hasor.net)
@@ -46,33 +40,30 @@ class AddressCacheResult {
     protected Logger             logger = LoggerFactory.getLogger(getClass());
     //做引用切换
     private volatile CacheResult cacheResultRef;
-    private final BindCenter     bindCenter;
     private final AddressPool    addressPool;
     private ArgsKey              argsKeyBuilder;
     //
-    public AddressCacheResult(AddressPool addressPool, BindCenter bindCenter) {
-        this.bindCenter = Hasor.assertIsNotNull(bindCenter);
+    public AddressCacheResult(AddressPool addressPool) {
         this.addressPool = Hasor.assertIsNotNull(addressPool);
         this.argsKeyBuilder = addressPool.getArgsKey();
     }
     //
     /**从全部地址中计算执行动态计算并缓存计算结果.*/
-    public List<InterAddress> getAddressList(RsfBindInfo<?> info, String methodSign, Object[] args) {
-        if (cacheResultRef == null) {
+    public List<InterAddress> getAddressList(String serviceID, String methodSign, Object[] args) {
+        if (this.cacheResultRef == null) {
             logger.warn("getAddressList fail. resultRef is null.");
             return null;
         }
-        String serviceID = info.getBindID();
         List<InterAddress> result = null;
         CacheResult resultRef = this.cacheResultRef;
         //
         //1.获取参数级地址列表
         if (this.argsKeyBuilder != null) {
-            Map<String, Map<Object, List<InterAddress>>> methodList = resultRef.argsLevel.get(serviceID);
+            Map<String, Map<String, List<InterAddress>>> methodList = resultRef.argsLevel.get(serviceID);
             if (methodList != null) {
-                Map<Object, List<InterAddress>> cacheList = methodList.get(methodSign);
+                Map<String, List<InterAddress>> cacheList = methodList.get(methodSign);
                 if (cacheList != null) {
-                    Object key = argsKeyBuilder.eval(args);
+                    String key = argsKeyBuilder.eval(args);
                     if (key != null) {
                         result = cacheList.get(methodSign);
                     }
@@ -87,6 +78,7 @@ class AddressCacheResult {
                 result = cacheList.get(methodSign);
             }
         }
+        //
         //3.获取服务级别地址列表
         if (result == null) {
             result = resultRef.serviceLevel.get(serviceID);
@@ -96,7 +88,7 @@ class AddressCacheResult {
     /**重置缓存结果*/
     public void reset() {
         this.logger.info("reset addressCache.");
-        Map<String, List<InterAddress>> allAddress = this.addressPool.allServicesSnapshot();
+        Map<String, List<InterAddress>> allAddress = this.addressPool.allServiceAddressToSnapshot();
         Collection<String> allServiceIDs = this.addressPool.listServices();
         CacheResult cacheResultRef = new CacheResult();
         //
@@ -104,62 +96,39 @@ class AddressCacheResult {
             /*计算使用的地址列表(所有可用的/本单元的/本地网络的)*/
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
-            RsfBindInfo<Object> binderInfo = this.bindCenter.getService(serviceID);
-            ScriptResourceRef scriptName = this.addressPool.getScriptResources(serviceID);
-            if (binderInfo == null) {
-                continue;
-            }
-            Method[] mArrays = binderInfo.getBindType().getDeclaredMethods();
+            InnerScriptResourceRef scriptName = this.addressPool.getScriptResources(serviceID);
             //
             //1.计算缓存的服务接口级,地址列表
             List<InterAddress> serviceLevelResult = null;
             if (StringUtils.isBlank(scriptName.serviceLevel)) {
-                logger.info("not specified serviceLevel script.");
-            } else if (new File(scriptName.serviceLevel).exists() == false) {
-                logger.error("file not found -> " + scriptName.serviceLevel);
+                logger.info("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
             } else {
-                serviceLevelResult = evalServiceLevel(scriptName.serviceLevel, binderInfo, all, unit);
+                serviceLevelResult = evalServiceLevel(serviceID, scriptName.serviceLevel, all, unit);
             }
-            serviceLevelResult = (serviceLevelResult == null || serviceLevelResult.isEmpty()) ? unit : serviceLevelResult;
+            if (serviceLevelResult == null || serviceLevelResult.isEmpty()) {
+                serviceLevelResult = unit;/*如果计算结果为空*/
+            }
             cacheResultRef.serviceLevel.put(serviceID, unit);
             //
             //2.计算缓存的服务方法级,地址列表
             if (StringUtils.isBlank(scriptName.methodLevel)) {
-                logger.info("not specified methodLevel script.");
-            } else if (new File(scriptName.methodLevel).exists() == false) {
-                logger.error("file not found -> " + scriptName.methodLevel);
+                logger.info("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
-                Map<String, List<InterAddress>> methodLevelResult = new HashMap<String, List<InterAddress>>();
-                for (Method m : mArrays) {
-                    List<InterAddress> methodCache = evalMethodLevel(scriptName.methodLevel, binderInfo, m, all, unit);
-                    if (methodCache != null && methodCache.isEmpty() == false) {
-                        String key = RsfRuntimeUtils.evalMethodSign(m);
-                        methodLevelResult.put(key, methodCache);
-                    }
-                }
+                Map<String, List<InterAddress>> methodLevelResult = evalMethodLevel(serviceID, scriptName.serviceLevel, all, unit);
                 if (methodLevelResult.isEmpty() == false) {
-                    cacheResultRef.methodLevel.put(serviceID, methodLevelResult);
+                    cacheResultRef.methodLevel.put(serviceID, methodLevelResult);/*保存计算结果*/
                 }
             }
             //
             //3.计算缓存的服务参数级,地址列表
             if (StringUtils.isBlank(scriptName.argsLevel)) {
-                logger.info("not specified argsLevel script.");
-            } else if (new File(scriptName.argsLevel).exists() == false) {
-                logger.error("file not found -> " + scriptName.argsLevel);
+                logger.info("eval routeScript [ArgsLevel], service {} route undefined.", serviceID);
             } else if (this.argsKeyBuilder == null) {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
-                Map<String, Map<Object, List<InterAddress>>> argsLevelResult = new HashMap<String, Map<Object, List<InterAddress>>>();
-                for (Method m : mArrays) {
-                    Map<Object, List<InterAddress>> methodCache = evalArgsLevel(scriptName.argsLevel, binderInfo, m, all, unit);
-                    if (methodCache != null && methodCache.isEmpty() == false) {
-                        String key = RsfRuntimeUtils.evalMethodSign(m);
-                        argsLevelResult.put(key, methodCache);
-                    }
-                }
+                Map<String, Map<String, List<InterAddress>>> argsLevelResult = evalArgsLevel(serviceID, scriptName.serviceLevel, all, unit);
                 if (argsLevelResult.isEmpty() == false) {
-                    cacheResultRef.argsLevel.put(serviceID, argsLevelResult);
+                    cacheResultRef.argsLevel.put(serviceID, argsLevelResult);/*保存计算结果*/
                 }
             }
             //
@@ -168,20 +137,26 @@ class AddressCacheResult {
         this.cacheResultRef = cacheResultRef;
     }
     //
-    /*
-     * 参数说明：
-     *  bindInfo    （net.hasor.rsf.RsfBindInfo）
+    /* 脚本说明：
+     * 
+     * 入参：
+     *  serviceID   （java.lang.String）
      *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
      *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
-     * 脚本样例：
-     *  def evalAddress(bindInfo, allAddress, unitAddress) { return allAddress; }
+     * 返回值
+     *  java.util.List<net.hasor.rsf.address.InterAddress>
+     * 
+     * 样例：
+     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *      return unitAddress;
+     *  }
      * */
-    private List<InterAddress> evalServiceLevel(String scriptName, RsfBindInfo<?> bindInfo, List<InterAddress> all, List<InterAddress> unit) {
+    private List<InterAddress> evalServiceLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
         try {
             ScriptEngine engine = createEngine();
-            Reader scriptReader = new FileReader(scriptName);// def evalAddress(bindInfo , allAddress , unitAddress) { return allAddress; }
+            Reader scriptReader = new FileReader(scriptText);
             engine.eval(scriptReader);
-            Object[] params = new Object[] { bindInfo, all, unit };
+            Object[] params = new Object[] { serviceID, all, unit };
             List<InterAddress> result = (List<InterAddress>) ((Invocable) engine).invokeFunction("evalAddress", params);
             return result;
         } catch (Throwable e) {
@@ -189,19 +164,32 @@ class AddressCacheResult {
             return null;
         }
     }
-    /*
-     * 参数说明：
-     *  bindInfo    （net.hasor.rsf.RsfBindInfo）
-     *  method      （java.lang.reflect.Method）
+    //
+    /* 脚本说明：
+     * 
+     * 入参：
+     *  serviceID   （java.lang.String）
      *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
      *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
-     * 脚本样例：
-     *  def evalAddress(bindInfo, method, allAddress, unitAddress) { return allAddress; }
+     * 返回值
+     *  java.util.Map<java.lang.String,java.util.List<net.hasor.rsf.address.InterAddress>>
+     * 
+     * 样例：
+     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
+     *          def resultData = []
+     *          resultData["insert"]        = [ new InterAddress()]
+     *          resultData["queryUserByID"] = unitAddress
+     *          return resultData
+     *      }
+     *      return null;
+     *  }
      * */
-    private List<InterAddress> evalMethodLevel(String scriptName, RsfBindInfo<?> bindInfo, Method m, List<InterAddress> all, List<InterAddress> unit) {
+    private Map<String, List<InterAddress>> evalMethodLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
         try {
             ScriptEngine engine = createEngine();
-            Reader scriptReader = new FileReader(scriptName);// def evalAddress(bindInfo, method, allAddress, unitAddress) { return allAddress; }
+            Reader scriptReader = new FileReader(scriptName);
             engine.eval(scriptReader);
             Object[] params = new Object[] { bindInfo, m, all, unit };
             List<InterAddress> result = (List<InterAddress>) ((Invocable) engine).invokeFunction("evalAddress", params);
@@ -211,29 +199,33 @@ class AddressCacheResult {
             return null;
         }
     }
-    /*
-     * 参数说明：
-     *  bindInfo    （net.hasor.rsf.RsfBindInfo）
-     *  argsKey     （net.hasor.rsf.address.route.rule.ArgsKey）
-     *  method      （java.lang.reflect.Method）
+    //
+    /* 脚本说明：
+     * 
+     * 入参：
+     *  serviceID   （java.lang.String）
+     *  keyBuilder  （net.hasor.rsf.address.route.rule.ArgsKey）
      *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
      *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
-     * 脚本样例：
-     *  def evalAddress(bindInfo, argsKey, method, allAddress, unitAddress) {
-     *      def targetType = method.getDeclaringClass().getName();
-     *      if ( targetType == "org.mytest.FooFacse" ) {
-     *          def mapData = []
-     *          mapData[ argsKey.eval(...) ] = allAddress
-     *          mapData[ argsKey.eval(...) ] = unitAddress
-     *          return mapData
-     *      } else {
-     *          ...
-     *          return ...
+     * 返回值
+     *  java.util.Map<java.lang.String,java.util.List<net.hasor.rsf.address.InterAddress>>
+     * 
+     * 样例：
+     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
+     *          def resultData = []
+     *          resultData["insert"]        = []
+     *          resultData["queryUserByID"] = []
+     *          //
+     *          resultData["insert"][keyBuilder.eval([])]
+     *          
+     *          return resultData
      *      }
      *      return null;
      *  }
      * */
-    private Map<Object, List<InterAddress>> evalArgsLevel(String scriptName, RsfBindInfo<?> bindInfo, Method m, List<InterAddress> all, List<InterAddress> unit) {
+    private Map<String, Map<String, List<InterAddress>>> evalArgsLevel(String serviceID, String scriptName, List<InterAddress> all, List<InterAddress> unit) {
         try {
             ScriptEngine engine = createEngine();
             Reader scriptReader = new FileReader(scriptName);// def evalAddress(bindInfo, argsKey, method, allAddress, unitAddress) { return allAddress; }
@@ -252,10 +244,6 @@ class AddressCacheResult {
         Bindings binding = engine.createBindings();
         engine.setBindings(binding, ScriptContext.GLOBAL_SCOPE);
         //
-        binding.put("env", addressPool.getRsfEnvironment());
-        binding.put("localUnit", addressPool.getUnitName());
-        binding.put("debug", addressPool.getRsfEnvironment().isDebug());
-        //
         return engine;
     }
 }
@@ -263,11 +251,11 @@ class AddressCacheResult {
 class CacheResult {
     public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
     public final Map<String, Map<String, List<InterAddress>>>              methodLevel; //方法级
-    public final Map<String, Map<String, Map<Object, List<InterAddress>>>> argsLevel;   //参数级
+    public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;   //参数级
     //
     public CacheResult() {
         this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级
         this.methodLevel = new HashMap<String, Map<String, List<InterAddress>>>(); //方法级
-        this.argsLevel = new HashMap<String, Map<String, Map<Object, List<InterAddress>>>>(); //参数级
+        this.argsLevel = new HashMap<String, Map<String, Map<String, List<InterAddress>>>>(); //参数级
     }
 }

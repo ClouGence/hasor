@@ -17,7 +17,7 @@ package net.hasor.rsf.protocol.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 /**
  * Protocol Interface,for custom network protocol

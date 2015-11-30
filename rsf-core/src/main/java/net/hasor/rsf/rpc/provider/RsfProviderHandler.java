@@ -19,7 +19,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.constants.ProtocolStatus;
+import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;

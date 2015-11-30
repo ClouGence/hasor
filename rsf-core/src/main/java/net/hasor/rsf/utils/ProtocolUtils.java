@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Request;
-import static net.hasor.rsf.constants.RSFConstants.RSF_Packet_Response;
+import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Request;
+import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Response;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;

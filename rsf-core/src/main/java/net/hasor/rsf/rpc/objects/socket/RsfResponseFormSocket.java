@@ -16,8 +16,8 @@
 package net.hasor.rsf.rpc.objects.socket;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;

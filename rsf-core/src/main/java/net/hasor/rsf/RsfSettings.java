@@ -22,8 +22,9 @@ import net.hasor.core.Settings;
  */
 public interface RsfSettings extends Settings {
     /**获取当发起请求的时候所使用的RSF协议版本。*/
-    public byte getVersion();
-    //
+    public byte getProtocolVersion();
+    /**获取RSF框架版本。*/
+    public String getVersion(); //
     /**获取默认超时时间。*/
     public int getDefaultTimeout();
     /**获取默认超时时间。*/

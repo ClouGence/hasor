@@ -30,9 +30,8 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.address.RouteScriptTypeEnum;
-import net.hasor.rsf.address.ScriptResourceRef;
-import net.hasor.rsf.constants.RsfException;
 import net.hasor.rsf.domain.FilterDefine;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.more.FormatException;
@@ -101,7 +100,9 @@ public class RsfBindBuilder implements RsfBinder {
         private final BindServiceDefine<T> serviceDefine;
         private final Set<URI>             hostAddressSet;
         private String                     flowControl;
-        private ScriptResourceRef          scriptRef;
+        private String                     serviceLevel;
+        private String                     methodLevel;
+        private String                     argsLevel;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
             this.serviceDefine = new BindServiceDefine<T>(serviceType, getContext());
@@ -116,7 +117,6 @@ public class RsfBindBuilder implements RsfBinder {
             domain.setClientTimeout(serviceInfo.clientTimeout());
             //
             this.hostAddressSet = new HashSet<URI>();
-            this.scriptRef = new ScriptResourceRef();
         }
         //
         @Override
@@ -223,14 +223,14 @@ public class RsfBindBuilder implements RsfBinder {
         //
         public RegisterReference<T> register() throws IOException {
             getContext().getBindCenter().publishService(this.serviceDefine, this.serviceDefine.getCustomerProvider());
-            getContext().getAddressPool().newAddress(this.serviceDefine, this.hostAddressSet);
+            getContext().getAddressPool().updateAddress(this.serviceDefine.getBindID(), this.hostAddressSet);
             getContext().getAddressPool().refreshFlowControl(this.flowControl, this.serviceDefine.getBindID());
-            if (StringUtils.isNotBlank(this.scriptRef.serviceLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ServiceLevel, this.scriptRef.serviceLevel);
-            if (StringUtils.isNotBlank(this.scriptRef.methodLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.MethodLevel, this.scriptRef.methodLevel);
-            if (StringUtils.isNotBlank(this.scriptRef.argsLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ArgsLevel, this.scriptRef.argsLevel);
+            if (StringUtils.isNotBlank(this.serviceLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ServiceLevel, this.serviceLevel);
+            if (StringUtils.isNotBlank(this.methodLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.MethodLevel, this.methodLevel);
+            if (StringUtils.isNotBlank(this.argsLevel))
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ArgsLevel, this.argsLevel);
             logger.info("service to public, {}", this.serviceDefine);
             return this.serviceDefine;
         }
@@ -240,15 +240,15 @@ public class RsfBindBuilder implements RsfBinder {
         }
         @Override
         public void updateAddresServiceScript(String scriptBody) {
-            this.scriptRef.serviceLevel = scriptBody;
+            this.serviceLevel = scriptBody;
         }
         @Override
         public void updateAddresMethodScript(String scriptBody) {
-            this.scriptRef.methodLevel = scriptBody;
+            this.methodLevel = scriptBody;
         }
         @Override
         public void updateAddresArgsScript(String scriptBody) {
-            this.scriptRef.argsLevel = scriptBody;
+            this.argsLevel = scriptBody;
         }
     }
 }

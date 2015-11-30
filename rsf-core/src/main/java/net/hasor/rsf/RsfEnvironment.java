@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf;
+import net.hasor.core.Environment;
 /**
- * 方便引用切换。
- * @version : 2014年9月12日
+ * RSF 配置。
+ * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ScriptResourceRef {
-    public ScriptResourceRef() {}
-    public ScriptResourceRef(ScriptResourceRef scriptResourcesRef) {
-        this.serviceLevel = scriptResourcesRef.serviceLevel;
-        this.methodLevel = scriptResourcesRef.methodLevel;
-        this.argsLevel = scriptResourcesRef.argsLevel;
-    }
-    public String serviceLevel = null; //服务级
-    public String methodLevel  = null; //方法级
-    public String argsLevel    = null; //参数级
+public interface RsfEnvironment extends Environment {
+    public RsfSettings getSettings();
 }

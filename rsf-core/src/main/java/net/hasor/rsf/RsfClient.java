@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.rsf.constants.RsfException;
 import org.more.future.FutureCallback;
+import net.hasor.rsf.domain.RsfException;
 /**
  * RSF调用者。
  * @version : 2014年11月18日

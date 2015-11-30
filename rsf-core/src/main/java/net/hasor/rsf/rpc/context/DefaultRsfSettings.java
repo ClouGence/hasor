@@ -15,15 +15,19 @@
  */
 package net.hasor.rsf.rpc.context;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWarp;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.manager.OptionManager;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -86,7 +90,17 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
         return this.clientOptionManager;
     }
     @Override
-    public byte getVersion() {
+    public String getVersion() {
+        try {
+            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-core.version");
+            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            return !dataLines.isEmpty() ? dataLines.get(0) : null;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+    @Override
+    public byte getProtocolVersion() {
         return RSFConstants.Version_1;
     }
     @Override

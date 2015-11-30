@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
-import java.io.IOException;
-import java.util.concurrent.Executor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import java.io.IOException;
+import java.util.concurrent.Executor;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.binder.RsfBindCenter;
@@ -34,6 +33,8 @@ import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.NameThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
@@ -52,10 +53,10 @@ public abstract class AbstractRsfContext implements RsfContext {
     //
     protected void initContext(Object context, RsfSettings rsfSettings) throws IOException {
         logger.info("rsfContext init.");
-        this.rsfEnvironment = new RsfEnvironment(context, rsfSettings);
+        this.rsfEnvironment = new DefaultRsfEnvironment(context, rsfSettings);
         //
         this.bindCenter = new RsfBindCenter(this);
-        this.addressPool = new AddressPool(rsfSettings.getUnitName(), bindCenter, this.rsfEnvironment);
+        this.addressPool = new AddressPool(this.rsfEnvironment);
         this.serializeFactory = SerializeFactory.createFactory(rsfSettings);
         //
         int queueSize = rsfSettings.getQueueMaxSize();

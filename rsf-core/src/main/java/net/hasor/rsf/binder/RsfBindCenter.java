@@ -140,7 +140,7 @@ public class RsfBindCenter implements BindCenter {
     public void updateAddress(String serviceID, Collection<URI> newHostList) {
         ServiceDefine<?> define = this.getService(serviceID);
         if (define != null) {
-            this.rsfContext.getAddressPool().newAddress(define, newHostList);
+            this.rsfContext.getAddressPool().updateAddress(define.getBindID(), newHostList);
         }
     }
 }

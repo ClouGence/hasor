@@ -25,7 +25,7 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class BindServiceDefine<T> extends ServiceDefine<T>implements RegisterReference<T>, CustomerProvider<T> {
+class BindServiceDefine<T> extends ServiceDefine<T> implements RegisterReference<T>, CustomerProvider<T> {
     private AbstractRsfContext rsfContext;
     private Provider<T>        customerProvider;
     //
@@ -47,7 +47,7 @@ class BindServiceDefine<T> extends ServiceDefine<T>implements RegisterReference<
     }
     @Override
     public void unRegister() {
-        this.rsfContext.getAddressPool().recoverService(this);
+        this.rsfContext.getAddressPool().removeBucket(this.getBindID());
         this.rsfContext.getBindCenter().recoverService(this);
     }
 }

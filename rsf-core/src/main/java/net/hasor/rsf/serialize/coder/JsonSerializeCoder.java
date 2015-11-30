@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.serialize.coder;
 import java.io.IOException;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.serialize.SerializeCoder;
 import org.more.json.JSON;
 /**

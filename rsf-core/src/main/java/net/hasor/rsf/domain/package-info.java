@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 服务元信息。
+ * RSF 服务元信息和常量定义。
  */
 package net.hasor.rsf.domain;

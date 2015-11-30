@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import io.netty.channel.Channel;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.constants.RSFConstants;
-import net.hasor.rsf.constants.RsfException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.netty.channel.Channel;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfException;
 /**
  * 
  * @version : 2014年11月17日
@@ -171,5 +173,8 @@ public class RsfRuntimeUtils {
     }
     public static void setAddress(InterAddress hostAddress, Channel channel) throws MalformedURLException {
         channel.attr(RSFConstants.AddressKey).set(hostAddress);
+    }
+    public static String nowTime() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 }

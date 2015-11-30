@@ -30,10 +30,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -48,27 +48,27 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressBucket {
-    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
+class AddressBucket {
+    protected Logger                                      logger = LoggerFactory.getLogger(getClass());
     //流控规则
-    private volatile FlowControlRef                  flowControlRef;                              //默认流控规则引用
-    private volatile ScriptResourceRef               scriptResourcesRef;
+    private volatile InnerFlowControlRef                  flowControlRef;                              //默认流控规则引用
+    private volatile InnerScriptResourceRef               scriptResourcesRef;
     //原始数据
-    private final String                             serviceID;                                   //服务ID
-    private final String                             unitName;                                    //服务所属单元
-    private final List<InterAddress>                 allAddressList;                              //所有备选地址
-    private ConcurrentMap<InterAddress, InvalidInfo> invalidAddresses;                            //失效状态统计信息
+    private final String                                  serviceID;                                   //服务ID
+    private final String                                  unitName;                                    //服务所属单元
+    private final List<InterAddress>                      allAddressList;                              //所有备选地址
+    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;                            //失效状态统计信息
     //
     //下面时计算出来的数据
-    private List<InterAddress>                       localUnitAddresses;                          //本单元地址
-    private List<InterAddress>                       availableAddresses;                          //所有可用地址（包括本地单元）
+    private List<InterAddress>                            localUnitAddresses;                          //本单元地址
+    private List<InterAddress>                            availableAddresses;                          //所有可用地址（包括本地单元）
     //
     //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
         this.allAddressList = new ArrayList<InterAddress>();
-        this.invalidAddresses = new ConcurrentHashMap<InterAddress, InvalidInfo>();
+        this.invalidAddresses = new ConcurrentHashMap<InterAddress, InnerInvalidInfo>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
@@ -185,8 +185,8 @@ public class AddressBucket {
                 return;
             }
         }
-        InvalidInfo invalidInfo = null;
-        if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InvalidInfo(timeout))) != null) {
+        InnerInvalidInfo invalidInfo = null;
+        if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InnerInvalidInfo(timeout))) != null) {
             invalidInfo.invalid(timeout);
         } else {
             try {
@@ -221,7 +221,7 @@ public class AddressBucket {
             }
             //
             //当失效的地址达到重试时间之后，再次刷新地址时候不被列入失效名单。
-            InvalidInfo info = this.invalidAddresses.get(addressInfo);
+            InnerInvalidInfo info = this.invalidAddresses.get(addressInfo);
             if (info != null && info.reTry()) {
                 doAdd = true;
             }
@@ -249,17 +249,17 @@ public class AddressBucket {
     }
     //
     /**获取流控规则*/
-    public FlowControlRef getFlowControlRef() {
+    public InnerFlowControlRef getFlowControlRef() {
         return this.flowControlRef;
     }
     /**设置流控规则*/
-    public void setFlowControlRef(FlowControlRef flowControlRef) {
+    public void setFlowControlRef(InnerFlowControlRef flowControlRef) {
         this.flowControlRef = flowControlRef;
     }
-    public ScriptResourceRef getScriptResourcesRef() {
+    public InnerScriptResourceRef getScriptResourcesRef() {
         return scriptResourcesRef;
     }
-    public void setScriptResourcesRef(ScriptResourceRef scriptResourcesRef) {
+    public void setScriptResourcesRef(InnerScriptResourceRef scriptResourcesRef) {
         this.scriptResourcesRef = scriptResourcesRef;
     }
 }

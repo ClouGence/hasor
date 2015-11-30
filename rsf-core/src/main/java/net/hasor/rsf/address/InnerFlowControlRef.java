@@ -23,15 +23,15 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class FlowControlRef {
+class InnerFlowControlRef {
     public UnitFlowControl   unitFlowControl   = null; //单元规则
     public RandomFlowControl randomFlowControl = null; //地址选取规则
     public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
     //
-    private FlowControlRef() {}
+    private InnerFlowControlRef() {}
     //
-    public static final FlowControlRef defaultRef(RsfSettings rsfSettings) {
-        FlowControlRef flowControlRef = new FlowControlRef();
+    public static final InnerFlowControlRef defaultRef(RsfSettings rsfSettings) {
+        InnerFlowControlRef flowControlRef = new InnerFlowControlRef();
         flowControlRef.randomFlowControl = new RandomFlowControl();
         flowControlRef.speedFlowControl = SpeedFlowControl.defaultControl(rsfSettings);
         return flowControlRef;

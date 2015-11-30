@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.constants;
+package net.hasor.rsf.domain;
 import io.netty.util.AttributeKey;
 import java.nio.charset.Charset;
 import net.hasor.rsf.address.InterAddress;

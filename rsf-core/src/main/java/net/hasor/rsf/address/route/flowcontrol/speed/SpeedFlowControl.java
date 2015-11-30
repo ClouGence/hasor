@@ -17,7 +17,6 @@ package net.hasor.rsf.address.route.flowcontrol.speed;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import net.hasor.core.Settings;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
@@ -67,7 +66,7 @@ public class SpeedFlowControl extends AbstractRule {
         defaultQoSBucket = qosBucket;
     }
     //
-    public boolean callCheck(RsfBindInfo<?> info, String methodSign, InterAddress doCallAddress) {
+    public boolean callCheck(String serviceID, String methodSign, InterAddress doCallAddress) {
         if (!this.enable()) {
             return true;
         }
@@ -81,7 +80,7 @@ public class SpeedFlowControl extends AbstractRule {
             key = methodSign;
             break;
         case Service:
-            key = info.getBindID();
+            key = serviceID;
             break;
         }
         //

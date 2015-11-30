@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+package net.hasor.rsf.domain;
 /**
  * 
- * @version : 2015年4月4日
+ * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfURLStreamHandler extends URLStreamHandler {
-    protected URLConnection openConnection(URL url) throws IOException {
-        throw new UnsupportedOperationException("Method not implemented.");
+public class RsfTimeoutException extends RsfException {
+    private static final long serialVersionUID = -445430836145251422L;
+    //
+    public RsfTimeoutException(String string) {
+        super(ProtocolStatus.RequestTimeout, string);
+    }
+    public RsfTimeoutException(Throwable e) {
+        super(ProtocolStatus.RequestTimeout, e);
     }
 }

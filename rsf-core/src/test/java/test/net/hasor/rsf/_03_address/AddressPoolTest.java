@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.address;
+package test.net.hasor.rsf._03_address;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,10 +23,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.BindCenter;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import net.hasor.rsf.rpc.context.RsfEnvironment;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
@@ -37,6 +39,10 @@ import org.more.util.io.IOUtils;
  */
 public class AddressPoolTest {
     private List<URI> addressList() throws IOException, URISyntaxException {
+        RsfSettings settings = new DefaultRsfSettings();
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, settings);
+        AddressPool pool = new AddressPool(rsfEnvironment);
+        //
         List<URI> addresses = new ArrayList<URI>();
         addresses.add(new InterAddress("192.168.137.10", 8000, "etc2").toURI());//  rsf://192.168.137.10:8000/etc2
         addresses.add(new InterAddress("192.168.137.11", 8000, "etc2").toURI());//  rsf://192.168.137.11:8000/etc2

@@ -34,8 +34,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.constants.ProtocolStatus;
-import net.hasor.rsf.constants.RsfException;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.protocol.netty.RSFCodec;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
@@ -72,7 +72,7 @@ public class RsfClientChannelManager {
             final Object[] methodArgs = rsfRequest.getParameterObject();
             final AddressPool addressPool = this.rsfContext.getAddressPool();
             InterAddress refereeAddress = null;
-            refereeAddress = addressPool.nextAddress(bindInfo, methodSign, methodArgs);
+            refereeAddress = addressPool.nextAddress(bindInfo.getBindID(), methodSign, methodArgs);
             //
             /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
             if (refereeAddress == null) {
@@ -97,7 +97,7 @@ public class RsfClientChannelManager {
             } else {
                 return client;
             }
-            addressPool.invalidAddress(refereeAddress);
+            addressPool.invalidAddress(bindInfo.getBindID(), refereeAddress);
             //
         }
         throw new RsfException(ProtocolStatus.ClientError, "there is not invalid address.");

@@ -19,7 +19,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
-import net.hasor.rsf.constants.RSFConstants;
+import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
 import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;

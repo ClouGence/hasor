@@ -19,11 +19,11 @@ package net.hasor.rsf.address;
  * @version : 2015年10月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InvalidInfo {
+class InnerInvalidInfo {
     private long timeoutPoint;
     private int  tryCount;
     //
-    public InvalidInfo(long timeout) {
+    public InnerInvalidInfo(long timeout) {
         this.timeoutPoint = System.currentTimeMillis() + timeout;
         this.tryCount = 0;
     }

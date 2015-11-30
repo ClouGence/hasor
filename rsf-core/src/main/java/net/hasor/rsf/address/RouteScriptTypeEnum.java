@@ -39,7 +39,7 @@ public enum RouteScriptTypeEnum {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
     //
-    public static void updateScript(RouteScriptTypeEnum scriptType, String script, ScriptResourceRef data) {
+    public static void updateScript(RouteScriptTypeEnum scriptType, String script, InnerScriptResourceRef data) {
         /*  */if (RouteScriptTypeEnum.ServiceLevel.equals(scriptType)) {
             data.serviceLevel = script;
         } else if (RouteScriptTypeEnum.MethodLevel.equals(scriptType)) {

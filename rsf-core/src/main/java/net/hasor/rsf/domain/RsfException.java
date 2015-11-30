@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.constants;
+package net.hasor.rsf.domain;
 /**
  * 
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfTimeoutException extends RsfException {
-    private static final long serialVersionUID = -445430836145251422L;
+public class RsfException extends RuntimeException {
+    private static final long serialVersionUID = -2959224725202940531L;
+    private short             status           = ProtocolStatus.Unknown;
     //
-    public RsfTimeoutException(String string) {
-        super(ProtocolStatus.RequestTimeout, string);
+    public RsfException(String string, Throwable e) {
+        super(string, e);
+        this.status = ProtocolStatus.Unknown;
     }
-    public RsfTimeoutException(Throwable e) {
-        super(ProtocolStatus.RequestTimeout, e);
+    public RsfException(short status, String string) {
+        super("(" + status + ") - " + string);
+        this.status = status;
+    }
+    public RsfException(short status, Throwable e) {
+        super(e);
+        this.status = status;
+    }
+    public short getStatus() {
+        return this.status;
     }
 }
