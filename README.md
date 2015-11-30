@@ -43,3 +43,7 @@ QQ群：**193943114**
 issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 
 Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
+
+
+----------
+![Hasor捐赠](http://static.oschina.net/uploads/space/2015/1130/154023_xiMj_1166271.png)
