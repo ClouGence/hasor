@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
@@ -27,9 +30,6 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 /**
  * 
  * @version : 2015年4月5日
@@ -93,14 +93,14 @@ public class FlowControlTest {
         //
         SpeedFlowControl rule = (SpeedFlowControl) ruleParser.ruleSettings(speedBody);
         InterAddress doCallAddress = addressList().get(0);
-        String m = FlowControlTest.class.getMethods()[0].toString();
+        String methodName = FlowControlTest.class.getMethods()[0].getName();
         RsfBindInfo<?> info = new ServiceDomain<FlowControlTest>(FlowControlTest.class);
         //
         int run = 0;
         long startTime = System.currentTimeMillis() / 1000;
         Thread.sleep(1000);
         for (int i = 0; i < 300000; i++) {
-            if (rule.callCheck(info, m, doCallAddress) == true) {
+            if (rule.callCheck(serviceID, methodName, doCallAddress).callCheck(info, m, doCallAddress) == true) {
                 run++;
                 long checkTime = System.currentTimeMillis() / 1000;
                 if (run % 20 == 0) {

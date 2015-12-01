@@ -227,7 +227,7 @@ class AddressBucket {
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
-        logger.info("refreshAvailableAddress.");
+        logger.debug("bucket {} refreshAvailableAddress.", this.getServiceID());
         //
         //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();
@@ -280,5 +280,9 @@ class AddressBucket {
     }
     public void setScriptResourcesRef(InnerScriptResourceRef scriptResourcesRef) {
         this.scriptResourcesRef = scriptResourcesRef;
+    }
+    @Override
+    public String toString() {
+        return "AddressBucket - " + this.getServiceID() + ",unit = " + this.unitName + " ,allAddress size = " + this.allAddressList.size();
     }
 }

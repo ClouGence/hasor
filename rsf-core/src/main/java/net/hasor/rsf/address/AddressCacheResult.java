@@ -101,7 +101,7 @@ class AddressCacheResult {
             //1.计算缓存的服务接口级,地址列表
             List<InterAddress> serviceLevelResult = null;
             if (StringUtils.isBlank(scriptName.serviceLevel)) {
-                logger.info("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
+                logger.debug("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
             } else {
                 serviceLevelResult = evalServiceLevel(serviceID, scriptName.serviceLevel, all, unit);
             }
@@ -112,7 +112,7 @@ class AddressCacheResult {
             //
             //2.计算缓存的服务方法级,地址列表
             if (StringUtils.isBlank(scriptName.methodLevel)) {
-                logger.info("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
+                logger.debug("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
                 Map<String, List<InterAddress>> methodLevelResult = evalMethodLevel(serviceID, scriptName.serviceLevel, all, unit);
                 if (methodLevelResult.isEmpty() == false) {
@@ -122,7 +122,7 @@ class AddressCacheResult {
             //
             //3.计算缓存的服务参数级,地址列表
             if (StringUtils.isBlank(scriptName.argsLevel)) {
-                logger.info("eval routeScript [ArgsLevel], service {} route undefined.", serviceID);
+                logger.debug("eval routeScript [ArgsLevel], service {} route undefined.", serviceID);
             } else if (this.argsKeyBuilder == null) {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
@@ -133,7 +133,7 @@ class AddressCacheResult {
             }
             //
         }
-        logger.info("switch cacheResultRef.");
+        logger.debug("switch cacheResultRef.");
         this.cacheResultRef = cacheResultRef;
     }
     //

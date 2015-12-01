@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.manager;
+package net.hasor.rsf.rpc.manager;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

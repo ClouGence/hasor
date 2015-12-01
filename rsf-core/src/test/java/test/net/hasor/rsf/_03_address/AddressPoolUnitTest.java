@@ -70,8 +70,8 @@ public class AddressPoolUnitTest {
                     Thread.sleep(10);
                 } catch (Exception e) {}
                 long checkTime = System.currentTimeMillis();
-                if (checkTime - lastTime < 3000) {
-                    continue;//3秒打印一条
+                if (checkTime - lastTime < 1500) {
+                    continue;//1.5秒打印一条
                 }
                 lastTime = System.currentTimeMillis();
                 long invokeCountSum = 0;
@@ -140,7 +140,7 @@ public class AddressPoolUnitTest {
         addresses_3.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
         addresses_3.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
         //        
-        //
+        //3个线程拼命的获取地址。
         Thread workThread_1 = new Thread(new NextWork(pool, atomicMap), "WorkThread_1");
         Thread workThread_2 = new Thread(new NextWork(pool, atomicMap), "WorkThread_2");
         Thread workThread_3 = new Thread(new NextWork(pool, atomicMap), "WorkThread_3");
@@ -149,7 +149,7 @@ public class AddressPoolUnitTest {
         workThread_2.start();
         workThread_3.start();
         monitorThread.start();
-        Thread.sleep(20000);
+        Thread.sleep(5000);
         //
         //Test - 0 ，动态新增服务，同时指定地址。
         pool.updateAddress(serviceID, addresses_1);

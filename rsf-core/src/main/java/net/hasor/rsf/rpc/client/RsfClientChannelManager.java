@@ -141,7 +141,7 @@ public class RsfClientChannelManager {
             }
         });
         ChannelFuture future = null;
-        SocketAddress remote = new InetSocketAddress(hostAddress.getHostAddress(), hostAddress.getHostPort());
+        SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getHostPort());
         logger.info("connect to {} ...", hostAddress);
         future = boot.connect(remote);
         try {
