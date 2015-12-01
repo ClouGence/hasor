@@ -15,15 +15,27 @@
  */
 package test.net.hasor.rsf._03_address;
 import java.net.URISyntaxException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import org.junit.Test;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
-import org.junit.Test;
 /**
  * 
  * @version : 2015年4月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressTest {
+    @Test
+    public void test() throws URISyntaxException {
+        ConcurrentMap<InterAddress, String> concurrentMap = new ConcurrentHashMap<InterAddress, String>();
+        //
+        concurrentMap.put(new InterAddress("127.0.0.1", 8000, "etc2"), "123");
+        concurrentMap.put(new InterAddress("127.0.0.1", 8000, "etc2"), "123");
+        //
+        assert concurrentMap.size() == 1;
+        System.out.println(concurrentMap.size());
+    }
     @Test
     public void ipAddress() throws URISyntaxException {
         InterAddress interAddress1 = new InterAddress("127.0.0.1", 8000, "etc2");
@@ -34,6 +46,9 @@ public class AddressTest {
         boolean eq1 = interAddress1.equals(interAddress2);
         boolean eq2 = interAddress1.equals(interAddress3);
         boolean eq3 = interAddress1.equals(interAddress4);
+        //
+        assert eq1 && eq2 && eq3;
+        //
         System.out.println(eq1 + "\t" + eq2 + "\t" + eq3);
         //
         System.out.println(interAddress1);
@@ -50,6 +65,9 @@ public class AddressTest {
         boolean eq1 = interAddress1.equals(interAddress2);
         boolean eq2 = interAddress1.equals(interAddress3);
         boolean eq3 = interAddress1.equals(interAddress4);
+        //
+        assert eq1 && eq2 && eq3;
+        //
         System.out.println(eq1 + "\t" + eq2 + "\t" + eq3);
         //
         System.out.println(interAddress1);

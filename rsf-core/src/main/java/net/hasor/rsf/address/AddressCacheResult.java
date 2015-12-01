@@ -49,7 +49,7 @@ class AddressCacheResult {
     }
     //
     /**从全部地址中计算执行动态计算并缓存计算结果.*/
-    public List<InterAddress> getAddressList(String serviceID, String methodSign, Object[] args) {
+    public List<InterAddress> getAddressList(String serviceID, String methodName, Object[] args) {
         if (this.cacheResultRef == null) {
             logger.warn("getAddressList fail. resultRef is null.");
             return null;
@@ -61,11 +61,11 @@ class AddressCacheResult {
         if (this.argsKeyBuilder != null) {
             Map<String, Map<String, List<InterAddress>>> methodList = resultRef.argsLevel.get(serviceID);
             if (methodList != null) {
-                Map<String, List<InterAddress>> cacheList = methodList.get(methodSign);
+                Map<String, List<InterAddress>> cacheList = methodList.get(methodName);
                 if (cacheList != null) {
                     String key = argsKeyBuilder.eval(args);
                     if (key != null) {
-                        result = cacheList.get(methodSign);
+                        result = cacheList.get(methodName);
                     }
                 }
             }
@@ -75,7 +75,7 @@ class AddressCacheResult {
         if (result == null) {
             Map<String, List<InterAddress>> cacheList = resultRef.methodLevel.get(serviceID);
             if (cacheList != null) {
-                result = cacheList.get(methodSign);
+                result = cacheList.get(methodName);
             }
         }
         //
@@ -137,9 +137,8 @@ class AddressCacheResult {
         this.cacheResultRef = cacheResultRef;
     }
     //
-    /* 脚本说明：
-     * 
-     * 入参：
+    /** 脚本说明：
+     * <pre>入参：
      *  serviceID   （java.lang.String）
      *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
      *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
@@ -147,9 +146,16 @@ class AddressCacheResult {
      *  java.util.List<net.hasor.rsf.address.InterAddress>
      * 
      * 样例：
-     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *  import net.hasor.rsf.address.InterAddress
+     *  def evalAddress(String serviceID, String scriptText, List<InterAddress> allAddress, List<InterAddress> unitAddress) {
      *      return unitAddress;
      *  }
+     *  
+     *  或
+     *  
+     *  def evalAddress(serviceID, scriptText, allAddress, unitAddress) {
+     *      return unitAddress;
+     *  }</pre>
      * */
     private List<InterAddress> evalServiceLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
         try {
@@ -165,17 +171,17 @@ class AddressCacheResult {
         }
     }
     //
-    /* 脚本说明：
-     * 
-     * 入参：
+    /** 脚本说明：
+     * <pre>入参：
      *  serviceID   （java.lang.String）
      *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
      *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
      * 返回值
-     *  java.util.Map<java.lang.String,java.util.List<net.hasor.rsf.address.InterAddress>>
+     *  java.util.List<net.hasor.rsf.address.InterAddress>
      * 
      * 样例：
-     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *  import net.hasor.rsf.address.InterAddress
+     *  def evalAddress(String serviceID, String scriptText, List<InterAddress> allAddress, List<InterAddress> unitAddress) {
      *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
      *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
      *          def resultData = []
@@ -185,6 +191,19 @@ class AddressCacheResult {
      *      }
      *      return null;
      *  }
+     *  
+     *  或
+     *  
+     *  def evalAddress(serviceID, allAddress, unitAddress) {
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
+     *          def resultData = []
+     *          resultData["insert"]        = [ new InterAddress()]
+     *          resultData["queryUserByID"] = unitAddress
+     *          return resultData
+     *      }
+     *      return null;
+     *  }</pre>
      * */
     private Map<String, List<InterAddress>> evalMethodLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
         try {
@@ -250,8 +269,8 @@ class AddressCacheResult {
 //
 class CacheResult {
     public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
-    public final Map<String, Map<String, List<InterAddress>>>              methodLevel; //方法级
-    public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;   //参数级
+    public final Map<String, Map<String, List<InterAddress>>>              methodLevel;  //方法级
+    public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;    //参数级
     //
     public CacheResult() {
         this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级

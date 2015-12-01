@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import io.netty.channel.Channel;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -22,12 +23,11 @@ import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import io.netty.channel.Channel;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年11月17日
@@ -39,9 +39,6 @@ public class RsfRuntimeUtils {
     private static ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<String, Class<?>>();
     private static ConcurrentMap<String, Method>   methodMap  = new ConcurrentHashMap<String, Method>();
     //
-    public static String evalMethodSign(Method targetMethod) {
-        return targetMethod.toString();
-    }
     //
     /**生成一个新的RequestID*/
     public static long genRequestID() {

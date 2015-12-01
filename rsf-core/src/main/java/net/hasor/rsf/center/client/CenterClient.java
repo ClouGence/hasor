@@ -110,7 +110,7 @@ public class CenterClient extends Thread implements EventListener {
     /**终端上线*/
     public void onLine(RsfContext rsfContext) throws Throwable {
         Map<String, String> reqParam = new HashMap<String, String>();
-        reqParam.put(CenterParams.Terminal_HostName, this.centerAddress.getHostAddress());
+        reqParam.put(CenterParams.Terminal_HostName, this.centerAddress.getHost());
         reqParam.put(CenterParams.Terminal_HostPort, String.valueOf(this.centerAddress.getHostPort()));
         reqParam.put(CenterParams.Terminal_HostUnit, String.valueOf(this.rsfContext.getSettings().getUnitName()));
         reqParam.put(CenterParams.Terminal_Version, IOUtils.toString(ResourcesUtils.getResourceAsStream("/META-INF/rsf-core.version")));

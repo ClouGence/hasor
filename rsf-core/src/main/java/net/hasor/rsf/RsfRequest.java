@@ -31,7 +31,7 @@ public interface RsfRequest extends RsfHeader {
     public long getReceiveTime();
     /**超时时间。*/
     public int getTimeout();
-    /**获取请求的服务。*/
+    /**获取请求的服务方法名。*/
     public String getMethod();
     /**获取请求参数类型。*/
     public Class<?>[] getParameterTypes();

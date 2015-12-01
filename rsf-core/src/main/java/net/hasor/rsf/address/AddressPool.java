@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +31,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.more.util.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
@@ -41,13 +48,6 @@ import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 服务地址池
      * <p>路由策略：
@@ -97,7 +97,7 @@ public class AddressPool {
             RsfSettings rsfSettings = rsfEnvironment.getSettings();
             long refreshCacheTime = rsfSettings.getRefreshCacheTime();
             long nextCheckSavePoint = 0;
-            logger.info("AddressPool - refreshCache.", refreshCacheTime);
+            logger.info("AddressPool - Timer -> start, refreshCacheTime = {}.", refreshCacheTime);
             readAddress();//当启动时，进行一次恢复。
             while (true) {
                 try {
@@ -108,7 +108,7 @@ public class AddressPool {
                 logger.info("AddressPool - refreshCache. at = ", refreshCacheTime);
                 refreshCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
-                    nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);//1小时
+                    nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);/*每小时保存一次地址本快照。*/
                     try {
                         saveAddress();
                     } catch (IOException e) {
@@ -123,10 +123,13 @@ public class AddressPool {
     protected void saveAddress() throws IOException {
         File writeFile = new File(this.snapshotHome, "address-" + System.currentTimeMillis() + ".zip");
         logger.info("rsf - saveAddress to snapshot file({}) ->{}", CharsetName, writeFile);
+        FileOutputStream fos = null;
+        ZipOutputStream zipStream = null;
+        FileWriter fw = null;
         try {
             writeFile.getParentFile().mkdirs();
-            FileOutputStream fos = new FileOutputStream(writeFile);
-            ZipOutputStream zipStream = new ZipOutputStream(fos);
+            fos = new FileOutputStream(writeFile);
+            zipStream = new ZipOutputStream(fos);
             synchronized (this.poolLock) {
                 for (AddressBucket bucket : this.addressPool.values()) {
                     if (bucket != null) {
@@ -137,8 +140,9 @@ public class AddressPool {
             }
             zipStream.flush();
             zipStream.close();
+            fos.close();
             //
-            FileWriter fw = new FileWriter(this.indexFile, false);
+            fw = new FileWriter(this.indexFile, false);
             logger.info("rsf - update snapshot index -> " + this.indexFile.getAbsolutePath());
             fw.write(writeFile.getName());
             fw.flush();
@@ -146,6 +150,17 @@ public class AddressPool {
         } catch (IOException e) {
             logger.error("rsf - saveAddress IOException :" + e.getMessage(), e);
             throw e;
+        } finally {
+            /*容错，万一中途抛异常，这里可以进行清理。*/
+            if (zipStream != null) {
+                zipStream.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+            if (fw != null) {
+                fw.close();
+            }
         }
     }
     /**从保存的地址本中恢复数据。*/
@@ -281,10 +296,10 @@ public class AddressPool {
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
      * 
      * @param serviceID 服务ID。
-     * @param newHostList 追加更新的地址。
+     * @param newHostSet 追加更新的地址。
      */
-    public void updateAddress(String serviceID, Collection<URI> newHostList) {
-        String hosts = ReflectionToStringBuilder.toString(newHostList, ToStringStyle.SIMPLE_STYLE);
+    public void updateAddress(String serviceID, Collection<InterAddress> newHostSet) {
+        String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
         logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucket
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -300,8 +315,7 @@ public class AddressPool {
             }
         }
         //2.新增服务
-        logger.info("update service {} address -> {}.", serviceID, newHostList);
-        bucket.newAddress(newHostList);
+        bucket.newAddress(newHostSet);
         bucket.refreshAddress();//局部更新
         this.rulerCache.reset();
     }
@@ -310,17 +324,17 @@ public class AddressPool {
      * 将服务的地址设置成临时失效状态。在{@link net.hasor.rsf.RsfSettings#getInvalidWaitTime()}毫秒之后，失效的地址会重新被列入备选地址池。
      * 置为失效，失效并不意味着永久的。在如果该地址同时有多个服务使用同一个地址，则需要依次执行失效。
      * @param serviceID 服务ID。
-     * @param invalidAddress 失效的地址。
+     * @param address 失效的地址。
      */
-    public void invalidAddress(String serviceID, InterAddress invalidAddress) {
+    public void invalidAddress(String serviceID, InterAddress address) throws URISyntaxException {
         long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
-            logger.info("serviceID ={} ,invalid address = {} ,bucket is not exist.", serviceID, invalidAddress);
+            logger.info("serviceID ={} ,invalid address = {} ,bucket is not exist.", serviceID, address);
             return;
         }
-        logger.info("serviceID ={} ,invalid address = {} ,wait {} -> active.", serviceID, invalidAddress, invalidWaitTime);
-        bucket.invalidAddress(invalidAddress, invalidWaitTime);
+        logger.info("serviceID ={} ,invalid address = {} ,wait {} -> active.", serviceID, address, invalidWaitTime);
+        bucket.invalidAddress(address, invalidWaitTime);
         bucket.refreshAddress();
         this.rulerCache.reset();
     }
@@ -337,7 +351,7 @@ public class AddressPool {
             return;
         }
         logger.info("serviceID ={} ,remove address = {} ,wait {} -> active.", serviceID, address, invalidWaitTime);
-        bucket.invalidAddress(address, invalidWaitTime);
+        bucket.removeAddress(address);
         bucket.refreshAddress();
         this.rulerCache.reset();
     }
@@ -493,11 +507,11 @@ public class AddressPool {
         synchronized (this.poolLock) {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
-                logger.info("service {} refreshCache.", bucketKey);
+                logger.debug("service {} refreshCache.", bucketKey);
                 this.addressPool.get(bucketKey).refreshAddress();//刷新地址计算结果
             }
-            this.rulerCache.reset();
         }
+        this.rulerCache.reset();
     }
     //
     /**
@@ -509,17 +523,17 @@ public class AddressPool {
      * </ul>
      * 当地址获取和地址更新同时进行时候，不需要保证瞬时的一致性，只要保证最终一致性就好。
      * @param serviceID 服务id
-     * @param methodSign 调用该服务的方法签名
+     * @param methodName 调用该服务的方法名
      * @param args 方法调用时用到的参数。
      * @return 返回可以使用的地址。
      */
-    public InterAddress nextAddress(String serviceID, String methodSign, Object[] args) {
+    public InterAddress nextAddress(String serviceID, String methodName, Object[] args) {
         AddressBucket bucket = addressPool.get(serviceID);
         if (bucket == null) {
             return null;
         }
         //
-        List<InterAddress> addresses = this.rulerCache.getAddressList(serviceID, methodSign, args);
+        List<InterAddress> addresses = this.rulerCache.getAddressList(serviceID, methodName, args);
         InterAddress doCallAddress = null;
         //
         /*并发下不需要保证瞬时的一致性,只要保证最终一致性就好.*/
@@ -529,7 +543,7 @@ public class AddressPool {
         }
         doCallAddress = flowControlRef.randomFlowControl.getServiceAddress(addresses);
         while (true) {
-            boolean check = flowControlRef.speedFlowControl.callCheck(serviceID, methodSign, doCallAddress);//QoS
+            boolean check = flowControlRef.speedFlowControl.callCheck(serviceID, methodName, doCallAddress);//QoS
             if (check) {
                 break;
             }

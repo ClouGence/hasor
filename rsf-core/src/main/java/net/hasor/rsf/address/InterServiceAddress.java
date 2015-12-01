@@ -73,6 +73,10 @@ public class InterServiceAddress extends InterAddress {
     public String getVersion() {
         return this.version;
     }
+    /**返回RSF协议形式表述的服务地址。格式为：“rsf://127.0.0.1:8000/unit/group/service/version”*/
+    public String toServiceSchema() {
+        return toHostSchema() + String.format("/%s/%s/%s", this.group, this.name, this.version);
+    }
     //
     /**
      * 两个 Address 可以比较是否相等
@@ -80,14 +84,13 @@ public class InterServiceAddress extends InterAddress {
      * @return 返回结果。
      */
     public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            String group = ((InterServiceAddress) obj).group;
-            String name = ((InterServiceAddress) obj).name;
-            String version = ((InterServiceAddress) obj).version;
-            return StringUtils.equals(group, this.group) && StringUtils.equals(name, this.name) && StringUtils.equals(version, this.version);
+        String diffURI = "";
+        if (obj instanceof InterServiceAddress) {
+            diffURI = ((InterServiceAddress) obj).toServiceSchema();
+            return StringUtils.equalsBlankIgnoreCase(diffURI, this.toServiceSchema());
+        } else {
+            return false;
         }
-        //
-        return false;
     }
     @Override
     public int hashCode() {
@@ -99,11 +102,11 @@ public class InterServiceAddress extends InterAddress {
         return result;
     }
     public String toString() {
-        return super.toString() + String.format("/%s/%s/%s", this.group, this.name, this.version);
+        return toServiceSchema();
     }
     protected URI createURL() throws URISyntaxException {
         String path = String.format("/%s/%s/%s/%s", this.getFormUnit(), this.getGroup(), this.getName(), this.getVersion());
-        return new URI(SECHMA, null, this.getHostAddress(), this.getHostPort(), "/" + path, null, null);
+        return new URI(SECHMA, null, this.getHost(), this.getHostPort(), "/" + path, null, null);
     }
     public static boolean checkFormat(URI serviceURL) {
         if (InterAddress.checkFormat(serviceURL)) {

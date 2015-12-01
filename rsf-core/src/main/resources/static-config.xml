@@ -71,8 +71,8 @@
 				<localDiskCache>true</localDiskCache>
 				<!-- 自动刷新地址本缓存的时间，默认6分钟。 -->
 				<refreshCacheTime>360000</refreshCacheTime>
-				<!-- 获取地址失效之后，等待重新尝试连接的时间(毫秒)。 -->
-				<invalidWaitTime>60000</invalidWaitTime>
+				<!-- (失效地址重试机制)地址被置为失效之后，当经过一段时间之后，保证失效地址重新可以被再次使用。 -等待时间为(毫秒) 12分钟。 -由于失效地址重试机制是在refreshCacheTime期间进行，因此该参数的配置最小值取决于refreshCacheTime参数配置。 -->
+				<invalidWaitTime>720000</invalidWaitTime>
 			</addressPool>
 		</rsfConfig>
 	</hasor>

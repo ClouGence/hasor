@@ -68,11 +68,11 @@ public class RsfClientChannelManager {
         //
         while (true) {
             final RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
-            final String methodSign = RsfRuntimeUtils.evalMethodSign(rsfRequest.getServiceMethod());
+            final String methodName = rsfRequest.getMethod();
             final Object[] methodArgs = rsfRequest.getParameterObject();
             final AddressPool addressPool = this.rsfContext.getAddressPool();
             InterAddress refereeAddress = null;
-            refereeAddress = addressPool.nextAddress(bindInfo.getBindID(), methodSign, methodArgs);
+            refereeAddress = addressPool.nextAddress(bindInfo.getBindID(), methodName, methodArgs);
             //
             /*如果一个地址更新操作正在进行中，则该方法会被暂时阻塞直至操作结束。*/
             if (refereeAddress == null) {

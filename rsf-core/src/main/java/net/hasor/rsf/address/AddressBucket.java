@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +29,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -106,23 +104,21 @@ class AddressBucket {
             BufferedReader bfreader = new BufferedReader(reader);
             String line = null;
             StringBuffer strBuffer = new StringBuffer("");
-            ArrayList<URI> newHostList = new ArrayList<URI>();
+            ArrayList<InterAddress> newHostSet = new ArrayList<InterAddress>();
             while ((line = bfreader.readLine()) != null) {
                 try {
-                    newHostList.add(new URI(line));
+                    newHostSet.add(new InterAddress(line));
                     strBuffer.append(line + " , ");
                 } catch (URISyntaxException e) {
                     logger.info("read address '{}' has URISyntaxException.", line);
                 }
             }
             logger.info("bucket read list -> {}", strBuffer.toString());
-            this.newAddress(newHostList);
+            this.newAddress(newHostSet);
         } else {
             logger.info("bucket read empty , not match record");
         }
     }
-    //
-    //
     //
     public String getServiceID() {
         return serviceID;
@@ -145,26 +141,28 @@ class AddressBucket {
     }
     //
     /**新增地址支持动态新增*/
-    public void newAddress(Collection<URI> newHostList) {
-        if (newHostList == null || newHostList.isEmpty()) {
+    public void newAddress(Collection<InterAddress> newHostSet) {
+        if (newHostSet == null || newHostSet.isEmpty()) {
             logger.error("{} - newHostList is empty.", serviceID);
             return;
         }
         //
         List<InterAddress> newAddress = new ArrayList<InterAddress>();
-        for (URI hostURI : newHostList) {
+        List<InterAddress> toAvailable = new ArrayList<InterAddress>();
+        for (InterAddress newHost : newHostSet) {
+            //1.保证不要重复添加。
             boolean doAdd = true;
-            InterAddress newHost = null;
-            try {
-                newHost = new InterAddress(hostURI);
-                for (InterAddress hasAddress : this.allAddressList) {
-                    if (newHost.equals(hasAddress) == true) {
-                        doAdd = false;
-                        break;
-                    }
+            for (InterAddress hasAddress : this.allAddressList) {
+                if (newHost.equals(hasAddress) == true) {
+                    doAdd = false;
+                    break;
                 }
-            } catch (Throwable e) {
-                logger.error("{} append new host '{}' format error.", serviceID, hostURI);
+            }
+            //2.确定是否需要再次激活。
+            for (InterAddress hasAddress : this.invalidAddresses.keySet()) {
+                if (newHost.equals(hasAddress) == true) {
+                    toAvailable.add(newHost);
+                }
             }
             //
             if (doAdd) {
@@ -172,20 +170,25 @@ class AddressBucket {
             }
         }
         //
+        //添加新地址
         this.allAddressList.addAll(newAddress);
+        //激活已经失效的地址
+        for (InterAddress hasAddress : toAvailable) {
+            this.invalidAddresses.remove(hasAddress);
+        }
         this.refreshAvailableAddress();
     }
     //
-    /**将地址置为失效的。*/
+    /**
+     * 将地址置为失效的。
+     * @param address 失效的地址。
+     * @param timeout 失效时长
+     */
     public void invalidAddress(InterAddress newInvalid, long timeout) {
-        for (InterAddress invalid : this.invalidAddresses.keySet()) {
-            String strInvalid = invalid.toString();
-            String strInvalidNew = newInvalid.toString();
-            if (StringUtils.equalsBlankIgnoreCase(strInvalid, strInvalidNew)) {
-                return;
-            }
+        if (this.allAddressList.contains(newInvalid) == false) {
+            return;
         }
-        InnerInvalidInfo invalidInfo = null;
+        InnerInvalidInfo invalidInfo = this.invalidAddresses.get(newInvalid);
         if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InnerInvalidInfo(timeout))) != null) {
             invalidInfo.invalid(timeout);
         } else {
@@ -198,7 +201,24 @@ class AddressBucket {
             }
         }
     }
-    /**强制刷新地址计算结果*/
+    /**
+     * 将地址从地址本中删除。
+     * @param address 要被删除的地址。
+     */
+    public void removeAddress(InterAddress address) {
+        if (this.allAddressList.contains(address) == false) {
+            return;
+        }
+        this.allAddressList.remove(address);
+        this.invalidAddresses.remove(address);
+        synchronized (this) {
+            refreshAvailableAddress();
+        }
+    }
+    /**
+     * 刷新地址计算结果。
+     * @return
+     */
     public void refreshAddress() {
         synchronized (this) {
             refreshAvailableAddress();
@@ -242,7 +262,6 @@ class AddressBucket {
                 unitList = availableList;
             }
         }
-        //
         //
         this.availableAddresses = availableList;
         this.localUnitAddresses = unitList;

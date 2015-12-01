@@ -71,8 +71,8 @@ public class InterAddress {
         return ipInt;
     }
     //
-    /** @return 地址*/
-    public String getHostAddress() {
+    /** @return IP地址*/
+    public String getHost() {
         return this.hostAddress;
     }
     /** @return 端口*/
@@ -84,32 +84,31 @@ public class InterAddress {
         return this.formUnit;
     }
     /** @return 获取IP的int值*/
-    public int getHostAddressData() {
+    public int getHostIPValue() {
         return this.hostAddressData;
     }
     /**转换地址为URL形式*/
     public URI toURI() {
         return this.uriFormat;
     }
+    /**返回RSF协议形式表述的主机地址。格式为：“rsf://127.0.0.1:8000/unit”*/
+    public String toHostSchema() {
+        return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
+    }
+    //
     /**
      * 两个 Address 可以比较是否相等
      * @param obj 另一个对象
      * @return 返回结果。
      */
     public boolean equals(Object obj) {
-        String diffHost = "";
-        int diffProt = 0;
+        String diffURI = "";
         if (obj instanceof InterAddress) {
-            diffHost = ((InterAddress) obj).getHostAddress();
-            diffProt = ((InterAddress) obj).getHostPort();
+            diffURI = ((InterAddress) obj).toHostSchema();
+            return StringUtils.equalsBlankIgnoreCase(diffURI, this.toHostSchema());
         } else {
             return false;
         }
-        //
-        if (StringUtils.equalsBlankIgnoreCase(diffHost, this.hostAddress)) {
-            return diffProt == this.hostPort;
-        }
-        return false;
     }
     @Override
     public int hashCode() {
@@ -124,10 +123,10 @@ public class InterAddress {
     }
     //
     public String toString() {
-        return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
+        return toHostSchema();
     }
     protected URI createURL() throws URISyntaxException {
-        return new URI(SECHMA, null, this.getHostAddress(), this.getHostPort(), "/" + this.formUnit, null, null);
+        return new URI(SECHMA, null, this.getHost(), this.getHostPort(), "/" + this.formUnit, null, null);
     }
     public static boolean checkFormat(URI rsfAddress) {
         if (StringUtils.equalsBlankIgnoreCase(SECHMA, rsfAddress.getScheme()) == true) {

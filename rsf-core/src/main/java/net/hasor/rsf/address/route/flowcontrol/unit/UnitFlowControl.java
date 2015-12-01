@@ -79,7 +79,7 @@ public class UnitFlowControl extends AbstractRule {
             boolean appendMark = false;
             //A.如果位于规则排除名单中,则直接标记appendMark为 true
             if (exclusions != null && exclusions.isEmpty() == false) {
-                String hostIP = inter.getHostAddress();
+                String hostIP = inter.getHost();
                 for (String ipPattern : exclusions) {
                     if (MatchUtils.matchWild(ipPattern, hostIP)) {
                         appendMark = true;
