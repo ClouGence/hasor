@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,7 +101,7 @@ public class AddressPool {
                 } catch (InterruptedException e) {
                     /**/
                 }
-                logger.info("AddressPool - refreshCache. at = ", refreshCacheTime);
+                logger.info("AddressPool - refreshCache. at = {}.", refreshCacheTime);
                 refreshCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
                     nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);/*每小时保存一次地址本快照。*/
@@ -321,7 +320,7 @@ public class AddressPool {
      * @param serviceID 服务ID。
      * @param address 失效的地址。
      */
-    public void invalidAddress(String serviceID, InterAddress address) throws URISyntaxException {
+    public void invalidAddress(String serviceID, InterAddress address) {
         long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {

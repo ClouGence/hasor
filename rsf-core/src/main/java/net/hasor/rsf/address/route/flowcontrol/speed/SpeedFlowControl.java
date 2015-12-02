@@ -66,7 +66,7 @@ public class SpeedFlowControl extends AbstractRule {
         defaultQoSBucket = qosBucket;
     }
     //
-    public boolean callCheck(String serviceID, String methodSign, InterAddress doCallAddress) {
+    public boolean callCheck(String serviceID, String methodName, InterAddress doCallAddress) {
         if (!this.enable()) {
             return true;
         }
@@ -77,7 +77,7 @@ public class SpeedFlowControl extends AbstractRule {
             key = doCallAddress.toString();
             break;
         case Method:
-            key = methodSign;
+            key = methodName;
             break;
         case Service:
             key = serviceID;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.objects.socket;
-import net.hasor.rsf.manager.OptionManager;
 import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
 import net.hasor.rsf.protocol.protocol.RsfSocketBlock;
+import net.hasor.rsf.rpc.manager.OptionManager;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
 /**
  * RSF请求
