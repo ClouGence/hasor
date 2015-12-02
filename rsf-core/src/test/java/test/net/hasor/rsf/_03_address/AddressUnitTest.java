@@ -25,7 +25,7 @@ import net.hasor.rsf.address.InterServiceAddress;
  * @version : 2015年4月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressTest {
+public class AddressUnitTest {
     @Test
     public void test() throws URISyntaxException {
         ConcurrentMap<InterAddress, String> concurrentMap = new ConcurrentHashMap<InterAddress, String>();

@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf._03_address.route.flowcontrol;
-import net.hasor.rsf.address.route.flowcontrol.speed.QoSBucket;
+package test.net.hasor.rsf._03_address;
 import org.junit.Test;
+import net.hasor.rsf.address.route.flowcontrol.speed.QoSBucket;
 /**
  * 
  * @version : 2015年4月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class QosTest {
+public class FlowControlQosTest {
     @Test
-    public void bucketTest() throws Throwable {
+    public void speedTest() throws Throwable {
         //QoS：稳定每秒50，峰值1000，时间更新窗口10毫秒。
         QoSBucket qos = new QoSBucket(50, 1000, 10);
         //

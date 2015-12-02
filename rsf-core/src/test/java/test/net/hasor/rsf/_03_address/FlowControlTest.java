@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf._03_address.route.flowcontrol;
+package test.net.hasor.rsf._03_address;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,13 +22,11 @@ import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 /**
  * 
@@ -54,9 +52,9 @@ public class FlowControlTest {
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("random-flow.xml"));
-        //
+        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/random-flow.xml"));
         RandomFlowControl rule = (RandomFlowControl) ruleParser.ruleSettings(randomBody);
+        //
         List<InterAddress> address = addressList();
         //
         for (int i = 0; i < 100; i++) {
@@ -64,21 +62,10 @@ public class FlowControlTest {
             System.out.println(i + "\t" + addr);
         }
     }
-    //    @Test
-    //    public void networkTest() throws Throwable {
-    //        RuleParser ruleParser = getRuleParser();
-    //        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("network-flow.xml"));
-    //        //
-    //        NetworkFlowControl rule = (NetworkFlowControl) ruleParser.ruleSettings(roomBody);
-    //        List<InterAddress> address = addressList();
-    //        //
-    //        List<InterAddress> addrList = rule.siftNetworkAddress(address);
-    //        System.out.println(addrList);
-    //    }
     @Test
     public void unitTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("unit-flow.xml"));
+        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/unit-flow.xml"));
         //
         UnitFlowControl rule = (UnitFlowControl) ruleParser.ruleSettings(roomBody);
         List<InterAddress> address = addressList();
@@ -89,18 +76,16 @@ public class FlowControlTest {
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("speed-flow.xml"));
+        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/speed-flow.xml"));
         //
         SpeedFlowControl rule = (SpeedFlowControl) ruleParser.ruleSettings(speedBody);
         InterAddress doCallAddress = addressList().get(0);
-        String methodName = FlowControlTest.class.getMethods()[0].getName();
-        RsfBindInfo<?> info = new ServiceDomain<FlowControlTest>(FlowControlTest.class);
         //
         int run = 0;
         long startTime = System.currentTimeMillis() / 1000;
         Thread.sleep(1000);
         for (int i = 0; i < 300000; i++) {
-            if (rule.callCheck(serviceID, methodName, doCallAddress).callCheck(info, m, doCallAddress) == true) {
+            if (rule.callCheck("serviceID", "methodName", doCallAddress) == true) {
                 run++;
                 long checkTime = System.currentTimeMillis() / 1000;
                 if (run % 20 == 0) {

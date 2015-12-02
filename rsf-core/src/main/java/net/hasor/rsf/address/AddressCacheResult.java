@@ -25,11 +25,11 @@ import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.address.route.rule.ArgsKey;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.address.route.rule.ArgsKey;
 /**
  * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
@@ -63,7 +63,7 @@ class AddressCacheResult {
             if (methodList != null) {
                 Map<String, List<InterAddress>> cacheList = methodList.get(methodName);
                 if (cacheList != null) {
-                    String key = argsKeyBuilder.eval(args);
+                    String key = argsKeyBuilder.eval(serviceID, methodName, args);
                     if (key != null) {
                         result = cacheList.get(methodName);
                     }
@@ -96,6 +96,7 @@ class AddressCacheResult {
             /*计算使用的地址列表(所有可用的/本单元的/本地网络的)*/
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
+            List<String> allStrList = convertToStr(all);
             InnerScriptResourceRef scriptName = this.addressPool.getScriptResources(serviceID);
             //
             //1.计算缓存的服务接口级,地址列表
@@ -103,10 +104,11 @@ class AddressCacheResult {
             if (StringUtils.isBlank(scriptName.serviceLevel)) {
                 logger.debug("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
             } else {
-                serviceLevelResult = evalServiceLevel(serviceID, scriptName.serviceLevel, all, unit);
+                List<String> serviceLevelResultStr = evalServiceLevel(serviceID, scriptName.serviceLevel, allStrList);
+                List<InterAddress> methodLevelResult = convertToAddress(all, serviceLevelResult);
             }
             if (serviceLevelResult == null || serviceLevelResult.isEmpty()) {
-                serviceLevelResult = unit;/*如果计算结果为空*/
+                serviceLevelResult = unit;/*如果计算结果为空，就使用单元化的地址 -> 如果单元化策略没有配置则单元化地址就是全量地址。*/
             }
             cacheResultRef.serviceLevel.put(serviceID, unit);
             //
@@ -114,8 +116,9 @@ class AddressCacheResult {
             if (StringUtils.isBlank(scriptName.methodLevel)) {
                 logger.debug("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
-                Map<String, List<InterAddress>> methodLevelResult = evalMethodLevel(serviceID, scriptName.serviceLevel, all, unit);
-                if (methodLevelResult.isEmpty() == false) {
+                Map<String, List<String>> methodLevelResultStr = evalMethodLevel(serviceID, scriptName.methodLevel, allStrList);
+                if (methodLevelResultStr.isEmpty() == false) {
+                    Map<String, List<InterAddress>> methodLevelResult = convertToAddressMethod(all, methodLevelResultStr);
                     cacheResultRef.methodLevel.put(serviceID, methodLevelResult);/*保存计算结果*/
                 }
             }
@@ -126,8 +129,9 @@ class AddressCacheResult {
             } else if (this.argsKeyBuilder == null) {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
-                Map<String, Map<String, List<InterAddress>>> argsLevelResult = evalArgsLevel(serviceID, scriptName.serviceLevel, all, unit);
-                if (argsLevelResult.isEmpty() == false) {
+                Map<String, Map<String, List<String>>> argsLevelResultStr = evalArgsLevel(serviceID, scriptName.argsLevel, allStrList);
+                if (argsLevelResultStr.isEmpty() == false) {
+                    Map<String, Map<String, List<InterAddress>>> argsLevelResult = convertToAddressArgs(all, argsLevelResultStr);
                     cacheResultRef.argsLevel.put(serviceID, argsLevelResult);/*保存计算结果*/
                 }
             }
@@ -136,28 +140,45 @@ class AddressCacheResult {
         logger.debug("switch cacheResultRef.");
         this.cacheResultRef = cacheResultRef;
     }
+    private static Map<String, Map<String, List<InterAddress>>> convertToAddressArgs(List<InterAddress> all, Map<String, Map<String, List<String>>> argsLevelResultStr) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    private static Map<String, List<InterAddress>> convertToAddressMethod(List<InterAddress> all, Map<String, List<String>> methodLevelResultStr) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    private static List<InterAddress> convertToAddress(List<InterAddress> all, List<InterAddress> serviceLevelResult) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    private static List<String> convertToStr(List<InterAddress> all) {
+        // TODO Auto-generated method stub
+        return null;
+    }
     //
     /** 脚本说明：
      * <pre>入参：
      *  serviceID   （java.lang.String）
-     *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
-     *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
+     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
      * 返回值
-     *  java.util.List<net.hasor.rsf.address.InterAddress>
+     *  java.util.List&lt;java.lang.String&gt;
      * 
      * 样例：
-     *  import net.hasor.rsf.address.InterAddress
-     *  def evalAddress(String serviceID, String scriptText, List<InterAddress> allAddress, List<InterAddress> unitAddress) {
-     *      return unitAddress;
-     *  }
-     *  
-     *  或
-     *  
-     *  def evalAddress(serviceID, scriptText, allAddress, unitAddress) {
-     *      return unitAddress;
+     *  def List&lt;String&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
+     *      //
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
+     *          return [
+     *              "192.168.1.2:8000",
+     *              "192.168.1.2:8001",
+     *              "192.168.1.3:8000"
+     *          ]
+     *      }
+     *      return null
      *  }</pre>
      * */
-    private List<InterAddress> evalServiceLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
+    private List<String> evalServiceLevel(String serviceID, String scriptText, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
             Reader scriptReader = new FileReader(scriptText);
@@ -174,38 +195,34 @@ class AddressCacheResult {
     /** 脚本说明：
      * <pre>入参：
      *  serviceID   （java.lang.String）
-     *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
-     *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
+     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
      * 返回值
-     *  java.util.List<net.hasor.rsf.address.InterAddress>
+     *  java.util.Map&lt;java.lang.String,java.util.List&lt;java.lang.String&gt;&gt;
      * 
      * 样例：
-     *  import net.hasor.rsf.address.InterAddress
-     *  def evalAddress(String serviceID, String scriptText, List<InterAddress> allAddress, List<InterAddress> unitAddress) {
-     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *  def Map&lt;String,List&lt;String&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
+     *      //
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ---- Group=RSF, Name=sorg.mytest.FooFacse, Version=1.0.0
      *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
-     *          def resultData = []
-     *          resultData["insert"]        = [ new InterAddress()]
-     *          resultData["queryUserByID"] = unitAddress
-     *          return resultData
+     *          return [
+     *              "println":[
+     *                  "192.168.1.2:8000",
+     *                  "192.168.1.2:8001",
+     *                  "192.168.1.3:8000"
+     *              ],
+     *              "sayEcho":[
+     *                  "192.168.1.2:8000",
+     *              ],
+     *              "testUserTag":[
+     *                  "192.168.1.2:8000",
+     *                  "192.168.1.3:8000"
+     *              ]
+     *          ]
      *      }
-     *      return null;
-     *  }
-     *  
-     *  或
-     *  
-     *  def evalAddress(serviceID, allAddress, unitAddress) {
-     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
-     *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
-     *          def resultData = []
-     *          resultData["insert"]        = [ new InterAddress()]
-     *          resultData["queryUserByID"] = unitAddress
-     *          return resultData
-     *      }
-     *      return null;
+     *      return null
      *  }</pre>
      * */
-    private Map<String, List<InterAddress>> evalMethodLevel(String serviceID, String scriptText, List<InterAddress> all, List<InterAddress> unit) {
+    private Map<String, List<String>> evalMethodLevel(String serviceID, String scriptText, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
             Reader scriptReader = new FileReader(scriptName);
@@ -219,32 +236,37 @@ class AddressCacheResult {
         }
     }
     //
-    /* 脚本说明：
-     * 
-     * 入参：
+    /** 脚本说明：
+     * <pre>入参：
      *  serviceID   （java.lang.String）
-     *  keyBuilder  （net.hasor.rsf.address.route.rule.ArgsKey）
-     *  allAddress  （java.util.List<net.hasor.rsf.address.InterAddress>）
-     *  unitAddress （java.util.List<net.hasor.rsf.address.InterAddress>）
+     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
      * 返回值
-     *  java.util.Map<java.lang.String,java.util.List<net.hasor.rsf.address.InterAddress>>
+     *  java.util.Map&lt;java.lang.String, java.util.Map&lt;java.lang.String, java.util.List&lt;java.lang.String&gt;&gt;&gt;
      * 
      * 样例：
-     *  def evalAddress(serviceID, allAddress, unitAddress) {
-     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ，组别：RSF，接口：sorg.mytest.FooFacse，版本：1.0.0
+     *  def Map&lt;String, Map&lt;String, List&lt;String&gt;&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
+     *      //
+     *      //[RSF]sorg.mytest.FooFacse-1.0.0 ---- Group=RSF, Name=sorg.mytest.FooFacse, Version=1.0.0
      *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
-     *          def resultData = []
-     *          resultData["insert"]        = []
-     *          resultData["queryUserByID"] = []
-     *          //
-     *          resultData["insert"][keyBuilder.eval([])]
-     *          
-     *          return resultData
+     *          return [
+     *              "println":[
+     *                  "192.168.1.2:8000",
+     *                  "192.168.1.2:8001",
+     *                  "192.168.1.3:8000"
+     *              ],
+     *              "sayEcho":[
+     *                  "192.168.1.2:8000",
+     *              ],
+     *              "testUserTag":[
+     *                  "192.168.1.2:8000",
+     *                  "192.168.1.3:8000"
+     *              ]
+     *          ]
      *      }
-     *      return null;
-     *  }
+     *      return null
+     *  }</pre>
      * */
-    private Map<String, Map<String, List<InterAddress>>> evalArgsLevel(String serviceID, String scriptName, List<InterAddress> all, List<InterAddress> unit) {
+    private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, String scriptName, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
             Reader scriptReader = new FileReader(scriptName);// def evalAddress(bindInfo, argsKey, method, allAddress, unitAddress) { return allAddress; }

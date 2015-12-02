@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf._03_address.route.flowcontrol;
+package test.net.hasor.rsf._03_address;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import org.junit.Test;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 /**
  * 
  * @version : 2015年4月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RuleTest {
+public class FlowControlReadTest {
     private RuleParser getRuleParser() throws IOException, URISyntaxException {
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
         rsfSettings.refresh();
@@ -39,7 +39,7 @@ public class RuleTest {
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("random-flow.xml"));
+        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/random-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(randomBody);
         System.out.println(rule);
@@ -47,7 +47,7 @@ public class RuleTest {
     @Test
     public void roomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String unitBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("unit-flow.xml"));
+        String unitBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/unit-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(unitBody);
         System.out.println(rule);
@@ -55,7 +55,7 @@ public class RuleTest {
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("speed-flow.xml"));
+        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/speed-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(speedBody);
         System.out.println(rule);

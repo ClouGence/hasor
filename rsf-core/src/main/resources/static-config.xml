@@ -39,8 +39,6 @@
 				<serialize name="Java">net.hasor.rsf.serialize.coder.JavaSerializeCoder</serialize>
 				<!-- Hessian-格式序列化 -->
 				<serialize name="Hessian">net.hasor.rsf.serialize.coder.HessianSerializeCoder</serialize>
-				<!-- BlackHole-黑洞序列化特殊用处 -->
-				<serialize name="BlackHole">net.hasor.rsf.serialize.coder.BlackHoleSerializeCoder</serialize>
 			</serializeType>
 
 			<!-- 默认QoS流控规则,该配置仅当没有配置任何QoS规则时才启用 -->

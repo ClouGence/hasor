@@ -21,7 +21,7 @@ import org.more.json.JSON;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultArgsKey implements ArgsKey {
-    public String eval(Object[] args) {
+    public String eval(String serviceID, String methodName, Object[] args) {
         return JSON.toString(args);
     }
 }

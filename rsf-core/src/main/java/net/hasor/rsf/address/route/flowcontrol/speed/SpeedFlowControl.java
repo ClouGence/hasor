@@ -97,7 +97,7 @@ public class SpeedFlowControl extends AbstractRule {
     //
     protected QoSBucket createQoSBucket() {
         QoSBucket qosBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
-        logger.info("create Qos at %s", qosBucket);
+        logger.info("create {}", qosBucket);
         return qosBucket;
     }
     //

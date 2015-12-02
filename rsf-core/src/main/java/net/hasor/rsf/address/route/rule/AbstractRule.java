@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
+import org.more.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Settings;
@@ -57,6 +58,10 @@ public abstract class AbstractRule implements Rule {
     /**设置规则内容*/
     protected void setRoutebody(String routebody) {
         this.routebody = routebody;
+    }
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, new RuleToStringStyle());
     }
     //
     //

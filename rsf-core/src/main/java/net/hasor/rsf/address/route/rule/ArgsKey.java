@@ -20,5 +20,5 @@ package net.hasor.rsf.address.route.rule;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ArgsKey {
-    public String eval(Object[] args);
+    public String eval(String serviceID, String methodName, Object[] args);
 }

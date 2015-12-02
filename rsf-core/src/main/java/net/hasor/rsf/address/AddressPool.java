@@ -101,7 +101,7 @@ public class AddressPool {
                 } catch (InterruptedException e) {
                     /**/
                 }
-                logger.info("AddressPool - refreshCache. at = {}.", refreshCacheTime);
+                logger.info("AddressPool - refreshCache. at = {} , refreshCacheTime = {}.", RsfRuntimeUtils.nowTime(), refreshCacheTime);
                 refreshCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
                     nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);/*每小时保存一次地址本快照。*/
@@ -116,15 +116,24 @@ public class AddressPool {
     }
     //
     /**保存地址列表到zip流中(每小时保存一次)。*/
-    protected void saveAddress() throws IOException {
-        File writeFile = new File(this.snapshotHome, "address-" + System.currentTimeMillis() + ".zip");
+    protected synchronized void saveAddress() throws IOException {
+        File writeFile = null;
+        while (writeFile == null || writeFile.exists()) {
+            if (writeFile != null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {/**/}
+            }
+            writeFile = new File(this.snapshotHome, "address-" + RsfRuntimeUtils.nowTime() + ".zip");
+        }
         logger.info("rsf - saveAddress to snapshot file({}) ->{}", CharsetName, writeFile);
         FileOutputStream fos = null;
         ZipOutputStream zipStream = null;
         FileWriter fw = null;
         try {
             writeFile.getParentFile().mkdirs();
-            fos = new FileOutputStream(writeFile);
+            fos = new FileOutputStream(writeFile, false);
+            fos.getFD().sync();
             zipStream = new ZipOutputStream(fos);
             synchronized (this.poolLock) {
                 for (AddressBucket bucket : this.addressPool.values()) {
@@ -144,7 +153,7 @@ public class AddressPool {
             fw.flush();
             fw.close();
         } catch (IOException e) {
-            logger.error("rsf - saveAddress IOException :" + e.getMessage(), e);
+            logger.error("rsf - saveAddress " + e.getClass().getSimpleName() + " :" + e.getMessage(), e);
             throw e;
         } finally {
             /*容错，万一中途抛异常，这里可以进行清理。*/
@@ -160,7 +169,7 @@ public class AddressPool {
         }
     }
     /**从保存的地址本中恢复数据。*/
-    protected void readAddress() {
+    protected synchronized void readAddress() {
         //1.校验
         if (!this.indexFile.exists()) {
             logger.info("address snapshot index file, undefined.");

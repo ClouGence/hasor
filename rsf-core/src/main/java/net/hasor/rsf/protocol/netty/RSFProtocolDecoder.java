@@ -102,7 +102,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(requestID);
         block.setStatus(status);
-        block.setSerializeType(block.pushData("BlackHole".getBytes()));
+        block.setSerializeType(block.pushData(null));
         ctx.pipeline().writeAndFlush(block);
     }
 }
