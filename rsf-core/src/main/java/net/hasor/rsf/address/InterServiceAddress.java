@@ -33,8 +33,8 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterServiceAddress extends InterAddress {
-    private final String group;  //:服务分组
-    private final String name;   //:服务名称
+    private final String group;   //:服务分组
+    private final String name;    //:服务名称
     private final String version; //:服务版
     //
     public InterServiceAddress(String serviceURL) throws URISyntaxException {
@@ -106,7 +106,7 @@ public class InterServiceAddress extends InterAddress {
     }
     protected URI createURL() throws URISyntaxException {
         String path = String.format("/%s/%s/%s/%s", this.getFormUnit(), this.getGroup(), this.getName(), this.getVersion());
-        return new URI(SECHMA, null, this.getHost(), this.getHostPort(), "/" + path, null, null);
+        return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + path, null, null);
     }
     public static boolean checkFormat(URI serviceURL) {
         if (InterAddress.checkFormat(serviceURL)) {

@@ -19,18 +19,16 @@ package net.hasor.rsf.address;
  * @version : 2015年10月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum RouteScriptTypeEnum {
+public enum RouteTypeEnum {
     /***/
-    ServiceLevel(1, "服务级"),
-    /***/
-    MethodLevel(2, "方法级"),
-    /***/
-    ArgsLevel(3, "/参数级"), ;
+    ServiceLevel(1, "服务级"), /***/
+    MethodLevel(2, "方法级"), /***/
+    ArgsLevel(3, "/参数级"),;
     //
     //
-    private int    type;
+    private int type;
     private String desc;
-    RouteScriptTypeEnum(int type, String desc) {
+    RouteTypeEnum(int type, String desc) {
         this.type = type;
         this.desc = desc;
     }
@@ -39,13 +37,13 @@ public enum RouteScriptTypeEnum {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
     //
-    public static void updateScript(RouteScriptTypeEnum scriptType, String script, InnerScriptResourceRef data) {
-        /*  */if (RouteScriptTypeEnum.ServiceLevel.equals(scriptType)) {
-            data.serviceLevel = script;
-        } else if (RouteScriptTypeEnum.MethodLevel.equals(scriptType)) {
-            data.methodLevel = script;
-        } else if (RouteScriptTypeEnum.ArgsLevel.equals(scriptType)) {
-            data.argsLevel = script;
+    static void updateScript(RouteTypeEnum scriptType, String script, RefRule data) {
+        /*  */if (RouteTypeEnum.ServiceLevel.equals(scriptType)) {
+            data.serviceLevel.update(script);
+        } else if (RouteTypeEnum.MethodLevel.equals(scriptType)) {
+            data.methodLevel.update(script);
+        } else if (RouteTypeEnum.ArgsLevel.equals(scriptType)) {
+            data.argsLevel.update(script);
         }
     }
 }

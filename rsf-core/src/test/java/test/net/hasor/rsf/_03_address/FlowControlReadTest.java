@@ -39,7 +39,7 @@ public class FlowControlReadTest {
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/random-flow.xml"));
+        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol-script/random-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(randomBody);
         System.out.println(rule);
@@ -47,7 +47,7 @@ public class FlowControlReadTest {
     @Test
     public void roomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String unitBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/unit-flow.xml"));
+        String unitBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol-script/unit-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(unitBody);
         System.out.println(rule);
@@ -55,7 +55,7 @@ public class FlowControlReadTest {
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol/speed-flow.xml"));
+        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flowcontrol-script/speed-flow.xml"));
         //
         Rule rule = ruleParser.ruleSettings(speedBody);
         System.out.println(rule);

@@ -29,7 +29,7 @@ import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
-import net.hasor.rsf.address.RouteScriptTypeEnum;
+import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.FilterDefine;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
@@ -226,11 +226,11 @@ public class RsfBindBuilder implements RsfBinder {
             getContext().getAddressPool().updateAddress(this.serviceDefine.getBindID(), this.hostAddressSet);
             getContext().getAddressPool().refreshFlowControl(this.flowControl, this.serviceDefine.getBindID());
             if (StringUtils.isNotBlank(this.serviceLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ServiceLevel, this.serviceLevel);
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.ServiceLevel, this.serviceLevel);
             if (StringUtils.isNotBlank(this.methodLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.MethodLevel, this.methodLevel);
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.MethodLevel, this.methodLevel);
             if (StringUtils.isNotBlank(this.argsLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteScriptTypeEnum.ArgsLevel, this.argsLevel);
+                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.ArgsLevel, this.argsLevel);
             logger.info("service to public, {}", this.serviceDefine);
             return this.serviceDefine;
         }

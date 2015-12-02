@@ -18,11 +18,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.hasor.core.Hasor;
 import org.more.FormatException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Hasor;
 /**
  * 服务地址例：“rsf://127.0.0.1:8000/unit”
  * @version : 2014年9月12日
@@ -71,19 +71,24 @@ public class InterAddress {
         return ipInt;
     }
     //
-    /** @return IP地址*/
+    /** 返回目标IP地址*/
     public String getHost() {
         return this.hostAddress;
     }
-    /** @return 端口*/
-    public int getHostPort() {
+    /** 返回目标地址的端口号*/
+    public int getPort() {
         return this.hostPort;
     }
-    /** @return 所属单元*/
+    /** 返回IP地址和端口，格式为：192.168.25.33:8000*/
+    public String getHostPort() {
+        return this.hostAddress + ":" + this.hostPort;
+    }
+    /** 返回地址所属单元*/
     public String getFormUnit() {
         return this.formUnit;
     }
-    /** @return 获取IP的int值*/
+    /** 返回IPv4地址的int表达形式。转换方法：字符串表达形式下可以分为4个字节对象，在由于int数据占有4个字节，彼此一一对应。
+     * <p>例如：192.168.34.22 -&nbsp;&gt;&nbsp; 11000000.10101000.00100010.00010110 -&nbsp;&gt;&nbsp; 11000000101010000010001000010110 -&nbsp;&gt;&nbsp; -1062723050*/
     public int getHostIPValue() {
         return this.hostAddressData;
     }
@@ -110,6 +115,14 @@ public class InterAddress {
             return false;
         }
     }
+    /**判断连接地址是否是同一个。判断依据是参数的{@link #getHostPort()}返回值和该对象的{@link #getHostPort()}返回值做比较。*/
+    public boolean equalsHost(InterAddress evalResult) {
+        return evalResult == null ? false : equalsHost(evalResult.getHostPort());
+    }
+    /**判断连接地址是否是同一个。判断依据是参数值和{@link #getHostPort()}返回值做比较。*/
+    public boolean equalsHost(String evalResult) {
+        return evalResult == null ? false : this.getHostPort().equals(evalResult);
+    }
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -126,7 +139,7 @@ public class InterAddress {
         return toHostSchema();
     }
     protected URI createURL() throws URISyntaxException {
-        return new URI(SECHMA, null, this.getHost(), this.getHostPort(), "/" + this.formUnit, null, null);
+        return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + this.formUnit, null, null);
     }
     public static boolean checkFormat(URI rsfAddress) {
         if (StringUtils.equalsBlankIgnoreCase(SECHMA, rsfAddress.getScheme()) == true) {

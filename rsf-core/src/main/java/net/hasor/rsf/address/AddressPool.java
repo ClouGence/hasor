@@ -84,8 +84,8 @@ public class AddressPool {
     private final AddressCacheResult                   rulerCache;
     private final RuleParser                           ruleParser;
     private final ArgsKey                              argsKey;
-    private volatile InnerFlowControlRef               flowControlRef;                                    //默认流控规则引用
-    private volatile InnerScriptResourceRef            scriptResourcesRef;
+    private volatile RefFlowControl                    flowControlRef;                                    //默认流控规则引用
+    private volatile RefRule                           ruleRef;
     private final Object                               poolLock;
     private final Thread                               timer;
     //
@@ -238,7 +238,7 @@ public class AddressPool {
         this.timer = new Thread(new PoolThread());
         this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
         this.timer.setDaemon(true);
-        this.flowControlRef = InnerFlowControlRef.defaultRef(rsfSettings);
+        this.flowControlRef = RefFlowControl.defaultRef(rsfSettings);
         //
         String argsKeyType = rsfSettings.getString("hasor.rsfConfig.route.argsKey", DefaultArgsKey.class.getName());
         logger.info("argsKey type is {}", argsKeyType);
@@ -250,7 +250,7 @@ public class AddressPool {
             throw ExceptionUtils.toRuntimeException(e);
         }
         //
-        this.scriptResourcesRef = new InnerScriptResourceRef();
+        this.ruleRef = new RefRule();
     }
     //
     /**
@@ -389,11 +389,11 @@ public class AddressPool {
      * 更新默认流控规则。
      * @param flowControl 流控规则
      */
-    public void refreshDefaultFlowControl(String flowControl) {
+    public void updateDefaultFlowControl(String flowControl) {
         String fileName = "flowControl-default";
         logger.info("refreshDefaultFlowControl ,save snapshots status = ", saveScript(fileName, flowControl));
         //
-        InnerFlowControlRef flowControlRef = paselowControl(flowControl);
+        RefFlowControl flowControlRef = paselowControl(flowControl);
         this.flowControlRef = flowControlRef;
         this.refreshCache();
     }
@@ -402,7 +402,7 @@ public class AddressPool {
      * @param serviceID 应用到的服务。
      * @param flowControl 流控规则
      */
-    public void refreshFlowControl(String serviceID, String flowControl) {
+    public void updateFlowControl(String serviceID, String flowControl) {
         String fileName = "flowControl-" + serviceID;
         logger.info("refreshFlowControl ,save snapshots status = ", saveScript(fileName, flowControl));
         //
@@ -410,7 +410,7 @@ public class AddressPool {
             AddressBucket bucket = this.addressPool.get(serviceID);
             if (bucket != null) {
                 logger.info("service {} refreshFlowControl.", serviceID);
-                InnerFlowControlRef flowControlRef = paselowControl(flowControl);
+                RefFlowControl flowControlRef = paselowControl(flowControl);
                 bucket.setFlowControlRef(flowControlRef);
                 this.refreshCache();
             }
@@ -418,34 +418,34 @@ public class AddressPool {
     }
     /**
      * 更新默认路由规则。
-     * @param scriptType 要更新的路由规则脚本类型。
+     * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void refreshDefaultRouteScript(RouteScriptTypeEnum scriptType, String script) throws IOException {
-        String fileName = "routeScript-" + scriptType.name() + "-default";
+    public void updateDefaultRoute(RouteTypeEnum routeType, String script) throws IOException {
+        String fileName = "routeType-" + routeType.name() + "-default";
         logger.info("refreshDefaultRouteScript ,save snapshots status = ", saveScript(fileName, script));
         //
-        InnerScriptResourceRef resource = new InnerScriptResourceRef(this.scriptResourcesRef);
-        RouteScriptTypeEnum.updateScript(scriptType, script, resource);
-        this.scriptResourcesRef = resource;
+        RefRule ruleRef = new RefRule(this.ruleRef);
+        RouteTypeEnum.updateScript(routeType, script, ruleRef);
+        this.ruleRef = ruleRef;
         this.refreshCache();
     }
     /**
      * 更新某个服务的路由规则脚本。
      * @param serviceID 要更新的服务。
-     * @param scriptType 要更新的路由规则脚本类型。
+     * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void refreshRouteScript(String serviceID, RouteScriptTypeEnum scriptType, String script) throws IOException {
-        String fileName = "routeScript-" + scriptType.name() + "-" + serviceID;
+    public void updateRoute(String serviceID, RouteTypeEnum routeType, String script) throws IOException {
+        String fileName = "routeType-" + routeType.name() + "-" + serviceID;
         logger.info("refreshRouteScript ,save snapshots status = ", saveScript(fileName, script));
         //
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket != null) {
             logger.info("service {} refreshRouteScript.", serviceID);
-            InnerScriptResourceRef resource = new InnerScriptResourceRef(bucket.getScriptResourcesRef());
-            RouteScriptTypeEnum.updateScript(scriptType, script, resource);
-            bucket.setScriptResourcesRef(resource);
+            RefRule ruleRef = new RefRule(bucket.getRuleRef());
+            RouteTypeEnum.updateScript(routeType, script, ruleRef);
+            bucket.setRuleRef(ruleRef);
             this.refreshCache();
         }
     }
@@ -454,14 +454,14 @@ public class AddressPool {
      * @param flowControl 规则配置
      * @return 返回解析的结果。
      */
-    private InnerFlowControlRef paselowControl(String flowControl) {
+    private RefFlowControl paselowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
             logger.error("flowControl body format error.");
             return null;
         }
         //
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        InnerFlowControlRef flowControlRef = InnerFlowControlRef.defaultRef(rsfSettings);
+        RefFlowControl flowControlRef = RefFlowControl.defaultRef(rsfSettings);
         //
         //1.提取路由配置
         List<String> ruleBodyList = new ArrayList<String>();
@@ -510,8 +510,8 @@ public class AddressPool {
                 logger.debug("service {} refreshCache.", bucketKey);
                 this.addressPool.get(bucketKey).refreshAddress();//刷新地址计算结果
             }
+            this.rulerCache.reset();
         }
-        this.rulerCache.reset();
     }
     /**
      * 从服务地址本中获取一条可用的地址。<p>当一个服务具有多个地址的情况下，为了保证公平性地址池采取了随机选取的方式（路由策略：随机选址）
@@ -521,8 +521,8 @@ public class AddressPool {
      *  <li>默认情况下地址的获取，会受到路由规则、流控规则的影响。</li>
      * </ul>
      * 当地址获取和地址更新同时进行时候，不需要保证瞬时的一致性，只要保证最终一致性就好。
-     * @param serviceID 服务id
-     * @param methodName 调用该服务的方法名
+     * @param serviceID 服务id。
+     * @param methodName 调用该服务的方法名。
      * @param args 方法调用时用到的参数。
      * @return 返回可以使用的地址。
      */
@@ -536,7 +536,7 @@ public class AddressPool {
         InterAddress doCallAddress = null;
         //
         /*并发下不需要保证瞬时的一致性,只要保证最终一致性就好.*/
-        InnerFlowControlRef flowControlRef = bucket.getFlowControlRef();
+        RefFlowControl flowControlRef = bucket.getFlowControlRef();
         if (flowControlRef == null) {
             flowControlRef = this.flowControlRef;
         }
@@ -555,13 +555,14 @@ public class AddressPool {
     protected ArgsKey getArgsKey() {
         return this.argsKey;
     }
-    protected InnerScriptResourceRef getScriptResources(String serviceID) {
+    /**获取地址路由规则引用。*/
+    protected RefRule getRefRule(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
-        InnerScriptResourceRef script = this.scriptResourcesRef;
-        if (bucket != null && bucket.getScriptResourcesRef() != null) {
-            script = bucket.getScriptResourcesRef();
+        RefRule ruleRef = this.ruleRef;
+        if (bucket != null && bucket.getRuleRef() != null) {
+            ruleRef = bucket.getRuleRef();
         }
-        return script;
+        return ruleRef;
     }
     @Override
     public String toString() {

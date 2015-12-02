@@ -48,9 +48,9 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  */
 class AddressBucket {
     protected Logger                                      logger = LoggerFactory.getLogger(getClass());
-    //流控规则
-    private volatile InnerFlowControlRef                  flowControlRef;                              //默认流控规则引用
-    private volatile InnerScriptResourceRef               scriptResourcesRef;
+    //流控&路由
+    private volatile RefFlowControl                       flowControlRef;                              //默认流控规则引用
+    private volatile RefRule                              ruleRef;
     //原始数据
     private final String                                  serviceID;                                   //服务ID
     private final String                                  unitName;                                    //服务所属单元
@@ -268,18 +268,18 @@ class AddressBucket {
     }
     //
     /**获取流控规则*/
-    public InnerFlowControlRef getFlowControlRef() {
+    public RefFlowControl getFlowControlRef() {
         return this.flowControlRef;
     }
     /**设置流控规则*/
-    public void setFlowControlRef(InnerFlowControlRef flowControlRef) {
+    public void setFlowControlRef(RefFlowControl flowControlRef) {
         this.flowControlRef = flowControlRef;
     }
-    public InnerScriptResourceRef getScriptResourcesRef() {
-        return scriptResourcesRef;
+    public RefRule getRuleRef() {
+        return this.ruleRef;
     }
-    public void setScriptResourcesRef(InnerScriptResourceRef scriptResourcesRef) {
-        this.scriptResourcesRef = scriptResourcesRef;
+    public void setRuleRef(RefRule ruleRef) {
+        this.ruleRef = ruleRef;
     }
     @Override
     public String toString() {

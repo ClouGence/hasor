@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.io.FileReader;
-import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.script.Bindings;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
@@ -97,15 +96,15 @@ class AddressCacheResult {
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
             List<String> allStrList = convertToStr(all);
-            InnerScriptResourceRef scriptName = this.addressPool.getScriptResources(serviceID);
+            RefRule refRule = this.addressPool.getRefRule(serviceID);
             //
             //1.计算缓存的服务接口级,地址列表
             List<InterAddress> serviceLevelResult = null;
-            if (StringUtils.isBlank(scriptName.serviceLevel)) {
+            if (refRule.serviceLevel.isEnable()) {
                 logger.debug("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
             } else {
-                List<String> serviceLevelResultStr = evalServiceLevel(serviceID, scriptName.serviceLevel, allStrList);
-                List<InterAddress> methodLevelResult = convertToAddress(all, serviceLevelResult);
+                List<String> serviceLevelResultStr = evalServiceLevel(serviceID, refRule, allStrList);
+                serviceLevelResult = convertToAddress(all, serviceLevelResultStr);
             }
             if (serviceLevelResult == null || serviceLevelResult.isEmpty()) {
                 serviceLevelResult = unit;/*如果计算结果为空，就使用单元化的地址 -> 如果单元化策略没有配置则单元化地址就是全量地址。*/
@@ -113,10 +112,10 @@ class AddressCacheResult {
             cacheResultRef.serviceLevel.put(serviceID, unit);
             //
             //2.计算缓存的服务方法级,地址列表
-            if (StringUtils.isBlank(scriptName.methodLevel)) {
+            if (refRule.methodLevel.isEnable()) {
                 logger.debug("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
-                Map<String, List<String>> methodLevelResultStr = evalMethodLevel(serviceID, scriptName.methodLevel, allStrList);
+                Map<String, List<String>> methodLevelResultStr = evalMethodLevel(serviceID, refRule, allStrList);
                 if (methodLevelResultStr.isEmpty() == false) {
                     Map<String, List<InterAddress>> methodLevelResult = convertToAddressMethod(all, methodLevelResultStr);
                     cacheResultRef.methodLevel.put(serviceID, methodLevelResult);/*保存计算结果*/
@@ -124,12 +123,12 @@ class AddressCacheResult {
             }
             //
             //3.计算缓存的服务参数级,地址列表
-            if (StringUtils.isBlank(scriptName.argsLevel)) {
+            if (refRule.argsLevel.isEnable()) {
                 logger.debug("eval routeScript [ArgsLevel], service {} route undefined.", serviceID);
             } else if (this.argsKeyBuilder == null) {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
-                Map<String, Map<String, List<String>>> argsLevelResultStr = evalArgsLevel(serviceID, scriptName.argsLevel, allStrList);
+                Map<String, Map<String, List<String>>> argsLevelResultStr = evalArgsLevel(serviceID, refRule, allStrList);
                 if (argsLevelResultStr.isEmpty() == false) {
                     Map<String, Map<String, List<InterAddress>>> argsLevelResult = convertToAddressArgs(all, argsLevelResultStr);
                     cacheResultRef.argsLevel.put(serviceID, argsLevelResult);/*保存计算结果*/
@@ -140,29 +139,58 @@ class AddressCacheResult {
         logger.debug("switch cacheResultRef.");
         this.cacheResultRef = cacheResultRef;
     }
-    private static Map<String, Map<String, List<InterAddress>>> convertToAddressArgs(List<InterAddress> all, Map<String, Map<String, List<String>>> argsLevelResultStr) {
-        // TODO Auto-generated method stub
-        return null;
+    //
+    //
+    //
+    private static Map<String, Map<String, List<InterAddress>>> convertToAddressArgs(List<InterAddress> all, Map<String, Map<String, List<String>>> argsLevelResult) {
+        Map<String, Map<String, List<InterAddress>>> result = new HashMap<String, Map<String, List<InterAddress>>>();
+        for (Entry<String, Map<String, List<String>>> ent : argsLevelResult.entrySet()) {
+            String key = ent.getKey();
+            Map<String, List<InterAddress>> val = convertToAddressMethod(all, ent.getValue());
+            if (val != null && !val.isEmpty()) {
+                result.put(key, val);
+            }
+        }
+        return result;
     }
-    private static Map<String, List<InterAddress>> convertToAddressMethod(List<InterAddress> all, Map<String, List<String>> methodLevelResultStr) {
-        // TODO Auto-generated method stub
-        return null;
+    private static Map<String, List<InterAddress>> convertToAddressMethod(List<InterAddress> all, Map<String, List<String>> methodLevelResult) {
+        Map<String, List<InterAddress>> result = new HashMap<String, List<InterAddress>>();
+        for (Entry<String, List<String>> ent : methodLevelResult.entrySet()) {
+            String key = ent.getKey();
+            List<InterAddress> val = convertToAddress(all, ent.getValue());
+            if (val != null && !val.isEmpty()) {
+                result.put(key, val);
+            }
+        }
+        return result;
     }
-    private static List<InterAddress> convertToAddress(List<InterAddress> all, List<InterAddress> serviceLevelResult) {
-        // TODO Auto-generated method stub
-        return null;
+    private static List<InterAddress> convertToAddress(List<InterAddress> all, List<String> serviceLevelResult) {
+        List<InterAddress> result = new ArrayList<InterAddress>(serviceLevelResult.size());
+        for (String evalResult : serviceLevelResult) {
+            for (InterAddress address : all) {
+                if (address.equalsHost(evalResult)) {
+                    result.add(address);
+                }
+            }
+        }
+        return result;
     }
     private static List<String> convertToStr(List<InterAddress> all) {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> result = new ArrayList<String>();
+        for (InterAddress address : all) {
+            result.add(address.getHostPort());
+        }
+        return result;
     }
+    //
+    //
     //
     /** 脚本说明：
      * <pre>入参：
-     *  serviceID   （java.lang.String）
-     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
+     *  serviceID   （String）
+     *  allAddress  （List&lt;String&gt;）
      * 返回值
-     *  java.util.List&lt;java.lang.String&gt;
+     *  List&lt;String&gt;
      * 
      * 样例：
      *  def List&lt;String&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
@@ -178,14 +206,13 @@ class AddressCacheResult {
      *      return null
      *  }</pre>
      * */
-    private List<String> evalServiceLevel(String serviceID, String scriptText, List<String> all) {
+    private List<String> evalServiceLevel(String serviceID, RefRule refRule, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
-            Reader scriptReader = new FileReader(scriptText);
-            engine.eval(scriptReader);
-            Object[] params = new Object[] { serviceID, all, unit };
-            List<InterAddress> result = (List<InterAddress>) ((Invocable) engine).invokeFunction("evalAddress", params);
-            return result;
+            Object obj = engine.eval(refRule.serviceLevel.getScript());
+            Object[] params = new Object[] { serviceID, all };
+            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            return (List<String>) result;
         } catch (Throwable e) {
             logger.error("evalServiceLevel error ,message = " + e.getMessage(), e);
             return null;
@@ -194,10 +221,10 @@ class AddressCacheResult {
     //
     /** 脚本说明：
      * <pre>入参：
-     *  serviceID   （java.lang.String）
-     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
+     *  serviceID   （String）
+     *  allAddress  （List&lt;String&gt;）
      * 返回值
-     *  java.util.Map&lt;java.lang.String,java.util.List&lt;java.lang.String&gt;&gt;
+     *  Map&lt;String,List&lt;String&gt;&gt;
      * 
      * 样例：
      *  def Map&lt;String,List&lt;String&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
@@ -222,14 +249,13 @@ class AddressCacheResult {
      *      return null
      *  }</pre>
      * */
-    private Map<String, List<String>> evalMethodLevel(String serviceID, String scriptText, List<String> all) {
+    private Map<String, List<String>> evalMethodLevel(String serviceID, RefRule refRule, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
-            Reader scriptReader = new FileReader(scriptName);
-            engine.eval(scriptReader);
-            Object[] params = new Object[] { bindInfo, m, all, unit };
-            List<InterAddress> result = (List<InterAddress>) ((Invocable) engine).invokeFunction("evalAddress", params);
-            return result;
+            engine.eval(refRule.methodLevel);
+            Object[] params = new Object[] { serviceID, all };
+            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            return (Map<String, List<String>>) result;
         } catch (Throwable e) {
             logger.error("evalMethodLevel error ,message = " + e.getMessage(), e);
             return null;
@@ -238,10 +264,10 @@ class AddressCacheResult {
     //
     /** 脚本说明：
      * <pre>入参：
-     *  serviceID   （java.lang.String）
-     *  allAddress  （java.util.List&lt;java.lang.String&gt;）
+     *  serviceID   （String）
+     *  allAddress  （List&lt;String&gt;）
      * 返回值
-     *  java.util.Map&lt;java.lang.String, java.util.Map&lt;java.lang.String, java.util.List&lt;java.lang.String&gt;&gt;&gt;
+     *  Map&lt;String, Map&lt;String, List&lt;String&gt;&gt;&gt;
      * 
      * 样例：
      *  def Map&lt;String, Map&lt;String, List&lt;String&gt;&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
@@ -266,14 +292,13 @@ class AddressCacheResult {
      *      return null
      *  }</pre>
      * */
-    private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, String scriptName, List<String> all) {
+    private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, RefRule refRule, List<String> all) {
         try {
             ScriptEngine engine = createEngine();
-            Reader scriptReader = new FileReader(scriptName);// def evalAddress(bindInfo, argsKey, method, allAddress, unitAddress) { return allAddress; }
-            engine.eval(scriptReader);
-            Object[] params = new Object[] { bindInfo, this.argsKeyBuilder, m, all, unit };
-            Map<Object, List<InterAddress>> result = (Map<Object, List<InterAddress>>) ((Invocable) engine).invokeFunction("evalAddress", params);
-            return result;
+            engine.eval(refRule.argsLevel);
+            Object[] params = new Object[] { serviceID, all };
+            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            return (Map<String, Map<String, List<String>>>) result;
         } catch (Throwable e) {
             logger.error("evalArgsLevel error ,message = " + e.getMessage(), e);
             return null;
