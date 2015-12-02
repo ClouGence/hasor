@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
@@ -27,9 +30,6 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 /**
  * 
  * @version : 2015年4月5日

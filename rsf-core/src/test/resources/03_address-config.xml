@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 	<hasor.rsfConfig>
+		<!-- 地址本 -->
 		<addressPool>
-			<!-- 缓存刷新时间为3秒 -->
+			<!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇） -->
+			<localDiskCache>true</localDiskCache>
+			<!-- 自动刷新addressPool地址本缓存的时间，默认6分钟。 -->
 			<refreshCacheTime>3000</refreshCacheTime>
-			<!-- 等待时间为20秒 -->
+			<!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。 -时间间隔为(毫秒) 12分钟。 -->
 			<invalidWaitTime>20000</invalidWaitTime>
 		</addressPool>
 	</hasor.rsfConfig>

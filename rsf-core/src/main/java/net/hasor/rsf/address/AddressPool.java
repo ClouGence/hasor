@@ -50,20 +50,19 @@ import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * 服务地址池
-     * <p>路由策略：
-     * 随机选址
-     * 
-     * 流控规则
-     *  服务级
-     *  
-     *  方法级
-     *  
-     *  参数级
-     * 
-     * 
-     * 
-     * 路由规则
-
+ * <p>路由策略：
+ * 随机选址
+ * 
+ * 流控规则
+ *  服务级
+ *  
+ *  方法级
+ *  
+ *  参数级
+ * 
+ * 
+ * 
+ * 路由规则
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -91,14 +90,12 @@ public class AddressPool {
     private final Object                               poolLock;
     private final Thread                               timer;
     //
-    //
     class PoolThread implements Runnable {
         public void run() {
             RsfSettings rsfSettings = rsfEnvironment.getSettings();
             long refreshCacheTime = rsfSettings.getRefreshCacheTime();
             long nextCheckSavePoint = 0;
             logger.info("AddressPool - Timer -> start, refreshCacheTime = {}.", refreshCacheTime);
-            readAddress();//当启动时，进行一次恢复。
             while (true) {
                 try {
                     Thread.sleep(refreshCacheTime);
@@ -204,10 +201,11 @@ public class AddressPool {
     }
     //
     public void init() {
-        if (inited.compareAndSet(false, true)) {
+        if (this.inited.compareAndSet(false, true)) {
             this.rulerCache.reset();
-            logger.info("start address snapshot Thread[{}].", timer.getName());
-            timer.start();
+            this.readAddress();//当启动时，进行一次地址复原。
+            this.logger.info("start address snapshot Thread[{}].", timer.getName());
+            this.timer.start();
         } else {
             throw new IllegalStateException("AddressPool has been initialized");
         }
@@ -289,8 +287,6 @@ public class AddressPool {
         }
         return duplicate;
     }
-    //
-    //
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -319,7 +315,6 @@ public class AddressPool {
         bucket.refreshAddress();//局部更新
         this.rulerCache.reset();
     }
-    //
     /**
      * 将服务的地址设置成临时失效状态。在{@link net.hasor.rsf.RsfSettings#getInvalidWaitTime()}毫秒之后，失效的地址会重新被列入备选地址池。
      * 置为失效，失效并不意味着永久的。在如果该地址同时有多个服务使用同一个地址，则需要依次执行失效。
@@ -364,7 +359,6 @@ public class AddressPool {
         this.addressPool.remove(serviceID);
         this.rulerCache.reset();
     }
-    //
     /**
      * 保存规则脚本数据到规则快照目录，当下一次启动RSF的时。将尝试从本地加载地址本而非远程注册中心。
      * @param name 规则名。
@@ -395,7 +389,6 @@ public class AddressPool {
         this.flowControlRef = flowControlRef;
         this.refreshCache();
     }
-    //
     /**
      * 更新服务的流控规则。
      * @param serviceID 应用到的服务。
@@ -500,8 +493,7 @@ public class AddressPool {
         //3.引用切换
         return flowControlRef;
     }
-    //
-    /**刷新缓存*/
+    /**刷新地址缓存*/
     public void refreshCache() {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
@@ -513,7 +505,6 @@ public class AddressPool {
         }
         this.rulerCache.reset();
     }
-    //
     /**
      * 从服务地址本中获取一条可用的地址。<p>当一个服务具有多个地址的情况下，为了保证公平性地址池采取了随机选取的方式（路由策略：随机选址）
      * <ul>
@@ -551,6 +542,7 @@ public class AddressPool {
         //
         return doCallAddress;
     }
+    //
     //
     protected ArgsKey getArgsKey() {
         return this.argsKey;
