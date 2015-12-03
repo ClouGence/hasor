@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._03_address;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -59,6 +61,7 @@ public class AbstractAddressPoolTest {
         }
         public void run() {
             long lastTime = System.currentTimeMillis();
+            Map<String, Map<InterAddress, Long>> refAtomicMap = new HashMap<String, Map<InterAddress, Long>>();
             while (true) {
                 try {
                     Thread.sleep(10);
@@ -73,15 +76,32 @@ public class AbstractAddressPoolTest {
                 for (Entry<String, ConcurrentMap<InterAddress, TimeData>> entry : atomicMap.entrySet()) {
                     String serviceKey = entry.getKey();
                     ConcurrentMap<InterAddress, TimeData> timeDataMap = entry.getValue();
+                    Map<InterAddress, Long> refData = refAtomicMap.get(serviceKey);
+                    if (refData == null) {
+                        refData = new HashMap<InterAddress, Long>();
+                        refAtomicMap.put(serviceKey, refData);
+                    }
                     //
                     System.out.println("serviceKey:" + serviceKey);
                     for (Entry<InterAddress, TimeData> timeDataEntry : timeDataMap.entrySet()) {
+                        Long refInvoke = refData.get(timeDataEntry.getKey());
+                        if (refInvoke == null) {
+                            refData.put(timeDataEntry.getKey(), 0L);
+                            refInvoke = 0L;
+                        }
                         TimeData timeData = timeDataEntry.getValue();
                         long invokeCount = timeData.atomicValue.get();
+                        //
                         long invokeSpeed = eval(checkTime, timeData, invokeCount);
                         invokeCount = invokeCount / 10000;
                         invokeSpeed = invokeSpeed / 10000;
-                        System.out.println(timeDataEntry.getKey() + "\t- [Count/Speed](单位:万)\t" + invokeCount + "/" + invokeSpeed);
+                        //
+                        if (refInvoke == invokeCount) {
+                            System.out.println(timeDataEntry.getKey() + "\t- [Count/Speed](单位:万)\t" + invokeCount + "/" + invokeSpeed + "\t (Death)");
+                        } else {
+                            System.out.println(timeDataEntry.getKey() + "\t- [Count/Speed](单位:万)\t" + invokeCount + "/" + invokeSpeed);
+                            refData.put(timeDataEntry.getKey(), invokeCount);
+                        }
                         invokeCountSum = invokeCountSum + invokeCount;
                         invokeSpeedSum = invokeSpeedSum + invokeSpeed;
                     }

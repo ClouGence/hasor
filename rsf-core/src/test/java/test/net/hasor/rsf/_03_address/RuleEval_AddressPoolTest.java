@@ -161,7 +161,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings();//create Settings
+        Settings setting = new StandardContextSettings("03_args-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
@@ -212,6 +212,6 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
         pool.updateDefaultRoute(RouteTypeEnum.ArgsLevel, script);
-        Thread.sleep(10000);
+        Thread.sleep(100000);
     }
 }

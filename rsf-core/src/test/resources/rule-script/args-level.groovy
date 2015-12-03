@@ -5,8 +5,9 @@ def Map<String,Map<String,List<String>>> evalAddress(String serviceID,List<Strin
         return [
             "sayEcho":[
                 "sayTo_etc1":[
-                    "202.168.17.10:8000",
-                    "202.168.17.11:8000"
+                    "192.168.2.3:8000",
+                    "192.168.3.4:8000",
+                    "192.168.4.5:8000"
                 ],
                 "sayTo_etc2":[
                     "192.168.137.10:8000",

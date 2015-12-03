@@ -58,7 +58,7 @@ class AddressCacheResult {
                 if (cacheList != null) {
                     String key = argsKeyBuilder.eval(serviceID, methodName, args);
                     if (key != null) {
-                        result = cacheList.get(methodName);
+                        result = cacheList.get(key);
                     }
                 }
             }
