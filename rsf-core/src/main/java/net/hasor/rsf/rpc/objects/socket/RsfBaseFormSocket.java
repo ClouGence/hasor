@@ -25,9 +25,9 @@ import net.hasor.rsf.utils.ByteStringCachelUtils;
  */
 public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
     private OptionManager optionManager = new OptionManager();
-    private DATA          rsfBlock;
-    private long          requestID;
     private String        serializeType;
+    private long          requestID;
+    private DATA          rsfBlock;
     //
     public RsfBaseFormSocket(Context context, DATA rsfBlock) {
         this.rsfBlock = rsfBlock;

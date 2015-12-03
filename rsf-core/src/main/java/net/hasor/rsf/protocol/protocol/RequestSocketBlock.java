@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.protocol;
-import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.util.ArrayUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * RSF 1.0 Request 协议
  * --------------------------------------------------------bytes =13
@@ -53,14 +53,14 @@ import org.more.util.ArrayUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
-    private byte  rsfHead        = 0; //byte[1]  RSF头
-    private long  requestID      = 0; //byte[8]  请求ID
-    private short serviceName    = 0; //byte[2]  远程服务名
-    private short serviceGroup   = 0; //byte[2]  远程服务分组
-    private short serviceVersion = 0; //byte[2]  远程服务版本
-    private short targetMethod   = 0; //byte[2]  远程服务方法名
-    private short serializeType  = 0; //byte[2]  序列化策略
-    private int   clientTimeout  = 0; //byte[4]  远程客户端超时时间
+    private byte  rsfHead        = 0;  //byte[1]  RSF头
+    private long  requestID      = 0;  //byte[8]  请求ID
+    private short serviceName    = 0;  //byte[2]  远程服务名
+    private short serviceGroup   = 0;  //byte[2]  远程服务分组
+    private short serviceVersion = 0;  //byte[2]  远程服务版本
+    private short targetMethod   = 0;  //byte[2]  远程服务方法名
+    private short serializeType  = 0;  //byte[2]  序列化策略
+    private int   clientTimeout  = 0;  //byte[4]  远程客户端超时时间
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
     //

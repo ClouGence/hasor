@@ -1,4 +1,4 @@
-package test.net.hasor.rsf.protocol;
+package test.net.hasor.rsf._04_protocol;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext, ResponseSocketBlock> implements RsfResponse {
+public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext, ResponseSocketBlock>implements RsfResponse {
     protected Logger       logger = LoggerFactory.getLogger(getClass());
     private RsfBindInfo<?> bindInfo;
     private short          responseStatus;

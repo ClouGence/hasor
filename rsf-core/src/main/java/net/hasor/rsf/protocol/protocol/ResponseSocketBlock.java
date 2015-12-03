@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.protocol;
-import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.util.ArrayUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * RSF 1.0 Response 协议
  * --------------------------------------------------------bytes =13
@@ -45,15 +45,15 @@ import org.more.util.ArrayUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
-    private byte  rsfHead       = 0; //byte[1]  RSF头
-    private long  requestID     = 0; //byte[8]  请求ID
-    private short status        = 0; //byte[2]  响应状态
-    private short serializeType = 0; //byte[2]  序列化类型
-    private short returnType    = 0; //byte[2]  返回类型
-    private short returnData    = 0; //byte[2]  返回数据
+    private byte  rsfHead       = 0;  //byte[1]  RSF头
+    private long  requestID     = 0;  //byte[8]  请求ID
+    private short status        = 0;  //byte[2]  响应状态
+    private short serializeType = 0;  //byte[2]  序列化类型
+    private short returnType    = 0;  //byte[2]  返回类型
+    private short returnData    = 0;  //byte[2]  返回数据
     private int[] optionMap     = {}; //(attr-index,attr-index)
     //
-    private long  receiveTime   = 0; //数据包到达时间
+    private long  receiveTime   = 0;  //数据包到达时间
     //
     //
     public void setReceiveTime(long receiveTime) {
