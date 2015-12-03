@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._03_address;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.address.AddressPool;
@@ -33,12 +33,12 @@ public class AbstractAddressPoolTest {
     }
     /*负责不停的执行doNextAddress的线程。*/
     public class NextWork implements Runnable {
-        private AddressPool                           pool;
-        private ConcurrentMap<InterAddress, TimeData> atomicMap;
-        private String                                serviceID;
-        private String                                methodName;
-        private Object[]                              args;
-        public NextWork(String serviceID, String methodName, Object[] args, AddressPool pool, ConcurrentMap<InterAddress, TimeData> atomicMap) {
+        private AddressPool                                                  pool;
+        private ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap;
+        private String                                                       serviceID;
+        private String                                                       methodName;
+        private String                                                       args;
+        public NextWork(String serviceID, String methodName, String args, AddressPool pool, ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap) {
             this.serviceID = serviceID;
             this.methodName = methodName;
             this.args = args;
@@ -53,8 +53,8 @@ public class AbstractAddressPoolTest {
     }
     /*负责打印atomicMap的线程*/
     public class MonitorWork implements Runnable {
-        private ConcurrentMap<InterAddress, TimeData> atomicMap;
-        public MonitorWork(ConcurrentMap<InterAddress, TimeData> atomicMap) {
+        private ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap;
+        public MonitorWork(ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap) {
             this.atomicMap = atomicMap;
         }
         public void run() {
@@ -70,15 +70,21 @@ public class AbstractAddressPoolTest {
                 lastTime = System.currentTimeMillis();
                 long invokeCountSum = 0;
                 long invokeSpeedSum = 0;
-                for (Entry<InterAddress, TimeData> entry : atomicMap.entrySet()) {
-                    TimeData timeData = entry.getValue();
-                    long invokeCount = timeData.atomicValue.get();
-                    long invokeSpeed = eval(checkTime, timeData, invokeCount);
-                    invokeCount = invokeCount / 10000;
-                    invokeSpeed = invokeSpeed / 10000;
-                    System.out.println(entry.getKey() + " - [Count/Speed](单位:万)\t" + invokeCount + "/" + invokeSpeed);
-                    invokeCountSum = invokeCountSum + invokeCount;
-                    invokeSpeedSum = invokeSpeedSum + invokeSpeed;
+                for (Entry<String, ConcurrentMap<InterAddress, TimeData>> entry : atomicMap.entrySet()) {
+                    String serviceKey = entry.getKey();
+                    ConcurrentMap<InterAddress, TimeData> timeDataMap = entry.getValue();
+                    //
+                    System.out.println("serviceKey:" + serviceKey);
+                    for (Entry<InterAddress, TimeData> timeDataEntry : timeDataMap.entrySet()) {
+                        TimeData timeData = timeDataEntry.getValue();
+                        long invokeCount = timeData.atomicValue.get();
+                        long invokeSpeed = eval(checkTime, timeData, invokeCount);
+                        invokeCount = invokeCount / 10000;
+                        invokeSpeed = invokeSpeed / 10000;
+                        System.out.println(timeDataEntry.getKey() + "\t- [Count/Speed](单位:万)\t" + invokeCount + "/" + invokeSpeed);
+                        invokeCountSum = invokeCountSum + invokeCount;
+                        invokeSpeedSum = invokeSpeedSum + invokeSpeed;
+                    }
                 }
                 System.out.println("CountSum/SpeedSum(单位:万)\t" + invokeCountSum + "/" + invokeSpeedSum);
                 System.out.println("------------------------");
@@ -94,16 +100,22 @@ public class AbstractAddressPoolTest {
         }
     }
     //
-    public void doNextAddress(String serviceID, String methodName, Object[] args, AddressPool pool, Map<InterAddress, TimeData> atomicMap) {
-        InterAddress inter = pool.nextAddress(serviceID, methodName, args);
+    public void doNextAddress(String serviceID, String methodName, String args, AddressPool pool, ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap) {
+        InterAddress inter = pool.nextAddress(serviceID, methodName, new Object[] { args });
         if (inter == null) {
             return;
         }
-        TimeData atomicData = atomicMap.get(inter);
+        String key = "serviceID=" + serviceID + ",method=" + methodName + ",args=" + args;
+        ConcurrentMap<InterAddress, TimeData> addressMap = atomicMap.get(key);
+        if (addressMap == null) {
+            addressMap = new ConcurrentHashMap<InterAddress, TimeData>();
+            atomicMap.put(key, addressMap);
+        }
+        TimeData atomicData = addressMap.get(inter);
         if (atomicData == null) {
             atomicData = new TimeData();
             atomicData.atomicValue = new AtomicLong(0);
-            atomicMap.put(inter, atomicData);
+            addressMap.put(inter, atomicData);
         }
         atomicData.atomicValue.getAndIncrement();//++
     }

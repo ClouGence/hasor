@@ -43,8 +43,10 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
      * -- 路由规则是只有etc2机房的地址才会被调用。*/
     @Test
     public void serviceRuleAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
-        Settings setting = new StandardContextSettings("03_rule-config.xml");//create Settings
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //
+        ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
+        Settings setting = new StandardContextSettings();//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
@@ -53,13 +55,20 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
         addresses_1.add(new InterAddress("192.168.137.11", 8000, "etc2"));//  rsf://192.168.137.11:8000/etc2
-        addresses_1.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
-        addresses_1.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        List<InterAddress> addresses_2 = new ArrayList<InterAddress>();
+        addresses_2.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
+        List<InterAddress> addresses_3 = new ArrayList<InterAddress>();
+        addresses_3.add(new InterAddress("192.168.2.3", 8000, "etc1"));//     rsf://192.168.1.3:8000/etc1
+        addresses_3.add(new InterAddress("192.168.3.4", 8000, "etc1"));//     rsf://192.168.1.4:8000/etc1
+        addresses_3.add(new InterAddress("192.168.4.5", 8000, "etc1"));//     rsf://192.168.1.5:8000/etc1
         //
-        //3个线程拼命的获取地址。
-        String serviceID = "[RSF]sorg.mytest.FooFacse-1.0.0";
+        String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         String methodName = "sayHello";
-        Object[] args = new Object[] { "say Hello" };
+        String args = "say Hello";
+        //
+        //线程拼命的获取地址
         Thread workThread_1 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_1");
         Thread workThread_2 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_2");
         Thread workThread_3 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_3");
@@ -70,10 +79,14 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         workThread_3.start();
         workThread_4.start();
         monitorThread.start();
+        Thread.sleep(5000);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
         pool.updateAddress(serviceID, addresses_1);
+        pool.updateAddress(serviceID, addresses_2);
+        pool.updateAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
         //服务级路由规则，应用规则之后只有etc2机房的地址可用。
@@ -84,11 +97,13 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
     }
     //
     /*动态更新方法级路由规则。
-     * --路由规则是sayEcho使用192.168.137.10地址，testUserTag使用192.168.1.3-4。*/
+     * --路由规则是sayEcho使用etc2机房，testUserTag使用etc1机房。*/
     @Test
     public void methodRuleAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
-        Settings setting = new StandardContextSettings("03_rule-config.xml");//create Settings
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //
+        ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
+        Settings setting = new StandardContextSettings();//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
@@ -97,27 +112,42 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
         addresses_1.add(new InterAddress("192.168.137.11", 8000, "etc2"));//  rsf://192.168.137.11:8000/etc2
-        addresses_1.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
-        addresses_1.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        List<InterAddress> addresses_2 = new ArrayList<InterAddress>();
+        addresses_2.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
+        List<InterAddress> addresses_3 = new ArrayList<InterAddress>();
+        addresses_3.add(new InterAddress("192.168.2.3", 8000, "etc1"));//     rsf://192.168.1.3:8000/etc1
+        addresses_3.add(new InterAddress("192.168.3.4", 8000, "etc1"));//     rsf://192.168.1.4:8000/etc1
+        addresses_3.add(new InterAddress("192.168.4.5", 8000, "etc1"));//     rsf://192.168.1.5:8000/etc1
         //
-        //3个线程拼命的获取地址。
-        String serviceID = "[RSF]sorg.mytest.FooFacse-1.0.0";
+        String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         String methodName1 = "sayEcho";
         String methodName2 = "testUserTag";
-        Object[] args = new Object[] { "say Hello" };
+        String args = "say Hello";
+        //
+        //线程拼命的获取地址
         Thread workThread_1 = new Thread(new NextWork(serviceID, methodName1, args, pool, atomicMap), "WorkThread_1");
-        Thread workThread_2 = new Thread(new NextWork(serviceID, methodName2, args, pool, atomicMap), "WorkThread_2");
+        Thread workThread_2 = new Thread(new NextWork(serviceID, methodName1, args, pool, atomicMap), "WorkThread_2");
+        Thread workThread_3 = new Thread(new NextWork(serviceID, methodName2, args, pool, atomicMap), "WorkThread_3");
+        Thread workThread_4 = new Thread(new NextWork(serviceID, methodName2, args, pool, atomicMap), "WorkThread_4");
         Thread monitorThread = new Thread(new MonitorWork(atomicMap), "MonitorThread");
         workThread_1.start();
         workThread_2.start();
+        workThread_3.start();
+        workThread_4.start();
         monitorThread.start();
+        Thread.sleep(5000);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
         pool.updateAddress(serviceID, addresses_1);
+        pool.updateAddress(serviceID, addresses_2);
+        pool.updateAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
-        //方法级路由规则，更新之后sayEcho使用192.168.137.10地址，testUserTag使用192.168.1.3-4
+        //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
         pool.updateDefaultRoute(RouteTypeEnum.MethodLevel, script);
@@ -128,29 +158,36 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
      * --路由规则是sayEcho使用192.168.137.10地址，testUserTag使用192.168.1.3-4。*/
     @Test
     public void argsRuleAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
-        Settings setting = new StandardContextSettings("03_rule-config.xml");//create Settings
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //
+        ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
+        Settings setting = new StandardContextSettings();//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.init();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
-        addresses_1.add(new InterAddress("202.168.17.10", 8000, "etc1"));//   rsf://202.168.17.10:8000/etc2
-        addresses_1.add(new InterAddress("202.168.17.11", 8000, "etc1"));//   rsf://202.168.17.11:8000/etc2
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
         addresses_1.add(new InterAddress("192.168.137.11", 8000, "etc2"));//  rsf://192.168.137.11:8000/etc2
-        addresses_1.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
-        addresses_1.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        List<InterAddress> addresses_2 = new ArrayList<InterAddress>();
+        addresses_2.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
+        addresses_2.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
+        List<InterAddress> addresses_3 = new ArrayList<InterAddress>();
+        addresses_3.add(new InterAddress("192.168.2.3", 8000, "etc1"));//     rsf://192.168.1.3:8000/etc1
+        addresses_3.add(new InterAddress("192.168.3.4", 8000, "etc1"));//     rsf://192.168.1.4:8000/etc1
+        addresses_3.add(new InterAddress("192.168.4.5", 8000, "etc1"));//     rsf://192.168.1.5:8000/etc1
         //
-        //3个线程拼命的获取地址。
-        String serviceID = "[RSF]sorg.mytest.FooFacse-1.0.0";
+        String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         String methodName1 = "sayEcho";
         String methodName2 = "testUserTag";
-        Object[] args1 = new Object[] { "sayTo_etc1" };
-        Object[] args2 = new Object[] { "sayTo_etc2" };
-        Object[] args3 = new Object[] { "server_3" };
-        Object[] args4 = new Object[] { "server_4" };
+        String args1 = "sayTo_etc1";
+        String args2 = "sayTo_etc2";
+        String args3 = "server_3";
+        String args4 = "server_4";
+        //
+        //线程拼命的获取地址
         Thread workThread_1 = new Thread(new NextWork(serviceID, methodName1, args1, pool, atomicMap), "WorkThread_1");
         Thread workThread_2 = new Thread(new NextWork(serviceID, methodName1, args2, pool, atomicMap), "WorkThread_2");
         Thread workThread_3 = new Thread(new NextWork(serviceID, methodName2, args3, pool, atomicMap), "WorkThread_3");
@@ -161,13 +198,17 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         workThread_3.start();
         workThread_4.start();
         monitorThread.start();
+        Thread.sleep(5000);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
         pool.updateAddress(serviceID, addresses_1);
+        pool.updateAddress(serviceID, addresses_2);
+        pool.updateAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
-        //方法级路由规则，更新之后sayEcho使用192.168.137.10地址，testUserTag使用192.168.1.3-4
+        //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
         pool.updateDefaultRoute(RouteTypeEnum.ArgsLevel, script);

@@ -38,8 +38,10 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
     /*动态更新地址*/
     @Test
     public void dynamicAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
-        Settings setting = new StandardContextSettings("03_address-config.xml");//create Settings
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //
+        ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
+        Settings setting = new StandardContextSettings();//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
@@ -53,52 +55,50 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         addresses_2.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
         addresses_2.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
         List<InterAddress> addresses_3 = new ArrayList<InterAddress>();
-        addresses_3.add(new InterAddress("192.168.2.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
-        addresses_3.add(new InterAddress("192.168.3.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
-        addresses_3.add(new InterAddress("192.168.4.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
+        addresses_3.add(new InterAddress("192.168.2.3", 8000, "etc1"));//     rsf://192.168.1.3:8000/etc1
+        addresses_3.add(new InterAddress("192.168.3.4", 8000, "etc1"));//     rsf://192.168.1.4:8000/etc1
+        addresses_3.add(new InterAddress("192.168.4.5", 8000, "etc1"));//     rsf://192.168.1.5:8000/etc1
         //
-        //3个线程拼命的获取地址。
         String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         String methodName = "sayHello";
-        Object[] args = new Object[] { "say Hello" };
+        String args = "say Hello";
+        //
+        //线程拼命的获取地址
         Thread workThread_1 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_1");
         Thread workThread_2 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_2");
         Thread workThread_3 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_3");
+        Thread workThread_4 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_4");
         Thread monitorThread = new Thread(new MonitorWork(atomicMap), "MonitorThread");
         workThread_1.start();
         workThread_2.start();
         workThread_3.start();
+        workThread_4.start();
         monitorThread.start();
         Thread.sleep(5000);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
-        //Test - 0 ，动态新增服务，同时指定地址。
+        //动态新增服务
         pool.updateAddress(serviceID, addresses_1);
         Thread.sleep(10000);
         //
-        //Test - 1 ，使一个地址失效。
-        pool.invalidAddress(serviceID, new InterAddress("192.168.137.10", 8000, "etc2"));
-        Thread.sleep(10000);
-        //
-        //Test - 2 ，动态加入更多的地址。
+        //动态加入更多的地址
         pool.updateAddress(serviceID, addresses_2);
+        pool.updateAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
-        //Test - 3 ，失效的地址重新激活。
-        pool.updateAddress(serviceID, addresses_1);
+        //删除地址
+        for (InterAddress addr : addresses_1)
+            pool.removeAddress(serviceID, addr);
         Thread.sleep(10000);
         //
-        //        addresses.add(new URI("rsf://192.168.0.101:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.102:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.103:8000/etc2"));
-        //        return addresses;
-        //
-        Thread.sleep(120000);//120秒
     }
     //
     /*动态失效地址和重新让地址生效。*/
     @Test
     public void invalidAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //
+        ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
         Settings setting = new StandardContextSettings("03_address-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
@@ -109,19 +109,23 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
         addresses_1.add(new InterAddress("192.168.137.11", 8000, "etc2"));//  rsf://192.168.137.11:8000/etc2
         //
-        //3个线程拼命的获取地址。
         String serviceID = "[RSF]test.net.hasor.rsf.services.EchoService-1.0.0";
         String methodName = "sayHello";
-        Object[] args = new Object[] { "say Hello" };
+        String args = "say Hello";
+        //
+        //线程拼命的获取地址
         Thread workThread_1 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_1");
         Thread workThread_2 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_2");
         Thread workThread_3 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_3");
+        Thread workThread_4 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_4");
         Thread monitorThread = new Thread(new MonitorWork(atomicMap), "MonitorThread");
         workThread_1.start();
         workThread_2.start();
         workThread_3.start();
+        workThread_4.start();
         monitorThread.start();
         Thread.sleep(5000);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //Test - 0 ，动态新增服务，同时指定地址。
         pool.updateAddress(serviceID, addresses_1);
@@ -138,12 +142,5 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //Test - 3 ，失效的地址重新激活。
         pool.updateAddress(serviceID, addresses_1);
         Thread.sleep(10000);
-        //
-        //        addresses.add(new URI("rsf://192.168.0.101:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.102:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.103:8000/etc2"));
-        //        return addresses;
-        //
-        Thread.sleep(120000);//120秒
     }
 }
