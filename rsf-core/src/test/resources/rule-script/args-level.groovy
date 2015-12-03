@@ -1,29 +1,24 @@
-package flowcontrol
-
 def Map<String,Map<String,List<String>>> evalAddress(String serviceID,List<String> allAddress)  {
     //
     //[RSF]sorg.mytest.FooFacse-1.0.0 ---- Group=RSF, Name=sorg.mytest.FooFacse, Version=1.0.0
     if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
         return [
-            "println":[
-                "":[
-                    "192.168.1.2:8000",
-                    "192.168.1.2:8001",
+            "sayEcho":[
+                "sayTo_etc1":[
+                    "202.168.17.10:8000",
+                    "202.168.17.11:8000"
+                ],
+                "sayTo_etc2":[
+                    "192.168.137.10:8000",
+                    "192.168.137.11:8000"
+                ]],
+            "testUserTag":[
+                "server_3":[
                     "192.168.1.3:8000"
                 ],
-            ],
-            "sayEcho":[
-                "sayToServerA":[
-                    "192.168.1.2:8000",
-                ],
-                "sayToServerB":[
-                    "192.168.1.2:8001",
-                ],
-
-            ],
-            "testUserTag":[
-                "192.168.1.2:8000",
-                "192.168.1.3:8000"
+                "server_4":[
+                    "192.168.1.4:8000"
+                ]
             ]
         ]
     }

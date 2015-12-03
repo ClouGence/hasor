@@ -37,13 +37,14 @@ public enum RouteTypeEnum {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
     //
-    static void updateScript(RouteTypeEnum scriptType, String script, RefRule data) {
-        /*  */if (RouteTypeEnum.ServiceLevel.equals(scriptType)) {
-            data.serviceLevel.update(script);
-        } else if (RouteTypeEnum.MethodLevel.equals(scriptType)) {
-            data.methodLevel.update(script);
-        } else if (RouteTypeEnum.ArgsLevel.equals(scriptType)) {
-            data.argsLevel.update(script);
+    static boolean updateScript(RouteTypeEnum routeType, String script, RuleRef ref) {
+        /*  */if (RouteTypeEnum.ServiceLevel.equals(routeType)) {
+            return ref.getServiceLevel().update(script);
+        } else if (RouteTypeEnum.MethodLevel.equals(routeType)) {
+            return ref.getMethodLevel().update(script);
+        } else if (RouteTypeEnum.ArgsLevel.equals(routeType)) {
+            return ref.getArgsLevel().update(script);
         }
+        return false;
     }
 }

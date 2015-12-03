@@ -18,8 +18,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +48,6 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * 服务地址池
  * <p>路由策略：
@@ -59,33 +60,31 @@ import net.hasor.rsf.utils.RsfRuntimeUtils;
  *  
  *  参数级
  * 
- * 
- * 
  * 路由规则
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool {
+    protected final Logger                             logger       = LoggerFactory.getLogger(getClass());
     private static final String                        CharsetName  = "UTF-8";
     private static final String                        ScriptPath   = "/script";
     private static final String                        SnapshotPath = "/snapshot";
     //
-    protected Logger                                   logger       = LoggerFactory.getLogger(getClass());
-    private AtomicBoolean                              inited       = new AtomicBoolean(false);
+    private final AtomicBoolean                        inited       = new AtomicBoolean(false);
     private final File                                 rsfHome;
     private final File                                 indexFile;
     private final File                                 scriptHome;
     private final File                                 snapshotHome;
     //
     private final RsfEnvironment                       rsfEnvironment;
-    private final ConcurrentMap<String, AddressBucket> addressPool;                                       //服务地址池Map.
-    private final String                               unitName;                                          //本机所处单元.
+    private final ConcurrentMap<String, AddressBucket> addressPool;
+    private final String                               unitName;
     //
     private final AddressCacheResult                   rulerCache;
     private final RuleParser                           ruleParser;
     private final ArgsKey                              argsKey;
-    private volatile RefFlowControl                    flowControlRef;                                    //默认流控规则引用
-    private volatile RefRule                           ruleRef;
+    private volatile FlowControlRef                    flowControlRef;
+    private volatile RuleRef                           ruleRef;
     private final Object                               poolLock;
     private final Thread                               timer;
     //
@@ -101,7 +100,7 @@ public class AddressPool {
                 } catch (InterruptedException e) {
                     /**/
                 }
-                logger.info("AddressPool - refreshCache. at = {} , refreshCacheTime = {}.", RsfRuntimeUtils.nowTime(), refreshCacheTime);
+                logger.info("AddressPool - refreshCache. at = {} , refreshCacheTime = {}.", nowTime(), refreshCacheTime);
                 refreshCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
                     nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);/*每小时保存一次地址本快照。*/
@@ -124,7 +123,7 @@ public class AddressPool {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {/**/}
             }
-            writeFile = new File(this.snapshotHome, "address-" + RsfRuntimeUtils.nowTime() + ".zip");
+            writeFile = new File(this.snapshotHome, "address-" + nowTime() + ".zip");
         }
         logger.info("rsf - saveAddress to snapshot file({}) ->{}", CharsetName, writeFile);
         FileOutputStream fos = null;
@@ -221,7 +220,7 @@ public class AddressPool {
     //
     public AddressPool(RsfEnvironment rsfEnvironment) {
         String unitName = rsfEnvironment.getSettings().getUnitName();
-        logger.info("init AddressPool unitName = " + unitName);
+        logger.info("AddressPool unitName at {}", unitName);
         //
         this.rsfEnvironment = rsfEnvironment;
         this.rsfHome = new File(rsfEnvironment.evalString("%" + RsfEnvironment.WORK_HOME + "%/rsf/"));
@@ -238,7 +237,8 @@ public class AddressPool {
         this.timer = new Thread(new PoolThread());
         this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
         this.timer.setDaemon(true);
-        this.flowControlRef = RefFlowControl.defaultRef(rsfSettings);
+        this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
+        this.ruleRef = new RuleRef();
         //
         String argsKeyType = rsfSettings.getString("hasor.rsfConfig.route.argsKey", DefaultArgsKey.class.getName());
         logger.info("argsKey type is {}", argsKeyType);
@@ -249,8 +249,6 @@ public class AddressPool {
             logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);
             throw ExceptionUtils.toRuntimeException(e);
         }
-        //
-        this.ruleRef = new RefRule();
     }
     //
     /**
@@ -368,32 +366,17 @@ public class AddressPool {
         this.rulerCache.reset();
     }
     /**
-     * 保存规则脚本数据到规则快照目录，当下一次启动RSF的时。将尝试从本地加载地址本而非远程注册中心。
-     * @param name 规则名。
-     * @param script 规则脚本。
-     */
-    protected boolean saveScript(String name, String script) {
-        String fileName = name + "-" + RsfRuntimeUtils.nowTime() + ".rol";
-        File rolFileName = new File(this.scriptHome, fileName);
-        //
-        try {
-            FileUtils.write(rolFileName, script, CharsetName);
-            logger.info("save the rule script to {}", rolFileName);
-            return true;
-        } catch (IOException e) {
-            logger.error("save the rule script to " + rolFileName + " ,error : " + e.getMessage(), e);
-            return false;
-        }
-    }
-    /**
      * 更新默认流控规则。
      * @param flowControl 流控规则
      */
     public void updateDefaultFlowControl(String flowControl) {
-        String fileName = "flowControl-default";
-        logger.info("refreshDefaultFlowControl ,save snapshots status = ", saveScript(fileName, flowControl));
+        FlowControlRef flowControlRef = paselowControl(flowControl);
+        if (flowControlRef == null) {
+            return;
+        }
         //
-        RefFlowControl flowControlRef = paselowControl(flowControl);
+        saveScript("flowControl-default", flowControl);
+        logger.info("update default flowControl -> update ok");
         this.flowControlRef = flowControlRef;
         this.refreshCache();
     }
@@ -403,17 +386,24 @@ public class AddressPool {
      * @param flowControl 流控规则
      */
     public void updateFlowControl(String serviceID, String flowControl) {
-        String fileName = "flowControl-" + serviceID;
-        logger.info("refreshFlowControl ,save snapshots status = ", saveScript(fileName, flowControl));
+        if (StringUtils.isBlank(serviceID)) {
+            return;
+        }
+        FlowControlRef flowControlRef = paselowControl(flowControl);
+        if (flowControlRef == null) {
+            return;
+        }
         //
-        if (!StringUtils.isBlank(serviceID)) {
-            AddressBucket bucket = this.addressPool.get(serviceID);
-            if (bucket != null) {
-                logger.info("service {} refreshFlowControl.", serviceID);
-                RefFlowControl flowControlRef = paselowControl(flowControl);
-                bucket.setFlowControlRef(flowControlRef);
-                this.refreshCache();
-            }
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            logger.warn("update flowControl service={} -> AddressBucket not exist.", serviceID);
+            return;
+        }
+        if (bucket != null) {
+            saveScript("flowControl-" + serviceID, flowControl);
+            logger.info("update flowControl service={} -> update ok", serviceID);
+            bucket.setFlowControlRef(flowControlRef);
+            this.refreshCache();
         }
     }
     /**
@@ -421,12 +411,16 @@ public class AddressPool {
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void updateDefaultRoute(RouteTypeEnum routeType, String script) throws IOException {
-        String fileName = "routeType-" + routeType.name() + "-default";
-        logger.info("refreshDefaultRouteScript ,save snapshots status = ", saveScript(fileName, script));
+    public void updateDefaultRoute(RouteTypeEnum routeType, String script) {
+        RuleRef ruleRef = new RuleRef(this.ruleRef);
+        boolean updated = RouteTypeEnum.updateScript(routeType, script, ruleRef);
+        if (!updated) {
+            logger.warn("update default rules -> no change.");
+            return;
+        }
         //
-        RefRule ruleRef = new RefRule(this.ruleRef);
-        RouteTypeEnum.updateScript(routeType, script, ruleRef);
+        saveScript("routeType-" + routeType.name() + "-default", script);
+        logger.info("update default rules -> update ok");
         this.ruleRef = ruleRef;
         this.refreshCache();
     }
@@ -436,70 +430,24 @@ public class AddressPool {
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void updateRoute(String serviceID, RouteTypeEnum routeType, String script) throws IOException {
-        String fileName = "routeType-" + routeType.name() + "-" + serviceID;
-        logger.info("refreshRouteScript ,save snapshots status = ", saveScript(fileName, script));
-        //
+    public void updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
         AddressBucket bucket = this.addressPool.get(serviceID);
-        if (bucket != null) {
-            logger.info("service {} refreshRouteScript.", serviceID);
-            RefRule ruleRef = new RefRule(bucket.getRuleRef());
-            RouteTypeEnum.updateScript(routeType, script, ruleRef);
-            bucket.setRuleRef(ruleRef);
-            this.refreshCache();
-        }
-    }
-    /**
-     * 解析路由规则。
-     * @param flowControl 规则配置
-     * @return 返回解析的结果。
-     */
-    private RefFlowControl paselowControl(String flowControl) {
-        if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
-            logger.error("flowControl body format error.");
-            return null;
+        if (bucket == null) {
+            logger.warn("update rules service={} -> AddressBucket not exist.", serviceID);
+            return;
         }
         //
-        RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        RefFlowControl flowControlRef = RefFlowControl.defaultRef(rsfSettings);
+        RuleRef ruleRef = new RuleRef(this.ruleRef);
+        boolean updated = RouteTypeEnum.updateScript(routeType, script, ruleRef);
+        if (!updated) {
+            logger.warn("update rules service={} -> no change.", serviceID);
+            return;
+        }
         //
-        //1.提取路由配置
-        List<String> ruleBodyList = new ArrayList<String>();
-        final String tagNameBegin = "<flowControl";
-        final String tagNameEnd = "</flowControl>";
-        int beginIndex = 0;
-        int endIndex = 0;
-        while (true) {
-            beginIndex = flowControl.indexOf(tagNameBegin, endIndex);
-            endIndex = flowControl.indexOf(tagNameEnd, endIndex + tagNameEnd.length());
-            if (beginIndex < 0 || endIndex < 0) {
-                break;
-            }
-            String flowControlBody = flowControl.substring(beginIndex, endIndex + tagNameEnd.length());
-            ruleBodyList.add(flowControlBody);
-        }
-        if (ruleBodyList.isEmpty()) {
-            logger.warn("flowControl is empty -> use default settings.");
-        }
-        //2.解析路由配置
-        for (int i = 0; i < ruleBodyList.size(); i++) {
-            String controlBody = ruleBodyList.get(i);
-            Rule rule = this.ruleParser.ruleSettings(controlBody);
-            if (rule == null) {
-                continue;
-            }
-            String simpleName = rule.getClass().getSimpleName();
-            logger.info("setup flowControl -> {}.", simpleName);
-            /*  */if (rule instanceof UnitFlowControl) {
-                flowControlRef.unitFlowControl = (UnitFlowControl) rule; /*单元规则*/
-            } else if (rule instanceof RandomFlowControl) {
-                flowControlRef.randomFlowControl = (RandomFlowControl) rule;/*选址规则*/
-            } else if (rule instanceof SpeedFlowControl) {
-                flowControlRef.speedFlowControl = (SpeedFlowControl) rule; /*速率规则*/
-            }
-        }
-        //3.引用切换
-        return flowControlRef;
+        saveScript("routeType-" + routeType.name() + "-default", script);
+        logger.info("update rules service={} -> update ok", serviceID);
+        bucket.setRuleRef(ruleRef);
+        this.refreshCache();
     }
     /**刷新地址缓存*/
     public void refreshCache() {
@@ -536,7 +484,7 @@ public class AddressPool {
         InterAddress doCallAddress = null;
         //
         /*并发下不需要保证瞬时的一致性,只要保证最终一致性就好.*/
-        RefFlowControl flowControlRef = bucket.getFlowControlRef();
+        FlowControlRef flowControlRef = bucket.getFlowControlRef();
         if (flowControlRef == null) {
             flowControlRef = this.flowControlRef;
         }
@@ -552,17 +500,83 @@ public class AddressPool {
     }
     //
     //
+    /**
+     * 保存规则脚本数据到规则快照目录，当下一次启动RSF的时。将尝试从本地加载地址本而非远程注册中心。
+     * @param name 规则名。
+     * @param script 规则脚本。
+     */
+    protected void saveScript(String name, String script) {
+        String fileName = name + "-" + nowTime() + ".rol";
+        File saveToFile = new File(this.scriptHome, fileName);
+        //
+        try {
+            FileUtils.write(saveToFile, script, CharsetName);
+            logger.info("save the rule script to {}", saveToFile);
+        } catch (IOException e) {
+            logger.error("write file error, file = " + saveToFile + " ,error : " + e.getMessage(), e);
+        }
+    }
+    /**解析路由规则*/
+    private FlowControlRef paselowControl(String flowControl) {
+        if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
+            logger.error("flowControl body format error.");
+            return null;
+        }
+        FlowControlRef flowControlRef = FlowControlRef.newRef();
+        //
+        //1.提取路由配置
+        List<String> ruleBodyList = new ArrayList<String>();
+        final String tagNameBegin = "<flowControl";
+        final String tagNameEnd = "</flowControl>";
+        int beginIndex = 0;
+        int endIndex = 0;
+        while (true) {
+            beginIndex = flowControl.indexOf(tagNameBegin, endIndex);
+            endIndex = flowControl.indexOf(tagNameEnd, endIndex + tagNameEnd.length());
+            if (beginIndex < 0 || endIndex < 0) {
+                break;
+            }
+            String flowControlBody = flowControl.substring(beginIndex, endIndex + tagNameEnd.length());
+            ruleBodyList.add(flowControlBody);
+        }
+        if (ruleBodyList.isEmpty()) {
+            logger.warn("flowControl is empty.");
+            return flowControlRef;
+        }
+        //2.解析路由配置
+        for (int i = 0; i < ruleBodyList.size(); i++) {
+            String controlBody = ruleBodyList.get(i);
+            Rule rule = this.ruleParser.ruleSettings(controlBody);
+            if (rule == null) {
+                continue;
+            }
+            String simpleName = rule.getClass().getSimpleName();
+            logger.info("setup flowControl type is {}.", simpleName);
+            /*  */if (rule instanceof UnitFlowControl) {
+                flowControlRef.unitFlowControl = (UnitFlowControl) rule; /*单元规则*/
+            } else if (rule instanceof RandomFlowControl) {
+                flowControlRef.randomFlowControl = (RandomFlowControl) rule;/*选址规则*/
+            } else if (rule instanceof SpeedFlowControl) {
+                flowControlRef.speedFlowControl = (SpeedFlowControl) rule; /*速率规则*/
+            }
+        }
+        //3.引用切换
+        return flowControlRef;
+    }
     protected ArgsKey getArgsKey() {
         return this.argsKey;
     }
     /**获取地址路由规则引用。*/
-    protected RefRule getRefRule(String serviceID) {
+    protected RuleRef getRefRule(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
-        RefRule ruleRef = this.ruleRef;
+        RuleRef ruleRef = this.ruleRef;
         if (bucket != null && bucket.getRuleRef() != null) {
             ruleRef = bucket.getRuleRef();
         }
         return ruleRef;
+    }
+    private static String nowTime() {
+        return new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
     }
     @Override
     public String toString() {

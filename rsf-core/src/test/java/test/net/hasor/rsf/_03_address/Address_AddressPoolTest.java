@@ -21,15 +21,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 /**
@@ -140,54 +137,6 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //
         //Test - 3 ，失效的地址重新激活。
         pool.updateAddress(serviceID, addresses_1);
-        Thread.sleep(10000);
-        //
-        //        addresses.add(new URI("rsf://192.168.0.101:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.102:8000/etc2"));
-        //        addresses.add(new URI("rsf://192.168.0.103:8000/etc2"));
-        //        return addresses;
-        //
-        Thread.sleep(120000);//120秒
-    }
-    //
-    /*动态更新路由规则。*/
-    @Test
-    public void ruleAddress() throws IOException, URISyntaxException, InterruptedException {
-        ConcurrentMap<InterAddress, TimeData> atomicMap = new ConcurrentHashMap<InterAddress, TimeData>();
-        Settings setting = new StandardContextSettings("03_address-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
-        //
-        List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
-        addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
-        addresses_1.add(new InterAddress("192.168.137.11", 8000, "etc2"));//  rsf://192.168.137.11:8000/etc2
-        addresses_1.add(new InterAddress("192.168.1.3", 8000, "etc3"));//     rsf://192.168.1.3:8000/etc3
-        addresses_1.add(new InterAddress("192.168.1.4", 8000, "etc3"));//     rsf://192.168.1.4:8000/etc3
-        addresses_1.add(new InterAddress("192.168.1.5", 8000, "etc3"));//     rsf://192.168.1.5:8000/etc3
-        //
-        //3个线程拼命的获取地址。
-        String serviceID = "[RSF]sorg.mytest.FooFacse-1.0.0";
-        String methodName = "sayHello";
-        Object[] args = new Object[] { "say Hello" };
-        Thread workThread_1 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_1");
-        Thread workThread_2 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_2");
-        Thread workThread_3 = new Thread(new NextWork(serviceID, methodName, args, pool, atomicMap), "WorkThread_3");
-        Thread monitorThread = new Thread(new MonitorWork(atomicMap), "MonitorThread");
-        workThread_1.start();
-        workThread_2.start();
-        workThread_3.start();
-        monitorThread.start();
-        Thread.sleep(5000);
-        //
-        //Test - 0 ，动态新增服务，同时指定地址。
-        pool.updateAddress(serviceID, addresses_1);
-        Thread.sleep(10000);
-        //
-        //Test - 1 ，服务级路由规则。
-        String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
-        pool.updateDefaultRoute(RouteTypeEnum.ServiceLevel, script);
         Thread.sleep(10000);
         //
         //        addresses.add(new URI("rsf://192.168.0.101:8000/etc2"));

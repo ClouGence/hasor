@@ -20,11 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.script.Bindings;
-import javax.script.Invocable;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
@@ -40,11 +35,9 @@ class AddressCacheResult {
     //做引用切换
     private volatile CacheResult cacheResultRef;
     private final AddressPool    addressPool;
-    private ArgsKey              argsKeyBuilder;
     //
     public AddressCacheResult(AddressPool addressPool) {
         this.addressPool = Hasor.assertIsNotNull(addressPool);
-        this.argsKeyBuilder = addressPool.getArgsKey();
     }
     //
     /**从全部地址中计算执行动态计算并缓存计算结果.*/
@@ -57,7 +50,8 @@ class AddressCacheResult {
         CacheResult resultRef = this.cacheResultRef;
         //
         //1.获取参数级地址列表
-        if (this.argsKeyBuilder != null) {
+        ArgsKey argsKeyBuilder = addressPool.getArgsKey();
+        if (argsKeyBuilder != null) {
             Map<String, Map<String, List<InterAddress>>> methodList = resultRef.argsLevel.get(serviceID);
             if (methodList != null) {
                 Map<String, List<InterAddress>> cacheList = methodList.get(methodName);
@@ -96,40 +90,42 @@ class AddressCacheResult {
             List<InterAddress> all = allAddress.get(serviceID);
             List<InterAddress> unit = allAddress.get(serviceID + "_UNIT");
             List<String> allStrList = convertToStr(all);
-            RefRule refRule = this.addressPool.getRefRule(serviceID);
+            RuleRef refRule = this.addressPool.getRefRule(serviceID);
             //
             //1.计算缓存的服务接口级,地址列表
             List<InterAddress> serviceLevelResult = null;
-            if (refRule.serviceLevel.isEnable()) {
+            if (!refRule.getServiceLevel().isEnable()) {
                 logger.debug("eval routeScript [ServiceLevel], service {} route undefined.", serviceID);
             } else {
                 List<String> serviceLevelResultStr = evalServiceLevel(serviceID, refRule, allStrList);
-                serviceLevelResult = convertToAddress(all, serviceLevelResultStr);
+                if (serviceLevelResultStr != null && !serviceLevelResultStr.isEmpty()) {
+                    serviceLevelResult = convertToAddress(all, serviceLevelResultStr);
+                }
             }
             if (serviceLevelResult == null || serviceLevelResult.isEmpty()) {
                 serviceLevelResult = unit;/*如果计算结果为空，就使用单元化的地址 -> 如果单元化策略没有配置则单元化地址就是全量地址。*/
             }
-            cacheResultRef.serviceLevel.put(serviceID, unit);
+            cacheResultRef.serviceLevel.put(serviceID, serviceLevelResult);
             //
             //2.计算缓存的服务方法级,地址列表
-            if (refRule.methodLevel.isEnable()) {
+            if (!refRule.getMethodLevel().isEnable()) {
                 logger.debug("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
                 Map<String, List<String>> methodLevelResultStr = evalMethodLevel(serviceID, refRule, allStrList);
-                if (methodLevelResultStr.isEmpty() == false) {
+                if (methodLevelResultStr != null && methodLevelResultStr.isEmpty() == false) {
                     Map<String, List<InterAddress>> methodLevelResult = convertToAddressMethod(all, methodLevelResultStr);
                     cacheResultRef.methodLevel.put(serviceID, methodLevelResult);/*保存计算结果*/
                 }
             }
             //
             //3.计算缓存的服务参数级,地址列表
-            if (refRule.argsLevel.isEnable()) {
+            if (!refRule.getArgsLevel().isEnable()) {
                 logger.debug("eval routeScript [ArgsLevel], service {} route undefined.", serviceID);
-            } else if (this.argsKeyBuilder == null) {
+            } else if (addressPool.getArgsKey() == null) {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
                 Map<String, Map<String, List<String>>> argsLevelResultStr = evalArgsLevel(serviceID, refRule, allStrList);
-                if (argsLevelResultStr.isEmpty() == false) {
+                if (argsLevelResultStr != null && argsLevelResultStr.isEmpty() == false) {
                     Map<String, Map<String, List<InterAddress>>> argsLevelResult = convertToAddressArgs(all, argsLevelResultStr);
                     cacheResultRef.argsLevel.put(serviceID, argsLevelResult);/*保存计算结果*/
                 }
@@ -206,12 +202,13 @@ class AddressCacheResult {
      *      return null
      *  }</pre>
      * */
-    private List<String> evalServiceLevel(String serviceID, RefRule refRule, List<String> all) {
+    private List<String> evalServiceLevel(String serviceID, RuleRef refRule, List<String> all) {
+        RuleEngine serviceLevel = refRule.getServiceLevel();
+        if (serviceLevel == null) {
+            return null;
+        }
         try {
-            ScriptEngine engine = createEngine();
-            Object obj = engine.eval(refRule.serviceLevel.getScript());
-            Object[] params = new Object[] { serviceID, all };
-            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            Object result = serviceLevel.runRule(serviceID, all);
             return (List<String>) result;
         } catch (Throwable e) {
             logger.error("evalServiceLevel error ,message = " + e.getMessage(), e);
@@ -249,12 +246,13 @@ class AddressCacheResult {
      *      return null
      *  }</pre>
      * */
-    private Map<String, List<String>> evalMethodLevel(String serviceID, RefRule refRule, List<String> all) {
+    private Map<String, List<String>> evalMethodLevel(String serviceID, RuleRef refRule, List<String> all) {
+        RuleEngine methodLevel = refRule.getMethodLevel();
+        if (methodLevel == null) {
+            return null;
+        }
         try {
-            ScriptEngine engine = createEngine();
-            engine.eval(refRule.methodLevel);
-            Object[] params = new Object[] { serviceID, all };
-            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            Object result = methodLevel.runRule(serviceID, all);
             return (Map<String, List<String>>) result;
         } catch (Throwable e) {
             logger.error("evalMethodLevel error ,message = " + e.getMessage(), e);
@@ -275,42 +273,40 @@ class AddressCacheResult {
      *      //[RSF]sorg.mytest.FooFacse-1.0.0 ---- Group=RSF, Name=sorg.mytest.FooFacse, Version=1.0.0
      *      if ( serviceID == "[RSF]sorg.mytest.FooFacse-1.0.0" ) {
      *          return [
-     *              "println":[
-     *                  "192.168.1.2:8000",
-     *                  "192.168.1.2:8001",
-     *                  "192.168.1.3:8000"
-     *              ],
      *              "sayEcho":[
-     *                  "192.168.1.2:8000",
-     *              ],
+     *                  "sayTo_etc1":[
+     *                      "202.168.17.10:8000",
+     *                      "202.168.17.11:8000"
+     *                  ],
+     *                  "sayTo_etc2":[
+     *                      "192.168.137.10:8000",
+     *                      "192.168.137.11:8000"
+     *                  ]],
      *              "testUserTag":[
-     *                  "192.168.1.2:8000",
-     *                  "192.168.1.3:8000"
+     *                  "server_3":[
+     *                      "192.168.1.3:8000"
+     *                  ],
+     *                  "server_4":[
+     *                      "192.168.1.4:8000"
+     *                  ]
      *              ]
      *          ]
      *      }
      *      return null
      *  }</pre>
      * */
-    private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, RefRule refRule, List<String> all) {
+    private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, RuleRef refRule, List<String> all) {
+        RuleEngine argsLevel = refRule.getArgsLevel();
+        if (argsLevel == null) {
+            return null;
+        }
         try {
-            ScriptEngine engine = createEngine();
-            engine.eval(refRule.argsLevel);
-            Object[] params = new Object[] { serviceID, all };
-            Object result = ((Invocable) engine).invokeFunction("evalAddress", params);
+            Object result = argsLevel.runRule(serviceID, all);
             return (Map<String, Map<String, List<String>>>) result;
         } catch (Throwable e) {
             logger.error("evalArgsLevel error ,message = " + e.getMessage(), e);
             return null;
         }
-    }
-    //
-    protected ScriptEngine createEngine() {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("groovy");
-        Bindings binding = engine.createBindings();
-        engine.setBindings(binding, ScriptContext.GLOBAL_SCOPE);
-        //
-        return engine;
     }
 }
 //
