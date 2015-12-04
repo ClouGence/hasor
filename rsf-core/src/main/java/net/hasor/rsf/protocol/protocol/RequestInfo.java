@@ -16,9 +16,6 @@
 package net.hasor.rsf.protocol.protocol;
 import java.util.ArrayList;
 import java.util.List;
-import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.ProtocolUtils;
-import net.hasor.rsf.utils.ByteStringCachelUtils;
 /**
  * RSF Request 数据对象。
  * @version : 2014年10月25日
@@ -40,10 +37,6 @@ public class RequestInfo extends OptionInfo {
     public RequestInfo() {
         this.paramTypes = new ArrayList<String>();
         this.paramValues = new ArrayList<byte[]>();
-    }
-    public RequestInfo(RequestBlock rsfBlock) {
-        this();
-        this.recovery(rsfBlock);
     }
     /**获取请求ID。*/
     public long getRequestID() {
@@ -130,81 +123,5 @@ public class RequestInfo extends OptionInfo {
     /**获取请求参数值列表。*/
     public List<byte[]> getParameterValues() {
         return new ArrayList<byte[]>(this.paramValues);
-    }
-    //
-    //
-    protected void recovery(RequestBlock rsfBlock) {
-        //
-        //1.基本数据
-        this.requestID = rsfBlock.getRequestID();
-        short serializeType = rsfBlock.getSerializeType();
-        this.serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeType));
-        //
-        //2.Opt参数
-        int[] optionArray = rsfBlock.getOptions();
-        for (int optItem : optionArray) {
-            short optKey = (short) (optItem >>> 16);
-            short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
-            String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
-            String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
-            this.addOption(optKeyStr, optValStr);
-        }
-        //
-        //3.Request
-        this.targetMethod = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getTargetMethod()));
-        this.serviceGroup = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceGroup()));
-        this.serviceName = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceName()));
-        this.serviceVersion = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceVersion()));
-        this.clientTimeout = rsfBlock.getClientTimeout();
-        this.paramTypes = new ArrayList<String>();
-        this.paramValues = new ArrayList<byte[]>();
-        int[] paramDatas = rsfBlock.getParameters();
-        for (int i = 0; i < paramDatas.length; i++) {
-            int paramItem = paramDatas[i];
-            short paramKey = (short) (paramItem >>> 16);
-            short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
-            byte[] keyData = rsfBlock.readPool(paramKey);
-            byte[] valData = rsfBlock.readPool(paramVal);
-            //
-            String paramType = ByteStringCachelUtils.fromCache(keyData);
-            this.paramTypes.add(paramType);
-            this.paramValues.add(valData);
-        }
-    }
-    /**构建一个二进制协议对象。*/
-    public RequestBlock buildBlock() {
-        RequestBlock block = new RequestBlock();
-        //
-        //1.基本信息
-        block.setHead(RSFConstants.RSF_Request);
-        block.setRequestID(this.getRequestID());//请求ID
-        block.setServiceGroup(ProtocolUtils.pushString(block, this.getServiceGroup()));
-        block.setServiceName(ProtocolUtils.pushString(block, this.getServiceName()));
-        block.setServiceVersion(ProtocolUtils.pushString(block, this.getServiceVersion()));
-        block.setTargetMethod(ProtocolUtils.pushString(block, this.getTargetMethod()));
-        block.setSerializeType(ProtocolUtils.pushString(block, this.getSerializeType()));
-        block.setClientTimeout(this.getClientTimeout());
-        //
-        //2.params
-        List<String> pTypes = this.getParameterTypes();
-        List<byte[]> pValues = getParameterValues();
-        for (int i = 0; i < pTypes.size(); i++) {
-            String typeKey = pTypes.get(i);
-            byte[] valKey = pValues.get(i);
-            //
-            short paramType = ProtocolUtils.pushString(block, typeKey);
-            short paramData = ProtocolUtils.pushBytes(block, valKey);
-            block.addParameter(paramType, paramData);
-        }
-        //
-        //3.Opt参数
-        String[] optKeys = getOptionKeys();
-        for (int i = 0; i < optKeys.length; i++) {
-            short optKey = ProtocolUtils.pushString(block, optKeys[i]);
-            short optVal = ProtocolUtils.pushString(block, getOption(optKeys[i]));
-            block.addOption(optKey, optVal);
-        }
-        //
-        return block;
     }
 }

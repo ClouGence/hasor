@@ -17,12 +17,12 @@ package net.hasor.rsf.protocol.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.hasor.rsf.protocol.codec.Protocol;
+import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.protocol.codec.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.protocol.protocol.RequestInfo;
 import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.protocol.protocol.ResponseInfo;
-import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 编码器，支持将{@link RequestInfo}、{@link RequestBlock}或者{@link ResponseInfo}、{@link ResponseBlock}编码写入Socket
  * @version : 2014年10月10日
@@ -31,21 +31,20 @@ import net.hasor.rsf.utils.ProtocolUtils;
 public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (msg instanceof RequestInfo) {
-            msg = ((RequestInfo) msg).buildBlock();
+            RequestInfo info = (RequestInfo) msg;
+            ProtocolUtils.wirteRequestInfo(RSFConstants.Version_1, info, out);
         }
         if (msg instanceof ResponseInfo) {
-            msg = ((ResponseInfo) msg).buildBlock();
+            ResponseInfo info = (ResponseInfo) msg;
+            ProtocolUtils.wirteResponseInfo(RSFConstants.Version_1, info, out);
         }
-        //
         if (msg instanceof RequestBlock) {
-            RequestBlock request = (RequestBlock) msg;
-            Protocol<RequestBlock> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
-            requestProtocol.encode((RequestBlock) msg, out);//request
+            RequestBlock block = (RequestBlock) msg;
+            ProtocolUtils.wirteRequestBlock(RSFConstants.Version_1, block, out);
         }
         if (msg instanceof ResponseBlock) {
-            ResponseBlock response = (ResponseBlock) msg;
-            Protocol<ResponseBlock> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
-            responseProtocol.encode((ResponseBlock) msg, out);//response
+            ResponseBlock block = (ResponseBlock) msg;
+            ProtocolUtils.wirteResponseBlock(RSFConstants.Version_1, block, out);
         }
         ctx.flush();
     }

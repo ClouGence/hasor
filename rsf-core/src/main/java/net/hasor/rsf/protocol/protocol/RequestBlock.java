@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.protocol.protocol;
 import org.more.util.ArrayUtils;
-import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * RSF 1.0 Request 二进制传输协议
  * --------------------------------------------------------bytes =13
@@ -66,7 +65,7 @@ public class RequestBlock extends PoolBlock {
     //
     //
     public byte getVersion() {
-        return ProtocolUtils.getVersion(this.rsfHead);
+        return (byte) (this.rsfHead & 0x0F);
     }
     /**获取协议版本。*/
     public byte getHead() {

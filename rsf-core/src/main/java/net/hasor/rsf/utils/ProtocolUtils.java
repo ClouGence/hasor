@@ -31,20 +31,6 @@ import net.hasor.rsf.protocol.protocol.ResponseBlock;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProtocolUtils {
-    private static Protocol<RequestBlock>[]  reqProtocolPool = new Protocol[16];
-    private static Protocol<ResponseBlock>[] resProtocolPool = new Protocol[16];
-    //
-    static {
-        reqProtocolPool[1] = new RpcRequestProtocol();
-        resProtocolPool[1] = new RpcResponseProtocol();
-    }
-    //
-    public static Protocol<RequestBlock> requestProtocol(byte rsfHead) {
-        return reqProtocolPool[getVersion(rsfHead)];
-    }
-    public static Protocol<ResponseBlock> responseProtocol(byte rsfHead) {
-        return resProtocolPool[getVersion(rsfHead)];
-    }
     //
     //
     //
@@ -59,10 +45,6 @@ public class ProtocolUtils {
     /**是否为Response消息。*/
     public static boolean isResponse(byte version) {
         return (RSF_Packet_Response | version) == version;
-    }
-    /**获取协议版本。*/
-    public static byte getVersion(byte rsfHead) {
-        return (byte) (rsfHead & 0x0F);
     }
     /**生成指定状态的的响应包*/
     public static ResponseBlock buildStatus(RequestBlock requestBlock, short status, RsfOptionSet optMap) {

@@ -1,4 +1,5 @@
 package test.net.hasor.rsf._04_protocol;
+import java.io.IOException;
 import java.util.Date;
 import org.junit.Test;
 import io.netty.buffer.ByteBuf;
@@ -6,7 +7,8 @@ import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.protocol.codec.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.serialize.SerializeCoder;
@@ -52,17 +54,16 @@ public class TransformTest {
         request.addOption("user", "guest");
         request.addOption("password", null);
         //
-        ByteBuf writeBuf = ByteBufAllocator.DEFAULT.heapBuffer();
-        request.buildBlock().fillTo(writeBuf);
-        byte[] rsfData = writeBuf.array();
+        ByteBuf dataBuf = ByteBufAllocator.DEFAULT.heapBuffer();
+        ProtocolUtils.wirteRequestInfo(RSFConstants.Version_1, request, dataBuf);
+        byte[] rsfData = dataBuf.array();
         return rsfData;
     }
-    public RequestInfo read(byte[] rsfData) {
-        ByteBuf readBuf = ByteBufAllocator.DEFAULT.heapBuffer();
-        readBuf.writeBytes(rsfData);
-        RequestBlock block = new RequestBlock();
-        block.fillFrom(readBuf);
-        RequestInfo request = new RequestInfo(block);
+    public RequestInfo read(byte[] rsfData) throws IOException {
+        //
+        ByteBuf dataBuf = ByteBufAllocator.DEFAULT.heapBuffer();
+        dataBuf.writeBytes(rsfData);
+        RequestInfo request = ProtocolUtils.buildRequestInfo(RSFConstants.Version_1, dataBuf);
         return request;
     }
 }

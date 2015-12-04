@@ -24,12 +24,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.codec.ProtocolUtils;
 import net.hasor.rsf.protocol.protocol.RequestInfo;
 import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.protocol.protocol.ResponseInfo;
-import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 解码器
  * @version : 2014年10月10日
@@ -70,33 +68,25 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     /**协议解析*/
     private ProtocolStatus doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) {
         if ((RSF_Packet_Request | rsfHead) == rsfHead) {
-            Protocol<RequestBlock> requestProtocol = ProtocolUtils.requestProtocol(rsfHead);
-            if (requestProtocol != null) {
-                try {
-                    RequestBlock block = requestProtocol.decode(frame);//   <-1.解码RSF数据包
-                    RequestInfo info = new RequestInfo(block);//            <-2.转换RSF数据包为Request数据对象
-                    info.setReceiveTime(System.currentTimeMillis());//      <-3.设置接收时间戳
-                    ctx.fireChannelRead(info);
-                    return ProtocolStatus.OK;/*正常处理后返回*/
-                } catch (IOException e) {
-                    logger.error(requestProtocol.getClass().getSimpleName() + " decode request error :" + e.getMessage(), e);
-                    return ProtocolStatus.ProtocolError;
-                }
+            try {
+                RequestInfo info = ProtocolUtils.buildRequestInfo(rsfHead, frame);// <-1.解码二进制数据。
+                info.setReceiveTime(System.currentTimeMillis());//                   <-2.设置接收时间戳
+                ctx.fireChannelRead(info);
+                return ProtocolStatus.OK;/*正常处理后返回*/
+            } catch (IOException e) {
+                logger.error("decode request error :" + e.getMessage(), e);
+                return ProtocolStatus.ProtocolError;
             }
         }
         if ((RSF_Packet_Response | rsfHead) == rsfHead) {
-            Protocol<ResponseBlock> responseProtocol = ProtocolUtils.responseProtocol(rsfHead);
-            if (responseProtocol != null) {
-                try {
-                    ResponseBlock block = responseProtocol.decode(frame);// <-1.解码RSF数据包
-                    ResponseInfo info = new ResponseInfo(block);//          <-2.转换RSF数据包为Response数据对象
-                    info.setReceiveTime(System.currentTimeMillis());//      <-3.设置接收时间戳
-                    ctx.fireChannelRead(info);
-                    return ProtocolStatus.OK;/*正常处理后返回*/
-                } catch (IOException e) {
-                    logger.error(responseProtocol.getClass().getSimpleName() + " decode response error :" + e.getMessage(), e);
-                    return ProtocolStatus.ProtocolError;
-                }
+            try {
+                ResponseInfo info = ProtocolUtils.buildResponseInfo(rsfHead, frame);// <-1.解码二进制数据。
+                info.setReceiveTime(System.currentTimeMillis());//                     <-2.设置接收时间戳
+                ctx.fireChannelRead(info);
+                return ProtocolStatus.OK;/*正常处理后返回*/
+            } catch (IOException e) {
+                logger.error("decode response error :" + e.getMessage(), e);
+                return ProtocolStatus.ProtocolError;
             }
         }
         return ProtocolStatus.ProtocolUnknown;
