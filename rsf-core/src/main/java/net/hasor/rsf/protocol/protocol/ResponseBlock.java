@@ -17,7 +17,7 @@ package net.hasor.rsf.protocol.protocol;
 import org.more.util.ArrayUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
- * RSF 1.0 Response 协议
+ * RSF 1.0 Response 二进制传输协议
  * --------------------------------------------------------bytes =13
  * byte[1]  version                              RSF版本(0xC1 or 0x81)
  * byte[8]  requestID                            包含的请求ID
@@ -53,16 +53,7 @@ public class ResponseBlock extends PoolBlock {
     private short returnData    = 0;  //byte[2]  返回数据
     private int[] optionMap     = {}; //(attr-index,attr-index)
     //
-    private long  receiveTime   = 0;  //数据包到达时间
     //
-    //
-    public void setReceiveTime(long receiveTime) {
-        this.receiveTime = receiveTime;
-    }
-    /**数据包到达时间*/
-    public long getReceiveTime() {
-        return receiveTime;
-    }
     /**获取协议版本。*/
     public byte getVersion() {
         return ProtocolUtils.getVersion(this.rsfHead);
@@ -115,11 +106,10 @@ public class ResponseBlock extends PoolBlock {
     public void setReturnData(short returnData) {
         this.returnData = returnData;
     }
-    //
     /**添加选项。*/
-    public void addOption(short optKey, short optData) {
-        int pType = optKey << 16;
-        int pData = optData;
+    public void addOption(short paramType, short paramData) {
+        int pType = paramType << 16;
+        int pData = paramData;
         int mergeData = (pType | pData);
         this.addOption(mergeData);
     }
@@ -140,7 +130,7 @@ public class ResponseBlock extends PoolBlock {
     public short[] getOptionValues() {
         short[] optDatas = new short[this.optionMap.length];
         for (int i = 0; i < this.optionMap.length; i++) {
-            optDatas[i] = (short) this.optionMap[i];
+            optDatas[i] = (short) (0x0000FFFF & this.optionMap[i]);
         }
         return optDatas;
     }

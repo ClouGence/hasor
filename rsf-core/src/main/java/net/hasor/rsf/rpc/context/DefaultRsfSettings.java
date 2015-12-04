@@ -17,6 +17,11 @@ package net.hasor.rsf.rpc.context;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWarp;
@@ -24,12 +29,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.OptionManager;
-import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.hasor.rsf.protocol.protocol.OptionInfo;
 /**
  * 
  * @version : 2014年11月12日
@@ -42,8 +42,8 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     private String          defaultVersion       = "1.0.0";
     private String          defaultSerializeType = "Hessian";
     //
-    private OptionManager   serverOptionManager  = new OptionManager();
-    private OptionManager   clientOptionManager  = new OptionManager();
+    private OptionInfo      serverOptionManager  = new OptionInfo();
+    private OptionInfo      clientOptionManager  = new OptionInfo();
     //
     private int             networkWorker        = 2;
     private int             networkListener      = 1;
@@ -190,10 +190,6 @@ public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
     @Override
     public boolean islocalDiskCache() {
         return this.localDiskCache;
-    }
-    //
-    public OptionManager getServerOptionManager() {
-        return serverOptionManager;
     }
     //
     public void refresh() throws IOException {

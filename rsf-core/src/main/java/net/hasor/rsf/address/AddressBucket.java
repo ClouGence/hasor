@@ -47,22 +47,23 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  * @author 赵永春(zyc@hasor.net)
  */
 class AddressBucket {
-    protected Logger                                      logger = LoggerFactory.getLogger(getClass());
+    protected Logger                                      logger;
     //流控&路由
-    private volatile FlowControlRef                       flowControlRef;                              //默认流控规则引用
+    private volatile FlowControlRef                       flowControlRef;     //默认流控规则引用
     private volatile RuleRef                              ruleRef;
     //原始数据
-    private final String                                  serviceID;                                   //服务ID
-    private final String                                  unitName;                                    //服务所属单元
-    private final List<InterAddress>                      allAddressList;                              //所有备选地址
-    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;                            //失效状态统计信息
+    private final String                                  serviceID;          //服务ID
+    private final String                                  unitName;           //服务所属单元
+    private final List<InterAddress>                      allAddressList;     //所有备选地址
+    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
     //
     //下面时计算出来的数据
-    private List<InterAddress>                            localUnitAddresses;                          //本单元地址
-    private List<InterAddress>                            availableAddresses;                          //所有可用地址（包括本地单元）
+    private List<InterAddress>                            localUnitAddresses; //本单元地址
+    private List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
     //
     //
     public AddressBucket(String serviceID, String unitName) {
+        this.logger = LoggerFactory.getLogger(getClass());
         this.serviceID = serviceID;
         this.unitName = unitName;
         this.allAddressList = new ArrayList<InterAddress>();

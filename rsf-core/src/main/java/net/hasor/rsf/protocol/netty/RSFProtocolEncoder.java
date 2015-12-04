@@ -19,15 +19,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.RequestInfo;
 import net.hasor.rsf.protocol.protocol.ResponseBlock;
+import net.hasor.rsf.protocol.protocol.ResponseInfo;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
- * 编码器
+ * 编码器，支持将{@link RequestInfo}、{@link RequestBlock}或者{@link ResponseInfo}、{@link ResponseBlock}编码写入Socket
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        if (msg instanceof RequestInfo) {
+            msg = ((RequestInfo) msg).buildBlock();
+        }
+        if (msg instanceof ResponseInfo) {
+            msg = ((ResponseInfo) msg).buildBlock();
+        }
+        //
         if (msg instanceof RequestBlock) {
             RequestBlock request = (RequestBlock) msg;
             Protocol<RequestBlock> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());

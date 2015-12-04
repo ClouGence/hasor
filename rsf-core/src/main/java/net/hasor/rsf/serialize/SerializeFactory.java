@@ -17,11 +17,12 @@ package net.hasor.rsf.serialize;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.core.XmlNode;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.RsfException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.XmlNode;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
@@ -33,11 +34,11 @@ public class SerializeFactory {
     //
     /**获取序列化（编码/解码）器。*/
     public SerializeCoder getSerializeCoder(String codeName) {
-        return this.coderMap.get(codeName);
+        return this.coderMap.get(codeName.toLowerCase());
     }
     /**注册序列化（编码/解码）器*/
     public void registerSerializeCoder(String codeName, SerializeCoder decoder) {
-        this.coderMap.put(codeName, decoder);
+        this.coderMap.put(codeName.toLowerCase(), decoder);
     }
     //
     //
@@ -64,7 +65,8 @@ public class SerializeFactory {
             SerializeCoder coder = (SerializeCoder) Class.forName(serializeCoder).newInstance();
             factory.registerSerializeCoder(serializeType, coder);
         } catch (Exception e) {
-            throw new RsfException((short) 0, e);
+            logger.error(e.getMessage(), e);
+            throw new RsfException(ProtocolStatus.SerializeError, e);
         }
     }
 }

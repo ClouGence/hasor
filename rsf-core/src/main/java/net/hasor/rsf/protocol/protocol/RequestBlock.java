@@ -17,7 +17,7 @@ package net.hasor.rsf.protocol.protocol;
 import org.more.util.ArrayUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
- * RSF 1.0 Request 协议
+ * RSF 1.0 Request 二进制传输协议
  * --------------------------------------------------------bytes =13
  * byte[1]  version                              RSF版本(0xC1 or 0x81)
  * byte[8]  requestID                            请求ID
@@ -64,16 +64,7 @@ public class RequestBlock extends PoolBlock {
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
     //
-    private long  receiveTime    = 0;
     //
-    //
-    public void setReceiveTime(long receiveTime) {
-        this.receiveTime = receiveTime;
-    }
-    /**数据包到达时间*/
-    public long getReceiveTime() {
-        return receiveTime;
-    }
     public byte getVersion() {
         return ProtocolUtils.getVersion(this.rsfHead);
     }
@@ -170,7 +161,10 @@ public class RequestBlock extends PoolBlock {
         }
         return pDatas;
     }
-    //
+    /**获取请求参数类型列表。*/
+    public int[] getParameters() {
+        return this.paramData;
+    }
     /**添加选项。*/
     public void addOption(short paramType, short paramData) {
         int pType = paramType << 16;
@@ -202,9 +196,5 @@ public class RequestBlock extends PoolBlock {
     /**获取Option。*/
     public int[] getOptions() {
         return this.optionMap;
-    }
-    /**获取请求参数类型列表。*/
-    public int[] getParameters() {
-        return this.paramData;
     }
 }
