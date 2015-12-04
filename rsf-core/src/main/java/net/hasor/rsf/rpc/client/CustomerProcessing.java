@@ -19,7 +19,7 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.socket.RsfResponseFormSocket;
 import org.slf4j.Logger;
@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 class CustomerProcessing implements Runnable {
     protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfFuture               rsfFuture;
-    private ResponseSocketBlock     responseBlock;
+    private ResponseBlock     responseBlock;
     private RsfClientRequestManager requestManager;
     //
-    public CustomerProcessing(ResponseSocketBlock responseBlock, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
+    public CustomerProcessing(ResponseBlock responseBlock, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
         this.responseBlock = responseBlock;
         this.requestManager = requestManager;
         this.rsfFuture = rsfFuture;

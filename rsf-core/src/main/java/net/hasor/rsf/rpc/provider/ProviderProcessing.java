@@ -22,8 +22,8 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDefine;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
@@ -40,10 +40,10 @@ import org.slf4j.LoggerFactory;
 class ProviderProcessing implements Runnable {
     protected Logger                 logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext rsfContext;
-    private final RequestSocketBlock requestBlock;
+    private final RequestBlock requestBlock;
     private final Channel            nettyChannel;
     //
-    public ProviderProcessing(AbstractRsfContext rsfContext, RequestSocketBlock requestBlock, Channel nettyChannel) {
+    public ProviderProcessing(AbstractRsfContext rsfContext, RequestBlock requestBlock, Channel nettyChannel) {
         this.rsfContext = rsfContext;
         this.requestBlock = requestBlock;
         this.nettyChannel = nettyChannel;
@@ -95,7 +95,7 @@ class ProviderProcessing implements Runnable {
     }
     //
     private void sendResponse(RsfResponseFormLocal rsfResponse) {
-        ResponseSocketBlock socketBlock = null;
+        ResponseBlock socketBlock = null;
         RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
         //
         if (rsfResponse != null) {
@@ -121,7 +121,7 @@ class ProviderProcessing implements Runnable {
     //
     private void sendError(Throwable exception) {
         RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
-        ResponseSocketBlock socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.BuildSocketBlock, optMap);
+        ResponseBlock socketBlock = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.BuildSocketBlock, optMap);
         if (exception instanceof RsfException) {
             socketBlock.setStatus(((RsfException) exception).getStatus());
         }

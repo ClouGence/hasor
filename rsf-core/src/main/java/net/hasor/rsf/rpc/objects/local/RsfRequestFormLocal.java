@@ -21,9 +21,9 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.OptionManager;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.manager.OptionManager;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
@@ -114,10 +114,10 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
         }
         return rsfResponse;
     }
-    public RequestSocketBlock buildSocketBlock(SerializeFactory serializeFactory) throws Throwable {
+    public RequestBlock buildSocketBlock(SerializeFactory serializeFactory) throws Throwable {
         SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
         RsfBindInfo<?> rsfBindInfo = this.getBindInfo();
-        RequestSocketBlock block = new RequestSocketBlock();
+        RequestBlock block = new RequestBlock();
         //
         //1.基本信息
         block.setHead(RSFConstants.RSF_Request);

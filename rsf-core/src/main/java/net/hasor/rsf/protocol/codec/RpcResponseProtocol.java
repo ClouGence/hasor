@@ -18,15 +18,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
+public class RpcResponseProtocol implements Protocol<ResponseBlock> {
     /**encode Message to byte & write to network framework*/
-    public void encode(ResponseSocketBlock resMsg, ByteBuf buf) throws IOException {
+    public void encode(ResponseBlock resMsg, ByteBuf buf) throws IOException {
         //
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0x81)
@@ -45,7 +45,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         //
     }
     //
-    private ByteBuf encodeResponse(ResponseSocketBlock resMsg) {
+    private ByteBuf encodeResponse(ResponseBlock resMsg) {
         ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         //
         //* --------------------------------------------------------bytes =8
@@ -75,7 +75,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
     //
     //
     /**decode stream to object*/
-    public ResponseSocketBlock decode(ByteBuf buf) throws IOException {
+    public ResponseBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本
         byte version = buf.readByte();
@@ -86,7 +86,7 @@ public class RpcResponseProtocol implements Protocol<ResponseSocketBlock> {
         //* byte[3]  contentLength                        内容大小
         buf.skipBytes(3);//.readUnsignedMedium()
         //
-        ResponseSocketBlock res = new ResponseSocketBlock();
+        ResponseBlock res = new ResponseBlock();
         res.setHead(version);
         res.setRequestID(requestID);
         //* --------------------------------------------------------bytes =8

@@ -21,8 +21,8 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.PoolBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeCoder;
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, RequestSocketBlock>implements RsfRequest {
+public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, RequestBlock>implements RsfRequest {
     protected Logger           logger = LoggerFactory.getLogger(getClass());
     private AbstractRsfContext rsfContext;
     private RsfBindInfo<?>     bindInfo;
@@ -45,12 +45,12 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
     private Class<?>[]         parameterTypes;
     private Object[]           parameterObjects;
     //
-    public RsfRequestFormSocket(AbstractRsfContext rsfContext, RequestSocketBlock rsfBlock) {
+    public RsfRequestFormSocket(AbstractRsfContext rsfContext, RequestBlock rsfBlock) {
         super(rsfContext, rsfBlock);
         this.rsfContext = rsfContext;
     }
     @Override
-    public void recovery(AbstractRsfContext context, RequestSocketBlock rsfBlock) {
+    public void recovery(AbstractRsfContext context, RequestBlock rsfBlock) {
         super.recovery(context, rsfBlock);
         //
         this.targetMethodName = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getTargetMethod()));
@@ -71,7 +71,7 @@ public class RsfRequestFormSocket extends RsfBaseFormSocket<AbstractRsfContext, 
         for (int i = 0; i < paramDatas.length; i++) {
             int paramItem = paramDatas[i];
             short paramKey = (short) (paramItem >>> 16);
-            short paramVal = (short) (paramItem & PoolSocketBlock.PoolMaxSize);
+            short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
             byte[] keyData = rsfBlock.readPool(paramKey);
             byte[] valData = rsfBlock.readPool(paramVal);
             //

@@ -19,8 +19,8 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
-import net.hasor.rsf.rpc.manager.OptionManager;
+import net.hasor.rsf.protocol.protocol.OptionManager;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.ProtocolUtils;
@@ -100,9 +100,9 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
     public boolean isResponse() {
         return this.committed;
     }
-    public ResponseSocketBlock buildSocketBlock(SerializeFactory serializeFactory) {
+    public ResponseBlock buildSocketBlock(SerializeFactory serializeFactory) {
         SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         //
         //1.基本信息
         block.setHead(RSFConstants.RSF_Response);

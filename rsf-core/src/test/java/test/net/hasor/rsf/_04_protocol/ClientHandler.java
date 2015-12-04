@@ -20,8 +20,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.io.IOException;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
@@ -31,7 +31,7 @@ import net.hasor.rsf.utils.ProtocolUtils;
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ResponseSocketBlock response = (ResponseSocketBlock) msg;
+        ResponseBlock response = (ResponseBlock) msg;
         if (response.getRequestID() % 1000000 == 0) {
             System.out.println("reqID:" + response.getRequestID());
         }
@@ -52,9 +52,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
     //
     private static long reqID = 0;
-    private RequestSocketBlock getData() throws IOException {
+    private RequestBlock getData() throws IOException {
         HessianSerializeCoder coder = new HessianSerializeCoder();
-        RequestSocketBlock request = new RequestSocketBlock();
+        RequestBlock request = new RequestBlock();
         request.setHead(RSFConstants.RSF_Request);
         request.setRequestID(reqID++);
         //

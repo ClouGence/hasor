@@ -20,8 +20,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.utils.ProtocolUtils;
@@ -36,16 +36,16 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof RequestSocketBlock == false) {
+        if (msg instanceof RequestBlock == false) {
             return;
         }
         //
         //创建request、response
-        RequestSocketBlock requestBlock = (RequestSocketBlock) msg;
+        RequestBlock requestBlock = (RequestBlock) msg;
         RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
         //
         //放入业务线程准备执行
-        ResponseSocketBlock readyWrite = null;
+        ResponseBlock readyWrite = null;
         try {
             logger.debug("received request({}) full = {}", requestBlock.getRequestID(), requestBlock);
             byte[] serviceUniqueName = requestBlock.readPool(requestBlock.getServiceName());

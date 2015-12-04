@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext, ResponseSocketBlock>implements RsfResponse {
+public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext, ResponseBlock>implements RsfResponse {
     protected Logger       logger = LoggerFactory.getLogger(getClass());
     private RsfBindInfo<?> bindInfo;
     private short          responseStatus;
@@ -40,13 +40,13 @@ public class RsfResponseFormSocket extends RsfBaseFormSocket<AbstractRsfContext,
     private boolean        committed;
     //
     //
-    public RsfResponseFormSocket(AbstractRsfContext rsfContext, RsfBindInfo<?> bindInfo, ResponseSocketBlock rsfBlock) {
+    public RsfResponseFormSocket(AbstractRsfContext rsfContext, RsfBindInfo<?> bindInfo, ResponseBlock rsfBlock) {
         super(rsfContext, rsfBlock);
         this.bindInfo = bindInfo;
         this.committed = false;
     }
     @Override
-    public void recovery(AbstractRsfContext context, ResponseSocketBlock rsfBlock) {
+    public void recovery(AbstractRsfContext context, ResponseBlock rsfBlock) {
         super.recovery(context, rsfBlock);
         //
         SerializeFactory serializeFactory = context.getSerializeFactory();

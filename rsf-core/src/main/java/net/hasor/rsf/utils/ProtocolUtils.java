@@ -22,34 +22,34 @@ import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
 import net.hasor.rsf.protocol.codec.RpcRequestProtocol;
 import net.hasor.rsf.protocol.codec.RpcResponseProtocol;
-import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.PoolBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProtocolUtils {
-    private static Protocol<RequestSocketBlock>[]  reqProtocolPool = new Protocol[16];
-    private static Protocol<ResponseSocketBlock>[] resProtocolPool = new Protocol[16];
+    private static Protocol<RequestBlock>[]  reqProtocolPool = new Protocol[16];
+    private static Protocol<ResponseBlock>[] resProtocolPool = new Protocol[16];
     //
     static {
         reqProtocolPool[1] = new RpcRequestProtocol();
         resProtocolPool[1] = new RpcResponseProtocol();
     }
     //
-    public static Protocol<RequestSocketBlock> requestProtocol(byte rsfHead) {
+    public static Protocol<RequestBlock> requestProtocol(byte rsfHead) {
         return reqProtocolPool[getVersion(rsfHead)];
     }
-    public static Protocol<ResponseSocketBlock> responseProtocol(byte rsfHead) {
+    public static Protocol<ResponseBlock> responseProtocol(byte rsfHead) {
         return resProtocolPool[getVersion(rsfHead)];
     }
     //
     //
     //
     /**判断 response 是否为一个ACK包。*/
-    public static boolean isACK(ResponseSocketBlock socketMessage) {
+    public static boolean isACK(ResponseBlock socketMessage) {
         return socketMessage.getStatus() == ProtocolStatus.Accepted;
     }
     /**是否为Request消息。*/
@@ -65,10 +65,10 @@ public class ProtocolUtils {
         return (byte) (rsfHead & 0x0F);
     }
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildStatus(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
+    public static ResponseBlock buildStatus(RequestBlock requestBlock, short status, RsfOptionSet optMap) {
         long reqID = requestBlock.getRequestID();//请求ID
         //
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(reqID);
         block.setStatus(status);
@@ -85,7 +85,7 @@ public class ProtocolUtils {
         //
         return block;
     }
-    public static short pushString(PoolSocketBlock socketMessage, String attrData) {
+    public static short pushString(PoolBlock socketMessage, String attrData) {
         if (attrData != null) {
             return socketMessage.pushData(ByteStringCachelUtils.fromCache(attrData));
         } else {

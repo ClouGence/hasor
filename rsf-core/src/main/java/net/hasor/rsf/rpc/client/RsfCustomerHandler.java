@@ -16,7 +16,7 @@
 package net.hasor.rsf.rpc.client;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 /**
@@ -33,9 +33,9 @@ class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
     //
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ResponseSocketBlock == false)
+        if (msg instanceof ResponseBlock == false)
             return;
-        ResponseSocketBlock block = (ResponseSocketBlock) msg;
+        ResponseBlock block = (ResponseBlock) msg;
         logger.debug("received response({}) full = {}", block.getRequestID(), block);
         //
         RsfClientRequestManager requestManager = this.rsfContext.getRequestManager();

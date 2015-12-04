@@ -18,8 +18,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 编码器
@@ -28,15 +28,15 @@ import net.hasor.rsf.utils.ProtocolUtils;
  */
 public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        if (msg instanceof RequestSocketBlock) {
-            RequestSocketBlock request = (RequestSocketBlock) msg;
-            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
-            requestProtocol.encode((RequestSocketBlock) msg, out);//request
+        if (msg instanceof RequestBlock) {
+            RequestBlock request = (RequestBlock) msg;
+            Protocol<RequestBlock> requestProtocol = ProtocolUtils.requestProtocol(request.getVersion());
+            requestProtocol.encode((RequestBlock) msg, out);//request
         }
-        if (msg instanceof ResponseSocketBlock) {
-            ResponseSocketBlock response = (ResponseSocketBlock) msg;
-            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
-            responseProtocol.encode((ResponseSocketBlock) msg, out);//response
+        if (msg instanceof ResponseBlock) {
+            ResponseBlock response = (ResponseBlock) msg;
+            Protocol<ResponseBlock> responseProtocol = ProtocolUtils.responseProtocol(response.getVersion());
+            responseProtocol.encode((ResponseBlock) msg, out);//response
         }
         ctx.flush();
     }

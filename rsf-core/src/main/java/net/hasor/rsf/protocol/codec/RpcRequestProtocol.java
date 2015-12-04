@@ -18,15 +18,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import java.io.IOException;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
+public class RpcRequestProtocol implements Protocol<RequestBlock> {
     /**encode Message to byte & write to network framework*/
-    public void encode(RequestSocketBlock reqMsg, ByteBuf buf) throws IOException {
+    public void encode(RequestBlock reqMsg, ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本
         buf.writeByte(RSFConstants.RSF_Request);
@@ -43,7 +43,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
         buf.writeBytes(requestBody);
     }
     //
-    private ByteBuf encodeRequest(RequestSocketBlock reqMsg) {
+    private ByteBuf encodeRequest(RequestBlock reqMsg) {
         ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名
@@ -85,7 +85,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
     //
     //
     /**decode stream to object*/
-    public RequestSocketBlock decode(ByteBuf buf) throws IOException {
+    public RequestBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0xC1)
         byte rsfHead = buf.readByte();
@@ -96,7 +96,7 @@ public class RpcRequestProtocol implements Protocol<RequestSocketBlock> {
         //* byte[3]  contentLength                        内容大小
         buf.skipBytes(3);//.readUnsignedMedium()
         //
-        RequestSocketBlock req = new RequestSocketBlock();
+        RequestBlock req = new RequestBlock();
         req.setHead(rsfHead);
         req.setRequestID(requestID);
         //* --------------------------------------------------------bytes =14

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.manager;
+package net.hasor.rsf.protocol.protocol;
 import java.util.HashMap;
 import java.util.Map;
 import net.hasor.rsf.RsfOptionSet;
@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfOptionSet;
  * @version : 2015年1月24日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OptionManager implements RsfOptionSet {
+public class OptionInfo implements RsfOptionSet {
     private final Map<String, String> optionMap = new HashMap<String, String>();
     //
     /**获取选项Key集合。*/

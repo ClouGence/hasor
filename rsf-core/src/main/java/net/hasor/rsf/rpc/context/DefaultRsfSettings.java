@@ -24,7 +24,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.rpc.manager.OptionManager;
+import net.hasor.rsf.protocol.protocol.OptionManager;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;

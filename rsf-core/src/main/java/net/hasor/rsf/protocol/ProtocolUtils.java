@@ -18,9 +18,9 @@ import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Request;
 import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Response;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.PoolBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
 /**
  * Protocol Interface,for custom network protocol
@@ -29,10 +29,10 @@ import net.hasor.rsf.utils.ByteStringCachelUtils;
  */
 public class ProtocolUtils {
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildResponse(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
+    public static ResponseBlock buildResponse(RequestBlock requestBlock, short status, RsfOptionSet optMap) {
         long reqID = requestBlock.getRequestID();//请求ID
         //
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(reqID);
         block.setStatus(status);
@@ -50,10 +50,10 @@ public class ProtocolUtils {
         return block;
     }
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildRequest(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
+    public static ResponseBlock buildRequest(RequestBlock requestBlock, short status, RsfOptionSet optMap) {
         long reqID = requestBlock.getRequestID();//请求ID
         //
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(reqID);
         block.setStatus(status);
@@ -84,10 +84,10 @@ public class ProtocolUtils {
         return (byte) (rsfHead & 0x0F);
     }
     /**生成指定状态的的响应包*/
-    public static ResponseSocketBlock buildStatus(RequestSocketBlock requestBlock, short status, RsfOptionSet optMap) {
+    public static ResponseBlock buildStatus(RequestBlock requestBlock, short status, RsfOptionSet optMap) {
         long reqID = requestBlock.getRequestID();//请求ID
         //
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(reqID);
         block.setStatus(status);
@@ -104,7 +104,7 @@ public class ProtocolUtils {
         //
         return block;
     }
-    public static short pushString(PoolSocketBlock socketMessage, String attrData) {
+    public static short pushString(PoolBlock socketMessage, String attrData) {
         if (attrData != null) {
             return socketMessage.pushData(ByteStringCachelUtils.fromCache(attrData));
         } else {

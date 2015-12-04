@@ -44,7 +44,7 @@ import net.hasor.rsf.utils.ProtocolUtils;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ResponseSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
+public class ResponseBlock extends PoolBlock {
     private byte  rsfHead       = 0;  //byte[1]  RSF头
     private long  requestID     = 0;  //byte[8]  请求ID
     private short status        = 0;  //byte[2]  响应状态

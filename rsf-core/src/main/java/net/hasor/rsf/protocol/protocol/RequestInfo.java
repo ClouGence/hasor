@@ -19,10 +19,7 @@ import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * RSF 1.0 Request 协议
  * --------------------------------------------------------bytes =13
- * byte[1]  version                              RSF版本(0xC1 or 0x81)
  * byte[8]  requestID                            请求ID
- * byte[1]  keepData                             保留区
- * byte[3]  contentLength                        内容大小(max ~ 16MB)
  * --------------------------------------------------------bytes =14
  * byte[2]  servicesName-(attr-index)            远程服务名
  * byte[2]  servicesGroup-(attr-index)           远程服务分组
@@ -40,31 +37,21 @@ import net.hasor.rsf.utils.ProtocolUtils;
  *     byte[4]  attr-0-(attr-index,attr-index)   选项参数1
  *     byte[4]  attr-1-(attr-index,attr-index)   选项参数2
  *     ...
- * --------------------------------------------------------bytes =6 ~ 8192
- * byte[2]  attrPool-size (0~4095)               池大小 0x0FFF
- *     byte[4] att-length                        属性1大小
- *     byte[4] att-length                        属性2大小
- *     ...
- * --------------------------------------------------------bytes =n
- * dataBody                                      数据内容
- *     bytes[...]
  * 
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBlock {
-    private byte  rsfHead        = 0;  //byte[1]  RSF头
-    private long  requestID      = 0;  //byte[8]  请求ID
-    private short serviceName    = 0;  //byte[2]  远程服务名
-    private short serviceGroup   = 0;  //byte[2]  远程服务分组
-    private short serviceVersion = 0;  //byte[2]  远程服务版本
-    private short targetMethod   = 0;  //byte[2]  远程服务方法名
-    private short serializeType  = 0;  //byte[2]  序列化策略
-    private int   clientTimeout  = 0;  //byte[4]  远程客户端超时时间
-    private int[] paramData      = {}; //(attr-index,attr-index)
-    private int[] optionMap      = {}; //(attr-index,attr-index)
+public class RequestInfo extends OptionInfo {
+    private long       requestID      = 0;  //byte[8]  请求ID
+    private String     serviceName    = 0;  //byte[2]  远程服务名
+    private String     serviceGroup   = 0;  //byte[2]  远程服务分组
+    private String     serviceVersion = 0;  //byte[2]  远程服务版本
+    private String     targetMethod   = 0;  //byte[2]  远程服务方法名
+    private String     serializeType  = 0;  //byte[2]  序列化策略
+    private int        clientTimeout  = 0;  //byte[4]  远程客户端超时时间
+    private String[][] paramData      = {}; //(attr-index,attr-index)
     //
-    private long  receiveTime    = 0;
+    private long       receiveTime    = 0;
     //
     //
     public void setReceiveTime(long receiveTime) {
@@ -74,7 +61,6 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
     public long getReceiveTime() {
         return receiveTime;
     }
-    @Override
     public byte getVersion() {
         return ProtocolUtils.getVersion(this.rsfHead);
     }
@@ -167,42 +153,9 @@ public class RequestSocketBlock extends PoolSocketBlock implements RsfSocketBloc
     public short[] getParameterValues() {
         short[] pDatas = new short[this.paramData.length];
         for (int i = 0; i < this.paramData.length; i++) {
-            pDatas[i] = (short) (PoolSocketBlock.PoolMaxSize & this.paramData[i]);
+            pDatas[i] = (short) (PoolBlock.PoolMaxSize & this.paramData[i]);
         }
         return pDatas;
-    }
-    //
-    /**添加选项。*/
-    public void addOption(short paramType, short paramData) {
-        int pType = paramType << 16;
-        int pData = paramData;
-        int mergeData = (pType | pData);
-        this.addOption(mergeData);
-    }
-    /**添加选项。*/
-    public void addOption(int mergeData) {
-        this.optionMap = ArrayUtils.add(this.optionMap, mergeData);
-    }
-    /**获取选项Key集合。*/
-    public short[] getOptionKeys() {
-        short[] optKeys = new short[this.optionMap.length];
-        for (int i = 0; i < this.optionMap.length; i++) {
-            int mergeData = this.optionMap[i];
-            optKeys[i] = (short) (mergeData >>> 16);
-        }
-        return optKeys;
-    }
-    /**获取选项数据*/
-    public short[] getOptionValues() {
-        short[] optDatas = new short[this.optionMap.length];
-        for (int i = 0; i < this.optionMap.length; i++) {
-            optDatas[i] = (short) (0x0000FFFF & this.optionMap[i]);
-        }
-        return optDatas;
-    }
-    /**获取Option。*/
-    public int[] getOptions() {
-        return this.optionMap;
     }
     /**获取请求参数类型列表。*/
     public int[] getParameters() {

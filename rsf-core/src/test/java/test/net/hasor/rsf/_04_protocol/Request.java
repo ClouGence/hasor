@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 
@@ -15,10 +15,10 @@ public class Request {
     public void request() throws IOException {
         ByteBuf buf = ByteBufAllocator.DEFAULT.heapBuffer();
         //
-        RequestSocketBlock block = new RequestSocketBlock();
+        RequestBlock block = new RequestBlock();
         block.setServiceGroup(ProtocolUtils.pushString(block, "group"));
         //
-        Protocol<RequestSocketBlock> request = ProtocolUtils.requestProtocol(RSFConstants.Version_1);
+        Protocol<RequestBlock> request = ProtocolUtils.requestProtocol(RSFConstants.Version_1);
         request.encode(block, buf);
     }
 }

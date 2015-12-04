@@ -39,7 +39,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfTimeoutException;
 import net.hasor.rsf.domain.ServiceDefine;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.manager.TimerManager;
@@ -221,7 +221,7 @@ public class RsfClientRequestManager {
         }
         //
         SerializeFactory factory = this.rsfContext.getSerializeFactory();
-        RequestSocketBlock block = rsfRequest.buildSocketBlock(factory);
+        RequestBlock block = rsfRequest.buildSocketBlock(factory);
         //
         this.startRequest(rsfFuture);/*应用 timeout 属性，避免在服务端无任何返回情况下一直无法除去request。*/
         ChannelFuture future = rsfClient.writeAndFlush(block);

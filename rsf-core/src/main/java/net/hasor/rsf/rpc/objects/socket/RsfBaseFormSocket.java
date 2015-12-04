@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.objects.socket;
-import net.hasor.rsf.protocol.protocol.PoolSocketBlock;
+import net.hasor.rsf.protocol.protocol.OptionManager;
+import net.hasor.rsf.protocol.protocol.PoolBlock;
 import net.hasor.rsf.protocol.protocol.RsfSocketBlock;
-import net.hasor.rsf.rpc.manager.OptionManager;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
 /**
  * RSF请求
@@ -74,7 +74,7 @@ public class RsfBaseFormSocket<Context, DATA extends RsfSocketBlock> {
         int[] optionArray = rsfBlock.getOptions();
         for (int optItem : optionArray) {
             short optKey = (short) (optItem >>> 16);
-            short optVal = (short) (optItem & PoolSocketBlock.PoolMaxSize);
+            short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
             String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
             String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
             this.optionManager.addOption(optKeyStr, optValStr);

@@ -23,8 +23,8 @@ import java.io.IOException;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.protocol.codec.Protocol;
-import net.hasor.rsf.protocol.protocol.RequestSocketBlock;
-import net.hasor.rsf.protocol.protocol.ResponseSocketBlock;
+import net.hasor.rsf.protocol.protocol.RequestBlock;
+import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 解码器
@@ -75,9 +75,9 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     private short doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) throws IOException {
         if ((RSF_Packet_Request | rsfHead) == rsfHead) {
             //request
-            Protocol<RequestSocketBlock> requestProtocol = ProtocolUtils.requestProtocol(rsfHead);
+            Protocol<RequestBlock> requestProtocol = ProtocolUtils.requestProtocol(rsfHead);
             if (requestProtocol != null) {
-                RequestSocketBlock block = requestProtocol.decode(frame);
+                RequestBlock block = requestProtocol.decode(frame);
                 block.setReceiveTime(System.currentTimeMillis());
                 ctx.fireChannelRead(block);
                 return ProtocolStatus.OK;/*正常处理后返回*/
@@ -85,9 +85,9 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         }
         if ((RSF_Packet_Response | rsfHead) == rsfHead) {
             //response
-            Protocol<ResponseSocketBlock> responseProtocol = ProtocolUtils.responseProtocol(rsfHead);
+            Protocol<ResponseBlock> responseProtocol = ProtocolUtils.responseProtocol(rsfHead);
             if (responseProtocol != null) {
-                ResponseSocketBlock block = responseProtocol.decode(frame);
+                ResponseBlock block = responseProtocol.decode(frame);
                 block.setReceiveTime(System.currentTimeMillis());
                 ctx.fireChannelRead(block);
                 return ProtocolStatus.OK;/*正常处理后返回*/
@@ -98,7 +98,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     //
     /**发送错误 */
     private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status) {
-        ResponseSocketBlock block = new ResponseSocketBlock();
+        ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(requestID);
         block.setStatus(status);
