@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;

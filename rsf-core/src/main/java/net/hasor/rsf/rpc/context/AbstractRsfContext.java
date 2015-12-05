@@ -26,7 +26,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
-import net.hasor.rsf.binder.RsfBindCenter;
+import net.hasor.rsf.rpc.RsfBindCenter;
 import net.hasor.rsf.rpc.client.RsfClientChannelManager;
 import net.hasor.rsf.rpc.client.RsfClientRequestManager;
 import net.hasor.rsf.rpc.event.Events;

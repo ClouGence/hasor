@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.binder;
+package net.hasor.rsf.container;
 import java.lang.annotation.Annotation;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;

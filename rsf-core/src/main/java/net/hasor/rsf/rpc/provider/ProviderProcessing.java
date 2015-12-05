@@ -19,9 +19,9 @@ import java.util.List;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfOptionSet;
+import net.hasor.rsf.container.ServiceInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
@@ -82,7 +82,7 @@ class ProviderProcessing implements Runnable {
         //2.执行调用
         try {
             String binderID = rsfRequest.getBindInfo().getBindID();
-            ServiceDefine<?> define = this.rsfContext.getBindCenter().getService(binderID);
+            ServiceInfo<?> define = this.rsfContext.getBindCenter().getService(binderID);
             List<RsfFilter> rsfFilters = define.getFilters();
             new RsfFilterHandler(rsfFilters, InvokeRsfFilterChain.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {

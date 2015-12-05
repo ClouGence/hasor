@@ -7,6 +7,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import net.hasor.core.Settings;
+import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.transform.netty.RSFCodec;
 /**
  * 
@@ -15,6 +19,10 @@ import net.hasor.rsf.transform.netty.RSFCodec;
  */
 public class Client {
     public void connect(String host, int port) throws Exception {
+        Settings setting = new StandardContextSettings();//create Settings
+        setting.refresh();
+        final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
+        //
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
@@ -23,7 +31,7 @@ public class Client {
             b.option(ChannelOption.SO_KEEPALIVE, true);
             b.handler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RSFCodec(), new ClientHandler());
+                    ch.pipeline().addLast(new RSFCodec(), new ClientHandler(rsfSetting));
                 }
             });
             // Start the client.

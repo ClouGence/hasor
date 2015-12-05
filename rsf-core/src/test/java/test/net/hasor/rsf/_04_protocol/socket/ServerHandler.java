@@ -19,9 +19,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.transform.protocol.RequestBlock;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * response 200
  * @version : 2014年11月4日
@@ -42,11 +41,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     //
     //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        RequestBlock req = (RequestBlock) msg;
+        RequestInfo req = (RequestInfo) msg;
         //
-        ResponseBlock response = ProtocolUtils.buildStatus(req, ProtocolStatus.Accepted, null);
+        ResponseInfo info = new ResponseInfo();
+        info.setRequestID(req.getRequestID());
+        info.setStatus(ProtocolStatus.Accepted);
         //
-        ctx.channel().writeAndFlush(response).addListener(sendListener);
-        //
+        ctx.channel().writeAndFlush(info).addListener(sendListener);
     }
 }

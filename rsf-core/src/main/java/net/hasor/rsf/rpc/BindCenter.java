@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.rpc;
+import java.util.List;
+import net.hasor.core.Provider;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfBinder;
 /**
- * RSF Bind 机制实现。
+ * 注册中心
+ * @version : 2014年11月30日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.binder;
+public interface BindCenter {
+    /**获取RsfBinder*/
+    public RsfBinder getRsfBinder();
+ 
+    //
+    /**回收已经发布的服务*/
+    public void recoverService(RsfBindInfo<?> bindInfo);
+}

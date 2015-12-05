@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._04_protocol.socket;
+import java.util.Date;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import java.io.IOException;
-import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.serialize.coder.HessianSerializeCoder;
-import net.hasor.rsf.transform.protocol.RequestBlock;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 100W 打印一次，证明还活着
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ClientHandler extends ChannelInboundHandlerAdapter {
+    private SerializeCoder coder = null;
+    public ClientHandler(RsfSettings rsfSetting) {
+        SerializeFactory factory = SerializeFactory.createFactory(rsfSetting);
+        coder = factory.getSerializeCoder("java");
+    }
+    //
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ResponseBlock response = (ResponseBlock) msg;
+        ResponseInfo response = (ResponseInfo) msg;
         if (response.getRequestID() % 1000000 == 0) {
             System.out.println("reqID:" + response.getRequestID());
         }
@@ -44,30 +50,49 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess() == false)
                     return;
-                future.channel().writeAndFlush(getData()).addListener(this);
+                RequestInfo info = newInfo();
+                if (info == null) {
+                    System.err.println("info is null, send end.");
+                    return;
+                }
+                future.channel().writeAndFlush(info).addListener(this);
             }
         };
         //
-        ctx.writeAndFlush(getData()).addListener(listener);
+        RequestInfo info = newInfo();
+        if (info == null) {
+            System.err.println("info is null, send end.");
+            return;
+        }
+        ctx.writeAndFlush(info).addListener(listener);
     }
     //
     private static long reqID = 0;
-    private RequestBlock getData() throws IOException {
-        HessianSerializeCoder coder = new HessianSerializeCoder();
-        RequestBlock request = new RequestBlock();
-        request.setHead(RSFConstants.RSF_Request);
-        request.setRequestID(reqID++);
-        //
-        request.setServiceName(ProtocolUtils.pushString(request, "net.hasor.rsf._test.TestServices"));
-        request.setServiceVersion(ProtocolUtils.pushString(request, "1.0.0"));
-        request.setServiceGroup(ProtocolUtils.pushString(request, "default"));
-        request.setTargetMethod(ProtocolUtils.pushString(request, "sayHello"));//String item, int index
-        request.setSerializeType(ProtocolUtils.pushString(request, "Hessian"));
-        //
-        request.addParameter(ProtocolUtils.pushString(request, "java.lang.String"), request.pushData(coder.encode("你好...")));
-        //
-        request.addOption(ProtocolUtils.pushString(request, "sync"), ProtocolUtils.pushString(request, "true"));
-        //
-        return request;
+    private RequestInfo newInfo() {
+        try {
+            RequestInfo request = new RequestInfo();
+            request.setRequestID(reqID++);
+            request.setServiceGroup("RSF");
+            request.setServiceName("test.net.hasor.rsf.services.EchoService");
+            request.setServiceVersion("1.0.0");
+            request.setSerializeType("serializeType");
+            request.setTargetMethod("targetMethod");
+            request.setClientTimeout(6000);
+            request.setReceiveTime(System.currentTimeMillis());
+            //
+            request.addParameter("java.lang.String", coder.encode("say Hello."));
+            request.addParameter("java.lang.Long", coder.encode(111222333444555L));
+            request.addParameter("java.util.Date", coder.encode(new Date()));
+            request.addParameter("java.lang.Object", coder.encode(null));
+            //
+            request.addOption("auth", "yes");
+            request.addOption("user", "guest");
+            request.addOption("password", null);
+            //
+            return request;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

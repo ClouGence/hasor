@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.util.List;
 import net.hasor.core.Provider;
 /**
  * RSF 环境。
@@ -27,8 +28,6 @@ public interface RsfContext {
     public RsfSettings getSettings();
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
-    /** @return 获取注册中心。*/
-    public BindCenter getBindCenter();
     /**
      * 获取元信息所描述的服务对象
      * @param bindInfo 元信息所描述对象
@@ -40,5 +39,13 @@ public interface RsfContext {
      * @param bindInfo 元信息所描述对象
      * @return 服务对象
      */
-    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo);
+    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
+    /**根据服务名获取服务描述。*/
+    public <T> RsfBindInfo<T> getServiceInfo(String serviceID);
+    /**根据服务名获取服务描述。*/
+    public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType);
+    /**根据服务名获取服务描述。*/
+    public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version);
+    /**获取已经注册的所有服务名称。*/
+    public List<String> getServiceIDs();
 }

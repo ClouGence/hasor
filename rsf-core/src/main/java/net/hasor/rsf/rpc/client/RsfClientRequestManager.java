@@ -35,10 +35,10 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
+import net.hasor.rsf.container.ServiceInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfTimeoutException;
-import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.manager.TimerManager;
@@ -166,7 +166,7 @@ public class RsfClientRequestManager {
         //
         try {
             RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
-            ServiceDefine<?> rsfDefine = this.getRsfContext().getBindCenter().getService(bindInfo.getBindID());
+            ServiceInfo<?> rsfDefine = this.getRsfContext().getBindCenter().getService(bindInfo.getBindID());
             List<RsfFilter> rsfFilterList = rsfDefine.getFilters();
             //
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/

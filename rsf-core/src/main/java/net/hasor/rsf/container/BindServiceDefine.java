@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.binder;
+package net.hasor.rsf.container;
+import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.rsf.RsfBinder.RegisterReference;
-import net.hasor.rsf.domain.ServiceDefine;
 import net.hasor.rsf.domain.ServiceDomain;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
 /**
- * 服务注册器
+ * 服务状态管理器。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class BindServiceDefine<T> extends ServiceDefine<T> implements RegisterReference<T>, CustomerProvider<T> {
-    private AbstractRsfContext rsfContext;
-    private Provider<T>        customerProvider;
+abstract class BindServiceDefine<T> extends ServiceInfo<T>implements RegisterReference<T>, CustomerProvider<T> {
+    private Provider<T> customerProvider;
     //
-    public BindServiceDefine(Class<T> domainType, AbstractRsfContext rsfContext) {
+    public BindServiceDefine(Class<T> domainType, EventContext eventPublisher) {
         super(new ServiceDomain<T>(domainType));
-        this.rsfContext = rsfContext;
     }
     //
     @Override
@@ -44,10 +41,5 @@ class BindServiceDefine<T> extends ServiceDefine<T> implements RegisterReference
     }
     public void setCustomerProvider(Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
-    }
-    @Override
-    public void unRegister() {
-        this.rsfContext.getAddressPool().removeBucket(this.getBindID());
-        this.rsfContext.getBindCenter().recoverService(this);
     }
 }

@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.container;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
-import org.more.util.StringUtils;
+import net.hasor.rsf.domain.ServiceDomain;
 /**
- * 一个完整的RSF上下文中可识别的服务对象，封装了服务挂载的 Filter和服务元信息
+ * 服务对象，封装了服务元信息、RsfFilter、服务提供者（如果有）。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceDefine<T> implements RsfBindInfo<T> {
+public class ServiceInfo<T> implements RsfBindInfo<T> {
     private final ServiceDomain<T>   domain;
-    private final List<FilterDefine> filterDefine;
+    private final List<FilterDefine> filterList;
+    private Provider<T>              provider;
     //
-    public ServiceDefine(ServiceDomain<T> domain) {
+    public ServiceInfo(ServiceDomain<T> domain) {
         this.domain = domain;
-        this.filterDefine = new ArrayList<FilterDefine>();
+        this.filterList = new ArrayList<FilterDefine>();
     }
-    //
     //
     /**添加Filter*/
     public void addRsfFilter(String filterID, RsfFilter rsfFilter) {
@@ -47,31 +48,23 @@ public class ServiceDefine<T> implements RsfBindInfo<T> {
     }
     /**添加Filter*/
     public void addRsfFilter(FilterDefine filterDefine) {
-        synchronized (this.filterDefine) {
-            for (FilterDefine filterDef : this.filterDefine) {
-                if (StringUtils.equals(filterDef.filterID(), filterDefine.filterID())) {
-                    return;
-                }
+        for (FilterDefine filterDef : this.filterList) {
+            if (StringUtils.equals(filterDef.filterID(), filterDefine.filterID())) {
+                return;
             }
-            this.filterDefine.add(filterDefine);
         }
-    }
-    //
-    //
-    /**获取服务上配置有效的过滤器*/
-    protected List<FilterDefine> getFilterDefineList() {
-        return new ArrayList<FilterDefine>(this.filterDefine);
+        this.filterList.add(filterDefine);
     }
     /**获取服务上配置有效的过滤器*/
     public List<RsfFilter> getFilters() {
-        return new ArrayList<RsfFilter>(getFilterDefineList());
+        return new ArrayList<RsfFilter>(this.filterList);
     }
     /**查找注册的Filter*/
     public RsfFilter getFilter(String filterID) {
         if (StringUtils.isBlank(filterID)) {
             return null;
         }
-        List<FilterDefine> defines = getFilterDefineList();
+        List<FilterDefine> defines = this.filterList;
         if (defines == null || defines.isEmpty()) {
             return null;
         }
@@ -81,6 +74,14 @@ public class ServiceDefine<T> implements RsfBindInfo<T> {
             }
         }
         return null;
+    }
+    /**获取服务提供者。*/
+    public Provider<T> getProvider() {
+        return this.provider;
+    }
+    /**设置服务提供者。*/
+    public void setProvider(Provider<T> provider) {
+        this.provider = provider;
     }
     //
     //
@@ -117,7 +118,7 @@ public class ServiceDefine<T> implements RsfBindInfo<T> {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer("");
-        List<FilterDefine> defines = getFilterDefineList();
+        List<FilterDefine> defines = this.filterList;
         if (defines == null) {
             buffer.append(" null");
         } else {
