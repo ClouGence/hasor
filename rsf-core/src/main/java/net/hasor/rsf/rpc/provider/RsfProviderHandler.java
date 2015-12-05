@@ -20,10 +20,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。

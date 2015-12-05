@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.netty;
+package net.hasor.rsf.transform.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.codec.ProtocolUtils;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
-import net.hasor.rsf.protocol.protocol.RequestInfo;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
-import net.hasor.rsf.protocol.protocol.ResponseInfo;
+import net.hasor.rsf.transform.codec.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 编码器，支持将{@link RequestInfo}、{@link RequestBlock}或者{@link ResponseInfo}、{@link ResponseBlock}编码写入Socket
  * @version : 2014年10月10日

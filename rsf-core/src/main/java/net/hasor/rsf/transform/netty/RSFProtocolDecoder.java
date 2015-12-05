@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.netty;
+package net.hasor.rsf.transform.netty;
 import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Request;
 import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Response;
 import java.io.IOException;
@@ -24,10 +24,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.codec.ProtocolUtils;
-import net.hasor.rsf.protocol.protocol.RequestInfo;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
-import net.hasor.rsf.protocol.protocol.ResponseInfo;
+import net.hasor.rsf.transform.codec.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 解码器
  * @version : 2014年10月10日

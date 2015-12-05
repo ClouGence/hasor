@@ -16,4 +16,4 @@
 /**
  * RSF 协议的编码/解码器。
  */
-package net.hasor.rsf.protocol.codec;
+package net.hasor.rsf.transform.codec;

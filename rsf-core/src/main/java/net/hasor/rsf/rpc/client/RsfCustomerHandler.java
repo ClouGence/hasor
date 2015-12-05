@@ -16,9 +16,9 @@
 package net.hasor.rsf.rpc.client;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
 /**
  * 负责处理 RSF 发出请求之后的所有响应（不区分连接）
  *  -- 根据 {@link ResponseMsg}中包含的 requestID 找到对应的{@link RsfFuture}。

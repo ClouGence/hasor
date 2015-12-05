@@ -16,4 +16,4 @@
 /**
  * 负责基于Netty 下的 RSF 数据包的编码和解码。
  */
-package net.hasor.rsf.protocol.netty;
+package net.hasor.rsf.transform.netty;

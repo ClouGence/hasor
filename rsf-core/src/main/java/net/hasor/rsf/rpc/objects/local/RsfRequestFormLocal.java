@@ -21,12 +21,12 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.protocol.OptionManager;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.rsf.transform.codec.ByteStringCachelUtils;
+import net.hasor.rsf.transform.protocol.OptionManager;
+import net.hasor.rsf.transform.protocol.RequestBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**

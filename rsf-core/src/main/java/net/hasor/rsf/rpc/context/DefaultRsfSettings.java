@@ -29,7 +29,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.OptionInfo;
+import net.hasor.rsf.transform.protocol.OptionInfo;
 /**
  * 
  * @version : 2014年11月12日

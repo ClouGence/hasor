@@ -36,8 +36,8 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.netty.RSFCodec;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.transform.netty.RSFCodec;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * 维护RSF同其它RSF的连接。

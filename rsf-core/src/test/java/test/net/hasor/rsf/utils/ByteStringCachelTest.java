@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.utils;
-import net.hasor.rsf.utils.ByteStringCachelUtils;
 import org.junit.Test;
+import net.hasor.rsf.transform.codec.ByteStringCachelUtils;
 /**
  * 
  * @version : 2015年4月23日

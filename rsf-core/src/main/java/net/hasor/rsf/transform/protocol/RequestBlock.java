@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.protocol;
+package net.hasor.rsf.transform.protocol;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Request 二进制传输协议

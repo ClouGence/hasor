@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.objects.socket;
-import net.hasor.rsf.protocol.protocol.PoolBlock;
-import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.rsf.transform.codec.ByteStringCachelUtils;
+import net.hasor.rsf.transform.protocol.PoolBlock;
 /**
  * RSF请求
  * @version : 2014年10月25日

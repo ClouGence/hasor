@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.codec;
+package net.hasor.rsf.transform.codec;
 import java.io.IOException;
 import java.util.List;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
-import net.hasor.rsf.protocol.protocol.PoolBlock;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
-import net.hasor.rsf.protocol.protocol.RequestInfo;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
-import net.hasor.rsf.protocol.protocol.ResponseInfo;
-import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.rsf.transform.protocol.PoolBlock;
+import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日

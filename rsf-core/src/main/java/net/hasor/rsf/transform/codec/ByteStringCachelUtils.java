@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.transform.codec;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -37,9 +37,15 @@ public class ByteStringCachelUtils {
         //            stringCache1.put(hashCode, oriData);
         //        }
         //        return oriData;
-        return new String(stringByte);
+        if (stringByte == null)
+            return null;
+        else
+            return new String(stringByte);
     }
     public static byte[] fromCache(String string) {
+        if (string == null) {
+            return null;
+        }
         //        byte[] stringByte = stringCache2.get(string);
         //        if (stringByte == null) {
         //            stringByte = string.getBytes();
@@ -54,12 +60,12 @@ public class ByteStringCachelUtils {
 class LRU<K, V> {
     /**链表元素*/
     private class LRU_Entity {
-        public LRU_Entity pre;  //链表前一个元素
-        public LRU_Entity next; //链表后一个元素
+        public LRU_Entity pre;   //链表前一个元素
+        public LRU_Entity next;  //链表后一个元素
         public int        count; //总数
         public boolean    isNew;
-        public K          key;  //Key
-        public V          val;  //值
+        public K          key;   //Key
+        public V          val;   //值
     }
     //
     private LRU_Entity root     = null; //链表的起始点

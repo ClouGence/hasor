@@ -19,8 +19,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
-import net.hasor.rsf.protocol.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * response 200

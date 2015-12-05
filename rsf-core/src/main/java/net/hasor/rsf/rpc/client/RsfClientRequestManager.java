@@ -39,13 +39,13 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfTimeoutException;
 import net.hasor.rsf.domain.ServiceDefine;
-import net.hasor.rsf.protocol.protocol.RequestBlock;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.manager.TimerManager;
 import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.transform.protocol.RequestBlock;
 /**
  * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
