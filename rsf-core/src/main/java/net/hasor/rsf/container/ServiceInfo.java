@@ -28,7 +28,7 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceInfo<T> implements RsfBindInfo<T> {
+public class ServiceInfo<T> {
     private final ServiceDomain<T>   domain;
     private final List<FilterDefine> filterList;
     private Provider<T>              provider;
@@ -56,7 +56,7 @@ public class ServiceInfo<T> implements RsfBindInfo<T> {
         this.filterList.add(filterDefine);
     }
     /**获取服务上配置有效的过滤器*/
-    public List<RsfFilter> getFilters() {
+    public List<RsfFilter> getFilterSnapshots() {
         return new ArrayList<RsfFilter>(this.filterList);
     }
     /**查找注册的Filter*/
@@ -79,39 +79,8 @@ public class ServiceInfo<T> implements RsfBindInfo<T> {
     public Provider<T> getProvider() {
         return this.provider;
     }
-    /**设置服务提供者。*/
-    public void setProvider(Provider<T> provider) {
-        this.provider = provider;
-    }
-    //
-    //
-    /**获取domain*/
-    protected ServiceDomain<T> getDomain() {
+    public RsfBindInfo<T> getDomain() {
         return this.domain;
-    }
-    public String getBindID() {
-        return this.getDomain().getBindID();
-    }
-    public String getBindName() {
-        return this.getDomain().getBindName();
-    }
-    public String getBindGroup() {
-        return this.getDomain().getBindGroup();
-    }
-    public String getBindVersion() {
-        return this.getDomain().getBindVersion();
-    }
-    public Class<T> getBindType() {
-        return this.getDomain().getBindType();
-    }
-    public int getClientTimeout() {
-        return this.getDomain().getClientTimeout();
-    }
-    public String getSerializeType() {
-        return this.getDomain().getSerializeType();
-    }
-    public Object getMetaData(String key) {
-        return this.getDomain().getMetaData(key);
     }
     //
     //
@@ -126,6 +95,6 @@ public class ServiceInfo<T> implements RsfBindInfo<T> {
                 buffer.append(define.filterID() + ",");
             }
         }
-        return "ServiceDefine[Domain=" + this.getDomain() + ",Filters=" + buffer.toString() + "]";
+        return "ServiceDefine[Domain=" + this.domain + ",Filters=" + buffer.toString() + "]";
     }
 }

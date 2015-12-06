@@ -38,10 +38,14 @@ public class ProtocolUtils {
         resProtocolPool[1] = new RpcResponseProtocol();
     }
     //
-    /**从RSF头中获取协议版本。*/
+    /**
+     * 从RSF头中获取协议版本。
+     * @param rsfHead RSF数据包头信息。
+     */
     public static byte getVersion(byte rsfHead) {
         return (byte) (rsfHead & 0x0F);
     }
+    /*将字节数据放入，PoolBlock*/
     private static short pushBytes(PoolBlock socketMessage, byte[] attrData) {
         if (attrData != null) {
             return socketMessage.pushData(attrData);
@@ -49,6 +53,7 @@ public class ProtocolUtils {
             return socketMessage.pushData(null);
         }
     }
+    /*将字符串数据放入，PoolBlock*/
     private static short pushString(PoolBlock socketMessage, String attrData) {
         if (attrData != null) {
             return socketMessage.pushData(ByteStringCachelUtils.fromCache(attrData));
@@ -63,14 +68,14 @@ public class ProtocolUtils {
     public static Protocol<RequestBlock> getRquestProtocol(byte rsfHead) {
         return reqProtocolPool[getVersion(rsfHead)];
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link RequestInfo}对象。
+    /**根据RSF头中描述的协议版本，从二进制数据流中创建{@link RequestInfo}对象。
      * @see #buildRequestInfo(RequestBlock)*/
     public static RequestInfo buildRequestInfo(byte rsfHead, ByteBuf dataBuf) throws IOException {
         Protocol<RequestBlock> protocol = getRquestProtocol(rsfHead);
         RequestBlock block = protocol.decode(dataBuf);
         return buildRequestInfo(block);
     }
-    /**将RSF协议数据转换成{@link RequestInfo}对象。*/
+    /**解析RSF协议数据包{@link RequestBlock}，将其转换为{@link RequestInfo}。*/
     public static RequestInfo buildRequestInfo(RequestBlock rsfBlock) {
         RequestInfo info = new RequestInfo();
         //
@@ -116,7 +121,7 @@ public class ProtocolUtils {
         //
         return info;
     }
-    /**构建一个二进制协议对象。*/
+    /**编码{@link RequestInfo}为协议数据包{@link RequestBlock}。*/
     public static RequestBlock buildRequestBlock(RequestInfo info) {
         RequestBlock block = new RequestBlock();
         //
@@ -152,13 +157,23 @@ public class ProtocolUtils {
         //
         return block;
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link RequestInfo}对象。
-     * @see #wirteRequestBlock(byte, RequestBlock, ByteBuf)*/
+    /**
+     * 自动编码{@link RequestInfo}，并将编码的协议数据写入到{@link ByteBuf}。
+     * @see #wirteRequestBlock(byte, RequestBlock, ByteBuf)
+     * @param rsfHead 使用的协议版本号（0～15）或是携带了协议信息的RSF数据传输协议头。
+     * @param info 需要编码的request。
+     * @param dataBuf 数据输出到这里。
+     */
     public static void wirteRequestInfo(byte rsfHead, RequestInfo info, ByteBuf dataBuf) throws IOException {
         RequestBlock block = buildRequestBlock(info);
         wirteRequestBlock(rsfHead, block, dataBuf);
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link RequestInfo}对象。*/
+    /**
+     * 将协议数据{@link RequestBlock}，写入到{@link ByteBuf}。
+     * @param rsfHead 使用的协议版本号（0～15）或是携带了协议信息的RSF数据传输协议头。
+     * @param block 协议数据包。
+     * @param dataBuf 数据输出到这里。
+     */
     public static void wirteRequestBlock(byte rsfHead, RequestBlock block, ByteBuf dataBuf) throws IOException {
         Protocol<RequestBlock> protocol = getRquestProtocol(rsfHead);
         protocol.encode(block, dataBuf);
@@ -170,14 +185,14 @@ public class ProtocolUtils {
     public static Protocol<ResponseBlock> getResponseProtocol(byte rsfHead) {
         return resProtocolPool[getVersion(rsfHead)];
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link ResponseInfo}对象。
+    /**根据RSF头中描述的协议版本，从二进制数据流中创建{@link ResponseInfo}对象。
      * @see #buildResponseInfo(ResponseBlock)*/
     public static ResponseInfo buildResponseInfo(byte rsfHead, ByteBuf dataBuf) throws IOException {
         Protocol<ResponseBlock> protocol = getResponseProtocol(rsfHead);
         ResponseBlock block = protocol.decode(dataBuf);
         return buildResponseInfo(block);
     }
-    /**将RSF协议数据转换成{@link ResponseInfo}对象。*/
+    /**解析RSF协议数据包{@link ResponseBlock}，将其转换为{@link ResponseInfo}。*/
     public static ResponseInfo buildResponseInfo(ResponseBlock rsfBlock) {
         ResponseInfo info = new ResponseInfo();
         //
@@ -207,7 +222,7 @@ public class ProtocolUtils {
         info.setReturnData(returnData);
         return info;
     }
-    /**构建一个二进制协议对象。*/
+    /**编码{@link ResponseInfo}为协议数据包{@link ResponseBlock}。*/
     public static ResponseBlock buildResponseBlock(ResponseInfo info) {
         ResponseBlock block = new ResponseBlock();
         //
@@ -235,13 +250,23 @@ public class ProtocolUtils {
         //
         return block;
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link RequestInfo}对象。
-     * @see #wirteResponseBlock(byte, ResponseBlock, ByteBuf)*/
+    /**
+     * 自动编码{@link ResponseInfo}，并将编码的协议数据写入到{@link ByteBuf}。
+     * @see #wirteResponseBlock(byte, ResponseBlock, ByteBuf)
+     * @param rsfHead 使用的协议版本号（0～15）或是携带了协议信息的RSF数据传输协议头。
+     * @param info 需要编码的request。
+     * @param dataBuf 数据输出到这里。
+     */
     public static void wirteResponseInfo(byte rsfHead, ResponseInfo info, ByteBuf dataBuf) throws IOException {
         ResponseBlock block = buildResponseBlock(info);
         wirteResponseBlock(rsfHead, block, dataBuf);
     }
-    /**根据RSF头中指定的协议，从字节数据中创建{@link RequestInfo}对象。*/
+    /**
+     * 将协议数据{@link ResponseBlock}，写入到{@link ByteBuf}。
+     * @param rsfHead 使用的协议版本号（0～15）或是携带了协议信息的RSF数据传输协议头。
+     * @param block 协议数据包。
+     * @param dataBuf 数据输出到这里。
+     */
     public static void wirteResponseBlock(byte rsfHead, ResponseBlock block, ByteBuf dataBuf) throws IOException {
         Protocol<ResponseBlock> protocol = getResponseProtocol(rsfHead);
         protocol.encode(block, dataBuf);

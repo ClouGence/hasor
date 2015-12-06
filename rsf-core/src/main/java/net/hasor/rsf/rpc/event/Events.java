@@ -21,13 +21,14 @@ package net.hasor.rsf.rpc.event;
  */
 public interface Events {
     /**服务发布*/
-    public static final String ServiceProvider = "ServiceProvider";
-    /**服务订阅*/
-    public static final String ServiceCustomer = "ServiceCustomer";
+    public static final String NewService    = "ServiceProvider";
     /**服务卸载*/
-    public static final String UnService       = "UnService";
+    public static final String UnService     = "UnService";
+    /**服务卸载*/
+    public static final String UpdateService = "UnService";
+    //
     /**应用下线*/
-    public static final String Shutdown        = "Shutdown";
+    public static final String Shutdown      = "Shutdown";
     /**应用启动*/
-    public static final String StartUp         = "StartUp";
+    public static final String StartUp       = "StartUp";
 }
