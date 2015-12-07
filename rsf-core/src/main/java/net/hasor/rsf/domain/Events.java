@@ -19,11 +19,4 @@ package net.hasor.rsf.domain;
  * @version : 2015年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Events {
-    /**服务发布*/
-    public static final String SetupService  = "ServiceProvider";
-    /**服务卸载*/
-    public static final String UnService     = "UnService";
-    /**服务卸载*/
-    public static final String UpdateService = "UnService";
-}
+public interface Events {}

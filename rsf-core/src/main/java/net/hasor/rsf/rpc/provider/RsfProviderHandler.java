@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.provider;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.RequestBlock;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
  * @version : 2014年11月4日
@@ -45,7 +44,7 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
         RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
         //
         //放入业务线程准备执行
-        ResponseBlock readyWrite = null;
+        ResponseInfo readyWrite = null;
         try {
             logger.debug("received request({}) full = {}", requestBlock.getRequestID(), requestBlock);
             byte[] serviceUniqueName = requestBlock.readPool(requestBlock.getServiceName());
@@ -53,10 +52,24 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
             Channel nettyChannel = ctx.channel();
             exe.execute(new ProviderProcessing(this.rsfContext, requestBlock, nettyChannel));
             //
-            readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.Accepted, optMap);
+            readyWrite = new ResponseInfo();
+            readyWrite.addOptionMap(optMap);
+            readyWrite.setRequestID(requestBlock.getRequestID());
+            readyWrite.setStatus(ProtocolStatus.Accepted);
         } catch (RejectedExecutionException e) {
             logger.warn("task pool is full ->RejectedExecutionException.");
-            readyWrite = ProtocolUtils.buildStatus(requestBlock, ProtocolStatus.ChooseOther, optMap);
+            readyWrite = new ResponseInfo();
+            readyWrite.addOptionMap(optMap);
+            readyWrite.setRequestID(requestBlock.getRequestID());
+            readyWrite.setStatus(ProtocolStatus.ChooseOther);
+            readyWrite.addOption("message", e.getMessage());
+        } catch (Throwable e) {
+            logger.error("processing error ->" + e.getMessage(), e);
+            readyWrite = new ResponseInfo();
+            readyWrite.addOptionMap(optMap);
+            readyWrite.setRequestID(requestBlock.getRequestID());
+            readyWrite.setStatus(ProtocolStatus.InvokeError);
+            readyWrite.addOption("message", e.getMessage());
         }
         //
         ctx.pipeline().writeAndFlush(readyWrite);

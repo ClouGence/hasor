@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.provider;
-import io.netty.channel.Channel;
 import java.util.List;
+import org.more.util.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import io.netty.channel.Channel;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfOptionSet;
-import net.hasor.rsf.container.ServiceInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
-import net.hasor.rsf.rpc.objects.socket.RsfRequestFormSocket;
 import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.util.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 负责处理 Request 调用逻辑，和response写入逻辑。
  * @version : 2014年11月4日
@@ -40,12 +39,12 @@ import org.slf4j.LoggerFactory;
 class ProviderProcessing implements Runnable {
     protected Logger                 logger = LoggerFactory.getLogger(getClass());
     private final AbstractRsfContext rsfContext;
-    private final RequestBlock requestBlock;
+    private final RequestInfo        requestInfo;
     private final Channel            nettyChannel;
     //
-    public ProviderProcessing(AbstractRsfContext rsfContext, RequestBlock requestBlock, Channel nettyChannel) {
+    public ProviderProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
         this.rsfContext = rsfContext;
-        this.requestBlock = requestBlock;
+        this.requestInfo = requestInfo;
         this.nettyChannel = nettyChannel;
     }
     public void run() {

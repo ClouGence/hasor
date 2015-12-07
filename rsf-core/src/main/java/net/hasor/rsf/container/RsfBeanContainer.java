@@ -43,9 +43,8 @@ import net.hasor.rsf.domain.RsfBindInfoWrap;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBeanContainer {
-    protected Logger                                    logger       = LoggerFactory.getLogger(getClass());
-    //Group - ServiceInfo
-    private final ConcurrentMap<String, ServiceInfo<?>> serviceMap;
+    protected Logger                                    logger;
+    private final ConcurrentMap<String, ServiceInfo<?>> serviceMap;                    //Group - ServiceInfo
     private final List<FilterDefine>                    filterList;
     private final Object                                filterLock;
     private final RsfEnvironment                        environment;
@@ -53,6 +52,7 @@ public class RsfBeanContainer {
     private final static Provider<RsfFilter>[]          EMPTY_FILTER = new Provider[0];
     //
     public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
+        this.logger = LoggerFactory.getLogger(getClass());
         this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
         this.filterList = new ArrayList<FilterDefine>();
         this.filterLock = new Object();
@@ -209,9 +209,13 @@ public class RsfBeanContainer {
      * 回收发布的服务
      * @param serviceDefine 服务定义。
      */
-    public void recoverService(String serviceID) {
+    public boolean recoverService(String serviceID) {
         this.getAddressPool().removeBucket(serviceID);
-        this.serviceMap.remove(serviceID);
+        if (this.serviceMap.containsKey(serviceID)) {
+            this.serviceMap.remove(serviceID);
+            return true;
+        }
+        return false;
     }
     /**创建{@link RsfBinder}。*/
     public RsfBinder createBinder() {
@@ -234,8 +238,8 @@ class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T>implements Register
         this.rsfContainer = rsfContainer;
     }
     @Override
-    public void unRegister() {
+    public boolean unRegister() {
         String serviceID = this.getBindID();
-        this.rsfContainer.recoverService(serviceID);
+        return this.rsfContainer.recoverService(serviceID);
     }
 }

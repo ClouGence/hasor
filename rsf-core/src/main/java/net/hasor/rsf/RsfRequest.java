@@ -24,15 +24,13 @@ public interface RsfRequest extends RsfHeader {
     /**请求是否为本地发起的。*/
     public boolean isLocal();
     /**获取要调用的目标方法。*/
-    public Method getServiceMethod();
+    public Method getMethod();
     /**获取上下文。*/
     public RsfContext getContext();
     /**请求到达时间（如果是本地发起的请求，该值为发起调用的时间戳）。*/
     public long getReceiveTime();
     /**超时时间。*/
     public int getTimeout();
-    /**获取请求的服务方法名。*/
-    public String getMethod();
     /**获取请求参数类型。*/
     public Class<?>[] getParameterTypes();
     /**获取请求参数值。*/

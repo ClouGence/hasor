@@ -41,4 +41,12 @@ public class OptionInfo implements RsfOptionSet {
     public void removeOption(String key) {
         this.optionMap.remove(key);
     }
+    public void addOptionMap(RsfOptionSet optSet) {
+        if (optSet == null) {
+            return;
+        }
+        for (String key : optSet.getOptionKeys()) {
+            this.addOption(key, optSet.getOption(key));
+        }
+    }
 }

@@ -175,6 +175,6 @@ public interface RsfBinder extends RuleConfiguration {
     /**接口解除*/
     public interface RegisterReference<T> extends RsfBindInfo<T> {
         /**解除注册。*/
-        public void unRegister();
+        public boolean unRegister();
     }
 }

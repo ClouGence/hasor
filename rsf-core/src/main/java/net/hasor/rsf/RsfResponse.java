@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * 响应请求
  * @version : 2014年10月25日
@@ -23,16 +24,20 @@ public interface RsfResponse extends RsfHeader {
     /**最终结果。*/
     public Object getResponseData();
     /**返回的类型信息。*/
-    public Class<?> getResponseType();
+    public Class<?> getReturnType();
     /**返回状态*/
-    public short getResponseStatus();
+    public short getStatus();
     //
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendData(Object returnObject);
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendStatus(short status);
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
-    public void sendStatus(short status, Object messageBody);
+    public void sendStatus(ProtocolStatus status);
+    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
+    public void sendStatus(short status, String messageBody);
+    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
+    public void sendStatus(ProtocolStatus status, String messageBody);
     //
     //    /**在send操作完成响应之前，给予客户端的消息（在长调用的时候可以用来替代消息队列）。*/
     //    public void onMessage(Object messageBody);

@@ -17,33 +17,28 @@ package net.hasor.rsf.rpc.objects.local;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.serialize.SerializeCoder;
-import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.transform.codec.ByteStringCachelUtils;
-import net.hasor.rsf.transform.protocol.OptionManager;
-import net.hasor.rsf.transform.protocol.RequestBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.OptionInfo;
+import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
+public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     private final AbstractRsfContext rsfContext;
-    private final long               requestID;
+    private final RequestInfo        requestInfo;
     private final RsfBindInfo<?>     bindInfo;
     private final Method             targetMethod;
     private final Class<?>[]         parameterTypes;
     private final Object[]           parameterObjects;
     private final long               receiveTime;
     //
-    public RsfRequestFormLocal(RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, AbstractRsfContext rsfContext) throws RsfException {
+    public RsfRequestFormLocal(RequestInfo requestInfo, Method targetMethod, Object[] parameterObjects, AbstractRsfContext rsfContext) throws RsfException {
         this.requestID = RsfRuntimeUtils.genRequestID();
         this.bindInfo = bindInfo;
         this.targetMethod = targetMethod;
@@ -78,7 +73,7 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
         return true;
     }
     @Override
-    public Method getServiceMethod() {
+    public Method getMethod() {
         return this.targetMethod;
     }
     @Override
@@ -94,62 +89,11 @@ public class RsfRequestFormLocal extends OptionManager implements RsfRequest {
         return this.bindInfo.getClientTimeout();
     }
     @Override
-    public String getMethod() {
-        return this.targetMethod.getName();
-    }
-    @Override
     public Class<?>[] getParameterTypes() {
         return this.parameterTypes;
     }
     @Override
     public Object[] getParameterObject() {
         return this.parameterObjects;
-    }
-    //
-    public RsfResponseFormLocal buildResponse() {
-        RsfResponseFormLocal rsfResponse = new RsfResponseFormLocal(this);
-        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
-        for (String optKey : optMap.getOptionKeys()) {
-            rsfResponse.addOption(optKey, optMap.getOption(optKey));
-        }
-        return rsfResponse;
-    }
-    public RequestBlock buildSocketBlock(SerializeFactory serializeFactory) throws Throwable {
-        SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
-        RsfBindInfo<?> rsfBindInfo = this.getBindInfo();
-        RequestBlock block = new RequestBlock();
-        //
-        //1.基本信息
-        block.setHead(RSFConstants.RSF_Request);
-        block.setRequestID(getRequestID());//请求ID
-        block.setServiceGroup(ProtocolUtils.pushString(block, rsfBindInfo.getBindGroup()));//序列化策略
-        block.setServiceName(ProtocolUtils.pushString(block, rsfBindInfo.getBindName()));//序列化策略
-        block.setServiceVersion(ProtocolUtils.pushString(block, rsfBindInfo.getBindVersion()));//序列化策略
-        block.setTargetMethod(ProtocolUtils.pushString(block, getMethod()));//序列化策略
-        block.setSerializeType(ProtocolUtils.pushString(block, getSerializeType()));//序列化策略
-        block.setClientTimeout(getTimeout());
-        //
-        //2.params
-        Class<?>[] pTypes = getParameterTypes();
-        Object[] pObjects = getParameterObject();
-        for (int i = 0; i < pTypes.length; i++) {
-            byte[] typeByte = ByteStringCachelUtils.fromCache(RsfRuntimeUtils.toAsmType(pTypes[i]));
-            byte[] paramByte = coder.encode(pObjects[i]);
-            //
-            short paramType = block.pushData(typeByte);
-            short paramData = block.pushData(paramByte);
-            //
-            block.addParameter(paramType, paramData);
-        }
-        //
-        //3.Opt参数
-        String[] optKeys = getOptionKeys();
-        for (int i = 0; i < optKeys.length; i++) {
-            short optKey = ProtocolUtils.pushString(block, optKeys[i]);
-            short optVal = ProtocolUtils.pushString(block, getOption(optKeys[i]));
-            block.addOption(optKey, optVal);
-        }
-        //
-        return block;
     }
 }

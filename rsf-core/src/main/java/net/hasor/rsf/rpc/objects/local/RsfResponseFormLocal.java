@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.objects.local;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.transform.protocol.OptionManager;
+import net.hasor.rsf.transform.codec.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.OptionInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
-    protected Logger         logger = LoggerFactory.getLogger(getClass());
-    private final RsfRequest rsfRequest;
-    private short            responseStatus;
-    private Class<?>         returnType;
-    private Object           returnObject;
-    private boolean          committed;
+public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
+    protected Logger           logger = LoggerFactory.getLogger(getClass());
+    private final RsfRequest   rsfRequest;
+    private final ResponseInfo responseInfo;
+    private short              responseStatus;
+    private Class<?>           returnType;
+    private Object             returnObject;
+    private boolean            committed;
     //
     public RsfResponseFormLocal(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;
+        this.responseInfo = new ResponseInfo();
+        
+        rsfRequest.getServiceMethod()
         this.returnType = rsfRequest.getServiceMethod().getReturnType();
+
     }
     //
     //
@@ -81,17 +86,25 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
     //
     @Override
     public void sendData(Object returnObject) {
-        updateReturn(ProtocolStatus.OK, returnObject);
+        this.updateReturn(ProtocolStatus.OK.getType(), returnObject, null);
+    }
+    @Override
+    public void sendStatus(ProtocolStatus status) {
+        this.updateReturn(status.getType(), null, null);
+    }
+    @Override
+    public void sendStatus(ProtocolStatus status, String messageBody) {
+        this.updateReturn(status.getType(), null, messageBody);
     }
     @Override
     public void sendStatus(short status) {
-        updateReturn(status, null);
+        this.updateReturn(status, null, null);
     }
     @Override
-    public void sendStatus(short status, Object messageBody) {
-        updateReturn(status, messageBody);
+    public void sendStatus(short status, String messageBody) {
+        this.updateReturn(status, null, messageBody);
     }
-    private void updateReturn(short status, Object messageBody) {
+    private void updateReturn(short status, Object returnData, String message) {
         this.returnObject = messageBody;
         this.responseStatus = status;
         this.committed = true;
@@ -100,14 +113,9 @@ public class RsfResponseFormLocal extends OptionManager implements RsfResponse {
     public boolean isResponse() {
         return this.committed;
     }
-    public ResponseBlock buildSocketBlock(SerializeFactory serializeFactory) {
+    public ResponseInfo buildSocketBlock(SerializeFactory serializeFactory) {
         SerializeCoder coder = serializeFactory.getSerializeCoder(getSerializeType());
         ResponseBlock block = new ResponseBlock();
-        //
-        //1.基本信息
-        block.setHead(RSFConstants.RSF_Response);
-        block.setRequestID(getRequestID());//请求ID
-        block.setSerializeType(ProtocolUtils.pushString(block, getSerializeType()));//序列化策略
         //
         //2.returnData
         try {

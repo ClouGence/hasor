@@ -63,8 +63,8 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
         return getRsfRequest().isLocal();
     }
     @Override
-    public Method getServiceMethod() {
-        return getRsfRequest().getServiceMethod();
+    public Method getMethod() {
+        return getRsfRequest().getMethod();
     }
     @Override
     public RsfContext getContext() {
@@ -77,10 +77,6 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
     @Override
     public int getTimeout() {
         return getRsfRequest().getTimeout();
-    }
-    @Override
-    public String getMethod() {
-        return getRsfRequest().getMethod();
     }
     @Override
     public Class<?>[] getParameterTypes() {

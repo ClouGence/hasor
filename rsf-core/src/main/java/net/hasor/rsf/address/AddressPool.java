@@ -367,10 +367,14 @@ public class AddressPool {
      * 从地址池中，删除指定服务的地址本。
      * @param serviceID 服务ID。
      */
-    public void removeBucket(String serviceID) {
-        logger.info("removeAddressBucket serviceID is {}", serviceID);
-        this.addressPool.remove(serviceID);
-        this.rulerCache.reset();
+    public boolean removeBucket(String serviceID) {
+        if (this.addressPool.containsKey(serviceID)) {
+            logger.info("removeAddressBucket serviceID is {}", serviceID);
+            this.addressPool.remove(serviceID);
+            this.rulerCache.reset();
+            return true;
+        }
+        return false;
     }
     /**
      * 更新默认流控规则。
