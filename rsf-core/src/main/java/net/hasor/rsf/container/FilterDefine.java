@@ -26,7 +26,7 @@ import net.hasor.rsf.RsfResponse;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FilterDefine implements Provider<RsfFilter>, RsfFilter {
+class FilterDefine implements Provider<RsfFilter>, RsfFilter {
     private String                        filterID;
     private Provider<? extends RsfFilter> filterProvider;
     //

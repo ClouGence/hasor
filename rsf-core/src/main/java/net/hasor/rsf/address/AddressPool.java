@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -296,7 +297,16 @@ public class AddressPool {
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
-     * 
+     * @param serviceID 服务ID。
+     * @param newHostSet 追加更新的地址。
+     */
+    public void updateAddress(String serviceID, InterAddress newHost) {
+        List<InterAddress> newHostSet = Arrays.asList(newHost);
+        this.updateAddress(serviceID, newHostSet);
+    }
+    /**
+     * 新增或追加更新服务地址信息。<p>
+     * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
      * @param serviceID 服务ID。
      * @param newHostSet 追加更新的地址。
      */

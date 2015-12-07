@@ -15,11 +15,16 @@
  */
 package net.hasor.rsf.container;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -28,18 +33,21 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.address.AddressPool;
 /**
  * 
  * @version : 2015年12月6日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBeanContainer {
+    protected Logger                                    logger       = LoggerFactory.getLogger(getClass());
     //Group - ServiceInfo
     private final ConcurrentMap<String, ServiceInfo<?>> serviceMap;
     private final List<FilterDefine>                    filterList;
     private final Object                                filterLock;
     private final RsfEnvironment                        environment;
-    private final static RsfFilter[]                    EMPTY_FILTER = new RsfFilter[0];
+    private AddressPool                                 addressPool;
+    private final static Provider<RsfFilter>[]          EMPTY_FILTER = new Provider[0];
     //
     public RsfBeanContainer(RsfEnvironment environment) {
         this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
@@ -48,7 +56,7 @@ public class RsfBeanContainer {
         this.environment = environment;
     }
     //
-    /** 
+    /**
      * 添加一个全局服务过滤器。
      * @param filterID 过滤器ID，不可重复定义相同id的RsfFilter。
      * @param instance 过滤器对象。
@@ -71,17 +79,46 @@ public class RsfBeanContainer {
             this.filterList.add(new FilterDefine(filterID, provider));
         }
     }
-    public RsfFilter[] getFilter(String serviceID) {
+    /**
+     * 计算指定服务上配置的过滤器。{@link RsfFilter}按照配置方式分为共有和私有。
+     * 共有Filter的生效范围是所有Service，私有Filter的生效范围仅Service。
+     * 每一个Filter在配置的时候都需要指定ID，根据ID私有Filter可以覆盖共有Filter的配置。
+     * @param serviceID 服务ID
+     */
+    public Provider<RsfFilter>[] getFilterProviders(String serviceID) {
         ServiceInfo<?> info = this.serviceMap.get(serviceID);
         if (info == null) {
             return EMPTY_FILTER;
         }
+        List<String> cacheIds = new LinkedList<String>();
+        Map<String, FilterDefine> cacheFilters = new HashMap<String, FilterDefine>();
+        //2.计算最终结果。
         List<FilterDefine> publicList = this.filterList;
-        List<RsfFilter> snapshotsList = info.getFilterSnapshots();
-        int maxSize = publicList.size() + snapshotsList.size();
-        List<RsfFilter> filterArrays = new ArrayList<RsfFilter>(maxSize);
-        //
-        //
+        if (publicList != null && !publicList.isEmpty()) {
+            for (FilterDefine filter : publicList) {
+                String filterID = filter.filterID();
+                cacheFilters.put(filterID, filter);
+                cacheIds.add(filterID);
+            }
+        }
+        List<FilterDefine> snapshotsList = info.getFilterSnapshots();
+        if (snapshotsList != null && !snapshotsList.isEmpty()) {
+            for (FilterDefine filter : snapshotsList) {
+                String filterID = filter.filterID();
+                cacheFilters.put(filterID, filter);//保存或覆盖已有。
+                if (cacheIds.contains(filterID)) {
+                    cacheIds.remove(filterID);//如果全局Filter已经定义了这个ID，那么从已有顺序中删除，在尾部追加私有Filter。
+                }
+                cacheIds.add(filterID);
+            }
+        }
+        //3.产出最终结果。
+        List<Provider<RsfFilter>> filterArrays = new ArrayList<Provider<RsfFilter>>(cacheIds.size());
+        for (String filterID : cacheIds) {
+            FilterDefine define = cacheFilters.get(filterID);
+            filterArrays.add(define);
+        }
+        return (Provider<RsfFilter>[]) filterArrays.toArray(new Provider[filterArrays.size()]);
     }
     /**
      * 根据服务id获取服务对象。如果服务未定义或者服务未声明提供者，则返回null。
@@ -92,7 +129,7 @@ public class RsfBeanContainer {
         ServiceInfo<?> info = this.serviceMap.get(serviceID);
         if (info == null)
             return null;
-        return info.getProvider();
+        return info.getCustomerProvider();
     }
     /**
      * 根据服务id获取服务元信息。
@@ -142,5 +179,23 @@ public class RsfBeanContainer {
     /**获取所有已经注册的服务名称。*/
     public List<String> getServiceIDs() {
         return new ArrayList<String>(this.serviceMap.keySet());
+    }
+    /**获取环境对象。*/
+    public RsfEnvironment getEnvironment() {
+        return environment;
+    }
+    public AddressPool getAddressPool() {
+        return addressPool;
+    }
+    /**
+     * 发布服务
+     * @param serviceDefine 服务定义。
+     */
+    public void publishService(ServiceInfo<?> serviceDefine) {
+        String serviceID = serviceDefine.getDomain().getBindID();
+        if (this.serviceMap.containsKey(serviceID)) {
+            throw new RepeateException("repeate serviceID :" + serviceID);
+        }
+        this.serviceMap.putIfAbsent(serviceID, serviceDefine);
     }
 }

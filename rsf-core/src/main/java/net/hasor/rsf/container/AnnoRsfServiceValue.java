@@ -15,14 +15,14 @@
  */
 package net.hasor.rsf.container;
 import java.lang.annotation.Annotation;
+import org.more.util.StringUtils;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
-import org.more.util.StringUtils;
 /**
  * @version : 2014年11月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AnnoRsfServiceValue implements RsfService {
+class AnnoRsfServiceValue implements RsfService {
     private String serviceGroup   = null;
     private String serviceName    = null;
     private String serviceVersion = null;

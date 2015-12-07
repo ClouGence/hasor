@@ -17,9 +17,9 @@ package net.hasor.rsf.container;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import org.more.FormatException;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -27,85 +27,67 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import org.more.FormatException;
-import org.more.RepeateException;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 服务注册器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfBindBuilder implements RsfBinder {
-    protected Logger                      logger = LoggerFactory.getLogger(getClass());
-    private final AbstractRsfContext      rsfContext;
-    private final ArrayList<FilterDefine> filterList;
-    private final Set<String>             filterIDs;
-    private final Object                  filterLock;
+public abstract class RsfBindBuilder implements RsfBinder {
+    protected abstract RsfBeanContainer getContainer();
     //
-    protected RsfBindBuilder(AbstractRsfContext rsfContext) {
-        this.rsfContext = rsfContext;
-        this.filterList = new ArrayList<FilterDefine>();
-        this.filterIDs = new HashSet<String>();
-        this.filterLock = new Object();
-    }
-    protected AbstractRsfContext getContext() {
-        return this.rsfContext;
-    }
+    //
     //
     public void bindFilter(String filterID, RsfFilter instance) {
-        this.bindFilter(filterID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(instance)));
+        this.getContainer().addFilter(filterID, instance);
     }
-    //
     public void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
-        synchronized (this.filterLock) {
-            if (this.filterIDs.contains(filterID)) {
-                throw new RepeateException("repeate filterID :" + filterID);
-            }
-            this.filterList.add(new FilterDefine(filterID, provider));
-        }
+        this.getContainer().addFilter(filterID, provider);
     }
-    //
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
-        LinkedBuilder<T> builder = new LinkedBuilderImpl<T>(type);
-        for (FilterDefine filter : filterList) {
-            builder.bindFilter(filter.filterID(), filter.getProvider());
-        }
-        return builder;
+        return new LinkedBuilderImpl<T>(type);
     }
-    //
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance) {
         return this.rsfService(type).toInstance(instance);
     }
-    //
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation) {
         return this.rsfService(type).to(implementation);
     }
-    //
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider) {
         return this.rsfService(type).toProvider(provider);
+    }
+    @Override
+    public void updateFlowControl(String flowControl) {
+        this.getContainer().getAddressPool().updateDefaultFlowControl(flowControl);
+    }
+    @Override
+    public void updateArgsRoute(String scriptBody) {
+        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+    }
+    @Override
+    public void updateMethodRoute(String scriptBody) {
+        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
+    }
+    @Override
+    public void updateServiceRoute(String scriptBody) {
+        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
     }
     //
     //
     //
-    public class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private final BindServiceDefine<T> serviceDefine;
-        private final Set<URI>             hostAddressSet;
-        private String                     flowControl;
-        private String                     serviceLevel;
-        private String                     methodLevel;
-        private String                     argsLevel;
+    private class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
+        private final ServiceInfo<T>    serviceDefine;
+        private final Set<InterAddress> addressSet;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
-            this.serviceDefine = new BindServiceDefine<T>(serviceType, getContext());
-            RsfSettings settings = rsfContext.getSettings();
+            this.serviceDefine = new ServiceInfo<T>(serviceType);
+            this.addressSet = new HashSet<InterAddress>();
+            RsfSettings settings = getContainer().getEnvironment().getSettings();
             //
             RsfService serviceInfo = new AnnoRsfServiceValue(settings, serviceType);
             ServiceDomain<T> domain = this.serviceDefine.getDomain();
@@ -114,8 +96,6 @@ public class RsfBindBuilder implements RsfBinder {
             domain.setBindVersion(serviceInfo.version());
             domain.setSerializeType(serviceInfo.serializeType());
             domain.setClientTimeout(serviceInfo.clientTimeout());
-            //
-            this.hostAddressSet = new HashSet<URI>();
         }
         //
         @Override
@@ -203,51 +183,55 @@ public class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException {
-            String unitName = getContext().getSettings().getUnitName();
-            return this.bindAddress(new InterAddress(rsfHost, port, unitName).toURI());
+            String unitName = getContainer().getEnvironment().getSettings().getUnitName();
+            return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }
         @Override
         public RegisterBuilder<T> bindAddress(String rsfURI) throws URISyntaxException {
-            return this.bindAddress(new URI(rsfURI));
+            return this.bindAddress(new InterAddress(rsfURI));
         }
-        //
         @Override
         public RegisterBuilder<T> bindAddress(URI rsfURI) {
             if (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI)) {
-                this.hostAddressSet.add(rsfURI);
-                return this;
+                return this.bindAddress(rsfURI);
             }
             throw new FormatException(rsfURI + " check fail.");
         }
+        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress) {
+            this.addressSet.add(rsfAddress);
+            return this;
+        }
         //
         public RegisterReference<T> register() throws IOException {
-            getContext().getBindCenter().publishService(this.serviceDefine, this.serviceDefine.getCustomerProvider());
-            getContext().getAddressPool().updateAddress(this.serviceDefine.getBindID(), this.hostAddressSet);
-            getContext().getAddressPool().refreshFlowControl(this.flowControl, this.serviceDefine.getBindID());
-            if (StringUtils.isNotBlank(this.serviceLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.ServiceLevel, this.serviceLevel);
-            if (StringUtils.isNotBlank(this.methodLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.MethodLevel, this.methodLevel);
-            if (StringUtils.isNotBlank(this.argsLevel))
-                getContext().getAddressPool().refreshRouteScript(this.serviceDefine.getBindID(), RouteTypeEnum.ArgsLevel, this.argsLevel);
+            String serviceID = this.serviceDefine.getDomain().getBindID();
+            getContainer().getAddressPool().updateAddress(serviceID, this.addressSet);
+            getContainer().publishService(this.serviceDefine);
             logger.info("service to public, {}", this.serviceDefine);
-            return this.serviceDefine;
+            return new RegisterReference<T>() {};
         }
         @Override
-        public void updateRoute(String flowControl) {
-            this.flowControl = flowControl;
+        public void updateFlowControl(String flowControl) {
+            AddressPool pool = getContainer().getAddressPool();
+            String serviceID = this.serviceDefine.getDomain().getBindID();
+            pool.updateFlowControl(serviceID, flowControl);
         }
         @Override
-        public void updateAddresServiceScript(String scriptBody) {
-            this.serviceLevel = scriptBody;
+        public void updateArgsRoute(String scriptBody) {
+            AddressPool pool = getContainer().getAddressPool();
+            String serviceID = this.serviceDefine.getDomain().getBindID();
+            pool.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
         }
         @Override
-        public void updateAddresMethodScript(String scriptBody) {
-            this.methodLevel = scriptBody;
+        public void updateMethodRoute(String scriptBody) {
+            AddressPool pool = getContainer().getAddressPool();
+            String serviceID = this.serviceDefine.getDomain().getBindID();
+            pool.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
         }
         @Override
-        public void updateAddresArgsScript(String scriptBody) {
-            this.argsLevel = scriptBody;
+        public void updateServiceRoute(String scriptBody) {
+            AddressPool pool = getContainer().getAddressPool();
+            String serviceID = this.serviceDefine.getDomain().getBindID();
+            pool.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
         }
     }
 }

@@ -20,7 +20,7 @@ import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.RsfBindInfo;
+import net.hasor.core.info.CustomerProvider;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
@@ -28,13 +28,18 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServiceInfo<T> {
+class ServiceInfo<T> implements CustomerProvider<T> {
     private final ServiceDomain<T>   domain;
     private final List<FilterDefine> filterList;
-    private Provider<T>              provider;
+    private Provider<T>              customerProvider;
     //
+    //
+    public ServiceInfo(Class<T> bindType) {
+        this.domain = new ServiceDomain<T>(Hasor.assertIsNotNull(bindType));
+        this.filterList = new ArrayList<FilterDefine>();
+    }
     public ServiceInfo(ServiceDomain<T> domain) {
-        this.domain = domain;
+        this.domain = Hasor.assertIsNotNull(domain);
         this.filterList = new ArrayList<FilterDefine>();
     }
     //
@@ -56,8 +61,8 @@ public class ServiceInfo<T> {
         this.filterList.add(filterDefine);
     }
     /**获取服务上配置有效的过滤器*/
-    public List<RsfFilter> getFilterSnapshots() {
-        return new ArrayList<RsfFilter>(this.filterList);
+    public List<FilterDefine> getFilterSnapshots() {
+        return new ArrayList<FilterDefine>(this.filterList);
     }
     /**查找注册的Filter*/
     public RsfFilter getFilter(String filterID) {
@@ -76,14 +81,17 @@ public class ServiceInfo<T> {
         return null;
     }
     /**获取服务提供者。*/
-    public Provider<T> getProvider() {
-        return this.provider;
+    @Override
+    public Provider<T> getCustomerProvider() {
+        return this.customerProvider;
     }
-    public RsfBindInfo<T> getDomain() {
+    public void setCustomerProvider(Provider<T> customerProvider) {
+        this.customerProvider = customerProvider;
+    }
+    /**获取服务元信息。*/
+    public ServiceDomain<T> getDomain() {
         return this.domain;
     }
-    //
-    //
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer("");

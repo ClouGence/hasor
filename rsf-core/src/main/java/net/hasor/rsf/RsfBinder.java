@@ -18,12 +18,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import net.hasor.core.Provider;
+import net.hasor.rsf.address.InterAddress;
 /**
  * 服务配置器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfBinder {
+public interface RsfBinder extends RuleConfiguration {
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
@@ -146,7 +147,7 @@ public interface RsfBinder {
     }
     //
     /**发布地址*/
-    public interface RegisterBuilder<T> {
+    public interface RegisterBuilder<T> extends RuleConfiguration {
         /**
          * @param rsfHost 远程服务地址
          * @param port 远程服务端口
@@ -162,17 +163,13 @@ public interface RsfBinder {
          * @param rsfURI 远程服务地址
          */
         public RegisterBuilder<T> bindAddress(URI rsfURI);
+        /**
+         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
+         * @param rsfURI 远程服务地址
+         */
+        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress);
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
-        //
-        /**更新服务地址本计算规则（服务级）*/
-        public void updateAddresServiceScript(String scriptBody);
-        /**更新本地方法级地址计算脚本。*/
-        public void updateAddresMethodScript(String scriptBody);
-        /**更新本地参数级地址计算脚本。*/
-        public void updateAddresArgsScript(String scriptBody);
-        /**更新服务路由策略*/
-        public void updateRoute(String flowControl);
     }
     //
     /**接口解除*/
