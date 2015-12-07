@@ -109,6 +109,9 @@ public class InterServiceAddress extends InterAddress {
         return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + path, null, null);
     }
     public static boolean checkFormat(URI serviceURL) {
+        if (serviceURL == null) {
+            return false;
+        }
         if (InterAddress.checkFormat(serviceURL)) {
             String REG = "[A-Za-z0-9_\\.]+";
             Matcher mat = Pattern.compile("(/" + REG + ")").matcher(serviceURL.getPath());

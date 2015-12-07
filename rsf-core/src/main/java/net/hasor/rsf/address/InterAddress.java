@@ -141,12 +141,15 @@ public class InterAddress {
     protected URI createURL() throws URISyntaxException {
         return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + this.formUnit, null, null);
     }
-    public static boolean checkFormat(URI rsfAddress) {
-        if (StringUtils.equalsBlankIgnoreCase(SECHMA, rsfAddress.getScheme()) == true) {
-            if (StringUtils.isBlank(rsfAddress.getHost()) == false) {
-                if (rsfAddress.getPort() != 0) {
+    public static boolean checkFormat(URI serviceURL) {
+        if (serviceURL == null) {
+            return false;
+        }
+        if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme()) == true) {
+            if (StringUtils.isBlank(serviceURL.getHost()) == false) {
+                if (serviceURL.getPort() != 0) {
                     String REG = "[A-Za-z0-9_\\.]+";
-                    Matcher mat = Pattern.compile("/(" + REG + ")").matcher(rsfAddress.getPath());
+                    Matcher mat = Pattern.compile("/(" + REG + ")").matcher(serviceURL.getPath());
                     mat.find();
                     String formUnit = mat.group(1);
                     if (StringUtils.isBlank(formUnit) == false) {
@@ -156,7 +159,7 @@ public class InterAddress {
             }
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("'{}' rsfAddress format error.", rsfAddress);
+            logger.debug("'{}' rsfAddress format error.", serviceURL);
         }
         return false;
     }

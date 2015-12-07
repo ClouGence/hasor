@@ -29,11 +29,14 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfBinder.RegisterReference;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.domain.RsfBindInfoWrap;
 /**
  * 
  * @version : 2015年12月6日
@@ -49,11 +52,12 @@ public class RsfBeanContainer {
     private AddressPool                                 addressPool;
     private final static Provider<RsfFilter>[]          EMPTY_FILTER = new Provider[0];
     //
-    public RsfBeanContainer(RsfEnvironment environment) {
+    public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
         this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
         this.filterList = new ArrayList<FilterDefine>();
         this.filterLock = new Object();
-        this.environment = environment;
+        this.environment = rsfEnvironment;
+        this.addressPool = new AddressPool(rsfEnvironment);
     }
     //
     /**
@@ -191,11 +195,47 @@ public class RsfBeanContainer {
      * 发布服务
      * @param serviceDefine 服务定义。
      */
-    public void publishService(ServiceInfo<?> serviceDefine) {
+    public <T> RegisterReference<T> publishService(ServiceInfo<T> serviceDefine) {
         String serviceID = serviceDefine.getDomain().getBindID();
         if (this.serviceMap.containsKey(serviceID)) {
-            throw new RepeateException("repeate serviceID :" + serviceID);
+            logger.error("service {} is exist.", serviceID);
+            throw new RepeateException("service " + serviceID + " is exist.");
         }
+        logger.info("service to public, id= {}", serviceID);
         this.serviceMap.putIfAbsent(serviceID, serviceDefine);
+        return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
+    }
+    /**
+     * 回收发布的服务
+     * @param serviceDefine 服务定义。
+     */
+    public void recoverService(String serviceID) {
+        this.getAddressPool().removeBucket(serviceID);
+        this.serviceMap.remove(serviceID);
+    }
+    /**创建{@link RsfBinder}。*/
+    public RsfBinder createBinder() {
+        return new RsfBindBuilder() {
+            protected RsfBeanContainer getContainer() {
+                return RsfBeanContainer.this;
+            }
+        };
+    }
+    //
+    //
+    public void init() {
+        this.addressPool.startTimer();
+    }
+}
+class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T>implements RegisterReference<T> {
+    private RsfBeanContainer rsfContainer;
+    public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceDefine) {
+        super(serviceDefine.getDomain());
+        this.rsfContainer = rsfContainer;
+    }
+    @Override
+    public void unRegister() {
+        String serviceID = this.getBindID();
+        this.rsfContainer.recoverService(serviceID);
     }
 }

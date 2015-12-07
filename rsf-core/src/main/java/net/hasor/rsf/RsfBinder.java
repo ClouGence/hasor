@@ -157,17 +157,17 @@ public interface RsfBinder extends RuleConfiguration {
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(String rsfURI) throws URISyntaxException;
+        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException;
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(URI rsfURI);
+        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array);
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
-         * @param rsfURI 远程服务地址
+         * @param rsfAddress 远程服务地址
          */
-        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress);
+        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array);
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
     }

@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import org.more.FormatException;
+import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -38,10 +39,11 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfBindBuilder implements RsfBinder {
+abstract class RsfBindBuilder implements RsfBinder {
     protected abstract RsfBeanContainer getContainer();
-    //
-    //
+    protected AddressPool getAddressPool() {
+        return getContainer().getAddressPool();
+    }
     //
     public void bindFilter(String filterID, RsfFilter instance) {
         this.getContainer().addFilter(filterID, instance);
@@ -63,19 +65,19 @@ public abstract class RsfBindBuilder implements RsfBinder {
     }
     @Override
     public void updateFlowControl(String flowControl) {
-        this.getContainer().getAddressPool().updateDefaultFlowControl(flowControl);
+        this.getAddressPool().updateDefaultFlowControl(flowControl);
     }
     @Override
     public void updateArgsRoute(String scriptBody) {
-        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
     }
     @Override
     public void updateMethodRoute(String scriptBody) {
-        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
+        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
     }
     @Override
     public void updateServiceRoute(String scriptBody) {
-        this.getContainer().getAddressPool().updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
+        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
     }
     //
     //
@@ -163,8 +165,8 @@ public abstract class RsfBindBuilder implements RsfBinder {
                 public T get() {
                     try {
                         return implementation.newInstance();
-                    } catch (Exception e) {
-                        throw new RsfException((short) 0, e);
+                    } catch (Throwable e) {
+                        throw new RsfException(e.getMessage(), e);
                     }
                 }
             });
@@ -187,27 +189,49 @@ public abstract class RsfBindBuilder implements RsfBinder {
             return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }
         @Override
-        public RegisterBuilder<T> bindAddress(String rsfURI) throws URISyntaxException {
-            return this.bindAddress(new InterAddress(rsfURI));
+        public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException {
+            if (!StringUtils.isBlank(rsfURI)) {
+                this.bindAddress(new InterAddress(rsfURI));
+            }
+            if (array.length > 0) {
+                for (String bindItem : array) {
+                    this.bindAddress(new InterAddress(bindItem));
+                }
+            }
+            return this;
         }
         @Override
-        public RegisterBuilder<T> bindAddress(URI rsfURI) {
+        public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) {
             if (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI)) {
-                return this.bindAddress(rsfURI);
+                this.bindAddress(rsfURI);
             }
-            throw new FormatException(rsfURI + " check fail.");
+            this.bindAddress(rsfURI);
+            if (array.length > 0) {
+                for (URI bindItem : array) {
+                    if (InterServiceAddress.checkFormat(bindItem) || InterAddress.checkFormat(bindItem)) {
+                        this.bindAddress(bindItem);
+                    }
+                    throw new FormatException(bindItem + " check fail.");
+                }
+            }
+            return this;
         }
-        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress) {
-            this.addressSet.add(rsfAddress);
+        public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array) {
+            if (rsfAddress != null) {
+                this.addressSet.add(rsfAddress);
+            }
+            if (array.length > 0) {
+                for (InterAddress bindItem : array) {
+                    this.addressSet.add(bindItem);
+                }
+            }
             return this;
         }
         //
         public RegisterReference<T> register() throws IOException {
             String serviceID = this.serviceDefine.getDomain().getBindID();
             getContainer().getAddressPool().updateAddress(serviceID, this.addressSet);
-            getContainer().publishService(this.serviceDefine);
-            logger.info("service to public, {}", this.serviceDefine);
-            return new RegisterReference<T>() {};
+            return getContainer().publishService(this.serviceDefine);
         }
         @Override
         public void updateFlowControl(String flowControl) {

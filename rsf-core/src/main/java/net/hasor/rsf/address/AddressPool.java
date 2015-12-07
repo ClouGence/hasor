@@ -208,14 +208,11 @@ public class AddressPool {
         }
     }
     //
-    public void init() {
+    public void startTimer() {
         if (this.inited.compareAndSet(false, true)) {
-            this.rulerCache.reset();
             this.readAddress();//当启动时，进行一次地址复原。
             this.logger.info("start address snapshot Thread[{}].", timer.getName());
             this.timer.start();
-        } else {
-            throw new IllegalStateException("AddressPool has been initialized");
         }
     }
     //

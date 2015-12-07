@@ -50,7 +50,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
+        pool.startTimer();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
@@ -107,7 +107,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
+        pool.startTimer();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
@@ -165,7 +165,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
+        pool.startTimer();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
@@ -212,6 +212,6 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
         pool.updateDefaultRoute(RouteTypeEnum.ArgsLevel, script);
-        Thread.sleep(100000);
+        Thread.sleep(10000);
     }
 }

@@ -45,7 +45,7 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
+        pool.startTimer();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2
@@ -103,7 +103,7 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
-        pool.init();
+        pool.startTimer();
         //
         List<InterAddress> addresses_1 = new ArrayList<InterAddress>();
         addresses_1.add(new InterAddress("192.168.137.10", 8000, "etc2"));//  rsf://192.168.137.10:8000/etc2

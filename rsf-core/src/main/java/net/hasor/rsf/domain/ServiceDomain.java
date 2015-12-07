@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.utils.RsfRuntimeUtils;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> {
-    private String   bindName      = null;     //服务名
+    private String   bindName      = null;      //服务名
     private String   bindGroup     = "default"; //服务分组
-    private String   bindVersion   = "1.0.0";  //服务版本
-    private Class<T> bindType      = null;     //服务类型
-    private int      clientTimeout = 6000;     //调用超时（毫秒）
-    private String   serializeType = null;     //传输序列化类型
+    private String   bindVersion   = "1.0.0";   //服务版本
+    private Class<T> bindType      = null;      //服务类型
+    private int      clientTimeout = 6000;      //调用超时（毫秒）
+    private String   serializeType = null;      //传输序列化类型
     //
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
