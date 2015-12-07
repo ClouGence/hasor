@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.objects.warp;
+package net.hasor.rsf.rpc.warp;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -29,10 +29,6 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
     @Override
     public RsfBindInfo<?> getBindInfo() {
         return getRsfRequest().getBindInfo();
-    }
-    @Override
-    public byte getVersion() {
-        return getRsfRequest().getVersion();
     }
     @Override
     public long getRequestID() {

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 import java.util.concurrent.Executor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
@@ -26,15 +28,12 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
-import net.hasor.rsf.rpc.RsfBindCenter;
+import net.hasor.rsf.domain.Events;
 import net.hasor.rsf.rpc.client.RsfClientChannelManager;
 import net.hasor.rsf.rpc.client.RsfClientRequestManager;
-import net.hasor.rsf.rpc.event.Events;
 import net.hasor.rsf.rpc.manager.ExecutesManager;
+import net.hasor.rsf.rpc.manager.NameThreadFactory;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.utils.NameThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
@@ -112,7 +111,7 @@ public abstract class AbstractRsfContext implements RsfContext {
      * @param serviceName 服务名
      * @return 返回Executor
      */
-    public Executor getCallExecute(byte[] serviceUniqueName) {
+    public Executor getCallExecute(String serviceUniqueName) {
         return this.executesManager.getExecute(serviceUniqueName);
     }
     /** @return 获取Netty事件处理工具*/

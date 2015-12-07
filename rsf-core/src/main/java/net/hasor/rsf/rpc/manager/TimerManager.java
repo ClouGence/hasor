@@ -19,7 +19,6 @@ import io.netty.util.Timer;
 import io.netty.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.utils.NameThreadFactory;
 /**
  * 
  * @version : 2015年3月28日

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.rpc;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -43,10 +43,6 @@ public class RsfRuntimeUtils {
         return requestID.incrementAndGet();
     }
     //
-    /**生成BindID*/
-    public static String bindID(String group, String name, String version) {
-        return String.format("[%s]%s-%s", group, name, version);
-    }
     //
     /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
     public static Class<?> toJavaType(final String tType, final ClassLoader loader) throws ClassNotFoundException {

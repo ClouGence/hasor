@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.objects.local;
+package net.hasor.rsf.rpc.objects;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -31,21 +29,19 @@ import net.hasor.rsf.utils.RsfRuntimeUtils;
  */
 public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     private final AbstractRsfContext rsfContext;
-    private final RequestInfo        requestInfo;
+    private final RequestInfo        info;
     private final RsfBindInfo<?>     bindInfo;
+    //
     private final Method             targetMethod;
     private final Class<?>[]         parameterTypes;
     private final Object[]           parameterObjects;
-    private final long               receiveTime;
     //
-    public RsfRequestFormLocal(RequestInfo requestInfo, Method targetMethod, Object[] parameterObjects, AbstractRsfContext rsfContext) throws RsfException {
-        this.requestID = RsfRuntimeUtils.genRequestID();
-        this.bindInfo = bindInfo;
+    public RsfRequestFormLocal(RequestInfo info, AbstractRsfContext rsfContext) throws RsfException {
+        this.info = info;
         this.targetMethod = targetMethod;
         this.parameterTypes = targetMethod.getParameterTypes();
         this.parameterObjects = parameterObjects;
         this.rsfContext = rsfContext;
-        this.receiveTime = System.currentTimeMillis();
     }
     @Override
     public String toString() {
@@ -57,16 +53,12 @@ public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
         return this.bindInfo;
     }
     @Override
-    public byte getVersion() {
-        return RSFConstants.Version_1;
-    }
-    @Override
     public long getRequestID() {
-        return this.requestID;
+        return this.info.getRequestID();
     }
     @Override
     public String getSerializeType() {
-        return this.bindInfo.getSerializeType();
+        return this.info.getSerializeType();
     }
     @Override
     public boolean isLocal() {
@@ -82,11 +74,11 @@ public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     }
     @Override
     public long getReceiveTime() {
-        return this.receiveTime;
+        return this.info.getReceiveTime();
     }
     @Override
     public int getTimeout() {
-        return this.bindInfo.getClientTimeout();
+        return this.info.getClientTimeout();
     }
     @Override
     public Class<?>[] getParameterTypes() {

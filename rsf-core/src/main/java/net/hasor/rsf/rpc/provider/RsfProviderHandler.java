@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 负责接受 RSF 消息，并将消息转换为 request/response 对象供业务线程使用。
@@ -35,19 +35,19 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof RequestBlock == false) {
+        if (msg instanceof RequestInfo == false) {
             return;
         }
         //
         //创建request、response
-        RequestBlock requestBlock = (RequestBlock) msg;
+        RequestInfo requestInfo = (RequestInfo) msg;
         RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
         //
         //放入业务线程准备执行
         ResponseInfo readyWrite = null;
         try {
-            logger.debug("received request({}) full = {}", requestBlock.getRequestID(), requestBlock);
-            byte[] serviceUniqueName = requestBlock.readPool(requestBlock.getServiceName());
+            logger.debug("received request({}) full = {}", requestInfo.getRequestID());
+            String serviceUniqueName = requestInfo.getServiceName();
             Executor exe = this.rsfContext.getCallExecute(serviceUniqueName);
             Channel nettyChannel = ctx.channel();
             exe.execute(new ProviderProcessing(this.rsfContext, requestBlock, nettyChannel));

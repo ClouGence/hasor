@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.socket.RsfResponseFormSocket;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.hasor.rsf.rpc.objects.RsfResponseFormLocal;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 负责处理客户端 Response 回应逻辑。
  * @version : 2015年4月23日
@@ -32,23 +32,23 @@ import org.slf4j.LoggerFactory;
 class CustomerProcessing implements Runnable {
     protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfFuture               rsfFuture;
-    private ResponseBlock     responseBlock;
+    private ResponseInfo            responseInfo;
     private RsfClientRequestManager requestManager;
     //
-    public CustomerProcessing(ResponseBlock responseBlock, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
-        this.responseBlock = responseBlock;
+    public CustomerProcessing(ResponseInfo responseInfo, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
         this.requestManager = requestManager;
         this.rsfFuture = rsfFuture;
+        this.responseInfo = responseInfo;
     }
     public void run() {
         //状态判断
-        long requestID = responseBlock.getRequestID();
-        short resStatus = responseBlock.getStatus();
-        if (resStatus == ProtocolStatus.Accepted) {
+        long requestID = responseInfo.getRequestID();
+        ProtocolStatus resStatus = responseInfo.getStatus();
+        if (ProtocolStatus.Accepted.equals(resStatus)) {
             //
             logger.debug("requestID:{} , received Accepted.", requestID);
             return;
-        } else if (resStatus == ProtocolStatus.ChooseOther) {
+        } else if (ProtocolStatus.ChooseOther.equals(resStatus)) {
             //
             logger.info("requestID:{} , received ChooseOther -> do tryAgain.", requestID);
             this.requestManager.tryAgain(requestID);
@@ -58,9 +58,9 @@ class CustomerProcessing implements Runnable {
         try {
             RsfBindInfo<?> bindInfo = rsfFuture.getRequest().getBindInfo();
             AbstractRsfContext rsfContext = this.requestManager.getRsfContext();
-            RsfResponse response = new RsfResponseFormSocket(rsfContext, bindInfo, this.responseBlock);
+            RsfResponse response = new RsfResponseFormLocal(rsfContext, bindInfo, this.responseInfo);
             logger.info("requestID:{} , received protocolStatus={}.", requestID, resStatus);
-            if (resStatus == ProtocolStatus.OK) {
+            if (ProtocolStatus.OK.equals(resStatus)) {
                 requestManager.putResponse(requestID, response);
             } else {
                 String errorMessage = (String) response.getResponseData();

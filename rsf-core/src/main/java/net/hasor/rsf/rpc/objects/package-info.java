@@ -13,25 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
-import java.util.concurrent.ThreadFactory;
 /**
- * 
- * @version : 2015年3月28日
- * @author 赵永春(zyc@hasor.net)
+ * RSF 请求响应消息。
  */
-public class NameThreadFactory implements ThreadFactory {
-    private String nameSample = "Thread-%s";
-    private int    index      = 1;
-    //
-    public NameThreadFactory(String nameSample) {
-        this.nameSample = nameSample;
-    }
-    //
-    public Thread newThread(Runnable run) {
-        Thread t = new Thread(run);
-        t.setName(String.format(nameSample, index++));
-        t.setDaemon(true);
-        return t;
-    }
-}
+package net.hasor.rsf.rpc.objects;

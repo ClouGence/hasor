@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.manager;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -22,7 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import net.hasor.rsf.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -31,22 +29,22 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
-    protected Logger                               logger           = LoggerFactory.getLogger(getClass());
-    private ThreadPoolExecutor                     defaultExecutor  = null;
-    private final Map<Integer, ThreadPoolExecutor> servicePoolCache = new HashMap<Integer, ThreadPoolExecutor>();
+    protected Logger                              logger           = LoggerFactory.getLogger(getClass());
+    private ThreadPoolExecutor                    defaultExecutor  = null;
+    private final Map<String, ThreadPoolExecutor> servicePoolCache = new HashMap<String, ThreadPoolExecutor>();
     //
     public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
         logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
-        this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize,//
-                keepAliveTime, TimeUnit.SECONDS, inWorkQueue,//
+        this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize, //
+                keepAliveTime, TimeUnit.SECONDS, inWorkQueue, //
                 new NameThreadFactory("RSF-Biz-%s"), new ThreadPoolExecutor.AbortPolicy());
     }
     //
-    public Executor getExecute(byte[] serviceUniqueName) {
+    public Executor getExecute(String serviceUniqueName) {
         if (this.servicePoolCache.isEmpty() == false) {
-            int nameHashCode = Arrays.hashCode(serviceUniqueName);
+            int nameHashCode = serviceUniqueName.hashCode();
             ThreadPoolExecutor executor = this.servicePoolCache.get(nameHashCode);
             if (executor != null) {
                 return executor;

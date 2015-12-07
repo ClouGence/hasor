@@ -30,13 +30,6 @@ public interface RsfClient {
      */
     public <T> T getRemoteByID(String serviceID) throws RsfException;
     /**
-     * 根据服务名，获取远程服务对象。服务版本、服务分组将使用默认值。
-     * @param serviceName 服务名
-     * @return 返回远程服务对象。
-     * @throws RsfException rsf异常
-     */
-    public <T> T getRemoteByName(String serviceName) throws RsfException;
-    /**
      * 获取远程服务对象。
      * @param group 分组
      * @param name 服务名
@@ -60,14 +53,6 @@ public interface RsfClient {
      * @throws RsfException rsf异常
      */
     public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException;
-    /**
-     * 将服务包装为另外一个接口。
-     * @param serviceName 服务名
-     * @param interFace 包装成为的服务接口
-     * @return 返回包装之后的服务接口。
-     * @throws RsfException rsf异常
-     */
-    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws RsfException;
     /**
      * 将服务包装为另外一个接口。
      * @param interFace 服务接口类型

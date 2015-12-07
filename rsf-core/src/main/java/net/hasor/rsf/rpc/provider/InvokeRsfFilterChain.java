@@ -42,7 +42,7 @@ class InvokeRsfFilterChain implements RsfFilterChain {
         }
         //
         try {
-            Method method = request.getServiceMethod();
+            Method method = request.getMethod();
             Object[] pObjects = request.getParameterObject();
             Object resData = method.invoke(targetObj, pObjects);
             response.sendData(resData);

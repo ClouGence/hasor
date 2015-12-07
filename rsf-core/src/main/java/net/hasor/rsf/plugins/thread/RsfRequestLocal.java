@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.objects.warp;
+package net.hasor.rsf.plugins.thread;
 import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.rpc.warp.AbstractRsfRequestWarp;
 /**
- * {@link RsfRequest}接口包装器。
+ * {@link RsfRequest}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestWarp extends AbstractRsfRequestWarp {
-    private final RsfRequest request;
-    public RsfRequestWarp(RsfRequest request) {
-        this.request = request;
-    }
+public class RsfRequestLocal extends AbstractRsfRequestWarp {
+    private static final ThreadLocal<RsfRequest> LOCAL_REQUEST = new ThreadLocal<RsfRequest>();
     @Override
-    protected RsfRequest getRsfRequest() {
-        return this.request;
+    protected final RsfRequest getRsfRequest() {
+        return LOCAL_REQUEST.get();
+    }
+    //
+    static void removeLocal() {
+        if (LOCAL_REQUEST.get() != null) {
+            LOCAL_REQUEST.remove();
+        }
+    }
+    static void updateLocal(RsfRequest rsfRequest) {
+        removeLocal();
+        if (rsfRequest != null) {
+            LOCAL_REQUEST.set(rsfRequest);
+        }
     }
 }

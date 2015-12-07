@@ -73,6 +73,9 @@ public enum ProtocolStatus {
             throw new IndexOutOfBoundsException("out of range.");
         }
     }
+    public boolean equalsValue(short resStatus) {
+        return type == resStatus;
+    }
     public short getType() {
         return type;
     }

@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.objects.warp;
-import net.hasor.rsf.RsfResponse;
+package net.hasor.rsf.rpc.manager;
+import java.util.concurrent.ThreadFactory;
 /**
- * {@link RsfResponse}接口包装器。
- * @version : 2014年10月25日
+ * 
+ * @version : 2015年3月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseWarp extends AbstractRsfResponseWarp {
-    private final RsfResponse response;
-    public RsfResponseWarp(RsfResponse response) {
-        this.response = response;
+public class NameThreadFactory implements ThreadFactory {
+    private String nameSample = "Thread-%s";
+    private int    index      = 1;
+    //
+    public NameThreadFactory(String nameSample) {
+        this.nameSample = nameSample;
     }
-    @Override
-    protected RsfResponse getRsfResponse() {
-        return this.response;
+    //
+    public Thread newThread(Runnable run) {
+        Thread t = new Thread(run);
+        t.setName(String.format(nameSample, index++));
+        t.setDaemon(true);
+        return t;
     }
 }

@@ -26,11 +26,11 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.rpc.RsfBindCenter;
+import net.hasor.rsf.rpc.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.local.RsfRequestFormLocal;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
+import net.hasor.rsf.rpc.objects.RsfRequestFormLocal;
 /**
  * 
  * @version : 2014年12月22日
@@ -38,7 +38,7 @@ import net.hasor.rsf.utils.RsfRuntimeUtils;
  */
 class RsfClientWrappe implements RsfClient {
     private final AbstractRsfContext            rsfContext;
-    private final RsfBindCenter                 rsfBindCenter;
+    private final RsfBeanContainer              rsfBeanContainer;
     private final Object                        LOCK_OBJECT;
     private final ConcurrentMap<String, Object> wrapperMap;
     //
@@ -51,24 +51,17 @@ class RsfClientWrappe implements RsfClient {
     //
     @Override
     public <T> T getRemoteByID(String serviceID) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getService(serviceID);
+        RsfBindInfo<?> bindInfo = this.rsfBeanContainer.getRsfBindInfo(serviceID);
         if (bindInfo == null)
             return null;
-        return this.wrapper(bindInfo, bindInfo.getBindType());
-    }
-    @Override
-    public <T> T getRemoteByName(String serviceName) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getServiceByName(serviceName);
-        if (bindInfo == null)
-            return null;
-        return this.wrapper(bindInfo, bindInfo.getBindType());
+        return (T) this.wrapper(bindInfo, bindInfo.getBindType());
     }
     @Override
     public <T> T getRemote(String group, String name, String version) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getService(group, name, version);
+        RsfBindInfo<?> bindInfo = this.rsfBeanContainer.getRsfBindInfo(group, name, version);
         if (bindInfo == null)
             return null;
-        return this.getRemote(bindInfo);
+        return (T) this.getRemote(bindInfo);
     }
     @Override
     public <T> T getRemote(RsfBindInfo<T> bindInfo) throws RsfException {
@@ -76,28 +69,21 @@ class RsfClientWrappe implements RsfClient {
     }
     @Override
     public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getService(serviceID);
-        if (bindInfo == null)
-            return null;
-        return this.wrapper(bindInfo, interFace);
-    }
-    @Override
-    public <T> T wrapperByName(String serviceName, Class<T> interFace) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getServiceByName(serviceName);
+        RsfBindInfo<?> bindInfo = this.rsfBeanContainer.getRsfBindInfo(serviceID);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
     }
     @Override
     public <T> T wrapper(Class<T> interFace) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getService(interFace);
+        RsfBindInfo<T> bindInfo = this.rsfBeanContainer.getRsfBindInfo(interFace);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
     }
     @Override
     public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws RsfException {
-        RsfBindInfo<T> bindInfo = this.rsfBindCenter.getService(group, name, version);
+        RsfBindInfo<?> bindInfo = this.rsfBeanContainer.getRsfBindInfo(group, name, version);
         if (bindInfo == null)
             return null;
         return this.wrapper(bindInfo, interFace);
@@ -109,23 +95,20 @@ class RsfClientWrappe implements RsfClient {
         if (interFace.isInterface() == false)
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         //
-        try {
-            String bindID = bindInfo.getBindID();
-            Object wrapperObject = this.wrapperMap.get(bindID);
-            if (wrapperObject == null)
-                synchronized (LOCK_OBJECT) {
-                    wrapperObject = this.wrapperMap.get(bindID);
-                    if (wrapperObject == null) {
-                        ClassLoader loader = new MoreClassLoader();
-                        wrapperObject = Proxy.newProxyInstance(loader, new Class<?>[] { interFace }, new RemoteWrapper(bindInfo, this));
-                        this.wrapperMap.put(bindID, wrapperObject);
-                    }
+        String bindID = bindInfo.getBindID();
+        Object wrapperObject = this.wrapperMap.get(bindID);
+        if (wrapperObject == null) {
+            synchronized (LOCK_OBJECT) {
+                wrapperObject = this.wrapperMap.get(bindID);
+                if (wrapperObject == null) {
+                    ClassLoader loader = new MoreClassLoader();
+                    wrapperObject = Proxy.newProxyInstance(loader, new Class<?>[] { interFace }, new RemoteWrapper(bindInfo, this));
+                    this.wrapperMap.put(bindID, wrapperObject);
                 }
-            return (T) wrapperObject;
-            //
-        } catch (Exception e) {
-            throw new RsfException(e.getMessage(), e);
+            }
         }
+        return (T) wrapperObject;
+        //
     }
     @Override
     public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable {

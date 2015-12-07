@@ -36,9 +36,9 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.rpc.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.netty.RSFCodec;
-import net.hasor.rsf.utils.RsfRuntimeUtils;
 /**
  * 维护RSF同其它RSF的连接。
  * 同时负责创建和销毁{@link AbstractRsfClient}的功能。
@@ -68,7 +68,7 @@ public class RsfClientChannelManager {
         //
         while (true) {
             final RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
-            final String methodName = rsfRequest.getMethod();
+            final String methodName = rsfRequest.getMethod().getName();
             final Object[] methodArgs = rsfRequest.getParameterObject();
             final AddressPool addressPool = this.rsfContext.getAddressPool();
             InterAddress refereeAddress = null;
@@ -141,7 +141,7 @@ public class RsfClientChannelManager {
             }
         });
         ChannelFuture future = null;
-        SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getHostPort());
+        SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getPort());
         logger.info("connect to {} ...", hostAddress);
         future = boot.connect(remote);
         try {

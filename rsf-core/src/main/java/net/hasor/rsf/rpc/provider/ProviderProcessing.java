@@ -26,11 +26,10 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.local.RsfResponseFormLocal;
-import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.rpc.objects.RsfResponseFormLocal;
+import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 负责处理 Request 调用逻辑，和response写入逻辑。
  * @version : 2014年11月4日
