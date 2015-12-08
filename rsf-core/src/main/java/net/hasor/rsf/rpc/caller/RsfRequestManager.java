@@ -17,6 +17,8 @@ package net.hasor.rsf.rpc.caller;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.more.future.FutureCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Provider;
@@ -33,27 +35,42 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.RsfTimeoutException;
-import net.hasor.rsf.rpc.manager.TimerManager;
-import net.hasor.rsf.rpc.net.NetChannel;
-import net.hasor.rsf.rpc.net.RsfClientChannelManager;
+import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
+import net.hasor.rsf.utils.TimerManager;
 /**
  * 负责管理所有 RSF 发起的请求。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfRequestManager extends RsfCallerWrap {
+public abstract class RsfRequestManager {
+    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
     private final TimerManager                       timerManager;
     private final AtomicInteger                      requestCount;
+    private final RsfContext                         rsfContext;
+    private final SerializeFactory                   serializeFactory;
     //
-    public RsfRequestManager(RsfBeanContainer rsfBeanContainer, RsfContext rsfContext) {
-        super(rsfContext);
+    public RsfRequestManager(RsfContext rsfContext) {
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = new TimerManager(rsfContext.getSettings().getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
+        this.rsfContext = rsfContext;
+        this.serializeFactory = SerializeFactory.createFactory(rsfContext.getSettings());
     }
+    /**获取RSF容器对象。*/
+    public final RsfContext getContext() {
+        return this.rsfContext;
+    }
+    /**获取{@link RsfBeanContainer}。*/
+    protected abstract RsfBeanContainer getContainer();
+    /**发送数据包。*/
+    protected abstract void sendData(Provider<InterAddress> target, RequestInfo info, FutureCallback<RsfResponse> callBack);
+    //
     /**
      * 获取正在进行中的调用请求。
      * @param requestID 请求ID
@@ -64,16 +81,50 @@ public abstract class RsfRequestManager extends RsfCallerWrap {
     }
     /**
      * 响应挂起的Request请求。
-     * @param requestID 请求ID
      * @param response 响应结果
      */
-    public void putResponse(long requestID, RsfResponse response) {
+    public boolean putResponse(ResponseInfo info) {
+        long requestID = info.getRequestID();
+        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
+        if (rsfFuture != null) {
+            logger.debug("received response({}) status = {}", requestID, info.getStatus());
+            //
+            RsfRequest rsfRequest = rsfFuture.getRequest();
+            RsfResponseFormLocal local = new RsfResponseFormLocal(info);
+            local.addOptionMap(info);
+            local.sendStatus(info.getStatus());
+            //
+            try {
+                SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
+                byte[] returnDataData = info.getReturnData();
+                Object returnObject = coder.decode(returnDataData);
+            } catch (Throwable e) {
+                logger.error("recovery form Socket > " + e.getMessage(), e);
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else {
+                    throw new RsfException(e.getMessage(), e);
+                }
+            }
+            return rsfFuture.completed(response);
+        } else {
+            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
+            return false;
+        }
+    }
+    /**
+     * 响应挂起的Request请求。
+     * @param response 响应结果
+     */
+    public boolean putResponse(RsfResponse response) {
+        long requestID = response.getRequestID();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
             logger.debug("received response({}) status = {}", requestID, response.getStatus());
-            rsfFuture.completed(response);
+            return rsfFuture.completed(response);
         } else {
             logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
+            return false;
         }
     }
     /**
@@ -128,16 +179,19 @@ public abstract class RsfRequestManager extends RsfCallerWrap {
      */
     protected RsfFuture doSendRequest(RsfRequestFormLocal rsfRequest, FutureCallback<RsfResponse> listener) {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
-        RsfResponseFormLocal res = rsfRequest.buildResponse();
         //
         try {
             RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
             Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(bindInfo.getBindID());
-            //
+            RsfResponseFormLocal res = new RsfResponseFormLocal(rsfRequest);
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
-                    sendRequest(rsfFuture);//发送请求到远方
+                    if (response.isResponse()) {
+                        rsfFuture.completed(response);//如果本地调用链已经做出了响应，那么不在需要发送到远端。
+                    } else {
+                        sendRequest(rsfFuture);//发送请求到远方
+                    }
                 }
             }).doFilter(rsfRequest, res);
         } catch (Throwable e) {
@@ -147,26 +201,13 @@ public abstract class RsfRequestManager extends RsfCallerWrap {
                 logger.error("do callback for failed error->" + e.getMessage(), e);
             }
         }
-        //
-        if (res.isResponse()) {
-            try {
-                rsfFuture.completed(res);
-            } catch (Throwable e) {
-                logger.error("do callback for completed error->" + e.getMessage(), e);
-            }
-        }
         return rsfFuture;
     }
     /**将请求发送到远端服务器。*/
     private void sendRequest(RsfFuture rsfFuture) throws Throwable {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
-        InterAddress target = rsfRequest.getTargetServer();
-        final NetChannel netChannel = this.getNetManager().getChannel(target);
-        if (netChannel == null) {
-            rsfFuture.failed(new IllegalStateException("the remote machine does not exist, InterAddress=" + target.getHostPort()));
-            return;
-        }
+        Provider<InterAddress> target = rsfRequest.getTarget();
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
@@ -193,7 +234,7 @@ public abstract class RsfRequestManager extends RsfCallerWrap {
             @Override
             public void completed(RsfResponse response) {
                 /*OK*/
-                putResponse(rsfRequest.getRequestID(), response);
+                putResponse(response);
             }
             @Override
             public void failed(Throwable e) {
@@ -204,13 +245,41 @@ public abstract class RsfRequestManager extends RsfCallerWrap {
         };
         /*4.发送请求*/
         try {
-            this.startRequest(rsfFuture);//              <- 1.计时request。
-            RequestInfo info = rsfRequest.buildInfo();// <- 2.生成RequestInfo
-            netChannel.sendData(info, callBack);//       <- 3.发送数据
+            this.startRequest(rsfFuture);//             <- 1.计时request。
+            RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
+            sendData(target, info, callBack);//         <- 3.发送数据
         } catch (Throwable e) {
             logger.error("request[" + rsfRequest.getRequestID() + "] send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
         }
     }
-    protected abstract RsfClientChannelManager getNetManager();
+    private RequestInfo buildInfo(RsfRequest rsfRequest) throws Throwable {
+        RequestInfo info = new RequestInfo();
+        RsfBindInfo<?> rsfBindInfo = rsfRequest.getBindInfo();
+        String serializeType = rsfRequest.getSerializeType();
+        SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
+        //
+        //1.基本信息
+        info.setRequestID(rsfRequest.getRequestID());//请求ID
+        info.setServiceGroup(rsfBindInfo.getBindGroup());//序列化策略
+        info.setServiceName(rsfBindInfo.getBindName());//序列化策略
+        info.setServiceVersion(rsfBindInfo.getBindVersion());//序列化策略
+        info.setTargetMethod(rsfRequest.getMethod().getName());//序列化策略
+        info.setSerializeType(serializeType);//序列化策略
+        info.setClientTimeout(rsfRequest.getTimeout());
+        //
+        //2.params
+        Class<?>[] pTypes = rsfRequest.getParameterTypes();
+        Object[] pObjects = rsfRequest.getParameterObject();
+        for (int i = 0; i < pTypes.length; i++) {
+            String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
+            byte[] paramByte = coder.encode(pObjects[i]);
+            info.addParameter(typeByte, paramByte);
+        }
+        //
+        //3.Opt参数
+        info.addOptionMap(rsfRequest);
+        //
+        return info;
+    }
 }

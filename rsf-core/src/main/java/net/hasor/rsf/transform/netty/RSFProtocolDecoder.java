@@ -54,7 +54,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         }
         //
         byte rsfHead = frame.getByte(0);//协议头
-        ProtocolStatus status = this.doDecode(rsfHead, ctx, frame);//协议解析
+        short status = this.doDecode(rsfHead, ctx, frame);//协议解析
         if (status != ProtocolStatus.OK) {
             frame = frame.resetReaderIndex().skipBytes(1);
             this.fireProtocolError(ctx, rsfHead, frame.readLong(), status);
@@ -66,7 +66,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     /**协议解析*/
-    private ProtocolStatus doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) {
+    private short doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) {
         if ((RSF_Packet_Request | rsfHead) == rsfHead) {
             try {
                 RequestInfo info = ProtocolUtils.buildRequestInfo(rsfHead, frame);// <-1.解码二进制数据。
@@ -93,11 +93,11 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     /**发送错误 */
-    private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, ProtocolStatus status) {
+    private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status) {
         ResponseBlock block = new ResponseBlock();
         block.setHead(RSFConstants.RSF_Response);
         block.setRequestID(requestID);
-        block.setStatus(status.getType());
+        block.setStatus(status);
         block.setSerializeType(block.pushData(null));
         ctx.pipeline().writeAndFlush(block);
     }

@@ -15,30 +15,30 @@
  */
 package net.hasor.rsf.rpc.caller;
 import java.lang.reflect.Method;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.rpc.net.RsfRuntimeUtils;
+import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.transform.protocol.OptionInfo;
-import net.hasor.rsf.transform.protocol.RequestInfo;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
-    private final RsfCallerWrap  rsfCaller;
-    private final InterAddress   targetServer;
-    private final long           requestID;
-    private final RsfBindInfo<?> bindInfo;
-    private final Method         targetMethod;
-    private final Class<?>[]     parameterTypes;
-    private final Object[]       parameterObjects;
+    private final RsfCaller              rsfCaller;
+    private final Provider<InterAddress> target;
+    private final long                   requestID;
+    private final RsfBindInfo<?>         bindInfo;
+    private final Method                 targetMethod;
+    private final Class<?>[]             parameterTypes;
+    private final Object[]               parameterObjects;
     //
-    public RsfRequestFormLocal(InterAddress target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCallerWrap rsfCaller) {
+    public RsfRequestFormLocal(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCaller rsfCaller) {
         this.requestID = RsfRuntimeUtils.genRequestID();
-        this.targetServer = target;
+        this.target = target;
         this.bindInfo = bindInfo;
         this.targetMethod = targetMethod;
         this.parameterTypes = targetMethod.getParameterTypes();
@@ -50,8 +50,8 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
         return "requestID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
     }
     /**获取最终要调用的远程服务地址。*/
-    public InterAddress getTargetServer() {
-        return this.targetServer;
+    public Provider<InterAddress> getTarget() {
+        return this.target;
     }
     //
     @Override
@@ -93,13 +93,5 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     @Override
     public Object[] getParameterObject() {
         return this.parameterObjects.clone();
-    }
-    public RsfResponseFormLocal buildResponse() {d
-        // TODO Auto-generated method stub
-        return null;
-    }
-    public RequestInfo buildInfo() {d
-        // TODO Auto-generated method stub
-        return null;
     }
 }

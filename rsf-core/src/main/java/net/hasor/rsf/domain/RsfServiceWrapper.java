@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
+import net.hasor.core.Provider;
+import net.hasor.rsf.address.InterAddress;
 /**
- * 
- * @version : 2014年11月14日
+ * 服务对象基类。
+ * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfException extends RuntimeException {
-    private static final long serialVersionUID = -2959224725202940531L;
-    private short             status           = ProtocolStatus.Unknown;
-    //
-    public RsfException(String string, Throwable e) {
-        super(string, e);
+public class RsfServiceWrapper {
+    private Provider<InterAddress> target;
+    public Provider<InterAddress> getTarget() {
+        return target;
     }
-    public RsfException(short status, String string) {
-        super("(" + status + ") - " + string);
-        this.status = status;
-    }
-    public RsfException(short status, Throwable e) {
-        super(e);
-        this.status = status;
-    }
-    public short getStatus() {
-        return this.status;
+    public void setTarget(Provider<InterAddress> target) {
+        this.target = target;
     }
 }

@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.utils;
+import java.util.concurrent.ThreadFactory;
 /**
  * 
- * @version : 2014年11月14日
+ * @version : 2015年3月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfException extends RuntimeException {
-    private static final long serialVersionUID = -2959224725202940531L;
-    private short             status           = ProtocolStatus.Unknown;
+public class NameThreadFactory implements ThreadFactory {
+    private String nameSample = "Thread-%s";
+    private int    index      = 1;
     //
-    public RsfException(String string, Throwable e) {
-        super(string, e);
+    public NameThreadFactory(String nameSample) {
+        this.nameSample = nameSample;
     }
-    public RsfException(short status, String string) {
-        super("(" + status + ") - " + string);
-        this.status = status;
-    }
-    public RsfException(short status, Throwable e) {
-        super(e);
-        this.status = status;
-    }
-    public short getStatus() {
-        return this.status;
+    //
+    public Thread newThread(Runnable run) {
+        Thread t = new Thread(run);
+        t.setName(String.format(nameSample, index++));
+        t.setDaemon(true);
+        return t;
     }
 }

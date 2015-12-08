@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc._;
+package net.hasor.rsf.rpc.net;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -29,7 +29,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.rpc.caller.RsfCallerWrap;
+import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.rpc.caller.RsfRequestManager;
 import net.hasor.rsf.rpc.caller.RsfRequestFormLocal;
 /**
@@ -37,7 +37,7 @@ import net.hasor.rsf.rpc.caller.RsfRequestFormLocal;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CallerManager extends RsfCallerWrap {
+public class CallerManager extends RsfCaller {
     private final RsfBeanContainer              rsfBeanContainer;
     private final Object                        LOCK_OBJECT;
     private final ConcurrentMap<String, Object> wrapperMap;

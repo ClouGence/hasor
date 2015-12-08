@@ -20,6 +20,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;

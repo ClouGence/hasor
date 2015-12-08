@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transform.protocol;
-import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * RSF Response 数据对象
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseInfo extends OptionInfo {
-    private long           requestID     = 0;    //请求ID
-    private long           receiveTime   = 0;    //数据包到达时间
-    private ProtocolStatus status        = null; //响应状态
-    private String         serializeType = null; //序列化类型
-    private String         returnType    = null; //返回类型
-    private byte[]         returnData    = null; //返回数据
+    private long   requestID     = 0;    //请求ID
+    private long   receiveTime   = 0;    //数据包到达时间
+    private short  status        = 0;    //响应状态
+    private String serializeType = null; //序列化类型
+    private String returnType    = null; //返回类型
+    private byte[] returnData    = null; //返回数据
     //
     //
     public ResponseInfo() {}
@@ -46,11 +45,11 @@ public class ResponseInfo extends OptionInfo {
         return this.receiveTime;
     }
     /**获取响应状态*/
-    public ProtocolStatus getStatus() {
+    public short getStatus() {
         return this.status;
     }
     /**设置响应状态*/
-    public void setStatus(ProtocolStatus status) {
+    public void setStatus(short status) {
         this.status = status;
     }
     /**获取序列化类型*/

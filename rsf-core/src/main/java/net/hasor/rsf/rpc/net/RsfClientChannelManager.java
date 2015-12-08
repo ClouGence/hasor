@@ -36,6 +36,7 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.netty.RSFCodec;
 /**
@@ -166,5 +167,13 @@ public class RsfClientChannelManager {
     public NetChannel getChannel(InterAddress target) {
         // TODO Auto-generated method stub
         return null;
+    }
+    public void closeChannel(Channel channel, Throwable cause) {
+        InterAddress address = RsfRuntimeUtils.getAddress(channel);
+        logger.error("exceptionCaught, host = " + address, cause);
+        // TODO Auto-generated method stub
+        InterAddress address = RsfRuntimeUtils.getAddress(channel);
+        rsfContext.getChannelManager().closeChannel(channel);
+        logger.warn("channelInactive, host = " + address);
     }
 }

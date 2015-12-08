@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.warp;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * 调用请求
  * @version : 2014年10月25日
@@ -54,8 +53,8 @@ public abstract class AbstractRsfResponseWarp implements RsfResponse {
         this.getRsfResponse().removeOption(key);
     }
     @Override
-    public Object getResponseData() {
-        return this.getRsfResponse().getResponseData();
+    public Object getData() {
+        return this.getRsfResponse().getData();
     }
     @Override
     public Class<?> getReturnType() {
@@ -74,14 +73,7 @@ public abstract class AbstractRsfResponseWarp implements RsfResponse {
         this.getRsfResponse().sendStatus(status);
     }
     @Override
-    public void sendStatus(ProtocolStatus status) {
-        this.getRsfResponse().sendStatus(status);
-    }
-    @Override
     public void sendStatus(short status, String messageBody) {
-        this.getRsfResponse().sendStatus(status, messageBody);
-    }
-    public void sendStatus(ProtocolStatus status, String messageBody) {
         this.getRsfResponse().sendStatus(status, messageBody);
     }
     @Override

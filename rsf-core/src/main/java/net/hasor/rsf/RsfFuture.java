@@ -44,7 +44,7 @@ public class RsfFuture extends BasicFuture<RsfResponse> {
      * @throws ExecutionException 远程方法在调用过程中发生异常。
      */
     public Object getData() throws InterruptedException, ExecutionException {
-        return this.get().getResponseData();
+        return this.get().getData();
     }
     /**
      * 等待执行结果的返回。
@@ -56,6 +56,6 @@ public class RsfFuture extends BasicFuture<RsfResponse> {
      * @throws TimeoutException 超时时间到达
      */
     public Object getData(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return this.get(timeout, unit).getResponseData();
+        return this.get(timeout, unit).getData();
     }
 }

@@ -17,7 +17,6 @@ package net.hasor.rsf.transform.codec;
 import java.io.IOException;
 import java.util.List;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.transform.protocol.PoolBlock;
 import net.hasor.rsf.transform.protocol.RequestBlock;
@@ -213,8 +212,7 @@ public class ProtocolUtils {
         }
         //
         //3.Response
-        ProtocolStatus status = ProtocolStatus.valueOf(rsfBlock.getStatus());
-        info.setStatus(status);
+        info.setStatus(rsfBlock.getStatus());
         byte[] returnType = rsfBlock.readPool(rsfBlock.getReturnType());
         byte[] returnData = rsfBlock.readPool(rsfBlock.getReturnData());
         String returnTypeStr = ByteStringCachelUtils.fromCache(returnType);
@@ -234,11 +232,7 @@ public class ProtocolUtils {
         //2.returnData
         block.setReturnType(ProtocolUtils.pushString(block, info.getReturnType()));//返回类型
         block.setReturnData(block.pushData(info.getReturnData()));
-        ProtocolStatus status = info.getStatus();
-        if (status == null) {
-            status = ProtocolStatus.Unknown;
-        }
-        block.setStatus(status.getType());//响应状态
+        block.setStatus(info.getStatus());//响应状态
         //
         //3.Opt参数
         String[] optKeys = info.getOptionKeys();

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 服务提供方传输层实现（基于Netty）
+ * 负责RSF请求的管理、RSF底层调用接口的实现。
  */
 package net.hasor.rsf.rpc.caller;
