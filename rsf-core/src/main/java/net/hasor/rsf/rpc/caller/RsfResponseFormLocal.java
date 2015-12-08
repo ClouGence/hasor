@@ -21,6 +21,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.net.RsfRuntimeUtils;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
@@ -61,10 +62,6 @@ public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
     @Override
     public RsfBindInfo<?> getBindInfo() {
         return this.rsfRequest.getBindInfo();
-    }
-    @Override
-    public byte getVersion() {
-        return this.rsfRequest.getVersion();
     }
     @Override
     public long getRequestID() {

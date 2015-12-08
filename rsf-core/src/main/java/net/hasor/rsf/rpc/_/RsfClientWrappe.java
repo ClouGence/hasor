@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller;
+package net.hasor.rsf.rpc._;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -28,7 +28,10 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.rpc.caller.RsfRequestManager;
+import net.hasor.rsf.rpc.caller.RsfRequestFormLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.net.RsfRuntimeUtils;
 /**
  * 
  * @version : 2014年12月22日
@@ -151,7 +154,7 @@ class RsfClientWrappe implements RsfClient {
         doSendRequest(request, listener);
     }
     protected RsfFuture doSendRequest(RsfRequestFormLocal request, FutureCallback<RsfResponse> listener) {
-        RsfClientRequestManager reqManager = this.rsfContext.getRequestManager();
+        RsfRequestManager reqManager = this.rsfContext.getRequestManager();
         return reqManager.sendRequest(request, listener);
     }
     private int validateTimeout(int timeout) {

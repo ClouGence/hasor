@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller;
+package net.hasor.rsf.rpc.net;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map.Entry;
@@ -161,6 +161,10 @@ public class RsfClientChannelManager {
         } catch (InterruptedException e) {
             logger.error("close connect({}) failure , {}", hostAddress, e.getMessage());
         }
+        return null;
+    }
+    public NetChannel getChannel(InterAddress target) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

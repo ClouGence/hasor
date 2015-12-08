@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller;
+package net.hasor.rsf.rpc.net;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfFuture;
+import net.hasor.rsf.rpc.caller.RsfRequestManager;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 /**
@@ -37,7 +38,7 @@ class RsfClientHandler extends BaseChannelInboundHandlerAdapter {
         ResponseBlock block = (ResponseBlock) msg;
         logger.debug("received response({}) full = {}", block.getRequestID(), block);
         //
-        RsfClientRequestManager requestManager = this.rsfContext.getRequestManager();
+        RsfRequestManager requestManager = this.rsfContext.getRequestManager();
         RsfFuture rsfFuture = requestManager.getRequest(block.getRequestID());
         if (rsfFuture == null) {
             logger.warn("give up the response,requestID({}) ,maybe because timeout! ", block.getRequestID());

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller;
+package net.hasor.rsf.rpc.net;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;
@@ -21,6 +21,8 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.rpc.caller.RsfRequestManager;
+import net.hasor.rsf.rpc.caller.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
@@ -32,9 +34,9 @@ class RsfClientProcessing implements Runnable {
     protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfFuture               rsfFuture;
     private ResponseInfo            responseInfo;
-    private RsfClientRequestManager requestManager;
+    private RsfRequestManager requestManager;
     //
-    public RsfClientProcessing(ResponseInfo responseInfo, RsfClientRequestManager requestManager, RsfFuture rsfFuture) {
+    public RsfClientProcessing(ResponseInfo responseInfo, RsfRequestManager requestManager, RsfFuture rsfFuture) {
         this.requestManager = requestManager;
         this.rsfFuture = rsfFuture;
         this.responseInfo = responseInfo;
@@ -46,11 +48,6 @@ class RsfClientProcessing implements Runnable {
         if (ProtocolStatus.Accepted.equals(resStatus)) {
             //
             logger.debug("requestID:{} , received Accepted.", requestID);
-            return;
-        } else if (ProtocolStatus.ChooseOther.equals(resStatus)) {
-            //
-            logger.info("requestID:{} , received ChooseOther -> do tryAgain.", requestID);
-            this.requestManager.tryAgain(requestID);
             return;
         }
         //恢复response

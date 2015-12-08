@@ -29,10 +29,10 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.domain.Events;
-import net.hasor.rsf.rpc.caller.RsfClientChannelManager;
-import net.hasor.rsf.rpc.caller.RsfClientRequestManager;
+import net.hasor.rsf.rpc.caller.RsfRequestManager;
 import net.hasor.rsf.rpc.manager.ExecutesManager;
 import net.hasor.rsf.rpc.manager.NameThreadFactory;
+import net.hasor.rsf.rpc.net.RsfClientChannelManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
@@ -47,7 +47,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     private SerializeFactory        serializeFactory;
     private ExecutesManager         executesManager;
     private EventLoopGroup          workLoopGroup;
-    private RsfClientRequestManager requestManager;
+    private RsfRequestManager requestManager;
     private RsfClientChannelManager channelManager;
     //
     protected void initContext(Object context, RsfSettings rsfSettings) throws IOException {
@@ -68,7 +68,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         logger.info("nioEventLoopGroup, workerThread = " + workerThread);
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
-        this.requestManager = new RsfClientRequestManager(this);
+        this.requestManager = new RsfRequestManager(this);
         this.channelManager = new RsfClientChannelManager(this);
         //
     }
@@ -91,7 +91,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.addressPool;
     }
     /** @return 获取请求管理中心*/
-    public RsfClientRequestManager getRequestManager() {
+    public RsfRequestManager getRequestManager() {
         return this.requestManager;
     }
     /** @return 获取网络连接管理中心*/

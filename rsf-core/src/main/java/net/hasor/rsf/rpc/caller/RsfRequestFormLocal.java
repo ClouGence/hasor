@@ -19,14 +19,16 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.rpc.net.RsfRuntimeUtils;
 import net.hasor.rsf.transform.protocol.OptionInfo;
+import net.hasor.rsf.transform.protocol.RequestInfo;
 /**
  * RSF请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
-    private final AbstractCaller callerManager;
+    private final RsfCallerWrap  rsfCaller;
     private final InterAddress   targetServer;
     private final long           requestID;
     private final RsfBindInfo<?> bindInfo;
@@ -34,18 +36,22 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     private final Class<?>[]     parameterTypes;
     private final Object[]       parameterObjects;
     //
-    public RsfRequestFormLocal(InterAddress target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, AbstractCaller callerManager) {
+    public RsfRequestFormLocal(InterAddress target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCallerWrap rsfCaller) {
         this.requestID = RsfRuntimeUtils.genRequestID();
         this.targetServer = target;
         this.bindInfo = bindInfo;
         this.targetMethod = targetMethod;
         this.parameterTypes = targetMethod.getParameterTypes();
         this.parameterObjects = parameterObjects;
-        this.callerManager = callerManager;
+        this.rsfCaller = rsfCaller;
     }
     @Override
     public String toString() {
         return "requestID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
+    }
+    /**获取最终要调用的远程服务地址。*/
+    public InterAddress getTargetServer() {
+        return this.targetServer;
     }
     //
     @Override
@@ -70,7 +76,7 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     }
     @Override
     public RsfContext getContext() {
-        return this.callerManager.getContext();
+        return this.rsfCaller.getContext();
     }
     @Override
     public long getReceiveTime() {
@@ -87,5 +93,13 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     @Override
     public Object[] getParameterObject() {
         return this.parameterObjects.clone();
+    }
+    public RsfResponseFormLocal buildResponse() {d
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public RequestInfo buildInfo() {d
+        // TODO Auto-generated method stub
+        return null;
     }
 }

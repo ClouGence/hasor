@@ -26,8 +26,8 @@ import net.hasor.rsf.domain.ProtocolStatus;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfProviderInvokeFilterChain implements RsfFilterChain {
-    public static RsfFilterChain Default = new RsfProviderInvokeFilterChain();
+class RsfInvokeFilterChain implements RsfFilterChain {
+    public static RsfFilterChain Default = new RsfInvokeFilterChain();
     //
     //default invoke
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
