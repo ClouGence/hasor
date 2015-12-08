@@ -27,7 +27,7 @@ public interface RsfRequest extends RsfHeader {
     public Method getMethod();
     /**获取上下文。*/
     public RsfContext getContext();
-    /**请求到达时间（如果是本地发起的请求，该值为发起调用的时间戳）。*/
+    /**请求到达时间（如果是本地发起的请求，该值为当前时间）。*/
     public long getReceiveTime();
     /**超时时间。*/
     public int getTimeout();

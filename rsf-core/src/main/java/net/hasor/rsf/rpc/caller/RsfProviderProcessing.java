@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.provider;
+package net.hasor.rsf.rpc.caller;
 import org.more.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +25,6 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.rpc.RsfFilterHandler;
-import net.hasor.rsf.rpc.client.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -36,13 +34,13 @@ import net.hasor.rsf.transform.protocol.ResponseBlock;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class ProviderProcessing implements Runnable {
+class RsfProviderProcessing implements Runnable {
     protected Logger               logger = LoggerFactory.getLogger(getClass());
     private final RsfBeanContainer rsfBeanContainer;
     private final RequestInfo      requestInfo;
     private final Channel          nettyChannel;
     //
-    public ProviderProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
+    public RsfProviderProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
         this.rsfContext = rsfContext;
         this.requestInfo = requestInfo;
         this.nettyChannel = nettyChannel;
@@ -82,7 +80,7 @@ class ProviderProcessing implements Runnable {
         try {
             String serviceID = rsfRequest.getBindInfo().getBindID();
             Provider<RsfFilter>[] rsfFilters = this.rsfBeanContainer.getFilterProviders(serviceID);
-            new RsfFilterHandler(rsfFilters, InvokeRsfFilterChain.Default).doFilter(rsfRequest, rsfResponse);
+            new RsfFilterHandler(rsfFilters, RsfProviderInvokeFilterChain.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {
             String errorMessage = "invoke fail, requestID:" + requestInfo.getRequestID() + " , error=" + e.getMessage();
             logger.error(errorMessage);

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.client;
+package net.hasor.rsf.rpc.caller;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 /**
@@ -26,8 +25,8 @@ import net.hasor.rsf.transform.protocol.ResponseBlock;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
-    public RsfCustomerHandler(AbstractRsfContext rsfContext) {
+class RsfClientHandler extends BaseChannelInboundHandlerAdapter {
+    public RsfClientHandler(AbstractRsfContext rsfContext) {
         super(rsfContext);
     }
     //
@@ -45,6 +44,6 @@ class RsfCustomerHandler extends BaseChannelInboundHandlerAdapter {
             return;//或许它已经超时了。
         }
         logger.debug("doResponse.");
-        new CustomerProcessing(block, requestManager, rsfFuture).run();
+        new RsfClientProcessing(block, requestManager, rsfFuture).run();
     }
 }

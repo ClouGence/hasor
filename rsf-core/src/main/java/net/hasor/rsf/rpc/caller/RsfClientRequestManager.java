@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.client;
+package net.hasor.rsf.rpc.caller;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,14 +35,12 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.container.ServiceInfo;
+import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfTimeoutException;
-import net.hasor.rsf.rpc.RsfFilterHandler;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.manager.TimerManager;
-import net.hasor.rsf.rpc.provider.RsfRequestFormLocal;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.transform.protocol.RequestBlock;
 /**
@@ -50,17 +48,16 @@ import net.hasor.rsf.transform.protocol.RequestBlock;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfClientRequestManager {
+public class RsfClientRequestManager extends AbstractCaller {
     protected Logger                                 logger = LoggerFactory.getLogger(getClass());
-    private final AbstractRsfContext                 rsfContext;
     private final RsfClientChannelManager            clientManager;
     private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
     private final TimerManager                       timerManager;
     private final AtomicInteger                      requestCount;
     private final RsfClientWrappe                    rsfClientWrappe;
     //
-    public RsfClientRequestManager(AbstractRsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+    public RsfClientRequestManager(RsfBeanContainer rsfBeanContainer, RsfContext rsfContext) {
+        super(rsfContext);
         this.clientManager = new RsfClientChannelManager(rsfContext);
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = new TimerManager(getRsfContext().getSettings().getDefaultTimeout());

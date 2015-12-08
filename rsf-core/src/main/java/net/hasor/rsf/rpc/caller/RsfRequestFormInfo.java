@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.provider;
+package net.hasor.rsf.rpc.caller;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -27,7 +27,7 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
+public class RsfRequestFormInfo extends OptionInfo implements RsfRequest {
     private final AbstractRsfContext rsfContext;
     private final RequestInfo        info;
     private final RsfBindInfo<?>     bindInfo;
@@ -36,7 +36,7 @@ public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     private final Class<?>[]         parameterTypes;
     private final Object[]           parameterObjects;
     //
-    public RsfRequestFormLocal(RequestInfo info, AbstractRsfContext rsfContext) throws RsfException {
+    public RsfRequestFormInfo(RequestInfo info, AbstractRsfContext rsfContext) throws RsfException {
         this.info = info;
         this.targetMethod = targetMethod;
         this.parameterTypes = targetMethod.getParameterTypes();

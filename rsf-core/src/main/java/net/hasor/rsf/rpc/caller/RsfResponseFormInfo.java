@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.client;
+package net.hasor.rsf.rpc.caller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.rpc.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -33,7 +32,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
+public class RsfResponseFormInfo extends OptionInfo implements RsfResponse {
     protected Logger           logger = LoggerFactory.getLogger(getClass());
     private final RsfRequest   rsfRequest;
     private final ResponseInfo responseInfo;
@@ -42,7 +41,7 @@ public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
     private Object             returnObject;
     private boolean            committed;
     // 
-    public RsfResponseFormLocal(RsfRequest rsfRequest) {
+    public RsfResponseFormInfo(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;
         this.responseInfo = new ResponseInfo();
         
@@ -50,7 +49,7 @@ public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
         this.returnType = rsfRequest.getServiceMethod().getReturnType();
 
     }
-    public RsfResponseFormLocal(AbstractRsfContext rsfContext, RsfBindInfo<?> bindInfo, ResponseInfo responseInfo2) {
+    public RsfResponseFormInfo(AbstractRsfContext rsfContext, RsfBindInfo<?> bindInfo, ResponseInfo responseInfo2) {
         // TODO Auto-generated constructor stub
     }
     //

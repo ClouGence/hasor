@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.provider;
+package net.hasor.rsf.rpc.caller;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.rpc.BaseChannelInboundHandlerAdapter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
@@ -47,7 +46,7 @@ public class RsfProviderHandler extends BaseChannelInboundHandlerAdapter {
             String serviceUniqueName = requestInfo.getServiceName();
             Executor exe = this.rsfContext.getCallExecute(serviceUniqueName);
             Channel nettyChannel = ctx.channel();
-            exe.execute(new ProviderProcessing(this.rsfContext, requestInfo, nettyChannel));//放入业务线程准备执行
+            exe.execute(new RsfProviderProcessing(this.rsfContext, requestInfo, nettyChannel));//放入业务线程准备执行
             //
             readyWrite = buildStatus(requestInfo, ProtocolStatus.Accepted, null);
         } catch (RejectedExecutionException e) {

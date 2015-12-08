@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.client;
+package net.hasor.rsf.rpc.caller;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map.Entry;
@@ -36,7 +36,6 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.rpc.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.netty.RSFCodec;
 /**
@@ -137,7 +136,7 @@ public class RsfClientChannelManager {
                 RsfRuntimeUtils.setAddress(hostAddress, channel);
                 logger.info("initConnection connect {}.", hostAddress);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new RsfCustomerHandler(rsfContext));
+                ch.pipeline().addLast(new RSFCodec(), new RsfClientHandler(rsfContext));
             }
         });
         ChannelFuture future = null;
