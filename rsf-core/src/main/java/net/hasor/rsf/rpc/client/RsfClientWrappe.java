@@ -30,7 +30,7 @@ import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.RsfRequestFormLocal;
+import net.hasor.rsf.rpc.provider.RsfRequestFormLocal;
 /**
  * 
  * @version : 2014年12月22日

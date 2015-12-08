@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.objects;
+package net.hasor.rsf.rpc.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;

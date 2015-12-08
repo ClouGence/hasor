@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.provider;
-import java.util.List;
 import org.more.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfOptionSet;
+import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.RsfFilterHandler;
+import net.hasor.rsf.rpc.client.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.RsfResponseFormLocal;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
@@ -36,10 +37,10 @@ import net.hasor.rsf.transform.protocol.ResponseBlock;
  * @author 赵永春(zyc@hasor.net)
  */
 class ProviderProcessing implements Runnable {
-    protected Logger                 logger = LoggerFactory.getLogger(getClass());
-    private final AbstractRsfContext rsfContext;
-    private final RequestInfo        requestInfo;
-    private final Channel            nettyChannel;
+    protected Logger               logger = LoggerFactory.getLogger(getClass());
+    private final RsfBeanContainer rsfBeanContainer;
+    private final RequestInfo      requestInfo;
+    private final Channel          nettyChannel;
     //
     public ProviderProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
         this.rsfContext = rsfContext;
@@ -69,22 +70,21 @@ class ProviderProcessing implements Runnable {
         }
         //
         //1.检查timeout
-        long lostTime = System.currentTimeMillis() - requestBlock.getReceiveTime();
-        int timeout = validateTimeout(requestBlock.getClientTimeout(), rsfRequest.getBindInfo());
+        long lostTime = System.currentTimeMillis() - requestInfo.getReceiveTime();
+        int timeout = validateTimeout(requestInfo.getClientTimeout(), rsfRequest.getBindInfo());
         if (lostTime > timeout) {
-            logger.error("request timeout. (client parameter)., requestID:" + requestBlock.getRequestID());
+            logger.error("request timeout. (client parameter)., requestID:" + requestInfo.getRequestID());
             rsfResponse.sendStatus(ProtocolStatus.RequestTimeout, "request timeout. (client parameter).");
             return rsfResponse;
         }
         //
         //2.执行调用
         try {
-            String binderID = rsfRequest.getBindInfo().getBindID();
-            ServiceInfo<?> define = this.rsfContext.getBindCenter().getService(binderID);
-            List<RsfFilter> rsfFilters = define.getFilters();
+            String serviceID = rsfRequest.getBindInfo().getBindID();
+            Provider<RsfFilter>[] rsfFilters = this.rsfBeanContainer.getFilterProviders(serviceID);
             new RsfFilterHandler(rsfFilters, InvokeRsfFilterChain.Default).doFilter(rsfRequest, rsfResponse);
         } catch (Throwable e) {
-            String errorMessage = "invoke fail, requestID:" + requestBlock.getRequestID() + " , error=" + e.getMessage();
+            String errorMessage = "invoke fail, requestID:" + requestInfo.getRequestID() + " , error=" + e.getMessage();
             logger.error(errorMessage);
             rsfResponse.sendStatus(ProtocolStatus.InvokeError, errorMessage);
             return rsfResponse;

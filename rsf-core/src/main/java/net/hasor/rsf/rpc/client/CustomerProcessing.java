@@ -22,7 +22,6 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.objects.RsfResponseFormLocal;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 负责处理客户端 Response 回应逻辑。

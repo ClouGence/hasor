@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc;
-import java.util.Collections;
-import java.util.List;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
@@ -26,19 +25,20 @@ import net.hasor.rsf.RsfResponse;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfFilterHandler implements RsfFilterChain {
-    private final List<RsfFilter> rsfFilter;
-    private final RsfFilterChain  rsfChain;
-    private int                   index;
+    private static final Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
+    private final Provider<RsfFilter>[]        rsfFilter;
+    private final RsfFilterChain               rsfChain;
+    private int                                index;
     //
-    public RsfFilterHandler(final List<RsfFilter> rsfFilter, final RsfFilterChain rsfChain) {
-        this.rsfFilter = (rsfFilter == null) ? Collections.EMPTY_LIST : rsfFilter;
+    public RsfFilterHandler(final Provider<RsfFilter>[] rsfFilter, final RsfFilterChain rsfChain) {
         this.rsfChain = rsfChain;
         this.index = -1;
+        this.rsfFilter = (rsfFilter != null && rsfFilter.length != 0) ? rsfFilter : EMPTY_FILTER;
     }
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         this.index++;
-        if (this.index < this.rsfFilter.size()) {
-            this.rsfFilter.get(index).doFilter(request, response, this);
+        if (this.index < this.rsfFilter.length) {
+            this.rsfFilter[index].get().doFilter(request, response, this);
         } else {
             this.rsfChain.doFilter(request, response);
         }

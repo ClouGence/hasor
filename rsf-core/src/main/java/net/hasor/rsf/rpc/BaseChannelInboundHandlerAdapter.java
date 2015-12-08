@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 基类
  * @version : 2014年11月4日
@@ -45,5 +50,16 @@ public class BaseChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapt
         InterAddress address = RsfRuntimeUtils.getAddress(channel);
         rsfContext.getChannelManager().closeChannel(channel);
         logger.warn("channelInactive, host = " + address);
+    }
+    protected ResponseInfo buildStatus(RequestInfo requestInfo, ProtocolStatus status, String message) {
+        ResponseInfo info = new ResponseInfo();
+        RsfOptionSet optMap = this.rsfContext.getSettings().getServerOption();
+        info.addOptionMap(optMap);
+        info.setRequestID(requestInfo.getRequestID());
+        info.setStatus(ProtocolStatus.Accepted);
+        if (StringUtils.isNotBlank(message)) {
+            info.addOption("message", message);
+        }
+        return info;
     }
 }
