@@ -1,7 +1,11 @@
-﻿===== Hasor-Core v2.0.0
+﻿===== Hasor-Core v2.0.1
+* 改进:
+    01.修改ShutdownHook钩子。在start时注册它、当shutdown时解除注册。
+
+===== Hasor-Core v2.0.0
 * 新增:
     01.新增 @Inject、@Init 两个注解以支持注解方式的自动注入。
-    02.添加 ShutdownHook 钩子，当外部终止jvm的时候，Hasor可以引发shutdown过程。
+    02.添加 ShutdownHook钩子，当外部终止jvm的时候，Hasor可以引发shutdown过程。
     03.事务管理增加“TransactionTemplate”接口。
     04.启动过程中增加了一些 log 的输出。
     05.将jetty的JSON解析器代码添加到Hasor工具代码中，位于包“org.more.json”。

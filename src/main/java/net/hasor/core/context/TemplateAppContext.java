@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
@@ -34,11 +39,6 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import net.hasor.core.module.ModuleHelper;
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -50,11 +50,7 @@ import org.slf4j.LoggerFactory;
 public abstract class TemplateAppContext<C extends BeanContainer> implements AppContext {
     public static final String DefaultSettings = "hasor-config.xml";
     protected Logger           logger          = LoggerFactory.getLogger(getClass());
-    //
-    public TemplateAppContext() {
-        /*无论容器启动关闭多少次，在虚拟机关闭的时候必须要触发一次。*/
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
-    }
+    private final ShutdownHook shutdownHook    = new ShutdownHook(this);
     //
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID) {
@@ -451,6 +447,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         //
         /*5.打印状态*/
         logger.info("Hasor Started!");
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
     /**发送停止通知*/
     public synchronized final void shutdown() {
@@ -466,5 +463,6 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         logger.info("doShutdownCompleted now.");
         doShutdownCompleted();
         logger.info("doShutdown completed!");
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
 }
