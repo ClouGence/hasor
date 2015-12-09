@@ -24,7 +24,6 @@ public class ResponseInfo extends OptionInfo {
     private long   receiveTime   = 0;    //数据包到达时间
     private short  status        = 0;    //响应状态
     private String serializeType = null; //序列化类型
-    private String returnType    = null; //返回类型
     private byte[] returnData    = null; //返回数据
     //
     //
@@ -59,14 +58,6 @@ public class ResponseInfo extends OptionInfo {
     /**设置序列化类型*/
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
-    }
-    /**获取返回值类型*/
-    public String getReturnType() {
-        return this.returnType;
-    }
-    /**设置返回值类型*/
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
     }
     /**获取返回值数据*/
     public byte[] getReturnData() {

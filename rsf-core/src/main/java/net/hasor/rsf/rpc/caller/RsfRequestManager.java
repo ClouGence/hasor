@@ -68,8 +68,8 @@ public abstract class RsfRequestManager {
     }
     /**获取{@link RsfBeanContainer}。*/
     protected abstract RsfBeanContainer getContainer();
-    /**发送数据包。*/
-    protected abstract void sendData(Provider<InterAddress> target, RequestInfo info, FutureCallback<RsfResponse> callBack);
+    /**发送数据包*/
+    protected abstract void sendData(Provider<InterAddress> target, RequestInfo info);
     //
     /**
      * 获取正在进行中的调用请求。
@@ -86,30 +86,25 @@ public abstract class RsfRequestManager {
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
-        if (rsfFuture != null) {
-            logger.debug("received response({}) status = {}", requestID, info.getStatus());
-            //
-            RsfRequest rsfRequest = rsfFuture.getRequest();
-            RsfResponseFormLocal local = new RsfResponseFormLocal(info);
-            local.addOptionMap(info);
-            local.sendStatus(info.getStatus());
-            //
-            try {
-                SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
-                byte[] returnDataData = info.getReturnData();
-                Object returnObject = coder.decode(returnDataData);
-            } catch (Throwable e) {
-                logger.error("recovery form Socket > " + e.getMessage(), e);
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else {
-                    throw new RsfException(e.getMessage(), e);
-                }
-            }
-            return rsfFuture.completed(response);
-        } else {
+        if (rsfFuture == null) {
             logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
             return false;
+        }
+        //
+        RsfRequest rsfRequest = rsfFuture.getRequest();
+        RsfResponseFormLocal local = new RsfResponseFormLocal(rsfRequest);
+        local.addOptionMap(info);
+        local.sendStatus(info.getStatus());
+        logger.info("received response({}) status = {}", requestID, info.getStatus());
+        try {
+            SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
+            byte[] returnDataData = info.getReturnData();
+            Object returnObject = coder.decode(returnDataData);
+            local.sendData(returnObject);
+            return rsfFuture.completed(local);
+        } catch (Throwable e) {
+            logger.error("recovery form Socket > " + e.getMessage(), e);
+            return rsfFuture.failed(e);
         }
     }
     /**
@@ -223,31 +218,31 @@ public abstract class RsfRequestManager {
             }
         }
         /*3.回调函数（错误处理）*/
-        FutureCallback<RsfResponse> callBack = new FutureCallback<RsfResponse>() {
-            @Override
-            public void cancelled() {
-                /*回应Response -> 用户取消*/
-                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] to cancelled by user.";
-                logger.error(errorMsg);
-                putResponse(rsfRequest.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
-            }
-            @Override
-            public void completed(RsfResponse response) {
-                /*OK*/
-                putResponse(response);
-            }
-            @Override
-            public void failed(Throwable e) {
-                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] error:" + e.getMessage();
-                logger.error(errorMsg, e);
-                putResponse(rsfRequest.getRequestID(), e);
-            }
-        };
+        //        FutureCallback<RsfResponse> sendErrorCallBack = new FutureCallback<RsfResponse>() {
+        //            @Override
+        //            public void cancelled() {
+        //                /*回应Response -> 用户取消*/
+        //                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] to cancelled by user.";
+        //                logger.error(errorMsg);
+        //                putResponse(rsfRequest.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
+        //            }
+        //            @Override
+        //            public void completed(RsfResponse response) {
+        //                /*OK*/
+        //                putResponse(response);
+        //            }
+        //            @Override
+        //            public void failed(Throwable e) {
+        //                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] error:" + e.getMessage();
+        //                logger.error(errorMsg, e);
+        //                putResponse(rsfRequest.getRequestID(), e);
+        //            }
+        //        };
         /*4.发送请求*/
         try {
             this.startRequest(rsfFuture);//             <- 1.计时request。
             RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
-            sendData(target, info, callBack);//         <- 3.发送数据
+            sendData(target, info);//                   <- 3.发送数据
         } catch (Throwable e) {
             logger.error("request[" + rsfRequest.getRequestID() + "] send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);

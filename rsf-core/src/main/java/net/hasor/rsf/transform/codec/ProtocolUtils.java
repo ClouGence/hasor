@@ -213,10 +213,7 @@ public class ProtocolUtils {
         //
         //3.Response
         info.setStatus(rsfBlock.getStatus());
-        byte[] returnType = rsfBlock.readPool(rsfBlock.getReturnType());
         byte[] returnData = rsfBlock.readPool(rsfBlock.getReturnData());
-        String returnTypeStr = ByteStringCachelUtils.fromCache(returnType);
-        info.setReturnType(returnTypeStr);
         info.setReturnData(returnData);
         return info;
     }
@@ -230,7 +227,6 @@ public class ProtocolUtils {
         block.setSerializeType(ProtocolUtils.pushString(block, info.getSerializeType()));//序列化策略
         //
         //2.returnData
-        block.setReturnType(ProtocolUtils.pushString(block, info.getReturnType()));//返回类型
         block.setReturnData(block.pushData(info.getReturnData()));
         block.setStatus(info.getStatus());//响应状态
         //

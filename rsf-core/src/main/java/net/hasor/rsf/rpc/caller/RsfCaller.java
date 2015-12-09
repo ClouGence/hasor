@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import org.more.classcode.MoreClassLoader;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -40,7 +39,7 @@ import net.hasor.rsf.domain.RsfServiceWrapper;
  */
 public abstract class RsfCaller extends RsfRequestManager {
     private final RsfBeanContainer container;
-    public RsfCaller(RsfContext rsfContext, RsfBeanContainer container) {
+    public RsfCaller(RsfBeanContainer container, RsfContext rsfContext) {
         super(rsfContext);
         this.container = container;
     }
@@ -132,8 +131,8 @@ public abstract class RsfCaller extends RsfRequestManager {
             return null;
         return this.wrapper(target, bindInfo, interFace);
     }
-    private final Object                          LOCK_OBJECT = new Object();
-    private final ConcurrentMap<String, Class<?>> wrapperMap  = new ConcurrentHashMap<String, Class<?>>();
+    private final Object                                          LOCK_OBJECT = new Object();
+    private final ConcurrentMap<String, Class<RsfServiceWrapper>> wrapperMap  = new ConcurrentHashMap<String, Class<RsfServiceWrapper>>();
     public <T> T wrapper(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         if (bindInfo == null)
             throw new NullPointerException();
@@ -141,22 +140,30 @@ public abstract class RsfCaller extends RsfRequestManager {
             throw new UnsupportedOperationException("interFace parameter must be an interFace.");
         //
         String bindID = bindInfo.getBindID();
-        Class<?> wrapperClass = this.wrapperMap.get(bindID);
+        Class<RsfServiceWrapper> wrapperClass = this.wrapperMap.get(bindID);
         if (wrapperClass == null) {
             synchronized (LOCK_OBJECT) {
                 wrapperClass = this.wrapperMap.get(bindID);
                 if (wrapperClass == null) {
-                    ClassLoader loader = new MoreClassLoader();
-                    MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapper.class);
-                    classConfig.addDelegate(interFace, new ServiceMethodDelegate(bindInfo));
-                    wrapperClass = classConfig.toClass();
-                    this.wrapperMap.put(bindID, wrapperClass);
+                    try {
+                        MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapper.class);
+                        classConfig.addDelegate(interFace, new ServiceMethodDelegate(bindInfo));
+                        wrapperClass = (Class<RsfServiceWrapper>) classConfig.toClass();
+                        this.wrapperMap.put(bindID, wrapperClass);
+                    } catch (Throwable e) {
+                        throw new RsfException(e.getMessage(), e);
+                    }
                 }
             }
         }
-        RsfServiceWrapper wrapper = (RsfServiceWrapper) wrapperClass.newInstance();
-        wrapper.setTarget(target);
-        return (T) wrapper;
+        //
+        try {
+            RsfServiceWrapper wrapper = (RsfServiceWrapper) wrapperClass.newInstance();
+            wrapper.setTarget(target);
+            return (T) wrapper;
+        } catch (Throwable e) {
+            throw new RsfException(e.getMessage(), e);
+        }
     }
     private class ServiceMethodDelegate implements MethodDelegate {
         private RsfBindInfo<?> bindInfo;

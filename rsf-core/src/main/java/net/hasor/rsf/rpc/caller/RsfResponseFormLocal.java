@@ -31,13 +31,11 @@ class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
     protected Logger         logger       = LoggerFactory.getLogger(getClass());
     private final RsfRequest rsfRequest;
     private short            status       = ProtocolStatus.Unknown;
-    private Class<?>         returnType   = null;
     private Object           returnObject = null;
     private boolean          committed    = false;
     //
     public RsfResponseFormLocal(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;
-        this.returnType = rsfRequest.getMethod().getReturnType();
     }
     //
     @Override
@@ -62,7 +60,7 @@ class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
     }
     @Override
     public Class<?> getReturnType() {
-        return this.returnType;
+        return this.rsfRequest.getMethod().getReturnType();
     }
     @Override
     public short getStatus() {
