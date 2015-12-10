@@ -83,6 +83,7 @@ public class RsfBeanContainer {
                 }
             }
             this.filterList.add(new FilterDefine(filterID, provider));
+            this.filterCache.clear();
         }
     }
     /**
