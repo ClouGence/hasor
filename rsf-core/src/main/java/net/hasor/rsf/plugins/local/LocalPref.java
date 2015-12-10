@@ -32,11 +32,11 @@ public class LocalPref implements RsfFilter {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
             Object serviceBean = request.getContext().getBean(bindInfo);
             if (serviceBean != null) {
-                String rMethod = request.getMethod();
+                String method = request.getMethod().getName();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();
                 //
-                Method m = serviceBean.getClass().getMethod(rMethod, rParams);
+                Method m = serviceBean.getClass().getMethod(method, rParams);
                 try {
                     response.sendData(m.invoke(serviceBean, rObjects));
                 } catch (InvocationTargetException e) {

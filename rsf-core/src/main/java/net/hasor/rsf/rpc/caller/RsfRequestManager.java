@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.rpc.caller;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.more.future.FutureCallback;
 import org.slf4j.Logger;
@@ -48,16 +49,18 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
-    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
-    private final ConcurrentHashMap<Long, RsfFuture> rsfResponse;
-    private final TimerManager                       timerManager;
-    private final AtomicInteger                      requestCount;
-    private final RsfContext                         rsfContext;
-    private final SerializeFactory                   serializeFactory;
+    protected Logger                             logger = LoggerFactory.getLogger(getClass());
+    private final ConcurrentMap<Long, RsfFuture> rsfResponse;
+    private final TimerManager                   timerManager;
+    private final AtomicInteger                  requestCount;
+    private final RsfContext                     rsfContext;
+    private final SerializeFactory               serializeFactory;
     //
     public RsfRequestManager(RsfContext rsfContext) {
+        RsfSettings rsfSettings = rsfContext.getSettings();
+        //
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-        this.timerManager = new TimerManager(rsfContext.getSettings().getDefaultTimeout());
+        this.timerManager = new TimerManager(rsfSettings.getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
         this.rsfContext = rsfContext;
         this.serializeFactory = SerializeFactory.createFactory(rsfContext.getSettings());
@@ -173,11 +176,12 @@ public abstract class RsfRequestManager {
      * @return 返回RsfFuture。
      */
     protected RsfFuture doSendRequest(RsfRequestFormLocal rsfRequest, FutureCallback<RsfResponse> listener) {
+        RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
+        String serviceID = bindInfo.getBindID();
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
         //
         try {
-            RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
-            Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(bindInfo.getBindID());
+            Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
             RsfResponseFormLocal res = new RsfResponseFormLocal(rsfRequest);
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {

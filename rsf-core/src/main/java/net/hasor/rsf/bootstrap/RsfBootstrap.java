@@ -40,7 +40,7 @@ import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.event.Events;
-import net.hasor.rsf.rpc.net.RsfProviderHandler;
+import net.hasor.rsf.rpc.net.RpcCodecProvider;
 import net.hasor.rsf.transform.netty.RSFCodec;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
@@ -164,7 +164,7 @@ public class RsfBootstrap {
                 Channel channel = ch.pipeline().channel();
                 RsfRuntimeUtils.setAddress(hostAddress, channel);
                 //
-                ch.pipeline().addLast(new RSFCodec(), new RsfProviderHandler(rsfContext));
+                ch.pipeline().addLast(new RSFCodec(), new RpcCodecProvider(rsfContext));
             }
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = boot.bind(localAddress, bindSocket);

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._06_caller;
+import java.net.URI;
 import java.util.List;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.address.InterAddress;
 /**
  * 
  * @version : 2015年12月9日
@@ -69,5 +71,24 @@ public class EmpytRsfContext implements RsfContext {
     public List<String> getServiceIDs() {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public RsfClient getRsfClient(String target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public RsfClient getRsfClient(URI target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public RsfClient getRsfClient(InterAddress target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
     }
 }

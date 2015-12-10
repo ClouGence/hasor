@@ -26,8 +26,18 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetChannel {
+    private Channel channel = null;
+    public NetChannel(Channel channel2) {
+        // TODO Auto-generated constructor stub
+    }
     public void sendData(RequestInfo info, FutureCallback<RsfResponse> callBack) {
         // TODO Auto-generated method stub
         return null;
+    }
+    public boolean isActive() {
+        return this.channel.isActive();
+    }
+    public void close() {
+        this.channel.close().await();
     }
 }

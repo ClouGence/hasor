@@ -30,7 +30,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.domain.Events;
 import net.hasor.rsf.rpc.caller.RsfRequestManager;
-import net.hasor.rsf.rpc.net.RsfClientChannelManager;
+import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.ExecutesManager;
 import net.hasor.rsf.utils.NameThreadFactory;
@@ -48,7 +48,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     private ExecutesManager         executesManager;
     private EventLoopGroup          workLoopGroup;
     private RsfRequestManager requestManager;
-    private RsfClientChannelManager channelManager;
+    private RsfNetManager channelManager;
     //
     protected void initContext(Object context, RsfSettings rsfSettings) throws IOException {
         logger.info("rsfContext init.");
@@ -69,7 +69,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         //
         this.requestManager = new RsfRequestManager(this);
-        this.channelManager = new RsfClientChannelManager(this);
+        this.channelManager = new RsfNetManager(this);
         //
     }
     /**序列化反序列化使用的类加载器*/
@@ -95,7 +95,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.requestManager;
     }
     /** @return 获取网络连接管理中心*/
-    public RsfClientChannelManager getChannelManager() {
+    public RsfNetManager getChannelManager() {
         return this.channelManager;
     }
     /** @return 获取序列化管理器。*/
