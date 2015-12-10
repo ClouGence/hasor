@@ -95,7 +95,7 @@ public abstract class RsfRequestManager {
         RsfResponseFormLocal local = new RsfResponseFormLocal(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
-        logger.info("received response({}) status = {}", requestID, info.getStatus());
+        //        logger.info("received response({}) status = {}", requestID, info.getStatus());
         try {
             SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
             byte[] returnDataData = info.getReturnData();

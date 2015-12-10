@@ -16,6 +16,7 @@
 package net.hasor.rsf.domain;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,10 +28,10 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
-    protected static Logger                        logger     = LoggerFactory.getLogger(RsfRuntimeUtils.class);
-    private static AtomicLong                      requestID  = new AtomicLong(1);
-    private static ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<String, Class<?>>();
-    private static ConcurrentMap<String, Method>   methodMap  = new ConcurrentHashMap<String, Method>();
+    protected static Logger                        logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
+    private static AtomicLong                      requestID   = new AtomicLong(1);
+    private static ConcurrentMap<String, Class<?>> classCache  = new ConcurrentHashMap<String, Class<?>>();
+    private static ConcurrentMap<Integer, Method>  methodCache = new ConcurrentHashMap<Integer, Method>();
     //
     //
     /**生成一个新的RequestID*/
@@ -113,16 +114,13 @@ public class RsfRuntimeUtils {
     }
     //
     public static Method getServiceMethod(Class<?> serviceType, String methodName, Class<?>[] parameterTypes) {
-        StringBuffer key = new StringBuffer(methodName);
-        for (Class<?> pt : parameterTypes) {
-            key.append(pt.getName() + ";");
-        }
-        String mKey = key.toString();
-        Method method = methodMap.get(mKey);
+        int hashCode = Arrays.hashCode(parameterTypes);
+        hashCode = 31 * hashCode + methodName.hashCode();
+        Method method = methodCache.get(hashCode);
         if (method == null) {
             try {
                 Method newMethod = serviceType.getMethod(methodName, parameterTypes);
-                method = methodMap.putIfAbsent(mKey, newMethod);
+                method = methodCache.putIfAbsent(hashCode, newMethod);
                 if (method == null) {
                     method = newMethod;
                 }

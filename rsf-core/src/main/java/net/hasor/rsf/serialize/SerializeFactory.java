@@ -34,11 +34,11 @@ public class SerializeFactory {
     //
     /**获取序列化（编码/解码）器。*/
     public SerializeCoder getSerializeCoder(String codeName) {
-        return this.coderMap.get(codeName.toLowerCase());
+        return this.coderMap.get(codeName);
     }
     /**注册序列化（编码/解码）器*/
     public void registerSerializeCoder(String codeName, SerializeCoder decoder) {
-        this.coderMap.put(codeName.toLowerCase(), decoder);
+        this.coderMap.put(codeName, decoder);
     }
     //
     //

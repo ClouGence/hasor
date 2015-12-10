@@ -16,25 +16,26 @@
 package test.net.hasor.rsf._06_caller;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.junit.Test;
+import org.more.future.FutureCallback;
 import net.hasor.core.Provider;
 import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.plugins.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.serialize.coder.JsonSerializeCoder;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import test.net.hasor.rsf.services.EchoService;
@@ -44,115 +45,118 @@ import test.net.hasor.rsf.services.EchoService;
  * @author 赵永春(zyc@hasor.net)
  */
 public class CallerTest {
-    private void send(SerializeFactory factory, final RsfCaller caller, final RequestInfo info) {
+    private void send(SerializeFactory factory, final RsfCaller caller, Queue<RequestInfo> queue) {
         try {
+            RequestInfo info = queue.poll();
+            if (info == null) {
+                return;
+            }
             byte[] inParam = info.getParameterValues().get(0);
-            Object inObject = factory.getSerializeCoder(info.getSerializeType()).decode(inParam);
             //
-            JsonSerializeCoder coder = new JsonSerializeCoder();
             ResponseInfo responseInfo = new ResponseInfo();
             responseInfo.setReceiveTime(System.currentTimeMillis());
             responseInfo.setRequestID(info.getRequestID());
             responseInfo.setStatus(ProtocolStatus.OK);
-            responseInfo.setReturnData(coder.encode("echo " + inObject));
-            responseInfo.setSerializeType("json");
+            responseInfo.setReturnData(inParam);
+            responseInfo.setSerializeType(info.getSerializeType());
             caller.putResponse(responseInfo);
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
     @Test
-    public void callerTest() throws IOException, URISyntaxException {
-        //
+    public void callerTest() throws IOException, URISyntaxException, InterruptedException {
         //准备环境
         final Settings setting = new StandardContextSettings();//create Settings
         final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
         final SerializeFactory factory = SerializeFactory.createFactory(rsfSetting);
-        final RsfContext emptyRsfContext = new DefaultContext() {
+        final Queue<RequestInfo> queue = new LinkedBlockingQueue<RequestInfo>();
+        final RsfContext emptyRsfContext = new EmpytRsfContext() {
             public RsfSettings getSettings() {
                 return rsfEnvironment.getSettings();
             }
         };
-        //
         //创建Caller
         final RsfCaller caller = new RsfCaller(container, emptyRsfContext) {
             protected void sendData(Provider<InterAddress> target, final RequestInfo info) {
-                //                System.out.println("do send Request(" + i`nfo.getRequestID() + "). to " + target.get());
-                final RsfCaller caller = this;
-                new Thread() {
-                    public void run() {
-                        send(factory, caller, info);
-                    };
-                }.start();
+                queue.add(info);
             }
         };
         //
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    send(factory, caller, queue);
+                }
+            };
+        }.start();
+        //
         //注册服务
-        Provider<InterAddress> target = new InstanceProvider<InterAddress>(new InterAddress("200.100.25.123", 8000, "unit"));
-        RsfBindInfo<?> info = container.createBinder().rsfService(EchoService.class).timeout(30000).register();
-        String serviceID = info.getBindID();
-        EchoService echo = (EchoService) caller.getRemoteByID(target, serviceID);
+        container.createBinder().bindFilter("QpsMonitor", new QpsMonitor());
+        final RsfBindInfo<?> bindInfo = container.createBinder().rsfService(EchoService.class).timeout(30000).register();
+        final Provider<InterAddress> target = new InstanceProvider<InterAddress>(new InterAddress("200.100.25.123", 8000, "unit"));
+        final Class<?>[] paramTypes = new Class<?>[] { String.class };
+        final Class<?>[] paramObjects = new Class<?>[] { String.class };
         //
-        //同步调用服务
-        for (int i = 0; i < 10; i++) {
-            try {
-                long startTime = System.currentTimeMillis();
-                String str = echo.sayHello("hello.");
-                long t = System.currentTimeMillis() - startTime;
-                System.out.println(t + "\t" + str);
-            } catch (Exception e) {
-                e.printStackTrace();
+        //异步调用服务
+        //for (int i = 0; i < 10; i++) {
+        //String serviceID = bindInfo.getBindID();
+        //EchoService echo = (EchoService) caller.getRemoteByID(target, serviceID);
+        FutureCallback<Object> callBack = new FutureCallback<Object>() {
+            @Override
+            public void failed(Throwable ex) {
+                caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
             }
-        }
+            @Override
+            public void completed(Object arg0) {
+                caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
+            }
+            @Override
+            public void cancelled() {
+                // TODO Auto-generated method stub
+            }
+        };
+        caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, callBack);
+        //}
         //
-        //        System.out.println();
-    }
-}
-class DefaultContext implements RsfContext {
-    @Override
-    public void shutdown() {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public RsfSettings getSettings() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public RsfClient getRsfClient() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public <T> T getBean(RsfBindInfo<T> bindInfo) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public <T> RsfBindInfo<T> getServiceInfo(String serviceID) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public List<String> getServiceIDs() {
-        // TODO Auto-generated method stub
-        return null;
+        //System.out.println();
+        Thread.sleep(240000);
     }
 }

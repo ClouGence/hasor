@@ -15,7 +15,9 @@
  */
 package net.hasor.rsf.transform.protocol;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.hasor.rsf.RsfOptionSet;
 /**
  * 
@@ -23,11 +25,12 @@ import net.hasor.rsf.RsfOptionSet;
  * @author 赵永春(zyc@hasor.net)
  */
 public class OptionInfo implements RsfOptionSet {
-    private final Map<String, String> optionMap = new HashMap<String, String>();
+    private final Set<String>         optionKeys = new HashSet<String>();
+    private final Map<String, String> optionMap  = new HashMap<String, String>();
     //
     /**获取选项Key集合。*/
     public String[] getOptionKeys() {
-        return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
+        return this.optionKeys.toArray(new String[this.optionKeys.size()]);
     }
     /**获取选项数据*/
     public String getOption(String key) {
@@ -35,10 +38,12 @@ public class OptionInfo implements RsfOptionSet {
     }
     /**设置选项数据*/
     public void addOption(String key, String value) {
+        this.optionKeys.add(key);
         this.optionMap.put(key, value);
     }
     /**删除选项数据*/
     public void removeOption(String key) {
+        this.optionKeys.remove(key);
         this.optionMap.remove(key);
     }
     public void addOptionMap(RsfOptionSet optSet) {

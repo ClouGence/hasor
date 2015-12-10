@@ -219,8 +219,8 @@ public abstract class RsfCaller extends RsfRequestManager {
      * @param parameterObjects 参数值
      * @param listener 回调接口。
      */
-    public void doCallBackInvoke(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
-        this.doCallBackRequest(target, bindInfo, methodName, parameterTypes, parameterObjects, new FutureCallback<RsfResponse>() {
+    public void callBackInvoke(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, final FutureCallback<Object> listener) {
+        this.callBackRequest(target, bindInfo, methodName, parameterTypes, parameterObjects, new FutureCallback<RsfResponse>() {
             public void completed(RsfResponse result) {
                 listener.completed(result.getData());
             }
@@ -241,7 +241,7 @@ public abstract class RsfCaller extends RsfRequestManager {
      * @param parameterObjects 参数值
      * @param listener 回调接口。
      */
-    public void doCallBackRequest(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener) {
+    public void callBackRequest(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener) {
         //1.准备Request
         Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
         RsfRequestFormLocal request = new RsfRequestFormLocal(target, bindInfo, targetMethod, parameterObjects, this);

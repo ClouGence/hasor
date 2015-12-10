@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfBindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> {
+    private String   bindID        = null;      //服务ID
     private String   bindName      = null;      //服务名
     private String   bindGroup     = "default"; //服务分组
     private String   bindVersion   = "1.0.0";   //服务版本
@@ -35,7 +36,10 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
         this.bindType = bindType;
     }
     public String getBindID() {
-        return String.format("[%s]%s-%s", this.bindGroup, this.bindName, this.bindVersion);
+        if (bindID == null) {
+            this.bindID = String.format("[%s]%s-%s", this.bindGroup, this.bindName, this.bindVersion);
+        }
+        return this.bindID;
     }
     /**获取发布服务的名称。*/
     public String getBindName() {

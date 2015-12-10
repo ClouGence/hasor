@@ -43,13 +43,14 @@ import net.hasor.rsf.domain.RsfBindInfoWrap;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBeanContainer {
-    protected Logger                                    logger;
-    private final ConcurrentMap<String, ServiceInfo<?>> serviceMap;                    //Group - ServiceInfo
-    private final List<FilterDefine>                    filterList;
-    private final Object                                filterLock;
-    private final RsfEnvironment                        environment;
-    private AddressPool                                 addressPool;
-    private final static Provider<RsfFilter>[]          EMPTY_FILTER = new Provider[0];
+    protected Logger                                           logger;
+    private final static Provider<RsfFilter>[]                 EMPTY_FILTER = new Provider[0];
+    private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
+    private final List<FilterDefine>                           filterList;
+    private final Object                                       filterLock;
+    private final RsfEnvironment                               environment;
+    private AddressPool                                        addressPool;
+    private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
     //
     public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
         this.logger = LoggerFactory.getLogger(getClass());
@@ -58,6 +59,7 @@ public class RsfBeanContainer {
         this.filterLock = new Object();
         this.environment = rsfEnvironment;
         this.addressPool = new AddressPool(rsfEnvironment);
+        this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
     }
     //
     /**
@@ -94,35 +96,40 @@ public class RsfBeanContainer {
         if (info == null) {
             return EMPTY_FILTER;
         }
-        List<String> cacheIds = new LinkedList<String>();
-        Map<String, FilterDefine> cacheFilters = new HashMap<String, FilterDefine>();
-        //2.计算最终结果。
-        List<FilterDefine> publicList = this.filterList;
-        if (publicList != null && !publicList.isEmpty()) {
-            for (FilterDefine filter : publicList) {
-                String filterID = filter.filterID();
-                cacheFilters.put(filterID, filter);
-                cacheIds.add(filterID);
-            }
-        }
-        List<FilterDefine> snapshotsList = info.getFilterSnapshots();
-        if (snapshotsList != null && !snapshotsList.isEmpty()) {
-            for (FilterDefine filter : snapshotsList) {
-                String filterID = filter.filterID();
-                cacheFilters.put(filterID, filter);//保存或覆盖已有。
-                if (cacheIds.contains(filterID)) {
-                    cacheIds.remove(filterID);//如果全局Filter已经定义了这个ID，那么从已有顺序中删除，在尾部追加私有Filter。
+        Provider<RsfFilter>[] result = filterCache.get(serviceID);
+        if (result == null) {
+            List<String> cacheIds = new LinkedList<String>();
+            Map<String, FilterDefine> cacheFilters = new HashMap<String, FilterDefine>();
+            //2.计算最终结果。
+            List<FilterDefine> publicList = this.filterList;
+            if (publicList != null && !publicList.isEmpty()) {
+                for (FilterDefine filter : publicList) {
+                    String filterID = filter.filterID();
+                    cacheFilters.put(filterID, filter);
+                    cacheIds.add(filterID);
                 }
-                cacheIds.add(filterID);
             }
+            List<FilterDefine> snapshotsList = info.getFilterSnapshots();
+            if (snapshotsList != null && !snapshotsList.isEmpty()) {
+                for (FilterDefine filter : snapshotsList) {
+                    String filterID = filter.filterID();
+                    cacheFilters.put(filterID, filter);//保存或覆盖已有。
+                    if (cacheIds.contains(filterID)) {
+                        cacheIds.remove(filterID);//如果全局Filter已经定义了这个ID，那么从已有顺序中删除，在尾部追加私有Filter。
+                    }
+                    cacheIds.add(filterID);
+                }
+            }
+            //3.产出最终结果。
+            List<Provider<RsfFilter>> filterArrays = new ArrayList<Provider<RsfFilter>>(cacheIds.size());
+            for (String filterID : cacheIds) {
+                FilterDefine define = cacheFilters.get(filterID);
+                filterArrays.add(define);
+            }
+            result = (Provider<RsfFilter>[]) filterArrays.toArray(new Provider[filterArrays.size()]);
+            this.filterCache.put(serviceID, result);
         }
-        //3.产出最终结果。
-        List<Provider<RsfFilter>> filterArrays = new ArrayList<Provider<RsfFilter>>(cacheIds.size());
-        for (String filterID : cacheIds) {
-            FilterDefine define = cacheFilters.get(filterID);
-            filterArrays.add(define);
-        }
-        return (Provider<RsfFilter>[]) filterArrays.toArray(new Provider[filterArrays.size()]);
+        return result;
     }
     /**
      * 根据服务id获取服务对象。如果服务未定义或者服务未声明提供者，则返回null。
@@ -177,7 +184,7 @@ public class RsfBeanContainer {
      * @param version 服务版本
      */
     public RsfBindInfo<?> getRsfBindInfo(String group, String name, String version) {
-        String serviceID = String.format("[%s]%s-%s", group, name, version);
+        String serviceID = "[" + group + "]" + name + "-" + version;//String.format("[%s]%s-%s", group, name, version);
         return this.getRsfBindInfo(serviceID);
     }
     /**获取所有已经注册的服务名称。*/

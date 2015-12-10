@@ -39,7 +39,7 @@ public class QpsMonitor implements RsfFilter {
             return;
         }
         //
-        if (checkTime - lastTime < 10000) {
+        if (checkTime - lastTime < 1000) {
             return;//10秒打印一条
         }
         lastTime = System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class QpsMonitor implements RsfFilter {
         logger.info("count:{} , QPS:{} , RT:{}", sendCount, qpsSecnd, rtTime);
         //
         /*1000亿次调用之后重置统计数据*/
-        if (sendCount.get() >= 100000000000L) {
+        if (sendCount.get() >= 100000000L) {
             sendCount.set(0);
             startTime = System.currentTimeMillis() / 1000;
             lastTime = System.currentTimeMillis();
