@@ -106,7 +106,7 @@ public interface RsfClient {
      * @param parameterObjects 参数值
      * @param listener 回调监听器。
      */
-    public void doCallBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
+    public void callBackInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<Object> listener);
     /**
      * 以回调方式发送RSF调用请求。
      * @param bindInfo 远程服务信息
@@ -115,5 +115,5 @@ public interface RsfClient {
      * @param parameterObjects 参数值
      * @param listener 回调监听器。
      */
-    public void doCallBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
+    public void callBackRequest(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener);
 }

@@ -146,7 +146,8 @@ public abstract class RsfCaller extends RsfRequestManager {
                 wrapperClass = this.wrapperMap.get(bindID);
                 if (wrapperClass == null) {
                     try {
-                        MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapper.class);
+                        ClassLoader loader = this.getContext().getClassLoader();
+                        MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapper.class, loader);
                         classConfig.addDelegate(interFace, new ServiceMethodDelegate(bindInfo));
                         wrapperClass = (Class<RsfServiceWrapper>) classConfig.toClass();
                         this.wrapperMap.put(bindID, wrapperClass);

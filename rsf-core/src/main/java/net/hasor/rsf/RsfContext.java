@@ -14,20 +14,40 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.net.URI;
 import java.util.List;
 import net.hasor.core.Provider;
+import net.hasor.rsf.address.InterAddress;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfContext {
-    /**停止工作*/
-    public void shutdown();
-    /** @return 获取RSF配置*/
-    public RsfSettings getSettings();
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
+    /** @return 发起远程调用的客户端接口*/
+    public RsfClient getRsfClient(String target);
+    /** @return 发起远程调用的客户端接口*/
+    public RsfClient getRsfClient(URI target);
+    /** @return 发起远程调用的客户端接口*/
+    public RsfClient getRsfClient(InterAddress target);
+    //
+    //
+    //
+    //
+    //
+    /**停止工作*/
+    public void shutdown();
+    /**获取RSF配置*/
+    public RsfSettings getSettings();
+    /**获取类加载器。*/
+    public ClassLoader getClassLoader();
+    //
+    //
+    //
+    //
+    //
     /**
      * 获取元信息所描述的服务对象
      * @param bindInfo 元信息所描述对象
