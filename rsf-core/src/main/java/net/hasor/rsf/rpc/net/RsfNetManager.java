@@ -23,17 +23,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import net.hasor.rsf.RsfEnvironment;
+import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.netty.RSFCodec;
-import net.hasor.rsf.utils.ExecutesManager;
 import net.hasor.rsf.utils.NameThreadFactory;
 /**
  * 维护RSF同其它RSF的连接，并提供数据投递和接收服务。
@@ -41,38 +43,31 @@ import net.hasor.rsf.utils.NameThreadFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfNetManager {
-    protected Logger                                      logger = LoggerFactory.getLogger(getClass());
-    private final int                                     connectTimeout;
-    private final ConcurrentMap<InterAddress, NetChannel> channelMapping;
-    private ExecutesManager                               executesManager;
-    private EventLoopGroup                                workLoopGroup;
-    private RpcEventListener                              listener;
+    protected Logger                                         logger = LoggerFactory.getLogger(getClass());
+    private final int                                        connectTimeout;
+    private final ConcurrentMap<InterAddress, RsfNetChannel> channelMapping;
+    private EventLoopGroup                                   workLoopGroup;
+    private ReceivedListener                          listener;
     //
-    public RsfNetManager(RsfEnvironment rsfEnvironment) {
-        RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        int queueSize = rsfSettings.getQueueMaxSize();
-        int minCorePoolSize = rsfSettings.getQueueMinPoolSize();
-        int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
-        long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
-        //
+    public RsfNetManager(AppContext appContext, ReceivedListener listener) {
+        RsfSettings rsfSettings = appContext.getInstance(RsfSettings.class);
         this.connectTimeout = rsfSettings.getConnectTimeout();
-        this.channelMapping = new ConcurrentHashMap<InterAddress, NetChannel>();
-        this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        this.channelMapping = new ConcurrentHashMap<InterAddress, RsfNetChannel>();
+        //
+        Hasor.addShutdownListener(appContext.getEnvironment(), new EventListener() {
+            public void onEvent(String event, Object[] params) throws Throwable {
+                logger.info("workLoopGroup, shutdownGracefully.");
+                workLoopGroup.shutdownGracefully();
+            }
+        });
         //
         int workerThread = rsfSettings.getNetworkWorker();
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         logger.info("nioEventLoopGroup, workerThread = " + workerThread);
     }
-    //
-    /**停止应用服务。*/
-    public void shutdown() {
-        this.executesManager.shutdown();
-        this.workLoopGroup.shutdownGracefully();
-    }
-    //
     /**建立或获取和远程的连接。*/
-    public NetChannel getChannel(InterAddress target) {
-        NetChannel client = this.channelMapping.get(target);
+    public RsfNetChannel getChannel(InterAddress target) {
+        RsfNetChannel client = this.channelMapping.get(target);
         if (client != null && client.isActive() == false) {
             this.channelMapping.remove(target);//conect is bad.
             client = null;
@@ -82,7 +77,7 @@ public class RsfNetManager {
         }
         /*同步调用不存在并发*/
         if ((client = connSocket(target)) != null) {
-            NetChannel oldChannel = this.channelMapping.put(target, client);
+            RsfNetChannel oldChannel = this.channelMapping.put(target, client);
             if (oldChannel != null && oldChannel != client) {
                 oldChannel.close();
             }
@@ -90,9 +85,16 @@ public class RsfNetManager {
         }
         return null;
     }
+    /**关闭连接释放资源。*/
+    public void closeChannel(InterAddress key) {
+        RsfNetChannel netChannel = this.channelMapping.remove(key);
+        if (netChannel != null) {
+            netChannel.close();
+        }
+    }
     //
     /*连接到远程机器*/
-    private synchronized NetChannel connSocket(final InterAddress hostAddress) {
+    private synchronized RsfNetChannel connSocket(final InterAddress hostAddress) {
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
         boot.channel(NioSocketChannel.class);
@@ -106,7 +108,7 @@ public class RsfNetManager {
         ChannelFuture future = null;
         SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getPort());
         logger.info("connect to {} ...", hostAddress);
-        future = boot.connect(remote);
+        future = boot.connect(remote).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);;
         try {
             future.await(this.connectTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -116,15 +118,11 @@ public class RsfNetManager {
         }
         if (future.isSuccess() == true) {
             logger.info("remote {} connected.", hostAddress);
-            return new NetChannel(future.channel());
+            return new RsfNetChannel(hostAddress, future.channel());
         }
         //
-        try {
-            logger.error("connect to {} failure , {}", hostAddress, future.cause());
-            future.channel().close().await();
-        } catch (InterruptedException e) {
-            logger.error("close connect({}) failure , {}", hostAddress, e.getMessage());
-        }
+        logger.error("connect to {} failure , {}", hostAddress, future.cause());
+        future.channel().close();
         return null;
     }
 }

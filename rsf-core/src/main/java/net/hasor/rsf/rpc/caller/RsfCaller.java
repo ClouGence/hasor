@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
+import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfService;
@@ -37,11 +37,14 @@ import net.hasor.rsf.domain.RsfServiceWrapper;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfCaller extends RsfRequestManager {
+public class RsfCaller extends RsfRequestManager {
     private final RsfBeanContainer container;
-    public RsfCaller(RsfBeanContainer container, RsfContext rsfContext) {
-        super(rsfContext);
-        this.container = container;
+    public RsfCaller(AppContext appContext, SendData sender) {
+        super(appContext, sender);
+        this.container = appContext.getInstance(RsfBeanContainer.class);
+        if (this.container == null) {
+            throw new NullPointerException("not found RsfBeanContainer.");
+        }
     }
     /**
      * 根据服务注册的类型，将远程服务提供者包装成该类型表示的一个接口代理。<br>

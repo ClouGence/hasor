@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -44,26 +45,33 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
 /**
- * 负责管理所有 RSF 发起的请求。
+ * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
     protected Logger                             logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentMap<Long, RsfFuture> rsfResponse;
+    private final RsfContext                     rsfContext;
     private final TimerManager                   timerManager;
     private final AtomicInteger                  requestCount;
-    private final RsfContext                     rsfContext;
     private final SerializeFactory               serializeFactory;
+    private final SendData                       sender;
     //
-    public RsfRequestManager(RsfContext rsfContext) {
-        RsfSettings rsfSettings = rsfContext.getSettings();
-        //
+    public RsfRequestManager(AppContext appContext, SendData sender) {
+        this.rsfContext = appContext.getInstance(RsfContext.class);
+        if (this.rsfContext == null) {
+            throw new NullPointerException("not found RsfContext.");
+        }
+        if (sender == null) {
+            throw new NullPointerException("not found SendData.");
+        }
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
+        RsfSettings rsfSettings = this.rsfContext.getSettings();
         this.timerManager = new TimerManager(rsfSettings.getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
-        this.rsfContext = rsfContext;
-        this.serializeFactory = SerializeFactory.createFactory(rsfContext.getSettings());
+        this.serializeFactory = SerializeFactory.createFactory(this.rsfContext.getSettings());
+        this.sender = sender;
     }
     /**获取RSF容器对象。*/
     public final RsfContext getContext() {
@@ -72,7 +80,9 @@ public abstract class RsfRequestManager {
     /**获取{@link RsfBeanContainer}。*/
     protected abstract RsfBeanContainer getContainer();
     /**发送数据包*/
-    protected abstract void sendData(Provider<InterAddress> target, RequestInfo info);
+    protected void sendData(Provider<InterAddress> target, RequestInfo info) {
+        this.sender.sendData(target, info);
+    };
     //
     /**
      * 获取正在进行中的调用请求。
@@ -203,10 +213,10 @@ public abstract class RsfRequestManager {
         return rsfFuture;
     }
     /**将请求发送到远端服务器。*/
-    private void sendRequest(RsfFuture rsfFuture) throws Throwable {
+    private void sendRequest(final RsfFuture rsfFuture) throws Throwable {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
-        Provider<InterAddress> target = rsfRequest.getTarget();
+        final Provider<InterAddress> target = rsfRequest.getTarget();
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
@@ -214,37 +224,16 @@ public abstract class RsfRequestManager {
             String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
             logger.warn(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
-                throw new RsfException(ProtocolStatus.ClientError, errorMessage);
+                throw new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage);
             } else {
                 try {
                     Thread.sleep(1000);/*SendLimitPolicy.WaitSecond*/
                 } catch (InterruptedException e) {/**/}
             }
         }
-        /*3.回调函数（错误处理）*/
-        //        FutureCallback<RsfResponse> sendErrorCallBack = new FutureCallback<RsfResponse>() {
-        //            @Override
-        //            public void cancelled() {
-        //                /*回应Response -> 用户取消*/
-        //                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] to cancelled by user.";
-        //                logger.error(errorMsg);
-        //                putResponse(rsfRequest.getRequestID(), new RsfException(ProtocolStatus.ClientError, errorMsg));
-        //            }
-        //            @Override
-        //            public void completed(RsfResponse response) {
-        //                /*OK*/
-        //                putResponse(response);
-        //            }
-        //            @Override
-        //            public void failed(Throwable e) {
-        //                String errorMsg = "send callback , request[" + rsfRequest.getRequestID() + "] error:" + e.getMessage();
-        //                logger.error(errorMsg, e);
-        //                putResponse(rsfRequest.getRequestID(), e);
-        //            }
-        //        };
-        /*4.发送请求*/
+        /*3.发送请求*/
         try {
-            this.startRequest(rsfFuture);//             <- 1.计时request。
+            startRequest(rsfFuture);//                  <- 1.计时request。
             RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
             sendData(target, info);//                   <- 3.发送数据
         } catch (Throwable e) {

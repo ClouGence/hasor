@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.rpc.net;
+import net.hasor.rsf.domain.RsfException;
 /**
- * 
- * @version : 2014年11月14日
+ * 发送数据到远端的回调函数。
+ * @version : 2015年12月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfTimeoutException extends RsfException {
-    private static final long serialVersionUID = -445430836145251422L;
-    //
-    public RsfTimeoutException(String string) {
-        super(ProtocolStatus.Timeout, string);
-    }
-    public RsfTimeoutException(Throwable e) {
-        super(ProtocolStatus.Timeout, e);
-    }
+public interface SendCallBack {
+    /**发送失败。*/
+    public void failed(long requestID, RsfException e);
+    /**发送成功。*/
+    public void complete(long requestID);
 }

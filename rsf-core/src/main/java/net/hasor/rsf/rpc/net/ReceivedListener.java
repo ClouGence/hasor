@@ -14,30 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import org.more.future.FutureCallback;
-import io.netty.channel.Channel;
-import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 
- * @version : 2015年12月8日
+ * @version : 2015年12月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NetChannel {
-    private Channel channel = null;
-    public NetChannel(Channel channel2) {
-        // TODO Auto-generated constructor stub
-    }
-    public void sendData(RequestInfo info, FutureCallback<RsfResponse> callBack) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    public boolean isActive() {
-        return this.channel.isActive();
-    }
-    public void close() {
-        this.channel.close().await();
-    }
+public interface ReceivedListener {
+    /**收到Response消息。*/
+    public void receivedMessage(ResponseInfo response);
+    /**收到Response消息。*/
+    public void receivedMessage(RequestInfo response);
 }

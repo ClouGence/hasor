@@ -23,29 +23,37 @@ package net.hasor.rsf.domain;
 public interface ProtocolStatus {
     /**未定义*/
     public static final short Unknown         = 0;
-    //-----------------------------------------------------
-    /**内容正确返回。*/
-    public static final short OK              = 200;
-    /**已经接受请求处理正在进行中。*/
-    public static final short Accepted        = 202;
-    //    //-----------------------------------------------------
-    //    /**试图调用受保护的服务。*/
-    //    Unauthorized(401, ""), //
-    /**服务资源不可用。*/
-    public static final short Forbidden       = 403;
-    //    /**找不到服务*/
-    //    NotFound(404, ""), //
-    /**超出客户端允许时间。*/
-    public static final short RequestTimeout  = 408;
-    //-----------------------------------------------------
-    /**调用服务执行出错，通常是遭到异常抛出。*/
-    public static final short InvokeError     = 500;
     /**不支持的协议版本。*/
     public static final short ProtocolUnknown = 505;
     /**协议编码解码错误。*/
     public static final short ProtocolError   = 505;
     /**序列化异常。*/
     public static final short SerializeError  = 511;
+    /**客户端错误。*/
+    public static final short NetworkError    = 600;
+    //
+    //-----------------------------------------------------Server(Response)
+    //
+    /**内容正确返回。*/
+    public static final short OK              = 200;
+    /**服务资源不可用。*/
+    public static final short Forbidden       = 403;
+    //-----------------------------------------------------Client(Request)
+    //
+    /**达到发送限制。*/
+    public static final short SendLimitPolicy = 408;
+    /**超出允许的时间。*/
+    public static final short Timeout         = 408;
+    //    /**已经接受请求处理正在进行中。*/
+    //    public static final short Accepted        = 202;
+    //    //-----------------------------------------------------
+    //    /**试图调用受保护的服务。*/
+    //    Unauthorized(401, ""), //
+    //    /**找不到服务*/
+    //    NotFound(404, ""), //
+    //-----------------------------------------------------
+    //    /**调用服务执行出错，通常是遭到异常抛出。*/
+    //    public static final short InvokeError     = 500;
     //    /**序列化类型未定义。*/
     //    SerializeForbidden(510, ""), //
     //    /**buildResponse错误。*/
@@ -55,6 +63,4 @@ public interface ProtocolStatus {
     //    /***/
     //    ResponseNullError(506, ""), //
     //-----------------------------------------------------
-    /**客户端错误。*/
-    public static final short ClientError     = 600;
 }

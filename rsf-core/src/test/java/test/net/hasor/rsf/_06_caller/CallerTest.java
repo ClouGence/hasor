@@ -20,10 +20,12 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.junit.Test;
 import org.more.future.FutureCallback;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.Settings;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
@@ -33,6 +35,7 @@ import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.plugins.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.RsfCaller;
+import net.hasor.rsf.rpc.caller.SendData;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -40,7 +43,12 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import test.net.hasor.rsf.services.EchoService;
 /**
+ * I5 Mac，测试结果，单机可以扛到QPS 15W+。
  * 
+ * [Thread-3] INFO: count:6507294 , QPS:151332 , RT:1
+ * [Thread-6] INFO: count:6810197 , QPS:154777 , RT:0
+ * [Thread-5] INFO: count:7038688 , QPS:156415 , RT:0
+ * [Thread-6] INFO: count:7304291 , QPS:158788 , RT:0
  * @version : 2015年12月9日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -64,99 +72,84 @@ public class CallerTest {
             e.printStackTrace();
         }
     }
+    private void runThread(final SerializeFactory factory, final RsfCaller caller, final Queue<RequestInfo> queue) {
+        new Thread() {
+            public void run() {
+                while (true)
+                    send(factory, caller, queue);
+            };
+        }.start();
+    }
+    //
+    //
+    //
     @Test
     public void callerTest() throws IOException, URISyntaxException, InterruptedException {
-        //准备环境
-        final Settings setting = new StandardContextSettings();//create Settings
-        final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
-        final SerializeFactory factory = SerializeFactory.createFactory(rsfSetting);
         final Queue<RequestInfo> queue = new LinkedBlockingQueue<RequestInfo>();
-        final RsfContext emptyRsfContext = new EmpytRsfContext() {
-            public RsfSettings getSettings() {
-                return rsfEnvironment.getSettings();
+        //
+        Module rsfModule = new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                final RsfSettings rsfSetting = new DefaultRsfSettings(apiBinder.getEnvironment().getSettings());//create RsfSettings
+                RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+                RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
+                RsfContext rsfContext = new EmpytRsfContext() {
+                    public RsfSettings getSettings() {
+                        return rsfSetting;
+                    }
+                };
+                //
+                apiBinder.bindType(RsfSettings.class).toInstance(rsfSetting);
+                apiBinder.bindType(RsfEnvironment.class).toInstance(rsfEnvironment);
+                apiBinder.bindType(RsfBeanContainer.class).toInstance(container);
+                apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
             }
         };
-        //创建Caller
-        final RsfCaller caller = new RsfCaller(container, emptyRsfContext) {
-            protected void sendData(Provider<InterAddress> target, final RequestInfo info) {
+        final AppContext appContext = Hasor.createAppContext(rsfModule);
+        //
+        //
+        //Caller
+        final RsfCaller caller = new RsfCaller(appContext, new SendData() {
+            public void sendData(Provider<InterAddress> target, RequestInfo info) {
                 queue.add(info);
             }
-        };
+        });
         //
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
-        new Thread() {
-            public void run() {
-                while (true) {
-                    send(factory, caller, queue);
-                }
-            };
-        }.start();
+        //Request -> Response，然后再写回Caller。
+        final SerializeFactory factory = SerializeFactory.createFactory(appContext.getInstance(RsfSettings.class));
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
+        runThread(factory, caller, queue);
         //
-        //注册服务
+        //RSF服务发布
+        RsfBeanContainer container = appContext.getInstance(RsfBeanContainer.class);
         container.createBinder().bindFilter("QpsMonitor", new QpsMonitor());
         final RsfBindInfo<?> bindInfo = container.createBinder().rsfService(EchoService.class).timeout(30000).register();
+        //
+        //调用服务
         final Provider<InterAddress> target = new InstanceProvider<InterAddress>(new InterAddress("200.100.25.123", 8000, "unit"));
         final Class<?>[] paramTypes = new Class<?>[] { String.class };
         final Class<?>[] paramObjects = new Class<?>[] { String.class };
-        //
-        //异步调用服务
-        //for (int i = 0; i < 10; i++) {
-        //String serviceID = bindInfo.getBindID();
-        //EchoService echo = (EchoService) caller.getRemoteByID(target, serviceID);
         FutureCallback<Object> callBack = new FutureCallback<Object>() {
-            @Override
             public void failed(Throwable ex) {
-                caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
+                System.out.println(ex.getClass() + ex.getMessage());
             }
-            @Override
             public void completed(Object arg0) {
                 caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
             }
-            @Override
             public void cancelled() {
-                // TODO Auto-generated method stub
+                caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
             }
         };
-        caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, callBack);
-        //}
+        for (int i = 0; i < 201; i++) {
+            //发起四次调用，然后让这四个球在RSF容器里弹来弹去。
+            caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, callBack);
+        }
         //
-        //System.out.println();
+        //
         Thread.sleep(240000);
     }
 }

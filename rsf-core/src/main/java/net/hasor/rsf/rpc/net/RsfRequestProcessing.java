@@ -25,9 +25,6 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.rpc.caller.RsfFilterHandler;
-import net.hasor.rsf.rpc.caller.RsfInvokeFilterChain;
-import net.hasor.rsf.rpc.caller.RsfResponseFormLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -37,13 +34,13 @@ import net.hasor.rsf.transform.protocol.ResponseBlock;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfProviderProcessing implements Runnable {
+class RsfRequestProcessing implements Runnable {
     protected Logger               logger = LoggerFactory.getLogger(getClass());
     private final RsfBeanContainer rsfBeanContainer;
     private final RequestInfo      requestInfo;
-    private final Channel          nettyChannel;
+    private final RsfNetChannel    nettyChannel;
     //
-    public RsfProviderProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
+    public RsfRequestProcessing(AbstractRsfContext rsfContext, RequestInfo requestInfo, Channel nettyChannel) {
         this.rsfContext = rsfContext;
         this.requestInfo = requestInfo;
         this.nettyChannel = nettyChannel;

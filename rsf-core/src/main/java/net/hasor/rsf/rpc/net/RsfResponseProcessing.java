@@ -30,13 +30,13 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @version : 2015年4月23日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfClientProcessing implements Runnable {
+class RsfResponseProcessing implements Runnable {
     protected Logger                logger = LoggerFactory.getLogger(getClass());
     private RsfFuture               rsfFuture;
     private ResponseInfo            responseInfo;
     private RsfRequestManager requestManager;
     //
-    public RsfClientProcessing(ResponseInfo responseInfo, RsfRequestManager requestManager, RsfFuture rsfFuture) {
+    public RsfResponseProcessing(ResponseInfo responseInfo, RsfRequestManager requestManager, RsfFuture rsfFuture) {
         this.requestManager = requestManager;
         this.rsfFuture = rsfFuture;
         this.responseInfo = responseInfo;

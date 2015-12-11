@@ -45,7 +45,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         //
         ResponseInfo info = new ResponseInfo();
         info.setRequestID(req.getRequestID());
-        info.setStatus(ProtocolStatus.Accepted);
+        info.setStatus(ProtocolStatus.OK);
         //
         ctx.channel().writeAndFlush(info).addListener(sendListener);
     }
