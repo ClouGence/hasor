@@ -16,6 +16,7 @@
 package net.hasor.rsf.transform.codec;
 import java.io.IOException;
 import java.util.List;
+import org.more.util.StringUtils;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.transform.protocol.PoolBlock;
@@ -86,12 +87,14 @@ public class ProtocolUtils {
         //
         //2.Opt参数
         int[] optionArray = rsfBlock.getOptions();
-        for (int optItem : optionArray) {
-            short optKey = (short) (optItem >>> 16);
-            short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
-            String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
-            String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
-            info.addOption(optKeyStr, optValStr);
+        if (optionArray.length > 0) {
+            for (int optItem : optionArray) {
+                short optKey = (short) (optItem >>> 16);
+                short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
+                String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
+                String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
+                info.addOption(optKeyStr, optValStr);
+            }
         }
         //
         //3.Request
@@ -107,15 +110,17 @@ public class ProtocolUtils {
         info.setClientTimeout(clientTimeout);
         //
         int[] paramDatas = rsfBlock.getParameters();
-        for (int i = 0; i < paramDatas.length; i++) {
-            int paramItem = paramDatas[i];
-            short paramKey = (short) (paramItem >>> 16);
-            short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
-            byte[] keyData = rsfBlock.readPool(paramKey);
-            byte[] valData = rsfBlock.readPool(paramVal);
-            //
-            String paramType = ByteStringCachelUtils.fromCache(keyData);
-            info.addParameter(paramType, valData);
+        if (paramDatas.length > 0) {
+            for (int i = 0; i < paramDatas.length; i++) {
+                int paramItem = paramDatas[i];
+                short paramKey = (short) (paramItem >>> 16);
+                short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
+                byte[] keyData = rsfBlock.readPool(paramKey);
+                byte[] valData = rsfBlock.readPool(paramVal);
+                //
+                String paramType = ByteStringCachelUtils.fromCache(keyData);
+                info.addParameter(paramType, valData);
+            }
         }
         //
         return info;
@@ -137,21 +142,25 @@ public class ProtocolUtils {
         //2.params
         List<String> pTypes = info.getParameterTypes();
         List<byte[]> pValues = info.getParameterValues();
-        for (int i = 0; i < pTypes.size(); i++) {
-            String typeKey = pTypes.get(i);
-            byte[] valKey = pValues.get(i);
-            //
-            short paramType = ProtocolUtils.pushString(block, typeKey);
-            short paramData = ProtocolUtils.pushBytes(block, valKey);
-            block.addParameter(paramType, paramData);
+        if ((pTypes != null && pTypes.isEmpty()) || (pValues != null && pValues.isEmpty())) {
+            for (int i = 0; i < pTypes.size(); i++) {
+                String typeKey = pTypes.get(i);
+                byte[] valKey = pValues.get(i);
+                //
+                short paramType = ProtocolUtils.pushString(block, typeKey);
+                short paramData = ProtocolUtils.pushBytes(block, valKey);
+                block.addParameter(paramType, paramData);
+            }
         }
         //
         //3.Opt参数
         String[] optKeys = info.getOptionKeys();
-        for (int i = 0; i < optKeys.length; i++) {
-            short optKey = ProtocolUtils.pushString(block, optKeys[i]);
-            short optVal = ProtocolUtils.pushString(block, info.getOption(optKeys[i]));
-            block.addOption(optKey, optVal);
+        if (optKeys.length > 0) {
+            for (int i = 0; i < optKeys.length; i++) {
+                short optKey = ProtocolUtils.pushString(block, optKeys[i]);
+                short optVal = ProtocolUtils.pushString(block, info.getOption(optKeys[i]));
+                block.addOption(optKey, optVal);
+            }
         }
         //
         return block;
@@ -260,5 +269,19 @@ public class ProtocolUtils {
     public static void wirteResponseBlock(byte rsfHead, ResponseBlock block, ByteBuf dataBuf) throws IOException {
         Protocol<ResponseBlock> protocol = getResponseProtocol(rsfHead);
         protocol.encode(block, dataBuf);
+    }
+    //
+    /**发送错误*/
+    public static ResponseBlock buildStatus(byte rsfHead, long requestID, short status, String message) {
+        ResponseBlock block = new ResponseBlock();
+        block.setHead(rsfHead);
+        block.setRequestID(requestID);
+        block.setStatus(status);
+        if (StringUtils.isNotBlank(message)) {
+            short optKey = ProtocolUtils.pushString(block, "message");
+            short optVal = ProtocolUtils.pushString(block, message);
+            block.addOption(optKey, optVal);
+        }
+        return block;
     }
 }

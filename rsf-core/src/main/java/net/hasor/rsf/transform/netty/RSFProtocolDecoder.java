@@ -57,7 +57,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         short status = this.doDecode(rsfHead, ctx, frame);//协议解析
         if (status != ProtocolStatus.OK) {
             frame = frame.resetReaderIndex().skipBytes(1);
-            this.fireProtocolError(ctx, rsfHead, frame.readLong(), status);
+            this.fireProtocolError(ctx, rsfHead, frame.readLong(), status, null);
         }
         return null;
     }
@@ -93,12 +93,8 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     }
     //
     /**发送错误 */
-    private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status) {
-        ResponseBlock block = new ResponseBlock();
-        block.setHead(RSFConstants.RSF_Response);
-        block.setRequestID(requestID);
-        block.setStatus(status);
-        block.setSerializeType(block.pushData(null));
+    private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status, String message) {
+        ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, status, message);
         ctx.pipeline().writeAndFlush(block);
     }
 }

@@ -17,7 +17,7 @@ package test.net.hasor.rsf._06_caller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.junit.Test;
 import org.more.future.FutureCallback;
 import net.hasor.core.ApiBinder;
@@ -35,57 +35,58 @@ import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.plugins.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.RsfCaller;
-import net.hasor.rsf.rpc.caller.SendData;
+import net.hasor.rsf.rpc.caller.SenderListener;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import test.net.hasor.rsf.services.EchoService;
 /**
- * I5 Mac，测试结果，单机可以扛到QPS 15W+。
+ * 请求发出。
  * 
- * [Thread-3] INFO: count:6507294 , QPS:151332 , RT:1
- * [Thread-6] INFO: count:6810197 , QPS:154777 , RT:0
- * [Thread-5] INFO: count:7038688 , QPS:156415 , RT:0
- * [Thread-6] INFO: count:7304291 , QPS:158788 , RT:0
+ * I5 Mac，4C，16G。
+ * 经过简单参数调优，从调用发起到产生远程Request，单机可以轻松扛到 20W+ QPS。
+ *  －QPS低下，主要性能压力在阻塞队列上，测试程序使用的是阻塞队列做为RequestInfo的承载容器。
+ * 
+ * [Thread-5] INFO: count:47922010 , QPS:204794 , RT:1
+ * [Thread-7] INFO: count:47922010 , QPS:204794 , RT:1
+ * [Thread-6] INFO: count:48305234 , QPS:205554 , RT:1
+ * [Thread-5] INFO: count:48678670 , QPS:206265 , RT:1
+ * [Thread-7] INFO: count:49039199 , QPS:206916 , RT:1
+ * [Thread-7] INFO: count:49500111 , QPS:207983 , RT:1
+ * [Thread-5] INFO: count:49500111 , QPS:207983 , RT:1
+ * [Thread-7] INFO: count:49696668 , QPS:203674 , RT:0
  * @version : 2015年12月9日
  * @author 赵永春(zyc@hasor.net)
  */
 public class CallerTest {
-    private void send(SerializeFactory factory, final RsfCaller caller, Queue<RequestInfo> queue) {
-        try {
-            RequestInfo info = queue.poll();
-            if (info == null) {
-                return;
-            }
-            byte[] inParam = info.getParameterValues().get(0);
-            //
-            ResponseInfo responseInfo = new ResponseInfo();
-            responseInfo.setReceiveTime(System.currentTimeMillis());
-            responseInfo.setRequestID(info.getRequestID());
-            responseInfo.setStatus(ProtocolStatus.OK);
-            responseInfo.setReturnData(inParam);
-            responseInfo.setSerializeType(info.getSerializeType());
-            caller.putResponse(responseInfo);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-    private void runThread(final SerializeFactory factory, final RsfCaller caller, final Queue<RequestInfo> queue) {
+    private void runThread(final RsfCaller caller, final Queue<RequestInfo> queue) {
         new Thread() {
             public void run() {
-                while (true)
-                    send(factory, caller, queue);
+                ResponseInfo responseInfo = null;
+                while (true) {
+                    RequestInfo info = queue.poll();
+                    if (info == null) {
+                        continue;
+                    }
+                    if (responseInfo == null) {
+                        responseInfo = new ResponseInfo();
+                        responseInfo.setStatus(ProtocolStatus.OK);
+                        responseInfo.setReturnData(info.getParameterValues().get(0));
+                        responseInfo.setSerializeType(info.getSerializeType());
+                    }
+                    //
+                    responseInfo.setReceiveTime(System.currentTimeMillis());
+                    responseInfo.setRequestID(info.getRequestID());
+                    caller.putResponse(responseInfo);
+                }
             };
         }.start();
     }
     //
-    //
-    //
     @Test
     public void callerTest() throws IOException, URISyntaxException, InterruptedException {
-        final Queue<RequestInfo> queue = new LinkedBlockingQueue<RequestInfo>();
+        final Queue<RequestInfo> queue = new ConcurrentLinkedQueue<RequestInfo>();
         //
         Module rsfModule = new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
@@ -108,21 +109,16 @@ public class CallerTest {
         //
         //
         //Caller
-        final RsfCaller caller = new RsfCaller(appContext, new SendData() {
-            public void sendData(Provider<InterAddress> target, RequestInfo info) {
+        final RsfCaller caller = new RsfCaller(appContext, new SenderListener() {
+            public void sendRequest(Provider<InterAddress> target, RequestInfo info) {
                 queue.add(info);
             }
         });
         //
         //Request -> Response，然后再写回Caller。
-        final SerializeFactory factory = SerializeFactory.createFactory(appContext.getInstance(RsfSettings.class));
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
-        runThread(factory, caller, queue);
+        for (int i = 0; i < 4; i++) {
+            runThread(caller, queue);
+        }
         //
         //RSF服务发布
         RsfBeanContainer container = appContext.getInstance(RsfBeanContainer.class);
@@ -144,7 +140,7 @@ public class CallerTest {
                 caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
             }
         };
-        for (int i = 0; i < 201; i++) {
+        for (int i = 0; i < 400; i++) {
             //发起四次调用，然后让这四个球在RSF容器里弹来弹去。
             caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, callBack);
         }

@@ -118,10 +118,10 @@ public class RequestInfo extends OptionInfo {
     }
     /**获取请求参数类型列表。*/
     public List<String> getParameterTypes() {
-        return new ArrayList<String>(this.paramTypes);
+        return this.paramTypes;
     }
     /**获取请求参数值列表。*/
     public List<byte[]> getParameterValues() {
-        return new ArrayList<byte[]>(this.paramValues);
+        return this.paramValues;
     }
 }

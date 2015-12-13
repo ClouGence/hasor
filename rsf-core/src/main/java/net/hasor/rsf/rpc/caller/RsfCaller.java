@@ -39,8 +39,8 @@ import net.hasor.rsf.domain.RsfServiceWrapper;
  */
 public class RsfCaller extends RsfRequestManager {
     private final RsfBeanContainer container;
-    public RsfCaller(AppContext appContext, SendData sender) {
-        super(appContext, sender);
+    public RsfCaller(AppContext appContext, SenderListener senderListener) {
+        super(appContext, senderListener);
         this.container = appContext.getInstance(RsfBeanContainer.class);
         if (this.container == null) {
             throw new NullPointerException("not found RsfBeanContainer.");
@@ -259,7 +259,7 @@ public class RsfCaller extends RsfRequestManager {
     }
     //
     @Override
-    protected RsfBeanContainer getContainer() {
+    public RsfBeanContainer getContainer() {
         return this.container;
     }
 }

@@ -56,14 +56,14 @@ public abstract class RsfRequestManager {
     private final TimerManager                   timerManager;
     private final AtomicInteger                  requestCount;
     private final SerializeFactory               serializeFactory;
-    private final SendData                       sender;
+    private final SenderListener                 senderListener;
     //
-    public RsfRequestManager(AppContext appContext, SendData sender) {
+    public RsfRequestManager(AppContext appContext, SenderListener senderListener) {
         this.rsfContext = appContext.getInstance(RsfContext.class);
         if (this.rsfContext == null) {
             throw new NullPointerException("not found RsfContext.");
         }
-        if (sender == null) {
+        if (senderListener == null) {
             throw new NullPointerException("not found SendData.");
         }
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
@@ -71,18 +71,18 @@ public abstract class RsfRequestManager {
         this.timerManager = new TimerManager(rsfSettings.getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
         this.serializeFactory = SerializeFactory.createFactory(this.rsfContext.getSettings());
-        this.sender = sender;
+        this.senderListener = senderListener;
     }
     /**获取RSF容器对象。*/
     public final RsfContext getContext() {
         return this.rsfContext;
     }
     /**获取{@link RsfBeanContainer}。*/
-    protected abstract RsfBeanContainer getContainer();
+    public abstract RsfBeanContainer getContainer();
     /**发送数据包*/
     protected void sendData(Provider<InterAddress> target, RequestInfo info) {
-        this.sender.sendData(target, info);
-    };
+        this.senderListener.sendRequest(target, info);
+    }
     //
     /**
      * 获取正在进行中的调用请求。
@@ -100,7 +100,7 @@ public abstract class RsfRequestManager {
         long requestID = info.getRequestID();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture == null) {
-            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
+            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
             return false;
         }
         //
@@ -108,7 +108,7 @@ public abstract class RsfRequestManager {
         RsfResponseFormLocal local = new RsfResponseFormLocal(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
-        //        logger.info("received response({}) status = {}", requestID, info.getStatus());
+        logger.debug("received message for requestID({}) -> status is {}", requestID, info.getStatus());
         try {
             SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
             byte[] returnDataData = info.getReturnData();
@@ -116,7 +116,7 @@ public abstract class RsfRequestManager {
             local.sendData(returnObject);
             return rsfFuture.completed(local);
         } catch (Throwable e) {
-            logger.error("recovery form Socket > " + e.getMessage(), e);
+            logger.error("decode response for requestID(" + requestID + ") error ->" + e.getMessage(), e);
             return rsfFuture.failed(e);
         }
     }
@@ -128,10 +128,10 @@ public abstract class RsfRequestManager {
         long requestID = response.getRequestID();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.debug("received response({}) status = {}", requestID, response.getStatus());
+            logger.debug("received message for requestID({}) -> status is {}", requestID, response.getStatus());
             return rsfFuture.completed(response);
         } else {
-            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
+            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
             return false;
         }
     }
@@ -143,10 +143,10 @@ public abstract class RsfRequestManager {
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.error("received error ,requestID({}) status = {}", requestID, e.getMessage());
+            logger.error("received message for requestID(" + requestID + ") -> error:" + e.getMessage(), e);
             rsfFuture.failed(e);
         } else {
-            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", requestID);
+            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
         }
     }
     private RsfFuture removeRsfFuture(long requestID) {
@@ -171,8 +171,8 @@ public abstract class RsfRequestManager {
                 if (rsfCallBack == null)
                     return;
                 /*异常信息*/
-                String errorInfo = "send request timeout, the maximum client Settings is " + request.getTimeout();
-                logger.warn(errorInfo);
+                String errorInfo = "request(" + request.getRequestID() + ") timeout for client.";
+                logger.error(errorInfo);
                 /*回应Response*/
                 putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
@@ -237,7 +237,7 @@ public abstract class RsfRequestManager {
             RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
             sendData(target, info);//                   <- 3.发送数据
         } catch (Throwable e) {
-            logger.error("request[" + rsfRequest.getRequestID() + "] send error, " + e.getMessage(), e);
+            logger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
         }
     }

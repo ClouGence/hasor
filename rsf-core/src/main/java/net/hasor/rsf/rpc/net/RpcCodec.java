@@ -24,6 +24,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.caller.RsfRequestManager;
+import net.hasor.rsf.rpc.caller.remote.RemoteRsfCallerProcessing;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**

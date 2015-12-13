@@ -38,6 +38,10 @@ public interface ProtocolStatus {
     public static final short OK              = 200;
     /**服务资源不可用。*/
     public static final short Forbidden       = 403;
+    /**服务资源不可用。*/
+    public static final short QueueFull       = 403;
+    /**RSF服务端内部错误。*/
+    public static final short ServerError     = 403;
     //-----------------------------------------------------Client(Request)
     //
     /**达到发送限制。*/

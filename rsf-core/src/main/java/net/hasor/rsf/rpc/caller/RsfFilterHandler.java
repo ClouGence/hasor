@@ -24,7 +24,7 @@ import net.hasor.rsf.RsfResponse;
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfFilterHandler implements RsfFilterChain {
+public class RsfFilterHandler implements RsfFilterChain {
     private static final Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
     private final Provider<RsfFilter>[]        rsfFilter;
     private final RsfFilterChain               rsfChain;

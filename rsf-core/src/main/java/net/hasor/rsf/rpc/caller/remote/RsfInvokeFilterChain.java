@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller;
+package net.hasor.rsf.rpc.caller.remote;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
@@ -37,7 +37,7 @@ class RsfInvokeFilterChain implements RsfFilterChain {
         Object targetObj = request.getContext().getBean(bindInfo);
         //
         if (targetObj == null) {
-            response.sendStatus(ProtocolStatus.Forbidden, "failed to get service.");
+            response.sendStatus(ProtocolStatus.Forbidden, "service " + bindInfo.getBindID() + " not exist.");
             return;
         }
         //

@@ -22,7 +22,7 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SendData {
-    /**将数据从本地发送到远端。*/
-    public void sendData(Provider<InterAddress> target, RequestInfo info);
+public interface SenderListener {
+    /**向远端发送请求。*/
+    public void sendRequest(Provider<InterAddress> target, RequestInfo info);
 }
