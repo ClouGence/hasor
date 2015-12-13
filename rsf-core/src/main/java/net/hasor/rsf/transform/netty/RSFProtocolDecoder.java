@@ -89,7 +89,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
                 return ProtocolStatus.ProtocolError;
             }
         }
-        return ProtocolStatus.ProtocolUnknown;
+        return ProtocolStatus.ProtocolUndefined;
     }
     //
     /**发送错误 */

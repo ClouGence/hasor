@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.caller.remote;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
@@ -34,9 +35,10 @@ class RsfInvokeFilterChain implements RsfFilterChain {
         if (response.isResponse() == true)
             return;
         RsfBindInfo<?> bindInfo = request.getBindInfo();
-        Object targetObj = request.getContext().getBean(bindInfo);
+        Provider<?> targetProvider = request.getContext().getServiceProvider(bindInfo);
+        Object target = targetProvider == null ? null : targetProvider.get();
         //
-        if (targetObj == null) {
+        if (target == null) {
             response.sendStatus(ProtocolStatus.Forbidden, "service " + bindInfo.getBindID() + " not exist.");
             return;
         }
@@ -44,7 +46,7 @@ class RsfInvokeFilterChain implements RsfFilterChain {
         try {
             Method method = request.getMethod();
             Object[] pObjects = request.getParameterObject();
-            Object resData = method.invoke(targetObj, pObjects);
+            Object resData = method.invoke(target, pObjects);
             response.sendData(resData);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();

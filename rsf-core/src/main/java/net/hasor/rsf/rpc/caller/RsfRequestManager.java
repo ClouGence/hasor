@@ -45,7 +45,7 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
 /**
- * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置。
+ * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置.
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -80,7 +80,7 @@ public abstract class RsfRequestManager {
     /**获取{@link RsfBeanContainer}。*/
     public abstract RsfBeanContainer getContainer();
     /**发送数据包*/
-    protected void sendData(Provider<InterAddress> target, RequestInfo info) {
+    private void sendData(Provider<InterAddress> target, RequestInfo info) {
         this.senderListener.sendRequest(target, info);
     }
     //
@@ -98,6 +98,7 @@ public abstract class RsfRequestManager {
      */
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
+        String serializeType = info.getSerializeType();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture == null) {
             logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
@@ -105,18 +106,19 @@ public abstract class RsfRequestManager {
         }
         //
         RsfRequest rsfRequest = rsfFuture.getRequest();
-        RsfResponseFormLocal local = new RsfResponseFormLocal(rsfRequest);
+        RsfResponseObject local = new RsfResponseObject(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
         logger.debug("received message for requestID({}) -> status is {}", requestID, info.getStatus());
         try {
-            SerializeCoder coder = serializeFactory.getSerializeCoder(info.getSerializeType());
+            SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
             byte[] returnDataData = info.getReturnData();
             Object returnObject = coder.decode(returnDataData);
             local.sendData(returnObject);
             return rsfFuture.completed(local);
         } catch (Throwable e) {
-            logger.error("decode response for requestID(" + requestID + ") error ->" + e.getMessage(), e);
+            String errorInfo = "decode response(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
+            logger.error(errorInfo, e);
             return rsfFuture.failed(e);
         }
     }
@@ -191,8 +193,9 @@ public abstract class RsfRequestManager {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
         //
         try {
+            rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
             Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
-            RsfResponseFormLocal res = new RsfResponseFormLocal(rsfRequest);
+            RsfResponseObject res = new RsfResponseObject(rsfRequest);
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {

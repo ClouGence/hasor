@@ -18,8 +18,10 @@ import java.net.URI;
 import java.util.List;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -29,26 +31,22 @@ import net.hasor.rsf.address.InterAddress;
  */
 public class EmpytRsfContext implements RsfContext {
     @Override
-    public void shutdown() {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public RsfSettings getSettings() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
     public RsfClient getRsfClient() {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
-    public <T> T getBean(RsfBindInfo<T> bindInfo) {
+    public RsfClient getRsfClient(String target) {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
-    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
+    public RsfClient getRsfClient(URI target) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public RsfClient getRsfClient(InterAddress target) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -73,22 +71,31 @@ public class EmpytRsfContext implements RsfContext {
         return null;
     }
     @Override
-    public RsfClient getRsfClient(String target) {
+    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
-    public RsfClient getRsfClient(URI target) {
+    public void shutdown() {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public RsfSettings getSettings() {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
-    public RsfClient getRsfClient(InterAddress target) {
+    public RsfEnvironment getEnvironment() {
         // TODO Auto-generated method stub
         return null;
     }
     @Override
     public ClassLoader getClassLoader() {
         return Thread.currentThread().getContextClassLoader();
+    }
+    @Override
+    public RsfBinder binder() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

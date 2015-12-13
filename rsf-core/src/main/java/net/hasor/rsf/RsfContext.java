@@ -34,32 +34,6 @@ public interface RsfContext {
     public RsfClient getRsfClient(InterAddress target);
     //
     //
-    //
-    //
-    //
-    /**停止工作*/
-    public void shutdown();
-    /**获取RSF配置*/
-    public RsfSettings getSettings();
-    /**获取类加载器。*/
-    public ClassLoader getClassLoader();
-    //
-    //
-    //
-    //
-    //
-    /**
-     * 获取元信息所描述的服务对象
-     * @param bindInfo 元信息所描述对象
-     * @return 服务对象
-     */
-    public <T> T getBean(RsfBindInfo<T> bindInfo);
-    /**
-     * 获取元信息所描述的服务对象
-     * @param bindInfo 元信息所描述对象
-     * @return 服务对象
-     */
-    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID);
     /**根据服务名获取服务描述。*/
@@ -68,4 +42,23 @@ public interface RsfContext {
     public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
     public List<String> getServiceIDs();
+    //
+    //
+    /**
+     * 获取元信息所描述的服务对象
+     * @param bindInfo 元信息所描述对象
+     */
+    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
+    //
+    //
+    /**停止工作*/
+    public void shutdown();
+    /**获取RSF配置*/
+    public RsfSettings getSettings();
+    /**获取RSF配置*/
+    public RsfEnvironment getEnvironment();
+    /**获取类加载器。*/
+    public ClassLoader getClassLoader();
+    /**创建{@link RsfBinder}。*/
+    public RsfBinder binder();
 }

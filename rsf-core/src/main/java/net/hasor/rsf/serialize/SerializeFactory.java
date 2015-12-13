@@ -28,7 +28,7 @@ import net.hasor.rsf.domain.RsfException;
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SerializeFactory {
+public class SerializeFactory implements SerializeList {
     protected static Logger             logger   = LoggerFactory.getLogger(SerializeFactory.class);
     private Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
     //

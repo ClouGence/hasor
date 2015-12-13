@@ -22,49 +22,40 @@ package net.hasor.rsf.domain;
  */
 public interface ProtocolStatus {
     /**未定义*/
-    public static final short Unknown         = 0;
+    public static final short Unknown            = 0;
     /**不支持的协议版本。*/
-    public static final short ProtocolUnknown = 505;
+    public static final short ProtocolUndefined  = 505;
     /**协议编码解码错误。*/
-    public static final short ProtocolError   = 505;
+    public static final short ProtocolError      = 505;
     /**序列化异常。*/
-    public static final short SerializeError  = 511;
+    public static final short SerializeError     = 511;
+    /**序列化类型未定义。*/
+    public static final short SerializeForbidden = 210;
     /**客户端错误。*/
-    public static final short NetworkError    = 600;
+    public static final short NetworkError       = 600;
     //
     //-----------------------------------------------------Server(Response)
     //
     /**内容正确返回。*/
-    public static final short OK              = 200;
+    public static final short OK                 = 200;
     /**服务资源不可用。*/
-    public static final short Forbidden       = 403;
+    public static final short Forbidden          = 403;
     /**服务资源不可用。*/
-    public static final short QueueFull       = 403;
-    /**RSF服务端内部错误。*/
-    public static final short ServerError     = 403;
+    public static final short QueueFull          = 403;
+    /**调用服务执行出错，通常是遭到异常抛出。*/
+    public static final short InvokeError        = 500;
     //-----------------------------------------------------Client(Request)
     //
     /**达到发送限制。*/
-    public static final short SendLimitPolicy = 408;
+    public static final short SendLimitPolicy    = 408;
     /**超出允许的时间。*/
-    public static final short Timeout         = 408;
-    //    /**已经接受请求处理正在进行中。*/
-    //    public static final short Accepted        = 202;
-    //    //-----------------------------------------------------
+    public static final short Timeout            = 408;
+    //
+    //
+    //
     //    /**试图调用受保护的服务。*/
     //    Unauthorized(401, ""), //
     //    /**找不到服务*/
     //    NotFound(404, ""), //
-    //-----------------------------------------------------
-    //    /**调用服务执行出错，通常是遭到异常抛出。*/
-    //    public static final short InvokeError     = 500;
-    //    /**序列化类型未定义。*/
-    //    SerializeForbidden(510, ""), //
-    //    /**buildResponse错误。*/
-    //    BuildResponse(504, ""), //
-    //    /***/
-    //    BuildSocketBlock(505, ""), //
-    //    /***/
-    //    ResponseNullError(506, ""), //
     //-----------------------------------------------------
 }

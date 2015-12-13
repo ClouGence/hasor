@@ -27,20 +27,20 @@ import net.hasor.rsf.transform.protocol.OptionInfo;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
-    protected Logger   logger       = LoggerFactory.getLogger(getClass());
-    private RsfRequest rsfRequest;
-    private short      status       = ProtocolStatus.Unknown;
-    private Object     returnObject = null;
-    private boolean    committed    = false;
+public class RsfResponseObject extends OptionInfo implements RsfResponse {
+    protected Logger         logger       = LoggerFactory.getLogger(getClass());
+    private final RsfRequest rsfRequest;
+    private short            status       = ProtocolStatus.Unknown;
+    private Object           returnObject = null;
+    private boolean          committed    = false;
     //
-    public RsfResponseFormLocal(RsfRequest rsfRequest) {
+    public RsfResponseObject(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;
     }
     //
     @Override
     public String toString() {
-        return "responseID:" + this.getRequestID() + " from Local," + this.getBindInfo();
+        return "responseID:" + this.getRequestID() + " from Setvice " + this.getBindInfo();
     }
     @Override
     public RsfBindInfo<?> getBindInfo() {
@@ -52,7 +52,7 @@ public class RsfResponseFormLocal extends OptionInfo implements RsfResponse {
     }
     @Override
     public String getSerializeType() {
-        return this.rsfRequest.getSerializeType();
+        return this.rsfRequest.getBindInfo().getSerializeType();
     }
     @Override
     public Object getData() {

@@ -44,18 +44,17 @@ import test.net.hasor.rsf.services.EchoService;
 /**
  * 请求发出。
  * 
- * I5 Mac，4C，16G。
- * 经过简单参数调优，从调用发起到产生远程Request，单机可以轻松扛到 20W+ QPS。
+ * I5 Mac，2C，16G。
+ * 使用阻塞队列。经过参数调优，从调用发起到产生RequestInfo，单机可以轻松扛到 14W+ QPS。
  *  －QPS低下，主要性能压力在阻塞队列上，测试程序使用的是阻塞队列做为RequestInfo的承载容器。
+ *  －OptionInfo.addOptionMap，也很消耗性能。
  * 
- * [Thread-5] INFO: count:47922010 , QPS:204794 , RT:1
- * [Thread-7] INFO: count:47922010 , QPS:204794 , RT:1
- * [Thread-6] INFO: count:48305234 , QPS:205554 , RT:1
- * [Thread-5] INFO: count:48678670 , QPS:206265 , RT:1
- * [Thread-7] INFO: count:49039199 , QPS:206916 , RT:1
- * [Thread-7] INFO: count:49500111 , QPS:207983 , RT:1
- * [Thread-5] INFO: count:49500111 , QPS:207983 , RT:1
- * [Thread-7] INFO: count:49696668 , QPS:203674 , RT:0
+ * [Thread-7] INFO: count:16040540 , QPS:141951 , RT:0
+ * [Thread-4] INFO: count:16480764 , QPS:144568 , RT:1
+ * [Thread-7] INFO: count:16480764 , QPS:144568 , RT:1
+ * [Thread-4] INFO: count:16894816 , QPS:146911 , RT:1
+ * [Thread-5] INFO: count:16930141 , QPS:141084 , RT:0
+ * [Thread-6] INFO: count:16930141 , QPS:141084 , RT:0
  * @version : 2015年12月9日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -140,7 +139,7 @@ public class CallerTest {
                 caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, this);
             }
         };
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 208; i++) {
             //发起四次调用，然后让这四个球在RSF容器里弹来弹去。
             caller.callBackInvoke(target, bindInfo, "sayHello", paramTypes, paramObjects, callBack);
         }

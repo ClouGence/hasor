@@ -24,6 +24,7 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.rpc.caller.RsfCaller;
+import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
@@ -36,10 +37,16 @@ import net.hasor.rsf.utils.ExecutesManager;
  */
 public class RemoteRsfCaller extends RsfCaller {
     private final ExecutesManager      executesManager;
+    private final SerializeList        serializeList;
     private final RemoteSenderListener senderListener;
     //
     public RemoteRsfCaller(AppContext appContext, RemoteSenderListener senderListener) {
         super(appContext, senderListener);
+        //
+        this.serializeList = appContext.getInstance(SerializeList.class);
+        if (this.serializeList == null) {
+            throw new NullPointerException("not found SerializeList.");
+        }
         //
         this.senderListener = senderListener;
         RsfSettings rsfSettings = this.getContext().getSettings();
@@ -59,12 +66,16 @@ public class RemoteRsfCaller extends RsfCaller {
     RemoteSenderListener getSenderListener() {
         return this.senderListener;
     }
+    /**获取序列化名单*/
+    SerializeList getSerializeList() {
+        return this.serializeList;
+    }
     /**
      * 收到Request请求，并将该请求安排进队列，由队列安排方法调用。
      * @param target 目标调用地址。
      * @param info 请求消息。
      */
-    public void receivedRequest(InterAddress target, RequestInfo info) {
+    public void receivedRequestInfo(InterAddress target, RequestInfo info) {
         try {
             logger.debug("received request({}) full = {}", info.getRequestID());
             String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
@@ -74,11 +85,6 @@ public class RemoteRsfCaller extends RsfCaller {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
-            this.senderListener.receiveResponse(target, block);
-        } catch (Throwable e) {
-            String msgLog = "put calling task error ->" + e.getMessage();
-            logger.error(msgLog, e);
-            ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.ServerError, msgLog);
             this.senderListener.receiveResponse(target, block);
         }
     }

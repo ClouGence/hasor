@@ -27,7 +27,7 @@ import net.hasor.rsf.transform.protocol.OptionInfo;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
+class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     private final RsfCaller              rsfCaller;
     private final Provider<InterAddress> target;
     private final long                   requestID;
