@@ -143,7 +143,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             //
             this.sendResponse(rsfResponse, serializeList);//将Response写入客户端。
         } catch (Throwable e) {
-            String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + " not exist.";
+            String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + "," + e.getMessage();
             logger.error(msgLog);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, msgLog);
             this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
