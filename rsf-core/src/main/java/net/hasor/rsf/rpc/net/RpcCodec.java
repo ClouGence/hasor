@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import java.util.concurrent.Executor;
-import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.rpc.caller.RsfRequestManager;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
@@ -40,61 +34,23 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        Channel channel = ctx.channel();
-        netChannel.closeChannel(channel, cause);
+        logger.info("exception close channel.");
+        ctx.pipeline().channel().close();
+        super.exceptionCaught(ctx, cause);
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
-        netChannel.closeChannel(channel, null);
+        logger.info("in active close channel.");
+        ctx.pipeline().channel().close();
+        super.channelInactive(ctx);
     }
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {}
-    //    protected ResponseInfo buildStatus(RequestInfo requestInfo, int status, String message) {
-    //        ResponseInfo info = new ResponseInfo();
-    //        RsfOptionSet optMap = this.get.rsfContext.getSettings().getServerOption();
-    //        info.addOptionMap(optMap);
-    //        info.setRequestID(requestInfo.getRequestID());
-    //        info.setStatus(ProtocolStatus.Accepted);
-    //        if (StringUtils.isNotBlank(message)) {
-    //            info.addOption("message", message);
-    //        }
-    //        return info;
-    //    }
-    //
-    public void channelRead(ChannelHandlerContext ctx, ResponseInfo info) throws Exception {
-        logger.debug("received response({}) full = {}", info.getRequestID(), info);
-        //
-        rpcEventListener.completed(info);
-        RsfRequestManager requestManager = this.rsfContext.getRequestManager();
-        RsfFuture rsfFuture = requestManager.getRequest(info.getRequestID());
-        if (rsfFuture == null) {
-            logger.warn("give up the response,requestID({}) ,maybe because timeout! ", info.getRequestID());
-            return;//或许它已经超时了。
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof RequestInfo) {
+            this.rpcEventListener.receivedMessage((RequestInfo) msg);
         }
-        logger.debug("doResponse.");
-        new RsfResponseProcessing(info, requestManager, rsfFuture).run();
-    }
-    public void channelRead(ChannelHandlerContext ctx, RequestInfo info) {
-        //创建request、response
-        ResponseInfo readyWrite = null;
-        //
-        try {
-            logger.debug("received request({}) full = {}", info.getRequestID());
-            String serviceUniqueName = info.getServiceName();
-            Executor exe = this.rsfContext.getCallExecute(serviceUniqueName);
-            Channel nettyChannel = ctx.channel();
-            exe.execute(new RsfRequestProcessing(this.rsfContext, info, nettyChannel));//放入业务线程准备执行
-            //
-            readyWrite = buildStatus(info, ProtocolStatus.Accepted, null);
-        } catch (RejectedExecutionException e) {
-            logger.warn("task pool is full ->RejectedExecutionException.");
-            readyWrite = buildStatus(info, ProtocolStatus.ChooseOther, e.getMessage());
-        } catch (Throwable e) {
-            logger.error("processing error ->" + e.getMessage(), e);
-            readyWrite = buildStatus(info, ProtocolStatus.InvokeError, e.getMessage());
+        if (msg instanceof ResponseInfo) {
+            this.rpcEventListener.receivedMessage((ResponseInfo) msg);
         }
-        //
-        ctx.pipeline().writeAndFlush(readyWrite);
     }
 }

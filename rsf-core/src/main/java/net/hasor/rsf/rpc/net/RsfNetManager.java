@@ -30,9 +30,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.netty.RSFCodec;
@@ -44,17 +44,19 @@ import net.hasor.rsf.utils.NameThreadFactory;
  */
 public class RsfNetManager {
     protected Logger                                         logger = LoggerFactory.getLogger(getClass());
+    private final RsfEnvironment                             rsfEnvironment;
     private final int                                        connectTimeout;
     private final ConcurrentMap<InterAddress, RsfNetChannel> channelMapping;
     private EventLoopGroup                                   workLoopGroup;
-    private ReceivedListener                          listener;
+    private ReceivedListener                                 listener;
     //
-    public RsfNetManager(AppContext appContext, ReceivedListener listener) {
-        RsfSettings rsfSettings = appContext.getInstance(RsfSettings.class);
+    public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener listener) {
+        this.rsfEnvironment = rsfEnvironment;
+        RsfSettings rsfSettings = rsfEnvironment.getSettings();
         this.connectTimeout = rsfSettings.getConnectTimeout();
         this.channelMapping = new ConcurrentHashMap<InterAddress, RsfNetChannel>();
         //
-        Hasor.addShutdownListener(appContext.getEnvironment(), new EventListener() {
+        Hasor.addShutdownListener(rsfEnvironment, new EventListener() {
             public void onEvent(String event, Object[] params) throws Throwable {
                 logger.info("workLoopGroup, shutdownGracefully.");
                 workLoopGroup.shutdownGracefully();
@@ -64,6 +66,15 @@ public class RsfNetManager {
         int workerThread = rsfSettings.getNetworkWorker();
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         logger.info("nioEventLoopGroup, workerThread = " + workerThread);
+    }
+    protected RsfEnvironment getRsfEnvironment() {
+        return rsfEnvironment;
+    }
+    protected EventLoopGroup getWorkLoopGroup() {
+        return workLoopGroup;
+    }
+    protected ReceivedListener getListener() {
+        return listener;
     }
     /**建立或获取和远程的连接。*/
     public RsfNetChannel getChannel(InterAddress target) {
