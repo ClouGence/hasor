@@ -28,7 +28,7 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfNetChannel {
+public class RsfNetChannel {
     protected Logger           logger = LoggerFactory.getLogger(getClass());
     private final InterAddress target;
     private final Channel      channel;

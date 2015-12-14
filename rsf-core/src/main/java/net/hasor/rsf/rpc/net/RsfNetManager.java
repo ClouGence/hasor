@@ -66,6 +66,8 @@ public class RsfNetManager {
         int workerThread = rsfSettings.getNetworkWorker();
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
         logger.info("nioEventLoopGroup, workerThread = " + workerThread);
+        //
+        this.listener = listener;
     }
     protected RsfEnvironment getRsfEnvironment() {
         return rsfEnvironment;

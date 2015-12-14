@@ -41,10 +41,21 @@ public class RsfServerNetManager extends RsfNetManager {
         super(rsfEnvironment, listener);
     }
     /**启动服务器。*/
+    public void start() throws UnknownHostException, URISyntaxException {
+        this.start(null, 0);
+    }
+    /**启动服务器。*/
+    public void start(InetAddress localAddress) throws UnknownHostException, URISyntaxException {
+        this.start(localAddress, 0);
+    }
+    /**启动服务器。*/
     public void start(InetAddress localAddress, int bindSocket) throws UnknownHostException, URISyntaxException {
         RsfSettings rsfSettings = this.getRsfEnvironment().getSettings();
         if (localAddress == null) {
             localAddress = NetworkUtils.finalBindAddress(rsfSettings.getBindAddress());
+        }
+        if (bindSocket == 0) {
+            bindSocket = rsfSettings.getBindPort();
         }
         final InterAddress hostAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, rsfSettings.getUnitName());
         int listenerThread = this.getRsfEnvironment().getSettings().getNetworkListener();
