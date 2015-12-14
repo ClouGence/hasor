@@ -16,6 +16,7 @@
 package net.hasor.rsf.plugins.local;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
@@ -30,15 +31,15 @@ public class LocalPref implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal() == true) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
-            Object serviceBean = request.getContext().getBean(bindInfo);
-            if (serviceBean != null) {
+            Provider<?> provider = request.getContext().getServiceProvider(bindInfo);
+            if (provider != null) {
                 String method = request.getMethod().getName();
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();
                 //
-                Method m = serviceBean.getClass().getMethod(method, rParams);
+                Method m = provider.getClass().getMethod(method, rParams);
                 try {
-                    response.sendData(m.invoke(serviceBean, rObjects));
+                    response.sendData(m.invoke(provider.get(), rObjects));
                 } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }

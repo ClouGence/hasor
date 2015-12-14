@@ -17,7 +17,10 @@ package test.net.hasor.rsf._07_network;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
@@ -41,6 +44,32 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkTest implements ReceivedListener {
+    protected Logger   logger    = LoggerFactory.getLogger(getClass());
+    private AtomicLong sendCount = new AtomicLong(0);
+    private long       startTime = System.currentTimeMillis();
+    private long       lastTime  = System.currentTimeMillis();
+    public void printInfo(long rtTime) {
+        long checkTime = System.currentTimeMillis();
+        if (checkTime - startTime == 0) {
+            return;
+        }
+        //
+        if (checkTime - lastTime < 1000) {
+            return;//10秒打印一条
+        }
+        lastTime = System.currentTimeMillis();
+        long qpsSecnd = (sendCount.get() / ((checkTime - startTime) / 1000));
+        logger.info("count:{} , QPS:{} , RT:{}", sendCount, qpsSecnd, rtTime);
+        //
+        /*1000亿次调用之后重置统计数据*/
+        if (sendCount.get() >= 100000000L) {
+            sendCount.set(0);
+            startTime = System.currentTimeMillis() / 1000;
+            lastTime = System.currentTimeMillis();
+        }
+    }
+    //
+    //
     private RsfServerNetManager server() throws IOException, URISyntaxException {
         Settings setting = new StandardContextSettings("07_server-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
@@ -82,31 +111,44 @@ public class NetworkTest implements ReceivedListener {
     //
     private RsfServerNetManager server;
     private RsfServerNetManager client;
+    private void sendData(RsfServerNetManager client, SendCallBack callBack) throws Throwable {
+        sendCount.getAndIncrement();
+        long startTime = System.currentTimeMillis();
+        {
+            RsfNetChannel channel = client.getChannel(new InterAddress("169.254.128.78", 8000, "unit"));
+            channel.sendData(buildInfo(), callBack);
+        }
+        printInfo(System.currentTimeMillis() - startTime);
+    }
     @Test()
     public void testNetwork() throws Throwable {
         server = server();
         client = client();
         //
-        RsfNetChannel channel = client.getChannel(new InterAddress("192.168.31.175", 8000, "unit"));
-        //
-        channel.sendData(buildInfo(), new SendCallBack() {
+        SendCallBack callBack = new SendCallBack() {
             @Override
             public void failed(long requestID, RsfException e) {
                 System.out.println("failed:" + requestID);
             }
             @Override
             public void complete(long requestID) {
-                System.out.println("complete:" + requestID);
+                try {
+                    sendData(client, this);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        Thread.sleep(10000);
+        };
+        //
+        sendData(client, callBack);
+        Thread.sleep(30000);
     }
     @Override
     public void receivedMessage(ResponseInfo response) {
-        System.out.println("received ResponseInfo:" + response.getRequestID());
+        //        System.out.println("received ResponseInfo:" + response.getRequestID());
     }
     @Override
     public void receivedMessage(RequestInfo response) {
-        System.out.println("received RequestInfo:" + response.getRequestID());
+        //        System.out.println("received RequestInfo:" + response.getRequestID());
     }
 }

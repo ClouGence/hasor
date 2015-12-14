@@ -23,6 +23,7 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 
  * @version : 2015年12月8日
@@ -42,14 +43,21 @@ public class RsfNetChannel {
     }
     /**将数据写入 Netty。*/
     public void sendData(final RequestInfo info, final SendCallBack callBack) {
-        final long requestID = info.getRequestID();
+        this.sendData(info.getRequestID(), info, callBack);
+    }
+    /**将数据写入 Netty。*/
+    public void sendData(final ResponseInfo info, final SendCallBack callBack) {
+        this.sendData(info.getRequestID(), info, callBack);
+    }
+    /**将数据写入 Netty。*/
+    private void sendData(final long requestID, Object sendData, final SendCallBack callBack) {
         if (!this.channel.isActive()) {
             RsfException e = new RsfException(ProtocolStatus.NetworkError, "send (" + requestID + ") an error, socket Channel is close.");
             callBack.failed(requestID, e);
             return;
         }
         /*发送数据*/
-        ChannelFuture future = this.channel.writeAndFlush(info);
+        ChannelFuture future = this.channel.writeAndFlush(sendData);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
