@@ -87,28 +87,33 @@ public class NetworkFunTest {
         Settings setting = new StandardContextSettings("07_server-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        final RsfServerNetManager server = new RsfServerNetManager(rsfEnvironment, new ReceivedListener() {
-            public void receivedMessage(RequestInfo response) {
-                System.out.println("[Server]received RequestInfo message.");
-                server.getChannel(null).sendData(info, callBack);
+        RsfServerNetManager server = new RsfServerNetManager(rsfEnvironment, new ReceivedListener() {
+            public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response) {
+                try {
+                    System.out.println("[Server]received RequestInfo message.");
+                    InterAddress target = new InterAddress("192.168.31.175", 8001, "unit");
+                    rsfNetManager.getChannel(target).sendData(buildResponse(response), null);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             }
-            public void receivedMessage(ResponseInfo response) {
+            public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response) {
                 System.out.println("[Server]received ResponseInfo message.");
             }
         });
         server.start();
         //
         final RsfNetManager client = new RsfNetManager(rsfEnvironment, new ReceivedListener() {
-            public void receivedMessage(RequestInfo response) {
+            public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response) {
                 System.out.println("[Client]received RequestInfo message.");
             }
-            public void receivedMessage(ResponseInfo response) {
+            public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response) {
                 System.out.println("[Client]received ResponseInfo message.");
             }
         });
         //
         //
-        InterAddress target = new InterAddress("169.254.128.78", 8000, "unit");
+        InterAddress target = new InterAddress("192.168.31.175", 8000, "unit");
         RsfNetChannel channel = client.getChannel(target);
         sendData(channel);
         //

@@ -66,7 +66,7 @@ public class RsfServerNetManager extends RsfNetManager {
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 logger.info("initConnection connect {}.", hostAddress);
-                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(getListener()));
+                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfServerNetManager.this, getListener()));
             }
         }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
         //

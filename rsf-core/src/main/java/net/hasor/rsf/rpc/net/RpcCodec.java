@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
+import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,10 +28,17 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  */
 public class RpcCodec extends ChannelInboundHandlerAdapter {
     protected Logger               logger = LoggerFactory.getLogger(getClass());
+    private final RsfNetManager    rsfNetManager;
     private final ReceivedListener rpcEventListener;
     //
-    public RpcCodec(ReceivedListener rpcEventListener) {
+    public RpcCodec(RsfNetManager rsfNetManager, ReceivedListener rpcEventListener) {
+        this.rsfNetManager = rsfNetManager;
         this.rpcEventListener = rpcEventListener;
+    }
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelActive");//登记远端地址
+        super.channelActive(ctx);
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -46,11 +54,13 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        InetSocketAddress address = (InetSocketAddress) ctx.pipeline().channel().remoteAddress();
+        System.out.println(address);
         if (msg instanceof RequestInfo) {
-            this.rpcEventListener.receivedMessage((RequestInfo) msg);
+            this.rpcEventListener.receivedMessage(this.rsfNetManager, (RequestInfo) msg);
         }
         if (msg instanceof ResponseInfo) {
-            this.rpcEventListener.receivedMessage((ResponseInfo) msg);
+            this.rpcEventListener.receivedMessage(this.rsfNetManager, (ResponseInfo) msg);
         }
     }
 }

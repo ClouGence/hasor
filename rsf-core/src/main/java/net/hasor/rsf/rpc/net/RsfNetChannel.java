@@ -53,7 +53,9 @@ public class RsfNetChannel {
     private void sendData(final long requestID, Object sendData, final SendCallBack callBack) {
         if (!this.channel.isActive()) {
             RsfException e = new RsfException(ProtocolStatus.NetworkError, "send (" + requestID + ") an error, socket Channel is close.");
-            callBack.failed(requestID, e);
+            if (callBack != null) {
+                callBack.failed(requestID, e);
+            }
             return;
         }
         /*发送数据*/
@@ -62,7 +64,9 @@ public class RsfNetChannel {
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
-                    callBack.complete(requestID);
+                    if (callBack != null) {
+                        callBack.complete(requestID);
+                    }
                     return;
                 }
                 RsfException e = null;
@@ -77,7 +81,10 @@ public class RsfNetChannel {
                     e = new RsfException(ProtocolStatus.NetworkError, errorMsg, ex);
                 }
                 //回应Response
-                callBack.failed(requestID, e);
+                logger.error(e.getMessage(), e);
+                if (callBack != null) {
+                    callBack.failed(requestID, e);
+                }
             }
         });
     }

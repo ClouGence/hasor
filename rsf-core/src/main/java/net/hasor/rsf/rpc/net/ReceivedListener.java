@@ -23,7 +23,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  */
 public interface ReceivedListener {
     /**收到Response消息。*/
-    public void receivedMessage(ResponseInfo response);
+    public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response);
     /**收到Response消息。*/
-    public void receivedMessage(RequestInfo response);
+    public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response);
 }

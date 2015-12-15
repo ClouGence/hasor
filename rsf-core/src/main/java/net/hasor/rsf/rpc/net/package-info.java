@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * 负责处理RSF在网络上的请求和响应，包括服务提供者和服务消费者。
+ * 负责处理RSF节点间的连接，并保障一条连接上进行双向通信。
+ * 简单来说当客户端连接到远程Server之后，远端的Server也可以利用这条连接想客户端发起远程调用。
  */
 package net.hasor.rsf.rpc.net;

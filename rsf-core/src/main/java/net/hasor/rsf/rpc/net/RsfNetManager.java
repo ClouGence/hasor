@@ -115,7 +115,7 @@ public class RsfNetManager {
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
                 logger.info("initConnection connect {}.", hostAddress);
-                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(listener));
+                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this, listener));
             }
         });
         ChannelFuture future = null;
