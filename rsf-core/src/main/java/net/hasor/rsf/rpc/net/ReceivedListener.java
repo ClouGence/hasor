@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
@@ -23,7 +24,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  */
 public interface ReceivedListener {
     /**收到Response消息。*/
-    public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response);
+    public void receivedMessage(InterAddress form, ResponseInfo response);
     /**收到Response消息。*/
-    public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response);
+    public void receivedMessage(InterAddress form, RequestInfo response);
 }

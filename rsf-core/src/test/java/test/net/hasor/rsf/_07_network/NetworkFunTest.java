@@ -18,20 +18,16 @@ import java.util.Date;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
-import net.hasor.rsf.rpc.net.RsfServerNetManager;
-import net.hasor.rsf.rpc.net.SendCallBack;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.coder.JavaSerializeCoder;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -82,53 +78,53 @@ public class NetworkFunTest {
     //
     //
     //
+    private RsfNetManager server = null;
+    private RsfNetManager client = null;
     @Test()
     public void testNetworkFunTest() throws Throwable {
-        Settings setting = new StandardContextSettings("07_server-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        RsfServerNetManager server = new RsfServerNetManager(rsfEnvironment, new ReceivedListener() {
-            public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response) {
+        RsfSettings serverSetting = new DefaultRsfSettings(new StandardContextSettings("07_server-config.xml"));
+        RsfEnvironment serverEnvironment = new DefaultRsfEnvironment(null, serverSetting);
+        server = new RsfNetManager(serverEnvironment, new ReceivedListener() {
+            public void receivedMessage(InterAddress form, RequestInfo response) {
                 try {
                     System.out.println("[Server]received RequestInfo message.");
-                    InterAddress target = new InterAddress("192.168.31.175", 8001, "unit");
-                    rsfNetManager.getChannel(target).sendData(buildResponse(response), null);
+                    server.getChannel(form).sendData(buildResponse(response), null);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }
-            public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response) {
+            public void receivedMessage(InterAddress form, ResponseInfo response) {
                 System.out.println("[Server]received ResponseInfo message.");
             }
         });
         server.start();
         //
-        final RsfNetManager client = new RsfNetManager(rsfEnvironment, new ReceivedListener() {
-            public void receivedMessage(RsfNetManager rsfNetManager, RequestInfo response) {
-                System.out.println("[Client]received RequestInfo message.");
+        //
+        //
+        RsfSettings clientSetting = new DefaultRsfSettings(new StandardContextSettings("07_client-config.xml"));
+        RsfEnvironment clientEnvironment = new DefaultRsfEnvironment(null, clientSetting);
+        client = new RsfNetManager(clientEnvironment, new ReceivedListener() {
+            public void receivedMessage(InterAddress form, RequestInfo response) {
+                try {
+                    System.out.println("[Client]received RequestInfo message.");
+                    client.getChannel(form).sendData(buildResponse(response), null);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             }
-            public void receivedMessage(RsfNetManager rsfNetManager, ResponseInfo response) {
+            public void receivedMessage(InterAddress form, ResponseInfo response) {
                 System.out.println("[Client]received ResponseInfo message.");
             }
         });
+        client.start();
         //
         //
-        InterAddress target = new InterAddress("192.168.31.175", 8000, "unit");
-        RsfNetChannel channel = client.getChannel(target);
-        sendData(channel);
         //
-        client.closeChannel(target);
+        RsfNetChannel clientToServer = client.getChannel(new InterAddress("127.0.0.1", 8000, "local"));
+        clientToServer.sendData(buildRequest(), null);
+        RsfNetChannel serverToClient = server.getChannel(new InterAddress("127.0.0.1", 8001, "local"));
+        serverToClient.sendData(buildRequest(), null);
         //
         System.out.println();
-    }
-    protected void sendData(RsfNetChannel channel) throws Throwable {
-        channel.sendData(buildRequest(), new SendCallBack() {
-            public void failed(long requestID, RsfException e) {
-                System.err.println("sendData failed -> requestID:" + requestID);
-            }
-            public void complete(long requestID) {
-                System.out.println("sendData complete -> requestID:" + requestID);
-            }
-        });
     }
 }

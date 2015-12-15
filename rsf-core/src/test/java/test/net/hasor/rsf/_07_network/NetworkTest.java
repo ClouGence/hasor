@@ -32,7 +32,7 @@ import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetChannel;
-import net.hasor.rsf.rpc.net.RsfServerNetManager;
+import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.rpc.net.SendCallBack;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.coder.JavaSerializeCoder;
@@ -70,19 +70,19 @@ public class NetworkTest implements ReceivedListener {
     }
     //
     //
-    private RsfServerNetManager server() throws IOException, URISyntaxException {
+    private RsfNetManager server() throws IOException, URISyntaxException {
         Settings setting = new StandardContextSettings("07_server-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        RsfServerNetManager server = new RsfServerNetManager(rsfEnvironment, this);
+        RsfNetManager server = new RsfNetManager(rsfEnvironment, this);
         server.start();
         return server;
     }
-    private RsfServerNetManager client() throws IOException, URISyntaxException {
+    private RsfNetManager client() throws IOException, URISyntaxException {
         Settings setting = new StandardContextSettings("07_client-config.xml");//create Settings
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        RsfServerNetManager client = new RsfServerNetManager(rsfEnvironment, this);
+        RsfNetManager client = new RsfNetManager(rsfEnvironment, this);
         client.start();
         return client;
     }
@@ -109,14 +109,14 @@ public class NetworkTest implements ReceivedListener {
         return request;
     }
     //
-    private RsfServerNetManager server;
-    private RsfServerNetManager client;
-    private void sendData(RsfServerNetManager client, SendCallBack callBack) throws Throwable {
+    private RsfNetManager server;
+    private RsfNetManager client;
+    private void sendData(RsfNetManager client, SendCallBack callBack) throws Throwable {
         sendCount.getAndIncrement();
         long startTime = System.currentTimeMillis();
         {
-            RsfNetChannel channel = client.getChannel(new InterAddress("169.254.128.78", 8000, "unit"));
-            channel.sendData(buildInfo(), callBack);
+            RsfNetChannel toServerChannel = client.getChannel(new InterAddress("127.0.0.1", 8000, "local"));
+            toServerChannel.sendData(buildInfo(), callBack);
         }
         printInfo(System.currentTimeMillis() - startTime);
     }
@@ -141,14 +141,16 @@ public class NetworkTest implements ReceivedListener {
         };
         //
         sendData(client, callBack);
-        Thread.sleep(30000);
+        sendData(client, callBack);
+        sendData(client, callBack);
+        Thread.sleep(60000);
     }
     @Override
-    public void receivedMessage(ResponseInfo response) {
-        //        System.out.println("received ResponseInfo:" + response.getRequestID());
+    public void receivedMessage(InterAddress form, ResponseInfo response) {
+        //System.out.println("received ResponseInfo:" + response.getRequestID());
     }
     @Override
-    public void receivedMessage(RequestInfo response) {
-        //        System.out.println("received RequestInfo:" + response.getRequestID());
+    public void receivedMessage(InterAddress form, RequestInfo response) {
+        //System.out.println("received RequestInfo:" + response.getRequestID());
     }
 }
