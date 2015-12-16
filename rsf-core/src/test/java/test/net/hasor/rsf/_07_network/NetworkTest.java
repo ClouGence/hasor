@@ -16,7 +16,6 @@
 package test.net.hasor.rsf._07_network;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
@@ -34,8 +32,6 @@ import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.rpc.net.SendCallBack;
-import net.hasor.rsf.serialize.SerializeCoder;
-import net.hasor.rsf.serialize.coder.JavaSerializeCoder;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
@@ -97,11 +93,10 @@ public class NetworkTest implements ReceivedListener {
         request.setClientTimeout(6000);
         request.setReceiveTime(System.currentTimeMillis());
         //
-        SerializeCoder coder = new JavaSerializeCoder();
-        request.addParameter("java.lang.String", coder.encode("say Hello."));
-        request.addParameter("java.lang.Long", coder.encode(111222333444555L));
-        request.addParameter("java.util.Date", coder.encode(new Date()));
-        request.addParameter("java.lang.Object", coder.encode(null));
+        //        request.addParameter("java.lang.String", coder.encode("say Hello."));
+        //        request.addParameter("java.lang.Long", coder.encode(111222333444555L));
+        //        request.addParameter("java.util.Date", coder.encode(new Date()));
+        //        request.addParameter("java.lang.Object", coder.encode(null));
         //
         request.addOption("auth", "yes");
         request.addOption("user", "guest");
@@ -111,11 +106,12 @@ public class NetworkTest implements ReceivedListener {
     //
     private RsfNetManager server;
     private RsfNetManager client;
+    private InterAddress  local;
     private void sendData(RsfNetManager client, SendCallBack callBack) throws Throwable {
         sendCount.getAndIncrement();
         long startTime = System.currentTimeMillis();
         {
-            RsfNetChannel toServerChannel = client.getChannel(new InterAddress("127.0.0.1", 8000, "local"));
+            RsfNetChannel toServerChannel = client.getChannel(local);
             toServerChannel.sendData(buildInfo(), callBack);
         }
         printInfo(System.currentTimeMillis() - startTime);
@@ -124,26 +120,15 @@ public class NetworkTest implements ReceivedListener {
     public void testNetwork() throws Throwable {
         server = server();
         client = client();
+        local = new InterAddress("127.0.0.1", 8000, "local");
         //
-        SendCallBack callBack = new SendCallBack() {
-            @Override
-            public void failed(long requestID, RsfException e) {
-                System.out.println("failed:" + requestID);
+        while (true) {
+            long checkTime = System.currentTimeMillis();
+            if (checkTime - startTime > 120000) {
+                return;//120秒退出
             }
-            @Override
-            public void complete(long requestID) {
-                try {
-                    sendData(client, this);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        //
-        sendData(client, callBack);
-        sendData(client, callBack);
-        sendData(client, callBack);
-        Thread.sleep(60000);
+            sendData(client, null);
+        }
     }
     @Override
     public void receivedMessage(InterAddress form, ResponseInfo response) {

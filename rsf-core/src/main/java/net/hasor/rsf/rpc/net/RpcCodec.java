@@ -60,7 +60,6 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println(this.rsfNetManager.bindAddress() + " \taaaaaaaaaaa");
         if (this.shakeHands.get() == false) {
             RequestInfo request = new RequestInfo();
             request.setRequestID(-1);
@@ -99,7 +98,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             String serverInfo = response.getOption("SERVER_INFO");
             Channel channel = ctx.pipeline().channel();
             this.targetKey = new InterAddress(serverInfo);
-            this.rsfNetManager.addChannel(this.targetKey, new RsfNetChannel(targetKey, channel));
+            this.rsfNetManager.addChannel(this.targetKey, new RsfNetChannel(targetKey, channel, this.shakeHands));
             this.shakeHands.set(true);
             logger.info("socket ready for {}.", this.targetKey);
         }

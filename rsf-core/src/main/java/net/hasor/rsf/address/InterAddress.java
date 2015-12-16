@@ -96,9 +96,13 @@ public class InterAddress {
     public URI toURI() {
         return this.uriFormat;
     }
+    private String hostSchema;
     /**返回RSF协议形式表述的主机地址。格式为：“rsf://127.0.0.1:8000/unit”*/
     public String toHostSchema() {
-        return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
+        if (hostSchema == null) {
+            return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
+        }
+        return this.hostSchema;
     }
     //
     /**

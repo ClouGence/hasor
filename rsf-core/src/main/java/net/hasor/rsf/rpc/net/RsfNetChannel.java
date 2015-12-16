@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
@@ -30,13 +31,15 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfNetChannel {
-    protected Logger           logger = LoggerFactory.getLogger(getClass());
-    private final InterAddress target;
-    private final Channel      channel;
+    protected Logger            logger = LoggerFactory.getLogger(getClass());
+    private final InterAddress  target;
+    private final Channel       channel;
+    private final AtomicBoolean shakeHands;
     //
-    RsfNetChannel(InterAddress target, Channel channel) {
+    RsfNetChannel(InterAddress target, Channel channel, AtomicBoolean shakeHands) {
         this.target = target;
         this.channel = channel;
+        this.shakeHands = shakeHands;
     }
     public InterAddress getTarget() {
         return target;
@@ -91,7 +94,7 @@ public class RsfNetChannel {
     //
     /**测定连接是否处于激活的。*/
     public boolean isActive() {
-        return this.channel.isActive();
+        return this.channel.isActive() && this.shakeHands.get();
     }
     /**关闭连接。*/
     void close() {
