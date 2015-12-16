@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.net;
 import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +36,19 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RpcCodec extends ChannelInboundHandlerAdapter {
-    protected Logger               logger     = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean    shakeHands = new AtomicBoolean(false);
-    private InterAddress           targetKey;
-    private final TimerManager     rsfTimerManager;
-    private final RsfNetManager    rsfNetManager;
-    private final ReceivedListener rpcEventListener;
+    protected Logger                         logger     = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean              shakeHands = new AtomicBoolean(false);
+    private InterAddress                     targetKey;
+    private final TimerManager               rsfTimerManager;
+    private final RsfNetManager              rsfNetManager;
+    private final ReceivedListener           rpcEventListener;
+    private final BasicFuture<RsfNetChannel> channelFuture;
     //
-    public RpcCodec(TimerManager rsfTimerManager, RsfNetManager rsfNetManager, ReceivedListener rpcEventListener) {
-        this.rsfTimerManager = rsfTimerManager;
+    public RpcCodec(RsfNetManager rsfNetManager, BasicFuture<RsfNetChannel> channelFuture) {
         this.rsfNetManager = rsfNetManager;
-        this.rpcEventListener = rpcEventListener;
+        this.rsfTimerManager = rsfNetManager.getTimerManager();
+        this.rpcEventListener = rsfNetManager.getReceivedListener();
+        this.channelFuture = channelFuture;
     }
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
@@ -57,6 +60,11 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             }
         });
         super.handlerAdded(ctx);
+    }
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("ddddd");
+        super.channelRegistered(ctx);
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -98,8 +106,9 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             String serverInfo = response.getOption("SERVER_INFO");
             Channel channel = ctx.pipeline().channel();
             this.targetKey = new InterAddress(serverInfo);
-            this.rsfNetManager.addChannel(this.targetKey, new RsfNetChannel(targetKey, channel, this.shakeHands));
             this.shakeHands.set(true);
+            RsfNetChannel netChannel = new RsfNetChannel(targetKey, channel, this.shakeHands);
+            this.channelFuture.completed(netChannel);
             logger.info("socket ready for {}.", this.targetKey);
         }
     }
@@ -108,14 +117,23 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.info("close socket for {}.", this.targetKey);
-        this.rsfNetManager.removeChannel(this.targetKey);
+        //
+        if (this.channelFuture.isDone())
+            this.rsfNetManager.closeChannel(this.targetKey);
+        else
+            this.channelFuture.cancel();
+        //
         super.channelInactive(ctx);
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        logger.info("exception close channel.");
-        ctx.pipeline().channel().close();
-        super.exceptionCaught(ctx, cause);
+        logger.error("close socket=" + this.targetKey + " with error -> " + cause.getMessage(), cause);
+        //
+        if (this.channelFuture.isDone())
+            this.rsfNetManager.closeChannel(this.targetKey);
+        else
+            this.channelFuture.cancel();
+        //
+        super.channelInactive(ctx);
     }
 }
