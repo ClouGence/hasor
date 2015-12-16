@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF API 软件包。
+ * RSF 分布式RPC框架。
  */
 package net.hasor.rsf;

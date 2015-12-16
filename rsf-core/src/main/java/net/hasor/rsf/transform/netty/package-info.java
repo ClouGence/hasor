@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 负责基于Netty 下的 RSF 数据包的编码和解码。
+ * 基于Netty 的 RSF 数据包编码器和解码器。
  */
 package net.hasor.rsf.transform.netty;

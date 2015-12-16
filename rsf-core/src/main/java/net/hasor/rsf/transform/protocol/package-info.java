@@ -15,6 +15,6 @@
  */
 /**
  * RSF 协议的底层Socket传输数据结构。
- * 这里封装的数据结构是由 Netty 直接解析网络数据得来。
+ * 封装RSF数据包的数据结构，最终在网络上进行传输。
  */
 package net.hasor.rsf.transform.protocol;

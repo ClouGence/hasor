@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * 路由规则实现。
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.address.route.rule;

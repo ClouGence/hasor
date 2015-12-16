@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * 负责提供远程调用请求响应的管理。
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.rpc.caller.remote;

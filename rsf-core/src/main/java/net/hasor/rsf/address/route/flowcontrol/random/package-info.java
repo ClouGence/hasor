@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * 随机选址规则。
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.address.route.flowcontrol.random;

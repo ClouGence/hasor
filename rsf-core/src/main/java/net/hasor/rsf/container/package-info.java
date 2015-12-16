@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF Bind 机制实现。
+ * Bean容器、RsfBinder机制实现。
  */
 package net.hasor.rsf.container;

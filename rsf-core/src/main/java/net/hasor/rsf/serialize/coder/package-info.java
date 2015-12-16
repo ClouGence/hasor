@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * 各种序列化协议支持。
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.serialize.coder;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议包工具。
+ * 工具。
  */
 package net.hasor.rsf.utils;

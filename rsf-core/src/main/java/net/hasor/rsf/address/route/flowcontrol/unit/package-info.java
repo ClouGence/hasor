@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 流控。
+ * 单元化规则。
  */
-package net.hasor.rsf.address.route.flowcontrol;
+package net.hasor.rsf.address.route.flowcontrol.unit;

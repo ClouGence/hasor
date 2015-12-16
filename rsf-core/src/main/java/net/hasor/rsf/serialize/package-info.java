@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 序列化工具集。
+ * 序列化功能支持。
  */
 package net.hasor.rsf.serialize;

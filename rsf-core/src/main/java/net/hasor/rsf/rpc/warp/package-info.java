@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * {@link net.hasor.rsf.RsfRequest}和{@link net.hasor.rsf.RsfResponse}接口的实现。
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf.rpc.warp;
