@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.net;
 import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +26,7 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
@@ -36,19 +36,20 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RpcCodec extends ChannelInboundHandlerAdapter {
-    protected Logger                         logger     = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean              shakeHands = new AtomicBoolean(false);
-    private InterAddress                     targetKey;
-    private final TimerManager               rsfTimerManager;
-    private final RsfNetManager              rsfNetManager;
-    private final ReceivedListener           rpcEventListener;
-    private final BasicFuture<RsfNetChannel> channelFuture;
+    protected Logger               logger     = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean    shakeHands = new AtomicBoolean(false);
+    private InterAddress           bindAddress;                                     //
+    private InterAddress           targetAddress;                                   //
+    private final TimerManager     rsfTimerManager;                                 //
+    private final ChannelRegister  channelRegister;                                 //
+    private final ReceivedListener rpcEventListener;                                //
     //
     public RpcCodec(RsfNetManager rsfNetManager) {
-        this.rsfNetManager = rsfNetManager;
+        this.logger = LoggerFactory.getLogger(getClass());
+        this.bindAddress = rsfNetManager.bindAddress();
         this.rsfTimerManager = rsfNetManager.getTimerManager();
+        this.channelRegister = rsfNetManager.getChannelRegister();
         this.rpcEventListener = rsfNetManager.getReceivedListener();
-        this.channelFuture = channelFuture;
     }
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
@@ -75,9 +76,9 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (this.shakeHands.get() == true) {
             /*   */if (msg instanceof RequestInfo) {
-                this.rpcEventListener.receivedMessage(this.targetKey, (RequestInfo) msg);
+                this.rpcEventListener.receivedMessage(this.targetAddress, (RequestInfo) msg);
             } else if (msg instanceof ResponseInfo) {
-                this.rpcEventListener.receivedMessage(this.targetKey, (ResponseInfo) msg);
+                this.rpcEventListener.receivedMessage(this.targetAddress, (ResponseInfo) msg);
             }
             return;
         }
@@ -90,7 +91,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
                 ResponseInfo response = new ResponseInfo();
                 response.setRequestID(-1);
                 response.setStatus(ProtocolStatus.OK);
-                response.addOption("SERVER_INFO", this.rsfNetManager.bindAddress().toHostSchema());//RSF实例信息。
+                response.addOption("SERVER_INFO", this.bindAddress.toHostSchema());//RSF实例信息。
                 logger.info("send ack to {}.", remoteAddress);
                 ctx.pipeline().writeAndFlush(response);//发送握手数据包
                 return;
@@ -100,35 +101,24 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             ResponseInfo response = (ResponseInfo) msg;
             String serverInfo = response.getOption("SERVER_INFO");
             Channel channel = ctx.pipeline().channel();
-            this.targetKey = new InterAddress(serverInfo);
+            this.targetAddress = new InterAddress(serverInfo);
             this.shakeHands.set(true);
-            RsfNetChannel netChannel = new RsfNetChannel(targetKey, channel, this.shakeHands);
-            this.channelFuture.completed(netChannel);
-            logger.info("socket ready for {}.", this.targetKey);
+            RsfNetChannel netChannel = new RsfNetChannel(this.targetAddress, channel, this.shakeHands);
+            this.channelRegister.completed(this.targetAddress, netChannel);
+            logger.info("socket ready for {}.", this.targetAddress);
         }
     }
     //
-    //
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("close socket for {}.", this.targetKey);
-        //
-        if (this.channelFuture.isDone())
-            this.rsfNetManager.closeChannel(this.targetKey);
-        else
-            this.channelFuture.cancel();
-        //
-        super.channelInactive(ctx);
+        logger.info("close socket for {}.", this.targetAddress);
+        this.channelRegister.failed(this.targetAddress, new RsfException(ProtocolStatus.NetworkError, "channel Inactive."));
+        ctx.close();
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("close socket=" + this.targetKey + " with error -> " + cause.getMessage(), cause);
-        //
-        if (this.channelFuture.isDone())
-            this.rsfNetManager.closeChannel(this.targetKey);
-        else
-            this.channelFuture.cancel();
-        //
-        super.channelInactive(ctx);
+        logger.error("close socket=" + this.targetAddress + " with error -> " + cause.getMessage(), cause);
+        this.channelRegister.failed(this.targetAddress, cause);
+        ctx.close();
     }
 }

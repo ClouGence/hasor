@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
@@ -103,6 +105,10 @@ public class InterAddress {
             return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
         }
         return this.hostSchema;
+    }
+    /**转换成{@link SocketAddress}类型对象。*/
+    public SocketAddress toSocketAddress() {
+        return new InetSocketAddress(getHost(), getPort());
     }
     //
     /**

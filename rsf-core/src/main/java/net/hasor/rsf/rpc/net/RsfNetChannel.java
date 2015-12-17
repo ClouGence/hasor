@@ -100,7 +100,7 @@ public class RsfNetChannel {
         return this.channel.isActive() && this.shakeHands.get();
     }
     /**关闭连接。*/
-    void close() {
+    public void close() {
         if (this.channel != null && this.channel.isActive()) {
             this.channel.close();
         }
