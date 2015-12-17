@@ -210,7 +210,7 @@ public class RsfBeanContainer {
             throw new RepeateException("service " + serviceID + " is exist.");
         }
         logger.info("service to public, id= {}", serviceID);
-        this.serviceMap.putIfAbsent(serviceID, serviceDefine);
+        ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
     }
     /**

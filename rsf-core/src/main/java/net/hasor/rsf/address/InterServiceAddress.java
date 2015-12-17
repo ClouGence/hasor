@@ -84,6 +84,8 @@ public class InterServiceAddress extends InterAddress {
      * @return 返回结果。
      */
     public boolean equals(Object obj) {
+        if (super.equals(obj) == false)
+            return false;
         String diffURI = "";
         if (obj instanceof InterServiceAddress) {
             diffURI = ((InterServiceAddress) obj).toServiceSchema();

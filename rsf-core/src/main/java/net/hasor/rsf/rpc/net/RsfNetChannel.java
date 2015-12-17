@@ -77,16 +77,19 @@ public class RsfNetChannel {
                     //用户取消
                     String errorMsg = "send request(" + requestID + ") to cancelled by user.";
                     e = new RsfException(ProtocolStatus.NetworkError, errorMsg);
+                    logger.error(e.getMessage(), e);
+                    //回应Response
+                    if (callBack != null)
+                        callBack.failed(requestID, e);
                 } else if (!future.isSuccess()) {
                     //异常状况
                     Throwable ex = future.cause();
                     String errorMsg = "send request(" + requestID + ") an error ->" + ex.getMessage();
                     e = new RsfException(ProtocolStatus.NetworkError, errorMsg, ex);
-                }
-                //回应Response
-                logger.error(e.getMessage(), e);
-                if (callBack != null) {
-                    callBack.failed(requestID, e);
+                    logger.error(e.getMessage(), e);
+                    //回应Response
+                    if (callBack != null)
+                        callBack.failed(requestID, e);
                 }
             }
         });

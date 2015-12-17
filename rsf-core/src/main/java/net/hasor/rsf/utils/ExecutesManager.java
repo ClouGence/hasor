@@ -46,9 +46,8 @@ public class ExecutesManager {
     }
     //
     public Executor getExecute(String serviceUniqueName) {
-        if (this.servicePoolCache.isEmpty() == false) {
-            int nameHashCode = serviceUniqueName.hashCode();
-            ThreadPoolExecutor executor = this.servicePoolCache.get(nameHashCode);
+        if (this.servicePoolCache.isEmpty() == false && serviceUniqueName != null) {
+            ThreadPoolExecutor executor = this.servicePoolCache.get(serviceUniqueName);
             if (executor != null) {
                 return executor;
             }

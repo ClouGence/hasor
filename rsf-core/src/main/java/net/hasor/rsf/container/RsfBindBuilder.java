@@ -202,14 +202,13 @@ abstract class RsfBindBuilder implements RsfBinder {
         }
         @Override
         public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) {
-            if (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI)) {
-                this.bindAddress(rsfURI);
+            if (rsfURI != null && (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI))) {
+                this.bindAddress(new InterAddress(rsfURI));
             }
-            this.bindAddress(rsfURI);
             if (array.length > 0) {
                 for (URI bindItem : array) {
-                    if (InterServiceAddress.checkFormat(bindItem) || InterAddress.checkFormat(bindItem)) {
-                        this.bindAddress(bindItem);
+                    if (rsfURI != null && (InterServiceAddress.checkFormat(bindItem) || InterAddress.checkFormat(bindItem))) {
+                        this.bindAddress(new InterAddress(bindItem));
                     }
                     throw new FormatException(bindItem + " check fail.");
                 }

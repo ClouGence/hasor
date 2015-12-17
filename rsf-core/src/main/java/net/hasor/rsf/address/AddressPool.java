@@ -115,15 +115,10 @@ public class AddressPool {
         }
     }
     //
-    /**保存地址列表到zip流中(每小时保存一次)。*/
+    /**保存地址列表到zip流中(每小时保存一次)，当遇到保存的文件已存在时，会出现1秒的CPU漂高。*/
     protected synchronized void saveAddress() throws IOException {
         File writeFile = null;
-        while (writeFile == null || writeFile.exists()) {
-            if (writeFile != null) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {/**/}
-            }
+        while (writeFile == null || writeFile.exists()) {/*会有1秒的CPU漂高*/
             writeFile = new File(this.snapshotHome, "address-" + nowTime() + ".zip");
         }
         logger.info("rsf - saveAddress to snapshot file({}) ->{}", CharsetName, writeFile);

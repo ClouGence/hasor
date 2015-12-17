@@ -65,7 +65,9 @@ public class AbstractAddressPoolTest {
             while (true) {
                 try {
                     Thread.sleep(10);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
                 long checkTime = System.currentTimeMillis();
                 if (checkTime - lastTime < 1500) {
                     continue;//1.5秒打印一条
