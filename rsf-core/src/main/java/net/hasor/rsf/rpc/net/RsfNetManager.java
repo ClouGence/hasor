@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.future.BasicFuture;
 import org.more.future.FutureCallback;
 import org.slf4j.Logger;
@@ -46,6 +46,8 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.netty.RSFCodec;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
@@ -100,7 +102,7 @@ public class RsfNetManager {
         return this.bindAddress;
     }
     /**建立或获取和远程的连接。*/
-    public RsfNetChannel getChannel(InterAddress target) throws InterruptedException, ExecutionException {
+    public Future<RsfNetChannel> getChannel(InterAddress target) throws InterruptedException, ExecutionException {
         Future<RsfNetChannel> channelFuture = this.channelMapping.get(target);
         if (channelFuture != null && channelFuture.isDone()) {
             RsfNetChannel channel = channelFuture.get();
@@ -110,14 +112,15 @@ public class RsfNetManager {
             }
         }
         if (channelFuture != null) {
-            return channelFuture.get();
+            return channelFuture;
+        } else {
+            channelFuture = connSocket(target);// TODO 这里应考虑到并发 
+            this.channelMapping.put(target, channelFuture);
         }
-        Future<RsfNetChannel> newChannel = connSocket(target);
-        this.channelMapping.put(target, newChannel);
-        return newChannel.get();
+        return channelFuture;
     }
     /*连接到远程机器*/
-    private synchronized Future<RsfNetChannel> connSocket(InterAddress hostAddress) {
+    private Future<RsfNetChannel> connSocket(InterAddress hostAddress) {s
         SocketAddress remote = new InetSocketAddress(hostAddress.getHost(), hostAddress.getPort());
         logger.info("connect to {} ...", hostAddress);
         //
@@ -125,8 +128,13 @@ public class RsfNetManager {
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
         boot.channel(NioSocketChannel.class);
-        boot.handler(new RsfChannelInitializer(this, result));
+        boot.handler(new ChannelInitializer<SocketChannel>() {
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this));
+            }
+        });
         configBoot(boot).connect(remote).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+        //
         return result;
     }
     //
@@ -152,38 +160,43 @@ public class RsfNetManager {
         if (bindSocket == 0) {
             bindSocket = rsfSettings.getBindPort();
         }
-        InterAddress bindAddress = null;
         try {
-            bindAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, rsfSettings.getUnitName());
+            this.bindAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, rsfSettings.getUnitName());
         } catch (Throwable e) {
             throw new UnknownHostException(e.getMessage());
         }
         logger.info("bindSocket at {}", this.bindAddress);
         //
-        ChannelFuture future = null;
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(this.listenLoopGroup, this.workLoopGroup);
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this, null));
+                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this));
             }
         });
         boot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         boot.childOption(ChannelOption.SO_KEEPALIVE, true);
-        future = configBoot(boot).bind(localAddress, bindSocket).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+        ChannelFuture future = configBoot(boot).bind(localAddress, bindSocket);
         //
-        try {
-            int connectTimeout = rsfSettings.getConnectTimeout();
-            future.await(connectTimeout, TimeUnit.MILLISECONDS);
-            if (future.isSuccess() == true) {
-                logger.info("rsf Server started at {}:{}", localAddress, bindSocket);
-                Channel channel = future.channel();
-                this.bindListener = new RsfNetChannel(bindAddress, channel);
+        final BasicFuture<RsfNetChannel> result = new BasicFuture<RsfNetChannel>();
+        future.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (!future.isSuccess()) {
+                    future.channel().close();
+                    result.failed(future.cause());
+                } else {
+                    Channel channel = future.channel();
+                    result.completed(new RsfNetChannel(bindAddress, channel, new AtomicBoolean(true)));
+                }
             }
-        } catch (InterruptedException e) {
-            future.channel().close();
-            logger.error(e.getMessage(), e);
+        });
+        try {
+            logger.info("rsf Server started at {}:{}", localAddress, bindSocket);
+            this.bindListener = result.get();
+        } catch (Exception e) {
+            logger.error("rsf start listener error: " + e.getMessage(), e);
+            throw new RsfException(ProtocolStatus.NetworkError, e);
         }
     }
     private <T extends AbstractBootstrap<?, ?>> T configBoot(T boot) {
@@ -197,7 +210,7 @@ public class RsfNetManager {
     //
     //
     //
-    public ReceivedListener getReceivedListener() {
+    ReceivedListener getReceivedListener() {
         return this.receivedListener;
     }
     TimerManager getTimerManager() {
@@ -219,17 +232,6 @@ public class RsfNetManager {
     //    }
     void closeChannel(InterAddress targetKey) {
         // TODO Auto-generated method stub
-    }
-}
-class RsfChannelInitializer extends ChannelInitializer<SocketChannel> {
-    private RsfNetManager              rsfNetManager;
-    private BasicFuture<RsfNetChannel> resultFuture;
-    public RsfChannelInitializer(RsfNetManager rsfNetManager, BasicFuture<RsfNetChannel> resultFuture) {
-        this.rsfNetManager = rsfNetManager;
-        this.resultFuture = resultFuture;
-    }
-    public void initChannel(SocketChannel ch) throws Exception {
-        ch.pipeline().addLast(new RSFCodec(), new RpcCodec(rsfNetManager, resultFuture));
     }
 }
 class ConnectionFutureCallback implements FutureCallback<RsfNetChannel> {

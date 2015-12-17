@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.hasor;
+package net.hasor.rsf.bootstrap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
@@ -21,10 +21,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Module;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.bootstrap.RsfBootstrap;
-import net.hasor.rsf.bootstrap.RsfStart;
-import net.hasor.rsf.bootstrap.WorkMode;
-import net.hasor.rsf.plugins.local.LocalPref;
+import net.hasor.rsf.plugins.filters.local.LocalPref;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日

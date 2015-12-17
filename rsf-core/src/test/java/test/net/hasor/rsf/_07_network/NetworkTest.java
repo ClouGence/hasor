@@ -111,7 +111,7 @@ public class NetworkTest implements ReceivedListener {
         sendCount.getAndIncrement();
         long startTime = System.currentTimeMillis();
         {
-            RsfNetChannel toServerChannel = client.getChannel(local);
+            RsfNetChannel toServerChannel = client.getChannel(local).get();
             toServerChannel.sendData(buildInfo(), callBack);
         }
         printInfo(System.currentTimeMillis() - startTime);

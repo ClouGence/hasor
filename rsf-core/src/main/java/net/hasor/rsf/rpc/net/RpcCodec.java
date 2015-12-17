@@ -44,7 +44,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     private final ReceivedListener           rpcEventListener;
     private final BasicFuture<RsfNetChannel> channelFuture;
     //
-    public RpcCodec(RsfNetManager rsfNetManager, BasicFuture<RsfNetChannel> channelFuture) {
+    public RpcCodec(RsfNetManager rsfNetManager) {
         this.rsfNetManager = rsfNetManager;
         this.rsfTimerManager = rsfNetManager.getTimerManager();
         this.rpcEventListener = rsfNetManager.getReceivedListener();
@@ -60,11 +60,6 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             }
         });
         super.handlerAdded(ctx);
-    }
-    @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("ddddd");
-        super.channelRegistered(ctx);
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.rsf.plugins.center.client;
 /***
  * 
  * @version : 2015年5月5日

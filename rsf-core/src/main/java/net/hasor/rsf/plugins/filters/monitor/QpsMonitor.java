@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.monitor;
+package net.hasor.rsf.plugins.filters.monitor;
 import java.util.concurrent.atomic.AtomicLong;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;

@@ -88,7 +88,7 @@ public class NetworkFunTest {
             public void receivedMessage(InterAddress form, RequestInfo response) {
                 try {
                     System.out.println("[Server]received RequestInfo message.");
-                    server.getChannel(form).sendData(buildResponse(response), null);
+                    server.getChannel(form).get().sendData(buildResponse(response), null);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
@@ -107,7 +107,7 @@ public class NetworkFunTest {
             public void receivedMessage(InterAddress form, RequestInfo response) {
                 try {
                     System.out.println("[Client]received RequestInfo message.");
-                    client.getChannel(form).sendData(buildResponse(response), null);
+                    client.getChannel(form).get().sendData(buildResponse(response), null);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
@@ -120,9 +120,9 @@ public class NetworkFunTest {
         //
         //
         //
-        RsfNetChannel clientToServer = client.getChannel(new InterAddress("127.0.0.1", 8000, "local"));
+        RsfNetChannel clientToServer = client.getChannel(new InterAddress("127.0.0.1", 8000, "local")).get();
         clientToServer.sendData(buildRequest(), null);
-        RsfNetChannel serverToClient = server.getChannel(new InterAddress("127.0.0.1", 8001, "local"));
+        RsfNetChannel serverToClient = server.getChannel(new InterAddress("127.0.0.1", 8001, "local")).get();
         serverToClient.sendData(buildRequest(), null);
         //
         System.out.println();
