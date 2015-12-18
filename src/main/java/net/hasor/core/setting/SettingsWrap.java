@@ -25,9 +25,9 @@ import net.hasor.core.XmlNode;
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SettingsWarp implements Settings {
+public class SettingsWrap implements Settings {
     private final Settings settings;
-    public SettingsWarp(Settings settings) {
+    public SettingsWrap(Settings settings) {
         this.settings = settings;
     }
     //
