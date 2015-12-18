@@ -463,6 +463,12 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         logger.info("doShutdownCompleted now.");
         doShutdownCompleted();
         logger.info("doShutdown completed!");
-        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        try {
+            Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        } catch (IllegalStateException e) {
+            if (!"Shutdown in progress".equals(e.getMessage())) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 }

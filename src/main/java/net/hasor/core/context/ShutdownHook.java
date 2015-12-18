@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 用于处理当虚拟机关闭时{@link TemplateAppContext}的shutdown过程。
  * @version : 2015年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 class ShutdownHook extends Thread implements Runnable {
+    protected Logger              logger = LoggerFactory.getLogger(getClass());
     private TemplateAppContext<?> appContext;
     public ShutdownHook(TemplateAppContext<?> appContext) {
         this.appContext = appContext;
@@ -29,7 +32,7 @@ class ShutdownHook extends Thread implements Runnable {
             this.setName("Hasor-ShutdownHook");
             this.appContext.shutdown();
         } catch (Throwable e) {
-            e.printStackTrace(System.err);
+            logger.error(e.getMessage(), e);
         }
     }
 }
