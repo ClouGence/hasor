@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.setting.SettingsWarp;
+import net.hasor.core.setting.SettingsWrap;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
@@ -35,7 +35,7 @@ import net.hasor.rsf.transform.protocol.OptionInfo;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultRsfSettings extends SettingsWarp implements RsfSettings {
+public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     protected Logger        logger               = LoggerFactory.getLogger(getClass());
     private int             defaultTimeout       = 6000;
     private String          defaultGroup         = "RSF";

@@ -142,7 +142,7 @@ public class ProtocolUtils {
         //2.params
         List<String> pTypes = info.getParameterTypes();
         List<byte[]> pValues = info.getParameterValues();
-        if ((pTypes != null && pTypes.isEmpty()) || (pValues != null && pValues.isEmpty())) {
+        if ((pTypes != null && !pTypes.isEmpty()) && (pValues != null && !pValues.isEmpty())) {
             for (int i = 0; i < pTypes.size(); i++) {
                 String typeKey = pTypes.get(i);
                 byte[] valKey = pValues.get(i);

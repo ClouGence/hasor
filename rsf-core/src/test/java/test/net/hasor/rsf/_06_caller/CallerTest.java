@@ -20,9 +20,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.junit.Test;
 import org.more.future.FutureCallback;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
@@ -35,7 +35,6 @@ import net.hasor.rsf.plugins.filters.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.rpc.caller.SenderListener;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import test.net.hasor.rsf.services.EchoService;
@@ -85,13 +84,12 @@ public class CallerTest {
     public void callerTest() throws IOException, URISyntaxException, InterruptedException {
         final Queue<RequestInfo> queue = new ConcurrentLinkedQueue<RequestInfo>();
         //
-        final Settings setting = new StandardContextSettings();//create Settings
-        final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext("03_address-config.xml");
+        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
         final RsfContext rsfContext = new EmpytRsfContext() {
             public RsfSettings getSettings() {
-                return rsfSetting;
+                return rsfEnvironment.getSettings();
             }
         };
         //

@@ -15,14 +15,12 @@
  */
 package test.net.hasor.rsf._08_context;
 import org.junit.Test;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.bootstrap.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
 /**
@@ -35,33 +33,31 @@ public class RsfContextTest {
     public void test() throws Throwable {
         //
         //Server
-        AppContext serverAppContext = Hasor.createAppContext("07_server-config.xml");
-        RsfSettings serverSetting = new DefaultRsfSettings(serverAppContext.getEnvironment().getSettings());
-        RsfEnvironment serverEnvironment = new DefaultRsfEnvironment(null, serverSetting);
-        RsfBeanContainer serverContainer = new RsfBeanContainer(serverEnvironment);
-        serverContainer.createBinder().rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-        AbstractRsfContext server = new AbstractRsfContext() {};
-        server.init(serverAppContext, serverContainer);
-        //
-        //
+        AppContext serverContext = Hasor.createAppContext("07_server-config.xml", new RsfModule() {
+            public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+            }
+        });
         //
         //Client
-        AppContext clientAppContext = Hasor.createAppContext("07_client-config.xml");
-        RsfSettings clientSetting = new DefaultRsfSettings(clientAppContext.getEnvironment().getSettings());
-        RsfEnvironment clientEnvironment = new DefaultRsfEnvironment(null, clientSetting);
-        RsfBeanContainer clientContainer = new RsfBeanContainer(clientEnvironment);
-        clientContainer.createBinder().rsfService(EchoService.class).bindAddress("rsf://127.0.0.1:8000/local").register();
-        AbstractRsfContext client = new AbstractRsfContext() {};
-        client.init(clientAppContext, clientContainer);
+        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfModule() {
+            public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://127.0.0.1:8000/local").register();
+            }
+        });
         //
         //
         //
         //Client -> Server
-        EchoService echoService = client.getRsfClient().wrapper(EchoService.class);
+        RsfClient client = clientContext.getInstance(RsfClient.class);
+        EchoService echoService = client.wrapper(EchoService.class);
         for (int i = 0; i < 208; i++) {
-            //发起四次调用，然后让这四个球在RSF容器里弹来弹去。
-            String res = echoService.sayHello("Hello Word");
-            System.out.println(res);
+            try {
+                String res = echoService.sayHello("Hello Word");
+                System.out.println(res);
+            } catch (Exception e) {}
         }
+        //
+        System.out.println();
     }
 }

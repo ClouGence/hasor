@@ -20,14 +20,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
@@ -67,18 +65,16 @@ public class NetworkTest implements ReceivedListener {
     //
     //
     private RsfNetManager server() throws IOException, URISyntaxException {
-        Settings setting = new StandardContextSettings("07_server-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        RsfNetManager server = new RsfNetManager(rsfEnvironment, this);
+        final AppContext appContext = Hasor.createAppContext("07_server-config.xml");
+        final RsfEnvironment environment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
+        RsfNetManager server = new RsfNetManager(environment, this);
         server.start();
         return server;
     }
     private RsfNetManager client() throws IOException, URISyntaxException {
-        Settings setting = new StandardContextSettings("07_client-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        RsfNetManager client = new RsfNetManager(rsfEnvironment, this);
+        final AppContext appContext = Hasor.createAppContext("07_client-config.xml");
+        final RsfEnvironment environment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
+        RsfNetManager client = new RsfNetManager(environment, this);
         client.start();
         return client;
     }

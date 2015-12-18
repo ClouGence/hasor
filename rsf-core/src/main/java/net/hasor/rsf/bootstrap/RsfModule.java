@@ -15,66 +15,54 @@
  */
 package net.hasor.rsf.bootstrap;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Module;
+import net.hasor.core.AppContext;
+import net.hasor.core.LifeModule;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.plugins.filters.local.LocalPref;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
+import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfModule implements Module {
-    private final RsfContext createRsfContext(ApiBinder apiBinder) throws Throwable {
-        Environment env = apiBinder.getEnvironment();
-        //1.调用引导程序启动 RSF
-        RsfBootstrap bootstrap = new RsfBootstrap();
-        bootstrap.bindSettings(env.getSettings());
-        bootstrap.doBinder(new RsfStart() {
-            public void onBind(RsfBinder rsfBinder) throws Throwable {
-                rsfBinder.bindFilter("LocalPre", new LocalPref());
-            }
-        });
-        bootstrap.socketBind(this.bindAddress(env), this.bindPort(env));
-        final RsfContext rsfContext = bootstrap.workAt(workMode(env)).sync();
-        //
-        //2.同步接收 AppContext 的 shutdown 通知，并且传递给 RSF
-        EventContext eventContext = env.getEventContext();
-        apiBinder.bindType(RsfContext.class, rsfContext);
-        eventContext.pushListener(EventContext.ContextEvent_Shutdown, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                rsfContext.shutdown();
-            }
-        });
-        return rsfContext;
+public class RsfModule implements LifeModule {
+    @Override
+    public final void onStart(AppContext appContext) throws Throwable {
+        RsfBeanContainer rsfContainer = appContext.getInstance(RsfBeanContainer.class);
+        AbstractRsfContext rsfContext = appContext.getInstance(AbstractRsfContext.class);
+        rsfContext.init(appContext, rsfContainer);
     }
-    //
-    private static final Object LOCK_KEY   = new Object();
-    private static RsfContext   rsfContext = null;
-    //
+    @Override
+    public final void onStop(AppContext appContext) throws Throwable {
+        AbstractRsfContext rsfContext = appContext.getInstance(AbstractRsfContext.class);
+        rsfContext.shutdown();
+    }
+    @Override
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        synchronized (LOCK_KEY) {
-            if (rsfContext == null) {
-                rsfContext = createRsfContext(apiBinder);
+        final RsfEnvironment environment = new DefaultRsfEnvironment(apiBinder.getEnvironment());
+        final RsfBeanContainer container = new RsfBeanContainer(environment);
+        final AbstractRsfContext rsfContext = new AbstractRsfContext() {};
+        apiBinder.bindType(RsfBeanContainer.class).toInstance(container);
+        apiBinder.bindType(AbstractRsfContext.class).toInstance(rsfContext);
+        //
+        apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
+        apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
+        apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
+        apiBinder.bindType(RsfClient.class).toProvider(new Provider<RsfClient>() {
+            public RsfClient get() {
+                return rsfContext.getRsfClient();
             }
-        }
-        this.loadModule(new InnerRsfApiBinder(apiBinder, rsfContext));
+        });
+        //
+        this.loadModule(apiBinder, container.createBinder());
     }
-    /**用于覆盖 rsf 配置文件中的配置。*/
-    protected String bindAddress(Environment env) {
-        return null;
+    public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
+        //
     }
-    /**用于覆盖 rsf 配置文件中的配置。*/
-    protected int bindPort(Environment env) {
-        return 0;
-    }
-    /**用于覆盖 rsf 配置文件中的配置。*/
-    protected WorkMode workMode(Environment env) {
-        return WorkMode.None;
-    }
-    //
-    public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }

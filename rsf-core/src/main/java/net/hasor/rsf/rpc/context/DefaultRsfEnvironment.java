@@ -15,7 +15,8 @@
  */
 package net.hasor.rsf.rpc.context;
 import java.io.IOException;
-import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.Environment;
+import net.hasor.core.environment.EnvironmentWrap;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 /**
@@ -23,16 +24,14 @@ import net.hasor.rsf.RsfSettings;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefaultRsfEnvironment extends StandardEnvironment implements RsfEnvironment {
-    public DefaultRsfEnvironment(RsfSettings rsfSettings) throws IOException {
-        this(null, rsfSettings);
-    }
-    public DefaultRsfEnvironment(Object context, RsfSettings rsfSettings) throws IOException {
-        super(context);
-        this.initEnvironment(rsfSettings);
+public class DefaultRsfEnvironment extends EnvironmentWrap implements RsfEnvironment {
+    private RsfSettings rsfSettings = null;
+    public DefaultRsfEnvironment(Environment environment) throws IOException {
+        super(environment);
+        this.rsfSettings = new DefaultRsfSettings(environment.getSettings());
     }
     @Override
     public RsfSettings getSettings() {
-        return (RsfSettings) super.getSettings();
+        return this.rsfSettings;
     }
 }

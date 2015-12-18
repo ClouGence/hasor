@@ -234,6 +234,10 @@ public class RsfNetManager {
             }
         }
         public void failed(InterAddress targetAddress, Throwable cause) {
+            if (targetAddress == null) {
+                logger.error(cause.getMessage(), cause);
+                return;
+            }
             BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress);
             if (future != null) {
                 future.failed(cause);

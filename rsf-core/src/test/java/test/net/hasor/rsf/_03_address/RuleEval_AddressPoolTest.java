@@ -23,15 +23,13 @@ import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 /**
  * 
  * @version : 2015年12月2日
@@ -46,9 +44,8 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings();//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext();
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.startTimer();
         //
@@ -103,9 +100,8 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings();//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext();
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.startTimer();
         //
@@ -161,9 +157,8 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings("03_args-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext("03_address-config.xml");
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.startTimer();
         //

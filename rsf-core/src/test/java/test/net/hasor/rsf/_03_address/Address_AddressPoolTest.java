@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
@@ -41,9 +43,8 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings();//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext();
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.startTimer();
         //
@@ -99,9 +100,8 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings("03_address-config.xml");//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext("03_address-config.xml");
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         AddressPool pool = new AddressPool(rsfEnvironment);//new AddressPool
         pool.startTimer();
         //

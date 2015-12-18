@@ -17,18 +17,16 @@ package test.net.hasor.rsf._05_container;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfBinder.RegisterBuilder;
 import net.hasor.rsf.RsfBinder.RegisterReference;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import test.net.hasor.rsf._03_address.AbstractAddressPoolTest;
 import test.net.hasor.rsf.services.EchoService;
 /**
@@ -42,9 +40,8 @@ public class ServiceContainerTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--开始环境准备-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         ConcurrentMap<String, ConcurrentMap<InterAddress, TimeData>> atomicMap = new ConcurrentHashMap<String, ConcurrentMap<InterAddress, TimeData>>();
-        Settings setting = new StandardContextSettings();//create Settings
-        RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
-        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        AppContext appContext = Hasor.createAppContext();
+        RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(appContext.getEnvironment());//create RsfEnvironment
         RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
         container.getAddressPool().startTimer();
         //

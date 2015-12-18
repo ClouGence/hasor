@@ -18,13 +18,12 @@ import java.util.Date;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
@@ -82,8 +81,8 @@ public class NetworkFunTest {
     private RsfNetManager client = null;
     @Test()
     public void testNetworkFunTest() throws Throwable {
-        RsfSettings serverSetting = new DefaultRsfSettings(new StandardContextSettings("07_server-config.xml"));
-        RsfEnvironment serverEnvironment = new DefaultRsfEnvironment(null, serverSetting);
+        final AppContext serverAppContext = Hasor.createAppContext("07_server-config.xml");
+        final RsfEnvironment serverEnvironment = new DefaultRsfEnvironment(serverAppContext.getEnvironment());//create RsfEnvironment
         server = new RsfNetManager(serverEnvironment, new ReceivedListener() {
             public void receivedMessage(InterAddress form, RequestInfo response) {
                 try {
@@ -101,8 +100,8 @@ public class NetworkFunTest {
         //
         //
         //
-        RsfSettings clientSetting = new DefaultRsfSettings(new StandardContextSettings("07_client-config.xml"));
-        RsfEnvironment clientEnvironment = new DefaultRsfEnvironment(null, clientSetting);
+        final AppContext clientAppContext = Hasor.createAppContext("07_client-config.xml");
+        final RsfEnvironment clientEnvironment = new DefaultRsfEnvironment(serverAppContext.getEnvironment());//create RsfEnvironment
         client = new RsfNetManager(clientEnvironment, new ReceivedListener() {
             public void receivedMessage(InterAddress form, RequestInfo response) {
                 try {
