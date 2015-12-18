@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import net.hasor.core.Provider;
-import net.hasor.rsf.address.InterAddress;
 /**
  * 服务对象基类。
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfServiceWrapper {
-    private Provider<InterAddress> target;
-    public Provider<InterAddress> getTarget() {
+    private AddressProvider target;
+    public AddressProvider getTarget() {
         return target;
     }
-    public void setTarget(Provider<InterAddress> target) {
+    public void setTarget(AddressProvider target) {
         this.target = target;
     }
 }

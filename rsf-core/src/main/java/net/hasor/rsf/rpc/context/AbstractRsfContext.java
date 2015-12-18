@@ -14,133 +14,154 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
-import java.io.IOException;
-import java.util.concurrent.Executor;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import net.hasor.core.EventContext;
+import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
-import net.hasor.rsf.domain.Events;
-import net.hasor.rsf.rpc.caller.RsfRequestManager;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.domain.AddressProvider;
+import net.hasor.rsf.domain.InstanceAddressProvider;
+import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
+import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
+import net.hasor.rsf.rpc.client.RpcRsfClient;
+import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetManager;
-import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.utils.ExecutesManager;
-import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
-    protected Logger                logger = LoggerFactory.getLogger(getClass());
-    private RsfEnvironment          rsfEnvironment;
-    private AddressPool             addressPool;
-    private RsfBindCenter           bindCenter;
-    private SerializeFactory        serializeFactory;
-    private ExecutesManager         executesManager;
-    private EventLoopGroup          workLoopGroup;
-    private RsfRequestManager requestManager;
-    private RsfNetManager channelManager;
+    protected Logger         logger           = LoggerFactory.getLogger(getClass());
+    private RsfBeanContainer rsfBeanContainer = null;                               //服务管理(含地址管理)
+    private RsfEnvironment   rsfEnvironment   = null;                               //环境&配置
+    private RemoteRsfCaller  rsfCaller        = null;                               //调用器
+    private RsfNetManager    rsfNetManager    = null;                               //网络传输
+    private AppContext       appContext       = null;
+    private AddressProvider  poolProvider     = null;
     //
-    protected void initContext(Object context, RsfSettings rsfSettings) throws IOException {
-        logger.info("rsfContext init.");
-        this.rsfEnvironment = new DefaultRsfEnvironment(context, rsfSettings);
+    public void init(AppContext appContext, RsfBeanContainer rsfBeanContainer) throws UnknownHostException {
+        Transport transport = new Transport();
+        this.rsfBeanContainer = rsfBeanContainer;
+        this.rsfEnvironment = this.rsfBeanContainer.getEnvironment();
+        this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
+        this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
+        this.appContext = appContext;
+        AddressPool pool = this.rsfBeanContainer.getAddressPool();
+        this.poolProvider = new PoolProvider(pool);
         //
-        this.bindCenter = new RsfBindCenter(this);
-        this.addressPool = new AddressPool(this.rsfEnvironment);
-        this.serializeFactory = SerializeFactory.createFactory(rsfSettings);
-        //
-        int queueSize = rsfSettings.getQueueMaxSize();
-        int minCorePoolSize = rsfSettings.getQueueMinPoolSize();
-        int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
-        long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
-        this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
-        //
-        int workerThread = rsfSettings.getNetworkWorker();
-        logger.info("nioEventLoopGroup, workerThread = " + workerThread);
-        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
-        //
-        this.requestManager = new RsfRequestManager(this);
-        this.channelManager = new RsfNetManager(this);
-        //
+        this.rsfBeanContainer.getAddressPool().startTimer();
+        this.rsfNetManager.start();
     }
-    /**序列化反序列化使用的类加载器*/
-    public ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+    /**销毁。*/
+    public void shutdown() {
+        this.rsfCaller.shutdown();
+        this.rsfNetManager.shutdown();
     }
-    /**获取配置*/
-    @Override
+    //
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();
     }
-    /** @return 获取服务注册中心*/
-    @Override
-    public RsfBindCenter getBindCenter() {
-        return this.bindCenter;
+    public ClassLoader getClassLoader() {
+        return this.appContext.getClassLoader();
     }
-    /** @return 获取地址管理中心*/
-    public AddressPool getAddressPool() {
-        return this.addressPool;
+    public AppContext getAppContext() {
+        return this.appContext;
     }
-    /** @return 获取请求管理中心*/
-    public RsfRequestManager getRequestManager() {
-        return this.requestManager;
-    }
-    /** @return 获取网络连接管理中心*/
-    public RsfNetManager getChannelManager() {
-        return this.channelManager;
-    }
-    /** @return 获取序列化管理器。*/
-    public SerializeFactory getSerializeFactory() {
-        return this.serializeFactory;
-    }
-    /** @return 获取事件管理器。*/
-    public EventContext getEventContext() {
-        return this.rsfEnvironment.getEventContext();
-    }
-    /**
-     * 获取{@link Executor}用于安排执行任务。
-     * @param serviceName 服务名
-     * @return 返回Executor
-     */
-    public Executor getCallExecute(String serviceUniqueName) {
-        return this.executesManager.getExecute(serviceUniqueName);
-    }
-    /** @return 获取Netty事件处理工具*/
-    public EventLoopGroup getWorkLoopGroup() {
-        return this.workLoopGroup;
-    }
-    /**停止工作*/
-    @Override
-    public void shutdown() {
-        this.getEventContext().fireSyncEvent(Events.Shutdown, this);
-        this.workLoopGroup.shutdownGracefully();
-    }
-    /**获取客户端*/
-    @Override
+    //
     public RsfClient getRsfClient() {
-        return this.requestManager.getClientWrappe();
+        return new RpcRsfClient(this.poolProvider, this.rsfCaller);
     }
-    /**
-     * 获取元信息所描述的服务对象
-     * @param bindInfo 元信息所描述对象
-     * @return 服务对象
-     */
-    @Override
-    public <T> T getBean(RsfBindInfo<T> bindInfo) {
-        Provider<T> provider = getProvider(bindInfo);
-        return (provider != null) ? provider.get() : null;
+    public RsfClient getRsfClient(String targetStr) throws URISyntaxException {
+        return this.getRsfClient(new InterAddress(targetStr));
     }
-    @Override
-    public <T> Provider<T> getProvider(RsfBindInfo<T> bindInfo) {
-        return this.getBindCenter().getProvider(bindInfo);
+    public RsfClient getRsfClient(URI targetURL) {
+        return this.getRsfClient(new InterAddress(targetURL));
+    }
+    public RsfClient getRsfClient(InterAddress target) {
+        AddressProvider provider = new InstanceAddressProvider(target);
+        return new RpcRsfClient(provider, this.rsfCaller);
+    }
+    public <T> RsfBindInfo<T> getServiceInfo(String serviceID) {
+        return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(serviceID);
+    }
+    public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType) {
+        return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(serviceType);
+    }
+    public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version) {
+        return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(group, name, version);
+    }
+    public List<String> getServiceIDs() {
+        return this.rsfBeanContainer.getServiceIDs();
+    }
+    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
+        return (Provider<T>) this.rsfBeanContainer.getProvider(bindInfo.getBindID());
+    }
+    public RsfBinder binder() {
+        return this.rsfBeanContainer.createBinder();
+    }
+    //
+    //
+    private class PoolProvider implements AddressProvider {
+        private AddressPool pool;
+        public PoolProvider(AddressPool pool) {
+            this.pool = pool;
+        }
+        @Override
+        public InterAddress get(String serviceID, String methodName, Object[] args) {
+            return this.pool.nextAddress(serviceID, methodName, args);
+        }
+    }
+    /*接收到网络数据*/
+    private class Transport implements ReceivedListener, RemoteSenderListener {
+        @Override
+        public void receivedMessage(InterAddress form, ResponseInfo response) {
+            rsfCaller.putResponse(response);
+        }
+        @Override
+        public void receivedMessage(InterAddress form, RequestInfo request) {
+            rsfCaller.doRequest(form, request);
+        }
+        //
+        @Override
+        public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
+            try {
+                InterAddress target = targetProvider.get();
+                rsfNetManager.getChannel(target).get().sendData(info, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        public void sendResponse(InterAddress target, ResponseBlock block) {
+            try {
+                rsfNetManager.getChannel(target).get().sendData(block, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        public void sendResponse(InterAddress target, ResponseInfo info) {
+            try {
+                rsfNetManager.getChannel(target).get().sendData(info, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

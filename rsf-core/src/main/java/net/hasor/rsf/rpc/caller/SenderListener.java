@@ -24,5 +24,5 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  */
 public interface SenderListener {
     /**向远端发送请求。*/
-    public void sendRequest(Provider<InterAddress> target, RequestInfo info);
+    public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info);
 }

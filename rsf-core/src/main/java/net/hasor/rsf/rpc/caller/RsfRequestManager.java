@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
+import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
@@ -35,12 +35,14 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.domain.AddressProvider;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.RsfTimeoutException;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
+import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
@@ -58,23 +60,20 @@ public abstract class RsfRequestManager {
     private final SerializeFactory               serializeFactory;
     private final SenderListener                 senderListener;
     //
-    public RsfRequestManager(AppContext appContext, SenderListener senderListener) {
-        this.rsfContext = appContext.getInstance(RsfContext.class);
-        if (this.rsfContext == null) {
-            throw new NullPointerException("not found RsfContext.");
-        }
+    public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
         if (senderListener == null) {
             throw new NullPointerException("not found SendData.");
         }
+        this.rsfContext = rsfContext;
+        RsfSettings rsfSetting = rsfContext.getSettings();
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-        RsfSettings rsfSettings = this.rsfContext.getSettings();
-        this.timerManager = new TimerManager(rsfSettings.getDefaultTimeout());
+        this.timerManager = new TimerManager(rsfSetting.getDefaultTimeout());
         this.requestCount = new AtomicInteger(0);
-        this.serializeFactory = SerializeFactory.createFactory(this.rsfContext.getSettings());
+        this.serializeFactory = SerializeFactory.createFactory(rsfSetting);
         this.senderListener = senderListener;
     }
     /**获取RSF容器对象。*/
-    public final RsfContext getContext() {
+    public RsfContext getContext() {
         return this.rsfContext;
     }
     /**获取{@link RsfBeanContainer}。*/
@@ -219,7 +218,7 @@ public abstract class RsfRequestManager {
     private void sendRequest(final RsfFuture rsfFuture) throws Throwable {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
-        final Provider<InterAddress> target = rsfRequest.getTarget();
+        final AddressProvider target = rsfRequest.getTarget();
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
@@ -236,9 +235,17 @@ public abstract class RsfRequestManager {
         }
         /*3.发送请求*/
         try {
+            String serviceID = rsfRequest.getBindInfo().getBindID();
+            String methodName = rsfRequest.getMethod().getName();
+            Object[] args = rsfRequest.getParameterObject();
+            InterAddress address = target.get(serviceID, methodName, args);
+            if (address == null) {
+                throw new RsfException(ProtocolStatus.Unknown, "address Unknown.");
+            }
+            Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
             startRequest(rsfFuture);//                  <- 1.计时request。
             RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
-            sendData(target, info);//                   <- 3.发送数据
+            sendData(targetProvider, info);//                   <- 3.发送数据
         } catch (Throwable e) {
             logger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
@@ -272,5 +279,9 @@ public abstract class RsfRequestManager {
         info.addOptionMap(rsfRequest);
         //
         return info;
+    }
+    /**获取序列化名单*/
+    public SerializeList getSerializeList() {
+        return this.serializeFactory;
     }
 }

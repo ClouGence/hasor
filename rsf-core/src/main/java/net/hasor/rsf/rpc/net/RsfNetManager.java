@@ -38,8 +38,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
@@ -74,17 +72,6 @@ public class RsfNetManager {
         this.timerManager = new TimerManager(connectTimeout, "RSF-Network");
         this.channelMapping = new ConcurrentHashMap<InterAddress, BasicFuture<RsfNetChannel>>();
         //
-        Hasor.addShutdownListener(rsfEnvironment, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                logger.info("rsfNetManager, shutdownGracefully.");
-                if (bindListener != null) {
-                    bindListener.close();
-                }
-                listenLoopGroup.shutdownGracefully();
-                workLoopGroup.shutdownGracefully();
-            }
-        });
-        //
         int workerThread = rsfSettings.getNetworkWorker();
         int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
@@ -94,6 +81,15 @@ public class RsfNetManager {
         this.rsfEnvironment = rsfEnvironment;
         this.receivedListener = receivedListener;
         this.channelRegister = new ManagerChannelRegister();
+    }
+    /**销毁。*/
+    public void shutdown() {
+        logger.info("rsfNetManager, shutdownGracefully.");
+        if (bindListener != null) {
+            bindListener.close();
+        }
+        listenLoopGroup.shutdownGracefully();
+        workLoopGroup.shutdownGracefully();
     }
     //
     /**获取RSF运行的地址。*/
@@ -207,9 +203,10 @@ public class RsfNetManager {
     }
     private <T extends AbstractBootstrap<?, ?>> T configBoot(T boot) {
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-        boot.option(ChannelOption.SO_BACKLOG, 1024);
-        boot.option(ChannelOption.SO_RCVBUF, 1024 * 256);
-        boot.option(ChannelOption.SO_SNDBUF, 1024 * 256);
+        //        boot.option(ChannelOption.SO_BACKLOG, 128);
+        //        boot.option(ChannelOption.SO_BACKLOG, 1024);
+        //        boot.option(ChannelOption.SO_RCVBUF, 1024 * 256);
+        //        boot.option(ChannelOption.SO_SNDBUF, 1024 * 256);
         boot.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         return boot;
     }
@@ -228,11 +225,19 @@ public class RsfNetManager {
     private class ManagerChannelRegister implements ChannelRegister {
         public void completed(InterAddress targetAddress, RsfNetChannel netChannel) {
             BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress);
-            future.completed(netChannel);
+            if (future != null) {
+                future.completed(netChannel);
+            } else {
+                future = new BasicFuture<RsfNetChannel>();
+                future.completed(netChannel);
+                channelMapping.put(targetAddress, future);
+            }
         }
         public void failed(InterAddress targetAddress, Throwable cause) {
             BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress);
-            future.failed(cause);
+            if (future != null) {
+                future.failed(cause);
+            }
         }
     }
 }

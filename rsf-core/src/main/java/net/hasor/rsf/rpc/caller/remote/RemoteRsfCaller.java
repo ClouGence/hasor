@@ -16,66 +16,48 @@
 package net.hasor.rsf.rpc.caller.remote;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.rpc.caller.RsfCaller;
-import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.utils.ExecutesManager;
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
- * 
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RemoteRsfCaller extends RsfCaller {
     private final ExecutesManager      executesManager;
-    private final SerializeList        serializeList;
     private final RemoteSenderListener senderListener;
-    //
-    public RemoteRsfCaller(AppContext appContext, RemoteSenderListener senderListener) {
-        super(appContext, senderListener);
-        //
-        this.serializeList = appContext.getInstance(SerializeList.class);
-        if (this.serializeList == null) {
-            throw new NullPointerException("not found SerializeList.");
-        }
+    // 
+    public RemoteRsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, RemoteSenderListener senderListener) {
+        super(rsfContext, rsfBeanContainer, senderListener);
         //
         this.senderListener = senderListener;
-        RsfSettings rsfSettings = this.getContext().getSettings();
+        RsfSettings rsfSettings = rsfContext.getSettings();
         int queueSize = rsfSettings.getQueueMaxSize();
         int minCorePoolSize = rsfSettings.getQueueMinPoolSize();
         int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
         long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
-        Hasor.pushShutdownListener(appContext.getEnvironment(), new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                logger.info("rsfCaller -> shutdown.");
-                executesManager.shutdown();
-            }
-        });
     }
-    /**获取消息监听器。*/
-    RemoteSenderListener getSenderListener() {
-        return this.senderListener;
-    }
-    /**获取序列化名单*/
-    SerializeList getSerializeList() {
-        return this.serializeList;
+    /**销毁。*/
+    public void shutdown() {
+        logger.info("rsfCaller -> shutdown.");
+        this.executesManager.shutdown();
     }
     /**
      * 收到Request请求，并将该请求安排进队列，由队列安排方法调用。
      * @param target 目标调用地址。
      * @param info 请求消息。
      */
-    public void receivedRequestInfo(InterAddress target, RequestInfo info) {
+    public void doRequest(InterAddress target, RequestInfo info) {
         try {
             logger.debug("received request({}) full = {}", info.getRequestID());
             String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
@@ -85,7 +67,14 @@ public class RemoteRsfCaller extends RsfCaller {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
-            this.senderListener.receiveResponse(target, block);
+            this.senderListener.sendResponse(target, block);
         }
+    }
+    //
+    //
+    //
+    /**获取消息监听器。*/
+    RemoteSenderListener getSenderListener() {
+        return this.senderListener;
     }
 }

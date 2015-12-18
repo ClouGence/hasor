@@ -21,7 +21,6 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -76,16 +75,7 @@ public class EmpytRsfContext implements RsfContext {
         return null;
     }
     @Override
-    public void shutdown() {
-        // TODO Auto-generated method stub
-    }
-    @Override
     public RsfSettings getSettings() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public RsfEnvironment getEnvironment() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
@@ -27,9 +28,9 @@ public interface RsfContext {
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
     /** @return 发起远程调用的客户端接口*/
-    public RsfClient getRsfClient(String target);
+    public RsfClient getRsfClient(String targetStr) throws URISyntaxException;
     /** @return 发起远程调用的客户端接口*/
-    public RsfClient getRsfClient(URI target);
+    public RsfClient getRsfClient(URI targetURL);
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient(InterAddress target);
     //
@@ -51,12 +52,12 @@ public interface RsfContext {
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
     //
     //
-    /**停止工作*/
-    public void shutdown();
+    //    /**停止工作*/
+    //    public void shutdown();
     /**获取RSF配置*/
     public RsfSettings getSettings();
-    /**获取RSF配置*/
-    public RsfEnvironment getEnvironment();
+    //    /**获取RSF配置*/
+    //    public RsfEnvironment getEnvironment();
     /**获取类加载器。*/
     public ClassLoader getClassLoader();
     /**创建{@link RsfBinder}。*/

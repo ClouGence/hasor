@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.more.future.FutureCallback;
-import net.hasor.rsf.domain.RsfException;
 /**
  * RSF调用者。
  * @version : 2014年11月18日
@@ -26,40 +27,35 @@ public interface RsfClient {
      * 根据服务ID，获取远程服务对象
      * @param serviceID 服务ID
      * @return 返回远程服务对象。
-     * @throws RsfException rsf异常
      */
-    public <T> T getRemoteByID(String serviceID) throws RsfException;
+    public <T> T getRemoteByID(String serviceID);
     /**
      * 获取远程服务对象。
      * @param group 分组
      * @param name 服务名
      * @param version 版本
      * @return 返回远程服务对象。
-     * @throws RsfException rsf异常
      */
-    public <T> T getRemote(String group, String name, String version) throws RsfException;
+    public <T> T getRemote(String group, String name, String version);
     /**
      * 获取远程服务对象
      * @param bindInfo rsf服务注册信息。
      * @return 返回远程服务对象。
-     * @throws RsfException rsf异常
      */
-    public <T> T getRemote(RsfBindInfo<T> bindInfo) throws RsfException;
+    public <T> T getRemote(RsfBindInfo<T> bindInfo);
     /**
      * 将服务包装为另外一个接口然后返回。
      * @param serviceID 服务ID
      * @param interFace 要装成为的接口
      * @return 返回包装之后的服务接口。
-     * @throws RsfException rsf异常
      */
-    public <T> T wrapperByID(String serviceID, Class<T> interFace) throws RsfException;
+    public <T> T wrapperByID(String serviceID, Class<T> interFace);
     /**
      * 将服务包装为另外一个接口。
      * @param interFace 服务接口类型
      * @return 返回包装之后的服务接口。
-     * @throws RsfException rsf异常
      */
-    public <T> T wrapper(Class<T> interFace) throws RsfException;
+    public <T> T wrapper(Class<T> interFace);
     /**
      * 将服务包装为另外一个接口。
      * @param group 分组
@@ -67,17 +63,15 @@ public interface RsfClient {
      * @param version 版本
      * @param interFace 服务接口类型
      * @return 返回包装之后的服务接口。
-     * @throws RsfException rsf异常
      */
-    public <T> T wrapper(String group, String name, String version, Class<T> interFace) throws RsfException;
+    public <T> T wrapper(String group, String name, String version, Class<T> interFace);
     /**
      * 将服务包装为另外一个接口。
      * @param bindInfo rsf服务注册信息。
      * @param interFace 服务接口类型
      * @return 返回包装之后的服务接口。
-     * @throws RsfException rsf异常
      */
-    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException;
+    public <T> T wrapper(RsfBindInfo<?> bindInfo, Class<T> interFace);
     //
     /**
      * 同步方式调用远程服务。
@@ -88,7 +82,7 @@ public interface RsfClient {
      * @return 返回执行结果
      * @throws Throwable 同步执行期间遇到的错误。
      */
-    public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws Throwable;
+    public Object syncInvoke(RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws InterruptedException, ExecutionException, TimeoutException;
     /**
      * 异步方式调用远程服务。
      * @param bindInfo 远程服务信息

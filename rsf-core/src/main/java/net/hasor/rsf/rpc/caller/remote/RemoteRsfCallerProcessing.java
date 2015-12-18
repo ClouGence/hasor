@@ -63,7 +63,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             String errorInfo = "do request(" + requestID + ") failed -> service " + serviceID + " not exist.";
             logger.error(errorInfo);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Forbidden, errorInfo);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
             return;
         }
         /*检查timeout。*/
@@ -74,7 +74,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             String errorInfo = "do request(" + requestID + ") failed -> timeout for server.";
             logger.error(errorInfo);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
             return;
         }
         /*准备参数*/
@@ -89,7 +89,7 @@ class RemoteRsfCallerProcessing implements Runnable {
                 String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") is undefined.";
                 logger.error(errorInfo);
                 ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
-                this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+                this.rsfCaller.getSenderListener().sendResponse(this.target, block);
                 return;
             }
             //2.参数数量校验
@@ -99,7 +99,7 @@ class RemoteRsfCallerProcessing implements Runnable {
                 String errorInfo = "do request(" + requestID + ") failed -> parameters count and types count, not equal.";
                 logger.error(errorInfo);
                 ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
-                this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+                this.rsfCaller.getSenderListener().sendResponse(this.target, block);
                 return;
             }
             //3.反序列化
@@ -116,7 +116,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
             return;
         }
         /*执行调用*/
@@ -128,7 +128,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             String errorInfo = "do request(" + requestID + ") failed -> lookup service method error " + e.getMessage();
             logger.error(errorInfo, e);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Forbidden, errorInfo);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
             return;
         }
         //
@@ -146,7 +146,7 @@ class RemoteRsfCallerProcessing implements Runnable {
             String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + "," + e.getMessage();
             logger.error(msgLog);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, msgLog);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
         }
     }
     private int validateTimeout(int timeout, RsfBindInfo<?> bindInfo) {
@@ -168,7 +168,7 @@ class RemoteRsfCallerProcessing implements Runnable {
                 String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") is undefined.";
                 logger.error(errorInfo);
                 ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
-                this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+                this.rsfCaller.getSenderListener().sendResponse(this.target, block);
                 return;
             }
             //2.Response对象
@@ -180,12 +180,12 @@ class RemoteRsfCallerProcessing implements Runnable {
             info.setReturnData(returnData);
             info.addOptionMap(rsfResponse);
             //
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, info);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, info);
         } catch (Throwable e) {
             String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
             ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
-            this.rsfCaller.getSenderListener().receiveResponse(this.target, block);
+            this.rsfCaller.getSenderListener().sendResponse(this.target, block);
         }
     }
 }

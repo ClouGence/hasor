@@ -46,7 +46,7 @@ public class ServiceContainerTest extends AbstractAddressPoolTest {
         RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
         RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
         RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
-        container.init();
+        container.getAddressPool().startTimer();
         //
         InterAddress[] addresses_1 = new InterAddress[2];
         addresses_1[0] = new InterAddress("192.168.137.10", 8000, "etc2");//  rsf://192.168.137.10:8000/etc2

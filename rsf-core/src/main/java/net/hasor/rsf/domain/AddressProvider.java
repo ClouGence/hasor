@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller.remote;
+package net.hasor.rsf.domain;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.rpc.caller.SenderListener;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
- * 可以提供向远端响应Response的能力。
- * @version : 2015年12月8日
+ * 
+ * @version : 2015年12月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RemoteSenderListener extends SenderListener {
-    /**向远端发送响应数据。*/
-    public void sendResponse(InterAddress target, ResponseBlock block);
-    /**向远端发送响应数据。*/
-    public void sendResponse(InterAddress target, ResponseInfo info);
+public interface AddressProvider {
+    public InterAddress get(String serviceID, String methodName, Object[] args);
 }

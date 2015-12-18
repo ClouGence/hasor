@@ -15,11 +15,10 @@
  */
 package net.hasor.rsf.rpc.caller;
 import java.lang.reflect.Method;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.AddressProvider;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 /**
@@ -28,15 +27,15 @@ import net.hasor.rsf.transform.protocol.OptionInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
-    private final RsfCaller              rsfCaller;
-    private final Provider<InterAddress> target;
-    private final long                   requestID;
-    private final RsfBindInfo<?>         bindInfo;
-    private final Method                 targetMethod;
-    private final Class<?>[]             parameterTypes;
-    private final Object[]               parameterObjects;
+    private final RsfCaller       rsfCaller;
+    private final AddressProvider target;
+    private final long            requestID;
+    private final RsfBindInfo<?>  bindInfo;
+    private final Method          targetMethod;
+    private final Class<?>[]      parameterTypes;
+    private final Object[]        parameterObjects;
     //
-    public RsfRequestFormLocal(Provider<InterAddress> target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCaller rsfCaller) {
+    public RsfRequestFormLocal(AddressProvider target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCaller rsfCaller) {
         this.requestID = RsfRuntimeUtils.genRequestID();
         this.target = target;
         this.bindInfo = bindInfo;
@@ -50,7 +49,7 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
         return "requestID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
     }
     /**获取最终要调用的远程服务地址。*/
-    public Provider<InterAddress> getTarget() {
+    public AddressProvider getTarget() {
         return this.target;
     }
     //

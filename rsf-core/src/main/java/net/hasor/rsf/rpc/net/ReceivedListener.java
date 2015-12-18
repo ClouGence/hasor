@@ -23,8 +23,8 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ReceivedListener {
-    /**收到Response消息。*/
+    /**从远端收到Response消息。*/
     public void receivedMessage(InterAddress form, ResponseInfo response);
-    /**收到Response消息。*/
-    public void receivedMessage(InterAddress form, RequestInfo response);
+    /**从远端收到RequestInfo消息。*/
+    public void receivedMessage(InterAddress form, RequestInfo request);
 }

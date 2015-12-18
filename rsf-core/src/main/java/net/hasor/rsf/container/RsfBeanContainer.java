@@ -233,11 +233,6 @@ public class RsfBeanContainer {
             }
         };
     }
-    //
-    //
-    public void init() {
-        this.addressPool.startTimer();
-    }
 }
 class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T>implements RegisterReference<T> {
     private RsfBeanContainer rsfContainer;

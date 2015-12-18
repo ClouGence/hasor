@@ -20,18 +20,16 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.junit.Test;
 import org.more.future.FutureCallback;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.Settings;
+import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.domain.InstanceAddressProvider;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.plugins.filters.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.RsfCaller;
@@ -87,28 +85,20 @@ public class CallerTest {
     public void callerTest() throws IOException, URISyntaxException, InterruptedException {
         final Queue<RequestInfo> queue = new ConcurrentLinkedQueue<RequestInfo>();
         //
-        Module rsfModule = new Module() {
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                final RsfSettings rsfSetting = new DefaultRsfSettings(apiBinder.getEnvironment().getSettings());//create RsfSettings
-                RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-                RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
-                RsfContext rsfContext = new EmpytRsfContext() {
-                    public RsfSettings getSettings() {
-                        return rsfSetting;
-                    }
-                };
-                //
-                apiBinder.bindType(RsfSettings.class).toInstance(rsfSetting);
-                apiBinder.bindType(RsfEnvironment.class).toInstance(rsfEnvironment);
-                apiBinder.bindType(RsfBeanContainer.class).toInstance(container);
-                apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
+        final Settings setting = new StandardContextSettings();//create Settings
+        final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
+        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
+        final RsfContext rsfContext = new EmpytRsfContext() {
+            public RsfSettings getSettings() {
+                return rsfSetting;
             }
         };
-        final AppContext appContext = Hasor.createAppContext(rsfModule);
+        //
         //
         //
         //Caller
-        final RsfCaller caller = new RsfCaller(appContext, new SenderListener() {
+        final RsfCaller caller = new RsfCaller(rsfContext, container, new SenderListener() {
             public void sendRequest(Provider<InterAddress> target, RequestInfo info) {
                 queue.add(info);
             }
@@ -120,12 +110,11 @@ public class CallerTest {
         }
         //
         //RSF服务发布
-        RsfBeanContainer container = appContext.getInstance(RsfBeanContainer.class);
         container.createBinder().bindFilter("QpsMonitor", new QpsMonitor());
         final RsfBindInfo<?> bindInfo = container.createBinder().rsfService(EchoService.class).timeout(30000).register();
         //
         //调用服务
-        final Provider<InterAddress> target = new InstanceProvider<InterAddress>(new InterAddress("200.100.25.123", 8000, "unit"));
+        final InstanceAddressProvider target = new InstanceAddressProvider(new InterAddress("200.100.25.123", 8000, "unit"));
         final Class<?>[] paramTypes = new Class<?>[] { String.class };
         final Class<?>[] paramObjects = new Class<?>[] { String.class };
         FutureCallback<Object> callBack = new FutureCallback<Object>() {

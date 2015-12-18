@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._06_caller;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.junit.Test;
 import org.more.future.FutureCallback;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.Settings;
+import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.domain.AddressProvider;
+import net.hasor.rsf.domain.InstanceAddressProvider;
 import net.hasor.rsf.plugins.filters.monitor.QpsMonitor;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
-import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
@@ -54,40 +49,21 @@ import test.net.hasor.rsf.services.EchoServiceImpl;
  * @version : 2015年12月9日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RemoteCallerTest implements RemoteSenderListener, Module {
+public class RemoteCallerTest implements RemoteSenderListener {
     private Queue<RequestInfo> queue  = new ConcurrentLinkedQueue<RequestInfo>();
     private RemoteRsfCaller    client = null;
     private RemoteRsfCaller    server = null;
     //
     //
     //
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        final RsfSettings rsfSetting = new DefaultRsfSettings(apiBinder.getEnvironment().getSettings());//create RsfSettings
-        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
-        final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
-        final SerializeList serializeList = SerializeFactory.createFactory(rsfSetting);
-        final RsfContext rsfContext = new EmpytRsfContext() {
-            public RsfSettings getSettings() {
-                return rsfSetting;
-            }
-            public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
-                return (Provider<T>) container.getProvider(bindInfo.getBindID());
-            }
-        };
-        apiBinder.bindType(RsfSettings.class).toInstance(rsfSetting);
-        apiBinder.bindType(RsfEnvironment.class).toInstance(rsfEnvironment);
-        apiBinder.bindType(RsfBeanContainer.class).toInstance(container);
-        apiBinder.bindType(SerializeList.class).toInstance(serializeList);
-        apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
-    }
     public void sendRequest(Provider<InterAddress> target, RequestInfo info) {
         this.queue.add(info);
     }
-    public void receiveResponse(InterAddress target, ResponseInfo info) {
+    public void sendResponse(InterAddress target, ResponseInfo info) {
         info.setReceiveTime(System.currentTimeMillis());
         client.putResponse(info);
     }
-    public void receiveResponse(InterAddress target, ResponseBlock block) {
+    public void sendResponse(InterAddress target, ResponseBlock block) {
         System.err.println(block.getRequestID() + " , status=" + block.getStatus());
     }
     //
@@ -102,7 +78,7 @@ public class RemoteCallerTest implements RemoteSenderListener, Module {
                         continue;
                     }
                     info.setReceiveTime(System.currentTimeMillis());
-                    server.receivedRequestInfo(null, info);
+                    server.doRequest(null, info);
                 }
             };
         }.start();
@@ -111,14 +87,10 @@ public class RemoteCallerTest implements RemoteSenderListener, Module {
     //
     //
     @Test
-    public void callerTest() throws IOException, URISyntaxException, InterruptedException {
-        //
-        final AppContext appContextServer = Hasor.createAppContext(this);
-        final AppContext appContextClient = Hasor.createAppContext(this);
-        //
+    public void callerTest() throws Throwable {
         //Caller
-        this.client = new RemoteRsfCaller(appContextClient, this);
-        this.server = new RemoteRsfCaller(appContextServer, this);
+        this.client = createRemoteRsfCaller();
+        this.server = createRemoteRsfCaller();
         //
         //Request -> Response，然后再写回Caller。
         for (int i = 0; i < 4; i++) {
@@ -126,17 +98,17 @@ public class RemoteCallerTest implements RemoteSenderListener, Module {
         }
         //
         //RSF服务发布
-        RsfBeanContainer containerServer = appContextServer.getInstance(RsfBeanContainer.class);
+        RsfBeanContainer containerServer = this.server.getContainer();
         containerServer.createBinder().rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
         //
-        RsfBeanContainer containerClient = appContextClient.getInstance(RsfBeanContainer.class);
+        RsfBeanContainer containerClient = this.client.getContainer();
         containerClient.createBinder().bindFilter("QpsMonitor", new QpsMonitor());
         final RsfBindInfo<?> bindInfo = containerClient.createBinder().rsfService(EchoService.class).register();
         //
         //
         //
         //调用服务
-        final Provider<InterAddress> target = new InstanceProvider<InterAddress>(new InterAddress("200.100.25.123", 8000, "unit"));
+        final AddressProvider target = new InstanceAddressProvider(new InterAddress("200.100.25.123", 8000, "unit"));
         final Class<?>[] paramTypes = new Class<?>[] { String.class };
         final Object[] paramObjects = new Object[] { "hello word" };
         FutureCallback<Object> callBack = new FutureCallback<Object>() {
@@ -157,5 +129,20 @@ public class RemoteCallerTest implements RemoteSenderListener, Module {
         //
         //
         Thread.sleep(240000);
+    }
+    private RemoteRsfCaller createRemoteRsfCaller() throws Throwable {
+        final Settings setting = new StandardContextSettings();//create Settings
+        final RsfSettings rsfSetting = new DefaultRsfSettings(setting);//create RsfSettings
+        final RsfEnvironment rsfEnvironment = new DefaultRsfEnvironment(null, rsfSetting);//create RsfEnvironment
+        final RsfBeanContainer container = new RsfBeanContainer(rsfEnvironment);
+        final RsfContext rsfContext = new EmpytRsfContext() {
+            public RsfSettings getSettings() {
+                return rsfSetting;
+            }
+            public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
+                return (Provider<T>) container.getProvider(bindInfo.getBindID());
+            }
+        };
+        return new RemoteRsfCaller(rsfContext, container, this);
     }
 }
