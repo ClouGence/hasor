@@ -24,6 +24,8 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.plugins.filters.local.LocalPref;
+import net.hasor.rsf.plugins.filters.thread.LocalWarpFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 /**
@@ -60,6 +62,9 @@ public class RsfModule implements LifeModule {
             }
         });
         //
+        RsfBinder rsfBinder = container.createBinder();
+        rsfBinder.bindFilter("LocalPref", new LocalPref());
+        rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
         this.loadModule(apiBinder, container.createBinder());
     }
     public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {

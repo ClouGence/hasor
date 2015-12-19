@@ -1,9 +1,10 @@
 package test.net.hasor.rsf._02_customer;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfBinder.RegisterBuilder;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.bootstrap.RsfBootstrap;
-import net.hasor.rsf.bootstrap.RsfStart;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.bootstrap.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 /**
  * 
@@ -12,24 +13,22 @@ import test.net.hasor.rsf.services.EchoService;
  */
 public class CustomerClient {
     public static void main(String[] args) throws Throwable {
-        String hostAddress = "127.0.0.1";//RSF服务绑定的本地IP地址。
-        int hostPort = 8002;//使用的端口
-        //
-        RsfContext rsfContext = new RsfBootstrap().doBinder(new RsfStart() {
-            public void onBind(RsfBinder rsfBinder) throws Throwable {
-                //声明服务
-                RegisterBuilder<?> regBuilder = rsfBinder.rsfService(EchoService.class);
-                //声明服务
-                regBuilder.bindAddress("rsf://127.0.0.1:8001/unit");
-                //发布服务
-                regBuilder.register();
+        //Client
+        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfModule() {
+            public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://127.0.0.1:8000/local").register();
             }
-        }).socketBind(hostAddress, hostPort).sync();
-        //
+        });
         System.out.println("server start.");
-        EchoService echoService = rsfContext.getRsfClient().wrapper(EchoService.class);
-        for (int i = 0; i < 200; i++) {
-            System.out.println("[Client] " + echoService.sayHello("index =" + i));
+        //
+        //Client -> Server
+        RsfClient client = clientContext.getInstance(RsfClient.class);
+        EchoService echoService = client.wrapper(EchoService.class);
+        for (int i = 0; i < 208; i++) {
+            try {
+                String res = echoService.sayHello("Hello Word");
+                System.out.println(res);
+            } catch (Exception e) {}
         }
     }
 }

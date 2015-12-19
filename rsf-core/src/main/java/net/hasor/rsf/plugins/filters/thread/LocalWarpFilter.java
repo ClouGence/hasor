@@ -23,7 +23,7 @@ import net.hasor.rsf.RsfResponse;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class InnerLocalWarpRsfFilter implements RsfFilter {
+public final class LocalWarpFilter implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         try {

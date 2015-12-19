@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf._01_provider;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfBinder.RegisterBuilder;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.bootstrap.RsfBootstrap;
-import net.hasor.rsf.bootstrap.RsfStart;
+import net.hasor.rsf.bootstrap.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
 /**
@@ -28,17 +27,12 @@ import test.net.hasor.rsf.services.EchoServiceImpl;
  */
 public class ProviderServer {
     public static void main(String[] args) throws Throwable {
-        String hostAddress = "127.0.0.1";//RSF服务绑定的本地IP地址。
-        int hostPort = 8001;//使用的端口
-        //
-        RsfContext rsfContext = new RsfBootstrap().doBinder(new RsfStart() {
-            public void onBind(RsfBinder rsfBinder) throws Throwable {
-                //声明服务
-                RegisterBuilder<?> regBuilder = rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl());
-                //发布服务
-                regBuilder.register();
+        //Server
+        Hasor.createAppContext("07_server-config.xml", new RsfModule() {
+            public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
+                rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
             }
-        }).socketBind(hostAddress, hostPort).sync();
+        });
         //
         System.out.println("server start.");
         while (true) {

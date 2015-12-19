@@ -13,43 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.center.client;
-import io.netty.handler.codec.http.HttpResponse;
+package net.hasor.rsf.plugins.center;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.core.EventListener;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.event.Events;
 import org.more.future.BasicFuture;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.netty.handler.codec.http.HttpResponse;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.rpc.context.AbstractRsfContext;
 /***
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CenterClient extends Thread implements EventListener {
-    protected Logger         logger = LoggerFactory.getLogger(getClass());
-    private final int        centerInterval;
-    private final HttpClient httpClient;
-    private RsfContext       rsfContext;
-    private boolean          online;
-    private String           terminalID;
-    private String           terminalAccessKey;
-    private InterAddress     centerAddress;
+public class CenterClient extends Thread {
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    private RsfContext   rsfContext;
+    private RsfClient    rsfClient;
+    private final int    centerInterval;
+    private boolean      online;
+    private String       terminalID;
+    private String       terminalAccessKey;
+    private InterAddress centerAddress;
     //
     public CenterClient(AbstractRsfContext rsfContext, InterAddress centerAddress) throws UnknownHostException {
         this.centerInterval = rsfContext.getSettings().getCenterInterval();
-        this.httpClient = new HttpClient(rsfContext);
         this.rsfContext = rsfContext;
+        this.rsfClient = rsfContext.getRsfClient(centerAddress);
         this.online = false;
         this.centerAddress = centerAddress;
         this.setDaemon(true);
@@ -72,43 +71,13 @@ public class CenterClient extends Thread implements EventListener {
             } finally {
                 try {
                     sleep(centerInterval);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {/**/}
             }
-        }
-    }
-    //
-    public void onEvent(String event, Object[] params) throws Throwable {
-        try {
-            if (logger.isInfoEnabled()) {
-                logger.info("rsf event -> " + event);
-            }
-            /*  */if (Events.StartUp.equals(event)) {
-                //应用启动
-                this.onLine((RsfContext) params[0]);
-            }
-            if (this.online == false) {
-                return;
-            }
-            if (Events.Shutdown.equals(event)) {
-                //应用下线
-                this.offLine((RsfContext) params[0]);
-            } else if (Events.ServiceCustomer.equals(event)) {
-                //服务订阅
-                this.serviceCustomer((RsfBindInfo<?>) params[0]);
-            } else if (Events.ServiceProvider.equals(event)) {
-                //服务发布
-                this.serviceProvider((RsfBindInfo<?>) params[0]);
-            } else if (Events.UnService.equals(event)) {
-                //服务卸载
-                this.unService((RsfBindInfo<?>) params[0]);
-            }
-        } catch (Exception e) {
-            logger.error("rsf event fail -> " + event + " :", e.getLocalizedMessage());
         }
     }
     //
     /**终端上线*/
-    public void onLine(RsfContext rsfContext) throws Throwable {
+    public String onLine(String terminalAccessKey, String hostName,) throws Throwable {
         Map<String, String> reqParam = new HashMap<String, String>();
         reqParam.put(CenterParams.Terminal_HostName, this.centerAddress.getHost());
         reqParam.put(CenterParams.Terminal_HostPort, String.valueOf(this.centerAddress.getHostPort()));
@@ -124,15 +93,7 @@ public class CenterClient extends Thread implements EventListener {
         }
     }
     /**终端下线*/
-    public void offLine(RsfContext rsfContext) throws Throwable {
-        Map<String, String> reqParam = new HashMap<String, String>();
-        reqParam.put(CenterParams.Terminal_ID, this.terminalID);
-        reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
-        //
-        this.online = false;
-        this.terminalID = null;
-        this.httpClient.request("/apis/offline", reqParam);
-    }
+    public void offLine(String terminalID, String terminalAccessKey);
     /**服务消费者*/
     public void serviceCustomer(RsfBindInfo<?> bindInfo) throws Throwable {
         Map<String, String> reqParam = new HashMap<String, String>();
@@ -181,7 +142,7 @@ public class CenterClient extends Thread implements EventListener {
         reqParam.put(CenterParams.Terminal_AccessKey, this.terminalAccessKey);
         //
         StringBuffer buffer = new StringBuffer("");
-        List<String> ids = this.rsfContext.getBindCenter().getServiceIDs();
+        List<String> ids = this.rsfContext.getServiceIDs();
         for (String id : ids) {
             buffer.append("," + id);
         }
