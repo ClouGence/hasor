@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.caller.remote;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.caller.SenderListener;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 可以提供向远端响应Response的能力。
@@ -24,8 +23,6 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RemoteSenderListener extends SenderListener {
-    /**向远端发送响应数据。*/
-    public void sendResponse(InterAddress target, ResponseBlock block);
     /**向远端发送响应数据。*/
     public void sendResponse(InterAddress target, ResponseInfo info);
 }

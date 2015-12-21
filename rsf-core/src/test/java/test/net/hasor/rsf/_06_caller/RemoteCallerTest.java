@@ -77,7 +77,7 @@ public class RemoteCallerTest implements RemoteSenderListener {
                         continue;
                     }
                     info.setReceiveTime(System.currentTimeMillis());
-                    server.doRequest(null, info);
+                    server.onRequest(null, info);
                 }
             };
         }.start();

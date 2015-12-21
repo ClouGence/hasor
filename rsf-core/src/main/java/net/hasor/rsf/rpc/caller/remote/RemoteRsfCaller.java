@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import org.more.future.BasicFuture;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
@@ -25,7 +29,7 @@ import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.ExecutesManager;
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
@@ -53,11 +57,42 @@ public class RemoteRsfCaller extends RsfCaller {
         this.executesManager.shutdown();
     }
     /**
+     * 收到Request请求直接进行调用，并等待调用结果返回。
+     * @param info 请求消息。
+     */
+    public ResponseInfo doRequest(RequestInfo info) {
+        long requestID = info.getRequestID();
+        ResponseInfo resp = null;
+        try {
+            final BasicFuture<ResponseInfo> future = new BasicFuture<ResponseInfo>();
+            new InvokerProcessing(this, info) {
+                protected void sendResponse(ResponseInfo info) {
+                    future.completed(info);
+                }
+            }.run();
+            resp = future.get(info.getClientTimeout(), TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            String errorInfo = "do request(" + requestID + ") failed -> waiting for response.";
+            logger.error(errorInfo);
+            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
+        } catch (InterruptedException e) {
+            String errorInfo = "do request(" + requestID + ") failed -> InterruptedException.";
+            logger.error(errorInfo);
+            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+        } catch (ExecutionException e) {
+            Throwable ex = e.getCause();
+            String errorInfo = "do request(" + requestID + ") failed -> " + ex.getMessage();
+            logger.error(errorInfo);
+            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+        }
+        return resp;
+    }
+    /**
      * 收到Request请求，并将该请求安排进队列，由队列安排方法调用。
      * @param target 目标调用地址。
      * @param info 请求消息。
      */
-    public void doRequest(InterAddress target, RequestInfo info) {
+    public void onRequest(InterAddress target, RequestInfo info) {
         try {
             logger.debug("received request({}) full = {}", info.getRequestID());
             String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
@@ -66,8 +101,8 @@ public class RemoteRsfCaller extends RsfCaller {
         } catch (RejectedExecutionException e) {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
-            ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
-            this.senderListener.sendResponse(target, block);
+            ResponseInfo resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
+            this.senderListener.sendResponse(target, resp);
         }
     }
     //

@@ -28,6 +28,7 @@ import net.hasor.rsf.plugins.filters.local.LocalPref;
 import net.hasor.rsf.plugins.filters.thread.LocalWarpFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.web.WebApiBinder;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
@@ -61,6 +62,11 @@ public class RsfModule implements LifeModule {
                 return rsfContext.getRsfClient();
             }
         });
+        //
+        if (apiBinder instanceof WebApiBinder) {
+            //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
+            //webApiBinder.serve("*.rsf").with(RsfServlet.class);
+        }
         //
         RsfBinder rsfBinder = container.createBinder();
         rsfBinder.bindFilter("LocalPref", new LocalPref());

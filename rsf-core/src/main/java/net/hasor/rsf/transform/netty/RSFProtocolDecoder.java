@@ -94,7 +94,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     //
     /**发送错误 */
     private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status, String message) {
-        ResponseBlock block = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, status, message);
+        ResponseBlock block = ProtocolUtils.buildBlockStatus(RSFConstants.RSF_Response, requestID, status, message);
         ctx.pipeline().writeAndFlush(block);
     }
 }

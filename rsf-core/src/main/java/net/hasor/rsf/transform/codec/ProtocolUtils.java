@@ -272,7 +272,17 @@ public class ProtocolUtils {
     }
     //
     /**发送错误*/
-    public static ResponseBlock buildStatus(byte rsfHead, long requestID, short status, String message) {
+    public static ResponseInfo buildStatus(byte rsfHead, long requestID, short status, String message) {
+        ResponseInfo info = new ResponseInfo();
+        info.setRequestID(requestID);
+        info.setStatus(status);
+        if (StringUtils.isNotBlank(message)) {
+            info.addOption("message", message);
+        }
+        return info;
+    }
+    /**发送错误*/
+    public static ResponseBlock buildBlockStatus(byte rsfHead, long requestID, short status, String message) {
         ResponseBlock block = new ResponseBlock();
         block.setHead(rsfHead);
         block.setRequestID(requestID);

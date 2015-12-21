@@ -39,7 +39,6 @@ import net.hasor.rsf.rpc.client.RpcRsfClient;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
@@ -82,6 +81,9 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     public AppContext getAppContext() {
         return this.appContext;
+    }
+    public RemoteRsfCaller getRsfCaller() {
+        return this.rsfCaller;
     }
     //
     public RsfClient getRsfClient() {
@@ -135,7 +137,7 @@ public abstract class AbstractRsfContext implements RsfContext {
         }
         @Override
         public void receivedMessage(InterAddress form, RequestInfo request) {
-            rsfCaller.doRequest(form, request);
+            rsfCaller.onRequest(form, request);
         }
         //
         @Override
@@ -143,14 +145,6 @@ public abstract class AbstractRsfContext implements RsfContext {
             try {
                 InterAddress target = targetProvider.get();
                 rsfNetManager.getChannel(target).get().sendData(info, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        @Override
-        public void sendResponse(InterAddress target, ResponseBlock block) {
-            try {
-                rsfNetManager.getChannel(target).get().sendData(block, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
