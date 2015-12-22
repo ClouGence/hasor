@@ -28,7 +28,6 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 /**
  * 
@@ -89,7 +88,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //服务级路由规则，应用规则之后只有etc2机房的地址可用。
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
-        pool.updateDefaultRoute(RouteTypeEnum.ServiceLevel, script);
+        pool.updateDefaultServiceRoute(script);
         Thread.sleep(10000);
     }
     //
@@ -146,7 +145,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
-        pool.updateDefaultRoute(RouteTypeEnum.MethodLevel, script);
+        pool.updateDefaultMethodRoute(script);
         Thread.sleep(10000);
     }
     //
@@ -206,7 +205,7 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。
         System.out.println("-> updateDefaultRoute.");
         String script = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
-        pool.updateDefaultRoute(RouteTypeEnum.ArgsLevel, script);
+        pool.updateDefaultArgsRoute(script);
         Thread.sleep(10000);
     }
 }

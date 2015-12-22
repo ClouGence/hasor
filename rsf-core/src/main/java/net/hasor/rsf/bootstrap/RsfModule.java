@@ -23,6 +23,7 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.plugins.filters.local.LocalPref;
 import net.hasor.rsf.plugins.filters.thread.LocalWarpFilter;
@@ -57,6 +58,7 @@ public class RsfModule implements LifeModule {
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
         apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
+        apiBinder.bindType(RsfUpdater.class).toInstance(container.getAddressPool());
         apiBinder.bindType(RsfClient.class).toProvider(new Provider<RsfClient>() {
             public RsfClient get() {
                 return rsfContext.getRsfClient();

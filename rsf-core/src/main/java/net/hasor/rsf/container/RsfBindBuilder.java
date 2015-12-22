@@ -31,7 +31,6 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
-import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
@@ -69,15 +68,15 @@ abstract class RsfBindBuilder implements RsfBinder {
     }
     @Override
     public void updateArgsRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+        this.getAddressPool().updateDefaultArgsRoute(scriptBody);
     }
     @Override
     public void updateMethodRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
+        this.getAddressPool().updateDefaultMethodRoute(scriptBody);
     }
     @Override
     public void updateServiceRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
+        this.getAddressPool().updateDefaultServiceRoute(scriptBody);
     }
     //
     //
@@ -242,19 +241,19 @@ abstract class RsfBindBuilder implements RsfBinder {
         public void updateArgsRoute(String scriptBody) {
             AddressPool pool = getContainer().getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
+            pool.updateArgsRoute(serviceID, scriptBody);
         }
         @Override
         public void updateMethodRoute(String scriptBody) {
             AddressPool pool = getContainer().getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
+            pool.updateMethodRoute(serviceID, scriptBody);
         }
         @Override
         public void updateServiceRoute(String scriptBody) {
             AddressPool pool = getContainer().getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
+            pool.updateServiceRoute(serviceID, scriptBody);
         }
     }
 }

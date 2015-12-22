@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
@@ -65,7 +66,7 @@ import net.hasor.rsf.address.route.rule.RuleParser;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AddressPool {
+public class AddressPool implements RsfUpdater {
     protected final Logger                             logger       = LoggerFactory.getLogger(getClass());
     private static final String                        CharsetName  = "UTF-8";
     private static final String                        ScriptPath   = "/script";
@@ -417,7 +418,7 @@ public class AddressPool {
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void updateDefaultRoute(RouteTypeEnum routeType, String script) {
+    private void updateDefaultRoute(RouteTypeEnum routeType, String script) {
         RuleRef ruleRef = new RuleRef(this.ruleRef);
         boolean updated = RouteTypeEnum.updateScript(routeType, script, ruleRef);
         if (!updated) {
@@ -436,7 +437,7 @@ public class AddressPool {
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    public void updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
+    private void updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
             logger.warn("update rules service={} -> AddressBucket not exist.", serviceID);
@@ -587,5 +588,29 @@ public class AddressPool {
     @Override
     public String toString() {
         return "AddressPool[" + this.unitName + "]";
+    }
+    @Override
+    public void updateDefaultServiceRoute(String scriptBody) {
+        this.updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
+    }
+    @Override
+    public void updateDefaultMethodRoute(String scriptBody) {
+        this.updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
+    }
+    @Override
+    public void updateDefaultArgsRoute(String scriptBody) {
+        this.updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+    }
+    @Override
+    public void updateServiceRoute(String serviceID, String scriptBody) {
+        this.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
+    }
+    @Override
+    public void updateMethodRoute(String serviceID, String scriptBody) {
+        this.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
+    }
+    @Override
+    public void updateArgsRoute(String serviceID, String scriptBody) {
+        this.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
     }
 }

@@ -22,6 +22,7 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.InterAddress;
 /**
  * 
@@ -85,6 +86,11 @@ public class EmpytRsfContext implements RsfContext {
     }
     @Override
     public RsfBinder binder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public RsfUpdater getUpdater() {
         // TODO Auto-generated method stub
         return null;
     }

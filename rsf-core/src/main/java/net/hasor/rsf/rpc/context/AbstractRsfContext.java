@@ -28,6 +28,7 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
@@ -75,6 +76,9 @@ public abstract class AbstractRsfContext implements RsfContext {
     //
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();
+    }
+    public RsfUpdater getUpdater() {
+        return this.rsfBeanContainer.getAddressPool();
     }
     public ClassLoader getClassLoader() {
         return this.appContext.getClassLoader();

@@ -56,6 +56,8 @@ public interface RsfContext {
     //    public void shutdown();
     /**获取RSF配置*/
     public RsfSettings getSettings();
+    /**获取地址路由更新接口。*/
+    public RsfUpdater getUpdater();
     //    /**获取RSF配置*/
     //    public RsfEnvironment getEnvironment();
     /**获取类加载器。*/

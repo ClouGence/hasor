@@ -24,7 +24,15 @@ import net.hasor.rsf.address.InterAddress;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfBinder extends RuleConfiguration {
+public interface RsfBinder {
+    /**更新服务地址本计算规则（服务级）*/
+    public void updateServiceRoute(String scriptBody);
+    /**更新本地方法级地址计算脚本。*/
+    public void updateMethodRoute(String scriptBody);
+    /**更新本地参数级地址计算脚本。*/
+    public void updateArgsRoute(String scriptBody);
+    /**更新服务路由策略*/
+    public void updateFlowControl(String flowControl);
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
@@ -147,7 +155,15 @@ public interface RsfBinder extends RuleConfiguration {
     }
     //
     /**发布地址*/
-    public interface RegisterBuilder<T> extends RuleConfiguration {
+    public interface RegisterBuilder<T> {
+        /**更新服务地址本计算规则（服务级）*/
+        public void updateServiceRoute(String scriptBody);
+        /**更新本地方法级地址计算脚本。*/
+        public void updateMethodRoute(String scriptBody);
+        /**更新本地参数级地址计算脚本。*/
+        public void updateArgsRoute(String scriptBody);
+        /**更新服务路由策略*/
+        public void updateFlowControl(String flowControl);
         /**
          * @param rsfHost 远程服务地址
          * @param port 远程服务端口

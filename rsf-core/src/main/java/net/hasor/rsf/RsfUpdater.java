@@ -15,17 +15,26 @@
  */
 package net.hasor.rsf;
 /**
- * 服务配置器
+ * 服务配置更新器。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RuleConfiguration {
+public interface RsfUpdater {
     /**更新服务地址本计算规则（服务级）*/
-    public void updateServiceRoute(String scriptBody);
+    public void updateDefaultServiceRoute(String scriptBody);
     /**更新本地方法级地址计算脚本。*/
-    public void updateMethodRoute(String scriptBody);
+    public void updateDefaultMethodRoute(String scriptBody);
     /**更新本地参数级地址计算脚本。*/
-    public void updateArgsRoute(String scriptBody);
+    public void updateDefaultArgsRoute(String scriptBody);
     /**更新服务路由策略*/
-    public void updateFlowControl(String flowControl);
+    public void updateDefaultFlowControl(String flowControl);
+    //
+    /**更新服务地址本计算规则（服务级）*/
+    public void updateServiceRoute(String serviceID, String scriptBody);
+    /**更新本地方法级地址计算脚本。*/
+    public void updateMethodRoute(String serviceID, String scriptBody);
+    /**更新本地参数级地址计算脚本。*/
+    public void updateArgsRoute(String serviceID, String scriptBody);
+    /**更新服务路由策略*/
+    public void updateFlowControl(String serviceID, String flowControl);
 }
