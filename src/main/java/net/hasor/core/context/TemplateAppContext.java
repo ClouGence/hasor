@@ -281,6 +281,9 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         if (loadModule) {
             List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
             for (XmlNode module : allModules) {
+                if (module ==null ){
+                    continue;
+                }
                 String moduleTypeString = module.getText();
                 if (StringUtils.isBlank(moduleTypeString)) {
                     continue;
