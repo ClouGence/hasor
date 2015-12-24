@@ -77,5 +77,11 @@
 			<version>0.9.1.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.hasor</groupId>
+			<artifactId>hasor-jetty</artifactId>
+			<version>0.0.1</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

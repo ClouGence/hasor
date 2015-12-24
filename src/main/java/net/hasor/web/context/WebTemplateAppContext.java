@@ -36,7 +36,7 @@ import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ResourcesUtils;
 /**
- * 
+ *
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -47,7 +47,7 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
         if (resURL != null) {
             webEnv = new WebStandardEnvironment(resURL.toURI(), servletContext);
         } else {
-            webEnv = new WebStandardEnvironment(servletContext);
+            webEnv = new WebStandardEnvironment(null, servletContext);
         }
         BeanContainer container = new BeanContainer();
         WebTemplateAppContext<?> appContext = new WebTemplateAppContext<BeanContainer>(webEnv, container);

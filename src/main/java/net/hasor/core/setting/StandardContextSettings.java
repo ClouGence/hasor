@@ -35,7 +35,7 @@ public class StandardContextSettings extends InputStreamSettings {
     public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
     public static final String StaticSettingName = "static-config.xml";
-    private URI                settingURI;
+    private URI settingURI;
     //
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {
@@ -59,22 +59,22 @@ public class StandardContextSettings extends InputStreamSettings {
         URL url = ResourcesUtils.getResource(mainSettings);
         if (url != null) {
             this.settingURI = url.toURI();
+            outInitLog("string", mainSettings);
         }
-        outInitLog("string", mainSettings);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final File mainSettings) throws IOException {
         if (mainSettings != null) {
             this.settingURI = mainSettings.toURI();
+            outInitLog("file", mainSettings);
         }
-        outInitLog("file", mainSettings);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final URI mainSettings) throws IOException {
-        if (mainSettings == null) {
+        if (mainSettings != null) {
             this.settingURI = mainSettings;
+            outInitLog("uri", mainSettings);
         }
-        outInitLog("uri", mainSettings);
     }
     /**获取配置文件{@link URI}。*/
     public URI getSettingURI() {

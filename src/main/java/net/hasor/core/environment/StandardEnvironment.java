@@ -28,11 +28,6 @@ import net.hasor.core.setting.StandardContextSettings;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    /**子类自己决定是否需要调用{@link #initEnvironment(Settings)}方法初始化。*/
-    protected StandardEnvironment(Object context) {
-        super(context);
-    }
-    //
     public StandardEnvironment(Object context, String mainSettings) throws IOException, URISyntaxException {
         super(context);
         logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);

@@ -27,9 +27,6 @@ import net.hasor.web.WebEnvironment;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
-    public WebStandardEnvironment(ServletContext servletContext) {
-        super(servletContext);
-    }
     public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) throws IOException {
         super(servletContext, settingURI);
     }
