@@ -21,9 +21,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+/**
+ * 
+ * @version : 2015年12月25日
+ * @author 赵永春(zyc@hasor.net)
+ */
 public class MyServlet extends HttpServlet {
+    private static final long serialVersionUID = 1897490522575674516L;
     @Inject
-    private AppContext appContext;
+    private AppContext        appContext;
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String myName = appContext.getEnvironment().getSettings().getString("myName");

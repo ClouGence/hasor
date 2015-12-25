@@ -17,7 +17,9 @@ package net.test.hasor.web._01_servlet;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
- *
+ * 
+ * @version : 2015年12月25日
+ * @author 赵永春(zyc@hasor.net)
  */
 public class MyServletModule extends WebModule {
     @Override

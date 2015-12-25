@@ -2,7 +2,9 @@
 * 改进:
     01.修改ShutdownHook钩子。在start时注册它、当shutdown时解除注册。
     02.增加Environment接口的包装器。
-    03.Fix “Shutdown in progress”异常。
+* 修复:
+    01.Fix “Shutdown in progress”异常。
+    02.Fix Web模式下启动空指针异常。
 
 ===== Hasor-Core v2.0.0
 * 新增:
