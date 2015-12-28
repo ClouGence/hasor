@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 依赖注入
+ * 辅助{@link Inject @Inject}注解用来标识value，表示的是 ByID，还是ByName。
  * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
-@Documented
-public @interface Inject {
-    /**如果同类型有多个注册可以使用该值进行区分。*/
-    public String value() default "";
-    /**区分注入Bean的方式
-     * 是【（默认）{@code AppContext.findBindingBean(withName, bindType)}】
-     * 还是【{@code AppContext.getInstance(bindID)}】。*/
-    public Type byType() default Type.ByName;
+public enum Type {
+    /**AppContext.getInstance(bindID)方式*/
+    ByID, //
+    /**（默认）AppContext.findBindingBean(withName, bindType)方式*/
+    ByName
 }

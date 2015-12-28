@@ -3,7 +3,7 @@
 	<!-- MySQL -->
 	<demo-jdbc-mysql>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://db.test.hasor.net/hdm1250987_db?useUnicode=true&amp;characterEncoding=utf8</url>
+		<url>jdbc:mysql://hdm-125.hichina.com/hdm1250987_db?useUnicode=true&amp;characterEncoding=utf8</url>
 		<user>hdm1250987</user>
 		<password>c3ffb0ff5b32473c8881</password>
 	</demo-jdbc-mysql>

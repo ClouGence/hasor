@@ -20,7 +20,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.DBModule;
 /***
- * 创建JDBC环境
+ * 多数剧源
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
@@ -51,6 +51,6 @@ public class MultipleDataSourceWarp implements Module {
     }
     protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, String dsName) throws Throwable {
         //3.启用默认事务拦截器
-        apiBinder.installModule(new DBModule(dataSource));
+        apiBinder.installModule(new DBModule(dsName, dataSource));
     }
 }

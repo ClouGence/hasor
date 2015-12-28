@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.db._02_datasource;
-import static net.test.hasor.junit.HasorUnit.newID;
 import java.io.IOException;
 import java.sql.SQLException;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.MultipleDataSourceWarp;
-import org.junit.Test;
 /**
  * 使用多数据源例子
  * @version : 2014年7月23日
@@ -30,31 +29,18 @@ import org.junit.Test;
 public class MultipleDataSourceTest {
     @Test
     public void useMoreDataSource() throws SQLException, IOException {
+        //
         //1.构建AppContext
         AppContext app = Hasor.createAppContext("jdbc-config.xml", new MultipleDataSourceWarp());
+        //
+        //2.初始化数据
+        InitDataService dataTest = app.getInstance(InitDataService.class);
+        dataTest.initData();
+        //
         //2.取得JDBC操作接口
         JdbcTemplate mJDBC = app.getInstance("mysql");
         JdbcTemplate hJDBC = app.getInstance("hsql");
-        //3.初始化表
-        this.initData(mJDBC, hJDBC);
-        //
         System.out.println("MySQL User Count :" + mJDBC.queryForInt("select count(*) from TB_User"));
         System.out.println("HSQL User Count :" + hJDBC.queryForInt("select count(*) from TB_User"));
-        //
-    }
-    private void initData(JdbcTemplate mJDBC, JdbcTemplate hJDBC) throws SQLException, IOException {
-        String insertUser_1 = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-        String insertUser_2 = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
-        String insertUser_3 = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
-        //
-        //1.初始化MySQL
-        mJDBC.execute("drop table TB_User");
-        mJDBC.loadSQL("TB_User.sql");
-        mJDBC.update(insertUser_1, newID());//执行插入语句
-        mJDBC.update(insertUser_2, newID());//执行插入语句
-        //2.初始化HSQL
-        hJDBC.execute("drop table TB_User");
-        hJDBC.loadSQL("TB_User.sql");
-        hJDBC.update(insertUser_3, newID());//执行插入语句
     }
 }

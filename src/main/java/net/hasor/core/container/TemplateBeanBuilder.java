@@ -26,6 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.more.convert.ConverterUtils;
+import org.more.util.BeanUtils;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
@@ -35,17 +41,12 @@ import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.Type;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.ScopeProvider;
-import org.more.convert.ConverterUtils;
-import org.more.util.BeanUtils;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
@@ -236,11 +237,16 @@ public class TemplateBeanBuilder implements BeanBuilder {
                 field.setAccessible(true);
             }
             Inject inject = field.getAnnotation(Inject.class);
+            Type byType = inject.byType();
             Object obj = null;
             if (StringUtils.isBlank(inject.value())) {
                 obj = appContext.getInstance(field.getType());
             } else {
-                obj = appContext.getInstance(inject.value());
+                /*   */if (Type.ByID == byType) {
+                    obj = appContext.getInstance(inject.value());
+                } else if (Type.ByName == byType) {
+                    obj = appContext.findBindingBean(inject.value(), field.getType());
+                }
             }
             if (obj != null) {
                 field.set(targetBean, obj);
