@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
+
+	<hasor debug="false">
+		<!-- 包扫描覆盖范围，逗号间隔 -->
+		<loadPackages>net.hasor.*</loadPackages>
+		<!-- 默认要装载的模块 -->
+		<modules loadModule="true">
+		</modules>
+	</hasor>
+
+
+
 	<!-- Hasor 默认配置文件 -->
 	<myName>ZZZ</myName>
 </config>

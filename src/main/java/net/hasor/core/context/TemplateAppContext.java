@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.more.convert.ConverterUtils;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
@@ -277,20 +278,22 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     protected Module[] findModules() {
         ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
-        boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
-        if (loadModule) {
-            List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
-            for (XmlNode module : allModules) {
-                if (module ==null ){
-                    continue;
-                }
-                String moduleTypeString = module.getText();
-                if (StringUtils.isBlank(moduleTypeString)) {
-                    continue;
-                }
-                if (!moduleTyleList.contains(moduleTypeString)) {
-                    moduleTyleList.add(moduleTypeString);
-                }
+        List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
+        for (XmlNode module : allModules) {
+            if (module == null) {
+                continue;
+            }
+            String loadModuleStr = module.getAttribute("loadModule");
+            boolean loadModuleBool = (Boolean) ConverterUtils.convert(loadModuleStr, Boolean.TYPE);
+            if (loadModuleBool == false) {
+                continue;ss
+            }
+            String moduleTypeString = module.getText();
+            if (StringUtils.isBlank(moduleTypeString)) {
+                continue;
+            }
+            if (!moduleTyleList.contains(moduleTypeString)) {
+                moduleTyleList.add(moduleTypeString);
             }
         }
         //
