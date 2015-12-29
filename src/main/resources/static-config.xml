@@ -10,15 +10,19 @@
 		<!-- 包扫描覆盖范围，逗号间隔 -->
 		<loadPackages>net.hasor.*</loadPackages>
 
+		<!-- 简单程序入口模块。【由StartupModule插件提供】 -->
+		<startup></startup>
+
 		<!-- 默认要装载的模块 -->
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 			<module>net.hasor.plugins.encoding.EncodingFilterModule</module>
 			<module>net.hasor.plugins.resource.ResourceLoaderModule</module>
+			<module>net.hasor.plugins.startup.StartupModule</module>
 		</modules>
 
-		<!-- 请求响应编码配置 -->
+		<!-- 请求响应编码配置。【由EncodingFilterModule插件提供】 -->
 		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
 
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->

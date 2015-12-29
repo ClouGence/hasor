@@ -55,11 +55,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         Module startModule = null;
         String startModuleType = sc.getInitParameter("startModule");
         if (StringUtils.isBlank(startModuleType)) {
-            logger.warn("startModule is undefinition.");
+            logger.info("web initModule is undefinition.");
         } else {
             Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModuleType);
             startModule = startModuleClass.newInstance();
-            logger.info("startModule is " + startModuleType);
+            logger.info("web initModule is " + startModuleType);
         }
         return startModule;
     }
