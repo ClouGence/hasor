@@ -24,12 +24,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Settings;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.Settings;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
+import net.hasor.web.startup.RuntimeListener;
 /**
  * 提供请求相应编码设置。
  * @version : 2013-9-13
@@ -59,13 +62,16 @@ public class EncodingFilterModule extends WebModule {
     }
 }
 class EncodingFilter implements Filter {
-    protected Logger logger           = LoggerFactory.getLogger(getClass());
-    private String   requestEncoding  = null;
-    private String   responseEncoding = null;
+    protected Logger    logger           = LoggerFactory.getLogger(getClass());
+    private String      requestEncoding  = null;
+    private String      responseEncoding = null;
+    private Environment environment      = null;
     public void init(FilterConfig filterConfig) throws ServletException {
         /*获取请求响应编码*/
         this.requestEncoding = filterConfig.getInitParameter(EncodingFilterModule.REQUEST_ENCODING);
         this.responseEncoding = filterConfig.getInitParameter(EncodingFilterModule.RESPONSE_ENCODING);
+        AppContext app = RuntimeListener.getAppContext(filterConfig.getServletContext());
+        this.environment = app.getEnvironment();
     }
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
@@ -75,7 +81,9 @@ class EncodingFilter implements Filter {
         if (this.requestEncoding != null)
             httpRes.setCharacterEncoding(this.responseEncoding);
         //
-        logger.info("at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+        if (this.environment.isDebug()) {
+            logger.info("at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+        }
         chain.doFilter(request, response);
     }
     public void destroy() {}

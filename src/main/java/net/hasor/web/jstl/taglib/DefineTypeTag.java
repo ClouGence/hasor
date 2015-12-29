@@ -16,28 +16,28 @@
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
-import net.hasor.web.jstl.tagfun.Functions;
 import org.more.util.StringUtils;
+import net.hasor.core.AppContext;
 /**
  * 
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefineBean_Tag extends AbstractHasorTag {
-    private static final long serialVersionUID = 8066383523368039588L;
+public class DefineTypeTag extends AbstractTag {
+    private static final long serialVersionUID = 7146544912135244582L;
     private String            var              = null;
-    private String            bean             = null;
+    private String            type             = null;
     public String getVar() {
         return this.var;
     }
     public void setVar(final String var) {
         this.var = var;
     }
-    public String getBean() {
-        return this.bean;
+    public String getType() {
+        return this.type;
     }
-    public void setBean(final String bean) {
-        this.bean = bean;
+    public void setType(final String type) {
+        this.type = type;
     }
     //
     //
@@ -45,19 +45,25 @@ public class DefineBean_Tag extends AbstractHasorTag {
     @Override
     public void release() {
         this.var = null;
-        this.bean = null;
+        this.type = null;
     }
     @Override
     public int doStartTag() throws JspException {
         if (StringUtils.isBlank(this.var)) {
             throw new NullPointerException("tag param var is null.");
         }
-        if (StringUtils.isBlank(this.bean)) {
-            throw new NullPointerException("tag param bean is null.");
+        if (StringUtils.isBlank(this.type)) {
+            throw new NullPointerException("tag param type is null.");
         }
         //
-        Object targetBean = Functions.defineBean(this.bean);
-        this.pageContext.setAttribute(this.var, targetBean);
-        return Tag.SKIP_BODY;
+        try {
+            Class<?> defineType = Class.forName(this.type);
+            AppContext appContext = getAppContext();
+            Object targetBean = appContext.getInstance(defineType);
+            this.pageContext.setAttribute(this.var, targetBean);
+            return Tag.SKIP_BODY;
+        } catch (ClassNotFoundException e) {
+            throw new JspException(e);
+        }
     }
 }

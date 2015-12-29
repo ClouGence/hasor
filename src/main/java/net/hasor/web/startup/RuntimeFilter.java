@@ -27,12 +27,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
@@ -95,11 +95,6 @@ public class RuntimeFilter implements Filter {
         this.filterPipeline.dispatch(httpReq, httpRes, chain);
     }
     //
-    /**获取{@link AppContext}接口。*/
-    protected final AppContext getAppContext() {
-        return RuntimeListener.getLocalAppContext();
-    }
-    //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
         //
@@ -108,15 +103,5 @@ public class RuntimeFilter implements Filter {
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
         //
-    }
-    //
-    /**获取{@link ServletContext}*/
-    public static ServletContext getLocalServletContext() {
-        return RuntimeListener.getLocalServletContext();
-    }
-    //
-    /**获取{@link AppContext}*/
-    public static AppContext getLocalAppContext() {
-        return RuntimeListener.getLocalAppContext();
     }
 }

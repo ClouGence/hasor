@@ -19,28 +19,25 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebTemplateAppContext;
-import org.more.util.ContextClassLoaderLocal;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
-    protected Logger                                       logger                  = LoggerFactory.getLogger(getClass());
-    public static final String                             AppContextName          = AppContext.class.getName();
-    private WebAppContext                                  appContext              = null;
-    private ListenerPipeline                               sessionListenerPipeline = null;
-    private static ContextClassLoaderLocal<ServletContext> LocalServletContext     = new ContextClassLoaderLocal<ServletContext>();
-    private static ContextClassLoaderLocal<AppContext>     LocalAppContext         = new ContextClassLoaderLocal<AppContext>();
+    protected Logger           logger                  = LoggerFactory.getLogger(getClass());
+    public static final String AppContextName          = AppContext.class.getName();
+    private WebAppContext      appContext              = null;
+    private ListenerPipeline   sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link WebAppContext}对象*/
@@ -75,8 +72,6 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
                 this.appContext.start(startModule);
             }
             //
-            RuntimeListener.LocalServletContext.set(servletContextEvent.getServletContext());
-            RuntimeListener.LocalAppContext.set(this.appContext);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -110,13 +105,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         }
     }
     //
-    /**获取{@link ServletContext}*/
-    public static ServletContext getLocalServletContext() {
-        return RuntimeListener.LocalServletContext.get();
-    }
-    //
     /**获取{@link AppContext}*/
-    public static AppContext getLocalAppContext() {
-        return RuntimeListener.LocalAppContext.get();
+    public static AppContext getAppContext(ServletContext servletContext) {
+        return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
     }
 }

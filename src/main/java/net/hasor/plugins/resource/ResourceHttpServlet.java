@@ -52,7 +52,7 @@ public class ResourceHttpServlet extends HttpServlet {
     private boolean                                          isDebug;
     //
     public synchronized void init(ServletConfig config) throws ServletException {
-        AppContext appContext = RuntimeListener.getLocalAppContext();
+        AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
         this.isDebug = appContext.getEnvironment().isDebug();
         //
         ResourceLoader[] resLoaderArray = LoaderList.get();

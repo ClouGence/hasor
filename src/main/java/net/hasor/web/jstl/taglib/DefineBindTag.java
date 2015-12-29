@@ -16,14 +16,14 @@
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
-import net.hasor.web.jstl.tagfun.Functions;
 import org.more.util.StringUtils;
+import net.hasor.core.AppContext;
 /**
  * 
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
-public class DefineBind_Tag extends AbstractHasorTag {
+public class DefineBindTag extends AbstractTag {
     private static final long serialVersionUID = -7899624524135156746L;
     private String            var              = null;
     private String            name             = null;
@@ -68,7 +68,9 @@ public class DefineBind_Tag extends AbstractHasorTag {
         }
         //
         try {
-            Object targetBean = Functions.defineBind(this.name, this.bindType);
+            Class<?> defineType = Class.forName(this.bindType);
+            AppContext appContext = getAppContext();
+            Object targetBean = appContext.findBindingBean(this.name, defineType);
             this.pageContext.setAttribute(this.var, targetBean);
             return Tag.SKIP_BODY;
         } catch (ClassNotFoundException e) {

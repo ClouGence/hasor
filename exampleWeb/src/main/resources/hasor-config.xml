@@ -2,7 +2,9 @@
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 	<!-- 对 Hasor 的配置 -->
 	<hasor>
+		<!-- 包扫描路径 -->
 		<loadPackages>net.hasor.*</loadPackages>
+		<!-- 启动入口 -->
 		<startup>net.test.hasor.web.MyModule</startup>
 	</hasor>
 

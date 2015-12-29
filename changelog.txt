@@ -1,10 +1,12 @@
 ﻿===== Hasor-Core v2.1.0
 * 新增:
-    01.新增一个插件，简化“modules.module”的配置。
+    01.增加一个WebDemo示例工程。
+    02.新增一个插件，简化“modules.module”的配置。
 * 改进:
     01.修改ShutdownHook钩子。在start时注册它、当shutdown时解除注册。
     02.增加Environment接口的包装器。
     03.为@Inject注解，增加Type枚举。通过枚举可以标识注入是：ByID 还是 ByName。
+    04.剔除JSP自定义函数功能。
 * 修复:
     01.Fix “Shutdown in progress”异常。
     02.Fix Web模式下启动空指针异常。

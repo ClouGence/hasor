@@ -5,12 +5,11 @@
 	<tlib-version>1.1</tlib-version>
 	<short-name>hs</short-name>
 	<uri>http://project.hasor.net/hasor/schema/jstl</uri>
-
-	<!-- defineBean，获取Bean对象 -->
+	<!-- findBean，获取Bean对象 -->
 	<tag>
 		<description>获取 Bean 对象，并将 Bean 对象存放于 request 作用域中。</description>
-		<name>defineBean</name>
-		<tag-class>net.hasor.web.jstl.taglib.DefineBean_Tag</tag-class>
+		<name>findBean</name>
+		<tag-class>net.hasor.web.jstl.taglib.DefineBeanTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>获取到的 bean 在 page 中保存的名称.</description>
@@ -25,11 +24,11 @@
 			<rtexprvalue>yes</rtexprvalue>
 		</attribute>
 	</tag>
-	<!-- defineType，根据类型获取Bean对象 -->
+	<!-- findType，根据类型获取Bean对象 -->
 	<tag>
 		<description>获取 Bean 对象，并将 Bean 对象存放于 request 作用域中。</description>
-		<name>defineType</name>
-		<tag-class>net.hasor.web.jstl.taglib.DefineType_Tag</tag-class>
+		<name>findType</name>
+		<tag-class>net.hasor.web.jstl.taglib.DefineTypeTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>获取到的 bean 在 page 中保存的名称.</description>
@@ -44,11 +43,11 @@
 			<rtexprvalue>yes</rtexprvalue>
 		</attribute>
 	</tag>
-	<!-- defineBind，获取findBindingBean对象 -->
+	<!-- findBind，获取findBindingBean对象 -->
 	<tag>
 		<description>获取 Bean 对象，通过 AppContext.findBindingBean 方法获取 Bean 绑定对象。</description>
-		<name>defineBind</name>
-		<tag-class>net.hasor.web.jstl.taglib.DefineBind_Tag</tag-class>
+		<name>findBind</name>
+		<tag-class>net.hasor.web.jstl.taglib.DefineBindTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>获取到的 bean 在 page 中保存的名称.</description>
@@ -73,7 +72,7 @@
 	<tag>
 		<description>抛出事件.</description>
 		<name>fireEvent</name>
-		<tag-class>net.hasor.web.jstl.taglib.DoEvent_Tag</tag-class>
+		<tag-class>net.hasor.web.jstl.taglib.DoEventTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>绑定名称.</description>
@@ -94,53 +93,4 @@
 			<rtexprvalue>yes</rtexprvalue>
 		</attribute>
 	</tag>
-
-
-	<!-- defineBean，获取Bean对象 -->
-	<function>
-		<description>获取 Bean 对象。</description>
-		<name>defineBean</name>
-		<function-class>net.hasor.web.jstl.tagfun.Functions</function-class>
-		<function-signature>Object defineBean(java.lang.String)</function-signature>
-		<example>&lt;${hs:defineBean(name).foo()}&gt;</example>
-	</function>
-	<!-- defineType，获取Bean对象 -->
-	<function>
-		<description>根据类型获取 Bean 对象。</description>
-		<name>defineType</name>
-		<function-class>net.hasor.web.jstl.tagfun.Functions</function-class>
-		<function-signature>Object defineType(java.lang.String)</function-signature>
-		<example>&lt;${hs:defineType(className).foo()}&gt;</example>
-	</function>
-	<!-- defineBind，获取Bean对象 -->
-	<function>
-		<description>根据类型获取 Bean 对象。</description>
-		<name>defineBind</name>
-		<function-class>net.hasor.web.jstl.tagfun.Functions</function-class>
-		<function-signature>Object defineBind(java.lang.String,java.lang.String)</function-signature>
-		<example>&lt;${hs:defineBind(name,className).foo()}&gt;</example>
-	</function>
-	<!-- hasBean，判断Bean是否存在 -->
-	<function>
-		<description>判断 Bean 是否存在，如果存在返回 true.</description>
-		<name>hasBean</name>
-		<function-class>net.hasor.web.jstl.tagfun.Functions</function-class>
-		<function-signature>boolean hasBean(java.lang.String)</function-signature>
-		<example>&lt;c:if test="${hs:hasBean(name)}"&gt;</example>
-	</function>
-	<!-- hasBind，判断绑定类型是否存在 -->
-	<function>
-		<description>判断 Bean 是否存在，如果存在返回 true.</description>
-		<name>hasBind</name>
-		<function-class>net.hasor.web.jstl.tagfun.Functions</function-class>
-		<function-signature>boolean hasBind(java.lang.String,java.lang.String)</function-signature>
-		<example>&lt;c:if test="${hs:hasBind(name,className)}"&gt;</example>
-	</function>
-
-
-
-
-
-	<!-- env -->
-	<!-- outLog -->
 </taglib>
