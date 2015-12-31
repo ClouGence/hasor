@@ -115,7 +115,7 @@ public class EnvVars {
         this.configEnvironment(this.envMap);
         //
         /*日志输出*/
-        if (logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled() && this.environment.isDebug()) {
             int keyMaxSize = 0;
             for (String key : this.envMap.keySet()) {
                 keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
