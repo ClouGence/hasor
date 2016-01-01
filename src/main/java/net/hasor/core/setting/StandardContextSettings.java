@@ -35,7 +35,7 @@ public class StandardContextSettings extends InputStreamSettings {
     public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
     public static final String StaticSettingName = "static-config.xml";
-    private URI settingURI;
+    private URI                settingURI;
     //
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {

@@ -23,12 +23,12 @@ import net.hasor.web.WebModule;
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ResourceLoaderModule extends WebModule {
+public class ResourceModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) {
         //1.准备参数
         Environment env = apiBinder.getEnvironment();
         //3.缓存路径
-        String cacheSubPath = env.getPluginDir(ResourceLoaderModule.class);
+        String cacheSubPath = env.getPluginDir(ResourceModule.class);
         File cacheDir = new File(env.evalString(cacheSubPath));
         if (!chekcCacheDir(cacheDir)) {
             int i = 0;

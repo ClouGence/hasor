@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import net.test.hasor.web._02_servlet.MyServletModule;
+package net.test.hasor.web._03_restful;
+import net.hasor.plugins.restful.api.MappingTo;
+import net.hasor.plugins.restful.api.Params;
 /**
  * 
- * @version : 2015年12月25日
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new MyServletModule());
+@MappingTo("/hello.do")
+public class HelloServices {
+    //
+    public void execute(@Params AppQueryForm queryForm) {
+        //
+        System.out.println();
     }
 }

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
+package net.test.hasor.web._02_servlet;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.test.hasor.web._02_servlet.MyServletModule;
 /**
  * 
  * @version : 2015年12月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyModule extends WebModule {
+public class MyServletModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new MyServletModule());
+        apiBinder.serve("/myServlet.do").with(MyServlet.class);
     }
 }

@@ -29,6 +29,16 @@
 09. 最小依赖 －> slf4j-api
 
 ----------
+### 内置插件
+01. AopModule插件，提供精确到方法级的注解化Aop配置
+02. EncodingModule插件，提供对请求响应编码统一设置的插件，默认编码为：UTF-8
+03. MimeTypeModule插件，提供MimeType接口，支持通过配置文件扩展环境不存在的mime type定义
+04. ResourceModule插件，提供丰富的资源加载模块，可以实现将zip包中的资源响应给web请求
+05. RestfulModule插件，提供restful风格的Api进行Web开发
+06. StartupModule插件，简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module
+07. ValidModule插件，一个小型验证框架
+
+----------
 ### 发展状况
 
 &emsp;&emsp; Hasor起源于2012年，并在2013年初具雏形。当时尚未开源，并被应用到公司个大项目中。那个时候Hasor还是基于Guice构建，并且整合了Spring JDBC、Guice Servlet等大量三方框架。还有少量自建功能，例如：WebMVC。当时整个框架还未从软件产品中完全剥离出来，其中最基本的要素经过打包会产生约 130MB的 JAR包依赖。与目前相比显得无比臃肿。

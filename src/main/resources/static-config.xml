@@ -17,13 +17,17 @@
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
-			<module>net.hasor.plugins.encoding.EncodingFilterModule</module>
-			<module>net.hasor.plugins.resource.ResourceLoaderModule</module>
+			<module>net.hasor.plugins.encoding.EncodingModule</module>
+			<module>net.hasor.plugins.resource.ResourceModule</module>
 			<module>net.hasor.plugins.startup.StartupModule</module>
+			<module>net.hasor.plugins.restful.RestfulModule</module>
 		</modules>
 
 		<!-- 请求响应编码配置。【由EncodingFilterModule插件提供】 -->
 		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
+
+		<!-- restful开发插件【由RestfulModule插件提供】 -->
+		<restful urlPatterns="htm;html;do;json" />
 
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>

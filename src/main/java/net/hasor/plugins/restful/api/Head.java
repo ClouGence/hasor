@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web._01_servlet;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+package net.hasor.plugins.restful.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2015年12月25日
- * @author 赵永春(zyc@hasor.net)
+ * Indicates that the annotated method responds to HTTP HEAD requests
+ * @see HttpMethod
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class MyServletModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.serve("/myServlet.do").with(MyServlet.class);
-    }
-}
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@HttpMethod(HttpMethod.HEAD)
+public @interface Head {}

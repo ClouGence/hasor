@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import net.test.hasor.web._02_servlet.MyServletModule;
+package net.hasor.plugins.restful.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 
- * @version : 2015年12月25日
- * @author 赵永春(zyc@hasor.net)
+ * 控制器映射的地址。
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class MyModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new MyServletModule());
-    }
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface MappingTo {
+    /**请求地址*/
+    public String value();
 }

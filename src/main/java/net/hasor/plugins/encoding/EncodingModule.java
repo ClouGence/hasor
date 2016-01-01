@@ -38,7 +38,7 @@ import net.hasor.web.startup.RuntimeListener;
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EncodingFilterModule extends WebModule {
+public class EncodingModule extends WebModule {
     public static final String REQUEST_ENCODING      = "hasor.encoding.requestEncoding";
     public static final String RESPONSE_ENCODING     = "hasor.encoding.responseEncoding";
     public static final String URL_PATTERNS_ENCODING = "hasor.encoding.urlPatterns";
@@ -68,8 +68,8 @@ class EncodingFilter implements Filter {
     private Environment environment      = null;
     public void init(FilterConfig filterConfig) throws ServletException {
         /*获取请求响应编码*/
-        this.requestEncoding = filterConfig.getInitParameter(EncodingFilterModule.REQUEST_ENCODING);
-        this.responseEncoding = filterConfig.getInitParameter(EncodingFilterModule.RESPONSE_ENCODING);
+        this.requestEncoding = filterConfig.getInitParameter(EncodingModule.REQUEST_ENCODING);
+        this.responseEncoding = filterConfig.getInitParameter(EncodingModule.RESPONSE_ENCODING);
         AppContext app = RuntimeListener.getAppContext(filterConfig.getServletContext());
         this.environment = app.getEnvironment();
     }

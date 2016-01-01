@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import net.test.hasor.web._02_servlet.MyServletModule;
+package net.test.hasor.web._03_restful;
+import org.more.bizcommon.Paginator;
 /**
  * 
- * @version : 2015年12月25日
+ * @version : 2015年8月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MyModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new MyServletModule());
-    }
-}
+public class AppQueryForm extends Paginator {}
