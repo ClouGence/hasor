@@ -15,14 +15,15 @@
  */
 package net.hasor.plugins.templates;
 import java.io.Writer;
+import net.hasor.core.AppContext;
 /**
  * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TemplateEngine {
-    /**执行模版引擎
-     * @param layoutFile */
+    public void initEngine(AppContext appContext);
+    /**执行模版引擎*/
     public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding);
     /**获取模版Loader*/
     public TemplateLoader getRootLoader();

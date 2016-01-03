@@ -43,6 +43,7 @@ public class TemplateContext {
         this.controlPath = settings.getDirectoryPath("hasor.template.controlPath", "/control");
         this.layoutPath = settings.getDirectoryPath("hasor.template.layoutPath", "/layout");
         this.templatePath = settings.getDirectoryPath("hasor.template.templatePath", "/templates");
+        //
     }
     protected String findLayout(String tempFile) {
         if (this.templateEngine == null) {

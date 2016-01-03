@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtils;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
@@ -38,25 +31,5 @@ public class TemplateModule extends WebModule {
                 apiBinder.serve("*." + name).with(servlet);
             }
         }
-    }
-}
-class TemplateHttpServlet extends HttpServlet {
-    private static final long   serialVersionUID = -4405894246041827036L;
-    private final AtomicBoolean inited           = new AtomicBoolean(false);
-    private TemplateContext     templateContext;
-    //
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        if (this.inited.compareAndSet(false, true)) {
-            this.templateContext = new TemplateContext();
-            this.templateContext.init(config.getServletContext());
-        }
-    }
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //
-        ContextMap contextMap = ContextMap.genContextMap(req, resp);
-        String requestURI = req.getRequestURI().substring(req.getContextPath().length());
-        this.templateContext.processTemplate(requestURI, resp.getWriter(), contextMap);
     }
 }
