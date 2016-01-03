@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -30,48 +31,61 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.AppContext;
-import net.hasor.web.startup.RuntimeListener;
-import org.more.util.ContextClassLoaderLocal;
 import org.more.util.StringUtils;
-import org.more.util.io.FileUtils;
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.web.startup.RuntimeListener;
 /**
  * 负责装载jar包或zip包中的资源
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ResourceHttpServlet extends HttpServlet {
-    protected static Logger                                  logger           = LoggerFactory.getLogger(ResourceHttpServlet.class);
-    private static final long                                serialVersionUID = 2470188139577613256L;
-    private static ContextClassLoaderLocal<ResourceLoader[]> LoaderList       = new ContextClassLoaderLocal<ResourceLoader[]>();
-    private static ContextClassLoaderLocal<File>             CacheDir         = new ContextClassLoaderLocal<File>();
-    private ConcurrentHashMap<String, ReadWriteLock>         cachingRes       = new ConcurrentHashMap<String, ReadWriteLock>();
-    private boolean                                          isDebug;
+class ResourceHttpServlet extends HttpServlet {
+    private static final long                        serialVersionUID = 2470188139577613256L;
+    protected static Logger                          logger           = LoggerFactory.getLogger(ResourceHttpServlet.class);
+    private ResourceLoader[]                         loaderList       = null;
+    private String                                   spacePath        = null;
+    private File                                     cacheDir         = null;
+    private ConcurrentHashMap<String, ReadWriteLock> cachingRes       = new ConcurrentHashMap<String, ReadWriteLock>();
+    private boolean                                  isDebug;
     //
     public synchronized void init(ServletConfig config) throws ServletException {
         AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
         this.isDebug = appContext.getEnvironment().isDebug();
+        this.spacePath = appContext.getEnvironment().getSettings().getDirectoryPath("hasor.resourceLoader.space", "/static");
         //
-        ResourceLoader[] resLoaderArray = LoaderList.get();
-        if (resLoaderArray != null) {
-            return;
+        List<ResourceLoader> loaderList = appContext.findBindingBean(ResourceLoader.class);
+        this.loaderList = loaderList.toArray(new ResourceLoader[loaderList.size()]);
+        if (this.loaderList == null) {
+            this.loaderList = new ResourceLoader[0];
         }
-        ResourceLoaderFactory factory = appContext.getInstance(ResourceLoaderFactory.class);
-        resLoaderArray = factory.loaderArray(appContext);
-        if (resLoaderArray != null && resLoaderArray.length != 0) {
-            LoaderList.set(resLoaderArray);
+        //
+        //缓存路径
+        Environment env = appContext.getEnvironment();
+        String cacheSubPath = env.getPluginDir(ResourceModule.class);
+        this.cacheDir = new File(env.evalString(cacheSubPath));
+        if (!chekcCacheDir(this.cacheDir)) {
+            int i = 0;
+            while (true) {
+                this.cacheDir = new File(env.evalString(cacheSubPath + "_" + String.valueOf(i)));;
+                if (chekcCacheDir(this.cacheDir)) {
+                    break;
+                }
+            }
         }
+        logger.info("use cacheDir " + this.cacheDir);
     }
-    static void initCacheDir(File cacheDir) {
-        FileUtils.deleteDir(cacheDir);
+    private static boolean chekcCacheDir(File cacheDir) {
         cacheDir.mkdirs();
-        CacheDir.set(cacheDir);
-        logger.info("use cacheDir " + cacheDir);
+        if (cacheDir.isDirectory() == false && cacheDir.exists() == true) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    //
     //
     //
     //
@@ -115,23 +129,26 @@ public class ResourceHttpServlet extends HttpServlet {
         }
     }
     /**资源服务入口方法*/
-    public void service(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //1.确定时候拦截
-        HttpServletRequest req = (HttpServletRequest) request;
-        String requestURI = req.getRequestURI();
+        String requestURI = request.getRequestURI().substring(request.getContextPath().length());
+        if (requestURI.startsWith(spacePath) == false) {
+            super.service(request, response);
+            return;
+        }
         try {
             requestURI = URLDecoder.decode(requestURI, "utf-8");
         } catch (Exception e) {
             logger.warn("URLDecoder.decode error ->" + requestURI);
         }
         //2.如果为调试模式每次都重新加载资源（不缓存）
-        File cacheFile = new File(CacheDir.get(), requestURI);
+        File cacheFile = new File(cacheDir, requestURI);
         if (this.isDebug) {
             boolean mark = this.cacheRes(cacheFile, requestURI, request, response);
             if (mark) {
                 this.forwardTo(cacheFile, request, response);
             } else {
-                ((HttpServletResponse) response).sendError(404, "not exist :" + requestURI);
+                response.sendError(404, "not exist :" + requestURI);
             }
             return;
         }
@@ -169,7 +186,6 @@ public class ResourceHttpServlet extends HttpServlet {
     /*资源缓存*/
     private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         InputStream inStream = null;
-        ResourceLoader[] loaderList = LoaderList.get();
         if (loaderList == null || loaderList.length == 0) {
             return false;
         }

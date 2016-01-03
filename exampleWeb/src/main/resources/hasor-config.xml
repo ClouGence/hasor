@@ -6,6 +6,9 @@
 		<loadPackages>net.hasor.*</loadPackages>
 		<!-- 启动入口 -->
 		<startup>net.test.hasor.web.MyModule</startup>
+
+		<!-- 可以将jar包或zip压缩包中的资源做为web请求响应【由ResourceModule插件提供】 -->
+		<resourceLoader urlPatterns="js;css;eot;svg;ttf;woff;" />
 	</hasor>
 
 	<!-- Demo程序用到的配置 -->

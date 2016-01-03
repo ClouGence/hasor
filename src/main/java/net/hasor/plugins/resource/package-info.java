@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * 软件包 net.hasor.quick.event
  * <p>Web 插件，提供一个 Servlet 作为入口，使用这个 Servlet 可以将 Classpath 中的资源作为 Web资源响应。</p>
  */
 package net.hasor.plugins.resource;

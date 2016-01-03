@@ -45,6 +45,9 @@ public class TemplateContext {
         this.templatePath = settings.getDirectoryPath("hasor.template.templatePath", "/templates");
     }
     protected String findLayout(String tempFile) {
+        if (this.templateEngine == null) {
+            return null;
+        }
         TemplateLoader loader = this.templateEngine.getRootLoader();
         File layoutFile = new File(this.layoutPath, tempFile);
         if (loader.exist(layoutFile.getPath()) == true) {
@@ -66,6 +69,9 @@ public class TemplateContext {
     }
     //
     public void processTemplate(String tempFile, Writer writer, ContextMap context) throws ServletException, IOException {
+        if (this.templateEngine == null) {
+            return;
+        }
         String layoutFile = findLayout(tempFile);
         String encoding = context.getCharacterEncoding();
         //
@@ -80,6 +86,9 @@ public class TemplateContext {
         //
     }
     public String processControl(String tempFile, ContextMap context) throws ServletException, IOException {
+        if (this.templateEngine == null) {
+            return null;
+        }
         String encoding = context.getCharacterEncoding();
         StringWriter tmpWriter = new StringWriter();
         this.templateEngine.process(this.controlPath + "/" + tempFile, tmpWriter, context, encoding);

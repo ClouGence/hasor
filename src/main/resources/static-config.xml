@@ -14,11 +14,13 @@
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
+
 			<module>net.hasor.plugins.encoding.EncodingModule</module>
-			<module>net.hasor.plugins.resource.ResourceModule</module>
-			<module>net.hasor.plugins.startup.StartupModule</module>
 			<module>net.hasor.plugins.restful.RestfulModule</module>
 			<module>net.hasor.plugins.templates.TemplateModule</module>
+			<module>net.hasor.plugins.resource.ResourceModule</module>
+
+			<module>net.hasor.plugins.startup.StartupModule</module>
 		</modules>
 
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
@@ -48,6 +50,9 @@
 
 		<!-- restful开发插件【由RestfulModule插件提供】 -->
 		<restful urlPatterns="htm;html;do;json;" />
+
+		<!-- 可以将jar包或zip压缩包中的资源做为web请求响应【由ResourceModule插件提供】 -->
+		<resourceLoader urlPatterns="js;css;" space="/static" />
 
 		<!-- template页面模版渲染引擎【由TemplateModule插件提供】 -->
 		<template urlPatterns="htm;html;">

@@ -23,18 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtils;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 /**
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TemplateModule {
+public class TemplateModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         String interceptNames = apiBinder.getEnvironment().getSettings().getString("hasor.template.urlPatterns", "htm;html;");
         TemplateHttpServlet servlet = new TemplateHttpServlet();
         for (String name : interceptNames.split(";")) {
             if (StringUtils.isBlank(name) == false) {
-                apiBinder.serve(name).with(servlet);
+                apiBinder.serve("*." + name).with(servlet);
             }
         }
     }
