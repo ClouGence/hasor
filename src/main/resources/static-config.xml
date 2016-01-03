@@ -10,9 +10,6 @@
 		<!-- 包扫描覆盖范围，逗号间隔 -->
 		<loadPackages>net.hasor.*</loadPackages>
 
-		<!-- 简单程序入口模块。【由StartupModule插件提供】 -->
-		<startup></startup>
-
 		<!-- 默认要装载的模块 -->
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
@@ -23,12 +20,6 @@
 			<module>net.hasor.plugins.restful.RestfulModule</module>
 		</modules>
 
-		<!-- 请求响应编码配置。【由EncodingFilterModule插件提供】 -->
-		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
-
-		<!-- restful开发插件【由RestfulModule插件提供】 -->
-		<restful urlPatterns="htm;html;do;json" />
-
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
 		<eventThreadPoolSize>20</eventThreadPoolSize>
 
@@ -38,7 +29,6 @@
 			<RUN_PATH>./</RUN_PATH>
 			<!-- 工作目录 -->
 			<WORK_HOME>%USER.DIR%/hasor-work</WORK_HOME>
-
 			<!-- 临时文件位置 -->
 			<HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
 			<!-- 日志存放位置 -->
@@ -48,5 +38,25 @@
 			<!-- 模块配置目录 -->
 			<HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
 		</environmentVar>
+
+		<!-- 简单程序入口模块。【由StartupModule插件提供】 -->
+		<startup></startup>
+
+		<!-- 请求响应编码配置。【由EncodingFilterModule插件提供】 -->
+		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
+
+		<!-- restful开发插件【由RestfulModule插件提供】 -->
+		<restful urlPatterns="htm;html;do;json;" />
+
+		<!-- template页面模版渲染引擎【由TemplateModule插件提供】 -->
+		<template urlPatterns="htm;html;">
+			<!-- 区块模版位置 -->
+			<controlPath>/control</controlPath>
+			<!-- 布局模版位置 -->
+			<layoutPath>/layout</layoutPath>
+			<!-- 页面模版位置 -->
+			<templatePath>/templates</templatePath>
+		</template>
+
 	</hasor>
 </config>

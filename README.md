@@ -36,7 +36,8 @@
 04. ResourceModule插件，提供丰富的资源加载模块，可以实现将zip包中的资源响应给web请求
 05. RestfulModule插件，提供restful风格的Api进行Web开发
 06. StartupModule插件，简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module
-07. ValidModule插件，一个小型验证框架
+07. ValidModule插件，一个简单的对象验证框架
+08. TemplateModule插件，提供一个通用的模版渲染引擎接口
 
 ----------
 ### 发展状况

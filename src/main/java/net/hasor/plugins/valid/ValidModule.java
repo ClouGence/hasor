@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.valid;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 
  * @version : 2014年8月27日
@@ -45,8 +48,18 @@ public class ValidModule implements Module {
         }
         //
     }
-    //
-    public void loadValid(ValidApiBinder apiBinder) throws Throwable {
-        //
+    private static class ValidMatcher implements Matcher<Method> {
+        public boolean matches(Method target) {
+            Annotation[][] paramAnno = target.getParameterAnnotations();
+            for (int paramIndex = 0; paramIndex < paramAnno.length; paramIndex++) {
+                Annotation[] annoArrays = paramAnno[paramIndex];
+                for (Annotation anno : annoArrays) {
+                    if (anno != null && anno instanceof Valid) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
