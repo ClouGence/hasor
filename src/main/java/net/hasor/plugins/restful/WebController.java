@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.AppContext;
+import net.hasor.plugins.templates.ContextMap;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * Controller <br>
@@ -514,6 +515,10 @@ public abstract class WebController {
     /** @return Get model from AppContext. */
     protected Object getModel(String bindID) {
         return this.getAppContext().getInstance(bindID);
+    }
+    /** @return Get ContextMap from request. */
+    protected ContextMap getContextMap() {
+        return ContextMap.genContextMap(getRequest(), getResponse());
     }
     // --------
     //    private MultipartRequest multipartRequest;

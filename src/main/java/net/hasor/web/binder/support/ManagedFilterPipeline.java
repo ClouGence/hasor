@@ -37,7 +37,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
     private FilterDefinition[]           filterDefinitions;
     private volatile boolean             initialized = false;
-    private WebAppContext                appContext  = null;
+    private WebAppContext                appContext;
     //
     //
     public ManagedFilterPipeline(final ManagedServletPipeline servletPipeline) {

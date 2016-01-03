@@ -146,7 +146,7 @@
 * 改进:
     01.StandardEventManager 改为无锁方式实现。
     02.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
-    
+
 ===== Hasor-Core v0.0.11
 * 修复:
     01.LoggerHelper,修复当多次调用log输出时产生堆栈溢出问题。

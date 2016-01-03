@@ -18,6 +18,7 @@
 			<module>net.hasor.plugins.resource.ResourceModule</module>
 			<module>net.hasor.plugins.startup.StartupModule</module>
 			<module>net.hasor.plugins.restful.RestfulModule</module>
+			<module>net.hasor.plugins.templates.TemplateModule</module>
 		</modules>
 
 		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->

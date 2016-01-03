@@ -15,7 +15,6 @@
  */
 package net.hasor.plugins.templates;
 import java.io.Writer;
-import java.util.Map;
 /**
  * 
  * @version : 2016年1月3日
@@ -24,7 +23,7 @@ import java.util.Map;
 public interface TemplateEngine {
     /**执行模版引擎
      * @param layoutFile */
-    public void process(String layoutFile, Writer writer, Map<String, Object> dataModel, String characterEncoding);
+    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding);
     /**获取模版Loader*/
     public TemplateLoader getRootLoader();
 }

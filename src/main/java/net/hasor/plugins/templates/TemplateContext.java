@@ -18,8 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import net.hasor.core.AppContext;
@@ -66,34 +64,25 @@ public class TemplateContext {
         }
         return null;
     }
-    protected Map<String, Object> getDataModule(ContextMap context) {
-        Map<String, Object> dataModel = (context != null) ? context.toDataMap() : null;
-        if (dataModel == null) {
-            dataModel = new HashMap<String, Object>();
-        }
-        return dataModel;
-    }
     //
     public void processTemplate(String tempFile, Writer writer, ContextMap context) throws ServletException, IOException {
-        Map<String, Object> dataModel = this.getDataModule(context);
         String layoutFile = findLayout(tempFile);
         String encoding = context.getCharacterEncoding();
         //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            this.templateEngine.process(this.templatePath + "/" + tempFile, tmpWriter, dataModel, encoding);
-            dataModel.put("content_placeholder", tmpWriter.toString());
-            this.templateEngine.process(layoutFile, writer, dataModel, context.getCharacterEncoding());
+            this.templateEngine.process(this.templatePath + "/" + tempFile, tmpWriter, context, encoding);
+            context.put("content_placeholder", tmpWriter.toString());
+            this.templateEngine.process(layoutFile, writer, context, encoding);
         } else {
-            this.templateEngine.process(this.templatePath + "/" + tempFile, writer, dataModel, encoding);
+            this.templateEngine.process(this.templatePath + "/" + tempFile, writer, context, encoding);
         }
         //
     }
     public String processControl(String tempFile, ContextMap context) throws ServletException, IOException {
-        Map<String, Object> dataModel = this.getDataModule(context);
         String encoding = context.getCharacterEncoding();
         StringWriter tmpWriter = new StringWriter();
-        this.templateEngine.process(this.controlPath + "/" + tempFile, tmpWriter, dataModel, encoding);
+        this.templateEngine.process(this.controlPath + "/" + tempFile, tmpWriter, context, encoding);
         return tmpWriter.toString();
     }
 }

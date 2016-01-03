@@ -14,13 +14,61 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates;
-import java.util.Map;
+import java.util.Enumeration;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * @version : 2016年1月2日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ContextMap {
-    Map<String, Object> toDataMap();
-    String getCharacterEncoding();
+public class ContextMap {
+    public static final String TEMPLATE_CONTEXT_DATA_KEY = "TEMPLATE_CONTEXT_DATA_KEY";
+    public static ContextMap genContextMap(HttpServletRequest request, HttpServletResponse response) {
+        ContextMap contextMap = (ContextMap) request.getAttribute(TEMPLATE_CONTEXT_DATA_KEY);
+        if (contextMap != null) {
+            return contextMap;
+        }
+        //
+        contextMap = new ContextMap(request, response);
+        request.setAttribute(TEMPLATE_CONTEXT_DATA_KEY, contextMap);
+        return contextMap;
+    }
+    //
+    //
+    //
+    private String                        characterEncoding;
+    private ConcurrentMap<String, Object> concurrentMap;
+    private ContextMap(HttpServletRequest request, HttpServletResponse response) {
+        this.characterEncoding = response.getCharacterEncoding();
+        this.concurrentMap = new ConcurrentHashMap<String, Object>();
+        //
+        Enumeration<?> paramEnum = request.getParameterNames();
+        while (paramEnum.hasMoreElements()) {
+            Object paramKey = paramEnum.nextElement();
+            String key = paramKey.toString();
+            String val = request.getParameter(key);
+            this.concurrentMap.putIfAbsent("req_" + key, val);
+        }
+    }
+    /***/
+    public String getCharacterEncoding() {
+        return this.characterEncoding;
+    }
+    /***/
+    public void put(String key, Object value) {
+        this.concurrentMap.put(key, value);
+        //
+    }
+    /***/
+    public Object get(String key) {
+        return this.concurrentMap.get(key);
+    }
+    /***/
+    public Set<String> keys() {
+        return this.concurrentMap.keySet();
+    }
 }

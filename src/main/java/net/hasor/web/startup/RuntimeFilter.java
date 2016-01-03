@@ -82,7 +82,6 @@ public class RuntimeFilter implements Filter {
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         //
         try {
-            /*执行.*/
             this.beforeRequest(this.appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);
         } finally {

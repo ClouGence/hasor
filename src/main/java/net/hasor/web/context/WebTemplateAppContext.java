@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.servlet.ServletContext;
+import org.more.util.ResourcesUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
@@ -34,7 +35,6 @@ import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
-import org.more.util.ResourcesUtils;
 /**
  *
  * @version : 2013-7-16
