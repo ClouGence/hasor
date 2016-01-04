@@ -56,7 +56,12 @@
 		<resourceLoader urlPatterns="js;css;" space="/static" />
 
 		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-		<template urlPatterns="htm;html;" engine="freemarker">
+		<template urlPatterns="htm;html;" engine="">
+			<!-- 可用的引擎 -->
+			<engineSet>
+				<engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>
+				<engine type="velocity">net.hasor.plugins.templates.engine.velocity.VelocityTemplateEngine</engine>
+			</engineSet>
 			<!-- 区块模版位置 -->
 			<controlPath>/control</controlPath>
 			<!-- 布局模版位置 -->

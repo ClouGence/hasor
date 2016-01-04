@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates;
+import java.util.List;
 import org.more.util.StringUtils;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -24,14 +27,37 @@ import net.hasor.web.WebModule;
  */
 public class TemplateModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        String engineName = settings.getString("hasor.template.engine", "");
+        if (StringUtils.isBlank(engineName)) {
+            logger.info("template Module not be load. -> engineName not configured.");
+            return;
+        }
+        List<XmlNode> engineList = settings.merageXmlNode("hasor.template.engineSet", "engine");
+        XmlNode engineConfig = null;
+        for (XmlNode engineType : engineList) {
+            String etype = engineType.getAttribute("type");
+            if (StringUtils.equals(engineName, etype) == true) {
+                engineConfig = engineType;
+                break;
+            }
+        }
+        if (engineConfig == null) {
+            logger.info("template Module not be load. -> engineName {} undefined.", engineName);
+            return;
+        }
         //
-        String interceptNames = apiBinder.getEnvironment().getSettings().getString("hasor.template.urlPatterns", "htm;html;");
+        String engineTypeName = engineConfig.getText().trim();
+        Class<TemplateEngine> engineType = (Class<TemplateEngine>) Class.forName(engineTypeName);
+        apiBinder.bindType(TemplateEngine.class).to(engineType);
+        //
         TemplateHttpServlet servlet = new TemplateHttpServlet();
+        String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
         for (String name : interceptNames.split(";")) {
             if (StringUtils.isBlank(name) == false) {
                 apiBinder.serve("*." + name).with(servlet);
             }
         }
+        logger.info("template Module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
     }
 }

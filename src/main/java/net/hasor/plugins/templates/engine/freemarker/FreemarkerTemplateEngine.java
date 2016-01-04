@@ -14,34 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates.engine.freemarker;
+import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
+import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import net.hasor.core.AppContext;
+import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.templates.ContextMap;
 import net.hasor.plugins.templates.TemplateEngine;
-import net.hasor.plugins.templates.TemplateLoader;
 /**
  * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public class FreemarkerTemplateEngine implements TemplateEngine {
+    private Configuration configuration;
     @Override
-    public void initEngine(AppContext appContext) {
+    public void initEngine(AppContext appContext) throws IOException {
         String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setDefaultEncoding("utf-8");
         configuration.setOutputEncoding("utf-8");
         configuration.setLocalizedLookup(true);
-        //   configuration.setTemplateLoader(new TemplateLoaderWrap(templateLoader));
+        configuration.setTemplateLoader(new FileTemplateLoader(new File(realPath), true));
     }
     @Override
-    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding) {
-        // configuration.getTemplate(name)
+    public void process(String template, Writer writer, ContextMap dataModel, String characterEncoding) throws Throwable {
+        configuration.getTemplate(template);
         // TODO Auto-generated method stub
     }
     @Override
-    public TemplateLoader getRootLoader() {
+    public ResourceLoader getRootLoader() {
         // TODO Auto-generated method stub
         return null;
     }

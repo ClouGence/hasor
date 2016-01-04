@@ -25,7 +25,7 @@ import net.hasor.plugins.templates.TemplateLoader;
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class FreemarkerTemplateEngine implements TemplateEngine {
+public class VelocityTemplateEngine implements TemplateEngine {
     @Override
     public void initEngine(AppContext appContext) {
         String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");

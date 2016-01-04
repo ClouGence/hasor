@@ -15,13 +15,13 @@
  */
 package net.hasor.plugins.templates;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
+import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * 
@@ -29,27 +29,30 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TemplateContext {
-    private AppContext     appContext     = null;
     private String         controlPath    = null; //区块模版位置
     private String         layoutPath     = null; //布局模版位置
     private String         templatePath   = null; //页面模版位置
     private TemplateEngine templateEngine = null;
     //
     public void init(ServletContext servletContext) throws ServletException {
-        this.appContext = RuntimeListener.getAppContext(servletContext);
-        this.templateEngine = this.appContext.getInstance(TemplateEngine.class);
-        //
-        Settings settings = this.appContext.getEnvironment().getSettings();
-        this.controlPath = settings.getDirectoryPath("hasor.template.controlPath", "/control");
-        this.layoutPath = settings.getDirectoryPath("hasor.template.layoutPath", "/layout");
-        this.templatePath = settings.getDirectoryPath("hasor.template.templatePath", "/templates");
-        //
+        try {
+            AppContext appContext = RuntimeListener.getAppContext(servletContext);
+            this.templateEngine = appContext.getInstance(TemplateEngine.class);
+            this.templateEngine.initEngine(appContext);
+            //
+            Settings settings = appContext.getEnvironment().getSettings();
+            this.controlPath = settings.getDirectoryPath("hasor.template.controlPath", "/control");
+            this.layoutPath = settings.getDirectoryPath("hasor.template.layoutPath", "/layout");
+            this.templatePath = settings.getDirectoryPath("hasor.template.templatePath", "/templates");
+        } catch (Exception e) {
+            throw new ServletException(e.getMessage(), e);
+        }
     }
     protected String findLayout(String tempFile) {
         if (this.templateEngine == null) {
             return null;
         }
-        TemplateLoader loader = this.templateEngine.getRootLoader();
+        ResourceLoader loader = this.templateEngine.getRootLoader();
         File layoutFile = new File(this.layoutPath, tempFile);
         if (loader.exist(layoutFile.getPath()) == true) {
             return layoutFile.getPath();
@@ -69,7 +72,7 @@ public class TemplateContext {
         return null;
     }
     //
-    public void processTemplate(String tempFile, Writer writer, ContextMap context) throws ServletException, IOException {
+    public void processTemplate(String tempFile, Writer writer, ContextMap context) throws Throwable {
         if (this.templateEngine == null) {
             return;
         }
@@ -86,7 +89,7 @@ public class TemplateContext {
         }
         //
     }
-    public String processControl(String tempFile, ContextMap context) throws ServletException, IOException {
+    public String processControl(String tempFile, ContextMap context) throws Throwable {
         if (this.templateEngine == null) {
             return null;
         }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates;
+import java.io.IOException;
 import java.io.Writer;
 import net.hasor.core.AppContext;
+import net.hasor.plugins.resource.ResourceLoader;
 /**
  * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TemplateEngine {
-    public void initEngine(AppContext appContext);
+    /**初始化引擎*/
+    public void initEngine(AppContext appContext) throws IOException;
     /**执行模版引擎*/
-    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding);
+    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding) throws Throwable;
     /**获取模版Loader*/
-    public TemplateLoader getRootLoader();
+    public ResourceLoader getRootLoader();
 }

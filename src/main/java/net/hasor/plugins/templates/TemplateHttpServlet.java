@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.more.util.ExceptionUtils;
 /**
  * 
  * @version : 2016年1月3日
@@ -40,9 +41,18 @@ class TemplateHttpServlet extends HttpServlet {
     }
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //
-        ContextMap contextMap = ContextMap.genContextMap(req, resp);
-        String requestURI = req.getRequestURI().substring(req.getContextPath().length());
-        this.templateContext.processTemplate(requestURI, resp.getWriter(), contextMap);
+        try {
+            ContextMap contextMap = ContextMap.genContextMap(req, resp);
+            String requestURI = req.getRequestURI().substring(req.getContextPath().length());
+            this.templateContext.processTemplate(requestURI, resp.getWriter(), contextMap);
+        } catch (Throwable e) {
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            } else if (e instanceof ServletException) {
+                throw (ServletException) e;
+            } else {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
     }
 }
