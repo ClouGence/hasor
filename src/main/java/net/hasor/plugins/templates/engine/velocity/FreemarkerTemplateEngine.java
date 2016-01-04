@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.templates.engine.freemarker;
+package net.hasor.plugins.templates.engine.velocity;
 import java.io.Writer;
 import freemarker.template.Configuration;
 import net.hasor.core.AppContext;

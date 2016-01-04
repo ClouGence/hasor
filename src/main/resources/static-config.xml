@@ -4,7 +4,7 @@
 	<root:config>
 		<root:hasor.loadPackages>net.*,org.*,com.*</root:hasor.loadPackages>
 	</root:config>
-	<!-- ========================================================================= -->
+	<!-- ============================================================================ -->
 	<!-- 框架配置 -->
 	<hasor debug="false">
 		<!-- 包扫描覆盖范围，逗号间隔 -->
@@ -42,20 +42,21 @@
 			<HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
 		</environmentVar>
 
-		<!-- 简单程序入口模块。【由StartupModule插件提供】 -->
+		<!-- ======================================================================== -->
+		<!-- 程序入口模块类名【由StartupModule插件提供】 -->
 		<startup></startup>
 
-		<!-- 请求响应编码配置。【由EncodingFilterModule插件提供】 -->
+		<!-- web请求响应编码配置【由EncodingFilterModule插件提供】 -->
 		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
 
-		<!-- restful开发插件【由RestfulModule插件提供】 -->
+		<!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
 		<restful urlPatterns="htm;html;do;json;" />
 
-		<!-- 可以将jar包或zip压缩包中的资源做为web请求响应【由ResourceModule插件提供】 -->
+		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
 		<resourceLoader urlPatterns="js;css;" space="/static" />
 
-		<!-- template页面模版渲染引擎【由TemplateModule插件提供】 -->
-		<template urlPatterns="htm;html;">
+		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
+		<template urlPatterns="htm;html;" engine="freemarker">
 			<!-- 区块模版位置 -->
 			<controlPath>/control</controlPath>
 			<!-- 布局模版位置 -->
@@ -63,6 +64,6 @@
 			<!-- 页面模版位置 -->
 			<templatePath>/templates</templatePath>
 		</template>
-
+		<!-- ======================================================================== -->
 	</hasor>
 </config>

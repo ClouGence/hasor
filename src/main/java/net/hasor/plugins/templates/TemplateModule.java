@@ -24,6 +24,8 @@ import net.hasor.web.WebModule;
  */
 public class TemplateModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        
+        //
         String interceptNames = apiBinder.getEnvironment().getSettings().getString("hasor.template.urlPatterns", "htm;html;");
         TemplateHttpServlet servlet = new TemplateHttpServlet();
         for (String name : interceptNames.split(";")) {
