@@ -16,7 +16,7 @@
 package net.hasor.plugins.mimetype;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import org.more.util.StringUtils;
+import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2015年2月11日
@@ -25,18 +25,14 @@ import org.more.util.StringUtils;
 public class MimeTypeModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         Object context = apiBinder.getEnvironment().getContext();
-        String contextType = context != null ? context.getClass().getName() : "";
-        String eqType = "javax.servlet.ServletContext";
-        //
         InnerMimeTypeContext mimeType = null;
-        if (StringUtils.equalsIgnoreCase(contextType, eqType)) {
+        if (apiBinder instanceof WebApiBinder) {
             mimeType = new InnerMimeTypeWebContext(context);
             mimeType.loadStream("mime.types.xml");
         } else {
             mimeType = new InnerMimeTypeContext(context);
             mimeType.loadStream("mime.types.xml");
         }
-        //
         apiBinder.bindType(MimeType.class).toInstance(mimeType);
     }
 }

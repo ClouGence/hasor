@@ -32,8 +32,8 @@ public class MyModule extends WebModule {
         //
         //resource插件用法
         ServletContext sc = apiBinder.getServletContext();
-        apiBinder.bindType(ResourceLoader.class).toInstance(new ZipResourceLoader(sc.getRealPath("/static/jquery-2.1.4.zip")));
-        apiBinder.bindType(ResourceLoader.class).toInstance(new ZipResourceLoader(sc.getRealPath("/static/Semantic-UI-v2.0.0.zip")));
+        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/jquery-2.1.4.zip")));
+        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/Semantic-UI-v2.0.0.zip")));
         //
         //
     }

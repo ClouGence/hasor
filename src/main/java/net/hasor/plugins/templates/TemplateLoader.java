@@ -31,4 +31,6 @@ public interface TemplateLoader extends ResourceLoader {
     public Reader getReader(Object templateSource, String encoding) throws IOException;
     /** Closes the template source */
     public void closeTemplateSource(Object templateSource) throws IOException;
+    //
+    public void resetState();
 }

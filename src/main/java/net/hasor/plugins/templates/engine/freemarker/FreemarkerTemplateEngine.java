@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.templates.engine;
-import java.io.File;
+package net.hasor.plugins.templates.engine.freemarker;
 import java.io.Writer;
 import freemarker.template.Configuration;
 import net.hasor.core.AppContext;
@@ -29,17 +28,16 @@ import net.hasor.plugins.templates.TemplateLoader;
 public class FreemarkerTemplateEngine implements TemplateEngine {
     @Override
     public void initEngine(AppContext appContext) {
-        String realPath = apiBinder.getServletContext().getRealPath("/");
+        String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setDefaultEncoding("utf-8");
         configuration.setOutputEncoding("utf-8");
         configuration.setLocalizedLookup(true);
-        configuration.setTemplateLoader(new DirTemplateLoader(new File(realPath)));
-        // TODO Auto-generated method stub
-        configuration.getTemplate(name)
+        configuration.setTemplateLoader(new TemplateLoaderWrap(templateLoader));
     }
     @Override
     public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding) {
+        configuration.getTemplate(name)
         // TODO Auto-generated method stub
     }
     @Override

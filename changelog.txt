@@ -2,8 +2,8 @@
 * 新增:
     01.增加一个WebDemo示例工程。
     02.新增一个插件，简化“modules.module”的配置。
-    03.将restful插件完全简化重写，从MVC框架中剥离出来成为一个独立的插件。做为hasor内置Web开发插件。
-    04.添加模版插件为核心插件，该插件将提供模版渲染支持。
+    03.新增restful插件，做为hasor内置Web开发插件。
+    04.添加templates插件，该插件将提供模版渲染支持。
 * 改进:
     01.修改ShutdownHook钩子。在start时注册它、当shutdown时解除注册。
     02.增加Environment接口的包装器。
