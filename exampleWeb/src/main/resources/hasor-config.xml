@@ -3,7 +3,7 @@
 	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描路径 -->
-		<loadPackages>net.hasor.*</loadPackages>
+		<loadPackages>net.test.hasor.*</loadPackages>
 		<!-- demo程序启动入口 -->
 		<startup>net.test.hasor.web.MyModule</startup>
 		<!-- 使用模版插件，并指定模版引擎为freemarker -->
