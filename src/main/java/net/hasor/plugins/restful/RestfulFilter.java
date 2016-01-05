@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -39,10 +40,14 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RestfulFilter implements Filter {
-    private String[]          interceptNames = null;
-    private MappingToDefine[] invokeArray    = new MappingToDefine[0];
+    private final AtomicBoolean inited         = new AtomicBoolean(false);
+    private String[]            interceptNames = null;
+    private MappingToDefine[]   invokeArray    = new MappingToDefine[0];
     //
     public void init(FilterConfig filterConfig) throws ServletException {
+        if (this.inited.compareAndSet(false, true) == false) {
+            return;
+        }
         //1.拦截
         AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
         String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");

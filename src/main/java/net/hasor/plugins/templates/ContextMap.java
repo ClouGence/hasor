@@ -40,10 +40,8 @@ public class ContextMap {
     //
     //
     //
-    private String                        characterEncoding;
     private ConcurrentMap<String, Object> concurrentMap;
     private ContextMap(HttpServletRequest request, HttpServletResponse response) {
-        this.characterEncoding = response.getCharacterEncoding();
         this.concurrentMap = new ConcurrentHashMap<String, Object>();
         //
         Enumeration<?> paramEnum = request.getParameterNames();
@@ -53,10 +51,6 @@ public class ContextMap {
             String val = request.getParameter(key);
             this.concurrentMap.putIfAbsent("req_" + key, val);
         }
-    }
-    /***/
-    public String getCharacterEncoding() {
-        return this.characterEncoding;
     }
     /***/
     public void put(String key, Object value) {

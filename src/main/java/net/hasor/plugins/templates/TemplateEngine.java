@@ -17,7 +17,6 @@ package net.hasor.plugins.templates;
 import java.io.IOException;
 import java.io.Writer;
 import net.hasor.core.AppContext;
-import net.hasor.plugins.resource.ResourceLoader;
 /**
  * 
  * @version : 2016年1月3日
@@ -27,7 +26,7 @@ public interface TemplateEngine {
     /**初始化引擎*/
     public void initEngine(AppContext appContext) throws IOException;
     /**执行模版引擎*/
-    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding) throws Throwable;
+    public void process(String template, Writer writer, ContextMap dataModel) throws Throwable;
     /**获取模版Loader*/
-    public ResourceLoader getRootLoader();
+    public boolean exist(String template) throws IOException;
 }

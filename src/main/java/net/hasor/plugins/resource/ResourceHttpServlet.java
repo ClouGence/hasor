@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.ServletConfig;
@@ -37,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
+import net.hasor.plugins.mimetype.MimeType;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * 负责装载jar包或zip包中的资源
@@ -46,6 +48,8 @@ import net.hasor.web.startup.RuntimeListener;
 class ResourceHttpServlet extends HttpServlet {
     private static final long                        serialVersionUID = 2470188139577613256L;
     protected static Logger                          logger           = LoggerFactory.getLogger(ResourceHttpServlet.class);
+    private final AtomicBoolean                      inited           = new AtomicBoolean(false);
+    private MimeType                                 mimeType         = null;
     private ResourceLoader[]                         loaderList       = null;
     private String                                   spacePath        = null;
     private File                                     cacheDir         = null;
@@ -53,9 +57,12 @@ class ResourceHttpServlet extends HttpServlet {
     private boolean                                  isDebug;
     //
     public synchronized void init(ServletConfig config) throws ServletException {
+        if (this.inited.compareAndSet(false, true) == false) {
+            return;
+        }
         AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
         this.isDebug = appContext.getEnvironment().isDebug();
-        this.spacePath = appContext.getEnvironment().getSettings().getDirectoryPath("hasor.resourceLoader.space", "/static");
+        this.spacePath = appContext.getEnvironment().getSettings().getString("hasor.resourceLoader.space", "/static");
         //
         List<ResourceLoader> loaderList = appContext.findBindingBean(ResourceLoader.class);
         this.loaderList = loaderList.toArray(new ResourceLoader[loaderList.size()]);
@@ -77,6 +84,8 @@ class ResourceHttpServlet extends HttpServlet {
             }
         }
         logger.info("use cacheDir " + this.cacheDir);
+        //
+        this.mimeType = appContext.getInstance(MimeType.class);
     }
     private static boolean chekcCacheDir(File cacheDir) {
         cacheDir.mkdirs();
@@ -97,7 +106,12 @@ class ResourceHttpServlet extends HttpServlet {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
         String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
-        String typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
+        String typeMimeType = null;
+        if (this.mimeType != null) {
+            typeMimeType = this.mimeType.getMimeType(fileExt);
+        } else {
+            typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
+        }
         if (StringUtils.isBlank(typeMimeType)) {
             if (logger.isInfoEnabled()) {
                 logger.info(requestURI + " not mapping MimeType!");

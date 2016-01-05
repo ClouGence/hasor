@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates.engine.velocity;
+import java.io.IOException;
 import java.io.Writer;
-import freemarker.template.Configuration;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import net.hasor.core.AppContext;
 import net.hasor.plugins.templates.ContextMap;
 import net.hasor.plugins.templates.TemplateEngine;
-import net.hasor.plugins.templates.TemplateLoader;
 /**
  * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public class VelocityTemplateEngine implements TemplateEngine {
+    private String         realPath;
+    private VelocityEngine velocityEngine;
     @Override
-    public void initEngine(AppContext appContext) {
-        String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
-        configuration.setDefaultEncoding("utf-8");
-        configuration.setOutputEncoding("utf-8");
-        configuration.setLocalizedLookup(true);
-        //   configuration.setTemplateLoader(new TemplateLoaderWrap(templateLoader));
+    public void initEngine(AppContext appContext) throws IOException {
+        this.realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
+        this.velocityEngine = new VelocityEngine();
     }
     @Override
-    public void process(String layoutFile, Writer writer, ContextMap dataModel, String characterEncoding) {
-        // configuration.getTemplate(name)
-        // TODO Auto-generated method stub
+    public void process(String template, Writer writer, ContextMap dataModel) throws Throwable {
+        Template temp = velocityEngine.getTemplate(realPath + "/" + template);
+        VelocityContext context = new VelocityContext();
+        temp.merge(context, writer);
+        temp.process();
     }
     @Override
-    public TemplateLoader getRootLoader() {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean exist(String template) throws IOException {
+        Template temp = velocityEngine.getTemplate(realPath + "/" + template);
+        return temp != null;
     }
 }

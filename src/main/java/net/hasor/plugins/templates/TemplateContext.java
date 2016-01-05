@@ -15,13 +15,14 @@
  */
 package net.hasor.plugins.templates;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
-import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * 
@@ -29,41 +30,44 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TemplateContext {
-    private String         controlPath    = null; //区块模版位置
-    private String         layoutPath     = null; //布局模版位置
-    private String         templatePath   = null; //页面模版位置
+    private AtomicBoolean  inited         = new AtomicBoolean(false);
+    private String         controlPath    = null;                    //区块模版位置
+    private String         layoutPath     = null;                    //布局模版位置
+    private String         templatePath   = null;                    //页面模版位置
     private TemplateEngine templateEngine = null;
     //
     public void init(ServletContext servletContext) throws ServletException {
+        if (this.inited.compareAndSet(false, true) == false) {
+            return;
+        }
         try {
             AppContext appContext = RuntimeListener.getAppContext(servletContext);
             this.templateEngine = appContext.getInstance(TemplateEngine.class);
             this.templateEngine.initEngine(appContext);
             //
             Settings settings = appContext.getEnvironment().getSettings();
-            this.controlPath = settings.getDirectoryPath("hasor.template.controlPath", "/control");
-            this.layoutPath = settings.getDirectoryPath("hasor.template.layoutPath", "/layout");
-            this.templatePath = settings.getDirectoryPath("hasor.template.templatePath", "/templates");
+            this.controlPath = settings.getString("hasor.template.controlPath", "/control");
+            this.layoutPath = settings.getString("hasor.template.layoutPath", "/layout");
+            this.templatePath = settings.getString("hasor.template.templatePath", "/templates");
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
         }
     }
-    protected String findLayout(String tempFile) {
+    protected String findLayout(String tempFile) throws IOException {
         if (this.templateEngine == null) {
             return null;
         }
-        ResourceLoader loader = this.templateEngine.getRootLoader();
         File layoutFile = new File(this.layoutPath, tempFile);
-        if (loader.exist(layoutFile.getPath()) == true) {
+        if (this.templateEngine.exist(layoutFile.getPath()) == true) {
             return layoutFile.getPath();
         } else {
             layoutFile = new File(layoutFile.getParent(), "default.htm");
-            if (loader.exist(layoutFile.getPath()) == true) {
+            if (this.templateEngine.exist(layoutFile.getPath()) == true) {
                 return layoutFile.getPath();
             } else {
                 while (layoutFile.getPath().startsWith(this.layoutPath)) {
                     layoutFile = new File(layoutFile.getParentFile().getParent(), "default.htm");
-                    if (loader.exist(layoutFile.getPath()) == true) {
+                    if (this.templateEngine.exist(layoutFile.getPath()) == true) {
                         return layoutFile.getPath();
                     }
                 }
@@ -77,15 +81,14 @@ public class TemplateContext {
             return;
         }
         String layoutFile = findLayout(tempFile);
-        String encoding = context.getCharacterEncoding();
         //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            this.templateEngine.process(this.templatePath + "/" + tempFile, tmpWriter, context, encoding);
+            this.templateEngine.process(this.templatePath + "/" + tempFile, tmpWriter, context);
             context.put("content_placeholder", tmpWriter.toString());
-            this.templateEngine.process(layoutFile, writer, context, encoding);
+            this.templateEngine.process(layoutFile, writer, context);
         } else {
-            this.templateEngine.process(this.templatePath + "/" + tempFile, writer, context, encoding);
+            this.templateEngine.process(this.templatePath + "/" + tempFile, writer, context);
         }
         //
     }
@@ -93,9 +96,8 @@ public class TemplateContext {
         if (this.templateEngine == null) {
             return null;
         }
-        String encoding = context.getCharacterEncoding();
         StringWriter tmpWriter = new StringWriter();
-        this.templateEngine.process(this.controlPath + "/" + tempFile, tmpWriter, context, encoding);
+        this.templateEngine.process(this.controlPath + "/" + tempFile, tmpWriter, context);
         return tmpWriter.toString();
     }
 }

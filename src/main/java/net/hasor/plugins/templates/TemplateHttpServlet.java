@@ -15,35 +15,46 @@
  */
 package net.hasor.plugins.templates;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.ExceptionUtils;
+import net.hasor.core.AppContext;
+import net.hasor.plugins.mimetype.MimeType;
+import net.hasor.web.startup.RuntimeListener;
 /**
  * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 class TemplateHttpServlet extends HttpServlet {
-    private static final long   serialVersionUID = -4405894246041827036L;
-    private final AtomicBoolean inited           = new AtomicBoolean(false);
-    private TemplateContext     templateContext;
+    private static final long serialVersionUID = -4405894246041827036L;
+    private MimeType          mimeType         = null;
+    private TemplateContext   templateContext;
     //
     @Override
     public void init(ServletConfig config) throws ServletException {
-        if (this.inited.compareAndSet(false, true)) {
-            this.templateContext = new TemplateContext();
-            this.templateContext.init(config.getServletContext());
-        }
+        this.templateContext = new TemplateContext();
+        this.templateContext.init(config.getServletContext());
+        AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
+        this.mimeType = appContext.getInstance(MimeType.class);
     }
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String requestURI = req.getRequestURI();
+        String fileExt = requestURI.substring(requestURI.lastIndexOf("."));
+        String typeMimeType = null;
+        if (this.mimeType != null) {
+            typeMimeType = this.mimeType.getMimeType(fileExt);
+        } else {
+            typeMimeType = req.getSession(true).getServletContext().getMimeType(fileExt);
+        }
+        resp.setContentType(typeMimeType);
         try {
             ContextMap contextMap = ContextMap.genContextMap(req, resp);
-            String requestURI = req.getRequestURI().substring(req.getContextPath().length());
+            requestURI = req.getRequestURI().substring(req.getContextPath().length());
             this.templateContext.processTemplate(requestURI, resp.getWriter(), contextMap);
         } catch (Throwable e) {
             if (e instanceof IOException) {

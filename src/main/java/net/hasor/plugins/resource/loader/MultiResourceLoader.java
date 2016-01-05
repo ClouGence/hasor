@@ -58,7 +58,7 @@ public class MultiResourceLoader implements ResourceLoader {
         return null;
     }
     //
-    protected ResourceLoader findLoader(String resourcePath) {
+    protected ResourceLoader findLoader(String resourcePath) throws IOException {
         ResourceLoader loader = this.lastLoaderForName.get(resourcePath);
         if (loader == null) {
             for (ResourceLoader loads : this.loaders) {
@@ -73,7 +73,7 @@ public class MultiResourceLoader implements ResourceLoader {
         return loader;
     }
     //
-    public boolean exist(String resourcePath) {
+    public boolean exist(String resourcePath) throws IOException {
         return findLoader(resourcePath) != null;
     }
     //

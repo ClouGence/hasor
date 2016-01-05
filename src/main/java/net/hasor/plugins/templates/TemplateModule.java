@@ -36,28 +36,39 @@ public class TemplateModule extends WebModule {
         List<XmlNode> engineList = settings.merageXmlNode("hasor.template.engineSet", "engine");
         XmlNode engineConfig = null;
         for (XmlNode engineType : engineList) {
+            engineConfig = null;
             String etype = engineType.getAttribute("type");
             if (StringUtils.equals(engineName, etype) == true) {
                 engineConfig = engineType;
                 break;
             }
         }
+        String engineTypeName = null;
         if (engineConfig == null) {
-            logger.info("template Module not be load. -> engineName {} undefined.", engineName);
+            engineTypeName = engineName;
+        } else {
+            engineTypeName = engineConfig.getText().trim();
+        }
+        if (StringUtils.isBlank(engineTypeName)) {
+            logger.info("template Module not be load. -> engineName undefined.");
             return;
         }
         //
-        String engineTypeName = engineConfig.getText().trim();
-        Class<TemplateEngine> engineType = (Class<TemplateEngine>) Class.forName(engineTypeName);
-        apiBinder.bindType(TemplateEngine.class).to(engineType);
-        //
-        TemplateHttpServlet servlet = new TemplateHttpServlet();
-        String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
-        for (String name : interceptNames.split(";")) {
-            if (StringUtils.isBlank(name) == false) {
-                apiBinder.serve("*." + name).with(servlet);
+        try {
+            Class<TemplateEngine> engineType = (Class<TemplateEngine>) Class.forName(engineTypeName);
+            apiBinder.bindType(TemplateEngine.class).to(engineType);
+            //
+            TemplateHttpServlet servlet = new TemplateHttpServlet();
+            String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
+            for (String name : interceptNames.split(";")) {
+                if (StringUtils.isBlank(name) == false) {
+                    apiBinder.serve("*." + name).with(servlet);
+                }
             }
+            logger.info("template Module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+            throw e;
         }
-        logger.info("template Module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
     }
 }

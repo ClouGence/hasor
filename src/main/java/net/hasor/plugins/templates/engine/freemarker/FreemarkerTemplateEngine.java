@@ -18,9 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.Template;
 import net.hasor.core.AppContext;
-import net.hasor.plugins.resource.ResourceLoader;
 import net.hasor.plugins.templates.ContextMap;
 import net.hasor.plugins.templates.TemplateEngine;
 /**
@@ -33,20 +34,22 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     @Override
     public void initEngine(AppContext appContext) throws IOException {
         String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
-        configuration.setDefaultEncoding("utf-8");
-        configuration.setOutputEncoding("utf-8");
-        configuration.setLocalizedLookup(true);
-        configuration.setTemplateLoader(new FileTemplateLoader(new File(realPath), true));
+        TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
+        configuration = new Configuration(Configuration.VERSION_2_3_22);
+        configuration.setTemplateLoader(templateLoader);
+        //
+        configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
+        configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8
+        configuration.setLocalizedLookup(false);//是否开启国际化false
+        configuration.setClassicCompatible(true);//null值测处理配置
     }
     @Override
-    public void process(String template, Writer writer, ContextMap dataModel, String characterEncoding) throws Throwable {
-        configuration.getTemplate(template);
-        // TODO Auto-generated method stub
+    public void process(String template, Writer writer, ContextMap dataModel) throws Throwable {
+        Template temp = configuration.getTemplate(template);
+        temp.process(dataModel, writer);
     }
     @Override
-    public ResourceLoader getRootLoader() {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean exist(String template) throws IOException {
+        return configuration.getTemplateLoader().findTemplateSource(template) != null;
     }
 }
