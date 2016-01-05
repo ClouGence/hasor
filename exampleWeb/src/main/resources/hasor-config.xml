@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
-	<!-- 对 Hasor 的配置 -->
+	<!-- 框架配置 -->
 	<hasor>
 		<!-- 包扫描路径 -->
 		<loadPackages>net.hasor.*</loadPackages>
-		<!-- 启动入口 -->
+		<!-- demo程序启动入口 -->
 		<startup>net.test.hasor.web.MyModule</startup>
-
-		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
-		<resourceLoader urlPatterns="js;css;eot;svg;ttf;woff;" />
-		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-		<template engine="freemarker" />
+		<!-- 使用模版插件，并指定模版引擎为freemarker -->
+		<template urlPatterns="htm;html;" engine="freemarker" />
 	</hasor>
 
 	<!-- Demo程序用到的配置 -->

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 package net.test.hasor.web;
-import javax.servlet.ServletContext;
-import net.hasor.plugins.resource.ResourceLoader;
-import net.hasor.plugins.resource.loader.ZipResourceLoader;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.test.hasor.web._02_servlet.MyServletModule;
+import net.test.hasor.web._01_filter.VarFilter;
+import net.test.hasor.web._02_servlet.MyServlet;
 /**
  * 
  * @version : 2015年12月25日
@@ -28,12 +26,14 @@ import net.test.hasor.web._02_servlet.MyServletModule;
 public class MyModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new MyServletModule());
+        //
+        apiBinder.filter("/*").through(new VarFilter());
+        apiBinder.serve("/myServlet.do").with(MyServlet.class);
         //
         //resource插件用法
-        ServletContext sc = apiBinder.getServletContext();
-        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/jquery-2.1.4.zip")));
-        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/Semantic-UI-v2.0.0.zip")));
+        //        ServletContext sc = apiBinder.getServletContext();
+        //        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/jquery-2.1.4.zip")));
+        //        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/bootstrap-3.3.5.zip")));
         //
         //
     }

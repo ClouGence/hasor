@@ -53,10 +53,10 @@
 		<restful urlPatterns="htm;html;do;json;" />
 
 		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
-		<resourceLoader urlPatterns="js;css;" space="/static" />
+		<resourceLoader urlPatterns=";" space="/static" />
 
 		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-		<template urlPatterns="htm;html;" engine="">
+		<template urlPatterns=";" engine="">
 			<!-- 可用的引擎 -->
 			<engineSet>
 				<engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>

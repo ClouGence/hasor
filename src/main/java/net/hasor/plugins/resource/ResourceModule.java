@@ -26,7 +26,7 @@ import net.hasor.web.WebModule;
 public class ResourceModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         Settings settings = apiBinder.getEnvironment().getSettings();
-        String interceptNames = settings.getString("hasor.resourceLoader.urlPatterns", "js;css;");
+        String interceptNames = settings.getString("hasor.resourceLoader.urlPatterns", "");
         ResourceHttpServlet servlet = new ResourceHttpServlet();
         for (String name : interceptNames.split(";")) {
             if (StringUtils.isBlank(name) == false) {

@@ -17,6 +17,7 @@ package net.hasor.plugins.templates.engine.freemarker;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
@@ -46,7 +47,14 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
     @Override
     public void process(String template, Writer writer, ContextMap dataModel) throws Throwable {
         Template temp = configuration.getTemplate(template);
-        temp.process(dataModel, writer);
+        //
+        HashMap<String, Object> data = new HashMap<String, Object>();
+        for (String key : dataModel.keys()) {
+            data.put(key, dataModel.get(key));
+        }
+        data.put("rootModel", dataModel);
+        //
+        temp.process(data, writer);
     }
     @Override
     public boolean exist(String template) throws IOException {
