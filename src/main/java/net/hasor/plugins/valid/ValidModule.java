@@ -16,6 +16,7 @@
 package net.hasor.plugins.valid;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,14 @@ public class ValidModule implements Module {
             logger.info("first installValid , ValidUtils to install.");
         }
         //
+        Set<Class<?>> validSet = apiBinder.getEnvironment().findClass(ValidDefine.class);
+        for (Class<?> validType : validSet) {
+            if (Validation.class.isAssignableFrom(validType)) {
+                ValidDefine validDefine = validType.getAnnotation(ValidDefine.class);
+                if (validDefine != null)
+                    apiBinder.bindType(Validation.class).nameWith(validDefine.value()).to((Class<Validation>) validType);
+            }
+        }
     }
     private static class ValidMatcher implements Matcher<Method> {
         public boolean matches(Method target) {
