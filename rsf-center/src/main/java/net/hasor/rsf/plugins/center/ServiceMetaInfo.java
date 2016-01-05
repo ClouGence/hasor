@@ -20,16 +20,16 @@ package net.hasor.rsf.plugins.center;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceMetaInfo {
-    private String bindID        = null;     //服务名
-    private String bindName      = null;     //服务名
+    private String bindID        = null;      //服务名
+    private String bindName      = null;      //服务名
     private String bindGroup     = "default"; //服务分组
-    private String bindVersion   = "1.0.0";  //服务版本
-    private String bindType      = null;     //服务类型
-    private int    clientTimeout = 6000;     //调用超时（毫秒）
-    private String serializeType = null;     //传输序列化类型
+    private String bindVersion   = "1.0.0";   //服务版本
+    private String bindType      = null;      //服务类型
+    private int    clientTimeout = 6000;      //调用超时（毫秒）
+    private String serializeType = null;      //传输序列化类型
     //
-    private String remoteHost    = null;     //远程机器
-    private int    remotePort    = 8000;     //发布端口
+    private String remoteHost    = null;      //远程机器
+    private int    remotePort    = 8000;      //发布端口
     //
     public String getBindID() {
         return bindID;

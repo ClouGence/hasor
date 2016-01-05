@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apps;
+import org.more.bizcommon.PageResult;
 import net.hasor.core.Inject;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
+import net.hasor.plugins.restful.api.MappingTo;
+import net.hasor.plugins.restful.api.Params;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
 import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
-import org.more.bizcommon.PageResult;
 /**
  * 
  * @version : 2015年7月27日	ˆ	

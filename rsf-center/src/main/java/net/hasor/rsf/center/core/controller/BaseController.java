@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.controller;
-import net.hasor.mvc.support.AbstractWebController;
-import net.hasor.plugins.valid.ValidData;
-import net.hasor.plugins.valid.ValidUtils;
-import net.hasor.rsf.center.core.login.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.plugins.restful.WebController;
+import net.hasor.plugins.valid.ValidApi;
+import net.hasor.plugins.valid.ValidData;
+import net.hasor.rsf.center.core.login.UserInfo;
 /**
  * 
  * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BaseController extends AbstractWebController {
+public class BaseController extends WebController {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private ValidApi validApi;
+    //
     protected String getRequestURI() {
         return this.getRequest().getRequestURI();
     }
@@ -34,6 +36,10 @@ public class BaseController extends AbstractWebController {
         return new UserInfo();
     }
     protected ValidData validForm(String validName, Object paramObj) {
-        return ValidUtils.doValid(validName, paramObj);
+        if (this.validApi == null) {
+            return null;
+        } else {
+            return validApi.doValid(validName, paramObj);
+        }
     }
 }

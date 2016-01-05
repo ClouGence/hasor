@@ -17,36 +17,28 @@ package net.hasor.rsf.center.core.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
-import net.hasor.mvc.support.ControllerApiBinder;
-import net.hasor.mvc.support.ControllerModule;
-import net.hasor.rsf.center.core.controller.RsfControllerModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
-import net.hasor.rsf.center.core.freemarker.FreemarkerModule;
-import net.hasor.rsf.center.core.jump.JumpModule;
-import net.hasor.rsf.center.core.valid.ValidModule;
-import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
+import net.hasor.rsf.center.core.filters.JumpFilter;
+import net.hasor.rsf.center.core.filters.VarFilter;
 import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
 /**
  * WebMVC各组件初始化配置。
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartAppModule extends ControllerModule implements LifeModule {
+public class StartAppModule extends WebModule implements LifeModule {
     public static final String CenterStartEvent = "CenterStartEvent";
     @Override
-    protected void loadController(ControllerApiBinder apiBinder) throws Throwable {
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //WorkAt
         WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.None);
         logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
         //
-        //Jump
-        apiBinder.installModule(new JumpModule());
-        //Valid
-        apiBinder.installModule(new ValidModule());
-        //Controller
-        apiBinder.installModule(new RsfControllerModule());
-        //Freemarker
-        apiBinder.installModule(new FreemarkerModule());
+        //Filters
+        apiBinder.filter("/*").through(new JumpFilter());
+        apiBinder.filter("/*").through(new VarFilter());
         //DataSource
         apiBinder.installModule(new DaoModule(workAt));
         //Zookeeper

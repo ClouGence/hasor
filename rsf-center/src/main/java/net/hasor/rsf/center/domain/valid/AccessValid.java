@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.valid;
+import org.more.bizcommon.ResultDO;
 import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
+import net.hasor.plugins.valid.ValidDefine;
 import net.hasor.plugins.valid.Validation;
-import net.hasor.rsf.center.core.valid.ValidDefine;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 import net.hasor.rsf.center.utils.SecretUtils;
-import org.more.bizcommon.ResultDO;
 /**
  * 
  * @version : 2015年6月28日

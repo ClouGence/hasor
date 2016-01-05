@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.web.apis;
-import net.hasor.mvc.api.MappingTo;
-import net.hasor.mvc.api.Params;
-import net.hasor.rsf.center.client.CenterParams;
+import net.hasor.plugins.restful.api.MappingTo;
+import net.hasor.plugins.restful.api.Params;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.form.apis.OnLineForm;
 /**
@@ -30,8 +29,8 @@ public class OnLine extends BaseController {
         //
         String terminalID = onLineForm.getHostName() + ":" + onLineForm.getHostPort() + ":" + System.currentTimeMillis();
         String terminalAccessKey = onLineForm.getHostName() + ":" + onLineForm.getHostPort() + ":" + System.currentTimeMillis();
-        this.setHeader(CenterParams.Terminal_ID, terminalID);
-        this.setHeader(CenterParams.Terminal_AccessKey, terminalAccessKey);
+        this.setHeader("CenterParams.Terminal_ID", terminalID);
+        this.setHeader("CenterParams.Terminal_AccessKey", terminalAccessKey);
         System.out.println("/apis/online");
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.form.apis;
-import net.hasor.mvc.api.ReqParam;
+import net.hasor.plugins.restful.api.ReqParam;
 /**
  * 
  * @version : 2015年6月11日

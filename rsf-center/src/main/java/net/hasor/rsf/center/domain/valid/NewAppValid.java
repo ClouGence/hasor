@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain.valid;
-import net.hasor.plugins.valid.Validation;
-import net.hasor.rsf.center.core.valid.ValidDefine;
-import net.hasor.rsf.center.domain.entity.AppDO;
 import org.more.bizcommon.ResultDO;
+import net.hasor.plugins.valid.ValidDefine;
+import net.hasor.plugins.valid.Validation;
+import net.hasor.rsf.center.domain.entity.AppDO;
 /**
  * 
  * @version : 2015年6月28日
