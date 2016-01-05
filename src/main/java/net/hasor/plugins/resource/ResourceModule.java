@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.plugins.resource;
+import java.io.File;
 import org.more.util.StringUtils;
+import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
@@ -25,13 +27,40 @@ import net.hasor.web.WebModule;
  */
 public class ResourceModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        //缓存路径
+        Environment env = apiBinder.getEnvironment();
+        String cacheSubPath = env.getPluginDir(ResourceModule.class);
+        File cacheDir = new File(env.evalString(cacheSubPath));
+        if (!chekcCacheDir(cacheDir)) {
+            int i = 0;
+            while (true) {
+                if (i > 99999) {
+                    logger.error("ResourceModule loade failed -> cacheDir permission." + cacheDir);
+                    return;
+                }
+                cacheDir = new File(env.evalString(cacheSubPath + "_" + String.valueOf(i)));;
+                if (chekcCacheDir(cacheDir)) {
+                    break;
+                }
+            }
+        }
+        logger.info("use cacheDir " + cacheDir);
+        //
         Settings settings = apiBinder.getEnvironment().getSettings();
         String interceptNames = settings.getString("hasor.resourceLoader.urlPatterns", "");
-        ResourceHttpServlet servlet = new ResourceHttpServlet();
+        ResourceHttpServlet servlet = new ResourceHttpServlet(cacheDir);
         for (String name : interceptNames.split(";")) {
             if (StringUtils.isBlank(name) == false) {
                 apiBinder.serve("*." + name).with(servlet);
             }
+        }
+    }
+    private static boolean chekcCacheDir(File cacheDir) {
+        cacheDir.mkdirs();
+        if (cacheDir.isDirectory() == false && cacheDir.exists() == true) {
+            return false;
+        } else {
+            return true;
         }
     }
 }

@@ -16,6 +16,7 @@
 package net.test.hasor.web;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import net.test.hasor.web._01_filter.JumpFilter;
 import net.test.hasor.web._01_filter.VarFilter;
 import net.test.hasor.web._02_servlet.MyServlet;
 /**
@@ -27,7 +28,9 @@ public class MyModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
+        apiBinder.filter("/*").through(new JumpFilter());
         apiBinder.filter("/*").through(new VarFilter());
+        //
         apiBinder.serve("/myServlet.do").with(MyServlet.class);
         //
         //resource插件用法

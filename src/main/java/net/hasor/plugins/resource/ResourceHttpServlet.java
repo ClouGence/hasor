@@ -37,7 +37,6 @@ import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
 import net.hasor.plugins.mimetype.MimeType;
 import net.hasor.web.startup.RuntimeListener;
 /**
@@ -55,6 +54,9 @@ class ResourceHttpServlet extends HttpServlet {
     private File                                     cacheDir         = null;
     private ConcurrentHashMap<String, ReadWriteLock> cachingRes       = new ConcurrentHashMap<String, ReadWriteLock>();
     private boolean                                  isDebug;
+    public ResourceHttpServlet(File cacheDir) {
+        this.cacheDir = cacheDir;
+    }
     //
     public synchronized void init(ServletConfig config) throws ServletException {
         if (this.inited.compareAndSet(false, true) == false) {
@@ -70,30 +72,7 @@ class ResourceHttpServlet extends HttpServlet {
             this.loaderList = new ResourceLoader[0];
         }
         //
-        //缓存路径
-        Environment env = appContext.getEnvironment();
-        String cacheSubPath = env.getPluginDir(ResourceModule.class);
-        this.cacheDir = new File(env.evalString(cacheSubPath));
-        if (!chekcCacheDir(this.cacheDir)) {
-            int i = 0;
-            while (true) {
-                this.cacheDir = new File(env.evalString(cacheSubPath + "_" + String.valueOf(i)));;
-                if (chekcCacheDir(this.cacheDir)) {
-                    break;
-                }
-            }
-        }
-        logger.info("use cacheDir " + this.cacheDir);
-        //
         this.mimeType = appContext.getInstance(MimeType.class);
-    }
-    private static boolean chekcCacheDir(File cacheDir) {
-        cacheDir.mkdirs();
-        if (cacheDir.isDirectory() == false && cacheDir.exists() == true) {
-            return false;
-        } else {
-            return true;
-        }
     }
     //
     //

@@ -23,24 +23,25 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.plugins.templates.ContextMap;
 /**
- * 服务让模版页面可以访问到“ctx_path”变量
+ * 负责跳转index.htm
  * @version : 2016年1月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class VarFilter implements Filter {
+public class JumpFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         /*--*/
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
-        ContextMap map = ContextMap.genContextMap(req, resp);
-        map.put("ctx_path", req.getSession(true).getServletContext().getContextPath());
-        chain.doFilter(request, response);
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        if (httpRequest.getRequestURI().endsWith("/")) {
+            httpResponse.sendRedirect(httpRequest.getRequestURI() + "index.htm");
+            return;
+        }
+        chain.doFilter(httpRequest, httpResponse);
     }
     @Override
     public void destroy() {

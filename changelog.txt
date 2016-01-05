@@ -9,6 +9,8 @@
     02.增加Environment接口的包装器。
     03.为@Inject注解，增加Type枚举。通过枚举可以标识注入是：ByID 还是 ByName。
     04.剔除JSP自定义函数功能。
+    05.resource插件在，选择缓存目录时，如果连续失败99999次。将会报一个错误，然后终止插件的启动。
+    06.templates插件与resource插件，整合了mimetype插件功能。
 * 修复:
     01.Fix “Shutdown in progress”异常。
     02.Fix Web模式下启动空指针异常。
