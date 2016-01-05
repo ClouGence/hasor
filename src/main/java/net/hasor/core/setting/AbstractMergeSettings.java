@@ -50,12 +50,11 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
         this.mergeSettings.removeAllMap();
     }
     public void refresh() throws IOException {
-        for (Map<String, SettingValue> atNS : this.namespaceSettings.values()) {
+        for (Entry<String, Map<String, SettingValue>> atNSEntry : this.namespaceSettings.entrySet()) {
             if (logger.isDebugEnabled()) {
-                for (Entry<String, SettingValue> nsEntry : atNS.entrySet())
-                    logger.debug("addSetting {}={}", nsEntry.getKey(), nsEntry.getValue());
+                logger.debug("addSetting size = {} ,namespace={}.", atNSEntry.getValue().size(), atNSEntry.getKey());
             }
-            this.mergeSettings.addMap(atNS);
+            this.mergeSettings.addMap(atNSEntry.getValue());
         }
     }
     @Override

@@ -4,18 +4,10 @@
 <meta charset="utf-8">
 <meta http-equiv="Access-Control-Allow-Origin" content="*">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>
-<#if $pageTitle??>
-	RSF - ${pageTitle!}
-<#else>
-	RSF - 服务中控
-</#if>
-</title>
+<title>Hasor - ${pageTitle!}</title>
 <!-- ================================================================================================================= -->
 <link rel="shortcut icon" type="image/x-icon" href="${ctx_path}/static/images/favicon.ico" />
-<!-- JQuery -->
 <script src="${ctx_path}/static/jquery-2.1.4/jquery-2.1.4.min.js"></script>
-<!-- Bootstrap -->
 <link rel="stylesheet" href="${ctx_path}/static/bootstrap-3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="${ctx_path}/static/bootstrap-3.3.5/css/bootstrap-theme.min.css">
 <script src="${ctx_path}/static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -27,13 +19,13 @@
 <!-- Le fav and touch icons -->
 <style type="text/css">
 body {
-  min-height: 100px;
-  padding-top: 30px;
+	background: #f2f2f2
 }
 </style>
 </head>
 <body>
-	<#include "/layout/menu.htm">
+	<#include "/control/navbar.htm">
 	<div class="container">${content_placeholder!}</div>
+	<#include "/control/foot.htm">
 </body>
 </html>
