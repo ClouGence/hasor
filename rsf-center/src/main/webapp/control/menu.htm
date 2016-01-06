@@ -1,58 +1,33 @@
-<div class="ui left demo vertical inverted sidebar labeled icon menu">
-  <a class="item">
-    <i class="home icon"></i>
-    Home
-  </a>
-  <a class="item">
-    <i class="block layout icon"></i>
-    Topics
-  </a>
-  <a class="item">
-    <i class="smile icon"></i>
-    Friends
-  </a>
-</div>
-
-
-<script type="text/javascript">
-function show(){
-    $('.ui.labeled.icon.sidebar').sidebar('toggle');
-}
-</script>
-<button onclick="show()">Show</button>
-<nav class="navbar navbar-default navbar-fixed-top">
-	<div class="container">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="/">RSF</a>
+<div class="ui fixed inverted main menu">
+	<a class="item"><i class="home icon"></i>RSF</a>
+	<div class="ui dropdown item">
+		<i class="block layout icon"></i>应用<i class="dropdown icon"></i>
+		<div class="menu">
+			<div class="item">应用登记</div>
+			<div class="item">应用管理</div>
 		</div>
-		<div id="navbar" class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-				<!-- <li class="active"><a href="#">Home</a></li> -->
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">应用 <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="/apps/registerApp.htm"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 应用登记</a></li>
-						<li><a href="/apps/appManager.htm"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 应用管理</a></li>
-					</ul></li>
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">服务 <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> 服务搜索</a></li>
-						<li><a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> 路由查询</a></li>
-						<li><a href="#"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> 规则定义</a></li>
-					</ul></li>
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">工具 <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> 调用统计</a></li>
-						<li><a href="#"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 版本分布</a></li>
-						<li><a href="#"><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> 路由推送记录</a></li>
-					</ul></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 设置</a></li>
-				<li><a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> 帮助</a></li>
-			</ul>
-		</div>
-		<!--/.nav-collapse -->
 	</div>
-</nav>
+	<div class="ui dropdown item">
+		<i class="block layout icon"></i>服务<i class="dropdown icon"></i>
+		<div class="menu">
+			<div class="item">服务搜索</div>
+			<div class="item">路由查询</div>
+			<div class="item">规则定义</div>
+		</div>
+	</div>
+	<div class="ui dropdown item">
+		<i class="block layout icon"></i>工具<i class="dropdown icon"></i>
+		<div class="menu">
+			<div class="item">调用统计</div>
+			<div class="item">版本分布</div>
+			<div class="item">路由推送记录</div>
+		</div>
+	</div>
+
+	<div class="right menu">
+		<a class="item"><i class="settings icon"></i>设置</a>
+		<a class="item"><i class="smile icon"></i>帮助</a>
+	</div>
+</div>
 
 <hr>
