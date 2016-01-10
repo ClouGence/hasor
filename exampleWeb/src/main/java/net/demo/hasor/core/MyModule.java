@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
+package net.demo.hasor.core;
+import net.demo.hasor.core.filters.JumpFilter;
+import net.demo.hasor.core.filters.VarFilter;
+import net.demo.hasor.core.servlet.MyServlet;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.test.hasor.web._01_filter.JumpFilter;
-import net.test.hasor.web._01_filter.VarFilter;
-import net.test.hasor.web._02_servlet.MyServlet;
 /**
  * 
  * @version : 2015年12月25日

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web._01_filter;
+package net.demo.hasor.core.filters;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

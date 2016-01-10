@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web._03_restful;
+package net.demo.hasor.web;
 import org.more.bizcommon.Paginator;
 /**
  * 

@@ -1,0 +1,51 @@
+<h3>
+	Hasor-2.1.0 <a href="#" target="_blank" style="float: right;">2016-01-01</a>
+</h3>
+<pre>
+* 新增:
+    01.增加一个WebDemo示例工程。
+    02.新增一个插件，简化“modules.module”的配置。
+    03.新增restful插件，做为hasor内置Web开发插件。
+    04.添加templates插件，该插件将提供模版渲染支持。
+* 改进:
+    01.修改ShutdownHook钩子。在start时注册它、当shutdown时解除注册。
+    02.增加Environment接口的包装器。
+    03.为@Inject注解，增加Type枚举。通过枚举可以标识注入是：ByID 还是 ByName。
+    04.剔除JSP自定义函数功能。
+    05.resource插件在，选择缓存目录时，如果连续失败99999次。将会报一个错误，然后终止插件的启动。
+    06.templates插件与resource插件，整合了mimetype插件功能。
+    07.Valid插件增加@ValidDefine注解方式定义验证。
+* 修复:
+    01.Fix “Shutdown in progress”异常。
+    02.Fix Web模式下启动空指针异常。
+    03.Fix @Inject 注解携带value参数时失效的问题。
+</pre>
+<h3>Hasor-2.0.0</h3>
+<pre>
+* 新增:
+    01.新增 @Inject、@Init 两个注解以支持注解方式的自动注入。
+    02.添加 ShutdownHook钩子，当外部终止jvm的时候，Hasor可以引发shutdown过程。
+    03.事务管理增加“TransactionTemplate”接口。
+    04.启动过程中增加了一些 log 的输出。
+    05.将jetty的JSON解析器代码添加到Hasor工具代码中，位于包“org.more.json”。
+    06.新增WebApiBinderWrap类。
+    07.ASM包升级为5.0版本，原有的ASM组建在解析jdk1.8的类文件时会有异常。
+* 改进:
+    01.StandardEnvironment构造方法改进。
+    02.StartModule接口更名为LifeModule，并新增了onStop方法。至此通过LifeModule接口可以得到模块整个生命周期。
+    03.AbstractEnvironment类的initEnvironment方法增加Settings类型参数。createSettings方法不再属于AbstractEnvironment的抽象方法。
+    04.StandardEnvironment类增加Settings类型参数的构造方法。
+    05.MimeType接口增加getContent()方法。
+    06.原有模块在实现 StartModule 接口时，如果是通过启动参数或者配置方式的模块，器onStart调用时间点在“ContextEvent_Started”事件之后。
+        - 现改为引发“ContextEvent_Started”事件时。
+    07.MVC的插件分离成独立插件。
+    08.db包“datasource”模块重构、简化逻辑，它不再提供数据库连接和当前线程的映射绑定。
+    09.事务管理器模块大量优化，同时“Manager”更名为“TranManager”。可以更好的让人理解。
+    10.事务管理器负责提供数据库连接与当前线程的绑定关系。
+    11.删除ResultModule类和其相关的功能，该功能不再是核心功能的一部分。
+    12.MVC框架被迁出 Hasor框架成为一个独立的Web开发框架名为“haweb”。
+* 修复:
+    01.大量优化。。
+    02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
+    03.AbstractClassConfig增加对 java javax 包类的排除，凡是这两个包的类都不进行aop。
+</pre>
