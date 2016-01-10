@@ -63,7 +63,7 @@ public class RuntimeFilter implements Filter {
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         //
-        logger.info("RuntimeFilter started.");
+        logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
     }
     //
     /** 销毁 */
