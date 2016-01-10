@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.1.0
+﻿===== Hasor-Core v2.1.0 (2016-01-?)
 * 新增:
     01.增加一个WebDemo示例工程。
     02.新增一个插件，简化“modules.module”的配置。
@@ -17,7 +17,7 @@
     02.Fix Web模式下启动空指针异常。
     03.Fix @Inject 注解携带value参数时失效的问题。
 
-===== Hasor-Core v2.0.0
+===== Hasor-Core v2.0.0 (2015-11-27)
 * 新增:
     01.新增 @Inject、@Init 两个注解以支持注解方式的自动注入。
     02.添加 ShutdownHook钩子，当外部终止jvm的时候，Hasor可以引发shutdown过程。
@@ -45,7 +45,7 @@
     02.Fix，classcode模块对long、float、double基本类型错误处理的问题。
     03.AbstractClassConfig增加对 java javax 包类的排除，凡是这两个包的类都不进行aop。
 
-===== Hasor-Core v1.2.0
+===== Hasor-Core v1.2.0 (2015-08-20)
 * 新增:
     01.增加 @IgnoreParam注解，用于Form表单注入忽略。
     02.net.hasor.db.transaction.Manager新增回调方式执行事务的方法。
@@ -57,7 +57,7 @@
     02.Valid验证框架分离出MVC成为一个独立的验证框架。
     03.改进ResultDO相关Message方面的功能，使其用起来更爽。
 
-===== Hasor-Core v1.1.0
+===== Hasor-Core v1.1.0 (2015-07-09)
 * 新增:
     01.增加ContextMap类，该类可以为WebMVC提供request作用域范围的数据存储。可以通过AbstractWebController或者AppContext获取到它。
     02.mvc框架增加请求文件名尾缀匹配，默认配置：“htm;html;do;”，配置项为：“hasor.modConfig.mvc.interceptFiles”。
@@ -73,7 +73,7 @@
     04.TemplateAppContext 在 start过程中不再需要处理AppContextAware相关初始化工作。
     05.BindInfoProvider去掉构造方法ApiBinder类型参数，相关AppContextAware工作不再需要特殊声明。
 
-===== Hasor-Core v1.0.0
+===== Hasor-Core v1.0.0 (2015-07-03)
 * 新增:
     01.新增DateUtils，时间日期方面的工具类。
     02.增添了一组getProvider方法方法，可以通过String或Class来获取Bean的Provider。
@@ -97,7 +97,7 @@
 * 修复:
     01.修复使用“apiBinder.bindType(PojoBean.class).asEagerSingleton()”方式声明单例失效的问题。
 
-===== Hasor-Core v0.0.14
+===== Hasor-Core v0.0.14 (2015-06-18)
 * 新增:
 	01.Settings接口增加merageXmlNode方法用于汇聚XmlNode。
 * 改进:
@@ -111,12 +111,12 @@
     03.Fix 相同模块在不同的“static-config.xml”配置文件中出现时，解决重复加载问题。
     04.扫清，FindBugs 扫描出来的Bug。
 
-===== Hasor-Core v0.0.13
+===== Hasor-Core v0.0.13 (2015-05-09)
 * 改进:
     01.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
     02.修改测试用例，取消log的封装。
 
-===== Hasor-Core v0.0.12
+===== Hasor-Core v0.0.12 (2015-05-09)
 * 新增:
     01.all-in行动，db和web项目被合并到core，同时合并一些quick插件。
     --DB--
@@ -150,11 +150,11 @@
     01.StandardEventManager 改为无锁方式实现。
     02.删除封装的log，采用slf4j。jdk自带的log因为采用了SystemClassLoader导致log失败。
 
-===== Hasor-Core v0.0.11
+===== Hasor-Core v0.0.11 (2015-04-24)
 * 修复:
     01.LoggerHelper,修复当多次调用log输出时产生堆栈溢出问题。
 
-===== Hasor-Core v0.0.10
+===== Hasor-Core v0.0.10 (2015-04-03)
 * 新增:
     01.添加org.more.future工具包，用于实现 java.util.concurrent.Future 接口功能。
     02.新增一个 ApiBinderWrap类。
@@ -175,7 +175,7 @@
     09.环境变量实现接口调整，接口有删减。原有接口当设置Java系统属性之后，环境变量组建不能识别它（Bug）。
     10.修复 ScanClassPath 类无法正确扫描到父类中接口实现的Bug。
 
-===== Hasor-Core v0.0.9
+===== Hasor-Core v0.0.9 (2014-09-21)
 * 新增:
     01.Hasor 的依赖注入使用 InjectMembers接口。
 * 改进:
@@ -185,7 +185,7 @@
     04.context部分重构，精简了设计。
     05.Hasor 不再依赖 Guice or Spring。
 
-===== Hasor-Core v0.0.8
+===== Hasor-Core v0.0.8 (2014-07-26)
 * 新增:
     01.确立类型绑定机制。
     02.确立Bean机制。
@@ -204,7 +204,7 @@
     07.删除ModulePropxy类、删除启动依赖检查功能。
     08.瘦身（去掉JSON包、Ognl包、其它一些工具包）。
 
-===== Hasor-Core v0.0.7
+===== Hasor-Core v0.0.7 (2014-01-17)
 * 修复:
     01.修复 AbstractAppContext 类处理 AppContextAware 接口方面的代码。
         --当类扫描器扫描不到 AppContextAware 接口实现类时能引发整个doStart阶段的退出。
@@ -226,7 +226,7 @@
     04.修改 Cache 接口的 clean 方法名为 cleanCache，以避免和 Map 接口冲突。
     05.GlobalProperty接口更名为FieldProperty
 
-===== Hasor-Core v0.0.6
+===== Hasor-Core v0.0.6 (2013-12-21)
 * 修复:
     01.改进 当使用 JSON 将（List、Map、基本类型）类之外的类型尝试序列化时会得到一个异常。修复这个问题，当遇到这种情况工具将使用 JSONPojoConvertor 对其进行序列化。
 * 新增:
@@ -250,7 +250,7 @@
         --ContextEvent_Started     当所有模块都 Start 之后（确保了每个模块都会尝试 start 之后）。
         --ContextEvent_Stoped      当所有模块都 Stop 之后（确保了每个模块都会尝试 stop 之后）。
 
-===== Hasor-Core v0.0.5
+===== Hasor-Core v0.0.5 (2013-11-25)
 * 新增:
     01.新增 DomXmlAccept 工具类，将 Xml 文件转换为  XmlNode 接口形式的 Dom 树。
 * 改进:
@@ -261,7 +261,7 @@
     04.Cache 接口方法有关 key 参数从 String 类型更换为 Serializable。并增加了一些方法。
     05.修改 StandardContextSettings 类，确保位于jar包中的“static-config.xml”资源在合并时优先级低于file。
 
-===== Hasor-Core v0.0.4
+===== Hasor-Core v0.0.4 (2013-11-11)
 * 新增:
     01.Environment 接口新增 isDebug 方法，用于表示应用程序启动是否为 debug 模式。
     02.Hasor 类新增 isDebugLogger、isErrorLogger、isWarningLogger、isInfoLogger 方法用于判断日志是否支持该级别的输出。
@@ -279,12 +279,12 @@
     03.Gift 体系更改为 Plugin，原本 Gift 是作为模块的一个补充，目前改为框架功能插件体系。
     04.代码大面积优化。
 
-===== Hasor-Core v0.0.3
+===== Hasor-Core v0.0.3 (2013-10-09)
 * 改进:
     01.修改根POM改为 0.0.2 该版本可以处理 GBK 编码下 Javadocs 生成。
     02.改进JavaDoc内容的质量。
 
-===== Hasor-Core v0.0.2
+===== Hasor-Core v0.0.2 (2013-09-29)
 * 修复:
     01.修复：StandardAppContext调用无参构造方法引发异常的问题，同时修改几个核心类的构造方法。
 * 新增:
@@ -297,7 +297,7 @@
     04.@Before 更名为 @Aop，性能进行了优化。
     05.ASM升级为4.0、ClassCode连带升级。
 
-===== Hasor-Core v0.0.1
+==== Hasor-Core v0.0.1 (2013-09-15)
 * 新增:
     01.增加@GuiceModule注解，可以标记在com.google.inject.Module接口上，可以将Guice模块引入到Hasor中。
 * 改进:
