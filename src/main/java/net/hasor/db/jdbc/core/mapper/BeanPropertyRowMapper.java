@@ -76,7 +76,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private T tranResultSet(final ResultSet rs, final T targetObject) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
-        for (int i = 1; i < nrOfColumns; i++) {
+        for (int i = 1; i <= nrOfColumns; i++) {
             String colName = rsmd.getColumnName(i);
             /*处理属性*/
             if (!this.caseInsensitive) {

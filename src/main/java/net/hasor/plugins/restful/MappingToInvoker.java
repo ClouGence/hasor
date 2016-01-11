@@ -65,7 +65,7 @@ class MappingToInvoker {
         context.httpReq = httpReq;
         //
         Object[] resolveParams = this.resolveParams(context);
-        Object resultData = targetMethod.invoke(targetProvider.get(), resolveParams);
+        Object resultData = targetMethod.invoke(targetObject, resolveParams);
         //
         if (targetMethod.isAnnotationPresent(Produces.class) == true) {
             Produces pro = targetMethod.getAnnotation(Produces.class);

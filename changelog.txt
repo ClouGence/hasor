@@ -16,6 +16,7 @@
     01.Fix “Shutdown in progress”异常。
     02.Fix Web模式下启动空指针异常。
     03.Fix @Inject 注解携带value参数时失效的问题。
+    04.Fix JdbcTemplate使用Result－>Object映射时，最后一个参数应设值丢失的问题。
 
 ===== Hasor-Core v2.0.0 (2015-11-27)
 * 新增:

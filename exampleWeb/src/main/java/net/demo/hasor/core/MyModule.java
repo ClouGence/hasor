@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
+import net.demo.hasor.core.db.DataSourceModule;
 import net.demo.hasor.core.filters.JumpFilter;
 import net.demo.hasor.core.filters.VarFilter;
 import net.demo.hasor.core.servlet.MyServlet;
@@ -33,11 +34,6 @@ public class MyModule extends WebModule {
         //
         apiBinder.serve("/myServlet.do").with(MyServlet.class);
         //
-        //resource插件用法
-        //        ServletContext sc = apiBinder.getServletContext();
-        //        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/jquery-2.1.4.zip")));
-        //        apiBinder.bindType(ResourceLoader.class).uniqueName().toInstance(new ZipResourceLoader(sc.getRealPath("/static/bootstrap-3.3.5.zip")));
-        //
-        //
+        apiBinder.installModule(new DataSourceModule());
     }
 }

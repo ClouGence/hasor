@@ -20,7 +20,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 依赖注入
+ * 依赖注入。
+ * <p>如果没有配置“value”参数那么将会使用“{@code AppContext.getInstance(class)}”方式进行依赖注入。</p>
+ * <p>如果了配置value属性那么将会根据“byType”参数决定注入方式。
+ * <ul>
+ * <li>“byType=Type.ByID”使用“{@code AppContext.getInstance(String)}”方式进行依赖注入。</li>
+ * <li>“byType=Type.ByName”使用“{@code AppContext.findBindingBean(withName, bindType)}”方式进行依赖注入。</li>
+ * </ul></p>
  * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -30,8 +36,9 @@ import java.lang.annotation.Target;
 public @interface Inject {
     /**如果同类型有多个注册可以使用该值进行区分。*/
     public String value() default "";
-    /**区分注入Bean的方式
-     * 是【（默认）{@code AppContext.findBindingBean(withName, bindType)}】
-     * 还是【{@code AppContext.getInstance(bindID)}】。*/
+    /**区分注入Bean的方式<ul>
+     * <li>“byType=Type.ByID”使用“{@code AppContext.getInstance(String)}”方式进行依赖注入。</li>
+     * <li>(默认配置)“byType=Type.ByName”使用“{@code AppContext.findBindingBean(withName, bindType)}”方式进行依赖注入。</li>
+     * </ul>*/
     public Type byType() default Type.ByName;
 }
