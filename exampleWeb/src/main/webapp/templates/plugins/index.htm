@@ -1,2 +1,9 @@
 ${rootModel.put('pageTitle','插件集')}
-${rootModel.put('navIndex',1)}
+${rootModel.put('navIndex',2)}
+
+<div class="row">
+	<div class="col-md-3 rightBorder">
+		<#include "/control/nav_plugins.htm">
+	</div>
+	<div class="col-md-9">${content_placeholder!}</div>
+</div>
