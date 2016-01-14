@@ -459,13 +459,14 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         }
         EventContext ec = getEnvironment().getEventContext();
         /*1.Init*/
-        logger.info("doShutdown now.");
+        logger.info("shutdown - doShutdown.");
         doShutdown();
         /*2.引发事件*/
+        logger.info("shutdown - fireSyncEvent.");
         ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
-        logger.info("doShutdownCompleted now.");
+        logger.info("shutdown - doShutdownCompleted..");
         doShutdownCompleted();
-        logger.info("doShutdown completed!");
+        logger.info("shutdown - finish.");
         try {
             Runtime.getRuntime().removeShutdownHook(shutdownHook);
         } catch (IllegalStateException e) {
