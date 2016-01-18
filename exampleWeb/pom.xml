@@ -4,12 +4,12 @@
 	<!-- Maven Info -->
 	<groupId>net.hasor</groupId>
 	<artifactId>demo-web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>war</packaging>
 
 	<!-- Project Info -->
-	<name>WebDemo</name>
-	<description>Web演示项目.</description>
+	<name>Hasor Home</name>
+	<description>Hasor首页</description>
 
 	<!-- 配置属性 -->
 	<properties>
