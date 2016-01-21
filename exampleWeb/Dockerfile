@@ -30,10 +30,10 @@ RUN set -x && \
 	curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz && \
 	tar -xvf tomcat.tar.gz --strip-components=1 && \
 	rm bin/*.bat && \
-	rm tomcat.tar.gz* && \
-    ln -s /work/sources/conf $WORK_HOME/conf &&  \
-    ln -s $WORK_HOME/conf $CATALINA_HOME/conf && \
-    ln -s $CATALINA_HOME/logs $WORK_HOME/logs
+	rm tomcat.tar.gz*
+RUN ln -s /work/sources/conf $WORK_HOME/conf &&  \
+    rm -rf $CATALINA_HOME/conf && ln -s $WORK_HOME/conf $CATALINA_HOME/conf && \
+    rm -rf $CATALINA_HOME/logs && ln -s $CATALINA_HOME/logs $WORK_HOME/logs
 EXPOSE 8080
 
 
