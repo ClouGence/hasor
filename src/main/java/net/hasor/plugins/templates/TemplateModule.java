@@ -21,7 +21,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
- * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -52,19 +51,16 @@ public class TemplateModule extends WebModule {
         if (StringUtils.isBlank(engineTypeName)) {
             logger.info("template Module not be load. -> engineName undefined.");
             return;
+        } else {
+            logger.info("template Module ,engineName {}.", engineTypeName);
         }
         //
         try {
             Class<TemplateEngine> engineType = (Class<TemplateEngine>) Class.forName(engineTypeName);
             apiBinder.bindType(TemplateEngine.class).to(engineType);
+            apiBinder.filter("/*").through(Integer.MAX_VALUE, new TemplateFilter());
             //
-            TemplateHttpServlet servlet = new TemplateHttpServlet();
             String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
-            for (String name : interceptNames.split(";")) {
-                if (StringUtils.isBlank(name) == false) {
-                    apiBinder.serve("*." + name).with(servlet);
-                }
-            }
             logger.info("template Module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);

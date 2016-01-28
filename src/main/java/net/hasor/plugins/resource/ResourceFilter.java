@@ -25,11 +25,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.servlet.ServletConfig;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.more.util.StringUtils;
@@ -41,24 +42,25 @@ import net.hasor.plugins.mimetype.MimeType;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * 负责装载jar包或zip包中的资源
+ * 
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class ResourceHttpServlet extends HttpServlet {
-    private static final long                        serialVersionUID = 2470188139577613256L;
-    protected static Logger                          logger           = LoggerFactory.getLogger(ResourceHttpServlet.class);
-    private final AtomicBoolean                      inited           = new AtomicBoolean(false);
-    private MimeType                                 mimeType         = null;
-    private ResourceLoader[]                         loaderList       = null;
-    private String                                   spacePath        = null;
-    private File                                     cacheDir         = null;
-    private ConcurrentHashMap<String, ReadWriteLock> cachingRes       = new ConcurrentHashMap<String, ReadWriteLock>();
+class ResourceFilter implements Filter {
+    protected static Logger                          logger     = LoggerFactory.getLogger(ResourceFilter.class);
+    private final AtomicBoolean                      inited     = new AtomicBoolean(false);
+    private MimeType                                 mimeType   = null;
+    private ResourceLoader[]                         loaderList = null;
+    private String                                   spacePath  = null;
+    private File                                     cacheDir   = null;
+    private ConcurrentHashMap<String, ReadWriteLock> cachingRes = new ConcurrentHashMap<String, ReadWriteLock>();
     private boolean                                  isDebug;
-    public ResourceHttpServlet(File cacheDir) {
+    public ResourceFilter(File cacheDir) {
         this.cacheDir = cacheDir;
     }
     //
-    public synchronized void init(ServletConfig config) throws ServletException {
+    @Override
+    public synchronized void init(FilterConfig config) throws ServletException {
         if (this.inited.compareAndSet(false, true) == false) {
             return;
         }
@@ -77,7 +79,7 @@ class ResourceHttpServlet extends HttpServlet {
     //
     //
     //
-    /**响应资源*/
+    /** 响应资源 */
     private void forwardTo(File file, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         if (response.isCommitted() == true) {
             return;
@@ -106,7 +108,7 @@ class ResourceHttpServlet extends HttpServlet {
     }
     //
     //
-    /*获取 ReadWriteLock 锁*/
+    /* 获取 ReadWriteLock 锁 */
     private ReadWriteLock getReadWriteLock(String requestURI) {
         ReadWriteLock newCacheRWLock = new ReentrantReadWriteLock();
         ReadWriteLock cacheRWLock = this.cachingRes.putIfAbsent(requestURI, newCacheRWLock);
@@ -115,18 +117,21 @@ class ResourceHttpServlet extends HttpServlet {
         }
         return cacheRWLock;
     }
-    /*释放 ReadWriteLock 锁*/
+    /* 释放 ReadWriteLock 锁 */
     private void releaseReadWriteLock(String requestURI) {
         if (this.cachingRes.containsKey(requestURI) == true) {
             this.cachingRes.remove(requestURI);
         }
     }
-    /**资源服务入口方法*/
-    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        //1.确定时候拦截
+    /** 资源服务入口方法 */
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
+        // 1.确定时候拦截
         String requestURI = request.getRequestURI().substring(request.getContextPath().length());
         if (requestURI.startsWith(spacePath) == false) {
-            super.service(request, response);
+            chain.doFilter(request, response);
             return;
         }
         try {
@@ -134,55 +139,55 @@ class ResourceHttpServlet extends HttpServlet {
         } catch (Exception e) {
             logger.warn("URLDecoder.decode error ->" + requestURI);
         }
-        //2.如果为调试模式每次都重新加载资源（不缓存）
+        // 2.如果为调试模式每次都重新加载资源（不缓存）
         File cacheFile = new File(cacheDir, requestURI);
         if (this.isDebug) {
             boolean mark = this.cacheRes(cacheFile, requestURI, request, response);
             if (mark) {
                 this.forwardTo(cacheFile, request, response);
             } else {
-                response.sendError(404, "not exist :" + requestURI);
+                chain.doFilter(request, response);
             }
             return;
         }
-        //3.检查缓存路径中是否存在，如已存在则直接响应资源。
+        // 3.检查缓存路径中是否存在，如已存在则直接响应资源。
         boolean forwardType = true;
         if (!cacheFile.exists()) {
             /*-- 下面代码是为了防止缓存穿透 --*/
             //
-            //预先为资源获取一个读写锁，并读锁定。
+            // 预先为资源获取一个读写锁，并读锁定。
             ReadWriteLock cacheRWLock = this.getReadWriteLock(requestURI);
-            cacheRWLock.readLock().lock();//读锁定，如果一个写锁存在则程序会等待写锁释放
-            if (!cacheFile.exists()) {//二次判断资源此时可能资源已在得到锁的等待过程中缓存完了。
-                /*升级锁*/
+            cacheRWLock.readLock().lock();// 读锁定，如果一个写锁存在则程序会等待写锁释放
+            if (!cacheFile.exists()) {// 二次判断资源此时可能资源已在得到锁的等待过程中缓存完了。
+                /* 升级锁 */
                 cacheRWLock.readLock().unlock();
                 cacheRWLock.writeLock().lock();
-                /*三次判断，即使成功拿到写锁也可能因为写锁具有多个而造成重复缓存。因此这里要加以判断。*/
+                /* 三次判断，即使成功拿到写锁也可能因为写锁具有多个而造成重复缓存。因此这里要加以判断。 */
                 if (cacheFile.exists() == false) {
-                    forwardType = this.cacheRes(cacheFile, requestURI, request, response);//当缓存失败时返回false
+                    forwardType = this.cacheRes(cacheFile, requestURI, request, response);// 当缓存失败时返回false
                 }
-                /*降级锁*/
+                /* 降级锁 */
                 cacheRWLock.readLock().lock();
                 cacheRWLock.writeLock().unlock();
             }
-            cacheRWLock.readLock().unlock();//读取解锁
-            //释放锁资源
+            cacheRWLock.readLock().unlock();// 读取解锁
+            // 释放锁资源
             this.releaseReadWriteLock(requestURI);
         }
-        //5.缓存完毕
+        // 5.缓存完毕
         if (forwardType) {
             this.forwardTo(cacheFile, request, response);
         } else {
             ((HttpServletResponse) response).sendError(404, "not exist this resource ‘" + requestURI + "’");
         }
     }
-    /*资源缓存*/
+    /* 资源缓存 */
     private boolean cacheRes(File cacheFile, String requestURI, ServletRequest request, ServletResponse response) throws IOException, ServletException {
         InputStream inStream = null;
         if (loaderList == null || loaderList.length == 0) {
             return false;
         }
-        //如果debug模式，无论目标是否已经被缓存都重新缓存。
+        // 如果debug模式，无论目标是否已经被缓存都重新缓存。
         if (this.isDebug == false && cacheFile.exists()) {
             return true;
         }
@@ -199,7 +204,7 @@ class ResourceHttpServlet extends HttpServlet {
         if (inStream == null) {
             return false;
         }
-        //4.写入临时文件夹
+        // 4.写入临时文件夹
         cacheFile.getParentFile().mkdirs();
         FileOutputStream out = new FileOutputStream(cacheFile);
         IOUtils.copy(inStream, out);
@@ -207,5 +212,9 @@ class ResourceHttpServlet extends HttpServlet {
         out.flush();
         out.close();
         return true;
+    }
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
     }
 }

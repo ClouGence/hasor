@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /**
- * 
  * @version : 2016年1月2日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,8 +37,7 @@ public class ContextMap {
         return contextMap;
     }
     //
-    //
-    //
+    private String                        viewName;
     private ConcurrentMap<String, Object> concurrentMap;
     private ContextMap(HttpServletRequest request, HttpServletResponse response) {
         this.concurrentMap = new ConcurrentHashMap<String, Object>();
@@ -51,6 +49,15 @@ public class ContextMap {
             String val = request.getParameter(key);
             this.concurrentMap.putIfAbsent("req_" + key, val);
         }
+        this.viewName = request.getRequestURI().substring(request.getContextPath().length());
+    }
+    /***/
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
+    /***/
+    public String getViewName() {
+        return this.viewName;
     }
     /***/
     public void put(String key, Object value) {

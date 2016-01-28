@@ -36,6 +36,7 @@ import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
+ * 
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -48,7 +49,7 @@ class RestfulFilter implements Filter {
         if (this.inited.compareAndSet(false, true) == false) {
             return;
         }
-        //1.拦截
+        // 1.拦截
         AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
         String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");
         Set<String> names = new HashSet<String>();
@@ -59,14 +60,14 @@ class RestfulFilter implements Filter {
         }
         this.interceptNames = names.toArray(new String[names.size()]);
         //
-        //2.Find MappingInfoDefine
+        // 2.Find MappingInfoDefine
         List<MappingToDefine> mappingList = appContext.findBindingBean(MappingToDefine.class);
         Collections.sort(mappingList, new Comparator<MappingToDefine>() {
             public int compare(MappingToDefine o1, MappingToDefine o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
-        //3.初始化
+        // 3.初始化
         for (MappingToDefine define : mappingList) {
             define.init(appContext);
         }
@@ -137,7 +138,7 @@ class RestfulFilter implements Filter {
     /** 为转发提供支持 */
     private RequestDispatcher getReqDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
-        //1.拆分请求字符串
+        // 1.拆分请求字符串
         final MappingToDefine define = this.findMapping(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
@@ -145,7 +146,7 @@ class RestfulFilter implements Filter {
         return new RequestDispatcher() {
             public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                /*执行servlet*/
+                /* 执行servlet */
                 try {
                     doInvoke(define, servletRequest, servletResponse);
                 } finally {
@@ -155,16 +156,16 @@ class RestfulFilter implements Filter {
             public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
                 if (servletResponse.isCommitted() == true)
                     throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
-                /*清空缓冲*/
+                /* 清空缓冲 */
                 servletResponse.resetBuffer();
                 ServletRequest requestToProcess;
                 if (servletRequest instanceof HttpServletRequest) {
                     requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
                 } else {
-                    //正常情况之下不会执行这段代码。
+                    // 正常情况之下不会执行这段代码。
                     requestToProcess = servletRequest;
                 }
-                /*执行转发*/
+                /* 执行转发 */
                 servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
                 try {
                     doInvoke(define, requestToProcess, servletResponse);
@@ -175,7 +176,7 @@ class RestfulFilter implements Filter {
         };
     }
     //
-    /** 使用RequestDispatcherRequestWrapper类处理request.getRequestURI方法的返回值*/
+    /** 使用RequestDispatcherRequestWrapper类处理request.getRequestURI方法的返回值 */
     public static final String REQUEST_DISPATCHER_REQUEST = "javax.servlet.forward.servlet_path";
     private static class RequestDispatcherRequestWrapper extends HttpServletRequestWrapper {
         private final String newRequestUri;

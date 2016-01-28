@@ -25,15 +25,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.web.startup.RuntimeListener;
 /**
- * 
  * @version : 2015年7月1日
  * @author 赵永春(zyc@hasor.net)
  */
 public class TemplateContext {
     private AtomicBoolean  inited         = new AtomicBoolean(false);
-    private String         controlPath    = null;                    //区块模版位置
-    private String         layoutPath     = null;                    //布局模版位置
-    private String         templatePath   = null;                    //页面模版位置
+    private String         controlPath    = null;                    // 区块模版位置
+    private String         layoutPath     = null;                    // 布局模版位置
+    private String         templatePath   = null;                    // 页面模版位置
     private TemplateEngine templateEngine = null;
     //
     public void init(ServletContext servletContext) throws ServletException {
@@ -84,13 +83,20 @@ public class TemplateContext {
         //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            this.templateEngine.process(this.templatePath + "/" + tempFile, tmpWriter, context);
+            this.templateEngine.process(fixTempName(this.templatePath, tempFile), tmpWriter, context);
             context.put("content_placeholder", tmpWriter.toString());
             this.templateEngine.process(layoutFile, writer, context);
         } else {
-            this.templateEngine.process(this.templatePath + "/" + tempFile, writer, context);
+            this.templateEngine.process(fixTempName(this.templatePath, tempFile), writer, context);
         }
         //
+    }
+    private static String fixTempName(String templatePath, String tempName) {
+        if (tempName.charAt(0) != '/') {
+            return templatePath + "/" + tempName;
+        } else {
+            return templatePath + tempName;
+        }
     }
     public String processControl(String tempFile, ContextMap context) throws Throwable {
         if (this.templateEngine == null) {

@@ -25,9 +25,10 @@ import net.hasor.plugins.templates.ContextMap;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * Controller <br>
- * 昨夜西风凋碧树。独上高楼，望尽天涯路。<br>
- * 衣带渐宽终不悔，为伊消得人憔悴。<br>
+ * 昨夜西风凋碧树。独上高楼，望尽天涯路。 <br>
+ * 衣带渐宽终不悔，为伊消得人憔悴。 <br>
  * 众里寻她千百度，蓦然回首，那人却在灯火阑珊处。
+ * 
  * @version : 2013-8-14
  * @author JFinal
  * @author 赵永春 (zyc@hasor.net)
@@ -68,7 +69,9 @@ public abstract class WebController {
     }
     /**
      * Return HttpSession.
-     * @param create a boolean specifying create HttpSession if it not exists
+     * 
+     * @param create
+     *            a boolean specifying create HttpSession if it not exists
      * @return Return HttpSession.
      */
     public HttpSession getSession(boolean create) {
@@ -77,8 +80,11 @@ public abstract class WebController {
     // --------
     /**
      * 设置{@link HttpServletRequest}属性
-     * @param attKey 属性名
-     * @param attValue 属性值
+     * 
+     * @param attKey
+     *            属性名
+     * @param attValue
+     *            属性值
      * @return 返回this
      */
     public WebController putAtt(String attKey, Object attValue) {
@@ -87,8 +93,11 @@ public abstract class WebController {
     }
     /**
      * 设置{@link HttpServletResponse}Header属性
-     * @param key 参数 key
-     * @param value 参数值
+     * 
+     * @param key
+     *            参数 key
+     * @param value
+     *            参数值
      * @return 返回this.
      */
     public WebController setHeader(String key, String value) {
@@ -97,8 +106,11 @@ public abstract class WebController {
     }
     /**
      * 设置{@link HttpServletResponse}Header属性
-     * @param key 参数 key
-     * @param value 参数值
+     * 
+     * @param key
+     *            参数 key
+     * @param value
+     *            参数值
      * @return 返回this.
      */
     public WebController addHeader(String key, String value) {
@@ -107,8 +119,11 @@ public abstract class WebController {
     }
     /**
      * Stores an attribute in this request
-     * @param name a String specifying the name of the attribute
-     * @param value the Object to be stored
+     * 
+     * @param name
+     *            a String specifying the name of the attribute
+     * @param value
+     *            the Object to be stored
      * @return 返回this.
      */
     public WebController setAttr(String name, Object value) {
@@ -117,7 +132,9 @@ public abstract class WebController {
     }
     /**
      * Removes an attribute from this request
-     * @param name a String specifying the name of the attribute to remove
+     * 
+     * @param name
+     *            a String specifying the name of the attribute to remove
      * @return 返回this.
      */
     public WebController removeAttr(String name) {
@@ -126,7 +143,9 @@ public abstract class WebController {
     }
     /**
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
-     * @param attrMap key and value as attribute of the map to be stored
+     * 
+     * @param attrMap
+     *            key and value as attribute of the map to be stored
      * @return 返回this.
      */
     public WebController setAttrs(Map<String, Object> attrMap) {
@@ -137,12 +156,12 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter as a String, or null if the parameter does not exist.
      * <p>
-     * You should only use this method when you are sure the parameter has only one value. If the 
-     * parameter might have more than one value, use getParaValues(java.lang.String). 
+     * You should only use this method when you are sure the parameter has only one value. If the parameter might have more than one value, use getParaValues(java.lang.String).
      * <p>
-     * If you use this method with a multivalued parameter, the value returned is equal to the first 
-     * value in the array returned by getParameterValues.
-     * @param name a String specifying the name of the parameter
+     * If you use this method with a multivalued parameter, the value returned is equal to the first value in the array returned by getParameterValues.
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
      * @return a String representing the single value of the parameter
      */
     public String getPara(String name) {
@@ -150,8 +169,11 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter as a String, or default value if the parameter does not exist.
-     * @param name a String specifying the name of the parameter
-     * @param defaultValue a String value be returned when the value of parameter is null
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
+     * @param defaultValue
+     *            a String value be returned when the value of parameter is null
      * @return a String representing the single value of the parameter
      */
     public String getPara(String name, String defaultValue) {
@@ -160,36 +182,35 @@ public abstract class WebController {
     }
     /**
      * Returns the values of the request parameters as a Map.
+     * 
      * @return a Map contains all the parameters name and value
      */
     public Map<String, String[]> getParaMap() {
         return this.getRequest().getParameterMap();
     }
     /**
-     * Returns an Enumeration of String objects containing the names of the parameters
-     * contained in this request. If the request has no parameters, the method returns
-     * an empty Enumeration.
-     * @return an Enumeration of String objects, each String containing the name of 
-     *          a request parameter; or an empty Enumeration if the request has no parameters
+     * Returns an Enumeration of String objects containing the names of the parameters contained in this request. If the request has no parameters, the method returns an empty Enumeration.
+     * 
+     * @return an Enumeration of String objects, each String containing the name of a request parameter; or an empty Enumeration if the request has no parameters
      */
     public Enumeration<String> getParaNames() {
         return this.getRequest().getParameterNames();
     }
     /**
-     * Returns an array of String objects containing all of the values the given request 
-     * parameter has, or null if the parameter does not exist. If the parameter has a 
-     * single value, the array has a length of 1.
-     * @param name a String containing the name of the parameter whose value is requested
+     * Returns an array of String objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
+     * 
+     * @param name
+     *            a String containing the name of the parameter whose value is requested
      * @return an array of String objects containing the parameter's values
      */
     public String[] getParaValues(String name) {
         return this.getRequest().getParameterValues(name);
     }
     /**
-     * Returns an array of Integer objects containing all of the values the given request 
-     * parameter has, or null if the parameter does not exist. If the parameter has a 
-     * single value, the array has a length of 1.
-     * @param name a String containing the name of the parameter whose value is requested
+     * Returns an array of Integer objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
+     * 
+     * @param name
+     *            a String containing the name of the parameter whose value is requested
      * @return an array of Integer objects containing the parameter's values
      */
     public Integer[] getParaValuesToInt(String name) {
@@ -202,8 +223,8 @@ public abstract class WebController {
         return result;
     }
     /**
-     * Returns an Enumeration containing the names of the attributes available to this request.
-     * This method returns an empty Enumeration if the request has no attributes available to it. 
+     * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
+     * 
      * @return an Enumeration of strings containing the names of the request's attributes
      */
     public Enumeration<String> getAttrNames() {
@@ -211,7 +232,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
+     * 
+     * @param name
+     *            a String specifying the name of the attribute
      * @return an Object containing the value of the attribute, or null if the attribute does not exist
      */
     public <T> T getAttr(String name) {
@@ -219,7 +242,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
+     * 
+     * @param name
+     *            a String specifying the name of the attribute
      * @return an String Object containing the value of the attribute, or null if the attribute does not exist
      */
     public String getAttrForStr(String name) {
@@ -227,7 +252,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
+     * 
+     * @param name
+     *            a String specifying the name of the attribute
      * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
      */
     public Integer getAttrForInt(String name) {
@@ -235,7 +262,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Integer.
-     * @param name a String specifying the name of the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Integer getParaToInt(String name) {
@@ -243,8 +272,11 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Integer with a default value if it is null.
-     * @param name a String specifying the name of the parameter
-     * @param defaultValue default value for the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
+     * @param defaultValue
+     *            default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Integer getParaToInt(String name, Integer defaultValue) {
@@ -252,7 +284,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Long.
-     * @param name a String specifying the name of the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Long getParaToLong(String name) {
@@ -260,14 +294,17 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Long with a default value if it is null.
-     * @param name a String specifying the name of the parameter
-     * @param defaultValue default value for the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
+     * @param defaultValue
+     *            default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Long getParaToLong(String name, Long defaultValue) {
         return toLong(this.getRequest().getParameter(name), defaultValue);
     }
-    /*字符串转换为Integer*/
+    /* 字符串转换为Integer */
     public Integer toInt(String value, Integer defaultValue) {
         if (value == null) {
             return defaultValue;
@@ -277,7 +314,7 @@ public abstract class WebController {
         }
         return Integer.parseInt(value);
     }
-    /*字符串转换为long*/
+    /* 字符串转换为long */
     private long toLong(String value, Long defaultValue) {
         if (value == null) {
             return defaultValue;
@@ -289,7 +326,9 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Boolean.
-     * @param name a String specifying the name of the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", null if parameter is not exists
      */
     public Boolean getParaToBoolean(String name) {
@@ -301,14 +340,17 @@ public abstract class WebController {
             } else if (result.equals("0") || result.equals("false")) {
                 return Boolean.FALSE;
             }
-            // return Boolean.FALSE;    // if use this, delete 2 lines code under
+            // return Boolean.FALSE; // if use this, delete 2 lines code under
         }
         return null;
     }
     /**
      * Returns the value of a request parameter and convert to Boolean with a default value if it is null.
-     * @param name a String specifying the name of the parameter
-     * @param defaultValue default value for the parameter
+     * 
+     * @param name
+     *            a String specifying the name of the parameter
+     * @param defaultValue
+     *            default value for the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", default value if it is null
      */
     public Boolean getParaToBoolean(String name, Boolean defaultValue) {
@@ -317,7 +359,9 @@ public abstract class WebController {
     }
     /**
      * Return a Object from session.
-     * @param key a String specifying the key of the Object stored in session
+     * 
+     * @param key
+     *            a String specifying the key of the Object stored in session
      * @return return session attribute data.
      */
     public <T> T getSessionAttr(String key) {
@@ -326,8 +370,11 @@ public abstract class WebController {
     }
     /**
      * Store Object to session.
-     * @param key a String specifying the key of the Object stored in session
-     * @param value a Object specifying the value stored in session
+     * 
+     * @param key
+     *            a String specifying the key of the Object stored in session
+     * @param value
+     *            a Object specifying the value stored in session
      * @return 返回this.
      */
     public WebController setSessionAttr(String key, Object value) {
@@ -336,7 +383,9 @@ public abstract class WebController {
     }
     /**
      * Remove Object in session.
-     * @param key a String specifying the key of the Object stored in session
+     * 
+     * @param key
+     *            a String specifying the key of the Object stored in session
      * @return 返回this.
      */
     public WebController removeSessionAttr(String key) {
@@ -348,8 +397,11 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name.
-     * @param name cookie name
-     * @param defaultValue default value
+     * 
+     * @param name
+     *            cookie name
+     * @param defaultValue
+     *            default value
      * @return return cookie value or default value.
      */
     public String getCookie(String name, String defaultValue) {
@@ -358,7 +410,9 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name.
-     * @param name cookie name
+     * 
+     * @param name
+     *            cookie name
      * @return return cookie value or null.
      */
     public String getCookie(String name) {
@@ -366,7 +420,9 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Integer.
-     * @param name cookie name
+     * 
+     * @param name
+     *            cookie name
      * @return return cookie value or null.
      */
     public Integer getCookieToInt(String name) {
@@ -375,8 +431,11 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Integer.
-     * @param name cookie name
-     * @param defaultValue default value
+     * 
+     * @param name
+     *            cookie name
+     * @param defaultValue
+     *            default value
      * @return return cookie value or default value.
      */
     public Integer getCookieToInt(String name, Integer defaultValue) {
@@ -385,7 +444,9 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Long.
-     * @param name cookie name
+     * 
+     * @param name
+     *            cookie name
      * @return return cookie value or null.
      */
     public Long getCookieToLong(String name) {
@@ -394,8 +455,11 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Long.
-     * @param name cookie name
-     * @param defaultValue default value
+     * 
+     * @param name
+     *            cookie name
+     * @param defaultValue
+     *            default value
      * @return return cookie value or default value.
      */
     public Long getCookieToLong(String name, Long defaultValue) {
@@ -404,7 +468,9 @@ public abstract class WebController {
     }
     /**
      * Get cookie object by cookie name.
-     * @param name cookie name
+     * 
+     * @param name
+     *            cookie name
      * @return Cookie object
      */
     public Cookie getCookieObject(String name) {
@@ -425,7 +491,9 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     * @param cookie new cookie.
+     * 
+     * @param cookie
+     *            new cookie.
      * @return 返回this.
      */
     public WebController setCookie(Cookie cookie) {
@@ -434,10 +502,15 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     * @param name cookie name
-     * @param value cookie value
-     * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately.  n &gt; 0 : max age in n seconds.
-     * @param path see Cookie.setPath(String)
+     * 
+     * @param name
+     *            cookie name
+     * @param value
+     *            cookie value
+     * @param maxAgeInSeconds
+     *            -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
+     * @param path
+     *            see Cookie.setPath(String)
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds, String path) {
@@ -446,11 +519,17 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     * @param name cookie name
-     * @param value cookie value
-     * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately.  n &gt; 0 : max age in n seconds.
-     * @param path see Cookie.setPath(String)
-     * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
+     * 
+     * @param name
+     *            cookie name
+     * @param value
+     *            cookie value
+     * @param maxAgeInSeconds
+     *            -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
+     * @param path
+     *            see Cookie.setPath(String)
+     * @param domain
+     *            the domain name within which this cookie is visible; form is according to RFC 2109
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
@@ -465,9 +544,13 @@ public abstract class WebController {
     }
     /**
      * Set Cookie with path = "/".
-     * @param name cookie name
-     * @param value cookie value
-     * @param maxAgeInSeconds max age
+     * 
+     * @param name
+     *            cookie name
+     * @param value
+     *            cookie value
+     * @param maxAgeInSeconds
+     *            max age
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds) {
@@ -476,7 +559,9 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie with path = "/".
-     * @param name cookie name
+     * 
+     * @param name
+     *            cookie name
      * @return 返回this.
      */
     public WebController removeCookie(String name) {
@@ -485,8 +570,11 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie.
-     * @param name cookie name
-     * @param path cookie with path = "/".
+     * 
+     * @param name
+     *            cookie name
+     * @param path
+     *            cookie with path = "/".
      * @return 返回this.
      */
     public WebController removeCookie(String name, String path) {
@@ -495,9 +583,13 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie.
-     * @param name cookie name
-     * @param path cookie with path = "/".
-     * @param domain domain
+     * 
+     * @param name
+     *            cookie name
+     * @param path
+     *            cookie with path = "/".
+     * @param domain
+     *            domain
      * @return 返回this.
      */
     public WebController removeCookie(String name, String path, String domain) {
@@ -520,60 +612,64 @@ public abstract class WebController {
     protected ContextMap getContextMap() {
         return ContextMap.genContextMap(getRequest(), getResponse());
     }
+    /** 更新渲染模版。 */
+    protected void renderTo(String viewName) {
+        getContextMap().setViewName(viewName);
+    }
     // --------
-    //    private MultipartRequest multipartRequest;
-    //    /** Get upload file from multipart request. */
-    //    public List<UploadFile> getFiles(String saveDirectory, Integer maxPostSize, String encoding) {
-    //        if (multipartRequest == null) {
-    //            multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize, encoding);
-    //            request = multipartRequest;
-    //        }
-    //        return multipartRequest.getFiles();
-    //    }
-    //    public UploadFile getFile(String parameterName, String saveDirectory, Integer maxPostSize, String encoding) {
-    //        getFiles(saveDirectory, maxPostSize, encoding);
-    //        return getFile(parameterName);
-    //    }
-    //    public List<UploadFile> getFiles(String saveDirectory, int maxPostSize) {
-    //        if (multipartRequest == null) {
-    //            multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize);
-    //            request = multipartRequest;
-    //        }
-    //        return multipartRequest.getFiles();
-    //    }
-    //    public UploadFile getFile(String parameterName, String saveDirectory, int maxPostSize) {
-    //        getFiles(saveDirectory, maxPostSize);
-    //        return getFile(parameterName);
-    //    }
-    //    public List<UploadFile> getFiles(String saveDirectory) {
-    //        if (multipartRequest == null) {
-    //            multipartRequest = new MultipartRequest(request, saveDirectory);
-    //            request = multipartRequest;
-    //        }
-    //        return multipartRequest.getFiles();
-    //    }
-    //    public UploadFile getFile(String parameterName, String saveDirectory) {
-    //        getFiles(saveDirectory);
-    //        return getFile(parameterName);
-    //    }
-    //    public List<UploadFile> getFiles() {
-    //        if (multipartRequest == null) {
-    //            multipartRequest = new MultipartRequest(request);
-    //            request = multipartRequest;
-    //        }
-    //        return multipartRequest.getFiles();
-    //    }
-    //    public UploadFile getFile() {
-    //        List<UploadFile> uploadFiles = getFiles();
-    //        return uploadFiles.size() > 0 ? uploadFiles.get(0) : null;
-    //    }
-    //    public UploadFile getFile(String parameterName) {
-    //        List<UploadFile> uploadFiles = getFiles();
-    //        for (UploadFile uploadFile : uploadFiles) {
-    //            if (uploadFile.getParameterName().equals(parameterName)) {
-    //                return uploadFile;
-    //            }
-    //        }
-    //        return null;
-    //    }
+    // private MultipartRequest multipartRequest;
+    // /** Get upload file from multipart request. */
+    // public List<UploadFile> getFiles(String saveDirectory, Integer maxPostSize, String encoding) {
+    // if (multipartRequest == null) {
+    // multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize, encoding);
+    // request = multipartRequest;
+    // }
+    // return multipartRequest.getFiles();
+    // }
+    // public UploadFile getFile(String parameterName, String saveDirectory, Integer maxPostSize, String encoding) {
+    // getFiles(saveDirectory, maxPostSize, encoding);
+    // return getFile(parameterName);
+    // }
+    // public List<UploadFile> getFiles(String saveDirectory, int maxPostSize) {
+    // if (multipartRequest == null) {
+    // multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize);
+    // request = multipartRequest;
+    // }
+    // return multipartRequest.getFiles();
+    // }
+    // public UploadFile getFile(String parameterName, String saveDirectory, int maxPostSize) {
+    // getFiles(saveDirectory, maxPostSize);
+    // return getFile(parameterName);
+    // }
+    // public List<UploadFile> getFiles(String saveDirectory) {
+    // if (multipartRequest == null) {
+    // multipartRequest = new MultipartRequest(request, saveDirectory);
+    // request = multipartRequest;
+    // }
+    // return multipartRequest.getFiles();
+    // }
+    // public UploadFile getFile(String parameterName, String saveDirectory) {
+    // getFiles(saveDirectory);
+    // return getFile(parameterName);
+    // }
+    // public List<UploadFile> getFiles() {
+    // if (multipartRequest == null) {
+    // multipartRequest = new MultipartRequest(request);
+    // request = multipartRequest;
+    // }
+    // return multipartRequest.getFiles();
+    // }
+    // public UploadFile getFile() {
+    // List<UploadFile> uploadFiles = getFiles();
+    // return uploadFiles.size() > 0 ? uploadFiles.get(0) : null;
+    // }
+    // public UploadFile getFile(String parameterName) {
+    // List<UploadFile> uploadFiles = getFiles();
+    // for (UploadFile uploadFile : uploadFiles) {
+    // if (uploadFile.getParameterName().equals(parameterName)) {
+    // return uploadFile;
+    // }
+    // }
+    // return null;
+    // }
 }

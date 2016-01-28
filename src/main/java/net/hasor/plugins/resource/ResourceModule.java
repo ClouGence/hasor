@@ -22,12 +22,13 @@ import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
  * 负责装载jar包中的资源。
+ * 
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ResourceModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //缓存路径
+        // 缓存路径
         Environment env = apiBinder.getEnvironment();
         String cacheSubPath = env.getPluginDir(ResourceModule.class);
         File cacheDir = new File(env.evalString(cacheSubPath));
@@ -48,10 +49,10 @@ public class ResourceModule extends WebModule {
         //
         Settings settings = apiBinder.getEnvironment().getSettings();
         String interceptNames = settings.getString("hasor.resourceLoader.urlPatterns", "");
-        ResourceHttpServlet servlet = new ResourceHttpServlet(cacheDir);
+        ResourceFilter resourceFilter = new ResourceFilter(cacheDir);
         for (String name : interceptNames.split(";")) {
             if (StringUtils.isBlank(name) == false) {
-                apiBinder.serve("*." + name).with(servlet);
+                apiBinder.filter("*." + name).through(Integer.MAX_VALUE, resourceFilter);
             }
         }
     }

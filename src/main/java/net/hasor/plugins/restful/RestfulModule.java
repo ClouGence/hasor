@@ -21,6 +21,7 @@ import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /***
  * restful插件
+ * 
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
@@ -55,7 +56,7 @@ public class RestfulModule extends WebModule {
         apiBinder.bindType(MappingToDefine.class).uniqueName().toInstance(define);
     }
     //
-    /**通过位运算决定check是否在data里。*/
+    /** 通过位运算决定check是否在data里。 */
     private boolean checkIn(final int data, final int check) {
         int or = data | check;
         return or == data;

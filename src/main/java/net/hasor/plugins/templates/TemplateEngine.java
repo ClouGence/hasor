@@ -18,15 +18,14 @@ import java.io.IOException;
 import java.io.Writer;
 import net.hasor.core.AppContext;
 /**
- * 
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TemplateEngine {
-    /**初始化引擎*/
+    /** 初始化引擎 */
     public void initEngine(AppContext appContext) throws IOException;
-    /**执行模版引擎*/
+    /** 执行模版引擎 */
     public void process(String template, Writer writer, ContextMap dataModel) throws Throwable;
-    /**获取模版Loader*/
+    /** 获取模版Loader */
     public boolean exist(String template) throws IOException;
 }
