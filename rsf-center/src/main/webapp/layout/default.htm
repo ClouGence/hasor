@@ -23,11 +23,17 @@ body {
 	padding-top: 47px;
 }
 </style>
+<script>
+$(document).ready(function() {
+	$('.ui.dropdown').dropdown();
+	$('.ui.checkbox').checkbox();
+	$('.menu .item').tab();
+});
+</script>
 </head>
 <body>
 	<#include "/control/menu.htm">
 	<div class="ui container">${content_placeholder!}</div>
 	<div class="ui container"><#include "/control/foot.htm"></div>
-	<hr>
 </body>
 </html>

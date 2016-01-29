@@ -31,6 +31,7 @@ public class Search extends BaseController {
     //
     public void execute(@Param("type") String type, @Param("mode") String mode) throws IOException {
         logger.info("request :" + getRequestURI());
-        this.getResponse().sendRedirect(this.getRequest().getContextPath() + "/result.htm");
+        //
+        this.renderTo("/search/result.htm");
     }
 }

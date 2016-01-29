@@ -43,8 +43,7 @@
 			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
 			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
 			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql
-			</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
 		</memInitialize>
 
 		<!-- 关键数据（内存模式下无效） -->

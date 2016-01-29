@@ -31,11 +31,11 @@
 					<i class="huge icons"><i class="block layout icon"></i><i class="corner users icon"></i></i>
 					<div class="content">与我相关</div>
 				</a>
-				<a class="four wide column" href="${ctx_path}/search.do?type=apps&keys=">
+				<a class="four wide column" href="${ctx_path}/search.do?type=apps&mode=query&keys=">
 					<i class="huge block layout icon"></i>
 					<div class="content">所有应用</div>
 				</a>
-				<a class="four wide column" href="${ctx_path}/search.htm?type=apps">
+				<a class="four wide column" href="${ctx_path}/search/search.htm?type=apps">
 					<i class="huge icons"><i class="block layout icon"></i><i class="corner search icon"></i></i>
 					<div class="content">高级查找</div>
 				</a>
@@ -44,7 +44,7 @@
 		<div class="six wide column">
 			<h4 class="ui header">管理</h4>
 			<div class="ui grid">
-				<a class="five wide column" href="#">
+				<a class="five wide column" href="${ctx_path}/apps/info.htm">
 					<i class="huge icons"><i class="file text outline icon"></i><i class="corner add icon"></i></i>
 					<div class="content">登记</div>
 				</a>
@@ -74,7 +74,7 @@
 					<i class="huge icons"><i class="cube icon"></i><i class="corner users icon"></i></i>
 					<div class="content">与我相关</div>
 				</a>
-				<a class="five wide column" href="${ctx_path}/search.htm?type=service">
+				<a class="five wide column" href="${ctx_path}/search.do?type=service&mode=query&keys=">
 					<i class="huge icons"><i class="cube icon"></i><i class="corner search icon"></i></i>
 					<div class="content">服务搜索</div>
 				</a>
@@ -109,11 +109,7 @@
 		<div class="column">
 			<h4 class="ui header">终端</h4>
 			<div class="ui grid">
-				<a class="five wide column" href="${ctx_path}/search.do?type=server">
-					<i class="huge server icon"></i>
-					<div class="content">服务器</div>
-				</a>
-				<a class="five wide column" href="${ctx_path}/search.do?type=threads">
+				<a class="five wide column" href="#">
 					<i class="huge certificate icon"></i>
 					<div class="content">应用进程</div>
 				</a>
@@ -159,6 +155,5 @@ function initPopup(names){
 }
 $(document).ready(function() {
 	initPopup('.term .apps .service .trem .toos');
-	$('.ui.dropdown').dropdown();
 });
 </script>

@@ -19,7 +19,6 @@ import java.net.UnknownHostException;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 /**
- * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
