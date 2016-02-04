@@ -18,7 +18,6 @@ import net.hasor.core.Inject;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 /**
- * 
  * @version : 2015年6月30日
  * @author 赵永春(zyc@hasor.net)
  */

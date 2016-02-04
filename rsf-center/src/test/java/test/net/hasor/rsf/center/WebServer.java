@@ -13,14 +13,14 @@ public class WebServer {
         SelectChannelConnector connector8082 = new SelectChannelConnector();
         connector8082.setPort(8082);
         server.addConnector(connector8082);
-        //        SelectChannelConnector connector8083 = new SelectChannelConnector();
-        //        connector8083.setPort(8083);
-        //        server.addConnector(connector8083);
-        //solr.solr.home
+        // SelectChannelConnector connector8083 = new SelectChannelConnector();
+        // connector8083.setPort(8083);
+        // server.addConnector(connector8083);
+        // solr.solr.home
         //
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
-        //context.setDescriptor("web/WEB-INF/web.xml");
+        // context.setDescriptor("web/WEB-INF/web.xml");
         context.setResourceBase("src/main/webapp");
         context.setConfigurationDiscovered(true);
         server.setHandler(context);

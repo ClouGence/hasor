@@ -20,11 +20,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 
  * @version : 2015年7月2日
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 @Documented
-public @interface Dao {}
+public @interface Dao {
+}

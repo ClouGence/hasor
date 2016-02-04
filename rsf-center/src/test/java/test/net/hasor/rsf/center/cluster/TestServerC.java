@@ -13,46 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.startup;
+package test.net.hasor.rsf.center.cluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.LifeModule;
-import net.hasor.rsf.center.core.dao.DaoModule;
-import net.hasor.rsf.center.core.filters.JumpFilter;
-import net.hasor.rsf.center.core.filters.VarFilter;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 /**
- * WebMVC各组件初始化配置。
- * 
- * @version : 2015年5月5日
+ * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartAppModule extends WebModule implements LifeModule {
-    public static final String CenterStartEvent = "CenterStartEvent";
+public class TestServerC implements LifeModule {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         // WorkAt
         WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
         //
-        // Filters
-        apiBinder.filter("/*").through(new JumpFilter());
-        apiBinder.filter("/*").through(new VarFilter());
-        // DataSource
-        apiBinder.installModule(new DaoModule(workAt));
         // Zookeeper
         apiBinder.installModule(new ZooKeeperModule(workAt));
     }
-    //
-    //
+    @Override
     public void onStart(AppContext appContext) throws Throwable {
-        Environment env = appContext.getEnvironment();
-        env.getEventContext().fireSyncEvent(CenterStartEvent, appContext);// fire Event
+        // TODO Auto-generated method stub
     }
+    @Override
     public void onStop(AppContext appContext) throws Throwable {
         // TODO Auto-generated method stub
+    }
+    public static void main(String[] args) {
+        Hasor.createAppContext("/cluster/rsf-server-c.xml", new TestServerC());
     }
 }

@@ -17,7 +17,6 @@ package net.hasor.rsf.center.domain.form.apis;
 import net.hasor.plugins.restful.api.ReqParam;
 import net.hasor.rsf.center.domain.valid.AccessInfo;
 /**
- * 
  * @version : 2015年6月11日
  * @author 赵永春(zyc@hasor.net)
  */

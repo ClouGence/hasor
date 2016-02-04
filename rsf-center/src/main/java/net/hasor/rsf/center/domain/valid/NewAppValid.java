@@ -19,7 +19,6 @@ import net.hasor.plugins.valid.ValidDefine;
 import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.domain.entity.AppDO;
 /**
- * 
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */

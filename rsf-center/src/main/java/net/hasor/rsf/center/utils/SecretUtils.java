@@ -19,7 +19,6 @@ import org.more.util.CommonCodeUtils.MD5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
  * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */

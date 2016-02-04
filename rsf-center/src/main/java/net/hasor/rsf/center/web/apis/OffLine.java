@@ -21,7 +21,6 @@ import net.hasor.plugins.valid.Valid;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.form.apis.OffLineForm;
 /**
- * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */

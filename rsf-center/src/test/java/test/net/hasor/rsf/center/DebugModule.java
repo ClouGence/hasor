@@ -21,7 +21,6 @@ import net.hasor.rsf.center.core.startup.StartAppModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
- * 
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -35,10 +34,11 @@ public class DebugModule extends WebModule implements EventListener {
     }
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("################### Dev ###################");
-        //        String workAt = StartAppModule.workAt();
-        //        if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
+        // String workAt = StartAppModule.workAt();
+        // if (StringUtils.equalsBlankIgnoreCase(workAt, WorkMode.Memory.getCodeString())) {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         jdbcTemplate.loadSQL("UTF-8", "init_sql.sql");
-        //        }
+        // }
+        //
     }
 }

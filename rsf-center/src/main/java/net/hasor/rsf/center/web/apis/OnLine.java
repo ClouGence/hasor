@@ -19,7 +19,6 @@ import net.hasor.plugins.restful.api.Params;
 import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.form.apis.OnLineForm;
 /**
- * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */

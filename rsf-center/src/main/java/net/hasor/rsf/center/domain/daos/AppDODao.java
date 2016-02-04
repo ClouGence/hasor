@@ -25,13 +25,12 @@ import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
 import org.more.bizcommon.PageResult;
 import org.more.bizcommon.ResultDO;
 /**
- * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
 public class AppDODao extends AbstractDao<AppDO> {
-    /**新增应用*/
+    /** 新增应用 */
     public ResultDO<Integer> saveAsNew(AppDO appDO) {
         ResultDO<Integer> resultDO = new ResultDO<Integer>();
         try {
@@ -45,7 +44,7 @@ public class AppDODao extends AbstractDao<AppDO> {
         }
         return resultDO;
     }
-    /**查询应用列表*/
+    /** 查询应用列表 */
     public PageResult<AppDO> queryAppDOByForm(AppQueryForm pageInfo) {
         PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
         try {
@@ -66,7 +65,7 @@ public class AppDODao extends AbstractDao<AppDO> {
         }
         return resultDO;
     }
-    /**新增应用*/
+    /** 新增应用 */
     public ResultDO<AppDO> queryAppDOByID(Long appID) {
         ResultDO<AppDO> resultDO = new ResultDO<AppDO>();
         try {

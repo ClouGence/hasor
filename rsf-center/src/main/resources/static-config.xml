@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<hasor>
+		<!-- 包扫描路径 -->
+		<loadPackages>net.hasor.rsf.center.*</loadPackages>
+		<!-- demo程序启动入口 -->
+		<startup>net.hasor.rsf.center.core.startup.StartAppModule</startup>
+
+		<!-- 使用模版插件，并指定模版引擎为freemarker -->
+		<template urlPatterns="htm;html;" engine="freemarker" />
+		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
+		<!-- <resourceLoader urlPatterns="js;css;eot;svg;ttf;woff;" /> -->
+	</hasor>
+
+	<!--
+		workAt
+			注册中心工作模式，可选的配置有：alone、cluster
+			- alone  - 单机模式：该模式下 rsf-center 会创建一个只有一个节点伪zk集群，并使用这个伪集群作为协调器。
+			- master - 集群主机模式：该模式下集群中要求至少下可以选择zk的工作方式是加入已有zk系统，或者独立zk集群。
+			- slave  - 集群从属模式：在该模式下可以选择zk的工作方式是加入已有zk系统，或者独立zk集群。
+		
+		serverID
+			服务器ID，master模式下需要配置，不同的master需要通过serverID标示自己。
+	-->
+
+	<rsfCenter workAt="alone" serverID="0">
+		<zooKeeper>
+			<!-- defaultBindPort：默认数据通信端口，defaultElectionPort：默认选举端口 -->
+			<zkServers defaultBindPort="2180" defaultElectionPort="2182">
+				<!--
+					master模式：要加入的ZK集群列表
+					slave模式：可选的ZK服务列表
+				-->
+				<!--
+					<server sid="0">127.0.0.1</server>
+					or
+					<server sid="0" bindPort="2180" electionPort="2182">127.0.0.1</server>
+				-->
+			</zkServers>
+
+			<!-- zk，客户端超时时间，15s -->
+			<clientTimeout>15000</clientTimeout>
+
+			<!-- 当存在多张网卡情况下，zk使用的地址 -->
+			<bindAddress>local</bindAddress>
+			<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
+			<bindPort>2180</bindPort>
+
+			<!-- 通信心跳时间，Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，tickTime以毫秒为单位。 -->
+			<tickTime>3000</tickTime>
+			<!-- 会话最小超时时间，15s -->
+			<minSessionTimeout>15000</minSessionTimeout>
+			<!-- 会话最大超时时间，30s -->
+			<maxSessionTimeout>30000</maxSessionTimeout>
+			<!-- 允许的客户端最大连接数 -->
+			<clientCnxns>300</clientCnxns>
+			<!-- 初始通信时限，集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数（tickTime的数量） -->
+			<initLimit>10</initLimit>
+			<!-- 同步通信时限，集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数（tickTime的数量） -->
+			<syncLimit>5</syncLimit>
+			<!-- 是否开启同步 -->
+			<syncEnabled>true</syncEnabled>
+			
+			<!--  选举方式 see ZooKeeper -->
+			<electionAlg>0</electionAlg>
+			<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
+			<electionPort>2182</electionPort>
+			<!--
+				participant - participant模式，具有投票资格
+				observer    - observer模式，节点不参与投票
+			-->
+			<peerType>participant</peerType>
+			<!-- 
+				When set to true the ZooKeeper server will listen for connections from its peers on all available IP addresses,
+				and not only the address configured in the server list of the configuration file.
+				It affects the connections handling the ZAB protocol and the Fast Leader Election protocol. Default value is false.
+ 			-->
+			<quorumListenOnAllIPs>false</quorumListenOnAllIPs>
+		</zooKeeper>
+
+		<!-- 内存数据库Sechma -->
+		<memInitialize>
+			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
+			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
+		</memInitialize>
+
+		<!-- 关键数据（内存模式下无效） -->
+		<jdbcConfig>
+			<driver>org.hsqldb.jdbcDriver</driver>
+			<url>jdbc:hsqldb:mem:rsf_memdb</url>
+			<username>sa</username>
+			<password></password>
+		</jdbcConfig>
+	</rsfCenter>
+</config>

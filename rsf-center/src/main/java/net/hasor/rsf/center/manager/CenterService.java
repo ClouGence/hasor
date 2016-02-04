@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.center.manager;
 /**
- * 
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */

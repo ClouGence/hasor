@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.web.apis;
-import net.hasor.plugins.restful.api.MappingTo;
-import net.hasor.plugins.restful.api.Params;
-import net.hasor.plugins.valid.Valid;
-import net.hasor.rsf.center.core.controller.BaseController;
-import net.hasor.rsf.center.domain.form.apis.UnServiceForm;
+package net.hasor.rsf.center.core.zookeeper;
+import java.io.IOException;
+import org.apache.zookeeper.ZooKeeper;
 /**
- * @version : 2015年5月5日
+ * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/unservice")
-public class UnService extends BaseController {
-    public void execute(@Valid("Access") @Params UnServiceForm unServiceForm) {
-        System.out.println("/apis/unservice");
-    }
+public interface ZooKeeperNode {
+    /** ZK系统中的基准节点 */
+    public static final String ROOT_PATH = "/rsf-center";
+    //
+    /** 终止ZooKeeper */
+    public void shutdownZooKeeper() throws IOException, InterruptedException;
+    /** 启动ZooKeeper */
+    public void startZooKeeper() throws IOException, InterruptedException;
+    /** 返回ZK */
+    public ZooKeeper getZooKeeper();
 }

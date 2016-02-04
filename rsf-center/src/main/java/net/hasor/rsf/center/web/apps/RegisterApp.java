@@ -24,7 +24,6 @@ import net.hasor.rsf.center.core.controller.BaseController;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
 /**
- * 
  * @version : 2015年7月27日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -43,7 +42,7 @@ public class RegisterApp extends BaseController {
         appDO.setModifyTime(new Date());
         appDO.setOnwer(this.getLoginUser().getUserName());
         //
-        ValidData validData = this.validForm("NewApp", appDO);//验证是否可以录入到数据库。
+        ValidData validData = this.validForm("NewApp", appDO);// 验证是否可以录入到数据库。
         if (validData.isValid()) {
             ResultDO<Integer> resultDO = daoProvider.getAppDao().saveAsNew(appDO);
             if (!resultDO.isSuccess()) {

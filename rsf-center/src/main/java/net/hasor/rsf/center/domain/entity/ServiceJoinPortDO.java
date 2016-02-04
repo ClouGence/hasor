@@ -16,16 +16,17 @@
 package net.hasor.rsf.center.domain.entity;
 /**
  * 连接到Service上的端点（提供者和消费者为两条记录）。
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceJoinPortDO {
-    private long   appID;        //服务ID
-    private String serviceID;    //服务ID
-    private String terminalID;   //终端ID
-    private int    timeout;      //超时时间
-    private String serializeType; //序列化策略
-    private char   persona;      //身份
+    private long   appID;         // 服务ID
+    private String serviceID;     // 服务ID
+    private String terminalID;    // 终端ID
+    private int    timeout;       // 超时时间
+    private String serializeType; // 序列化策略
+    private char   persona;       // 身份
     //
     public long getAppID() {
         return appID;

@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.center.core.login;
 /**
- * 
  * @version : 2015年7月29日
  * @author 赵永春(zyc@hasor.net)
  */

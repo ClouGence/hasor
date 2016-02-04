@@ -18,7 +18,6 @@ import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.entity.ServiceJoinPortDO;
 /**
- * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */

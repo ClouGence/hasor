@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.hasor.plugins.templates.ContextMap;
 /**
  * 服务让模版页面可以访问到“ctx_path”变量
+ * 
  * @version : 2016年1月5日
  * @author 赵永春(zyc@hasor.net)
  */

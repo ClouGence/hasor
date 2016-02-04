@@ -16,7 +16,6 @@
 package net.hasor.rsf.center.domain.form.apps;
 import org.more.bizcommon.Paginator;
 /**
- * 
  * @version : 2015年8月12日
  * @author 赵永春(zyc@hasor.net)
  */

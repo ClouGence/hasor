@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+
+	<rsfCenter workAt="master" serverID="2">
+		<!-- 远程服务器地址列表 -->
+		<zooKeeper.zkServers>
+			<server sid="0" bindPort="2181" electionPort="2191">127.0.0.1</server>
+			<server sid="1" bindPort="2182" electionPort="2192">127.0.0.1</server>
+			<server sid="2" bindPort="2183" electionPort="2193">127.0.0.1</server>
+		</zooKeeper.zkServers>
+		<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
+		<zooKeeper.bindPort>2183</zooKeeper.bindPort>
+		<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
+		<zooKeeper.electionPort>2193</zooKeeper.electionPort>
+	</rsfCenter>
+
+	<hasor.environmentVar>
+		<WORK_HOME>%USER.HOME%/hasor-work/rsf-center-c</WORK_HOME>
+	</hasor.environmentVar>
+</config>

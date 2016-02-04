@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.center.domain.valid;
 /**
- * 
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */

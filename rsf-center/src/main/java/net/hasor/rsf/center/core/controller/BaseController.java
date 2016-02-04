@@ -21,7 +21,6 @@ import net.hasor.plugins.valid.ValidApi;
 import net.hasor.plugins.valid.ValidData;
 import net.hasor.rsf.center.core.login.UserInfo;
 /**
- * 
  * @version : 2015年7月28日
  * @author 赵永春(zyc@hasor.net)
  */

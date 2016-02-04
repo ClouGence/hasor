@@ -37,7 +37,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
- * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -48,7 +47,7 @@ public class DaoModule extends WebModule implements LifeModule {
     }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        //1.初始化数据库
+        // 1.初始化数据库
         Settings settings = apiBinder.getEnvironment().getSettings();
         String driverString = settings.getString("rsfCenter.jdbcConfig.driver");
         String urlString = settings.getString("rsfCenter.jdbcConfig.url");
@@ -63,12 +62,12 @@ public class DaoModule extends WebModule implements LifeModule {
         DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
         apiBinder.installModule(new DBModule(dataSource));
         //
-        //2.绑定myBatis接口实现
+        // 2.绑定myBatis接口实现
         Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, dataSource));
         //
-        //3.Dao
+        // 3.Dao
         Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
         for (Class<?> daoType : daoSet) {
             apiBinder.bindType(daoType);
@@ -78,7 +77,7 @@ public class DaoModule extends WebModule implements LifeModule {
         Environment env = appContext.getEnvironment();
         Settings settings = env.getSettings();
         //
-        //Alone模式
+        // Alone模式
         if (WorkMode.Alone == workAt) {
             logger.info("rsf workAt {} , initialize memdb.", workAt);
             XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
@@ -87,7 +86,7 @@ public class DaoModule extends WebModule implements LifeModule {
             }
             List<XmlNode> xmlNodes = xmlNode.getChildren("sqlScript");
             if (xmlNodes != null) {
-                logger.info("sqlScript count = {}", xmlNodes.size());
+                logger.info("sqlScript count = {}.", xmlNodes.size());
                 JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
                 for (XmlNode node : xmlNodes) {
                     String scriptName = node.getText().trim();
@@ -102,11 +101,11 @@ public class DaoModule extends WebModule implements LifeModule {
                 }
             }
         }
+        //
     }
     public void onStop(AppContext appContext) throws Throwable {
         // TODO Auto-generated method stub
     }
-    //
     //
     private DataSource createDataSource(String driverString, String urlString, String userString, String pwdString) throws PropertyVetoException {
         int poolMaxSize = 40;
@@ -118,7 +117,7 @@ public class DaoModule extends WebModule implements LifeModule {
         dataSource.setPassword(pwdString);
         dataSource.setMaxPoolSize(poolMaxSize);
         dataSource.setInitialPoolSize(1);
-        //dataSource.setAutomaticTestTable("DB_TEST_ATest001");
+        // dataSource.setAutomaticTestTable("DB_TEST_ATest001");
         dataSource.setIdleConnectionTestPeriod(18000);
         dataSource.setCheckoutTimeout(3000);
         dataSource.setTestConnectionOnCheckin(true);

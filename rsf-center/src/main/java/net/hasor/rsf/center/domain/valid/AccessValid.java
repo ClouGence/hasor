@@ -23,7 +23,6 @@ import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 import net.hasor.rsf.center.utils.SecretUtils;
 /**
- * 
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,13 +37,13 @@ public class AccessValid implements Validation, InjectMembers {
         //
         String secretKey = SecretUtils.toSecretKey(accInfo);
         ResultDO<TerminalDO> terminalResultDO = daoProvider.getTerminalDao().queryTerminalByIDAndSecret(accInfo.getTerminalID(), secretKey);
-        //        if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
-        //            if (terminalResultDO.isSuccess() == false) {
-        //                return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());
-        //            } else {
-        //                return new ResultDO<String>().setSuccess(false);
-        //            }
-        //        }
+        // if (!terminalResultDO.isSuccess() || terminalResultDO.getResult() == null) {
+        // if (terminalResultDO.isSuccess() == false) {
+        // return new ResultDO<String>().setSuccess(false).addMessage(terminalResultDO.getMessageList());
+        // } else {
+        // return new ResultDO<String>().setSuccess(false);
+        // }
+        // }
         // TODO Auto-generated method stub
         return new ResultDO<String>().setSuccess(true);
     }

@@ -26,7 +26,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 /**
- * 
  * @version : 2015年5月27日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -34,7 +33,9 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
     private SqlSessionFactory sessionFactory;
     /**
      * Construct a new SqlExecutorTemplate for bean usage.
-     * <p>Note: The DataSource has to be set before using the instance.
+     * <p>
+     * Note: The DataSource has to be set before using the instance.
+     * 
      * @see #setDataSource
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory) {
@@ -43,8 +44,11 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
     }
     /**
      * Construct a new SqlExecutorTemplate, given a DataSource to obtain connections from.
-     * <p>Note: This will not trigger initialization of the exception translator.
-     * @param dataSource the JDBC DataSource to obtain connections from
+     * <p>
+     * Note: This will not trigger initialization of the exception translator.
+     * 
+     * @param dataSource
+     *            the JDBC DataSource to obtain connections from
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory, final DataSource dataSource) {
         super(dataSource);
@@ -52,8 +56,11 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
     }
     /**
      * Construct a new SqlExecutorTemplate, given a DataSource to obtain connections from.
-     * <p>Note: This will not trigger initialization of the exception translator.
-     * @param dataSource the JDBC DataSource to obtain connections from
+     * <p>
+     * Note: This will not trigger initialization of the exception translator.
+     * 
+     * @param dataSource
+     *            the JDBC DataSource to obtain connections from
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory, final Connection conn) {
         super(conn);

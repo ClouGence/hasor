@@ -22,26 +22,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 错误码
+ * 
  * @version : 2015年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ErrorCode {
-    /**0, "Success"*/
+    /** 0, "Success" */
     OK(0, "Success"),
     //
-    /**1, "SQL{}，执行出错. ->{}"*/
+    /** 1, "SQL{}，执行出错. ->{}" */
     DAO_SELECT(1, "Select SQL{}，执行出错. ->{%s}"), //
-    /**2, "Insert SQL{}，执行出错. ->{}"*/
+    /** 2, "Insert SQL{}，执行出错. ->{}" */
     DAO_INSERT(2, "Insert SQL{}，执行出错. ->{%s}"), //
-    /**3, "不存在ID为 %s 的数据记录。"*/
+    /** 3, "不存在ID为 %s 的数据记录。" */
     DAO_SELECT_NODATA(3, "不存在ID为 %s 的数据记录。"), //
-    /**4, "对不起没有记录。"*/
+    /** 4, "对不起没有记录。" */
     DAO_SELECT_EMPTY(4, "对不起没有匹配到任何记录。"),//
     //
     //
-    //---------------------------------------------
+    // ---------------------------------------------
     ;
-    private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
+    private static Logger         logger = LoggerFactory.getLogger(ErrorCode.class);
     private final MessageTemplate messageTemplate;
     ErrorCode(final int codeType, final String messageTemplate) {
         this.messageTemplate = new MessageTemplate() {

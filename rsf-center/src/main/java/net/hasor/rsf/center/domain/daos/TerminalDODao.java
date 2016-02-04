@@ -22,6 +22,7 @@ import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 /**
  * 终端
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */

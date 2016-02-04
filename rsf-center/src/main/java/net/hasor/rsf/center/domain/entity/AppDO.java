@@ -17,21 +17,22 @@ package net.hasor.rsf.center.domain.entity;
 import java.util.Date;
 /**
  * 一个应用
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class AppDO {
-    private long   appID;       //应用ID（PK，自增）
-    private String appCode;     //应用Code（唯一）
-    private String appName;     //应用名称
-    private String icon;        //应用图标
-    private String accessKey;   //授权KEY
-    private String accessSecret; //授权密钥
-    private String onwer;       //接口人（创建应用的人）
-    private String contactUsers; //接口人（多个人）
-    private String description; //应用描述
-    private Date   createTime;  //创建时间
-    private Date   modifyTime;  //修改时间
+    private long   appID;        // 应用ID（PK，自增）
+    private String appCode;      // 应用Code（唯一）
+    private String appName;      // 应用名称
+    private String icon;         // 应用图标
+    private String accessKey;    // 授权KEY
+    private String accessSecret; // 授权密钥
+    private String onwer;        // 接口人（创建应用的人）
+    private String contactUsers; // 接口人（多个人）
+    private String description;  // 应用描述
+    private Date   createTime;   // 创建时间
+    private Date   modifyTime;   // 修改时间
     //
     public long getAppID() {
         return appID;

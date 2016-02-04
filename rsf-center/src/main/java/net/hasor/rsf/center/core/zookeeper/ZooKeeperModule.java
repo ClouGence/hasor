@@ -14,137 +14,77 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.zookeeper;
-import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
-import java.net.InetSocketAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import net.hasor.core.LifeModule;
+import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Alone;
+import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Master;
+import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Slave;
 import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.rsf.utils.NetworkUtils;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.server.DataTree;
-import org.apache.zookeeper.server.ServerCnxnFactory;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.ZooKeeperServer.DataTreeBuilder;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 /**
- * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ZooKeeperModule extends WebModule implements LifeModule {
+public class ZooKeeperModule implements LifeModule {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private WorkMode workAt;
     public ZooKeeperModule(WorkMode workAt) {
         this.workAt = workAt;
     }
     //
-    private ZooKeeperCfg startZooKeeperServer(ZooKeeperCfg cfg, Environment env) throws IOException, InterruptedException {
-        FileTxnSnapLog txnLog = new FileTxnSnapLog(new File(cfg.getDataDir()), new File(cfg.getSnapDir()));
-        DataTreeBuilder treeBuilder = new DataTreeBuilder() {
-            public DataTree build() {
-                return new DataTree();
-            }
-        };
-        final ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, cfg.getTickTime(), cfg.getMinSessionTimeout(), cfg.getMaxSessionTimeout(), treeBuilder, new ZKDatabase(txnLog));
-        ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
-        cnxnFactory.configure(new InetSocketAddress(cfg.getBindAddress(), cfg.getBindPort()), cfg.getClientCnxns());
-        logger.info("zkServer starting...");
-        cnxnFactory.startup(zkServer);
-        //
-        //watch server start.
-        long curTime = System.currentTimeMillis();
-        while (true) {
-            if (!zkServer.isRunning()) {
-                Thread.sleep(100);
-                long passTime = System.currentTimeMillis() - curTime;
-                long second = passTime / 1000;
-                if (second > 15) {
-                    throw new InterruptedException("15s, zkServer start fail.");/*15秒没起来*/
-                } else if (second > 0) {
-                    logger.info("zkServer starting {} second pass.", second);
-                }
-                continue;
-            }
-            break;
-        }
-        //
-        //保证系统关闭的时候zk被停止
-        logger.info("zkServer addShutdownListener.");
-        Hasor.addShutdownListener(env, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                if (zkServer.isRunning()) {
-                    zkServer.shutdown();
-                }
-            }
-        });
-        //
-        return cfg;
-    }
-    //
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        ZooKeeperCfg cfg = new ZooKeeperCfg(apiBinder.getEnvironment());
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        ZooKeeperCfg cfg = ZooKeeperCfg.buildFormConfig(apiBinder.getEnvironment());
+        ZooKeeperNode zkNode = null;
         StringWriter writer = new StringWriter();
         writer.append("\n----------- ZooKeeper -----------");
-        writer.append("\n              dataDir = " + cfg.getDataDir());
-        writer.append("\n              snapDir = " + cfg.getSnapDir());
+        writer.append("\n             workMode = " + workAt);
         switch (workAt) {
-        case Alone://单机模式
+        case Alone:
+            // 单机模式
             cfg.setBindAddress("127.0.0.1");
-            for (int port = 50000; port < 65535; port++) {
-                if (NetworkUtils.isPortAvailable(port)) {
-                    cfg.setBindPort(port);
-                    break;
-                }
-            }
-            cfg.setClientCnxns(2);
-            cfg.setZkServers(cfg.getBindAddress() + ":" + cfg.getBindPort());
+            cfg.setClientCnxns(2);// 准许两个客户端
+            writer.append("\n              dataDir = " + cfg.getDataDir());
+            writer.append("\n              snapDir = " + cfg.getSnapDir());
+            zkNode = new ZooKeeperNode_Alone(cfg);
             break;
-        case Master://集群下主机模式
+        case Master:
+            // 集群主机模式
+            writer.append("\n              dataDir = " + cfg.getDataDir());
+            writer.append("\n              snapDir = " + cfg.getSnapDir());
             writer.append("\n             bindPort = " + cfg.getBindPort());
             writer.append("\n             tickTime = " + cfg.getTickTime());
             writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
             writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
             writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
+            writer.append("\n          electionAlg = " + cfg.getElectionAlg());
+            writer.append("\n         electionPort = " + cfg.getElectionPort());
+            zkNode = new ZooKeeperNode_Master(cfg);
             break;
-        case Slave://集群下丛机模式
+        case Slave:
+            // 集群从属模式
             writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
-            writer.append("\n            zkServers = " + cfg.getZkServers());
+            zkNode = new ZooKeeperNode_Slave(cfg);
             break;
         default:
             throw new InterruptedException("undefined workMode : " + workAt.getCodeString());
         }
+        writer.append("\n            zkServers = " + cfg.getZkServersStr());
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
         //
-        //zk客户端
-        logger.info("ZooKeeper connection to shelf.");
-        ZooKeeper zooKeeper = new ZooKeeper(cfg.getZkServers(), cfg.getClientTimeout(), new Watcher() {
-            public void process(WatchedEvent event) {
-                logger.info(event.getPath());
-            }
-        });
-        //
-        apiBinder.bindType(ZooKeeper.class).toInstance(zooKeeper);
+        apiBinder.bindType(ZooKeeperNode.class).toInstance(zkNode);
     }
     public void onStart(AppContext appContext) throws Throwable {
-        ZooKeeper zooKeeper = appContext.getInstance(ZooKeeper.class);
-        logger.info("ZooKeeper starting");
-        //
-        System.out.println("ssssss");
-        zooKeeper.create("/root", "data".getBytes(), null, null);
-        zooKeeper.setData("/", "data".getBytes(), 0);
-        zooKeeper.getState().isAlive();
+        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
+        logger.info("startZooKeeper...");
+        zkNode.startZooKeeper();
     }
     public void onStop(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
+        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
+        logger.info("shutdownZooKeeper...");
+        zkNode.shutdownZooKeeper();
     }
 }

@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import net.hasor.core.Provider;
 /**
- * 
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */

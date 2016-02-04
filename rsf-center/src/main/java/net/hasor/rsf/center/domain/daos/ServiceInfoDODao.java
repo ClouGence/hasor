@@ -25,12 +25,13 @@ import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
 import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
 /**
  * 表示为一个Service
+ * 
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
 public class ServiceInfoDODao extends AbstractDao<ServiceInfoDO> {
-    /**查询应用列表*/
+    /** 查询应用列表 */
     public PageResult<ServiceInfoDO> queryServiceInfoDOByForm(ServiceQueryForm pageInfo) {
         PageResult<ServiceInfoDO> resultDO = new PageResult<ServiceInfoDO>(pageInfo);
         try {

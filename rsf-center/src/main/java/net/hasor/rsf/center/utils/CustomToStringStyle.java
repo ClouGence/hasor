@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.more.builder.ToStringStyle;
 /**
- * 
  * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */
