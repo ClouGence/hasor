@@ -23,8 +23,8 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.center.core.zookeeper.ZooKeeperCfg;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
+import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 单机模式，不加入任何ZK集群，自己本身就是一个ZK节点。
@@ -34,17 +34,18 @@ import net.hasor.rsf.utils.NetworkUtils;
  */
 public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeeperNode {
     protected Logger          logger = LoggerFactory.getLogger(getClass());
-    private ZooKeeperCfg      zooKeeperCfg;
+    private RsfCenterCfg      zooKeeperCfg;
     private FileTxnSnapLog    txnLog;
     private ZooKeeperServer   zkServer;
     private ServerCnxnFactory cnxnFactory;
-    public ZooKeeperNode_Alone(ZooKeeperCfg zooKeeperCfg) {
+    public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg) {
         super(zooKeeperCfg);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
     /** 终止ZooKeeper */
     public void shutdownZooKeeper() throws IOException, InterruptedException {
+        super.shutdownZooKeeper();
         if (this.cnxnFactory != null) {
             this.cnxnFactory.shutdown();
             this.zkServer.shutdown();

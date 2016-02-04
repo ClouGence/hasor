@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
+package net.hasor.rsf.center.core.rsf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.LifeModule;
-import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
+import net.hasor.rsf.bootstrap.RsfModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
- * @version : 2015年8月13日
+ * RSF 通信端口配置
+ * 
+ * @version : 2016年2月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerB implements LifeModule {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public class RsfInit implements LifeModule {
+    protected Logger     logger       = LoggerFactory.getLogger(getClass());
+    private RsfCenterCfg rsfCenterCfg = null;
+    public RsfInit(RsfCenterCfg rsfCenterCfg) {
+        this.rsfCenterCfg = rsfCenterCfg;
+    }
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // WorkAt
-        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
-        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
-        //
-        // Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(cfg));
+        String ns = "http://project.hasor.net/hasor/schema/main";
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.rsfConfig.port", rsfCenterCfg.getRsfPort(), ns);
+        apiBinder.installModule(new RsfModule());
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
@@ -44,8 +46,5 @@ public class TestServerB implements LifeModule {
     @Override
     public void onStop(AppContext appContext) throws Throwable {
         // TODO Auto-generated method stub
-    }
-    public static void main(String[] args) {
-        Hasor.createAppContext("/cluster/rsf-server-b.xml", new TestServerB());
     }
 }

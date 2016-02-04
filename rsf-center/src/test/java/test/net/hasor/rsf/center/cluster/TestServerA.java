@@ -21,7 +21,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.LifeModule;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
-import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
@@ -31,11 +31,11 @@ public class TestServerA implements LifeModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // WorkAt
-        WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
-        logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
+        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
         //
         // Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(workAt));
+        apiBinder.installModule(new ZooKeeperModule(cfg));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {

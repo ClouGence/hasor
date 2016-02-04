@@ -25,11 +25,12 @@ import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
+import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.center.core.zookeeper.ZooKeeperCfg;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
+import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 集群节点模式，自己本身作为ZK的一个数据节点加入到ZK集群中，并且该模式参与ZK的选举。如果使用该模式，则至少需要三台以上机器以保证leader的正常选举。
@@ -39,17 +40,18 @@ import net.hasor.rsf.utils.NetworkUtils;
  */
 public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeeperNode {
     protected Logger              logger = LoggerFactory.getLogger(getClass());
-    private ZooKeeperCfg          zooKeeperCfg;
+    private RsfCenterCfg          zooKeeperCfg;
     private QuorumPeer            quorumPeer;
     private DatadirCleanupManager purgeMgr;
     //
-    public ZooKeeperNode_Master(ZooKeeperCfg zooKeeperCfg) {
+    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg) {
         super(zooKeeperCfg);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
     /** 终止ZooKeeper */
     public void shutdownZooKeeper() throws IOException, InterruptedException {
+        super.shutdownZooKeeper();
         if (this.quorumPeer != null) {
             this.quorumPeer.shutdown();
             this.purgeMgr.shutdown();
@@ -79,7 +81,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         this.quorumPeer.setClientPortAddress(inetAddress);
         this.quorumPeer.setTxnFactory(txnLog);
         this.quorumPeer.setQuorumPeers(servers);
-        this.quorumPeer.setElectionType(this.zooKeeperCfg.getElectionAlg());
+        this.quorumPeer.setElectionType(3);
         this.quorumPeer.setMyid(this.zooKeeperCfg.getServerID());
         this.quorumPeer.setTickTime(this.zooKeeperCfg.getTickTime());
         this.quorumPeer.setMinSessionTimeout(this.zooKeeperCfg.getMinSessionTimeout());
@@ -91,7 +93,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         this.quorumPeer.setZKDatabase(new ZKDatabase(this.quorumPeer.getTxnFactory()));
         this.quorumPeer.setLearnerType(this.zooKeeperCfg.getPeerType());
         this.quorumPeer.setSyncEnabled(this.zooKeeperCfg.isSyncEnabled());
-        this.quorumPeer.setQuorumListenOnAllIPs(this.zooKeeperCfg.isQuorumListenOnAllIPs());
+        this.quorumPeer.setQuorumListenOnAllIPs(false);
         //
         logger.info("zkNode starting...");
         this.quorumPeer.start();
@@ -100,22 +102,24 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         // watch server start.
         long curTime = System.currentTimeMillis();
         while (true) {
-            if (!this.quorumPeer.isRunning()) {
-                Thread.sleep(100);
+            ServerState ackstate = this.quorumPeer.getPeerState();
+            if (ackstate == ServerState.LOOKING) {
+                Thread.sleep(1000);
                 long passTime = System.currentTimeMillis() - curTime;
                 long second = passTime / 1000;
-                if (second > 15) {
+                if (second > 150) {
                     throw new InterruptedException("15s, zkNode start fail.");/*15秒没起来*/
                 } else if (second > 0) {
                     logger.info("zkNode starting {} second pass.", second);
                 }
                 continue;
             }
+            logger.info("zkNode starting -> ok.");
             break;
         }
         //
         //
-        String serverConnection = inetAddress.getHostName() + ":" + inetAddress.getPort();
-        // super.startZooKeeper(serverConnection);
+        String serverConnection = inetAddress.getAddress().getHostAddress() + ":" + inetAddress.getPort();
+        super.startZooKeeper(serverConnection);
     }
 }

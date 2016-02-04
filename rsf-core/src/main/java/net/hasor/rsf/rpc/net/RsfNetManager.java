@@ -49,6 +49,7 @@ import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.TimerManager;
 /**
  * 维护RSF同其它RSF的连接，并提供数据投递和接收服务。
+ * 
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -82,7 +83,7 @@ public class RsfNetManager {
         this.receivedListener = receivedListener;
         this.channelRegister = new ManagerChannelRegister();
     }
-    /**销毁。*/
+    /** 销毁。 */
     public void shutdown() {
         logger.info("rsfNetManager, shutdownGracefully.");
         if (bindListener != null) {
@@ -92,24 +93,24 @@ public class RsfNetManager {
         workLoopGroup.shutdownGracefully();
     }
     //
-    /**获取RSF运行的地址。*/
+    /** 获取RSF运行的地址。 */
     public InterAddress bindAddress() {
         return this.bindAddress;
     }
-    /**建立或获取和远程的连接。*/
+    /** 建立或获取和远程的连接。 */
     public Future<RsfNetChannel> getChannel(InterAddress target) throws InterruptedException, ExecutionException {
         Future<RsfNetChannel> channelFuture = this.channelMapping.get(target);
         if (channelFuture != null && channelFuture.isDone()) {
             RsfNetChannel channel = channelFuture.get();
             if (channel != null && channel.isActive() == false) {
-                this.channelMapping.remove(target);//conect is bad.
+                this.channelMapping.remove(target);// conect is bad.
                 channelFuture = null;
             }
         }
         if (channelFuture != null) {
             return channelFuture;
         } else {
-            channelFuture = connSocket(target);// TODO 这里应考虑到并发 
+            channelFuture = connSocket(target);// TODO 这里应考虑到并发
         }
         return channelFuture;
     }
@@ -140,20 +141,20 @@ public class RsfNetManager {
         return result;
     }
     //
-    /**启动服务器。*/
+    /** 启动服务器。 */
     public void start() throws UnknownHostException {
         this.start("127.0.0.1", 0);
     }
-    /**启动服务器。*/
+    /** 启动服务器。 */
     public void start(InetAddress localAddress) throws UnknownHostException {
         this.start(localAddress, 0);
     }
-    /**启动服务器。*/
+    /** 启动服务器。 */
     public void start(String bindAddress, int bindSocket) throws UnknownHostException {
         InetAddress localAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.start(localAddress, bindSocket);
     }
-    /**启动服务器。*/
+    /** 启动服务器。 */
     public void start(InetAddress localAddress, int bindSocket) throws UnknownHostException {
         RsfSettings rsfSettings = this.rsfEnvironment.getSettings();
         if (localAddress == null) {
@@ -203,10 +204,10 @@ public class RsfNetManager {
     }
     private <T extends AbstractBootstrap<?, ?>> T configBoot(T boot) {
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-        //        boot.option(ChannelOption.SO_BACKLOG, 128);
-        //        boot.option(ChannelOption.SO_BACKLOG, 1024);
-        //        boot.option(ChannelOption.SO_RCVBUF, 1024 * 256);
-        //        boot.option(ChannelOption.SO_SNDBUF, 1024 * 256);
+        // boot.option(ChannelOption.SO_BACKLOG, 128);
+        // boot.option(ChannelOption.SO_BACKLOG, 1024);
+        // boot.option(ChannelOption.SO_RCVBUF, 1024 * 256);
+        // boot.option(ChannelOption.SO_SNDBUF, 1024 * 256);
         boot.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         return boot;
     }

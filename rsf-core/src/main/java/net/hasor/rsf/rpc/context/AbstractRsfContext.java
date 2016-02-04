@@ -43,15 +43,16 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
+ * 
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext {
     protected Logger         logger           = LoggerFactory.getLogger(getClass());
-    private RsfBeanContainer rsfBeanContainer = null;                               //服务管理(含地址管理)
-    private RsfEnvironment   rsfEnvironment   = null;                               //环境&配置
-    private RemoteRsfCaller  rsfCaller        = null;                               //调用器
-    private RsfNetManager    rsfNetManager    = null;                               //网络传输
+    private RsfBeanContainer rsfBeanContainer = null;                               // 服务管理(含地址管理)
+    private RsfEnvironment   rsfEnvironment   = null;                               // 环境&配置
+    private RemoteRsfCaller  rsfCaller        = null;                               // 调用器
+    private RsfNetManager    rsfNetManager    = null;                               // 网络传输
     private AppContext       appContext       = null;
     private AddressProvider  poolProvider     = null;
     //
@@ -66,9 +67,11 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.poolProvider = new PoolProvider(pool);
         //
         this.rsfBeanContainer.getAddressPool().startTimer();
-        this.rsfNetManager.start();
+        String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
+        int bindPort = this.rsfEnvironment.getSettings().getBindPort();
+        this.rsfNetManager.start(bindAddress, bindPort);
     }
-    /**销毁。*/
+    /** 销毁。 */
     public void shutdown() {
         this.rsfCaller.shutdown();
         this.rsfNetManager.shutdown();

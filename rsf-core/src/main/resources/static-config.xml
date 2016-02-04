@@ -6,7 +6,7 @@
 	</hasor>
 
 	<!-- Hasor-RSF -->
-	<hasor.rsfConfig address="local" port="8000" unitName="local">
+	<hasor.rsfConfig address="local" port="2180" unitName="local">
 		<!--注册中心，用于更新服务列表的配置服务器 -->
 		<!-- <centerServer address="local" port="8082" interval="60000" /> -->
 

@@ -20,6 +20,10 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
@@ -29,21 +33,18 @@ import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
+import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DaoModule extends WebModule implements LifeModule {
-    private WorkMode workAt = null;
-    public DaoModule(WorkMode workAt) {
-        this.workAt = workAt;
+    private RsfCenterCfg rsfCenterCfg = null;
+    public DaoModule(RsfCenterCfg rsfCenterCfg) {
+        this.rsfCenterCfg = rsfCenterCfg;
     }
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
@@ -53,7 +54,7 @@ public class DaoModule extends WebModule implements LifeModule {
         String urlString = settings.getString("rsfCenter.jdbcConfig.url");
         String userString = settings.getString("rsfCenter.jdbcConfig.username");
         String pwdString = settings.getString("rsfCenter.jdbcConfig.password");
-        if (WorkMode.Alone == workAt) {
+        if (WorkMode.Alone == rsfCenterCfg.getWorkMode()) {
             driverString = "org.hsqldb.jdbcDriver";
             urlString = "jdbc:hsqldb:mem:rsf_memdb";
             userString = "sa";
@@ -78,8 +79,8 @@ public class DaoModule extends WebModule implements LifeModule {
         Settings settings = env.getSettings();
         //
         // Alone模式
-        if (WorkMode.Alone == workAt) {
-            logger.info("rsf workAt {} , initialize memdb.", workAt);
+        if (WorkMode.Alone == rsfCenterCfg.getWorkMode()) {
+            logger.info("rsf workAt {} , initialize memdb.", rsfCenterCfg.getWorkMode());
             XmlNode xmlNode = settings.getXmlNode("rsfCenter.memInitialize");
             if (xmlNode == null || xmlNode.getChildren("sqlScript") == null) {
                 throw new IOException("read config error,`rsfCenter.memInitialize` node is not exist.");

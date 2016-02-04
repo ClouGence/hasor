@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.zookeeper;
+package net.hasor.rsf.center.domain.constant;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -32,8 +32,9 @@ import net.hasor.rsf.utils.NetworkUtils;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ZooKeeperCfg {
+public class RsfCenterCfg {
     // - 通用
+    private WorkMode                workMode;
     private long                    serverID;
     private Map<Long, QuorumServer> zkServers;
     // - Client模式
@@ -51,17 +52,18 @@ public class ZooKeeperCfg {
     private int                     initLimit;
     private int                     syncLimit;
     private boolean                 syncEnabled;
-    private int                     electionAlg;
     private int                     electionPort;
     private LearnerType             peerType;
-    private boolean                 quorumListenOnAllIPs;
+    private int                     rsfPort;
     //
     //
-    private ZooKeeperCfg() {}
-    public static ZooKeeperCfg buildFormConfig(Environment env) throws UnknownHostException {
-        ZooKeeperCfg cfg = new ZooKeeperCfg();
+    private RsfCenterCfg() {}
+    public static RsfCenterCfg buildFormConfig(Environment env) throws UnknownHostException {
+        RsfCenterCfg cfg = new RsfCenterCfg();
         Settings settings = env.getSettings();
+        cfg.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         cfg.serverID = settings.getLong("rsfCenter.serverID", 0L);
+        cfg.rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
         cfg.zkServers = new HashMap<Long, QuorumServer>();
         XmlNode[] zkServers = settings.getXmlNodeArray("rsfCenter.zooKeeper.zkServers.server");
         int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2180);
@@ -99,10 +101,8 @@ public class ZooKeeperCfg {
         cfg.initLimit = settings.getInteger("rsfCenter.zooKeeper.initLimit", 10);
         cfg.syncLimit = settings.getInteger("rsfCenter.zooKeeper.syncLimit", 5);
         cfg.syncEnabled = settings.getBoolean("rsfCenter.zooKeeper.syncEnabled", true);
-        cfg.electionAlg = settings.getInteger("rsfCenter.zooKeeper.electionAlg", 3);
         cfg.electionPort = settings.getInteger("rsfCenter.zooKeeper.electionPort", 2182);
         cfg.peerType = settings.getEnum("rsfCenter.zooKeeper.peerType", LearnerType.class, LearnerType.PARTICIPANT);
-        cfg.quorumListenOnAllIPs = settings.getBoolean("rsfCenter.zooKeeper.quorumListenOnAllIPs", false);
         //
         // -check electionPort
         QuorumServer thisServer = cfg.zkServers.get(cfg.serverID);
@@ -116,11 +116,23 @@ public class ZooKeeperCfg {
         return cfg;
     }
     //
+    public WorkMode getWorkMode() {
+        return workMode;
+    }
+    public void setWorkMode(WorkMode workMode) {
+        this.workMode = workMode;
+    }
     public long getServerID() {
         return serverID;
     }
     public void setServerID(long serverID) {
         this.serverID = serverID;
+    }
+    public int getRsfPort() {
+        return rsfPort;
+    }
+    public void setRsfPort(int rsfPort) {
+        this.rsfPort = rsfPort;
     }
     public Map<Long, QuorumServer> getZkServers() {
         return zkServers;
@@ -129,6 +141,22 @@ public class ZooKeeperCfg {
         this.zkServers = zkServers;
     }
     public String getZkServersStr() {
+        Map<Long, QuorumServer> servers = this.getZkServers();
+        if (servers == null || servers.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder strBuilder = new StringBuilder("");
+            for (QuorumServer ent : servers.values()) {
+                String host = ent.addr.getHostName() + ":" + ent.addr.getPort() + ":" + ent.electionAddr.getPort();
+                if (strBuilder.length() > 2) {
+                    strBuilder.append(",");
+                }
+                strBuilder.append(host);
+            }
+            return strBuilder.toString();
+        }
+    }
+    public String getZkServersStrForLog() {
         Map<Long, QuorumServer> servers = this.getZkServers();
         if (servers == null || servers.isEmpty()) {
             return "[]";
@@ -224,23 +252,11 @@ public class ZooKeeperCfg {
     public void setSyncEnabled(boolean syncEnabled) {
         this.syncEnabled = syncEnabled;
     }
-    public int getElectionAlg() {
-        return electionAlg;
-    }
-    public void setElectionAlg(int electionAlg) {
-        this.electionAlg = electionAlg;
-    }
     public LearnerType getPeerType() {
         return peerType;
     }
     public void setPeerType(LearnerType peerType) {
         this.peerType = peerType;
-    }
-    public boolean isQuorumListenOnAllIPs() {
-        return quorumListenOnAllIPs;
-    }
-    public void setQuorumListenOnAllIPs(boolean quorumListenOnAllIPs) {
-        this.quorumListenOnAllIPs = quorumListenOnAllIPs;
     }
     public int getElectionPort() {
         return electionPort;

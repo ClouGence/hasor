@@ -20,8 +20,9 @@ import net.hasor.core.LifeModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
 import net.hasor.rsf.center.core.filters.JumpFilter;
 import net.hasor.rsf.center.core.filters.VarFilter;
+import net.hasor.rsf.center.core.rsf.RsfInit;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
-import net.hasor.rsf.center.domain.constant.WorkMode;
+import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -35,16 +36,18 @@ public class StartAppModule extends WebModule implements LifeModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // WorkAt
-        WorkMode workAt = apiBinder.getEnvironment().getSettings().getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
-        logger.info("rsf work mode at : ({}){}", workAt.getCodeType(), workAt.getCodeString());
+        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
         //
         // Filters
         apiBinder.filter("/*").through(new JumpFilter());
         apiBinder.filter("/*").through(new VarFilter());
         // DataSource
-        apiBinder.installModule(new DaoModule(workAt));
+        apiBinder.installModule(new DaoModule(cfg));
         // Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(workAt));
+        apiBinder.installModule(new ZooKeeperModule(cfg));
+        // RSF
+        apiBinder.installModule(new RsfInit(cfg));
     }
     //
     //
