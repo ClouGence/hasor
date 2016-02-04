@@ -4,6 +4,9 @@
     02.ResourceModule插件的实现机制从 Servlet 改为Filter，当资源无法通过插件获取时候，转交给servlet容器。原有方案是直接抛除404。
     03.RestfulModule插件的实现机制从 Servlet 改为Filter，可以通过WebController类中renderTo方法指定具体要渲染的模版，模版渲染更加灵活。
     04.RestfulModule插件的实现机制从 Servlet 改为Filter，支持ContextMap中setViewName方法来指定渲染的模版。
+    05.环境变量，WOR_HOME 从 USER.DIR 更换到 USER.HOME。原因是，USER.DIR 工作目录获取并不是想象的那样始终是在程序位置。
+    06.Settings接口增加 addSetting方法和clearSetting方法用来增加和删除配置项。
+    07.SaxXmlParser类优化，在处理配置项冲突时，升级为保留全部配置。原有逻辑为合并覆盖。
 
 ===== Hasor-Core v2.1.0 (2016-01-17)
 * 新增:

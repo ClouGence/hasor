@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 /**
- * 
  * @version : 2013-7-13
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -92,14 +92,14 @@ public class SaxXmlParser extends DefaultHandler {
         for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
             DefaultXmlNode currentXml = ent.getValue();
-            //1.将XmlTree转换为map映射
-            HashMap<String, Object> dataMap = new HashMap<String, Object>();
+            // 1.将XmlTree转换为map映射
+            HashMap<String, List<Object>> dataMap = new HashMap<String, List<Object>>();
             this.convertType(dataMap, currentXml.getChildren(), "");
-            //2.弃掉转换过程中根节点名称
-            HashMap<String, Object> finalReturnData = new HashMap<String, Object>();
-            for (Entry<String, Object> data : dataMap.entrySet()) {
+            // 2.弃掉转换过程中根节点名称
+            HashMap<String, List<Object>> finalReturnData = new HashMap<String, List<Object>>();
+            for (Entry<String, List<Object>> data : dataMap.entrySet()) {
                 String keyStr = data.getKey();
-                Object valStr = data.getValue();
+                List<Object> valStr = data.getValue();
                 //
                 if (keyStr.indexOf(".") > 0) {
                     keyStr = keyStr.substring(keyStr.indexOf(".") + 1);
@@ -109,29 +109,44 @@ public class SaxXmlParser extends DefaultHandler {
                 }
             }
             dataMap = finalReturnData;
-            //3.输出映射结果，并处理多值合并问题（采用覆盖和追加的策略）
+            // 3.输出映射结果，多各值的话会按照顺序依次add到最终结果中。
             for (String key : dataMap.keySet()) {
                 String $key = key.toLowerCase();
-                Object $var = dataMap.get(key);
-                this.dataContainer.setSettings($key, $var, currentXmlns);
+                List<Object> $var = dataMap.get(key);
+                if ($var != null && $var.size() > 0) {
+                    for (Object var : $var) {
+                        this.dataContainer.addSetting($key, var, currentXmlns);
+                    }
+                }
             }
         }
     }
-    /**转换成Key Value形式*/
-    protected void convertType(final Map<String, Object> returnData, final List<XmlNode> xmlPropertyList, final String parentAttName) {
+    /** 转换成Key Value形式 */
+    protected void convertType(final Map<String, List<Object>> returnData, final List<XmlNode> xmlPropertyList, final String parentAttName) {
         if (xmlPropertyList != null) {
             for (XmlNode xmlNode : xmlPropertyList) {
                 DefaultXmlNode impl = (DefaultXmlNode) xmlNode;
-                //1.put本级
+                // 1.put本级
                 String key = "".equals(parentAttName) ? impl.getName() : parentAttName + "." + impl.getName();
-                returnData.put(key, impl);
-                //2.put属性
+                convertTypePut(returnData, key, impl);
+                // 2.put属性
                 for (Entry<String, String> ent : impl.getAttributeMap().entrySet()) {
-                    returnData.put(key + "." + ent.getKey(), ent.getValue());
+                    String putKey = key + "." + ent.getKey();
+                    convertTypePut(returnData, putKey, ent.getValue());
                 }
-                //3.put孩子
+                // 3.put孩子
                 this.convertType(returnData, xmlNode.getChildren(), key);
             }
         }
+    }
+    private void convertTypePut(final Map<String, List<Object>> returnData, String key, Object value) {
+        List<Object> dataList = null;
+        if (returnData.containsKey(key)) {
+            dataList = returnData.get(key);
+        } else {
+            dataList = new ArrayList<Object>();
+            returnData.put(key, dataList);
+        }
+        dataList.add(value);
     }
 }

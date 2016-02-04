@@ -17,7 +17,6 @@ package net.hasor.core.setting;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * 
  * @version : 2014年10月11日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -27,8 +26,9 @@ public class SettingValue {
     //
     //
     public void newValue(Object value) {
-        if (this.varList.contains(value) == false)
+        if (this.varList.contains(value) == false) {
             this.varList.add(value);
+        }
         this.defaultVar = value;
     }
     //
@@ -46,5 +46,9 @@ public class SettingValue {
             }
         }
         return buffer.toString();
+    }
+    public void clear() {
+        this.varList.clear();
+        this.defaultVar = null;
     }
 }

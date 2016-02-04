@@ -22,6 +22,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 /**
  * Settings接口的抽象实现。
+ * 
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -50,8 +51,14 @@ public class SettingsWrap implements Settings {
     public void refresh() throws IOException {
         this.settings.refresh();
     }
-    public void setSettings(String key, Object value, String namespace) {
-        this.settings.setSettings(key, value, namespace);
+    public void setSetting(String key, Object value, String namespace) {
+        this.settings.setSetting(key, value, namespace);
+    }
+    public void addSetting(String key, Object value, String namespace) {
+        this.settings.addSetting(key, value, namespace);
+    }
+    public void removeSetting(String key, String namespace) {
+        this.settings.removeSetting(key, namespace);
     }
     public Character getChar(String name) {
         return this.settings.getChar(name);

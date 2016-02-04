@@ -31,7 +31,7 @@
 			<!-- 程序目录 -->
 			<RUN_PATH>./</RUN_PATH>
 			<!-- 工作目录 -->
-			<WORK_HOME>%USER.DIR%/hasor-work</WORK_HOME>
+			<WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
 			<!-- 临时文件位置 -->
 			<HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
 			<!-- 日志存放位置 -->
