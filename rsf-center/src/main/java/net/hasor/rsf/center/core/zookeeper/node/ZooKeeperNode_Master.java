@@ -16,7 +16,6 @@
 package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import org.apache.zookeeper.server.DatadirCleanupManager;
@@ -31,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 集群节点模式，自己本身作为ZK的一个数据节点加入到ZK集群中，并且该模式参与ZK的选举。如果使用该模式，则至少需要三台以上机器以保证leader的正常选举。
  * 
@@ -66,9 +64,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         File snapDir = new File(this.zooKeeperCfg.getSnapDir());
         FileTxnSnapLog txnLog = new FileTxnSnapLog(dataDir, snapDir);
         //
-        InetAddress bindAddress = NetworkUtils.finalBindAddress(this.zooKeeperCfg.getBindAddress());
-        int bindPort = this.zooKeeperCfg.getBindPort();
-        InetSocketAddress inetAddress = new InetSocketAddress(bindAddress, bindPort);
+        InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
         ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
         cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
         Map<Long, QuorumServer> servers = this.zooKeeperCfg.getZkServers();

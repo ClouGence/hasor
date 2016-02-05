@@ -17,10 +17,16 @@ package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
+import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
@@ -71,8 +77,47 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
             this.shutdownZooKeeper();
         }
     }
-    /** 返回ZK */
+    //
+    @Override
     public ZooKeeper getZooKeeper() {
         return this.zooKeeper;
+    }
+    @Override
+    public void createNode(String nodePath) throws KeeperException, InterruptedException {
+        if (this.zooKeeper.exists(nodePath, false) == null) {
+            try {
+                String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                logger.info("zkClient createNode {} -> {}", nodePath, result);
+            } catch (NodeExistsException e) {
+                logger.warn("zkClient createNode {} -> NodeExistsException -> {}", nodePath, e.getMessage());
+            }
+        } else {
+            logger.info("zkClient createNode {} -> exists.", nodePath);
+        }
+    }
+    @Override
+    public void deleteNode(String nodePath) throws KeeperException, InterruptedException {
+        if (this.zooKeeper.exists(nodePath, false) != null) {
+            try {
+                this.zooKeeper.delete(nodePath, -1);
+                logger.info("zkClient deleteNode {}", nodePath);
+            } catch (NoNodeException e) {
+                logger.warn("zkClient deleteNode {} -> NoNodeException -> {}", nodePath, e.getMessage());
+            }
+        } else {
+            logger.info("zkClient deleteNode {} -> is not exists.", nodePath);
+        }
+    }
+    @Override
+    public void saveOrUpdate(String nodePath, String data) throws KeeperException, InterruptedException {
+        Stat stat = this.zooKeeper.exists(nodePath, false);
+        if (stat == null) {
+            this.createNode(nodePath);
+            stat = this.zooKeeper.exists(nodePath, false);
+        }
+        //
+        byte[] byteDatas = (data == null) ? null : data.getBytes();
+        this.zooKeeper.setData(nodePath, byteDatas, stat.getVersion());
+        logger.info("zkClient saveOrUpdate Node {}", nodePath);
     }
 }

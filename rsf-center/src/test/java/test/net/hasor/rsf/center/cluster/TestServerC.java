@@ -16,36 +16,15 @@
 package test.net.hasor.rsf.center.cluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.LifeModule;
-import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
-import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
+import net.hasor.rsf.center.core.startup.StartAppModule;
 /**
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerC implements LifeModule {
+public class TestServerC {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // WorkAt
-        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
-        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
-        //
-        // Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(cfg));
-    }
-    @Override
-    public void onStart(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void onStop(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
-    }
     public static void main(String[] args) {
-        Hasor.createAppContext("/cluster/rsf-server-c.xml", new TestServerC());
+        Hasor.createAppContext("/cluster/rsf-server-c.xml", new StartAppModule());
     }
 }

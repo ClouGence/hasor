@@ -43,8 +43,7 @@ public class RsfCenterCfg {
     private String                  workDir;
     private String                  dataDir;
     private String                  snapDir;
-    private String                  bindAddress;
-    private int                     bindPort;
+    private InetSocketAddress       bindInetAddress;
     private int                     tickTime;
     private int                     minSessionTimeout;
     private int                     maxSessionTimeout;
@@ -64,9 +63,10 @@ public class RsfCenterCfg {
         cfg.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         cfg.serverID = settings.getLong("rsfCenter.serverID", 0L);
         cfg.rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
+        //
         cfg.zkServers = new HashMap<Long, QuorumServer>();
         XmlNode[] zkServers = settings.getXmlNodeArray("rsfCenter.zooKeeper.zkServers.server");
-        int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2180);
+        int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2181);
         int defaultElectionPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultElectionPort", 2182);
         if (zkServers != null && zkServers.length > 0) {
             for (XmlNode server : zkServers) {
@@ -91,8 +91,12 @@ public class RsfCenterCfg {
         cfg.workDir = env.getWorkSpaceDir();
         cfg.dataDir = new File(cfg.workDir, "data").getAbsolutePath();
         cfg.snapDir = new File(cfg.workDir, "snap").getAbsolutePath();
-        cfg.bindAddress = settings.getString("rsfCenter.zooKeeper.bindAddress", "local");
-        cfg.bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2180);// 绑定的端口
+        //
+        String bindAddress = settings.getString("rsfCenter.zooKeeper.bindAddress", "local");
+        int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2181);// 绑定的端口
+        InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
+        cfg.bindInetAddress = new InetSocketAddress(inetAddress, bindPort);
+        //
         cfg.tickTime = settings.getInteger("rsfCenter.zooKeeper.tickTime", 3000);// 心跳时间
         cfg.minSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.minSessionTimeout", 15000);
         cfg.maxSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.maxSessionTimeout", 30000);
@@ -114,31 +118,6 @@ public class RsfCenterCfg {
             }
         }
         return cfg;
-    }
-    //
-    public WorkMode getWorkMode() {
-        return workMode;
-    }
-    public void setWorkMode(WorkMode workMode) {
-        this.workMode = workMode;
-    }
-    public long getServerID() {
-        return serverID;
-    }
-    public void setServerID(long serverID) {
-        this.serverID = serverID;
-    }
-    public int getRsfPort() {
-        return rsfPort;
-    }
-    public void setRsfPort(int rsfPort) {
-        this.rsfPort = rsfPort;
-    }
-    public Map<Long, QuorumServer> getZkServers() {
-        return zkServers;
-    }
-    public void setZkServers(Map<Long, QuorumServer> zkServers) {
-        this.zkServers = zkServers;
     }
     public String getZkServersStr() {
         Map<Long, QuorumServer> servers = this.getZkServers();
@@ -174,6 +153,31 @@ public class RsfCenterCfg {
             return strBuilder.append(" ]").toString();
         }
     }
+    //
+    public WorkMode getWorkMode() {
+        return workMode;
+    }
+    public void setWorkMode(WorkMode workMode) {
+        this.workMode = workMode;
+    }
+    public long getServerID() {
+        return serverID;
+    }
+    public void setServerID(long serverID) {
+        this.serverID = serverID;
+    }
+    public int getRsfPort() {
+        return rsfPort;
+    }
+    public void setRsfPort(int rsfPort) {
+        this.rsfPort = rsfPort;
+    }
+    public Map<Long, QuorumServer> getZkServers() {
+        return zkServers;
+    }
+    public void setZkServers(Map<Long, QuorumServer> zkServers) {
+        this.zkServers = zkServers;
+    }
     public int getClientTimeout() {
         return clientTimeout;
     }
@@ -198,17 +202,11 @@ public class RsfCenterCfg {
     public void setSnapDir(String snapDir) {
         this.snapDir = snapDir;
     }
-    public String getBindAddress() {
-        return bindAddress;
+    public InetSocketAddress getBindInetAddress() {
+        return bindInetAddress;
     }
-    public void setBindAddress(String bindAddress) {
-        this.bindAddress = bindAddress;
-    }
-    public int getBindPort() {
-        return bindPort;
-    }
-    public void setBindPort(int bindPort) {
-        this.bindPort = bindPort;
+    public void setBindInetAddress(InetSocketAddress bindInetAddress) {
+        this.bindInetAddress = bindInetAddress;
     }
     public int getTickTime() {
         return tickTime;

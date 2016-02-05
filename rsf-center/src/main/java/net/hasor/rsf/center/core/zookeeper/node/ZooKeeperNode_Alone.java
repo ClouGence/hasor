@@ -16,7 +16,6 @@
 package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 单机模式，不加入任何ZK集群，自己本身就是一个ZK节点。
  * 
@@ -72,9 +70,7 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         this.zkServer.setMaxSessionTimeout(maxSessionTimeout);
         // ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, tickTime, minSessionTimeout, maxSessionTimeout, this, new ZKDatabase(txnLog));
         //
-        InetAddress bindAddress = NetworkUtils.finalBindAddress(this.zooKeeperCfg.getBindAddress());
-        int bindPort = this.zooKeeperCfg.getBindPort();
-        InetSocketAddress inetAddress = new InetSocketAddress(bindAddress, bindPort);
+        InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
         this.cnxnFactory = ServerCnxnFactory.createFactory();
         this.cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
         //

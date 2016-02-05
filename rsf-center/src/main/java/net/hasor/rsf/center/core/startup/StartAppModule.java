@@ -14,40 +14,51 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.startup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
+import net.hasor.rsf.bootstrap.RsfModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
-import net.hasor.rsf.center.core.filters.JumpFilter;
-import net.hasor.rsf.center.core.filters.VarFilter;
-import net.hasor.rsf.center.core.rsf.RsfInit;
+import net.hasor.rsf.center.core.zookeeper.InitDataModue;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+import net.hasor.rsf.center.domain.constant.WorkMode;
 /**
  * WebMVC各组件初始化配置。
  * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartAppModule extends WebModule implements LifeModule {
+public class StartAppModule implements LifeModule {
     public static final String CenterStartEvent = "CenterStartEvent";
+    protected Logger           logger           = LoggerFactory.getLogger(getClass());
+    private RsfCenterCfg       rsfCenterCfg;
+    //
+    public StartAppModule() {}
+    public StartAppModule(RsfCenterCfg rsfCenterCfg) {
+        this.rsfCenterCfg = rsfCenterCfg;
+    }
     @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        // WorkAt
-        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
-        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        if (this.rsfCenterCfg == null) {
+            this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        }
         //
-        // Filters
-        apiBinder.filter("/*").through(new JumpFilter());
-        apiBinder.filter("/*").through(new VarFilter());
+        WorkMode workMode = this.rsfCenterCfg.getWorkMode();
+        logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         // DataSource
-        apiBinder.installModule(new DaoModule(cfg));
+        apiBinder.installModule(new DaoModule(this.rsfCenterCfg));
         // Zookeeper
-        apiBinder.installModule(new ZooKeeperModule(cfg));
+        apiBinder.installModule(new ZooKeeperModule(this.rsfCenterCfg));
         // RSF
-        apiBinder.installModule(new RsfInit(cfg));
+        String ns = "http://project.hasor.net/hasor/schema/main";
+        apiBinder.getEnvironment().getSettings().setSetting("hasor.rsfConfig.port", rsfCenterCfg.getRsfPort(), ns);
+        apiBinder.installModule(new RsfModule());
+        // Zookeeper数据初始化
+        apiBinder.installModule(new InitDataModue(this.rsfCenterCfg));
     }
     //
     //

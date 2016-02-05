@@ -4,7 +4,7 @@
 		<!-- 包扫描路径 -->
 		<loadPackages>net.hasor.rsf.center.*</loadPackages>
 		<!-- demo程序启动入口 -->
-		<startup>net.hasor.rsf.center.core.startup.StartAppModule</startup>
+		<startup>net.hasor.rsf.center.core.startup.WebManagerModule</startup>
 
 		<!-- 使用模版插件，并指定模版引擎为freemarker -->
 		<template urlPatterns="htm;html;" engine="freemarker" />

@@ -15,9 +15,6 @@
  */
 package net.hasor.rsf.center.core.zookeeper;
 import java.io.StringWriter;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
@@ -47,17 +44,16 @@ public class ZooKeeperModule implements LifeModule {
         switch (rsfCenterCfg.getWorkMode()) {
         case Alone:
             // 单机模式
-            cfg.setBindAddress("127.0.0.1");
-            cfg.setClientCnxns(2);// 准许两个客户端
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
+            writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
             zkNode = new ZooKeeperNode_Alone(cfg);
             break;
         case Master:
             // 集群主机模式
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
-            writer.append("\n             bindPort = " + cfg.getBindPort());
+            writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
             writer.append("\n             tickTime = " + cfg.getTickTime());
             writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
             writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
@@ -85,13 +81,6 @@ public class ZooKeeperModule implements LifeModule {
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         logger.info("startZooKeeper...");
         zkNode.startZooKeeper();
-        //
-        // 初始化ZK信息
-        ZooKeeper zk = zkNode.getZooKeeper();
-        if (zk.exists("/rsf-center", true) == null) {
-            logger.info("init rsf-center to zooKeeper.");
-            String rootNode = zk.create("/rsf-center", null, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        }
     }
     public void onStop(AppContext appContext) throws Throwable {
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
