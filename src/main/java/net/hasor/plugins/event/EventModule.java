@@ -46,6 +46,7 @@ public class EventModule implements Module {
             }
             Event eventAnno = eventClass.getAnnotation(Event.class);
             String[] eventVar = eventAnno.value();
+            EventType eventType = eventAnno.type();
             for (String eventName : eventVar) {
                 if (StringUtils.isBlank(eventName)) {
                     continue;
@@ -53,8 +54,11 @@ public class EventModule implements Module {
                 BindInfo<?> eventInfo = apiBinder.bindType(eventClass).uniqueName().toInfo();
                 EventListenerPropxy eventListener = new EventListenerPropxy(eventInfo);
                 eventListener = Hasor.autoAware(apiBinder.getEnvironment(), eventListener);
-                apiBinder.getEnvironment().getEventContext().pushListener(eventName, eventListener);
-                apiBinder.getEnvironment().getEventContext().addListener(eventName, eventListener);
+                /*   */if (EventType.Once == eventType) {
+                    apiBinder.getEnvironment().getEventContext().pushListener(eventName, eventListener);
+                } else if (EventType.Listener == eventType) {
+                    apiBinder.getEnvironment().getEventContext().addListener(eventName, eventListener);
+                }
                 logger.info("event ‘{}’ binding to ‘{}’", eventName, eventClass);
             }
             // 当ContextEvent_Start事件到来时注册所有配置文件监听器。
