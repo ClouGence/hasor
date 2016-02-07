@@ -13,6 +13,7 @@
 		<!-- 默认要装载的模块 -->
 		<modules loadModule="true">
 			<module>net.hasor.plugins.aop.AopModule</module>
+			<module>net.hasor.plugins.event.EventModule</module>
 			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 
 			<module>net.hasor.plugins.encoding.EncodingModule</module>
