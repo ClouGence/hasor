@@ -20,11 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 /**
  * 提供 <code>@Event</code>注解 功能支持。
@@ -53,7 +51,6 @@ public class EventModule implements Module {
                 }
                 BindInfo<?> eventInfo = apiBinder.bindType(eventClass).uniqueName().toInfo();
                 EventListenerPropxy eventListener = new EventListenerPropxy(eventInfo);
-                eventListener = Hasor.autoAware(apiBinder.getEnvironment(), eventListener);
                 /*   */if (EventType.Once == eventType) {
                     apiBinder.getEnvironment().getEventContext().pushListener(eventName, eventListener);
                 } else if (EventType.Listener == eventType) {
@@ -65,19 +62,18 @@ public class EventModule implements Module {
             logger.info("event binding finish.");
         }
     }
-    private class EventListenerPropxy implements EventListener, AppContextAware {
+    private class EventListenerPropxy implements EventListener {
         private BindInfo<?>   targetInfo     = null;
         private EventListener targetListener = null;
         //
         public EventListenerPropxy(BindInfo<?> targetInfo) {
             this.targetInfo = targetInfo;
         }
-        public void setAppContext(AppContext appContext) {
+        public void onEvent(String event, Object[] params) throws Throwable {
             if (this.targetListener == null) {
+                AppContext appContext = (AppContext) params[0];
                 this.targetListener = (EventListener) appContext.getInstance(this.targetInfo);
             }
-        }
-        public void onEvent(String event, Object[] params) throws Throwable {
             this.targetListener.onEvent(event, params);
         }
     }
