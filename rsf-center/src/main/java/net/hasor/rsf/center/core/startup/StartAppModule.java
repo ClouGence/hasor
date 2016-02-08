@@ -18,11 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
 import net.hasor.rsf.bootstrap.RsfModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
-import net.hasor.rsf.center.core.zookeeper.InitDataModue;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
@@ -33,8 +31,9 @@ import net.hasor.rsf.center.domain.constant.WorkMode;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StartAppModule implements LifeModule {
-    public static final String CenterStartEvent = "CenterStartEvent";
-    protected Logger           logger           = LoggerFactory.getLogger(getClass());
+    protected Logger           logger                      = LoggerFactory.getLogger(getClass());
+    public static final String RSFCenterCluster_StartEvent = "RSFCenterCluster_StartEvent";
+    public static final String RSFCenterCluster_StopEvent  = "RSFCenterCluster_StopEvent";
     private RsfCenterCfg       rsfCenterCfg;
     //
     public StartAppModule() {}
@@ -47,26 +46,23 @@ public class StartAppModule implements LifeModule {
             this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
         }
         //
+        apiBinder.bindType(RsfCenterCfg.class).toInstance(this.rsfCenterCfg);
         WorkMode workMode = this.rsfCenterCfg.getWorkMode();
         logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         // DataSource
         apiBinder.installModule(new DaoModule(this.rsfCenterCfg));
-        // Zookeeper
+        // Zookeeper环境
         apiBinder.installModule(new ZooKeeperModule(this.rsfCenterCfg));
         // RSF
         String ns = "http://project.hasor.net/hasor/schema/main";
         apiBinder.getEnvironment().getSettings().setSetting("hasor.rsfConfig.port", rsfCenterCfg.getRsfPort(), ns);
         apiBinder.installModule(new RsfModule());
-        // Zookeeper数据初始化
-        apiBinder.installModule(new InitDataModue(this.rsfCenterCfg));
     }
-    //
     //
     public void onStart(AppContext appContext) throws Throwable {
-        Environment env = appContext.getEnvironment();
-        env.getEventContext().fireSyncEvent(CenterStartEvent, appContext);// fire Event
+        appContext.getEnvironment().getEventContext().fireSyncEvent(RSFCenterCluster_StartEvent, appContext);
     }
     public void onStop(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
+        appContext.getEnvironment().getEventContext().fireSyncEvent(RSFCenterCluster_StopEvent, appContext);
     }
 }

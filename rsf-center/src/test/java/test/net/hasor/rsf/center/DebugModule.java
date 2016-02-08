@@ -17,7 +17,6 @@ package test.net.hasor.rsf.center;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.rsf.center.core.startup.StartAppModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -26,7 +25,7 @@ import net.hasor.web.WebModule;
  */
 public class DebugModule extends WebModule implements EventListener {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.getEnvironment().getEventContext().pushListener(StartAppModule.CenterStartEvent, this);
+        //
     }
     @Override
     public void onEvent(String event, Object[] params) throws Throwable {

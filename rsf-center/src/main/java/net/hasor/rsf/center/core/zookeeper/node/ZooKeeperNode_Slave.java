@@ -17,7 +17,6 @@ package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
@@ -31,8 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
+import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
- * 集群客户端模式，加入已有ZK集群。
+ * 集群客户端模式，加入已有ZK集群。作为ZK客户端还提供了对ZK的读写功能。
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
@@ -83,10 +83,15 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         return this.zooKeeper;
     }
     @Override
-    public void createNode(String nodePath) throws KeeperException, InterruptedException {
+    public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException {
         if (this.zooKeeper.exists(nodePath, false) == null) {
             try {
-                String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                this.zooKeeper.delete(nodePath, -1);
+            } catch (NoNodeException e) {
+                // e: NoNodeException => // do nothing
+            }
+            try {
+                String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, nodtType.getNodeType());
                 logger.info("zkClient createNode {} -> {}", nodePath, result);
             } catch (NodeExistsException e) {
                 logger.warn("zkClient createNode {} -> NodeExistsException -> {}", nodePath, e.getMessage());
@@ -109,15 +114,19 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         }
     }
     @Override
-    public void saveOrUpdate(String nodePath, String data) throws KeeperException, InterruptedException {
+    public Stat saveOrUpdate(ZkNodeType nodtType, String nodePath, String data) throws KeeperException, InterruptedException {
         Stat stat = this.zooKeeper.exists(nodePath, false);
         if (stat == null) {
-            this.createNode(nodePath);
+            this.createNode(nodtType, nodePath);
             stat = this.zooKeeper.exists(nodePath, false);
+            if (stat == null) {
+                return null;
+            }
         }
         //
         byte[] byteDatas = (data == null) ? null : data.getBytes();
-        this.zooKeeper.setData(nodePath, byteDatas, stat.getVersion());
+        stat = this.zooKeeper.setData(nodePath, byteDatas, stat.getVersion());
         logger.info("zkClient saveOrUpdate Node {}", nodePath);
+        return stat;
     }
 }

@@ -17,6 +17,8 @@ package net.hasor.rsf.center.core.zookeeper;
 import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
+import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
@@ -43,9 +45,9 @@ public interface ZooKeeperNode {
     public ZooKeeper getZooKeeper();
     //
     /** 创建一个永久节点 */
-    public void createNode(String nodePath) throws KeeperException, InterruptedException;
+    public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;
     /** 删除一个节点 */
     public void deleteNode(String nodePath) throws KeeperException, InterruptedException;
     /** 设置或者更新数据 */
-    public void saveOrUpdate(String nodePath, String data) throws KeeperException, InterruptedException;
+    public Stat saveOrUpdate(ZkNodeType nodtType, String nodePath, String data) throws KeeperException, InterruptedException;
 }

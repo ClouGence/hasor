@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.manager;
+import java.io.InputStream;
+import java.util.List;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 /**
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface CenterService {}
+public class CenterService {
+    public String getVersion() {
+        try {
+            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
+            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            return !dataLines.isEmpty() ? dataLines.get(0) : null;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+}
