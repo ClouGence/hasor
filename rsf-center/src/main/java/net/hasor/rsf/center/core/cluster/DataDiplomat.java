@@ -1,25 +1,20 @@
-/*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+/* Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language governing
+ * permissions and limitations under the License. */
 package net.hasor.rsf.center.core.cluster;
 import static net.hasor.rsf.center.core.startup.StartAppModule.RSFCenterCluster_StartEvent;
 import static net.hasor.rsf.center.core.startup.StartAppModule.RSFCenterCluster_StopEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,10 +55,7 @@ public class DataDiplomat implements EventListener {
     //
     public void initDiplomatEnv() throws IOException {
         //
-        InetSocketAddress inetAddress = this.rsfCenterCfg.getBindInetAddress();
-        String localAddress = inetAddress.getAddress().getHostAddress();
-        int localPort = this.rsfCenterCfg.getRsfPort();
-        this.serverInfo = String.format("%s:%s", localAddress, localPort);
+        this.serverInfo = this.rsfCenterCfg.getHostAndPort();
         this.serverInfoPath = ZooKeeperNode.SERVER_PATH + "/" + this.serverInfo;
         //
         this.configuration = new Configuration(Configuration.VERSION_2_3_22);
@@ -97,7 +89,7 @@ public class DataDiplomat implements EventListener {
         }
     }
     /** 时间戳 */
-    public String nowData() {
+    private String nowData() {
         return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     }
     //
@@ -127,9 +119,6 @@ public class DataDiplomat implements EventListener {
         zkNode.saveOrUpdate(ZkNodeType.Persistent, this.serverInfoPath + "/version", this.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, this.serverInfoPath + "/auth", this.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Session, this.serverInfoPath + "/heartbeat", this.nowData());
-        //
-        long sid = this.zkNode.getZooKeeper().getSessionId();
-        zkNode.saveOrUpdate(ZkNodeType.Share, ZooKeeperNode.LEADER_PATH + "/" + sid, this.serverInfo);
         //
     }
     @Override
