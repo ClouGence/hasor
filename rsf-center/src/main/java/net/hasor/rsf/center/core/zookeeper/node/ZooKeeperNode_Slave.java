@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.EventContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
+import net.hasor.rsf.center.domain.constant.CenterEventType;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
@@ -39,19 +41,31 @@ import net.hasor.rsf.center.domain.constant.ZkNodeType;
  */
 public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     protected Logger       logger            = LoggerFactory.getLogger(getClass());
-    private RsfCenterCfg   zooKeeperCfg;
-    private ZooKeeper      zooKeeper;
     private CountDownLatch connectedSemphore = new CountDownLatch(1);
+    private String         serverConnection;
+    private RsfCenterCfg   zooKeeperCfg;
+    private EventContext   eventContext;
+    private ZooKeeper      zooKeeper;
     //
-    public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg) {
+    public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
         this.zooKeeperCfg = zooKeeperCfg;
+        this.eventContext = eventContext;
     }
     //
     public void process(WatchedEvent event) {
-        if (KeeperState.SyncConnected == event.getState()) {
+        /*   */if (KeeperState.SyncConnected == event.getState()) {
             // 链接成功，释放startZooKeeper，的同步等待。
             logger.info("zookeeper client -> SyncConnected.");
             this.connectedSemphore.countDown();
+            this.eventContext.fireSyncEvent(CenterEventType.ZooKeeper_SyncConnected);
+        } else if (KeeperState.Expired == event.getState()) {
+            //
+            try {
+                this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
     //
@@ -69,7 +83,8 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     /** 启动ZooKeeper */
     protected void startZooKeeper(String serverConnection) throws IOException, InterruptedException {
         logger.info("zkClient connected to {}.", serverConnection);
-        this.zooKeeper = new ZooKeeper(serverConnection, zooKeeperCfg.getClientTimeout(), this);
+        this.serverConnection = serverConnection;
+        this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
         try {
             this.connectedSemphore.await(this.zooKeeperCfg.getClientTimeout(), TimeUnit.MILLISECONDS);
             logger.info("zkClient connected -> ok.");

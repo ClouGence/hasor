@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.startup;
+import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Start_Event;
+import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Stop_Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
@@ -31,10 +33,8 @@ import net.hasor.rsf.center.domain.constant.WorkMode;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StartAppModule implements LifeModule {
-    protected Logger           logger                      = LoggerFactory.getLogger(getClass());
-    public static final String RSFCenterCluster_StartEvent = "RSFCenterCluster_StartEvent";
-    public static final String RSFCenterCluster_StopEvent  = "RSFCenterCluster_StopEvent";
-    private RsfCenterCfg       rsfCenterCfg;
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    private RsfCenterCfg rsfCenterCfg;
     //
     public StartAppModule() {}
     public StartAppModule(RsfCenterCfg rsfCenterCfg) {
@@ -60,9 +60,9 @@ public class StartAppModule implements LifeModule {
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(RSFCenterCluster_StartEvent, appContext);
+        appContext.getEnvironment().getEventContext().fireSyncEvent(Center_Start_Event, appContext);
     }
     public void onStop(AppContext appContext) throws Throwable {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(RSFCenterCluster_StopEvent, appContext);
+        appContext.getEnvironment().getEventContext().fireSyncEvent(Center_Stop_Event, appContext);
     }
 }

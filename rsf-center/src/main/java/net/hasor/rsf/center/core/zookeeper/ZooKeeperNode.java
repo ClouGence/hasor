@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import net.hasor.rsf.center.core.cluster.DataDiplomat;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * @version : 2015年8月19日
@@ -43,6 +44,8 @@ public interface ZooKeeperNode {
     public void startZooKeeper() throws IOException, InterruptedException;
     /** 返回ZK */
     public ZooKeeper getZooKeeper();
+    /** 添加ZK状态监听器 */
+    public void addListener(DataDiplomat dataDiplomat);
     //
     /** 创建一个永久节点 */
     public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;

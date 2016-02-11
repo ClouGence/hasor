@@ -1,18 +1,21 @@
-/* Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+/*
+ * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License. */
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.rsf.center.core.cluster;
-import static net.hasor.rsf.center.core.startup.StartAppModule.RSFCenterCluster_StartEvent;
-import static net.hasor.rsf.center.core.startup.StartAppModule.RSFCenterCluster_StopEvent;
-import java.io.IOException;
+import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Start_Event;
+import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Stop_Event;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -40,34 +43,29 @@ import net.hasor.rsf.center.domain.constant.ZkNodeType;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event({ RSFCenterCluster_StartEvent, RSFCenterCluster_StopEvent })
+@Event({ Center_Start_Event, Center_Stop_Event })
 public class DataDiplomat implements EventListener {
     protected Logger      logger = LoggerFactory.getLogger(getClass());
-    @Inject
-    private ZooKeeperNode zkNode;
+    private Configuration configuration;
     @Inject
     private RsfCenterCfg  rsfCenterCfg;
     @Inject
     private AppContext    appContext;
-    private Configuration configuration;
-    private String        serverInfo;
-    private String        serverInfoPath;
     //
-    public void initDiplomatEnv() throws IOException {
-        //
-        this.serverInfo = this.rsfCenterCfg.getHostAndPort();
-        this.serverInfoPath = ZooKeeperNode.SERVER_PATH + "/" + this.serverInfo;
-        //
-        this.configuration = new Configuration(Configuration.VERSION_2_3_22);
-        this.configuration.setTemplateLoader(new ClassPathTemplateLoader());
-        //
-        this.configuration.setDefaultEncoding("utf-8");// 默认页面编码UTF-8
-        this.configuration.setOutputEncoding("utf-8");// 输出编码格式UTF-8
-        this.configuration.setLocalizedLookup(false);// 是否开启国际化false
-        this.configuration.setNumberFormat("0");
-        this.configuration.setClassicCompatible(true);// null值测处理配置
+    //
+    //
+    private void initFreemarker() {
+        if (this.configuration == null) {
+            Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
+            configuration.setTemplateLoader(new ClassPathTemplateLoader());
+            configuration.setDefaultEncoding("utf-8");// 默认页面编码UTF-8
+            configuration.setOutputEncoding("utf-8");// 输出编码格式UTF-8
+            configuration.setLocalizedLookup(false);// 是否开启国际化false
+            configuration.setNumberFormat("0");
+            configuration.setClassicCompatible(true);// null值测处理配置
+            this.configuration = configuration;
+        }
     }
-    //
     /** 获取RSF-Center服务器信息 */
     public String serverInfo() throws Throwable {
         String fmt = "/META-INF/zookeeper/server-info.tmp";
@@ -85,26 +83,33 @@ public class DataDiplomat implements EventListener {
             List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
             return !dataLines.isEmpty() ? dataLines.get(0) : null;
         } catch (Throwable e) {
-            return null;
+            return "undefined";
         }
     }
     /** 时间戳 */
     private String nowData() {
         return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     }
-    //
-    //
-    //
-    public void shutdownDiplomat() throws Throwable {
-        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
-        logger.info("ZooKeeper data -> remove server info.");
-        //
-        zkNode.deleteNode(this.serverInfoPath);
+    /** 获取服务信息，在ZK上的路径 */
+    private String getZooKeeperServerPath() {
+        return ZooKeeperNode.SERVER_PATH + "/" + this.rsfCenterCfg.getHostAndPort();
     }
     //
-    private void initCenterInfo() throws Throwable {
+    //
+    //
+    @Override
+    public void onEvent(String event, Object[] params) throws Throwable {
+        //
+        this.initFreemarker();
+        /*   */if (StringUtils.equals(event, Center_Start_Event) == true) {
+            this.initDiplomat();
+        } else if (StringUtils.equals(event, Center_Stop_Event) == true) {
+            this.shutdownDiplomat();
+        }
+    }
+    public void initDiplomat() throws Throwable {
         logger.info("init rsf-center to zooKeeper.");
-        this.initDiplomatEnv();
+        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         //
         // -必要的目录
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.ROOT_PATH);
@@ -114,21 +119,16 @@ public class DataDiplomat implements EventListener {
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.CONFIG_PATH);
         //
         // Server信息
-        zkNode.createNode(ZkNodeType.Persistent, this.serverInfoPath);
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, this.serverInfoPath + "/info", this.serverInfo());
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, this.serverInfoPath + "/version", this.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, this.serverInfoPath + "/auth", this.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Session, this.serverInfoPath + "/heartbeat", this.nowData());
-        //
+        String serverInfoPath = getZooKeeperServerPath();
+        zkNode.createNode(ZkNodeType.Persistent, serverInfoPath);
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.serverInfo());
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.getVersion());
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.getVersion());
+        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.nowData());
     }
-    @Override
-    public void onEvent(String event, Object[] params) throws Throwable {
-        /*   */if (StringUtils.equals(event, RSFCenterCluster_StartEvent) == true) {
-            this.initCenterInfo();
-            //
-        } else if (StringUtils.equals(event, RSFCenterCluster_StopEvent) == true) {
-            this.shutdownDiplomat();
-            //
-        }
+    public void shutdownDiplomat() throws Throwable {
+        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
+        logger.info("ZooKeeper data -> remove server info.");
+        zkNode.deleteNode(getZooKeeperServerPath());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.EventContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
@@ -36,8 +37,8 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
     private FileTxnSnapLog    txnLog;
     private ZooKeeperServer   zkServer;
     private ServerCnxnFactory cnxnFactory;
-    public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg) {
-        super(zooKeeperCfg);
+    public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
+        super(zooKeeperCfg, eventContext);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
@@ -68,7 +69,8 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         this.zkServer.setTickTime(tickTime);
         this.zkServer.setMinSessionTimeout(minSessionTimeout);
         this.zkServer.setMaxSessionTimeout(maxSessionTimeout);
-        // ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, tickTime, minSessionTimeout, maxSessionTimeout, this, new ZKDatabase(txnLog));
+        // ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, tickTime,
+        // minSessionTimeout, maxSessionTimeout, this, new ZKDatabase(txnLog));
         //
         InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
         this.cnxnFactory = ServerCnxnFactory.createFactory();

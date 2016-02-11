@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.EventContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
@@ -42,8 +43,8 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
     private QuorumPeer            quorumPeer;
     private DatadirCleanupManager purgeMgr;
     //
-    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg) {
-        super(zooKeeperCfg);
+    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
+        super(zooKeeperCfg, eventContext);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //

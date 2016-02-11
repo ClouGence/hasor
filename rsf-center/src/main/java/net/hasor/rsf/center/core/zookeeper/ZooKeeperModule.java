@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
+import net.hasor.rsf.center.core.cluster.DataDiplomat;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Alone;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Master;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Slave;
@@ -47,7 +48,7 @@ public class ZooKeeperModule implements LifeModule {
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
             writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
-            zkNode = new ZooKeeperNode_Alone(cfg);
+            zkNode = new ZooKeeperNode_Alone(cfg, apiBinder.getEnvironment().getEventContext());
             break;
         case Master:
             // 集群主机模式
@@ -59,12 +60,12 @@ public class ZooKeeperModule implements LifeModule {
             writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
             writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
             writer.append("\n         electionPort = " + cfg.getElectionPort());
-            zkNode = new ZooKeeperNode_Master(cfg);
+            zkNode = new ZooKeeperNode_Master(cfg, apiBinder.getEnvironment().getEventContext());
             break;
         case Slave:
             // 集群从属模式
             writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
-            zkNode = new ZooKeeperNode_Slave(cfg);
+            zkNode = new ZooKeeperNode_Slave(cfg, apiBinder.getEnvironment().getEventContext());
             break;
         default:
             throw new InterruptedException("undefined workMode : " + rsfCenterCfg.getWorkMode().getCodeString());
@@ -73,6 +74,7 @@ public class ZooKeeperModule implements LifeModule {
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
         //
+        zkNode.addListener(new DataDiplomat());
         apiBinder.bindType(ZooKeeperNode.class).toInstance(zkNode);
     }
     public void onStart(AppContext appContext) throws Throwable {
