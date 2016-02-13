@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
@@ -29,8 +29,8 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventContext;
+import net.hasor.rsf.center.core.zookeeper.WatcherListener;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
-import net.hasor.rsf.center.domain.constant.CenterEventType;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
@@ -40,31 +40,30 @@ import net.hasor.rsf.center.domain.constant.ZkNodeType;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
-    protected Logger       logger            = LoggerFactory.getLogger(getClass());
-    private CountDownLatch connectedSemphore = new CountDownLatch(1);
-    private String         serverConnection;
-    private RsfCenterCfg   zooKeeperCfg;
-    private EventContext   eventContext;
-    private ZooKeeper      zooKeeper;
+    protected Logger              logger = LoggerFactory.getLogger(getClass());
+    private List<WatcherListener> listenerList;
+    private String                serverConnection;
+    private RsfCenterCfg          zooKeeperCfg;
+    private ZooKeeper             zooKeeper;
     //
     public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
+        this.listenerList = new ArrayList<WatcherListener>();
         this.zooKeeperCfg = zooKeeperCfg;
-        this.eventContext = eventContext;
     }
     //
+    @Override
+    public void addListener(WatcherListener listener) {
+        this.listenerList.add(listener);
+    }
+    @Override
+    public void clearListener() {
+        this.listenerList.clear();
+    }
     public void process(WatchedEvent event) {
-        /*   */if (KeeperState.SyncConnected == event.getState()) {
-            // 链接成功，释放startZooKeeper，的同步等待。
-            logger.info("zookeeper client -> SyncConnected.");
-            this.connectedSemphore.countDown();
-            this.eventContext.fireSyncEvent(CenterEventType.ZooKeeper_SyncConnected);
-        } else if (KeeperState.Expired == event.getState()) {
-            //
-            try {
-                this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        if (KeeperState.SyncConnected == event.getState()) {
+            logger.info("zookeeper client -> SyncConnected.");// 链接成功。
+            for (WatcherListener listener : this.listenerList) {
+                listener.syncConnected(this);
             }
         }
     }
@@ -85,13 +84,9 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         logger.info("zkClient connected to {}.", serverConnection);
         this.serverConnection = serverConnection;
         this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
-        try {
-            this.connectedSemphore.await(this.zooKeeperCfg.getClientTimeout(), TimeUnit.MILLISECONDS);
-            logger.info("zkClient connected -> ok.");
-        } catch (Exception e) {
-            this.shutdownZooKeeper();
-        }
+        logger.info("zkClient connected -> ok.");
     }
+    //
     //
     @Override
     public ZooKeeper getZooKeeper() {
@@ -119,6 +114,12 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     public void deleteNode(String nodePath) throws KeeperException, InterruptedException {
         if (this.zooKeeper.exists(nodePath, false) != null) {
             try {
+                List<String> childrenList = this.zooKeeper.getChildren(nodePath, false);
+                if (childrenList != null) {
+                    for (String itemNodePath : childrenList) {
+                        this.deleteNode(nodePath + "/" + itemNodePath);
+                    }
+                }
                 this.zooKeeper.delete(nodePath, -1);
                 logger.info("zkClient deleteNode {}", nodePath);
             } catch (NoNodeException e) {

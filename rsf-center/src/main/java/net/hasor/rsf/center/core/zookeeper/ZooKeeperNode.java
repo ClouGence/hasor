@@ -18,7 +18,6 @@ import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import net.hasor.rsf.center.core.cluster.DataDiplomat;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * @version : 2015年8月19日
@@ -45,7 +44,9 @@ public interface ZooKeeperNode {
     /** 返回ZK */
     public ZooKeeper getZooKeeper();
     /** 添加ZK状态监听器 */
-    public void addListener(DataDiplomat dataDiplomat);
+    public void addListener(WatcherListener watcherListener);
+    /** 清空ZK状态监听器 */
+    public void clearListener();
     //
     /** 创建一个永久节点 */
     public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;

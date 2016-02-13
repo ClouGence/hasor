@@ -74,19 +74,21 @@ public class ZooKeeperModule implements LifeModule {
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
         //
-        zkNode.addListener(new DataDiplomat());
         apiBinder.bindType(ZooKeeperNode.class).toInstance(zkNode);
     }
     public void onStart(AppContext appContext) throws Throwable {
         //
         // 启动ZK
-        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         logger.info("startZooKeeper...");
+        ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         zkNode.startZooKeeper();
+        zkNode.clearListener();
+        zkNode.addListener(new DataDiplomat(appContext));
     }
     public void onStop(AppContext appContext) throws Throwable {
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         logger.info("shutdownZooKeeper...");
+        zkNode.clearListener();
         zkNode.shutdownZooKeeper();
     }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.center.cluster;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
@@ -24,7 +25,8 @@ import net.hasor.rsf.center.core.startup.StartAppModule;
  */
 public class TestServerD {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Hasor.createAppContext("/cluster/rsf-server-d.xml", new StartAppModule());
+        System.in.read();
     }
 }

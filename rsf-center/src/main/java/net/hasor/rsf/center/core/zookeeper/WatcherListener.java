@@ -18,4 +18,6 @@ package net.hasor.rsf.center.core.zookeeper;
  * @version : 2016年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface WatcherListener {}
+public interface WatcherListener {
+    public void syncConnected(ZooKeeperNode zkNode);
+}

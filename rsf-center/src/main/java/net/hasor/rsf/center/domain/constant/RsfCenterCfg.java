@@ -109,12 +109,14 @@ public class RsfCenterCfg {
         cfg.peerType = settings.getEnum("rsfCenter.zooKeeper.peerType", LearnerType.class, LearnerType.PARTICIPANT);
         //
         // -check electionPort
-        QuorumServer thisServer = cfg.zkServers.get(cfg.serverID);
-        if (thisServer == null) {
-            throw new IllegalStateException("In 'rsfCenter.zooKeeper.zkServers' configuration lose yourself. -> serverID = " + cfg.serverID);
-        } else {
-            if (thisServer.electionAddr.getPort() != cfg.electionPort) {
-                throw new IllegalStateException("electionPort configuration is not consistent . -> serverID = " + cfg.serverID);
+        if (cfg.getWorkMode() != WorkMode.Slave) {
+            QuorumServer thisServer = cfg.zkServers.get(cfg.serverID);
+            if (thisServer == null) {
+                throw new IllegalStateException("In 'rsfCenter.zooKeeper.zkServers' configuration lose yourself. -> serverID = " + cfg.serverID);
+            } else {
+                if (thisServer.electionAddr.getPort() != cfg.electionPort) {
+                    throw new IllegalStateException("electionPort configuration is not consistent . -> serverID = " + cfg.serverID);
+                }
             }
         }
         return cfg;
@@ -126,7 +128,10 @@ public class RsfCenterCfg {
         } else {
             StringBuilder strBuilder = new StringBuilder("");
             for (QuorumServer ent : servers.values()) {
-                String host = ent.addr.getHostName() + ":" + ent.addr.getPort() + ":" + ent.electionAddr.getPort();
+                String host = ent.addr.getAddress().getHostAddress() + ":" + ent.addr.getPort();//+ ":" + ent.electionAddr.getPort();
+                if (this.getWorkMode() != WorkMode.Slave) {
+                    host += (":" + ent.electionAddr.getPort());
+                }
                 if (strBuilder.length() > 2) {
                     strBuilder.append(",");
                 }

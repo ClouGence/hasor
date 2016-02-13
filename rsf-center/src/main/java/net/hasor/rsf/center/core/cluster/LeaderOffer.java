@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.leader;
+package net.hasor.rsf.center.core.cluster;
 import java.util.Comparator;
 /**
  * A leader offer is a numeric id / path pair. The id is the sequential node id assigned

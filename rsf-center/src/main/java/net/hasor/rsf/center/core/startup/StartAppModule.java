@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.startup;
-import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Start_Event;
-import static net.hasor.rsf.center.domain.constant.CenterEventType.Center_Stop_Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
@@ -60,9 +58,9 @@ public class StartAppModule implements LifeModule {
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(Center_Start_Event, appContext);
+        //
     }
     public void onStop(AppContext appContext) throws Throwable {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(Center_Stop_Event, appContext);
+        //
     }
 }
