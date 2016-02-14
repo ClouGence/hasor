@@ -15,22 +15,26 @@
  */
 package net.hasor.plugins.event;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
-import net.hasor.core.LifeModule;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 /**
  * 提供 <code>@Event</code>注解 功能支持。
  * 
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EventModule implements LifeModule {
+public class EventModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
@@ -50,7 +54,7 @@ public class EventModule implements LifeModule {
                     continue;
                 }
                 BindInfo<?> eventInfo = apiBinder.bindType(eventClass).uniqueName().toInfo();
-                EventListenerPropxy eventListener = new EventListenerPropxy(eventInfo);
+                EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventInfo));
                 /*   */if (EventType.Once == eventType) {
                     apiBinder.getEnvironment().getEventContext().pushListener(eventName, eventListener);
                 } else if (EventType.Listener == eventType) {
@@ -62,21 +66,19 @@ public class EventModule implements LifeModule {
             logger.info("event binding finish.");
         }
     }
-    @Override
-    public void onStart(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
-    }
-    @Override
-    public void onStop(AppContext appContext) throws Throwable {
-        // TODO Auto-generated method stub
-    }
     //
-    private class EventListenerPropxy implements EventListener<Object> {
-        private BindInfo<?>           targetInfo     = null;
-        private EventListener<Object> targetListener = null;
+    private class EventListenerPropxy implements EventListener<Object>, AppContextAware {
+        private BasicFuture<AppContext> appContextFuture;
+        private BindInfo<?>             targetInfo     = null;
+        private EventListener<Object>   targetListener = null;
         //
         public EventListenerPropxy(BindInfo<?> targetInfo) {
             this.targetInfo = targetInfo;
+            this.appContextFuture = new BasicFuture<AppContext>();
+        }
+        @Override
+        public void setAppContext(AppContext appContext) {
+            this.appContextFuture.completed(appContext);
         }
         @Override
         public void onEvent(String event, Object eventData) throws Throwable {
@@ -84,7 +86,8 @@ public class EventModule implements LifeModule {
                 return;
             }
             if (this.targetListener == null) {
-                this.targetListener = (EventListener<Object>) this.targetInfo.getBindType().newInstance();
+                AppContext app = this.appContextFuture.get(10, TimeUnit.SECONDS);//最大等待时间10秒
+                this.targetListener = (EventListener<Object>) app.getInstance(this.targetInfo);
             }
             this.targetListener.onEvent(event, eventData);
         }
