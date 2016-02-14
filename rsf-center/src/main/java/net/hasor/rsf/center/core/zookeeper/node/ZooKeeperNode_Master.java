@@ -90,7 +90,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         this.quorumPeer.setZKDatabase(new ZKDatabase(this.quorumPeer.getTxnFactory()));
         this.quorumPeer.setLearnerType(this.zooKeeperCfg.getPeerType());
         this.quorumPeer.setSyncEnabled(this.zooKeeperCfg.isSyncEnabled());
-        this.quorumPeer.setQuorumListenOnAllIPs(false);
+        this.quorumPeer.setQuorumListenOnAllIPs(true);
         this.quorumPeer.setDaemon(true);
         //
         logger.info("zkNode starting...");

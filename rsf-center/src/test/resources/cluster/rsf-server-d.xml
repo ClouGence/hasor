@@ -9,6 +9,8 @@
 			<server sid="3" bindPort="2183" electionPort="2193">127.0.0.1</server>
 			<server sid="4" bindPort="2184" electionPort="2194">127.0.0.1</server>
 		</zooKeeper.zkServers>
+		<!-- 当存在多张网卡情况下，zk使用的地址 -->
+		<bindAddress>local</bindAddress>
 		<!-- RSF消息通信使用端口 -->
 		<rsfPort>2174</rsfPort>
 		<!-- master和alone模式下，Zookeeper客户端连入端口 -->

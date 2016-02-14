@@ -92,7 +92,7 @@ public class RsfCenterCfg {
         cfg.dataDir = new File(cfg.workDir, "data").getAbsolutePath();
         cfg.snapDir = new File(cfg.workDir, "snap").getAbsolutePath();
         //
-        String bindAddress = settings.getString("rsfCenter.zooKeeper.bindAddress", "local");
+        String bindAddress = settings.getString("rsfCenter.bindAddress", "local");
         int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2181);// 绑定的端口
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         cfg.bindInetAddress = new InetSocketAddress(inetAddress, bindPort);
