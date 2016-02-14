@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.center.core.zookeeper.node;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
@@ -28,9 +27,9 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.EventContext;
-import net.hasor.rsf.center.core.zookeeper.WatcherListener;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
+import net.hasor.rsf.center.domain.constant.RsfEvent;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
@@ -40,48 +39,38 @@ import net.hasor.rsf.center.domain.constant.ZkNodeType;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
-    private List<WatcherListener> listenerList;
-    private String                serverConnection;
-    private RsfCenterCfg          zooKeeperCfg;
-    private ZooKeeper             zooKeeper;
+    protected Logger     logger     = LoggerFactory.getLogger(getClass());
+    private AppContext   appContext = null;
+    private String       serverConnection;
+    private RsfCenterCfg zooKeeperCfg;
+    private ZooKeeper    zooKeeper;
     //
-    public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
-        this.listenerList = new ArrayList<WatcherListener>();
+    public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg) {
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
-    @Override
-    public void addListener(WatcherListener listener) {
-        this.listenerList.add(listener);
-    }
-    @Override
-    public void clearListener() {
-        this.listenerList.clear();
-    }
     public void process(WatchedEvent event) {
         if (KeeperState.SyncConnected == event.getState()) {
             logger.info("zookeeper client -> SyncConnected.");// 链接成功。
-            for (WatcherListener listener : this.listenerList) {
-                listener.syncConnected(this);
-            }
+            appContext.getEnvironment().getEventContext().fireSyncEvent(RsfEvent.SyncConnected, this);
         }
     }
     //
     /** 终止ZooKeeper */
-    public void shutdownZooKeeper() throws IOException, InterruptedException {
+    public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
         if (zooKeeper != null) {
             zooKeeper.close();
             zooKeeper = null;
         }
     }
     /** 启动ZooKeeper */
-    public void startZooKeeper() throws IOException, InterruptedException {
-        this.startZooKeeper(zooKeeperCfg.getZkServersStr());
+    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+        this.startZooKeeper(appContext, zooKeeperCfg.getZkServersStr());
     }
     /** 启动ZooKeeper */
-    protected void startZooKeeper(String serverConnection) throws IOException, InterruptedException {
+    protected void startZooKeeper(AppContext appContext, String serverConnection) throws IOException, InterruptedException {
         logger.info("zkClient connected to {}.", serverConnection);
+        this.appContext = appContext;
         this.serverConnection = serverConnection;
         this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
         logger.info("zkClient connected -> ok.");

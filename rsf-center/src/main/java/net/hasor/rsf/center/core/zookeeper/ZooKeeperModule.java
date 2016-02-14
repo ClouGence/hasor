@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
-import net.hasor.rsf.center.core.cluster.DataDiplomat;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Alone;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Master;
 import net.hasor.rsf.center.core.zookeeper.node.ZooKeeperNode_Slave;
@@ -48,7 +47,7 @@ public class ZooKeeperModule implements LifeModule {
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
             writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
-            zkNode = new ZooKeeperNode_Alone(cfg, apiBinder.getEnvironment().getEventContext());
+            zkNode = new ZooKeeperNode_Alone(cfg);
             break;
         case Master:
             // 集群主机模式
@@ -60,12 +59,12 @@ public class ZooKeeperModule implements LifeModule {
             writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
             writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
             writer.append("\n         electionPort = " + cfg.getElectionPort());
-            zkNode = new ZooKeeperNode_Master(cfg, apiBinder.getEnvironment().getEventContext());
+            zkNode = new ZooKeeperNode_Master(cfg);
             break;
         case Slave:
             // 集群从属模式
             writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
-            zkNode = new ZooKeeperNode_Slave(cfg, apiBinder.getEnvironment().getEventContext());
+            zkNode = new ZooKeeperNode_Slave(cfg);
             break;
         default:
             throw new InterruptedException("undefined workMode : " + rsfCenterCfg.getWorkMode().getCodeString());
@@ -81,14 +80,11 @@ public class ZooKeeperModule implements LifeModule {
         // 启动ZK
         logger.info("startZooKeeper...");
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
-        zkNode.startZooKeeper();
-        zkNode.clearListener();
-        zkNode.addListener(new DataDiplomat(appContext));
+        zkNode.startZooKeeper(appContext);
     }
     public void onStop(AppContext appContext) throws Throwable {
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         logger.info("shutdownZooKeeper...");
-        zkNode.clearListener();
-        zkNode.shutdownZooKeeper();
+        zkNode.shutdownZooKeeper(appContext);
     }
 }

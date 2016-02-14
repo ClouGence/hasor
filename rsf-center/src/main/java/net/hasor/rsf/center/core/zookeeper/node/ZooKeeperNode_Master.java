@@ -28,7 +28,7 @@ import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.EventContext;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
@@ -43,14 +43,14 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
     private QuorumPeer            quorumPeer;
     private DatadirCleanupManager purgeMgr;
     //
-    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
-        super(zooKeeperCfg, eventContext);
+    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg) {
+        super(zooKeeperCfg);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
     /** 终止ZooKeeper */
-    public void shutdownZooKeeper() throws IOException, InterruptedException {
-        super.shutdownZooKeeper();
+    public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+        super.shutdownZooKeeper(appContext);
         if (this.quorumPeer != null) {
             this.quorumPeer.shutdown();
             this.purgeMgr.shutdown();
@@ -59,7 +59,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         }
     }
     /** 启动ZooKeeper */
-    public void startZooKeeper() throws IOException, InterruptedException {
+    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
         //
         File dataDir = new File(this.zooKeeperCfg.getDataDir());
         File snapDir = new File(this.zooKeeperCfg.getSnapDir());
@@ -118,6 +118,6 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         //
         //
         String serverConnection = inetAddress.getAddress().getHostAddress() + ":" + inetAddress.getPort();
-        super.startZooKeeper(serverConnection);
+        super.startZooKeeper(appContext, serverConnection);
     }
 }

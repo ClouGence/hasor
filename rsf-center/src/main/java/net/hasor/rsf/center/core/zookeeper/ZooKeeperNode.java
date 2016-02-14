@@ -18,6 +18,7 @@ import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * @version : 2015年8月19日
@@ -38,15 +39,11 @@ public interface ZooKeeperNode {
     //
     //
     /** 终止ZooKeeper */
-    public void shutdownZooKeeper() throws IOException, InterruptedException;
-    /** 启动ZooKeeper */
-    public void startZooKeeper() throws IOException, InterruptedException;
+    public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException;
+    /** 启动ZooKeeper*/
+    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException;
     /** 返回ZK */
     public ZooKeeper getZooKeeper();
-    /** 添加ZK状态监听器 */
-    public void addListener(WatcherListener watcherListener);
-    /** 清空ZK状态监听器 */
-    public void clearListener();
     //
     /** 创建一个永久节点 */
     public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;

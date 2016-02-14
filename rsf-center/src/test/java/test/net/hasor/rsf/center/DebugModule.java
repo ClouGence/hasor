@@ -23,13 +23,13 @@ import net.hasor.web.WebModule;
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DebugModule extends WebModule implements EventListener {
+public class DebugModule extends WebModule implements EventListener<AppContext> {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
     }
     @Override
-    public void onEvent(String event, Object[] params) throws Throwable {
-        this.onStart((AppContext) params[0]);
+    public void onEvent(String event, AppContext appContext) throws Throwable {
+        this.onStart(appContext);
     }
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("################### Dev ###################");

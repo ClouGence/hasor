@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.cluster;
+package net.hasor.rsf.center.core.diplomat;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -37,9 +37,13 @@ import org.slf4j.LoggerFactory;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.center.core.zookeeper.WatcherListener;
+import net.hasor.core.EventListener;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
+import net.hasor.plugins.event.Event;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
+import net.hasor.rsf.center.domain.constant.RsfEvent;
 import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * 集群数据协调器，负责读写zk集群数据信息。
@@ -47,15 +51,21 @@ import net.hasor.rsf.center.domain.constant.ZkNodeType;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DataDiplomat implements WatcherListener {
+@Event(RsfEvent.SyncConnected)
+public class DataDiplomat implements EventListener<ZooKeeperNode> {
     protected Logger      logger         = LoggerFactory.getLogger(getClass());
+    @Inject
     private AppContext    appContext     = null;
+    @Inject
+    private RsfCenterCfg  rsfCenterCfg;
     private Configuration configuration  = null;
     private String        leaderHostName = null;
-    public DataDiplomat(AppContext appContext) {
-        this.appContext = appContext;
-    }
     //
+    //
+    //
+    public String getLeaderHostName() {
+        return leaderHostName;
+    }
     /** 获取RSF-Center服务器信息 */
     public String serverInfo() throws Throwable {
         RsfCenterCfg rsfCenterCfg = this.appContext.getInstance(RsfCenterCfg.class);
@@ -96,7 +106,7 @@ public class DataDiplomat implements WatcherListener {
     //
     //
     @Override
-    public void syncConnected(ZooKeeperNode zkNode) {
+    public void onEvent(String event, ZooKeeperNode zkNode) throws Throwable {
         try {
             //init节点数据
             this.initZooKeeperInfo(zkNode);
@@ -107,8 +117,12 @@ public class DataDiplomat implements WatcherListener {
                     try {
                         zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, this);
                         evalLeaderHostName(zooKeeper);
-                        //
-                        System.out.println("!!!!!!!!!!!!!!!!!!!" + event.getState().name() + "\t\t" + leaderHostName);
+                        if (rsfCenterCfg.getHostAndPort().equals(leaderHostName)) {
+                            logger.info("confirm leader to {} , leader is myself.", leaderHostName);
+                        } else {
+                            logger.info("confirm leader to {}.", leaderHostName);
+                        }
+                        appContext.getEnvironment().getEventContext().fireAsyncEvent(RsfEvent.ConfirmLeader, DataDiplomat.this);
                     } catch (NoNodeException e) {
                         logger.info("zkNode {} , NoNodeException -> retry event. {}", event.getPath(), event.getState());
                         this.process(event);
@@ -144,18 +158,20 @@ public class DataDiplomat implements WatcherListener {
     //
     //
     //
+    @Init
+    public void init() {
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
+        configuration.setTemplateLoader(new ClassPathTemplateLoader());
+        configuration.setDefaultEncoding("utf-8");// 默认页面编码UTF-8
+        configuration.setOutputEncoding("utf-8");// 输出编码格式UTF-8
+        configuration.setLocalizedLookup(false);// 是否开启国际化false
+        configuration.setNumberFormat("0");
+        configuration.setClassicCompatible(true);// null值测处理配置
+        this.configuration = configuration;
+        //        Heartbeat
+    }
     /*加入RSF-Center集群*/
     private void initZooKeeperInfo(ZooKeeperNode zkNode) throws Throwable {
-        if (this.configuration == null) {
-            Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
-            configuration.setTemplateLoader(new ClassPathTemplateLoader());
-            configuration.setDefaultEncoding("utf-8");// 默认页面编码UTF-8
-            configuration.setOutputEncoding("utf-8");// 输出编码格式UTF-8
-            configuration.setLocalizedLookup(false);// 是否开启国际化false
-            configuration.setNumberFormat("0");
-            configuration.setClassicCompatible(true);// null值测处理配置
-            this.configuration = configuration;
-        }
         logger.info("init rsf-center to zooKeeper.");
         // -必要的目录
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.ROOT_PATH);
@@ -174,13 +190,4 @@ public class DataDiplomat implements WatcherListener {
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
         //
     }
-    //    /*退出RSF-Center集群*/
-    //    private void destroyZooKeeperInfo(ZooKeeperNode zkNode) throws KeeperException, InterruptedException {
-    //        logger.info("ZooKeeper data -> remove server info.");
-    //        // -退出选举
-    //        if (this.support != null) {
-    //            this.support.stop();
-    //        }
-    //        zkNode.deleteNode(getZooKeeperServerPath());
-    //    }
 }

@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.zookeeper;
+package net.hasor.rsf.center.domain.constant;
 /**
- * @version : 2016年2月11日
+ * 事件
+ * 
+ * @version : 2015年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface WatcherListener {
-    public void syncConnected(ZooKeeperNode zkNode);
+public interface RsfEvent {
+    /** ZK连接可用，参数为：ZooKeeperNode */
+    public static final String SyncConnected = "SyncConnected";
+    /** 确认Leader，参数为：DataDiplomat */
+    public static final String ConfirmLeader = "ConfirmLeader";
 }

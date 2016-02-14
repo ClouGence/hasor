@@ -22,7 +22,7 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.EventContext;
+import net.hasor.core.AppContext;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
@@ -37,14 +37,14 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
     private FileTxnSnapLog    txnLog;
     private ZooKeeperServer   zkServer;
     private ServerCnxnFactory cnxnFactory;
-    public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg, EventContext eventContext) {
-        super(zooKeeperCfg, eventContext);
+    public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg) {
+        super(zooKeeperCfg);
         this.zooKeeperCfg = zooKeeperCfg;
     }
     //
     /** 终止ZooKeeper */
-    public void shutdownZooKeeper() throws IOException, InterruptedException {
-        super.shutdownZooKeeper();
+    public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+        super.shutdownZooKeeper(appContext);
         if (this.cnxnFactory != null) {
             this.cnxnFactory.shutdown();
             this.zkServer.shutdown();
@@ -55,7 +55,7 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         }
     }
     /** 启动ZooKeeper */
-    public void startZooKeeper() throws IOException, InterruptedException {
+    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
         //
         File dataDir = new File(this.zooKeeperCfg.getDataDir());
         File snapDir = new File(this.zooKeeperCfg.getSnapDir());
@@ -97,6 +97,6 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         }
         //
         String serverConnection = inetAddress.getHostName() + ":" + inetAddress.getPort();
-        super.startZooKeeper(serverConnection);
+        super.startZooKeeper(appContext, serverConnection);
     }
 }
