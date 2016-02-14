@@ -19,19 +19,19 @@ package net.hasor.core;
  * @version : 2014-3-19
  * @author 赵永春(zyc@hasor.net)
  */
-public interface EventCallBackHook {
+public interface EventCallBackHook<T> {
     /**
      * 在执行事件监听器发生异常时调用该方法。
      * @param eventType 事件类型
      * @param objects 事件参数
      * @param e 发生的异常。
      */
-    public void handleException(String eventType, Object[] objects, Throwable e);
+    public void handleException(String eventType, T eventData, Throwable e);
     /**
      * 当完成异步事件处理时回调。<p>
      * 注意：无论在异步事件分发过程中是否发生异常，该方法都会如期的被执行。
      * @param eventType 事件类型
      * @param objects 事件参数
      */
-    public void handleComplete(String eventType, Object[] objects);
+    public void handleComplete(String eventType, T eventData);
 }

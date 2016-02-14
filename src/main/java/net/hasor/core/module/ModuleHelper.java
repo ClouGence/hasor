@@ -31,14 +31,14 @@ public class ModuleHelper {
             return atModule;
         }
         if (atModule instanceof LifeModule) {
-            /*启动*/Hasor.pushStartListener(env, new EventListener() {
-                public void onEvent(String event, Object[] params) throws Throwable {
-                    ((LifeModule) atModule).onStart((AppContext) params[0]);
+            /*启动*/Hasor.pushStartListener(env, new EventListener<AppContext>() {
+                public void onEvent(String event, AppContext eventData) throws Throwable {
+                    ((LifeModule) atModule).onStart(eventData);
                 }
             });
-            /*停止*/Hasor.pushShutdownListener(env, new EventListener() {
-                public void onEvent(String event, Object[] params) throws Throwable {
-                    ((LifeModule) atModule).onStop((AppContext) params[0]);
+            /*停止*/Hasor.pushShutdownListener(env, new EventListener<AppContext>() {
+                public void onEvent(String event, AppContext eventData) throws Throwable {
+                    ((LifeModule) atModule).onStop(eventData);
                 }
             });
         }

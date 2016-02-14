@@ -20,11 +20,11 @@ import net.hasor.core.EventCallBackHook;
  * @version : 2014-3-13
  * @author 赵永春(zyc@hasor.net)
  */
-public class EventObject {
-    private String            eventType = null;
-    private boolean           sync      = true; //默认是同步的
-    private Object[]          params    = null;
-    private EventCallBackHook callBack  = null;
+public class EventObject<T> {
+    private String               eventType = null;
+    private boolean              sync      = true; //默认是同步的
+    private T                    eventData = null;
+    private EventCallBackHook<T> callBack  = null;
     //
     public EventObject(final String eventType, final boolean sync) {
         this.eventType = eventType;
@@ -34,19 +34,19 @@ public class EventObject {
     public String getEventType() {
         return this.eventType;
     }
-    public Object[] getParams() {
-        return this.params;
-    }
     public boolean isSync() {
         return this.sync;
     }
-    public void addParams(final Object[] params) {
-        this.params = params;
-    }
-    public void setCallBack(final EventCallBackHook callBack) {
+    public void setCallBack(final EventCallBackHook<T> callBack) {
         this.callBack = callBack;
     }
-    public EventCallBackHook getCallBack() {
+    public EventCallBackHook<T> getCallBack() {
         return this.callBack;
+    }
+    public T getEventData() {
+        return eventData;
+    }
+    public void setEventData(T eventData) {
+        this.eventData = eventData;
     }
 }

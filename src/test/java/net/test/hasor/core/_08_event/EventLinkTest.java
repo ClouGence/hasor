@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.test.hasor.core._08_event.listener.MyListener;
-import org.junit.Test;
 /**
  * 该例子演示了事件链。及由事件引发的事件。
  *   例子使用的是异步事件的方式进行演示。
@@ -37,9 +37,8 @@ public class EventLinkTest {
         final String SeedEvent = "SeedEvent";//种子事件
         //1.添加事件监听器
         ec.addListener(EventName, new MyListener());
-        ec.addListener(SeedEvent, new EventListener() {
-            public void onEvent(String event, Object[] params) throws Throwable {
-                AppContext app = (AppContext) params[0];
+        ec.addListener(SeedEvent, new EventListener<AppContext>() {
+            public void onEvent(String event, AppContext app) throws Throwable {
                 EventContext localEC = app.getEnvironment().getEventContext();
                 System.out.println("before MyEvent.");
                 localEC.fireAsyncEvent(EventName, 1);

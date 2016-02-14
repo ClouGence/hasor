@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event.listener;
-import net.hasor.core.EventListener;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
+import net.hasor.core.EventListener;
 /**
  * 收到事件，同时线程沉睡500毫秒延迟。
  * @version : 2014-1-11
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MyListener implements EventListener {
-    public void onEvent(String event, Object[] params) throws InterruptedException {
+public class MyListener implements EventListener<Object> {
+    public void onEvent(String event, Object eventData) throws InterruptedException {
         Thread.sleep(500);
-        System.out.println("Receive Message:" + ReflectionToStringBuilder.toString(params, ToStringStyle.SIMPLE_STYLE));
+        System.out.println("Receive Message:" + ReflectionToStringBuilder.toString(eventData, ToStringStyle.SIMPLE_STYLE));
     }
 };

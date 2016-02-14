@@ -23,14 +23,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
-import net.hasor.core.Module;
+import net.hasor.core.LifeModule;
 /**
  * 提供 <code>@Event</code>注解 功能支持。
  * 
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
-public class EventModule implements Module {
+public class EventModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
@@ -62,19 +62,31 @@ public class EventModule implements Module {
             logger.info("event binding finish.");
         }
     }
-    private class EventListenerPropxy implements EventListener {
-        private BindInfo<?>   targetInfo     = null;
-        private EventListener targetListener = null;
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void onStop(AppContext appContext) throws Throwable {
+        // TODO Auto-generated method stub
+    }
+    //
+    private class EventListenerPropxy implements EventListener<Object> {
+        private BindInfo<?>           targetInfo     = null;
+        private EventListener<Object> targetListener = null;
         //
         public EventListenerPropxy(BindInfo<?> targetInfo) {
             this.targetInfo = targetInfo;
         }
-        public void onEvent(String event, Object[] params) throws Throwable {
-            if (this.targetListener == null) {
-                AppContext appContext = (AppContext) params[0];
-                this.targetListener = (EventListener) appContext.getInstance(this.targetInfo);
+        @Override
+        public void onEvent(String event, Object eventData) throws Throwable {
+            if (eventData == null) {
+                return;
             }
-            this.targetListener.onEvent(event, params);
+            if (this.targetListener == null) {
+                this.targetListener = (EventListener<Object>) this.targetInfo.getBindType().newInstance();
+            }
+            this.targetListener.onEvent(event, eventData);
         }
     }
 }

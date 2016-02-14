@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
-import net.test.hasor.core._08_event.custom.ListenerPlugin;
-import org.junit.Test;
 /**
  * 异步事件演示
  * @version : 2013-8-11F
@@ -28,7 +27,7 @@ public class AnnoEventTest {
     @Test
     public void annoEventTest() throws InterruptedException {
         System.out.println("--->>annoEventTest<<--");
-        AppContext appContext = Hasor.createAppContext(new ListenerPlugin());
+        AppContext appContext = Hasor.createAppContext();
         EventContext ec = appContext.getEnvironment().getEventContext();
         //
         String EventName = "TestEvent";

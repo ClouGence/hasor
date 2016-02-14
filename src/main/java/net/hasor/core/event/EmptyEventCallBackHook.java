@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import net.hasor.core.EventCallBackHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.EventCallBackHook;
 /**
  * 异步事件回调接口。
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-class EmptyEventCallBackHook implements EventCallBackHook {
+class EmptyEventCallBackHook implements EventCallBackHook<Object> {
     protected static Logger logger = LoggerFactory.getLogger(EmptyEventCallBackHook.class);
     @Override
-    public void handleException(final String eventType, final Object[] objects, final Throwable e) {
+    public void handleException(final String eventType, Object eventData, final Throwable e) {
         logger.error("during the execution of Event ‘{}’ throw an error ->{}", eventType, e.getMessage(), e);
     }
     @Override
-    public void handleComplete(final String eventType, final Object[] objects) {}
+    public void handleComplete(final String eventType, Object eventData) {}
 }

@@ -22,10 +22,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.more.util.StringUtils;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
-import org.more.util.StringUtils;
 /**
  * 标准事件处理器接口的实现类
  * @version : 2013-5-6
@@ -62,21 +62,21 @@ public class StandardEventManager implements EventContext {
     }
     //
     @Override
-    public void pushListener(final String eventType, final EventListener eventListener) {
+    public <T> void pushListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
         }
         this.getListenerPool(eventType).pushOnceListener(eventListener);
     }
     @Override
-    public void addListener(final String eventType, final EventListener eventListener) {
+    public <T> void addListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
         }
         this.getListenerPool(eventType).addListener(eventListener);
     }
     @Override
-    public void removeListener(final String eventType, final EventListener eventListener) {
+    public <T> void removeListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
             return;
         }
@@ -84,33 +84,33 @@ public class StandardEventManager implements EventContext {
     }
     //
     @Override
-    public final void fireSyncEvent(final String eventType, final Object... objects) {
-        this.fireSyncEvent(eventType, null, objects);
+    public final <T> void fireSyncEvent(final String eventType, final T eventData) {
+        this.fireSyncEvent(eventType, null, eventData);
     }
     @Override
-    public final void fireSyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.fireEvent(eventType, true, callBack, objects);
+    public final <T> void fireSyncEvent(final String eventType, final EventCallBackHook<T> callBack, final T eventData) {
+        this.fireEvent(eventType, true, callBack, eventData);
     }
     @Override
-    public final void fireAsyncEvent(final String eventType, final Object... objects) {
-        this.fireAsyncEvent(eventType, null, objects);
+    public final <T> void fireAsyncEvent(final String eventType, final T eventData) {
+        this.fireAsyncEvent(eventType, null, eventData);
     }
     @Override
-    public final void fireAsyncEvent(final String eventType, final EventCallBackHook callBack, final Object... objects) {
-        this.fireEvent(eventType, false, callBack, objects);
+    public final <T> void fireAsyncEvent(final String eventType, final EventCallBackHook<T> callBack, final T eventData) {
+        this.fireEvent(eventType, false, callBack, eventData);
     }
-    private final void fireEvent(final String eventType, final boolean sync, final EventCallBackHook callBack, final Object... objects) {
-        EventObject event = this.createEvent(eventType, sync);
+    private final <T> void fireEvent(final String eventType, final boolean sync, final EventCallBackHook<T> callBack, final T eventData) {
+        EventObject<T> event = this.createEvent(eventType, sync);
         event.setCallBack(callBack);
-        event.addParams(objects);
+        event.setEventData(eventData);
         this.fireEvent(event);
     }
     /**创建事件对象*/
-    protected EventObject createEvent(final String eventType, final boolean sync) {
-        return new EventObject(eventType, sync);
+    protected <T> EventObject<T> createEvent(final String eventType, final boolean sync) {
+        return new EventObject<T>(eventType, sync);
     };
     /**引发事件*/
-    protected void fireEvent(final EventObject event) {
+    protected <T> void fireEvent(final EventObject<T> event) {
         if (event.isSync()) {
             //同步的
             this.executeEvent(event);
@@ -124,11 +124,11 @@ public class StandardEventManager implements EventContext {
         }
     };
     /**引发事件*/
-    private void executeEvent(final EventObject eventObj) {
+    private <T> void executeEvent(final EventObject<T> eventObj) {
         String eventType = eventObj.getEventType();
-        Object[] objects = eventObj.getParams();
-        EventCallBackHook callBack = eventObj.getCallBack();
-        callBack = callBack != null ? callBack : StandardEventManager.EMPTY_CALLBACK;
+        T eventData = eventObj.getEventData();
+        EventCallBackHook<T> callBack = eventObj.getCallBack();
+        callBack = (callBack != null ? callBack : (EventCallBackHook<T>) StandardEventManager.EMPTY_CALLBACK);
         if (StringUtils.isBlank(eventType) == true) {
             return;
         }
@@ -136,28 +136,30 @@ public class StandardEventManager implements EventContext {
         //1.引发事件.
         EventListenerPool listenerPool = this.getListenerPool(eventType);
         if (listenerPool != null) {
-            List<EventListener> snapshot = listenerPool.getListenerSnapshot();
-            for (EventListener listener : snapshot) {
+            List<EventListener<?>> snapshot = (List<EventListener<?>>) listenerPool.getListenerSnapshot();
+            for (EventListener<?> listenerItem : snapshot) {
                 try {
-                    listener.onEvent(eventType, objects);
+                    EventListener<Object> listener = (EventListener<Object>) listenerItem;
+                    listener.onEvent(eventType, eventData);
                 } catch (Throwable e) {
-                    callBack.handleException(eventType, objects, e);
+                    callBack.handleException(eventType, eventData, e);
                 } finally {
-                    callBack.handleComplete(eventType, objects);
+                    callBack.handleComplete(eventType, eventData);
                 }
             }
         }
         //
         //2.处理Once事件.
-        List<EventListener> onceList = listenerPool.popOnceListener();
+        List<EventListener<?>> onceList = listenerPool.popOnceListener();
         if (onceList != null) {
-            for (EventListener listener : onceList) {
+            for (EventListener<?> listenerItem : onceList) {
                 try {
-                    listener.onEvent(eventType, objects);
+                    EventListener<Object> listener = (EventListener<Object>) listenerItem;
+                    listener.onEvent(eventType, eventData);
                 } catch (Throwable e) {
-                    callBack.handleException(eventType, objects, e);
+                    callBack.handleException(eventType, eventData, e);
                 } finally {
-                    callBack.handleComplete(eventType, objects);
+                    callBack.handleComplete(eventType, eventData);
                 }
             }
         }
@@ -170,36 +172,36 @@ public class StandardEventManager implements EventContext {
 }
 //
 class EventListenerPool {
-    private final Object                              ONCE_LOCK = new Object();
-    private ArrayList<EventListener>                  onceListener;
-    private final CopyOnWriteArrayList<EventListener> listenerList;
+    private final Object                                 ONCE_LOCK = new Object();
+    private ArrayList<EventListener<?>>                  onceListener;
+    private final CopyOnWriteArrayList<EventListener<?>> listenerList;
     //
     public EventListenerPool() {
-        onceListener = new ArrayList<EventListener>();
-        listenerList = new CopyOnWriteArrayList<EventListener>();
+        onceListener = new ArrayList<EventListener<?>>();
+        listenerList = new CopyOnWriteArrayList<EventListener<?>>();
     }
     //
-    public void pushOnceListener(EventListener eventListener) {
+    public void pushOnceListener(EventListener<?> eventListener) {
         synchronized (ONCE_LOCK) {
             onceListener.add(eventListener);
         }
     }
-    public void addListener(EventListener eventListener) {
+    public void addListener(EventListener<?> eventListener) {
         listenerList.add(eventListener);
     }
     //
-    public List<EventListener> popOnceListener() {
-        List<EventListener> onceList = null;
+    public List<EventListener<?>> popOnceListener() {
+        List<EventListener<?>> onceList = null;
         synchronized (ONCE_LOCK) {
             onceList = this.onceListener;
-            this.onceListener = new ArrayList<EventListener>();
+            this.onceListener = new ArrayList<EventListener<?>>();
         }
         return onceList;
     }
-    public List<EventListener> getListenerSnapshot() {
-        return new ArrayList<EventListener>(this.listenerList);
+    public List<EventListener<?>> getListenerSnapshot() {
+        return new ArrayList<EventListener<?>>(this.listenerList);
     }
-    public void removeListener(EventListener eventListener) {
+    public void removeListener(EventListener<?> eventListener) {
         listenerList.remove(eventListener);
     }
 }
