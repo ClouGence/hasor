@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.Settings;
-import net.hasor.core.event.StandardEventManager;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Environment;
+import net.hasor.core.EventContext;
+import net.hasor.core.Settings;
+import net.hasor.core.event.StandardEventManager;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Settings)}方法以初始化。
  * @version : 2013-4-9
@@ -75,12 +75,16 @@ public abstract class AbstractEnvironment implements Environment {
         return this.settings;
     }
     @Override
-    public EventContext getEventContext() {
+    public final EventContext getEventContext() {
         if (this.eventManager == null) {
             int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
-            this.eventManager = new StandardEventManager(eventThreadPoolSize);
+            this.eventManager = createEventManager(eventThreadPoolSize);
         }
         return this.eventManager;
+    }
+    /**创建事件管理器*/
+    protected StandardEventManager createEventManager(int eventThreadPoolSize) {
+        return new StandardEventManager(eventThreadPoolSize);
     }
     //
     /*----------------------------------------------------------------------------------------Dir*/

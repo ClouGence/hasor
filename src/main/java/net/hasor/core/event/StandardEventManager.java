@@ -124,7 +124,7 @@ public class StandardEventManager implements EventContext {
         }
     };
     /**引发事件*/
-    private <T> void executeEvent(final EventObject<T> eventObj) {
+    protected <T> void executeEvent(final EventObject<T> eventObj) {
         String eventType = eventObj.getEventType();
         T eventData = eventObj.getEventData();
         EventCallBackHook<T> callBack = eventObj.getCallBack();

@@ -20,6 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.more.RepeateException;
+import org.more.classcode.MoreClassLoader;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
@@ -27,11 +32,6 @@ import net.hasor.core.Scope;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
-import org.more.RepeateException;
-import org.more.classcode.MoreClassLoader;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 整个Hasor将围绕这个类构建！！
  * <br/>它，完成了Bean容器的功能。
@@ -46,12 +46,22 @@ import org.slf4j.LoggerFactory;
 public class BeanContainer extends TemplateBeanBuilder {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
     private AtomicBoolean                           inited           = new AtomicBoolean(false);
-    private ClassLoader                             rootLosder       = new MoreClassLoader();
+    private final ClassLoader                       rootLosder;
     private Provider<Scope>                         singletonScope   = new InstanceProvider<Scope>(new SingletonScope());
     private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
     private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
+    //
+    public BeanContainer() {
+        this(new MoreClassLoader());
+    }
+    public BeanContainer(ClassLoader classLoader) {
+        if (classLoader == null) {
+            classLoader = new MoreClassLoader();
+        }
+        this.rootLosder = classLoader;
+    }
     //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/

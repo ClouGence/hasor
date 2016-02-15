@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" default-autowire="byName">
+
+	<!-- 将Hasor集成进Spring，完整配置 -->
+	<bean id="hasor" class="net.hasor.plugins.spring.SpringHasorFactory">
+		<!-- Hasor配置文件 -->
+		<property name="config" value="classpath:/spring/hasor-config.xml" />
+		<!-- 初始化加在模块 -->
+		<property name="modules">
+			<list>
+				<bean class="net.test.hasor.spring.SpringTestModule"></bean>
+			</list>
+		</property>
+		<!-- 是否将Hasor的Bean分享到Spring -->
+		<property name="shareBean" value="true" />
+		<!-- 分享事件，分享事件是指，Hasor的事件监听器可以接受到Spring发来的事件，反之Spring也可以接受到来自Hasor发送的事件 -->
+		<property name="shareEvent" value="true" />
+	</bean>
+
+	<import resource="classpath:/spring/spring-bean.xml" />
+</beans>

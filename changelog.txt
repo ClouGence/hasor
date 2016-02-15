@@ -2,6 +2,10 @@
 * 新增:
     01.增加Event事件注册插件，简化时间的注册机制。
     02.Settings接口增加 addSetting方法和clearSetting方法用来增加和删除配置项。
+    03.新增Spring插件，完美与Spring整合。同时支持与Spring的双向事件通知。
+        - 支持Hasor的Bean通过Spring获取、支持SpringBean通过Hasor获取。
+        - 支持Hasor的事件，通过Spring方式接收、支持Spring的事件，通过Hasor方式接收。
+        
 * 改进:
     01.改进事物管理器的拦截器注册机制，从拦截所有类改为只拦截标记了@Transactional注解的方法。
     02.ResourceModule插件的实现机制从 Servlet 改为Filter，当资源无法通过插件获取时候，转交给servlet容器。原有方案是直接抛除404。
