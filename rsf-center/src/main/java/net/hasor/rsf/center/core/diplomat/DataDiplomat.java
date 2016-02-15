@@ -41,10 +41,10 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.plugins.event.Event;
+import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.RsfEvent;
-import net.hasor.rsf.center.domain.constant.ZkNodeType;
 /**
  * 集群数据协调器，负责读写zk集群数据信息。
  * 
