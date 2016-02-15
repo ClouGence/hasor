@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" default-autowire="byName">
 
 	<!-- 将Hasor集成进Spring，最简配置 -->
-	<bean id="hasor" class="net.hasor.plugins.spring.SpringHasorFactory">
+	<bean id="hasor" class="net.hasor.plugins.spring.factory.tospring.SpringHasorFactory">
 		<!-- 初始化加在模块（可选的属性） -->
 		<property name="modules">
 			<list>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring;
+package net.hasor.plugins.spring.factory.tospring;
 import java.util.ArrayList;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
