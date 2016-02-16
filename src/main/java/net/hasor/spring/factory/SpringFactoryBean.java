@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.factory.tospring;
+package net.hasor.spring.factory;
 import java.util.ArrayList;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -39,16 +39,16 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.event.EventObject;
-import net.hasor.plugins.spring.event.AsyncHasorEvent;
-import net.hasor.plugins.spring.event.EventType;
-import net.hasor.plugins.spring.event.HasorEvent;
-import net.hasor.plugins.spring.event.SyncHasorEvent;
+import net.hasor.spring.event.AsyncHasorEvent;
+import net.hasor.spring.event.EventType;
+import net.hasor.spring.event.HasorEvent;
+import net.hasor.spring.event.SyncHasorEvent;
 /**
  * 
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SpringHasorFactory implements FactoryBean, InitializingBean, //
+public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         ApplicationContextAware, //
         ShareEventListener, ApplicationListener, ApplicationEventPublisherAware, //
         Module {
@@ -59,7 +59,6 @@ public class SpringHasorFactory implements FactoryBean, InitializingBean, //
     private ApplicationContext applicationContext;
     private String             config;
     private ArrayList<Module>  modules;
-    private boolean            shareBean  = false;
     private boolean            shareEvent = false;
     //
     public String getConfig() {
@@ -73,12 +72,6 @@ public class SpringHasorFactory implements FactoryBean, InitializingBean, //
     }
     public void setModules(ArrayList<Module> modules) {
         this.modules = modules;
-    }
-    public boolean isShareBean() {
-        return shareBean;
-    }
-    public void setShareBean(boolean shareBean) {
-        this.shareBean = shareBean;
     }
     public boolean isShareEvent() {
         return shareEvent;
@@ -112,7 +105,6 @@ public class SpringHasorFactory implements FactoryBean, InitializingBean, //
     public void afterPropertiesSet() throws Exception {
         ArrayList<Module> moduleList = this.getModules();
         String config = this.getConfig();
-        Module[] moduleArrays = new Module[0];
         // - initData
         if (StringUtils.isBlank(config) == false) {
             config = SystemPropertyUtils.resolvePlaceholders(config);
@@ -120,11 +112,13 @@ public class SpringHasorFactory implements FactoryBean, InitializingBean, //
         if (StringUtils.isBlank(config)) {
             config = TemplateAppContext.DefaultSettings;
         }
-        if (moduleList != null && !moduleList.isEmpty()) {
-            moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
+        if (moduleList == null) {
+            moduleList = new ArrayList<Module>();
         }
         // - AppContext
         try {
+            moduleList.add(this);
+            Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
             this.appContext = createAppContext(this.applicationContext, config, moduleArrays);
         } catch (Throwable e) {
             if (e instanceof Exception) {
@@ -133,15 +127,11 @@ public class SpringHasorFactory implements FactoryBean, InitializingBean, //
                 ExceptionUtils.toRuntimeException(e);
             }
         }
-        // - ShareBean
-        if (this.isShareBean()) {
-            //动态注册Bean TODO
-        }
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     protected AppContext createAppContext(ApplicationContext context, final String config, final Module... modules) throws Throwable {
         logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-        Environment dev = new ShareEventStandardEnvironment(context, config, this);
+        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context, config, this);
         BeanContainer container = new BeanContainer(context.getClassLoader());
         AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
         appContext.start(modules);

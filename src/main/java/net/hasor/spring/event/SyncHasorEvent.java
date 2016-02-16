@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.event;
+package net.hasor.spring.event;
 /**
  * 同步事件
  * @version : 2016年2月15日

@@ -35,7 +35,7 @@ public @interface Transactional {
     /**是否为只读事务。*/
     public boolean readOnly() default false;
     /**遇到下列异常继续事务递交。*/
-    public Class<? extends Throwable>[]noRollbackFor() default {};
+    public Class<? extends Throwable>[] noRollbackFor() default {};
     /**遇到下列异常继续事务递交。*/
-    public String[]noRollbackForClassName() default {};
+    public String[] noRollbackForClassName() default {};
 }

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.factory.tospring;
-import net.hasor.core.event.EventObject;
+package net.hasor.spring.event;
 /**
  * 
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-interface ShareEventListener {
-    void fireEvent(EventObject<?> eventObj);
+public interface EventType {
+    public String getEventType();
 }

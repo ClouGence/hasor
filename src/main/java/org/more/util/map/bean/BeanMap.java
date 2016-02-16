@@ -44,7 +44,7 @@ import org.more.util.map.AbstractMapEntry;
  * @author James Strachan
  * @author Stephen Colebourne
  */
-public class BeanMap extends AbstractMap<String, Object>implements Cloneable {
+public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
     private transient Object                        bean;
     private transient HashMap<String, Method>       readMethods      = new HashMap<String, Method>();
     private transient HashMap<String, Method>       writeMethods     = new HashMap<String, Method>();

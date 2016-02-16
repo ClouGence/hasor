@@ -27,5 +27,5 @@ import net.hasor.core.MethodInterceptor;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Aop {
-    public Class<? extends MethodInterceptor>[]value();
+    public Class<? extends MethodInterceptor>[] value();
 }

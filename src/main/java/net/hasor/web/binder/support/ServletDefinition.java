@@ -108,11 +108,11 @@ class ServletDefinition extends AbstractServletModuleBinding {
     /**/
     private void doService(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         HttpServletRequest request = new HttpServletRequestWrapper((HttpServletRequest) servletRequest) {
-            private String path;
-            private boolean pathComputed = false;
+            private String  path;
+            private boolean pathComputed     = false;
             //must use a boolean on the memo field, because null is a legal value (TODO no, it's not)
             private boolean pathInfoComputed = false;
-            private String pathInfo;
+            private String  pathInfo;
             @Override
             public String getPathInfo() {
                 if (!this.isPathInfoComputed()) {

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.spring;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.hasor.core.AppContext;
 import net.test.hasor.spring.event.tohasor.SpringEventPublisher;
@@ -25,17 +27,22 @@ import net.test.hasor.spring.event.tospring.HasorEventPublisher;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SpringTest {
+    private ApplicationContext applicationContext;
+    @Before
+    public void initSpring() {
+        this.applicationContext = new ClassPathXmlApplicationContext("spring/spring-bean.xml");
+    }
+    //
+    //
     @Test
     public void springPublisherEvent() {
-        ClassPathXmlApplicationContext app = new ClassPathXmlApplicationContext("spring/full-hasor-to-spring.xml");
-        SpringEventPublisher springPublisher = (SpringEventPublisher) app.getBean("springEventPublisher");
+        SpringEventPublisher springPublisher = (SpringEventPublisher) applicationContext.getBean("springEventPublisher");
         //
         springPublisher.publishSyncEvent();//通过Spring发送事件给Hasor
     }
     @Test
     public void hasorPublisherEvent() {
-        ClassPathXmlApplicationContext app = new ClassPathXmlApplicationContext("spring/full-hasor-to-spring.xml");
-        AppContext appContext = (AppContext) app.getBean("hasor");
+        AppContext appContext = (AppContext) applicationContext.getBean("hasor");
         //
         HasorEventPublisher hasorPublisher = appContext.getInstance(HasorEventPublisher.class);
         hasorPublisher.publishEvent();//通过Hasor发送事件给Spring

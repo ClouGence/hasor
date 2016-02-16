@@ -40,7 +40,7 @@ import net.hasor.web.env.WebStandardEnvironment;
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppContext<C>implements WebAppContext {
+public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppContext<C> implements WebAppContext {
     public static WebTemplateAppContext<? extends BeanContainer> create(String settingURI, ServletContext servletContext) throws IOException, URISyntaxException {
         URL resURL = ResourcesUtils.getResource(settingURI);
         WebEnvironment webEnv = null;
