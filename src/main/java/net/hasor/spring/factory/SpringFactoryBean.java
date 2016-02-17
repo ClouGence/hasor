@@ -38,10 +38,10 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.event.EventObject;
-import net.hasor.spring.event.AsyncHasorEvent;
+import net.hasor.spring.event.AsyncSpringHasorEvent;
 import net.hasor.spring.event.EventType;
-import net.hasor.spring.event.HasorEvent;
-import net.hasor.spring.event.SyncHasorEvent;
+import net.hasor.spring.event.SpringHasorEvent;
+import net.hasor.spring.event.SyncSpringHasorEvent;
 /**
  * 
  * @version : 2016年2月15日
@@ -164,9 +164,9 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         }
         //
         EventContext eventContext = this.appContext.getEnvironment().getEventContext();
-        /*   */if (event instanceof SyncHasorEvent) {
+        /*   */if (event instanceof SyncSpringHasorEvent) {
             eventContext.fireSyncEvent(eventType, event);
-        } else if (event instanceof AsyncHasorEvent) {
+        } else if (event instanceof AsyncSpringHasorEvent) {
             eventContext.fireAsyncEvent(eventType, event);
         } else {
             eventContext.fireSyncEvent(eventType, event);
@@ -177,7 +177,7 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     public void fireEvent(EventObject<?> eventObj) {
         this.applicationEventPublisher.publishEvent(new InternalHasorEvent(eventObj.getEventType(), eventObj.getEventData()));
     }
-    private static class InternalHasorEvent extends HasorEvent {
+    private static class InternalHasorEvent extends SpringHasorEvent {
         private static final long serialVersionUID = 4716275791429045894L;
         public InternalHasorEvent(String event, Object source) {
             super(event, source);

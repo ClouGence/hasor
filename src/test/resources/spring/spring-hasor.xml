@@ -9,23 +9,29 @@ http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/sche
 	<!-- 
 		Spring中使用Hasor
 		
-		方式一，让Hasor加载来自Spring中配置的Module
+			方式一，让Hasor加载来自Spring中配置的Module
 		
 			<bean id="startWith" class="net.test.hasor.spring.SpringTestModule"></bean>
 			<h:hasor factoryID="hasor" startWithRef="startWith" />
 	
-		方式二，简化配置
+			方式二，简化配置
 			<h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule" />
+			
+		将Hasor中的Bean导出到Spring中
+		
+			<h:bean id="helloString" refID="helloString" hasorID="hasor" />
+			<h:bean id="helloString" refType="net.test.hasor.spring.bean.HasorBean" hasorID="hasor" />
+			<h:bean id="helloString" refType="" refName="" hasorID="hasor" />
+		
 	-->
 
 	<h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule">
 		<h:configFile resource="" />
-		<h:bean id="hello" refID="hello" />
+		<!-- 将Hasor中ID为helloWord的Bean导出到Spring中，并定名为helloString -->
+		<h:bean id="helloString" refID="helloWord" />
 	</h:hasor>
 
 
-	<!-- 在Spring中声明来自Hasor的Bean -->
-	<h:bean id="test" refID="hello" hasorID="hasor" />
-	<!-- 	<h:bean id="" refType="" hasorID="hasor" /> -->
-	<!-- 	<h:bean id="" refType="" refName="" hasorID="hasor" /> -->
+	<!-- 将Hasor的Bean导出到Spring中。因为在h:hasor标签之外声明，所以需要通过hasorID来指定使用的是哪一个Hasor容器 -->
+	<h:bean id="hasorBean" refType="net.test.hasor.spring.bean.HasorBean" hasorID="hasor" />
 </beans>

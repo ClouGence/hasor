@@ -24,7 +24,8 @@ import net.hasor.core.Module;
 public class SpringTestModule implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        System.out.println("SpringTestModule loaded.");
-        apiBinder.bindType(String.class).idWith("hello").toInstance("HelloWord");
+        System.out.println("SpringTestModule loading ...");
+        //
+        apiBinder.bindType(String.class).idWith("helloWord").toInstance("HelloWord");
     }
 }

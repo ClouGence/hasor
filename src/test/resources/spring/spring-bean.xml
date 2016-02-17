@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" default-autowire="byName">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-autowire="byName">
+
+	<!--将针对注解的处理器配置好  -->
+	<context:annotation-config />     
+ 	<!--使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入base-package为需要扫描的包（含所有子包）-->
+	<context:component-scan base-package="*.*" />
 
 	<!-- 引入Hasor -->
 	<import resource="classpath:/spring/spring-hasor.xml" />
 
+	<!-- 声明一个Bean -->
+	<bean id="springBean" class="net.test.hasor.spring.bean.SpringBean" />
+	
 	<!-- Spring的方式发送事件给 Hasor  -->
 	<bean id="springEventPublisher" class="net.test.hasor.spring.event.tohasor.SpringEventPublisher" />
 	<!-- Spring的方式接收来自Hasor的事件 -->

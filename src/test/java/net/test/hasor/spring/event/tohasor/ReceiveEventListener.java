@@ -16,13 +16,13 @@
 package net.test.hasor.spring.event.tohasor;
 import net.hasor.core.EventListener;
 import net.hasor.plugins.event.Event;
-import net.hasor.spring.event.SpringEvent;
+import net.hasor.spring.event.SpringEventEnum;
 /**
  * 接受来自Spring发送的事件
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event(SpringEvent.Context_Refreshed_Event)
+@Event(SpringEventEnum.Context_Refreshed_Event)
 public class ReceiveEventListener implements EventListener<Object> {
     @Override
     public void onEvent(String event, Object eventData) throws Throwable {

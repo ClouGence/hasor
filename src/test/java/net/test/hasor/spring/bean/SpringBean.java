@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 package net.test.hasor.spring.bean;
+import javax.annotation.Resource;
 /**
- * 
+ * 使用Spring的方式注入Hasor的Bean。
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SpringBean {}
+public class SpringBean {
+    @Resource
+    private HasorBean hasorBean;
+    //
+    public void print() {
+        System.out.println(this.hasorBean);
+    }
+    @Override
+    public String toString() {
+        return "SpringBean - [hasorBean:" + this.hasorBean + "]";
+    }
+}

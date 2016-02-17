@@ -19,6 +19,10 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.spring.SpringModule;
+import net.test.hasor.spring.bean.HasorBean;
+import net.test.hasor.spring.bean.SpringBean;
 import net.test.hasor.spring.event.tohasor.SpringEventPublisher;
 import net.test.hasor.spring.event.tospring.HasorEventPublisher;
 /**
@@ -48,11 +52,22 @@ public class SpringTest {
         hasorPublisher.publishEvent();//通过Hasor发送事件给Spring
     }
     @Test
-    public void spring() {
-        Object obj1 = this.applicationContext.getBean("test");
+    public void springTest() {
+        SpringBean obj1 = (SpringBean) this.applicationContext.getBean("springBean");
         System.out.println("@@@@@@@@@@@@@@" + obj1);
         //
-        Object obj2 = this.applicationContext.getBean("hello");
+        Object obj2 = this.applicationContext.getBean("helloString");
         System.out.println("@@@@@@@@@@@@@@" + obj2);
+    }
+    @Test
+    public void hasorTest() {
+        AppContext appContext = Hasor.createAppContext(new SpringModule(this.applicationContext) {
+            protected boolean isExportBean(String beanName) {
+                return true;
+            }
+        });
+        //
+        HasorBean hasorBean = appContext.getInstance(HasorBean.class);
+        System.out.println("@@@@@@@@@@@@@@" + hasorBean);
     }
 }

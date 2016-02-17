@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 package net.test.hasor.spring.bean;
+import net.hasor.core.Inject;
 /**
- * 
+ * 使用Hasor的方式注入Spring的Bean。
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorBean {}
+public class HasorBean {
+    @Inject
+    private SpringBean springBean;
+    //
+    public void print() {
+        System.out.println(this.springBean);
+    }
+    @Override
+    public String toString() {
+        return "HasorBean - [springBean:" + this.springBean + "]";
+    }
+}

@@ -16,18 +16,18 @@
 package net.hasor.spring.event;
 import org.springframework.context.ApplicationEvent;
 /**
- * 异步事件
+ * Spring中的Hasor事件
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorEvent extends ApplicationEvent implements EventType {
+public class SpringHasorEvent extends ApplicationEvent implements EventType {
     private static final long serialVersionUID = 4739385371879985426L;
     private String            eventType;
     //
-    public HasorEvent(Object source) {
+    public SpringHasorEvent(Object source) {
         this(null, source);
     }
-    public HasorEvent(String eventType, Object source) {
+    public SpringHasorEvent(String eventType, Object source) {
         super(source);
         this.eventType = eventType;
     }

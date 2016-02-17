@@ -15,16 +15,16 @@
  */
 package net.hasor.spring.event;
 /**
- * 同步事件
+ * Hasor事件
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SyncHasorEvent extends AsyncHasorEvent {
-    private static final long serialVersionUID = -3534412519141290457L;
-    public SyncHasorEvent(Object source) {
+public class AsyncSpringHasorEvent extends SpringHasorEvent {
+    private static final long serialVersionUID = 4739385371879985426L;
+    public AsyncSpringHasorEvent(Object source) {
         super(source);
     }
-    public SyncHasorEvent(String event, Object source) {
+    public AsyncSpringHasorEvent(String event, Object source) {
         super(source);
     }
 }

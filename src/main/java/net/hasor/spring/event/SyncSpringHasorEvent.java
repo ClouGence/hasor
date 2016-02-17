@@ -15,13 +15,16 @@
  */
 package net.hasor.spring.event;
 /**
- * 
+ * 同步事件
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SpringEvent {
-    public final static String Context_Closed_Event    = "ContextClosedEvent";
-    public final static String Context_Refreshed_Event = "ContextRefreshedEvent";
-    public final static String Context_Started_Event   = "ContextStartedEvent";
-    public final static String Context_Stopped_Event   = "ContextStoppedEvent";
+public class SyncSpringHasorEvent extends AsyncSpringHasorEvent {
+    private static final long serialVersionUID = -3534412519141290457L;
+    public SyncSpringHasorEvent(Object source) {
+        super(source);
+    }
+    public SyncSpringHasorEvent(String event, Object source) {
+        super(source);
+    }
 }

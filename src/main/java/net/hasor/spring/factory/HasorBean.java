@@ -72,7 +72,9 @@ public class HasorBean<T> implements FactoryBean, InitializingBean {
         if (StringUtils.isNotBlank(this.refID)) {
             this.beanBindInfo = this.factory.getBindInfo(this.refID);
         } else {
-            this.beanBindInfo = this.factory.findBindingRegister(this.refName, this.refType);
+            if (this.refName != null && this.refType != null) {
+                this.beanBindInfo = this.factory.findBindingRegister(this.refName, this.refType);
+            }
         }
         if (this.beanBindInfo == null && this.refType == null) {
             throw new NullPointerException("HasorBean class is null.");
