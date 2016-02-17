@@ -14,58 +14,82 @@
  * limitations under the License.
  */
 package net.hasor.spring.factory.xml;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
+import java.util.ArrayList;
+import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import net.hasor.spring.factory.SpringFactoryBean;
 /**
  * 
  * @version : 2016年2月16日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class HasorDefinitionParser implements BeanDefinitionParser {
-    protected String revertProperty(NamedNodeMap attributes, String attName) {
-        Node attNode = attributes.getNamedItem(attName);
-        return (attNode != null) ? attNode.getNodeValue() : null;
-    }
+class HasorDefinitionParser extends AbstractHasorDefinitionParser {
     @Override
-    public BeanDefinition parse(Element element, ParserContext parserContext) {
-        NamedNodeMap attributes = element.getAttributes();
+    protected AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
-        //-解析
-        AbstractBeanDefinition definition = parse(element, attributes, builder, parserContext);
-        if (definition == null) {
-            return null;
+        builder.getRawBeanDefinition().setBeanClass(SpringFactoryBean.class);
+        builder.setScope(BeanDefinition.SCOPE_SINGLETON);//单例
+        //
+        String shareEvent = revertProperty(attributes, "shareEvent");
+        if (org.more.util.StringUtils.isNotBlank(shareEvent)) {
+            builder.addPropertyValue("shareEvent", Boolean.parseBoolean(shareEvent));
         }
-        //-将Bean注册到容器中
-        return registerBean(element, parserContext, attributes, definition);
-    }
-    protected abstract AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, BeanDefinitionBuilder builder, ParserContext parserContext);
-    /**摘抄 Spring 源码，将Bean注册到容器中*/
-    private BeanDefinition registerBean(Element element, ParserContext parserContext, NamedNodeMap attributes, AbstractBeanDefinition definition) {
-        if (!parserContext.isNested()) {
-            try {
-                String id = revertProperty(attributes, "factoryID");
-                if (!StringUtils.hasText(id)) {
-                    parserContext.getReaderContext().error("factoryID is required for element '" + element.getLocalName() + "' when used as a top-level tag", element);
+        //
+        String startWith = revertProperty(attributes, "startWith");
+        String startWithRef = revertProperty(attributes, "startWithRef");
+        if (org.more.util.StringUtils.isNotBlank(startWith) || org.more.util.StringUtils.isNotBlank(startWithRef)) {
+            ManagedList list = new ManagedList();
+            list.setSource(ArrayList.class);
+            list.setMergeEnabled(false);
+            builder.addPropertyValue("modules", list);
+            if (org.more.util.StringUtils.isNotBlank(startWithRef)) {
+                //-startWithRef
+                String[] refs = startWithRef.split(",");
+                for (String refName : refs) {
+                    list.add(new RuntimeBeanReference(refName));
                 }
-                BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id);
-                BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
-                parserContext.registerComponent(new BeanComponentDefinition(holder));
-            } catch (BeanDefinitionStoreException ex) {
-                parserContext.getReaderContext().error(ex.getMessage(), element);
-                return null;
+            } else {
+                //-startWith
+                BeanDefinitionBuilder startWithBuilder = BeanDefinitionBuilder.genericBeanDefinition(startWith);
+                AbstractBeanDefinition startWithDefine = startWithBuilder.getBeanDefinition();
+                String beanName = new DefaultBeanNameGenerator().generateBeanName(startWithDefine, parserContext.getRegistry());
+                list.add(new BeanDefinitionHolder(startWithDefine, beanName));
             }
         }
-        return definition;
+        //
+        String configFile = null;
+        String factoryID = revertProperty(attributes, beanID());
+        BeanDefinitionParser parser = new BeanDefinitionParser(factoryID);
+        //
+        Node node = element.getFirstChild();
+        while (node != null) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element entry = (Element) node;
+                /*   */if (entry.getLocalName().equals("configFile")) {
+                    configFile = this.revertProperty(node.getAttributes(), "resource");
+                    if (StringUtils.isBlank(configFile)) {
+                        configFile = node.getNodeValue();
+                    }
+                } else if (entry.getLocalName().equals("bean")) {
+                    parser.parse((Element) node, parserContext);
+                }
+            }
+            node = node.getNextSibling();
+        }
+        if (StringUtils.isNotBlank(configFile)) {
+            builder.addPropertyValue("config", configFile);
+        }
+        //
+        return builder.getBeanDefinition();
     }
 }

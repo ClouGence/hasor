@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:h="http://project.hasor.net/hasor/schema/spring"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/schema/spring/spring-hasor.xsd" default-autowire="byName">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:h="http://project.hasor.net/hasor/schema/spring"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/schema/spring/spring-hasor.xsd"
+	default-autowire="byName">
 
 	<!-- 
 		Spring中使用Hasor
@@ -16,14 +17,15 @@ http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/sche
 		方式二，简化配置
 			<h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule" />
 	-->
-	
+
 	<h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule">
-		<h:configFile resource=""/>
+		<h:configFile resource="" />
+		<h:bean id="hello" refID="hello" />
 	</h:hasor>
 
 
 	<!-- 在Spring中声明来自Hasor的Bean -->
-	<!-- 	<h:bean id="" refID="" factory="hasor" /> -->
-	<!-- 	<h:bean id="" refType="" factory="hasor" /> -->
-	<!-- 	<h:bean id="" refType="" refName="" factory="hasor" /> -->
+	<h:bean id="test" refID="hello" hasorID="hasor" />
+	<!-- 	<h:bean id="" refType="" hasorID="hasor" /> -->
+	<!-- 	<h:bean id="" refType="" refName="" hasorID="hasor" /> -->
 </beans>

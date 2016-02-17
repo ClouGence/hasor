@@ -25,5 +25,6 @@ public class SpringTestModule implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         System.out.println("SpringTestModule loaded.");
+        apiBinder.bindType(String.class).idWith("hello").toInstance("HelloWord");
     }
 }

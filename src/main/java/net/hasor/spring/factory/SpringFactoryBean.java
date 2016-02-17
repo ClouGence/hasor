@@ -31,7 +31,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.util.SystemPropertyUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;

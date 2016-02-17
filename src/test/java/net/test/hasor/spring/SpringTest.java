@@ -47,4 +47,12 @@ public class SpringTest {
         HasorEventPublisher hasorPublisher = appContext.getInstance(HasorEventPublisher.class);
         hasorPublisher.publishEvent();//通过Hasor发送事件给Spring
     }
+    @Test
+    public void spring() {
+        Object obj1 = this.applicationContext.getBean("test");
+        System.out.println("@@@@@@@@@@@@@@" + obj1);
+        //
+        Object obj2 = this.applicationContext.getBean("hello");
+        System.out.println("@@@@@@@@@@@@@@" + obj2);
+    }
 }
