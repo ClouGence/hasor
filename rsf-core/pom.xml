@@ -47,13 +47,6 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 下面是插件的依赖，如需使用该功能在引用依赖 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- LOGGING begin -->
 		<dependency>

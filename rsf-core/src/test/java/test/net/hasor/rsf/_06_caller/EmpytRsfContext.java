@@ -94,4 +94,9 @@ public class EmpytRsfContext implements RsfContext {
         // TODO Auto-generated method stub
         return null;
     }
+    @Override
+    public InterAddress bindAddress() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

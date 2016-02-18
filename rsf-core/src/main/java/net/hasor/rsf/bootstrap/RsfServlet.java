@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.bootstrap;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.Inject;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
@@ -49,6 +51,14 @@ public class RsfServlet extends HttpServlet {
         }
         //
         String type = req.getParameter("type");
+        req.getRemotePort();
+        InterAddress target = null;
+        try {
+            target = new InterAddress(req.getRemoteHost(), req.getRemotePort(), "");
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         //
         ServletInputStream inStream = req.getInputStream();
         ByteBuf dataBuf = ByteBufAllocator.DEFAULT.heapBuffer();
@@ -57,7 +67,7 @@ public class RsfServlet extends HttpServlet {
         RequestInfo rsfRequest = ProtocolUtils.buildRequestInfo(rsfHead, dataBuf);
         //
         RemoteRsfCaller caller = rsfContext.getRsfCaller();
-        ResponseInfo rsfResponse = caller.doRequest(rsfRequest);
+        ResponseInfo rsfResponse = caller.doRequest(target, rsfRequest);
         //
         super.service(req, resp);
     }

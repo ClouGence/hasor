@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.address.InterAddress;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -26,6 +27,10 @@ import net.hasor.rsf.RsfRequest;
 public abstract class AbstractRsfRequestWarp implements RsfRequest {
     protected abstract RsfRequest getRsfRequest();
     //
+    @Override
+    public InterAddress getRemoteAddress() {
+        return getRsfRequest().getRemoteAddress();
+    }
     @Override
     public RsfBindInfo<?> getBindInfo() {
         return getRsfRequest().getBindInfo();

@@ -65,24 +65,26 @@ public class RsfCenterCfg {
         cfg.rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
         //
         cfg.zkServers = new HashMap<Long, QuorumServer>();
-        XmlNode[] zkServers = settings.getXmlNodeArray("rsfCenter.zooKeeper.zkServers.server");
-        int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2181);
-        int defaultElectionPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultElectionPort", 2182);
-        if (zkServers != null && zkServers.length > 0) {
-            for (XmlNode server : zkServers) {
-                String binPortStr = server.getAttribute("bindPort");
-                String electionPortStr = server.getAttribute("electionPort");
-                //
-                int bindPort = StringUtils.isBlank(binPortStr) ? defaultBindPort : Integer.valueOf(binPortStr);
-                int electionPort = StringUtils.isBlank(electionPortStr) ? defaultElectionPort : Integer.valueOf(electionPortStr);
-                long sid = Long.valueOf(server.getAttribute("sid"));
-                String address = server.getText();
-                InetAddress bindAddress = NetworkUtils.finalBindAddress(address);
-                //
-                InetSocketAddress bindAddr = new InetSocketAddress(bindAddress, bindPort);
-                InetSocketAddress electionAddr = new InetSocketAddress(bindAddress, electionPort);
-                cfg.zkServers.put(sid, new QuorumServer(sid, bindAddr, electionAddr));
-                //
+        if (cfg.getWorkMode() != WorkMode.Alone) {
+            XmlNode[] zkServers = settings.getXmlNodeArray("rsfCenter.zooKeeper.zkServers.server");
+            int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2181);
+            int defaultElectionPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultElectionPort", 2182);
+            if (zkServers != null && zkServers.length > 0) {
+                for (XmlNode server : zkServers) {
+                    String binPortStr = server.getAttribute("bindPort");
+                    String electionPortStr = server.getAttribute("electionPort");
+                    //
+                    int bindPort = StringUtils.isBlank(binPortStr) ? defaultBindPort : Integer.valueOf(binPortStr);
+                    int electionPort = StringUtils.isBlank(electionPortStr) ? defaultElectionPort : Integer.valueOf(electionPortStr);
+                    long sid = Long.valueOf(server.getAttribute("sid"));
+                    String address = server.getText();
+                    InetAddress bindAddress = NetworkUtils.finalBindAddress(address);
+                    //
+                    InetSocketAddress bindAddr = new InetSocketAddress(bindAddress, bindPort);
+                    InetSocketAddress electionAddr = new InetSocketAddress(bindAddress, electionPort);
+                    cfg.zkServers.put(sid, new QuorumServer(sid, bindAddr, electionAddr));
+                    //
+                }
             }
         }
         //
@@ -109,7 +111,7 @@ public class RsfCenterCfg {
         cfg.peerType = settings.getEnum("rsfCenter.zooKeeper.peerType", LearnerType.class, LearnerType.PARTICIPANT);
         //
         // -check electionPort
-        if (cfg.getWorkMode() != WorkMode.Slave) {
+        if (cfg.getWorkMode() == WorkMode.Master) {
             QuorumServer thisServer = cfg.zkServers.get(cfg.serverID);
             if (thisServer == null) {
                 throw new IllegalStateException("In 'rsfCenter.zooKeeper.zkServers' configuration lose yourself. -> serverID = " + cfg.serverID);

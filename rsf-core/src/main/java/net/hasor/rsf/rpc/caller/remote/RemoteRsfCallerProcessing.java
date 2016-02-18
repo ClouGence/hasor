@@ -25,15 +25,13 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 class RemoteRsfCallerProcessing extends InvokerProcessing {
-    protected Logger           logger = LoggerFactory.getLogger(getClass());
-    private final InterAddress target;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     //
     public RemoteRsfCallerProcessing(InterAddress target, RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
-        super(rsfCaller, requestInfo);
-        this.target = target;
+        super(target, rsfCaller, requestInfo);
     }
     @Override
     protected void sendResponse(ResponseInfo info) {
-        this.getRsfCaller().getSenderListener().sendResponse(target, info);
+        this.getRsfCaller().getSenderListener().sendResponse(this.getTarget(), info);
     }
 }

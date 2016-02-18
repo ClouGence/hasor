@@ -31,7 +31,7 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
 /**
- * 基类
+ * 负责处理两个RSF程序之间的握手。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */

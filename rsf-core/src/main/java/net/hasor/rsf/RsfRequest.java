@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.lang.reflect.Method;
+import net.hasor.rsf.address.InterAddress;
 /**
  * 调用请求
  * @version : 2014年10月25日
@@ -35,4 +36,7 @@ public interface RsfRequest extends RsfHeader {
     public Class<?>[] getParameterTypes();
     /**获取请求参数值。*/
     public Object[] getParameterObject();
+    //
+    /**获取发送请求的远程服务器使用的地址和端口。*/
+    public InterAddress getRemoteAddress();
 }

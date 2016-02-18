@@ -2,22 +2,8 @@
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
 	<!-- 单机模式 -->
-	<rsfCenter workAt="alone" serverID="0">
-		<!-- RSF消息通信使用端口，rsf-center集群之间选举出 leader 之后，注册中心所有写操作都将发消息到这台机器。 -->
+	<rsfCenter workAt="alone">
 		<rsfPort>2180</rsfPort>
-		<!-- 远程服务器地址列表 -->
-		<zooKeeper.zkServers>
-			<!-- 集群模式 -->
-			<!-- <server sid="0" bindPort="2181" electionPort="2191">127.0.0.1</server> -->
-			<!-- <server sid="1" bindPort="2182" electionPort="2192">127.0.0.1</server> -->
-			<!-- <server sid="2" bindPort="2183" electionPort="2193">127.0.0.1</server> -->
-		</zooKeeper.zkServers>
-		<!-- 当存在多张网卡情况下，zk使用的地址 -->
-		<bindAddress>local</bindAddress>
-		<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
-		<zooKeeper.bindPort>2181</zooKeeper.bindPort>
-		<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
-		<zooKeeper.electionPort>2182</zooKeeper.electionPort>
 	</rsfCenter>
 
 	<hasor.environmentVar>

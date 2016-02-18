@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 /**
  * RSF请求
@@ -26,13 +27,15 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
  */
 class RsfRequestFormRemote implements RsfRequest {
     private final RequestInfo     requestInfo;
+    private final InterAddress    target;
     private final RemoteRsfCaller rsfCaller;
     private final RsfBindInfo<?>  bindInfo;
     private final Method          targetMethod;
     private final Class<?>[]      parameterTypes;
     private final Object[]        parameterObjects;
     //
-    public RsfRequestFormRemote(RequestInfo requestInfo, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RemoteRsfCaller rsfCaller) {
+    public RsfRequestFormRemote(InterAddress target, RequestInfo requestInfo, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RemoteRsfCaller rsfCaller) {
+        this.target = target;
         this.requestInfo = requestInfo;
         this.bindInfo = bindInfo;
         this.targetMethod = targetMethod;
@@ -101,5 +104,9 @@ class RsfRequestFormRemote implements RsfRequest {
     @Override
     public void removeOption(String key) {
         this.requestInfo.removeOption(key);
+    }
+    @Override
+    public InterAddress getRemoteAddress() {
+        return this.target;
     }
 }

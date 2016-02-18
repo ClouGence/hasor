@@ -18,9 +18,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
+import org.more.classcode.MoreClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
@@ -53,16 +53,17 @@ public abstract class AbstractRsfContext implements RsfContext {
     private RsfEnvironment   rsfEnvironment   = null;                               // 环境&配置
     private RemoteRsfCaller  rsfCaller        = null;                               // 调用器
     private RsfNetManager    rsfNetManager    = null;                               // 网络传输
-    private AppContext       appContext       = null;
+    private ClassLoader      rootClassLoader  = null;
     private AddressProvider  poolProvider     = null;
     //
-    public void init(AppContext appContext, RsfBeanContainer rsfBeanContainer) throws UnknownHostException {
+    //
+    public void init(ClassLoader rootClassLoader, RsfBeanContainer rsfBeanContainer) throws UnknownHostException {
         Transport transport = new Transport();
         this.rsfBeanContainer = rsfBeanContainer;
         this.rsfEnvironment = this.rsfBeanContainer.getEnvironment();
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
-        this.appContext = appContext;
+        this.rootClassLoader = (rootClassLoader == null) ? new MoreClassLoader() : rootClassLoader;
         AddressPool pool = this.rsfBeanContainer.getAddressPool();
         this.poolProvider = new PoolProvider(pool);
         //
@@ -84,10 +85,11 @@ public abstract class AbstractRsfContext implements RsfContext {
         return this.rsfBeanContainer.getAddressPool();
     }
     public ClassLoader getClassLoader() {
-        return this.appContext.getClassLoader();
+        return this.rootClassLoader;
     }
-    public AppContext getAppContext() {
-        return this.appContext;
+    /** 获取RSF运行的地址。 */
+    public InterAddress bindAddress() {
+        return this.rsfNetManager.bindAddress();
     }
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
@@ -153,7 +155,7 @@ public abstract class AbstractRsfContext implements RsfContext {
                 InterAddress target = targetProvider.get();
                 rsfNetManager.getChannel(target).get().sendData(info, null);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("sendRequest - " + e.getMessage(), e);
             }
         }
         @Override
@@ -161,7 +163,7 @@ public abstract class AbstractRsfContext implements RsfContext {
             try {
                 rsfNetManager.getChannel(target).get().sendData(info, null);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("sendResponse - " + e.getMessage(), e);
             }
         }
     }

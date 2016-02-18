@@ -16,6 +16,7 @@
 package net.hasor.rsf.bootstrap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.LifeModule;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBinder;
@@ -40,7 +41,7 @@ public class RsfModule implements LifeModule {
     public final void onStart(AppContext appContext) throws Throwable {
         RsfBeanContainer rsfContainer = appContext.getInstance(RsfBeanContainer.class);
         AbstractRsfContext rsfContext = appContext.getInstance(AbstractRsfContext.class);
-        rsfContext.init(appContext, rsfContainer);
+        rsfContext.init(appContext.getClassLoader(), rsfContainer);
     }
     @Override
     public final void onStop(AppContext appContext) throws Throwable {
@@ -50,8 +51,9 @@ public class RsfModule implements LifeModule {
     @Override
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
         final RsfEnvironment environment = new DefaultRsfEnvironment(apiBinder.getEnvironment());
-        final RsfBeanContainer container = new RsfBeanContainer(environment);
+        final RsfBeanContainer container = Hasor.autoAware(environment, new RsfBeanContainer(environment));
         final AbstractRsfContext rsfContext = new AbstractRsfContext() {};
+        //
         apiBinder.bindType(RsfBeanContainer.class).toInstance(container);
         apiBinder.bindType(AbstractRsfContext.class).toInstance(rsfContext);
         //

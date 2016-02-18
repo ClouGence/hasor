@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
@@ -39,13 +40,18 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
 abstract class InvokerProcessing implements Runnable {
     protected Logger              logger = LoggerFactory.getLogger(getClass());
     private final RemoteRsfCaller rsfCaller;
+    private final InterAddress    target;
     private final RequestInfo     requestInfo;
     private final ClassLoader     classLoader;
     //
-    public InvokerProcessing(RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
+    public InvokerProcessing(InterAddress target, RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
+        this.target = target;
         this.rsfCaller = rsfCaller;
         this.requestInfo = requestInfo;
         this.classLoader = rsfCaller.getContext().getClassLoader();
+    }
+    public InterAddress getTarget() {
+        return target;
     }
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
@@ -132,7 +138,7 @@ abstract class InvokerProcessing implements Runnable {
         }
         //
         try {
-            RsfRequestFormRemote rsfRequest = new RsfRequestFormRemote(this.requestInfo, bindInfo, targetMethod, pObjects, this.rsfCaller);
+            RsfRequestFormRemote rsfRequest = new RsfRequestFormRemote(this.target, this.requestInfo, bindInfo, targetMethod, pObjects, this.rsfCaller);
             RsfResponseObject rsfResponse = new RsfResponseObject(rsfRequest);
             rsfResponse.addOptionMap(this.rsfCaller.getContext().getSettings().getServerOption());//填充服务端的选项参数，并将选项参数响应到客户端。
             //

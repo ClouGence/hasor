@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.more.FormatException;
 import org.more.util.StringUtils;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -62,6 +63,9 @@ abstract class RsfBindBuilder implements RsfBinder {
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider) {
         return this.rsfService(type).toProvider(provider);
     }
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo) {
+        return this.rsfService(type).toInfo(bindInfo);
+    }
     @Override
     public void updateFlowControl(String flowControl) {
         this.getAddressPool().updateDefaultFlowControl(flowControl);
@@ -78,8 +82,6 @@ abstract class RsfBindBuilder implements RsfBinder {
     public void updateServiceRoute(String scriptBody) {
         this.getAddressPool().updateDefaultServiceRoute(scriptBody);
     }
-    //
-    //
     //
     private class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
         private final ServiceInfo<T>    serviceDefine;
@@ -179,6 +181,11 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> toProvider(Provider<T> provider) {
             this.serviceDefine.setCustomerProvider(provider);
+            return this;
+        }
+        @Override
+        public ConfigurationBuilder<T> toInfo(BindInfo<T> bindInfo) {
+            this.serviceDefine.setBindInfo(bindInfo);
             return this;
         }
         //

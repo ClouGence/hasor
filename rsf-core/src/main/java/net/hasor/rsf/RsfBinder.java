@@ -17,6 +17,7 @@ package net.hasor.rsf;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -56,7 +57,7 @@ public interface RsfBinder {
      * 该方法相当于“<code>rsfBinder.rsfService(type).toInstance(instance);</code>”
      * @param type 服务类型
      * @param instance 为绑定指定的实例对象。
-     * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
+     * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
      * @see #rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance);
@@ -65,10 +66,19 @@ public interface RsfBinder {
      * 该方法相当于“<code>rsfBinder.rsfService(type).to(implementation);</code>”
      * @param type 服务类型
      * @param implementation 为绑定指定的实现类。
-     * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
+     * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
      * @see #rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
+    /**
+     * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
+     * 该方法相当于“<code>rsfBinder.rsfService(type).toInfo(bindInfo);</code>”
+     * @param type 服务类型
+     * @param bindInfo 为绑定指定的实现类。
+     * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
+     * @see #rsfService(Class)
+     */
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo);
     /**
      * 绑定一个类型并且为这个类型指定一个Provider。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).toProvider(provider);</code>”
@@ -86,21 +96,27 @@ public interface RsfBinder {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类
-         * @return 返回 NamedBuilder。
+         * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> to(Class<? extends T> implementation);
         /**
          * 为绑定设置一个实例。
          * @param instance 实例对象
-         * @return 返回 NamedBuilder。
+         * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> toInstance(T instance);
         /**
          * 为绑定设置一个 {@link Provider}。
          * @param provider provider
-         * @return 返回 NamedBuilder。
+         * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> toProvider(Provider<T> provider);
+        /**
+         * 为绑定设置一个 {@link BindInfo}。
+         * @param bindInfo BindInfo
+         * @return 返回 ConfigurationBuilder。
+         */
+        public ConfigurationBuilder<T> toInfo(BindInfo<T> bindInfo);
     }
     /**设置服务名。*/
     public interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {

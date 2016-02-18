@@ -25,6 +25,9 @@ import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -42,13 +45,14 @@ import net.hasor.rsf.domain.RsfBindInfoWrap;
  * @version : 2015年12月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfBeanContainer {
+public class RsfBeanContainer implements AppContextAware {
     protected Logger                                           logger;
     private final static Provider<RsfFilter>[]                 EMPTY_FILTER = new Provider[0];
     private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
     private final List<FilterDefine>                           filterList;
     private final Object                                       filterLock;
     private final RsfEnvironment                               environment;
+    private AppContext                                         appContext;
     private AddressPool                                        addressPool;
     private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
     //
@@ -60,6 +64,10 @@ public class RsfBeanContainer {
         this.environment = rsfEnvironment;
         this.addressPool = new AddressPool(rsfEnvironment);
         this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
+    }
+    @Override
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
     }
     //
     /**
@@ -141,7 +149,17 @@ public class RsfBeanContainer {
         ServiceInfo<?> info = this.serviceMap.get(serviceID);
         if (info == null)
             return null;
-        return info.getCustomerProvider();
+        Provider<?> target = info.getCustomerProvider();
+        BindInfo<?> bindInfo = info.getBindInfo();
+        if (target == null && bindInfo == null) {
+            return null;
+        }
+        if (target != null) {
+            return target;
+        } else if (this.appContext != null) {
+            return this.appContext.getProvider(bindInfo);
+        }
+        return null;
     }
     /**
      * 根据服务id获取服务元信息。
@@ -234,7 +252,7 @@ public class RsfBeanContainer {
         };
     }
 }
-class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T>implements RegisterReference<T> {
+class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
     private RsfBeanContainer rsfContainer;
     public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceDefine) {
         super(serviceDefine.getDomain());

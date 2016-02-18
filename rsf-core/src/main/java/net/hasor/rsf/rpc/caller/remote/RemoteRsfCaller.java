@@ -60,12 +60,12 @@ public class RemoteRsfCaller extends RsfCaller {
      * 收到Request请求直接进行调用，并等待调用结果返回。
      * @param info 请求消息。
      */
-    public ResponseInfo doRequest(RequestInfo info) {
+    public ResponseInfo doRequest(InterAddress target, RequestInfo info) {
         long requestID = info.getRequestID();
         ResponseInfo resp = null;
         try {
             final BasicFuture<ResponseInfo> future = new BasicFuture<ResponseInfo>();
-            new InvokerProcessing(this, info) {
+            new InvokerProcessing(target, this, info) {
                 protected void sendResponse(ResponseInfo info) {
                     future.completed(info);
                 }

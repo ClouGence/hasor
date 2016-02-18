@@ -52,14 +52,12 @@ public interface RsfContext {
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
     //
     //
-    //    /**停止工作*/
-    //    public void shutdown();
+    /** 获取RSF运行的地址。 */
+    public InterAddress bindAddress();
     /**获取RSF配置*/
     public RsfSettings getSettings();
     /**获取地址路由更新接口。*/
     public RsfUpdater getUpdater();
-    //    /**获取RSF配置*/
-    //    public RsfEnvironment getEnvironment();
     /**获取类加载器。*/
     public ClassLoader getClassLoader();
     /**创建{@link RsfBinder}。*/
