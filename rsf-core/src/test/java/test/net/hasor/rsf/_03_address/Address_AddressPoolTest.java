@@ -23,14 +23,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 /**
  * 
  * @version : 2015年12月2日
@@ -79,12 +75,12 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //动态新增服务
-        pool.updateAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_1);
         Thread.sleep(10000);
         //
         //动态加入更多的地址
-        pool.updateAddress(serviceID, addresses_2);
-        pool.updateAddress(serviceID, addresses_3);
+        pool.appendAddress(serviceID, addresses_2);
+        pool.appendAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
         //删除地址
@@ -128,7 +124,7 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<--环境准备完毕-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //
         //Test - 0 ，动态新增服务，同时指定地址。
-        pool.updateAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_1);
         Thread.sleep(10000);
         //
         //Test - 1 ，使一个地址失效。
@@ -140,7 +136,7 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         Thread.sleep(10000);
         //
         //Test - 3 ，失效的地址重新激活。
-        pool.updateAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_1);
         Thread.sleep(10000);
     }
 }

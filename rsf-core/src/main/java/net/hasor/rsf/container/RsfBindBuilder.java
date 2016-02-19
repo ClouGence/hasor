@@ -235,7 +235,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         public RegisterReference<T> register() throws IOException {
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            getContainer().getAddressPool().updateAddress(serviceID, this.addressSet);
+            getContainer().getAddressPool().appendAddress(serviceID, this.addressSet);
             return getContainer().publishService(this.serviceDefine);
         }
         @Override

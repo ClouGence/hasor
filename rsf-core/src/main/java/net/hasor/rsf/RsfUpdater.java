@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.util.Collection;
+import net.hasor.rsf.address.InterAddress;
 /**
  * 服务配置更新器。
  * @version : 2014年11月12日
@@ -37,4 +39,13 @@ public interface RsfUpdater {
     public void updateArgsRoute(String serviceID, String scriptBody);
     /**更新服务路由策略*/
     public void updateFlowControl(String serviceID, String flowControl);
+    //
+    /**追加一批新地址*/
+    public void appendAddress(String serviceID, Collection<InterAddress> newHostSet);
+    /**刷新服务的地址本*/
+    public void refreshAddress(String serviceID);
+    /**删除服务上的一个地址*/
+    public void removeAddress(String serviceID, InterAddress address);
+    /**某一个地址不可用了，从所有服务中删除这个地址*/
+    public void removeAddress(InterAddress address);
 }

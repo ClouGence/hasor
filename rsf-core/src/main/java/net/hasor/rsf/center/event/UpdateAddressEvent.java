@@ -15,8 +15,12 @@
  */
 package net.hasor.rsf.center.event;
 /**
- * 更新地址本
+ * 更新服务的地址本
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterEvent {}
+public class UpdateAddressEvent extends RsfCenterEvent {
+    public static final String APPEND_TYPE = "APPEND";
+    public static final String REMOVE_TYPE = "REMOVE";
+    public static final String UPDATE_TYPE = "UPDATE";
+}

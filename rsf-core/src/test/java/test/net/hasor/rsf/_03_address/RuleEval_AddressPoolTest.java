@@ -80,9 +80,9 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
-        pool.updateAddress(serviceID, addresses_1);
-        pool.updateAddress(serviceID, addresses_2);
-        pool.updateAddress(serviceID, addresses_3);
+        pool.appendAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_2);
+        pool.appendAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
         //服务级路由规则，应用规则之后只有etc2机房的地址可用。
@@ -137,9 +137,9 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
-        pool.updateAddress(serviceID, addresses_1);
-        pool.updateAddress(serviceID, addresses_2);
-        pool.updateAddress(serviceID, addresses_3);
+        pool.appendAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_2);
+        pool.appendAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
         //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。
@@ -197,9 +197,9 @@ public class RuleEval_AddressPoolTest extends AbstractAddressPoolTest {
         //
         //给服务分配地址
         System.out.println("-> updateAddress.");
-        pool.updateAddress(serviceID, addresses_1);
-        pool.updateAddress(serviceID, addresses_2);
-        pool.updateAddress(serviceID, addresses_3);
+        pool.appendAddress(serviceID, addresses_1);
+        pool.appendAddress(serviceID, addresses_2);
+        pool.appendAddress(serviceID, addresses_3);
         Thread.sleep(10000);
         //
         //服务级路由规则，应用规则之后sayEcho使用etc2机房，testUserTag使用etc1机房。

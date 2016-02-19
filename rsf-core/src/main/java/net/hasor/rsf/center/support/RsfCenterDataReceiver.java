@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.event;
+package net.hasor.rsf.center.support;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.center.RsfCenterListener;
+import net.hasor.rsf.center.event.RsfCenterEvent;
 /**
- * 更新地址本
+ * 注册中心数据接收器，负责更新注册中心推送过来的配置信息。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterEvent {}
+public class RsfCenterDataReceiver implements RsfCenterListener {
+    private RsfContext rsfContext;
+    @Override
+    public void onEvent(String event, RsfCenterEvent eventData) throws Throwable {
+        // TODO Auto-generated method stub
+        rsfContext.getUpdater().
+    }
+}

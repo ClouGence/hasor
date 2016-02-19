@@ -293,9 +293,9 @@ public class AddressPool implements RsfUpdater {
      * @param serviceID 服务ID。
      * @param newHostSet 追加更新的地址。
      */
-    public void updateAddress(String serviceID, InterAddress newHost) {
+    public void appendAddress(String serviceID, InterAddress newHost) {
         List<InterAddress> newHostSet = Arrays.asList(newHost);
-        this.updateAddress(serviceID, newHostSet);
+        this.appendAddress(serviceID, newHostSet);
     }
     /**
      * 新增或追加更新服务地址信息。<p>
@@ -303,7 +303,7 @@ public class AddressPool implements RsfUpdater {
      * @param serviceID 服务ID。
      * @param newHostSet 追加更新的地址。
      */
-    public void updateAddress(String serviceID, Collection<InterAddress> newHostSet) {
+    public void appendAddress(String serviceID, Collection<InterAddress> newHostSet) {
         String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
         logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucket
@@ -358,6 +358,17 @@ public class AddressPool implements RsfUpdater {
         bucket.removeAddress(address);
         bucket.refreshAddress();
         this.rulerCache.reset();
+    }
+    public void removeAddress(InterAddress address) {
+        /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
+        synchronized (this.poolLock) {
+            Set<String> keySet = this.addressPool.keySet();
+            for (String bucketKey : keySet) {
+                logger.debug("service {} removeAddress.", bucketKey);
+                this.addressPool.get(bucketKey).removeAddress(address);
+            }
+            this.rulerCache.reset();
+        }
     }
     /**
      * 从地址池中，删除指定服务的地址本。
@@ -455,6 +466,15 @@ public class AddressPool implements RsfUpdater {
         logger.info("update rules service={} -> update ok", serviceID);
         bucket.setRuleRef(ruleRef);
         this.refreshCache();
+    }
+    public void refreshAddress(String serviceID) {
+        /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
+        synchronized (this.poolLock) {
+            AddressBucket bucket = this.addressPool.get(serviceID);
+            logger.debug("service {} refreshCache.", serviceID);
+            bucket.refreshAddress();//刷新地址计算结果
+        }
+        this.rulerCache.reset();
     }
     /**刷新地址缓存*/
     public void refreshCache() {

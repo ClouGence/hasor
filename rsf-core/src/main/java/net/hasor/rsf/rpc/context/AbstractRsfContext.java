@@ -128,7 +128,7 @@ public abstract class AbstractRsfContext implements RsfContext {
     }
     //
     //
-    private class PoolProvider implements AddressProvider {
+    private static class PoolProvider implements AddressProvider {
         private AddressPool pool;
         public PoolProvider(AddressPool pool) {
             this.pool = pool;
