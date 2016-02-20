@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.RepeateException;
-import org.more.classcode.MoreClassLoader;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,29 +45,14 @@ import net.hasor.core.scope.SingletonScope;
 public class BeanContainer extends TemplateBeanBuilder {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
     private AtomicBoolean                           inited           = new AtomicBoolean(false);
-    private final ClassLoader                       rootLosder;
     private Provider<Scope>                         singletonScope   = new InstanceProvider<Scope>(new SingletonScope());
     private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
     private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
     //
-    public BeanContainer() {
-        this(new MoreClassLoader());
-    }
-    public BeanContainer(ClassLoader classLoader) {
-        if (classLoader == null) {
-            classLoader = new MoreClassLoader();
-        }
-        this.rootLosder = classLoader;
-    }
-    //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
-    /**获取当创建Bean时使用的{@link ClassLoader}*/
-    public ClassLoader getClassLoader() {
-        return this.rootLosder;
-    }
     public boolean isInit() {
         return this.inited.get();
     }

@@ -50,6 +50,10 @@ public class EnvironmentWrap implements Environment {
         return this.getEnvironment().getContext();
     }
     @Override
+    public ClassLoader getClassLoader() {
+        return this.getEnvironment().getClassLoader();
+    }
+    @Override
     public EventContext getEventContext() {
         return this.getEnvironment().getEventContext();
     }

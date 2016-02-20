@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
-import org.more.util.ExceptionUtils;
+import org.more.classcode.MoreClassLoader;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +40,17 @@ public abstract class AbstractEnvironment implements Environment {
     private String[]     spanPackage  = null;
     private Settings     settings     = null;
     private Object       context      = null;
+    private ClassLoader  rootLosder   = null;
     private EventContext eventManager = null;
     //
     //---------------------------------------------------------------------------------Basic Method
-    public AbstractEnvironment(Object context) {
+    public AbstractEnvironment(Settings settings) {
+        this(null, settings);
+    }
+    public AbstractEnvironment(Object context, Settings settings) {
+        this.settings = settings;
         this.context = context;
+        this.rootLosder = new MoreClassLoader();
     }
     //---------------------------------------------------------------------------------Basic Method
     @Override
@@ -53,6 +59,16 @@ public abstract class AbstractEnvironment implements Environment {
     }
     public void setContext(final Object context) {
         this.context = context;
+    }
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader() {
+        return this.rootLosder;
+    }
+    /**设置类加载器*/
+    public void setRootLosder(ClassLoader classLoader) {
+        if (classLoader != null) {
+            this.rootLosder = classLoader;
+        }
     }
     @Override
     public boolean isDebug() {
@@ -101,16 +117,7 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /*----------------------------------------------------------------------------------------Env*/
     /**初始化方法*/
-    protected final void initEnvironment(Settings settings) {
-        try {
-            logger.debug("init Environment...");
-            this.settings = settings;
-            this.getSettings().refresh();
-            logger.info("init Environment , use Settings = {}", settings);
-        } catch (IOException e) {
-            logger.error("init Environment , has IOException -> " + e.getMessage(), e);
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+    protected final void initEnvironment() {
         logger.debug("create envVars...");
         this.envVars = this.createEnvVars();
         logger.debug("reload envVars...");

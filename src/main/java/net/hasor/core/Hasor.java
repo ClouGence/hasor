@@ -74,16 +74,15 @@ public abstract class Hasor {
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config) {
-        return Hasor.createAppContext(config, new Module[0]);
+    public static AppContext createAppContext(final String mainSettings) {
+        return Hasor.createAppContext(mainSettings, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String config, final Module... modules) {
+    public static AppContext createAppContext(final String mainSettings, final Module... modules) {
         try {
-            logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-            Environment dev = new StandardEnvironment(null, config);
-            BeanContainer container = new BeanContainer();
-            AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
+            logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
+            Environment dev = new StandardEnvironment(null, mainSettings);
+            AppContext appContext = new StatusAppContext<BeanContainer>(dev, new BeanContainer());
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {

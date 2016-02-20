@@ -130,8 +130,8 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     /**用简易的方式创建{@link AppContext}容器。*/
     protected AppContext createAppContext(ApplicationContext context, final String config, final Module... modules) throws Throwable {
         logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context, config, this);
-        BeanContainer container = new BeanContainer(context.getClassLoader());
+        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context.getClassLoader(), context, config, this);
+        BeanContainer container = new BeanContainer();
         AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
         appContext.start(modules);
         return appContext;

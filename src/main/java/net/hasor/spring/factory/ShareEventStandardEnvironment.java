@@ -26,7 +26,7 @@ import net.hasor.core.event.StandardEventManager;
  */
 class ShareEventStandardEnvironment extends StandardEnvironment {
     private ShareEventListener shareEventListener;
-    public ShareEventStandardEnvironment(Object context, String mainSettings, ShareEventListener shareEventListener) throws IOException, URISyntaxException {
+    public ShareEventStandardEnvironment(ClassLoader classLoader, Object context, String mainSettings, ShareEventListener shareEventListener) throws IOException, URISyntaxException {
         super(context, mainSettings);
         this.shareEventListener = shareEventListener;
     }

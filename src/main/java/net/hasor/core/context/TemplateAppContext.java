@@ -390,7 +390,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     public abstract Environment getEnvironment();
     /**获取当创建Bean时使用的{@link ClassLoader}*/
     public ClassLoader getClassLoader() {
-        return this.getContainer().getClassLoader();
+        return this.getEnvironment().getClassLoader();
     }
     /**安装模块的工具方法。*/
     protected void installModule(Module module) throws Throwable {

@@ -29,32 +29,32 @@ import net.hasor.core.setting.StandardContextSettings;
  */
 public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment(Object context, String mainSettings) throws IOException, URISyntaxException {
-        super(context);
+        super(context, new StandardContextSettings(mainSettings));
         logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
-        Settings settings = new StandardContextSettings(mainSettings);
-        this.initEnvironment(settings);
+        this.getSettings().refresh();
+        this.initEnvironment();
     }
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
-        super(context);
+        super(context, new StandardContextSettings(mainSettings));
         logger.info("create Environment, type = StandardEnvironment, settingsType is [file] mode, mainSettings = {}", mainSettings);
-        Settings settings = new StandardContextSettings(mainSettings);
-        this.initEnvironment(settings);
+        this.getSettings().refresh();
+        this.initEnvironment();
     }
     public StandardEnvironment(Object context, URL mainSettings) throws URISyntaxException, IOException {
-        super(context);
+        super(context, new StandardContextSettings(mainSettings.toURI()));
         logger.info("create Environment, type = StandardEnvironment, settingsType is [url] mode, mainSettings = {}", mainSettings);
-        Settings settings = new StandardContextSettings(mainSettings.toURI());
-        this.initEnvironment(settings);
+        this.getSettings().refresh();
+        this.initEnvironment();
     }
     public StandardEnvironment(Object context, URI mainSettings) throws IOException {
-        super(context);
+        super(context, new StandardContextSettings(mainSettings));
         logger.info("create Environment, type = StandardEnvironment, settingsType is [uri] mode, mainSettings = {}", mainSettings);
-        Settings settings = new StandardContextSettings(mainSettings);
-        this.initEnvironment(settings);
+        this.getSettings().refresh();
+        this.initEnvironment();
     }
     public StandardEnvironment(Object context, Settings settings) throws IOException {
-        super(context);
+        super(context, settings);
         logger.info("create Environment, type = StandardEnvironment, settingsType is [Settings] mode, settings = {}", settings);
-        this.initEnvironment(settings);
+        this.initEnvironment();
     }
 }

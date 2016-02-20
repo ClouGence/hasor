@@ -29,6 +29,8 @@ public interface Environment {
     public boolean isDebug();
     /** @return 获取上下文*/
     public Object getContext();
+    /**获取当创建Bean时使用的{@link ClassLoader}*/
+    public ClassLoader getClassLoader();
     /** @return 事件上下文*/
     public EventContext getEventContext();
     //
