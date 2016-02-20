@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.event;
+package net.hasor.rsf.domain;
 /**
- * 更新流控规则
- * @version : 2016年2月18日
+ * 
+ * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UpdateFlowControlEvent extends RsfCenterEvent {
-    public static final String APPEND_TYPE = "APPEND";
-    public static final String REMOVE_TYPE = "REMOVE";
-    public static final String UPDATE_TYPE = "UPDATE";
+public class RsfCenterException extends RsfException {
+    private static final long serialVersionUID = 6625965825562561251L;
+    //
+    public RsfCenterException(String string) {
+        super(ProtocolStatus.InvokeError, string);
+    }
+    public RsfCenterException(Throwable e) {
+        super(ProtocolStatus.InvokeError, e);
+    }
 }

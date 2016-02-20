@@ -20,7 +20,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.bootstrap.RsfModule;
+import net.hasor.rsf.bootstrap.RsfFrameworkModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
 /**
@@ -33,14 +33,14 @@ public class RsfContextTest {
     public void test() throws Throwable {
         //
         //Server
-        AppContext serverContext = Hasor.createAppContext("07_server-config.xml", new RsfModule() {
+        AppContext serverContext = Hasor.createAppContext("07_server-config.xml", new RsfFrameworkModule() {
             public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
                 rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
             }
         });
         //
         //Client
-        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfModule() {
+        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfFrameworkModule() {
             public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
                 rsfBinder.rsfService(EchoService.class).bindAddress("rsf://127.0.0.1:8000/local").register();
             }

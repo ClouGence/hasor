@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.event;
+package net.hasor.rsf;
 /**
- * 更新路由脚本规则
- * @version : 2016年2月18日
+ * RSF插件。
+ * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UpdateRouteEvent extends RsfCenterEvent {
-    public static final String APPEND_TYPE = "APPEND";
-    public static final String REMOVE_TYPE = "REMOVE";
-    public static final String UPDATE_TYPE = "UPDATE";
+public interface RsfPlugin {
+    /**
+     * 初始化过程。
+     * @param rsfContext
+     * @throws Throwable init异常抛出
+     */
+    public void loadRsf(RsfContext rsfContext) throws Throwable;
 }

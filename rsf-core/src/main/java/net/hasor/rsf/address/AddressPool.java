@@ -88,22 +88,27 @@ public class AddressPool implements RsfUpdater {
     private volatile FlowControlRef                    flowControlRef;
     private volatile RuleRef                           ruleRef;
     private final Object                               poolLock;
-    private final Thread                               timer;
+    private final PoolThread                           timer;
     //
-    class PoolThread implements Runnable {
+    class PoolThread extends Thread {
+        private boolean exitThread = false;
+        public void stopTimer() {
+            this.exitThread = true;
+        }
         public void run() {
+            this.exitThread = false;
             RsfSettings rsfSettings = rsfEnvironment.getSettings();
             long refreshCacheTime = rsfSettings.getRefreshCacheTime();
             long nextCheckSavePoint = 0;
             logger.info("AddressPool - Timer -> start, refreshCacheTime = {}.", refreshCacheTime);
-            while (true) {
+            while (!this.exitThread) {
                 try {
                     Thread.sleep(refreshCacheTime);
                 } catch (InterruptedException e) {
                     /**/
                 }
                 logger.info("AddressPool - refreshCache. at = {} , refreshCacheTime = {}.", nowTime(), refreshCacheTime);
-                refreshCache();
+                refreshAddressCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
                     nextCheckSavePoint = System.currentTimeMillis() + (1 * 60 * 60 * 1000);/*每小时保存一次地址本快照。*/
                     try {
@@ -113,6 +118,7 @@ public class AddressPool implements RsfUpdater {
                     }
                 }
             }
+            logger.info("AddressPool - Timer -> stop.");
         }
     }
     //
@@ -207,8 +213,14 @@ public class AddressPool implements RsfUpdater {
     public void startTimer() {
         if (this.inited.compareAndSet(false, true)) {
             this.readAddress();//当启动时，进行一次地址复原。
-            this.logger.info("start address snapshot Thread[{}].", timer.getName());
+            this.logger.info("startTimer address snapshot Thread[{}].", timer.getName());
             this.timer.start();
+        }
+    }
+    public void shutdownTimer() {
+        if (this.inited.compareAndSet(true, false)) {
+            this.logger.info("shutdownTimer address snapshot Thread[{}].", timer.getName());
+            this.timer.stopTimer();
         }
     }
     //
@@ -228,7 +240,7 @@ public class AddressPool implements RsfUpdater {
         this.rulerCache = new AddressCacheResult(this);
         this.ruleParser = new RuleParser(rsfSettings);
         this.poolLock = new Object();
-        this.timer = new Thread(new PoolThread());
+        this.timer = new PoolThread();
         this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
         this.timer.setDaemon(true);
         this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
@@ -345,19 +357,35 @@ public class AddressPool implements RsfUpdater {
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
-     * @param address 将要删除的地址。
+     * @param invalidAddress 将要删除的地址。
      */
-    public void removeAddress(String serviceID, InterAddress address) {
+    public void removeAddress(String serviceID, InterAddress invalidAddress) {
+        this.removeAddress(serviceID, Arrays.asList(invalidAddress));
+    }
+    /**
+     * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
+     * @param serviceID 服务ID。
+     * @param invalidAddressSet 将要删除的地址。
+     */
+    public void removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet) {
         long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
-            logger.info("serviceID ={} ,remove address = {} ,bucket is not exist.", serviceID, address);
+            logger.info("serviceID ={} ,bucket is not exist.", serviceID);
             return;
         }
-        logger.info("serviceID ={} ,remove address = {} ,wait {} -> active.", serviceID, address, invalidWaitTime);
-        bucket.removeAddress(address);
-        bucket.refreshAddress();
-        this.rulerCache.reset();
+        StringBuilder strBuilder = new StringBuilder("");
+        if (invalidAddressSet == null || invalidAddressSet.isEmpty()) {
+            strBuilder.append("empty.");
+        } else {
+            for (InterAddress invalidAddress : invalidAddressSet) {
+                strBuilder.append(invalidAddress.toHostSchema() + ",");
+                bucket.removeAddress(invalidAddress);
+                bucket.refreshAddress();
+                this.rulerCache.reset();
+            }
+        }
+        logger.info("serviceID ={} ,remove invalidAddress = {} ,wait {} -> active.", serviceID, strBuilder.toString(), invalidWaitTime);
     }
     public void removeAddress(InterAddress address) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
@@ -396,7 +424,7 @@ public class AddressPool implements RsfUpdater {
         saveScript("flowControl-default", flowControl);
         logger.info("update default flowControl -> update ok");
         this.flowControlRef = flowControlRef;
-        this.refreshCache();
+        this.refreshAddressCache();
     }
     /**
      * 更新服务的流控规则。
@@ -421,7 +449,7 @@ public class AddressPool implements RsfUpdater {
             saveScript("flowControl-" + serviceID, flowControl);
             logger.info("update flowControl service={} -> update ok", serviceID);
             bucket.setFlowControlRef(flowControlRef);
-            this.refreshCache();
+            this.refreshAddressCache();
         }
     }
     /**
@@ -440,7 +468,7 @@ public class AddressPool implements RsfUpdater {
         saveScript("routeType-" + routeType.name() + "-default", script);
         logger.info("update default rules -> update ok");
         this.ruleRef = ruleRef;
-        this.refreshCache();
+        this.refreshAddressCache();
     }
     /**
      * 更新某个服务的路由规则脚本。
@@ -465,9 +493,9 @@ public class AddressPool implements RsfUpdater {
         saveScript("routeType-" + routeType.name() + "-default", script);
         logger.info("update rules service={} -> update ok", serviceID);
         bucket.setRuleRef(ruleRef);
-        this.refreshCache();
+        this.refreshAddressCache();
     }
-    public void refreshAddress(String serviceID) {
+    public void refreshAddressCache(String serviceID) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             AddressBucket bucket = this.addressPool.get(serviceID);
@@ -477,7 +505,7 @@ public class AddressPool implements RsfUpdater {
         this.rulerCache.reset();
     }
     /**刷新地址缓存*/
-    public void refreshCache() {
+    public void refreshAddressCache() {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             Set<String> keySet = this.addressPool.keySet();

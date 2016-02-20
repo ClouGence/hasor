@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.event;
+package net.hasor.rsf;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
 /**
- * 更新服务的地址本
- * @version : 2016年2月18日
+ * Rsf 制定 Hasor Module。
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UpdateAddressEvent extends RsfCenterEvent {
-    public static final String APPEND_TYPE = "APPEND";
-    public static final String REMOVE_TYPE = "REMOVE";
-    public static final String UPDATE_TYPE = "UPDATE";
+public abstract class RsfModule implements Module, RsfPlugin {
+    @Override
+    public final void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.bindType(RsfPlugin.class).uniqueName().toInstance(this);
+    }
 }

@@ -40,12 +40,29 @@ public interface RsfUpdater {
     /**更新服务路由策略*/
     public void updateFlowControl(String serviceID, String flowControl);
     //
-    /**追加一批新地址*/
+    /**
+     * 新增或追加更新服务地址信息。<p>
+     * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
+     * @param serviceID 服务ID。
+     * @param newHostSet 追加更新的地址。
+     */
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet);
     /**刷新服务的地址本*/
-    public void refreshAddress(String serviceID);
-    /**删除服务上的一个地址*/
-    public void removeAddress(String serviceID, InterAddress address);
+    public void refreshAddressCache(String serviceID);
+    /**刷新地址缓存*/
+    public void refreshAddressCache();
+    /**
+     * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
+     * @param serviceID 服务ID。
+     * @param invalidAddressSet 将要删除的地址。
+     */
+    public void removeAddress(String serviceID, InterAddress invalidAddress);
+    /**
+     * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
+     * @param serviceID 服务ID。
+     * @param invalidAddressSet 将要删除的地址。
+     */
+    public void removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet);
     /**某一个地址不可用了，从所有服务中删除这个地址*/
     public void removeAddress(InterAddress address);
 }

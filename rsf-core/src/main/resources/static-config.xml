@@ -3,10 +3,13 @@
 	<!-- 框架配置，包扫描范围 -->
 	<hasor>
 		<loadPackages>net.hasor.rsf.*</loadPackages>
+		<modules>
+			<module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
+		</modules>
 	</hasor>
-
+	
 	<!-- Hasor-RSF -->
-	<hasor.rsfConfig address="local" port="2180" unitName="local">
+	<hasor.rsfConfig enable="false" address="local" port="2180" unitName="local">
 		<!--注册中心，用于更新服务列表的配置服务器 -->
 		<!-- <centerServer address="local" port="8082" interval="60000" /> -->
 

@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center;
+package net.hasor.rsf.center.support;
+import net.hasor.rsf.RsfUpdater;
 /**
- * 注册中心消息接收器
+ * 更新地址本
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterListener {
-    public boolean onEvent(String serviceID, String eventType, String eventBody) throws Throwable;
+interface EventProcess {
+    public boolean processEvent(RsfUpdater rsfUpdater, String serviceID, String eventBody);
 }

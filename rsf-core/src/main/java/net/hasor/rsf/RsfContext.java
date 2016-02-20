@@ -17,6 +17,7 @@ package net.hasor.rsf;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -56,6 +57,8 @@ public interface RsfContext {
     public InterAddress bindAddress();
     /**获取RSF配置*/
     public RsfSettings getSettings();
+    /**获取IoC容器*/
+    public AppContext getAppContext();
     /**获取地址路由更新接口。*/
     public RsfUpdater getUpdater();
     /**获取类加载器。*/

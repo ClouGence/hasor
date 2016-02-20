@@ -16,6 +16,7 @@
 package test.net.hasor.rsf._06_caller;
 import java.net.URI;
 import java.util.List;
+import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfBinder;
@@ -96,6 +97,11 @@ public class EmpytRsfContext implements RsfContext {
     }
     @Override
     public InterAddress bindAddress() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public AppContext getAppContext() {
         // TODO Auto-generated method stub
         return null;
     }
