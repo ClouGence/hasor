@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.domain;
+import java.io.Serializable;
 /**
  * 
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class PublishInfo {
+public class PublishInfo implements Serializable {
+    private static final long serialVersionUID = -7962837923093982098L;
     /** 唯一标识（客户端唯一标识）。*/
-    private String bindID;
+    private String            bindID;
     /** 服务名称。*/
-    private String bindName;
+    private String            bindName;
     /** 服务分组。*/
-    private String bindGroup;
+    private String            bindGroup;
     /** 服务版本。*/
-    private String bindVersion;
+    private String            bindVersion;
     /** 注册的服务类型。*/
-    private String bindType;
+    private String            bindType;
     /** 获取客户端调用服务超时时间。*/
-    private int    clientTimeout;
+    private int               clientTimeout;
     /** 获取序列化方式*/
-    private String serializeType;
+    private String            serializeType;
     //
     public String getBindID() {
         return bindID;

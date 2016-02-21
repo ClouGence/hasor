@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfBindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> {
+    private String   centerID      = null;      //在注册中心上的（发布ID or 订阅ID）
     private String   bindID        = null;      //服务ID
     private String   bindName      = null;      //服务名
     private String   bindGroup     = "default"; //服务分组
@@ -34,6 +35,14 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     //
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
+    }
+    /**在注册中心上的（发布ID or 订阅ID）*/
+    public String getCenterID() {
+        return centerID;
+    }
+    /**在注册中心上的（发布ID or 订阅ID）*/
+    public void setCenterID(String centerID) {
+        this.centerID = centerID;
     }
     public String getBindID() {
         if (bindID == null) {

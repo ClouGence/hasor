@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.more.FormatException;
 import org.more.util.StringUtils;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
@@ -32,7 +33,6 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
-import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 服务注册器
@@ -162,17 +162,24 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
+            Hasor.assertIsNotNull(implementation);
+            final AppContext appContext = getContainer().getAppContext();
             return this.toProvider(new Provider<T>() {
                 public T get() {
-                    try {
-                        return implementation.newInstance();
-                    } catch (Throwable e) {
-                        throw new RsfException(e.getMessage(), e);
-                    }
+                    return appContext.getInstance(implementation);
                 }
             });
         }
-        //
+        @Override
+        public ConfigurationBuilder<T> toInfo(final BindInfo<T> bindInfo) {
+            Hasor.assertIsNotNull(bindInfo);
+            final AppContext appContext = getContainer().getAppContext();
+            return this.toProvider(new Provider<T>() {
+                public T get() {
+                    return appContext.getInstance(bindInfo);
+                }
+            });
+        }
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {
             return this.toProvider(new InstanceProvider<T>(instance));
@@ -181,11 +188,6 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> toProvider(Provider<T> provider) {
             this.serviceDefine.setCustomerProvider(provider);
-            return this;
-        }
-        @Override
-        public ConfigurationBuilder<T> toInfo(BindInfo<T> bindInfo) {
-            this.serviceDefine.setBindInfo(bindInfo);
             return this;
         }
         //
@@ -227,6 +229,8 @@ abstract class RsfBindBuilder implements RsfBinder {
             }
             if (array.length > 0) {
                 for (InterAddress bindItem : array) {
+                    if (bindItem == null)
+                        continue;
                     this.addressSet.add(bindItem);
                 }
             }

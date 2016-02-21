@@ -151,6 +151,9 @@ class AddressBucket {
         List<InterAddress> newAddress = new ArrayList<InterAddress>();
         List<InterAddress> toAvailable = new ArrayList<InterAddress>();
         for (InterAddress newHost : newHostSet) {
+            if (newHost == null) {
+                continue;
+            }
             //1.保证不要重复添加。
             boolean doAdd = true;
             for (InterAddress hasAddress : this.allAddressList) {

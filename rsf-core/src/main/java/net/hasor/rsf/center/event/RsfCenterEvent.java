@@ -16,7 +16,8 @@
 package net.hasor.rsf.center.event;
 import org.more.util.StringUtils;
 /**
- * 更新地址本
+ * 注册中心下推送的事件类型
+ * 
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -44,8 +45,11 @@ public enum RsfCenterEvent {
     /**推送默认服务流控规则*/
     RsfCenter_UpdateDefaultFlowControlEvent("UpdateDefaultFlowControlEvent"), //
     /**推送流控流控规则*/
-    RsfCenter_UpdateFlowControlEvent("UpdateFlowControlEvent"),//
-    ;
+    RsfCenter_UpdateFlowControlEvent("UpdateFlowControlEvent");
+    //
+    //---------------------------------------------------------------------------------------------
+    //
+    //
     private String eventType;
     RsfCenterEvent(String eventType) {
         this.eventType = eventType;

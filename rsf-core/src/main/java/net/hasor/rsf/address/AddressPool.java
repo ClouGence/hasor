@@ -536,6 +536,10 @@ public class AddressPool implements RsfUpdater {
         }
         //
         List<InterAddress> addresses = this.rulerCache.getAddressList(serviceID, methodName, args);
+        if (addresses == null || addresses.isEmpty()) {
+            return null;
+        }
+        //
         InterAddress doCallAddress = null;
         //
         /*并发下不需要保证瞬时的一致性,只要保证最终一致性就好.*/

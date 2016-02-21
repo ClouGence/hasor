@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.context;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -165,16 +166,16 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         //
         @Override
         public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
-            try {
+            try {dd//死锁
                 InterAddress target = targetProvider.get();
-                rsfNetManager.getChannel(target).get().sendData(info, null);
+                rsfNetManager.getChannel(target).get(info.getClientTimeout(), TimeUnit.MILLISECONDS).sendData(info, null);
             } catch (Exception e) {
                 logger.error("sendRequest - " + e.getMessage(), e);
             }
         }
         @Override
         public void sendResponse(InterAddress target, ResponseInfo info) {
-            try {
+            try {dd//死锁
                 rsfNetManager.getChannel(target).get().sendData(info, null);
             } catch (Exception e) {
                 logger.error("sendResponse - " + e.getMessage(), e);

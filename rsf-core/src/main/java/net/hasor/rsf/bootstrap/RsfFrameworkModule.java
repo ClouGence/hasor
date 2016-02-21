@@ -32,6 +32,7 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
+import net.hasor.rsf.center.client.RsfCenterRsfModule;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.filters.local.LocalPref;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
@@ -56,8 +57,8 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         //
         //1.组装 RsfContext 对象
         final RsfEnvironment environment = new DefaultRsfEnvironment(env);
-        final RsfBeanContainer rsfContainer = Hasor.autoAware(environment, new RsfBeanContainer(environment));
-        final AbstractRsfContext rsfContext = Hasor.autoAware(environment, new AbstractRsfContext(rsfContainer) {});
+        final RsfBeanContainer rsfContainer = new RsfBeanContainer(environment);
+        final AbstractRsfContext rsfContext = new AbstractRsfContext(rsfContainer) {};
         //
         //2.监听启动和销毁事件
         Hasor.addShutdownListener(environment, new EventListener<AppContext>() {
@@ -76,6 +77,9 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
                     pluginList = new ArrayList<RsfPlugin>(pluginList);
                 }
                 pluginList.add(0, RsfFrameworkModule.this);
+                //
+                rsfContainer.setAppContext(eventData);
+                rsfContext.setAppContext(eventData);
                 rsfContext.start(pluginList.toArray(new RsfPlugin[pluginList.size()]));
             }
         });
@@ -104,5 +108,6 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         RsfBinder rsfBinder = rsfContext.binder();
         rsfBinder.bindFilter("LocalPref", new LocalPref());
         rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
+        new RsfCenterRsfModule().loadRsf(rsfContext);
     }
 }

@@ -20,10 +20,10 @@ package net.hasor.rsf.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Events {
-    /**发布服务提供者*/
-    public static final String Rsf_PublishProviderService = "PublishProviderService";
-    /**订阅服务消费者*/
-    public static final String Rsf_ReceiveConsumerService = "ReceiveConsumerService";
-    /**删除服务*/
-    public static final String Rsf_RemoteService          = "RemoteService";
+    /**发布服务*/
+    public static final String Rsf_ProviderService = "ProviderService";
+    /**订阅服务*/
+    public static final String Rsf_ConsumerService = "ConsumerService";
+    /**删除发布或订阅*/
+    public static final String Rsf_DeleteService   = "DeleteService";
 }

@@ -240,7 +240,7 @@ public abstract class RsfRequestManager {
             Object[] args = rsfRequest.getParameterObject();
             InterAddress address = target.get(serviceID, methodName, args);
             if (address == null) {
-                throw new RsfException(ProtocolStatus.Unknown, "address Unknown.");
+                throw new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable.");
             }
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
             startRequest(rsfFuture);//                  <- 1.计时request。

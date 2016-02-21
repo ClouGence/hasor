@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.domain.PublishInfo;
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
+@RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
     /**发布服务
      * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除发布。*/
-    public String publishService(InterAddress host, PublishInfo info);
+    public String publishService(String hostString, PublishInfo info);
     /** 订阅服务
      * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除订阅。*/
-    public String receiveService(InterAddress host, PublishInfo info);
-    //
+    public String receiveService(String hostString, PublishInfo info);
     /**根据订阅ID删除订阅信息。*/
-    public boolean removeRegister(InterAddress host, String registerID);
+    public boolean removeRegister(String hostString, String registerID);
 }

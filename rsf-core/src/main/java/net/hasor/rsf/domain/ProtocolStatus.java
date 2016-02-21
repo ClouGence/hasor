@@ -23,14 +23,14 @@ package net.hasor.rsf.domain;
 public interface ProtocolStatus {
     /**未定义*/
     public static final short Unknown            = 0;
+    /**序列化类型未定义。*/
+    public static final short SerializeForbidden = 210;
     /**不支持的协议版本。*/
     public static final short ProtocolUndefined  = 505;
     /**协议编码解码错误。*/
-    public static final short ProtocolError      = 505;
+    public static final short ProtocolError      = 506;
     /**序列化异常。*/
     public static final short SerializeError     = 511;
-    /**序列化类型未定义。*/
-    public static final short SerializeForbidden = 210;
     /**客户端错误。*/
     public static final short NetworkError       = 600;
     //
@@ -41,13 +41,13 @@ public interface ProtocolStatus {
     /**服务资源不可用。*/
     public static final short Forbidden          = 403;
     /**服务资源不可用。*/
-    public static final short QueueFull          = 403;
+    public static final short QueueFull          = 404;
     /**调用服务执行出错，通常是遭到异常抛出。*/
     public static final short InvokeError        = 500;
     //-----------------------------------------------------Client(Request)
     //
     /**达到发送限制。*/
-    public static final short SendLimitPolicy    = 408;
+    public static final short SendLimitPolicy    = 501;
     /**超出允许的时间。*/
     public static final short Timeout            = 408;
     //

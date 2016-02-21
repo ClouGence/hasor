@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -39,6 +39,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.domain.Events;
 import net.hasor.rsf.domain.RsfBindInfoWrap;
 /**
  * 
@@ -68,6 +69,9 @@ public class RsfBeanContainer implements AppContextAware {
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
+    }
+    public AppContext getAppContext() {
+        return appContext;
     }
     //
     /**
@@ -150,14 +154,8 @@ public class RsfBeanContainer implements AppContextAware {
         if (info == null)
             return null;
         Provider<?> target = info.getCustomerProvider();
-        BindInfo<?> bindInfo = info.getBindInfo();
-        if (target == null && bindInfo == null) {
-            return null;
-        }
         if (target != null) {
             return target;
-        } else if (this.appContext != null) {
-            return this.appContext.getProvider(bindInfo);
         }
         return null;
     }
@@ -229,6 +227,14 @@ public class RsfBeanContainer implements AppContextAware {
         }
         logger.info("service to public, id= {}", serviceID);
         ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
+        //
+        if (serviceDefine.getCustomerProvider() != null) {
+            EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+            eventContext.fireAsyncEvent(Events.Rsf_ProviderService, serviceDefine.getDomain());
+        } else {
+            EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+            eventContext.fireAsyncEvent(Events.Rsf_ConsumerService, serviceDefine.getDomain());
+        }
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
     }
     /**
@@ -254,12 +260,17 @@ public class RsfBeanContainer implements AppContextAware {
 }
 class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
     private RsfBeanContainer rsfContainer;
-    public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceDefine) {
-        super(serviceDefine.getDomain());
+    private ServiceInfo<T>   serviceInfo;
+    public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceInfo) {
+        super(serviceInfo.getDomain());
         this.rsfContainer = rsfContainer;
+        this.serviceInfo = serviceInfo;
     }
     @Override
     public boolean unRegister() {
+        EventContext eventContext = this.rsfContainer.getAppContext().getEnvironment().getEventContext();
+        eventContext.fireAsyncEvent(Events.Rsf_DeleteService, this.serviceInfo.getDomain());
+        //
         String serviceID = this.getBindID();
         return this.rsfContainer.recoverService(serviceID);
     }

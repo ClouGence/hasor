@@ -17,7 +17,6 @@ package net.hasor.rsf.container;
 import java.util.ArrayList;
 import java.util.List;
 import org.more.util.StringUtils;
-import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -32,9 +31,7 @@ import net.hasor.rsf.domain.ServiceDomain;
 class ServiceInfo<T> implements CustomerProvider<T> {
     private final ServiceDomain<T>   domain;
     private final List<FilterDefine> filterList;
-    //
     private Provider<T>              customerProvider;
-    private BindInfo<T>              bindInfo;
     //
     //
     public ServiceInfo(Class<T> bindType) {
@@ -90,12 +87,6 @@ class ServiceInfo<T> implements CustomerProvider<T> {
     }
     public void setCustomerProvider(Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
-    }
-    public BindInfo<T> getBindInfo() {
-        return bindInfo;
-    }
-    public void setBindInfo(BindInfo<T> bindInfo) {
-        this.bindInfo = bindInfo;
     }
     //
     /**获取服务元信息。*/
