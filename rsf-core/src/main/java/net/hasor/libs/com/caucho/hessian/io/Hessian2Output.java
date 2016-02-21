@@ -209,7 +209,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     public void completeCall() throws IOException {
         /*
         flushIfFull();
-
+        
         _buffer[_offset++] = (byte) 'Z';
         */
     }

@@ -21,12 +21,14 @@ package net.hasor.rsf.address;
  */
 enum RouteTypeEnum {
     /***/
-    ServiceLevel(1, "服务级"), /***/
-    MethodLevel(2, "方法级"), /***/
+    ServiceLevel(1, "服务级"),
+    /***/
+    MethodLevel(2, "方法级"),
+    /***/
     ArgsLevel(3, "/参数级"),;
     //
     //
-    private int type;
+    private int    type;
     private String desc;
     RouteTypeEnum(int type, String desc) {
         this.type = type;
