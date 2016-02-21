@@ -33,13 +33,13 @@ import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.plugins.filters.local.LocalPref;
-import net.hasor.rsf.plugins.filters.thread.LocalWarpFilter;
+import net.hasor.rsf.filters.local.LocalPref;
+import net.hasor.rsf.filters.thread.LocalWarpFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.web.WebApiBinder;
 /**
- * Rsf 制定 Hasor Module。
+ * Rsf 框架启动入口。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -54,9 +54,12 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             return;
         }
         //
+        //1.组装 RsfContext 对象
         final RsfEnvironment environment = new DefaultRsfEnvironment(env);
         final RsfBeanContainer rsfContainer = Hasor.autoAware(environment, new RsfBeanContainer(environment));
         final AbstractRsfContext rsfContext = Hasor.autoAware(environment, new AbstractRsfContext(rsfContainer) {});
+        //
+        //2.监听启动和销毁事件
         Hasor.addShutdownListener(environment, new EventListener<AppContext>() {
             @Override
             public void onEvent(String event, AppContext eventData) throws Throwable {
@@ -77,6 +80,7 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             }
         });
         //
+        //3.将重要的接口注册到Hasor
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
         apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
@@ -87,11 +91,13 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             }
         });
         //
+        //4.Web环境兼容
         if (apiBinder instanceof WebApiBinder) {
+            logger.info("rsf framework config web.");
             //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
             //webApiBinder.serve("*.rsf").with(RsfServlet.class);
         }
-        //
+        logger.info("rsf framework init finish.");
     }
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {

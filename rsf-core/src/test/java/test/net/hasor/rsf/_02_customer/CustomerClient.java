@@ -1,10 +1,10 @@
 package test.net.hasor.rsf._02_customer;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.bootstrap.RsfFrameworkModule;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 /**
  * 
@@ -14,9 +14,11 @@ import test.net.hasor.rsf.services.EchoService;
 public class CustomerClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfFrameworkModule() {
-            public void loadModule(ApiBinder apiBinder, RsfBinder rsfBinder) throws Throwable {
-                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://127.0.0.1:8000/local").register();
+        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfModule() {
+            @Override
+            public void loadRsf(RsfContext rsfContext) throws Throwable {
+                RsfBinder rsfBinder = rsfContext.binder();
+                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://192.168.31.103:8000/local").register();
             }
         });
         System.out.println("server start.");

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.support;
+package net.hasor.rsf.center.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterListener;
@@ -28,9 +29,12 @@ import net.hasor.rsf.domain.RsfCenterException;
 public class RsfCenterDataReceiver implements RsfCenterListener {
     protected Logger   logger = LoggerFactory.getLogger(getClass());
     private RsfContext rsfContext;
+    public RsfCenterDataReceiver(RsfContext rsfContext) {
+        this.rsfContext = rsfContext;
+    }
     @Override
     public boolean onEvent(String serviceID, String eventType, String eventBody) throws Throwable {
-        RsfUpdater rsfUpdater = rsfContext.getUpdater();
+        RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();
         EventProcess process = EventProcessMapping.findEventProcess(eventType);
         if (process == null) {
             throw new RsfCenterException(eventType + " eventType is undefined.");

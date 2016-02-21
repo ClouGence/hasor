@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center;
+import net.hasor.rsf.RsfService;
 /**
- * 注册中心消息接收器
+ * 接收来自注册中心的消息。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
+@RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterListener {
+    /**
+     * 接收来自注册中心的消息。
+     * @param serviceID 相关服务ID
+     * @param eventType 事件类型
+     * @param eventBody 事件内容
+     * @return 返回事件处理是否成功。
+     * @throws Throwable 如果事件处理失败则引发的错误。
+     */
     public boolean onEvent(String serviceID, String eventType, String eventBody) throws Throwable;
 }

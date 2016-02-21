@@ -37,6 +37,11 @@ public class AddressUnitTest {
         System.out.println(concurrentMap.size());
     }
     @Test
+    public void unitAddress() throws URISyntaxException {
+        InterAddress unit = new InterAddress("rsf://127.0.0.1:8000");
+        System.out.println(unit);
+    }
+    @Test
     public void ipAddress() throws URISyntaxException {
         InterAddress interAddress1 = new InterAddress("127.0.0.1", 8000, "etc2");
         InterAddress interAddress2 = new InterAddress("127.0.0.1", 8000, "etc2");

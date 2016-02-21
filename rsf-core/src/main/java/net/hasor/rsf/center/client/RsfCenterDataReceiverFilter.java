@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.filters.thread;
+package net.hasor.rsf.center.client;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 /**
- * 负责更新{@link RsfRequestLocal}、{@link RsfResponseLocal}
- * @version : 2014年10月25日
+ * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
+ * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class LocalWarpFilter implements RsfFilter {
+public class RsfCenterDataReceiverFilter implements RsfFilter {
+    public RsfCenterDataReceiverFilter(RsfContext rsfContext) {
+        // TODO Auto-generated constructor stub
+    }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        try {
-            RsfRequestLocal.updateLocal(request);
-            RsfResponseLocal.updateLocal(response);
-            chain.doFilter(request, response);
-        } finally {
-            RsfRequestLocal.removeLocal();
-            RsfResponseLocal.removeLocal();
-        }
+        chain.doFilter(request, response);
     }
 }

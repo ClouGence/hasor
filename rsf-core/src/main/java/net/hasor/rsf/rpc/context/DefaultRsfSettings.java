@@ -16,6 +16,8 @@
 package net.hasor.rsf.rpc.context;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
@@ -28,6 +30,7 @@ import net.hasor.core.setting.SettingsWrap;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RSFConstants;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 /**
@@ -61,9 +64,9 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private String          bindAddress          = "local";
     private int             bindPort             = 8000;
     //
-    private String          centerAddress        = "local";
-    private int             centerPort           = 8000;
-    private int             centerInterval       = 60000;
+    private InterAddress[]  centerServerSet      = new InterAddress[0];
+    private int             centerRsfTimeout     = 6000;
+    private int             centerHeartbeatTime  = 15000;
     //
     private String          unitName             = "local";
     private int             invalidWaitTime      = 30000;
@@ -160,16 +163,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.bindPort;
     }
     @Override
-    public String getCenterAddress() {
-        return this.centerAddress;
+    public InterAddress[] getCenterServerSet() {
+        return this.centerServerSet.clone();
     }
-    @Override
-    public int getCenterPort() {
-        return this.centerPort;
+    public int getCenterRsfTimeout() {
+        return this.centerRsfTimeout;
     }
-    @Override
-    public int getCenterInterval() {
-        return this.centerInterval;
+    public int getCenterHeartbeatTime() {
+        return this.centerHeartbeatTime;
     }
     @Override
     public int getConnectTimeout() {
@@ -243,9 +244,34 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
         //
-        this.centerAddress = getString("hasor.rsfConfig.centerServer.address", "local");
-        this.centerPort = getInteger("hasor.rsfConfig.centerServer.port", 8000);
-        this.centerInterval = getInteger("hasor.rsfConfig.centerServer.interval", 60000);;
+        XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
+        if (centerServerArrays != null) {
+            ArrayList<InterAddress> addressArrays = new ArrayList<InterAddress>();
+            for (XmlNode centerServer : centerServerArrays) {
+                String serverURL = centerServer.getText();
+                if (StringUtils.isNotBlank(serverURL)) {
+                    serverURL = serverURL.trim();
+                    try {
+                        if (InterAddress.checkFormat(new URI(serverURL)) == false) {
+                            serverURL = serverURL + "/default";
+                            if (InterAddress.checkFormat(new URI(serverURL)) == false) {
+                                logger.error("centerServer {} format error.", centerServer.getText());
+                                continue;
+                            }
+                        }
+                        InterAddress interAddress = new InterAddress(serverURL);
+                        if (addressArrays.contains(interAddress) == false) {
+                            addressArrays.add(interAddress);
+                        }
+                    } catch (Exception e) {
+                        logger.error("centerServer {} format error -> {}.", centerServer.getText(), e.getMessage());
+                    }
+                }
+            }
+            this.centerServerSet = addressArrays.toArray(new InterAddress[addressArrays.size()]);
+        }
+        this.centerRsfTimeout = getInteger("hasor.rsfConfig.centerServers.timeout", 6000);
+        this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
         this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);

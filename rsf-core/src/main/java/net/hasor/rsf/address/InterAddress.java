@@ -158,6 +158,9 @@ public class InterAddress {
         if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme()) == true) {
             if (StringUtils.isBlank(serviceURL.getHost()) == false) {
                 if (serviceURL.getPort() != 0) {
+                    if (StringUtils.isBlank(serviceURL.getPath())) {
+                        return false;
+                    }
                     String REG = "[A-Za-z0-9_\\.]+";
                     Matcher mat = Pattern.compile("/(" + REG + ")").matcher(serviceURL.getPath());
                     mat.find();

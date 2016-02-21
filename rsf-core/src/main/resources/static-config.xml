@@ -4,14 +4,27 @@
 	<hasor>
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<modules>
+			<!-- RSF框架启动入口 -->
 			<module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
+			<!-- RSF与注册中心插件 -->
+			<module>net.hasor.rsf.center.client.RsfCenterRsfModule</module>
 		</modules>
+		
+		<!-- RSF框架环境变量 -->
+		<environmentVar>
+			<!-- 应用程序代码 -->
+			<RSF_APP_CODE>anonymous</RSF_APP_CODE>
+			<!-- 连接注册中心需要的授权码 -->
+			<RSF_AUTH_CODE></RSF_AUTH_CODE>
+		</environmentVar>
 	</hasor>
 	
 	<!-- Hasor-RSF -->
 	<hasor.rsfConfig enable="false" address="local" port="2180" unitName="local">
 		<!--注册中心，用于更新服务列表的配置服务器 -->
-		<!-- <centerServer address="local" port="8082" interval="60000" /> -->
+		<centerServers timeout="6000" heartbeatTime="15000">
+			<!-- <server>rsf://127.0.0.1:2180</server> -->
+		</centerServers>
 
 		<!--用于设置默认情况下RSF服务的一些基本信息。 version = 在未指定注册服务的版本信息时使用下面这个配置。 group = 在未指定注册服务的分组信息时使用下面这个配置。 timeout = 在未指定注册服务的超时时间情况下 6000 毫秒超时。 -->
 		<defaultServiceValue version="1.0.0" group="RSF" timeout="6000" />

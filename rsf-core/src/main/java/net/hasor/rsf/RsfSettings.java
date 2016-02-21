@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.Settings;
+import net.hasor.rsf.address.InterAddress;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
@@ -68,11 +69,11 @@ public interface RsfSettings extends Settings {
     public int getBindPort();
     //
     /**获取注册中心服务地址*/
-    public String getCenterAddress();
-    /**获取注册中心服务端口号地址*/
-    public int getCenterPort();
-    /**获取于注册中心的心跳频率*/
-    public int getCenterInterval();
+    public InterAddress[] getCenterServerSet();
+    /**与注册中心之间接口调用所使用的超时时间（一般不需要配置，除非发生注册中心接口调用超时异常）*/
+    public int getCenterRsfTimeout();
+    /**与注册中心保持状态所用的心跳时间间隔*/
+    public int getCenterHeartbeatTime();
     //
     /**获取本机所属单元*/
     public String getUnitName();

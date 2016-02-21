@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.plugins.filters.thread;
-import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.rpc.warp.AbstractRsfResponseWarp;
+package net.hasor.rsf.filters.thread;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.rpc.warp.AbstractRsfRequestWarp;
 /**
- * {@link RsfResponse}接口包装器（当前线程绑定）。
+ * {@link RsfRequest}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfResponseLocal extends AbstractRsfResponseWarp {
-    private static final ThreadLocal<RsfResponse> LOCAL_RESPONSE = new ThreadLocal<RsfResponse>();
+public class RsfRequestLocal extends AbstractRsfRequestWarp {
+    private static final ThreadLocal<RsfRequest> LOCAL_REQUEST = new ThreadLocal<RsfRequest>();
     @Override
-    protected final RsfResponse getRsfResponse() {
-        return LOCAL_RESPONSE.get();
+    protected final RsfRequest getRsfRequest() {
+        return LOCAL_REQUEST.get();
     }
     //
     static void removeLocal() {
-        if (LOCAL_RESPONSE.get() != null) {
-            LOCAL_RESPONSE.remove();
+        if (LOCAL_REQUEST.get() != null) {
+            LOCAL_REQUEST.remove();
         }
     }
-    static void updateLocal(RsfResponse rsfResponse) {
+    static void updateLocal(RsfRequest rsfRequest) {
         removeLocal();
-        if (rsfResponse != null) {
-            LOCAL_RESPONSE.set(rsfResponse);
+        if (rsfRequest != null) {
+            LOCAL_REQUEST.set(rsfRequest);
         }
     }
 }
