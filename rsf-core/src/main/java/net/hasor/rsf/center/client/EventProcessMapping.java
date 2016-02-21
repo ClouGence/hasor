@@ -28,7 +28,7 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.event.RsfCenterEvent;
 /**
- * 更新地址本
+ * 注册中心事件响应实现
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */

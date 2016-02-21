@@ -16,7 +16,7 @@
 package net.hasor.rsf.center.client;
 import net.hasor.rsf.RsfUpdater;
 /**
- * 更新地址本
+ * 注册中心事件处理器接口
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
