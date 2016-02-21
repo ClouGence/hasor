@@ -31,7 +31,7 @@ import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.event.StandardEventManager;
 /**
- * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Settings)}方法以初始化。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
