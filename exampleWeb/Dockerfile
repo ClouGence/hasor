@@ -4,7 +4,9 @@ MAINTAINER ZhaoYongChun "zyc@hasor.net"
 # work
 RUN mkdir -p "/work"
 ENV WORK_HOME /work
-ADD . /work/sources
+ADD . /work/sources/demo
+ADD ../ /work/sources/hasor
+
 
 
 # maven
@@ -38,7 +40,10 @@ EXPOSE 8080
 
 
 # === project ===
-WORKDIR /work/sources
+WORKDIR /work/sources/hasor
+RUN mvn install
+
+WORKDIR /work/sources/demo
 RUN mkdir -p "$WORK_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $WORK_HOME/webroot/ROOT.war && \
