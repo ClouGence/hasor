@@ -5,7 +5,6 @@ MAINTAINER ZhaoYongChun "zyc@hasor.net"
 RUN mkdir -p "/work"
 ENV WORK_HOME /work
 ADD . /work/sources/demo
-ADD ../ /work/sources/hasor
 
 
 
@@ -40,8 +39,9 @@ EXPOSE 8080
 
 
 # === project ===
-WORKDIR /work/sources/hasor
-RUN mvn install
+RUN git clone https://git.oschina.net/zycgit/hasor.git /work/sources/hasor && \
+	cd /work/sources/hasor && \
+	mvn install
 
 WORKDIR /work/sources/demo
 RUN mkdir -p "$WORK_HOME/webroot" && \
