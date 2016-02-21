@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
 import net.hasor.core.LifeModule;
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfBinder;
@@ -30,6 +31,7 @@ import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.rsf.center.server.RsfCenterRegisterProvider;
+import net.hasor.rsf.domain.Events;
 /**
  * WebMVC各组件初始化配置。
  * 
@@ -47,6 +49,12 @@ public class RsfCenterServerModule implements LifeModule {
         Settings settings = apiBinder.getEnvironment().getSettings();
         int rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
         settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
+        apiBinder.getEnvironment().getEventContext().addListener(Events.Rsf_Initialized, new EventListener<RsfContext>() {
+            @Override
+            public void onEvent(String event, RsfContext eventData) throws Throwable {
+                eventData.getSettings().refreshRsfConfig();
+            }
+        });
         this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
         //
         // 2.工作模式

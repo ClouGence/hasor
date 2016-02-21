@@ -25,7 +25,7 @@
 	<rsfCenter workAt="alone" serverID="0">
 		<!-- RSF消息通信使用端口，rsf-center集群之间选举出 leader 之后，注册中心所有写操作都将发消息到这台机器。 -->
 		<rsfPort>2180</rsfPort>
-		
+
 		<!-- ZooKeeper 配置，ZK的作用是让rsf-center集群能够感知到所有rsf-center服务器，并且在rsf-center集群中选举出一个 leader -->
 		<zooKeeper>
 			<!-- defaultBindPort：默认数据通信端口，defaultElectionPort：默认选举端口 -->

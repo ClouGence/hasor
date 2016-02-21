@@ -54,24 +54,24 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfNetManager {
-    protected Logger                                                      logger = LoggerFactory.getLogger(getClass());
-    private final RsfEnvironment                                          rsfEnvironment;
-    private final TimerManager                                            timerManager;
-    private final ConcurrentMap<InterAddress, BasicFuture<RsfNetChannel>> channelMapping;
-    private final EventLoopGroup                                          workLoopGroup;
-    private final NioEventLoopGroup                                       listenLoopGroup;
-    private final ReceivedListener                                        receivedListener;
-    private final ChannelRegister                                         channelRegister;
+    protected Logger                                                logger = LoggerFactory.getLogger(getClass());
+    private final RsfEnvironment                                    rsfEnvironment;
+    private final TimerManager                                      timerManager;
+    private final ConcurrentMap<String, BasicFuture<RsfNetChannel>> channelMapping;
+    private final EventLoopGroup                                    workLoopGroup;
+    private final NioEventLoopGroup                                 listenLoopGroup;
+    private final ReceivedListener                                  receivedListener;
+    private final ChannelRegister                                   channelRegister;
     //
-    private InterAddress                                                  bindAddress;
-    private RsfNetChannel                                                 bindListener;
+    private InterAddress                                            bindAddress;
+    private RsfNetChannel                                           bindListener;
     //
     //
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener receivedListener) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         int connectTimeout = rsfSettings.getConnectTimeout();
         this.timerManager = new TimerManager(connectTimeout, "RSF-Network");
-        this.channelMapping = new ConcurrentHashMap<InterAddress, BasicFuture<RsfNetChannel>>();
+        this.channelMapping = new ConcurrentHashMap<String, BasicFuture<RsfNetChannel>>();
         //
         int workerThread = rsfSettings.getNetworkWorker();
         int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
@@ -99,11 +99,11 @@ public class RsfNetManager {
     }
     /** 建立或获取和远程的连接。 */
     public Future<RsfNetChannel> getChannel(InterAddress target) throws InterruptedException, ExecutionException {
-        Future<RsfNetChannel> channelFuture = this.channelMapping.get(target);
+        Future<RsfNetChannel> channelFuture = this.channelMapping.get(target.getHostPort());
         if (channelFuture != null && channelFuture.isDone()) {
             RsfNetChannel channel = channelFuture.get();
             if (channel != null && channel.isActive() == false) {
-                this.channelMapping.remove(target);// conect is bad.
+                this.channelMapping.remove(target.getHostPort());// conect is bad.
                 channelFuture = null;
             }
         }
@@ -116,17 +116,18 @@ public class RsfNetManager {
     }
     /*连接到远程机器*/
     private Future<RsfNetChannel> connSocket(InterAddress hostAddress) {
-        BasicFuture<RsfNetChannel> result = this.channelMapping.get(hostAddress);
+        String hostPort = hostAddress.getHostPort();
+        BasicFuture<RsfNetChannel> result = this.channelMapping.get(hostPort);
         if (result != null) {
             return result;
         }
         synchronized (this) {
-            result = this.channelMapping.get(hostAddress);
+            result = this.channelMapping.get(hostPort);
             if (result != null) {
                 return result;
             }
             result = new BasicFuture<RsfNetChannel>();
-            this.channelMapping.put(hostAddress, result);
+            this.channelMapping.put(hostPort, result);
             logger.info("connect to {} ...", hostAddress);
             Bootstrap boot = new Bootstrap();
             boot.group(this.workLoopGroup);
@@ -239,13 +240,14 @@ public class RsfNetManager {
     }
     private class ManagerChannelRegister implements ChannelRegister {
         public void completed(InterAddress targetAddress, RsfNetChannel netChannel) {
-            BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress);
+            String hostPort = targetAddress.getHostPort();
+            BasicFuture<RsfNetChannel> future = channelMapping.get(hostPort);
             if (future != null) {
                 future.completed(netChannel);
             } else {
                 future = new BasicFuture<RsfNetChannel>();
                 future.completed(netChannel);
-                channelMapping.put(targetAddress, future);
+                channelMapping.put(hostPort, future);
             }
         }
         public void failed(InterAddress targetAddress, Throwable cause) {
@@ -253,7 +255,7 @@ public class RsfNetManager {
                 logger.error(cause.getMessage(), cause);
                 return;
             }
-            BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress);
+            BasicFuture<RsfNetChannel> future = channelMapping.get(targetAddress.getHostPort());
             if (future != null) {
                 future.failed(cause);
             }

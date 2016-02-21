@@ -64,6 +64,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("connected form {}", ctx.channel().remoteAddress());
         if (this.shakeHands.get() == false) {
             RequestInfo request = new RequestInfo();
             request.setRequestID(-1);

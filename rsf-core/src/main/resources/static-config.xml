@@ -18,7 +18,7 @@
 	<!-- Hasor-RSF -->
 	<hasor.rsfConfig enable="false" address="local" port="2180" unitName="local">
 		<!--注册中心，用于更新服务列表的配置服务器 -->
-		<centerServers enable="true" timeout="6000" heartbeatTime="15000">
+		<centerServers enable="false" timeout="6000" heartbeatTime="15000">
 			<!-- <server>rsf://127.0.0.1:2180</server> -->
 		</centerServers>
 
