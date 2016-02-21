@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.manager;
-import net.hasor.rsf.address.InterAddress;
+package test.net.hasor.rsf.center.alone;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.center.core.startup.RsfCenterServerModule;
 /**
- * 服务提供者管理器
- * @version : 2015年6月8日
+ * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProviderManager {
-    /**登记提供者*/
-    public String pushProvider(String serviceID, InterAddress interAddress) {
-        return null;
+public class TestServerG {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    public static void main(String[] args) throws IOException {
+        Hasor.createAppContext("/alone/rsf-server-g.xml", new RsfCenterServerModule());
+        System.in.read();
     }
 }

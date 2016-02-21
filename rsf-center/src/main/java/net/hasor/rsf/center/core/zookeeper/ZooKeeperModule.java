@@ -46,14 +46,14 @@ public class ZooKeeperModule implements LifeModule {
             // 单机模式
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
-            writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
+            writer.append("\n zooKeeperBindAddress = " + cfg.getClusterBindInetAddress());
             zkNode = new ZooKeeperNode_Alone(cfg);
             break;
         case Master:
             // 集群主机模式
             writer.append("\n              dataDir = " + cfg.getDataDir());
             writer.append("\n              snapDir = " + cfg.getSnapDir());
-            writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
+            writer.append("\n zooKeeperBindAddress = " + cfg.getClusterBindInetAddress());
             writer.append("\n             tickTime = " + cfg.getTickTime());
             writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
             writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
@@ -70,6 +70,7 @@ public class ZooKeeperModule implements LifeModule {
             throw new InterruptedException("undefined workMode : " + rsfCenterCfg.getWorkMode().getCodeString());
         }
         writer.append("\n            zkServers = " + cfg.getZkServersStrForLog());
+        writer.append("\n          bindAddress = " + cfg.getHostAndPort());
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
         //

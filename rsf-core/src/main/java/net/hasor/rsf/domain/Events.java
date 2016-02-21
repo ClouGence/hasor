@@ -21,9 +21,19 @@ package net.hasor.rsf.domain;
  */
 public interface Events {
     /**发布服务*/
-    public static final String Rsf_ProviderService = "ProviderService";
+    public static final String Rsf_ProviderService = "RsfEvent_ProviderService";
     /**订阅服务*/
-    public static final String Rsf_ConsumerService = "ConsumerService";
+    public static final String Rsf_ConsumerService = "RsfEvent_ConsumerService";
     /**删除发布或订阅*/
-    public static final String Rsf_DeleteService   = "DeleteService";
+    public static final String Rsf_DeleteService   = "RsfEvent_DeleteService";
+    //
+    /**Rsf框架事件，当调用start方法开始时触发该事件。
+     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
+    public static final String Rsf_Initialized     = "RsfEvent_Initialized";
+    /**Rsf框架事件，当完成Rsf启动时触发该事件。
+     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
+    public static final String Rsf_Started         = "RsfEvent_Started";
+    /**Rsf框架事件，当调用shutdown方法时触发该事件。
+     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#shutdown()*/
+    public static final String Rsf_Shutdown        = "RsfEvent_Shutdown";
 }

@@ -33,6 +33,11 @@ public class RsfCenterRsfModule implements RsfPlugin {
     protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfModule.class);
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
+        boolean enable = rsfContext.getSettings().isEnableCenter();
+        if (!enable) {
+            return;
+        }
+        //
         RsfBinder rsfBinder = rsfContext.binder();
         //
         // 1.注册中心消息接收接口

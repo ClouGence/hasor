@@ -73,7 +73,7 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 logger.info("rsf framework starting.");
                 List<RsfPlugin> pluginList = eventData.findBindingBean(RsfPlugin.class);
-                if (pluginList != null) {
+                if (pluginList == null) {
                     pluginList = new ArrayList<RsfPlugin>(pluginList);
                 }
                 pluginList.add(0, RsfFrameworkModule.this);

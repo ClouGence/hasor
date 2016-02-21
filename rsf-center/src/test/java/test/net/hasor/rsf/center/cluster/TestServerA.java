@@ -17,7 +17,7 @@ package test.net.hasor.rsf.center.cluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.center.core.startup.StartAppModule;
+import net.hasor.rsf.center.core.startup.RsfCenterServerModule;
 /**
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
@@ -25,6 +25,6 @@ import net.hasor.rsf.center.core.startup.StartAppModule;
 public class TestServerA {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public static void main(String[] args) {
-        Hasor.createAppContext("/cluster/rsf-server-a.xml", new StartAppModule());
+        Hasor.createAppContext("/cluster/rsf-server-a.xml", new RsfCenterServerModule());
     }
 }

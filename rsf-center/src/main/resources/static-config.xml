@@ -90,7 +90,5 @@
 	</rsfCenter>
 	
 	<!-- RSF -->
-	<hasor.rsfConfig address="local" port="8000" unitName="local">
-
-	</hasor.rsfConfig>
+	<hasor.rsfConfig enable="true" />
 </config>

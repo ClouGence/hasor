@@ -19,7 +19,6 @@ import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
 import net.hasor.rsf.center.core.filters.JumpFilter;
 import net.hasor.rsf.center.core.filters.VarFilter;
-import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -32,15 +31,11 @@ public class WebManagerModule extends WebModule implements LifeModule {
     public static final String CenterStartEvent = "CenterStartEvent";
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        // WorkAt
-        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
-        logger.info("rsf work mode at : ({}){}", cfg.getWorkMode().getCodeType(), cfg.getWorkMode().getCodeString());
-        //
         // Filters
         apiBinder.filter("/*").through(new JumpFilter());
         apiBinder.filter("/*").through(new VarFilter());
         // Rsf-center
-        apiBinder.installModule(new StartAppModule(cfg));
+        apiBinder.installModule(new RsfCenterServerModule());
     }
     //
     //

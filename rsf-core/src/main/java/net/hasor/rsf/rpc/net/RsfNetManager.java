@@ -136,9 +136,23 @@ public class RsfNetManager {
                     ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this));
                 }
             });
-            configBoot(boot).connect(hostAddress.toSocketAddress()).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+            configBoot(boot).connect(hostAddress.toSocketAddress()).addListener(new ConnSocketCallBack(result));
         }
         return result;
+    }
+    private static class ConnSocketCallBack implements ChannelFutureListener {
+        private BasicFuture<RsfNetChannel> result = null;
+        public ConnSocketCallBack(BasicFuture<RsfNetChannel> result) {
+            this.result = result;
+        }
+        public void operationComplete(ChannelFuture future) {
+            if (!future.isSuccess()) {
+                future.channel().close();
+                this.result.failed(future.cause());
+            } else {
+                //TODO
+            }
+        }
     }
     //
     /** 启动服务器。 */

@@ -18,7 +18,7 @@ public class CustomerClient {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://192.168.31.103:8000/local").register();
+                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://30.10.220.79:8000/local").register();
             }
         });
         System.out.println("server start.");

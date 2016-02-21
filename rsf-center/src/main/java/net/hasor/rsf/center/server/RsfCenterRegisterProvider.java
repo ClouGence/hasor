@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.manager;
-import net.hasor.rsf.address.InterAddress;
+package net.hasor.rsf.center.server;
+import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.domain.PublishInfo;
 /**
- * 服务消费者管理器
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsumerManager {
-    /**登记消费者*/
-    public String pushConsumer(String serviceID, InterAddress interAddress) {
+public class RsfCenterRegisterProvider implements RsfCenterRegister {
+    @Override
+    public String publishService(String hostString, PublishInfo info) {
+        // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public String receiveService(String hostString, PublishInfo info) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public boolean removeRegister(String hostString, String registerID) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

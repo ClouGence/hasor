@@ -38,11 +38,11 @@ import net.hasor.rsf.utils.TimerManager;
 public class RpcCodec extends ChannelInboundHandlerAdapter {
     protected Logger               logger     = LoggerFactory.getLogger(getClass());
     private final AtomicBoolean    shakeHands = new AtomicBoolean(false);
-    private InterAddress           bindAddress;                                     //
-    private InterAddress           targetAddress;                                   //
-    private final TimerManager     rsfTimerManager;                                 //
-    private final ChannelRegister  channelRegister;                                 //
-    private final ReceivedListener rpcEventListener;                                //
+    private InterAddress           bindAddress;
+    private InterAddress           targetAddress;
+    private final TimerManager     rsfTimerManager;
+    private final ChannelRegister  channelRegister;
+    private final ReceivedListener rpcEventListener;
     //
     public RpcCodec(RsfNetManager rsfNetManager) {
         this.logger = LoggerFactory.getLogger(getClass());

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import java.io.IOException;
 import net.hasor.core.Settings;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -83,4 +84,9 @@ public interface RsfSettings extends Settings {
     public long getRefreshCacheTime();
     /**启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇）*/
     public boolean islocalDiskCache();
+    /**是否启用注册中心功能。*/
+    public boolean isEnableCenter();
+    //
+    /**重新加载Rsf配置*/
+    public void refreshRsfConfig() throws IOException;
 }

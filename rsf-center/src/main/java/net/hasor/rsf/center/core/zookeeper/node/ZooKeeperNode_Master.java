@@ -65,7 +65,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         File snapDir = new File(this.zooKeeperCfg.getSnapDir());
         FileTxnSnapLog txnLog = new FileTxnSnapLog(dataDir, snapDir);
         //
-        InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
+        InetSocketAddress inetAddress = this.zooKeeperCfg.getClusterBindInetAddress();
         ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
         cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
         Map<Long, QuorumServer> servers = this.zooKeeperCfg.getZkServers();

@@ -72,7 +72,7 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         // ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, tickTime,
         // minSessionTimeout, maxSessionTimeout, this, new ZKDatabase(txnLog));
         //
-        InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
+        InetSocketAddress inetAddress = this.zooKeeperCfg.getClusterBindInetAddress();
         this.cnxnFactory = ServerCnxnFactory.createFactory();
         this.cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
         //

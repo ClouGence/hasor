@@ -56,9 +56,9 @@ class RsfEventTransport implements EventListener<ServiceDomain<?>> {
                 //
                 this.centerRegister.removeRegister(hostString, eventData.getCenterID());
             }
-            logger.error("eventType = {} , process end.", event);
+            this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, eventData.getBindID());
         } catch (Throwable e) {
-            this.logger.error(e.getMessage(), e);
+            this.logger.error("eventType = {} ,serviceID ={} , process error -> {}", event, eventData.getBindID(), e.getMessage(), e);
         }
     }
     private PublishInfo converTo(ServiceDomain<?> eventData) {

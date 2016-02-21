@@ -144,7 +144,7 @@ public abstract class RsfRequestManager {
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.error("received message for requestID(" + requestID + ") -> error:" + e.getMessage(), e);
+            logger.error("received message for requestID(" + requestID + ") -> error {}", e.getMessage());
             rsfFuture.failed(e);
         } else {
             logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
