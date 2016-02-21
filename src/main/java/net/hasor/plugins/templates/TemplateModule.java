@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates;
-import java.util.List;
 import org.more.util.StringUtils;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
@@ -32,7 +31,7 @@ public class TemplateModule extends WebModule {
             logger.info("template Module not be load. -> engineName not configured.");
             return;
         }
-        List<XmlNode> engineList = settings.merageXmlNode("hasor.template.engineSet", "engine");
+        XmlNode[] engineList = settings.getXmlNodeArray("hasor.template.engineSet.engine");
         XmlNode engineConfig = null;
         for (XmlNode engineType : engineList) {
             engineConfig = null;

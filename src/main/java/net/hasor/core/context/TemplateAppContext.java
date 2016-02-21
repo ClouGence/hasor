@@ -279,7 +279,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         Environment env = this.getEnvironment();
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
         if (loadModule) {
-            List<XmlNode> allModules = env.getSettings().merageXmlNode("hasor.modules", "module");
+            XmlNode[] allModules = env.getSettings().getXmlNodeArray("hasor.modules.module");
             for (XmlNode module : allModules) {
                 if (module == null) {
                     continue;

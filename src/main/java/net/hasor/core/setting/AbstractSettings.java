@@ -479,22 +479,6 @@ public abstract class AbstractSettings implements Settings {
     public XmlNode[] getXmlNodeArray(final String name) {
         return this.getToTypeArray(name, XmlNode.class, null);
     }
-    public List<XmlNode> merageXmlNode(String parentNameSpace, String elementNode) {
-        List<XmlNode> result = new ArrayList<XmlNode>();
-        XmlNode[] nodeArray = getXmlNodeArray(parentNameSpace);
-        if (nodeArray == null || nodeArray.length == 0) {
-            return result;
-        }
-        for (XmlNode atNode : nodeArray) {
-            List<XmlNode> list = atNode.getChildren(elementNode);
-            if (list == null || list.isEmpty()) {
-                continue;
-            }
-            result.addAll(list);
-        }
-        //
-        return result;
-    }
     public String toString() {
         return "Settings[" + this.getClass().getSimpleName() + "]";
     }

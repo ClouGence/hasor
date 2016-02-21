@@ -17,7 +17,6 @@ package net.hasor.core;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 /**
  * <p>
@@ -181,6 +180,4 @@ public interface Settings {
     public String[] getDirectoryPathArray(String name, String defaultValue);
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode[] getXmlNodeArray(String name);
-    /** 将指定父路径下的xml子节点，汇聚到一起返回。 */
-    public List<XmlNode> merageXmlNode(String parentNameSpace, String elementNode);
 }

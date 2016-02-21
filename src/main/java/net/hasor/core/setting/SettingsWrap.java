@@ -16,7 +16,6 @@
 package net.hasor.core.setting;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
@@ -233,9 +232,6 @@ public class SettingsWrap implements Settings {
     }
     public XmlNode[] getXmlNodeArray(String name) {
         return this.settings.getXmlNodeArray(name);
-    }
-    public List<XmlNode> merageXmlNode(String parentNameSpace, String elementNode) {
-        return this.settings.merageXmlNode(parentNameSpace, elementNode);
     }
     @Override
     public String toString() {
