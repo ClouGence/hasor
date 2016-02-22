@@ -33,6 +33,8 @@ public interface ProtocolStatus {
     public static final short SerializeError     = 511;
     /**客户端错误。*/
     public static final short NetworkError       = 600;
+    /**试图调用受保护的服务。*/
+    public static final short Unauthorized       = 401;
     //
     //-----------------------------------------------------Server(Response)
     //
@@ -40,8 +42,10 @@ public interface ProtocolStatus {
     public static final short OK                 = 200;
     /**服务资源不可用。*/
     public static final short Forbidden          = 403;
+    /**找不到服务。*/
+    public static final short NotFound           = 404;
     /**服务资源不可用。*/
-    public static final short QueueFull          = 404;
+    public static final short QueueFull          = 405;
     /**调用服务执行出错，通常是遭到异常抛出。*/
     public static final short InvokeError        = 500;
     //-----------------------------------------------------Client(Request)
@@ -50,12 +54,5 @@ public interface ProtocolStatus {
     public static final short SendLimitPolicy    = 501;
     /**超出允许的时间。*/
     public static final short Timeout            = 408;
-    //
-    //
-    //
-    //    /**试图调用受保护的服务。*/
-    //    Unauthorized(401, ""), //
-    //    /**找不到服务*/
-    //    NotFound(404, ""), //
     //-----------------------------------------------------
 }

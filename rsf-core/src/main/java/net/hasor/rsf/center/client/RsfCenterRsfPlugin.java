@@ -29,12 +29,13 @@ import net.hasor.rsf.domain.Events;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterRsfModule implements RsfPlugin {
-    protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfModule.class);
+public class RsfCenterRsfPlugin implements RsfPlugin {
+    protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfPlugin.class);
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         boolean enable = rsfContext.getSettings().isEnableCenter();
         if (!enable) {
+            logger.info("rsf center hostSet is empyt -> center disable.");
             return;
         }
         //
@@ -43,7 +44,7 @@ public class RsfCenterRsfModule implements RsfPlugin {
         // 1.注册中心消息接收接口
         rsfBinder.rsfService(RsfCenterListener.class)//服务类型
                 .toInstance(new RsfCenterDataReceiver(rsfContext))//服务实现
-                .bindFilter("AuthFilter", new RsfCenterDataReceiverFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterDataVerificationFilter(rsfContext))//服务安全过滤器
                 .register();//注册服务
         //
         // 2.注册中心消息发送接口
@@ -55,14 +56,11 @@ public class RsfCenterRsfModule implements RsfPlugin {
         }
         if (centerList.length != 0) {
             strBuilder.deleteCharAt(strBuilder.length() - 1);
-        } else {
-            logger.info("rsf center hostSet is empyt -> center disable.");
-            return;
         }
         logger.info("rsf center hostSet = {}  -> center enable.", strBuilder.toString());
         rsfBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(faceTimer)//服务接口超时时间
-                .bindFilter("AuthFilter", new RsfCenterDataReceiverFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterDataVerificationFilter(rsfContext))//服务安全过滤器
                 .bindAddress(null, centerList)//
                 .register();
         //

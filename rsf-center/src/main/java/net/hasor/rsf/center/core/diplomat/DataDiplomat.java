@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.diplomat;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import freemarker.template.Configuration;
@@ -76,17 +73,6 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         StringWriter writer = new StringWriter();
         template.process(dataModel, writer);
         return writer.toString();
-    }
-    /** 获取RSF-Center服务器版本 */
-    public String getVersion() {
-        try {
-            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
-            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
-            return !dataLines.isEmpty() ? dataLines.get(0) : null;
-        } catch (Throwable e) {
-            logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
-            return "undefined";
-        }
     }
     /** 时间戳 */
     private String nowData() {
@@ -183,8 +169,8 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         String serverInfoPath = getZooKeeperServerPath();
         zkNode.createNode(ZkNodeType.Persistent, serverInfoPath);
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.serverInfo());
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.getVersion());
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.nowData());
         // -Leader选举
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);

@@ -282,7 +282,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);
         this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
-        this.enableCenter = getBoolean("hasor.rsfConfig.centerServers.enable", false);
+        this.enableCenter = this.centerServerSet.length != 0;
         logger.info("loadRsfConfig complete!");
     }
 }

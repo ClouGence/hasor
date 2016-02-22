@@ -15,15 +15,21 @@
  */
 package net.hasor.rsf.center.domain.constant;
 import java.io.File;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
@@ -33,6 +39,7 @@ import net.hasor.rsf.utils.NetworkUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterCfg {
+    protected static final Logger   logger = LoggerFactory.getLogger(RsfCenterCfg.class);
     // - 通用
     private WorkMode                workMode;
     private long                    serverID;
@@ -54,6 +61,7 @@ public class RsfCenterCfg {
     private int                     electionPort;
     private LearnerType             peerType;
     private int                     rsfPort;
+    private String                  centerVersion;
     //
     //
     private RsfCenterCfg() {}
@@ -121,6 +129,15 @@ public class RsfCenterCfg {
                 }
             }
         }
+        //
+        try {
+            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
+            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            cfg.centerVersion = !dataLines.isEmpty() ? dataLines.get(0) : null;
+        } catch (Throwable e) {
+            logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
+            cfg.centerVersion = "undefined";
+        }
         return cfg;
     }
     public String getZkServersStr() {
@@ -169,6 +186,10 @@ public class RsfCenterCfg {
     //
     //
     //
+    /** 获取RSF-Center服务器版本 */
+    public String getVersion() {
+        return this.centerVersion;
+    }
     public WorkMode getWorkMode() {
         return workMode;
     }

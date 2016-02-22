@@ -31,6 +31,7 @@ import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
 import net.hasor.rsf.center.server.RsfCenterRegisterProvider;
+import net.hasor.rsf.center.server.RsfCenterRegisterVerificationFilter;
 import net.hasor.rsf.domain.Events;
 /**
  * WebMVC各组件初始化配置。
@@ -73,8 +74,14 @@ public class RsfCenterServerModule implements LifeModule {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class).register();
-                rsfBinder.rsfService(RsfCenterListener.class).register();
+                rsfBinder.rsfService(RsfCenterRegister.class)//
+                        .to(RsfCenterRegisterProvider.class)//
+                        .bindFilter("VerificationFilter", new RsfCenterRegisterVerificationFilter(rsfContext))//
+                        .register();
+                //
+                rsfBinder.rsfService(RsfCenterListener.class)// 
+                        .bindFilter("VerificationFilter", new RsfCenterRegisterVerificationFilter(rsfContext))//
+                        .register();
             }
         });
         //

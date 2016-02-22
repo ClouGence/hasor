@@ -67,7 +67,7 @@ abstract class InvokerProcessing implements Runnable {
             String serviceID = "[" + group + "]" + name + "-" + version;
             String errorInfo = "do request(" + requestID + ") failed -> service " + serviceID + " not exist.";
             logger.error(errorInfo);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Forbidden, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.NotFound, errorInfo);
             this.sendResponse(info);
             return;
         }

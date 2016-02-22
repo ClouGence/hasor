@@ -39,7 +39,7 @@ class RsfInvokeFilterChain implements RsfFilterChain {
         Object target = targetProvider == null ? null : targetProvider.get();
         //
         if (target == null) {
-            response.sendStatus(ProtocolStatus.Forbidden, "service " + bindInfo.getBindID() + " not exist.");
+            response.sendStatus(ProtocolStatus.NotFound, "service " + bindInfo.getBindID() + " not exist.");
             return;
         }
         //

@@ -2,7 +2,7 @@
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
 	<hasor.rsfConfig enable="true" address="local" port="8000" unitName="local">
-		<centerServers enable="true">
+		<centerServers>
 <!-- 			<server>rsf://30.10.220.79:2171</server> -->
 <!-- 			<server>rsf://30.10.220.79:2172</server> -->
 <!-- 			<server>rsf://30.10.220.79:2173</server> -->
