@@ -22,31 +22,43 @@ import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.center.domain.RSFCenterConstants;
+import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterRegisterVerificationFilter implements RsfFilter {
-    protected Logger   logger = LoggerFactory.getLogger(getClass());
-    private RsfContext rsfContext;
+    protected Logger    logger = LoggerFactory.getLogger(getClass());
+    private RsfContext  rsfContext;
+    private AuthManager authManager;
     //
     public RsfCenterRegisterVerificationFilter(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
+        this.authManager = rsfContext.getAppContext().getInstance(AuthManager.class);
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
             //-如果是对外发送请求，则添加请求头参数用于注册中心校验
-            //            request.addOption(RSFCenterConstants.RSF_APP_CODE, this.appCode);
             //            request.addOption(RSFCenterConstants.RSF_AUTH_CODE, this.authCode);
             //            request.addOption(RSFCenterConstants.RSF_VERSION, this.rsfVersion);
+            //            boolean authResult = this.authManager.checkAuth(appCode, authCode);
+            //            if (authResult) {
+            chain.doFilter(request, response);
+            //            } else {
+            //                response.sendStatus(ProtocolStatus.Unauthorized, "refused to service registry");
+            //            }
         } else {
             //-如果是来自远程的响应，则校验来自注册中心的响应中授权码是否是本地预先保存的
             String appCode = response.getOption(RSFCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
             String authCode = response.getOption(RSFCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
-            //
+            boolean authResult = this.authManager.checkAuth(appCode, authCode);
+            if (authResult) {
+                chain.doFilter(request, response);
+            } else {
+                response.sendStatus(ProtocolStatus.Unauthorized, "refused to service registry");
+            }
         }
-        chain.doFilter(request, response);
     }
 }

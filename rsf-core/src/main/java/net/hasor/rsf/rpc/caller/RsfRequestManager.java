@@ -17,7 +17,9 @@ package net.hasor.rsf.rpc.caller;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.more.classcode.ASMEngineToos;
 import org.more.future.FutureCallback;
+import org.more.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
@@ -100,7 +102,7 @@ public abstract class RsfRequestManager {
         String serializeType = info.getSerializeType();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture == null) {
-            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
+            logger.warn("received message for requestID:{} -> maybe is timeout! ", requestID);
             return false;
         }
         //
@@ -108,15 +110,23 @@ public abstract class RsfRequestManager {
         RsfResponseObject local = new RsfResponseObject(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
-        logger.debug("received message for requestID({}) -> status is {}", requestID, info.getStatus());
+        logger.debug("received message for requestID:{} -> status is {}", requestID, info.getStatus());
         try {
-            SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
-            byte[] returnDataData = info.getReturnData();
-            Object returnObject = coder.decode(returnDataData);
-            local.sendData(returnObject);
-            return rsfFuture.completed(local);
+            if (info.getStatus() == ProtocolStatus.OK) {
+                SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
+                byte[] returnDataData = info.getReturnData();
+                Object returnObject = coder.decode(returnDataData);
+                local.sendData(returnObject);
+                return rsfFuture.completed(local);
+            } else {
+                String bindID = local.getBindInfo().getBindID();
+                String callMethod = rsfRequest.getMethod().getName();
+                String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
+                logger.error(errorInfo);
+                return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
+            }
         } catch (Throwable e) {
-            String errorInfo = "decode response(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
+            String errorInfo = "decode response for requestID: " + requestID + " failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
             return rsfFuture.failed(e);
         }
@@ -129,10 +139,10 @@ public abstract class RsfRequestManager {
         long requestID = response.getRequestID();
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.debug("received message for requestID({}) -> status is {}", requestID, response.getStatus());
+            logger.debug("received message for requestID: {} -> status is {}", requestID, response.getStatus());
             return rsfFuture.completed(response);
         } else {
-            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
+            logger.warn("received message for requestID: {} -> maybe is timeout! ", requestID);
             return false;
         }
     }
@@ -144,10 +154,10 @@ public abstract class RsfRequestManager {
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.error("received message for requestID(" + requestID + ") -> error {}", e.getMessage());
+            logger.error("received message for requestID: " + requestID + " -> error {}", e.getMessage());
             rsfFuture.failed(e);
         } else {
-            logger.warn("received message for requestID({}) -> maybe is timeout! ", requestID);
+            logger.warn("received message for requestID: {} -> maybe is timeout! ", requestID);
         }
     }
     private RsfFuture removeRsfFuture(long requestID) {
@@ -172,7 +182,7 @@ public abstract class RsfRequestManager {
                 if (rsfCallBack == null)
                     return;
                 /*异常信息*/
-                String errorInfo = "request(" + request.getRequestID() + ") timeout for client.";
+                String errorInfo = "requestID: " + request.getRequestID() + " timeout for client.";
                 logger.error(errorInfo);
                 /*回应Response*/
                 putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
