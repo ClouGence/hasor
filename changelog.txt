@@ -1,4 +1,8 @@
-﻿===== Hasor-Core v2.2.0 (2016-2-23)
+﻿===== Hasor-Core v2.2.1 (2016-?)
+* 改进:
+    01.
+
+===== Hasor-Core v2.2.0 (2016-2-23)
 * 新增:
     01.增加Event事件注册插件，简化时间的注册机制。
     02.Settings接口增加 addSetting方法和clearSetting方法用来增加和删除配置项。
