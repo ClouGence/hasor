@@ -4,8 +4,7 @@ MAINTAINER ZhaoYongChun "zyc@hasor.net"
 # work
 RUN mkdir -p "/work"
 ENV WORK_HOME /work
-ADD . /work/sources/demo
-
+ADD . /work/sources
 
 
 # maven
@@ -25,7 +24,7 @@ ENV PATH $CATALINA_HOME/bin:$PATH
 RUN mkdir -p "$CATALINA_HOME"
 WORKDIR $CATALINA_HOME
 ENV TOMCAT_MAJOR 8
-ENV TOMCAT_VERSION 8.0.32
+ENV TOMCAT_VERSION 8.0.30
 ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
 RUN set -x && \
 	curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz && \
@@ -39,11 +38,7 @@ EXPOSE 8080
 
 
 # === project ===
-RUN git clone https://git.oschina.net/zycgit/hasor.git /work/sources/hasor && \
-	cd /work/sources/hasor && \
-	mvn install
-
-WORKDIR /work/sources/demo
+WORKDIR /work/sources
 RUN mkdir -p "$WORK_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $WORK_HOME/webroot/ROOT.war && \
