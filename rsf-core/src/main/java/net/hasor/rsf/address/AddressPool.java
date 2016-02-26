@@ -17,11 +17,13 @@ package net.hasor.rsf.address;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +38,8 @@ import java.util.zip.ZipOutputStream;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.ExceptionUtils;
+import org.more.util.MatchUtils;
+import org.more.util.MatchUtils.MatchTypeEnum;
 import org.more.util.StringUtils;
 import org.more.util.io.FileUtils;
 import org.slf4j.Logger;
@@ -50,6 +54,8 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
+import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.utils.ZipUtils;
 /**
  * 服务地址池
  * <p>路由策略：
@@ -67,15 +73,14 @@ import net.hasor.rsf.address.route.rule.RuleParser;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected final Logger                             logger       = LoggerFactory.getLogger(getClass());
-    private static final String                        CharsetName  = "UTF-8";
-    private static final String                        ScriptPath   = "/script";
+    protected static final Logger                      logger       = LoggerFactory.getLogger(AddressPool.class);
+    private static final String                        CharsetName  = ZipUtils.CharsetName;
     private static final String                        SnapshotPath = "/snapshot";
+    private static final String                        defaultName  = "default-ruleScript";
     //
     private final AtomicBoolean                        inited       = new AtomicBoolean(false);
     private final File                                 rsfHome;
     private final File                                 indexFile;
-    private final File                                 scriptHome;
     private final File                                 snapshotHome;
     //
     private final RsfEnvironment                       rsfEnvironment;
@@ -90,7 +95,7 @@ public class AddressPool implements RsfUpdater {
     private final Object                               poolLock;
     private final PoolThread                           timer;
     //
-    class PoolThread extends Thread {
+    private class PoolThread extends Thread {
         private boolean exitThread = false;
         public void stopTimer() {
             this.exitThread = true;
@@ -102,11 +107,14 @@ public class AddressPool implements RsfUpdater {
             long nextCheckSavePoint = 0;
             logger.info("AddressPool - Timer -> start, refreshCacheTime = {}.", refreshCacheTime);
             while (!this.exitThread) {
+                //1.启动时做一次清理
+                clearCacheData();
                 try {
                     Thread.sleep(refreshCacheTime);
                 } catch (InterruptedException e) {
                     /**/
                 }
+                //2.将数据保存到缓存文件
                 logger.info("AddressPool - refreshCache. at = {} , refreshCacheTime = {}.", nowTime(), refreshCacheTime);
                 refreshAddressCache();
                 if (rsfSettings.islocalDiskCache() && nextCheckSavePoint < System.currentTimeMillis()) {
@@ -122,29 +130,101 @@ public class AddressPool implements RsfUpdater {
         }
     }
     //
+    /**清理缓存的地址数据*/
+    protected void clearCacheData() {
+        String[] fileNames = this.snapshotHome.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return MatchUtils.wildToRegex("address-[0-9]{8}-[0-9]{6}.zip", name, MatchTypeEnum.Regex);
+            }
+        });
+        List<String> sortList = Arrays.asList(fileNames);
+        Collections.sort(sortList);
+        //
+        long nowTime = System.currentTimeMillis() - (7 * 24 * 3600000);//数据写死自动清理 7 天之前的数据
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        for (String itemName : sortList) {
+            try {
+                String dateTimeStr = itemName.substring("address-".length(), itemName.length() - ".zip".length());
+                Date dateTime = format.parse(dateTimeStr);
+                if (dateTime.getTime() < nowTime) {
+                    new File(this.snapshotHome, itemName).delete();
+                }
+            } catch (Exception e) { /**/ }
+        }
+    }
     /**保存地址列表到zip流中(每小时保存一次)，当遇到保存的文件已存在时，会出现1秒的CPU漂高。*/
     protected synchronized void saveAddress() throws IOException {
         File writeFile = null;
         while (writeFile == null || writeFile.exists()) {/*会有1秒的CPU漂高*/
             writeFile = new File(this.snapshotHome, "address-" + nowTime() + ".zip");
         }
-        logger.info("rsf - saveAddress to snapshot file({}) ->{}", CharsetName, writeFile);
+        logger.info("rsf - saveAddress to snapshot file({}) ->{}", writeFile);
         FileOutputStream fos = null;
         ZipOutputStream zipStream = null;
         FileWriter fw = null;
         try {
             writeFile.getParentFile().mkdirs();
             fos = new FileOutputStream(writeFile, false);
-            fos.getFD().sync();
+            fos.getFD().sync();//独占文件
             zipStream = new ZipOutputStream(fos);
+            //1.写所有服务地址
             synchronized (this.poolLock) {
                 for (AddressBucket bucket : this.addressPool.values()) {
                     if (bucket != null) {
                         logger.debug("rsf - service saveAddress {} storage to snapshot file ->{}", bucket.getServiceID(), writeFile);
-                        bucket.saveTo(zipStream, CharsetName);
+                        bucket.saveToZip(zipStream);
                     }
                 }
             }
+            //2.保存流控规则
+            if (StringUtils.isNotBlank(this.flowControlRef.flowControlScript)) {
+                String fclName = "default-flowControl" + RSFConstants.FlowControlRef_ZipEntry;
+                try {
+                    String comment = "the default flowControlRef of all service.";
+                    ZipUtils.writeEntry(zipStream, this.flowControlRef.flowControlScript, fclName, comment);
+                    logger.info("the default flowControlRef save to entry -> {} ,finish.", fclName);
+                } catch (Exception e) {
+                    logger.error("the default flowControlRef save to entry -> {} ,error -> {}", fclName, e.getMessage(), e);
+                }
+            }
+            //3.保存路由脚本
+            if (this.ruleRef != null) {
+                String slsName = defaultName + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+                try {
+                    String script = this.ruleRef.getServiceLevel().getScript();
+                    if (StringUtils.isNotBlank(script)) {
+                        String comment = "the default ServiceLevelScript of all service.";
+                        ZipUtils.writeEntry(zipStream, script, slsName, comment);
+                        logger.info("default ServiceLevelScript save to entry -> {} ,finish.", slsName);
+                    }
+                } catch (Exception e) {
+                    logger.error("default ServiceLevelScript save to entry -> {} ,error -> {}", slsName, e.getMessage(), e);
+                }
+                String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+                try {
+                    String script = this.ruleRef.getMethodLevel().getScript();
+                    if (StringUtils.isNotBlank(script)) {
+                        String comment = "the default MethodLevelScript of all service.";
+                        ZipUtils.writeEntry(zipStream, script, mlsName, comment);
+                        logger.info("default MethodLevelScript save to entry -> {} ,finish.", mlsName);
+                    }
+                } catch (Exception e) {
+                    logger.error("default MethodLevelScript save to entry -> {} ,error -> {}", mlsName, e.getMessage(), e);
+                }
+                String alsName = defaultName + RSFConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
+                try {
+                    String script = this.ruleRef.getArgsLevel().getScript();
+                    if (StringUtils.isNotBlank(script)) {
+                        String comment = "the default ArgsLevelScript of all service.";
+                        ZipUtils.writeEntry(zipStream, script, alsName, comment);
+                        logger.info("default ArgsLevelScript save to entry -> {} ,finish.", alsName);
+                    }
+                } catch (Exception e) {
+                    logger.error("default ArgsLevelScript save to entry -> {} ,error -> {}", alsName, e.getMessage(), e);
+                }
+            }
+            //
             zipStream.flush();
             zipStream.close();
             fos.close();
@@ -194,32 +274,84 @@ public class AddressPool implements RsfUpdater {
             logger.error("read the snapshot file name error :" + e.getMessage(), e);
             return;
         }
-        //3.读取地址。
-        Collection<AddressBucket> buckerColl = addressPool.values();
-        for (AddressBucket bucker : buckerColl) {
-            if (bucker == null) {
-                continue;
+        //
+        //3.恢复数据数据
+        try {
+            ZipFile zipFile = new ZipFile(readFile);
+            Collection<AddressBucket> buckerColl = addressPool.values();
+            for (AddressBucket bucker : buckerColl) {
+                recovery(zipFile, bucker);
             }
-            try {
-                ZipFile zipFile = new ZipFile(readFile);
-                bucker.readFrom(zipFile, CharsetName);
-                zipFile.close();
-            } catch (Throwable e) {
-                logger.error("addressBucket read snapshot file error :" + e.getMessage(), e);
+            zipFile.close();
+        } catch (Exception e) {
+            logger.error("read the snapshot file name error :" + e.getMessage(), e);
+        }
+    }
+    private void recovery(ZipFile zipFile, AddressBucket bucker) {
+        if (bucker == null) {
+            return;
+        }
+        //1.恢复地址数据
+        AddressBucket.recoveryConfig(zipFile, bucker.getServiceID(), this);
+        //2.恢复默认流控规则
+        try {
+            String fclName = defaultName + RSFConstants.FlowControlRef_ZipEntry;
+            String flowControl = ZipUtils.readToString(zipFile, fclName);
+            if (StringUtils.isNotBlank(flowControl)) {
+                updateDefaultFlowControl(flowControl);
             }
+        } catch (Throwable e) {
+            logger.error("recoveryConfig default flowControl,failed-> message={}.", e.getMessage(), e);
+        }
+        //3.恢复默认服务级路由脚本策略
+        try {
+            String slsName = defaultName + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+            String scriptBody = ZipUtils.readToString(zipFile, slsName);
+            if (StringUtils.isNotBlank(scriptBody)) {
+                updateDefaultServiceRoute(scriptBody);
+            }
+        } catch (Throwable e) {
+            logger.error("recoveryConfig default serviceRoute,failed-> message={}.", e.getMessage(), e);
+        }
+        //4.恢复默认方法级路由脚本策略
+        try {
+            String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String scriptBody = ZipUtils.readToString(zipFile, mlsName);
+            if (StringUtils.isNotBlank(scriptBody)) {
+                updateDefaultMethodRoute(scriptBody);
+            }
+        } catch (Throwable e) {
+            logger.error("recoveryConfig default methodRoute,failed-> message={}.", e.getMessage(), e);
+        }
+        //4.恢复默认参数级路由脚本策略
+        try {
+            String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String scriptBody = ZipUtils.readToString(zipFile, mlsName);
+            if (StringUtils.isNotBlank(scriptBody)) {
+                updateDefaultArgsRoute(scriptBody);
+            }
+        } catch (Throwable e) {
+            logger.error("recoveryConfig default argsRoute,failed-> message={}.", e.getMessage(), e);
+        }
+    }
+    public AddressBucket getBucket(String serviceID) {
+        if (this.addressPool.containsKey(serviceID)) {
+            return this.addressPool.get(serviceID);
+        } else {
+            return null;
         }
     }
     //
     public void startTimer() {
         if (this.inited.compareAndSet(false, true)) {
             this.readAddress();//当启动时，进行一次地址复原。
-            this.logger.info("startTimer address snapshot Thread[{}].", timer.getName());
+            logger.info("startTimer address snapshot Thread[{}].", timer.getName());
             this.timer.start();
         }
     }
     public void shutdownTimer() {
         if (this.inited.compareAndSet(true, false)) {
-            this.logger.info("shutdownTimer address snapshot Thread[{}].", timer.getName());
+            logger.info("shutdownTimer address snapshot Thread[{}].", timer.getName());
             this.timer.stopTimer();
         }
     }
@@ -230,7 +362,6 @@ public class AddressPool implements RsfUpdater {
         //
         this.rsfEnvironment = rsfEnvironment;
         this.rsfHome = new File(rsfEnvironment.evalString("%" + RsfEnvironment.WORK_HOME + "%/rsf/"));
-        this.scriptHome = new File(rsfHome, ScriptPath);
         this.snapshotHome = new File(rsfHome, SnapshotPath);
         this.indexFile = new File(snapshotHome, "address.index");
         //
@@ -421,7 +552,6 @@ public class AddressPool implements RsfUpdater {
             return;
         }
         //
-        saveScript("flowControl-default", flowControl);
         logger.info("update default flowControl -> update ok");
         this.flowControlRef = flowControlRef;
         this.refreshAddressCache();
@@ -446,7 +576,6 @@ public class AddressPool implements RsfUpdater {
             return;
         }
         if (bucket != null) {
-            saveScript("flowControl-" + serviceID, flowControl);
             logger.info("update flowControl service={} -> update ok", serviceID);
             bucket.setFlowControlRef(flowControlRef);
             this.refreshAddressCache();
@@ -465,7 +594,6 @@ public class AddressPool implements RsfUpdater {
             return;
         }
         //
-        saveScript("routeType-" + routeType.name() + "-default", script);
         logger.info("update default rules -> update ok");
         this.ruleRef = ruleRef;
         this.refreshAddressCache();
@@ -490,7 +618,6 @@ public class AddressPool implements RsfUpdater {
             return;
         }
         //
-        saveScript("routeType-" + routeType.name() + "-default", script);
         logger.info("update rules service={} -> update ok", serviceID);
         bucket.setRuleRef(ruleRef);
         this.refreshAddressCache();
@@ -559,29 +686,14 @@ public class AddressPool implements RsfUpdater {
     }
     //
     //
-    /**
-     * 保存规则脚本数据到规则快照目录，当下一次启动RSF的时。将尝试从本地加载地址本而非远程注册中心。
-     * @param name 规则名。
-     * @param script 规则脚本。
-     */
-    protected void saveScript(String name, String script) {
-        String fileName = name + "-" + nowTime() + ".rol";
-        File saveToFile = new File(this.scriptHome, fileName);
-        //
-        try {
-            FileUtils.write(saveToFile, script, CharsetName);
-            logger.info("save the rule script to {}", saveToFile);
-        } catch (IOException e) {
-            logger.error("write file error, file = " + saveToFile + " ,error : " + e.getMessage(), e);
-        }
-    }
     /**解析路由规则*/
-    private FlowControlRef paselowControl(String flowControl) {
+    public FlowControlRef paselowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
             logger.error("flowControl body format error.");
             return null;
         }
         FlowControlRef flowControlRef = FlowControlRef.newRef();
+        flowControlRef.flowControlScript = flowControl;
         //
         //1.提取路由配置
         List<String> ruleBodyList = new ArrayList<String>();

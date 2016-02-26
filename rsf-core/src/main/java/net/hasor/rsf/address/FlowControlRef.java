@@ -24,6 +24,7 @@ import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
  * @author 赵永春(zyc@hasor.net)
  */
 class FlowControlRef {
+    public String            flowControlScript = null;
     public UnitFlowControl   unitFlowControl   = null; //单元规则
     public RandomFlowControl randomFlowControl = null; //地址选取规则
     public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则

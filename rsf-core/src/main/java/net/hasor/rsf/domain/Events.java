@@ -27,6 +27,7 @@ public interface Events {
     /**删除发布或订阅*/
     public static final String Rsf_DeleteService   = "RsfEvent_DeleteService";
     //
+    //
     /**Rsf框架事件，当调用start方法开始时触发该事件。
      * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
     public static final String Rsf_Initialized     = "RsfEvent_Initialized";
