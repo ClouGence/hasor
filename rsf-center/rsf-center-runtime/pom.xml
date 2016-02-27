@@ -8,12 +8,12 @@
 	</parent>
 
 	<!-- Maven Info -->
-	<artifactId>rsf-center-manager</artifactId>
+	<artifactId>rsf-center-runtime</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<!-- Project Info -->
-	<name>RSF-Center-Manager</name>
+	<name>RSF-Center-Runtime</name>
 	<description>the Hasor Remote Service Framework Center project.</description>
 
 	<!-- SCM -->
@@ -33,9 +33,35 @@
 	<!-- 引用依赖 -->
 	<dependencies>
 		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.22</version>
+		</dependency>
+		<dependency>
 			<groupId>net.hasor</groupId>
-			<artifactId>rsf-center-runtime</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>rsf-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.6</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- DB begin -->
@@ -50,23 +76,11 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.30</version>
-		</dependency>
-		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
 		</dependency>
 		<!-- DB end -->
 
-		<!-- Jetty Test -->
-		<dependency>
-			<groupId>net.hasor</groupId>
-			<artifactId>hasor-jetty</artifactId>
-			<version>0.0.1</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>

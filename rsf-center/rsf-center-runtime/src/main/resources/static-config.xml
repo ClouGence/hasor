@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/main">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-rsf-runtime">
+	<!-- 框架配置，包扫描范围 -->
 	<hasor>
 		<!-- 包扫描路径 -->
 		<loadPackages>net.hasor.rsf.center.*</loadPackages>
-		<!-- demo程序启动入口 -->
-		<startup>net.hasor.rsf.center.core.startup.WebManagerModule</startup>
-
-		<!-- 使用模版插件，并指定模版引擎为freemarker -->
-		<template urlPatterns="htm;html;" engine="freemarker" />
-		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
-		<!-- <resourceLoader urlPatterns="js;css;eot;svg;ttf;woff;" /> -->
+		<!-- 程序启动入口 -->
+		<startup>net.hasor.rsf.center.core.startup.RsfCenterServerModule</startup>
 	</hasor>
 
 	<!--

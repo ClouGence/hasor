@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
-import java.security.NoSuchAlgorithmException;
-import org.more.util.CommonCodeUtils.MD5;
+import org.hsqldb.lib.MD5;
 import net.hasor.core.Inject;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
@@ -30,19 +29,13 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     //
     @Override
     public String publishService(String hostString, PublishInfo info) {
-        try {
-            return MD5.getMD5(info.getBindID());
-        } catch (NoSuchAlgorithmException e) {
-            return info.getBindID();
-        }
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
     public String receiveService(String hostString, PublishInfo info) {
-        try {
-            return MD5.getMD5(info.getBindID());
-        } catch (NoSuchAlgorithmException e) {
-            return info.getBindID();
-        }
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
     public boolean removeRegister(String hostString, String registerID) {
@@ -58,18 +51,12 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     @Override
     public String repairPublishService(String hostString, String oldRegisterID, PublishInfo info) {
-        try {
-            return MD5.getMD5(info.getBindID());
-        } catch (NoSuchAlgorithmException e) {
-            return info.getBindID();
-        }
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
     public String repairReceiveService(String hostString, String oldRegisterID, PublishInfo info) {
-        try {
-            return MD5.getMD5(info.getBindID());
-        } catch (NoSuchAlgorithmException e) {
-            return info.getBindID();
-        }
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
 }
