@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.more.util.StringUtils;
@@ -66,7 +67,7 @@ class AddressBucket {
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
         this.unitName = unitName;
-        this.allAddressList = new ArrayList<InterAddress>();
+        this.allAddressList = new CopyOnWriteArrayList<InterAddress>();
         this.invalidAddresses = new ConcurrentHashMap<InterAddress, InnerInvalidInfo>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();

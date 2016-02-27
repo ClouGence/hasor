@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.domain.Events;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
@@ -29,13 +27,12 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<ServiceDomain<?>> {
-    protected Logger          logger         = LoggerFactory.getLogger(getClass());
-    private String            hostString     = null;
-    private RsfCenterRegister centerRegister = null;
+    protected Logger           logger    = LoggerFactory.getLogger(getClass());
+    private RsfCenterBeatTimer beatTimer = null;
     public RsfEventTransport(RsfContext rsfContext) {
-        this.hostString = rsfContext.bindAddress().getHostPort();
-        this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
+        this.beatTimer = new RsfCenterBeatTimer(rsfContext);
     }
+    //
     @Override
     public void onEvent(String event, ServiceDomain<?> eventData) throws Throwable {
         if (eventData == null) {
@@ -43,33 +40,15 @@ class RsfEventTransport implements EventListener<ServiceDomain<?>> {
         }
         try {
             if (StringUtils.equals(Events.Rsf_ProviderService, event)) {
-                //
-                PublishInfo info = converTo(eventData);
-                String registerID = this.centerRegister.publishService(hostString, info);
-                eventData.setCenterID(registerID);
+                this.beatTimer.newService(eventData, Events.Rsf_ProviderService);
             } else if (StringUtils.equals(Events.Rsf_ConsumerService, event)) {
-                //
-                PublishInfo info = converTo(eventData);
-                String registerID = this.centerRegister.receiveService(hostString, info);
-                eventData.setCenterID(registerID);
+                this.beatTimer.newService(eventData, Events.Rsf_ConsumerService);
             } else if (StringUtils.equals(Events.Rsf_DeleteService, event)) {
-                //
-                this.centerRegister.removeRegister(hostString, eventData.getCenterID());
+                this.beatTimer.deleteService(eventData);
             }
             this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, eventData.getBindID());
         } catch (Throwable e) {
             this.logger.error("eventType = {} ,serviceID ={} , process error -> {}", event, eventData.getBindID(), e.getMessage(), e);
         }
-    }
-    private PublishInfo converTo(ServiceDomain<?> eventData) {
-        PublishInfo info = new PublishInfo();
-        info.setBindID(eventData.getBindID());
-        info.setBindGroup(eventData.getBindGroup());
-        info.setBindName(eventData.getBindName());
-        info.setBindVersion(eventData.getBindVersion());
-        info.setBindType(eventData.getBindType().getName());
-        info.setClientTimeout(eventData.getClientTimeout());
-        info.setSerializeType(eventData.getSerializeType());
-        return info;
     }
 }

@@ -23,6 +23,8 @@ import net.hasor.rsf.center.domain.PublishInfo;
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
+    /**服务心跳*/
+    public boolean[] serviceBeat(String hostString, String[] registerID);
     /**发布服务
      * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除发布。*/
     public String publishService(String hostString, PublishInfo info);
@@ -31,4 +33,7 @@ public interface RsfCenterRegister {
     public String receiveService(String hostString, PublishInfo info);
     /**根据订阅ID删除订阅信息。*/
     public boolean removeRegister(String hostString, String registerID);
+    //
+    public String repairPublishService(String hostString, String registerID, PublishInfo converTo);
+    public String repairReceiveService(String hostString, String registerID, PublishInfo converTo);
 }

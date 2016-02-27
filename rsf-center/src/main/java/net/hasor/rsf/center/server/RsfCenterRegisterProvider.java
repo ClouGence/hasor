@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
+import org.hsqldb.lib.MD5;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.domain.PublishInfo;
 /**
@@ -24,16 +25,33 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public String publishService(String hostString, PublishInfo info) {
         // TODO Auto-generated method stub
-        return null;
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
     public String receiveService(String hostString, PublishInfo info) {
         // TODO Auto-generated method stub
-        return null;
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
     public boolean removeRegister(String hostString, String registerID) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
+    }
+    @Override
+    public boolean[] serviceBeat(String hostString, String[] registerID) {
+        boolean[] res = new boolean[registerID.length];
+        for (int i = 0; i < res.length; i++)
+            res[i] = true;
+        return res;
+    }
+    @Override
+    public String repairPublishService(String hostString, String registerID, PublishInfo info) {
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
+    }
+    @Override
+    public String repairReceiveService(String hostString, String registerID, PublishInfo info) {
+        // TODO Auto-generated method stub
+        return MD5.encode(info.getBindID(), "UTF-8");
     }
 }
