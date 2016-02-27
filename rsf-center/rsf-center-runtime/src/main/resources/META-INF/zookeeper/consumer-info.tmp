@@ -1,0 +1,5 @@
+<info>
+	<serializeType>${info.serializeType}</serializeType>
+	<client.timeout>${info.clientTimeout}</client.timeout>
+	<client.maximumRequest>${info.clientMaximumRequest}</client.maximumRequest>
+</info>

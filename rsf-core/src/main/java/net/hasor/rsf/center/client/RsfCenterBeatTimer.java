@@ -30,6 +30,8 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.domain.ConsumerPublishInfo;
+import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.domain.Events;
 import net.hasor.rsf.domain.ServiceDomain;
@@ -41,12 +43,14 @@ import net.hasor.rsf.utils.TimerManager;
  */
 class RsfCenterBeatTimer implements TimerTask {
     protected Logger                                      logger = LoggerFactory.getLogger(getClass());
+    private final RsfContext                              rsfContext;
     private final String                                  hostString;
     private final TimerManager                            timerManager;
     private final RsfCenterRegister                       centerRegister;
     private final ConcurrentMap<ServiceDomain<?>, String> serviceMap;
     //
     public RsfCenterBeatTimer(RsfContext rsfContext) {
+        this.rsfContext = rsfContext;
         this.hostString = rsfContext.bindAddress().getHostPort();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime());
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
@@ -116,11 +120,15 @@ class RsfCenterBeatTimer implements TimerTask {
                 String registerID = null;
                 if (StringUtils.equals(eventType, Events.Rsf_ProviderService)) {
                     //
-                    registerID = this.centerRegister.publishService(this.hostString, converTo(domain));
+                    ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
+                    info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
+                    registerID = this.centerRegister.publishService(this.hostString, info);
                     logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerID);
                 } else if (StringUtils.equals(eventType, Events.Rsf_ConsumerService)) {
                     //
-                    registerID = this.centerRegister.receiveService(this.hostString, converTo(domain));
+                    ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
+                    info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
+                    registerID = this.centerRegister.receiveService(this.hostString, info);
                     logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerID);
                 }
                 if (StringUtils.isNotBlank(registerID)) {
@@ -168,11 +176,15 @@ class RsfCenterBeatTimer implements TimerTask {
                 String registerID = null;
                 if (StringUtils.equals(eventType, Events.Rsf_ConsumerService)) {
                     //
-                    registerID = this.centerRegister.repairPublishService(this.hostString, domain.getCenterID(), converTo(domain));
+                    ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
+                    info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
+                    registerID = this.centerRegister.repairPublishService(this.hostString, domain.getCenterID(), info);
                     logger.info("repairPublishService service {} register to center -> {}", domain.getBindID(), registerID);
                 } else if (StringUtils.equals(eventType, Events.Rsf_ProviderService)) {
                     //
-                    registerID = this.centerRegister.repairReceiveService(this.hostString, domain.getCenterID(), converTo(domain));
+                    ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
+                    info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
+                    registerID = this.centerRegister.repairReceiveService(this.hostString, domain.getCenterID(), info);
                     logger.info("repairReceiveService service {} register to center -> {}", domain.getBindID(), registerID);
                 }
                 if (StringUtils.isNotBlank(registerID)) {
@@ -185,8 +197,7 @@ class RsfCenterBeatTimer implements TimerTask {
         //
         timerManager.atTime(this);
     }
-    private PublishInfo converTo(ServiceDomain<?> eventData) {
-        PublishInfo info = new PublishInfo();
+    private <T extends PublishInfo> T fillTo(ServiceDomain<?> eventData, T info) {
         info.setBindID(eventData.getBindID());
         info.setBindGroup(eventData.getBindGroup());
         info.setBindName(eventData.getBindName());

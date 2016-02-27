@@ -1,11 +1,11 @@
 <info>
-	<hashCode>${hashCode}</hashCode>		<!-- 服务签名 -->
-	<bindID>${info.bindID}</bindID>			<!-- BindID -->
-	<group>${info.bindGroup}</group>		<!-- Group -->
-	<name>${info.bindName}</name>			<!-- Name -->
-	<version>${info.bindVersion}</version>	<!-- Version -->
-	<bindType>${info.bindType}</bindTypen>	<!-- Type -->
-	<serviceList>							<!-- 接口信息 -->
+	<hashCode>${hashCode}</hashCode>
+	<bindID>${info.bindID}</bindID>
+	<group>${info.bindGroup}</group>
+	<name>${info.bindName}</name>
+	<version>${info.bindVersion}</version>
+	<bindType>${info.bindType}</bindTypen>
+	<serviceList>
 		<method>org.hasor.test.HelloWord.hello(String,Long)</method>
 		<method>org.hasor.test.HelloWord.hello(String,Long)</method>
 		<method>org.hasor.test.HelloWord.hello(String,Long)</method>

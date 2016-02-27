@@ -26,6 +26,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.rsf.center.core.diplomat.ClassPathTemplateLoader;
+import net.hasor.rsf.center.domain.ConsumerPublishInfo;
+import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
@@ -35,10 +37,10 @@ import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
  */
 public class ZkTmpService {
     @Inject
-    private AppContext    appContext    = null;
+    private AppContext    appContext;
     @Inject
     private RsfCenterCfg  rsfCenterCfg;
-    private Configuration configuration = null;
+    private Configuration configuration;
     @Init
     public void init() {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
@@ -76,6 +78,29 @@ public class ZkTmpService {
         dataModel.put("info", info);
         dataModel.put("hashCode", hashCode);
         String fmt = "/META-INF/zookeeper/service-info.tmp";
+        Template template = this.configuration.getTemplate(fmt, "UTF-8");
+        StringWriter writer = new StringWriter();
+        template.process(dataModel, writer);
+        return writer.toString();
+    }
+    //
+    /** 生成提供者信息 */
+    public String providerInfo(ProviderPublishInfo info) throws Throwable {
+        Map<String, Object> dataModel = new HashMap<String, Object>();
+        dataModel.put("cfg", this.rsfCenterCfg);
+        dataModel.put("info", info);
+        String fmt = "/META-INF/zookeeper/provider-info.tmp";
+        Template template = this.configuration.getTemplate(fmt, "UTF-8");
+        StringWriter writer = new StringWriter();
+        template.process(dataModel, writer);
+        return writer.toString();
+    }
+    /** 生成消费者信息 */
+    public String consumerInfo(ConsumerPublishInfo info) throws Throwable {
+        Map<String, Object> dataModel = new HashMap<String, Object>();
+        dataModel.put("cfg", this.rsfCenterCfg);
+        dataModel.put("info", info);
+        String fmt = "/META-INF/zookeeper/consumer-info.tmp";
         Template template = this.configuration.getTemplate(fmt, "UTF-8");
         StringWriter writer = new StringWriter();
         template.process(dataModel, writer);

@@ -15,7 +15,8 @@
  */
 package net.hasor.rsf.center;
 import net.hasor.rsf.RsfService;
-import net.hasor.rsf.center.domain.PublishInfo;
+import net.hasor.rsf.center.domain.ConsumerPublishInfo;
+import net.hasor.rsf.center.domain.ProviderPublishInfo;
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日
@@ -27,17 +28,17 @@ public interface RsfCenterRegister {
     public boolean[] serviceBeat(String hostString, String[] registerID);
     /**发布服务
      * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除发布。*/
-    public String publishService(String hostString, PublishInfo info);
+    public String publishService(String hostString, ProviderPublishInfo info);
     /** 订阅服务
      * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除订阅。*/
-    public String receiveService(String hostString, PublishInfo info);
+    public String receiveService(String hostString, ConsumerPublishInfo info);
     /**根据订阅ID删除订阅信息。*/
     public boolean removeRegister(String hostString, String registerID);
     //
     /**修复发布服务
      * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
-    public String repairPublishService(String hostString, String oldRegisterID, PublishInfo info);
+    public String repairPublishService(String hostString, String oldRegisterID, ProviderPublishInfo info);
     /**修复订阅服务
      * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
-    public String repairReceiveService(String hostString, String oldRegisterID, PublishInfo info);
+    public String repairReceiveService(String hostString, String oldRegisterID, ConsumerPublishInfo info);
 }

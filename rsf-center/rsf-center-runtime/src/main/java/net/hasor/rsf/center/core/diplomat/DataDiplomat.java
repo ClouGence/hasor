@@ -148,7 +148,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.zkTmpService.serverInfo());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.rsfCenterCfg.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.zkTmpService.heartbeat());
+        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/beat", this.zkTmpService.heartbeat());
         //
         // -Leader选举
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
@@ -172,7 +172,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
             }
             String date = zkTmpService.heartbeat();
             logger.info("rsfCenter beat -> {}", date);
-            zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", date);
+            zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/beat", date);
             timerManager.atTime(this);
         }
     };
