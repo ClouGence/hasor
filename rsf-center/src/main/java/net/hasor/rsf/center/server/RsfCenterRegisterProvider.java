@@ -45,12 +45,12 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         return res;
     }
     @Override
-    public String repairPublishService(String hostString, String registerID, PublishInfo info) {
+    public String repairPublishService(String hostString, String oldRegisterID, PublishInfo info) {
         // TODO Auto-generated method stub
         return MD5.encode(info.getBindID(), "UTF-8");
     }
     @Override
-    public String repairReceiveService(String hostString, String registerID, PublishInfo info) {
+    public String repairReceiveService(String hostString, String oldRegisterID, PublishInfo info) {
         // TODO Auto-generated method stub
         return MD5.encode(info.getBindID(), "UTF-8");
     }

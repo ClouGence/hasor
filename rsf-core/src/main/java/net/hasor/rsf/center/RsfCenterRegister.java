@@ -34,6 +34,10 @@ public interface RsfCenterRegister {
     /**根据订阅ID删除订阅信息。*/
     public boolean removeRegister(String hostString, String registerID);
     //
-    public String repairPublishService(String hostString, String registerID, PublishInfo converTo);
-    public String repairReceiveService(String hostString, String registerID, PublishInfo converTo);
+    /**修复发布服务
+     * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
+    public String repairPublishService(String hostString, String oldRegisterID, PublishInfo info);
+    /**修复订阅服务
+     * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
+    public String repairReceiveService(String hostString, String oldRegisterID, PublishInfo info);
 }
