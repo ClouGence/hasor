@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.zookeeper.node;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.zookeeper.KeeperException;
@@ -30,8 +31,8 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
-import net.hasor.rsf.center.domain.constant.RsfEvent;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
+import net.hasor.rsf.center.domain.constant.RsfEvent;
 /**
  * 集群客户端模式，加入已有ZK集群。作为ZK客户端还提供了对ZK的读写功能。
  * 
@@ -90,10 +91,16 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
                 // e: NoNodeException => // do nothing
             }
             try {
+                String parent = new File(nodePath).getParent();
+                if (this.zooKeeper.exists(parent, false) == null) {
+                    this.createNode(nodtType, parent);
+                }
                 String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, nodtType.getNodeType());
-                logger.info("zkClient createNode {} -> {}", nodePath, result);
+                logger.debug("zkClient createNode {} -> {}", nodePath, result);
             } catch (NodeExistsException e) {
                 logger.warn("zkClient createNode {} -> NodeExistsException -> {}", nodePath, e.getMessage());
+            } catch (NoNodeException e) {
+                logger.warn("zkClient createNode {} -> NoNodeException -> {}", nodePath, e.getMessage());
             }
         } else {
             logger.info("zkClient createNode {} -> exists.", nodePath);
@@ -110,7 +117,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
                     }
                 }
                 this.zooKeeper.delete(nodePath, -1);
-                logger.info("zkClient deleteNode {}", nodePath);
+                logger.debug("zkClient deleteNode {}", nodePath);
             } catch (NoNodeException e) {
                 logger.warn("zkClient deleteNode {} -> NoNodeException -> {}", nodePath, e.getMessage());
             }
@@ -131,7 +138,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         //
         byte[] byteDatas = (data == null) ? null : data.getBytes();
         stat = this.zooKeeper.setData(nodePath, byteDatas, stat.getVersion());
-        logger.info("zkClient saveOrUpdate Node {}", nodePath);
+        logger.debug("zkClient saveOrUpdate Node {}", nodePath);
         return stat;
     }
 }

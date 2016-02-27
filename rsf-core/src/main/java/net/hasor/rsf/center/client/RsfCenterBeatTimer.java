@@ -114,11 +114,11 @@ class RsfCenterBeatTimer implements TimerTask {
             try {
                 String eventType = this.serviceMap.get(domain);
                 String registerID = null;
-                if (StringUtils.equals(eventType, Events.Rsf_ConsumerService)) {
+                if (StringUtils.equals(eventType, Events.Rsf_ProviderService)) {
                     //
                     registerID = this.centerRegister.publishService(this.hostString, converTo(domain));
                     logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerID);
-                } else if (StringUtils.equals(eventType, Events.Rsf_ProviderService)) {
+                } else if (StringUtils.equals(eventType, Events.Rsf_ConsumerService)) {
                     //
                     registerID = this.centerRegister.receiveService(this.hostString, converTo(domain));
                     logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerID);
@@ -127,7 +127,7 @@ class RsfCenterBeatTimer implements TimerTask {
                     domain.setCenterID(registerID);//更新远程服务注册ID
                 }
             } catch (Exception e) {
-                logger.error("receiveService service {} register to center error-> {}", domain.getBindID(), e.getMessage());
+                logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage());
             }
         }
         //

@@ -59,6 +59,7 @@ ZK 目录数据
 
 /rsf-center/services/group/name/version/info
 	<info>
+		<hashCode>xxxxxxxx</hashCode>										<!-- 服务签名 -->
 		<bindID>[RSF]-org.hasor.test.HelloWord-1.0</bindID>					<!-- BindID -->
 		<group>RSF</group>													<!-- Group -->
 		<name>org.hasor.test.HelloWord</name>								<!-- Name -->

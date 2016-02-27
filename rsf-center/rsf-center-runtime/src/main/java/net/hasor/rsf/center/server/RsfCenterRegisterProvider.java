@@ -15,9 +15,12 @@
  */
 package net.hasor.rsf.center.server;
 import java.security.NoSuchAlgorithmException;
+import org.apache.zookeeper.data.Stat;
 import org.more.util.CommonCodeUtils.MD5;
 import net.hasor.core.Inject;
 import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.core.zktmp.ZkTmpService;
+import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.PublishInfo;
 /**
@@ -27,12 +30,20 @@ import net.hasor.rsf.center.domain.PublishInfo;
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Inject
     private ZooKeeperNode zooKeeperNode;
+    @Inject
+    private ZkTmpService  zkTmpService;
     //
     @Override
     public String publishService(String hostString, PublishInfo info) {
         try {
-            return MD5.getMD5(info.getBindID());
-        } catch (NoSuchAlgorithmException e) {
+            String servicePath = "/rsf-center/services/" + info.getBindGroup() + "/" + info.getBindName() + "/" + info.getBindVersion();
+            zooKeeperNode.createNode(ZkNodeType.Persistent, servicePath);;
+            //
+            String serviceInfo = zkTmpService.serviceInfo(info);
+            Stat s = zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, servicePath + "/info", serviceInfo);
+            //
+            return MD5.getMD5(serviceInfo);
+        } catch (Throwable e) {
             return info.getBindID();
         }
     }

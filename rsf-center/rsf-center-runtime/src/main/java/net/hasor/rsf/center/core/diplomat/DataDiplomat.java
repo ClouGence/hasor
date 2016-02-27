@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.diplomat;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
@@ -31,8 +26,6 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.AppContext;
@@ -40,6 +33,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.plugins.event.Event;
+import net.hasor.rsf.center.core.zktmp.ZkTmpService;
 import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
@@ -53,33 +47,19 @@ import net.hasor.rsf.utils.TimerManager;
  */
 @Event(RsfEvent.SyncConnected)
 public class DataDiplomat implements EventListener<ZooKeeperNode> {
-    protected Logger      logger         = LoggerFactory.getLogger(getClass());
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private AppContext    appContext     = null;
+    private AppContext   appContext;
     @Inject
-    private RsfCenterCfg  rsfCenterCfg;
-    private Configuration configuration  = null;
-    private String        leaderHostName = null;
-    private TimerManager  timerManager;
+    private RsfCenterCfg rsfCenterCfg;
+    @Inject
+    private ZkTmpService zkTmpService;
+    private String       leaderHostName;
+    private TimerManager timerManager;
     //
     //
     public String getLeaderHostName() {
         return leaderHostName;
-    }
-    /** 获取RSF-Center服务器信息 */
-    public String serverInfo() throws Throwable {
-        RsfCenterCfg rsfCenterCfg = this.appContext.getInstance(RsfCenterCfg.class);
-        Map<String, Object> dataModel = new HashMap<String, Object>();
-        dataModel.put("cfg", rsfCenterCfg);
-        String fmt = "/META-INF/zookeeper/server-info.tmp";
-        Template template = this.configuration.getTemplate(fmt, "UTF-8");
-        StringWriter writer = new StringWriter();
-        template.process(dataModel, writer);
-        return writer.toString();
-    }
-    /** 时间戳 */
-    private String nowData() {
-        return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     }
     /** 获取服务信息，在ZK上的路径 */
     private String getZooKeeperServerPath() {
@@ -149,14 +129,6 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
     //
     @Init
     public void init() {
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
-        configuration.setTemplateLoader(new ClassPathTemplateLoader());
-        configuration.setDefaultEncoding("utf-8");// 默认页面编码UTF-8
-        configuration.setOutputEncoding("utf-8");// 输出编码格式UTF-8
-        configuration.setLocalizedLookup(false);// 是否开启国际化false
-        configuration.setNumberFormat("0");
-        configuration.setClassicCompatible(true);// null值测处理配置
-        this.configuration = configuration;
         this.timerManager = new TimerManager(15000);
     }
     /*加入RSF-Center集群*/
@@ -173,10 +145,10 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         // -Server信息
         final String serverInfoPath = getZooKeeperServerPath();
         zkNode.createNode(ZkNodeType.Persistent, serverInfoPath);
-        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.serverInfo());
+        zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.zkTmpService.serverInfo());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.rsfCenterCfg.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.nowData());
+        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.zkTmpService.heartbeat());
         //
         // -Leader选举
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
@@ -198,7 +170,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
             if (curentBeatID != beatID) {
                 return;
             }
-            String date = nowData();
+            String date = zkTmpService.heartbeat();
             logger.info("rsfCenter beat -> {}", date);
             zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", date);
             timerManager.atTime(this);
