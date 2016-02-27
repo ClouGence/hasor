@@ -40,7 +40,7 @@ public class RsfCenterRegisterVerificationFilter implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
-            //-如果是对外发送请求，则添加请求头参数用于注册中心校验
+            //-如果是对外发送请求，则添加请求头参数用于远程对注册中心发来数据的校验
             //            request.addOption(RSFCenterConstants.RSF_AUTH_CODE, this.authCode);
             //            request.addOption(RSFCenterConstants.RSF_VERSION, this.rsfVersion);
             //            boolean authResult = this.authManager.checkAuth(appCode, authCode);
@@ -50,7 +50,7 @@ public class RsfCenterRegisterVerificationFilter implements RsfFilter {
             //                response.sendStatus(ProtocolStatus.Unauthorized, "refused to service registry");
             //            }
         } else {
-            //-如果是来自远程的响应，则校验来自注册中心的响应中授权码是否是本地预先保存的
+            //-如果是来自远程的响应，则校验是否是和注册中心协调好的授权码
             String appCode = response.getOption(RSFCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
             String authCode = response.getOption(RSFCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
             boolean authResult = this.authManager.checkAuth(appCode, authCode);

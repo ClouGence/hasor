@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Init;
@@ -42,6 +44,7 @@ import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.RsfEvent;
+import net.hasor.rsf.utils.TimerManager;
 /**
  * 集群数据协调器，负责读写zk集群数据信息。
  * 
@@ -57,7 +60,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
     private RsfCenterCfg  rsfCenterCfg;
     private Configuration configuration  = null;
     private String        leaderHostName = null;
-    //
+    private TimerManager  timerManager;
     //
     //
     public String getLeaderHostName() {
@@ -89,8 +92,6 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         return rsfCenterCfg.getHostAndPort();
     }
     //
-    //
-    //
     @Override
     public void onEvent(String event, ZooKeeperNode zkNode) throws Throwable {
         try {
@@ -110,6 +111,10 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
                         }
                         appContext.getEnvironment().getEventContext().fireAsyncEvent(RsfEvent.ConfirmLeader, DataDiplomat.this);
                     } catch (NoNodeException e) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) { /**/ }
+                        //
                         logger.info("zkNode {} , NoNodeException -> retry event. {}", event.getPath(), event.getState());
                         this.process(event);
                     } catch (Throwable e) {
@@ -142,8 +147,6 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         }
     }
     //
-    //
-    //
     @Init
     public void init() {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
@@ -154,26 +157,51 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         configuration.setNumberFormat("0");
         configuration.setClassicCompatible(true);// null值测处理配置
         this.configuration = configuration;
-        //        Heartbeat
+        this.timerManager = new TimerManager(15000);
     }
     /*加入RSF-Center集群*/
-    private void initZooKeeperInfo(ZooKeeperNode zkNode) throws Throwable {
+    private void initZooKeeperInfo(final ZooKeeperNode zkNode) throws Throwable {
         logger.info("init rsf-center to zooKeeper.");
+        //
         // -必要的目录
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.ROOT_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.SERVER_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.SERVICES_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.CONFIG_PATH);
+        //
         // -Server信息
-        String serverInfoPath = getZooKeeperServerPath();
+        final String serverInfoPath = getZooKeeperServerPath();
         zkNode.createNode(ZkNodeType.Persistent, serverInfoPath);
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.serverInfo());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", this.nowData());
+        //
         // -Leader选举
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
         //
+        // -Beat(心跳)
+        this.timerManager.atTime(new BeatTask(++this.beatID, serverInfoPath, zkNode));
     }
+    private long beatID = 0;
+    private class BeatTask implements TimerTask {
+        private long          curentBeatID   = 0;
+        private String        serverInfoPath = null;
+        private ZooKeeperNode zkNode         = null;
+        public BeatTask(long curentBeatID, String serverInfoPath, ZooKeeperNode zkNode) {
+            this.curentBeatID = curentBeatID;
+            this.serverInfoPath = serverInfoPath;
+            this.zkNode = zkNode;
+        }
+        public void run(Timeout timeout) throws Exception {
+            if (curentBeatID != beatID) {
+                return;
+            }
+            String date = nowData();
+            logger.info("rsfCenter beat -> {}", date);
+            zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/heartbeat", date);
+            timerManager.atTime(this);
+        }
+    };
 }
