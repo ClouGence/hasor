@@ -58,7 +58,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param instance 为绑定指定的实例对象。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see #rsfService(Class)
+     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance);
     /**
@@ -67,7 +67,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param implementation 为绑定指定的实现类。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see #rsfService(Class)
+     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
     /**
@@ -76,7 +76,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param bindInfo 为绑定指定的实现类。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see #rsfService(Class)
+     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo);
     /**
@@ -84,8 +84,8 @@ public interface RsfBinder {
      * 该方法相当于“<code>rsfBinder.rsfService(type).toProvider(provider);</code>”
      * @param type 服务类型
      * @param provider 为绑定指定的实现类。
-     * @return 返回细粒度绑定操作接口 - {@link NamedBuilder}
-     * @see #rsfService(Class)
+     * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
+     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider);
     //

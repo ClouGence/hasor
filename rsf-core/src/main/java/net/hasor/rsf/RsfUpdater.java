@@ -54,7 +54,7 @@ public interface RsfUpdater {
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
-     * @param invalidAddressSet 将要删除的地址。
+     * @param invalidAddress 将要删除的地址。
      */
     public void removeAddress(String serviceID, InterAddress invalidAddress);
     /**

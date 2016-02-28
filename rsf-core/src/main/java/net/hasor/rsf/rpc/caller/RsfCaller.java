@@ -53,7 +53,7 @@ public class RsfCaller extends RsfRequestManager {
      * 所有接口方法调用都映射为一个RPC请求响应。
      * @param target 目标RSF服务提供者地址。
      * @param serviceID 服务ID
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public Object getRemoteByID(AddressProvider target, String serviceID) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(serviceID);
@@ -68,7 +68,7 @@ public class RsfCaller extends RsfRequestManager {
      * @param group 服务分组
      * @param name 服务名
      * @param version 服务版本。
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public Object getRemote(AddressProvider target, String group, String name, String version) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(group, name, version);
@@ -82,7 +82,7 @@ public class RsfCaller extends RsfRequestManager {
      * 所有接口方法调用都映射为一个RPC请求响应。
      * @param target 目标RSF服务提供者地址。
      * @param bindInfo 服务元信息。
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public <T> T getRemote(AddressProvider target, RsfBindInfo<T> bindInfo) throws RsfException {
         if (bindInfo == null) {
@@ -96,7 +96,7 @@ public class RsfCaller extends RsfRequestManager {
      * @param target 目标RSF服务提供者地址。
      * @param serviceID 服务ID
      * @param interFace 要包装成为的那个接口。
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public <T> T wrapperByID(AddressProvider target, String serviceID, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(serviceID);
@@ -109,7 +109,7 @@ public class RsfCaller extends RsfRequestManager {
      * 请注意：当出现调用远程不存在的方法时会引发异常。虽然如此，但是该方法仍然有着自己的魅力。<p>
      * @param target 目标RSF服务提供者地址。
      * @param interFace 要包装成为的那个接口，需要配合{@link RsfService @RsfService}注解一起使用。
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public <T> T wrapper(AddressProvider target, Class<T> interFace) throws RsfException {
         if (interFace == null) {
@@ -128,7 +128,7 @@ public class RsfCaller extends RsfRequestManager {
      * @param name 服务名称
      * @param version 服务版本
      * @param interFace 要包装成为的那个接口。
-     * @see {@link net.hasor.rsf.RsfBindInfo#getBindType()}
+     * @see net.hasor.rsf.RsfBindInfo#getBindType()
      */
     public <T> T wrapper(AddressProvider target, String group, String name, String version, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(group, name, version);

@@ -239,7 +239,7 @@ public class RsfBeanContainer implements AppContextAware {
     }
     /**
      * 回收发布的服务
-     * @param serviceDefine 服务定义。
+     * @param serviceID 服务定义。
      */
     public boolean recoverService(String serviceID) {
         this.getAddressPool().removeBucket(serviceID);

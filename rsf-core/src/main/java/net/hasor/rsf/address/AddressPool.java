@@ -434,7 +434,7 @@ public class AddressPool implements RsfUpdater {
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
      * @param serviceID 服务ID。
-     * @param newHostSet 追加更新的地址。
+     * @param newHost 追加更新的地址。
      */
     public void appendAddress(String serviceID, InterAddress newHost) {
         List<InterAddress> newHostSet = Arrays.asList(newHost);

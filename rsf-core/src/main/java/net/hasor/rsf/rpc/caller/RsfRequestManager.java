@@ -95,7 +95,7 @@ public abstract class RsfRequestManager {
     }
     /**
      * 响应挂起的Request请求。
-     * @param response 响应结果
+     * @param info 响应结果
      */
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
@@ -149,7 +149,7 @@ public abstract class RsfRequestManager {
     /**
      * 响应挂起的Request请求。
      * @param requestID 请求ID
-     * @param rsfException 异常响应
+     * @param e 异常响应
      */
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
