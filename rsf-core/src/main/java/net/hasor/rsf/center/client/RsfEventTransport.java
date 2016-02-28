@@ -40,12 +40,19 @@ class RsfEventTransport implements EventListener<ServiceDomain<?>> {
         }
         try {
             if (StringUtils.equals(Events.Rsf_ProviderService, event)) {
+                //
                 this.beatTimer.newService(eventData, Events.Rsf_ProviderService);
             } else if (StringUtils.equals(Events.Rsf_ConsumerService, event)) {
+                //
                 this.beatTimer.newService(eventData, Events.Rsf_ConsumerService);
             } else if (StringUtils.equals(Events.Rsf_DeleteService, event)) {
+                //
                 this.beatTimer.deleteService(eventData);
+            } else if (StringUtils.equals(Events.Rsf_Started, event)) {
+                //
+                this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
             }
+            //
             this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, eventData.getBindID());
         } catch (Throwable e) {
             this.logger.error("eventType = {} ,serviceID ={} , process error -> {}", event, eventData.getBindID(), e.getMessage(), e);
