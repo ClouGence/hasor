@@ -14,27 +14,21 @@ ZK 目录数据
 						/info ------------- 服务信息
 						/provider --------- 提供者列表
 							/192.168.1.11:2180
-								/beat		终端心跳
 							/192.168.1.11:2180
-								/beat		终端心跳
 							/192.168.1.11:2180
-								/beat		终端心跳
 						/consumer --------- 消费者列表
 							/192.168.1.11:2180
-								/beat		终端心跳
 							/192.168.1.11:2180
-								/beat		终端心跳
 							/192.168.1.11:2180
-								/beat		终端心跳
 						/flowcontrol ------ 流控规则
 						/rule ------------- 路由规则
 							/args-level --- 参数级路由规则
 							/method-level - 方法级路由规则
 							/service-level  服务级路由规则
-		/registerList --------------------- 订阅者和发布者列表
-			/xxxxxxxxxx
-			/xxxxxxxxxx
-			/xxxxxxxxxx
+		/registers ------------------------ 订阅者和发布者列表
+			/be0d771bda6aca49a262d9d9560c1081
+			/be0d771bda6aca49a262d9d9560c1081
+			/be0d771bda6aca49a262d9d9560c1081
 		/config --------------------------- 默认规则设置
 			/flowcontrol ------------------ 默认流控规则
 			/rule ------------------------- 默认路由规则
@@ -61,8 +55,8 @@ ZK 目录数据
 /rsf-center/servers/192.168.1.11:2180/version
 	1.0.0
 
-/rsf-center/servers/192.168.1.11:2180/heartbeat
-	2016-02-02 22:22:22
+/rsf-center/servers/192.168.1.11:2180/beat
+	20160202-222222
 
 /rsf-center/leader
 	192.168.1.11:2180
@@ -95,6 +89,11 @@ ZK 目录数据
 		<client.timeout>6000</client.timeout>				<!-- rsf调用超时时间-->
 		<client.maximumRequest>200</client.maximumRequest>	<!-- 最大并发请求数 -->
 	</info>
+
+/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
+	20160228-050413@provider@/rsf-center/services/RSF/test.net.hasor.rsf.service.bean.EchoService/1.0.0/provider/192.168.31.103:8000
+	内容格式为：
+		<心跳时间戳>@<注册类型>@<服务信息在ZK中的路径>
 
 /rsf-center/services/group/name/version/flowcontrol
 	<controlSet>

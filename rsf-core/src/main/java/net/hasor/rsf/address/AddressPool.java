@@ -138,7 +138,7 @@ public class AddressPool implements RsfUpdater {
                 return MatchUtils.wildToRegex("address-[0-9]{8}-[0-9]{6}.zip", name, MatchTypeEnum.Regex);
             }
         });
-        List<String> sortList = Arrays.asList(fileNames);
+        List<String> sortList = (fileNames == null) ? new ArrayList<String>(0) : Arrays.asList(fileNames);
         Collections.sort(sortList);
         //
         long nowTime = System.currentTimeMillis() - (7 * 24 * 3600000);//数据写死自动清理 7 天之前的数据

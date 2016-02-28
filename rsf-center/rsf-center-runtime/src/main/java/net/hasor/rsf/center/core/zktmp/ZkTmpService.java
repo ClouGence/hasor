@@ -15,8 +15,6 @@
  */
 package net.hasor.rsf.center.core.zktmp;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.util.CommonCodeUtils.MD5;
@@ -64,14 +62,13 @@ public class ZkTmpService {
         return writer.toString();
     }
     //
-    /** 生成RSF-Center服务器心跳数据 */
-    public String heartbeat() {
-        return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+    public String publishInfoHashCode(PublishInfo info) throws Throwable {
+        return MD5.getMD5(info.getBindID());
     }
     //
     /** 生成服务信息 */
     public String serviceInfo(PublishInfo info) throws Throwable {
-        String hashCode = MD5.getMD5(info.getBindID());
+        String hashCode = this.publishInfoHashCode(info);
         //
         Map<String, Object> dataModel = new HashMap<String, Object>();
         dataModel.put("cfg", this.rsfCenterCfg);

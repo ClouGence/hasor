@@ -38,6 +38,7 @@ import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.RsfEvent;
+import net.hasor.rsf.center.utils.DateCenterUtils;
 import net.hasor.rsf.utils.TimerManager;
 /**
  * 注册中心在集群上的注册资料维护类。
@@ -141,6 +142,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.SERVICES_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.CONFIG_PATH);
+        zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.REGISTERS_PATH);
         //
         // -Server信息
         final String serverInfoPath = getZooKeeperServerPath();
@@ -148,7 +150,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.zkTmpService.serverInfo());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/auth", this.rsfCenterCfg.getVersion());
-        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/beat", this.zkTmpService.heartbeat());
+        zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/beat", DateCenterUtils.timestamp());
         //
         // -Leader选举
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
@@ -170,7 +172,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
             if (curentBeatID != beatID) {
                 return;
             }
-            String date = zkTmpService.heartbeat();
+            String date = DateCenterUtils.timestamp();
             logger.info("rsfCenter beat -> {}", date);
             zkNode.saveOrUpdate(ZkNodeType.Session, serverInfoPath + "/beat", date);
             timerManager.atTime(this);

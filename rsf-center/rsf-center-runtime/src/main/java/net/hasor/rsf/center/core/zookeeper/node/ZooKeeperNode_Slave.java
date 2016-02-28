@@ -141,4 +141,15 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         logger.debug("zkClient saveOrUpdate Node {}", nodePath);
         return stat;
     }
+    @Override
+    public String readData(String nodePath) throws KeeperException, InterruptedException {
+        Stat stat = this.zooKeeper.exists(nodePath, false);
+        if (stat == null) {
+            return null;
+        }
+        //
+        byte[] byteDatas = this.zooKeeper.getData(nodePath, false, stat);
+        logger.debug("zkClient readData Node {}", nodePath);
+        return new String(byteDatas);
+    }
 }
