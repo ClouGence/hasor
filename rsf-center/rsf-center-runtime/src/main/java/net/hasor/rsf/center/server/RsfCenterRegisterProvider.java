@@ -116,6 +116,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     @Override
     public String repairPublishService(String hostString, String oldRegisterID, ProviderPublishInfo info) {
+        this.removeRegister(hostString, oldRegisterID);
         return this.publishService(hostString, info);
     }
     //
@@ -166,6 +167,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     @Override
     public String repairReceiveService(String hostString, String oldRegisterID, ConsumerPublishInfo info) {
+        this.removeRegister(hostString, oldRegisterID);
         return this.receiveService(hostString, info);
     }
     //
