@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.core.diplomat;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,14 +64,10 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         return leaderHostName;
     }
     /** 获取服务信息，在ZK上的路径 */
-    private String getZooKeeperServerPath() {
+    private String getServerNode() {
         RsfCenterCfg rsfCenterCfg = this.appContext.getInstance(RsfCenterCfg.class);
-        return ZooKeeperNode.SERVER_PATH + "/" + rsfCenterCfg.getHostAndPort();
-    }
-    /** 获取服务信息，在ZK上的路径 */
-    private String getServerInfo() {
-        RsfCenterCfg rsfCenterCfg = this.appContext.getInstance(RsfCenterCfg.class);
-        return rsfCenterCfg.getHostAndPort();
+        InetSocketAddress bindInetAddress = rsfCenterCfg.getBindInetAddress();
+        return bindInetAddress.getAddress().getHostAddress();
     }
     //
     @Override
@@ -85,7 +82,8 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
                     try {
                         zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, this);
                         evalLeaderHostName(zooKeeper);
-                        if (rsfCenterCfg.getHostAndPort().equals(leaderHostName)) {
+                        String bindAddress = rsfCenterCfg.getBindInetAddress().getAddress().getHostAddress();
+                        if (bindAddress.equals(leaderHostName)) {
                             logger.info("confirm leader to {} , leader is myself.", leaderHostName);
                         } else {
                             logger.info("confirm leader to {}.", leaderHostName);
@@ -105,7 +103,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
             };
             zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, watcher);
             //计算Leader数据
-            String hostName = this.getServerInfo();
+            String hostName = this.getServerNode();
             zooKeeper.create(ZooKeeperNode.LEADER_PATH + "/n_", hostName.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             this.evalLeaderHostName(zooKeeper);
         } catch (Throwable e) {
@@ -130,7 +128,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
     //
     @Init
     public void init() {
-        this.timerManager = new TimerManager(15000);
+        this.timerManager = new TimerManager(15000, "RsfCenter-Beat");
     }
     /*加入RSF-Center集群*/
     private void initZooKeeperInfo(final ZooKeeperNode zkNode) throws Throwable {
@@ -145,7 +143,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.REGISTERS_PATH);
         //
         // -Server信息
-        final String serverInfoPath = getZooKeeperServerPath();
+        final String serverInfoPath = ZooKeeperNode.SERVER_PATH + "/" + this.getServerNode();
         zkNode.createNode(ZkNodeType.Persistent, serverInfoPath);
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/info", this.zkTmpService.serverInfo());
         zkNode.saveOrUpdate(ZkNodeType.Persistent, serverInfoPath + "/version", this.rsfCenterCfg.getVersion());

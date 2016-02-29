@@ -19,6 +19,8 @@
 			服务器ID，master模式下需要配置，不同的master需要通过serverID标示自己。
 	-->
 	<rsfCenter workAt="alone" serverID="0">
+		<!-- 当存在多张网卡情况下，注册中心使用的地址 -->
+		<bindAddress>local</bindAddress>
 		<!-- RSF消息通信使用端口，rsf-center集群之间选举出 leader 之后，注册中心所有写操作都将发消息到这台机器。 -->
 		<rsfPort>2180</rsfPort>
 
@@ -40,8 +42,6 @@
 			<!-- zk，客户端超时时间，15s -->
 			<clientTimeout>15000</clientTimeout>
 
-			<!-- 当存在多张网卡情况下，zk使用的地址 -->
-			<bindAddress>local</bindAddress>
 			<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
 			<bindPort>2181</bindPort>
 

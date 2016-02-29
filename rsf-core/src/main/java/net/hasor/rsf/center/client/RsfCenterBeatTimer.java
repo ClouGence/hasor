@@ -52,7 +52,7 @@ class RsfCenterBeatTimer implements TimerTask {
     public RsfCenterBeatTimer(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.hostString = rsfContext.bindAddress().getHostPort();
-        this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime());
+        this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeat");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<ServiceDomain<?>, String>();
         this.timerManager.atTime(this);

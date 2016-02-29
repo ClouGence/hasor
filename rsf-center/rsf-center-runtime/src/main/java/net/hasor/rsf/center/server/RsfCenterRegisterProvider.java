@@ -30,6 +30,8 @@ import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.utils.DateCenterUtils;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 /**
  * 客户端注册中心接口{@link RsfCenterRegister}实现，负责将来自客户端的RSF注册请求发到zk集群。
  * @version : 2015年6月8日
@@ -60,8 +62,8 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         //
         String serviceInfo = this.zkTmpService.serviceInfo(info);
         this.zooKeeperNode.createNode(ZkNodeType.Persistent, servicePath);
-        Stat s1 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, serviceInfoPath, serviceInfo);
-        if (s1 == null) {
+        Stat stat = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, serviceInfoPath, serviceInfo);
+        if (stat == null) {
             return null;
         }
         return servicePath;
@@ -75,7 +77,9 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             //1.注册服务：/rsf-center/services/group/name/version/info
             String servicePath = this.addServices(hostString, info);
             if (servicePath == null) {
-                logger.error("publishService failed -> save providerInfo to zk failed, hostString ={} ,serviceID ={}", hostString, info.getBindID());
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("publishService save serviceInfo to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={}", //
+                        hostString, info.getBindID(), servicePath);
                 return null;
             }
             //
@@ -83,23 +87,31 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             String providerInfo = this.zkTmpService.providerInfo(info);
             String providerInfoPath = servicePath + "/provider/" + hostString;
             this.zooKeeperNode.createNode(ZkNodeType.Persistent, providerInfoPath);
-            Stat s2 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, providerInfoPath, providerInfo);
-            if (s2 == null) {
-                logger.error("publishService failed -> save providerInfo to zk failed, hostString ={} ,serviceID ={}", hostString, info.getBindID());
+            Stat s1 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, providerInfoPath, providerInfo);
+            if (s1 == null) {
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("publishService save provider to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={} ,providerInfoPath={}", //
+                        hostString, info.getBindID(), servicePath, providerInfoPath);
                 return null;
             }
             //
-            //3.服务注册信息
-            String registerID = (s2 == null) ? null : MD5.getMD5(servicePath + providerInfoPath);
+            //3.服务注册信息：/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
+            String registerID = (s1 == null) ? null : MD5.getMD5(servicePath + providerInfoPath);
             String registerPath = ZooKeeperNode.REGISTERS_PATH + "/" + registerID;
             String registerBody = DateCenterUtils.timestamp() + "@provider@" + providerInfoPath;
-            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, registerPath, registerBody);
+            Stat s2 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, registerPath, registerBody);
+            if (s2 == null) {
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("publishService save provider register to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={} ,providerInfoPath={} ,registerID={} ,registerPath={}", //
+                        hostString, info.getBindID(), servicePath, providerInfoPath, registerID, registerPath);
+                return null;
+            }
             //
-            logger.info("publishService {} form {} -> {}", info.getBindID(), hostString, registerID);
+            logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, info.getBindID(), registerID);
             return registerID;
         } catch (Throwable e) {
             logger.error("publishService -> " + e.getMessage(), e);
-            return null;
+            throw new RsfException(ProtocolStatus.InvokeError, e);
         }
     }
     @Override
@@ -115,7 +127,9 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             //1.注册服务：/rsf-center/services/group/name/version/info
             String servicePath = this.addServices(hostString, info);
             if (servicePath == null) {
-                logger.error("receiveService failed -> save consumerInfo to zk failed, hostString ={} ,serviceID ={}", hostString, info.getBindID());
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("receiveService save serviceInfo to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={}", //
+                        hostString, info.getBindID(), servicePath);
                 return null;
             }
             //
@@ -123,24 +137,31 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             String consumerInfo = this.zkTmpService.consumerInfo(info);
             String consumerInfoPath = servicePath + "/consumer/" + hostString;
             this.zooKeeperNode.createNode(ZkNodeType.Persistent, consumerInfoPath);
-            Stat s2 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, consumerInfoPath, consumerInfo);
-            if (s2 == null) {
-                logger.error("receiveService failed -> save consumerInfo to zk failed, hostString ={} ,serviceID ={}", hostString, info.getBindID());
+            Stat s1 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, consumerInfoPath, consumerInfo);
+            if (s1 == null) {
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("receiveService save consumer to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={} ,consumerInfoPath={}", //
+                        hostString, info.getBindID(), servicePath, consumerInfoPath);
                 return null;
             }
             //
-            //3.服务注册信息
-            String registerID = (s2 == null) ? null : MD5.getMD5(servicePath + consumerInfoPath);
+            //3.服务注册信息：/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
+            String registerID = (s1 == null) ? null : MD5.getMD5(servicePath + consumerInfoPath);
             String registerPath = ZooKeeperNode.REGISTERS_PATH + "/" + registerID;
             String registerBody = DateCenterUtils.timestamp() + "@consumer@" + consumerInfoPath;
-            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, registerPath, registerBody);
+            Stat s2 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, registerPath, registerBody);
+            if (s2 == null) {
+                //数据保存失败，则反馈终端注册失败，等待RSF客户端下一次心跳再来注册。
+                logger.error("receiveService save consumer register to zk failed. -> hostString ={} ,serviceID ={} ,servicePath={} ,providerInfoPath={} ,registerID={} ,registerPath={}", //
+                        hostString, info.getBindID(), servicePath, consumerInfoPath, registerID, registerPath);
+                return null;
+            }
             //
-            String returnData = (s2 == null) ? null : MD5.getMD5(servicePath + consumerInfoPath);
-            logger.info("receiveService {} form {} -> {}", info.getBindID(), hostString, returnData);
-            return returnData;
+            logger.info("receiveService host ={} ,serviceID ={} -> {}", hostString, info.getBindID(), registerID);
+            return registerID;
         } catch (Throwable e) {
             logger.error("receiveService -> " + e.getMessage(), e);
-            return null;
+            throw new RsfException(ProtocolStatus.InvokeError, e);
         }
     }
     @Override
@@ -148,17 +169,46 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         return this.receiveService(hostString, info);
     }
     //
-    //
-    //
     @Override
     public boolean removeRegister(String hostString, String registerID) {
-        return true; // TODO Auto-generated method stub
+        try {
+            //1.删除注册信息：/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
+            String deletePath = ZooKeeperNode.REGISTERS_PATH + "/" + registerID;
+            String registerBody = this.zooKeeperNode.readData(deletePath);
+            this.zooKeeperNode.deleteNode(deletePath);//删除失败也无所谓，Leader会定时清理数据
+            //
+            logger.info("removeRegister registerID= {} ,registerBody= {}", registerID, registerBody);
+            return true;
+        } catch (Exception e) {
+            logger.error("removeRegister -> " + e.getMessage(), e);
+            //虽然数据删除失败，但是客户端不会为其在进行心跳服务。随着leader对数据的清理，注册中心中服务信息的最终一致性可以保障。
+            return false;
+        }
     }
     @Override
-    public boolean[] serviceBeat(String hostString, String[] registerID) {
-        boolean[] res = new boolean[registerID.length];
-        for (int i = 0; i < res.length; i++)
-            res[i] = true;
-        return res;// TODO Auto-generated method stub
+    public boolean[] serviceBeat(String hostString, String[] registerIDs) {
+        boolean[] resultArrays = new boolean[registerIDs.length];
+        for (int i = 0; i < registerIDs.length; i++) {
+            String registerPath = ZooKeeperNode.REGISTERS_PATH + "/" + registerIDs[i];
+            resultArrays[i] = false;//预设值
+            try {
+                //1.心跳的注册信息：/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
+                String registerBody = this.zooKeeperNode.readData(registerPath);
+                String[] registerInfo = registerBody.split("@");
+                //2.如果保存的心跳数据格式有误，则通知RSF客户端心跳失败。RSF客户端会对心跳失败的服务进行重新注册。
+                if (registerInfo.length == 3) {
+                    registerBody = DateCenterUtils.timestamp() + "@" + registerInfo[1] + "@" + registerInfo[2];//new body
+                    Stat s2 = this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, registerPath, registerBody);
+                    if (s2 != null) {
+                        resultArrays[i] = true;
+                    } else {
+                        logger.error("serviceBeat update beat failed -> hostString ={} ,registerPath ={}", hostString, registerPath);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("serviceBeat update beat failed -> hostString ={} ,registerPath ={} ,error ={}", hostString, registerPath, e.getMessage());
+            }
+        }
+        return resultArrays;
     }
 }

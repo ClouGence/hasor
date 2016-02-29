@@ -98,7 +98,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
                 String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, nodtType.getNodeType());
                 logger.debug("zkClient createNode {} -> {}", nodePath, result);
             } catch (NodeExistsException e) {
-                logger.warn("zkClient createNode {} -> NodeExistsException -> {}", nodePath, e.getMessage());
+                logger.warn("zkClient createNode {} -> NodeExistsException ,maybe someone created first.-> {}", nodePath, e.getMessage());
             } catch (NoNodeException e) {
                 logger.warn("zkClient createNode {} -> NoNodeException -> {}", nodePath, e.getMessage());
             }
@@ -119,7 +119,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
                 this.zooKeeper.delete(nodePath, -1);
                 logger.debug("zkClient deleteNode {}", nodePath);
             } catch (NoNodeException e) {
-                logger.warn("zkClient deleteNode {} -> NoNodeException -> {}", nodePath, e.getMessage());
+                logger.warn("zkClient deleteNode {} -> NoNodeException ,maybe someone deleted first.-> {}", nodePath, e.getMessage());
             }
         } else {
             logger.info("zkClient deleteNode {} -> is not exists.", nodePath);

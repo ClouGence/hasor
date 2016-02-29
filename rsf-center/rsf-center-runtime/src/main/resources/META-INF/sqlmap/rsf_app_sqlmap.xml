@@ -30,7 +30,7 @@
 		app_modify_time
 	</sql>
 
-	<select id="queryAppDOByForm" resultMap="appDOMap" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
+	<select id="queryAppDOByForm" resultMap="appDOMap" parameterType="net.hasor.rsf.center.domain.form.AppQueryForm">
 		select
 			<include refid="appDO_allColumns" />
 		from
@@ -41,7 +41,7 @@
 			#{pageInfo.firstItem} , #{pageInfo.pageSize}
 	</select>
 
-	<select id="queryAppDOCountByForm" resultType="int" parameterType="net.hasor.rsf.center.domain.form.apps.AppQueryForm">
+	<select id="queryAppDOCountByForm" resultType="int" parameterType="net.hasor.rsf.center.domain.form.AppQueryForm">
 		select
 			count(1)
 		from

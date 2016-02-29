@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.LifeModule;
 import net.hasor.core.Settings;
@@ -49,7 +50,9 @@ public class RsfCenterServerModule implements LifeModule {
         // 1.将“rsfCenter.rsfPort”配置映射到“hasor.rsfConfig.port”
         Settings settings = apiBinder.getEnvironment().getSettings();
         int rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
+        String rsfAddress = settings.getString("rsfCenter.bindAddress", "local");
         settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
+        settings.setSetting("hasor.rsfConfig.address", rsfAddress, "http://project.hasor.net/hasor/schema/main");
         apiBinder.getEnvironment().getEventContext().addListener(Events.Rsf_Initialized, new EventListener<RsfContext>() {
             @Override
             public void onEvent(String event, RsfContext eventData) throws Throwable {
@@ -88,7 +91,8 @@ public class RsfCenterServerModule implements LifeModule {
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
-        //
+        Environment env = appContext.getEnvironment();
+        //        env.getEventContext().fireSyncEvent(Events., appContext);// fire Event
     }
     public void onStop(AppContext appContext) throws Throwable {
         //

@@ -1,8 +1,8 @@
 <info>
 	<workMode>${cfg.workMode.codeString}</workMode>
-	<inetAddress>${cfg.clusterBindInetAddress.getAddress().getHostAddress()}</inetAddress>
+	<inetAddress>${cfg.bindInetAddress.getAddress().getHostAddress()}</inetAddress>
 	<rsf.bindPort>${cfg.rsfPort}</rsf.bindPort>
 	<zooKeeper.sid>${cfg.serverID}</zooKeeper.sid>
-	<zooKeeper.bindPort>${cfg.clusterBindInetAddress.getPort()}</zooKeeper.bindPort>
+	<zooKeeper.bindPort>${cfg.bindInetAddress.getPort()}</zooKeeper.bindPort>
 	<zooKeeper.electionPort>${cfg.electionPort}</zooKeeper.electionPort>
 </info>

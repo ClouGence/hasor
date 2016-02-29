@@ -5,6 +5,7 @@ import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.address.InterAddress;
 import test.net.hasor.rsf.services.EchoService;
 /**
  * 
@@ -18,7 +19,8 @@ public class CustomerClient {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(EchoService.class).bindAddress("rsf://30.10.220.79:8000/local").register();
+                InterAddress local = new InterAddress("rsf://127.0.0.1:8000/local");
+                rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
             }
         });
         System.out.println("server start.");

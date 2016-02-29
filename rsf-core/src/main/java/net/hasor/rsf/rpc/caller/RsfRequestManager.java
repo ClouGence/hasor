@@ -17,9 +17,7 @@ package net.hasor.rsf.rpc.caller;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.more.classcode.ASMEngineToos;
 import org.more.future.FutureCallback;
-import org.more.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
@@ -69,7 +67,7 @@ public abstract class RsfRequestManager {
         this.rsfContext = rsfContext;
         RsfSettings rsfSetting = rsfContext.getSettings();
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-        this.timerManager = new TimerManager(rsfSetting.getDefaultTimeout());
+        this.timerManager = new TimerManager(rsfSetting.getDefaultTimeout(), "RsfRequestManager");
         this.requestCount = new AtomicInteger(0);
         this.serializeFactory = SerializeFactory.createFactory(rsfSetting);
         this.senderListener = senderListener;

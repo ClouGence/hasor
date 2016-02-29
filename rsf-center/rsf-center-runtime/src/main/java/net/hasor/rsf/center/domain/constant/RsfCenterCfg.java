@@ -50,7 +50,7 @@ public class RsfCenterCfg {
     private String                  workDir;
     private String                  dataDir;
     private String                  snapDir;
-    private InetSocketAddress       clusterBindInetAddress;
+    private InetSocketAddress       bindInetAddress;
     private int                     tickTime;
     private int                     minSessionTimeout;
     private int                     maxSessionTimeout;
@@ -105,7 +105,7 @@ public class RsfCenterCfg {
         String bindAddress = settings.getString("rsfCenter.bindAddress", "local");
         int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2181);// 绑定的端口
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
-        cfg.clusterBindInetAddress = new InetSocketAddress(inetAddress, bindPort);
+        cfg.bindInetAddress = new InetSocketAddress(inetAddress, bindPort);
         //
         cfg.tickTime = settings.getInteger("rsfCenter.zooKeeper.tickTime", 3000);// 心跳时间
         cfg.minSessionTimeout = settings.getInteger("rsfCenter.zooKeeper.minSessionTimeout", 15000);
@@ -177,12 +177,6 @@ public class RsfCenterCfg {
             return strBuilder.append(" ]").toString();
         }
     }
-    public String getHostAndPort() {
-        InetSocketAddress inetAddress = this.getClusterBindInetAddress();
-        String localAddress = inetAddress.getAddress().getHostAddress();
-        int localPort = this.getRsfPort();
-        return localAddress + ":" + localPort;
-    }
     //
     //
     //
@@ -238,11 +232,11 @@ public class RsfCenterCfg {
     public void setSnapDir(String snapDir) {
         this.snapDir = snapDir;
     }
-    public InetSocketAddress getClusterBindInetAddress() {
-        return clusterBindInetAddress;
+    public InetSocketAddress getBindInetAddress() {
+        return bindInetAddress;
     }
-    public void setClusterBindInetAddress(InetSocketAddress clusterBindInetAddress) {
-        this.clusterBindInetAddress = clusterBindInetAddress;
+    public void setBindInetAddress(InetSocketAddress bindInetAddress) {
+        this.bindInetAddress = bindInetAddress;
     }
     public int getTickTime() {
         return tickTime;

@@ -23,7 +23,10 @@ import javax.sql.DataSource;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
@@ -35,18 +38,17 @@ import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplate;
 import net.hasor.rsf.center.core.mybatis.SqlExecutorTemplateProvider;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
 /**
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class DaoModule extends WebModule implements LifeModule {
+public class DaoModule implements LifeModule {
+    protected Logger     logger       = LoggerFactory.getLogger(getClass());
     private RsfCenterCfg rsfCenterCfg = null;
     public DaoModule(RsfCenterCfg rsfCenterCfg) {
         this.rsfCenterCfg = rsfCenterCfg;
     }
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
         // 1.初始化数据库
         Settings settings = apiBinder.getEnvironment().getSettings();

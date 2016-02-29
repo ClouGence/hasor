@@ -3,6 +3,7 @@
 
 	<!-- 单机模式 -->
 	<rsfCenter workAt="alone">
+		<bindAddress>127.0.0.1</bindAddress>
 		<rsfPort>2177</rsfPort>
 	</rsfCenter>
 

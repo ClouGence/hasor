@@ -9,6 +9,9 @@
 			<server sid="3" bindPort="2183" electionPort="2193">local</server>
 			<server sid="4" bindPort="2184" electionPort="2194">local</server>
 		</zooKeeper.zkServers>
+		
+		<!-- 绑定的本地IP地址 -->
+		<bindAddress>127.0.0.1</bindAddress>
 		<!-- RSF消息通信使用端口 -->
 		<rsfPort>2176</rsfPort>
 	</rsfCenter>

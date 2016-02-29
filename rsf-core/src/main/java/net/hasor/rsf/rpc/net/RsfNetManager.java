@@ -158,7 +158,7 @@ public class RsfNetManager {
     //
     /** 启动服务器。 */
     public void start() throws UnknownHostException {
-        this.start("127.0.0.1", 0);
+        this.start("0.0.0.0", 0);
     }
     /** 启动服务器。 */
     public void start(InetAddress localAddress) throws UnknownHostException {
