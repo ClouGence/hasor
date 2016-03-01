@@ -86,7 +86,8 @@ public class EventModule implements Module {
                 return;
             }
             if (this.targetListener == null) {
-                AppContext app = this.appContextFuture.get(10, TimeUnit.SECONDS);//最大等待时间10秒
+                AppContext app = this.appContextFuture.get();//无限制等待
+                //AppContext app = this.appContextFuture.get(10, TimeUnit.SECONDS);//最大等待时间10秒
                 this.targetListener = (EventListener<Object>) app.getInstance(this.targetInfo);
             }
             this.targetListener.onEvent(event, eventData);
