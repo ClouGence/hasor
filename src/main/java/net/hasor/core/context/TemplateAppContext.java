@@ -358,16 +358,22 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {
         final AppContext appContet = this;
-        /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
-            public Environment get() {
-                return appContet.getEnvironment();
-            }
-        });
         /*绑定Settings对象的Provider*/
         apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
             public Settings get() {
                 return appContet.getEnvironment().getSettings();
+            }
+        });
+        /*绑定EventContext对象的Provider*/
+        apiBinder.bindType(EventContext.class).toProvider(new Provider<EventContext>() {
+            public EventContext get() {
+                return appContet.getEnvironment().getEventContext();
+            }
+        });
+        /*绑定Environment对象的Provider*/
+        apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
+            public Environment get() {
+                return appContet.getEnvironment();
             }
         });
         /*绑定AppContext对象的Provider*/

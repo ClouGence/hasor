@@ -1,6 +1,6 @@
 ﻿===== Hasor-Core v2.2.1 (2016-?)
 * 改进:
-    01.
+    01.容器在启动时增加EventContext类型的绑定，开发的时候可以直接通过依赖注入或者appContext.getInstance(EventContext.class)方式的到。
 
 ===== Hasor-Core v2.2.0 (2016-2-23)
 * 新增:
