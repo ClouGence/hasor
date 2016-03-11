@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.center.domain.RSFCenterConstants;
+import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 /**
@@ -45,13 +45,13 @@ public class RsfCenterDataVerificationFilter implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
             //-如果是对外发送请求，则添加请求头参数用于注册中心校验
-            request.addOption(RSFCenterConstants.RSF_APP_CODE, this.appCode);
-            request.addOption(RSFCenterConstants.RSF_AUTH_CODE, this.authCode);
-            request.addOption(RSFCenterConstants.RSF_VERSION, this.rsfVersion);
+            request.addOption(RsfCenterConstants.RSF_APP_CODE, this.appCode);
+            request.addOption(RsfCenterConstants.RSF_AUTH_CODE, this.authCode);
+            request.addOption(RsfCenterConstants.RSF_VERSION, this.rsfVersion);
         } else {
             //-如果是来自远程的响应，则校验来自注册中心的响应中授权码是否是本地预先保存的
-            String appCode = response.getOption(RSFCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
-            String authCode = response.getOption(RSFCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
+            String appCode = response.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
+            String authCode = response.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
             if (StringUtils.equals(this.appCode, appCode) == false || StringUtils.equals(this.authCode, authCode) == false) {
                 String remoteData = "appCode=" + appCode + " ,authCode=" + authCode;
                 String errorMessage = "rsfCenter auth code failed. -> RSF_APP_CODE or RSF_AUTH_CODE error , remoteData :{ " + remoteData + " }";

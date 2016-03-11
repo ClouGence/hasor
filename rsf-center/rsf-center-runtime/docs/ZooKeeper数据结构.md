@@ -25,10 +25,6 @@ ZK 目录数据
 							/args-level --- 参数级路由规则
 							/method-level - 方法级路由规则
 							/service-level  服务级路由规则
-		/registers ------------------------ 订阅者和发布者列表
-			/be0d771bda6aca49a262d9d9560c1081
-			/be0d771bda6aca49a262d9d9560c1081
-			/be0d771bda6aca49a262d9d9560c1081
 		/config --------------------------- 默认规则设置
 			/flowcontrol ------------------ 默认流控规则
 			/rule ------------------------- 默认路由规则
@@ -76,6 +72,10 @@ ZK 目录数据
 		</serviceList>
 	</info>
 
+/rsf-center/services/group/name/version/provider
+	1234567890000
+	内容格式为：心跳时间戳Long类型，标示最后一次记录到provider变更的时间点
+
 /rsf-center/services/group/name/version/provider/192.168.1.11:2180
 	<info>
 		<serializeType>java</serializeType>					<!-- 传输序列化协议 -->
@@ -89,11 +89,6 @@ ZK 目录数据
 		<client.timeout>6000</client.timeout>				<!-- rsf调用超时时间-->
 		<client.maximumRequest>200</client.maximumRequest>	<!-- 最大并发请求数 -->
 	</info>
-
-/rsf-center/registers/be0d771bda6aca49a262d9d9560c1081
-	20160228-050413@provider@/rsf-center/services/RSF/test.net.hasor.rsf.service.bean.EchoService/1.0.0/provider/192.168.31.103:8000
-	内容格式为：
-		<心跳时间戳>@<注册类型>@<服务信息在ZK中的路径>
 
 /rsf-center/services/group/name/version/flowcontrol
 	<controlSet>

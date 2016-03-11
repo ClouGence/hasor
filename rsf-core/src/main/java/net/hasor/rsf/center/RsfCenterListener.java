@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.center;
 import net.hasor.rsf.RsfService;
+import net.hasor.rsf.center.domain.CenterEventBody;
 /**
  * 接收来自注册中心的消息。
  * @version : 2016年2月18日
@@ -23,12 +24,11 @@ import net.hasor.rsf.RsfService;
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterListener {
     /**
-     * 接收来自注册中心的消息。
-     * @param serviceID 相关服务ID
+     * 接收来自注册中心的消息。    
      * @param eventType 事件类型
-     * @param eventBody 事件内容
+     * @param centerEventBody 内容
      * @return 返回事件处理是否成功。
      * @throws Throwable 如果事件处理失败则引发的错误。
      */
-    public boolean onEvent(String serviceID, String eventType, String eventBody) throws Throwable;
+    public boolean onEvent(String eventType, CenterEventBody centerEventBody) throws Throwable;
 }

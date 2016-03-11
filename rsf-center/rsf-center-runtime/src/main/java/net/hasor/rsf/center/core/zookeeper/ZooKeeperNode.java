@@ -25,17 +25,15 @@ import net.hasor.core.AppContext;
  */
 public interface ZooKeeperNode {
     /** ZK系统中的基准节点 */
-    public static final String ROOT_PATH      = "/rsf-center";
+    public static final String ROOT_PATH     = "/rsf-center";
     /** servers信息保存的节点 */
-    public static final String SERVER_PATH    = ROOT_PATH + "/servers";
+    public static final String SERVER_PATH   = ROOT_PATH + "/servers";
     /** leader信息保存的节点 */
-    public static final String LEADER_PATH    = ROOT_PATH + "/leader";
+    public static final String LEADER_PATH   = ROOT_PATH + "/leader";
     /** services信息保存的节点 */
-    public static final String SERVICES_PATH  = ROOT_PATH + "/services";
+    public static final String SERVICES_PATH = ROOT_PATH + "/services";
     /** config信息保存的节点 */
-    public static final String CONFIG_PATH    = ROOT_PATH + "/config";
-    /** registers信息保存的节点 */
-    public static final String REGISTERS_PATH = ROOT_PATH + "/registers";
+    public static final String CONFIG_PATH   = ROOT_PATH + "/config";
     //
     //
     //

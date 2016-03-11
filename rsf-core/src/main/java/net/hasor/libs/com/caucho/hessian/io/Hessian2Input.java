@@ -2312,7 +2312,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             reader = findSerializerFactory().getListDeserializer(null, null);
             return reader.readLengthList(this, length);
         }
-            // compact fixed list
+        // compact fixed list
         case 0x70:
         case 0x71:
         case 0x72:
@@ -2328,7 +2328,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             reader = findSerializerFactory().getListDeserializer(type, null);
             return reader.readLengthList(this, length);
         }
-            // compact fixed untyped list
+        // compact fixed untyped list
         case 0x78:
         case 0x79:
         case 0x7a:

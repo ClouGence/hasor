@@ -17,6 +17,7 @@ package net.hasor.rsf.center.core.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.LifeModule;
+import net.hasor.rsf.center.core.dao.DaoModule;
 import net.hasor.rsf.center.core.filters.JumpFilter;
 import net.hasor.rsf.center.core.filters.VarFilter;
 import net.hasor.web.WebApiBinder;
@@ -34,6 +35,10 @@ public class WebManagerModule extends WebModule implements LifeModule {
         // Filters
         apiBinder.filter("/*").through(new JumpFilter());
         apiBinder.filter("/*").through(new VarFilter());
+        //
+        // 3.数据源
+        apiBinder.installModule(new DaoModule(this.rsfCenterCfg));
+        //
         // Rsf-center
         apiBinder.installModule(new RsfCenterServerModule());
     }

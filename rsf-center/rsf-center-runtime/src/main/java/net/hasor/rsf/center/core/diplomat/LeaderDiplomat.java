@@ -20,14 +20,14 @@ import net.hasor.core.EventListener;
 import net.hasor.core.Inject;
 import net.hasor.plugins.event.Event;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.rsf.center.domain.constant.RsfEvent;
+import net.hasor.rsf.center.domain.constant.RsfCenterEvent;
 /**
- * 负责处理当Leader变更。
+ * 负责处理当Leader变更通知。
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event(RsfEvent.ConfirmLeader)
+@Event(RsfCenterEvent.ConfirmLeader_Event)
 public class LeaderDiplomat implements EventListener<DataDiplomat> {
     protected Logger     logger = LoggerFactory.getLogger(getClass());
     @Inject

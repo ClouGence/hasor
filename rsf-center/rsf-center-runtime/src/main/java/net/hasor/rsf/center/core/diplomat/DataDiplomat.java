@@ -38,16 +38,16 @@ import net.hasor.rsf.center.core.zktmp.ZkTmpService;
 import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.rsf.center.domain.constant.RsfEvent;
+import net.hasor.rsf.center.domain.constant.RsfCenterEvent;
 import net.hasor.rsf.center.utils.DateCenterUtils;
 import net.hasor.rsf.utils.TimerManager;
 /**
- * 注册中心在集群上的注册资料维护类。
+ * 负责在ZK集群上的注册中心资料。
  * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event(RsfEvent.SyncConnected)
+@Event(RsfCenterEvent.SyncConnected_Event)
 public class DataDiplomat implements EventListener<ZooKeeperNode> {
     protected Logger     logger = LoggerFactory.getLogger(getClass());
     @Inject
@@ -88,7 +88,7 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
                         } else {
                             logger.info("confirm leader to {}.", leaderHostName);
                         }
-                        appContext.getEnvironment().getEventContext().fireAsyncEvent(RsfEvent.ConfirmLeader, DataDiplomat.this);
+                        appContext.getEnvironment().getEventContext().fireAsyncEvent(RsfCenterEvent.ConfirmLeader_Event, DataDiplomat.this);
                     } catch (NoNodeException e) {
                         try {
                             Thread.sleep(1000);
@@ -140,7 +140,6 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.LEADER_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.SERVICES_PATH);
         zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.CONFIG_PATH);
-        zkNode.createNode(ZkNodeType.Persistent, ZooKeeperNode.REGISTERS_PATH);
         //
         // -Server信息
         final String serverInfoPath = ZooKeeperNode.SERVER_PATH + "/" + this.getServerNode();
@@ -176,4 +175,5 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
             timerManager.atTime(this);
         }
     };
+    //
 }

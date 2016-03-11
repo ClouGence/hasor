@@ -40,7 +40,10 @@ import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfBindInfoWrap;
+import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 
  * @version : 2015年12月6日
@@ -228,11 +231,15 @@ public class RsfBeanContainer implements AppContextAware {
         logger.info("service to public, id= {}", serviceID);
         ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
         //
-        if (serviceDefine.getCustomerProvider() != null) {
-            EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+        EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+        if (RsfServiceType.Provider == serviceDefine.getDomain().getServiceType()) {
+            //服务提供者
+            if (serviceDefine.getCustomerProvider() == null) {
+                throw new RsfException(ProtocolStatus.Forbidden, "Provider Not set the implementation class.");
+            }
             eventContext.fireAsyncEvent(Events.Rsf_ProviderService, serviceDefine.getDomain());
         } else {
-            EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+            //服务消费者
             eventContext.fireAsyncEvent(Events.Rsf_ConsumerService, serviceDefine.getDomain());
         }
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);

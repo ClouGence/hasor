@@ -27,7 +27,6 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.center.core.dao.DaoModule;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 import net.hasor.rsf.center.domain.constant.WorkMode;
@@ -36,7 +35,6 @@ import net.hasor.rsf.center.server.RsfCenterRegisterVerificationFilter;
 import net.hasor.rsf.domain.Events;
 /**
  * WebMVC各组件初始化配置。
- * 
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -66,13 +64,10 @@ public class RsfCenterServerModule implements LifeModule {
         WorkMode workMode = this.rsfCenterCfg.getWorkMode();
         logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         //
-        // 3.数据源
-        apiBinder.installModule(new DaoModule(this.rsfCenterCfg));
-        //
-        // 4.Zookeeper环境
+        // 3.Zookeeper环境
         apiBinder.installModule(new ZooKeeperModule(this.rsfCenterCfg));
         //
-        // 5.RSF框架，发布注册中心接口
+        // 4.RSF框架，发布注册中心接口
         apiBinder.installModule(new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {

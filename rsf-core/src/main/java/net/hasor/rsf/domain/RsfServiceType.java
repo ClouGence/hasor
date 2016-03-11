@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.form;
-import org.more.bizcommon.Paginator;
+package net.hasor.rsf.domain;
 /**
- * @version : 2015年8月12日
+ * 
+ * @version : 2016年3月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AppQueryForm extends Paginator {}
+public enum RsfServiceType {
+    Provider, Consumer
+}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.core.diplomat;
+package net.hasor.rsf.center.core.zktmp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ import net.hasor.plugins.resource.loader.ClassPathResourceLoader;
  * @version : 2016年2月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ClassPathTemplateLoader extends URLClassLoader implements TemplateLoader {
+class ClassPathTemplateLoader extends URLClassLoader implements TemplateLoader {
     private String                  packageName    = null;
     private ClassPathResourceLoader resourceLoader = null;
     //

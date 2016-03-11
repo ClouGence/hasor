@@ -33,6 +33,11 @@
 	<!-- 引用依赖 -->
 	<dependencies>
 		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>rsf-center-runtime</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

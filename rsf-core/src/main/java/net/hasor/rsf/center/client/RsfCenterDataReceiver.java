@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterListener;
+import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.RsfCenterException;
 /**
  * 注册中心数据接收器，负责更新注册中心推送过来的配置信息。
@@ -27,22 +30,48 @@ import net.hasor.rsf.domain.RsfCenterException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterDataReceiver implements RsfCenterListener {
-    protected Logger   logger = LoggerFactory.getLogger(getClass());
-    private RsfContext rsfContext;
+    protected Logger              logger = LoggerFactory.getLogger(getClass());
+    private final RsfContext      rsfContext;
+    private final EventContext    eventContext;
+    private static final String[] checkServiceEventArrays;
+    static {
+        checkServiceEventArrays = new String[] { //
+                "AppendAddressEvent", //
+                "RemoveAddressEvent", //
+                "UpdateServiceRouteEvent", //
+                "UpdateMethodRouteEvent", //
+                "UpdateArgsRouteEvent", //
+                "UpdateFlowControlEvent" };
+    }
+    //
+    //
     public RsfCenterDataReceiver(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
+        this.eventContext = rsfContext.getAppContext().getEnvironment().getEventContext();
     }
     @Override
-    public boolean onEvent(String serviceID, String eventType, String eventBody) throws Throwable {
+    public boolean onEvent(String eventType, CenterEventBody centerEventBody) throws Throwable {
         RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();
         EventProcess process = EventProcessMapping.findEventProcess(eventType);
         if (process == null) {
             throw new RsfCenterException(eventType + " eventType is undefined.");
         }
-        if (this.rsfContext.getServiceInfo(serviceID) == null) {
-            throw new RsfCenterException(serviceID + " service is undefined.");
+        //-有些事件需要检测服务-
+        String serviceID = centerEventBody.getServiceID();
+        for (String checkItem : checkServiceEventArrays) {
+            if (checkItem.equals(eventType)) {
+                if (this.rsfContext.getServiceInfo(serviceID) == null) {
+                    throw new RsfCenterException(serviceID + " service is undefined.");
+                }
+            }
         }
-        //
-        return process.processEvent(rsfUpdater, serviceID, eventBody);
+        //-发送CenterMarkDataUpdate_Event事件-
+        boolean result = process.processEvent(rsfUpdater, centerEventBody);
+        if (result == true) {
+            if (StringUtils.isBlank(serviceID) == false) {
+                this.eventContext.fireSyncEvent(RsfCenterInfoManager.CenterMarkDataUpdate_Event, centerEventBody);//同步更新服务的CenterMarkData
+            }
+        }
+        return result;
     }
 }

@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.center.domain.RSFCenterConstants;
+import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.domain.ProtocolStatus;
 /**
  * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
@@ -52,8 +52,8 @@ public class RsfCenterRegisterVerificationFilter implements RsfFilter {
             //            }
         } else {
             //-如果是来自远程的响应，则校验是否是和注册中心协调好的授权码
-            String appCode = response.getOption(RSFCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
-            String authCode = response.getOption(RSFCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
+            String appCode = response.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
+            String authCode = response.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
             boolean authResult = this.authManager.checkAuth(appCode, authCode);
             if (authResult) {
                 chain.doFilter(request, response);

@@ -32,10 +32,9 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.center.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
-import net.hasor.rsf.center.domain.constant.RsfEvent;
+import net.hasor.rsf.center.domain.constant.RsfCenterEvent;
 /**
  * 集群客户端模式，加入已有ZK集群。作为ZK客户端还提供了对ZK的读写功能。
- * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -53,7 +52,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     public void process(WatchedEvent event) {
         if (KeeperState.SyncConnected == event.getState()) {
             logger.info("zookeeper client -> SyncConnected.");// 链接成功。
-            appContext.getEnvironment().getEventContext().fireSyncEvent(RsfEvent.SyncConnected, this);
+            appContext.getEnvironment().getEventContext().fireSyncEvent(RsfCenterEvent.SyncConnected_Event, this);
         }
     }
     //

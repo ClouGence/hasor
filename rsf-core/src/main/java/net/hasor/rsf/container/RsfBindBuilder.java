@@ -33,6 +33,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
+import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 服务注册器
@@ -94,6 +95,7 @@ abstract class RsfBindBuilder implements RsfBinder {
             //
             RsfService serviceInfo = new AnnoRsfServiceValue(settings, serviceType);
             ServiceDomain<T> domain = this.serviceDefine.getDomain();
+            domain.setServiceType(RsfServiceType.Consumer);
             domain.setBindGroup(serviceInfo.group());
             domain.setBindName(serviceInfo.name());
             domain.setBindVersion(serviceInfo.version());
@@ -187,6 +189,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public ConfigurationBuilder<T> toProvider(Provider<T> provider) {
+            this.serviceDefine.getDomain().setServiceType(RsfServiceType.Provider);
             this.serviceDefine.setCustomerProvider(provider);
             return this;
         }

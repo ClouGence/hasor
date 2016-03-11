@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center;
+import java.util.Map;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
@@ -24,21 +25,19 @@ import net.hasor.rsf.center.domain.ProviderPublishInfo;
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
-    /**服务心跳*/
-    public boolean[] serviceBeat(String hostString, String[] registerID);
     /**发布服务
-     * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除发布。*/
+     * @return 返回订阅ID。*/
     public String publishService(String hostString, ProviderPublishInfo info);
-    /** 订阅服务
-     * @return 返回订阅ID，当服务下线时需要使用这个ID进行解除订阅。*/
-    public String receiveService(String hostString, ConsumerPublishInfo info);
-    /**根据订阅ID删除订阅信息。*/
-    public boolean removeRegister(String hostString, String registerID);
+    /**发布服务心跳*/
+    public Map<String, Boolean> publishServiceBeat(String hostString, Map<String, String> beatMap);
+    /**删除发布*/
+    public boolean removePublish(String hostString, String serviceID);
     //
-    /**修复发布服务
-     * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
-    public String repairPublishService(String hostString, String oldRegisterID, ProviderPublishInfo info);
-    /**修复订阅服务
-     * @return 返回新的订阅ID，当服务下线时需要使用这个新的ID进行解除发布。*/
-    public String repairReceiveService(String hostString, String oldRegisterID, ConsumerPublishInfo info);
+    /** 订阅服务
+     * @return 返回订阅ID。*/
+    public String receiveService(String hostString, ConsumerPublishInfo info);
+    /**订阅服务心跳*/
+    public Map<String, Boolean> receiveServiceBeat(String hostString, Map<String, String> beatMap);
+    /**删除订阅*/
+    public boolean removeReceive(String hostString, String serviceID);
 }

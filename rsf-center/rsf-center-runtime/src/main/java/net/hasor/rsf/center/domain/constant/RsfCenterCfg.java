@@ -62,6 +62,8 @@ public class RsfCenterCfg {
     private LearnerType             peerType;
     private int                     rsfPort;
     private String                  centerVersion;
+    private int                     pushQueueMaxSize;
+    private int                     pushSleepTime;
     //
     //
     private RsfCenterCfg() {}
@@ -138,6 +140,9 @@ public class RsfCenterCfg {
             logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
             cfg.centerVersion = "undefined";
         }
+        //
+        cfg.pushQueueMaxSize = settings.getInteger("rsfCenter.push.queueMaxSize", 100);// 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。
+        cfg.pushSleepTime = settings.getInteger("rsfCenter.push.sleepTime", 3000);// 数据推送线程每次工作等待的时间
         return cfg;
     }
     public String getZkServersStr() {
@@ -291,5 +296,17 @@ public class RsfCenterCfg {
     }
     public void setElectionPort(int electionPort) {
         this.electionPort = electionPort;
+    }
+    public int getPushQueueMaxSize() {
+        return this.pushQueueMaxSize;
+    }
+    public void setPushQueueMaxSize(int pushQueueMaxSize) {
+        this.pushQueueMaxSize = pushQueueMaxSize;
+    }
+    public int getPushSleepTime() {
+        return pushSleepTime;
+    }
+    public void setPushSleepTime(int pushSleepTime) {
+        this.pushSleepTime = pushSleepTime;
     }
 }

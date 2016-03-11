@@ -27,10 +27,10 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<ServiceDomain<?>> {
-    protected Logger           logger    = LoggerFactory.getLogger(getClass());
-    private RsfCenterBeatTimer beatTimer = null;
+    protected Logger             logger    = LoggerFactory.getLogger(getClass());
+    private RsfCenterInfoManager beatTimer = null;
     public RsfEventTransport(RsfContext rsfContext) {
-        this.beatTimer = new RsfCenterBeatTimer(rsfContext);
+        this.beatTimer = new RsfCenterInfoManager(rsfContext);
     }
     //
     @Override
@@ -40,17 +40,17 @@ class RsfEventTransport implements EventListener<ServiceDomain<?>> {
         }
         try {
             if (StringUtils.equals(Events.Rsf_ProviderService, event)) {
-                //
                 this.beatTimer.newService(eventData, Events.Rsf_ProviderService);
+                //
             } else if (StringUtils.equals(Events.Rsf_ConsumerService, event)) {
-                //
                 this.beatTimer.newService(eventData, Events.Rsf_ConsumerService);
+                //
             } else if (StringUtils.equals(Events.Rsf_DeleteService, event)) {
-                //
                 this.beatTimer.deleteService(eventData);
-            } else if (StringUtils.equals(Events.Rsf_Started, event)) {
                 //
+            } else if (StringUtils.equals(Events.Rsf_Started, event)) {
                 this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
+                //
             }
             //
             this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, eventData.getBindID());

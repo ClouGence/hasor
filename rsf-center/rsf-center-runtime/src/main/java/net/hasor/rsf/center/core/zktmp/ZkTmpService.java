@@ -23,13 +23,12 @@ import freemarker.template.Template;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
-import net.hasor.rsf.center.core.diplomat.ClassPathTemplateLoader;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.domain.constant.RsfCenterCfg;
 /**
- * RSF-Center,在Zk集群中数据生成器。
+ * 负责写入ZK集群的数据生成。
  * @version : 2016年2月27日
  * @author 赵永春(zyc@hasor.net)
  */

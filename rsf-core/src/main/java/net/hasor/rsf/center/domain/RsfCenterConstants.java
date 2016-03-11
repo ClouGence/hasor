@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain.valid;
+package net.hasor.rsf.center.domain;
 /**
- * @version : 2015年6月28日
+ * 各种常量
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface AccessInfo {
-    public String getTerminalID();
-    public String getAccessKey();
+public interface RsfCenterConstants {
+    public static final String RSF_APP_CODE  = "RSF_APP_CODE"; //应用程序编码
+    public static final String RSF_AUTH_CODE = "RSF_AUTH_CODE";//授权码
+    public static final String RSF_VERSION   = "RSF_VERSION";  //客户端版本
 }

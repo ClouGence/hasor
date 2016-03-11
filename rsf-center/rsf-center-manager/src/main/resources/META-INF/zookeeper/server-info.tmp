@@ -1,8 +1,0 @@
-<info>
-	<workMode>${cfg.workMode.codeString}</workMode>                                        <!-- 工作模式：Master、Slave、Alone -->
-	<inetAddress>${cfg.clusterBindInetAddress.getAddress().getHostAddress()}</inetAddress> <!-- 注册中心地址，RSF客户端连接到这个地址 -->
-	<rsf.bindPort>${cfg.rsfPort}</rsf.bindPort>                                            <!-- 注册中心端口，RSF客户端连接到这个端口 -->
-	<zooKeeper.sid>${cfg.serverID}</zooKeeper.sid>                                         <!-- 集群中sid -->
-	<zooKeeper.bindPort>${cfg.clusterBindInetAddress.getPort()}</zooKeeper.bindPort>       <!-- 集群中用于zk信息传输的端口 -->
-	<zooKeeper.electionPort>${cfg.electionPort}</zooKeeper.electionPort>                   <!-- 集群中用于zk选举的端口 -->
-</info>

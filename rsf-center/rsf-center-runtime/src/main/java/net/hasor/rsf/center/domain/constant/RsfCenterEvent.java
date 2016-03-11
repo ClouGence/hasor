@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain;
+package net.hasor.rsf.center.domain.constant;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * 事件
+ * @version : 2015年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RSFCenterConstants {
-    public static final String RSF_APP_CODE  = "RSF_APP_CODE"; //应用程序编码
-    public static final String RSF_AUTH_CODE = "RSF_AUTH_CODE";//授权码
-    public static final String RSF_VERSION   = "RSF_VERSION";  //客户端版本
+public interface RsfCenterEvent {
+    /** ZK连接可用，参数为：ZooKeeperNode */
+    public static final String SyncConnected_Event  = "SyncConnected";
+    /** 确认Leader，参数为：DataDiplomat */
+    public static final String ConfirmLeader_Event  = "ConfirmLeader";
+    //
+    /** 注册中心收到了服务发布或者订阅的变更，参数为：DataDiplomat */
+    public static final String ServicesChange_Event = "ServicesChange";
 }

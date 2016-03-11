@@ -24,25 +24,26 @@ import net.hasor.rsf.RsfBindInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> {
-    private String   centerID      = null;      //在注册中心上的（发布ID or 订阅ID）
-    private String   bindID        = null;      //服务ID
-    private String   bindName      = null;      //服务名
-    private String   bindGroup     = "default"; //服务分组
-    private String   bindVersion   = "1.0.0";   //服务版本
-    private Class<T> bindType      = null;      //服务类型
-    private int      clientTimeout = 6000;      //调用超时（毫秒）
-    private String   serializeType = null;      //传输序列化类型
+    private String         centerSnapshot = null;      //在注册中心上快照，用于（发布 or 订阅）
+    private String         bindID         = null;      //服务ID
+    private String         bindName       = null;      //服务名
+    private String         bindGroup      = "default"; //服务分组
+    private String         bindVersion    = "1.0.0";   //服务版本
+    private Class<T>       bindType       = null;      //服务类型
+    private int            clientTimeout  = 6000;      //调用超时（毫秒）
+    private String         serializeType  = null;      //传输序列化类型
+    private RsfServiceType serviceType    = null;      //服务类型（提供者 or 消费者）
     //
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
     }
-    /**在注册中心上的（发布ID or 订阅ID）*/
-    public String getCenterID() {
-        return centerID;
+    /**在注册中心上快照，用于（发布 or 订阅）*/
+    public String getCenterSnapshot() {
+        return centerSnapshot;
     }
-    /**在注册中心上的（发布ID or 订阅ID）*/
-    public void setCenterID(String centerID) {
-        this.centerID = centerID;
+    /**在注册中心上快照，用于（发布 or 订阅）*/
+    public void setCenterSnapshot(String centerSnapshot) {
+        this.centerSnapshot = centerSnapshot;
     }
     public String getBindID() {
         if (bindID == null) {
@@ -93,6 +94,14 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     /**设置客户端使用的对象序列化格式。*/
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
+    }
+    /**获取服务类型，消费者还是提供者*/
+    public RsfServiceType getServiceType() {
+        return serviceType;
+    }
+    /**设置服务类型，消费者还是提供者*/
+    public void setServiceType(RsfServiceType serviceType) {
+        this.serviceType = serviceType;
     }
     //
     public String toString() {
