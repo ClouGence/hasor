@@ -18,6 +18,7 @@ import java.util.Map;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
+import net.hasor.rsf.center.domain.ReceiveResult;
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日
@@ -27,17 +28,17 @@ import net.hasor.rsf.center.domain.ProviderPublishInfo;
 public interface RsfCenterRegister {
     /**发布服务
      * @return 返回订阅ID。*/
-    public String publishService(String hostString, ProviderPublishInfo info);
+    public String publishService(String rsfHostString, ProviderPublishInfo info);
     /**发布服务心跳*/
-    public Map<String, Boolean> publishServiceBeat(String hostString, Map<String, String> beatMap);
+    public Map<String, Boolean> publishServiceBeat(String rsfHostString, Map<String, String> beatMap);
     /**删除发布*/
-    public boolean removePublish(String hostString, String serviceID);
+    public boolean removePublish(String rsfHostString, String serviceID);
     //
     /** 订阅服务
-     * @return 返回订阅ID。*/
-    public String receiveService(String hostString, ConsumerPublishInfo info);
+     * @return 返回订阅信息。*/
+    public ReceiveResult receiveService(String rsfHostString, ConsumerPublishInfo info);
     /**订阅服务心跳*/
-    public Map<String, Boolean> receiveServiceBeat(String hostString, Map<String, String> beatMap);
+    public Map<String, Boolean> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap);
     /**删除订阅*/
-    public boolean removeReceive(String hostString, String serviceID);
+    public boolean removeReceive(String rsfHostString, String serviceID);
 }

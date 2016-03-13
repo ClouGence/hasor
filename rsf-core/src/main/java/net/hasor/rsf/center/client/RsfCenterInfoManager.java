@@ -31,11 +31,13 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
+import net.hasor.rsf.center.domain.ReceiveResult;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
@@ -57,14 +59,12 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
     public RsfCenterInfoManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterMarkDataUpdate_Event, this);
         this.rsfContext = rsfContext;
-        this.hostString = rsfContext.bindAddress().getHostPort();
+        this.hostString = rsfContext.bindAddress().toHostSchema();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<String, ServiceDomain<?>>();
         this.timerManager.atTime(this);
     }
-    //
-    //
     //
     @Override
     public void onEvent(String event, CenterEventBody eventData) throws Throwable {
@@ -84,8 +84,6 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
             }
         }
     }
-    //
-    //
     //
     /**异步注册到注册中心*/
     public synchronized void newService(ServiceDomain<?> domain, String eventType) {
@@ -165,7 +163,8 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                     //
                     ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
                     info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
-                    snapshotInfo = this.centerRegister.receiveService(this.hostString, info);
+                    ReceiveResult receiveResult = this.centerRegister.receiveService(this.hostString, info);
+                    snapshotInfo = processResult(domain.getBindID(), receiveResult);
                     logger.info("receiveService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
                 }
                 if (StringUtils.isNotBlank(snapshotInfo)) {
@@ -247,7 +246,8 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                 } else if (RsfServiceType.Consumer == domain.getServiceType()) {
                     ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
                     info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
-                    snapshotInfo = this.centerRegister.receiveService(this.hostString, info);
+                    ReceiveResult receiveResult = this.centerRegister.receiveService(this.hostString, info);
+                    snapshotInfo = processResult(domain.getBindID(), receiveResult);
                     logger.info("repairReceiveService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
                     //
                 }
@@ -260,6 +260,28 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
         }
         //
         timerManager.atTime(this);
+    }
+    private String processResult(String serviceID, ReceiveResult receiveResult) {
+        //1.准备服务提供者列表
+        List<InterAddress> newHostSet = new ArrayList<InterAddress>();
+        List<String> providerList = receiveResult.getProviderList();
+        if (providerList != null && providerList.isEmpty() == false) {
+            for (String providerAddress : providerList) {
+                try {
+                    newHostSet.add(new InterAddress(providerAddress));
+                } catch (Throwable e) {
+                    logger.error("address '{}' formater error ->{}", providerAddress, e.getMessage());
+                }
+            }
+        }
+        //2.更新服务提供者地址列表
+        try {
+            this.rsfContext.getUpdater().appendAddress(serviceID, newHostSet);
+        } catch (Throwable e) {
+            logger.error("appendAddress failed ,serviceID=" + serviceID + " ,message=" + e.getMessage(), e);
+        }
+        //3.返回注册中心centerSnapshot
+        return receiveResult.getCenterSnapshot();
     }
     private <T extends PublishInfo> T fillTo(ServiceDomain<?> eventData, T info) {
         info.setBindID(eventData.getBindID());
