@@ -57,8 +57,10 @@ public class RsfCaller extends RsfRequestManager {
      */
     public Object getRemoteByID(AddressProvider target, String serviceID) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(serviceID);
-        if (bindInfo == null)
+        if (bindInfo == null) {
+            logger.error("service {} is undefined.", serviceID);
             throw new IllegalStateException("service " + serviceID + " is undefined.");
+        }
         return this.wrapper(target, bindInfo, bindInfo.getBindType());
     }
     /**
@@ -73,6 +75,7 @@ public class RsfCaller extends RsfRequestManager {
     public Object getRemote(AddressProvider target, String group, String name, String version) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(group, name, version);
         if (bindInfo == null) {
+            logger.error("the group={} ,name={} ,version={} is undefined.", group, name, version);
             throw new IllegalStateException("the group=" + group + " ,name=" + name + " ,version=" + version + " is undefined.");
         }
         return this.getRemote(target, bindInfo);
@@ -100,8 +103,10 @@ public class RsfCaller extends RsfRequestManager {
      */
     public <T> T wrapperByID(AddressProvider target, String serviceID, Class<T> interFace) throws RsfException {
         RsfBindInfo<?> bindInfo = this.getContainer().getRsfBindInfo(serviceID);
-        if (bindInfo == null)
+        if (bindInfo == null) {
+            logger.error("service {} is undefined.", serviceID);
             throw new IllegalStateException("service " + serviceID + " is undefined.");
+        }
         return this.wrapper(target, bindInfo, interFace);
     }
     /**
@@ -116,8 +121,10 @@ public class RsfCaller extends RsfRequestManager {
             throw new NullPointerException("the interFace is null.");
         }
         RsfBindInfo<T> bindInfo = this.getContainer().getRsfBindInfo(interFace);
-        if (bindInfo == null)
-            throw new IllegalStateException("service is undefined.");
+        if (bindInfo == null) {
+            logger.error("service {} is undefined.", interFace.getName());
+            throw new IllegalStateException("service " + interFace.getName() + " is undefined.");
+        }
         return this.wrapper(target, bindInfo, interFace);
     }
     /**
@@ -141,8 +148,10 @@ public class RsfCaller extends RsfRequestManager {
     public <T> T wrapper(AddressProvider target, RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         if (bindInfo == null)
             throw new NullPointerException();
-        if (interFace.isInterface() == false)
-            throw new UnsupportedOperationException("interFace parameter must be an interFace.");
+        if (interFace.isInterface() == false) {
+            logger.error("interFace {} parameter must be an interFace.", interFace.getName());
+            throw new UnsupportedOperationException("interFace " + interFace.getName() + " parameter must be an interFace.");
+        }
         //
         String bindID = bindInfo.getBindID();
         Class<RsfServiceWrapper> wrapperClass = this.wrapperMap.get(bindID);
@@ -168,6 +177,7 @@ public class RsfCaller extends RsfRequestManager {
             wrapper.setTarget(target);
             return (T) wrapper;
         } catch (Throwable e) {
+            logger.error("new wrapperClass failed -> service={}, interFace {}, error={}", bindID, interFace.getName(), e.getMessage(), e);
             throw new RsfException(e.getMessage(), e);
         }
     }

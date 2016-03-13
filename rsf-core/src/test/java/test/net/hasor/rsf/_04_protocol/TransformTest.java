@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.serialize.SerializeCoder;
 import net.hasor.rsf.serialize.SerializeFactory;
@@ -55,7 +55,7 @@ public class TransformTest {
         request.addOption("password", null);
         //
         ByteBuf dataBuf = ByteBufAllocator.DEFAULT.heapBuffer();
-        ProtocolUtils.wirteRequestInfo(RSFConstants.Version_1, request, dataBuf);
+        ProtocolUtils.wirteRequestInfo(RsfConstants.Version_1, request, dataBuf);
         byte[] rsfData = dataBuf.array();
         return rsfData;
     }
@@ -63,7 +63,7 @@ public class TransformTest {
         //
         ByteBuf dataBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         dataBuf.writeBytes(rsfData);
-        RequestInfo request = ProtocolUtils.buildRequestInfo(RSFConstants.Version_1, dataBuf);
+        RequestInfo request = ProtocolUtils.buildRequestInfo(RsfConstants.Version_1, dataBuf);
         return request;
     }
 }

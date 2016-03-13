@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RSFConstants {
+public interface RsfConstants {
     // RSF数据包   -（1000 0000）
     public static final byte    RSF_Packet                  = (byte) (0x80);
     // RSF心跳包   -（1000 0000）
@@ -48,4 +48,8 @@ public interface RSFConstants {
     public static final String  ServiceLevelScript_ZipEntry = ".sls";
     public static final String  MethodLevelScript_ZipEntry  = ".mls";
     public static final String  ArgsLevelScript_ZipEntry    = ".als";
+    //
+    public static final String  RsfInvoker_Logger           = "rsf-invoker";
+    public static final String  RsfAddress_Logger           = "rsf-address";
+    public static final String  RsfCenter_Logger            = "rsf-center";
 }

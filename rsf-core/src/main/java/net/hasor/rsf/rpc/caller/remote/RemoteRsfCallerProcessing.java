@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.caller.remote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
@@ -25,7 +26,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 class RemoteRsfCallerProcessing extends InvokerProcessing {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
     //
     public RemoteRsfCallerProcessing(InterAddress target, RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
         super(target, rsfCaller, requestInfo);

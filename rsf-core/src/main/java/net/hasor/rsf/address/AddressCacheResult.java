@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.address.route.rule.ArgsKey;
+import net.hasor.rsf.domain.RsfConstants;
 /**
  * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
@@ -31,7 +32,7 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
  * @author 赵永春(zyc@hasor.net)
  */
 class AddressCacheResult {
-    protected Logger             logger = LoggerFactory.getLogger(getClass());
+    protected Logger             logger = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
     //做引用切换
     private volatile CacheResult cacheResultRef;
     private final AddressPool    addressPool;

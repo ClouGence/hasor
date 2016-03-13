@@ -54,7 +54,7 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
 /**
  * 服务地址池
@@ -73,7 +73,7 @@ import net.hasor.rsf.utils.ZipUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected static final Logger                      logger       = LoggerFactory.getLogger(AddressPool.class);
+    protected static final Logger                      logger       = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
     private static final String                        CharsetName  = ZipUtils.CharsetName;
     private static final String                        SnapshotPath = "/snapshot";
     private static final String                        defaultName  = "default-ruleScript";
@@ -179,7 +179,7 @@ public class AddressPool implements RsfUpdater {
             }
             //2.保存流控规则
             if (StringUtils.isNotBlank(this.flowControlRef.flowControlScript)) {
-                String fclName = "default-flowControl" + RSFConstants.FlowControlRef_ZipEntry;
+                String fclName = "default-flowControl" + RsfConstants.FlowControlRef_ZipEntry;
                 try {
                     String comment = "the default flowControlRef of all service.";
                     ZipUtils.writeEntry(zipStream, this.flowControlRef.flowControlScript, fclName, comment);
@@ -190,7 +190,7 @@ public class AddressPool implements RsfUpdater {
             }
             //3.保存路由脚本
             if (this.ruleRef != null) {
-                String slsName = defaultName + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+                String slsName = defaultName + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
                 try {
                     String script = this.ruleRef.getServiceLevel().getScript();
                     if (StringUtils.isNotBlank(script)) {
@@ -201,7 +201,7 @@ public class AddressPool implements RsfUpdater {
                 } catch (Exception e) {
                     logger.error("default ServiceLevelScript save to entry -> {} ,error -> {}", slsName, e.getMessage(), e);
                 }
-                String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+                String mlsName = defaultName + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
                 try {
                     String script = this.ruleRef.getMethodLevel().getScript();
                     if (StringUtils.isNotBlank(script)) {
@@ -212,7 +212,7 @@ public class AddressPool implements RsfUpdater {
                 } catch (Exception e) {
                     logger.error("default MethodLevelScript save to entry -> {} ,error -> {}", mlsName, e.getMessage(), e);
                 }
-                String alsName = defaultName + RSFConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
+                String alsName = defaultName + RsfConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
                 try {
                     String script = this.ruleRef.getArgsLevel().getScript();
                     if (StringUtils.isNotBlank(script)) {
@@ -295,7 +295,7 @@ public class AddressPool implements RsfUpdater {
         AddressBucket.recoveryConfig(zipFile, bucker.getServiceID(), this);
         //2.恢复默认流控规则
         try {
-            String fclName = defaultName + RSFConstants.FlowControlRef_ZipEntry;
+            String fclName = defaultName + RsfConstants.FlowControlRef_ZipEntry;
             String flowControl = ZipUtils.readToString(zipFile, fclName);
             if (StringUtils.isNotBlank(flowControl)) {
                 updateDefaultFlowControl(flowControl);
@@ -305,7 +305,7 @@ public class AddressPool implements RsfUpdater {
         }
         //3.恢复默认服务级路由脚本策略
         try {
-            String slsName = defaultName + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+            String slsName = defaultName + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, slsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 updateDefaultServiceRoute(scriptBody);
@@ -315,7 +315,7 @@ public class AddressPool implements RsfUpdater {
         }
         //4.恢复默认方法级路由脚本策略
         try {
-            String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String mlsName = defaultName + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, mlsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 updateDefaultMethodRoute(scriptBody);
@@ -325,7 +325,7 @@ public class AddressPool implements RsfUpdater {
         }
         //4.恢复默认参数级路由脚本策略
         try {
-            String mlsName = defaultName + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String mlsName = defaultName + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, mlsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 updateDefaultArgsRoute(scriptBody);

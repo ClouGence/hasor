@@ -31,7 +31,7 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 /**
  * 
@@ -105,7 +105,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     }
     @Override
     public byte getProtocolVersion() {
-        return RSFConstants.Version_1;
+        return RsfConstants.Version_1;
     }
     @Override
     public String getDefaultGroup() {

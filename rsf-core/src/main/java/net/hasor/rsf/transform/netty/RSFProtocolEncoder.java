@@ -17,7 +17,7 @@ package net.hasor.rsf.transform.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestBlock;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -32,19 +32,19 @@ public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (msg instanceof RequestInfo) {
             RequestInfo info = (RequestInfo) msg;
-            ProtocolUtils.wirteRequestInfo(RSFConstants.Version_1, info, out);
+            ProtocolUtils.wirteRequestInfo(RsfConstants.Version_1, info, out);
         }
         if (msg instanceof ResponseInfo) {
             ResponseInfo info = (ResponseInfo) msg;
-            ProtocolUtils.wirteResponseInfo(RSFConstants.Version_1, info, out);
+            ProtocolUtils.wirteResponseInfo(RsfConstants.Version_1, info, out);
         }
         if (msg instanceof RequestBlock) {
             RequestBlock block = (RequestBlock) msg;
-            ProtocolUtils.wirteRequestBlock(RSFConstants.Version_1, block, out);
+            ProtocolUtils.wirteRequestBlock(RsfConstants.Version_1, block, out);
         }
         if (msg instanceof ResponseBlock) {
             ResponseBlock block = (ResponseBlock) msg;
-            ProtocolUtils.wirteResponseBlock(RSFConstants.Version_1, block, out);
+            ProtocolUtils.wirteResponseBlock(RsfConstants.Version_1, block, out);
         }
         ctx.flush();
     }

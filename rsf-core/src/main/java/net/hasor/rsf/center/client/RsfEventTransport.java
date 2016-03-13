@@ -20,42 +20,47 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 负责侦听RSF框架发出的事件，并将事件转发到RsfCenter。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfEventTransport implements EventListener<ServiceDomain<?>> {
-    protected Logger             logger    = LoggerFactory.getLogger(getClass());
+class RsfEventTransport implements EventListener<Object> {
+    protected Logger             logger    = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     private RsfCenterInfoManager beatTimer = null;
     public RsfEventTransport(RsfContext rsfContext) {
         this.beatTimer = new RsfCenterInfoManager(rsfContext);
     }
     //
     @Override
-    public void onEvent(String event, ServiceDomain<?> eventData) throws Throwable {
+    public void onEvent(String event, Object eventData) throws Throwable {
         if (eventData == null) {
             return;
         }
+        if (StringUtils.equals(Events.Rsf_Started, event)) {
+            this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
+            this.logger.info("eventType = {} , start the registration service processed.", event);
+            return;
+        }
+        //
+        ServiceDomain<?> domain = (ServiceDomain<?>) eventData;
         try {
             if (StringUtils.equals(Events.Rsf_ProviderService, event)) {
-                this.beatTimer.newService(eventData, Events.Rsf_ProviderService);
+                this.beatTimer.newService(domain, Events.Rsf_ProviderService);
                 //
             } else if (StringUtils.equals(Events.Rsf_ConsumerService, event)) {
-                this.beatTimer.newService(eventData, Events.Rsf_ConsumerService);
+                this.beatTimer.newService(domain, Events.Rsf_ConsumerService);
                 //
             } else if (StringUtils.equals(Events.Rsf_DeleteService, event)) {
-                this.beatTimer.deleteService(eventData);
-                //
-            } else if (StringUtils.equals(Events.Rsf_Started, event)) {
-                this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
+                this.beatTimer.deleteService(domain);
                 //
             }
             //
-            this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, eventData.getBindID());
+            this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, domain.getBindID());
         } catch (Throwable e) {
-            this.logger.error("eventType = {} ,serviceID ={} , process error -> {}", event, eventData.getBindID(), e.getMessage(), e);
+            this.logger.error("eventType = {} ,serviceID ={} , process error -> {}", event, domain.getBindID(), e.getMessage(), e);
         }
     }
 }

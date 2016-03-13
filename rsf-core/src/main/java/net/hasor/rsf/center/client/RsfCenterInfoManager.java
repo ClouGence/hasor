@@ -36,6 +36,7 @@ import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.utils.TimerManager;
@@ -46,7 +47,7 @@ import net.hasor.rsf.utils.TimerManager;
  */
 class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> {
     public static final String                            CenterMarkDataUpdate_Event = "CenterMarkDataUpdate";
-    protected Logger                                      logger                     = LoggerFactory.getLogger(getClass());
+    protected static Logger                               logger                     = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     private final RsfContext                              rsfContext;
     private final String                                  hostString;
     private final TimerManager                            timerManager;
@@ -184,10 +185,10 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
             for (ServiceDomain<?> domain : needBeat) {
                 beatAllMap.put(domain.getBindID(), domain);
                 /*   */if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    beatPMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
+                    beatCMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
                     //
                 } else if (RsfServiceType.Provider == domain.getServiceType()) {
-                    beatCMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
+                    beatPMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
                     //
                 }
             }

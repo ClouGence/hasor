@@ -23,7 +23,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.rpc.caller.RsfFilterHandler;
 import net.hasor.rsf.rpc.caller.RsfResponseObject;
@@ -38,7 +38,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class InvokerProcessing implements Runnable {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
+    protected Logger              logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
     private final RemoteRsfCaller rsfCaller;
     private final InterAddress    target;
     private final RequestInfo     requestInfo;
@@ -67,7 +67,7 @@ abstract class InvokerProcessing implements Runnable {
             String serviceID = "[" + group + "]" + name + "-" + version;
             String errorInfo = "do request(" + requestID + ") failed -> service " + serviceID + " not exist.";
             logger.error(errorInfo);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.NotFound, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.NotFound, errorInfo);
             this.sendResponse(info);
             return;
         }
@@ -78,7 +78,7 @@ abstract class InvokerProcessing implements Runnable {
         if (lostTime > timeout) {
             String errorInfo = "do request(" + requestID + ") failed -> timeout for server.";
             logger.error(errorInfo);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
             this.sendResponse(info);
             return;
         }
@@ -93,7 +93,7 @@ abstract class InvokerProcessing implements Runnable {
             if (coder == null) {
                 String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") is undefined.";
                 logger.error(errorInfo);
-                ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
+                ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
                 this.sendResponse(info);
                 return;
             }
@@ -103,7 +103,7 @@ abstract class InvokerProcessing implements Runnable {
             if (pTypeList.size() != pObjectList.size()) {
                 String errorInfo = "do request(" + requestID + ") failed -> parameters count and types count, not equal.";
                 logger.error(errorInfo);
-                ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+                ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
                 this.sendResponse(info);
                 return;
             }
@@ -120,7 +120,7 @@ abstract class InvokerProcessing implements Runnable {
         } catch (Throwable e) {
             String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
             this.sendResponse(info);
             return;
         }
@@ -132,7 +132,7 @@ abstract class InvokerProcessing implements Runnable {
         } catch (Throwable e) {
             String errorInfo = "do request(" + requestID + ") failed -> lookup service method error " + e.getMessage();
             logger.error(errorInfo, e);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Forbidden, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.Forbidden, errorInfo);
             this.sendResponse(info);
             return;
         }
@@ -150,7 +150,7 @@ abstract class InvokerProcessing implements Runnable {
         } catch (Throwable e) {
             String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + "," + e.getMessage();
             logger.error(msgLog);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, msgLog);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, msgLog);
             this.sendResponse(info);
         }
     }
@@ -172,7 +172,7 @@ abstract class InvokerProcessing implements Runnable {
             if (coder == null) {
                 String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") is undefined.";
                 logger.error(errorInfo);
-                ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
+                ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
                 this.sendResponse(info);
                 return;
             }
@@ -189,7 +189,7 @@ abstract class InvokerProcessing implements Runnable {
         } catch (Throwable e) {
             String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
-            ResponseInfo info = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
+            ResponseInfo info = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.SerializeError, errorInfo);
             this.sendResponse(info);
         }
     }

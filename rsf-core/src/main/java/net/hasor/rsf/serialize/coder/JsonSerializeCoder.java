@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.serialize.coder;
 import java.io.IOException;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.serialize.SerializeCoder;
 import org.more.json.JSON;
 /**
@@ -26,7 +26,7 @@ import org.more.json.JSON;
 public class JsonSerializeCoder implements SerializeCoder {
     public byte[] encode(Object object) throws IOException {
         String text = JSON.toString(object);
-        return text.getBytes(RSFConstants.DEFAULT_CHARSET);
+        return text.getBytes(RsfConstants.DEFAULT_CHARSET);
     }
     //
     public Object decode(byte[] bytes) throws IOException {

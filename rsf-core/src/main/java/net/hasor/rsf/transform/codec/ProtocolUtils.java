@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import org.more.util.StringUtils;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.PoolBlock;
 import net.hasor.rsf.transform.protocol.RequestBlock;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -130,7 +130,7 @@ public class ProtocolUtils {
         RequestBlock block = new RequestBlock();
         //
         //1.基本信息
-        block.setHead(RSFConstants.RSF_Request);
+        block.setHead(RsfConstants.RSF_Request);
         block.setRequestID(info.getRequestID());//请求ID
         block.setServiceGroup(ProtocolUtils.pushString(block, info.getServiceGroup()));
         block.setServiceName(ProtocolUtils.pushString(block, info.getServiceName()));
@@ -231,7 +231,7 @@ public class ProtocolUtils {
         ResponseBlock block = new ResponseBlock();
         //
         //1.基本信息
-        block.setHead(RSFConstants.RSF_Response);
+        block.setHead(RsfConstants.RSF_Response);
         block.setRequestID(info.getRequestID());//请求ID
         block.setSerializeType(ProtocolUtils.pushString(block, info.getSerializeType()));//序列化策略
         //

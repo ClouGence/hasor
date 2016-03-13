@@ -30,7 +30,7 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
@@ -49,7 +49,7 @@ import net.hasor.rsf.utils.ZipUtils;
 class AddressBucket {
     protected static final Logger logger;
     static {
-        logger = LoggerFactory.getLogger(AddressBucket.class);
+        logger = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
     }
     //流控&路由
     private volatile FlowControlRef                       flowControlRef;     //默认流控规则引用
@@ -87,7 +87,7 @@ class AddressBucket {
             }
             bfwriter.flush();
             logger.info("bucket save list -> {}", strLogs.toString());
-            String salName = this.serviceID + RSFConstants.ServiceAddressList_ZipEntry;
+            String salName = this.serviceID + RsfConstants.ServiceAddressList_ZipEntry;
             try {
                 String comment = "the address List of [" + salName + "] service.";
                 ZipUtils.writeEntry(outStream, strWriter.toString(), salName, comment);
@@ -98,7 +98,7 @@ class AddressBucket {
         }
         //2.保存流控规则
         if (this.flowControlRef != null && StringUtils.isNotBlank(this.flowControlRef.flowControlScript)) {
-            String fclName = this.serviceID + RSFConstants.FlowControlRef_ZipEntry;
+            String fclName = this.serviceID + RsfConstants.FlowControlRef_ZipEntry;
             try {
                 String comment = "the flowControlRef of [" + this.serviceID + "] service.";
                 ZipUtils.writeEntry(outStream, this.flowControlRef.flowControlScript, fclName, comment);
@@ -109,7 +109,7 @@ class AddressBucket {
         }
         //3.保存路由脚本
         if (this.ruleRef != null) {
-            String slsName = this.serviceID + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+            String slsName = this.serviceID + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
             try {
                 String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
                 String script = this.ruleRef.getServiceLevel().getScript();
@@ -118,7 +118,7 @@ class AddressBucket {
             } catch (Exception e) {
                 logger.error("ServiceLevelScript save to entry -> {} ,error -> {}", slsName, e.getMessage(), e);
             }
-            String mlsName = this.serviceID + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String mlsName = this.serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             try {
                 String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
                 String script = this.ruleRef.getMethodLevel().getScript();
@@ -127,7 +127,7 @@ class AddressBucket {
             } catch (Exception e) {
                 logger.error("MethodLevelScript save to entry -> {} ,error -> {}", mlsName, e.getMessage(), e);
             }
-            String alsName = this.serviceID + RSFConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
+            String alsName = this.serviceID + RsfConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
             try {
                 String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
                 String script = this.ruleRef.getArgsLevel().getScript();
@@ -141,7 +141,7 @@ class AddressBucket {
     /**保存地址列表到zip流中。*/
     public void readAddressFromZip(ZipFile zipFile) throws IOException {
         //服务地址本
-        String salName = this.serviceID + RSFConstants.ServiceAddressList_ZipEntry;
+        String salName = this.serviceID + RsfConstants.ServiceAddressList_ZipEntry;
         List<String> dataBody = ZipUtils.readToList(zipFile, salName);
         if (dataBody != null && dataBody.isEmpty() == false) {
             logger.info("service {} read address form {}", salName, zipFile.getName());
@@ -342,7 +342,7 @@ class AddressBucket {
         }
         //2.恢复流控规则
         try {
-            String fclName = serviceID + RSFConstants.FlowControlRef_ZipEntry;
+            String fclName = serviceID + RsfConstants.FlowControlRef_ZipEntry;
             String flowControl = ZipUtils.readToString(zipFile, fclName);
             if (StringUtils.isNotBlank(flowControl)) {
                 pool.updateFlowControl(serviceID, flowControl);
@@ -352,7 +352,7 @@ class AddressBucket {
         }
         //3.恢复服务级路由脚本策略
         try {
-            String slsName = serviceID + RSFConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
+            String slsName = serviceID + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, slsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 pool.updateServiceRoute(serviceID, scriptBody);
@@ -362,7 +362,7 @@ class AddressBucket {
         }
         //4.恢复方法级路由脚本策略
         try {
-            String mlsName = serviceID + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String mlsName = serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, mlsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 pool.updateMethodRoute(serviceID, scriptBody);
@@ -372,7 +372,7 @@ class AddressBucket {
         }
         //4.恢复参数级路由脚本策略
         try {
-            String mlsName = serviceID + RSFConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
+            String mlsName = serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             String scriptBody = ZipUtils.readToString(zipFile, mlsName);
             if (StringUtils.isNotBlank(scriptBody)) {
                 pool.updateArgsRoute(serviceID, scriptBody);

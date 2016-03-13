@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transform.netty;
-import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Request;
-import static net.hasor.rsf.domain.RSFConstants.RSF_Packet_Response;
+import static net.hasor.rsf.domain.RsfConstants.RSF_Packet_Request;
+import static net.hasor.rsf.domain.RsfConstants.RSF_Packet_Response;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
@@ -34,7 +34,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
     public RSFProtocolDecoder() {
         this(Integer.MAX_VALUE);
     }
@@ -94,7 +94,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
     //
     /**发送错误 */
     private void fireProtocolError(ChannelHandlerContext ctx, byte rsfHead, long requestID, short status, String message) {
-        ResponseBlock block = ProtocolUtils.buildBlockStatus(RSFConstants.RSF_Response, requestID, status, message);
+        ResponseBlock block = ProtocolUtils.buildBlockStatus(RsfConstants.RSF_Response, requestID, status, message);
         ctx.pipeline().writeAndFlush(block);
     }
 }

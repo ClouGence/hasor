@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfException;
 /**
  * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
@@ -31,10 +32,10 @@ import net.hasor.rsf.domain.RsfException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterDataVerificationFilter implements RsfFilter {
-    protected Logger logger     = LoggerFactory.getLogger(getClass());
-    private String   authCode   = null;                               //RSF_APP_CODE  应用程序编码
-    private String   appCode    = null;                               //RSF_AUTH_CODE 授权码
-    private String   rsfVersion = null;                               //              客户端版本
+    protected Logger logger     = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    private String   authCode   = null;                                                  //RSF_APP_CODE  应用程序编码
+    private String   appCode    = null;                                                  //RSF_AUTH_CODE 授权码
+    private String   rsfVersion = null;                                                  //              客户端版本
     //
     public RsfCenterDataVerificationFilter(RsfContext rsfContext) {
         this.authCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_APP_CODE");

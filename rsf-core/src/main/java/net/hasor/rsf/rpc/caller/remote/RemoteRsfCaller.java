@@ -25,7 +25,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RSFConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -74,16 +74,16 @@ public class RemoteRsfCaller extends RsfCaller {
         } catch (TimeoutException e) {
             String errorInfo = "do request(" + requestID + ") failed -> waiting for response.";
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
+            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
         } catch (InterruptedException e) {
             String errorInfo = "do request(" + requestID + ") failed -> InterruptedException.";
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
         } catch (ExecutionException e) {
             Throwable ex = e.getCause();
             String errorInfo = "do request(" + requestID + ") failed -> " + ex.getMessage();
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
         }
         return resp;
     }
@@ -101,7 +101,7 @@ public class RemoteRsfCaller extends RsfCaller {
         } catch (RejectedExecutionException e) {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
-            ResponseInfo resp = ProtocolUtils.buildStatus(RSFConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
+            ResponseInfo resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
             this.senderListener.sendResponse(target, resp);
         }
     }
