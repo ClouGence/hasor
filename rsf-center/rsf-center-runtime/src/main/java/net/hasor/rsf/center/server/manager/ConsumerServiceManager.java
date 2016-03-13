@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
+import net.hasor.rsf.center.domain.ReceiveResult;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
@@ -26,7 +28,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 public class ConsumerServiceManager extends BaseServiceManager {
     /**发布服务*/
-    public String publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {
+    public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {
         //
         //1.注册服务：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
@@ -58,7 +60,13 @@ public class ConsumerServiceManager extends BaseServiceManager {
         //4.返回心跳时间
         String snapshotInfo = this.readData(consumerBeatPath);
         logger.info("receiveService host ={} ,serviceID ={} -> {}", hostString, serviceID, snapshotInfo);
-        return snapshotInfo;
+        //
+        //5.准备返回值
+        ReceiveResult result = new ReceiveResult();
+        result.setCenterSnapshot(snapshotInfo);
+        List<String> providerList = this.getProviderList(serviceID);
+        result.setProviderList(providerList);
+        return result;
     }
     /**删除服务订阅者*/
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {

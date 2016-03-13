@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.zookeeper.data.Stat;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
@@ -134,6 +136,40 @@ public class BaseServiceManager {
         String beatData = DateCenterUtils.beatData();
         Stat s = this.saveOrUpdateNode(ZkNodeType.Persistent, beatPath, beatData);
         return s != null;
+    }
+    /**获取指定服务的提供者列表。*/
+    protected List<String> getProviderList(String serviceID) {
+        String providerPath = this.pathManager.evalProviderPath(serviceID);
+        List<String> providerList = null;
+        try {
+            providerList = this.zooKeeperNode.getZooKeeper().getChildren(providerPath, false);
+        } catch (Throwable e) {
+            logger.error("find providerList failed ->" + e.getMessage(), e);
+        }
+        List<String> result = new ArrayList<String>();
+        if (providerList != null) {
+            for (String provider : providerList) {
+                result.add("rsf://" + provider.replace('@', '/'));
+            }
+        }
+        return result;
+    }
+    /**获取指定服务的消费者列表。*/
+    public List<String> getConsumerList(String serviceID) {
+        String consumerPath = this.pathManager.evalConsumerPath(serviceID);
+        List<String> consumerList = null;
+        try {
+            consumerList = this.zooKeeperNode.getZooKeeper().getChildren(consumerPath, false);
+        } catch (Throwable e) {
+            logger.error("find providerList failed ->" + e.getMessage(), e);
+        }
+        List<String> result = new ArrayList<String>();
+        if (consumerList != null) {
+            for (String provider : consumerList) {
+                result.add("rsf://" + provider.replace('@', '/'));
+            }
+        }
+        return result;
     }
     protected void fireSyncEvent(String eventType, String eventData) {
         this.appContext.getEnvironment().getEventContext().fireSyncEvent(eventType, eventData);

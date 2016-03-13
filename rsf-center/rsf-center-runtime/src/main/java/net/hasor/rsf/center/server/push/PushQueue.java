@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -22,15 +23,15 @@ import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.plugins.event.Event;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.center.server.manager.BaseServiceManager;
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event(RsfCenterEvent.ServicesChange_Event)
+@Event(RsfCenterEvent.ServicesPull_Event)
 public class PushQueue implements EventListener<String> {
     private ConcurrentSkipListSet<String> dataSet;
     private ReadWriteLock                 lock;
@@ -40,7 +41,7 @@ public class PushQueue implements EventListener<String> {
     @Inject
     private RsfCenterCfg                  rsfCenterCfg;
     @Inject
-    private ZooKeeperNode                 zooKeeperNode;
+    private BaseServiceManager            serviceManager;
     //
     @Init
     public void init() {
@@ -52,7 +53,6 @@ public class PushQueue implements EventListener<String> {
     // - 监听到服务注册订阅消息，将该服务加入到推送列表返回。该方法不做推送，推送交给推送线程去做。
     @Override
     public void onEvent(String event, String serviceID) throws Throwable {
-        System.out.println("ServicesChange_Event ->" + serviceID);
         this.lock.readLock().lock();
         this.dataSet.add(serviceID);
         this.lock.readLock().unlock();
@@ -63,10 +63,7 @@ public class PushQueue implements EventListener<String> {
                 this.pushLock.notifyAll();
             }
         }
-        //
     }
-    //
-    //
     //
     private void waitData() throws InterruptedException {
         final long waitTime = this.rsfCenterCfg.getPushSleepTime();
@@ -75,26 +72,34 @@ public class PushQueue implements EventListener<String> {
         } else {
             for (;;) {
                 this.pushLock.wait(waitTime);
-                if (this.dataSet.isEmpty() == false || this.checkZkChange()) {
+                if (this.dataSet.isEmpty() == false) {
                     return;
                 }
             }
         }
     }
-    // - 检测ZK中是否有本机没有感知到的服务变更，需要进行推送。
-    private boolean checkZkChange() {
-        return false;
+    private void runPush() {
+        while (true) {
+            this.waitData();
+            //
+            this.lock.writeLock().lock();
+            String[] serviceIDs = this.dataSet.toArray(new String[this.dataSet.size()]);
+            this.dataSet.clear();
+            this.lock.writeLock().unlock();;
+            //
+            for (String serviceID : serviceIDs) {
+                this.pushData(serviceID);
+            }
+        }
     }
-    private void pushData() {
-        this.lock.writeLock().lock();
+    private void pushData(String serviceID) {
+        List<String> consumerList = this.serviceManager.getConsumerList(serviceID);
         //
-        String[] serviceArrays = this.dataSet.toArray(new String[this.dataSet.size()]);
-        this.dataSet.clear();
+        System.out.println("PushService ->" + serviceID);
         //        providerAddress(serviceID);
         //        consumerAddress(serviceID);
         //
         //        RsfCenterListener listener = this.rsfContext.getRsfClient("").wrapper(RsfCenterListener.class);
         //listener.onEvent(serviceID, eventType, eventBody);
-        this.lock.writeLock().unlock();;
     }
 }

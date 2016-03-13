@@ -64,7 +64,7 @@ public class ProviderServiceManager extends BaseServiceManager {
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {
         //1.删除注册的服务
         boolean result = super.removeRegister(hostString, serviceID, RsfServiceType.Provider);
-        //1.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
+        //2.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
         if (result == true) {
             String providerPath = pathManager.evalProviderPath(serviceID);
             updateSnapshot(hostString, serviceID, providerPath);
@@ -77,7 +77,7 @@ public class ProviderServiceManager extends BaseServiceManager {
         // --引发事件，通知推送进程推送服务地址
         String snapshotInfo = this.readData(providerTermPath);
         logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID, snapshotInfo);
-        fireSyncEvent(RsfCenterEvent.ServicesChange_Event, serviceID);
+        fireSyncEvent(RsfCenterEvent.ServicesPull_Event, serviceID);
         return snapshotInfo;
     }
 }

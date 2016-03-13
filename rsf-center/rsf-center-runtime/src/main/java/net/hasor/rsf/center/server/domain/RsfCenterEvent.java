@@ -21,10 +21,10 @@ package net.hasor.rsf.center.server.domain;
  */
 public interface RsfCenterEvent {
     /** ZK连接可用，参数为：ZooKeeperNode */
-    public static final String SyncConnected_Event  = "SyncConnected";
-    /** 确认Leader，参数为：DataDiplomat */
-    public static final String ConfirmLeader_Event  = "ConfirmLeader";
+    public static final String SyncConnected_Event = "SyncConnected";
+    /** 确认RsfCenter的Leader，参数为：DataDiplomat */
+    public static final String ConfirmLeader_Event = "ConfirmLeader";
     //
-    /** 注册中心收到了服务发布或者订阅的变更，参数为：DataDiplomat */
-    public static final String ServicesChange_Event = "ServicesChange";
+    /** 服务推送事件，参数为：String，服务ID */
+    public static final String ServicesPull_Event  = "ServicesPull_Event";
 }

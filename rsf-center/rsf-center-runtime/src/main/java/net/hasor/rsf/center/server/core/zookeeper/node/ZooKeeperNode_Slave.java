@@ -25,6 +25,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,33 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     private String       serverConnection;
     private RsfCenterCfg zooKeeperCfg;
     private ZooKeeper    zooKeeper;
+    private boolean      start      = false;
+    private Thread       zkCheckManager;
     //
     public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg) {
         this.zooKeeperCfg = zooKeeperCfg;
+        this.zkCheckManager = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        if (start == true && zooKeeper.getState() == States.CLOSED) {
+                            zooKeeper = createZK();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // TODO: handle exception
+                    } finally {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e2) { /**/ }
+                    }
+                }
+            }
+        };
+        this.zkCheckManager.setDaemon(true);
+        this.zkCheckManager.setName("RsfCenter-CheckZK");
+        this.zkCheckManager.start();
     }
     //
     public void process(WatchedEvent event) {
@@ -58,6 +83,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     //
     /** 终止ZooKeeper */
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+        this.start = false;
         if (zooKeeper != null) {
             zooKeeper.close();
             zooKeeper = null;
@@ -72,8 +98,12 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         logger.info("zkClient connected to {}.", serverConnection);
         this.appContext = appContext;
         this.serverConnection = serverConnection;
-        this.zooKeeper = new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
+        this.zooKeeper = createZK();
+        this.start = true;
         logger.info("zkClient connected -> ok.");
+    }
+    private ZooKeeper createZK() throws IOException {
+        return new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
     }
     //
     //

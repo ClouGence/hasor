@@ -20,6 +20,7 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import net.hasor.core.AppContext;
 /**
+ * 
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -34,8 +35,6 @@ public interface ZooKeeperNode {
     public static final String SERVICES_PATH = ROOT_PATH + "/services";
     /** config信息保存的节点 */
     public static final String CONFIG_PATH   = ROOT_PATH + "/config";
-    //
-    //
     //
     /** 终止ZooKeeper */
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException;
