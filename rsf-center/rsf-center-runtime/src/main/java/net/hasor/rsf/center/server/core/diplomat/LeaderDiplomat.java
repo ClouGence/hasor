@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
-import java.io.IOException;
+package net.hasor.rsf.center.server.core.diplomat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+import net.hasor.core.EventListener;
+import net.hasor.core.Inject;
+import net.hasor.plugins.event.Event;
+import net.hasor.rsf.center.server.domain.RsfCenterCfg;
+import net.hasor.rsf.center.server.domain.RsfCenterEvent;
 /**
- * @version : 2015年8月13日
+ * 负责处理当Leader变更通知。
+ * 
+ * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerD {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/cluster/rsf-server-d.xml", new RsfCenterServerModule());
-        System.in.read();
+@Event(RsfCenterEvent.ConfirmLeader_Event)
+public class LeaderDiplomat implements EventListener<DataDiplomat> {
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    @Inject
+    private RsfCenterCfg rsfCenterCfg;
+    //
+    @Override
+    public void onEvent(String event, DataDiplomat eventData) throws Throwable {
+        // TODO Auto-generated method stub
     }
 }

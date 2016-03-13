@@ -18,7 +18,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.center.core.startup.RsfCenterServerModule;
+import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)

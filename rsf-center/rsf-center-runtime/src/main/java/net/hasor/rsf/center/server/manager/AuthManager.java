@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+package net.hasor.rsf.center.server.manager;
 /**
- * @version : 2015年8月13日
+ * 
+ * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerD {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/cluster/rsf-server-d.xml", new RsfCenterServerModule());
-        System.in.read();
+public class AuthManager {
+    public boolean checkAuth(String appCode, String authCode) {
+        // TODO Auto-generated method stub
+        System.out.println("checkAuth -> appCode=" + appCode + " ,authCode=" + authCode);
+        return true;
     }
 }

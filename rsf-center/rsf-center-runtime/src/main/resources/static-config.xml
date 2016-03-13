@@ -3,9 +3,9 @@
 	<!-- 框架配置，包扫描范围 -->
 	<hasor>
 		<!-- 包扫描路径 -->
-		<loadPackages>net.hasor.rsf.center.*</loadPackages>
+		<loadPackages>net.hasor.rsf.center.server.*</loadPackages>
 		<!-- 程序启动入口 -->
-		<startup>net.hasor.rsf.center.core.startup.RsfCenterServerModule</startup>
+		<startup>net.hasor.rsf.center.server.core.startup.RsfCenterServerModule</startup>
 	</hasor>
 
 	<!--
@@ -75,24 +75,6 @@
 			-->
 			<peerType>participant</peerType>
 		</zooKeeper>
-
-		<!-- ============================================================================ -->
-		<!-- 内存数据库Sechma -->
-		<memInitialize>
-			<sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
-			<sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
-		</memInitialize>
-
-		<!-- 关键数据（内存模式下无效） -->
-		<jdbcConfig>
-			<driver>org.hsqldb.jdbcDriver</driver>
-			<url>jdbc:hsqldb:mem:rsf_memdb</url>
-			<username>sa</username>
-			<password></password>
-		</jdbcConfig>
-		<!-- ============================================================================ -->
 	</rsfCenter>
 	
 	<!-- RSF -->

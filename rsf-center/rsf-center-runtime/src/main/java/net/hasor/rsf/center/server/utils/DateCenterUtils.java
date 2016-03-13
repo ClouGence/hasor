@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
-import java.io.IOException;
+package net.hasor.rsf.center.server.utils;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
- * @version : 2015年8月13日
+ * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerD {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/cluster/rsf-server-d.xml", new RsfCenterServerModule());
-        System.in.read();
+public class DateCenterUtils {
+    protected static Logger    logger      = LoggerFactory.getLogger(DateCenterUtils.class);
+    public static final String DATA_FORMAT = "yyyyMMdd-hhmmss";
+    //
+    /** 生成RSF-Center服务器心跳数据 */
+    public static String timestamp() {
+        return new SimpleDateFormat(DATA_FORMAT).format(new Date());
+    }
+    public static String beatData() {
+        return DateCenterUtils.timestamp() + "@" + String.valueOf(System.currentTimeMillis());
     }
 }

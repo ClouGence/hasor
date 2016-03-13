@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+package net.hasor.rsf.center.server.domain;
 /**
- * @version : 2015年8月13日
+ * 事件
+ * @version : 2015年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerD {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/cluster/rsf-server-d.xml", new RsfCenterServerModule());
-        System.in.read();
-    }
+public interface RsfCenterEvent {
+    /** ZK连接可用，参数为：ZooKeeperNode */
+    public static final String SyncConnected_Event  = "SyncConnected";
+    /** 确认Leader，参数为：DataDiplomat */
+    public static final String ConfirmLeader_Event  = "ConfirmLeader";
+    //
+    /** 注册中心收到了服务发布或者订阅的变更，参数为：DataDiplomat */
+    public static final String ServicesChange_Event = "ServicesChange";
 }
