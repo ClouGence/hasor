@@ -103,6 +103,9 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         logger.info("zkClient connected -> ok.");
     }
     private ZooKeeper createZK() throws IOException {
+        if (this.start){
+            this.shutdownZooKeeper();
+        }
         return new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
     }
     //
