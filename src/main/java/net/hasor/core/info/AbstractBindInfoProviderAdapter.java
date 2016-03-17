@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import org.more.util.StringUtils;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import org.more.util.StringUtils;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
@@ -31,7 +31,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private String             bindName         = null;
     private Class<T>           bindType         = null;
     private Class<? extends T> sourceType       = null;
-    private boolean            singleton        = false;
+    private Boolean            singleton        = null;
     //2.系统属性
     private Provider<T>        customerProvider = null;
     private Provider<Scope>    scopeProvider    = null;
@@ -66,10 +66,10 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
-    public void setSingleton(final boolean singleton) {
+    public void setSingleton(boolean singleton) {
         this.singleton = singleton;
     }
-    public boolean isSingleton() {
+    public Boolean isSingleton() {
         return this.singleton;
     }
     public void setCustomerProvider(final Provider<T> customerProvider) {

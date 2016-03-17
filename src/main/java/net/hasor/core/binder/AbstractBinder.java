@@ -18,6 +18,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
+import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
@@ -31,10 +35,6 @@ import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.module.ModuleHelper;
-import org.more.util.BeanUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #getBeanBuilder()} ,会返回一个类( {@link BeanBuilder} )用于配置Bean信息。
@@ -45,7 +45,7 @@ public abstract class AbstractBinder implements ApiBinder {
     private Logger      logger = LoggerFactory.getLogger(getClass());
     private Environment environment;
     public AbstractBinder(Environment environment) {
-        this.environment = Hasor.assertIsNotNull(environment);
+        this.environment = Hasor.assertIsNotNull(environment, "environment is null.");
     }
     //
     public Environment getEnvironment() {
@@ -140,6 +140,10 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         public MetaDataBindingBuilder<T> metaData(final String key, final Object value) {
             this.typeBuilder.setMetaData(key, value);
+            return this;
+        }
+        public MetaDataBindingBuilder<T> asEagerPrototype() {
+            this.typeBuilder.setSingleton(false);
             return this;
         }
         public MetaDataBindingBuilder<T> asEagerSingleton() {

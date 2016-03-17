@@ -111,10 +111,8 @@ public class TemplateBeanBuilder implements BeanBuilder {
     }
     //
     //
-    //
-    //
     /**创建对象*/
-    private <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
+    protected <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
         try {
             //
             //1.特殊类型创建处理。

@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import net.hasor.core.ApiBinder.ScopedBindingBuilder;
 /**
- * 初始化注入接口。Hasor 的 Ioc 是通过递归的方式实现，版本中要想实依赖注入必须要实现 InjectMembers接口。
- * 请注意：{@link Inject}注解方式和接口方式互斥，且接口方式优先于注解方式。
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * 标记类型为单例模式，与{@link Prototype}为互斥关系，注解方式优先于配置。
+ * @see ScopedBindingBuilder#asEagerSingleton()
+ * @version : 2015年7月28日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface InjectMembers {
-    /**
-     * 执行注入
-     * @param appContext appContext对象
-     */
-    public void doInject(AppContext appContext) throws Throwable;
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+public @interface Singleton {}

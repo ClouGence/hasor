@@ -21,7 +21,10 @@ package org.more.util;
  */
 public class MatchUtils {
     public static enum MatchTypeEnum {
-        Wild, Regex
+        /**通配符：通过：? 和 * 进行匹配。*/
+        Wild,
+        /**正则表达式匹配。*/
+        Regex
     }
     /**将通配符转换成正则表达式。*/
     public static String wildToRegex(final String wild) {

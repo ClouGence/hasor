@@ -1,4 +1,8 @@
 ﻿===== Hasor-Core v2.2.1 (2016-?)
+* 新增:
+    01.新增“.hasor.default.asEagerSingleton”配置用来配置默认情况下，类型是以单例模式运行还是以原型方式运行。（默认单例模式）
+    02.ApiBinder接口新增“asEagerPrototype”方法用来强制以原型方式注册。到目前为止可以选择的方式有：“asEagerSingleton”、“asEagerPrototype”
+    03.新增注解配置：@Singleton、@Prototype
 * 改进:
     01.容器在启动时增加EventContext类型的绑定，开发的时候可以直接通过依赖注入或者appContext.getInstance(EventContext.class)方式的到。
     02.Event插件在接收到事件响应时，需要一直等待AppContext对象被注入进来。原有逻辑是等待10秒注入AppContext对象。

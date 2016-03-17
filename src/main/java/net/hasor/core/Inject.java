@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 依赖注入。
+ * 依赖注入。请注意{@link InjectMembers}接口方式与注解方式互斥，且优先于注解方式。
  * <p>如果没有配置“value”参数那么将会使用“{@code AppContext.getInstance(class)}”方式进行依赖注入。</p>
  * <p>如果了配置value属性那么将会根据“byType”参数决定注入方式。
  * <ul>

@@ -34,13 +34,15 @@ import net.test.hasor.core._01_bean.pojo.PojoInfo;
  *      给一个接口指定一个实现类。
  * 3.nameBindTest
  *      用名字区分相同类型的两个不同Bean。
- * 4.singletonBeanTest
- *      单例模式。
- * 5.customBeanTest
+ * 4.singletonDefaultBeanTest
+ *      框架配置成默认单例模式。
+ * 5.singletonDefaultBeanTest
+ *      框架配置成默认单例模式。
+ * 6.customBeanTest
  *      托管一个自己创建的Bean，被托管的Bean将成为单例。
- * 6.idBeanTest
+ * 7.idBeanTest
  *      为Bean起一个唯一的名字，然后通过名字获取它。
- * 7.factoryBeanTest
+ * 8.factoryBeanTest
  *      工厂方式创建Bean。
  * 
  * @version : 2015年11月6日
@@ -96,21 +98,52 @@ public class BeanTest {
         logger.debug("userB :" + JSON.toString(userB));
     }
     //
-    /* 单例模式 */
+    /* 单例模式，结果为：true,false,true */
     @Test
-    public void singletonBeanTest() {
-        System.out.println("--->>singletonBeanTest<<--");
-        AppContext appContext = Hasor.createAppContext(new Module() {
+    public void singletonDefaultBeanTest() {
+        System.out.println("--->>singletonDefaultBeanTest<<--");
+        AppContext appContext = Hasor.createAppContext("default－singleton-config.xml", new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(PojoBean.class).asEagerSingleton();
+                apiBinder.bindType(PojoBean.class).asEagerSingleton();//单例模式
+                apiBinder.bindType(InitBean.class).asEagerPrototype();//原型模式
             }
         });
         //
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
+        logger.debug("objectA eq objectB = " + (objectA == objectB));//单例
         //
-        logger.debug("objectBody :" + JSON.toString(objectA));
-        logger.debug("objectA eq objectB = " + (objectA == objectB));
+        InitBean objectC = appContext.getInstance(InitBean.class);
+        InitBean objectD = appContext.getInstance(InitBean.class);
+        logger.debug("objectC eq objectD = " + (objectC == objectD));//原型
+        //
+        InitBean2 objectE = appContext.getInstance(InitBean2.class);
+        InitBean2 objectF = appContext.getInstance(InitBean2.class);
+        logger.debug("objectE eq objectF = " + (objectE == objectF));//跟随框架默认配置
+    }
+    //
+    /* 原型模式，结果为：true,false,false */
+    @Test
+    public void prototypeDefaultBeanTest() {
+        System.out.println("--->>singletonDefaultBeanTest<<--");
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                apiBinder.bindType(PojoBean.class).asEagerSingleton();//单例模式
+                apiBinder.bindType(InitBean.class).asEagerPrototype();//原型模式
+            }
+        });
+        //
+        PojoInfo objectA = appContext.getInstance(PojoBean.class);
+        PojoInfo objectB = appContext.getInstance(PojoBean.class);
+        logger.debug("objectA eq objectB = " + (objectA == objectB));//单例
+        //
+        InitBean objectC = appContext.getInstance(InitBean.class);
+        InitBean objectD = appContext.getInstance(InitBean.class);
+        logger.debug("objectC eq objectD = " + (objectC == objectD));//原型
+        //
+        InitBean2 objectE = appContext.getInstance(InitBean2.class);
+        InitBean2 objectF = appContext.getInstance(InitBean2.class);
+        logger.debug("objectE eq objectF = " + (objectE == objectF));//跟随框架默认配置
     }
     //
     /* 托管一个自己创建的Bean，被托管的Bean将成为单例。 */

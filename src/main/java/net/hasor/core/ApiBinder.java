@@ -86,7 +86,7 @@ public interface ApiBinder {
      *  -- {@link ScopedBindingBuilder}类型，为绑定设置作用域。继承自：{@link MetaDataBindingBuilder}<br>
      *  -- {@link MetaDataBindingBuilder}类型，绑定元信息配置。<br>
      * @param type bean type。
-     * @return 返回细粒度绑定接口 - {@link NamedBindingBuilder}。
+     * @return 返回 - {@link NamedBindingBuilder}。
      */
     public <T> NamedBindingBuilder<T> bindType(Class<T> type);
     /**
@@ -94,7 +94,7 @@ public interface ApiBinder {
      * 该方法相当于“<code>apiBinder.bindType(type).toInstance(instance);</code>”
      * @param type bean type。
      * @param instance 类型的实例
-     * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+     * @return 返回 - {@link MetaDataBindingBuilder}。
      * @see #bindType(Class)
      */
     public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance);
@@ -103,7 +103,7 @@ public interface ApiBinder {
      * 该方法相当于“<code>apiBinder.bindType(type).to(implementation);</code>”
      * @param type bean type。
      * @param implementation 绑定的类型的实现类
-     * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+     * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
     public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation);
@@ -112,7 +112,7 @@ public interface ApiBinder {
      * 该方法相当于“<code>apiBinder.bindType(type).to(implementation);</code>”
      * @param type bean type。
      * @param provider provider 可以用来封装类型实例创建的细节。
-     * @return 返回细粒度绑定接口 - {@link ScopedBindingBuilder}。
+     * @return 返回 - {@link ScopedBindingBuilder}。
      * @see #bindType(Class)
      */
     public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider);
@@ -121,7 +121,7 @@ public interface ApiBinder {
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).to(type);</code>”
      * @param withName bean名称。
      * @param type bean type。
-     * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+     * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type);
@@ -131,7 +131,7 @@ public interface ApiBinder {
      * @param withName 要绑定的类型。
      * @param type bean type。
      * @param instance 同时指定实例对象
-     * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+     * @return 返回 - {@link MetaDataBindingBuilder}。
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
@@ -142,7 +142,7 @@ public interface ApiBinder {
      * @param withName 要绑定的类型。
      * @param type bean type。
      * @param implementation 同时指定实现类
-     * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+     * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
@@ -153,7 +153,7 @@ public interface ApiBinder {
      * @param withName 要绑定的类型。
      * @param type bean type。
      * @param provider provider 可以用来封装类型实例创建的细节。
-     * @return 返回细粒度绑定接口 - {@link LifeBindingBuilder}。
+     * @return 返回 - {@link LifeBindingBuilder}。
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
@@ -165,18 +165,18 @@ public interface ApiBinder {
         /**
          * 绑定一个名称(并同时设置ID,为随机ID)。
          * @param name 名称
-         * @return 返回细粒度绑定接口 - {@link LinkedBindingBuilder}。
+         * @return 返回 - {@link LinkedBindingBuilder}。
          */
         public LinkedBindingBuilder<T> nameWith(String name);
         /**
          * 随机取一个不重复的名字(并同时设置ID,为随机ID)。
-         * @return 返回细粒度绑定接口 - {@link LinkedBindingBuilder}。
+         * @return 返回 - {@link LinkedBindingBuilder}。
          */
         public LinkedBindingBuilder<T> uniqueName();
         /**
          * 设置一个ID标识符。
          * @param idString id标识符.
-         * @return 返回细粒度绑定接口 - {@link NamedBindingBuilder}。
+         * @return 返回 - {@link NamedBindingBuilder}。
          */
         public NamedBindingBuilder<T> idWith(String idString);
     }
@@ -185,25 +185,25 @@ public interface ApiBinder {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类型
-         * @return 返回细粒度绑定接口 - {@link InjectPropertyBindingBuilder}。
+         * @return 返回 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> to(Class<? extends T> implementation);
         /**
          * 为绑定设置一个实例
          * @param instance 实例对象
-         * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toInstance(T instance);
         /**
          * 为绑定设置一个 {@link Provider}。
          * @param provider provider 可以用来封装类型实例创建的细节。
-         * @return 返回细粒度绑定接口 - {@link LifeBindingBuilder}。
+         * @return 返回 - {@link LifeBindingBuilder}。
          */
         public LifeBindingBuilder<T> toProvider(Provider<T> provider);
         /**
          * 为绑定设置一个构造方法。
          * @param constructor 使用的构造方法。
-         * @return 返回细粒度绑定接口 - {@link InjectConstructorBindingBuilder}。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
@@ -213,21 +213,21 @@ public interface ApiBinder {
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
          * @param value 构造方法参数值。
-         * @return 返回细粒度绑定接口 - {@link InjectConstructorBindingBuilder}。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
          * @param valueInfo 要注入的参数来自于其它绑定。
-         * @return 返回细粒度绑定接口 - {@link InjectConstructorBindingBuilder}。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
          * @param valueProvider provider 可以用来封装类型实例创建的细节。
-         * @return 返回细粒度绑定接口 - {@link InjectConstructorBindingBuilder}。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider);
     }
@@ -264,20 +264,28 @@ public interface ApiBinder {
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends MetaDataBindingBuilder<T> {
         /**
-         * 注册为单例，该方法会覆盖toScope方法的设置。
-         * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+         * 注册为原型模式。<p>
+         * 原型模式：当类型被多个对象注入时，每个注入的类型实例都是全新的对象。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
+         */
+        public MetaDataBindingBuilder<T> asEagerPrototype();
+        /**
+         * 注册为单例模式。<p>
+         * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
+         * 如果配置了{@link #toScope(Provider)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> asEagerSingleton();
         /**
          * 设置Scope。
          * @param scope 作用域
-         * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toScope(Scope scope);
         /**
          * 设置Scope。
          * @param scope 作用域
-         * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toScope(Provider<Scope> scope);
     }
@@ -287,7 +295,7 @@ public interface ApiBinder {
          * 设置元信息。
          * @param key 元信息 key
          * @param value 元信息 value
-         * @return 返回细粒度绑定接口 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> metaData(String key, Object value);
         /**

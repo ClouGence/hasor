@@ -26,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Prototype;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.Singleton;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
 /**
@@ -45,7 +46,7 @@ import net.hasor.core.scope.SingletonScope;
 public class BeanContainer extends TemplateBeanBuilder {
     protected Logger                                logger           = LoggerFactory.getLogger(getClass());
     private AtomicBoolean                           inited           = new AtomicBoolean(false);
-    private Provider<Scope>                         singletonScope   = new InstanceProvider<Scope>(new SingletonScope());
+    private Scope                                   singletonScope   = new SingletonScope();
     private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
     private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
     private ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
@@ -114,6 +115,46 @@ public class BeanContainer extends TemplateBeanBuilder {
         this.tempBindInfoList.add(adapter);
         return adapter;
     }
+    @Override
+    protected <T> T createObject(final Class<T> targetType, final BindInfo<T> bindInfo, final AppContext appContext) {
+        Prototype prototype = targetType.getAnnotation(Prototype.class);
+        Singleton singleton = targetType.getAnnotation(Singleton.class);
+        if (prototype != null && singleton != null) {
+            throw new IllegalArgumentException(targetType + " , @Prototype and @Singleton appears only one.");
+        }
+        //
+        boolean isSingleton = false;
+        if (prototype != null) {
+            isSingleton = false;
+        } else if (singleton != null) {
+            isSingleton = true;
+        } else {
+            if (appContext != null) {
+                isSingleton = appContext.getEnvironment().getSettings().getBoolean("hasor.default.asEagerSingleton", true);
+            }
+            if (bindInfo != null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
+                Boolean sing = ((AbstractBindInfoProviderAdapter) bindInfo).isSingleton();
+                if (sing != null) {
+                    isSingleton = sing;
+                }
+            }
+        }
+        //
+        if (isSingleton) {
+            Object key = (bindInfo != null) ? bindInfo : targetType;
+            return this.singletonScope.scope(key, new Provider<T>() {
+                public T get() {
+                    return callSuperCreateObject(targetType, bindInfo, appContext);
+                }
+            }).get();
+            //   
+        } else {
+            return callSuperCreateObject(targetType, bindInfo, appContext);
+        }
+    }
+    private <T> T callSuperCreateObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
+        return super.createObject(targetType, bindInfo, appContext);
+    }
     /*---------------------------------------------------------------------------------------Life*/
     /**
      * 当容器启动时，需要做Bean注册的重复性检查。
@@ -148,15 +189,15 @@ public class BeanContainer extends TemplateBeanBuilder {
             }
             nameList.add(bindName);
             //
-            if (info instanceof AbstractBindInfoProviderAdapter) {
-                AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-                if (infoAdapter.isSingleton() == true) {
-                    if (infoAdapter.getScopeProvider() != null) {
-                        throw new IllegalStateException("Single mode cannot be set scope.");
-                    }
-                    infoAdapter.setScopeProvider(this.singletonScope);
-                }
-            }
+            //            if (info instanceof AbstractBindInfoProviderAdapter) {
+            //                AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
+            //                if (infoAdapter.isSingleton() == true) {
+            //                    if (infoAdapter.getScopeProvider() != null) {
+            //                        throw new IllegalStateException("Single mode cannot be set scope.");
+            //                    }
+            //                    //infoAdapter.setScopeProvider(this.singletonScope); //只做检测
+            //                }
+            //            }
         }
         this.tempBindInfoList.clear();
     }
@@ -171,6 +212,6 @@ public class BeanContainer extends TemplateBeanBuilder {
         this.indexTypeMapping.clear();
         this.indexNameMapping.clear();
         this.idDataSource.clear();
-        this.singletonScope = new InstanceProvider<Scope>(new SingletonScope());
+        this.singletonScope = new SingletonScope();
     }
 }

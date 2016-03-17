@@ -34,7 +34,7 @@ public class MyScope implements Scope {
         Map<Object, Provider<?>> scopeMap = threadSington.get();
         Provider<?> returnData = scopeMap.get(key);
         if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
+            Provider<T> newSingleProvider = new SingleProvider<T>(provider) {};
             returnData = scopeMap.put(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;
