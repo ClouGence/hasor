@@ -42,7 +42,7 @@ import net.hasor.core.module.ModuleHelper;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
- * 
+ *
  * 提示：initContext 方法是整个类的入口方法。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
@@ -314,7 +314,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        this.getContainer().doInitializeCompleted();
+        this.getContainer().doInitializeCompleted(getEnvironment());
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {

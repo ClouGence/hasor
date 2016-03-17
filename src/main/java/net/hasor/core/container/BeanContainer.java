@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,10 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Prototype;
+import net.hasor.core.Environment;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.Singleton;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
 /**
@@ -117,28 +119,7 @@ public class BeanContainer extends TemplateBeanBuilder {
     }
     @Override
     protected <T> T createObject(final Class<T> targetType, final BindInfo<T> bindInfo, final AppContext appContext) {
-        Prototype prototype = targetType.getAnnotation(Prototype.class);
-        Singleton singleton = targetType.getAnnotation(Singleton.class);
-        if (prototype != null && singleton != null) {
-            throw new IllegalArgumentException(targetType + " , @Prototype and @Singleton appears only one.");
-        }
-        //
-        boolean isSingleton = false;
-        if (prototype != null) {
-            isSingleton = false;
-        } else if (singleton != null) {
-            isSingleton = true;
-        } else {
-            if (appContext != null) {
-                isSingleton = appContext.getEnvironment().getSettings().getBoolean("hasor.default.asEagerSingleton", true);
-            }
-            if (bindInfo != null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
-                Boolean sing = ((AbstractBindInfoProviderAdapter) bindInfo).isSingleton();
-                if (sing != null) {
-                    isSingleton = sing;
-                }
-            }
-        }
+        boolean isSingleton = testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings());
         //
         if (isSingleton) {
             Object key = (bindInfo != null) ? bindInfo : targetType;
@@ -159,7 +140,7 @@ public class BeanContainer extends TemplateBeanBuilder {
     /**
      * 当容器启动时，需要做Bean注册的重复性检查。
      */
-    public void doInitializeCompleted() {
+    public void doInitializeCompleted(Environment env) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
@@ -189,15 +170,19 @@ public class BeanContainer extends TemplateBeanBuilder {
             }
             nameList.add(bindName);
             //
-            //            if (info instanceof AbstractBindInfoProviderAdapter) {
-            //                AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-            //                if (infoAdapter.isSingleton() == true) {
-            //                    if (infoAdapter.getScopeProvider() != null) {
-            //                        throw new IllegalStateException("Single mode cannot be set scope.");
-            //                    }
-            //                    //infoAdapter.setScopeProvider(this.singletonScope); //只做检测
-            //                }
-            //            }
+            if (info instanceof AbstractBindInfoProviderAdapter) {
+                final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
+                Method initMethod = TemplateBeanBuilder.findInitMethod(info.getBindType(), infoAdapter);
+                boolean singleton = testSingleton(infoAdapter.getBindType(), info, env.getSettings());
+                if (initMethod != null && singleton) {
+                    //
+                    Hasor.pushStartListener(env, new EventListener<AppContext>() {
+                        public void onEvent(String event, AppContext eventData) throws Throwable {
+                            eventData.getInstance(infoAdapter);//执行init
+                        }
+                    });
+                }
+            }
         }
         this.tempBindInfoList.clear();
     }

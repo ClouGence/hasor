@@ -39,8 +39,11 @@ import net.hasor.core.BindInfoAware;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
+import net.hasor.core.Prototype;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.Settings;
+import net.hasor.core.Singleton;
 import net.hasor.core.Type;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
@@ -240,7 +243,8 @@ public class TemplateBeanBuilder implements BeanBuilder {
             if (StringUtils.isBlank(inject.value())) {
                 obj = appContext.getInstance(field.getType());
             } else {
-                /*   */if (Type.ByID == byType) {
+                /*   */
+                if (Type.ByID == byType) {
                     obj = appContext.getInstance(inject.value());
                 } else if (Type.ByName == byType) {
                     obj = appContext.findBindingBean(inject.value(), field.getType());
@@ -254,29 +258,63 @@ public class TemplateBeanBuilder implements BeanBuilder {
     }
     private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
         try {
-            //a.可能存在的配置。
-            if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
-                DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-                Method initMethod = defBinder.getInitMethod(targetBean.getClass());
-                if (initMethod != null) {
-                    initMethod.invoke(targetBean);
-                    return;
-                }
-            }
-            //b.注解形式
-            List<Method> methodList = BeanUtils.getMethods(targetBean.getClass());
-            for (Method method : methodList) {
-                boolean hasAnno = method.isAnnotationPresent(Init.class);
-                if (hasAnno == false) {
-                    continue;
-                }
-                //
-                Class<?>[] paramArray = method.getParameterTypes();
+            Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
+            //
+            if (initMethod != null) {
+                Class<?>[] paramArray = initMethod.getParameterTypes();
                 Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
-                method.invoke(targetBean, paramObject);
+                initMethod.invoke(targetBean, paramObject);
             }
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }
+    }
+    //
+    //
+    /** 查找类的默认初始化方法*/
+    public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
+        Method initMethod = null;
+        //a.可能存在的配置。
+        if (initMethod == null && bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            initMethod = defBinder.getInitMethod(targetBeanType);
+        }
+        //b.注解形式
+        if (initMethod == null && targetBeanType != null) {
+            List<Method> methodList = BeanUtils.getMethods(targetBeanType);
+            for (Method method : methodList) {
+                boolean hasAnno = method.isAnnotationPresent(Init.class);
+                if (hasAnno) {
+                    initMethod = method;
+                    break;
+                }
+            }
+        }
+        return initMethod;
+    }
+    public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
+        Prototype prototype = targetType.getAnnotation(Prototype.class);
+        Singleton singleton = targetType.getAnnotation(Singleton.class);
+        if (prototype != null && singleton != null) {
+            throw new IllegalArgumentException(targetType + " , @Prototype and @Singleton appears only one.");
+        }
+        //
+        boolean isSingleton = false;
+        if (prototype != null) {
+            isSingleton = false;
+        } else if (singleton != null) {
+            isSingleton = true;
+        } else {
+            if (settings != null) {
+                isSingleton = settings.getBoolean("hasor.default.asEagerSingleton", true);
+            }
+            if (bindInfo != null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
+                Boolean sing = ((AbstractBindInfoProviderAdapter) bindInfo).isSingleton();
+                if (sing != null) {
+                    isSingleton = sing;
+                }
+            }
+        }
+        return isSingleton;
     }
 }
