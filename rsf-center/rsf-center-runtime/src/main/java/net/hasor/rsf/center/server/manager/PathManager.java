@@ -15,11 +15,13 @@
  */
 package net.hasor.rsf.center.server.manager;
 import org.more.util.StringUtils;
+import net.hasor.core.Singleton;
 /**
  * 
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class PathManager {
     //
     public String evalServicePath(String serviceID) {

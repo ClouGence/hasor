@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.plugins.event.Event;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
@@ -27,6 +28,7 @@ import net.hasor.rsf.center.server.domain.RsfCenterEvent;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 @Event(RsfCenterEvent.ConfirmLeader_Event)
 public class LeaderDiplomat implements EventListener<DataDiplomat> {
     protected Logger     logger = LoggerFactory.getLogger(getClass());

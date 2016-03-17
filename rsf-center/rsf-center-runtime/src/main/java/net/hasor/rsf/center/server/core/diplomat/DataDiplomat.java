@@ -18,13 +18,10 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
@@ -33,6 +30,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.plugins.event.Event;
 import net.hasor.rsf.center.server.core.zktmp.ZkTmpService;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
@@ -47,6 +45,7 @@ import net.hasor.rsf.utils.TimerManager;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 @Event(RsfCenterEvent.SyncConnected_Event)
 public class DataDiplomat implements EventListener<ZooKeeperNode> {
     protected Logger     logger = LoggerFactory.getLogger(getClass());
@@ -67,21 +66,20 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
     private String getServerNode() {
         RsfCenterCfg rsfCenterCfg = this.appContext.getInstance(RsfCenterCfg.class);
         InetSocketAddress bindInetAddress = rsfCenterCfg.getBindInetAddress();
-        return bindInetAddress.getAddress().getHostAddress();
+        return bindInetAddress.getAddress().getHostAddress() + ":" + bindInetAddress.getPort();
     }
     //
     @Override
-    public void onEvent(String event, ZooKeeperNode zkNode) throws Throwable {
+    public void onEvent(final String event, final ZooKeeperNode zkNode) throws Throwable {
         try {
             //init节点数据
             this.initZooKeeperInfo(zkNode);
             //Leader同步通知
-            final ZooKeeper zooKeeper = zkNode.getZooKeeper();
             final Watcher watcher = new Watcher() {
                 public void process(WatchedEvent event) {
                     try {
-                        zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, this);
-                        evalLeaderHostName(zooKeeper);
+                        zkNode.watcherChildren(ZooKeeperNode.LEADER_PATH, this);
+                        evalLeaderHostName(zkNode);
                         String bindAddress = rsfCenterCfg.getBindInetAddress().getAddress().getHostAddress();
                         if (bindAddress.equals(leaderHostName)) {
                             logger.info("confirm leader to {} , leader is myself.", leaderHostName);
@@ -101,21 +99,21 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
                     }
                 }
             };
-            zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, watcher);
+            zkNode.watcherChildren(ZooKeeperNode.LEADER_PATH, watcher);
             //计算Leader数据
             String hostName = this.getServerNode();
-            zooKeeper.create(ZooKeeperNode.LEADER_PATH + "/n_", hostName.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-            this.evalLeaderHostName(zooKeeper);
+            zkNode.saveOrUpdate(ZkNodeType.Share, ZooKeeperNode.LEADER_PATH + "/n_", hostName);
+            this.evalLeaderHostName(zkNode);
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);
         }
     }
-    private void evalLeaderHostName(ZooKeeper zooKeeper) throws KeeperException, InterruptedException {
+    private void evalLeaderHostName(ZooKeeperNode zkNode) throws KeeperException, InterruptedException {
         String rootNodeName = ZooKeeperNode.LEADER_PATH;
-        List<String> preLeaders = zooKeeper.getChildren(ZooKeeperNode.LEADER_PATH, false);
+        List<String> preLeaders = zkNode.getChildrenNode(ZooKeeperNode.LEADER_PATH);
         List<LeaderOffer> leaderOffers = new ArrayList<LeaderOffer>(preLeaders.size());
         for (String offer : preLeaders) {
-            String hostName = new String(zooKeeper.getData(rootNodeName + "/" + offer, false, null));
+            String hostName = zkNode.readData(rootNodeName + "/" + offer);
             leaderOffers.add(new LeaderOffer(Integer.valueOf(offer.substring("n_".length())), rootNodeName + "/" + offer, hostName));
         }
         Collections.sort(leaderOffers, new LeaderOffer.IdComparator());

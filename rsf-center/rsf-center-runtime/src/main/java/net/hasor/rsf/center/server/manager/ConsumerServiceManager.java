@@ -17,6 +17,7 @@ package net.hasor.rsf.center.server.manager;
 import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ReceiveResult;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
@@ -26,6 +27,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class ConsumerServiceManager extends BaseServiceManager {
     /**发布服务*/
     public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {

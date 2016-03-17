@@ -15,8 +15,9 @@
  */
 package net.hasor.rsf.center.server.core.zookeeper;
 import java.io.IOException;
+import java.util.List;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
 import net.hasor.core.AppContext;
 /**
@@ -40,11 +41,17 @@ public interface ZooKeeperNode {
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException;
     /** 启动ZooKeeper*/
     public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException;
-    /** 返回ZK */
-    public ZooKeeper getZooKeeper();
     //
-    /** 创建一个永久节点 */
-    public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;
+    //
+    //
+    /** 监视节点改动 */
+    public void watcherChildren(String nodePath, Watcher watcher) throws KeeperException, InterruptedException;
+    /** 检测节点是否存在 */
+    public boolean existsNode(String nodePath) throws KeeperException, InterruptedException;
+    /** 查询子节点 */
+    public List<String> getChildrenNode(String nodePath) throws KeeperException, InterruptedException;
+    /** 创建一个节点 */
+    public String createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException;
     /** 删除一个节点 */
     public void deleteNode(String nodePath) throws KeeperException, InterruptedException;
     /** 设置或者更新数据 */

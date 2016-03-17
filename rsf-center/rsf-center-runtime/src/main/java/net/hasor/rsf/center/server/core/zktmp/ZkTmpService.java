@@ -23,6 +23,7 @@ import freemarker.template.Template;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
@@ -32,6 +33,7 @@ import net.hasor.rsf.center.server.domain.RsfCenterCfg;
  * @version : 2016年2月27日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class ZkTmpService {
     @Inject
     private AppContext    appContext;

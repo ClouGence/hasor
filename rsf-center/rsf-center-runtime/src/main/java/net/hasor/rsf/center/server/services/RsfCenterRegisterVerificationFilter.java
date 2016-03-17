@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.server.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
@@ -30,6 +31,7 @@ import net.hasor.rsf.domain.RsfConstants;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class RsfCenterRegisterVerificationFilter implements RsfFilter {
     protected Logger    logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     private RsfContext  rsfContext;

@@ -21,6 +21,7 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
@@ -35,6 +36,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
     protected Logger               logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     @Inject

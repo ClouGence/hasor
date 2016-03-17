@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.server.core.zookeeper.node;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
@@ -50,17 +51,18 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     //
     public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg) {
         this.zooKeeperCfg = zooKeeperCfg;
+        /* 该线程对象负责当 start 了之后，不断的检测zk是否挂掉需要重新链（例如：Session超时） */
         this.zkCheckManager = new Thread() {
             @Override
             public void run() {
                 while (true) {
                     try {
                         if (start == true && zooKeeper.getState() == States.CLOSED) {
+                            zooKeeper.close();
                             zooKeeper = createZK();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        // TODO: handle exception
+                        logger.error(e.getMessage(), e);
                     } finally {
                         try {
                             Thread.sleep(1000);
@@ -96,6 +98,9 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     /** 启动ZooKeeper */
     protected void startZooKeeper(AppContext appContext, String serverConnection) throws IOException, InterruptedException {
         logger.info("zkClient connected to {}.", serverConnection);
+        if (this.start == true) {
+            return;
+        }
         this.appContext = appContext;
         this.serverConnection = serverConnection;
         this.zooKeeper = createZK();
@@ -103,25 +108,30 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         logger.info("zkClient connected -> ok.");
     }
     private ZooKeeper createZK() throws IOException {
-        if (this.start){
-            this.shutdownZooKeeper();
-        }
         return new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
     }
     //
     //
     @Override
-    public ZooKeeper getZooKeeper() {
-        return this.zooKeeper;
+    public void watcherChildren(String nodePath, Watcher watcher) throws KeeperException, InterruptedException {
+        if (watcher != null) {
+            this.zooKeeper.getChildren(nodePath, watcher);
+        }
     }
     @Override
-    public void createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException {
+    public boolean existsNode(String nodePath) throws KeeperException, InterruptedException {
+        return this.zooKeeper.exists(nodePath, false) != null;
+    }
+    @Override
+    public List<String> getChildrenNode(String nodePath) throws KeeperException, InterruptedException {
+        if (this.zooKeeper.exists(nodePath, false) != null) {
+            return this.zooKeeper.getChildren(nodePath, false);
+        }
+        return Collections.EMPTY_LIST;
+    }
+    @Override
+    public String createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException {
         if (this.zooKeeper.exists(nodePath, false) == null) {
-            try {
-                this.zooKeeper.delete(nodePath, -1);
-            } catch (NoNodeException e) {
-                // e: NoNodeException => // do nothing
-            }
             try {
                 String parent = new File(nodePath).getParent();
                 if (this.zooKeeper.exists(parent, false) == null) {
@@ -129,6 +139,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
                 }
                 String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, nodtType.getNodeType());
                 logger.debug("zkClient createNode {} -> {}", nodePath, result);
+                return result;
             } catch (NodeExistsException e) {
                 logger.warn("zkClient createNode {} -> NodeExistsException ,maybe someone created first.-> {}", nodePath, e.getMessage());
             } catch (NoNodeException e) {
@@ -137,6 +148,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         } else {
             logger.info("zkClient createNode {} -> exists.", nodePath);
         }
+        return null;
     }
     @Override
     public void deleteNode(String nodePath) throws KeeperException, InterruptedException {
@@ -161,11 +173,12 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     public Stat saveOrUpdate(ZkNodeType nodtType, String nodePath, String data) throws KeeperException, InterruptedException {
         Stat stat = this.zooKeeper.exists(nodePath, false);
         if (stat == null) {
-            this.createNode(nodtType, nodePath);
-            stat = this.zooKeeper.exists(nodePath, false);
+            String createNodePath = this.createNode(nodtType, nodePath);
+            stat = this.zooKeeper.exists(createNodePath, false);
             if (stat == null) {
                 return null;
             }
+            nodePath = createNodePath;
         }
         //
         byte[] byteDatas = (data == null) ? null : data.getBytes();

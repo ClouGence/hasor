@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.server.manager;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
@@ -25,6 +26,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class ProviderServiceManager extends BaseServiceManager {
     /**发布服务*/
     public String publishService(String hostString, ProviderPublishInfo info) throws KeeperException, InterruptedException, Throwable {

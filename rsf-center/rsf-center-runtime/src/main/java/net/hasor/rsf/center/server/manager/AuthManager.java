@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import net.hasor.core.Singleton;
 /**
  * 
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class AuthManager {
     public boolean checkAuth(String appCode, String authCode) {
         // TODO Auto-generated method stub

@@ -35,7 +35,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BaseServiceManager {
+public abstract class BaseServiceManager {
     protected Logger       logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     @Inject
     private AppContext     appContext;
@@ -84,7 +84,7 @@ public class BaseServiceManager {
             return false;
         }
         //
-        if (this.zooKeeperNode.getZooKeeper().exists(terminalPath, false) != null) {
+        if (this.zooKeeperNode.existsNode(terminalPath) == true) {
             //
             String data = this.zooKeeperNode.readData(terminalPath);
             if (StringUtils.isNotBlank(data)) {
@@ -125,7 +125,7 @@ public class BaseServiceManager {
             return false;
         }
         //
-        if (this.zooKeeperNode.getZooKeeper().exists(beatPath, false) == null) {
+        if (this.zooKeeperNode.existsNode(beatPath) == false) {
             return false;
         }
         //
@@ -142,7 +142,7 @@ public class BaseServiceManager {
         String providerPath = this.pathManager.evalProviderPath(serviceID);
         List<String> providerList = null;
         try {
-            providerList = this.zooKeeperNode.getZooKeeper().getChildren(providerPath, false);
+            providerList = this.zooKeeperNode.getChildrenNode(providerPath);
         } catch (Throwable e) {
             logger.error("find providerList failed ->" + e.getMessage(), e);
         }
@@ -159,7 +159,7 @@ public class BaseServiceManager {
         String consumerPath = this.pathManager.evalConsumerPath(serviceID);
         List<String> consumerList = null;
         try {
-            consumerList = this.zooKeeperNode.getZooKeeper().getChildren(consumerPath, false);
+            consumerList = this.zooKeeperNode.getChildrenNode(consumerPath);
         } catch (Throwable e) {
             logger.error("find providerList failed ->" + e.getMessage(), e);
         }
