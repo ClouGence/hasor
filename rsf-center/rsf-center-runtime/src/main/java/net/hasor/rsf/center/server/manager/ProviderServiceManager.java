@@ -33,7 +33,7 @@ public class ProviderServiceManager extends BaseServiceManager {
         //
         //1.保存服务信息：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
-        String servicePath = this.addServices(hostString, info);
+        String servicePath = this.addServices(info);
         if (servicePath == null) {
             logger.error("publishService save serviceInfo failed. -> hostString ={} ,serviceID ={}", hostString, serviceID);
             return null; //服务信息保存失败，反馈终端注册失败

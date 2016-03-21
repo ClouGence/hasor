@@ -30,13 +30,15 @@ import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.WorkMode;
+import net.hasor.rsf.center.server.push.PushQueue;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterProvider;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterVerificationFilter;
 import net.hasor.rsf.domain.Events;
 /**
  * WebMVC各组件初始化配置。
- * @version : 2015年5月5日
+ *
  * @author 赵永春(zyc@hasor.net)
+ * @version : 2015年5月5日
  */
 public class RsfCenterServerModule implements LifeModule {
     protected Logger     logger = LoggerFactory.getLogger(getClass());
@@ -72,8 +74,7 @@ public class RsfCenterServerModule implements LifeModule {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(RsfCenterRegister.class)//
-                        .to(RsfCenterRegisterProvider.class)//
+                rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class)//
                         .bindFilter("VerificationFilter", new RsfCenterRegisterVerificationFilter(rsfContext))//
                         .register();
                 //
@@ -83,6 +84,7 @@ public class RsfCenterServerModule implements LifeModule {
             }
         });
         //
+        apiBinder.bindType(PushQueue.class);
     }
     //
     public void onStart(AppContext appContext) throws Throwable {

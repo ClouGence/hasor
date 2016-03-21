@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.server.core.zktmp.ZkTmpService;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
@@ -35,7 +36,8 @@ import net.hasor.rsf.domain.RsfServiceType;
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class BaseServiceManager {
+@Singleton
+public class BaseServiceManager {
     protected Logger       logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     @Inject
     private AppContext     appContext;
@@ -47,7 +49,7 @@ public abstract class BaseServiceManager {
     protected ZkTmpService zkTmpService;
     //
     /**注册服务，该方法会检测服务的注册是否冲突。*/
-    protected String addServices(String hostString, PublishInfo info) throws Throwable {
+    protected String addServices(PublishInfo info) throws Throwable {
         String serviceID = info.getBindID();
         String servicePath = pathManager.evalServicePath(serviceID);
         String serviceInfoPath = pathManager.evalServiceInfoPath(serviceID);
@@ -138,7 +140,7 @@ public abstract class BaseServiceManager {
         return s != null;
     }
     /**获取指定服务的提供者列表。*/
-    protected List<String> getProviderList(String serviceID) {
+    public List<String> getProviderList(String serviceID) {
         String providerPath = this.pathManager.evalProviderPath(serviceID);
         List<String> providerList = null;
         try {
@@ -171,6 +173,7 @@ public abstract class BaseServiceManager {
         }
         return result;
     }
+    /**获取指定服务的消费者列表。*/
     protected void fireSyncEvent(String eventType, String eventData) {
         this.appContext.getEnvironment().getEventContext().fireSyncEvent(eventType, eventData);
     }

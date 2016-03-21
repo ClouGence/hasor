@@ -26,11 +26,14 @@ public class RsfCustomerClient {
         //Client -> Server
         RsfClient client = clientContext.getInstance(RsfClient.class);
         EchoService echoService = client.wrapper(EchoService.class);
-        for (int i = 0; i < 208; i++) {
+        for (int i = 0; i < 200; i++) {
             try {
+                Thread.sleep(2000);
                 String res = echoService.sayHello("Hello Word");
                 System.out.println(res);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                System.out.println("call failed ->" + e.getMessage());
+            }
         }
     }
 }

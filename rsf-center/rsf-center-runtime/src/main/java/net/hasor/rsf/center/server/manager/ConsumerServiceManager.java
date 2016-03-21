@@ -17,9 +17,18 @@ package net.hasor.rsf.center.server.manager;
 import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.RsfCenterListener;
+import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ReceiveResult;
+import net.hasor.rsf.center.event.RsfCenterEvent;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
@@ -29,12 +38,58 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 @Singleton
 public class ConsumerServiceManager extends BaseServiceManager {
+    @Inject
+    private RsfContext                     rsfContext;
+    private RsfBindInfo<RsfCenterListener> listenerBindInfo;
+    private Class<?>[]                     paramTypes;
+    //
+    //
+    @Init
+    public void init() {
+        this.listenerBindInfo = this.rsfContext.getServiceInfo(RsfCenterListener.class);
+        this.paramTypes = new Class<?>[] { String.class, CenterEventBody.class };
+    }
+    /**新的提供者出现，向所有订阅者推送提供者列表。*/
+    public void newProviderToPush(String serviceID) {
+        List<String> consumerList = this.getConsumerList(serviceID);
+        List<String> providerList = this.getProviderList(serviceID);
+        //
+        StringBuffer addressBuffer = new StringBuffer("");
+        for (int i = 0; i < providerList.size(); i++) {
+            if (i >= 0) {
+                addressBuffer.append(",");
+            }
+            String provider = providerList.get(i);
+            addressBuffer.append(provider);
+        }
+        String addressString = addressBuffer.toString();
+        CenterEventBody body = new CenterEventBody();
+        body.setServiceID(serviceID);
+        body.setEventBody(addressString);
+        body.setSnapshotInfo("");
+        Object[] paramObjects = new Object[] { RsfCenterEvent.RsfCenter_AppendAddressEvent.getEventType(), body };
+        //
+        for (String consumer : consumerList) {
+            try {
+                InterAddress interAddress = new InterAddress(consumer);
+                String hostString = interAddress.getHostPort() + "@" + interAddress.getFormUnit();
+                String consumerBeatPath = pathManager.evalConsumerTermBeatPath(serviceID, hostString);
+                String snapshotInfo = this.readData(consumerBeatPath);
+                body.setSnapshotInfo(snapshotInfo);
+                //
+                RsfClient client = this.rsfContext.getRsfClient(consumer);
+                client.syncInvoke(this.listenerBindInfo, "onEvent", this.paramTypes, paramObjects);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), new Exception(e));
+            }
+        }
+    }
     /**发布服务*/
     public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {
         //
         //1.注册服务：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
-        String servicePath = this.addServices(hostString, info);
+        String servicePath = this.addServices(info);
         if (servicePath == null) {
             logger.error("receiveService save serviceInfo failed. -> hostString ={} ,serviceID ={}", hostString, serviceID);
             return null; //服务信息保存失败，反馈终端注册失败

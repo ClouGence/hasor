@@ -82,6 +82,7 @@ public class ZooKeeperModule implements LifeModule {
         logger.info("startZooKeeper...");
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);
         zkNode.startZooKeeper(appContext);
+        //
     }
     public void onStop(AppContext appContext) throws Throwable {
         ZooKeeperNode zkNode = appContext.getInstance(ZooKeeperNode.class);

@@ -44,7 +44,7 @@ public class RsfCenterRegisterVerificationFilter implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
-            request.getRemoteAddress();
+            request.getTargetAddress();
             //-如果是对外发送请求，则添加请求头参数用于远程对注册中心发来数据的校验
             //            request.addOption(RSFCenterConstants.RSF_AUTH_CODE, this.authCode);
             //            request.addOption(RSFCenterConstants.RSF_VERSION, this.rsfVersion);

@@ -42,8 +42,6 @@ public interface ZooKeeperNode {
     /** 启动ZooKeeper*/
     public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException;
     //
-    //
-    //
     /** 监视节点改动 */
     public void watcherChildren(String nodePath, Watcher watcher) throws KeeperException, InterruptedException;
     /** 检测节点是否存在 */
