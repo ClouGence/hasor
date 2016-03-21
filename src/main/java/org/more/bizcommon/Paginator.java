@@ -31,6 +31,13 @@ public class Paginator {
     /**排序方式 */
     private final List<Order> orderBy     = new ArrayList<Order>(0);
     //
+    public Paginator() {}
+    public Paginator(Paginator paginator) {
+        this.totalCount = paginator.totalCount;
+        this.pageSize = paginator.pageSize;
+        this.currentPage = paginator.currentPage;
+        this.orderBy.addAll(paginator.orderBy);
+    }
     //
     /**获取排序字段*/
     public List<Order> getOrderBy() {

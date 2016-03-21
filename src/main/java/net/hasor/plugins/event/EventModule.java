@@ -15,7 +15,6 @@
  */
 package net.hasor.plugins.event;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -23,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
+import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
@@ -38,6 +37,7 @@ public class EventModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
+        final EventContext eventContext = env.getEventContext();
         final Set<Class<?>> eventSet = env.findClass(Event.class);
         if (eventSet == null || eventSet.isEmpty()) {
             return;
@@ -53,12 +53,11 @@ public class EventModule implements Module {
                 if (StringUtils.isBlank(eventName)) {
                     continue;
                 }
-                BindInfo<?> eventInfo = apiBinder.bindType(eventClass).uniqueName().toInfo();
-                EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventInfo));
+                EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventClass));
                 /*   */if (EventType.Once == eventType) {
-                    apiBinder.getEnvironment().getEventContext().pushListener(eventName, eventListener);
+                    eventContext.pushListener(eventName, eventListener);
                 } else if (EventType.Listener == eventType) {
-                    apiBinder.getEnvironment().getEventContext().addListener(eventName, eventListener);
+                    eventContext.addListener(eventName, eventListener);
                 }
                 logger.info("event ‘{}’ binding to ‘{}’", eventName, eventClass);
             }
@@ -69,11 +68,11 @@ public class EventModule implements Module {
     //
     private class EventListenerPropxy implements EventListener<Object>, AppContextAware {
         private BasicFuture<AppContext> appContextFuture;
-        private BindInfo<?>             targetInfo     = null;
+        private Class<?>                eventClass     = null;
         private EventListener<Object>   targetListener = null;
         //
-        public EventListenerPropxy(BindInfo<?> targetInfo) {
-            this.targetInfo = targetInfo;
+        public EventListenerPropxy(Class<?> eventClass) {
+            this.eventClass = eventClass;
             this.appContextFuture = new BasicFuture<AppContext>();
         }
         @Override
@@ -88,7 +87,7 @@ public class EventModule implements Module {
             if (this.targetListener == null) {
                 AppContext app = this.appContextFuture.get();//无限制等待
                 //AppContext app = this.appContextFuture.get(10, TimeUnit.SECONDS);//最大等待时间10秒
-                this.targetListener = (EventListener<Object>) app.getInstance(this.targetInfo);
+                this.targetListener = (EventListener<Object>) app.getInstance(this.eventClass);
             }
             this.targetListener.onEvent(event, eventData);
         }
