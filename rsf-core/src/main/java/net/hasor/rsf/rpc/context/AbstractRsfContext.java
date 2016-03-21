@@ -167,6 +167,10 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         public InterAddress get(String serviceID, String methodName, Object[] args) {
             return this.pool.nextAddress(serviceID, methodName, args);
         }
+        @Override
+        public boolean isDistributed() {
+            return true;
+        }
     }
     /*接收到网络数据*/
     private class Transport implements ReceivedListener, RemoteSenderListener {
@@ -181,10 +185,11 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         //
         @Override
         public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
+            InterAddress target = targetProvider.get();
             try {
-                InterAddress target = targetProvider.get();
                 rsfNetManager.getChannel(target).get().sendData(info, null);
             } catch (Exception e) {
+                rsfBeanContainer.getAddressPool().invalidAddress(target);//异常地址失效
                 rsfCaller.putResponse(info.getRequestID(), e);
                 logger.error("sendRequest - " + e.getMessage());
             }
@@ -194,6 +199,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
             try {
                 rsfNetManager.getChannel(target).get().sendData(info, null);
             } catch (Exception e) {
+                rsfBeanContainer.getAddressPool().invalidAddress(target);//异常地址失效
                 logger.error("sendResponse - " + e.getMessage(), e);
             }
         }

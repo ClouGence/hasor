@@ -65,4 +65,9 @@ public interface RsfContext {
     public ClassLoader getClassLoader();
     /**创建{@link RsfBinder}。*/
     public RsfBinder binder();
+    //
+    //    /**应用上线（优雅上线）*/
+    //    public void online();
+    //    /**应用下线（优雅停机）*/
+    //    public void offline();
 }

@@ -132,7 +132,15 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
     }
     //
     @Override
-    public void run(Timeout timeout) throws Exception {
+    public void run(Timeout timeout) {
+        try {
+            this.run();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        timerManager.atTime(this);
+    }
+    private void run() throws Exception {
         List<ServiceDomain<?>> needBeat = new ArrayList<ServiceDomain<?>>();//需要心跳
         List<ServiceDomain<?>> needRegister = new ArrayList<ServiceDomain<?>>();//需要注册
         List<ServiceDomain<?>> needRepair = new ArrayList<ServiceDomain<?>>();//心跳失败，需要重新注册
@@ -172,6 +180,7 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                 }
             } catch (Exception e) {
                 logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage());
+                logger.debug(e.getMessage(), e);
             }
         }
         //
@@ -209,6 +218,7 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                 }
             } catch (Exception e) {
                 logger.info("publishServiceBeat failed->services={} ,error={}", new Date(), JSON.toString(beatPMap), e.getMessage());
+                logger.debug(e.getMessage(), e);
             }
             //-订阅者心跳-
             try {
@@ -228,6 +238,7 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                 }
             } catch (Exception e) {
                 logger.info("receiveServiceBeat failed->services={} ,error={}", new Date(), JSON.toString(beatCMap), e.getMessage());
+                logger.debug(e.getMessage(), e);
             }
             //
             needRepair.addAll(beatAllMap.values());
@@ -256,10 +267,10 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
                 }
             } catch (Exception e) {
                 logger.error("repairService service {} register to center error-> {}", domain.getBindID(), e.getMessage());
+                logger.debug(e.getMessage(), e);
             }
         }
         //
-        timerManager.atTime(this);
     }
     private String processResult(String serviceID, ReceiveResult receiveResult) {
         //1.准备服务提供者列表
@@ -279,6 +290,7 @@ class RsfCenterInfoManager implements TimerTask, EventListener<CenterEventBody> 
             this.rsfContext.getUpdater().appendAddress(serviceID, newHostSet);
         } catch (Throwable e) {
             logger.error("appendAddress failed ,serviceID=" + serviceID + " ,message=" + e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         //3.返回注册中心centerSnapshot
         return receiveResult.getCenterSnapshot();

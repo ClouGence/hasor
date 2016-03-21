@@ -29,4 +29,8 @@ public class InstanceAddressProvider implements AddressProvider {
     public InterAddress get(String serviceID, String methodName, Object[] args) {
         return this.interAddress;
     }
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 }

@@ -98,4 +98,8 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     public InterAddress getRemoteAddress() {
         return this.rsfCaller.getContext().bindAddress();
     }
+    @Override
+    public InterAddress getTargetAddress() {
+        return !this.target.isDistributed() ? this.target.get(null, null, null) : null;
+    }
 }

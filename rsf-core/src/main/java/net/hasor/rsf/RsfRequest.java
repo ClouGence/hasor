@@ -37,6 +37,8 @@ public interface RsfRequest extends RsfHeader {
     /**获取请求参数值。*/
     public Object[] getParameterObject();
     //
-    /**获取发送请求的远程服务器使用的地址和端口。*/
+    /**获取发送请求的远程服务器使用的地址和端口，如果是本地发起的该地址则是本地RSF的地址。*/
     public InterAddress getRemoteAddress();
+    /**获取请求准备发送的目标地址（如果是分布式调用该方法会返回null）*/
+    public InterAddress getTargetAddress();
 }

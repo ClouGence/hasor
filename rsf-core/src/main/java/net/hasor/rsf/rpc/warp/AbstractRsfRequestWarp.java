@@ -32,6 +32,10 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
         return getRsfRequest().getRemoteAddress();
     }
     @Override
+    public InterAddress getTargetAddress() {
+        return getRsfRequest().getTargetAddress();
+    }
+    @Override
     public RsfBindInfo<?> getBindInfo() {
         return getRsfRequest().getBindInfo();
     }

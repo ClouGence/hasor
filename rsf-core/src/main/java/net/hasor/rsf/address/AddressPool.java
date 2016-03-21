@@ -77,6 +77,8 @@ public class AddressPool implements RsfUpdater {
     private static final String                        CharsetName  = ZipUtils.CharsetName;
     private static final String                        SnapshotPath = "/snapshot";
     private static final String                        defaultName  = "default-ruleScript";
+    public static final String                         Dynamic      = AddressBucket.Dynamic;
+    public static final String                         Static       = AddressBucket.Static;
     //
     private final AtomicBoolean                        inited       = new AtomicBoolean(false);
     private final File                                 rsfHome;
@@ -436,6 +438,25 @@ public class AddressPool implements RsfUpdater {
      * @param serviceID 服务ID。
      * @param newHost 追加更新的地址。
      */
+    public void appendStaticAddress(String serviceID, InterAddress newHost) {
+        List<InterAddress> newHostSet = Arrays.asList(newHost);
+        this.appendStaticAddress(serviceID, newHostSet);
+    }
+    /**
+     * 新增或追加更新服务地址信息。<p>
+     * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
+     * @param serviceID 服务ID。
+     * @param newHostSet 追加更新的地址。
+     */
+    public void appendStaticAddress(String serviceID, Collection<InterAddress> newHostSet) {
+        this._appendAddress(serviceID, newHostSet, Static);
+    }
+    /**
+     * 新增或追加更新服务地址信息。<p>
+     * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
+     * @param serviceID 服务ID。
+     * @param newHost 追加更新的地址。
+     */
     public void appendAddress(String serviceID, InterAddress newHost) {
         List<InterAddress> newHostSet = Arrays.asList(newHost);
         this.appendAddress(serviceID, newHostSet);
@@ -447,6 +468,9 @@ public class AddressPool implements RsfUpdater {
      * @param newHostSet 追加更新的地址。
      */
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet) {
+        this._appendAddress(serviceID, newHostSet, Dynamic);
+    }
+    private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, String type) {
         String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
         logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucket
@@ -463,26 +487,29 @@ public class AddressPool implements RsfUpdater {
             }
         }
         //2.新增服务
-        bucket.newAddress(newHostSet);
+        bucket.newAddress(newHostSet, type);
         bucket.refreshAddress();//局部更新
         this.rulerCache.reset();
     }
     /**
-     * 将服务的地址设置成临时失效状态。在{@link net.hasor.rsf.RsfSettings#getInvalidWaitTime()}毫秒之后，失效的地址会重新被列入备选地址池。
-     * 置为失效，失效并不意味着永久的。在如果该地址同时有多个服务使用同一个地址，则需要依次执行失效。
-     * @param serviceID 服务ID。
+     * 将服务的地址设置成临时失效状态。
+     * 在{@link net.hasor.rsf.RsfSettings#getInvalidWaitTime()}毫秒之后，失效的地址会重新被列入备选地址池。
+     * 置为失效，失效并不意味着永久的。
      * @param address 失效的地址。
      */
-    public void invalidAddress(String serviceID, InterAddress address) {
+    public void invalidAddress(InterAddress address) {
         long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
-        AddressBucket bucket = this.addressPool.get(serviceID);
-        if (bucket == null) {
-            logger.info("serviceID ={} ,invalid address = {} ,bucket is not exist.", serviceID, address);
-            return;
+        /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
+        synchronized (this.poolLock) {
+            Set<String> keySet = this.addressPool.keySet();
+            for (String bucketKey : keySet) {
+                logger.info("serviceID ={} ,invalid address = {} ,bucket is not exist.", bucketKey, address);
+                AddressBucket bucket = this.addressPool.get(bucketKey);
+                bucket.invalidAddress(address, invalidWaitTime);
+                bucket.refreshAddress();
+            }
+            this.rulerCache.reset();
         }
-        logger.info("serviceID ={} ,invalid address = {} ,wait {} -> active.", serviceID, address, invalidWaitTime);
-        bucket.invalidAddress(address, invalidWaitTime);
-        bucket.refreshAddress();
         this.rulerCache.reset();
     }
     /**

@@ -62,9 +62,6 @@ public class RemoteCallerTest implements RemoteSenderListener {
         info.setReceiveTime(System.currentTimeMillis());
         client.putResponse(info);
     }
-    public void sendResponse(InterAddress target, ResponseBlock block) {
-        System.err.println(block.getRequestID() + " , status=" + block.getStatus());
-    }
     //
     //
     //

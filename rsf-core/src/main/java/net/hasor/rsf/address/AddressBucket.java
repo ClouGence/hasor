@@ -48,6 +48,8 @@ import net.hasor.rsf.utils.ZipUtils;
  */
 class AddressBucket {
     protected static final Logger logger;
+    public static final String    Dynamic = "dynamic";
+    public static final String    Static  = "static";
     static {
         logger = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
     }
@@ -58,6 +60,7 @@ class AddressBucket {
     private final String                                  serviceID;          //服务ID
     private final String                                  unitName;           //服务所属单元
     private final List<InterAddress>                      allAddressList;     //所有备选地址
+    private final List<InterAddress>                      staticAddressList;  //不会失效的备选地址
     private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
     //
     //下面时计算出来的数据
@@ -68,6 +71,7 @@ class AddressBucket {
         this.serviceID = serviceID;
         this.unitName = unitName;
         this.allAddressList = new CopyOnWriteArrayList<InterAddress>();
+        this.staticAddressList = new CopyOnWriteArrayList<InterAddress>();
         this.invalidAddresses = new ConcurrentHashMap<InterAddress, InnerInvalidInfo>();
         this.localUnitAddresses = new ArrayList<InterAddress>();
         this.availableAddresses = new ArrayList<InterAddress>();
@@ -81,6 +85,11 @@ class AddressBucket {
             StringWriter strWriter = new StringWriter();
             BufferedWriter bfwriter = new BufferedWriter(strWriter);
             for (InterAddress inter : this.allAddressList) {
+                if (this.staticAddressList.contains(inter)) {
+                    strLogs.append("S|");
+                } else {
+                    strLogs.append("D|");
+                }
                 strLogs.append(inter.toString() + " , ");
                 bfwriter.write(inter.toString());
                 bfwriter.newLine();
@@ -146,20 +155,27 @@ class AddressBucket {
         if (dataBody != null && dataBody.isEmpty() == false) {
             logger.info("service {} read address form {}", salName, zipFile.getName());
             StringBuilder strBuffer = new StringBuilder();
-            ArrayList<InterAddress> newHostSet = new ArrayList<InterAddress>();
+            ArrayList<InterAddress> staticNewHostSet = new ArrayList<InterAddress>();
+            ArrayList<InterAddress> dynamicNewHostSet = new ArrayList<InterAddress>();
             for (String line : dataBody) {
                 if (StringUtils.isBlank(line) || line.startsWith("#")) {
                     continue;
                 }
                 try {
-                    newHostSet.add(new InterAddress(line));
-                    strBuffer.append(line + " , ");
+                    if (line.startsWith("S|")) {
+                        staticNewHostSet.add(new InterAddress(line.substring(1)));
+                        strBuffer.append(line + " , ");
+                    } else if (line.startsWith("D|")) {
+                        dynamicNewHostSet.add(new InterAddress(line.substring(1)));
+                        strBuffer.append(line + " , ");
+                    }
                 } catch (URISyntaxException e) {
                     logger.info("read address '{}' has URISyntaxException.", line);
                 }
             }
             logger.info("bucket read list -> {}", strBuffer.toString());
-            this.newAddress(newHostSet);
+            this.newAddress(staticNewHostSet, Static);
+            this.newAddress(dynamicNewHostSet, Dynamic);
         }
     }
     //
@@ -184,13 +200,14 @@ class AddressBucket {
     }
     //
     /**新增地址支持动态新增*/
-    public void newAddress(Collection<InterAddress> newHostSet) {
+    public void newAddress(Collection<InterAddress> newHostSet, String type) {
         if (newHostSet == null || newHostSet.isEmpty()) {
             logger.error("{} - newHostList is empty.", serviceID);
             return;
         }
         //
         List<InterAddress> newAddress = new ArrayList<InterAddress>();
+        List<InterAddress> newStaticAddress = new ArrayList<InterAddress>();
         List<InterAddress> toAvailable = new ArrayList<InterAddress>();
         for (InterAddress newHost : newHostSet) {
             if (newHost == null) {
@@ -212,12 +229,16 @@ class AddressBucket {
             }
             //
             if (doAdd) {
+                if (StringUtils.equals(type, Static)) {
+                    newStaticAddress.add(newHost);
+                }
                 newAddress.add(newHost);
             }
         }
         //
         //添加新地址
         this.allAddressList.addAll(newAddress);
+        this.staticAddressList.addAll(newStaticAddress);
         //激活已经失效的地址
         for (InterAddress hasAddress : toAvailable) {
             this.invalidAddresses.remove(hasAddress);
@@ -231,6 +252,9 @@ class AddressBucket {
      * @param timeout 失效时长
      */
     public void invalidAddress(InterAddress newInvalid, long timeout) {
+        if (this.staticAddressList.contains(newInvalid) == true) {
+            return;
+        }
         if (this.allAddressList.contains(newInvalid) == false) {
             return;
         }
@@ -256,6 +280,7 @@ class AddressBucket {
             return;
         }
         this.allAddressList.remove(address);
+        this.staticAddressList.remove(address);
         this.invalidAddresses.remove(address);
         synchronized (this) {
             refreshAvailableAddress();

@@ -128,11 +128,11 @@ public class Address_AddressPoolTest extends AbstractAddressPoolTest {
         Thread.sleep(10000);
         //
         //Test - 1 ，使一个地址失效。
-        pool.invalidAddress(serviceID, new InterAddress("192.168.137.10", 8000, "etc2"));
+        pool.invalidAddress(new InterAddress("192.168.137.10", 8000, "etc2"));
         Thread.sleep(10000);
         //
         //Test - 2 ，使另个地址失效。
-        pool.invalidAddress(serviceID, new InterAddress("192.168.137.11", 8000, "etc2"));
+        pool.invalidAddress(new InterAddress("192.168.137.11", 8000, "etc2"));
         Thread.sleep(10000);
         //
         //Test - 3 ，失效的地址重新激活。

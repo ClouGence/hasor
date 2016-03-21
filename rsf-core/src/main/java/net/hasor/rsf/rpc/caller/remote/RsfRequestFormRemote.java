@@ -109,4 +109,8 @@ class RsfRequestFormRemote implements RsfRequest {
     public InterAddress getRemoteAddress() {
         return this.target;
     }
+    @Override
+    public InterAddress getTargetAddress() {
+        return rsfCaller.getContext().bindAddress();
+    }
 }

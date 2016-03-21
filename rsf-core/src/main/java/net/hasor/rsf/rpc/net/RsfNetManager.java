@@ -101,8 +101,14 @@ public class RsfNetManager {
     public Future<RsfNetChannel> getChannel(InterAddress target) throws InterruptedException, ExecutionException {
         Future<RsfNetChannel> channelFuture = this.channelMapping.get(target.getHostPort());
         if (channelFuture != null && channelFuture.isDone()) {
-            RsfNetChannel channel = channelFuture.get();
-            if (channel != null && channel.isActive() == false) {
+            RsfNetChannel channel = null;
+            try {
+                channel = channelFuture.get();
+                if (channel != null && channel.isActive() == false) {
+                    this.channelMapping.remove(target.getHostPort());// conect is bad.
+                    channelFuture = null;
+                }
+            } catch (Exception e) {
                 this.channelMapping.remove(target.getHostPort());// conect is bad.
                 channelFuture = null;
             }

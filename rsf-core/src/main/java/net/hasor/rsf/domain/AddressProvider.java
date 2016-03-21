@@ -21,5 +21,8 @@ import net.hasor.rsf.address.InterAddress;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface AddressProvider {
+    /** 是否为分布式调用*/
+    public boolean isDistributed();
+    /** 根据服务ID获取地址*/
     public InterAddress get(String serviceID, String methodName, Object[] args);
 }

@@ -249,12 +249,13 @@ public abstract class RsfRequestManager {
             Object[] args = rsfRequest.getParameterObject();
             InterAddress address = target.get(serviceID, methodName, args);
             if (address == null) {
-                throw new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable.");
+                rsfFuture.failed(new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable."));
+                return;
             }
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
             startRequest(rsfFuture);//                  <- 1.计时request。
             RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
-            sendData(targetProvider, info);//                   <- 3.发送数据
+            sendData(targetProvider, info);//           <- 3.发送数据
         } catch (Throwable e) {
             logger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
