@@ -64,6 +64,7 @@ public class RsfCenterCfg {
     private String                  centerVersion;
     private int                     pushQueueMaxSize;
     private int                     pushSleepTime;
+    private String                  anonymousAppCode;
     //
     //
     private RsfCenterCfg() {}
@@ -101,8 +102,8 @@ public class RsfCenterCfg {
         cfg.clientTimeout = settings.getInteger("rsfCenter.zooKeeper.clientTimeout", 15000);
         //
         cfg.workDir = env.getWorkSpaceDir();
-        cfg.dataDir = new File(cfg.workDir, "data").getAbsolutePath();
-        cfg.snapDir = new File(cfg.workDir, "snap").getAbsolutePath();
+        cfg.dataDir = new File(cfg.workDir, "zookeeper/data").getAbsolutePath();
+        cfg.snapDir = new File(cfg.workDir, "zookeeper/snap").getAbsolutePath();
         //
         String bindAddress = settings.getString("rsfCenter.bindAddress", "local");
         int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2181);// 绑定的端口
@@ -143,6 +144,7 @@ public class RsfCenterCfg {
         //
         cfg.pushQueueMaxSize = settings.getInteger("rsfCenter.push.queueMaxSize", 100);// 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。
         cfg.pushSleepTime = settings.getInteger("rsfCenter.push.sleepTime", 3000);// 数据推送线程每次工作等待的时间
+        cfg.anonymousAppCode = settings.getString("rsfCenter.push.anonymousAppCode", "anonymous");// 默认推送使用的：应用程序代码
         return cfg;
     }
     public String getZkServersStr() {
@@ -308,5 +310,11 @@ public class RsfCenterCfg {
     }
     public void setPushSleepTime(int pushSleepTime) {
         this.pushSleepTime = pushSleepTime;
+    }
+    public String getAnonymousAppCode() {
+        return anonymousAppCode;
+    }
+    public void setAnonymousAppCode(String anonymousAppCode) {
+        this.anonymousAppCode = anonymousAppCode;
     }
 }

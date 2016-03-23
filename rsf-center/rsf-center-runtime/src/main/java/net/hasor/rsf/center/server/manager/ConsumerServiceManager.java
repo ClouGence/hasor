@@ -32,7 +32,7 @@ import net.hasor.rsf.center.event.RsfCenterEvent;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
- * 
+ * 订阅者Manager
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -49,7 +49,8 @@ public class ConsumerServiceManager extends BaseServiceManager {
         this.listenerBindInfo = this.rsfContext.getServiceInfo(RsfCenterListener.class);
         this.paramTypes = new Class<?>[] { String.class, CenterEventBody.class };
     }
-    /**新的提供者出现，向所有订阅者推送提供者列表。*/
+    //
+    /**新的提供者出现，向所有订阅者推送提供者列表（同步）。*/
     public void newProviderToPush(String serviceID) {
         List<String> consumerList = this.getConsumerList(serviceID);
         List<String> providerList = this.getProviderList(serviceID);
@@ -77,17 +78,18 @@ public class ConsumerServiceManager extends BaseServiceManager {
                 String snapshotInfo = this.readData(consumerBeatPath);
                 body.setSnapshotInfo(snapshotInfo);
                 //
-                RsfClient client = this.rsfContext.getRsfClient(consumer);
+                RsfClient client = this.rsfContext.getRsfClient(consumer);//通过RSF点对点的向远程服务器推送最新的地址列表（同步）
                 client.syncInvoke(this.listenerBindInfo, "onEvent", this.paramTypes, paramObjects);
             } catch (Throwable e) {
                 logger.error(e.getMessage(), new Exception(e));
             }
         }
     }
-    /**发布服务*/
+    //
+    /**订阅服务*/
     public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {
         //
-        //1.注册服务：/rsf-center/services/group/name/version/info
+        // 1.注册服务：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
         String servicePath = this.addServices(info);
         if (servicePath == null) {
@@ -95,7 +97,7 @@ public class ConsumerServiceManager extends BaseServiceManager {
             return null; //服务信息保存失败，反馈终端注册失败
         }
         //
-        //2.登记消费者：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180
+        // 2.登记消费者：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180
         String consumerInfo = this.zkTmpService.consumerInfo(info);
         String consumerTermPath = pathManager.evalConsumerTermPath(serviceID, hostString);
         this.createNode(ZkNodeType.Persistent, consumerTermPath);
@@ -106,7 +108,7 @@ public class ConsumerServiceManager extends BaseServiceManager {
             return null; //提供者数据保存失败，反馈终端注册失败
         }
         //
-        //3.服务注册信息：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180/beat
+        // 3.服务注册信息：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180/beat
         String consumerBeatPath = pathManager.evalConsumerTermBeatPath(serviceID, hostString);
         boolean beatResult = updateBeat(consumerBeatPath);
         if (beatResult == false) {
@@ -114,18 +116,19 @@ public class ConsumerServiceManager extends BaseServiceManager {
             return null; //初始化心跳数据失败
         }
         //
-        //4.返回心跳时间
+        // 4.返回心跳时间
         String snapshotInfo = this.readData(consumerBeatPath);
         logger.info("receiveService host ={} ,serviceID ={} -> {}", hostString, serviceID, snapshotInfo);
         //
-        //5.准备返回值
+        // 5.准备返回值
         ReceiveResult result = new ReceiveResult();
         result.setCenterSnapshot(snapshotInfo);
         List<String> providerList = this.getProviderList(serviceID);
         result.setProviderList(providerList);
         return result;
     }
-    /**删除服务订阅者*/
+    //
+    /**删除订阅*/
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {
         return super.removeRegister(hostString, serviceID, RsfServiceType.Consumer);
     }

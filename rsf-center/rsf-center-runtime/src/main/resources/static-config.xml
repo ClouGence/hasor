@@ -26,6 +26,8 @@
 
 		<!-- 服务推送配置 -->
 		<push>
+			<!-- 默认推送使用的：应用程序代码 -->
+			<anonymousAppCode>anonymous</anonymousAppCode>
 			<!-- 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。 -->
 			<queueMaxSize>100</queueMaxSize>
 			<!-- 数据推送线程每次工作等待的时间，单位毫秒 -->

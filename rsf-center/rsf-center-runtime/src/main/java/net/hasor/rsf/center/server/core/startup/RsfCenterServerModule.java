@@ -35,7 +35,7 @@ import net.hasor.rsf.center.server.services.RsfCenterRegisterProvider;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterVerificationFilter;
 import net.hasor.rsf.domain.Events;
 /**
- * WebMVC各组件初始化配置。
+ * 注册中心启动入口。
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2015年5月5日
@@ -47,29 +47,31 @@ public class RsfCenterServerModule implements LifeModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
-        // 1.将“rsfCenter.rsfPort”配置映射到“hasor.rsfConfig.port”
+        // 1.将“rsfCenter.rsfPort”配置映射到“hasor.rsfConfig.port” -> 映射配置的目的是让配置文件看起来更规整。
         Settings settings = apiBinder.getEnvironment().getSettings();
         int rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
         String rsfAddress = settings.getString("rsfCenter.bindAddress", "local");
         settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
         settings.setSetting("hasor.rsfConfig.address", rsfAddress, "http://project.hasor.net/hasor/schema/main");
         apiBinder.getEnvironment().getEventContext().addListener(Events.Rsf_Initialized, new EventListener<RsfContext>() {
-            @Override
             public void onEvent(String event, RsfContext eventData) throws Throwable {
+                //Rsf_Initialized 是Rsf在启动之前的事件通知，这个时候Rsf框架刚刚准备初始化，在这里重载配置是为了让，前面映射的配置生效。
                 eventData.getSettings().refreshRsfConfig();
             }
         });
+        //
+        // 2.解析注册中心配置信息。
         this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
         //
-        // 2.工作模式
+        // 3.工作模式确定
         apiBinder.bindType(RsfCenterCfg.class).toInstance(this.rsfCenterCfg);
         WorkMode workMode = this.rsfCenterCfg.getWorkMode();
         logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         //
-        // 3.Zookeeper环境
+        // 4.启动Zookeeper集群
         apiBinder.installModule(new ZooKeeperModule(this.rsfCenterCfg));
         //
-        // 4.RSF框架，发布注册中心接口
+        // 5.启动RSF框架，发布注册中心接口
         apiBinder.installModule(new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
@@ -84,6 +86,7 @@ public class RsfCenterServerModule implements LifeModule {
             }
         });
         //
+        // 6.注册PushQueue类型，当容器启动之后会启动，注册中心推送线程。
         apiBinder.bindType(PushQueue.class);
     }
     //

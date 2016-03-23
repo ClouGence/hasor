@@ -22,7 +22,7 @@ import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
- * 
+ * 提供者Manager
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -31,7 +31,7 @@ public class ProviderServiceManager extends BaseServiceManager {
     /**发布服务*/
     public String publishService(String hostString, ProviderPublishInfo info) throws KeeperException, InterruptedException, Throwable {
         //
-        //1.保存服务信息：/rsf-center/services/group/name/version/info
+        // 1.保存服务信息：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
         String servicePath = this.addServices(info);
         if (servicePath == null) {
@@ -39,7 +39,7 @@ public class ProviderServiceManager extends BaseServiceManager {
             return null; //服务信息保存失败，反馈终端注册失败
         }
         //
-        //2.登记提供者：/rsf-center/services/group/name/version/provider/192.168.1.11:2180
+        // 2.登记提供者：/rsf-center/services/group/name/version/provider/192.168.1.11:2180
         String providerInfo = this.zkTmpService.providerInfo(info);
         String providerTermPath = pathManager.evalProviderTermPath(serviceID, hostString);
         this.createNode(ZkNodeType.Persistent, providerTermPath);
@@ -50,7 +50,7 @@ public class ProviderServiceManager extends BaseServiceManager {
             return null; //提供者数据保存失败，反馈终端注册失败
         }
         //
-        //3.初始化提供者的心跳：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180/beat
+        // 3.初始化提供者的心跳：/rsf-center/services/group/name/version/consumer/192.168.1.11:2180/beat
         String providerBeatPath = pathManager.evalProviderTermBeatPath(serviceID, hostString);
         boolean beatResult = updateBeat(providerBeatPath);
         if (beatResult == false) {
@@ -58,15 +58,17 @@ public class ProviderServiceManager extends BaseServiceManager {
             return null; //初始化心跳数据失败
         }
         //
-        //4.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
+        // 4.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
         String providerPath = pathManager.evalProviderPath(serviceID);
         return updateSnapshot(hostString, serviceID, providerPath);
     }
-    /**删除服务提供者*/
+    /**删除提供者*/
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {
-        //1.删除注册的服务
+        //
+        // 1.删除注册的服务
         boolean result = super.removeRegister(hostString, serviceID, RsfServiceType.Provider);
-        //2.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
+        //
+        // 2.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
         if (result == true) {
             String providerPath = pathManager.evalProviderPath(serviceID);
             updateSnapshot(hostString, serviceID, providerPath);
@@ -74,9 +76,11 @@ public class ProviderServiceManager extends BaseServiceManager {
         return result;
     }
     private String updateSnapshot(String hostString, String serviceID, String providerTermPath) throws Throwable {
+        //
+        // 1.更新心跳时间
         updateBeat(providerTermPath);
         //
-        // --引发事件，通知推送进程推送服务地址
+        // 2.引发事件，通知推送进程推送服务地址
         String snapshotInfo = this.readData(providerTermPath);
         logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID, snapshotInfo);
         fireSyncEvent(RsfCenterEvent.ServicesPull_Event, serviceID);

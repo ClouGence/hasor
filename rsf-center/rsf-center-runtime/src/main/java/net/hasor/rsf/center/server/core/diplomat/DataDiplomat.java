@@ -72,8 +72,10 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
     @Override
     public void onEvent(final String event, final ZooKeeperNode zkNode) throws Throwable {
         try {
+            //
             //init节点数据
             this.initZooKeeperInfo(zkNode);
+            //
             //Leader同步通知
             final Watcher watcher = new Watcher() {
                 public void process(WatchedEvent event) {
@@ -100,7 +102,8 @@ public class DataDiplomat implements EventListener<ZooKeeperNode> {
                 }
             };
             zkNode.watcherChildren(ZooKeeperNode.LEADER_PATH, watcher);
-            //计算Leader数据
+            //
+            //排队申请成为Leader
             String hostName = this.getServerNode();
             zkNode.saveOrUpdate(ZkNodeType.Share, ZooKeeperNode.LEADER_PATH + "/n_", hostName);
             this.evalLeaderHostName(zkNode);

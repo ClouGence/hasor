@@ -32,7 +32,7 @@ import net.hasor.rsf.center.server.manager.ProviderServiceManager;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
- * 客户端注册中心接口{@link RsfCenterRegister}实现，负责将来自客户端的RSF注册请求发到zk集群。
+ * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */

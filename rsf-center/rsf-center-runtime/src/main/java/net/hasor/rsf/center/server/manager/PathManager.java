@@ -17,7 +17,7 @@ package net.hasor.rsf.center.server.manager;
 import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 /**
- * 
+ * Zookeeper中地址目录Manager，所有有关Zk目录相关的计算放到这里。
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */

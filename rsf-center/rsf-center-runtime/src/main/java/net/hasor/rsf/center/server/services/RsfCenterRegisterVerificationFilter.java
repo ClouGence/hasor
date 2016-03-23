@@ -22,6 +22,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.domain.ProtocolStatus;
@@ -34,30 +35,28 @@ import net.hasor.rsf.domain.RsfConstants;
 @Singleton
 public class RsfCenterRegisterVerificationFilter implements RsfFilter {
     protected Logger    logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    private String      centerVersion;
     private RsfContext  rsfContext;
     private AuthManager authManager;
     //
     public RsfCenterRegisterVerificationFilter(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
         this.authManager = rsfContext.getAppContext().getInstance(AuthManager.class);
+        this.centerVersion = this.rsfContext.getSettings().getVersion();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
-            request.getTargetAddress();
             //-如果是对外发送请求，则添加请求头参数用于远程对注册中心发来数据的校验
-            //            request.addOption(RSFCenterConstants.RSF_AUTH_CODE, this.authCode);
-            //            request.addOption(RSFCenterConstants.RSF_VERSION, this.rsfVersion);
-            //            boolean authResult = this.authManager.checkAuth(appCode, authCode);
-            //            if (authResult) {
+            InterAddress target = request.getTargetAddress();
+            String checkCode = this.authManager.checkAuth(target);
+            request.addOption(RsfCenterConstants.RSF_CHECK_CODE, checkCode);
+            request.addOption(RsfCenterConstants.RSF_VERSION, this.centerVersion);
             chain.doFilter(request, response);
-            //            } else {
-            //                response.sendStatus(ProtocolStatus.Unauthorized, "refused to service registry");
-            //            }
         } else {
-            //-如果是来自远程的响应，则校验是否是和注册中心协调好的授权码
-            String appCode = response.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
-            String authCode = response.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
+            //-如果是来自远程的请求响应，则校验是否是和注册中心协调好的授权码
+            String appCode = request.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
+            String authCode = request.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
             boolean authResult = this.authManager.checkAuth(appCode, authCode);
             if (authResult) {
                 chain.doFilter(request, response);

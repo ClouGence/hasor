@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import org.more.util.CommonCodeUtils.MD5;
+import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 /**
  * 
  * @version : 2016年2月22日
@@ -22,9 +26,20 @@ import net.hasor.core.Singleton;
  */
 @Singleton
 public class AuthManager {
+    @Inject
+    private RsfCenterCfg rsfCenterCfg;
     public boolean checkAuth(String appCode, String authCode) {
         // TODO Auto-generated method stub
         System.out.println("checkAuth -> appCode=" + appCode + " ,authCode=" + authCode);
         return true;
+    }
+    public String checkAuth(InterAddress targetAddress) {
+        try {
+            String appCode = "anonymous";
+            String authCode = "";
+            return MD5.getMD5(appCode + authCode);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
