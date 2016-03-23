@@ -105,4 +105,12 @@ public class EmpytRsfContext implements RsfContext {
         // TODO Auto-generated method stub
         return null;
     }
+    @Override
+    public void online() {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void offline() {
+        // TODO Auto-generated method stub
+    }
 }

@@ -86,6 +86,8 @@ public interface RsfSettings extends Settings {
     public boolean islocalDiskCache();
     /**是否启用注册中心功能。*/
     public boolean isEnableCenter();
+    /**应用自动上线*/
+    public boolean isAutomaticOnline();
     //
     /**重新加载Rsf配置*/
     public void refreshRsfConfig() throws IOException;

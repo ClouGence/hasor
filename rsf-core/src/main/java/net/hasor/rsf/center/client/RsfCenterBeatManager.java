@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.RepeateException;
 import org.more.json.JSON;
 import org.more.util.StringUtils;
@@ -48,16 +49,17 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> {
-    public static final String                            CenterMarkDataUpdate_Event = "CenterMarkDataUpdate";
-    protected static Logger                               logger                     = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    public static final String                            CenterUpdate_Event = "CenterUpdate_Event";
+    protected static Logger                               logger             = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
     private final RsfContext                              rsfContext;
     private final String                                  hostString;
     private final TimerManager                            timerManager;
     private final RsfCenterRegister                       centerRegister;
     private final ConcurrentMap<String, ServiceDomain<?>> serviceMap;
+    private final AtomicBoolean                           inited             = new AtomicBoolean(false);
     //
     public RsfCenterBeatManager(RsfContext rsfContext) {
-        rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterMarkDataUpdate_Event, this);
+        rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
         this.rsfContext = rsfContext;
         this.hostString = rsfContext.bindAddress().toHostSchema();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
@@ -104,30 +106,9 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
         if (domain == null) {
             return;
         }
-        String serviceID = domain.getBindID();
         if (this.serviceMap.containsKey(domain)) {
             this.serviceMap.remove(domain);
-            try {
-                if (StringUtils.isNotBlank(serviceID)) {
-                    //从注册中心删除
-                    Boolean res = null;
-                    if (RsfServiceType.Provider == domain.getServiceType()) {
-                        res = this.centerRegister.removePublish(this.hostString, serviceID);
-                    } else if (RsfServiceType.Consumer == domain.getServiceType()) {
-                        res = this.centerRegister.removeReceive(this.hostString, serviceID);
-                    }
-                    //打印Log
-                    if (res != null && res) {
-                        logger.info("deleteService complete -> serviceID={} ,result={}", serviceID, res);
-                    } else {
-                        logger.error("deleteService failed -> serviceID={} ,result={}", serviceID, res);
-                    }
-                } else {
-                    logger.info("deleteService complete -> serviceID={}", serviceID);
-                }
-            } catch (Exception e) {
-                logger.error("deleteService error -> serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
-            }
+            this.offlineService(domain);//下线服务应用
         }
     }
     //
@@ -140,7 +121,51 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
         }
         timerManager.atTime(this);
     }
+    //
+    public synchronized void online() {
+        this.inited.set(true);
+    }
+    public synchronized void offline() {
+        if (this.inited.compareAndSet(true, false) == false) {
+            return;
+        }
+        this.inited.set(false);
+        List<ServiceDomain<?>> serviceList = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());
+        for (ServiceDomain<?> domain : serviceList) {
+            if (domain != null) {
+                this.offlineService(domain);
+            }
+        }
+    }
+    private void offlineService(ServiceDomain<?> domain) {
+        try {
+            String serviceID = domain.getBindID();
+            if (StringUtils.isNotBlank(serviceID)) {
+                //从注册中心删除
+                Boolean res = null;
+                if (RsfServiceType.Provider == domain.getServiceType()) {
+                    res = this.centerRegister.removePublish(this.hostString, serviceID);
+                } else if (RsfServiceType.Consumer == domain.getServiceType()) {
+                    res = this.centerRegister.removeReceive(this.hostString, serviceID);
+                }
+                //打印Log
+                if (res != null && res) {
+                    logger.info("deleteService complete -> serviceID={} ,result={}", serviceID, res);
+                } else {
+                    logger.error("deleteService failed -> serviceID={} ,result={}", serviceID, res);
+                }
+            } else {
+                logger.info("deleteService complete -> serviceID={}", serviceID);
+            }
+        } catch (Exception e) {
+            logger.error("deleteService error -> serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
+        }
+    }
+    //
     private void run() throws Exception {
+        if (this.inited.get() == false) {
+            return;
+        }
         List<ServiceDomain<?>> needBeat = new ArrayList<ServiceDomain<?>>();//需要心跳
         List<ServiceDomain<?>> needRegister = new ArrayList<ServiceDomain<?>>();//需要注册
         List<ServiceDomain<?>> needRepair = new ArrayList<ServiceDomain<?>>();//心跳失败，需要重新注册

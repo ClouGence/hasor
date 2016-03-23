@@ -35,7 +35,7 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.AddressProvider;
-import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.InstanceAddressProvider;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
@@ -71,22 +71,41 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     //
     public void start(RsfPlugin... plugins) throws Throwable {
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", Events.Rsf_Initialized);
-        ec.fireSyncEvent(Events.Rsf_Initialized, this);
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Initialized);
+        ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
         logger.info("rsfContext -> doInitializeCompleted");
         //
         this.rsfBeanContainer.getAddressPool().startTimer();
-        String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
-        int bindPort = this.rsfEnvironment.getSettings().getBindPort();
-        this.rsfNetManager.start(bindAddress, bindPort);
         //
         for (RsfPlugin rsfPlugins : plugins) {
             rsfPlugins.loadRsf(this);
         }
         //
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", Events.Rsf_Started);
-        ec.fireSyncEvent(Events.Rsf_Started, this);
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
+        ec.fireSyncEvent(RsfEvent.Rsf_Started, this);
         logger.info("rsfContext -> doStartCompleted");
+        //
+        String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
+        int bindPort = this.rsfEnvironment.getSettings().getBindPort();
+        this.rsfNetManager.start(bindAddress, bindPort);
+        //
+        if (this.rsfEnvironment.getSettings().isAutomaticOnline()) {
+            this.online();
+        }
+    }
+    /**应用上线*/
+    @Override
+    public void online() {
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
+        EventContext ec = getAppContext().getEnvironment().getEventContext();
+        ec.fireAsyncEvent(RsfEvent.Rsf_Online, this);
+    }
+    /**应用下线*/
+    @Override
+    public void offline() {
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Offline);
+        EventContext ec = getAppContext().getEnvironment().getEventContext();
+        ec.fireAsyncEvent(RsfEvent.Rsf_Offline, this);
     }
     /** 销毁。 */
     public void shutdown() {
@@ -94,9 +113,9 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.rsfNetManager.shutdown();
         this.rsfBeanContainer.getAddressPool().shutdownTimer();
         //
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", Events.Rsf_Shutdown);
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Shutdown);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireSyncEvent(Events.Rsf_Shutdown, this);
+        ec.fireSyncEvent(RsfEvent.Rsf_Shutdown, this);
         logger.info("rsfContext -> doShutdownCompleted");
     }
     //

@@ -39,7 +39,7 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
-import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfBindInfoWrap;
 import net.hasor.rsf.domain.RsfException;
@@ -237,10 +237,10 @@ public class RsfBeanContainer implements AppContextAware {
             if (serviceDefine.getCustomerProvider() == null) {
                 throw new RsfException(ProtocolStatus.Forbidden, "Provider Not set the implementation class.");
             }
-            eventContext.fireAsyncEvent(Events.Rsf_ProviderService, serviceDefine.getDomain());
+            eventContext.fireAsyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine.getDomain());
         } else {
             //服务消费者
-            eventContext.fireAsyncEvent(Events.Rsf_ConsumerService, serviceDefine.getDomain());
+            eventContext.fireAsyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine.getDomain());
         }
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
     }
@@ -276,7 +276,7 @@ class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements Registe
     @Override
     public boolean unRegister() {
         EventContext eventContext = this.rsfContainer.getAppContext().getEnvironment().getEventContext();
-        eventContext.fireAsyncEvent(Events.Rsf_DeleteService, this.serviceInfo.getDomain());
+        eventContext.fireAsyncEvent(RsfEvent.Rsf_DeleteService, this.serviceInfo.getDomain());
         //
         String serviceID = this.getBindID();
         return this.rsfContainer.recoverService(serviceID);

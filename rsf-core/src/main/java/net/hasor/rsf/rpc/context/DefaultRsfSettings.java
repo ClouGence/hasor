@@ -73,6 +73,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private long            refreshCacheTime     = 360000;
     private boolean         localDiskCache       = true;
     private boolean         enableCenter         = false;
+    private boolean         automaticOnline      = true;
     //
     //
     //
@@ -197,6 +198,10 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     public boolean isEnableCenter() {
         return this.enableCenter;
     }
+    @Override
+    public boolean isAutomaticOnline() {
+        return this.automaticOnline;
+    }
     //
     public void refresh() throws IOException {
         super.refresh();
@@ -277,12 +282,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         }
         this.centerRsfTimeout = getInteger("hasor.rsfConfig.centerServers.timeout", 6000);
         this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
+        this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
         this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);
         this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         this.enableCenter = this.centerServerSet.length != 0;
+        //
         logger.info("loadRsfConfig complete!");
     }
 }

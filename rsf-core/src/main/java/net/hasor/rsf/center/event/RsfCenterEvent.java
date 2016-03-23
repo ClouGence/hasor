@@ -24,23 +24,23 @@ import org.more.util.StringUtils;
 public enum RsfCenterEvent {
     /**追加或重新激活地址。*/
     RsfCenter_AppendAddressEvent("AppendAddressEvent"), //
-    /**刷新服务地址本。*/
+    /**推送刷新服务地址本指令，刷新地址本之后地址本会被重新激活。*/
     RsfCenter_RefreshAddressEvent("RefreshAddressEvent"), //
     /**推送无效的地址，客户端对此地址进行删除操作。*/
     RsfCenter_RemoveAddressEvent("RemoveAddressEvent"), //
     //
     /**推送默认服务级路由规则*/
-    RsfCenter_UpdateDefaultServiceRouteEvent("UpdateServiceRouteEvent"), //
+    RsfCenter_UpdateDefaultServiceRouteEvent("UpdateDefaultServiceRouteEvent"), //
     /**推送服务级路由规则*/
     RsfCenter_UpdateServiceRouteEvent("UpdateServiceRouteEvent"), //
     /**推送默认方法级路由规则*/
-    RsfCenter_UpdateDefaultMethodRouteEvent("UpdateMethodRouteEvent"), //
+    RsfCenter_UpdateDefaultMethodRouteEvent("UpdateDefaultMethodRouteEvent"), //
     /**推送方法级路由规则*/
     RsfCenter_UpdateMethodRouteEvent("UpdateMethodRouteEvent"), //
     /**推送默认参数级路由规则*/
-    RsfCenter_UpdateDefaultArgsRouteEvent("UpdateArgsRouteEvent "), //
+    RsfCenter_UpdateDefaultArgsRouteEvent("UpdateDefaultArgsRouteEvent"), //
     /**推送参数级路由规则*/
-    RsfCenter_UpdateArgsRouteEvent("UpdateArgsRouteEvent "), //
+    RsfCenter_UpdateArgsRouteEvent("UpdateArgsRouteEvent"), //
     //
     /**推送默认服务流控规则*/
     RsfCenter_UpdateDefaultFlowControlEvent("UpdateDefaultFlowControlEvent"), //

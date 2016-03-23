@@ -23,7 +23,7 @@ import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfConstants;
 /**
  * 注册中心插件
@@ -68,10 +68,12 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         // 3.注册RSF事件监听器
         EventContext eventContext = rsfContext.getAppContext().getEnvironment().getEventContext();
         RsfEventTransport transport = new RsfEventTransport(rsfContext);
-        eventContext.addListener(Events.Rsf_ProviderService, transport);
-        eventContext.addListener(Events.Rsf_ConsumerService, transport);
-        eventContext.addListener(Events.Rsf_DeleteService, transport);
-        eventContext.addListener(Events.Rsf_Started, transport);
-        eventContext.addListener(Events.Rsf_Shutdown, transport);
+        eventContext.addListener(RsfEvent.Rsf_ProviderService, transport);
+        eventContext.addListener(RsfEvent.Rsf_ConsumerService, transport);
+        eventContext.addListener(RsfEvent.Rsf_DeleteService, transport);
+        eventContext.addListener(RsfEvent.Rsf_Started, transport);
+        eventContext.addListener(RsfEvent.Rsf_Shutdown, transport);
+        eventContext.addListener(RsfEvent.Rsf_Online, transport);
+        eventContext.addListener(RsfEvent.Rsf_Offline, transport);
     }
 }

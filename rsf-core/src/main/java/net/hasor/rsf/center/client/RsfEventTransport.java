@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
@@ -39,7 +39,7 @@ class RsfEventTransport implements EventListener<Object> {
         if (eventData == null) {
             return;
         }
-        if (StringUtils.equals(Events.Rsf_Started, event)) {
+        if (StringUtils.equals(RsfEvent.Rsf_Started, event)) {
             this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
             this.logger.info("eventType = {} , start the registration service processed.", event);
             return;
@@ -47,14 +47,20 @@ class RsfEventTransport implements EventListener<Object> {
         //
         ServiceDomain<?> domain = (ServiceDomain<?>) eventData;
         try {
-            if (StringUtils.equals(Events.Rsf_ProviderService, event)) {
-                this.beatTimer.newService(domain, Events.Rsf_ProviderService);
+            if (StringUtils.equals(RsfEvent.Rsf_ProviderService, event)) {
+                this.beatTimer.newService(domain, RsfEvent.Rsf_ProviderService);
                 //
-            } else if (StringUtils.equals(Events.Rsf_ConsumerService, event)) {
-                this.beatTimer.newService(domain, Events.Rsf_ConsumerService);
+            } else if (StringUtils.equals(RsfEvent.Rsf_ConsumerService, event)) {
+                this.beatTimer.newService(domain, RsfEvent.Rsf_ConsumerService);
                 //
-            } else if (StringUtils.equals(Events.Rsf_DeleteService, event)) {
+            } else if (StringUtils.equals(RsfEvent.Rsf_DeleteService, event)) {
                 this.beatTimer.deleteService(domain);
+                //
+            } else if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
+                this.beatTimer.online();
+                //
+            } else if (StringUtils.equals(RsfEvent.Rsf_Offline, event)) {
+                this.beatTimer.offline();
                 //
             }
             //

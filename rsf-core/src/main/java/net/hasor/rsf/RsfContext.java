@@ -52,7 +52,6 @@ public interface RsfContext {
      */
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
     //
-    //
     /** 获取RSF运行的地址。 */
     public InterAddress bindAddress();
     /**获取RSF配置*/
@@ -66,8 +65,8 @@ public interface RsfContext {
     /**创建{@link RsfBinder}。*/
     public RsfBinder binder();
     //
-    //    /**应用上线（优雅上线）*/
-    //    public void online();
-    //    /**应用下线（优雅停机）*/
-    //    public void offline();
+    /**应用上线（优雅上线）*/
+    public void online();
+    /**应用下线（优雅停机）*/
+    public void offline();
 }

@@ -19,7 +19,7 @@ package net.hasor.rsf.domain;
  * @version : 2015年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Events {
+public interface RsfEvent {
     /**发布服务*/
     public static final String Rsf_ProviderService = "RsfEvent_ProviderService";
     /**订阅服务*/
@@ -27,6 +27,10 @@ public interface Events {
     /**删除发布或订阅*/
     public static final String Rsf_DeleteService   = "RsfEvent_DeleteService";
     //
+    /**应用上线*/
+    public static final String Rsf_Online          = "RsfEvent_Online";
+    /**应用下线*/
+    public static final String Rsf_Offline         = "RsfEvent_Offline";
     //
     /**Rsf框架事件，当调用start方法开始时触发该事件。
      * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
