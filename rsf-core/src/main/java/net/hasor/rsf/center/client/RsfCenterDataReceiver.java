@@ -69,7 +69,7 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
         boolean result = process.processEvent(rsfUpdater, centerEventBody);
         if (result == true) {
             if (StringUtils.isBlank(serviceID) == false) {
-                this.eventContext.fireSyncEvent(RsfCenterInfoManager.CenterMarkDataUpdate_Event, centerEventBody);//同步更新服务的CenterMarkData
+                this.eventContext.fireSyncEvent(RsfCenterBeatManager.CenterMarkDataUpdate_Event, centerEventBody);//同步更新服务的CenterMarkData
             }
         }
         return result;

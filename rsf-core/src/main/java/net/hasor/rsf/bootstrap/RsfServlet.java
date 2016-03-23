@@ -41,7 +41,6 @@ public class RsfServlet extends HttpServlet {
     @Inject
     private AbstractRsfContext rsfContext       = null;
     //
-    //
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String length = req.getHeader("Content-Length");
         int dataSize = Integer.parseInt(length);
@@ -50,6 +49,7 @@ public class RsfServlet extends HttpServlet {
             return;
         }
         //
+        String rsfURL = req.getParameter("rsf");
         String type = req.getParameter("type");
         req.getRemotePort();
         InterAddress target = null;

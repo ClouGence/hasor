@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import org.more.util.CommonCodeUtils.MD5;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,6 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.domain.RsfException;
 /**
  * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
  * @version : 2016年2月18日
@@ -33,13 +33,15 @@ import net.hasor.rsf.domain.RsfException;
  */
 public class RsfCenterDataVerificationFilter implements RsfFilter {
     protected Logger logger     = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
-    private String   authCode   = null;                                                  //RSF_APP_CODE  应用程序编码
     private String   appCode    = null;                                                  //RSF_AUTH_CODE 授权码
+    private String   authCode   = null;                                                  //RSF_APP_CODE  应用程序编码
+    private String   checkCode  = null;
     private String   rsfVersion = null;                                                  //              客户端版本
     //
-    public RsfCenterDataVerificationFilter(RsfContext rsfContext) {
-        this.authCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_APP_CODE");
-        this.appCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_AUTH_CODE");
+    public RsfCenterDataVerificationFilter(RsfContext rsfContext) throws Throwable {
+        this.appCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_APP_CODE");
+        this.authCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_AUTH_CODE");
+        this.checkCode = MD5.getMD5(this.appCode + this.authCode);//计算检查码
         this.rsfVersion = rsfContext.getSettings().getVersion();
     }
     @Override
@@ -50,14 +52,13 @@ public class RsfCenterDataVerificationFilter implements RsfFilter {
             request.addOption(RsfCenterConstants.RSF_AUTH_CODE, this.authCode);
             request.addOption(RsfCenterConstants.RSF_VERSION, this.rsfVersion);
         } else {
-            //-如果是来自远程的响应，则校验来自注册中心的响应中授权码是否是本地预先保存的
-            String appCode = response.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
-            String authCode = response.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
-            if (StringUtils.equals(this.appCode, appCode) == false || StringUtils.equals(this.authCode, authCode) == false) {
-                String remoteData = "appCode=" + appCode + " ,authCode=" + authCode;
-                String errorMessage = "rsfCenter auth code failed. -> RSF_APP_CODE or RSF_AUTH_CODE error , remoteData :{ " + remoteData + " }";
+            //-如果是来自远程的响应，则校验来自注册中心的响应的检查码
+            String checkCode = request.getOption(RsfCenterConstants.RSF_CHECK_CODE); //RSF_CHECK_CODE 检查码
+            if (StringUtils.equals(this.checkCode, checkCode) == false) {
+                String errorMessage = "rsfCenter check code failed. -> checkCode=" + this.checkCode + " ,remoteCheckCode=" + checkCode;
                 logger.error(errorMessage);
-                throw new RsfException(ProtocolStatus.Unauthorized, errorMessage);
+                response.sendStatus(ProtocolStatus.Unauthorized, "rsfCenter checkCode failed");
+                return;
             }
         }
         chain.doFilter(request, response);

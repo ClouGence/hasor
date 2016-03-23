@@ -29,9 +29,9 @@ import net.hasor.rsf.domain.ServiceDomain;
  */
 class RsfEventTransport implements EventListener<Object> {
     protected Logger             logger    = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
-    private RsfCenterInfoManager beatTimer = null;
+    private RsfCenterBeatManager beatTimer = null;
     public RsfEventTransport(RsfContext rsfContext) {
-        this.beatTimer = new RsfCenterInfoManager(rsfContext);
+        this.beatTimer = new RsfCenterBeatManager(rsfContext);
     }
     //
     @Override
