@@ -40,7 +40,8 @@ import net.hasor.core.XmlNode;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger      logger = LoggerFactory.getLogger(getClass());
+    private ScanClassPath scanUtils;
     /** 获取一个 Map，该Map中保存了所有配置信息。 */
     protected abstract Map<String, Map<String, SettingValue>> getFullSettingsMap();
     protected abstract Map<String, SettingValue> getLocalSettingData();
@@ -53,7 +54,10 @@ public abstract class AbstractSettings implements Settings {
         if (loadPackages == null) {
             loadPackages = new String[] { "" };
         }
-        return ScanClassPath.getClassSet(loadPackages, featureType);
+        if (this.scanUtils == null) {
+            this.scanUtils = ScanClassPath.newInstance(loadPackages);
+        }
+        return this.scanUtils.getClassSet(featureType);
     }
     /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
     public Set<Class<?>> findClass(final Class<?> featureType, String loadPackages) {

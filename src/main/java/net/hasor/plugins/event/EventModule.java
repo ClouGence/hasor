@@ -39,11 +39,13 @@ public class EventModule implements Module {
         final Environment env = apiBinder.getEnvironment();
         final EventContext eventContext = env.getEventContext();
         final Set<Class<?>> eventSet = env.findClass(Event.class);
+        final Class<?> listenerClass = EventListener.class;
+        //
         if (eventSet == null || eventSet.isEmpty()) {
             return;
         }
         for (final Class<?> eventClass : eventSet) {
-            if (eventClass == Event.class || EventListener.class.isAssignableFrom(eventClass) == false) {
+            if (eventClass == Event.class || listenerClass.isAssignableFrom(eventClass) == false) {
                 continue;
             }
             Event eventAnno = eventClass.getAnnotation(Event.class);
