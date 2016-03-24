@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.asm.ClassVisitor;
+import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
@@ -30,6 +31,7 @@ import org.more.classcode.ASMEngineToos;
  * @version 2010-8-12
  * @author 赵永春 (zyc@hasor.net)
  */
+@SuppressWarnings("deprecation")
 class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
     private MethodClassConfig classConfig    = null;
     private String            superClassName = null;                 //父类类名
@@ -59,6 +61,9 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
         String[] finalInterfaces = newFaces.toArray(new String[newFaces.size()]);
         //
         super.visit(version, access, className, signature, name, finalInterfaces);
+    }
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        return null;
     }
     //
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {

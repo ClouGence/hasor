@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.more.asm.ClassVisitor;
+import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
@@ -29,6 +30,7 @@ import org.more.util.StringUtils;
  * @version : 2014年9月8日
  * @author 赵永春(zyc@hasor.net)
  */
+@SuppressWarnings("deprecation")
 class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
     private PropertyClassConfig classConfig    = null;
     private String              superClassName = null;                 //父类类名
@@ -45,6 +47,9 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
         String className = this.classConfig.getClassName();
         className = classConfig.getClassName().replace(".", "/");
         super.visit(version, access, className, signature, name, interfaces);
+    }
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        return null;
     }
     //
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {

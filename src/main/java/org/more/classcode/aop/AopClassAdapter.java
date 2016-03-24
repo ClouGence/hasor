@@ -34,6 +34,7 @@ import org.more.classcode.ASMEngineToos;
  * @version 2010-9-2
  * @author 赵永春 (zyc@hasor.net)
  */
+@SuppressWarnings("deprecation")
 class AopClassAdapter extends ClassVisitor implements Opcodes {
     public final static String AopPrefix      = "$aopFun"; //生成的Aop方法前缀
     private String             superClassName = null;      //父类类名

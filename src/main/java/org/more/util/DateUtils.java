@@ -45,8 +45,9 @@ public class DateUtils {
     }
     /**按照格式获取时间格式化之后的获取当前时间：日*/
     public static String getTimeForMormat(Date date, String format) {
-        if (date == null)
+        if (date == null) {
             return null;
+        }
         return new SimpleDateFormat(format).format(date);
     }
     /**是否是过期的时间（依照当前时间）*/
