@@ -77,14 +77,6 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         //
         this.rsfBeanContainer.getAddressPool().startTimer();
         //
-        for (RsfPlugin rsfPlugins : plugins) {
-            rsfPlugins.loadRsf(this);
-        }
-        //
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
-        ec.fireSyncEvent(RsfEvent.Rsf_Started, this);
-        logger.info("rsfContext -> doStartCompleted");
-        //
         String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
         int bindPort = this.rsfEnvironment.getSettings().getBindPort();
         this.rsfNetManager.start(bindAddress, bindPort);
@@ -92,6 +84,14 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         if (this.rsfEnvironment.getSettings().isAutomaticOnline()) {
             this.online();
         }
+        //
+        for (RsfPlugin rsfPlugins : plugins) {
+            rsfPlugins.loadRsf(this);
+        }
+        //
+        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
+        ec.fireSyncEvent(RsfEvent.Rsf_Started, this);
+        logger.info("rsfContext -> doStartCompleted");
     }
     /**应用上线*/
     @Override

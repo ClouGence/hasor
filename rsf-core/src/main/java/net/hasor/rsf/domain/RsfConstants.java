@@ -41,6 +41,7 @@ public interface RsfConstants {
     public static final byte    RSF_Response                = Version_1 | RSF_Packet_Response;
     //
     public static final Charset DEFAULT_CHARSET             = Charset.forName("UTF-8");
+    public static final boolean DEFAULT_ONLINE_STATUS       = false;
     //
     //
     public static final String  ServiceAddressList_ZipEntry = ".sal";

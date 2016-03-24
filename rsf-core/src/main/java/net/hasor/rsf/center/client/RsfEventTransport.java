@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
  * 负责侦听RSF框架发出的事件，并将事件转发到RsfCenter。
@@ -43,6 +43,12 @@ class RsfEventTransport implements EventListener<Object> {
             this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
             this.logger.info("eventType = {} , start the registration service processed.", event);
             return;
+        } else if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
+            this.beatTimer.online();
+            return;
+        } else if (StringUtils.equals(RsfEvent.Rsf_Offline, event)) {
+            this.beatTimer.offline();
+            return;
         }
         //
         ServiceDomain<?> domain = (ServiceDomain<?>) eventData;
@@ -55,12 +61,6 @@ class RsfEventTransport implements EventListener<Object> {
                 //
             } else if (StringUtils.equals(RsfEvent.Rsf_DeleteService, event)) {
                 this.beatTimer.deleteService(domain);
-                //
-            } else if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
-                this.beatTimer.online();
-                //
-            } else if (StringUtils.equals(RsfEvent.Rsf_Offline, event)) {
-                this.beatTimer.offline();
                 //
             }
             //

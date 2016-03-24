@@ -56,7 +56,7 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     private final TimerManager                            timerManager;
     private final RsfCenterRegister                       centerRegister;
     private final ConcurrentMap<String, ServiceDomain<?>> serviceMap;
-    private final AtomicBoolean                           inited             = new AtomicBoolean(false);
+    private final AtomicBoolean                           onlineStatus;
     //
     public RsfCenterBeatManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
@@ -65,6 +65,7 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<String, ServiceDomain<?>>();
+        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
         this.timerManager.atTime(this);
     }
     //
@@ -115,7 +116,7 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     @Override
     public void run(Timeout timeout) {
         try {
-            if (this.inited.get()) {
+            if (this.onlineStatus.get()) {
                 this.run();
             }
         } catch (Exception e) {
@@ -125,13 +126,15 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     }
     //
     public synchronized void online() {
-        this.inited.set(true);
-    }
-    public synchronized void offline() {
-        if (this.inited.compareAndSet(true, false) == false) {
+        if (this.onlineStatus.compareAndSet(false, true) == false) {
             return;
         }
-        this.inited.set(false);
+        logger.info("rsfCenterBeat-> received online signal.");
+    }
+    public synchronized void offline() {
+        if (this.onlineStatus.compareAndSet(true, false) == false) {
+            return;
+        }
         List<ServiceDomain<?>> serviceList = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());
         for (ServiceDomain<?> domain : serviceList) {
             if (domain != null) {
