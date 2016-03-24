@@ -39,9 +39,13 @@ class RsfEventTransport implements EventListener<Object> {
         if (eventData == null) {
             return;
         }
+        this.logger.info("rsfEventTransport -> eventType = {}.", event);
         if (StringUtils.equals(RsfEvent.Rsf_Started, event)) {
             this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
             this.logger.info("eventType = {} , start the registration service processed.", event);
+            return;
+        } else if (StringUtils.equals(RsfEvent.Rsf_Shutdown, event)) {
+            this.beatTimer.offline();
             return;
         } else if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
             this.beatTimer.online();

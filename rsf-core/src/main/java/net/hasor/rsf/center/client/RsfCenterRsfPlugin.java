@@ -71,8 +71,10 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         eventContext.addListener(RsfEvent.Rsf_ProviderService, transport);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, transport);
         eventContext.addListener(RsfEvent.Rsf_DeleteService, transport);
+        //
         eventContext.addListener(RsfEvent.Rsf_Started, transport);
         eventContext.addListener(RsfEvent.Rsf_Shutdown, transport);
+        //
         eventContext.addListener(RsfEvent.Rsf_Online, transport);
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
     }
