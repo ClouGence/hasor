@@ -30,12 +30,17 @@ import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfPlugin;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.client.RsfCenterRsfPlugin;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.filters.local.LocalPref;
+import net.hasor.rsf.filters.online.OnlineRsfFilter;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
+import net.hasor.rsf.filters.thread.RsfRequestLocal;
+import net.hasor.rsf.filters.thread.RsfResponseLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.web.WebApiBinder;
@@ -94,6 +99,8 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
                 return rsfContext.getRsfClient();
             }
         });
+        apiBinder.bindType(RsfRequest.class).toInstance(new RsfRequestLocal());
+        apiBinder.bindType(RsfResponse.class).toInstance(new RsfResponseLocal());
         //
         //4.Web环境兼容
         if (apiBinder instanceof WebApiBinder) {
@@ -105,9 +112,11 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
     }
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
+        //
         RsfBinder rsfBinder = rsfContext.binder();
         rsfBinder.bindFilter("LocalPref", new LocalPref());
         rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
+        rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter(rsfContext));
         new RsfCenterRsfPlugin().loadRsf(rsfContext);
     }
 }

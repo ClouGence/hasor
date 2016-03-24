@@ -115,7 +115,9 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     @Override
     public void run(Timeout timeout) {
         try {
-            this.run();
+            if (this.inited.get()) {
+                this.run();
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -163,9 +165,6 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     }
     //
     private void run() throws Exception {
-        if (this.inited.get() == false) {
-            return;
-        }
         List<ServiceDomain<?>> needBeat = new ArrayList<ServiceDomain<?>>();//需要心跳
         List<ServiceDomain<?>> needRegister = new ArrayList<ServiceDomain<?>>();//需要注册
         List<ServiceDomain<?>> needRepair = new ArrayList<ServiceDomain<?>>();//心跳失败，需要重新注册

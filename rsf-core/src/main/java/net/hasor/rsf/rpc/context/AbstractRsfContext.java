@@ -35,8 +35,8 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.AddressProvider;
-import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.InstanceAddressProvider;
+import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
@@ -69,7 +69,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.poolProvider = new PoolProvider(pool);
     }
     //
-    public void start(RsfPlugin... plugins) throws Throwable {
+    public synchronized void start(RsfPlugin... plugins) throws Throwable {
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Initialized);
         ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
@@ -95,20 +95,22 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     }
     /**应用上线*/
     @Override
-    public void online() {
+    public synchronized void online() {
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireAsyncEvent(RsfEvent.Rsf_Online, this);
+        ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
     }
     /**应用下线*/
     @Override
-    public void offline() {
+    public synchronized void offline() {
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Offline);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireAsyncEvent(RsfEvent.Rsf_Offline, this);
+        ec.fireSyncEvent(RsfEvent.Rsf_Offline, this);
     }
     /** 销毁。 */
-    public void shutdown() {
+    public synchronized void shutdown() {
+        this.offline();
+        //
         this.rsfCaller.shutdown();
         this.rsfNetManager.shutdown();
         this.rsfBeanContainer.getAddressPool().shutdownTimer();

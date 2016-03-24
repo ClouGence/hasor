@@ -55,9 +55,9 @@ public class RsfCenterDataVerificationFilter implements RsfFilter {
             //-如果是来自远程的响应，则校验来自注册中心的响应的检查码
             String checkCode = request.getOption(RsfCenterConstants.RSF_CHECK_CODE); //RSF_CHECK_CODE 检查码
             if (StringUtils.equals(this.checkCode, checkCode) == false) {
-                String errorMessage = "rsfCenter check code failed. -> checkCode=" + this.checkCode + " ,remoteCheckCode=" + checkCode;
+                String errorMessage = "check center code failed. -> localCode=" + this.checkCode + " ,centerCode=" + checkCode;
                 logger.error(errorMessage);
-                response.sendStatus(ProtocolStatus.Unauthorized, "rsfCenter checkCode failed");
+                response.sendStatus(ProtocolStatus.Unauthorized, "check center code failed");
                 return;
             }
         }
