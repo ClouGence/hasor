@@ -19,7 +19,7 @@ import org.apache.zookeeper.data.Stat;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
-import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.center.server.push.RsfCenterPushEventEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 提供者Manager
@@ -72,6 +72,8 @@ public class ProviderServiceManager extends BaseServiceManager {
         if (result == true) {
             String providerPath = pathManager.evalProviderPath(serviceID);
             updateSnapshot(hostString, serviceID, providerPath);
+            logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID);
+            pushEvent(RsfCenterPushEventEnum.RemoveAddressEvent.newEvent().setEventBody(hostString));
         }
         return result;
     }
@@ -81,9 +83,6 @@ public class ProviderServiceManager extends BaseServiceManager {
         updateBeat(providerTermPath);
         //
         // 2.引发事件，通知推送进程推送服务地址
-        String snapshotInfo = this.readData(providerTermPath);
-        logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID, snapshotInfo);
-        fireSyncEvent(RsfCenterEvent.ServicesPull_Event, serviceID);
-        return snapshotInfo;
+        return this.readData(providerTermPath);
     }
 }

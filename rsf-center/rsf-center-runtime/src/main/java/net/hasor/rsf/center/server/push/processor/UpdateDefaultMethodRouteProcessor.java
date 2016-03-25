@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center.server.push.processor;
+import net.hasor.rsf.center.server.push.PushEvent;
+import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 事件
- * @version : 2015年7月3日
+ * 
+ * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterEvent {
-    /** ZK连接可用，参数为：ZooKeeperNode */
-    public static final String SyncConnected_Event = "SyncConnected";
-    /** 确认RsfCenter的Leader，参数为：DataDiplomat */
-    public static final String ConfirmLeader_Event = "ConfirmLeader";
-    //
-    /** 推送事件PushEvent，参数为：PushEvent */
-    public static final String PushEvent           = "PushEvent";
+public class UpdateDefaultMethodRouteProcessor extends PushProcessor {
+    @Override
+    public void doProcessor(PushEvent event) {
+        // TODO Auto-generated method stub
+    }
 }

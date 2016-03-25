@@ -69,4 +69,6 @@ public interface RsfContext {
     public void online();
     /**应用下线（优雅停机）*/
     public void offline();
+    /**是否在线*/
+    public boolean isOnline();
 }

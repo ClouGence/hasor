@@ -69,8 +69,6 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         this.zkServer.setTickTime(tickTime);
         this.zkServer.setMinSessionTimeout(minSessionTimeout);
         this.zkServer.setMaxSessionTimeout(maxSessionTimeout);
-        // ZooKeeperServer zkServer = new ZooKeeperServer(txnLog, tickTime,
-        // minSessionTimeout, maxSessionTimeout, this, new ZKDatabase(txnLog));
         //
         InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
         this.cnxnFactory = ServerCnxnFactory.createFactory();

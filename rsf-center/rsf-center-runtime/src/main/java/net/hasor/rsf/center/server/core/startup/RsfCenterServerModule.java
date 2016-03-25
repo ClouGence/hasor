@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.LifeModule;
 import net.hasor.core.Settings;
@@ -33,7 +32,7 @@ import net.hasor.rsf.center.server.domain.WorkMode;
 import net.hasor.rsf.center.server.push.PushQueue;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterProvider;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterVerificationFilter;
-import net.hasor.rsf.domain.Events;
+import net.hasor.rsf.domain.RsfEvent;
 /**
  * 注册中心启动入口。
  *
@@ -53,7 +52,7 @@ public class RsfCenterServerModule implements LifeModule {
         String rsfAddress = settings.getString("rsfCenter.bindAddress", "local");
         settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
         settings.setSetting("hasor.rsfConfig.address", rsfAddress, "http://project.hasor.net/hasor/schema/main");
-        apiBinder.getEnvironment().getEventContext().addListener(Events.Rsf_Initialized, new EventListener<RsfContext>() {
+        apiBinder.getEnvironment().getEventContext().addListener(RsfEvent.Rsf_Initialized, new EventListener<RsfContext>() {
             public void onEvent(String event, RsfContext eventData) throws Throwable {
                 //Rsf_Initialized 是Rsf在启动之前的事件通知，这个时候Rsf框架刚刚准备初始化，在这里重载配置是为了让，前面映射的配置生效。
                 eventData.getSettings().refreshRsfConfig();
@@ -75,6 +74,8 @@ public class RsfCenterServerModule implements LifeModule {
         apiBinder.installModule(new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
+                rsfContext.offline();//切换下线，暂不接收任何Rsf请求
+                //
                 RsfBinder rsfBinder = rsfContext.binder();
                 rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class)//
                         .bindFilter("VerificationFilter", new RsfCenterRegisterVerificationFilter(rsfContext))//
@@ -91,8 +92,9 @@ public class RsfCenterServerModule implements LifeModule {
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
-        Environment env = appContext.getEnvironment();
-        //        env.getEventContext().fireSyncEvent(Events., appContext);// fire Event
+        appContext.getInstance(RsfContext.class).online();//切换上线，开始提供服务
+        logger.info("rsfCenter online.");
+        //
     }
     public void onStop(AppContext appContext) throws Throwable {
         //

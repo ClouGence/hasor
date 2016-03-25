@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.RepeateException;
 import org.more.json.JSON;
 import org.more.util.StringUtils;
@@ -56,7 +55,6 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     private final TimerManager                            timerManager;
     private final RsfCenterRegister                       centerRegister;
     private final ConcurrentMap<String, ServiceDomain<?>> serviceMap;
-    private final AtomicBoolean                           onlineStatus;
     //
     public RsfCenterBeatManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
@@ -65,7 +63,6 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<String, ServiceDomain<?>>();
-        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
         this.timerManager.atTime(this);
     }
     //
@@ -116,7 +113,7 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     @Override
     public void run(Timeout timeout) {
         try {
-            if (this.onlineStatus.get()) {
+            if (this.rsfContext.isOnline()) {
                 this.run();
             }
         } catch (Exception e) {
@@ -126,15 +123,9 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     }
     //
     public synchronized void online() {
-        if (this.onlineStatus.compareAndSet(false, true) == false) {
-            return;
-        }
         logger.info("rsfCenterBeat-> received online signal.");
     }
     public synchronized void offline() {
-        if (this.onlineStatus.compareAndSet(true, false) == false) {
-            return;
-        }
         List<ServiceDomain<?>> serviceList = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());
         for (ServiceDomain<?> domain : serviceList) {
             if (domain != null) {

@@ -14,49 +14,26 @@
  * limitations under the License.
  */
 package net.hasor.rsf.filters.online;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.domain.RsfEvent;
 /**
  * 一旦下线，所有远程的连入请求都被回绝：Forbidden
  * @version : 2016年3月23日
  * @author 赵永春(zyc@hasor.net)
  */
-public class OnlineRsfFilter implements RsfFilter, EventListener<Object> {
-    protected Logger            logger       = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
-    public OnlineRsfFilter(RsfContext rsfContext) {
-        EventContext ec = rsfContext.getAppContext().getEnvironment().getEventContext();
-        ec.addListener(RsfEvent.Rsf_Online, this);
-        ec.addListener(RsfEvent.Rsf_Offline, this);
-    }
+public class OnlineRsfFilter implements RsfFilter {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (request.isLocal() == false && this.onlineStatus.get() == false) {
+        if (request.isLocal() == false && request.getContext().isOnline() == false) {
             response.sendStatus(ProtocolStatus.Forbidden, "the service is not yet ready.");
             return;
         }
         chain.doFilter(request, response);
-    }
-    @Override
-    public void onEvent(String event, Object eventData) throws Throwable {
-        logger.info("onlineRsfFilter -> " + event);
-        if (StringUtils.equalsIgnoreCase(event, RsfEvent.Rsf_Online)) {
-            this.onlineStatus.set(true);
-        }
-        if (StringUtils.equalsIgnoreCase(event, RsfEvent.Rsf_Offline)) {
-            this.onlineStatus.set(false);
-        }
     }
 }

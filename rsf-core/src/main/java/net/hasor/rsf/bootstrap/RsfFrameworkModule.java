@@ -116,7 +116,7 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         RsfBinder rsfBinder = rsfContext.binder();
         rsfBinder.bindFilter("LocalPref", new LocalPref());
         rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
-        rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter(rsfContext));
+        rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
         new RsfCenterRsfPlugin().loadRsf(rsfContext);
     }
 }

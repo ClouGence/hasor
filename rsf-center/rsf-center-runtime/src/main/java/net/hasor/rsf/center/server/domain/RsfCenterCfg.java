@@ -154,7 +154,7 @@ public class RsfCenterCfg {
         } else {
             StringBuilder strBuilder = new StringBuilder("");
             for (QuorumServer ent : servers.values()) {
-                String host = ent.addr.getAddress().getHostAddress() + ":" + ent.addr.getPort();//+ ":" + ent.electionAddr.getPort();
+                String host = ent.addr.getAddress().getHostAddress() + ":" + ent.addr.getPort();
                 if (this.getWorkMode() != WorkMode.Slave) {
                     host += (":" + ent.electionAddr.getPort());
                 }

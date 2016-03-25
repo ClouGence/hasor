@@ -106,7 +106,7 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
                 long passTime = System.currentTimeMillis() - curTime;
                 long second = passTime / 1000;
                 if (second > 150) {
-                    throw new InterruptedException("15s, zkNode start fail.");/*15秒没起来*/
+                    throw new InterruptedException("150s, zkNode start fail.");/*15秒没起来*/
                 } else if (second > 0) {
                     logger.info("zkNode starting {} second pass.", second);
                 }

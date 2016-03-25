@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
@@ -27,29 +30,36 @@ import net.hasor.plugins.event.Event;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
-import net.hasor.rsf.center.server.manager.ConsumerServiceManager;
+import net.hasor.rsf.center.server.utils.JsonUtils;
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@Event(RsfCenterEvent.ServicesPull_Event)
-public class PushQueue implements EventListener<String>, Runnable {
-    protected Logger                      logger = LoggerFactory.getLogger(getClass());
-    private ConcurrentSkipListSet<String> dataSet;
-    private ReadWriteLock                 lock;
-    private Thread                        threadPushQueue;
+@Event(RsfCenterEvent.PushEvent)
+public class PushQueue implements Runnable, EventListener<PushEvent> {
+    protected Logger                                   logger = LoggerFactory.getLogger(getClass());
+    private ConcurrentSkipListSet<PushEvent>           dataSet;
+    private ReadWriteLock                              lock;
+    private Thread                                     threadPushQueue;
+    private Map<RsfCenterPushEventEnum, PushProcessor> processorMapping;
     @Inject
-    private RsfContext                    rsfContext;
+    private RsfContext                                 rsfContext;
     @Inject
-    private RsfCenterCfg                  rsfCenterCfg;
-    @Inject
-    private ConsumerServiceManager        consumerServiceManager;
+    private RsfCenterCfg                               rsfCenterCfg;
     //
     @Init
     public void init() {
-        this.dataSet = new ConcurrentSkipListSet<String>();
+        AppContext app = rsfContext.getAppContext();
+        this.processorMapping = new HashMap<RsfCenterPushEventEnum, PushProcessor>();
+        for (RsfCenterPushEventEnum eventType : RsfCenterPushEventEnum.values()) {
+            PushProcessor processor = app.getInstance(eventType.getProcessorType());
+            this.processorMapping.put(eventType, processor);
+        }
+        logger.info("pushQueue processor mapping ->{}", JsonUtils.toJsonString(this.processorMapping.keySet()));
+        //
+        this.dataSet = new ConcurrentSkipListSet<PushEvent>();
         this.lock = new ReentrantReadWriteLock();
         this.threadPushQueue = new Thread(this);
         this.threadPushQueue.setDaemon(true);
@@ -58,11 +68,10 @@ public class PushQueue implements EventListener<String>, Runnable {
         logger.info("PushQueue Thread start.");
     }
     //
-    // - 监听到服务注册订阅消息，将该服务加入到推送列表返回。该方法不做推送，推送交给推送线程去做。
-    @Override
-    public void onEvent(String event, String serviceID) throws Throwable {
+    // - 收到推送消息。该方法不做推送，推送交给推送线程去做。
+    public void onEvent(String event, PushEvent eventData) throws Throwable {
         this.lock.readLock().lock();
-        this.dataSet.add(serviceID);
+        this.dataSet.add(eventData);
         this.lock.readLock().unlock();
         //
         if (this.dataSet.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
@@ -95,18 +104,26 @@ public class PushQueue implements EventListener<String>, Runnable {
             }
             //
             this.lock.writeLock().lock();
-            String[] serviceIDs = this.dataSet.toArray(new String[this.dataSet.size()]);
+            PushEvent[] serviceIDs = this.dataSet.toArray(new PushEvent[this.dataSet.size()]);
             this.dataSet.clear();
-            this.lock.writeLock().unlock();;
+            this.lock.writeLock().unlock();
             //
-            for (String serviceID : serviceIDs) {
-                this.pushData(serviceID);
+            for (PushEvent pushEvent : serviceIDs) {
+                this.pushData(pushEvent);
             }
         }
     }
-    private void pushData(String serviceID) {
+    private void pushData(PushEvent pushEvent) {
+        if (pushEvent == null) {
+            return;
+        }
         //
-        logger.info("PushService {} -> {}", serviceID);
-        this.consumerServiceManager.newProviderToPush(serviceID);
+        PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
+        if (pushProcessor != null) {
+            logger.info("pushEvent {} -> {}", pushEvent.getPushEventType().name());
+            pushProcessor.doProcessor(pushEvent);
+        } else {
+            logger.error("pushEvent {} -> {}", pushEvent.getPushEventType().name());
+        }
     }
 }

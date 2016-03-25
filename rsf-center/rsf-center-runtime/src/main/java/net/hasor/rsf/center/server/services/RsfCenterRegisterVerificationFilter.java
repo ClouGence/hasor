@@ -61,7 +61,7 @@ public class RsfCenterRegisterVerificationFilter implements RsfFilter {
             if (authResult) {
                 chain.doFilter(request, response);
             } else {
-                response.sendStatus(ProtocolStatus.Unauthorized, "refused to service registry");
+                response.sendStatus(ProtocolStatus.Unauthorized, "check auth code failed.");
             }
         }
     }

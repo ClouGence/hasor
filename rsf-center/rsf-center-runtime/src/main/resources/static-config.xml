@@ -8,8 +8,7 @@
 		<startup>net.hasor.rsf.center.server.core.startup.RsfCenterServerModule</startup>
 	</hasor>
 
-	<!--
-		workAt
+	<!--workAt
 			注册中心工作模式，可选的配置有：alone、cluster
 			- alone  - 单机模式：该模式下 rsf-center 会创建一个只有一个节点伪zk集群，并使用这个伪集群作为协调器。
 			- master - 集群主机模式：该模式下集群中要求至少下可以选择zk的工作方式是加入已有zk系统，或者独立zk集群。

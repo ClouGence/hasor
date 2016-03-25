@@ -113,4 +113,9 @@ public class EmpytRsfContext implements RsfContext {
     public void offline() {
         // TODO Auto-generated method stub
     }
+    @Override
+    public boolean isOnline() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

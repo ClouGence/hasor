@@ -22,12 +22,15 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.server.core.zktmp.ZkTmpService;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
+import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -173,9 +176,10 @@ public class BaseServiceManager {
         }
         return result;
     }
-    /**获取指定服务的消费者列表。*/
-    protected void fireSyncEvent(String eventType, String eventData) {
-        this.appContext.getEnvironment().getEventContext().fireSyncEvent(eventType, eventData);
+    /**发布推送事件*/
+    protected void pushEvent(PushEvent pushEvent) {
+        EventContext ec = this.appContext.getEnvironment().getEventContext();
+        ec.fireSyncEvent(RsfCenterEvent.PushEvent, pushEvent);
     }
     protected String readData(String dataPath) throws Throwable {
         return this.zooKeeperNode.readData(dataPath);

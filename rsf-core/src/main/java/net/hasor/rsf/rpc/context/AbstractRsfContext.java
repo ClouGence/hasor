@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.context;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -36,6 +37,7 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.AddressProvider;
 import net.hasor.rsf.domain.InstanceAddressProvider;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
@@ -51,15 +53,17 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, AppContextAware {
-    protected Logger         logger           = LoggerFactory.getLogger(getClass());
-    private RsfBeanContainer rsfBeanContainer = null;                               // 服务管理(含地址管理)
-    private RsfEnvironment   rsfEnvironment   = null;                               // 环境&配置
-    private RemoteRsfCaller  rsfCaller        = null;                               // 调用器
-    private RsfNetManager    rsfNetManager    = null;                               // 网络传输
-    private AddressProvider  poolProvider     = null;
-    private AppContext       appContext       = null;
+    protected Logger            logger           = LoggerFactory.getLogger(getClass());
+    private RsfBeanContainer    rsfBeanContainer = null;                               // 服务管理(含地址管理)
+    private RsfEnvironment      rsfEnvironment   = null;                               // 环境&配置
+    private RemoteRsfCaller     rsfCaller        = null;                               // 调用器
+    private RsfNetManager       rsfNetManager    = null;                               // 网络传输
+    private AddressProvider     poolProvider     = null;
+    private AppContext          appContext       = null;
+    private final AtomicBoolean onlineStatus;
     //
     public AbstractRsfContext(RsfBeanContainer rsfBeanContainer) {
+        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
         this.rsfBeanContainer = rsfBeanContainer;
         Transport transport = new Transport();
         this.rsfEnvironment = this.rsfBeanContainer.getEnvironment();
@@ -96,16 +100,28 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     /**应用上线*/
     @Override
     public synchronized void online() {
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
+        if (this.onlineStatus.compareAndSet(false, true) == false) {
+            logger.error("rsfContext -> already online");
+            return;
+        }
+        logger.info("rsfContext -> already online , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
     }
     /**应用下线*/
     @Override
     public synchronized void offline() {
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Offline);
+        if (this.onlineStatus.compareAndSet(true, false) == false) {
+            logger.error("rsfContext -> already offline");
+            return;
+        }
+        logger.info("rsfContext -> already offline , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         ec.fireSyncEvent(RsfEvent.Rsf_Offline, this);
+    }
+    @Override
+    public boolean isOnline() {
+        return this.onlineStatus.get();
     }
     /** 销毁。 */
     public synchronized void shutdown() {
