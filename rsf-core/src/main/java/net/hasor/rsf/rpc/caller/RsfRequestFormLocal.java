@@ -19,8 +19,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.AddressProvider;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
+import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 /**
  * RSF请求

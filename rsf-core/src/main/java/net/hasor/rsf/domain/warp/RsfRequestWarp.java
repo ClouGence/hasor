@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.domain.warp;
+import net.hasor.rsf.RsfRequest;
 /**
- * 服务对象基类。
- * @version : 2015年12月8日
+ * {@link RsfRequest}接口包装器。
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfServiceWrapper {
-    private AddressProvider target;
-    public AddressProvider getTarget() {
-        return target;
+public class RsfRequestWarp extends AbstractRsfRequestWarp {
+    private final RsfRequest request;
+    public RsfRequestWarp(RsfRequest request) {
+        this.request = request;
     }
-    public void setTarget(AddressProvider target) {
-        this.target = target;
+    @Override
+    protected RsfRequest getRsfRequest() {
+        return this.request;
     }
 }

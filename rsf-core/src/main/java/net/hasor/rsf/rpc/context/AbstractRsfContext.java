@@ -35,10 +35,11 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.domain.AddressProvider;
-import net.hasor.rsf.domain.InstanceAddressProvider;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfEvent;
+import net.hasor.rsf.domain.provider.AddressProvider;
+import net.hasor.rsf.domain.provider.InstanceAddressProvider;
+import net.hasor.rsf.domain.provider.PoolAddressProvider;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
@@ -70,7 +71,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
         AddressPool pool = this.rsfBeanContainer.getAddressPool();
-        this.poolProvider = new PoolProvider(pool);
+        this.poolProvider = new PoolAddressProvider(pool);
     }
     //
     public synchronized void start(RsfPlugin... plugins) throws Throwable {
@@ -195,20 +196,6 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     }
     //
     //
-    private static class PoolProvider implements AddressProvider {
-        private AddressPool pool;
-        public PoolProvider(AddressPool pool) {
-            this.pool = pool;
-        }
-        @Override
-        public InterAddress get(String serviceID, String methodName, Object[] args) {
-            return this.pool.nextAddress(serviceID, methodName, args);
-        }
-        @Override
-        public boolean isDistributed() {
-            return true;
-        }
-    }
     /*接收到网络数据*/
     private class Transport implements ReceivedListener, RemoteSenderListener {
         @Override

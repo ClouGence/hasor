@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.domain.AddressProvider;
+import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 /**
  * 

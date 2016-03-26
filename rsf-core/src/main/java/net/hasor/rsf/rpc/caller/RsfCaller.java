@@ -29,10 +29,10 @@ import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.domain.AddressProvider;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
-import net.hasor.rsf.domain.RsfServiceWrapper;
+import net.hasor.rsf.domain.provider.AddressProvider;
+import net.hasor.rsf.domain.warp.RsfServiceWrapper;
 /**
  * 通过包装RSF请求响应，提供（同步、异步、回调、接口代理）四种远程调用方式的实现。
  * @version : 2015年12月8日

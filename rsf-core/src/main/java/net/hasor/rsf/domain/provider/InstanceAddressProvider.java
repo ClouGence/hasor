@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.warp;
-import net.hasor.rsf.RsfRequest;
+package net.hasor.rsf.domain.provider;
+import net.hasor.rsf.address.InterAddress;
 /**
- * {@link RsfRequest}接口包装器。
- * @version : 2014年10月25日
+ * 
+ * @version : 2015年12月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfRequestWarp extends AbstractRsfRequestWarp {
-    private final RsfRequest request;
-    public RsfRequestWarp(RsfRequest request) {
-        this.request = request;
+public class InstanceAddressProvider implements AddressProvider {
+    private InterAddress interAddress;
+    public InstanceAddressProvider(InterAddress interAddress) {
+        this.interAddress = interAddress;
     }
     @Override
-    protected RsfRequest getRsfRequest() {
-        return this.request;
+    public InterAddress get(String serviceID, String methodName, Object[] args) {
+        return this.interAddress;
+    }
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
+    @Override
+    public String toString() {
+        return "AddressProvider[" + this.interAddress.toString() + "]";
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
+package net.hasor.rsf.domain.warp;
 import net.hasor.rsf.RsfBindInfo;
 /**
  * {@link RsfBindInfo}包装形式。

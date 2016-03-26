@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.filters.thread;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.rpc.warp.AbstractRsfRequestWarp;
+import net.hasor.rsf.domain.warp.AbstractRsfRequestWarp;
 /**
  * {@link RsfRequest}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日

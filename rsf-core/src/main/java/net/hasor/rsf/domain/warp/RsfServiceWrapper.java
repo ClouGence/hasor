@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain;
-import net.hasor.rsf.address.InterAddress;
+package net.hasor.rsf.domain.warp;
+import net.hasor.rsf.domain.provider.AddressProvider;
 /**
- * 
- * @version : 2015年12月18日
+ * 服务对象基类。
+ * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InstanceAddressProvider implements AddressProvider {
-    private InterAddress interAddress;
-    public InstanceAddressProvider(InterAddress interAddress) {
-        this.interAddress = interAddress;
+public class RsfServiceWrapper {
+    private AddressProvider target;
+    public AddressProvider getTarget() {
+        return target;
     }
-    @Override
-    public InterAddress get(String serviceID, String methodName, Object[] args) {
-        return this.interAddress;
-    }
-    @Override
-    public boolean isDistributed() {
-        return false;
+    public void setTarget(AddressProvider target) {
+        this.target = target;
     }
 }

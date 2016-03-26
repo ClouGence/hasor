@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.warp;
-import net.hasor.rsf.RsfResponse;
 /**
- * {@link RsfResponse}接口包装器。
- * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * {@link net.hasor.rsf.RsfRequest}和{@link net.hasor.rsf.RsfResponse}接口的实现。
  */
-public class RsfResponseWarp extends AbstractRsfResponseWarp {
-    private final RsfResponse response;
-    public RsfResponseWarp(RsfResponse response) {
-        this.response = response;
-    }
-    @Override
-    protected RsfResponse getRsfResponse() {
-        return this.response;
-    }
-}
+package net.hasor.rsf.domain.warp;
