@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push.processor;
+import net.hasor.core.Singleton;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 
+ * 推送参数级路由规则
+ * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#UpdateArgsRouteEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class UpdateArgsRouteProcessor extends PushProcessor {
     @Override
-    public void doProcessor(PushEvent event) {
+    public void doProcessor(RsfClient rsfClient, PushEvent event) {
         // TODO Auto-generated method stub
     }
 }

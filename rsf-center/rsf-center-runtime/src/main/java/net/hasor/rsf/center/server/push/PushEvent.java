@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
-import org.more.util.StringUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 /**
  * 
  * @version : 2016年3月23日
@@ -22,18 +24,32 @@ import org.more.util.StringUtils;
  */
 public class PushEvent implements Comparable<PushEvent> {
     private RsfCenterPushEventEnum pushEventType;//推送类型
-    private String                 target;       //推送指令对特定RSF客户端的指向
+    private String                 serviceID;    //ServiceID
+    private List<String>           targetList;   //推送指令对特定RSF客户端的指向
     private String                 eventBody;    //内容体
     //
-    PushEvent(RsfCenterPushEventEnum pushEventType) {
+    PushEvent(String serviceID, RsfCenterPushEventEnum pushEventType) {
+        this.serviceID = serviceID;
         this.pushEventType = pushEventType;
+        this.targetList = new ArrayList<String>();
     }
     //
-    public String getTarget() {
-        return target;
+    public String getServiceID() {
+        return serviceID;
     }
-    public PushEvent setTarget(String target) {
-        this.target = target;
+    public List<String> getTarget() {
+        return targetList;
+    }
+    public PushEvent addTarget(List<String> targetList) {
+        if (targetList != null) {
+            this.targetList.addAll(targetList);
+        }
+        return this;
+    }
+    public PushEvent addTarget(String target) {
+        if (target != null) {
+            this.targetList.add(target);
+        }
         return this;
     }
     public String getEventBody() {
@@ -51,11 +67,7 @@ public class PushEvent implements Comparable<PushEvent> {
     public boolean equals(Object obj) {
         if (obj instanceof PushEvent) {
             PushEvent diffEvent = (PushEvent) obj;
-            if (this.pushEventType == diffEvent.pushEventType) {
-                if (StringUtils.equalsIgnoreCase(target, diffEvent.target)) {
-                    return StringUtils.equals(eventBody, diffEvent.eventBody);
-                }
-            }
+            return this.hashCode() == diffEvent.hashCode();
         }
         return false;
     }
@@ -64,13 +76,20 @@ public class PushEvent implements Comparable<PushEvent> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((pushEventType == null) ? 0 : pushEventType.hashCode());
-        result = prime * result + ((target == null) ? 0 : target.hashCode());
+        result = prime * result + Integer.valueOf(this.targetList.size()).hashCode();
+        if (this.targetList != null && this.targetList.isEmpty() == false) {
+            List<String> shortArray = new ArrayList<String>(this.targetList);
+            Collections.sort(shortArray);
+            for (String addr : this.targetList) {
+                result = prime * result + ((addr == null) ? 0 : addr.hashCode());
+            }
+        }
         result = prime * result + ((eventBody == null) ? 0 : eventBody.hashCode());
         return result;
     }
     @Override
     public String toString() {
-        return "{PushEvent=" + this.pushEventType.name() + " ,target=" + this.target + " ,eventBody=" + this.eventBody + "}";
+        return "{PushEvent=" + this.pushEventType.name() + " ,hashCode=" + this.hashCode() + "}";
     }
     @Override
     public int compareTo(PushEvent o) {

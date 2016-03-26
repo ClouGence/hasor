@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
+import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.RsfCenterPushEventEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
@@ -59,8 +61,15 @@ public class ProviderServiceManager extends BaseServiceManager {
         }
         //
         // 4.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
-        String providerPath = pathManager.evalProviderPath(serviceID);
-        return updateSnapshot(hostString, serviceID, providerPath);
+        try {
+            String providerPath = pathManager.evalProviderPath(serviceID);
+            return updateSnapshot(hostString, serviceID, providerPath);
+        } finally {
+            List<String> consumerList = this.getConsumerList(serviceID);
+            PushEvent event = RsfCenterPushEventEnum.AppendAddressEvent//
+                    .newEvent(serviceID).addTarget(consumerList).setEventBody(hostString);
+            this.pushEvent(event);
+        }
     }
     /**删除提供者*/
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {
@@ -73,7 +82,11 @@ public class ProviderServiceManager extends BaseServiceManager {
             String providerPath = pathManager.evalProviderPath(serviceID);
             updateSnapshot(hostString, serviceID, providerPath);
             logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID);
-            pushEvent(RsfCenterPushEventEnum.RemoveAddressEvent.newEvent().setEventBody(hostString));
+            //
+            List<String> consumerList = this.getConsumerList(serviceID);
+            PushEvent event = RsfCenterPushEventEnum.RemoveAddressEvent//
+                    .newEvent(serviceID).addTarget(consumerList).setEventBody(hostString);
+            this.pushEvent(event);
         }
         return result;
     }

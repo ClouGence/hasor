@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push.processor;
+import net.hasor.core.Singleton;
+import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 
+ * 追加或重新激活地址。
+ * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#AppendAddressEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class AppendAddressProcessor extends PushProcessor {
     @Override
-    public void doProcessor(PushEvent event) {
+    public void doProcessor(RsfClient rsfClient, PushEvent event) {
+        rsfClient.syncInvoke(bindInfo, methodName, parameterTypes, parameterObjects);
         // TODO Auto-generated method stub
     }
 }

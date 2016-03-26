@@ -16,9 +16,8 @@
 package net.hasor.rsf.center.server.push;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -40,8 +39,7 @@ import net.hasor.rsf.center.server.utils.JsonUtils;
 @Event(RsfCenterEvent.PushEvent)
 public class PushQueue implements Runnable, EventListener<PushEvent> {
     protected Logger                                   logger = LoggerFactory.getLogger(getClass());
-    private ConcurrentSkipListSet<PushEvent>           dataSet;
-    private ReadWriteLock                              lock;
+    private Queue<PushEvent>                           dataQueue;
     private Thread                                     threadPushQueue;
     private Map<RsfCenterPushEventEnum, PushProcessor> processorMapping;
     @Inject
@@ -59,8 +57,7 @@ public class PushQueue implements Runnable, EventListener<PushEvent> {
         }
         logger.info("pushQueue processor mapping ->{}", JsonUtils.toJsonString(this.processorMapping.keySet()));
         //
-        this.dataSet = new ConcurrentSkipListSet<PushEvent>();
-        this.lock = new ReentrantReadWriteLock();
+        this.dataQueue = new LinkedBlockingQueue<PushEvent>();
         this.threadPushQueue = new Thread(this);
         this.threadPushQueue.setDaemon(true);
         this.threadPushQueue.setName("Rsf-Center-PushQueue");
@@ -70,11 +67,9 @@ public class PushQueue implements Runnable, EventListener<PushEvent> {
     //
     // - 收到推送消息。该方法不做推送，推送交给推送线程去做。
     public void onEvent(String event, PushEvent eventData) throws Throwable {
-        this.lock.readLock().lock();
-        this.dataSet.add(eventData);
-        this.lock.readLock().unlock();
+        this.dataQueue.add(eventData);
         //
-        if (this.dataSet.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
+        if (this.dataQueue.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
             //推送线程定时运行一次，在两次运行期间如果等待推送的服务数达到了上限，那么也进行推送。
             synchronized (this) {
                 this.notifyAll();
@@ -84,12 +79,12 @@ public class PushQueue implements Runnable, EventListener<PushEvent> {
     //
     private synchronized void waitData() throws InterruptedException {
         final long waitTime = this.rsfCenterCfg.getPushSleepTime();
-        if (this.dataSet.isEmpty() == false) {
+        if (this.dataQueue.isEmpty() == false) {
             return;
         } else {
             for (;;) {
                 this.wait(waitTime);
-                if (this.dataSet.isEmpty() == false) {
+                if (this.dataQueue.isEmpty() == false) {
                     return;
                 }
             }
@@ -99,31 +94,22 @@ public class PushQueue implements Runnable, EventListener<PushEvent> {
         while (true) {
             try {
                 this.waitData();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger.error(e.getMessage(), e);
             }
-            //
-            this.lock.writeLock().lock();
-            PushEvent[] serviceIDs = this.dataSet.toArray(new PushEvent[this.dataSet.size()]);
-            this.dataSet.clear();
-            this.lock.writeLock().unlock();
-            //
-            for (PushEvent pushEvent : serviceIDs) {
-                this.pushData(pushEvent);
-            }
+            doPushQueue();
         }
     }
-    private void pushData(PushEvent pushEvent) {
-        if (pushEvent == null) {
-            return;
-        }
-        //
-        PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
-        if (pushProcessor != null) {
-            logger.info("pushEvent {} -> {}", pushEvent.getPushEventType().name());
-            pushProcessor.doProcessor(pushEvent);
-        } else {
-            logger.error("pushEvent {} -> {}", pushEvent.getPushEventType().name());
+    private void doPushQueue() {
+        PushEvent pushEvent = null;
+        while ((pushEvent = this.dataQueue.poll()) != null) {
+            PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
+            if (pushProcessor != null) {
+                logger.info("pushEvent {} -> {}", pushEvent.getPushEventType().name(), pushEvent);
+                pushProcessor.doProcessor(pushEvent);
+            } else {
+                logger.error("pushEvent pushProcessor is null. {} -> {}", pushEvent.getPushEventType().name(), pushEvent);
+            }
         }
     }
 }

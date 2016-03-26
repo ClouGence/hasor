@@ -77,7 +77,7 @@ public enum RsfCenterPushEventEnum {
     public RsfCenterEvent getEventType() {
         return eventType;
     }
-    public PushEvent newEvent() {
-        return new PushEvent(this);
+    public PushEvent newEvent(String serviceID) {
+        return new PushEvent(serviceID, this);
     }
 }
