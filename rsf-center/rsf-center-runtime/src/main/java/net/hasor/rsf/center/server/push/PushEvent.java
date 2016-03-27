@@ -23,13 +23,13 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class PushEvent implements Comparable<PushEvent> {
-    private RsfCenterPushEventEnum pushEventType;//推送类型
-    private String                 snapshotInfo; //snapshotInfo
-    private String                 serviceID;    //ServiceID
-    private List<String>           targetList;   //推送指令对特定RSF客户端的指向
-    private String                 eventBody;    //内容体
+    private RsfCenterPushEvent pushEventType;//推送类型
+    private String             snapshotInfo; //snapshotInfo
+    private String             serviceID;    //ServiceID
+    private List<String>       targetList;   //推送指令对特定RSF客户端的指向
+    private String             eventBody;    //内容体
     //
-    PushEvent(String serviceID, RsfCenterPushEventEnum pushEventType) {
+    PushEvent(String serviceID, RsfCenterPushEvent pushEventType) {
         this.serviceID = serviceID;
         this.pushEventType = pushEventType;
         this.targetList = new ArrayList<String>();
@@ -38,8 +38,9 @@ public class PushEvent implements Comparable<PushEvent> {
     public String getServiceID() {
         return serviceID;
     }
-    public void setSnapshotInfo(String snapshotInfo) {
+    public PushEvent setSnapshotInfo(String snapshotInfo) {
         this.snapshotInfo = snapshotInfo;
+        return this;
     }
     public String getSnapshotInfo() {
         return this.snapshotInfo;
@@ -66,7 +67,7 @@ public class PushEvent implements Comparable<PushEvent> {
         this.eventBody = eventBody;
         return this;
     }
-    public RsfCenterPushEventEnum getPushEventType() {
+    public RsfCenterPushEvent getPushEventType() {
         return pushEventType;
     }
     //

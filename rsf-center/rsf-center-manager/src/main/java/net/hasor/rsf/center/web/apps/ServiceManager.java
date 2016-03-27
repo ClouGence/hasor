@@ -25,7 +25,7 @@ import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.AppDO;
 import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
-import net.hasor.rsf.center.domain.form.ServiceQueryForm;
+import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
 /**
  * @version : 2015年7月27日 ˆ
  * @author 赵永春(zyc@hasor.net)

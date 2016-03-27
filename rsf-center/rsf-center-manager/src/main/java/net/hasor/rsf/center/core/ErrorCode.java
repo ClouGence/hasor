@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center.core;
 import java.util.HashSet;
 import java.util.Set;
 import org.more.bizcommon.Message;

@@ -17,13 +17,13 @@ package net.hasor.rsf.center.domain.daos;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.ResultDO;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.AppDO;
-import net.hasor.rsf.center.domain.form.AppQueryForm;
-import org.more.bizcommon.PageResult;
-import org.more.bizcommon.ResultDO;
+import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
 /**
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)

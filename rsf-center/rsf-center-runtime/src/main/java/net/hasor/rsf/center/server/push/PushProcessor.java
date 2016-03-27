@@ -25,11 +25,11 @@ import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
 /**
- * 执行处理器，该类的作用是通过线程隔离RsfCenterListener的远程接口。
+ * 执行处理器，该类的作用是将事件推送到指定的客户端中去。
  * @version : 2016年3月23日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class PushProcessor {
+public class PushProcessor {
     protected Logger                       logger = LoggerFactory.getLogger(getClass());
     @Inject
     private RsfContext                     rsfContext;
@@ -65,11 +65,19 @@ public abstract class PushProcessor {
             //
         }
     }
+    //
+    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
+        CenterEventBody eventBody = new CenterEventBody();
+        eventBody.setEventType(event.getPushEventType().getEventType().getEventType());
+        eventBody.setServiceID(event.getServiceID());
+        eventBody.setSnapshotInfo(event.getSnapshotInfo());
+        eventBody.setEventBody(event.getEventBody());
+        //
+        sendEvent(rsfAddress, eventBody);
+    }
     protected void sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) throws Throwable {
         RsfCenterListener listener = this.rsfClientListener.get();
         ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
         listener.onEvent(eventBody.getEventType(), eventBody);
     }
-    //
-    public abstract void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable;
 }

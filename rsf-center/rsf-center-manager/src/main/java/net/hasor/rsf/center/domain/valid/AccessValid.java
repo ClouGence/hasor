@@ -21,7 +21,6 @@ import net.hasor.plugins.valid.ValidDefine;
 import net.hasor.plugins.valid.Validation;
 import net.hasor.rsf.center.domain.daos.DaoProvider;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
-import net.hasor.rsf.center.utils.SecretUtils;
 /**
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)

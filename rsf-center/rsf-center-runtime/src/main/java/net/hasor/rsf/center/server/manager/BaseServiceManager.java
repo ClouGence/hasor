@@ -190,4 +190,7 @@ public class BaseServiceManager {
     protected void createNode(ZkNodeType persistent, String infoPath) throws Throwable {
         this.zooKeeperNode.createNode(persistent, infoPath);
     }
+    protected String convertTo(String hostString) {
+        return "rsf://" + hostString.replace("@", "/");
+    }
 }

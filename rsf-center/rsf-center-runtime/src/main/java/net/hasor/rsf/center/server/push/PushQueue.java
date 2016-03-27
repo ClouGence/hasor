@@ -38,20 +38,20 @@ import net.hasor.rsf.center.server.utils.JsonUtils;
 @Singleton
 @Event(RsfCenterEvent.PushEvent)
 public class PushQueue implements Runnable, EventListener<PushEvent> {
-    protected Logger                                   logger = LoggerFactory.getLogger(getClass());
-    private Queue<PushEvent>                           dataQueue;
-    private Thread                                     threadPushQueue;
-    private Map<RsfCenterPushEventEnum, PushProcessor> processorMapping;
+    protected Logger                               logger = LoggerFactory.getLogger(getClass());
+    private Queue<PushEvent>                       dataQueue;
+    private Thread                                 threadPushQueue;
+    private Map<RsfCenterPushEvent, PushProcessor> processorMapping;
     @Inject
-    private RsfContext                                 rsfContext;
+    private RsfContext                             rsfContext;
     @Inject
-    private RsfCenterCfg                               rsfCenterCfg;
+    private RsfCenterCfg                           rsfCenterCfg;
     //
     @Init
     public void init() {
         AppContext app = rsfContext.getAppContext();
-        this.processorMapping = new HashMap<RsfCenterPushEventEnum, PushProcessor>();
-        for (RsfCenterPushEventEnum eventType : RsfCenterPushEventEnum.values()) {
+        this.processorMapping = new HashMap<RsfCenterPushEvent, PushProcessor>();
+        for (RsfCenterPushEvent eventType : RsfCenterPushEvent.values()) {
             PushProcessor processor = app.getInstance(eventType.getProcessorType());
             this.processorMapping.put(eventType, processor);
         }

@@ -21,7 +21,7 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.push.PushEvent;
-import net.hasor.rsf.center.server.push.RsfCenterPushEventEnum;
+import net.hasor.rsf.center.server.push.RsfCenterPushEvent;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 提供者Manager
@@ -61,13 +61,16 @@ public class ProviderServiceManager extends BaseServiceManager {
         }
         //
         // 4.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
+        String snapshotInfo = null;
         try {
             String providerPath = pathManager.evalProviderPath(serviceID);
-            return updateSnapshot(hostString, serviceID, providerPath);
+            snapshotInfo = updateSnapshot(hostString, serviceID, providerPath);
+            return snapshotInfo;
         } finally {
             List<String> consumerList = this.getConsumerList(serviceID);
-            PushEvent event = RsfCenterPushEventEnum.AppendAddressEvent//
-                    .newEvent(serviceID).addTarget(consumerList).setEventBody(hostString);
+            String rsfHostString = convertTo(hostString);
+            PushEvent event = RsfCenterPushEvent.AppendAddressEvent//
+                    .newEvent(serviceID).addTarget(consumerList).setEventBody(rsfHostString).setSnapshotInfo(snapshotInfo);
             this.pushEvent(event);
         }
     }
@@ -80,12 +83,13 @@ public class ProviderServiceManager extends BaseServiceManager {
         // 2.更新提供者列表时间戳：/rsf-center/services/group/name/version/provider
         if (result == true) {
             String providerPath = pathManager.evalProviderPath(serviceID);
-            updateSnapshot(hostString, serviceID, providerPath);
+            String snapshotInfo = updateSnapshot(hostString, serviceID, providerPath);
             logger.info("publishService host ={} ,serviceID ={} -> {}", hostString, serviceID);
             //
             List<String> consumerList = this.getConsumerList(serviceID);
-            PushEvent event = RsfCenterPushEventEnum.RemoveAddressEvent//
-                    .newEvent(serviceID).addTarget(consumerList).setEventBody(hostString);
+            String rsfHostString = convertTo(hostString);
+            PushEvent event = RsfCenterPushEvent.RemoveAddressEvent//
+                    .newEvent(serviceID).addTarget(consumerList).setEventBody(rsfHostString).setSnapshotInfo(snapshotInfo);
             this.pushEvent(event);
         }
         return result;

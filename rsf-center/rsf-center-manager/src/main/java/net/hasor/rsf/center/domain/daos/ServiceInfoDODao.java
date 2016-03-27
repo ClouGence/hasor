@@ -22,7 +22,7 @@ import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
 import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.ServiceInfoDO;
-import net.hasor.rsf.center.domain.form.ServiceQueryForm;
+import net.hasor.rsf.center.domain.form.apps.ServiceQueryForm;
 /**
  * 表示为一个Service
  * 
