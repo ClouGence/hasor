@@ -35,14 +35,6 @@
 15. web - 支持freemarker模版引擎（内置插件）
 
 ----------
-### 内置工具箱
-01. ConverterUtils，提供任意类型到任意类型的转换
-02. JSON，来自Jetty的JSON序列化和反序列化工具
-03. “org.more.util”下拥有各种Util工具，它们都来自于Apache
-04. Paginator和PageResult对分页数据的封装
-05. “org.more.classcode”提供字节码的增强，提供了Aop、动态接口实现、动态属性新增。
-
-----------
 ### 内置插件
 01. AopModule插件，提供精确到方法级的注解化Aop配置
 02. EncodingModule插件，提供对请求响应编码统一设置的插件，默认编码为：UTF-8
@@ -53,6 +45,14 @@
 07. ValidModule插件，一个简单的对象验证框架
 08. TemplateModule插件，提供一个通用的模版渲染引擎接口
 08. EventModule插件，提供注解化事件监听器，无需编写代码进行注册事件监听器
+
+----------
+### 工具箱
+01. ConverterUtils，提供任意类型到任意类型的转换
+02. JSON，来自Jetty的JSON序列化和反序列化工具
+03. “org.more.util”下拥有各种Util工具，它们都来自于Apache
+04. Paginator和PageResult对分页数据的封装
+05. “org.more.classcode”提供字节码的增强，提供了Aop、动态接口实现、动态属性新增。
 
 ----------
 ### 发展状况
