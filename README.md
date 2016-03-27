@@ -14,7 +14,7 @@
 ----------
 ### 架构
 
-![架构](http://static.oschina.net/uploads/space/2015/1127/185946_9TWV_1166271.png)
+![架构](http://project.hasor.net/resources/185946_9TWV_1166271.png)
 
 ----------
 ### 特性
@@ -76,5 +76,3 @@ QQ群：**193943114**
 
 * issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
-
-<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1258227832'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1258227832%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
