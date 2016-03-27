@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.util.Collection;
+import java.util.List;
 import net.hasor.rsf.address.InterAddress;
 /**
  * 服务配置更新器。
@@ -47,9 +48,9 @@ public interface RsfUpdater {
      * @param newHostSet 追加更新的地址。
      */
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet);
-    /**刷新服务的地址本*/
-    public void refreshAddressCache(String serviceID);
-    /**刷新地址缓存*/
+    /**刷新服务的地址本，使其使用全新的地址本。*/
+    public void refreshAddress(String serviceID, List<InterAddress> addressList);
+    /**使用新的地址本替换已有的地址本。*/
     public void refreshAddressCache();
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
@@ -65,4 +66,5 @@ public interface RsfUpdater {
     public void removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet);
     /**某一个地址不可用了，从所有服务中删除这个地址*/
     public void removeAddress(InterAddress address);
+    //
 }

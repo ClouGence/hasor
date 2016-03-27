@@ -48,6 +48,8 @@ import net.hasor.rsf.utils.ZipUtils;
  */
 class AddressBucket {
     protected static final Logger logger;
+    private static final String   D       = "D|";
+    private static final String   S       = "S|";
     public static final String    Dynamic = "dynamic";
     public static final String    Static  = "static";
     static {
@@ -60,9 +62,10 @@ class AddressBucket {
     private final String                                  serviceID;          //服务ID
     private final String                                  unitName;           //服务所属单元
     private final List<InterAddress>                      allAddressList;     //所有备选地址
-    private final List<InterAddress>                      staticAddressList;  //不会失效的备选地址
-    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
+    private final List<InterAddress>                      staticAddressList;  //不会失效的地址（即使是注册中心推送也不会失效）
     //
+    //运行时动态更新的地址
+    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
     //下面时计算出来的数据
     private List<InterAddress>                            localUnitAddresses; //本单元地址
     private List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
@@ -86,9 +89,9 @@ class AddressBucket {
             BufferedWriter bfwriter = new BufferedWriter(strWriter);
             for (InterAddress inter : this.allAddressList) {
                 if (this.staticAddressList.contains(inter)) {
-                    strLogs.append("S|");
+                    strLogs.append(S);
                 } else {
-                    strLogs.append("D|");
+                    strLogs.append(D);
                 }
                 strLogs.append(inter.toString() + " , ");
                 bfwriter.write(inter.toString());
@@ -162,10 +165,10 @@ class AddressBucket {
                     continue;
                 }
                 try {
-                    if (line.startsWith("S|")) {
+                    if (line.startsWith(S)) {
                         staticNewHostSet.add(new InterAddress(line.substring(1)));
                         strBuffer.append(line + " , ");
-                    } else if (line.startsWith("D|")) {
+                    } else if (line.startsWith(D)) {
                         dynamicNewHostSet.add(new InterAddress(line.substring(1)));
                         strBuffer.append(line + " , ");
                     }
@@ -286,12 +289,17 @@ class AddressBucket {
             refreshAvailableAddress();
         }
     }
-    /**
-     * 刷新地址计算结果。
-     * @return
-     */
+    /**刷新地址计算结果。*/
     public void refreshAddress() {
         synchronized (this) {
+            refreshAvailableAddress();
+        }
+    }
+    public void refreshAddressToNew(List<InterAddress> addressList) {
+        synchronized (this) {
+            this.allAddressList.clear();
+            this.allAddressList.addAll(addressList);
+            this.invalidAddresses.clear();
             refreshAvailableAddress();
         }
     }

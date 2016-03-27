@@ -65,7 +65,7 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
                 }
             }
         }
-        //-发送CenterMarkDataUpdate_Event事件-
+        //-发送CenterUpdate_Event事件-
         boolean result = process.processEvent(rsfUpdater, centerEventBody);
         if (result == true) {
             if (StringUtils.isBlank(serviceID) == false) {

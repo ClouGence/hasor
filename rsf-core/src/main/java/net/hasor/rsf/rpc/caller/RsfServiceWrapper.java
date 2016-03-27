@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.domain.warp;
+package net.hasor.rsf.rpc.caller;
 import net.hasor.rsf.domain.provider.AddressProvider;
 /**
  * 服务对象基类。

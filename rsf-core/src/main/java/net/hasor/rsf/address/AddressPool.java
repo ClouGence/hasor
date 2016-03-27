@@ -58,17 +58,8 @@ import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
 /**
  * 服务地址池
- * <p>路由策略：
- * 随机选址
- * 
- * 流控规则
- *  服务级
- *  
- *  方法级
- *  
- *  参数级
- * 
- * 路由规则
+ * <p>路由策略：随机选址
+ * <p>流控规则：服务级、方法级、参数级
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -649,12 +640,12 @@ public class AddressPool implements RsfUpdater {
         bucket.setRuleRef(ruleRef);
         this.refreshAddressCache();
     }
-    public void refreshAddressCache(String serviceID) {
+    public void refreshAddress(String serviceID, List<InterAddress> addressList) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             AddressBucket bucket = this.addressPool.get(serviceID);
             logger.debug("service {} refreshCache.", serviceID);
-            bucket.refreshAddress();//刷新地址计算结果
+            bucket.refreshAddressToNew(addressList);//刷新地址计算结果
         }
         this.rulerCache.reset();
     }

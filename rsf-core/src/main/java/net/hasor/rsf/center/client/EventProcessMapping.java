@@ -100,14 +100,20 @@ class EventProcessMapping {
             return true;
         }
     }
-    /**刷新服务地址本。*/
+    /**使用新的地址本替换已有的地址本。*/
     private static class RefreshAddressEvent implements EventProcess {
         @Override
         public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody) {
             String serviceID = centerEventBody.getServiceID();
+            String eventBody = centerEventBody.getEventBody();
             //
-            rsfUpdater.refreshAddressCache(serviceID);
-            logger.info("receiver Event from RsfCenter , eventType=RefreshAddressEvent, serviceID = {} , atTime = {}.", serviceID, nowData());
+            List<InterAddress> addressList = convertTo(eventBody);
+            if (addressList != null && addressList.isEmpty() == false) {
+                rsfUpdater.refreshAddress(serviceID, addressList);
+                logger.info("receiver Event from RsfCenter , eventType=RefreshAddressEvent, serviceID = {} , atTime = {}.", serviceID, nowData());
+            } else {
+                logger.info("receiver Event from RsfCenter , eventType=RefreshAddressEvent, serviceID = {} , addressSet is empty.", serviceID);
+            }
             return true;
         }
     }
