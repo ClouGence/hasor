@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.core.zktmp;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import org.more.util.CommonCodeUtils.MD5;
+import freemarker.core.ParseException;
 import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
@@ -51,16 +56,19 @@ public class ZkTmpService {
         configuration.setClassicCompatible(true);// null值测处理配置
         this.configuration = configuration;
     }
+    public String renderTemplate(String fmt, Map<String, Object> dataModel) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+        Template template = this.configuration.getTemplate(fmt, "UTF-8");
+        StringWriter writer = new StringWriter();
+        template.process(dataModel, writer);
+        return writer.toString();
+    }
     //
     /** 生成RSF-Center服务器信息 */
     public String serverInfo() throws Throwable {
         Map<String, Object> dataModel = new HashMap<String, Object>();
         dataModel.put("cfg", this.rsfCenterCfg);
-        String fmt = "/META-INF/zookeeper/server-info.tmp";
-        Template template = this.configuration.getTemplate(fmt, "UTF-8");
-        StringWriter writer = new StringWriter();
-        template.process(dataModel, writer);
-        return writer.toString();
+        String fmt = "/META-INF/rsf-center/zookeeper/server-info.tmp";
+        return renderTemplate(fmt, dataModel);
     }
     //
     public String publishInfoHashCode(PublishInfo info) throws Throwable {
@@ -75,11 +83,8 @@ public class ZkTmpService {
         dataModel.put("cfg", this.rsfCenterCfg);
         dataModel.put("info", info);
         dataModel.put("hashCode", hashCode);
-        String fmt = "/META-INF/zookeeper/service-info.tmp";
-        Template template = this.configuration.getTemplate(fmt, "UTF-8");
-        StringWriter writer = new StringWriter();
-        template.process(dataModel, writer);
-        return writer.toString();
+        String fmt = "/META-INF/rsf-center/zookeeper/service-info.tmp";
+        return renderTemplate(fmt, dataModel);
     }
     //
     /** 生成提供者信息 */
@@ -87,21 +92,15 @@ public class ZkTmpService {
         Map<String, Object> dataModel = new HashMap<String, Object>();
         dataModel.put("cfg", this.rsfCenterCfg);
         dataModel.put("info", info);
-        String fmt = "/META-INF/zookeeper/provider-info.tmp";
-        Template template = this.configuration.getTemplate(fmt, "UTF-8");
-        StringWriter writer = new StringWriter();
-        template.process(dataModel, writer);
-        return writer.toString();
+        String fmt = "/META-INF/rsf-center/zookeeper/provider-info.tmp";
+        return renderTemplate(fmt, dataModel);
     }
     /** 生成消费者信息 */
     public String consumerInfo(ConsumerPublishInfo info) throws Throwable {
         Map<String, Object> dataModel = new HashMap<String, Object>();
         dataModel.put("cfg", this.rsfCenterCfg);
         dataModel.put("info", info);
-        String fmt = "/META-INF/zookeeper/consumer-info.tmp";
-        Template template = this.configuration.getTemplate(fmt, "UTF-8");
-        StringWriter writer = new StringWriter();
-        template.process(dataModel, writer);
-        return writer.toString();
+        String fmt = "/META-INF/rsf-center/zookeeper/consumer-info.tmp";
+        return renderTemplate(fmt, dataModel);
     }
 }

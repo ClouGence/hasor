@@ -24,6 +24,20 @@ import net.hasor.core.Singleton;
 @Singleton
 public class PathManager {
     //
+    public String evalArgsLevelRuleScriptPath(String serviceID) {
+        return "/rsf-center/services/" + converPath(serviceID) + "/rule/args-level";
+    }
+    public String evalMethodLevelRuleScriptPath(String serviceID) {
+        return "/rsf-center/services/" + converPath(serviceID) + "/rule/method-level";
+    }
+    public String evalServiceLevelRuleScriptPath(String serviceID) {
+        return "/rsf-center/services/" + converPath(serviceID) + "/rule/service-level";
+    }
+    //
+    public String evalFlowControlPath(String serviceID) {
+        return "/rsf-center/services/" + converPath(serviceID) + "/flowcontrol";
+    }
+    //
     public String evalServicePath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID);
     }

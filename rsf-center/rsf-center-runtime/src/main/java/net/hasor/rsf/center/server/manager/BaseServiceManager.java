@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zookeeper.data.Stat;
 import org.more.RepeateException;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -51,6 +54,53 @@ public class BaseServiceManager {
     @Inject
     protected ZkTmpService zkTmpService;
     //
+    /**初始化服务的：路由脚本、流控规则。*/
+    protected void initScripts(PublishInfo info) throws Throwable {
+        String serviceID = info.getBindID();
+        //
+        //1.初始化默认流控规则
+        String flowcontrolPath = pathManager.evalFlowControlPath(serviceID);
+        String data = this.zooKeeperNode.readData(flowcontrolPath);
+        if (StringUtils.isBlank(data)) {
+            InputStream ins = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center/default/flowcontrol.xml");
+            String defaultData = IOUtils.toString(ins);
+            this.zooKeeperNode.createNode(ZkNodeType.Persistent, flowcontrolPath);
+            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, flowcontrolPath, defaultData);
+        }
+        //
+        //2.初始化默认服务级路由
+        String serviceLevelRuleScriptPath = pathManager.evalServiceLevelRuleScriptPath(serviceID);
+        String serviceLevelData = this.zooKeeperNode.readData(serviceLevelRuleScriptPath);
+        if (StringUtils.isBlank(serviceLevelData)) {
+            InputStream ins = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center/default/service-level.groovy");
+            String defaultData = IOUtils.toString(ins);
+            this.zooKeeperNode.createNode(ZkNodeType.Persistent, serviceLevelRuleScriptPath);
+            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, serviceLevelRuleScriptPath, defaultData);
+        }
+        //
+        //3.初始化默认方法级路由
+        String methodLevelRuleScriptPath = pathManager.evalMethodLevelRuleScriptPath(serviceID);
+        String methodLevelData = this.zooKeeperNode.readData(methodLevelRuleScriptPath);
+        if (StringUtils.isBlank(methodLevelData)) {
+            InputStream ins = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center/default/method-level.groovy");
+            String defaultData = IOUtils.toString(ins);
+            this.zooKeeperNode.createNode(ZkNodeType.Persistent, methodLevelRuleScriptPath);
+            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, methodLevelRuleScriptPath, defaultData);
+        }
+        //
+        //4.初始化默认参数级路由
+        String argsLevelRuleScriptPath = pathManager.evalArgsLevelRuleScriptPath(serviceID);
+        String argsLevelData = this.zooKeeperNode.readData(argsLevelRuleScriptPath);
+        if (StringUtils.isBlank(argsLevelData)) {
+            InputStream ins = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center/default/args-level.groovy");
+            String defaultData = IOUtils.toString(ins);
+            this.zooKeeperNode.createNode(ZkNodeType.Persistent, argsLevelRuleScriptPath);
+            this.zooKeeperNode.saveOrUpdate(ZkNodeType.Persistent, argsLevelRuleScriptPath, defaultData);
+        }
+        //
+        return;
+    }
+    //
     /**注册服务，该方法会检测服务的注册是否冲突。*/
     protected String addServices(PublishInfo info) throws Throwable {
         String serviceID = info.getBindID();
@@ -74,6 +124,9 @@ public class BaseServiceManager {
         if (stat == null) {
             return null;
         }
+        //
+        this.initScripts(info);
+        //
         return servicePath;
     }
     protected boolean removeRegister(String hostString, String serviceID, RsfServiceType rsfServiceType) throws Throwable {
@@ -154,7 +207,7 @@ public class BaseServiceManager {
         List<String> result = new ArrayList<String>();
         if (providerList != null) {
             for (String provider : providerList) {
-                result.add("rsf://" + provider.replace('@', '/'));
+                result.add(this.convertTo(provider));
             }
         }
         return result;
@@ -170,8 +223,8 @@ public class BaseServiceManager {
         }
         List<String> result = new ArrayList<String>();
         if (consumerList != null) {
-            for (String provider : consumerList) {
-                result.add("rsf://" + provider.replace('@', '/'));
+            for (String consumer : consumerList) {
+                result.add(this.convertTo(consumer));
             }
         }
         return result;
