@@ -15,11 +15,13 @@
  */
 package net.hasor.rsf.center.server.push.processor;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 追加或重新激活地址。
+ * 追加或重新激活地址
+ * 说明：每当新的提供者上线时，都会通过该事件推送给消费者端。
  * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#AppendAddressEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
@@ -27,8 +29,13 @@ import net.hasor.rsf.center.server.push.PushProcessor;
 @Singleton
 public class AppendAddressProcessor extends PushProcessor {
     @Override
-    public void doProcessor(RsfClient rsfClient, PushEvent event) {
-        rsfClient.syncInvoke(bindInfo, methodName, parameterTypes, parameterObjects);
-        // TODO Auto-generated method stub
+    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
+        CenterEventBody eventBody = new CenterEventBody();
+        eventBody.setEventType(event.getPushEventType().getEventType().getEventType());
+        eventBody.setServiceID(event.getServiceID());
+        eventBody.setSnapshotInfo(event.getSnapshotInfo());
+        eventBody.setEventBody(event.getEventBody());
+        //
+        sendEvent(rsfAddress, eventBody);
     }
 }

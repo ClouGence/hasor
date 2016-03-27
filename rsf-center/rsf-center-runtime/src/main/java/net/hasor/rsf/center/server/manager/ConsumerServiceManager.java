@@ -43,7 +43,6 @@ public class ConsumerServiceManager extends BaseServiceManager {
     private RsfBindInfo<RsfCenterListener> listenerBindInfo;
     private Class<?>[]                     paramTypes;
     //
-    //
     @Init
     public void init() {
         this.listenerBindInfo = this.rsfContext.getServiceInfo(RsfCenterListener.class);
@@ -131,5 +130,9 @@ public class ConsumerServiceManager extends BaseServiceManager {
     /**删除订阅*/
     public boolean removeRegister(String hostString, String serviceID) throws Throwable {
         return super.removeRegister(hostString, serviceID, RsfServiceType.Consumer);
+    }
+    /**订阅者心跳*/
+    public boolean serviceBeat(String hostString, String serviceID) throws Throwable {
+        return super.serviceBeat(hostString, serviceID, RsfServiceType.Consumer);
     }
 }

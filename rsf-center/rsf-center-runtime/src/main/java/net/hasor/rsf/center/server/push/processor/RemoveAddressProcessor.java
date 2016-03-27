@@ -15,11 +15,13 @@
  */
 package net.hasor.rsf.center.server.push.processor;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 推送无效的地址，客户端对此地址进行删除操作
+ * 推送无效的地址
+ * 说明：当有服务下线时，注册中心会通过该事件将无效的地址推送给消费者。
  * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#RemoveAddressEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
@@ -27,7 +29,13 @@ import net.hasor.rsf.center.server.push.PushProcessor;
 @Singleton
 public class RemoveAddressProcessor extends PushProcessor {
     @Override
-    public void doProcessor(RsfClient rsfClient, PushEvent event) {
-        // TODO Auto-generated method stub
+    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
+        CenterEventBody eventBody = new CenterEventBody();
+        eventBody.setEventType(event.getPushEventType().getEventType().getEventType());
+        eventBody.setServiceID(event.getServiceID());
+        eventBody.setSnapshotInfo(event.getSnapshotInfo());
+        eventBody.setEventBody(event.getEventBody());
+        //
+        sendEvent(rsfAddress, eventBody);
     }
 }

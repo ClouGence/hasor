@@ -98,4 +98,8 @@ public class ProviderServiceManager extends BaseServiceManager {
         // 2.引发事件，通知推送进程推送服务地址
         return this.readData(providerTermPath);
     }
+    /**提供者者心跳*/
+    public boolean serviceBeat(String hostString, String serviceID) throws Throwable {
+        return super.serviceBeat(hostString, serviceID, RsfServiceType.Provider);
+    }
 }

@@ -117,7 +117,7 @@ public class BaseServiceManager {
         return false;
     }
     /**处理某一个服务的心跳*/
-    public boolean serviceBeat(String hostString, String serviceID, RsfServiceType rsfServiceType) throws Throwable {
+    protected boolean serviceBeat(String hostString, String serviceID, RsfServiceType rsfServiceType) throws Throwable {
         String beatPath = null;
         if (rsfServiceType == RsfServiceType.Consumer) {
             beatPath = pathManager.evalConsumerTermBeatPath(serviceID, hostString);

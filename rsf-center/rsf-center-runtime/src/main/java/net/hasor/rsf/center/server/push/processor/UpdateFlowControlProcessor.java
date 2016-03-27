@@ -15,11 +15,12 @@
  */
 package net.hasor.rsf.center.server.push.processor;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 推送流控流控规则
+ * 推送流控流控规则，流控规则包含了：限流、选址、单元化
+ * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。
  * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#UpdateFlowControlEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
@@ -27,7 +28,7 @@ import net.hasor.rsf.center.server.push.PushProcessor;
 @Singleton
 public class UpdateFlowControlProcessor extends PushProcessor {
     @Override
-    public void doProcessor(RsfClient rsfClient, PushEvent event) {
+    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
         // TODO Auto-generated method stub
     }
 }

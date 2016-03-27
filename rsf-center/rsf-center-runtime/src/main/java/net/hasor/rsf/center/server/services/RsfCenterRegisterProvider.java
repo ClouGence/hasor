@@ -118,9 +118,9 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             try {
                 boolean beatResult = false;
                 if (rsfServiceType == RsfServiceType.Consumer) {
-                    beatResult = this.consumerServiceManager.serviceBeat(rsfHostString, serviceID, rsfServiceType);
+                    beatResult = this.consumerServiceManager.serviceBeat(rsfHostString, serviceID);
                 } else if (rsfServiceType == RsfServiceType.Provider) {
-                    beatResult = this.providerServiceManager.serviceBeat(rsfHostString, serviceID, rsfServiceType);
+                    beatResult = this.providerServiceManager.serviceBeat(rsfHostString, serviceID);
                 } else {
                     beatResult = false;
                 }

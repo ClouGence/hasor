@@ -16,23 +16,33 @@
 package net.hasor.rsf.center.server.push;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.core.Init;
 import net.hasor.core.Inject;
-import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.RsfCenterListener;
+import net.hasor.rsf.center.domain.CenterEventBody;
+import net.hasor.rsf.domain.provider.InstanceAddressProvider;
+import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
 /**
- * 执行处理器
+ * 执行处理器，该类的作用是通过线程隔离RsfCenterListener的远程接口。
  * @version : 2016年3月23日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class PushProcessor {
-    protected Logger   logger = LoggerFactory.getLogger(getClass());
+    protected Logger                       logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfContext rsfContext;
+    private RsfContext                     rsfContext;
+    private ThreadLocal<RsfCenterListener> rsfClientListener;
     //
-    /**获取RsfContext。*/
-    protected final RsfContext getRsfContext() {
-        return this.rsfContext;
+    @Init
+    public void init() {
+        this.rsfClientListener = new ThreadLocal<RsfCenterListener>() {
+            @Override
+            protected RsfCenterListener initialValue() {
+                return rsfContext.getRsfClient().wrapper(RsfCenterListener.class);
+            }
+        };
     }
     //
     public final void doProcessor(PushEvent event) {
@@ -40,28 +50,26 @@ public abstract class PushProcessor {
             return;
         }
         if (event.getTarget() == null || event.getTarget().isEmpty()) {
-            RsfClient rsfClient = this.getRsfContext().getRsfClient();
-            doCall(event, rsfClient);
+            logger.error("target is empty event ->{}", event);
+            return;
+            //
         } else {
             for (String target : event.getTarget()) {
                 try {
                     InterAddress rsfAddress = new InterAddress(target);
-                    RsfClient rsfClient = this.getRsfContext().getRsfClient(rsfAddress);
-                    doCall(event, rsfClient);
-                } catch (Exception e) {
+                    this.doProcessor(rsfAddress, event);
+                } catch (Throwable e) {
                     logger.error(e.getMessage(), e);
                 }
             }
+            //
         }
     }
-    private void doCall(PushEvent event, RsfClient rsfClient) {
-        try {
-            if (rsfClient != null) {
-                this.doProcessor(rsfClient, event);
-            }
-        } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
-        }
+    protected void sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) throws Throwable {
+        RsfCenterListener listener = this.rsfClientListener.get();
+        ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
+        listener.onEvent(eventBody.getEventType(), eventBody);
     }
-    public abstract void doProcessor(RsfClient rsfClient, PushEvent event) throws Throwable;
+    //
+    public abstract void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable;
 }

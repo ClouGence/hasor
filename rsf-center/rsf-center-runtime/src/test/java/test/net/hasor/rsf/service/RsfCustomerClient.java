@@ -26,7 +26,7 @@ public class RsfCustomerClient {
         //Client -> Server
         RsfClient client = clientContext.getInstance(RsfClient.class);
         EchoService echoService = client.wrapper(EchoService.class);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 2000; i++) {
             try {
                 Thread.sleep(1000);
                 String res = echoService.sayHello("Hello Word");

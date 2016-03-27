@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class PushEvent implements Comparable<PushEvent> {
     private RsfCenterPushEventEnum pushEventType;//推送类型
+    private String                 snapshotInfo; //snapshotInfo
     private String                 serviceID;    //ServiceID
     private List<String>           targetList;   //推送指令对特定RSF客户端的指向
     private String                 eventBody;    //内容体
@@ -36,6 +37,12 @@ public class PushEvent implements Comparable<PushEvent> {
     //
     public String getServiceID() {
         return serviceID;
+    }
+    public void setSnapshotInfo(String snapshotInfo) {
+        this.snapshotInfo = snapshotInfo;
+    }
+    public String getSnapshotInfo() {
+        return this.snapshotInfo;
     }
     public List<String> getTarget() {
         return targetList;

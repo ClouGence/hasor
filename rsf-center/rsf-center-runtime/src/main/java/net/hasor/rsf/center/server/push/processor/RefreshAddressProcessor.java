@@ -15,11 +15,13 @@
  */
 package net.hasor.rsf.center.server.push.processor;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.PushProcessor;
 /**
- * 推送刷新服务地址本指令，刷新地址本之后地址本会被重新激活。
+ * 使用新的地址本替换已有的地址本。
+ * 说明：废弃服务已有的地址本，使用全新的地址本加以替换。
  * @see net.hasor.rsf.center.server.push.RsfCenterPushEventEnum#RefreshAddressEvent
  * @version : 2016年3月24日
  * @author 赵永春(zyc@hasor.net)
@@ -27,7 +29,13 @@ import net.hasor.rsf.center.server.push.PushProcessor;
 @Singleton
 public class RefreshAddressProcessor extends PushProcessor {
     @Override
-    public void doProcessor(RsfClient rsfClient, PushEvent event) {
-        // TODO Auto-generated method stub
+    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
+        CenterEventBody eventBody = new CenterEventBody();
+        eventBody.setEventType(event.getPushEventType().getEventType().getEventType());
+        eventBody.setServiceID(event.getServiceID());
+        eventBody.setSnapshotInfo(event.getSnapshotInfo());
+        eventBody.setEventBody(event.getEventBody());
+        //
+        sendEvent(rsfAddress, eventBody);
     }
 }
