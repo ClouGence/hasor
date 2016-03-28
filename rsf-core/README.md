@@ -7,11 +7,11 @@
 
 ----------
 ### 工作原理
-![工作原理](http://project.hasor.net/resources/224933_BV6Q_1166271.jpg)
+![工作原理](http://project.hasor.net/resources/224933_BV6Q_1166271.png)
 
 ----------
 ### 架构设计
-![工作原理](http://project.hasor.net/resources/224933_BV6Q_1166271.jpg)
+![工作原理](http://project.hasor.net/resources/002011_mz60_1166271.png)
 
 ----------
 ### 特性
