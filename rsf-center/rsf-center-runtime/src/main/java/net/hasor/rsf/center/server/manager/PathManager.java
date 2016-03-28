@@ -23,7 +23,6 @@ import net.hasor.core.Singleton;
  */
 @Singleton
 public class PathManager {
-    //
     public String evalArgsLevelRuleScriptPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/rule/args-level";
     }
@@ -33,37 +32,30 @@ public class PathManager {
     public String evalServiceLevelRuleScriptPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/rule/service-level";
     }
-    //
     public String evalFlowControlPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/flowcontrol";
     }
-    //
     public String evalServicePath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID);
     }
-    //
     public String evalServiceInfoPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/info";
     }
-    //
     public String evalConsumerPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/consumer";
     }
     public String evalConsumerTermPath(String serviceID, String hostString) {
         return "/rsf-center/services/" + converPath(serviceID) + "/consumer/" + hostString;
     }
-    //
     public String evalConsumerTermBeatPath(String serviceID, String hostString) {
         return "/rsf-center/services/" + converPath(serviceID) + "/consumer/" + hostString + "/beat";
     }
-    //
     public String evalProviderPath(String serviceID) {
         return "/rsf-center/services/" + converPath(serviceID) + "/provider";
     }
     public String evalProviderTermPath(String serviceID, String hostString) {
         return "/rsf-center/services/" + converPath(serviceID) + "/provider/" + hostString;
     }
-    //
     public String evalProviderTermBeatPath(String serviceID, String hostString) {
         return "/rsf-center/services/" + converPath(serviceID) + "/provider/" + hostString + "/beat";
     }
