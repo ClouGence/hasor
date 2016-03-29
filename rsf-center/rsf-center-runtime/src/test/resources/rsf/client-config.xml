@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
-	<hasor.rsfConfig enable="true" bindAddress="127.0.0.1" port="8001" unitName="local">
+	<hasor.rsfConfig enable="true" bindAddress="127.0.0.1" port="8001">
 		<centerServers>
 <!-- 			<server>rsf://30.10.220.79:2171</server> -->
 <!-- 			<server>rsf://30.10.220.79:2172</server> -->
@@ -11,7 +11,6 @@
 <!-- 			<server>rsf://30.10.220.79:2176</server> -->
 			<server>rsf://127.0.0.1:2177</server>
 		</centerServers>
-		<network workerThread="20" listenThread="1" />
 	</hasor.rsfConfig>
 
 </config>

@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.center.server;
 /**
- * 注册中心管理器
+ * 注册中心控制台
  * @version : 2016年3月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterContext {}
+public interface RsfCenterConsole {}
