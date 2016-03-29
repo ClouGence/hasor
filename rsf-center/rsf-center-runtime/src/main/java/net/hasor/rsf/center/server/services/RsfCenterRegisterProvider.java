@@ -29,7 +29,6 @@ import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.ReceiveResult;
 import net.hasor.rsf.center.server.manager.ConsumerServiceManager;
 import net.hasor.rsf.center.server.manager.ProviderServiceManager;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
@@ -38,7 +37,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 @Singleton
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
-    protected Logger               logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected Logger               logger = LoggerFactory.getLogger(getClass());
     @Inject
     private ProviderServiceManager providerServiceManager;
     @Inject

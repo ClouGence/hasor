@@ -36,7 +36,6 @@ import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.RsfTimeoutException;
@@ -53,7 +52,7 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
-    protected Logger                             logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
+    protected Logger                             logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentMap<Long, RsfFuture> rsfResponse;
     private final RsfContext                     rsfContext;
     private final TimerManager                   timerManager;

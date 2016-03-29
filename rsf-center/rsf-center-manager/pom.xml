@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>net.hasor</groupId>
 			<artifactId>rsf-center-runtime</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- DB begin -->

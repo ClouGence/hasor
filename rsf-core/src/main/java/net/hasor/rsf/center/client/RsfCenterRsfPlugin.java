@@ -24,14 +24,13 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.domain.RsfEvent;
-import net.hasor.rsf.domain.RsfConstants;
 /**
  * 注册中心插件
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterRsfPlugin implements RsfPlugin {
-    protected static Logger logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfPlugin.class);
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         boolean enable = rsfContext.getSettings().isEnableCenter();

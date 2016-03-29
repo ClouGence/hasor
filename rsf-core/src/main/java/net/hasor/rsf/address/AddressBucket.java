@@ -48,13 +48,13 @@ import net.hasor.rsf.utils.ZipUtils;
  */
 class AddressBucket {
     protected static final Logger logger;
-    private static final String   D       = "D|";
-    private static final String   S       = "S|";
-    public static final String    Dynamic = "dynamic";
-    public static final String    Static  = "static";
     static {
-        logger = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
+        logger = LoggerFactory.getLogger(AddressBucket.class);
     }
+    private static final String                           D       = "D|";
+    private static final String                           S       = "S|";
+    public static final String                            Dynamic = "dynamic";
+    public static final String                            Static  = "static";
     //流控&路由
     private volatile FlowControlRef                       flowControlRef;     //默认流控规则引用
     private volatile RuleRef                              ruleRef;

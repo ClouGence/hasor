@@ -28,14 +28,13 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.event.RsfCenterEvent;
-import net.hasor.rsf.domain.RsfConstants;
 /**
  * 注册中心事件响应实现
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 class EventProcessMapping {
-    protected static Logger logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected static Logger logger = LoggerFactory.getLogger(EventProcessMapping.class);
     private static String nowData() {
         return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     }

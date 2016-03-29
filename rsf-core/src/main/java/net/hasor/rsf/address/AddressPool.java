@@ -64,7 +64,7 @@ import net.hasor.rsf.utils.ZipUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected static final Logger                      logger       = LoggerFactory.getLogger(RsfConstants.RsfAddress_Logger);
+    protected final Logger                             logger       = LoggerFactory.getLogger(getClass());
     private static final String                        CharsetName  = ZipUtils.CharsetName;
     private static final String                        SnapshotPath = "/snapshot";
     private static final String                        defaultName  = "default-ruleScript";

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/rsf-center-dev">
-	<hasor debug="true">
-		<modules>
-			<module>test.net.hasor.rsf.center.DebugModule</module>
-		</modules>
-	</hasor>
-</config>

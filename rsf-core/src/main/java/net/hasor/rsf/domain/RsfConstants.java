@@ -49,8 +49,4 @@ public interface RsfConstants {
     public static final String  ServiceLevelScript_ZipEntry = ".sls";
     public static final String  MethodLevelScript_ZipEntry  = ".mls";
     public static final String  ArgsLevelScript_ZipEntry    = ".als";
-    //
-    public static final String  RsfInvoker_Logger           = "rsf-invoker";
-    public static final String  RsfAddress_Logger           = "rsf-address";
-    public static final String  RsfCenter_Logger            = "rsf-center";
 }

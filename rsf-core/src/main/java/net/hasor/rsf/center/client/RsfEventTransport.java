@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.ServiceDomain;
 /**
@@ -28,7 +27,7 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<Object> {
-    protected Logger             logger    = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected Logger             logger    = LoggerFactory.getLogger(getClass());
     private RsfCenterBeatManager beatTimer = null;
     public RsfEventTransport(RsfContext rsfContext) {
         this.beatTimer = new RsfCenterBeatManager(rsfContext);

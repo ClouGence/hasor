@@ -34,7 +34,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
-    protected Logger logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public RSFProtocolDecoder() {
         this(Integer.MAX_VALUE);
     }

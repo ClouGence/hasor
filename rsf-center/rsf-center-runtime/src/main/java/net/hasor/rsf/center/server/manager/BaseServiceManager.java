@@ -35,7 +35,6 @@ import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 
@@ -44,7 +43,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 @Singleton
 public class BaseServiceManager {
-    protected Logger       logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected Logger       logger = LoggerFactory.getLogger(getClass());
     @Inject
     private AppContext     appContext;
     @Inject

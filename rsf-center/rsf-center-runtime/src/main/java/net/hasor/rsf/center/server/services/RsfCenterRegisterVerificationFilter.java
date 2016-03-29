@@ -26,7 +26,6 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfConstants;
 /**
  * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
  * @version : 2016年2月18日
@@ -34,7 +33,7 @@ import net.hasor.rsf.domain.RsfConstants;
  */
 @Singleton
 public class RsfCenterRegisterVerificationFilter implements RsfFilter {
-    protected Logger    logger = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected Logger    logger = LoggerFactory.getLogger(getClass());
     private String      centerVersion;
     private RsfContext  rsfContext;
     private AuthManager authManager;

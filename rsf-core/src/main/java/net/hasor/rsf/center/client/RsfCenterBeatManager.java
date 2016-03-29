@@ -38,7 +38,6 @@ import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.domain.ReceiveResult;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.utils.TimerManager;
@@ -49,7 +48,7 @@ import net.hasor.rsf.utils.TimerManager;
  */
 class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> {
     public static final String                            CenterUpdate_Event = "CenterUpdate_Event";
-    protected static Logger                               logger             = LoggerFactory.getLogger(RsfConstants.RsfCenter_Logger);
+    protected Logger                                      logger             = LoggerFactory.getLogger(getClass());
     private final RsfContext                              rsfContext;
     private final String                                  hostString;
     private final TimerManager                            timerManager;

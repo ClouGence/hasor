@@ -8,13 +8,13 @@
 	</parent>
 
 	<!-- Maven Info -->
-	<artifactId>rsf-center</artifactId>
+	<artifactId>rsf-root</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- Project Info -->
-	<name>RSF-Center</name>
-	<description>the Hasor Remote Service Framework Center project.</description>
+	<name>RSF-Root</name>
+	<description>the Hasor Remote Service Framework root project.</description>
 
 	<!-- SCM -->
 	<scm>
@@ -31,7 +31,8 @@
 	</developers>
 
 	<modules>
-		<module>rsf-center-runtime</module>
-		<module>rsf-center-manager</module>
+		<module>rsf-core</module>
+		<!-- <module>rsf-center/rsf-center-manager</module> -->
+		<module>rsf-center/rsf-center-runtime</module>
 	</modules>
 </project>

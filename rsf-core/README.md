@@ -10,7 +10,7 @@
 
 ----------
 ### 架构设计
-![工作原理](http://project.hasor.net/resources/002011_mz60_1166271.jpg)
+![RSF架构](http://project.hasor.net/resources/002011_mz60_1166271.jpg)
 
 ----------
 ### 特性
@@ -97,7 +97,6 @@
 	        System.out.println(res);
 	    }
 	}
-
 
 ----------
 ### 交流平台

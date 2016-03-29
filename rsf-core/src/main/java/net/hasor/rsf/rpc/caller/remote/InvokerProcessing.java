@@ -38,7 +38,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class InvokerProcessing implements Runnable {
-    protected Logger              logger = LoggerFactory.getLogger(RsfConstants.RsfInvoker_Logger);
+    protected Logger              logger = LoggerFactory.getLogger(getClass());
     private final RemoteRsfCaller rsfCaller;
     private final InterAddress    target;
     private final RequestInfo     requestInfo;

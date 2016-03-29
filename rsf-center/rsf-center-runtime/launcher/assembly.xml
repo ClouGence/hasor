@@ -1,0 +1,58 @@
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
+	<id>build</id>
+	<formats>
+		<format>dir</format>
+		<format>zip</format>
+		<format>tar.gz</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>launcher/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<directoryMode>755</directoryMode>
+			<fileMode>660</fileMode>
+		</fileSet>
+		<fileSet>
+			<directory>launcher/conf</directory>
+			<outputDirectory>conf</outputDirectory>
+		</fileSet>
+	</fileSets>
+
+	<files>
+		<file>
+			<source>launcher/LICENSE</source>
+			<outputDirectory>/</outputDirectory>
+			<destName>LICENSE</destName>
+		</file>
+	</files>
+
+	<dependencySets>
+		<dependencySet>
+			<scope>runtime</scope>
+			<outputDirectory>boot</outputDirectory>
+			<useStrictFiltering>true</useStrictFiltering>
+			<includes>
+				<include>*:plexus-classworlds*</include>
+			</includes>
+		</dependencySet>
+
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+			<useStrictFiltering>false</useStrictFiltering>
+			<excludes>
+				<exclude>*:plexus-classworlds*</exclude>
+			</excludes>
+		</dependencySet>
+
+		<dependencySet>
+			<scope>runtime</scope>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+
+
+	</dependencySets>
+</assembly>
