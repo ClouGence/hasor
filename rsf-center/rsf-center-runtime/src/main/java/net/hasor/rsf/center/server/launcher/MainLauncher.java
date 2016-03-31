@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import org.codehaus.plexus.classworlds.ClassWorld;
-import org.more.json.JSON;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
     public static void main(String[] args, ClassWorld world) throws IOException, InterruptedException {
-        System.out.println(JSON.toString(args));
         //
         //MDC.put("", "");
         String action = args[0];
@@ -43,6 +41,9 @@ public class MainLauncher {
         if ("start".equalsIgnoreCase(action)) {
             String config = args[1];
             AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
+            //
+        } else if ("stop".equalsIgnoreCase(action)) {
+            System.exit(1);
             //
         } else if ("version".equalsIgnoreCase(action)) {
             try {
@@ -55,6 +56,6 @@ public class MainLauncher {
             }
         }
         //
-        Thread.sleep(15000);
+        Thread.sleep(30000);
     }
 }

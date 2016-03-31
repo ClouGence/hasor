@@ -16,7 +16,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+#
+# Control Script for the RsfCenter Server
 #
 # Required ENV vars:
 # ------------------
@@ -28,7 +30,7 @@
 #   JAVA_OPTS - parameters passed to the Java VM when running app
 #     e.g. to debug App itself, use
 #       set APP_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 #
 # OS specific support.  $var _must_ be set to either true or false.
@@ -67,8 +69,6 @@ if [ -r "$APP_HOME/bin/hook.sh" ]; then
   source "$APP_HOME/bin/hook.sh"
 fi
 
-
-
 if [ "$JPDA_ENABLE" = "jpda" ] ; then
   if [ -z "$JPDA_TRANSPORT" ]; then
     JPDA_TRANSPORT="dt_socket"
@@ -82,7 +82,6 @@ if [ "$JPDA_ENABLE" = "jpda" ] ; then
   if [ -z "$JPDA_OPTS" ]; then
     JPDA_OPTS="-agentlib:jdwp=transport=$JPDA_TRANSPORT,address=$JPDA_ADDRESS,server=y,suspend=$JPDA_SUSPEND"
   fi
-  CATALINA_OPTS="$JPDA_OPTS $CATALINA_OPTS"
 fi
 
 
@@ -93,19 +92,19 @@ if $cygwin; then
 fi
 
 if $darwin; then
-    # Look for the Apple JDKs first to preserve the existing behaviour, and then look for the new JDKs provided by Oracle.
-    if [[ -z "$JAVA_HOME" && -L /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK ]] ; then
+  # Look for the Apple JDKs first to preserve the existing behaviour, and then look for the new JDKs provided by Oracle.
+  if [[ -z "$JAVA_HOME" && -L /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK ]] ; then
       export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home
-    fi
-    if [[ -z "$JAVA_HOME" && -L /System/Library/Java/JavaVirtualMachines/CurrentJDK ]] ; then
-      export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/CurrentJDK/Contents/Home
-    fi
-    if [[ -z "$JAVA_HOME" && -L "/Library/Java/JavaVirtualMachines/CurrentJDK" ]] ; then
-      export JAVA_HOME=/Library/Java/JavaVirtualMachines/CurrentJDK/Contents/Home
-    fi           
-    if [[ -z "$JAVA_HOME" && -x "/usr/libexec/java_home" ]] ; then
-      export JAVA_HOME=/usr/libexec/java_home
-    fi
+  fi
+  if [[ -z "$JAVA_HOME" && -L /System/Library/Java/JavaVirtualMachines/CurrentJDK ]] ; then
+    export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/CurrentJDK/Contents/Home
+  fi
+  if [[ -z "$JAVA_HOME" && -L "/Library/Java/JavaVirtualMachines/CurrentJDK" ]] ; then
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/CurrentJDK/Contents/Home
+  fi
+  if [[ -z "$JAVA_HOME" && -x "/usr/libexec/java_home" ]] ; then
+    export JAVA_HOME=/usr/libexec/java_home
+  fi
 fi
 
 if [ -z "$JAVA_CMD" ] ; then
@@ -128,7 +127,7 @@ if [ ! -x "$JAVA_CMD" ] ; then
 fi
 
 if [ -z "$APP_PID" ]; then
-  APP_PID=rsf-center.pid  
+  APP_PID="rsf-center.pid"
 fi
 
 # Bugzilla 37848: When no TTY is available, don't output to console
@@ -195,7 +194,7 @@ check_app_pid() {
   fi
 }
 
-#echo rsfcenter version
+#print rsfcenter version
 do_version() {
     exec "$JAVA_CMD" -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
       "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
@@ -205,6 +204,9 @@ do_version() {
 
 #start rsfCenter
 do_start() {
+    if [ "$JPDA_ENABLE" = "jpda" ] ; then
+      JAVA_OPTS="$JPDA_OPTS $JAVA_OPTS"
+    fi
     check_app_pid
     mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
     touch "$CONSOLE_OUT" || exit 1
@@ -213,24 +215,105 @@ do_start() {
       "-Dapp.home=${APP_HOME}"  \
       org.codehaus.plexus.classworlds.launcher.Launcher start ${APP_CONFIG} "$@" \
       >> "${CONSOLE_OUT}" 2>&1 "&"
-    
+
     if [ ! -z "$APP_PID" ]; then
       echo $! > "$APP_PID"
     fi
     echo "RsfCenter started."
 }
 
+#stop rsfCenter
 do_stop() {
+    ## check process
+    if [ ! -z "$APP_PID" ]; then
+      if [ -f "$APP_PID" ]; then
+        if [ -s "$APP_PID" ]; then
+          kill -0 `cat "$APP_PID"` >/dev/null 2>&1
+          if [ $? -gt 0 ]; then
+            echo "PID file found but no matching process was found. Stop aborted."
+            exit 1
+          fi
+        else
+          echo "PID file is empty and has been ignored."
+        fi
+      else
+        echo "\$APP_PID was set but the specified file does not exist. Is RsfCenter running? Stop aborted."
+        exit 1
+      fi
+    fi
+    ##
+    ## use manager stop it
+    mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
+    touch "$CONSOLE_OUT" || exit 1
+    eval "$JAVA_CMD" $JAVA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
+      "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
+      "-Dapp.home=${APP_HOME}"  \
+      org.codehaus.plexus.classworlds.launcher.Launcher stop ${APP_CONFIG} "$@"
+
+    # stop failed. Shutdown port disabled? Try a normal kill.
+    if [ $? != 0 ]; then
+      if [ ! -z "$CATALINA_PID" ]; then
+        echo "The stop command failed. Attempting to signal the process to stop through OS signal."
+        kill -15 `cat "$APP_PID"` >/dev/null 2>&1
+      fi
+    fi
+
+    ## try kill process
+    KILL_SLEEP_INTERVAL=5
+    FORCE=0
+    if [ "$1" = "-force" ]; then
+      shift
+      FORCE=1
+    fi
+
+    ## fource kill
+    KILL_SLEEP_INTERVAL=5
+    if [ $FORCE -eq 1 ]; then
+      if [ -z "$APP_PID" ]; then
+        echo "Kill failed: \$APP_PID not set"
+      else
+        if [ -f "$APP_PID" ]; then
+          PID=`cat "$APP_PID"`
+          echo "Killing RsfCenter with the PID: $PID"
+          kill -9 $PID
+          while [ $KILL_SLEEP_INTERVAL -ge 0 ]; do
+              kill -0 `cat "$APP_PID"` >/dev/null 2>&1
+              if [ $? -gt 0 ]; then
+                  rm -f "$APP_PID" >/dev/null 2>&1
+                  if [ $? != 0 ]; then
+                      if [ -w "$APP_PID" ]; then
+                          cat /dev/null > "$APP_PID"
+                      else
+                          echo "The PID file could not be removed."
+                      fi
+                  fi
+                  echo "The RsfCenter process has been killed."
+                  break
+              fi
+              if [ $KILL_SLEEP_INTERVAL -gt 0 ]; then
+                  sleep 1
+              fi
+              KILL_SLEEP_INTERVAL=`expr $KILL_SLEEP_INTERVAL - 1 `
+          done
+          if [ $KILL_SLEEP_INTERVAL -lt 0 ]; then
+              echo "RsfCenter has not been killed completely yet. The process might be waiting on some system call or might be UNINTERRUPTIBLE."
+          fi
+        fi
+      fi
+    fi
 
 }
 
 if [ "$1" = "start" ] ; then
+  shift
   do_start
 
 elif [ "$1" = "stop" ] ; then
+  shift
   do_stop
 
 elif [ "$1" = "version" ] ; then
+  shift
   do_version
 
 else
@@ -238,9 +321,7 @@ else
   echo "commands:"
   echo "  start             Start Catalina in a separate window"
   echo "  stop              Stop Catalina, waiting up to 5 seconds for the process to end"
-  echo "  stop n            Stop Catalina, waiting up to n seconds for the process to end"
   echo "  stop -force       Stop Catalina, wait up to 5 seconds and then use kill -KILL if still running"
-  echo "  stop n -force     Stop Catalina, wait up to n seconds and then use kill -KILL if still running"
   echo "  version           What version of rsfCenter are you running?"
   exit 1
 fi
