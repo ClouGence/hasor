@@ -40,4 +40,7 @@ public class DebugModule extends WebModule implements EventListener<AppContext> 
         // }
         //
     }
+    public static void main(String[] args) {
+        System.out.println("CC26115060wgtq4ac".toUpperCase());
+    }
 }

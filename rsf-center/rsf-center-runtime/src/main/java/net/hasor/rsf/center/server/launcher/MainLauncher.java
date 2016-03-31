@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
+import java.io.IOException;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
  * 
  * @version : 2016年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartupLauncher {
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        System.out.println("Hello Word.");
+public class MainLauncher {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    public static void main(String[] args, ClassWorld world) throws IOException, InterruptedException {
+        //        MDC.put("", "");
+        AppContext app = Hasor.createAppContext("rsf-config.xml", new RsfCenterServerModule());
+        app.getEnvironment().envVar("WORK_HOME");
+        Thread.sleep(15000);
     }
 }

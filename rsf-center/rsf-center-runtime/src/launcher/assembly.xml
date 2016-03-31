@@ -10,20 +10,19 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>launcher/bin</directory>
+			<directory>src/launcher/binary</directory>
 			<outputDirectory>bin</outputDirectory>
-			<directoryMode>755</directoryMode>
-			<fileMode>660</fileMode>
+			<fileMode>0755</fileMode>
 		</fileSet>
 		<fileSet>
-			<directory>launcher/conf</directory>
+			<directory>src/launcher/conf</directory>
 			<outputDirectory>conf</outputDirectory>
 		</fileSet>
 	</fileSets>
 
 	<files>
 		<file>
-			<source>launcher/LICENSE</source>
+			<source>src/launcher/LICENSE</source>
 			<outputDirectory>/</outputDirectory>
 			<destName>LICENSE</destName>
 		</file>
@@ -31,7 +30,7 @@
 
 	<dependencySets>
 		<dependencySet>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 			<outputDirectory>boot</outputDirectory>
 			<useStrictFiltering>true</useStrictFiltering>
 			<includes>
@@ -40,6 +39,7 @@
 		</dependencySet>
 
 		<dependencySet>
+			<scope>runtime</scope>
 			<useProjectArtifact>true</useProjectArtifact>
 			<outputDirectory>lib</outputDirectory>
 			<useStrictFiltering>false</useStrictFiltering>
@@ -52,7 +52,6 @@
 			<scope>runtime</scope>
 			<outputDirectory>lib</outputDirectory>
 		</dependencySet>
-
-
 	</dependencySets>
+
 </assembly>
