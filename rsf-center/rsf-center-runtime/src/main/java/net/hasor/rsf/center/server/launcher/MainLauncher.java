@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.more.json.JSON;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -27,11 +33,28 @@ import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
  * @author 赵永春(zyc@hasor.net)
  */
 public class MainLauncher {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
     public static void main(String[] args, ClassWorld world) throws IOException, InterruptedException {
-        //        MDC.put("", "");
-        AppContext app = Hasor.createAppContext("rsf-config.xml", new RsfCenterServerModule());
-        app.getEnvironment().envVar("WORK_HOME");
+        System.out.println(JSON.toString(args));
+        //
+        //MDC.put("", "");
+        String action = args[0];
+        //
+        if ("start".equalsIgnoreCase(action)) {
+            String config = args[1];
+            AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
+            //
+        } else if ("version".equalsIgnoreCase(action)) {
+            try {
+                InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
+                List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+                System.out.println(!dataLines.isEmpty() ? dataLines.get(0) : null);
+            } catch (Throwable e) {
+                logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
+                System.out.println("undefined");
+            }
+        }
+        //
         Thread.sleep(15000);
     }
 }

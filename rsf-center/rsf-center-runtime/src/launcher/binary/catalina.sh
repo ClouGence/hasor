@@ -67,6 +67,25 @@ if [ -r "$APP_HOME/bin/hook.sh" ]; then
   source "$APP_HOME/bin/hook.sh"
 fi
 
+
+
+if [ "$JPDA_ENABLE" = "jpda" ] ; then
+  if [ -z "$JPDA_TRANSPORT" ]; then
+    JPDA_TRANSPORT="dt_socket"
+  fi
+  if [ -z "$JPDA_ADDRESS" ]; then
+    JPDA_ADDRESS="8000"
+  fi
+  if [ -z "$JPDA_SUSPEND" ]; then
+    JPDA_SUSPEND="n"
+  fi
+  if [ -z "$JPDA_OPTS" ]; then
+    JPDA_OPTS="-agentlib:jdwp=transport=$JPDA_TRANSPORT,address=$JPDA_ADDRESS,server=y,suspend=$JPDA_SUSPEND"
+  fi
+  CATALINA_OPTS="$JPDA_OPTS $CATALINA_OPTS"
+fi
+
+
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
   JAVA_HOME=`cygpath --absolute --windows "$JAVA_HOME"`
@@ -176,23 +195,52 @@ check_app_pid() {
   fi
 }
 
+#echo rsfcenter version
+do_version() {
+    exec "$JAVA_CMD" -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
+      "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
+      "-Dapp.home=${APP_HOME}"  \
+      org.codehaus.plexus.classworlds.launcher.Launcher version "$@"
+}
 
+#start rsfCenter
+do_start() {
+    check_app_pid
+    mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
+    touch "$CONSOLE_OUT" || exit 1
+    eval "$JAVA_CMD" $JAVA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
+      "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
+      "-Dapp.home=${APP_HOME}"  \
+      org.codehaus.plexus.classworlds.launcher.Launcher start ${APP_CONFIG} "$@" \
+      >> "${CONSOLE_OUT}" 2>&1 "&"
+    
+    if [ ! -z "$APP_PID" ]; then
+      echo $! > "$APP_PID"
+    fi
+    echo "RsfCenter started."
+}
 
+do_stop() {
 
+}
 
+if [ "$1" = "start" ] ; then
+  do_start
 
-check_app_pid
-mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
-touch "$CONSOLE_OUT" || exit 1
-eval "$JAVA_CMD" $JAVA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
-  "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
-  "-Dapp.home=${APP_HOME}"  \
-  org.codehaus.plexus.classworlds.launcher.Launcher start ${APP_CONFIG} "$@" \
-  >> "${CONSOLE_OUT}" 2>&1 "&"
+elif [ "$1" = "stop" ] ; then
+  do_stop
 
-if [ ! -z "$APP_PID" ]; then
-  echo $! > "$APP_PID"
+elif [ "$1" = "version" ] ; then
+  do_version
+
+else
+  echo "Usage: catalina.sh ( commands ... )"
+  echo "commands:"
+  echo "  start             Start Catalina in a separate window"
+  echo "  stop              Stop Catalina, waiting up to 5 seconds for the process to end"
+  echo "  stop n            Stop Catalina, waiting up to n seconds for the process to end"
+  echo "  stop -force       Stop Catalina, wait up to 5 seconds and then use kill -KILL if still running"
+  echo "  stop n -force     Stop Catalina, wait up to n seconds and then use kill -KILL if still running"
+  echo "  version           What version of rsfCenter are you running?"
+  exit 1
 fi
-echo "RsfCenter started."
-
-  
