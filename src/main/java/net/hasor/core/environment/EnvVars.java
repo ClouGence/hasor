@@ -80,9 +80,7 @@ public class EnvVars {
             }
         }
         for (String envItem : envNames) {
-            if (envMap.containsKey(envItem) == false) {
-                envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
-            }
+            envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
         /*单独处理RUN_PATH*/
         String runPath = new File("").getAbsolutePath();
