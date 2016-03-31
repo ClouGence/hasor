@@ -5,6 +5,7 @@
     03.新增注解配置：@Singleton、@Prototype
     04.单例类如果配置了@Init注解,则在注册到Hasor容器时，会在容器启动的第一时间自动调用init方法以完成对象初始化功能。
         - 这个特性类似Spring配置文件中 init属性的功能。
+    05.Hasor启动类新增传入File参数方式指定配置文件。
 * 改进:
     01.容器在启动时增加EventContext类型的绑定，开发的时候可以直接通过依赖注入或者appContext.getInstance(EventContext.class)方式的到。
     02.Event插件在接收到事件响应时，需要一直等待AppContext对象被注入进来。原有逻辑是等待10秒注入AppContext对象。

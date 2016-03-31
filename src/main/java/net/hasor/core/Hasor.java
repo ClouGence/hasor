@@ -16,6 +16,7 @@
 package net.hasor.core;
 import static net.hasor.core.EventContext.ContextEvent_Shutdown;
 import static net.hasor.core.EventContext.ContextEvent_Started;
+import java.io.File;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,22 @@ public abstract class Hasor {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(final String mainSettings, final Module... modules) {
+        try {
+            logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
+            Environment dev = new StandardEnvironment(null, mainSettings);
+            AppContext appContext = new StatusAppContext<BeanContainer>(dev, new BeanContainer());
+            appContext.start(modules);
+            return appContext;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(final File mainSettings) {
+        return Hasor.createAppContext(mainSettings, new Module[0]);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(final File mainSettings, final Module... modules) {
         try {
             logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
             Environment dev = new StandardEnvironment(null, mainSettings);
