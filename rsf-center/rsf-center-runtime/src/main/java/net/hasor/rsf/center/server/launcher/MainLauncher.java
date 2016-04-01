@@ -44,6 +44,7 @@ public class MainLauncher {
             //
         } else if ("stop".equalsIgnoreCase(action)) {
             Thread.sleep(2000);
+            logger.error("!!!!!!!!!!!!!!");
             System.exit(1);
             //
         } else if ("version".equalsIgnoreCase(action)) {

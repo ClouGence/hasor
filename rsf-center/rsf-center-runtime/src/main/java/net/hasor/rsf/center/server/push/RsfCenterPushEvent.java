@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
-import net.hasor.rsf.center.event.RsfCenterEvent;
+import net.hasor.rsf.center.RsfCenterEvent;
 /**
  * 注册中心下推送的事件类型
  * 
