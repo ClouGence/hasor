@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 本地发出的远程调用的，请求响应管理器。
+ * 本地发出的远程调用所使用的“请求响应管理器”。
  */
 package net.hasor.rsf.rpc.caller;

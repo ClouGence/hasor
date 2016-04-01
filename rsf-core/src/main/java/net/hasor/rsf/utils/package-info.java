@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * 各种工具
  */
 package net.hasor.rsf.utils;

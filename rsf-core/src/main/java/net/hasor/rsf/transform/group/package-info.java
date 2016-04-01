@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 为监控中心发送调用统计，以及流量复制。
+ * 为监控中心发送调用统计，以及流量复制
  */
 package net.hasor.rsf.transform.group;
