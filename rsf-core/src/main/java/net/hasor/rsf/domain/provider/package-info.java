@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供{@link AddressProvider}接口以及实现。
+ * 提供{@link net.hasor.rsf.domain.provider.AddressProvider}接口以及实现。
  */
 package net.hasor.rsf.domain.provider;
