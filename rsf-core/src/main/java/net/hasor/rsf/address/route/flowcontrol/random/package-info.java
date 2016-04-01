@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 随机选址规则。
+ * 流控规则：随机选址。
  */
 package net.hasor.rsf.address.route.flowcontrol.random;

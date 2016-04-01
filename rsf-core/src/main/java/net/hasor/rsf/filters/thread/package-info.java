@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * RsfRequest接口可以被@Inject（服务提供者端）。
+ * <p>场景：在业务代码中想要获取{@link net.hasor.rsf.RsfRequest}、{@link net.hasor.rsf.RsfResponse}接口
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.filters.thread;

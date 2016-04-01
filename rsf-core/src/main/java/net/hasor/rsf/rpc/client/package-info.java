@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * RSF服务框架RemoteClient实现，{@link net.hasor.rsf.RsfClient}接口的实现。
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.rpc.client;

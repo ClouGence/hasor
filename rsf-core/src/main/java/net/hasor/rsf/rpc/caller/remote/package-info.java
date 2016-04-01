@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 负责提供远程调用请求响应的管理。
+ * RSF框架接收远程请求的，请求调用管理器。
  */
 package net.hasor.rsf.rpc.caller.remote;

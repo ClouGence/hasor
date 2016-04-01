@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * RSF框架客户端，管理控制台功能。
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.console;

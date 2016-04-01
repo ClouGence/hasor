@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 路由规则实现。
+ * 路由规则机制。
  */
 package net.hasor.rsf.address.route.rule;

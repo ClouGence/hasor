@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * QoS流控规则。
+ * 流控规则：QoS限流
  */
 package net.hasor.rsf.address.route.flowcontrol.speed;

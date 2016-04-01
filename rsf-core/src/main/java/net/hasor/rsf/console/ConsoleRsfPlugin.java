@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.console;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfPlugin;
 /**
- * 各种工具。
+ * RSF终端管理器插件。
+ * @version : 2016年2月18日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.utils;
+public class ConsoleRsfPlugin implements RsfPlugin {
+    protected static Logger logger = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    @Override
+    public void loadRsf(RsfContext rsfContext) throws Throwable {
+        //
+    }
+}

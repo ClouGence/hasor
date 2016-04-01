@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.event;
+package net.hasor.rsf.center;
 import org.more.util.StringUtils;
 /**
  * 注册中心下推送的事件类型

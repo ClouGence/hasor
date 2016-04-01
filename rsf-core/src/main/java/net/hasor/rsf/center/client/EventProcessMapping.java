@@ -26,8 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.RsfCenterEvent;
 import net.hasor.rsf.center.domain.CenterEventBody;
-import net.hasor.rsf.center.event.RsfCenterEvent;
 /**
  * 注册中心事件响应实现
  * @version : 2016年2月18日

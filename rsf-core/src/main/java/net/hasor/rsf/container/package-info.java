@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 /**
- * Bean容器、RsfBinder机制实现。
+ * RSF服务框架中的，Bean容器、以及RsfBinder机制实现。
+ * <p>
+ * RSF本身不具备IoC/Aop特性，相关功能是基于底层框架Hasor提供的。
+ * 因此，RSF接住Hasor，是支持IoC/Aop这些高级特性的。
  */
 package net.hasor.rsf.container;

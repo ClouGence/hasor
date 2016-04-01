@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * RSF启动器
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.bootstrap;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * 注册中心相关功能，RSF框架客户端功能的实现。包括了服务心跳，服务上下线，接收注册中心推送的事件。
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.center.client;

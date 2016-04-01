@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * 与注册中心通信的功能，所需要的domain数据模型。
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.center.domain;

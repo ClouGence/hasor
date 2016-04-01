@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种工具。
+ * RSF注册中心相关功能。
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.center;

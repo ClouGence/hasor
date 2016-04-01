@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 服务元信息和常量定义。
+ * RSF框架所需要的domain数据模型。
  */
 package net.hasor.rsf.domain;

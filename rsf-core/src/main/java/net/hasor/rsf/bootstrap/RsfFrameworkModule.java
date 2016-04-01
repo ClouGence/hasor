@@ -35,6 +35,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.client.RsfCenterRsfPlugin;
+import net.hasor.rsf.console.ConsoleRsfPlugin;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.filters.local.LocalPref;
 import net.hasor.rsf.filters.online.OnlineRsfFilter;
@@ -118,5 +119,6 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
         rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
         new RsfCenterRsfPlugin().loadRsf(rsfContext);
+        new ConsoleRsfPlugin().loadRsf(rsfContext);
     }
 }

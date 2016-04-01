@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * {@link net.hasor.rsf.RsfRequest}和{@link net.hasor.rsf.RsfResponse}接口的实现。
+ * 框架中所有的warp类，warp实际上就是静态代理。
  */
 package net.hasor.rsf.domain.warp;

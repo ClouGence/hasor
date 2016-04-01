@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 地址管理实现。
+ * 地址管理 & 服务路由 & 流量控制。
  */
 package net.hasor.rsf.address;
