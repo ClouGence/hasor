@@ -43,6 +43,7 @@ public class MainLauncher {
             AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
             //
         } else if ("stop".equalsIgnoreCase(action)) {
+            Thread.sleep(2000);
             System.exit(1);
             //
         } else if ("version".equalsIgnoreCase(action)) {

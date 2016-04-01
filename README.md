@@ -30,8 +30,7 @@
 		<!-- 如果在一台机器上同时运行提供者和消费者，那么请为两个程序分别指定不同的 port端口号 -->
 		<hasor.rsfConfig enable="true" address="127.0.0.1" port="8000">
 			<centerServers>
-				<!-- 注册中心 -->
-				<server>rsf://127.0.0.1:2177</server>
+				<server>rsf://127.0.0.1:2177</server><!-- 注册中心，可以配置多个 -->
 			</centerServers>
 		</hasor.rsfConfig>
 	</config>

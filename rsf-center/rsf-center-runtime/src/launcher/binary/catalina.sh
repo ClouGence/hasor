@@ -23,9 +23,6 @@
 # Required ENV vars:
 # ------------------
 #   APP_HOME   - location of app's installed home dir
-#   APP_CONFIG - rsf settings file
-#
-#   JAVA_CMD
 #   JAVA_HOME - location of a JDK home dir
 #   JAVA_OPTS - parameters passed to the Java VM when running app
 #     e.g. to debug App itself, use
@@ -241,6 +238,7 @@ do_stop() {
         exit 1
       fi
     fi
+    
     ##
     ## use manager stop it
     mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
@@ -250,78 +248,65 @@ do_stop() {
       "-Dapp.home=${APP_HOME}"  \
       org.codehaus.plexus.classworlds.launcher.Launcher stop ${APP_CONFIG} "$@"
 
-    # stop failed. Shutdown port disabled? Try a normal kill.
+    ## stop failed. Shutdown port disabled? Try a normal kill.
     if [ $? != 0 ]; then
-      if [ ! -z "$CATALINA_PID" ]; then
+      if [ ! -z "$APP_PID" ]; then
         echo "The stop command failed. Attempting to signal the process to stop through OS signal."
         kill -15 `cat "$APP_PID"` >/dev/null 2>&1
       fi
     fi
-
-    ## try kill process
-    KILL_SLEEP_INTERVAL=5
-    FORCE=0
-    if [ "$1" = "-force" ]; then
-      shift
-      FORCE=1
-    fi
-
-    ## fource kill
-    KILL_SLEEP_INTERVAL=5
-    if [ $FORCE -eq 1 ]; then
-      if [ -z "$APP_PID" ]; then
-        echo "Kill failed: \$APP_PID not set"
-      else
-        if [ -f "$APP_PID" ]; then
-          PID=`cat "$APP_PID"`
-          echo "Killing RsfCenter with the PID: $PID"
-          kill -9 $PID
-          while [ $KILL_SLEEP_INTERVAL -ge 0 ]; do
-              kill -0 `cat "$APP_PID"` >/dev/null 2>&1
-              if [ $? -gt 0 ]; then
-                  rm -f "$APP_PID" >/dev/null 2>&1
-                  if [ $? != 0 ]; then
-                      if [ -w "$APP_PID" ]; then
-                          cat /dev/null > "$APP_PID"
-                      else
-                          echo "The PID file could not be removed."
-                      fi
-                  fi
-                  echo "The RsfCenter process has been killed."
-                  break
+    
+    ##
+    if [ "$1" = "-f" ]; then
+      KILL_SLEEP_INTERVAL=5
+      if [ -f "$APP_PID" ]; then
+        PID=`cat "$APP_PID"`
+        echo "Killing RsfCenter with the PID: $PID"
+        kill -9 $PID
+        while [ $KILL_SLEEP_INTERVAL -ge 0 ]; do
+          kill -0 `cat "$APP_PID"` >/dev/null 2>&1
+          if [ $? -gt 0 ]; then
+            rm -f "$APP_PID" >/dev/null 2>&1
+            if [ $? != 0 ]; then
+              if [ -w "$APP_PID" ]; then
+                cat /dev/null > "$APP_PID"
+              else
+                echo "The PID file could not be removed."
               fi
-              if [ $KILL_SLEEP_INTERVAL -gt 0 ]; then
-                  sleep 1
-              fi
-              KILL_SLEEP_INTERVAL=`expr $KILL_SLEEP_INTERVAL - 1 `
-          done
-          if [ $KILL_SLEEP_INTERVAL -lt 0 ]; then
-              echo "RsfCenter has not been killed completely yet. The process might be waiting on some system call or might be UNINTERRUPTIBLE."
+            fi
+            echo "The RsfCenter process has been killed."
+            break
           fi
+          if [ $KILL_SLEEP_INTERVAL -gt 0 ]; then
+              sleep 1
+          fi
+          KILL_SLEEP_INTERVAL=`expr $KILL_SLEEP_INTERVAL - 1 `
+        done
+        if [ $KILL_SLEEP_INTERVAL -lt 0 ]; then
+            echo "RsfCenter has not been killed completely yet. The process might be waiting on some system call or might be UNINTERRUPTIBLE."
         fi
       fi
     fi
-
 }
 
 if [ "$1" = "start" ] ; then
   shift
-  do_start
+  do_start $@
 
 elif [ "$1" = "stop" ] ; then
   shift
-  do_stop
+  do_stop $@
 
 elif [ "$1" = "version" ] ; then
   shift
-  do_version
+  do_version $@
 
 else
   echo "Usage: catalina.sh ( commands ... )"
   echo "commands:"
-  echo "  start             Start Catalina in a separate window"
-  echo "  stop              Stop Catalina, waiting up to 5 seconds for the process to end"
-  echo "  stop -force       Stop Catalina, wait up to 5 seconds and then use kill -KILL if still running"
-  echo "  version           What version of rsfCenter are you running?"
+  echo "  start     Start Catalina in a separate window"
+  echo "  stop      Stop Catalina, waiting up to 5 seconds for the process to end"
+  echo "  stop -f   Stop Catalina, wait up to 5 seconds and then use kill -KILL if still running"
+  echo "  version   What version of rsfCenter are you running?"
   exit 1
 fi
