@@ -162,9 +162,9 @@ public class RsfNetManager {
         }
     }
     //
-    /** 启动服务器。 */
+    /** 启动服务器，使用“local”地址作为服务提供地址。 */
     public void start() throws UnknownHostException {
-        this.start("0.0.0.0", 0);
+        this.start(NetworkUtils.finalBindAddress("local"), 0);
     }
     /** 启动服务器。 */
     public void start(InetAddress localAddress) throws UnknownHostException {

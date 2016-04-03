@@ -1,4 +1,4 @@
-package test.net.hasor.rsf._02_customer;
+package test.net.hasor.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
@@ -15,11 +15,11 @@ import test.net.hasor.rsf.services.EchoService;
 public class CustomerClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        AppContext clientContext = Hasor.createAppContext("07_client-config.xml", new RsfModule() {
+        AppContext clientContext = Hasor.createAppContext("customer-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                InterAddress local = new InterAddress("rsf://127.0.0.1:8000/local");
+                InterAddress local = new InterAddress("rsf://127.0.0.1:8000/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
             }
         });

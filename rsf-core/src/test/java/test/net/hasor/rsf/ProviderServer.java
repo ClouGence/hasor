@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf._01_provider;
+package test.net.hasor.rsf;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
@@ -28,7 +28,7 @@ import test.net.hasor.rsf.services.EchoServiceImpl;
 public class ProviderServer {
     public static void main(String[] args) throws Throwable {
         //Server
-        Hasor.createAppContext("07_server-config.xml", new RsfModule() {
+        Hasor.createAppContext("provider-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();

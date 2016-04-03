@@ -56,25 +56,26 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private int             queueMaxPoolSize     = 7;
     private long            queueKeepAliveTime   = 300L;
     //
-    private int             requestTimeout       = 6000;
-    private int             maximumRequest       = 200;
-    private SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
-    private int             connectTimeout       = 100;
-    //
     private String          bindAddress          = "local";
-    private int             bindPort             = 8000;
+    private int             bindPort             = 2180;
     //
     private InterAddress[]  centerServerSet      = new InterAddress[0];
     private int             centerRsfTimeout     = 6000;
     private int             centerHeartbeatTime  = 15000;
     //
-    private String          unitName             = "local";
+    private int             consolePort          = 2181;
+    private String[]        consoleInBound       = null;
+    //
+    private int             requestTimeout       = 6000;
+    private int             maximumRequest       = 200;
+    private SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
+    private int             connectTimeout       = 100;
+    private String          unitName             = "default";
     private int             invalidWaitTime      = 30000;
     private long            refreshCacheTime     = 360000;
     private boolean         localDiskCache       = true;
     private boolean         enableCenter         = false;
     private boolean         automaticOnline      = true;
-    //
     //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
@@ -202,6 +203,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     public boolean isAutomaticOnline() {
         return this.automaticOnline;
     }
+    @Override
+    public int getConsolePort() {
+        return this.consolePort;
+    }
+    @Override
+    public String[] getConsoleInBoundAddress() {
+        return this.consoleInBound;
+    }
     //
     public void refresh() throws IOException {
         super.refresh();
@@ -213,18 +222,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.defaultTimeout = getInteger("hasor.rsfConfig.defaultServiceValue.timeout", 6000);
         this.defaultSerializeType = getString("hasor.rsfConfig.serializeType.default", "Hessian");
         //
-        XmlNode[] clientOptSetArray = getXmlNodeArray("hasor.rsfConfig.clientOptionSet");
-        if (clientOptSetArray != null) {
-            for (XmlNode optSet : clientOptSetArray) {
-                for (XmlNode opt : optSet.getChildren("option")) {
-                    String key = opt.getAttribute("key");
-                    String var = opt.getText();
-                    if (StringUtils.isBlank(key) == false) {
-                        this.clientOptionManager.addOption(key, var);
-                    }
-                }
-            }
-        }
         XmlNode[] serverOptSetArray = getXmlNodeArray("hasor.rsfConfig.serverOptionSet");
         if (serverOptSetArray != null) {
             for (XmlNode optSet : serverOptSetArray) {
@@ -233,6 +230,18 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                     String var = opt.getText();
                     if (StringUtils.isBlank(key) == false) {
                         this.serverOptionManager.addOption(key, var);
+                    }
+                }
+            }
+        }
+        XmlNode[] clientOptSetArray = getXmlNodeArray("hasor.rsfConfig.clientOptionSet");
+        if (clientOptSetArray != null) {
+            for (XmlNode optSet : clientOptSetArray) {
+                for (XmlNode opt : optSet.getChildren("option")) {
+                    String key = opt.getAttribute("key");
+                    String var = opt.getText();
+                    if (StringUtils.isBlank(key) == false) {
+                        this.clientOptionManager.addOption(key, var);
                     }
                 }
             }
@@ -246,13 +255,8 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.queueMaxPoolSize = getInteger("hasor.rsfConfig.queue.maxPoolSize", 7);
         this.queueKeepAliveTime = getLong("hasor.rsfConfig.queue.keepAliveTime", 300L);
         //
-        this.requestTimeout = getInteger("hasor.rsfConfig.client.defaultTimeout", 6000);
-        this.maximumRequest = getInteger("hasor.rsfConfig.client.maximumRequest", 200);
-        this.sendLimitPolicy = getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
-        this.connectTimeout = getInteger("hasor.rsfConfig.client.connectTimeout", 100);
-        //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
-        this.bindPort = getInteger("hasor.rsfConfig.port", 8000);
+        this.bindPort = getInteger("hasor.rsfConfig.port", 2180);
         //
         XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
         if (centerServerArrays != null) {
@@ -282,13 +286,33 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         }
         this.centerRsfTimeout = getInteger("hasor.rsfConfig.centerServers.timeout", 6000);
         this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
-        this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
+        //
+        this.consolePort = getInteger("hasor.rsfConfig.console.port", 2181);
+        String consoleInBoundStr = getString("hasor.rsfConfig.inBound", "local");
+        if (StringUtils.isNotBlank(consoleInBoundStr)) {
+            ArrayList<String> addressList = new ArrayList<String>();
+            for (String item : consoleInBoundStr.split(",")) {
+                String itemTrim = item.trim();
+                if (StringUtils.isNotBlank(itemTrim)) {
+                    addressList.add(itemTrim);
+                }
+            }
+            this.consoleInBound = addressList.toArray(new String[addressList.size()]);
+        } else {
+            this.consoleInBound = new String[0];
+        }
+        //
+        this.requestTimeout = getInteger("hasor.rsfConfig.client.defaultTimeout", 6000);
+        this.maximumRequest = getInteger("hasor.rsfConfig.client.maximumRequest", 200);
+        this.sendLimitPolicy = getEnum("hasor.rsfConfig.client.sendLimitPolicy", SendLimitPolicy.class, SendLimitPolicy.Reject);
+        this.connectTimeout = getInteger("hasor.rsfConfig.client.connectTimeout", 100);
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
         this.invalidWaitTime = getInteger("hasor.rsfConfig.addressPool.invalidWaitTime", 60000);
         this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         this.enableCenter = this.centerServerSet.length != 0;
+        this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
         //
         logger.info("loadRsfConfig complete!");
     }

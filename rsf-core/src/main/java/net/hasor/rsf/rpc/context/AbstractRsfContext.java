@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
@@ -131,11 +132,6 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.rsfCaller.shutdown();
         this.rsfNetManager.shutdown();
         this.rsfBeanContainer.getAddressPool().shutdownTimer();
-        //
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Shutdown);
-        EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireSyncEvent(RsfEvent.Rsf_Shutdown, this);
-        logger.info("rsfContext -> doShutdownCompleted");
     }
     //
     @Override
@@ -145,6 +141,10 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     @Override
     public AppContext getAppContext() {
         return this.appContext;
+    }
+    @Override
+    public Environment getEnvironment() {
+        return this.appContext.getEnvironment();
     }
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();

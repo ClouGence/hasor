@@ -8,30 +8,50 @@
 		
 		<!-- RSF框架环境变量 -->
 		<environmentVar>
-			<!-- 应用程序代码 -->
+			<!-- 应用程序代码或应用名称 -->
 			<RSF_APP_CODE>anonymous</RSF_APP_CODE>
 			<!-- 连接注册中心需要的授权码 -->
 			<RSF_AUTH_CODE></RSF_AUTH_CODE>
 		</environmentVar>
 	</hasor>
 	
-	<!-- Hasor-RSF -->
-	<hasor.rsfConfig enable="false" address="local" port="2180" unitName="local">
+	<!--
+		Hasor-RSF ( 分布式服务框架 )
+
+			- enable  : 是否启用RSF，默认情况不启用。启用了RSF之后它会开启相应的端口和线程。
+			- address : RSF，无法在多个网卡上同时对外提供服务，因此您需要指定一个IP地址来告诉RSF工作在哪张网卡上。
+							“local”和“localhost”的区别，local指的是，本地默认网卡的IP地址。“localhost”对应的IP地址是“127.0.0.1”
+							如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
+			- port    : RSF对外提供服务的监听端口号。
+	-->
+	<hasor.rsfConfig enable="false" address="local" port="2180">
+		<!-- 所属单元名称，单元是用来给应用部署划分虚拟机房的。RSF通过单元可以有效控制跨机房调用，从而提升远程调用效率。-->
+		<unitName>default</unitName>
+		
+		<!--
+			RSF管理控制台(Telnet)
+				- telnet  	  : 监听端口号。
+				- inBound 	  : 可以使用RSF管理控制台的IP地址列表，默认是“127.0.0.1”。
+									默认情况下您必须登录到应用服务器上，才能够访问RSF管理控制台。
+				提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
+		-->
+		<console port="2181" inBound="127.0.0.1" />
+
 		<!--注册中心，用于更新服务列表的配置服务器 -->
 		<centerServers timeout="6000" heartbeatTime="15000" automaticOnline="true">
 			<!-- <server>rsf://127.0.0.1:2180</server> -->
 		</centerServers>
 
 		<!--用于设置默认情况下RSF服务的一些基本信息。
-				version = 在未指定注册服务的版本信息时使用下面这个配置。
-				group   = 在未指定注册服务的分组信息时使用下面这个配置。
+				version = 在未指定注册服务的版本信息时使用的版本号。
+				group   = 在未指定注册服务的分组信息时使用的分组名称。
 				timeout = 在未指定注册服务的超时时间情况下 6000 毫秒超时。
 		 -->
 		<defaultServiceValue version="1.0.0" group="RSF" timeout="6000" />
 
 		<!--通用配置
 				defaultTimeout  = 客户端RPC发起请求超时时间
-				maximumRequest  = 最大并发请求数
+				maximumRequest  = 最大允许的并发请求数
 				sendLimitPolicy = 并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
 				connectTimeout  = 客户端发起一个连接到完成RSF协议握手所允许的最大耗时（单位毫秒）。
 		-->

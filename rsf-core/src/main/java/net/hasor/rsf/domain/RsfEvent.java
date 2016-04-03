@@ -38,7 +38,4 @@ public interface RsfEvent {
     /**Rsf框架事件，当完成Rsf启动时触发该事件。
      * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
     public static final String Rsf_Started         = "RsfEvent_Started";
-    /**Rsf框架事件，当调用shutdown方法时触发该事件。
-     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#shutdown()*/
-    public static final String Rsf_Shutdown        = "RsfEvent_Shutdown";
 }

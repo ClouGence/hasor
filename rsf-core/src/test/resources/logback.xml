@@ -3,7 +3,7 @@
 	<!-- caller日志 -->
 	<appender name="caller_filesync" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>../logs/rsf-caller.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>target/logs/rsf-caller.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<Encoding>UTF-8</Encoding>
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -13,7 +13,7 @@
 	<!-- address日志 -->
 	<appender name="address_filesync" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>../logs/rsf-address.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>target/logs/rsf-address.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<Encoding>UTF-8</Encoding>
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -23,7 +23,7 @@
 	<!-- center日志 -->
 	<appender name="center_filesync" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>../logs/rsf-center.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>target/logs/rsf-center.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<Encoding>UTF-8</Encoding>
 		<layout class="ch.qos.logback.classic.PatternLayout">

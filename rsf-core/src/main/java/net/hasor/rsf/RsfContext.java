@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
 /**
@@ -35,7 +36,6 @@ public interface RsfContext {
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient(InterAddress target);
     //
-    //
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID);
     /**根据服务名获取服务描述。*/
@@ -44,7 +44,6 @@ public interface RsfContext {
     public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version);
     /**获取已经注册的所有服务名称。*/
     public List<String> getServiceIDs();
-    //
     //
     /**
      * 获取元信息所描述的服务对象
@@ -58,6 +57,8 @@ public interface RsfContext {
     public RsfSettings getSettings();
     /**获取IoC容器*/
     public AppContext getAppContext();
+    /**获取{@link Environment}*/
+    public Environment getEnvironment();
     /**获取地址路由更新接口。*/
     public RsfUpdater getUpdater();
     /**获取类加载器。*/
