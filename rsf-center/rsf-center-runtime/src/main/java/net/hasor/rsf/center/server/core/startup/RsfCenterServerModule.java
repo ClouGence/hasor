@@ -18,9 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.LifeModule;
-import net.hasor.core.Settings;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
@@ -32,7 +30,6 @@ import net.hasor.rsf.center.server.domain.WorkMode;
 import net.hasor.rsf.center.server.push.PushQueue;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterProvider;
 import net.hasor.rsf.center.server.services.RsfCenterRegisterVerificationFilter;
-import net.hasor.rsf.domain.RsfEvent;
 /**
  * 注册中心启动入口。
  *
@@ -47,17 +44,17 @@ public class RsfCenterServerModule implements LifeModule {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
         // 1.将“rsfCenter.rsfPort”配置映射到“hasor.rsfConfig.port” -> 映射配置的目的是让配置文件看起来更规整。
-        Settings settings = apiBinder.getEnvironment().getSettings();
-        int rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
-        String rsfAddress = settings.getString("rsfCenter.bindAddress", "local");
-        settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
-        settings.setSetting("hasor.rsfConfig.address", rsfAddress, "http://project.hasor.net/hasor/schema/main");
-        apiBinder.getEnvironment().getEventContext().addListener(RsfEvent.Rsf_Initialized, new EventListener<RsfContext>() {
-            public void onEvent(String event, RsfContext eventData) throws Throwable {
-                //Rsf_Initialized 是Rsf在启动之前的事件通知，这个时候Rsf框架刚刚准备初始化，在这里重载配置是为了让，前面映射的配置生效。
-                eventData.getSettings().refreshRsfConfig();
-            }
-        });
+        //        Settings settings = apiBinder.getEnvironment().getSettings();
+        //        int rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
+        //        String rsfAddress = settings.getString("rsfCenter.bindAddress", "local");
+        //        settings.setSetting("hasor.rsfConfig.port", rsfPort, "http://project.hasor.net/hasor/schema/main");
+        //        settings.setSetting("hasor.rsfConfig.address", rsfAddress, "http://project.hasor.net/hasor/schema/main");
+        //        apiBinder.getEnvironment().getEventContext().addListener(RsfEvent.Rsf_Initialized, new EventListener<RsfContext>() {
+        //            public void onEvent(String event, RsfContext eventData) throws Throwable {
+        //                //Rsf_Initialized 是Rsf在启动之前的事件通知，这个时候Rsf框架刚刚准备初始化，在这里重载配置是为了让，前面映射的配置生效。
+        //                eventData.getSettings().refreshRsfConfig();
+        //            }
+        //        });
         //
         // 2.解析注册中心配置信息。
         this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());

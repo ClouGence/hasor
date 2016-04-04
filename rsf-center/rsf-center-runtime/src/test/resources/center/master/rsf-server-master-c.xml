@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+	<!--
+		重要的四个端口
+			2130 : RSF对外提供服务的监听端口号。
+			2131 : RSF管理控制台(Telnet)，监听端口号。
+			2132 : RsfCenter，集群间Zookeeper通信端口号。
+			2133 : RsfCenter，集群间Zookeeper，Leader选举端口号。
+	 -->
+
+	<!-- 集群模式 -->
+	<rsfCenter workAt="master" serverID="3">
+		<!-- master模式下Zookeeper集群列表 -->
+		<zooKeeper.zkServers>
+			<server sid="1" bindPort="2112" electionPort="2113">127.0.0.1</server>
+			<server sid="2" bindPort="2122" electionPort="2123">127.0.0.1</server>
+			<server sid="3" bindPort="2132" electionPort="2133">127.0.0.1</server>
+			<server sid="4" bindPort="2142" electionPort="2143">127.0.0.1</server>
+		</zooKeeper.zkServers>
+		<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
+		<zooKeeper.bindPort>2132</zooKeeper.bindPort>
+		<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
+		<zooKeeper.electionPort>2133</zooKeeper.electionPort>
+	</rsfCenter>
+	<!--
+		RSF配置
+			- enable  	   : 确保设置为true，Rsf与注册中心通信是通过RSF自身协议。
+			- address 	   : RSF，无法在多个网卡上同时对外提供服务，因此您需要指定一个IP地址来告诉RSF工作在哪张网卡上。
+								“local”和“localhost”的区别，local指的是，本地默认网卡的IP地址。“localhost”对应的IP地址是“127.0.0.1”
+								如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
+			- port    	   : RSF对外提供服务的监听端口号。
+			- console.port : RSF管理控制台(Telnet)，监听端口号。
+	-->
+	<hasor.rsfConfig enable="true" address="127.0.0.1" port="2130" console.port="2131" />
+
+	<!-- 环境变量（demo使用） -->
+	<hasor.environmentVar>
+		<WORK_HOME>%USER.HOME%/hasor-work/rsf-center-master-c</WORK_HOME>
+	</hasor.environmentVar>
+</config>

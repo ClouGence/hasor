@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.cluster;
+package test.net.hasor.rsf.center.alone;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
+ * 单机模式
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerA {
+public class TestServerAlone {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) {
-        Hasor.createAppContext("/cluster/rsf-server-a.xml", new RsfCenterServerModule());
+    public static void main(String[] args) throws IOException {
+        Hasor.createAppContext("/center/alone/rsf-server-alone.xml", new RsfCenterServerModule());
+        System.in.read();
     }
 }

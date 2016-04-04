@@ -43,16 +43,17 @@ import net.hasor.rsf.utils.NameThreadFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ConsoleRsfPlugin implements RsfPlugin {
-    protected static Logger            logger         = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
-    private static final StringDecoder DECODER        = new StringDecoder();
-    private static final StringEncoder ENCODER        = new StringEncoder();
-    private static final TelnetHandler SERVER_HANDLER = new TelnetHandler();
-    private InterAddress               bindAddress;
-    private EventLoopGroup             workerGroup    = null;
+    protected static Logger logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    private StringDecoder   stringDecoder = new StringDecoder();
+    private StringEncoder   stringEncoder = new StringEncoder();
+    private TelnetHandler   telnetHandler = null;
+    private InterAddress    bindAddress   = null;
+    private EventLoopGroup  workerGroup   = null;
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         //1.初始化常量配置。
-        this.workerGroup = new NioEventLoopGroup(2, new NameThreadFactory("RSF-Console-%s"));
+        this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console"));
+        this.telnetHandler = new TelnetHandler(rsfContext);
         int consolePort = rsfContext.getSettings().getConsolePort();
         InterAddress consoleAddress = rsfContext.bindAddress();
         try {
@@ -73,9 +74,9 @@ public class ConsoleRsfPlugin implements RsfPlugin {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-                    pipeline.addLast(DECODER);
-                    pipeline.addLast(ENCODER);
-                    pipeline.addLast(SERVER_HANDLER);
+                    pipeline.addLast(stringDecoder);
+                    pipeline.addLast(stringEncoder);
+                    pipeline.addLast(telnetHandler);
                 }
             });
             b.bind(this.bindAddress.getHost(), this.bindAddress.getPort()).sync().await();

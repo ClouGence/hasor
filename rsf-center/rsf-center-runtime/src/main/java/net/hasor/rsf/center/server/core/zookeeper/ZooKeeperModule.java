@@ -36,7 +36,9 @@ public class ZooKeeperModule implements LifeModule {
     }
     //
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        if (this.rsfCenterCfg == null) {
+            this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        }
         ZooKeeperNode zkNode = null;
         StringWriter writer = new StringWriter();
         writer.append("\n----------- ZooKeeper -----------");
@@ -44,33 +46,32 @@ public class ZooKeeperModule implements LifeModule {
         switch (rsfCenterCfg.getWorkMode()) {
         case Alone:
             // 单机模式
-            writer.append("\n              dataDir = " + cfg.getDataDir());
-            writer.append("\n              snapDir = " + cfg.getSnapDir());
-            writer.append("\n zooKeeperBindAddress = " + cfg.getBindInetAddress());
-            zkNode = new ZooKeeperNode_Alone(cfg);
+            writer.append("\n              dataDir = " + rsfCenterCfg.getDataDir());
+            writer.append("\n              snapDir = " + rsfCenterCfg.getSnapDir());
+            writer.append("\n zooKeeperBindAddress = " + rsfCenterCfg.getBindInetAddress());
+            zkNode = new ZooKeeperNode_Alone(rsfCenterCfg);
             break;
         case Master:
             // 集群主机模式
-            writer.append("\n              dataDir = " + cfg.getDataDir());
-            writer.append("\n              snapDir = " + cfg.getSnapDir());
-            writer.append("\n zooKeeperBindAddress = " + cfg.getBindInetAddress());
-            writer.append("\n             tickTime = " + cfg.getTickTime());
-            writer.append("\n    minSessionTimeout = " + cfg.getMinSessionTimeout());
-            writer.append("\n    maxSessionTimeout = " + cfg.getMaxSessionTimeout());
-            writer.append("\n          clientCnxns = " + cfg.getClientCnxns());
-            writer.append("\n         electionPort = " + cfg.getElectionPort());
-            zkNode = new ZooKeeperNode_Master(cfg);
+            writer.append("\n              dataDir = " + rsfCenterCfg.getDataDir());
+            writer.append("\n              snapDir = " + rsfCenterCfg.getSnapDir());
+            writer.append("\n zooKeeperBindAddress = " + rsfCenterCfg.getBindInetAddress());
+            writer.append("\n             tickTime = " + rsfCenterCfg.getTickTime());
+            writer.append("\n    minSessionTimeout = " + rsfCenterCfg.getMinSessionTimeout());
+            writer.append("\n    maxSessionTimeout = " + rsfCenterCfg.getMaxSessionTimeout());
+            writer.append("\n          clientCnxns = " + rsfCenterCfg.getClientCnxns());
+            writer.append("\n         electionPort = " + rsfCenterCfg.getElectionPort());
+            zkNode = new ZooKeeperNode_Master(rsfCenterCfg);
             break;
         case Slave:
             // 集群从属模式
-            writer.append("\n        clientTimeout = " + cfg.getClientTimeout());
-            zkNode = new ZooKeeperNode_Slave(cfg);
+            writer.append("\n        clientTimeout = " + rsfCenterCfg.getClientTimeout());
+            zkNode = new ZooKeeperNode_Slave(rsfCenterCfg);
             break;
         default:
             throw new InterruptedException("undefined workMode : " + rsfCenterCfg.getWorkMode().getCodeString());
         }
-        writer.append("\n            zkServers = " + cfg.getZkServersStrForLog());
-        writer.append("\n          bindAddress = " + cfg.getBindInetAddress());
+        writer.append("\n            zkServers = " + rsfCenterCfg.getZkServersStrForLog());
         writer.append("\n---------------------------------");
         logger.info("ZooKeeper config following:" + writer.toString());
         //

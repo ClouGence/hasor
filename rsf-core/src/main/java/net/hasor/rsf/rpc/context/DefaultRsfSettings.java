@@ -33,6 +33,7 @@ import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.OptionInfo;
+import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 
  * @version : 2014年11月12日
@@ -288,19 +289,32 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
         //
         this.consolePort = getInteger("hasor.rsfConfig.console.port", 2181);
-        String consoleInBoundStr = getString("hasor.rsfConfig.inBound", "local");
+        String consoleInBoundStr = getString("hasor.rsfConfig.console.inBound", "local");
+        ArrayList<String> addressList = new ArrayList<String>();
         if (StringUtils.isNotBlank(consoleInBoundStr)) {
-            ArrayList<String> addressList = new ArrayList<String>();
             for (String item : consoleInBoundStr.split(",")) {
                 String itemTrim = item.trim();
                 if (StringUtils.isNotBlank(itemTrim)) {
-                    addressList.add(itemTrim);
+                    try {
+                        if (StringUtils.equalsIgnoreCase("local", itemTrim)) {
+                            addressList.add(NetworkUtils.finalBindAddress("local").getHostAddress());
+                        } else {
+                            addressList.add(itemTrim);
+                        }
+                    } catch (Exception e) {
+                        logger.error("console - inBound address " + itemTrim + " error " + e.getMessage(), e);
+                    }
                 }
             }
-            this.consoleInBound = addressList.toArray(new String[addressList.size()]);
-        } else {
-            this.consoleInBound = new String[0];
         }
+        if (addressList.isEmpty()) {
+            try {
+                addressList.add(NetworkUtils.finalBindAddress("local").getHostAddress());
+            } catch (Exception e) {
+                addressList.add("127.0.0.1");
+            }
+        }
+        this.consoleInBound = addressList.toArray(new String[addressList.size()]);
         //
         this.requestTimeout = getInteger("hasor.rsfConfig.client.defaultTimeout", 6000);
         this.maximumRequest = getInteger("hasor.rsfConfig.client.maximumRequest", 200);

@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.master;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+package net.hasor.rsf.console;
+import net.hasor.rsf.RsfContext;
 /**
- * @version : 2015年8月13日
+ * RSF命令
+ * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerE {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/master/rsf-server-e.xml", new RsfCenterServerModule());
-        System.in.read();
-    }
+public interface RsfCommand {
+    /**帮助信息.*/
+    public String helpInfo();
+    /**命令是否支持多行输入。*/
+    public boolean inputMultiLine();
+    /**执行命令*/
+    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable;
 }

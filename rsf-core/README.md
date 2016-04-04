@@ -99,11 +99,12 @@
 	}
 
 ----------
-### 交流平台
+### 相关连接
 
-* QQ群：**193943114**
-* issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
+* WebSite：[http://www.hasor.net](http://www.hasor.net)
+* Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
+* QQ群：193943114
 
 ----------
 ### 后续优化

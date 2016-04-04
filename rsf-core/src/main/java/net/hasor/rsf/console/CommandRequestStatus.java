@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.alone;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+package net.hasor.rsf.console;
 /**
- * @version : 2015年8月13日
+ * 
+ * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerG {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/alone/rsf-server-g.xml", new RsfCenterServerModule());
-        System.in.read();
-    }
+enum CommandRequestStatus {
+    /**命令准备，用于多行命令在执行前接受内容。（单行命令不支持此状态）*/
+    Prepare,
+    /**命令就绪，多行命令在Prepare模式下输入一个空行即可进入状态，如果命令在该状态下输入了新的内容会重新跳回到Prepare状态。（单行命令默认值）*/
+    Ready,
+    /**命令即将执行，等待任务执行调度系统调度。*/
+    StandBy,
+    /**命令运行中，命令在Ready状态下输入一个空行即可进入该状态。*/
+    Running,
+    /**命令执行完毕*/
+    Complete
 }

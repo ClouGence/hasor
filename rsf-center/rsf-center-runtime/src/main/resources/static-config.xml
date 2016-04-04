@@ -18,11 +18,6 @@
 			服务器ID，master模式下需要配置，不同的master需要通过serverID标示自己。
 	-->
 	<rsfCenter workAt="alone" serverID="0">
-		<!-- 当存在多张网卡情况下，注册中心使用的地址 -->
-		<bindAddress>local</bindAddress>
-		<!-- RSF消息通信使用端口，rsf-center集群之间选举出 leader 之后，注册中心所有写操作都将发消息到这台机器。 -->
-		<rsfPort>2180</rsfPort>
-
 		<!-- 服务推送配置 -->
 		<push>
 			<!-- 默认推送使用的：应用程序代码 -->
@@ -35,16 +30,21 @@
 
 		<!-- ZooKeeper 配置，ZK的作用是让rsf-center集群能够感知到所有rsf-center服务器，并且在rsf-center集群中选举出一个 leader -->
 		<zooKeeper>
-			<!-- defaultBindPort：默认数据通信端口，defaultElectionPort：默认选举端口 -->
-			<zkServers defaultBindPort="2181" defaultElectionPort="2182">
+			<!-- RsfCenter集群模式下：集群中其它机器的通信端口号
+					- defaultBindPort     ：RsfCenter,默认数据通信端口.
+					- defaultElectionPort ：RsfCenter,默认选举端口
+			 -->
+			<zkServers defaultBindPort="2182" defaultElectionPort="2183">
 				<!--
-					master模式：要加入的ZK集群列表
-					slave模式：可选的ZK服务列表
+					不同模式下配置的含义
+						- master模式 ：集群机器列表，当前节点参与RsfCenter集群的Leader选举，也有可能称为Leader。
+									  成为Leader之后意味着更多工作任务，而这有可能会降低Center的服务能力。
+						- slave模式  ：要加入的集群机器列表，当前节点不参与RsfCenter集群的Leader选举，也不可能称为Leader。
 				-->
 				<!--
 					<server sid="0">127.0.0.1</server>
 					or
-					<server sid="0" bindPort="2180" electionPort="2182">127.0.0.1</server>
+					<server sid="0" bindPort="2182" electionPort="2183">127.0.0.1</server>
 				-->
 			</zkServers>
 
@@ -52,7 +52,9 @@
 			<clientTimeout>15000</clientTimeout>
 
 			<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
-			<bindPort>2181</bindPort>
+			<bindPort>2182</bindPort>
+			<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
+			<electionPort>2183</electionPort>
 
 			<!-- 通信心跳时间，Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，tickTime以毫秒为单位。 -->
 			<tickTime>3000</tickTime>
@@ -68,8 +70,6 @@
 			<syncLimit>5</syncLimit>
 			<!-- 是否开启同步 -->
 			<syncEnabled>true</syncEnabled>
-			<!-- 选举端口，ZookeeperZK集群模式下会在此端口上进行选举 -->
-			<electionPort>2182</electionPort>
 			<!--
 				participant - participant模式，具有投票资格
 				observer    - observer模式，节点不参与投票
@@ -77,7 +77,8 @@
 			<peerType>participant</peerType>
 		</zooKeeper>
 	</rsfCenter>
-	
+
 	<!-- RSF -->
 	<hasor.rsfConfig enable="true" />
+
 </config>

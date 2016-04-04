@@ -17,6 +17,7 @@ package net.hasor.rsf.center.server.launcher;
 import java.net.URL;
 import java.util.Map;
 import org.more.future.BasicFuture;
+import org.more.util.StringUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -25,7 +26,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
@@ -35,31 +35,34 @@ import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpVersion;
-import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.utils.NameThreadFactory;
 /***
  * 基于Netty的简易HttpClient
  * @version : 2015年5月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class HttpClient {
-    private final String         centerHost;
-    private final int            centerPort;
-    private final EventLoopGroup workerGroup;
+    private final String         remoteHost;
+    private final int            remotePort;
+    private final EventLoopGroup worker;
     //
-    public HttpClient(AbstractRsfContext rsfContext) {
-        //        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
-        this.centerHost = rsfContext.getSettings().getCenterAddress();
-        this.centerPort = rsfContext.getSettings().getCenterPort();
-        this.workerGroup = rsfContext.get.getWorkLoopGroup();
+    public HttpClient(URL remoteHost, EventLoopGroup worker) {
+        this.remoteHost = remoteHost.getHost();
+        this.remotePort = remoteHost.getPort();
+        this.worker = worker;
     }
     //
-    public BasicFuture<HttpResponse> request(String requestPath, Map<String, String> reqParams) throws Exception {
-        //
+    public BasicFuture<HttpResponse> request(String requestPath, Map<String, String> reqParams, String body) throws Exception {
+        if (StringUtils.isBlank(body)) {
+            return this.request(requestPath, reqParams, new byte[0]);
+        } else {
+            return this.request(requestPath, reqParams, body.getBytes("UTF-8"));
+        }
+    }
+    public BasicFuture<HttpResponse> request(String requestPath, Map<String, String> reqParams, byte[] body) throws Exception {
         // 初始化Netty
         final Bootstrap b = new Bootstrap();
         final BasicFuture<HttpResponse> future = new BasicFuture<HttpResponse>();
-        b.group(this.workerGroup);
+        b.group(this.worker);
         b.channel(NioSocketChannel.class);
         b.option(ChannelOption.SO_KEEPALIVE, true);
         b.handler(new ChannelInitializer<SocketChannel>() {
@@ -73,17 +76,19 @@ public class HttpClient {
         });
         //
         // 连接Server
-        ChannelFuture f = b.connect(this.centerHost, this.centerPort).sync();
+        ChannelFuture f = b.connect(this.remoteHost, this.remotePort).sync();
         //
         // 构建http请求
-        URL reqPath = new URL("http", this.centerHost, this.centerPort, requestPath);
+        URL reqPath = new URL("http", this.remoteHost, this.remotePort, requestPath);
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, reqPath.toString());
-        request.headers().set(HttpHeaders.Names.HOST, this.centerHost);
+        request.headers().set(HttpHeaders.Names.HOST, this.remoteHost);
         request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
         request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, request.content().readableBytes());
         //
         // 发送http请求
-        request.content().writeBytes("Are you ok?".getBytes("UTF-8"));
+        if (body != null) {
+            request.content().writeBytes(body);
+        }
         f.channel().write(request);
         f.channel().flush();
         //

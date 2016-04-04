@@ -60,7 +60,6 @@ public class RsfCenterCfg {
     private boolean                 syncEnabled;
     private int                     electionPort;
     private LearnerType             peerType;
-    private int                     rsfPort;
     private String                  centerVersion;
     private int                     pushQueueMaxSize;
     private int                     pushSleepTime;
@@ -73,7 +72,6 @@ public class RsfCenterCfg {
         Settings settings = env.getSettings();
         cfg.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         cfg.serverID = settings.getLong("rsfCenter.serverID", 0L);
-        cfg.rsfPort = settings.getInteger("rsfCenter.rsfPort", 2180);
         //
         cfg.zkServers = new HashMap<Long, QuorumServer>();
         if (cfg.getWorkMode() != WorkMode.Alone) {
@@ -105,7 +103,7 @@ public class RsfCenterCfg {
         cfg.dataDir = new File(cfg.workDir, "zookeeper/data").getAbsolutePath();
         cfg.snapDir = new File(cfg.workDir, "zookeeper/snap").getAbsolutePath();
         //
-        String bindAddress = settings.getString("rsfCenter.bindAddress", "local");
+        String bindAddress = settings.getString("hasor.rsfConfig.address", "local");//settings.getString("rsfCenter.bindAddress", "local");
         int bindPort = settings.getInteger("rsfCenter.zooKeeper.bindPort", 2181);// 绑定的端口
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         cfg.bindInetAddress = new InetSocketAddress(inetAddress, bindPort);
@@ -202,12 +200,6 @@ public class RsfCenterCfg {
     }
     public void setServerID(long serverID) {
         this.serverID = serverID;
-    }
-    public int getRsfPort() {
-        return rsfPort;
-    }
-    public void setRsfPort(int rsfPort) {
-        this.rsfPort = rsfPort;
     }
     public Map<Long, QuorumServer> getZkServers() {
         return zkServers;

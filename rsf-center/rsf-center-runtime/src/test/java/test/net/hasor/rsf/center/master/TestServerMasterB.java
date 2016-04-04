@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
+ * 集群模式
  * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerF {
+public class TestServerMasterB {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/master/rsf-server-f.xml", new RsfCenterServerModule());
+        Hasor.createAppContext("/center/master/rsf-server-master-b.xml", new RsfCenterServerModule());
         System.in.read();
     }
 }

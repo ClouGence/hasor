@@ -3,13 +3,13 @@
 
 	<hasor.rsfConfig enable="true" address="127.0.0.1" port="8000">
 		<centerServers>
-<!-- 			<server>rsf://30.10.220.79:2171</server> -->
-<!-- 			<server>rsf://30.10.220.79:2172</server> -->
-<!-- 			<server>rsf://30.10.220.79:2173</server> -->
-<!-- 			<server>rsf://30.10.220.79:2174</server> -->
-<!-- 			<server>rsf://30.10.220.79:2175</server> -->
-<!-- 			<server>rsf://30.10.220.79:2176</server> -->
-			<server>rsf://127.0.0.1:2177</server>
+			<server>rsf://127.0.0.1:2180</server>
+			<!-- <server>rsf://127.0.0.1:2110</server> -->
+			<!-- <server>rsf://127.0.0.1:2120</server> -->
+			<!-- <server>rsf://127.0.0.1:2130</server> -->
+			<!-- <server>rsf://127.0.0.1:2140</server> -->
+			<!-- <server>rsf://127.0.0.1:2150</server> -->
+			<!-- <server>rsf://127.0.0.1:2160</server> -->
 		</centerServers>
 	</hasor.rsfConfig>
 
