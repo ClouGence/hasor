@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import static net.hasor.core.EventContext.ContextEvent_Shutdown;
-import static net.hasor.core.EventContext.ContextEvent_Started;
+import static net.hasor.core.AppContext.ContextEvent_Shutdown;
+import static net.hasor.core.AppContext.ContextEvent_Started;
 import java.io.File;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;

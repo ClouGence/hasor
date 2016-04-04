@@ -21,6 +21,17 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface AppContext {
+    /**容器事件，在所有模块初始化之后引发。
+     * @see net.hasor.core.context.TemplateAppContext*/
+    public static final String ContextEvent_Initialized = "ContextEvent_Initialized";
+    /**容器事件，在所有模块 start 阶段之后引发。
+     * @see net.hasor.core.context.TemplateAppContext*/
+    public static final String ContextEvent_Started     = "ContextEvent_Started";
+    /**容器事件，在所有模块 start 阶段之后引发。
+     * @see net.hasor.core.context.TemplateAppContext*/
+    public static final String ContextEvent_Shutdown    = "ContextEvent_Shutdown";
+    //
+    //
     /** @return 获取 {@link Environment} */
     public Environment getEnvironment();
     /**获取当创建Bean时使用的{@link ClassLoader}*/

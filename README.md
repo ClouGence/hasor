@@ -70,9 +70,9 @@
 &emsp;&emsp; 2015年11月27日，2.0版本发布，提供了@Inject注解方式进行依赖注入，该版本一举解决了在去除Guice和决定不在依赖Spring之后Hasor的Ioc能力大大下降的问题。同时Hasor2.0开始确立了“小而美的核心，大而全的生态圈”的目标。
 
 ----------
-### 交流平台
+### 相关连接
 
-QQ群：**193943114**
-
-* issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
+* WebSite：[http://www.hasor.net](http://www.hasor.net)
+* Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
+* QQ群：193943114

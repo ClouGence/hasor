@@ -439,9 +439,9 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         logger.info("appContext -> doBind.");
         doBind(apiBinder);
         /*3.引发事件*/
-        logger.info("appContext -> fireSyncEvent ,eventType = {}", EventContext.ContextEvent_Initialized);
+        logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Initialized);
         EventContext ec = getEnvironment().getEventContext();
-        ec.fireSyncEvent(EventContext.ContextEvent_Initialized, apiBinder);
+        ec.fireSyncEvent(ContextEvent_Initialized, apiBinder);
         logger.info("appContext -> doInitializeCompleted");
         doInitializeCompleted();
         //
@@ -449,8 +449,8 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         logger.info("appContext -> doStart");
         doStart();
         /*4.发送启动事件*/
-        logger.info("appContext -> fireSyncEvent ,eventType = {}", EventContext.ContextEvent_Started);
-        ec.fireSyncEvent(EventContext.ContextEvent_Started, this);
+        logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
+        ec.fireSyncEvent(ContextEvent_Started, this);
         logger.info("appContext -> doStartCompleted");
         doStartCompleted();/*用于扩展*/
         //
@@ -469,7 +469,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         doShutdown();
         /*2.引发事件*/
         logger.info("shutdown - fireSyncEvent.");
-        ec.fireSyncEvent(EventContext.ContextEvent_Shutdown, this);
+        ec.fireSyncEvent(ContextEvent_Shutdown, this);
         logger.info("shutdown - doShutdownCompleted..");
         doShutdownCompleted();
         logger.info("shutdown - finish.");
