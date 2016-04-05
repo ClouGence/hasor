@@ -15,13 +15,17 @@
  */
 package net.hasor.rsf.center.server.core.zookeeper.node;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import org.apache.zookeeper.server.ServerCnxnFactory;
+import java.util.Properties;
+import org.apache.zookeeper.server.NIOServerCnxn;
+import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+import org.more.util.io.IOUtils;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
@@ -32,11 +36,8 @@ import net.hasor.rsf.center.server.domain.RsfCenterCfg;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeeperNode {
-    protected Logger          logger = LoggerFactory.getLogger(getClass());
-    private RsfCenterCfg      zooKeeperCfg;
-    private FileTxnSnapLog    txnLog;
-    private ZooKeeperServer   zkServer;
-    private ServerCnxnFactory cnxnFactory;
+    private RsfCenterCfg          zooKeeperCfg;
+    private NIOServerCnxn.Factory cnxnFactory;
     public ZooKeeperNode_Alone(RsfCenterCfg zooKeeperCfg) {
         super(zooKeeperCfg);
         this.zooKeeperCfg = zooKeeperCfg;
@@ -47,37 +48,76 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         super.shutdownZooKeeper(appContext);
         if (this.cnxnFactory != null) {
             this.cnxnFactory.shutdown();
-            this.zkServer.shutdown();
-            this.txnLog.close();
-            this.cnxnFactory = null;
-            this.zkServer = null;
-            this.txnLog = null;
+            //            this.cnxnFactory.shutdown();
+            //            this.zkServer.shutdown();
+            //            this.txnLog.close();
+            //            this.cnxnFactory = null;
+            //            this.zkServer = null;
+            //            this.txnLog = null;
         }
     }
-    /** 启动ZooKeeper */
-    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+    /** 启动ZooKeeper 
+     * @throws ConfigException */
+    public void startZooKeeper(AppContext appContext) throws Throwable {
+        //        private Map<Long, QuorumServer> zkServers;
+        //        // - Client模式
+        //        private int                     clientTimeout;
+        //        // - Server模式
+        //        private InetSocketAddress       bindInetAddress;
         //
-        File dataDir = new File(this.zooKeeperCfg.getDataDir());
-        File snapDir = new File(this.zooKeeperCfg.getSnapDir());
-        this.txnLog = new FileTxnSnapLog(dataDir, snapDir);
-        //
-        int tickTime = this.zooKeeperCfg.getTickTime();
-        int minSessionTimeout = this.zooKeeperCfg.getMinSessionTimeout();
-        int maxSessionTimeout = this.zooKeeperCfg.getMaxSessionTimeout();
-        this.zkServer = new ZooKeeperServer();
-        this.zkServer.setTxnLogFactory(txnLog);
-        this.zkServer.setTickTime(tickTime);
-        this.zkServer.setMinSessionTimeout(minSessionTimeout);
-        this.zkServer.setMaxSessionTimeout(maxSessionTimeout);
-        //
+        //1. init config
         InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
-        this.cnxnFactory = ServerCnxnFactory.createFactory();
-        this.cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
+        Properties zkProp = new Properties();
+        zkProp.setProperty("dataDir", this.zooKeeperCfg.getDataDir());
+        zkProp.setProperty("dataLogDir", this.zooKeeperCfg.getSnapDir());
+        zkProp.setProperty("clientPortAddress", inetAddress.getHostName());
+        zkProp.setProperty("clientPort", String.valueOf(inetAddress.getPort()));
+        zkProp.setProperty("tickTime", String.valueOf(this.zooKeeperCfg.getTickTime()));
+        zkProp.setProperty("maxClientCnxns", String.valueOf(this.zooKeeperCfg.getClientCnxns()));
+        zkProp.setProperty("minSessionTimeout", String.valueOf(this.zooKeeperCfg.getMinSessionTimeout()));
+        zkProp.setProperty("maxSessionTimeout", String.valueOf(this.zooKeeperCfg.getMaxSessionTimeout()));
+        zkProp.setProperty("initLimit", String.valueOf(this.zooKeeperCfg.getInitLimit()));
+        zkProp.setProperty("syncLimit", String.valueOf(this.zooKeeperCfg.getSyncLimit()));
+        zkProp.setProperty("syncEnabled", String.valueOf(this.zooKeeperCfg.isSyncEnabled()));
+        zkProp.setProperty("electionAlg", "3");
+        zkProp.setProperty("electionPort", String.valueOf(this.zooKeeperCfg.getElectionPort()));
+        zkProp.setProperty("peerType", this.zooKeeperCfg.getPeerType().name());
         //
+        new File(this.zooKeeperCfg.getDataDir()).mkdirs();
+        new File(this.zooKeeperCfg.getSnapDir()).mkdirs();
+        File myIdFile = new File(this.zooKeeperCfg.getDataDir(), "myid");
+        if (myIdFile.exists() == false) {
+            myIdFile.getParentFile().mkdirs();
+            myIdFile.createNewFile();
+        }
+        FileWriter myIdWriter = new FileWriter(new File(this.zooKeeperCfg.getDataDir(), "myid"), false);
+        IOUtils.write(String.valueOf(this.zooKeeperCfg.getServerID()), myIdWriter);
+        myIdWriter.flush();
+        myIdWriter.close();
+        QuorumPeerConfig config = new QuorumPeerConfig();
+        config.parseProperties(zkProp);
+        //
+        //2. start zookeeper
         logger.info("zkNode starting...");
-        cnxnFactory.startup(zkServer);
+        ZooKeeperServer zkServer = new ZooKeeperServer();
+        try {
+            ServerConfig serverConfig = new ServerConfig();
+            serverConfig.readFrom(config);
+            //
+            File dataDir = new File(serverConfig.getDataDir());
+            File dataLogDir = new File(serverConfig.getDataLogDir());
+            FileTxnSnapLog ftxn = new FileTxnSnapLog(dataDir, dataLogDir);
+            zkServer.setTxnLogFactory(ftxn);
+            zkServer.setTickTime(serverConfig.getTickTime());
+            zkServer.setMinSessionTimeout(serverConfig.getMinSessionTimeout());
+            zkServer.setMaxSessionTimeout(serverConfig.getMaxSessionTimeout());
+            this.cnxnFactory = new NIOServerCnxn.Factory(config.getClientPortAddress(), config.getMaxClientCnxns());
+            this.cnxnFactory.startup(zkServer);
+        } catch (InterruptedException e) {
+            logger.info("zkNode interrupted", e);
+        }
         //
-        // watch server start.
+        //3.watch server start.
         long curTime = System.currentTimeMillis();
         while (true) {
             if (!zkServer.isRunning()) {
@@ -94,6 +134,7 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
             break;
         }
         //
+        //4.init zooKeeper Client
         String serverConnection = inetAddress.getHostName() + ":" + inetAddress.getPort();
         super.startZooKeeper(appContext, serverConnection);
     }

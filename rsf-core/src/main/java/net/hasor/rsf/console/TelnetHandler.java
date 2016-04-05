@@ -14,6 +14,7 @@
  * under the License.
  */
 package net.hasor.rsf.console;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -34,6 +35,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.rsf.utils.NetworkUtils;
 /**
  * Handles a server-side channel.
  */
@@ -69,15 +71,22 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             return;
         }
         //
-        RsfSettings settings = this.rsfContext.getSettings();
-        InterAddress addr = new InterAddress(settings.getBindAddress(), settings.getBindPort(), settings.getUnitName());
+        String hostSchema = null;
+        try {
+            RsfSettings settings = this.rsfContext.getSettings();
+            InetAddress hostInetAddress = NetworkUtils.finalBindAddress(settings.getBindAddress());
+            InterAddress addr = new InterAddress(hostInetAddress.getHostAddress(), settings.getBindPort(), settings.getUnitName());
+            hostSchema = addr.toHostSchema();
+        } catch (Exception e) {
+            hostSchema = InetAddress.getLocalHost().getHostAddress();
+        }
         // Send greeting for a new connection.
         ctx.write("--------------------------------------------\r\n\r\n");
         ctx.write("Welcome to Remote Service Framework Console!\r\n");
         ctx.write("\r\n");
         ctx.write("login      : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
         ctx.write("workAt     : " + ctx.channel().localAddress() + "\r\n");
-        ctx.write("rsfAddress : " + addr.toHostSchema() + "\r\n\r\n");
+        ctx.write("rsfAddress : " + hostSchema + "\r\n\r\n");
         ctx.write("Tips: You can enter a 'help' for more information.\r\n");
         ctx.write("use the 'exit' or 'quit' out of the console.\r\n");
         ctx.write("--------------------------------------------\r\n");

@@ -40,7 +40,7 @@ public interface ZooKeeperNode {
     /** 终止ZooKeeper */
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException;
     /** 启动ZooKeeper*/
-    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException;
+    public void startZooKeeper(AppContext appContext) throws Throwable;
     //
     /** 监视节点改动 */
     public void watcherChildren(String nodePath, Watcher watcher) throws KeeperException, InterruptedException;

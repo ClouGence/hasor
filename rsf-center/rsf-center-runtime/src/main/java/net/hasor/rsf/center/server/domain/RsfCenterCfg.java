@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
-import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
@@ -39,31 +38,32 @@ import net.hasor.rsf.utils.NetworkUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterCfg {
-    protected static final Logger   logger = LoggerFactory.getLogger(RsfCenterCfg.class);
+    protected static final Logger logger = LoggerFactory.getLogger(RsfCenterCfg.class);
     // - 通用
-    private WorkMode                workMode;
-    private long                    serverID;
-    private Map<Long, QuorumServer> zkServers;
+    private WorkMode              workMode;
+    private long                  serverID;
+    private Map<Long, ServerInfo> zkServers;
     // - Client模式
-    private int                     clientTimeout;
+    private int                   clientTimeout;
     // - Server模式
-    private String                  workDir;
-    private String                  dataDir;
-    private String                  snapDir;
-    private InetSocketAddress       bindInetAddress;
-    private int                     tickTime;
-    private int                     minSessionTimeout;
-    private int                     maxSessionTimeout;
-    private int                     clientCnxns;
-    private int                     initLimit;
-    private int                     syncLimit;
-    private boolean                 syncEnabled;
-    private int                     electionPort;
-    private LearnerType             peerType;
-    private String                  centerVersion;
-    private int                     pushQueueMaxSize;
-    private int                     pushSleepTime;
-    private String                  anonymousAppCode;
+    private String                workDir;
+    private String                dataDir;
+    private String                snapDir;
+    private InetSocketAddress     bindInetAddress;
+    private int                   tickTime;
+    private int                   minSessionTimeout;
+    private int                   maxSessionTimeout;
+    private int                   clientCnxns;
+    private int                   initLimit;
+    private int                   syncLimit;
+    private boolean               syncEnabled;
+    private int                   electionPort;
+    private LearnerType           peerType;
+    //
+    private String                centerVersion;
+    private int                   pushQueueMaxSize;
+    private int                   pushSleepTime;
+    private String                anonymousAppCode;
     //
     //
     private RsfCenterCfg() {}
@@ -73,7 +73,8 @@ public class RsfCenterCfg {
         cfg.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         cfg.serverID = settings.getLong("rsfCenter.serverID", 0L);
         //
-        cfg.zkServers = new HashMap<Long, QuorumServer>();
+        cfg.zkServers = new HashMap<Long, ServerInfo>();
+        cfg.peerType = settings.getEnum("rsfCenter.zooKeeper.peerType", LearnerType.class, LearnerType.PARTICIPANT);
         if (cfg.getWorkMode() != WorkMode.Alone) {
             XmlNode[] zkServers = settings.getXmlNodeArray("rsfCenter.zooKeeper.zkServers.server");
             int defaultBindPort = settings.getInteger("rsfCenter.zooKeeper.zkServers.defaultBindPort", 2181);
@@ -89,9 +90,12 @@ public class RsfCenterCfg {
                     String address = server.getText();
                     InetAddress bindAddress = NetworkUtils.finalBindAddress(address);
                     //
-                    InetSocketAddress bindAddr = new InetSocketAddress(bindAddress, bindPort);
-                    InetSocketAddress electionAddr = new InetSocketAddress(bindAddress, electionPort);
-                    cfg.zkServers.put(sid, new QuorumServer(sid, bindAddr, electionAddr));
+                    ServerInfo serverInfo = new ServerInfo();
+                    serverInfo.setServerID(sid);
+                    serverInfo.setAddress(bindAddress.getHostAddress());
+                    serverInfo.setBindPort(bindPort);
+                    serverInfo.setElectionPort(electionPort);
+                    cfg.zkServers.put(sid, serverInfo);
                     //
                 }
             }
@@ -117,15 +121,14 @@ public class RsfCenterCfg {
         cfg.syncLimit = settings.getInteger("rsfCenter.zooKeeper.syncLimit", 5);
         cfg.syncEnabled = settings.getBoolean("rsfCenter.zooKeeper.syncEnabled", true);
         cfg.electionPort = settings.getInteger("rsfCenter.zooKeeper.electionPort", 2182);
-        cfg.peerType = settings.getEnum("rsfCenter.zooKeeper.peerType", LearnerType.class, LearnerType.PARTICIPANT);
         //
         // -check electionPort
         if (cfg.getWorkMode() == WorkMode.Master) {
-            QuorumServer thisServer = cfg.zkServers.get(cfg.serverID);
+            ServerInfo thisServer = cfg.zkServers.get(cfg.serverID);
             if (thisServer == null) {
                 throw new IllegalStateException("In 'rsfCenter.zooKeeper.zkServers' configuration lose yourself. -> serverID = " + cfg.serverID);
             } else {
-                if (thisServer.electionAddr.getPort() != cfg.electionPort) {
+                if (thisServer.getElectionPort() != cfg.electionPort) {
                     throw new IllegalStateException("electionPort configuration is not consistent . -> serverID = " + cfg.serverID);
                 }
             }
@@ -146,15 +149,15 @@ public class RsfCenterCfg {
         return cfg;
     }
     public String getZkServersStr() {
-        Map<Long, QuorumServer> servers = this.getZkServers();
+        Map<Long, ServerInfo> servers = this.getZkServers();
         if (servers == null || servers.isEmpty()) {
             return "";
         } else {
             StringBuilder strBuilder = new StringBuilder("");
-            for (QuorumServer ent : servers.values()) {
-                String host = ent.addr.getAddress().getHostAddress() + ":" + ent.addr.getPort();
+            for (ServerInfo ent : servers.values()) {
+                String host = ent.getAddress() + ":" + ent.getBindPort();
                 if (this.getWorkMode() != WorkMode.Slave) {
-                    host += (":" + ent.electionAddr.getPort());
+                    host += (":" + ent.getElectionPort());
                 }
                 if (strBuilder.length() > 2) {
                     strBuilder.append(",");
@@ -165,15 +168,15 @@ public class RsfCenterCfg {
         }
     }
     public String getZkServersStrForLog() {
-        Map<Long, QuorumServer> servers = this.getZkServers();
+        Map<Long, ServerInfo> servers = this.getZkServers();
         if (servers == null || servers.isEmpty()) {
             return "[]";
         } else {
             StringBuilder strBuilder = new StringBuilder("[ ");
-            for (Entry<Long, QuorumServer> ent : servers.entrySet()) {
+            for (Entry<Long, ServerInfo> ent : servers.entrySet()) {
                 long sid = ent.getKey();
-                QuorumServer qServer = ent.getValue();
-                String host = sid + "=" + qServer.addr.getHostName() + ":" + qServer.addr.getPort() + ":" + qServer.electionAddr.getPort();
+                ServerInfo qServer = ent.getValue();
+                String host = sid + "=" + qServer.getAddress() + ":" + qServer.getBindPort() + ":" + qServer.getElectionPort();
                 if (strBuilder.length() > 2) {
                     strBuilder.append(" , ");
                 }
@@ -201,10 +204,10 @@ public class RsfCenterCfg {
     public void setServerID(long serverID) {
         this.serverID = serverID;
     }
-    public Map<Long, QuorumServer> getZkServers() {
+    public Map<Long, ServerInfo> getZkServers() {
         return zkServers;
     }
-    public void setZkServers(Map<Long, QuorumServer> zkServers) {
+    public void setZkServers(Map<Long, ServerInfo> zkServers) {
         this.zkServers = zkServers;
     }
     public int getClientTimeout() {

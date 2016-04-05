@@ -92,7 +92,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         }
     }
     /** 启动ZooKeeper */
-    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+    public void startZooKeeper(AppContext appContext) throws Throwable {
         this.startZooKeeper(appContext, zooKeeperCfg.getZkServersStr());
     }
     /** 启动ZooKeeper */

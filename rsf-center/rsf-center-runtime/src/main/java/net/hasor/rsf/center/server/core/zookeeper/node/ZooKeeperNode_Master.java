@@ -118,6 +118,6 @@ public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeep
         //
         //
         String serverConnection = inetAddress.getAddress().getHostAddress() + ":" + inetAddress.getPort();
-        super.startZooKeeper(appContext, serverConnection);
+        //super.startZooKeeper(appContext, serverConnection);
     }
 }
