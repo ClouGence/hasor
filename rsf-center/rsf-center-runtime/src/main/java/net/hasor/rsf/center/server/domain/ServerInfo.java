@@ -48,4 +48,8 @@ public class ServerInfo {
     public void setElectionPort(int electionPort) {
         this.electionPort = electionPort;
     }
+    @Override
+    public String toString() {
+        return this.address + ":" + this.bindPort + ":" + this.electionPort;
+    }
 }

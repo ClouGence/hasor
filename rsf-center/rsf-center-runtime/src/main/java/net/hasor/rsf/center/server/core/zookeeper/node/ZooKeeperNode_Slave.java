@@ -28,9 +28,12 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventContext;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
@@ -41,16 +44,16 @@ import net.hasor.rsf.center.server.domain.RsfCenterEvent;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
-    protected Logger     logger     = LoggerFactory.getLogger(getClass());
-    private AppContext   appContext = null;
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    private RsfContext   rsfContext;
+    private RsfCenterCfg centerConfig;
     private String       serverConnection;
-    private RsfCenterCfg zooKeeperCfg;
     private ZooKeeper    zooKeeper;
-    private boolean      start      = false;
+    private boolean      start  = false;
     private Thread       zkCheckManager;
     //
-    public ZooKeeperNode_Slave(RsfCenterCfg zooKeeperCfg) {
-        this.zooKeeperCfg = zooKeeperCfg;
+    public ZooKeeperNode_Slave(RsfCenterCfg centerConfig) {
+        this.centerConfig = centerConfig;
         /* 该线程对象负责当 start 了之后，不断的检测zk是否挂掉需要重新链（例如：Session超时） */
         this.zkCheckManager = new Thread() {
             @Override
@@ -79,7 +82,8 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     public void process(WatchedEvent event) {
         if (KeeperState.SyncConnected == event.getState()) {
             logger.info("zookeeper client -> SyncConnected.");// 链接成功。
-            appContext.getEnvironment().getEventContext().fireSyncEvent(RsfCenterEvent.SyncConnected_Event, this);
+            EventContext ec = this.rsfContext.getAppContext().getEnvironment().getEventContext();
+            ec.fireSyncEvent(RsfCenterEvent.SyncConnected_Event, this);
         }
     }
     //
@@ -87,28 +91,45 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
         this.start = false;
         if (zooKeeper != null) {
-            zooKeeper.close();
-            zooKeeper = null;
+            this.zooKeeper.close();
+            this.zooKeeper = null;
         }
     }
     /** 启动ZooKeeper */
-    public void startZooKeeper(AppContext appContext) throws Throwable {
-        this.startZooKeeper(appContext, zooKeeperCfg.getZkServersStr());
+    public void startZooKeeper(RsfContext rsfContext, QuorumPeerConfig config) throws Throwable {
+        this.startZooKeeper(rsfContext, centerConfig.getZkServersStr());
     }
     /** 启动ZooKeeper */
-    protected void startZooKeeper(AppContext appContext, String serverConnection) throws IOException, InterruptedException {
+    protected void startZooKeeper(RsfContext rsfContext, String serverConnection) throws IOException, InterruptedException {
         logger.info("zkClient connected to {}.", serverConnection);
         if (this.start == true) {
             return;
         }
-        this.appContext = appContext;
+        this.rsfContext = rsfContext;
         this.serverConnection = serverConnection;
         this.zooKeeper = createZK();
         this.start = true;
+        //
+        //3.watch server start.
+        long curTime = System.currentTimeMillis();
+        while (true) {
+            if (this.zooKeeper.getState() == States.CONNECTING) {
+                Thread.sleep(100);
+                long passTime = System.currentTimeMillis() - curTime;
+                long second = passTime / 1000;
+                if (second > 150) {
+                    throw new InterruptedException("15s, zkNode start fail.");/*15秒没起来*/
+                } else if (second > 0) {
+                    logger.info("zkNode starting {} second pass.", second);
+                }
+                continue;
+            }
+            break;
+        }
         logger.info("zkClient connected -> ok.");
     }
     private ZooKeeper createZK() throws IOException {
-        return new ZooKeeper(this.serverConnection, zooKeeperCfg.getClientTimeout(), this);
+        return new ZooKeeper(this.serverConnection, centerConfig.getClientTimeout(), this);
     }
     //
     //

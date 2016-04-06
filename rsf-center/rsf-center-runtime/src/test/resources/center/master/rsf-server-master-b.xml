@@ -12,9 +12,9 @@
 	<rsfCenter workAt="master" serverID="2">
 		<!-- master模式下Zookeeper集群列表 -->
 		<zooKeeper.zkServers>
-			<server sid="1" bindPort="2112" electionPort="2113">127.0.0.1</server>
-			<server sid="2" bindPort="2122" electionPort="2123">127.0.0.1</server>
-			<server sid="3" bindPort="2132" electionPort="2133">127.0.0.1</server>
+			<server sid="1" bindPort="2112" electionPort="2113">local</server>
+			<server sid="2" bindPort="2122" electionPort="2123">local</server>
+			<server sid="3" bindPort="2132" electionPort="2133">local</server>
 		</zooKeeper.zkServers>
 		<!-- 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求 -->
 		<zooKeeper.bindPort>2122</zooKeeper.bindPort>

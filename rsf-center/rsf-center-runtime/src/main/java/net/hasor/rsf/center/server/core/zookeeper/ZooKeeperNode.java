@@ -19,7 +19,9 @@ import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import net.hasor.core.AppContext;
+import net.hasor.rsf.RsfContext;
 /**
  * 
  * @version : 2015年8月19日
@@ -40,7 +42,7 @@ public interface ZooKeeperNode {
     /** 终止ZooKeeper */
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException;
     /** 启动ZooKeeper*/
-    public void startZooKeeper(AppContext appContext) throws Throwable;
+    public void startZooKeeper(RsfContext rsfContext, QuorumPeerConfig config) throws Throwable;
     //
     /** 监视节点改动 */
     public void watcherChildren(String nodePath, Watcher watcher) throws KeeperException, InterruptedException;

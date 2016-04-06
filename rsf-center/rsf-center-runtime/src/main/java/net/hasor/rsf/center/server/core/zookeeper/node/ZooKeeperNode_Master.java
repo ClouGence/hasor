@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.core.zookeeper.node;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Map;
-import org.apache.zookeeper.server.DatadirCleanupManager;
-import org.apache.zookeeper.server.ServerCnxnFactory;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.server.quorum.QuorumPeer;
-import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
-import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
-import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 /**
@@ -38,86 +31,46 @@ import net.hasor.rsf.center.server.domain.RsfCenterCfg;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Master extends ZooKeeperNode_Slave implements ZooKeeperNode {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
-    private RsfCenterCfg          zooKeeperCfg;
-    private QuorumPeer            quorumPeer;
-    private DatadirCleanupManager purgeMgr;
-    //
-    public ZooKeeperNode_Master(RsfCenterCfg zooKeeperCfg) {
-        super(zooKeeperCfg);
-        this.zooKeeperCfg = zooKeeperCfg;
+    protected Logger        logger   = LoggerFactory.getLogger(getClass());
+    private ZooKeeperMaster zkServer = new ZooKeeperMaster();
+    public ZooKeeperNode_Master(RsfCenterCfg rsfCenterCfg) {
+        super(rsfCenterCfg);
     }
     //
     /** 终止ZooKeeper */
     public void shutdownZooKeeper(AppContext appContext) throws IOException, InterruptedException {
         super.shutdownZooKeeper(appContext);
-        if (this.quorumPeer != null) {
-            this.quorumPeer.shutdown();
-            this.purgeMgr.shutdown();
-            this.quorumPeer = null;
-            this.purgeMgr = null;
-        }
+        this.zkServer.shutdown();
     }
+    //
     /** 启动ZooKeeper */
-    public void startZooKeeper(AppContext appContext) throws IOException, InterruptedException {
+    public void startZooKeeper(final RsfContext rsfContext, final QuorumPeerConfig config) throws Throwable {
         //
-        File dataDir = new File(this.zooKeeperCfg.getDataDir());
-        File snapDir = new File(this.zooKeeperCfg.getSnapDir());
-        FileTxnSnapLog txnLog = new FileTxnSnapLog(dataDir, snapDir);
-        //
-        InetSocketAddress inetAddress = this.zooKeeperCfg.getBindInetAddress();
-        ServerCnxnFactory cnxnFactory = ServerCnxnFactory.createFactory();
-        cnxnFactory.configure(inetAddress, this.zooKeeperCfg.getClientCnxns());
-        Map<Long, QuorumServer> servers = this.zooKeeperCfg.getZkServers();
-        //
-        this.purgeMgr = new DatadirCleanupManager(dataDir.getAbsolutePath(), snapDir.getAbsolutePath(), 3, 0);
-        this.purgeMgr.start();
-        //
-        // @see org.apache.zookeeper.server.quorum.QuorumPeerMain
-        this.quorumPeer = new QuorumPeer();
-        this.quorumPeer.setClientPortAddress(inetAddress);
-        this.quorumPeer.setTxnFactory(txnLog);
-        this.quorumPeer.setQuorumPeers(servers);
-        this.quorumPeer.setElectionType(3);
-        this.quorumPeer.setMyid(this.zooKeeperCfg.getServerID());
-        this.quorumPeer.setTickTime(this.zooKeeperCfg.getTickTime());
-        this.quorumPeer.setMinSessionTimeout(this.zooKeeperCfg.getMinSessionTimeout());
-        this.quorumPeer.setMaxSessionTimeout(this.zooKeeperCfg.getMaxSessionTimeout());
-        this.quorumPeer.setInitLimit(this.zooKeeperCfg.getInitLimit());
-        this.quorumPeer.setSyncLimit(this.zooKeeperCfg.getSyncLimit());
-        this.quorumPeer.setQuorumVerifier(new QuorumMaj(servers.size()));
-        this.quorumPeer.setCnxnFactory(cnxnFactory);
-        this.quorumPeer.setZKDatabase(new ZKDatabase(this.quorumPeer.getTxnFactory()));
-        this.quorumPeer.setLearnerType(this.zooKeeperCfg.getPeerType());
-        this.quorumPeer.setSyncEnabled(this.zooKeeperCfg.isSyncEnabled());
-        this.quorumPeer.setQuorumListenOnAllIPs(true);
-        this.quorumPeer.setDaemon(true);
-        //
+        //1. start zookeeper
         logger.info("zkNode starting...");
-        this.quorumPeer.start();
-        //
-        //
-        // watch server start.
-        long curTime = System.currentTimeMillis();
-        while (true) {
-            ServerState ackstate = this.quorumPeer.getPeerState();
-            if (ackstate == ServerState.LOOKING) {
-                Thread.sleep(1000);
-                long passTime = System.currentTimeMillis() - curTime;
-                long second = passTime / 1000;
-                if (second > 150) {
-                    throw new InterruptedException("150s, zkNode start fail.");/*15秒没起来*/
-                } else if (second > 0) {
-                    logger.info("zkNode starting {} second pass.", second);
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    zkServer.runFromConfig(config);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
-                continue;
             }
-            logger.info("zkNode starting -> ok.");
-            break;
+        };
+        t.setDaemon(true);
+        t.setName("ZooKeeper-Main");
+        t.start();
+        //
+        //4.init zooKeeper Client
+        RsfCenterCfg rsfCenterCfg = rsfContext.getAppContext().getInstance(RsfCenterCfg.class);
+        InetSocketAddress inetAddress = rsfCenterCfg.getBindInetAddress();
+        String serverConnection = inetAddress.getHostName() + ":" + inetAddress.getPort();
+        super.startZooKeeper(rsfContext, serverConnection);
+    }
+    private static class ZooKeeperMaster extends QuorumPeerMain {
+        public void shutdown() {
+            super.quorumPeer.shutdown();
         }
-        //
-        //
-        String serverConnection = inetAddress.getAddress().getHostAddress() + ":" + inetAddress.getPort();
-        //super.startZooKeeper(appContext, serverConnection);
     }
 }
