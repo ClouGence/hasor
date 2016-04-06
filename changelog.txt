@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.2.1 (2016-?)
+﻿===== Hasor-Core v2.3.0 (2016-?)
 * 新增:
     01.新增“.hasor.default.asEagerSingleton”配置用来配置默认情况下，类型是以单例模式运行还是以原型方式运行。（默认单例模式）
     02.ApiBinder接口新增“asEagerPrototype”方法用来强制以原型方式注册。到目前为止可以选择的方式有：“asEagerSingleton”、“asEagerPrototype”
