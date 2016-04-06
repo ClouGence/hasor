@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:h="http://project.hasor.net/hasor/schema/spring"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/schema/spring/spring-hasor.xsd"
+http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/schema/spring-hasor-2.3.0.xsd"
 	default-autowire="byName">
 
 	<!-- 
