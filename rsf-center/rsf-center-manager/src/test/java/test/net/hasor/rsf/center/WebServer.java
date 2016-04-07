@@ -21,9 +21,9 @@ import org.junit.Test;
 public class WebServer {
     public static void main(String[] args) throws Exception {
         //
-    }
-    @Test
-    public void main() throws Exception {
+//    }
+//    @Test
+//    public void main() throws Exception {
         Server server = new Server();
         SelectChannelConnector connector8082 = new SelectChannelConnector();
         connector8082.setPort(8082);

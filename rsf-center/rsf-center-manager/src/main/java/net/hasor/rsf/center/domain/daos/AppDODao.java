@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import org.more.bizcommon.PageResult;
 import org.more.bizcommon.ResultDO;
+import net.hasor.rsf.center.core.ErrorCode;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
-import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.AppDO;
 import net.hasor.rsf.center.domain.form.apps.AppQueryForm;
 /**

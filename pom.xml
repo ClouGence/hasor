@@ -32,7 +32,7 @@
 
 	<modules>
 		<module>rsf-core</module>
-		<!-- <module>rsf-center/rsf-center-manager</module> -->
+		<module>rsf-center/rsf-center-manager</module>
 		<module>rsf-center/rsf-center-runtime</module>
 	</modules>
 </project>

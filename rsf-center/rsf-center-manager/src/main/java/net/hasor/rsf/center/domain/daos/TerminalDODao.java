@@ -16,9 +16,9 @@
 package net.hasor.rsf.center.domain.daos;
 import java.util.HashMap;
 import org.more.bizcommon.ResultDO;
+import net.hasor.rsf.center.core.ErrorCode;
 import net.hasor.rsf.center.core.dao.AbstractDao;
 import net.hasor.rsf.center.core.dao.Dao;
-import net.hasor.rsf.center.domain.constant.ErrorCode;
 import net.hasor.rsf.center.domain.entity.TerminalDO;
 /**
  * 终端

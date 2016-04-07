@@ -37,7 +37,12 @@ import net.hasor.rsf.center.server.services.RsfCenterRegisterVerificationFilter;
  * @version : 2015年5月5日
  */
 public class RsfCenterServerModule implements LifeModule {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    private RsfCenterCfg rsfCenterCfg;
+    public RsfCenterServerModule() {}
+    public RsfCenterServerModule(RsfCenterCfg rsfCenterCfg) {
+        this.rsfCenterCfg = rsfCenterCfg;
+    }
     //
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
@@ -56,15 +61,17 @@ public class RsfCenterServerModule implements LifeModule {
         //        });
         //
         // 2.解析注册中心配置信息。
-        RsfCenterCfg rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        if (this.rsfCenterCfg == null) {
+            this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        }
         //
         // 3.工作模式确定
-        apiBinder.bindType(RsfCenterCfg.class).toInstance(rsfCenterCfg);
-        WorkMode workMode = rsfCenterCfg.getWorkMode();
+        apiBinder.bindType(RsfCenterCfg.class).toInstance(this.rsfCenterCfg);
+        WorkMode workMode = this.rsfCenterCfg.getWorkMode();
         logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         //
         // 4.启动Zookeeper集群
-        apiBinder.installModule(new ZooKeeperModule(rsfCenterCfg));
+        apiBinder.installModule(new ZooKeeperModule(this.rsfCenterCfg));
         //
         // 5.启动RSF框架，发布注册中心接口
         apiBinder.installModule(new RsfModule() {

@@ -20,6 +20,8 @@ import net.hasor.core.LifeModule;
 import net.hasor.rsf.center.core.dao.DaoModule;
 import net.hasor.rsf.center.core.filters.JumpFilter;
 import net.hasor.rsf.center.core.filters.VarFilter;
+import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -32,12 +34,14 @@ public class WebManagerModule extends WebModule implements LifeModule {
     public static final String CenterStartEvent = "CenterStartEvent";
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        RsfCenterCfg cfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
+        //
         // Filters
         apiBinder.filter("/*").through(new JumpFilter());
         apiBinder.filter("/*").through(new VarFilter());
         //
         // 3.数据源
-        apiBinder.installModule(new DaoModule(this.rsfCenterCfg));
+        apiBinder.installModule(new DaoModule(cfg));
         //
         // Rsf-center
         apiBinder.installModule(new RsfCenterServerModule());
