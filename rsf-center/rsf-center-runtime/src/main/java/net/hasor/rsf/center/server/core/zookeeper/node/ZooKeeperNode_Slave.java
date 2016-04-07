@@ -216,6 +216,10 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         //
         byte[] byteDatas = this.zooKeeper.getData(nodePath, false, stat);
         logger.debug("zkClient readData Node {}", nodePath);
-        return new String(byteDatas);
+        if (byteDatas == null) {
+            return null;
+        } else {
+            return new String(byteDatas);
+        }
     }
 }

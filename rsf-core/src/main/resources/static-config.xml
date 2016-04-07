@@ -4,7 +4,10 @@
 	<hasor>
 		<loadPackages>net.hasor.rsf.*</loadPackages>
 		<!-- RSF框架启动入口 -->
-		<modules.module>net.hasor.rsf.bootstrap.RsfFrameworkModule</modules.module>
+		<modules>
+			<module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
+			<module>net.hasor.rsf.console.commands.CommandPlugin</module>
+		</modules>
 		
 		<!-- RSF框架环境变量 -->
 		<environmentVar>
@@ -35,9 +38,7 @@
 									默认情况下您必须登录到应用服务器上，才能够访问RSF管理控制台。
 				提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
 		-->
-		<console port="2181" inBound="local,127.0.0.1">
-			<commands name="" type="" />
-		</console>
+		<console port="2181" inBound="local,127.0.0.1" />
 
 		<!--注册中心，用于更新服务列表的配置服务器 -->
 		<centerServers timeout="6000" heartbeatTime="15000" automaticOnline="true">

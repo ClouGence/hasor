@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.command;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
+package net.hasor.rsf.center.server.push.share;
+import net.hasor.core.EventListener;
+import net.hasor.core.Singleton;
+import net.hasor.plugins.event.Event;
+import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.center.server.push.PushEvent;
 /**
- * 
- * @version : 2016年4月3日
+ * 将事件分享到集群其它RsfCenter中上去。
+ * @version : 2016年3月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HelpRsfCommand implements RsfCommand {
+@Singleton
+@Event(RsfCenterEvent.PushEvent)
+public class SharePushEvent implements EventListener<PushEvent> {
     @Override
-    public String helpInfo() {
+    public void onEvent(String event, PushEvent eventData) throws Throwable {
         // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public boolean inputMultiLine() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-    @Override
-    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable {
-        Thread.sleep(3000);
-        // TODO Auto-generated met hod stub
-        return "Hello Word.";
     }
 }

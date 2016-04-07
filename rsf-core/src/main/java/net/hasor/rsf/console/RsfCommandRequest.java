@@ -41,7 +41,7 @@ public final class RsfCommandRequest {
         this.rsfContext = rsfContext;
         this.rsfCommand = rsfCommand;
         this.nettyContext = nettyContext;
-        this.requestArgs = requestArgs.split(" ");
+        this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
         this.bodyBuffer = new StringBuffer("");
         this.status = rsfCommand.inputMultiLine() ? CommandRequestStatus.Prepare : CommandRequestStatus.Ready;
         this.doClose = false;

@@ -35,6 +35,7 @@ import net.hasor.rsf.center.server.core.zookeeper.node.ZooKeeperNode_Master;
 import net.hasor.rsf.center.server.core.zookeeper.node.ZooKeeperNode_Slave;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.ServerInfo;
+import net.hasor.rsf.center.server.domain.WorkMode;
 /**
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
@@ -108,15 +109,17 @@ public class ZooKeeperModule implements LifeModule {
         zkProp.setProperty("quorumListenOnAllIPs", "false");
         zkProp.setProperty("electionPort", String.valueOf(this.rsfCenterCfg.getElectionPort()));
         zkProp.setProperty("peerType", this.rsfCenterCfg.getPeerType().name());
-        Map<Long, ServerInfo> serverMap = this.rsfCenterCfg.getZkServers();
-        if (serverMap == null || serverMap.isEmpty()) {
-            throw new IllegalStateException("rsfCenter.zooKeeper.zkServers.server is null.");
-        } else {
-            for (Entry<Long, ServerInfo> ent : serverMap.entrySet()) {
-                //server.1=localhost:2887:3887
-                String key = "server." + ent.getKey();
-                String value = ent.getValue().toString();
-                zkProp.setProperty(key, value);
+        if (this.rsfCenterCfg.getWorkMode() != WorkMode.Alone) {
+            Map<Long, ServerInfo> serverMap = this.rsfCenterCfg.getZkServers();
+            if (serverMap == null || serverMap.isEmpty()) {
+                throw new IllegalStateException("rsfCenter.zooKeeper.zkServers.server is null.");
+            } else {
+                for (Entry<Long, ServerInfo> ent : serverMap.entrySet()) {
+                    //server.1=localhost:2887:3887
+                    String key = "server." + ent.getKey();
+                    String value = ent.getValue().toString();
+                    zkProp.setProperty(key, value);
+                }
             }
         }
         //        // - Client模式

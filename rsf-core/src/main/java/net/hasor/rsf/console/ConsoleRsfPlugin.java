@@ -49,6 +49,7 @@ public class ConsoleRsfPlugin implements RsfPlugin {
     private TelnetHandler   telnetHandler = null;
     private InterAddress    bindAddress   = null;
     private EventLoopGroup  workerGroup   = null;
+    //
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         //1.初始化常量配置。

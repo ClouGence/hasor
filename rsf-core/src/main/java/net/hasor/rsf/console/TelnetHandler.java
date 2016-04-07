@@ -1,17 +1,17 @@
 /*
- * Copyright 2012 The Netty Project
+ * Copyright 2008-2009 the original author or authors.
  *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package net.hasor.rsf.console;
 import java.net.InetAddress;
@@ -45,6 +45,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     private static final AttributeKey<RsfCommandRequest> KEY    = AttributeKey.newInstance("CommandRequest");
     private static final String                          CMD    = "rsf>";
     private RsfContext                                   rsfContext;
+    private CommandManager                               commandManager;
     private ScheduledExecutorService                     executor;
     private String[]                                     inBoundAddress;
     //
@@ -57,6 +58,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         threadPool.setMaximumPoolSize(workSize);
         //
         this.inBoundAddress = rsfContext.getSettings().getConsoleInBoundAddress();
+        this.commandManager = rsfContext.getAppContext().getInstance(CommandManager.class);
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -149,7 +151,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
                 requestCMD = inputString.substring(0, cmdIndex);
                 requestArgs = inputString.substring(cmdIndex + 1);
             }
-            RsfCommand rsfCommand = this.rsfContext.getAppContext().findBindingBean(requestCMD, RsfCommand.class);
+            RsfCommand rsfCommand = this.commandManager.findCommand(requestCMD);
             if (rsfCommand == null) {
                 return new RsfCommandResponse("'" + requestCMD + "' is bad command.", true, false);
             }
