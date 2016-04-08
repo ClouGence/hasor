@@ -27,5 +27,6 @@ public class CommandPlugin implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.bindType(RsfCommand.class).uniqueName().to(HelpRsfCommand.class);
         apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
     }
 }

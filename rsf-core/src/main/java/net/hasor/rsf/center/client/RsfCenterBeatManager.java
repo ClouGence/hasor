@@ -122,7 +122,14 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     }
     //
     public synchronized void online() {
-        logger.info("rsfCenterBeat-> received online signal.");
+        try {
+            if (this.rsfContext.isOnline()) {
+                logger.info("rsfCenterBeat-> received online signal.");
+                this.run();
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
     public synchronized void offline() {
         List<ServiceDomain<?>> serviceList = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());

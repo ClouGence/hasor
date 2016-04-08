@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
-	<hasor.rsfConfig enable="true" bindAddress="127.0.0.1" port="8001">
+	<hasor.rsfConfig enable="true" address="127.0.0.1" port="8001" console.port="8002">
 		<centerServers>
 			<server>rsf://127.0.0.1:2180</server>
 			<!-- <server>rsf://127.0.0.1:2110</server> -->
