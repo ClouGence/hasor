@@ -144,7 +144,7 @@ public class RsfCenterCfg {
         }
         //
         cfg.pushQueueMaxSize = settings.getInteger("rsfCenter.push.queueMaxSize", 100);// 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。
-        cfg.pushSleepTime = settings.getInteger("rsfCenter.push.sleepTime", 3000);// 数据推送线程每次工作等待的时间
+        cfg.pushSleepTime = settings.getInteger("rsfCenter.push.sleepTime", 1000);// 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么转发到其它机器上。
         cfg.anonymousAppCode = settings.getString("rsfCenter.push.anonymousAppCode", "anonymous");// 默认推送使用的：应用程序代码
         return cfg;
     }

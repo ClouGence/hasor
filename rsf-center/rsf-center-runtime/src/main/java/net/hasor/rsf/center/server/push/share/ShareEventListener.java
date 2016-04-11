@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push.share;
-import net.hasor.core.EventListener;
-import net.hasor.core.Singleton;
-import net.hasor.plugins.event.Event;
-import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.server.push.PushEvent;
 /**
- * 将事件分享到集群其它RsfCenter中上去。
- * @version : 2016年3月1日
+ * 注册中心之间分享事件的远程接口。
+ * @version : 2016年4月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-@Event(RsfCenterEvent.PushEvent)
-public class SharePushEvent implements EventListener<PushEvent> {
-    @Override
-    public void onEvent(String event, PushEvent eventData) throws Throwable {
-        // TODO Auto-generated method stub
-    }
+@RsfService(group = "RSF", version = "1.0.0")
+public interface ShareEventListener {
+    /**分享事件*/
+    public boolean shareEvent(PushEvent eventData);
 }

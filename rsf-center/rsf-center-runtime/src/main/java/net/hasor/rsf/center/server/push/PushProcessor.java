@@ -38,7 +38,6 @@ public class PushProcessor {
     @Init
     public void init() {
         this.rsfClientListener = new ThreadLocal<RsfCenterListener>() {
-            @Override
             protected RsfCenterListener initialValue() {
                 return rsfContext.getRsfClient().wrapper(RsfCenterListener.class);
             }
@@ -68,16 +67,28 @@ public class PushProcessor {
     //
     public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
         CenterEventBody eventBody = new CenterEventBody();
-        eventBody.setEventType(event.getPushEventType().getEventType().getEventType());
+        eventBody.setEventType(event.getPushEventType().forCenterEvent().getEventType());
         eventBody.setServiceID(event.getServiceID());
         eventBody.setSnapshotInfo(event.getSnapshotInfo());
         eventBody.setEventBody(event.getEventBody());
+        boolean result = false;
         //
-        sendEvent(rsfAddress, eventBody);
+        result = sendEvent(rsfAddress, eventBody);
+        if (result == false) {
+            result = sendEvent(rsfAddress, eventBody);
+            if (result == false) {
+                result = sendEvent(rsfAddress, eventBody);
+            }
+        }
     }
-    protected void sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) throws Throwable {
-        RsfCenterListener listener = this.rsfClientListener.get();
-        ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
-        listener.onEvent(eventBody.getEventType(), eventBody);
+    protected boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) {
+        try {
+            RsfCenterListener listener = this.rsfClientListener.get();
+            ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
+            return listener.onEvent(eventBody.getEventType(), eventBody);
+        } catch (Throwable e) {
+            logger.error("send event to target error:" + e.getMessage(), e);
+            return false;
+        }
     }
 }

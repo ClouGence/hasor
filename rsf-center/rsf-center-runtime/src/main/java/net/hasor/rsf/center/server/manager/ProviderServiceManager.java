@@ -21,7 +21,7 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.push.PushEvent;
-import net.hasor.rsf.center.server.push.RsfCenterPushEvent;
+import net.hasor.rsf.center.server.push.RsfCenterEventEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 提供者Manager
@@ -69,7 +69,7 @@ public class ProviderServiceManager extends BaseServiceManager {
         } finally {
             List<String> consumerList = this.getConsumerList(serviceID);
             String rsfHostString = convertTo(hostString);
-            PushEvent event = RsfCenterPushEvent.AppendAddressEvent//
+            PushEvent event = RsfCenterEventEnum.AppendAddressEvent//
                     .newEvent(serviceID).addTarget(consumerList).setEventBody(rsfHostString).setSnapshotInfo(snapshotInfo);
             this.pushEvent(event);
         }
@@ -88,7 +88,7 @@ public class ProviderServiceManager extends BaseServiceManager {
             //
             List<String> consumerList = this.getConsumerList(serviceID);
             String rsfHostString = convertTo(hostString);
-            PushEvent event = RsfCenterPushEvent.RemoveAddressEvent//
+            PushEvent event = RsfCenterEventEnum.RemoveAddressEvent//
                     .newEvent(serviceID).addTarget(consumerList).setEventBody(rsfHostString).setSnapshotInfo(snapshotInfo);
             this.pushEvent(event);
         }

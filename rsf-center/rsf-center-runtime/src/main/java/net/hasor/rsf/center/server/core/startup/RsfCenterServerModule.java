@@ -64,9 +64,9 @@ public class RsfCenterServerModule implements LifeModule {
         if (this.rsfCenterCfg == null) {
             this.rsfCenterCfg = RsfCenterCfg.buildFormConfig(apiBinder.getEnvironment());
         }
+        apiBinder.bindType(RsfCenterCfg.class).toInstance(this.rsfCenterCfg);
         //
         // 3.工作模式确定
-        apiBinder.bindType(RsfCenterCfg.class).toInstance(this.rsfCenterCfg);
         WorkMode workMode = this.rsfCenterCfg.getWorkMode();
         logger.info("rsf work mode at : ({}){}", workMode.getCodeType(), workMode.getCodeString());
         //
@@ -75,7 +75,6 @@ public class RsfCenterServerModule implements LifeModule {
         //
         // 5.启动RSF框架，发布注册中心接口
         apiBinder.installModule(new RsfModule() {
-            @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 rsfContext.offline();//切换下线，暂不接收任何Rsf请求
                 //

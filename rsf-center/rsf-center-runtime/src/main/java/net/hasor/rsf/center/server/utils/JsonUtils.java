@@ -16,7 +16,7 @@
 package net.hasor.rsf.center.server.utils;
 import org.more.json.JSON;
 import org.more.json.JSONEnumConvertor;
-import net.hasor.rsf.center.server.push.RsfCenterPushEvent;
+import net.hasor.rsf.center.server.push.RsfCenterEventEnum;
 /**
  * 
  * @version : 2016年3月25日
@@ -30,7 +30,7 @@ public class JsonUtils {
             synchronized (LOCK) {
                 if (json == null) {
                     json = new JSON();
-                    json.addConvertor(RsfCenterPushEvent.class, new JSONEnumConvertor(false));
+                    json.addConvertor(RsfCenterEventEnum.class, new JSONEnumConvertor(false));
                 }
             }
         }

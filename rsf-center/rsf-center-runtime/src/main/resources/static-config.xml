@@ -22,10 +22,10 @@
 		<push>
 			<!-- 默认推送使用的：应用程序代码 -->
 			<anonymousAppCode>anonymous</anonymousAppCode>
-			<!-- 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。 -->
-			<queueMaxSize>100</queueMaxSize>
-			<!-- 数据推送线程每次工作等待的时间，单位毫秒 -->
-			<sleepTime>3000</sleepTime>
+			<!-- 推送队列最大长度，当待推送服务达到这个阀值之后注册中心就会将新的事件交给集群其它机器去处理。 -->
+			<queueMaxSize>10000</queueMaxSize>
+			<!-- 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么转发到其它机器上。单位毫秒 -->
+			<sleepTime>1000</sleepTime>
 		</push>
 
 		<!-- ZooKeeper 配置，ZK的作用是让rsf-center集群能够感知到所有rsf-center服务器，并且在rsf-center集群中选举出一个 leader -->

@@ -16,12 +16,12 @@
 package net.hasor.rsf.center.server.push;
 import net.hasor.rsf.center.RsfCenterEvent;
 /**
- * 注册中心下推送的事件类型
+ * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
  * 
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum RsfCenterPushEvent {
+public enum RsfCenterEventEnum {
     /**
      * 追加或重新激活地址
      * 说明：每当新的提供者上线时，都会通过该事件推送给消费者端。*/
@@ -72,10 +72,10 @@ public enum RsfCenterPushEvent {
     //---------------------------------------------------------------------------------------------
     //
     //
-    private RsfCenterEvent                 eventType;
+    private RsfCenterEvent                 rsfCenterEvent;
     private Class<? extends PushProcessor> processorType;
-    RsfCenterPushEvent(RsfCenterEvent eventType, Class<? extends PushProcessor> processorType) {
-        this.eventType = eventType;
+    RsfCenterEventEnum(RsfCenterEvent rsfCenterEvent, Class<? extends PushProcessor> processorType) {
+        this.rsfCenterEvent = rsfCenterEvent;
         this.processorType = processorType;
     }
     public Class<? extends PushProcessor> getProcessorType() {
@@ -85,8 +85,8 @@ public enum RsfCenterPushEvent {
     public String toString() {
         return this.name();
     }
-    public RsfCenterEvent getEventType() {
-        return eventType;
+    public RsfCenterEvent forCenterEvent() {
+        return rsfCenterEvent;
     }
     public PushEvent newEvent(String serviceID) {
         return new PushEvent(serviceID, this);

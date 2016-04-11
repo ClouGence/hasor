@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ import net.hasor.plugins.event.Event;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
+import net.hasor.rsf.center.server.push.share.SharePushManager;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 /**
  * 推送服务触发器
@@ -39,70 +40,72 @@ import net.hasor.rsf.center.server.utils.JsonUtils;
 @Event(RsfCenterEvent.PushEvent)
 public class PushQueue implements Runnable, EventListener<PushEvent> {
     protected Logger                               logger = LoggerFactory.getLogger(getClass());
-    private Queue<PushEvent>                       dataQueue;
-    private Thread                                 threadPushQueue;
-    private Map<RsfCenterPushEvent, PushProcessor> processorMapping;
+    private LinkedBlockingQueue<PushEvent>         dataQueue;
+    private ArrayList<Thread>                      threadPushQueue;
+    private Map<RsfCenterEventEnum, PushProcessor> processorMapping;
     @Inject
     private RsfContext                             rsfContext;
     @Inject
     private RsfCenterCfg                           rsfCenterCfg;
+    @Inject
+    private SharePushManager                       sharePushManager;
     //
     @Init
     public void init() {
-        AppContext app = rsfContext.getAppContext();
-        this.processorMapping = new HashMap<RsfCenterPushEvent, PushProcessor>();
-        for (RsfCenterPushEvent eventType : RsfCenterPushEvent.values()) {
+        AppContext app = this.rsfContext.getAppContext();
+        this.processorMapping = new HashMap<RsfCenterEventEnum, PushProcessor>();
+        for (RsfCenterEventEnum eventType : RsfCenterEventEnum.values()) {
             PushProcessor processor = app.getInstance(eventType.getProcessorType());
             this.processorMapping.put(eventType, processor);
         }
         logger.info("pushQueue processor mapping ->{}", JsonUtils.toJsonString(this.processorMapping.keySet()));
         //
         this.dataQueue = new LinkedBlockingQueue<PushEvent>();
-        this.threadPushQueue = new Thread(this);
-        this.threadPushQueue.setDaemon(true);
-        this.threadPushQueue.setName("Rsf-Center-PushQueue");
-        this.threadPushQueue.start();
+        this.threadPushQueue = new ArrayList<Thread>();
+        for (int i = 1; i <= 3; i++) {
+            Thread pushQueue = this.createPushThread(i);
+            pushQueue.start();
+            this.threadPushQueue.add(pushQueue);
+        }
         logger.info("PushQueue Thread start.");
+    }
+    /**创建推送线程*/
+    protected Thread createPushThread(int index) {
+        Thread threadPushQueue = new Thread(this);
+        threadPushQueue.setDaemon(true);
+        threadPushQueue.setName("Rsf-Center-PushQueue-" + index);
+        return threadPushQueue;
     }
     //
     // - 收到推送消息。该方法不做推送，推送交给推送线程去做。
     public void onEvent(String event, PushEvent eventData) throws Throwable {
-        this.dataQueue.add(eventData);
-        //
         if (this.dataQueue.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
-            //推送线程定时运行一次，在两次运行期间如果等待推送的服务数达到了上限，那么也进行推送。
-            synchronized (this) {
-                this.notifyAll();
+            try {
+                Thread.sleep(this.rsfCenterCfg.getPushSleepTime());
+            } catch (Exception e) {
+                logger.error("pushQueue - " + e.getMessage(), e);
+            }
+            if (this.dataQueue.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
+                this.sharePushManager.shareEvent(eventData); //需要转发到进群其它机器中处理
+                return;
             }
         }
+        //
+        this.dataQueue.offer(eventData);//资源不在紧张，加入到队列中。
     }
     //
-    private synchronized void waitData() throws InterruptedException {
-        final long waitTime = this.rsfCenterCfg.getPushSleepTime();
-        if (this.dataQueue.isEmpty() == false) {
-            return;
-        } else {
-            for (;;) {
-                this.wait(waitTime);
-                if (this.dataQueue.isEmpty() == false) {
-                    return;
-                }
-            }
-        }
-    }
     public void run() {
         while (true) {
             try {
-                this.waitData();
+                doPushQueue();
             } catch (Throwable e) {
-                logger.error(e.getMessage(), e);
+                logger.error("doPushQueue - " + e.getMessage(), e);
             }
-            doPushQueue();
         }
     }
-    private void doPushQueue() {
+    private void doPushQueue() throws InterruptedException {
         PushEvent pushEvent = null;
-        while ((pushEvent = this.dataQueue.poll()) != null) {
+        while ((pushEvent = this.dataQueue.take()) != null) {
             PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
             if (pushProcessor != null) {
                 logger.info("pushEvent {} -> {}", pushEvent.getPushEventType().name(), pushEvent);

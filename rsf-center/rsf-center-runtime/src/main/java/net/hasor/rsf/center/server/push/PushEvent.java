@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
- * 
+ * 需要推送的事件对象
  * @version : 2016年3月23日
  * @author 赵永春(zyc@hasor.net)
  */
-public class PushEvent implements Comparable<PushEvent> {
-    private RsfCenterPushEvent pushEventType;//推送类型
-    private String             snapshotInfo; //snapshotInfo
-    private String             serviceID;    //ServiceID
-    private List<String>       targetList;   //推送指令对特定RSF客户端的指向
-    private String             eventBody;    //内容体
+public class PushEvent implements Comparable<PushEvent>, Serializable {
+    private static final long  serialVersionUID = -140715745519391877L;
+    private String             snapshotInfo;                           //snapshotInfo
+    private String             serviceID;                              //ServiceID
+    private List<String>       targetList;                             //推送指令对特定RSF客户端的指向
     //
-    PushEvent(String serviceID, RsfCenterPushEvent pushEventType) {
+    private RsfCenterEventEnum pushEventType;                          //推送的事件类型 @see RsfCenterEvent枚举
+    private String             eventBody;                              //内容体（真正推送的内容）
+    //
+    PushEvent(String serviceID, RsfCenterEventEnum pushEventType) {
         this.serviceID = serviceID;
         this.pushEventType = pushEventType;
         this.targetList = new ArrayList<String>();
@@ -67,7 +70,7 @@ public class PushEvent implements Comparable<PushEvent> {
         this.eventBody = eventBody;
         return this;
     }
-    public RsfCenterPushEvent getPushEventType() {
+    public RsfCenterEventEnum getPushEventType() {
         return pushEventType;
     }
     //
