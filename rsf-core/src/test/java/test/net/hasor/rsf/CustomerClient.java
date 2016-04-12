@@ -19,7 +19,7 @@ public class CustomerClient {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                InterAddress local = new InterAddress("rsf://127.0.0.1:8000/default");
+                InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
             }
         });
