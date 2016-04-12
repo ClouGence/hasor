@@ -41,9 +41,10 @@ import net.hasor.rsf.utils.NetworkUtils;
  */
 @Sharable
 public class TelnetHandler extends SimpleChannelInboundHandler<String> {
-    protected static Logger                              logger = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
-    private static final AttributeKey<RsfCommandRequest> KEY    = AttributeKey.newInstance("CommandRequest");
-    private static final String                          CMD    = "rsf>";
+    protected static Logger                              logger     = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    private static final AttributeKey<RsfCommandRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
+    private static final AttributeKey<RsfCommandSession> SessionKEY = AttributeKey.newInstance("CommandSession");
+    private static final String                          CMD        = "rsf>";
     private RsfContext                                   rsfContext;
     private CommandManager                               commandManager;
     private ScheduledExecutorService                     executor;
@@ -82,6 +83,11 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         } catch (Exception e) {
             hostSchema = InetAddress.getLocalHost().getHostAddress();
         }
+        //
+        Attribute<RsfCommandSession> attr = ctx.attr(SessionKEY);
+        if (attr.get() == null) {
+            attr.set(new RsfCommandSession(this.rsfContext, ctx));
+        }
         // Send greeting for a new connection.
         ctx.write("--------------------------------------------\r\n\r\n");
         ctx.write("Welcome to Remote Service Framework Console!\r\n");
@@ -98,7 +104,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
         request = request.trim();
-        Attribute<RsfCommandRequest> attr = ctx.attr(KEY);
+        Attribute<RsfCommandRequest> attr = ctx.attr(RequestKEY);
         boolean close = false;
         String result = "";
         //
@@ -143,6 +149,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     private RsfCommandResponse doRequest(final Attribute<RsfCommandRequest> cmdAttr, final ChannelHandlerContext ctx, final String inputString) {
         //1.准备环境
         RsfCommandRequest requestCmd = cmdAttr.get();
+        Attribute<RsfCommandSession> sessionAttr = ctx.attr(SessionKEY);
         if (requestCmd == null) {
             String requestCMD = inputString;
             String requestArgs = "";
@@ -155,7 +162,8 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             if (rsfCommand == null) {
                 return new RsfCommandResponse("'" + requestCMD + "' is bad command.", true, false);
             }
-            requestCmd = new RsfCommandRequest(this.rsfContext, ctx, rsfCommand, requestArgs);
+            //
+            requestCmd = new RsfCommandRequest(requestCMD, sessionAttr.get(), rsfCommand, requestArgs);
             cmdAttr.set(requestCmd);
         }
         //

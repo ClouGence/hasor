@@ -43,8 +43,8 @@ public class SwitchRsfCommand implements RsfCommand {
         return false;
     }
     @Override
-    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable {
-        //
+    public String doCommand(RsfCommandRequest request) throws Throwable {
+        RsfContext rsfContext = request.getRsfContext();
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {

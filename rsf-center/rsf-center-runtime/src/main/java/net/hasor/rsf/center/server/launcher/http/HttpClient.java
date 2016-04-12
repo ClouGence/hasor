@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.launcher;
+package net.hasor.rsf.center.server.launcher.http;
 import java.net.URL;
 import java.util.Map;
 import org.more.future.BasicFuture;

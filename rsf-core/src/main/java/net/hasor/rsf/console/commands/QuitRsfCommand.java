@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
@@ -36,7 +35,7 @@ public class QuitRsfCommand implements RsfCommand {
         return false;
     }
     @Override
-    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable {
+    public String doCommand(RsfCommandRequest request) throws Throwable {
         request.closeSession();
         return "logout of console";
     }

@@ -16,9 +16,11 @@
 package net.hasor.rsf.console;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
+import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
-import io.netty.channel.ChannelHandlerContext;
 import net.hasor.rsf.RsfContext;
 /**
  * 
@@ -26,25 +28,28 @@ import net.hasor.rsf.RsfContext;
  * @author 赵永春(zyc@hasor.net)
  */
 public final class RsfCommandRequest {
-    private RsfContext            rsfContext;   //Rsf环境
-    private RsfCommand            rsfCommand;   //命令执行体
-    private ChannelHandlerContext nettyContext; //网络套接字
-    private String[]              requestArgs;  //请求参数
-    private CommandRequestStatus  status;
-    private StringBuffer          bodyBuffer;   //多行输入下内容缓冲区
-    private String                result;       //执行结果
-    private long                  doStartTime;  //命令执行的开始时间
-    private boolean               doClose;
+    public static final String   WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
+    private RsfCommandSession    rsfSession;                                              //Rsf环境
+    private RsfCommand           rsfCommand;                                              //命令执行体
+    private String               command;
+    private String[]             requestArgs;                                             //请求参数
+    private CommandRequestStatus status;
+    private StringBuffer         bodyBuffer;                                              //多行输入下内容缓冲区
+    private String               result;                                                  //执行结果
+    private long                 doStartTime;                                             //命令执行的开始时间
+    private boolean              doClose;
+    private Map<String, Object>  attr;
     //
-    RsfCommandRequest(RsfContext rsfContext, ChannelHandlerContext nettyContext, //
+    RsfCommandRequest(String command, RsfCommandSession rsfSession, //
             RsfCommand rsfCommand, String requestArgs) {
-        this.rsfContext = rsfContext;
+        this.rsfSession = rsfSession;
         this.rsfCommand = rsfCommand;
-        this.nettyContext = nettyContext;
+        this.command = command;
         this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
         this.bodyBuffer = new StringBuffer("");
         this.status = rsfCommand.inputMultiLine() ? CommandRequestStatus.Prepare : CommandRequestStatus.Ready;
         this.doClose = false;
+        this.attr = new HashMap<String, Object>();
     }
     void appendRequestBody(String requestBody) {
         if (this.rsfCommand.inputMultiLine()) {
@@ -80,23 +85,36 @@ public final class RsfCommandRequest {
         public void run() {
             try {
                 doStartTime = System.currentTimeMillis();
-                result = rsfCommand.doCommand(rsfContext, RsfCommandRequest.this);
+                result = rsfCommand.doCommand(RsfCommandRequest.this);
             } catch (Throwable e) {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
                 result = "execute the command error :" + sw.toString();
             } finally {
+                //
+                Object withoutAfterClose = getAttr(WITHOUT_AFTER_CLOSE_SESSION);
+                if (withoutAfterClose == null) {
+                    withoutAfterClose = false;
+                }
+                boolean withoutAfterCloseBoolean = (Boolean) ConverterUtils.convert(Boolean.TYPE, withoutAfterClose);
+                if (withoutAfterCloseBoolean == false) {
+                    Object afterClose = getSessionAttr(RsfCommand.AFTER_CLOSE_SESSION);
+                    if (afterClose != null) {
+                        doClose = (Boolean) ConverterUtils.convert(Boolean.TYPE, afterClose);
+                    }
+                }
+                //
                 if (!doClose) {
                     result = result + "\r\n--------------\r\n";
                     result = result + ("pass time: " + (System.currentTimeMillis() - doStartTime) + "ms.");
                 }
             }
-            writeMessageLine(result);
+            rsfSession.writeMessageLine(result);
             status = CommandRequestStatus.Complete;
             this.callBack.run();
             if (doClose) {
-                writeMessageLine("bye.");
-                nettyContext.close();
+                rsfSession.writeMessageLine("bye.");
+                rsfSession.close();
             }
         }
     }
@@ -108,9 +126,28 @@ public final class RsfCommandRequest {
     }
     //
     //
+    /**获取会话属性。*/
+    public Object getSessionAttr(String key) {
+        return this.rsfSession.getSessionAttr(key);
+    }
+    /**设置会话属性。*/
+    public void setSessionAttr(String key, Object value) {
+        this.rsfSession.setSessionAttr(key, value);
+    }
+    /**获取会话属性。*/
+    public Object getAttr(String key) {
+        return this.attr.get(key.toLowerCase());
+    }
+    /**设置请求属性。*/
+    public void setAttr(String key, Object value) {
+        this.attr.put(key.toLowerCase(), value);
+    }
+    public String getCommandString() {
+        return this.command;
+    }
     /**获取RSF环境{@link RsfContext}*/
     public RsfContext getRsfContext() {
-        return this.rsfContext;
+        return this.rsfSession.getRsfContext();
     }
     /**获取request*/
     public String[] getRequestArgs() {
@@ -118,20 +155,6 @@ public final class RsfCommandRequest {
     }
     public String getRequestBody() {
         return this.bodyBuffer.toString();
-    }
-    /**输出状态（带有换行）。*/
-    public void writeMessageLine(String message) {
-        if (StringUtils.isBlank(message)) {
-            message = "";
-        }
-        this.nettyContext.writeAndFlush(message + "\r\n");
-    }
-    /**输出状态（不带换行）。*/
-    public void writeMessage(String message) {
-        if (StringUtils.isBlank(message)) {
-            message = "";
-        }
-        this.nettyContext.writeAndFlush(message);
     }
     /**关闭Telnet连接。*/
     public void closeSession() {

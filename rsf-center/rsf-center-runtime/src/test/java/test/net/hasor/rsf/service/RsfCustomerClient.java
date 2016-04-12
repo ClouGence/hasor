@@ -1,7 +1,6 @@
 package test.net.hasor.rsf.service;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
@@ -17,8 +16,7 @@ public class RsfCustomerClient {
         AppContext clientContext = Hasor.createAppContext("/rsf/client-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(EchoService.class).register();
+                rsfContext.binder().rsfService(EchoService.class).register();
             }
         });
         System.out.println("server start.");

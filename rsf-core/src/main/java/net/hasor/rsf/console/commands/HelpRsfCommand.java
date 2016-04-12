@@ -42,7 +42,8 @@ public class HelpRsfCommand implements RsfCommand {
         return false;
     }
     @Override
-    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable {
+    public String doCommand(RsfCommandRequest request) throws Throwable {
+        RsfContext rsfContext = request.getRsfContext();
         CommandManager commandManager = rsfContext.getAppContext().getInstance(CommandManager.class);
         List<String> cmdNames = commandManager.getCommandNames();
         StringWriter sw = new StringWriter();

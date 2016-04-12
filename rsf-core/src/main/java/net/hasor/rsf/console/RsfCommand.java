@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
-import net.hasor.rsf.RsfContext;
 /**
  * RSF命令
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfCommand {
+    public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";
+    //
     /**帮助信息.*/
     public String helpInfo();
     /**命令是否支持多行输入。*/
     public boolean inputMultiLine();
     /**执行命令*/
-    public String doCommand(RsfContext rsfContext, RsfCommandRequest request) throws Throwable;
+    public String doCommand(RsfCommandRequest request) throws Throwable;
 }

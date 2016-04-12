@@ -15,15 +15,17 @@
  */
 package net.hasor.rsf.center.server.launcher;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.more.future.BasicFuture;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
 /**
@@ -33,14 +35,12 @@ import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
  */
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
-    public static void main(String[] args, ClassWorld world) throws IOException, InterruptedException {
-        //
-        //MDC.put("", "");
+    public static void main(String[] args, ClassWorld world) throws Throwable {
         String action = args[0];
         //
         if ("start".equalsIgnoreCase(action)) {
-            String config = args[1];
-            AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
+            doStart(args);
+            return;
             //
         } else if ("stop".equalsIgnoreCase(action)) {
             Thread.sleep(2000);
@@ -58,6 +58,17 @@ public class MainLauncher {
             }
         }
         //
-        Thread.sleep(30000);
+    }
+    protected static void doStart(String[] args) throws InterruptedException, ExecutionException {
+        final BasicFuture<Object> future = new BasicFuture<Object>();
+        final String config = args[1];
+        AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
+        app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                future.completed(new Object());//to end
+            }
+        });
+        //
+        future.get();
     }
 }

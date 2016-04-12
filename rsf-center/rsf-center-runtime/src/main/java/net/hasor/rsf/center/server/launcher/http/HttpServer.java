@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.launcher;
+package net.hasor.rsf.center.server.launcher.http;
 /***
  * 基于Netty的简易HttpServer
  * @version : 2015年5月5日
