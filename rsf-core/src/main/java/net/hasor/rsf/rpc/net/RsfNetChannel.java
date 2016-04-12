@@ -84,8 +84,9 @@ public class RsfNetChannel {
                     e = new RsfException(ProtocolStatus.NetworkError, errorMsg);
                     logger.error(e.getMessage(), e);
                     //回应Response
-                    if (callBack != null)
+                    if (callBack != null) {
                         callBack.failed(requestID, e);
+                    }
                 } else if (!future.isSuccess()) {
                     //异常状况
                     Throwable ex = future.cause();
@@ -93,8 +94,9 @@ public class RsfNetChannel {
                     e = new RsfException(ProtocolStatus.NetworkError, errorMsg, ex);
                     logger.error(e.getMessage(), e);
                     //回应Response
-                    if (callBack != null)
+                    if (callBack != null) {
                         callBack.failed(requestID, e);
+                    }
                 }
             }
         });

@@ -109,22 +109,24 @@ class AddressBucket {
             }
         }
         //2.保存流控规则
-        if (this.flowControlRef != null && StringUtils.isNotBlank(this.flowControlRef.flowControlScript)) {
+        FlowControlRef flowControlRef = this.flowControlRef;
+        if (flowControlRef != null && StringUtils.isNotBlank(flowControlRef.flowControlScript)) {
             String fclName = this.serviceID + RsfConstants.FlowControlRef_ZipEntry;
             try {
                 String comment = "the flowControlRef of [" + this.serviceID + "] service.";
-                ZipUtils.writeEntry(outStream, this.flowControlRef.flowControlScript, fclName, comment);
+                ZipUtils.writeEntry(outStream, flowControlRef.flowControlScript, fclName, comment);
                 logger.info("flowControlRef save to entry -> {} ,finish.", fclName);
             } catch (Exception e) {
                 logger.error("flowControlRef save to entry -> {} ,error -> {}", fclName, e.getMessage(), e);
             }
         }
         //3.保存路由脚本
-        if (this.ruleRef != null) {
+        RuleRef ruleRef = this.ruleRef;
+        if (ruleRef != null) {
             String slsName = this.serviceID + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
             try {
                 String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
-                String script = this.ruleRef.getServiceLevel().getScript();
+                String script = ruleRef.getServiceLevel().getScript();
                 ZipUtils.writeEntry(outStream, script, slsName, comment);
                 logger.info("ServiceLevelScript save to entry -> {} ,finish.", slsName);
             } catch (Exception e) {
@@ -133,7 +135,7 @@ class AddressBucket {
             String mlsName = this.serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
             try {
                 String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
-                String script = this.ruleRef.getMethodLevel().getScript();
+                String script = ruleRef.getMethodLevel().getScript();
                 ZipUtils.writeEntry(outStream, script, mlsName, comment);
                 logger.info("MethodLevelScript save to entry -> {} ,finish.", mlsName);
             } catch (Exception e) {
@@ -142,7 +144,7 @@ class AddressBucket {
             String alsName = this.serviceID + RsfConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
             try {
                 String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
-                String script = this.ruleRef.getArgsLevel().getScript();
+                String script = ruleRef.getArgsLevel().getScript();
                 ZipUtils.writeEntry(outStream, script, alsName, comment);
                 logger.info("ArgsLevelScript save to entry -> {} ,finish.", alsName);
             } catch (Exception e) {

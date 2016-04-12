@@ -92,7 +92,9 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         }
         //
         for (RsfPlugin rsfPlugins : plugins) {
-            rsfPlugins.loadRsf(this);
+            if (rsfPlugins != null) {
+                rsfPlugins.loadRsf(this);
+            }
         }
         //
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
