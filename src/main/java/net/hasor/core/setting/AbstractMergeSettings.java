@@ -50,11 +50,19 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
         this.mergeSettings.removeAllMap();
     }
     public void refresh() throws IOException {
+        Map<String, SettingValue> mainConfig = null;
         for (Entry<String, Map<String, SettingValue>> atNSEntry : this.namespaceSettings.entrySet()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("addSetting size = {} ,namespace={}.", atNSEntry.getValue().size(), atNSEntry.getKey());
             }
-            this.mergeSettings.addMap(atNSEntry.getValue());
+            if ("http://project.hasor.net/hasor/schema/main".equalsIgnoreCase(atNSEntry.getKey()) == true) {
+                mainConfig = atNSEntry.getValue();
+            } else {
+                this.mergeSettings.addMap(atNSEntry.getValue());
+            }
+        }
+        if (mainConfig != null) {
+            this.mergeSettings.addMap(mainConfig);//最后添加主配置
         }
     }
     @Override
