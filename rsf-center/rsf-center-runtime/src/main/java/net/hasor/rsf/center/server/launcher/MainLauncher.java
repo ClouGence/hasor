@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.more.future.BasicFuture;
 import org.more.util.ResourcesUtils;
@@ -27,7 +29,10 @@ import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.startup.RsfCenterServerModule;
+import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.rsf.center.server.launcher.telnet.TelnetClient;
+import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 
  * @version : 2016年3月29日
@@ -37,32 +42,19 @@ public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
     public static void main(String[] args, ClassWorld world) throws Throwable {
         String action = args[0];
-        //
-        if ("start".equalsIgnoreCase(action)) {
+        /*   */if ("start".equalsIgnoreCase(action)) {
             doStart(args);
-            return;
-            //
         } else if ("stop".equalsIgnoreCase(action)) {
-            Thread.sleep(2000);
-            logger.error("!!!!!!!!!!!!!!");
-            System.exit(1);
-            //
+            doStop(args);
         } else if ("version".equalsIgnoreCase(action)) {
-            try {
-                InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
-                List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
-                System.out.println(!dataLines.isEmpty() ? dataLines.get(0) : null);
-            } catch (Throwable e) {
-                logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
-                System.out.println("undefined");
-            }
+            doVersion(args);
         }
-        //
     }
-    protected static void doStart(String[] args) throws InterruptedException, ExecutionException {
+    //
+    protected static void doStart(String[] args) throws Throwable {
         final BasicFuture<Object> future = new BasicFuture<Object>();
         final String config = args[1];
-        AppContext app = Hasor.createAppContext(new File(config), new RsfCenterServerModule());
+        AppContext app = Hasor.createAppContext(new File(config), new StartupModule());
         app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 future.completed(new Object());//to end
@@ -70,5 +62,31 @@ public class MainLauncher {
         });
         //
         future.get();
+    }
+    protected static void doStop(String[] args) throws Throwable {
+        StringWriter commands = new StringWriter();
+        commands.write("set SESSION_AFTERCLOSE = true \n");
+        commands.write("center_app_shutdown_command\n");
+        //
+        StandardContextSettings settings = new StandardContextSettings("rsf-config.xml");
+        settings.refresh();
+        DefaultRsfSettings rsfSettings = new DefaultRsfSettings(settings);
+        //
+        String addressHost = rsfSettings.getBindAddress();
+        addressHost = NetworkUtils.finalBindAddress(addressHost).getHostAddress();
+        int consolePort = rsfSettings.getConsolePort();
+        //
+        BufferedReader reader = new BufferedReader(new StringReader(commands.toString()));
+        TelnetClient.execCommand(addressHost, consolePort, reader);
+    }
+    protected static void doVersion(String[] args) {
+        try {
+            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
+            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            System.out.println(!dataLines.isEmpty() ? dataLines.get(0) : null);
+        } catch (Throwable e) {
+            logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
+            System.out.println("undefined");
+        }
     }
 }

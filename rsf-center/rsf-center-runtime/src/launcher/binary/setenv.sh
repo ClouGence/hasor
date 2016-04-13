@@ -26,7 +26,7 @@ LOGS="$APP_HOME/logs"
 CONSOLE_OUT="$LOGS/console.out"
 
 #JPDA
-JPDA_ENABLE="jpda"
+#JPDA_ENABLE="jpda"
 JPDA_TRANSPORT="dt_socket"
 JPDA_ADDRESS="8000"
 JPDA_SUSPEND="n"

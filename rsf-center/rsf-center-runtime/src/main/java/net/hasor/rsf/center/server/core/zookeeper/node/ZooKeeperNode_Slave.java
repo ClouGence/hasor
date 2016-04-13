@@ -114,7 +114,7 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
         long curTime = System.currentTimeMillis();
         while (true) {
             if (this.zooKeeper.getState() == States.CONNECTING) {
-                Thread.sleep(100);
+                Thread.sleep(1000);
                 long passTime = System.currentTimeMillis() - curTime;
                 long second = passTime / 1000;
                 if (second > 150) {
