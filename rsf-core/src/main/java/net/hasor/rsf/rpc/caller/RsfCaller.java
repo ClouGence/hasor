@@ -165,13 +165,22 @@ public class RsfCaller extends RsfRequestManager {
                 if (wrapperClass == null) {
                     try {
                         RsfSettings rsfSettings = this.rsfBeanContainer.getEnvironment().getSettings();
+                        boolean useFast = false;
                         if (StringUtils.equalsIgnoreCase("fast", rsfSettings.getWrapperType()) == true) {
+                            useFast = true;//ByClassCode
+                        } else if (StringUtils.equalsIgnoreCase("proxy", rsfSettings.getWrapperType()) == true) {
+                            useFast = false;//ByJavaProxy
+                        } else {
+                            useFast = false;//default
+                        }
+                        //
+                        if (useFast == true) {
                             //ByClassCode
                             ClassLoader loader = this.getContext().getClassLoader();
                             MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapperObject.class, loader);
                             classConfig.addDelegate(interFace, new ServiceMethodDelegateByClassCode(bindInfo));
                             wrapperClass = (Class<RsfServiceWrapper>) classConfig.toClass();
-                        } else if (StringUtils.equalsIgnoreCase("proxy", rsfSettings.getWrapperType()) == true) {
+                        } else {
                             //ByJavaProxy
                             ClassLoader loader = this.getContext().getClassLoader();
                             wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] { RsfServiceWrapper.class, interFace });
