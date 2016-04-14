@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -23,11 +26,13 @@ import java.util.concurrent.TimeoutException;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
+import org.more.util.StringUtils;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfFuture;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.RsfService;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
@@ -159,10 +164,19 @@ public class RsfCaller extends RsfRequestManager {
                 wrapperClass = this.wrapperMap.get(bindID);
                 if (wrapperClass == null) {
                     try {
-                        ClassLoader loader = this.getContext().getClassLoader();
-                        MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapper.class, loader);
-                        classConfig.addDelegate(interFace, new ServiceMethodDelegate(bindInfo));
-                        wrapperClass = (Class<RsfServiceWrapper>) classConfig.toClass();
+                        RsfSettings rsfSettings = this.rsfBeanContainer.getEnvironment().getSettings();
+                        if (StringUtils.equalsIgnoreCase("fast", rsfSettings.getWrapperType()) == true) {
+                            //ByClassCode
+                            ClassLoader loader = this.getContext().getClassLoader();
+                            MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapperObject.class, loader);
+                            classConfig.addDelegate(interFace, new ServiceMethodDelegateByClassCode(bindInfo));
+                            wrapperClass = (Class<RsfServiceWrapper>) classConfig.toClass();
+                        } else if (StringUtils.equalsIgnoreCase("proxy", rsfSettings.getWrapperType()) == true) {
+                            //ByJavaProxy
+                            ClassLoader loader = this.getContext().getClassLoader();
+                            wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] { RsfServiceWrapper.class, interFace });
+                        }
+                        //
                         this.wrapperMap.put(bindID, wrapperClass);
                     } catch (Throwable e) {
                         throw new RsfException(e.getMessage(), e);
@@ -172,7 +186,17 @@ public class RsfCaller extends RsfRequestManager {
         }
         //
         try {
-            RsfServiceWrapper wrapper = (RsfServiceWrapper) wrapperClass.newInstance();
+            RsfServiceWrapper wrapper = null;
+            if (Proxy.isProxyClass(wrapperClass) == true) {
+                //ByJavaProxy
+                Constructor<RsfServiceWrapper> constructor = wrapperClass.getConstructor(new Class[] { InvocationHandler.class });
+                wrapper = constructor.newInstance(new Object[] { new ServiceMethodDelegateByProxy(bindInfo) });
+                //
+            } else {
+                //ByClassCode
+                wrapper = (RsfServiceWrapper) wrapperClass.newInstance();
+            }
+            //
             wrapper.setTarget(target);
             return (T) wrapper;
         } catch (Throwable e) {
@@ -180,9 +204,29 @@ public class RsfCaller extends RsfRequestManager {
             throw new RsfException(e.getMessage(), e);
         }
     }
-    private class ServiceMethodDelegate implements MethodDelegate {
+    private class ServiceMethodDelegateByProxy implements InvocationHandler {
+        private RsfBindInfo<?>  bindInfo;
+        private AddressProvider target;
+        public ServiceMethodDelegateByProxy(RsfBindInfo<?> bindInfo) {
+            this.bindInfo = bindInfo;
+        }
+        @Override
+        public Object invoke(Object target, Method callMethod, Object[] params) throws Throwable {
+            if ("getTarget".equals(callMethod.getName())) {
+                return this.target;
+            } else if ("setTarget".equals(callMethod.getName())) {
+                this.target = (AddressProvider) params[0];
+                return null;
+            } else {
+                RsfServiceWrapper wrapper = (RsfServiceWrapper) target;
+                AddressProvider targetAddress = wrapper.getTarget();
+                return syncInvoke(targetAddress, this.bindInfo, callMethod.getName(), callMethod.getParameterTypes(), params);
+            }
+        }
+    }
+    private class ServiceMethodDelegateByClassCode implements MethodDelegate {
         private RsfBindInfo<?> bindInfo;
-        public ServiceMethodDelegate(RsfBindInfo<?> bindInfo) {
+        public ServiceMethodDelegateByClassCode(RsfBindInfo<?> bindInfo) {
             this.bindInfo = bindInfo;
         }
         public Object invoke(Method callMethod, Object target, Object[] params) throws Throwable {

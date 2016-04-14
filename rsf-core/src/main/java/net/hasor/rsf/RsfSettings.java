@@ -63,6 +63,8 @@ public interface RsfSettings extends Settings {
     public SendLimitPolicy getSendLimitPolicy();
     /**客户端发起一个连接请求所允许的最大耗时（单位毫秒）*/
     public int getConnectTimeout();
+    /**获取动态代理类的实现方式。*/
+    public String getWrapperType();
     //
     /**获取本地服务绑定地址*/
     public String getBindAddress();

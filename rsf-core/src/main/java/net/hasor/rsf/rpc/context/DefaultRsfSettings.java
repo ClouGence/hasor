@@ -77,6 +77,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private boolean         localDiskCache       = true;
     private boolean         enableCenter         = false;
     private boolean         automaticOnline      = true;
+    private String          wrapperType          = null;
     //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
@@ -179,6 +180,10 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     @Override
     public int getConnectTimeout() {
         return this.connectTimeout;
+    }
+    @Override
+    public String getWrapperType() {
+        return this.wrapperType;
     }
     @Override
     public String getUnitName() {
@@ -327,6 +332,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         this.enableCenter = this.centerServerSet.length != 0;
         this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
+        this.wrapperType = getString("hasor.rsfConfig.client.wrapperType", "fast");//默认使用快速的
         //
         logger.info("loadRsfConfig complete!");
     }

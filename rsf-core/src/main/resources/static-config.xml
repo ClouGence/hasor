@@ -57,8 +57,13 @@
 				maximumRequest  = 最大允许的并发请求数
 				sendLimitPolicy = 并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
 				connectTimeout  = 客户端发起一个连接到完成RSF协议握手所允许的最大耗时（单位毫秒）。
+				wrapperType     = 客户端在包装远程接口的时候使用的动态代理方式。
+									fast	内置的字节码生成机制,部分jdk1.8兼容有问题，需要添加“-noverify”参数以压制jvm对字节码的强制校验。
+												http://stackoverflow.com/questions/15122890/java-lang-verifyerror-expecting-a-stackmap-frame-at-branch-target-jdk-1-7
+									proxy	java原生的动态代理，理论上性能会稍微低一些，但是不会有兼容性问题。
+				
 		-->
-		<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="3000" />
+		<client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="3000" wrapperType="proxy" />
 
 		<!--处理队列配置（用于配置ExecutesManager）
 				maxSize     = 处理任务队列的最小大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。

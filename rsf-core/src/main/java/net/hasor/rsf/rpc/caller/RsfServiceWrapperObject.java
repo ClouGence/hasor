@@ -20,7 +20,12 @@ import net.hasor.rsf.domain.provider.AddressProvider;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfServiceWrapper {
-    public AddressProvider getTarget();
-    public void setTarget(AddressProvider target);
+public class RsfServiceWrapperObject implements RsfServiceWrapper {
+    private AddressProvider target;
+    public AddressProvider getTarget() {
+        return target;
+    }
+    public void setTarget(AddressProvider target) {
+        this.target = target;
+    }
 }
