@@ -92,9 +92,10 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         ctx.write("--------------------------------------------\r\n\r\n");
         ctx.write("Welcome to Remote Service Framework Console!\r\n");
         ctx.write("\r\n");
-        ctx.write("login      : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
-        ctx.write("workAt     : " + ctx.channel().localAddress() + "\r\n");
-        ctx.write("rsfAddress : " + hostSchema + "\r\n\r\n");
+        ctx.write("     login : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
+        ctx.write("    workAt : " + ctx.channel().localAddress() + "\r\n");
+        ctx.write("rsfAddress : " + hostSchema + "\r\n");
+        ctx.write("  unitName : " + this.rsfContext.getSettings().getUnitName() + "\r\n\r\n");
         ctx.write("Tips: You can enter a 'help' for more information.\r\n");
         ctx.write("use the 'exit' or 'quit' out of the console.\r\n");
         ctx.write("--------------------------------------------\r\n");
@@ -168,7 +169,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         //2.不同模式命令的处理
-        if (requestCmd.getCommand().inputMultiLine()) {
+        if (requestCmd.inputMultiLine()) {
             /*多行模式*/
             if (requestCmd.getStatus() == CommandRequestStatus.Prepare) {
                 requestCmd.appendRequestBody(inputString);

@@ -29,5 +29,7 @@ public class CommandPlugin implements Module {
         apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
         apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
         apiBinder.bindType(RsfCommand.class).uniqueName().to(GetSetRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(ServiceRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(RuleRsfCommand.class);
     }
 }

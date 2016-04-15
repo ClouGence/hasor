@@ -31,7 +31,7 @@ public class QuitRsfCommand implements RsfCommand {
         return "out of console.";
     }
     @Override
-    public boolean inputMultiLine() {
+    public boolean inputMultiLine(RsfCommandRequest request) {
         return false;
     }
     @Override

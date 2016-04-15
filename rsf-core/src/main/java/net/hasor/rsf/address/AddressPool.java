@@ -795,4 +795,80 @@ public class AddressPool implements RsfUpdater {
     public void updateArgsRoute(String serviceID, String scriptBody) {
         this.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
     }
+    //
+    //
+    @Override
+    public String defaultServiceRoute() {
+        return getServiceRouteByRef(this.ruleRef);
+    }
+    @Override
+    public String defaultMethodRoute() {
+        return getMethodRouteByRef(this.ruleRef);
+    }
+    @Override
+    public String defaultArgsRoute() {
+        return getArgsRouteByRef(this.ruleRef);
+    }
+    @Override
+    public String defaultFlowControl() {
+        return getFlowControlByRef(this.flowControlRef);
+    }
+    @Override
+    public String serviceRoute(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return getServiceRouteByRef(bucket.getRuleRef());
+    }
+    @Override
+    public String methodRoute(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return getMethodRouteByRef(bucket.getRuleRef());
+    }
+    @Override
+    public String argsRoute(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return getArgsRouteByRef(bucket.getRuleRef());
+    }
+    @Override
+    public String flowControl(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return getFlowControlByRef(bucket.getFlowControlRef());
+    }
+    //
+    //
+    private static String getFlowControlByRef(FlowControlRef ruleRef) {
+        if (ruleRef == null || ruleRef.flowControlScript == null) {
+            return null;
+        }
+        return ruleRef.flowControlScript;
+    }
+    private static String getArgsRouteByRef(RuleRef ruleRef) {
+        if (ruleRef == null || ruleRef.getArgsLevel() == null) {
+            return null;
+        }
+        return ruleRef.getArgsLevel().getScript();
+    }
+    private static String getMethodRouteByRef(RuleRef ruleRef) {
+        if (ruleRef == null || ruleRef.getMethodLevel() == null) {
+            return null;
+        }
+        return ruleRef.getMethodLevel().getScript();
+    }
+    private static String getServiceRouteByRef(RuleRef ruleRef) {
+        if (ruleRef == null || ruleRef.getServiceLevel() == null) {
+            return null;
+        }
+        return ruleRef.getServiceLevel().getScript();
+    }
 }

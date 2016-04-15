@@ -34,11 +34,11 @@ public class HelpRsfCommand implements RsfCommand {
     @Override
     public String helpInfo() {
         return "command help manual. the function like linux man.\r\n"//
-                + " - rsf>help       (show all commands help info.)\r\n"// 
-                + " - rsf>help quit  (show the 'quit' command help info.)";
+                + " - help       (show all commands help info.)\r\n"// 
+                + " - help quit  (show the 'quit' command help info.)";
     }
     @Override
-    public boolean inputMultiLine() {
+    public boolean inputMultiLine(RsfCommandRequest request) {
         return false;
     }
     @Override

@@ -33,13 +33,13 @@ public class SwitchRsfCommand implements RsfCommand {
     @Override
     public String helpInfo() {
         return "switching application service online/offline.\r\n"//
-                + " - rsf>switch          (show help info.)\r\n"// 
-                + " - rsf>switch info     (show application online status.)\r\n"//
-                + " - rsf>switch online   (online application , publishing/subscription to registry.)\r\n"//
-                + " - rsf>switch offline  (offline application , remove publishing/subscription form registry.)";
+                + " - switch          (show help info.)\r\n"// 
+                + " - switch info     (show application online status.)\r\n"//
+                + " - switch online   (online application , publishing/subscription to registry.)\r\n"//
+                + " - switch offline  (offline application , remove publishing/subscription form registry.)";
     }
     @Override
-    public boolean inputMultiLine() {
+    public boolean inputMultiLine(RsfCommandRequest request) {
         return false;
     }
     @Override

@@ -31,11 +31,11 @@ public class GetSetRsfCommand implements RsfCommand {
     @Override
     public String helpInfo() {
         return "set/get environment variables of console .\r\n"//
-                + " - rsf>get variableName                (returns variable Value.)\r\n"// 
-                + " - rsf>set variableName variableValue  (set new values to variable.)";//
+                + " - get variableName                (returns variable Value.)\r\n"// 
+                + " - set variableName variableValue  (set new values to variable.)";//
     }
     @Override
-    public boolean inputMultiLine() {
+    public boolean inputMultiLine(RsfCommandRequest request) {
         return false;
     }
     @Override

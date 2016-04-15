@@ -24,8 +24,8 @@ public interface RsfCommand {
     //
     /**帮助信息.*/
     public String helpInfo();
-    /**命令是否支持多行输入。*/
-    public boolean inputMultiLine();
+    /**命令是否启用多行输入，启用多行输入之后。两次回车即可完成整个命令。*/
+    public boolean inputMultiLine(RsfCommandRequest request);
     /**执行命令*/
     public String doCommand(RsfCommandRequest request) throws Throwable;
 }

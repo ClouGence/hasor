@@ -34,6 +34,7 @@ public final class RsfCommandRequest {
     private String               command;
     private String[]             requestArgs;                                             //请求参数
     private CommandRequestStatus status;
+    private boolean              inputMultiLine;
     private StringBuffer         bodyBuffer;                                              //多行输入下内容缓冲区
     private String               result;                                                  //执行结果
     private long                 doStartTime;                                             //命令执行的开始时间
@@ -47,12 +48,13 @@ public final class RsfCommandRequest {
         this.command = command;
         this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
         this.bodyBuffer = new StringBuffer("");
-        this.status = rsfCommand.inputMultiLine() ? CommandRequestStatus.Prepare : CommandRequestStatus.Ready;
         this.doClose = false;
         this.attr = new HashMap<String, Object>();
+        this.inputMultiLine = rsfCommand.inputMultiLine(this);
+        this.status = this.inputMultiLine ? CommandRequestStatus.Prepare : CommandRequestStatus.Ready;
     }
     void appendRequestBody(String requestBody) {
-        if (this.rsfCommand.inputMultiLine()) {
+        if (this.inputMultiLine) {
             this.bodyBuffer.append(requestBody);
             this.status = CommandRequestStatus.Prepare;
         }
@@ -72,6 +74,9 @@ public final class RsfCommandRequest {
     }
     CommandRequestStatus getStatus() {
         return this.status;
+    }
+    boolean inputMultiLine() {
+        return this.inputMultiLine;
     }
     void doCommand(final Executor executor, Runnable callBack) {
         status = CommandRequestStatus.Running;
@@ -120,7 +125,11 @@ public final class RsfCommandRequest {
     }
     RsfCommandResponse getResponse() {
         if (this.status != CommandRequestStatus.Complete) {
-            return new RsfCommandResponse("commit the command.", false, false);
+            if (this.inputMultiLine) {
+                return new RsfCommandResponse("commit the command.", false, false);
+            } else {
+                return new RsfCommandResponse("", false, false);
+            }
         }
         return new RsfCommandResponse(this.result, true, false);
     }

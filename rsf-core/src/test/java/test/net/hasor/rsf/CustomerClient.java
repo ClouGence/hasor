@@ -1,7 +1,4 @@
 package test.net.hasor.rsf;
-import java.lang.reflect.Method;
-import java.util.List;
-import org.more.classcode.delegate.faces.InnerChainMethodDelegate;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfBinder;
@@ -36,20 +33,6 @@ public class CustomerClient {
                 String res = echoService.sayHello("Hello Word");
                 System.out.println(res);
             } catch (Exception e) {}
-        }
-    }
-    public int getNames(int abc, Object abcc) {
-        try {
-            Class<?>[] arrayOfClass = new Class[] { int.class, Object.class };
-            Object[] arrayOfObject = new Object[] { abc, abcc };
-            //
-            Method localMethod = List.class.getMethod("getNames", arrayOfClass);
-            ClassLoader localLoader = getClass().getClassLoader();
-            //
-            Object target = new InnerChainMethodDelegate("xxxx", "", localLoader).invoke(localMethod, this, arrayOfObject);
-            return ((Integer) target).intValue();
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
         }
     }
 }

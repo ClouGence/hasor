@@ -25,21 +25,43 @@ import net.hasor.rsf.address.InterAddress;
 public interface RsfUpdater {
     /**更新服务地址本计算规则（服务级）*/
     public void updateDefaultServiceRoute(String scriptBody);
+    /**更新服务地址本计算规则（服务级）*/
+    public String defaultServiceRoute();
+    //
     /**更新本地方法级地址计算脚本。*/
     public void updateDefaultMethodRoute(String scriptBody);
+    /**更新本地方法级地址计算脚本。*/
+    public String defaultMethodRoute();
+    //
     /**更新本地参数级地址计算脚本。*/
     public void updateDefaultArgsRoute(String scriptBody);
+    /**更新本地参数级地址计算脚本。*/
+    public String defaultArgsRoute();
+    //
     /**更新服务路由策略*/
     public void updateDefaultFlowControl(String flowControl);
+    /**更新服务路由策略*/
+    public String defaultFlowControl();
     //
     /**更新服务地址本计算规则（服务级）*/
     public void updateServiceRoute(String serviceID, String scriptBody);
+    /**更新服务地址本计算规则（服务级）*/
+    public String serviceRoute(String serviceID);
+    //
     /**更新本地方法级地址计算脚本。*/
     public void updateMethodRoute(String serviceID, String scriptBody);
+    /**更新本地方法级地址计算脚本。*/
+    public String methodRoute(String serviceID);
+    //
     /**更新本地参数级地址计算脚本。*/
     public void updateArgsRoute(String serviceID, String scriptBody);
+    /**更新本地参数级地址计算脚本。*/
+    public String argsRoute(String serviceID);
+    //
     /**更新服务路由策略*/
     public void updateFlowControl(String serviceID, String flowControl);
+    /**更新服务路由策略*/
+    public String flowControl(String serviceID);
     //
     /**
      * 新增或追加更新服务地址信息。<p>
