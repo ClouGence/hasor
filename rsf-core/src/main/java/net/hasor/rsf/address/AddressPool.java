@@ -564,57 +564,58 @@ public class AddressPool implements RsfUpdater {
      * 更新默认流控规则。
      * @param flowControl 流控规则
      */
-    public void updateDefaultFlowControl(String flowControl) {
+    public boolean updateDefaultFlowControl(String flowControl) {
         FlowControlRef flowControlRef = paselowControl(flowControl);
         if (flowControlRef == null) {
-            return;
+            return false;
         }
         //
         logger.info("update default flowControl -> update ok");
         this.flowControlRef = flowControlRef;
         this.refreshAddressCache();
+        return true;
     }
     /**
      * 更新服务的流控规则。
      * @param serviceID 应用到的服务。
      * @param flowControl 流控规则
      */
-    public void updateFlowControl(String serviceID, String flowControl) {
+    public boolean updateFlowControl(String serviceID, String flowControl) {
         if (StringUtils.isBlank(serviceID)) {
-            return;
+            return false;
         }
         FlowControlRef flowControlRef = paselowControl(flowControl);
         if (flowControlRef == null) {
-            return;
+            return false;
         }
         //
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
             logger.warn("update flowControl service={} -> AddressBucket not exist.", serviceID);
-            return;
+            return false;
         }
-        if (bucket != null) {
-            logger.info("update flowControl service={} -> update ok", serviceID);
-            bucket.setFlowControlRef(flowControlRef);
-            this.refreshAddressCache();
-        }
+        logger.info("update flowControl service={} -> update ok", serviceID);
+        bucket.setFlowControlRef(flowControlRef);
+        this.refreshAddressCache();
+        return true;
     }
     /**
      * 更新默认路由规则。
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    private void updateDefaultRoute(RouteTypeEnum routeType, String script) {
+    private boolean updateDefaultRoute(RouteTypeEnum routeType, String script) {
         RuleRef ruleRef = new RuleRef(this.ruleRef);
         boolean updated = RouteTypeEnum.updateScript(routeType, script, ruleRef);
-        if (!updated) {
+        if (updated == false) {
             logger.warn("update default rules -> no change.");
-            return;
+            return false;
         }
         //
         logger.info("update default rules -> update ok");
         this.ruleRef = ruleRef;
         this.refreshAddressCache();
+        return true;
     }
     /**
      * 更新某个服务的路由规则脚本。
@@ -622,23 +623,24 @@ public class AddressPool implements RsfUpdater {
      * @param routeType 更新的路由规则类型。
      * @param script 路由规则脚本内容。
      */
-    private void updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
+    private boolean updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
             logger.warn("update rules service={} -> AddressBucket not exist.", serviceID);
-            return;
+            return false;
         }
         //
         RuleRef ruleRef = new RuleRef(this.ruleRef);
         boolean updated = RouteTypeEnum.updateScript(routeType, script, ruleRef);
-        if (!updated) {
+        if (updated == false) {
             logger.warn("update rules service={} -> no change.", serviceID);
-            return;
+            return false;
         }
         //
         logger.info("update rules service={} -> update ok", serviceID);
         bucket.setRuleRef(ruleRef);
         this.refreshAddressCache();
+        return true;
     }
     public void refreshAddress(String serviceID, List<InterAddress> addressList) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
@@ -772,28 +774,28 @@ public class AddressPool implements RsfUpdater {
         return "AddressPool[" + this.unitName + "]";
     }
     @Override
-    public void updateDefaultServiceRoute(String scriptBody) {
-        this.updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
+    public boolean updateDefaultServiceRoute(String scriptBody) {
+        return this.updateDefaultRoute(RouteTypeEnum.ServiceLevel, scriptBody);
     }
     @Override
-    public void updateDefaultMethodRoute(String scriptBody) {
-        this.updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
+    public boolean updateDefaultMethodRoute(String scriptBody) {
+        return this.updateDefaultRoute(RouteTypeEnum.MethodLevel, scriptBody);
     }
     @Override
-    public void updateDefaultArgsRoute(String scriptBody) {
-        this.updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+    public boolean updateDefaultArgsRoute(String scriptBody) {
+        return this.updateDefaultRoute(RouteTypeEnum.ArgsLevel, scriptBody);
     }
     @Override
-    public void updateServiceRoute(String serviceID, String scriptBody) {
-        this.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
+    public boolean updateServiceRoute(String serviceID, String scriptBody) {
+        return this.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
     }
     @Override
-    public void updateMethodRoute(String serviceID, String scriptBody) {
-        this.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
+    public boolean updateMethodRoute(String serviceID, String scriptBody) {
+        return this.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
     }
     @Override
-    public void updateArgsRoute(String serviceID, String scriptBody) {
-        this.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
+    public boolean updateArgsRoute(String serviceID, String scriptBody) {
+        return this.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
     }
     //
     //

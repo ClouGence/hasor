@@ -25,7 +25,7 @@ import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 /**
- * 
+ * 路由脚本的查看和更新指令。
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -35,7 +35,7 @@ public class RuleRsfCommand implements RsfCommand {
     //
     @Override
     public String helpInfo() {
-        return "rule service rule info.\r\n"//
+        return "service rule script show/update.\r\n"//
                 + " - rule              (show help info.)\r\n"// 
                 + " - rule -s default   (show default service Level rule info .)\r\n"//
                 + " - rule -m default   (show default method Level rule info .)\r\n"//
@@ -49,7 +49,14 @@ public class RuleRsfCommand implements RsfCommand {
                 + " - rule -ua default  (update default args Level rule info .)\r\n"//
                 + " - rule -us XXXX     (update service Level rule info of XXXX.)\r\n"//
                 + " - rule -um XXXX     (update method Level rule info of XXXX.)\r\n"//
-                + " - rule -ua XXXX     (update args Level rule info of XXXX.)";
+                + " - rule -ua XXXX     (update args Level rule info of XXXX.)"//
+                //
+                + " - rule -cs default  (clean default service Level rule info .)\r\n"//
+                + " - rule -cm default  (clean default method Level rule info .)\r\n"//
+                + " - rule -ca default  (clean default args Level rule info .)\r\n"//
+                + " - rule -cs XXXX     (clean service Level rule info of XXXX.)\r\n"//
+                + " - rule -cm XXXX     (clean method Level rule info of XXXX.)\r\n"//
+                + " - rule -ca XXXX     (clean args Level rule info of XXXX.)";
     }
     @Override
     public boolean inputMultiLine(RsfCommandRequest request) {
@@ -68,20 +75,34 @@ public class RuleRsfCommand implements RsfCommand {
         if (args != null && args.length > 1) {
             String mode = args[0];
             String nameArg = args[1];
+            /*如果是 -u 系列指令检查一下内容是不是为空。*/
+            if (mode != null && mode.startsWith("-u")) {
+                String scriptBody = request.getRequestBody();
+                if (StringUtils.isBlank(scriptBody)) {
+                    return "[ERROR] updated content is empty, ignore.";
+                }
+            }
+            /*执行指令*/
             /*  */if ("-s".equalsIgnoreCase(mode)) {
-                this.showServiceRule(sw, nameArg, rsfContext);
+                this.showServiceRule(sw, nameArg, rsfContext);//显示服务级路由脚本
             } else if ("-m".equalsIgnoreCase(mode)) {
-                this.showMethodRule(sw, nameArg, rsfContext);
+                this.showMethodRule(sw, nameArg, rsfContext);//显示方法级路由脚本
             } else if ("-a".equalsIgnoreCase(mode)) {
-                this.showArgsRule(sw, nameArg, rsfContext);
+                this.showArgsRule(sw, nameArg, rsfContext);//显示参数级路由脚本
             } else if ("-us".equalsIgnoreCase(mode)) {
-                this.updateServiceRule(sw, nameArg, request);
+                this.updateServiceRule(sw, nameArg, request);//更新服务级路由脚本
             } else if ("-um".equalsIgnoreCase(mode)) {
-                this.updateMethodRule(sw, nameArg, request);
+                this.updateMethodRule(sw, nameArg, request);//更新方法级路由脚本
             } else if ("-ua".equalsIgnoreCase(mode)) {
-                this.updateArgsRule(sw, nameArg, request);
+                this.updateArgsRule(sw, nameArg, request);//更新参数级路由脚本
+            } else if ("-cs".equalsIgnoreCase(mode)) {
+                this.cleanServiceRule(sw, nameArg, request);//清空服务级路由脚本
+            } else if ("-cm".equalsIgnoreCase(mode)) {
+                this.cleanMethodRule(sw, nameArg, request);//清空方法级路由脚本
+            } else if ("-ca".equalsIgnoreCase(mode)) {
+                this.cleanArgsRule(sw, nameArg, request);//清空参数级别路由脚本
             } else {
-                sw.write("bad args.");
+                sw.write("[ERROR] bad args.");
             }
             //
         } else {
@@ -90,6 +111,7 @@ public class RuleRsfCommand implements RsfCommand {
         }
         return sw.toString();
     }
+    //
     //
     private void showArgsRule(StringWriter sw, String nameArg, RsfContext rsfContext) throws IOException {
         //1.body
@@ -101,7 +123,7 @@ public class RuleRsfCommand implements RsfCommand {
         }
         //2.write
         if (StringUtils.isBlank(body)) {
-            sw.write(">> args rule of " + nameArg + " content is empty.");
+            sw.write("[SUCCEED] content is empty.");
         } else {
             writeBody(sw, body);
         }
@@ -116,7 +138,7 @@ public class RuleRsfCommand implements RsfCommand {
         }
         //2.write
         if (StringUtils.isBlank(body)) {
-            sw.write(">> method rule of " + nameArg + " content is empty.");
+            sw.write("[SUCCEED] content is empty.");
         } else {
             writeBody(sw, body);
         }
@@ -131,7 +153,7 @@ public class RuleRsfCommand implements RsfCommand {
         }
         //2.write
         if (StringUtils.isBlank(body)) {
-            sw.write(">> service rule of " + nameArg + " content is empty.");
+            sw.write("[SUCCEED] content is empty.");
         } else {
             writeBody(sw, body);
         }
@@ -146,19 +168,111 @@ public class RuleRsfCommand implements RsfCommand {
             sw.write(line + "\r\n");
         }
     }
+    //
     private void updateArgsRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
         RsfContext rsfContext = request.getRsfContext();
-        System.out.println();
-        // TODO Auto-generated method stub
+        String scriptBody = request.getRequestBody();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultArgsRoute(scriptBody);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update default route script of ArgsLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateArgsRoute(nameArg, scriptBody);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update ArgsLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
     }
     private void updateMethodRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
         RsfContext rsfContext = request.getRsfContext();
-        System.out.println();
-        // TODO Auto-generated method stub
+        String scriptBody = request.getRequestBody();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultMethodRoute(scriptBody);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update default route script of MethodLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateMethodRoute(nameArg, scriptBody);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update MethodLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
     }
     private void updateServiceRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
         RsfContext rsfContext = request.getRsfContext();
-        System.out.println();
-        // TODO Auto-generated method stub
+        String scriptBody = request.getRequestBody();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultServiceRoute(scriptBody);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update default route script of ServiceLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateServiceRoute(nameArg, scriptBody);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] update ServiceLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
+    }
+    //
+    private void cleanArgsRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
+        RsfContext rsfContext = request.getRsfContext();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultArgsRoute(null);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean default route script of ArgsLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateArgsRoute(nameArg, null);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean ArgsLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
+    }
+    private void cleanMethodRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
+        RsfContext rsfContext = request.getRsfContext();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultMethodRoute(null);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean default route script of MethodLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateMethodRoute(nameArg, null);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean MethodLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
+    }
+    private void cleanServiceRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
+        RsfContext rsfContext = request.getRsfContext();
+        if ("default".equalsIgnoreCase(nameArg)) {
+            boolean result = rsfContext.getUpdater().updateDefaultServiceRoute(null);
+            sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean default route script of ArgsLevel.");
+            return;
+        } else {
+            if (rsfContext.getServiceInfo(nameArg) == null) {
+                sw.write("[ERROR] serviceID is not exist.");
+                return;
+            } else {
+                boolean result = rsfContext.getUpdater().updateServiceRoute(nameArg, null);
+                sw.write("[" + (result ? "SUCCEED" : "FAILED") + "] clean ArgsLevel route script of serviceID = " + nameArg);
+                return;
+            }
+        }
     }
 }

@@ -55,7 +55,7 @@ public final class RsfCommandRequest {
     }
     void appendRequestBody(String requestBody) {
         if (this.inputMultiLine) {
-            this.bodyBuffer.append(requestBody);
+            this.bodyBuffer.append(requestBody + "\n");
             this.status = CommandRequestStatus.Prepare;
         }
     }

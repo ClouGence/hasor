@@ -59,7 +59,7 @@ public class HelpRsfCommand implements RsfCommand {
                 sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                 sw.write(cmd.helpInfo() + "\r\n");
             } else {
-                sw.write("command '" + cmdName + "' does not exist.\r\n");
+                sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
             }
             //
         } else {

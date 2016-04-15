@@ -54,9 +54,9 @@ public class GetSetRsfCommand implements RsfCommand {
                 if (args != null && args.length > 1) {
                     String varValue = args[1].trim();
                     request.setSessionAttr(varName, varValue);
-                    return "set the new value, ok.";
+                    return "[SUCCEED] set the new value.";
                 } else {
-                    return "args count error.";
+                    return "[ERROR] args count error.";
                 }
             }
             if ("get".equalsIgnoreCase(cmd)) {
@@ -68,9 +68,9 @@ public class GetSetRsfCommand implements RsfCommand {
                 }
             }
             //
-            return "does not support command '" + request.getCommandString() + "'.";
+            return "[ERROR] does not support command '" + request.getCommandString() + "'.";
         } else {
-            return "args count error.";
+            return "[ERROR] args count error.";
         }
     }
 }

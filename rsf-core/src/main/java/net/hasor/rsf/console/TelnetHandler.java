@@ -144,13 +144,30 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        clearAttr(ctx);
         cause.printStackTrace();
         ctx.close();
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        clearAttr(ctx);
+        super.channelInactive(ctx);
+    }
+    private void clearAttr(ChannelHandlerContext ctx) {
+        Attribute<RsfCommandSession> sessionAttr = ctx.attr(SessionKEY);
+        Attribute<RsfCommandRequest> attr = ctx.attr(RequestKEY);
+        if (sessionAttr != null) {
+            sessionAttr.remove();
+        }
+        if (attr != null) {
+            attr.remove();
+        }
     }
     private RsfCommandResponse doRequest(final Attribute<RsfCommandRequest> cmdAttr, final ChannelHandlerContext ctx, final String inputString) {
         //1.准备环境
         RsfCommandRequest requestCmd = cmdAttr.get();
         Attribute<RsfCommandSession> sessionAttr = ctx.attr(SessionKEY);
+        boolean newCommand = (requestCmd == null);
         if (requestCmd == null) {
             String requestCMD = inputString;
             String requestArgs = "";
@@ -172,7 +189,9 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         if (requestCmd.inputMultiLine()) {
             /*多行模式*/
             if (requestCmd.getStatus() == CommandRequestStatus.Prepare) {
-                requestCmd.appendRequestBody(inputString);
+                if (newCommand == false) {
+                    requestCmd.appendRequestBody(inputString);
+                }
                 if (StringUtils.isBlank(inputString)) {
                     requestCmd.inReady();//命令准备执行
                 }

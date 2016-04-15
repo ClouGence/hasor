@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.more.util.CommonCodeUtils.MD5;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.hasor.libs.org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 /**
  * 
  * @version : 2015年12月3日
@@ -45,18 +44,16 @@ class RuleEngine {
     public synchronized boolean update(String ruleScript) {
         //1.空内容判断
         if (StringUtils.isBlank(ruleScript)) {
-            if (ruleScript == null) {
+            ruleScript = "";
+            if (this.ruleScript == null) {
                 return false;/*将脚本更新为空，同时本地也为空 ->不执行脚本更新。*/
-            } else {
-                this.runScript = null;
-                return true;
             }
         }
         //2.内容签名
         String signature = null;
         try {
             signature = MD5.getMD5(ruleScript);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Throwable e) {
             logger.error("eval ruleScript signature error ->" + e.getMessage(), e);
             signature = ruleScript;
         }
@@ -64,15 +61,21 @@ class RuleEngine {
         if (StringUtils.equalsIgnoreCase(signature, this.signature)) {
             return false;/*无变化*/
         }
-        this.ruleScript = ruleScript;
-        this.signature = signature;
-        this.runScript = null;
         //
         try {
-            ScriptEngine engine = new ScriptEngineManager().getEngineByName("groovy");
+            if (StringUtils.isBlank(ruleScript)) {
+                this.ruleScript = null;
+                this.signature = signature;
+                return true;
+            }
+            ScriptEngine engine = new GroovyScriptEngineImpl();
             engine.eval(ruleScript);
             this.runScript = ((Invocable) engine).getInterface(RuleScriptInterface.class);
             logger.info("ruleEngine ruleScript compiler finish.");
+            //
+            this.ruleScript = ruleScript;
+            this.signature = signature;
+            return true;
         } catch (Throwable e) {
             if (e instanceof ScriptException) {
                 ScriptException se = (ScriptException) e;
@@ -81,8 +84,8 @@ class RuleEngine {
             } else {
                 logger.error("ruleEngine ruleScript compiler error ->" + e.getMessage(), e);
             }
+            return false;
         }
-        return true;
     }
     public String getScript() {
         return this.ruleScript;

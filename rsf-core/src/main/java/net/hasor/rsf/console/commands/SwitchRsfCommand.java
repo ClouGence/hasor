@@ -51,15 +51,15 @@ public class SwitchRsfCommand implements RsfCommand {
             String todoArg = args[0];
             if (StringUtils.equalsIgnoreCase("online", todoArg) == true) {
                 rsfContext.online();
-                sw.write("switch to online : " + rsfContext.isOnline());
+                sw.write("[SUCCEED] switch to online : " + rsfContext.isOnline());
             } else if (StringUtils.equalsIgnoreCase("offline", todoArg) == true) {
                 rsfContext.offline();
-                sw.write("switch to offline : " + rsfContext.isOnline());
+                sw.write("[SUCCEED] switch to offline : " + rsfContext.isOnline());
             } else if (StringUtils.equalsIgnoreCase("info", todoArg) == true) {
                 String status = rsfContext.isOnline() ? "online" : "offline";
-                sw.write("application is " + status);
+                sw.write("[SUCCEED] application is " + status);
             } else {
-                sw.write("bad args '" + todoArg + "' switch command need 'online' or 'offline'.");
+                sw.write("[ERROR] bad args '" + todoArg + "' switch command need 'online' or 'offline'.");
             }
             //
         } else {
