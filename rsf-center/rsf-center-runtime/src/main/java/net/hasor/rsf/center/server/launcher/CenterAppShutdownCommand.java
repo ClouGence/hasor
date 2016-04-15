@@ -30,7 +30,7 @@ public class CenterAppShutdownCommand implements RsfCommand {
         return "shutdown center.";
     }
     @Override
-    public boolean inputMultiLine() {
+    public boolean inputMultiLine(RsfCommandRequest request) {
         return false;
     }
     @Override
