@@ -708,9 +708,15 @@ public class AddressPool implements RsfUpdater {
     //
     /**解析路由规则*/
     public FlowControlRef paselowControl(String flowControl) {
-        if (StringUtils.isBlank(flowControl) || !flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
-            logger.error("flowControl body format error.");
-            return null;
+        if (StringUtils.isBlank(flowControl)) {
+            logger.error("flowControl body is null.");
+            return FlowControlRef.newRef();
+        } else {
+            flowControl = flowControl.trim();
+            if (!flowControl.startsWith("<controlSet") || !flowControl.endsWith("</controlSet>")) {
+                logger.error("flowControl body format error.");
+                return null;
+            }
         }
         FlowControlRef flowControlRef = FlowControlRef.newRef();
         flowControlRef.flowControlScript = flowControl;

@@ -49,7 +49,7 @@ public class RuleRsfCommand implements RsfCommand {
                 + " - rule -ua default  (update default args Level rule info .)\r\n"//
                 + " - rule -us XXXX     (update service Level rule info of XXXX.)\r\n"//
                 + " - rule -um XXXX     (update method Level rule info of XXXX.)\r\n"//
-                + " - rule -ua XXXX     (update args Level rule info of XXXX.)"//
+                + " - rule -ua XXXX     (update args Level rule info of XXXX.)\r\n"//
                 //
                 + " - rule -cs default  (clean default service Level rule info .)\r\n"//
                 + " - rule -cm default  (clean default method Level rule info .)\r\n"//

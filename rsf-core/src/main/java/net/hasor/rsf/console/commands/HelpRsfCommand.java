@@ -16,6 +16,7 @@
 package net.hasor.rsf.console.commands;
 import java.io.StringWriter;
 import java.util.List;
+import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.CommandManager;
@@ -35,6 +36,7 @@ public class HelpRsfCommand implements RsfCommand {
     public String helpInfo() {
         return "command help manual. the function like linux man.\r\n"//
                 + " - help       (show all commands help info.)\r\n"// 
+                + " - help -a    (show all commands help detail info.)\r\n"// 
                 + " - help quit  (show the 'quit' command help info.)";
     }
     @Override
@@ -52,26 +54,38 @@ public class HelpRsfCommand implements RsfCommand {
         }
         //
         String[] args = request.getRequestArgs();
+        boolean showDetail = false;
         if (args != null && args.length > 0) {
             String cmdName = args[0];
-            RsfCommand cmd = commandManager.findCommand(cmdName);
-            if (cmd != null) {
-                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+            if ("-a".equalsIgnoreCase(cmdName)) {
+                showDetail = true;
+            } else {
+                RsfCommand cmd = commandManager.findCommand(cmdName);
+                if (cmd != null) {
+                    sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+                    sw.write(cmd.helpInfo() + "\r\n");
+                } else {
+                    sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
+                }
+                return sw.toString();
+            }
+        }
+        int maxLength = 0;
+        for (String name : cmdNames) {
+            maxLength = name.length() > maxLength ? name.length() : maxLength;
+        }
+        maxLength = maxLength + 2;
+        for (String name : cmdNames) {
+            RsfCommand cmd = commandManager.findCommand(name);
+            if (showDetail) {
+                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + name + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                 sw.write(cmd.helpInfo() + "\r\n");
             } else {
-                sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
+                sw.write(" - " + StringUtils.rightPad(name, maxLength) + cmd.helpInfo().split("\r\n")[0]);
             }
-            //
-        } else {
-            for (String name : cmdNames) {
-                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + name + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
-                RsfCommand cmd = commandManager.findCommand(name);
-                sw.write(cmd.helpInfo() + "\r\n");
-                if (cmdNames.size() > 1) {
-                    sw.write("\r\n");
-                }
+            if (cmdNames.size() > 1) {
+                sw.write("\r\n");
             }
-            //
         }
         return sw.toString();
     }

@@ -90,13 +90,13 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         // Send greeting for a new connection.
         ctx.write("--------------------------------------------\r\n\r\n");
-        ctx.write("Welcome to Remote Service Framework Console!\r\n");
+        ctx.write("Welcome to RSF Console!\r\n");
         ctx.write("\r\n");
         ctx.write("     login : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
         ctx.write("    workAt : " + ctx.channel().localAddress() + "\r\n");
         ctx.write("rsfAddress : " + hostSchema + "\r\n");
         ctx.write("  unitName : " + this.rsfContext.getSettings().getUnitName() + "\r\n\r\n");
-        ctx.write("Tips: You can enter a 'help' for more information.\r\n");
+        ctx.write("Tips: You can enter a 'help' or 'help -a' for more information.\r\n");
         ctx.write("use the 'exit' or 'quit' out of the console.\r\n");
         ctx.write("--------------------------------------------\r\n");
         ctx.write(CMD);
