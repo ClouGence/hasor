@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.server.console.commands.CenterCommandPlugin;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperModule;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.WorkMode;
@@ -91,6 +92,9 @@ public class RsfCenterServerModule implements LifeModule {
         //
         // 6.注册PushQueue类型，当容器启动之后会启动，注册中心推送线程。
         apiBinder.bindType(PushQueue.class);
+        //
+        // 7.命令集
+        apiBinder.installModule(new CenterCommandPlugin());
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
