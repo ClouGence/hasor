@@ -16,14 +16,6 @@
 package net.hasor.rsf.center.server.console.commands;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.commands.FlowRsfCommand;
-import net.hasor.rsf.console.commands.GetSetRsfCommand;
-import net.hasor.rsf.console.commands.HelpRsfCommand;
-import net.hasor.rsf.console.commands.QuitRsfCommand;
-import net.hasor.rsf.console.commands.RuleRsfCommand;
-import net.hasor.rsf.console.commands.ServiceRsfCommand;
-import net.hasor.rsf.console.commands.SwitchRsfCommand;
 /**
  * 内置命令集
  * @version : 2016年4月3日
@@ -32,12 +24,12 @@ import net.hasor.rsf.console.commands.SwitchRsfCommand;
 public class CenterCommandPlugin implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(HelpRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(GetSetRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(ServiceRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(RuleRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(FlowRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(HelpRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(GetSetRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(ServiceRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(RuleRsfCommand.class);
+        //        apiBinder.bindType(RsfCommand.class).uniqueName().to(FlowRsfCommand.class);
     }
 }
