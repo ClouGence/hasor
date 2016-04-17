@@ -42,17 +42,24 @@ public final class RsfCommandSession {
         if (StringUtils.isBlank(message)) {
             message = "";
         }
-        this.nettyContext.writeAndFlush(message + "\r\n");
+        if (this.nettyContext.channel().isActive()) {
+            this.nettyContext.writeAndFlush(message + "\r\n");
+        }
     }
     /**输出状态（不带换行）。*/
     void writeMessage(String message) {
         if (StringUtils.isBlank(message)) {
             message = "";
         }
-        this.nettyContext.writeAndFlush(message);
+        if (this.nettyContext.channel().isActive()) {
+            this.nettyContext.writeAndFlush(message);
+        }
     }
     //
     //
+    public boolean isActive() {
+        return this.nettyContext.channel().isActive();
+    }
     public RsfContext getRsfContext() {
         return this.rsfContext;
     }

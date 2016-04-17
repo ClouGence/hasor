@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
@@ -25,6 +27,7 @@ import net.hasor.rsf.console.RsfCommandRequest;
  */
 @RsfCmd("center_app_shutdown_command")
 public class CenterAppShutdownCommand implements RsfCommand {
+    protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownCommand.class);
     @Override
     public String helpInfo() {
         return "shutdown center.";
@@ -40,16 +43,23 @@ public class CenterAppShutdownCommand implements RsfCommand {
             final AppContext appContext = request.getRsfContext().getAppContext();
             Thread thread = new Thread() {
                 public void run() {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) { /**/ }
                     appContext.shutdown();
+                    //
+                    for (int i = 10; i == 0; i--) {
+                        logger.error("after {} seconds to kill self.", i);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) { /**/ }
+                    }
+                    //
+                    System.exit(1);
                 };
             };
             //
+            thread.setDaemon(true);
             thread.setName("Shutdown");
             thread.start();
-            return "3 seconds to shutdown center.";
+            return "do shutdown center.";
         } catch (Exception e) {
             return "shutdown error " + e.getMessage();
         }

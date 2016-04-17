@@ -65,7 +65,7 @@ public class MainLauncher {
     }
     protected static void doStop(String[] args) throws Throwable {
         StringWriter commands = new StringWriter();
-        commands.write("set SESSION_AFTERCLOSE = true \n");
+        commands.write("set SESSION_AFTERCLOSE = true \n");//命令执行结束就关闭回话。
         commands.write("center_app_shutdown_command\n");
         //
         StandardContextSettings settings = new StandardContextSettings("rsf-config.xml");

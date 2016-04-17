@@ -169,4 +169,15 @@ public final class RsfCommandRequest {
     public void closeSession() {
         this.doClose = true;
     }
+    public boolean isSessionActive() {
+        return this.rsfSession.isActive();
+    }
+    /**输出状态（带有换行）。*/
+    public void writeMessageLine(String message) {
+        this.rsfSession.writeMessageLine(message);
+    }
+    /**输出状态（不带换行）。*/
+    public void writeMessage(String message) {
+        this.rsfSession.writeMessage(message);
+    }
 }
