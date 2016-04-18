@@ -59,6 +59,7 @@ public class CenterAppShutdownCommand implements RsfCommand {
             thread.setDaemon(true);
             thread.setName("Shutdown");
             thread.start();
+            request.writeMessageLine("do shutdown center now.");
             return "do shutdown center.";
         } catch (Exception e) {
             return "shutdown error " + e.getMessage();

@@ -44,13 +44,13 @@ import net.hasor.rsf.center.server.domain.RsfCenterEvent;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
-    protected Logger     logger = LoggerFactory.getLogger(getClass());
-    private RsfContext   rsfContext;
-    private RsfCenterCfg centerConfig;
-    private String       serverConnection;
-    private ZooKeeper    zooKeeper;
-    private boolean      start  = false;
-    private Thread       zkCheckManager;
+    protected Logger       logger           = LoggerFactory.getLogger(getClass());
+    private RsfContext     rsfContext       = null;
+    protected RsfCenterCfg centerConfig     = null;
+    private String         serverConnection = null;
+    private ZooKeeper      zooKeeper        = null;
+    private boolean        start            = false;
+    private Thread         zkCheckManager   = null;
     //
     public ZooKeeperNode_Slave(RsfCenterCfg centerConfig) {
         this.centerConfig = centerConfig;

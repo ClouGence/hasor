@@ -23,6 +23,7 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
+import net.hasor.rsf.utils.NetworkUtils;
 /**
  * 单机模式，不加入任何ZK集群，自己本身就是一个ZK节点。
  * 
@@ -62,7 +63,25 @@ public class ZooKeeperNode_Alone extends ZooKeeperNode_Slave implements ZooKeepe
         t.setName("ZooKeeper-Main");
         t.start();
         //
-        //4.init zooKeeper Client
+        //2.wait server start.
+        long curTime = System.currentTimeMillis();
+        int bindProt = this.centerConfig.getBindInetAddress().getPort();
+        while (true) {
+            if (NetworkUtils.isPortAvailable(bindProt) == false) {
+                Thread.sleep(1000);
+                long passTime = System.currentTimeMillis() - curTime;
+                long second = passTime / 1000;
+                if (second > 150) {
+                    throw new InterruptedException("15s, zkNode start fail.");/*15秒没起来*/
+                } else if (second > 0) {
+                    logger.info("zkNode starting {} second pass.", second);
+                }
+                continue;
+            }
+            break;
+        }
+        //
+        //3.init zooKeeper Client
         RsfCenterCfg rsfCenterCfg = rsfContext.getAppContext().getInstance(RsfCenterCfg.class);
         InetSocketAddress inetAddress = rsfCenterCfg.getBindInetAddress();
         String serverConnection = inetAddress.getHostName() + ":" + inetAddress.getPort();

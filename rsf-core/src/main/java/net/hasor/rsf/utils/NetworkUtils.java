@@ -25,7 +25,7 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class NetworkUtils {
-    private static void bindPort(String host, int port) throws Exception {
+    private static void isPortAvailable(String host, int port) throws Exception {
         Socket s = new Socket();
         s.bind(new InetSocketAddress(host, port));
         s.close();
@@ -33,8 +33,8 @@ public class NetworkUtils {
     /**测试端口是否被占用*/
     public static boolean isPortAvailable(int port) {
         try {
-            bindPort("0.0.0.0", port);
-            bindPort(InetAddress.getLocalHost().getHostAddress(), port);
+            isPortAvailable("0.0.0.0", port);
+            isPortAvailable(InetAddress.getLocalHost().getHostAddress(), port);
             return true;
         } catch (Exception e) {
             return false;
