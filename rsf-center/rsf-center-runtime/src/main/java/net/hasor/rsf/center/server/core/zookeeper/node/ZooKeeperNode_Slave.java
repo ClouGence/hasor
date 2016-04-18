@@ -152,12 +152,21 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     }
     @Override
     public String createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException {
+        if (nodePath.startsWith("/") == false) {
+            nodePath = "/" + nodePath;
+        }
+        //
         if (this.zooKeeper.exists(nodePath, false) == null) {
             try {
                 String parent = new File(nodePath).getParent();
                 if (this.zooKeeper.exists(parent, false) == null) {
                     this.createNode(nodtType, parent);
                 }
+                //
+                if (nodePath.startsWith(ROOT_PATH) == false) {
+                    throw new IllegalArgumentException("zkPath " + nodePath + " is not rsfCenter path.");
+                }
+                //
                 String result = this.zooKeeper.create(nodePath, null, Ids.OPEN_ACL_UNSAFE, nodtType.getNodeType());
                 logger.debug("zkClient createNode {} -> {}", nodePath, result);
                 return result;

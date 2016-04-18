@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.server.manager;
 import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.center.server.core.zookeeper.ZooKeeperNode;
 /**
  * Zookeeper中地址目录Manager，所有有关Zk目录相关的计算放到这里。
  * @version : 2016年2月22日
@@ -23,41 +24,53 @@ import net.hasor.core.Singleton;
  */
 @Singleton
 public class PathManager {
+    //    /** ZK系统中的基准节点 */
+    //    public static final String ROOT_PATH     = ZooKeeperNode.ROOT_PATH;    // --> /rsf-center
+    //    /** servers信息保存的节点 */
+    //    public static final String SERVER_PATH   = ZooKeeperNode.SERVER_PATH;  // --> /rsf-center/servers
+    //    /** leader信息保存的节点 */
+    //    public static final String LEADER_PATH   = ZooKeeperNode.LEADER_PATH;  // --> /rsf-center/leader
+    //    /** config信息保存的节点 */
+    //    public static final String CONFIG_PATH   = ZooKeeperNode.CONFIG_PATH;  // --> /rsf-center/config
+    /** services信息保存的节点 */
+    public static final String SERVICES_PATH = ZooKeeperNode.SERVICES_PATH;// --> /rsf-center/services
+    //
+    //
     public String evalArgsLevelRuleScriptPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/rule/args-level";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/rule/args-level";
     }
     public String evalMethodLevelRuleScriptPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/rule/method-level";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/rule/method-level";
     }
     public String evalServiceLevelRuleScriptPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/rule/service-level";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/rule/service-level";
     }
     public String evalFlowControlPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/flowcontrol";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/flowcontrol";
     }
     public String evalServicePath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID);
+        return SERVICES_PATH + "/" + converPath(serviceID);
     }
     public String evalServiceInfoPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/info";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/info";
     }
     public String evalConsumerPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/consumer";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/consumer";
     }
     public String evalConsumerTermPath(String serviceID, String hostString) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/consumer/" + hostString;
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/consumer/" + hostString;
     }
     public String evalConsumerTermBeatPath(String serviceID, String hostString) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/consumer/" + hostString + "/beat";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/consumer/" + hostString + "/beat";
     }
     public String evalProviderPath(String serviceID) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/provider";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/provider";
     }
     public String evalProviderTermPath(String serviceID, String hostString) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/provider/" + hostString;
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/provider/" + hostString;
     }
     public String evalProviderTermBeatPath(String serviceID, String hostString) {
-        return "/rsf-center/services/" + converPath(serviceID) + "/provider/" + hostString + "/beat";
+        return SERVICES_PATH + "/" + converPath(serviceID) + "/provider/" + hostString + "/beat";
     }
     protected static String converPath(String serviceID) {
         if (StringUtils.isBlank(serviceID) == true || serviceID.charAt(0) != '[') {
