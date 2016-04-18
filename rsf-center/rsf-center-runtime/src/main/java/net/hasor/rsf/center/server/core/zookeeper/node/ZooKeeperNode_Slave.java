@@ -152,13 +152,9 @@ public class ZooKeeperNode_Slave implements ZooKeeperNode, Watcher {
     }
     @Override
     public String createNode(ZkNodeType nodtType, String nodePath) throws KeeperException, InterruptedException {
-        if (nodePath.startsWith("/") == false) {
-            nodePath = "/" + nodePath;
-        }
-        //
         if (this.zooKeeper.exists(nodePath, false) == null) {
             try {
-                String parent = new File(nodePath).getParent();
+                String parent = new File(nodePath).getParent().replace("\\\\", "/");
                 if (this.zooKeeper.exists(parent, false) == null) {
                     this.createNode(nodtType, parent);
                 }
