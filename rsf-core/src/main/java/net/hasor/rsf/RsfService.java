@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RsfService {
-    /**唯一标识。*/
+    /**服务名。*/
     public String name() default "";
     /**服务分组。*/
     public String group() default "";
