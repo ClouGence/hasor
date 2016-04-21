@@ -62,9 +62,6 @@ PRGDIR=`dirname "$PRG"`
 if [ -r "$APP_HOME/bin/setenv.sh" ]; then
   source "$APP_HOME/bin/setenv.sh"
 fi
-if [ -r "$APP_HOME/bin/hook.sh" ]; then
-  source "$APP_HOME/bin/hook.sh"
-fi
 
 if [ "$JPDA_ENABLE" = "jpda" ] ; then
   if [ -z "$JPDA_TRANSPORT" ]; then
@@ -201,13 +198,10 @@ do_version() {
 
 #start rsfCenter
 do_start() {
-    if [ "$JPDA_ENABLE" = "jpda" ] ; then
-      JAVA_OPTS="$JPDA_OPTS $JAVA_OPTS"
-    fi
     check_app_pid
     mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
     touch "$CONSOLE_OUT" || exit 1
-    eval "$JAVA_CMD" $JAVA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
+    eval "$JAVA_CMD" $JAVA_OPTS $JPDA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
       "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
       "-Dapp.home=${APP_HOME}"  \
       org.codehaus.plexus.classworlds.launcher.Launcher start ${APP_CONFIG} "$@" \

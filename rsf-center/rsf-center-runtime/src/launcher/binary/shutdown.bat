@@ -19,40 +19,34 @@ rem Stop script for the RsfCenter Server
 rem ---------------------------------------------------------------------------
 
 setlocal
-
+rem Suppress Terminate batch job on CTRL+C
 rem Guess APP_HOME if not defined
+cd %~dp0
 set "CURRENT_DIR=%cd%"
+
 if not "%APP_HOME%" == "" goto gotHome
 set "APP_HOME=%CURRENT_DIR%"
 if exist "%APP_HOME%\bin\catalina.bat" goto okHome
 cd ..
 set "APP_HOME=%cd%"
 cd "%CURRENT_DIR%"
+
 :gotHome
 if exist "%APP_HOME%\bin\catalina.bat" goto okHome
 echo The APP_HOME environment variable is not defined correctly
 echo This environment variable is needed to run this program
 goto end
+
 :okHome
-
-set "EXECUTABLE=%APP_HOME%\bin\catalina.bat"
-
-rem Check that target executable exists
-if exist "%EXECUTABLE%" goto okExec
-echo Cannot find "%EXECUTABLE%"
-echo This file is needed to run this program
-goto end
-:okExec
-
 rem Get remaining unshifted command line arguments and save them in the
 set CMD_LINE_ARGS=
 :setArgs
-if ""%1""=="""" goto doneSetArgs
+if "%1"=="" goto doneSetArgs
 set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
 shift
 goto setArgs
 :doneSetArgs
 
-call "%EXECUTABLE%" stop %CMD_LINE_ARGS%
+call "%APP_HOME%\bin\catalina.bat" stop %CMD_LINE_ARGS%
 
 :end

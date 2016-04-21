@@ -41,6 +41,7 @@ import net.hasor.rsf.utils.NetworkUtils;
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
     public static void main(String[] args, ClassWorld world) throws Throwable {
+        logger.info(">>>>>>>>>>>>>>>>> MainLauncher <<<<<<<<<<<<<<<<<");
         String action = args[0];
         /*   */if ("start".equalsIgnoreCase(action)) {
             doStart(args);
@@ -52,6 +53,7 @@ public class MainLauncher {
     }
     //
     protected static void doStart(String[] args) throws Throwable {
+        logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         final BasicFuture<Object> future = new BasicFuture<Object>();
         final String config = args[1];
         AppContext app = Hasor.createAppContext(new File(config), new StartupModule());
@@ -64,6 +66,7 @@ public class MainLauncher {
         future.get();
     }
     protected static void doStop(String[] args) throws Throwable {
+        logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         StringWriter commands = new StringWriter();
         commands.write("set SESSION_AFTERCLOSE = true \n");//命令执行结束就关闭回话。
         commands.write("center_app_shutdown_command\n");

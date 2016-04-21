@@ -48,4 +48,4 @@ case "$1" in
     exit
 esac
 
-su -c "RSF_HOME=\"$RSF_HOME/bin/catalina.sh\" "$RSF_CMD"
+su -c "RSF_HOME=\"$RSF_HOME/bin/catalina.sh\" "$RSF_CMD" -f

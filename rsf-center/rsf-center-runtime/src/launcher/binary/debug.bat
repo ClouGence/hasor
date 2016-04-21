@@ -47,6 +47,7 @@ shift
 goto setArgs
 :doneSetArgs
 
+set JPDA_ENABLE=jpda
 call "%APP_HOME%\bin\catalina.bat" start %CMD_LINE_ARGS%
 
 :end
