@@ -15,6 +15,8 @@
  */
 package net.hasor.rsf.center.server.launcher.telnet;
 import java.io.BufferedReader;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.more.future.BasicFuture;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -34,6 +36,8 @@ import io.netty.handler.codec.string.StringEncoder;
 public final class TelnetClient {
     public static void execCommand(String host, int port, final BufferedReader commandReader) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
+        final BasicFuture<Object> closeFuture = new BasicFuture<Object>();
+        final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
         try {
             Bootstrap b = new Bootstrap();
             b = b.group(group);
@@ -44,22 +48,30 @@ public final class TelnetClient {
                     pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
                     pipeline.addLast(new StringDecoder());
                     pipeline.addLast(new StringEncoder());
-                    pipeline.addLast(new TelnetClientHandler());
+                    pipeline.addLast(new TelnetClientHandler(closeFuture, atomicBoolean));
                 }
             });
             Channel ch = b.connect(host, port).sync().channel();
             ChannelFuture lastWriteFuture = null;
             for (;;) {
-                String line = commandReader.readLine();
-                if (line == null) {
-                    break;
+                if (atomicBoolean.get() == true) {
+                    String line = commandReader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    if (ch.isActive()) {
+                        atomicBoolean.set(false);
+                        lastWriteFuture = ch.writeAndFlush(line + "\r\n");
+                    }
+                } else {
+                    Thread.sleep(500);//等待指令的响应
                 }
-                lastWriteFuture = ch.writeAndFlush(line + "\r\n");
             }
             if (lastWriteFuture != null) {
                 lastWriteFuture.sync();
             }
         } finally {
+            closeFuture.get();
             group.shutdownGracefully();
         }
     }

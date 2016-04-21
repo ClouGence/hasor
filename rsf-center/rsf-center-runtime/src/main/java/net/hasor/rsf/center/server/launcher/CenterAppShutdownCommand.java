@@ -38,31 +38,35 @@ public class CenterAppShutdownCommand implements RsfCommand {
     }
     @Override
     public String doCommand(RsfCommandRequest request) throws Throwable {
-        try {
-            //延迟3秒，shutdown
-            final AppContext appContext = request.getRsfContext().getAppContext();
-            Thread thread = new Thread() {
-                public void run() {
-                    appContext.shutdown();
-                    //
-                    for (int i = 10; i == 0; i--) {
-                        logger.error("after {} seconds to kill self.", i);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) { /**/ }
-                    }
-                    //
-                    System.exit(1);
-                };
-            };
-            //
-            thread.setDaemon(true);
-            thread.setName("Shutdown");
-            thread.start();
-            request.writeMessageLine("do shutdown center now.");
-            return "do shutdown center.";
-        } catch (Exception e) {
-            return "shutdown error " + e.getMessage();
+        int i = 5;
+        for (;;) {
+            logger.error("after {} seconds to kill self.", i);
+            request.writeMessageLine("detail Message:");
+            request.writeMessageLine("after " + i + " seconds to kill self.");
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) { /**/ }
+            i--;
+            if (i == 0) {
+                break;
+            }
         }
+        //延迟3秒，shutdown
+        final AppContext appContext = request.getRsfContext().getAppContext();
+        Thread thread = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {/**/}
+                appContext.shutdown();
+                System.exit(1);
+            };
+        };
+        //
+        request.writeMessageLine("shutdown center now.");
+        thread.setDaemon(true);
+        thread.setName("Shutdown");
+        thread.start();
+        return "do shutdown center.";
     }
 }

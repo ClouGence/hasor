@@ -114,11 +114,11 @@ public final class RsfCommandRequest {
                     result = result + ("pass time: " + (System.currentTimeMillis() - doStartTime) + "ms.");
                 }
             }
-            rsfSession.writeMessageLine(result);
+            writeMessageLine(result);
             status = CommandRequestStatus.Complete;
             this.callBack.run();
             if (doClose) {
-                rsfSession.writeMessageLine("bye.");
+                writeMessageLine("bye.");
                 rsfSession.close();
             }
         }
@@ -174,10 +174,14 @@ public final class RsfCommandRequest {
     }
     /**输出状态（带有换行）。*/
     public void writeMessageLine(String message) {
-        this.rsfSession.writeMessageLine(message);
+        try {
+            this.rsfSession.writeMessageLine(message);
+        } catch (Exception e) { /**/ }
     }
     /**输出状态（不带换行）。*/
     public void writeMessage(String message) {
-        this.rsfSession.writeMessage(message);
+        try {
+            this.rsfSession.writeMessage(message);
+        } catch (Exception e) { /**/ }
     }
 }

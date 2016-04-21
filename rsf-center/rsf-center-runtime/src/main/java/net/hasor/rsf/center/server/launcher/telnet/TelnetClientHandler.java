@@ -14,6 +14,10 @@
  * under the License.
  */
 package net.hasor.rsf.center.server.launcher.telnet;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.more.future.BasicFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -22,13 +26,31 @@ import io.netty.channel.SimpleChannelInboundHandler;
  */
 @Sharable
 public class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
+    protected static Logger     logger = LoggerFactory.getLogger(TelnetClientHandler.class);
+    private BasicFuture<Object> closeFuture;
+    private AtomicBoolean       atomicBoolean;
+    public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean) {
+        this.closeFuture = closeFuture;
+        this.atomicBoolean = atomicBoolean;
+    }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        System.err.println(msg);
+        logger.error(msg);
+        if (msg.startsWith("rsf>[SUCCEED]")) {
+            this.atomicBoolean.set(true);
+        }
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        logger.error(cause.getMessage(), cause);
         ctx.close();
+        this.closeFuture.completed(new Object());
+        this.atomicBoolean.set(true);
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        this.closeFuture.completed(new Object());
+        this.atomicBoolean.set(true);
     }
 }

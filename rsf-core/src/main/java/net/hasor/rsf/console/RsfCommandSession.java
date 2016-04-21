@@ -38,21 +38,21 @@ public final class RsfCommandSession {
         this.nettyContext.close();
     }
     /**输出状态（带有换行）。*/
-    void writeMessageLine(String message) {
+    void writeMessageLine(String message) throws InterruptedException {
         if (StringUtils.isBlank(message)) {
             message = "";
         }
         if (this.nettyContext.channel().isActive()) {
-            this.nettyContext.writeAndFlush(message + "\r\n");
+            this.nettyContext.writeAndFlush(message + "\r\n").sync();
         }
     }
     /**输出状态（不带换行）。*/
-    void writeMessage(String message) {
+    void writeMessage(String message) throws InterruptedException {
         if (StringUtils.isBlank(message)) {
             message = "";
         }
         if (this.nettyContext.channel().isActive()) {
-            this.nettyContext.writeAndFlush(message);
+            this.nettyContext.writeAndFlush(message).sync();
         }
     }
     //

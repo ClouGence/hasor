@@ -52,7 +52,7 @@ public class MainLauncher {
         }
     }
     //
-    protected static void doStart(String[] args) throws Throwable {
+    public static void doStart(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         final BasicFuture<Object> future = new BasicFuture<Object>();
         final String config = args[1];
@@ -65,13 +65,14 @@ public class MainLauncher {
         //
         future.get();
     }
-    protected static void doStop(String[] args) throws Throwable {
+    public static void doStop(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         StringWriter commands = new StringWriter();
         commands.write("set SESSION_AFTERCLOSE = true \n");//命令执行结束就关闭回话。
         commands.write("center_app_shutdown_command\n");
         //
-        StandardContextSettings settings = new StandardContextSettings("rsf-config.xml");
+        final String config = args[1];
+        StandardContextSettings settings = new StandardContextSettings(new File(config));
         settings.refresh();
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(settings);
         //
@@ -82,7 +83,7 @@ public class MainLauncher {
         BufferedReader reader = new BufferedReader(new StringReader(commands.toString()));
         TelnetClient.execCommand(addressHost, consolePort, reader);
     }
-    protected static void doVersion(String[] args) {
+    public static void doVersion(String[] args) {
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
             List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
