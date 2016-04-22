@@ -38,10 +38,10 @@ public class CenterAppShutdownCommand implements RsfCommand {
     }
     @Override
     public String doCommand(RsfCommandRequest request) throws Throwable {
+        request.writeMessageLine("detail Message:");
         int i = 5;
         for (;;) {
             logger.error("after {} seconds to kill self.", i);
-            request.writeMessageLine("detail Message:");
             request.writeMessageLine("after " + i + " seconds to kill self.");
             try {
                 Thread.sleep(1000);

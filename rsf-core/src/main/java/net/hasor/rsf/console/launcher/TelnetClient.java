@@ -13,8 +13,10 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package net.hasor.rsf.center.server.launcher.telnet;
+package net.hasor.rsf.console.launcher;
 import java.io.BufferedReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.future.BasicFuture;
 import io.netty.bootstrap.Bootstrap;
@@ -34,7 +36,11 @@ import io.netty.handler.codec.string.StringEncoder;
  * Simplistic telnet client.
  */
 public final class TelnetClient {
-    public static void execCommand(String host, int port, final BufferedReader commandReader) throws Exception {
+    public static void execCommand(String host, int port, final String command) throws Exception {
+        StringWriter commands = new StringWriter();
+        commands.write("set SESSION_AFTERCLOSE = true \n");
+        commands.write(command + "\n");
+        //
         EventLoopGroup group = new NioEventLoopGroup();
         final BasicFuture<Object> closeFuture = new BasicFuture<Object>();
         final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
@@ -53,6 +59,7 @@ public final class TelnetClient {
             });
             Channel ch = b.connect(host, port).sync().channel();
             ChannelFuture lastWriteFuture = null;
+            BufferedReader commandReader = new BufferedReader(new StringReader(commands.toString()));
             for (;;) {
                 if (atomicBoolean.get() == true) {
                     String line = commandReader.readLine();

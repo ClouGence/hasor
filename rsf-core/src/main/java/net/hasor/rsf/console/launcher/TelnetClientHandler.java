@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package net.hasor.rsf.center.server.launcher.telnet;
+package net.hasor.rsf.console.launcher;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.more.future.BasicFuture;
 import org.slf4j.Logger;

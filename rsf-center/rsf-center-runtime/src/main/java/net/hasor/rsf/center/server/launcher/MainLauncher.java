@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.more.future.BasicFuture;
@@ -30,7 +27,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.center.server.launcher.telnet.TelnetClient;
+import net.hasor.rsf.console.launcher.TelnetClient;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.utils.NetworkUtils;
 /**
@@ -67,9 +64,6 @@ public class MainLauncher {
     }
     public static void doStop(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
-        StringWriter commands = new StringWriter();
-        commands.write("set SESSION_AFTERCLOSE = true \n");//命令执行结束就关闭回话。
-        commands.write("center_app_shutdown_command\n");
         //
         final String config = args[1];
         StandardContextSettings settings = new StandardContextSettings(new File(config));
@@ -80,8 +74,7 @@ public class MainLauncher {
         addressHost = NetworkUtils.finalBindAddress(addressHost).getHostAddress();
         int consolePort = rsfSettings.getConsolePort();
         //
-        BufferedReader reader = new BufferedReader(new StringReader(commands.toString()));
-        TelnetClient.execCommand(addressHost, consolePort, reader);
+        TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command");
     }
     public static void doVersion(String[] args) {
         try {
