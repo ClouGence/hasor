@@ -106,8 +106,9 @@
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<configuration>
+							<finalName>rsf-center-v${project.version}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
-							<outputDirectory>${project.build.directory}/build</outputDirectory>
+							<outputDirectory>build</outputDirectory>
 							<descriptors>
 								<descriptor>src/launcher/assembly.xml</descriptor>
 							</descriptors>
