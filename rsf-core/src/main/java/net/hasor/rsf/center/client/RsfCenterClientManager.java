@@ -46,7 +46,7 @@ import net.hasor.rsf.utils.TimerManager;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> {
+class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody> {
     public static final String                            CenterUpdate_Event = "CenterUpdate_Event";
     protected Logger                                      logger             = LoggerFactory.getLogger(getClass());
     private final RsfContext                              rsfContext;
@@ -55,7 +55,7 @@ class RsfCenterBeatManager implements TimerTask, EventListener<CenterEventBody> 
     private final RsfCenterRegister                       centerRegister;
     private final ConcurrentMap<String, ServiceDomain<?>> serviceMap;
     //
-    public RsfCenterBeatManager(RsfContext rsfContext) {
+    public RsfCenterClientManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
         this.rsfContext = rsfContext;
         this.hostString = rsfContext.bindAddress().toHostSchema();

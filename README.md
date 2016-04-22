@@ -14,7 +14,7 @@
 
 ----------
 ### Center架构设计
-![RsfCenter架构设计](http://project.hasor.net/resources/002011_mz60_1166271.jpg)
+![RsfCenter架构设计](http://project.hasor.net/resources/005201_W9C1_1166271.jpg)
 
 ----------
 ### Demo
@@ -22,40 +22,35 @@
 	<dependency>
 		<groupId>net.hasor</groupId>
 		<artifactId>rsf-core</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</dependency>
 
+	<!-- 配置文件 -->
 	<!-- server-config.xml or client-config.xml -->
-	<config xmlns="http://project.hasor.net/hasor/schema/main">
-		<!-- 如果在一台机器上同时运行提供者和消费者，那么请为两个程序分别指定不同的 port端口号 -->
-		<hasor.rsfConfig enable="true" address="127.0.0.1" port="8000">
-			<centerServers>
-				<server>rsf://127.0.0.1:2177</server><!-- 注册中心，可以配置多个 -->
-			</centerServers>
-		</hasor.rsfConfig>
-	</config>
+	<hasor.rsfConfig enable="true" port="9001" console.port="9002" unitName="default">
+		<centerServers>
+			<server>rsf://center-host:2180</server>
+		</centerServers>
+	</hasor.rsfConfig>
 
 	//Server
 	Hasor.createAppContext("server-config.xml", new RsfModule() {
-	    @Override
-	    public void loadRsf(RsfContext rsfContext) throws Throwable {
-	        RsfBinder rsfBinder = rsfContext.binder();
-	        rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-	    }
+		public void loadRsf(RsfContext rsfContext) throws Throwable {
+			EchoService echoService = new EchoServiceImpl();
+			rsfContext.binder().rsfService(EchoService.class).toInstance(echoService).register();
+		}
 	});
 
 	//Client
 	AppContext clientContext = Hasor.createAppContext("client-config.xml", new RsfModule() {
-	    @Override
-	    public void loadRsf(RsfContext rsfContext) throws Throwable {
-	        RsfBinder rsfBinder = rsfContext.binder();
-	        rsfBinder.rsfService(EchoService.class).register();
-	    }
+		public void loadRsf(RsfContext rsfContext) throws Throwable {
+			rsfContext.binder().rsfService(EchoService.class).register();
+		}
 	});
 	RsfClient client = clientContext.getInstance(RsfClient.class);
 	EchoService echoService = client.wrapper(EchoService.class);
-	String res = echoService.sayHello("Hello Word");
-	System.out.println(res);
+	String echoMessage = echoService.sayHello("Hello Word");
+	System.out.println(echoMessage);
 
 ----------
 ### 相关连接

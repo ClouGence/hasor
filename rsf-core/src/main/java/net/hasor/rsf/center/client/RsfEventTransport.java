@@ -27,10 +27,10 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<Object> {
-    protected Logger             logger    = LoggerFactory.getLogger(getClass());
-    private RsfCenterBeatManager beatTimer = null;
+    protected Logger               logger        = LoggerFactory.getLogger(getClass());
+    private RsfCenterClientManager centerManager = null;
     public RsfEventTransport(RsfContext rsfContext) {
-        this.beatTimer = new RsfCenterBeatManager(rsfContext);
+        this.centerManager = new RsfCenterClientManager(rsfContext);
     }
     //
     @Override
@@ -40,27 +40,27 @@ class RsfEventTransport implements EventListener<Object> {
         }
         this.logger.info("rsfEventTransport -> eventType = {}.", event);
         if (StringUtils.equals(RsfEvent.Rsf_Started, event)) {
-            this.beatTimer.run(null);//启动的时候调用一次，目的是进行服务注册
+            this.centerManager.run(null);//启动的时候调用一次，目的是进行服务注册
             this.logger.info("eventType = {} , start the registration service processed.", event);
             return;
         } else if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
-            this.beatTimer.online();
+            this.centerManager.online();
             return;
         } else if (StringUtils.equals(RsfEvent.Rsf_Offline, event)) {
-            this.beatTimer.offline();
+            this.centerManager.offline();
             return;
         }
         //
         ServiceDomain<?> domain = (ServiceDomain<?>) eventData;
         try {
             if (StringUtils.equals(RsfEvent.Rsf_ProviderService, event)) {
-                this.beatTimer.newService(domain, RsfEvent.Rsf_ProviderService);
+                this.centerManager.newService(domain, RsfEvent.Rsf_ProviderService);
                 //
             } else if (StringUtils.equals(RsfEvent.Rsf_ConsumerService, event)) {
-                this.beatTimer.newService(domain, RsfEvent.Rsf_ConsumerService);
+                this.centerManager.newService(domain, RsfEvent.Rsf_ConsumerService);
                 //
             } else if (StringUtils.equals(RsfEvent.Rsf_DeleteService, event)) {
-                this.beatTimer.deleteService(domain);
+                this.centerManager.deleteService(domain);
                 //
             }
             //

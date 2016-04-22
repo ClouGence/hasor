@@ -6,7 +6,7 @@
 
 ----------
 ### 工作原理
-![工作原理](http://project.hasor.net/resources/224933_BV6Q_1166271.jpg)
+!!!!!!!!!
 
 ----------
 ### 架构设计
@@ -41,62 +41,6 @@
 04. 默认最大发起请求超限制策略设置（等待1秒重试、抛异常）。
 05. 请求超时设置。
 06. RSF在启动链接注册中心之后，会根据授权码来校验来自Center的指令。通过校验码来防止恶意伪装RsfCenter的攻击。
-
-----------
-### Demo
-	<!-- 引入依赖 -->
-	<dependency>
-		<groupId>net.hasor</groupId>
-		<artifactId>rsf-core</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</dependency>
-
-	<!-- server-config.xml or client-config.xml -->
-	<config xmlns="http://project.hasor.net/hasor/schema/main">
-		<!-- 如果在一台机器上同时运行提供者和消费者，那么请为两个程序分别指定不同的 port端口号 -->
-		<hasor.rsfConfig enable="true" address="127.0.0.1" port="8000">
-			<centerServers>
-				<!-- 注册中心 -->
-				<server>rsf://127.0.0.1:2177</server>
-			</centerServers>
-		</hasor.rsfConfig>
-	</config>
-
-	public class RsfProviderServer {
-	    public static void main(String[] args) throws Throwable {
-	        //Server
-	        Hasor.createAppContext("server-config.xml", new RsfModule() {
-	            @Override
-	            public void loadRsf(RsfContext rsfContext) throws Throwable {
-	                RsfBinder rsfBinder = rsfContext.binder();
-	                rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-	            }
-	        });
-	        //
-	        System.out.println("server start.");
-	        Thread.sleep(10000);
-	    }
-	}
-
-	public class RsfCustomerClient {
-	    public static void main(String[] args) throws Throwable {
-	        //Client
-	        AppContext clientContext = Hasor.createAppContext("client-config.xml", new RsfModule() {
-	            @Override
-	            public void loadRsf(RsfContext rsfContext) throws Throwable {
-	                RsfBinder rsfBinder = rsfContext.binder();
-	                rsfBinder.rsfService(EchoService.class).register();
-	            }
-	        });
-	        System.out.println("server start.");
-	        //
-	        //Client -> Server
-	        RsfClient client = clientContext.getInstance(RsfClient.class);
-	        EchoService echoService = client.wrapper(EchoService.class);
-	        String res = echoService.sayHello("Hello Word");
-	        System.out.println(res);
-	    }
-	}
 
 ----------
 ### 相关连接
