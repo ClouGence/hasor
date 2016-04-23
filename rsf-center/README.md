@@ -21,14 +21,6 @@
 01. 支持服务动态发布、动态卸载。
 
 ----------
-### 相关连接
-
-* WebSite：[http://www.hasor.net](http://www.hasor.net)
-* Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
-* Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
-* QQ群：193943114
-
-----------
 ### 后续优化
 1. RSF校验机制
 2. 集群下事件分发机制

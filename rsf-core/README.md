@@ -43,14 +43,6 @@
 06. RSF在启动链接注册中心之后，会根据授权码来校验来自Center的指令。通过校验码来防止恶意伪装RsfCenter的攻击。
 
 ----------
-### 相关连接
-
-* WebSite：[http://www.hasor.net](http://www.hasor.net)
-* Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
-* Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
-* QQ群：193943114
-
-----------
 ### 后续优化
 1. HTTP请求通道（用于穿透防火墙）
 2. restful形式API。
