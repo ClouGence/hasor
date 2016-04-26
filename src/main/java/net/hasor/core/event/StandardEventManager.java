@@ -142,10 +142,9 @@ public class StandardEventManager implements EventContext {
                 try {
                     EventListener<Object> listener = (EventListener<Object>) listenerItem;
                     listener.onEvent(eventType, eventData);
+                    callBack.handleComplete(eventType, eventData);
                 } catch (Throwable e) {
                     callBack.handleException(eventType, eventData, e);
-                } finally {
-                    callBack.handleComplete(eventType, eventData);
                 }
             }
         }
@@ -157,10 +156,9 @@ public class StandardEventManager implements EventContext {
                 try {
                     EventListener<Object> listener = (EventListener<Object>) listenerItem;
                     listener.onEvent(eventType, eventData);
+                    callBack.handleComplete(eventType, eventData);
                 } catch (Throwable e) {
                     callBack.handleException(eventType, eventData, e);
-                } finally {
-                    callBack.handleComplete(eventType, eventData);
                 }
             }
         }
