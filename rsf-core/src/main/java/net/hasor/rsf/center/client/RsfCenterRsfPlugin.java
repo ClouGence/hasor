@@ -44,7 +44,7 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         // 1.注册中心消息接收接口
         rsfBinder.rsfService(RsfCenterListener.class)//服务类型
                 .toInstance(new RsfCenterDataReceiver(rsfContext))//服务实现
-                .bindFilter("AuthFilter", new RsfCenterDataVerificationFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
                 .register();//注册服务
         //
         // 2.注册中心消息发送接口
@@ -60,7 +60,7 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         logger.info("rsf center hostSet = {}  -> center enable.", strBuilder.toString());
         rsfBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(faceTimer)//服务接口超时时间
-                .bindFilter("AuthFilter", new RsfCenterDataVerificationFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
                 .bindStaticAddress(null, centerList)//静态地址，用不失效
                 .register();
         //

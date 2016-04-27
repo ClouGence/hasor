@@ -26,6 +26,7 @@ import net.hasor.rsf.center.domain.ReceiveResult;
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
+    //
     /**发布服务
      * @return 返回订阅ID。*/
     public String publishService(String rsfHostString, ProviderPublishInfo info);

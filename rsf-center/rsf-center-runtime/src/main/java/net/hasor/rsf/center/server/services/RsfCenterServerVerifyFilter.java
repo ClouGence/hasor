@@ -22,46 +22,34 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.domain.ProtocolStatus;
 /**
- * 注册中心数据接收器安全过滤器，负责验证注册中心的消息是否可靠。
+ * 检验来自Client的请求是否准许访问Cenrer。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-public class RsfCenterRegisterVerificationFilter implements RsfFilter {
+public class RsfCenterServerVerifyFilter implements RsfFilter {
     protected Logger    logger = LoggerFactory.getLogger(getClass());
-    private String      centerVersion;
-    private RsfContext  rsfContext;
     private AuthManager authManager;
     //
-    public RsfCenterRegisterVerificationFilter(RsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+    public RsfCenterServerVerifyFilter(RsfContext rsfContext) {
         this.authManager = rsfContext.getAppContext().getInstance(AuthManager.class);
-        this.centerVersion = this.rsfContext.getSettings().getVersion();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (request.isLocal()) {
-            //-如果是对外发送请求，则添加请求头参数用于远程对注册中心发来数据的校验
-            InterAddress target = request.getTargetAddress();
-            String checkCode = this.authManager.checkAuth(target);
-            request.addOption(RsfCenterConstants.RSF_CHECK_CODE, checkCode);
-            request.addOption(RsfCenterConstants.RSF_VERSION, this.centerVersion);
-            chain.doFilter(request, response);
-        } else {
-            //-如果是来自远程的请求响应，则校验是否是和注册中心协调好的授权码
+        if (request.isLocal() == false) {
+            //-如果是来自远程的请求响应，则校验注册中心需要校验应用接入Key
             String appCode = request.getOption(RsfCenterConstants.RSF_AUTH_CODE); //RSF_AUTH_CODE 授权码
             String authCode = request.getOption(RsfCenterConstants.RSF_APP_CODE); //RSF_APP_CODE  应用程序编码
             boolean authResult = this.authManager.checkAuth(appCode, authCode);
-            if (authResult) {
-                chain.doFilter(request, response);
-            } else {
+            if (authResult == false) {
                 response.sendStatus(ProtocolStatus.Unauthorized, "check auth code failed.");
+                return;
             }
         }
+        chain.doFilter(request, response);
     }
 }

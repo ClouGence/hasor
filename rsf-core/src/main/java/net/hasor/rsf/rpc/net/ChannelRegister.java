@@ -16,7 +16,7 @@
 package net.hasor.rsf.rpc.net;
 import net.hasor.rsf.address.InterAddress;
 /**
- * 
+ * 包内，用于类解耦的接口。
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
