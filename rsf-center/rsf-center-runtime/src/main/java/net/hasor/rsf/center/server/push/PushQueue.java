@@ -29,7 +29,7 @@ import net.hasor.plugins.event.Event;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
-import net.hasor.rsf.center.server.push.share.SharePushManager;
+import net.hasor.rsf.center.server.share.SharePushManager;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 /**
  * 推送服务触发器

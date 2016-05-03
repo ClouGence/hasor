@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.push.share;
-import net.hasor.core.Singleton;
+package net.hasor.rsf.center.server.share;
+import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.server.push.PushEvent;
 /**
- * 将事件分享到集群其它RsfCenter中上去。
- * @version : 2016年3月1日
+ * 注册中心之间分享事件的远程接口。
+ * @version : 2016年4月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-public class SharePushManager {
-    public void shareEvent(PushEvent eventData) {
-        System.out.println("share event.");
-        //TODO :需要转发到进群其它机器中处理
-    }
+@RsfService(group = "RSF", version = "1.0.0")
+public interface ShareEventListener {
+    /**分享事件*/
+    public boolean receiveShareEvent(PushEvent eventData);
 }

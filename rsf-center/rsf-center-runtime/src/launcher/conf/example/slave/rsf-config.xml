@@ -10,9 +10,9 @@
 	<rsfCenter workAt="slave">
 		<!-- 要加入的Zookeeper集群列表 -->
 		<zooKeeper.zkServers>
-			<server sid="1" bindPort="2112" electionPort="2113">127.0.0.1</server>
-			<server sid="2" bindPort="2122" electionPort="2123">127.0.0.1</server>
-			<server sid="3" bindPort="2132" electionPort="2133">127.0.0.1</server>
+			<server sid="1" bindPort="2182" electionPort="2183">127.0.0.1</server>
+			<server sid="2" bindPort="2182" electionPort="2183">127.0.0.1</server>
+			<server sid="3" bindPort="2182" electionPort="2183">127.0.0.1</server>
 		</zooKeeper.zkServers>
 	</rsfCenter>
 	<!--
@@ -26,8 +26,8 @@
 	-->
 	<hasor.rsfConfig enable="true" address="127.0.0.1" port="2140" console.port="2141" />
 
-	<!-- 环境变量（demo使用） -->
+	<!-- 工作目录 -->
 	<hasor.environmentVar>
-		<WORK_HOME>%USER.HOME%/hasor-work/rsf-server-slave-a</WORK_HOME>
+		<WORK_HOME>%app.home%/works</WORK_HOME>
 	</hasor.environmentVar>
 </config>
