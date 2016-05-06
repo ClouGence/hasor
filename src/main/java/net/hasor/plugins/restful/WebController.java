@@ -70,8 +70,7 @@ public abstract class WebController {
     /**
      * Return HttpSession.
      * 
-     * @param create
-     *            a boolean specifying create HttpSession if it not exists
+     * @param create a boolean specifying create HttpSession if it not exists
      * @return Return HttpSession.
      */
     public HttpSession getSession(boolean create) {
@@ -81,10 +80,8 @@ public abstract class WebController {
     /**
      * 设置{@link HttpServletRequest}属性
      * 
-     * @param attKey
-     *            属性名
-     * @param attValue
-     *            属性值
+     * @param attKey 属性名
+     * @param attValue 属性值
      * @return 返回this
      */
     public WebController putAtt(String attKey, Object attValue) {
@@ -94,10 +91,8 @@ public abstract class WebController {
     /**
      * 设置{@link HttpServletResponse}Header属性
      * 
-     * @param key
-     *            参数 key
-     * @param value
-     *            参数值
+     * @param key 参数 key
+     * @param value 参数值
      * @return 返回this.
      */
     public WebController setHeader(String key, String value) {
@@ -107,10 +102,8 @@ public abstract class WebController {
     /**
      * 设置{@link HttpServletResponse}Header属性
      * 
-     * @param key
-     *            参数 key
-     * @param value
-     *            参数值
+     * @param key 参数 key
+     * @param value 参数值
      * @return 返回this.
      */
     public WebController addHeader(String key, String value) {
@@ -120,10 +113,8 @@ public abstract class WebController {
     /**
      * Stores an attribute in this request
      * 
-     * @param name
-     *            a String specifying the name of the attribute
-     * @param value
-     *            the Object to be stored
+     * @param name a String specifying the name of the attribute
+     * @param value the Object to be stored
      * @return 返回this.
      */
     public WebController setAttr(String name, Object value) {
@@ -133,8 +124,7 @@ public abstract class WebController {
     /**
      * Removes an attribute from this request
      * 
-     * @param name
-     *            a String specifying the name of the attribute to remove
+     * @param name a String specifying the name of the attribute to remove
      * @return 返回this.
      */
     public WebController removeAttr(String name) {
@@ -144,8 +134,7 @@ public abstract class WebController {
     /**
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
      * 
-     * @param attrMap
-     *            key and value as attribute of the map to be stored
+     * @param attrMap key and value as attribute of the map to be stored
      * @return 返回this.
      */
     public WebController setAttrs(Map<String, Object> attrMap) {
@@ -160,8 +149,7 @@ public abstract class WebController {
      * <p>
      * If you use this method with a multivalued parameter, the value returned is equal to the first value in the array returned by getParameterValues.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
+     * @param name a String specifying the name of the parameter
      * @return a String representing the single value of the parameter
      */
     public String getPara(String name) {
@@ -170,10 +158,8 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter as a String, or default value if the parameter does not exist.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
-     * @param defaultValue
-     *            a String value be returned when the value of parameter is null
+     * @param name a String specifying the name of the parameter
+     * @param defaultValue a String value be returned when the value of parameter is null
      * @return a String representing the single value of the parameter
      */
     public String getPara(String name, String defaultValue) {
@@ -199,8 +185,7 @@ public abstract class WebController {
     /**
      * Returns an array of String objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
      * 
-     * @param name
-     *            a String containing the name of the parameter whose value is requested
+     * @param name a String containing the name of the parameter whose value is requested
      * @return an array of String objects containing the parameter's values
      */
     public String[] getParaValues(String name) {
@@ -209,8 +194,7 @@ public abstract class WebController {
     /**
      * Returns an array of Integer objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
      * 
-     * @param name
-     *            a String containing the name of the parameter whose value is requested
+     * @param name a String containing the name of the parameter whose value is requested
      * @return an array of Integer objects containing the parameter's values
      */
     public Integer[] getParaValuesToInt(String name) {
@@ -233,8 +217,7 @@ public abstract class WebController {
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
      * 
-     * @param name
-     *            a String specifying the name of the attribute
+     * @param name a String specifying the name of the attribute
      * @return an Object containing the value of the attribute, or null if the attribute does not exist
      */
     public <T> T getAttr(String name) {
@@ -243,8 +226,7 @@ public abstract class WebController {
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
      * 
-     * @param name
-     *            a String specifying the name of the attribute
+     * @param name a String specifying the name of the attribute
      * @return an String Object containing the value of the attribute, or null if the attribute does not exist
      */
     public String getAttrForStr(String name) {
@@ -253,8 +235,7 @@ public abstract class WebController {
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
      * 
-     * @param name
-     *            a String specifying the name of the attribute
+     * @param name a String specifying the name of the attribute
      * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
      */
     public Integer getAttrForInt(String name) {
@@ -263,8 +244,7 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Integer.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
+     * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Integer getParaToInt(String name) {
@@ -273,10 +253,8 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Integer with a default value if it is null.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
-     * @param defaultValue
-     *            default value for the parameter
+     * @param name a String specifying the name of the parameter
+     * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Integer getParaToInt(String name, Integer defaultValue) {
@@ -285,8 +263,7 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Long.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
+     * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Long getParaToLong(String name) {
@@ -295,10 +272,8 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Long with a default value if it is null.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
-     * @param defaultValue
-     *            default value for the parameter
+     * @param name a String specifying the name of the parameter
+     * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
     public Long getParaToLong(String name, Long defaultValue) {
@@ -327,8 +302,7 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Boolean.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
+     * @param name a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", null if parameter is not exists
      */
     public Boolean getParaToBoolean(String name) {
@@ -347,10 +321,8 @@ public abstract class WebController {
     /**
      * Returns the value of a request parameter and convert to Boolean with a default value if it is null.
      * 
-     * @param name
-     *            a String specifying the name of the parameter
-     * @param defaultValue
-     *            default value for the parameter
+     * @param name a String specifying the name of the parameter
+     * @param defaultValue default value for the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", default value if it is null
      */
     public Boolean getParaToBoolean(String name, Boolean defaultValue) {
@@ -360,8 +332,7 @@ public abstract class WebController {
     /**
      * Return a Object from session.
      * 
-     * @param key
-     *            a String specifying the key of the Object stored in session
+     * @param key a String specifying the key of the Object stored in session
      * @return return session attribute data.
      */
     public <T> T getSessionAttr(String key) {
@@ -371,10 +342,8 @@ public abstract class WebController {
     /**
      * Store Object to session.
      * 
-     * @param key
-     *            a String specifying the key of the Object stored in session
-     * @param value
-     *            a Object specifying the value stored in session
+     * @param key a String specifying the key of the Object stored in session
+     * @param value a Object specifying the value stored in session
      * @return 返回this.
      */
     public WebController setSessionAttr(String key, Object value) {
@@ -384,8 +353,7 @@ public abstract class WebController {
     /**
      * Remove Object in session.
      * 
-     * @param key
-     *            a String specifying the key of the Object stored in session
+     * @param key a String specifying the key of the Object stored in session
      * @return 返回this.
      */
     public WebController removeSessionAttr(String key) {
@@ -398,10 +366,8 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name.
      * 
-     * @param name
-     *            cookie name
-     * @param defaultValue
-     *            default value
+     * @param name cookie name
+     * @param defaultValue default value
      * @return return cookie value or default value.
      */
     public String getCookie(String name, String defaultValue) {
@@ -411,8 +377,7 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name.
      * 
-     * @param name
-     *            cookie name
+     * @param name cookie name
      * @return return cookie value or null.
      */
     public String getCookie(String name) {
@@ -421,8 +386,7 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name and convert to Integer.
      * 
-     * @param name
-     *            cookie name
+     * @param name cookie name
      * @return return cookie value or null.
      */
     public Integer getCookieToInt(String name) {
@@ -432,10 +396,8 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name and convert to Integer.
      * 
-     * @param name
-     *            cookie name
-     * @param defaultValue
-     *            default value
+     * @param name cookie name
+     * @param defaultValue default value
      * @return return cookie value or default value.
      */
     public Integer getCookieToInt(String name, Integer defaultValue) {
@@ -445,8 +407,7 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name and convert to Long.
      * 
-     * @param name
-     *            cookie name
+     * @param name cookie name
      * @return return cookie value or null.
      */
     public Long getCookieToLong(String name) {
@@ -456,10 +417,8 @@ public abstract class WebController {
     /**
      * Get cookie value by cookie name and convert to Long.
      * 
-     * @param name
-     *            cookie name
-     * @param defaultValue
-     *            default value
+     * @param name cookie name
+     * @param defaultValue default value
      * @return return cookie value or default value.
      */
     public Long getCookieToLong(String name, Long defaultValue) {
@@ -469,8 +428,7 @@ public abstract class WebController {
     /**
      * Get cookie object by cookie name.
      * 
-     * @param name
-     *            cookie name
+     * @param name cookie name
      * @return Cookie object
      */
     public Cookie getCookieObject(String name) {
@@ -492,8 +450,7 @@ public abstract class WebController {
     /**
      * Set Cookie to response.
      * 
-     * @param cookie
-     *            new cookie.
+     * @param cookie new cookie.
      * @return 返回this.
      */
     public WebController setCookie(Cookie cookie) {
@@ -503,14 +460,10 @@ public abstract class WebController {
     /**
      * Set Cookie to response.
      * 
-     * @param name
-     *            cookie name
-     * @param value
-     *            cookie value
-     * @param maxAgeInSeconds
-     *            -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
-     * @param path
-     *            see Cookie.setPath(String)
+     * @param name cookie name
+     * @param value cookie value
+     * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
+     * @param path see Cookie.setPath(String)
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds, String path) {
@@ -520,16 +473,11 @@ public abstract class WebController {
     /**
      * Set Cookie to response.
      * 
-     * @param name
-     *            cookie name
-     * @param value
-     *            cookie value
-     * @param maxAgeInSeconds
-     *            -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
-     * @param path
-     *            see Cookie.setPath(String)
-     * @param domain
-     *            the domain name within which this cookie is visible; form is according to RFC 2109
+     * @param name cookie name
+     * @param value cookie value
+     * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
+     * @param path see Cookie.setPath(String)
+     * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
@@ -545,12 +493,9 @@ public abstract class WebController {
     /**
      * Set Cookie with path = "/".
      * 
-     * @param name
-     *            cookie name
-     * @param value
-     *            cookie value
-     * @param maxAgeInSeconds
-     *            max age
+     * @param name cookie name
+     * @param value cookie value
+     * @param maxAgeInSeconds max age
      * @return 返回this.
      */
     public WebController setCookie(String name, String value, int maxAgeInSeconds) {
@@ -560,8 +505,7 @@ public abstract class WebController {
     /**
      * Remove Cookie with path = "/".
      * 
-     * @param name
-     *            cookie name
+     * @param name cookie name
      * @return 返回this.
      */
     public WebController removeCookie(String name) {
@@ -571,10 +515,8 @@ public abstract class WebController {
     /**
      * Remove Cookie.
      * 
-     * @param name
-     *            cookie name
-     * @param path
-     *            cookie with path = "/".
+     * @param name cookie name
+     * @param path cookie with path = "/".
      * @return 返回this.
      */
     public WebController removeCookie(String name, String path) {
@@ -584,12 +526,9 @@ public abstract class WebController {
     /**
      * Remove Cookie.
      * 
-     * @param name
-     *            cookie name
-     * @param path
-     *            cookie with path = "/".
-     * @param domain
-     *            domain
+     * @param name cookie name
+     * @param path cookie with path = "/".
+     * @param domain domain
      * @return 返回this.
      */
     public WebController removeCookie(String name, String path, String domain) {

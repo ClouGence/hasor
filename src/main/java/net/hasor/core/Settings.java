@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
@@ -31,10 +30,8 @@ public interface Settings {
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
      * -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
      * 
-     * @param featureType
-     *            特征类型
-     * @param loadPackages
-     *            扫面范围，多个包
+     * @param featureType 特征类型
+     * @param loadPackages 扫面范围，多个包
      * @return 返回匹配的类集合。
      */
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages);
@@ -42,10 +39,8 @@ public interface Settings {
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
      * -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
      * 
-     * @param featureType
-     *            特征类型
-     * @param loadPackages
-     *            扫面范围，单个包
+     * @param featureType 特征类型
+     * @param loadPackages 扫面范围，单个包
      * @return 返回匹配的类集合。
      */
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages);
@@ -103,21 +98,21 @@ public interface Settings {
     public Date getDate(String name, long defaultValue);
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date getDate(String name, String format);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第三个参数为默认值。 */
     public Date getDate(String name, String format, Date defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第三个参数为默认值。 */
     public Date getDate(String name, String format, long defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。*/
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType);
-    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第三个参数为默认值。 */
     public <T extends Enum<?>> T getEnum(String name, Class<T> enmType, T defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示文件，结尾不带‘/’）。*/
     public String getFilePath(String name);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示文件，结尾不带‘/’）。第二个参数为默认值。 */
     public String getFilePath(String name, String defaultValue);
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。*/
     public String getDirectoryPath(String name);
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。第二个参数为默认值。 */
     public String getDirectoryPath(String name, String defaultValue);
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode getXmlNode(String name);
@@ -162,21 +157,21 @@ public interface Settings {
     public Date[] getDateArray(String name, long defaultValue);
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date[] getDateArray(String name, String format);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第三个参数为默认值。 */
     public Date[] getDateArray(String name, String format, Date defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第三个参数为默认值。 */
     public Date[] getDateArray(String name, String format, long defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。*/
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType);
-    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第三个参数为默认值。 */
     public <T extends Enum<?>> T[] getEnumArray(String name, Class<T> enmType, T defaultValue);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示文件，结尾不带‘/’）。*/
     public String[] getFilePathArray(String name);
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示文件，结尾不带‘/’）。第二个参数为默认值。 */
     public String[] getFilePathArray(String name, String defaultValue);
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。*/
     public String[] getDirectoryPathArray(String name);
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    /** 解析全局配置参数，并且返回字符串（用于表示目录，结尾带‘/’）。第二个参数为默认值。 */
     public String[] getDirectoryPathArray(String name, String defaultValue);
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode[] getXmlNodeArray(String name);

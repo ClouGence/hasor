@@ -17,7 +17,7 @@ package org.more.json;
 class Slf4jLog extends AbstractLogger {
     private final org.slf4j.Logger _logger;
     public Slf4jLog() throws Exception {
-        this("org.eclipse.jetty.util.log");
+        this("org.more.json");
     }
     public Slf4jLog(String name) {
         //NOTE: if only an slf4j-api jar is on the classpath, slf4j will use a NOPLogger

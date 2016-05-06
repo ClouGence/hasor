@@ -16,15 +16,15 @@
 package net.test.hasor.core._06_context;
 import java.util.Date;
 import java.util.Set;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.core.context.TemplateAppContext;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 1.findClassTest
  *      类扫描
@@ -86,8 +86,8 @@ public class ContextTest {
         Integer myAge = settings.getInteger("mySelf.myAge");
         logger.info("my Age is {}.", myAge);
         //
-        Date myBirthday = settings.getDate("mySelf.myBirthday");
-        logger.info("my Birthday is {}.", myBirthday);//需要解决通用格式转换问题
+        Date myBirthday = settings.getDate("mySelf.myBirthday", "YYYY-MM-DD hh:mm:ss");
+        logger.info("my Birthday is {}.", myBirthday);
         //
         String myWork = settings.getString("mySelf.myWork");
         logger.info("my Work is {}.", myWork);
