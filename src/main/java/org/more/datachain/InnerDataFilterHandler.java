@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.datachain;
+package org.more.datachain;
 /**
  * 
  * @version : 2016年5月6日

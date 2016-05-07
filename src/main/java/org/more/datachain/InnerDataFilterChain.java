@@ -1,5 +1,4 @@
 /*
-/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.datachain;
+package org.more.datachain;
 /**
  * 
  * @version : 2016年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Domain<T> {
-    /**获取输入数据。*/
-    public T getDomain();
-    /** 写入附加数据 */
-    public <V> void attachData(Class<V> type, V attachData);
-    /** 读取附加数据 */
-    public <V> V attachData(Class<V> type);
+class InnerDataFilterChain<I, O> implements DataFilterChain<I, O> {
+    private final DataCreater<I> inputDataCreater;
+    private final DataCreater<O> outputDataCreater;
+    //
+    public InnerDataFilterChain(DataCreater<I> input, DataCreater<O> output) {
+        this.inputDataCreater = input;
+        this.outputDataCreater = output;
+    }
+    @Override
+    public O doForward(Domain<I> domain) throws Throwable {
+        return this.outputDataCreater.newObject();
+    }
+    @Override
+    public I doBackward(Domain<O> domain) throws Throwable {
+        return this.inputDataCreater.newObject();
+    }
 }

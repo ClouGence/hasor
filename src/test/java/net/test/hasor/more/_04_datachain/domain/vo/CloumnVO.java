@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.domain.dto;
+package net.test.hasor.more._04_datachain.domain.vo;
 /**
  * 新闻帖子
  * @version : 2016年5月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CloumnDO {
+public class CloumnVO {
     private long    id;          //栏目Id
     private String  name;        //栏目名
     private boolean special;     //允许个性化

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.domain.vo;
+package net.test.hasor.more._04_datachain.domain.dto;
 /**
  * 新闻帖子中的图片
  * @version : 2016年5月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NewsImagesVO {
+public class NewsImagesDO {
     private long   id;
+    private long   newsId;
     private String imgUrl;
     private String desc;
     //
@@ -29,6 +30,12 @@ public class NewsImagesVO {
     }
     public void setId(long id) {
         this.id = id;
+    }
+    public long getNewsId() {
+        return newsId;
+    }
+    public void setNewsId(long newsId) {
+        this.newsId = newsId;
     }
     public String getImgUrl() {
         return imgUrl;

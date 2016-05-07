@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.datafilter;
+package net.test.hasor.more._04_datachain.datafilter;
 import java.util.ArrayList;
 import java.util.List;
+import org.more.datachain.DataFilter;
+import org.more.datachain.DataFilterChain;
+import org.more.datachain.Domain;
 import net.hasor.core.Inject;
-import net.hasor.plugins.datachain.DataFilter;
-import net.hasor.plugins.datachain.DataFilterChain;
-import net.hasor.plugins.datachain.Domain;
-import net.test.hasor.core._07_datachain.dao.ImageDao;
-import net.test.hasor.core._07_datachain.domain.dto.NewsContentDO;
-import net.test.hasor.core._07_datachain.domain.dto.NewsImagesDO;
-import net.test.hasor.core._07_datachain.domain.vo.NewsContentVO;
-import net.test.hasor.core._07_datachain.domain.vo.NewsImagesVO;
+import net.test.hasor.more._04_datachain.dao.ImageDao;
+import net.test.hasor.more._04_datachain.domain.dto.NewsContentDO;
+import net.test.hasor.more._04_datachain.domain.dto.NewsImagesDO;
+import net.test.hasor.more._04_datachain.domain.vo.NewsContentVO;
+import net.test.hasor.more._04_datachain.domain.vo.NewsImagesVO;
 /**
  * 负责例子中，新闻图片转换。
  * @version : 2016年5月7日

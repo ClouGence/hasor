@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain;
+package net.test.hasor.more._04_datachain;
 import java.util.Date;
 import org.junit.Test;
+import org.more.datachain.DataChainContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.plugins.datachain.DataChainContext;
-import net.test.hasor.core._07_datachain.datafilter.CloumnFilter;
-import net.test.hasor.core._07_datachain.datafilter.ContentFilter;
-import net.test.hasor.core._07_datachain.datafilter.ImagesFilter;
-import net.test.hasor.core._07_datachain.domain.dto.NewsContentDO;
-import net.test.hasor.core._07_datachain.domain.vo.NewsContentVO;
+import net.test.hasor.more._04_datachain.datafilter.CloumnFilter;
+import net.test.hasor.more._04_datachain.datafilter.ContentFilter;
+import net.test.hasor.more._04_datachain.datafilter.ImagesFilter;
+import net.test.hasor.more._04_datachain.domain.dto.NewsContentDO;
+import net.test.hasor.more._04_datachain.domain.vo.NewsContentVO;
 /**
  * 数据对象转换工具，提供 A 类型对象到 B 类型对象转换功能。并使开发者在转换过程中可以实现更加高级别的控制协调能力。
  * 使用场景：

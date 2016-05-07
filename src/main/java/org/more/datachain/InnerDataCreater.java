@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.dao;
-import net.test.hasor.core._07_datachain.domain.vo.CloumnVO;
+package org.more.datachain;
 /**
  * 
  * @version : 2016年5月7日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CloumnDao {
-    public CloumnVO getCloumnById(long cloumnId) {
-        CloumnVO cloumnVO = new CloumnVO();
-        cloumnVO.setId(cloumnId);
-        cloumnVO.setCanSubscribe(true);
-        cloumnVO.setName("XXX-" + Long.toString(System.currentTimeMillis(), 16).toUpperCase());
-        cloumnVO.setSpecial(false);
-        return cloumnVO;
+class InnerDataCreater<T> implements DataCreater<T> {
+    private T value;
+    public InnerDataCreater(T value) {
+        this.value = value;
+    }
+    @Override
+    public T newObject() {
+        return this.value;
     }
 }

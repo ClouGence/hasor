@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.domain.dto;
+package net.test.hasor.more._04_datachain.domain.dto;
 import java.util.Date;
 import java.util.List;
 /**

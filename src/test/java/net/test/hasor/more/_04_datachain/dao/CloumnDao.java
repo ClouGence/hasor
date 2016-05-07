@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.test.hasor.more._04_datachain.dao;
+import net.test.hasor.more._04_datachain.domain.vo.CloumnVO;
 /**
- * 数据对象转换工具，提供 A 类型对象到 B 类型对象转换功能。并使开发者在转换过程中可以实现更加高级别的控制协调能力。
- * 使用场景：
- *  如，DO 到 TO or VO，以及各种 O 之间的数据转换，这些数据对象随着业务和团队组成，无法简单的 Bean copy 去解决数据转换问题。
- *  另外，随着业务模型的复杂度增加，类型转换可能会遍布应用程序的各个角落，DataChain可以帮你归类整理类型转换。使其可以从用复用。
+ * 
+ * @version : 2016年5月7日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.plugins.datachain;
+public class CloumnDao {
+    public CloumnVO getCloumnById(long cloumnId) {
+        CloumnVO cloumnVO = new CloumnVO();
+        cloumnVO.setId(cloumnId);
+        cloumnVO.setCanSubscribe(true);
+        cloumnVO.setName("XXX-" + Long.toString(System.currentTimeMillis(), 16).toUpperCase());
+        cloumnVO.setSpecial(false);
+        return cloumnVO;
+    }
+}

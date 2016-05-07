@@ -15,12 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.datachain;
+package org.more.datachain;
 /**
  * 
  * @version : 2016年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface DataCreater<T> {
-    public T newObject() throws Throwable;
+public interface Domain<T> {
+    /**获取输入数据。*/
+    public T getDomain();
+    /** 写入附加数据 */
+    public <V> void attachData(Class<V> type, V attachData);
+    /** 读取附加数据 */
+    public <V> V attachData(Class<V> type);
 }

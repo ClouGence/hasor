@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_datachain.dao;
+package net.test.hasor.more._04_datachain.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.test.hasor.core._07_datachain.domain.dto.NewsImagesDO;
+import net.test.hasor.more._04_datachain.domain.dto.NewsImagesDO;
 /**
  * 
  * @version : 2016年5月7日

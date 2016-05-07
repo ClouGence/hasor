@@ -14,26 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.datachain;
+package org.more.datachain;
 /**
  * 
  * @version : 2016年5月6日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerDataFilterChain<I, O> implements DataFilterChain<I, O> {
-    private final DataCreater<I> inputDataCreater;
-    private final DataCreater<O> outputDataCreater;
-    //
-    public InnerDataFilterChain(DataCreater<I> input, DataCreater<O> output) {
-        this.inputDataCreater = input;
-        this.outputDataCreater = output;
-    }
-    @Override
-    public O doForward(Domain<I> domain) throws Throwable {
-        return this.outputDataCreater.newObject();
-    }
-    @Override
-    public I doBackward(Domain<O> domain) throws Throwable {
-        return this.inputDataCreater.newObject();
-    }
+public interface ConvertChain<I, O> {
+    public O doChain(I inputData) throws Throwable;
+    public O doChain(I inputData, final O defaultOut) throws Throwable;
 }
