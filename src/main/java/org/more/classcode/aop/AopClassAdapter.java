@@ -28,7 +28,7 @@ import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
-import org.more.classcode.ASMEngineToos;
+import org.more.classcode.ASMEngineTools;
 /**
  * 该类的作用是在生成的类中加入aop的支持。
  * @version 2010-9-2
@@ -65,10 +65,10 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         //1.采集符合Aop切面期望的方法。
         Method[] methodSet1 = this.classConfig.getSuperClass().getMethods();
         for (Method targetMethod : methodSet1) {
-            String tmDesc = ASMEngineToos.toAsmFullDesc(targetMethod);
+            String tmDesc = ASMEngineTools.toAsmFullDesc(targetMethod);
             int dataModifiers = targetMethod.getModifiers();
-            if (/**/ASMEngineToos.checkIn(dataModifiers, Modifier.PRIVATE) == true || //
-                    ASMEngineToos.checkIn(dataModifiers, Modifier.FINAL) == true) {
+            if (/**/ASMEngineTools.checkIn(dataModifiers, Modifier.PRIVATE) == true || //
+                    ASMEngineTools.checkIn(dataModifiers, Modifier.FINAL) == true) {
                 continue;
             }
             //
@@ -82,15 +82,15 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         for (Method targetMethod : this.aopMethodMap) {
             int access = targetMethod.getModifiers();
             String name = targetMethod.getName();
-            String desc = ASMEngineToos.toAsmDesc(targetMethod);
-            String signature = ASMEngineToos.toAsmSignature(targetMethod);
+            String desc = ASMEngineTools.toAsmDesc(targetMethod);
+            String signature = ASMEngineTools.toAsmSignature(targetMethod);
             Class<?>[] errors = targetMethod.getExceptionTypes();
             String[] exceptions = new String[errors.length];
             for (int i = 0; i < errors.length; i++) {
-                exceptions[i] = ASMEngineToos.replaceClassName(errors[i]);
+                exceptions[i] = ASMEngineTools.replaceClassName(errors[i]);
             }
             //
-            if (ASMEngineToos.checkIn(access, Modifier.NATIVE)) {
+            if (ASMEngineTools.checkIn(access, Modifier.NATIVE)) {
                 access = access - Modifier.NATIVE;
             }
             //
@@ -103,12 +103,12 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         for (Method targetMethod : this.aopMethodMap) {
             int access = Modifier.PRIVATE;
             String name = targetMethod.getName();
-            String desc = ASMEngineToos.toAsmDesc(targetMethod);
-            String signature = ASMEngineToos.toAsmSignature(targetMethod);
+            String desc = ASMEngineTools.toAsmDesc(targetMethod);
+            String signature = ASMEngineTools.toAsmSignature(targetMethod);
             Class<?>[] errors = targetMethod.getExceptionTypes();
             String[] exceptions = new String[errors.length];
             for (int i = 0; i < errors.length; i++) {
-                exceptions[i] = ASMEngineToos.replaceClassName(errors[i]);
+                exceptions[i] = ASMEngineTools.replaceClassName(errors[i]);
             }
             //
             MethodVisitor mv = this.visitMethod(access, AopPrefix + name, desc, signature, exceptions);
@@ -119,7 +119,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         //4.采集类本身的方法。
         Method[] methodSet2 = this.classConfig.getSuperClass().getDeclaredMethods();
         for (Method targetMethod : methodSet2) {
-            String selfMethodDesc = ASMEngineToos.toAsmFullDesc(targetMethod);
+            String selfMethodDesc = ASMEngineTools.toAsmFullDesc(targetMethod);
             this.validMethod.add(selfMethodDesc);
         }
     }
@@ -158,28 +158,28 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitInsn(Opcodes.DUP);
             mv.visitIntInsn(Opcodes.BIPUSH, i);
             if (asmParams[i].equals("B") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
             } else if (asmParams[i].equals("S") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
             } else if (asmParams[i].equals("I") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
             } else if (asmParams[i].equals("J") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
             } else if (asmParams[i].equals("F") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
             } else if (asmParams[i].equals("D") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
             } else if (asmParams[i].equals("C") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
             } else if (asmParams[i].equals("Z") == true) {
-                mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+                mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
             } else {
                 mv.visitVarInsn(Opcodes.ALOAD, i + 1);
@@ -223,40 +223,40 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         if (asmReturns.equals("B") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
-            mv.visitInsn(ASMEngineToos.getReturn("B"));
+            mv.visitInsn(ASMEngineTools.getReturn("B"));
         } else if (asmReturns.equals("S") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
-            mv.visitInsn(ASMEngineToos.getReturn("S"));
+            mv.visitInsn(ASMEngineTools.getReturn("S"));
         } else if (asmReturns.equals("I") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
-            mv.visitInsn(ASMEngineToos.getReturn("I"));
+            mv.visitInsn(ASMEngineTools.getReturn("I"));
         } else if (asmReturns.equals("J") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
-            mv.visitInsn(ASMEngineToos.getReturn("J"));
+            mv.visitInsn(ASMEngineTools.getReturn("J"));
         } else if (asmReturns.equals("F") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
-            mv.visitInsn(ASMEngineToos.getReturn("F"));
+            mv.visitInsn(ASMEngineTools.getReturn("F"));
         } else if (asmReturns.equals("D") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-            mv.visitInsn(ASMEngineToos.getReturn("D"));
+            mv.visitInsn(ASMEngineTools.getReturn("D"));
         } else if (asmReturns.equals("C") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Character");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
-            mv.visitInsn(ASMEngineToos.getReturn("C"));
+            mv.visitInsn(ASMEngineTools.getReturn("C"));
         } else if (asmReturns.equals("Z") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
-            mv.visitInsn(ASMEngineToos.getReturn("Z"));
+            mv.visitInsn(ASMEngineTools.getReturn("Z"));
         } else if (asmReturns.equals("V") == true) {
             mv.visitInsn(Opcodes.POP);
             mv.visitInsn(Opcodes.RETURN);
         } else {
-            mv.visitTypeInsn(Opcodes.CHECKCAST, ASMEngineToos.asmTypeToType(asmReturns));
+            mv.visitTypeInsn(Opcodes.CHECKCAST, ASMEngineTools.asmTypeToType(asmReturns));
             mv.visitInsn(Opcodes.ARETURN);
         }
     }
@@ -279,7 +279,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
-        String[] asmParams = ASMEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String[] asmParams = ASMEngineTools.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
         int maxStack = 5;//方法最大堆栈大小
@@ -303,21 +303,21 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
             mv.visitVarInsn(ASTORE, paramCount + 4);
             //
-            mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainAopInvocation.class));
+            mv.visitTypeInsn(NEW, ASMEngineTools.replaceClassName(InnerChainAopInvocation.class));
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, paramCount + 4);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, paramCount + 3);
-            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainAopInvocation.class), "<init>", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineTools.replaceClassName(InnerChainAopInvocation.class), "<init>", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)V");
             mv.visitVarInsn(ASTORE, paramCount + 5);
             //
-            mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerAopInvocation.class));
+            mv.visitTypeInsn(NEW, ASMEngineTools.replaceClassName(InnerAopInvocation.class));
             mv.visitInsn(DUP);
             mv.visitLdcInsn(name + desc);
             mv.visitVarInsn(ALOAD, paramCount + 4);
             mv.visitVarInsn(ALOAD, paramCount + 5);
-            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerAopInvocation.class), "<init>", "(Ljava/lang/String;Ljava/lang/reflect/Method;" + ASMEngineToos.toAsmType(AopInvocation.class) + ")V");//
-            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineToos.replaceClassName(InnerAopInvocation.class), "proceed", "()Ljava/lang/Object;");
+            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineTools.replaceClassName(InnerAopInvocation.class), "<init>", "(Ljava/lang/String;Ljava/lang/reflect/Method;" + ASMEngineTools.toAsmType(AopInvocation.class) + ")V");//
+            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineTools.replaceClassName(InnerAopInvocation.class), "proceed", "()Ljava/lang/Object;");
             mv.visitVarInsn(ASTORE, paramCount + 6);
             mv.visitVarInsn(ALOAD, paramCount + 6);
             mv.visitLabel(tryEnd);
@@ -350,13 +350,13 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
-        String[] asmParams = ASMEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String[] asmParams = ASMEngineTools.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         int paramCount = asmParams.length;
         //
         mv.visitVarInsn(ALOAD, 0);
         for (int i = 0; i < paramCount; i++) {
             String asmType = asmParams[i];
-            mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+            mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
         }
         mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, name, desc);
         mv.visitInsn(RETURN);
@@ -368,17 +368,17 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
-        String[] asmParams = ASMEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String[] asmParams = ASMEngineTools.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         String asmReturns = m.group(2);
         int paramCount = asmParams.length;
         //
         mv.visitVarInsn(ALOAD, 0);
         for (int i = 0; i < paramCount; i++) {
             String asmType = asmParams[i];
-            mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+            mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
         }
         mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, name, desc);
-        mv.visitInsn(ASMEngineToos.getReturn(asmReturns));
+        mv.visitInsn(ASMEngineTools.getReturn(asmReturns));
         mv.visitMaxs(paramCount + 1, paramCount + 1);
     }
 }

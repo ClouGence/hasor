@@ -32,8 +32,7 @@ import org.more.json.JSON.Output;
  */
 public class JSONPojoConvertor implements JSON.Convertor {
     private static final Logger                    LOG           = Log.getLogger(JSONPojoConvertor.class);
-    public static final Object[]                   GETTER_ARG    = new Object[] {},
-                                                           NULL_ARG = new Object[] { null };
+    public static final Object[]                   GETTER_ARG    = new Object[] {}, NULL_ARG = new Object[] { null };
     private static final Map<Class<?>, NumberType> __numberTypes = new HashMap<Class<?>, NumberType>();
     public static NumberType getNumberType(Class<?> clazz) {
         return __numberTypes.get(clazz);

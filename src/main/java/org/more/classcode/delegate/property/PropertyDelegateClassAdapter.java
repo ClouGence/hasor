@@ -23,7 +23,7 @@ import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
 import org.more.asm.MethodVisitor;
 import org.more.asm.Opcodes;
-import org.more.classcode.ASMEngineToos;
+import org.more.classcode.ASMEngineTools;
 import org.more.util.StringUtils;
 /**
  * 该类负责输出代理属性。
@@ -72,7 +72,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             MethodVisitor mv = null;
             String propertyName = property.propertyName();
             String $propertyName = StringUtils.firstCharToUpperCase(propertyName);
-            String typeDesc = ASMEngineToos.toAsmType(property.getType());
+            String typeDesc = ASMEngineTools.toAsmType(property.getType());
             //
             if (property.isMarkRead()) {
                 String methodName = "get" + $propertyName;
@@ -126,13 +126,13 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getClassLoader", "()Ljava/lang/ClassLoader;");
             mv.visitVarInsn(ASTORE, 1);
-            mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class));
+            mv.visitTypeInsn(NEW, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class));
             mv.visitInsn(DUP);
             mv.visitLdcInsn(this.classConfig.getClassName());
             mv.visitLdcInsn(propertyName);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
-            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class), "get", "()Ljava/lang/Object;");
+            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
+            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class), "get", "()Ljava/lang/Object;");
             mv.visitVarInsn(ASTORE, 2);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitLabel(tryEnd);
@@ -184,15 +184,15 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getClassLoader", "()Ljava/lang/ClassLoader;");
             mv.visitVarInsn(ASTORE, 2);
-            mv.visitTypeInsn(NEW, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class));
+            mv.visitTypeInsn(NEW, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class));
             mv.visitInsn(DUP);
             mv.visitLdcInsn(this.classConfig.getClassName());
             mv.visitLdcInsn(propertyName);
             mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
-            mv.visitVarInsn(ASMEngineToos.getLoad(propertyAsmType), 1);
+            mv.visitMethodInsn(INVOKESPECIAL, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V");
+            mv.visitVarInsn(ASMEngineTools.getLoad(propertyAsmType), 1);
             this.codeBuilder_2(mv, propertyAsmType);
-            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineToos.replaceClassName(InnerChainPropertyDelegate.class), "set", "(Ljava/lang/Object;)V");
+            mv.visitMethodInsn(INVOKEVIRTUAL, ASMEngineTools.replaceClassName(InnerChainPropertyDelegate.class), "set", "(Ljava/lang/Object;)V");
             mv.visitLabel(tryEnd);
             mv.visitInsn(RETURN);
         }
@@ -223,40 +223,40 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
         if (asmReturns.equals("B") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Byte");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
-            mv.visitInsn(ASMEngineToos.getReturn("B"));
+            mv.visitInsn(ASMEngineTools.getReturn("B"));
         } else if (asmReturns.equals("S") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Short");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
-            mv.visitInsn(ASMEngineToos.getReturn("S"));
+            mv.visitInsn(ASMEngineTools.getReturn("S"));
         } else if (asmReturns.equals("I") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Integer");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
-            mv.visitInsn(ASMEngineToos.getReturn("I"));
+            mv.visitInsn(ASMEngineTools.getReturn("I"));
         } else if (asmReturns.equals("J") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Long");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
-            mv.visitInsn(ASMEngineToos.getReturn("J"));
+            mv.visitInsn(ASMEngineTools.getReturn("J"));
         } else if (asmReturns.equals("F") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Float");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
-            mv.visitInsn(ASMEngineToos.getReturn("F"));
+            mv.visitInsn(ASMEngineTools.getReturn("F"));
         } else if (asmReturns.equals("D") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Double");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-            mv.visitInsn(ASMEngineToos.getReturn("D"));
+            mv.visitInsn(ASMEngineTools.getReturn("D"));
         } else if (asmReturns.equals("C") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Character");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
-            mv.visitInsn(ASMEngineToos.getReturn("C"));
+            mv.visitInsn(ASMEngineTools.getReturn("C"));
         } else if (asmReturns.equals("Z") == true) {
             mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/Boolean");
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
-            mv.visitInsn(ASMEngineToos.getReturn("Z"));
+            mv.visitInsn(ASMEngineTools.getReturn("Z"));
         } else if (asmReturns.equals("V") == true) {
             mv.visitInsn(Opcodes.POP);
             mv.visitInsn(Opcodes.RETURN);
         } else {
-            mv.visitTypeInsn(Opcodes.CHECKCAST, ASMEngineToos.asmTypeToType(asmReturns));
+            mv.visitTypeInsn(Opcodes.CHECKCAST, ASMEngineTools.asmTypeToType(asmReturns));
             mv.visitInsn(Opcodes.ARETURN);
         }
     }
@@ -288,13 +288,13 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
         m.find();
-        String[] asmParams = ASMEngineToos.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
+        String[] asmParams = ASMEngineTools.splitAsmType(m.group(1));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
         int paramCount = asmParams.length;
         //
         mv.visitVarInsn(ALOAD, 0);
         for (int i = 0; i < paramCount; i++) {
             String asmType = asmParams[i];
-            mv.visitVarInsn(ASMEngineToos.getLoad(asmType), i + 1);
+            mv.visitVarInsn(ASMEngineTools.getLoad(asmType), i + 1);
         }
         mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, name, desc);
         mv.visitInsn(RETURN);

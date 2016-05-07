@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.more.asm.ClassVisitor;
-import org.more.classcode.ASMEngineToos;
+import org.more.classcode.ASMEngineTools;
 import org.more.classcode.AbstractClassConfig;
 /**
  * 
@@ -90,7 +90,7 @@ public class AopClassConfig extends AbstractClassConfig {
         this.$methodMapping = new HashMap<String, Method>();
         Method[] methodSet = this.getSuperClass().getMethods();
         for (Method tMethod : methodSet) {
-            String tmDesc = ASMEngineToos.toAsmFullDesc(tMethod);
+            String tmDesc = ASMEngineTools.toAsmFullDesc(tMethod);
             this.$methodMapping.put(tmDesc, tMethod);
         }
     }

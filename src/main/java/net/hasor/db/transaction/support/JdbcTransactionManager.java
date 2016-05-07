@@ -134,7 +134,7 @@ public class JdbcTransactionManager implements TransactionManager {
         ===============================================================*/
         /*REQUIRED：加入已有事务*/
         if (behavior == REQUIRED ||
-                /*REQUIRES_NEW：独立事务*/
+        /*REQUIRES_NEW：独立事务*/
                 behavior == REQUIRES_NEW ||
                 /*NESTED：嵌套事务*/
                 behavior == NESTED) {

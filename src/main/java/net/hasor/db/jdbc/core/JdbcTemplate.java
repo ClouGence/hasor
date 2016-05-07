@@ -67,8 +67,6 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
     private boolean resultsCaseInsensitive = false;
     //
-    //
-    //
     /**
      * Construct a new JdbcTemplate for bean usage.
      * <p>Note: The DataSource has to be set before using the instance.
@@ -659,12 +657,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                 } else
                     /*连接不支持批处理*/
                     for (int i = 0; i < sql.length; i++) {
-                        this.currSql = sql[i];
-                        if (!stmt.execute(sql[i])) {
-                            rowsAffected[i] = stmt.getUpdateCount();
-                        } else {
-                            throw new SQLException("Invalid batch SQL statement: " + sql[i]);
-                        }
+                    this.currSql = sql[i];
+                    if (!stmt.execute(sql[i])) {
+                    rowsAffected[i] = stmt.getUpdateCount();
+                    } else {
+                    throw new SQLException("Invalid batch SQL statement: " + sql[i]);
+                    }
                     }
                 return rowsAffected;
             }
