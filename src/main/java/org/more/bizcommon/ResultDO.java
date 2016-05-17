@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
+import org.more.datachain.DataChainContext;
+import org.more.datachain.DataFilter;
 /**
  * 结果集
  * @version : 2014年10月25日
@@ -31,6 +33,12 @@ public class ResultDO<T> implements Result<T> {
     private List<Message>     messageList      = new ArrayList<Message>();
     //
     public ResultDO() {}
+    public ResultDO(Result<T> result) {
+        this.result = result.getResult();
+        this.throwable = result.getThrowable();
+        this.success = result.isSuccess();
+        this.messageList.addAll(result.getMessageList());
+    }
     public ResultDO(T result) {
         this.result = result;
     }
@@ -44,7 +52,18 @@ public class ResultDO<T> implements Result<T> {
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-    //
+    @Override
+    public <V> ResultDO<V> convertResult(DataFilter<T, V>... filters) throws Throwable {
+        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {};
+        if (filters != null && filters.length > 0) {
+            for (int i = 0; i <= filters.length; i++) {
+                dataChainContext.addDataFilter("dataFilter_" + i, filters[i]);
+            }
+        }
+        V result = dataChainContext.doChain(this.getResult());
+        return new ResultDO<V>(result).setSuccess(this.isSuccess()) //
+                .setThrowable(this.getThrowable()).addMessage(this.getMessageList());
+    }
     //
     /**获取分页结果集。*/
     public T getResult() {
@@ -74,6 +93,11 @@ public class ResultDO<T> implements Result<T> {
         return this;
     }
     /**添加一条消息。*/
+    public ResultDO<T> addMessage(int type, String message, Object... params) {
+        this.messageList.add(new Message(type, message, params));
+        return this;
+    }
+    /**添加一条消息。*/
     public ResultDO<T> addMessage(Message msgList) {
         if (msgList != null) {
             this.messageList.add(msgList);
@@ -100,8 +124,6 @@ public class ResultDO<T> implements Result<T> {
     public boolean isEmptyMessage() {
         return this.messageList.isEmpty();
     }
-    //
-    //
     //
     public ResultDO<T> setResult(T result) {
         this.result = result;

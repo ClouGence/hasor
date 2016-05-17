@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import java.util.ArrayList;
 import java.util.List;
+import org.more.datachain.DataChainContext;
+import org.more.datachain.DataFilter;
 /**
  * 带有翻页信息的结果集
  * @version : 2014年10月25日
@@ -39,6 +42,10 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
             this.setTotalCount(pageInfo.getTotalCount());
             this.setCurrentPage(pageInfo.getCurrentPage());
         }
+    }
+    public PageResult(PageResult<T> result) {
+        super(result);
+        this.result = new ResultDO<List<T>>(result);
     }
     //
     /**获取分页结果集。*/
@@ -82,8 +89,41 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
         return this;
     }
     /**添加一条消息。*/
+    public PageResult<T> addMessage(int type, String message, Object... params) {
+        this.result.addMessage(type, message, params);
+        return this;
+    }
+    /**添加一条消息。*/
     public PageResult<T> addMessage(Message message) {
         this.result.addMessage(message);
         return this;
+    }
+    /**添加一组消息。*/
+    public PageResult<T> addMessage(List<Message> messageList) {
+        this.result.addMessage(messageList);
+        return this;
+    }
+    //
+    @Override
+    public <V> Result<V> convertResult(DataFilter<List<T>, V>... filters) throws Throwable {
+        return this.result.convertResult(filters);
+    }
+    public <V> PageResult<V> convertPageResult(DataFilter<T, V>... filters) throws Throwable {
+        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {};
+        if (filters != null && filters.length > 0) {
+            for (int i = 0; i <= filters.length; i++) {
+                dataChainContext.addDataFilter("dataFilter_" + i, filters[i]);
+            }
+        }
+        List<T> tList = this.result.getResult();
+        List<V> vList = new ArrayList<V>();
+        if (tList != null) {
+            for (T tObject : tList) {
+                V result = dataChainContext.doChain(tObject);
+                vList.add(result);
+            }
+        }
+        return new PageResult<V>((Paginator) this).setSuccess(this.isSuccess()) //
+                .setThrowable(this.getThrowable()).addMessage(this.getMessageList());
     }
 }
