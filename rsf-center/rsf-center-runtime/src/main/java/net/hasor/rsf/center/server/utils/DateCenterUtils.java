@@ -27,8 +27,11 @@ public class DateCenterUtils {
     public static final String DATA_FORMAT = "yyyyMMdd-hhmmss";
     //
     /** 生成RSF-Center服务器心跳数据 */
+    public static String timestamp(Date atDate) {
+        return new SimpleDateFormat(DATA_FORMAT).format(atDate);
+    }
     public static String timestamp() {
-        return new SimpleDateFormat(DATA_FORMAT).format(new Date());
+        return timestamp(new Date());
     }
     public static String beatData() {
         return DateCenterUtils.timestamp() + "@" + String.valueOf(System.currentTimeMillis());

@@ -15,11 +15,8 @@
  */
 package net.hasor.rsf.center.server.manager;
 import java.util.List;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.data.Stat;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
-import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.RsfCenterEventEnum;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -31,7 +28,7 @@ import net.hasor.rsf.domain.RsfServiceType;
 @Singleton
 public class ProviderServiceManager extends BaseServiceManager {
     /**发布服务*/
-    public String publishService(String hostString, ProviderPublishInfo info) throws KeeperException, InterruptedException, Throwable {
+    public String publishService(String hostString, ProviderPublishInfo info) throws Throwable {
         //
         // 1.保存服务信息：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();

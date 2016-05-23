@@ -20,11 +20,6 @@ package net.hasor.rsf.center.server.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfCenterEvent {
-    /** ZK连接可用，参数为：ZooKeeperNode */
-    public static final String SyncConnected_Event = "SyncConnected";
-    /** 确认RsfCenter的Leader，参数为：DataDiplomat */
-    public static final String ConfirmLeader_Event = "ConfirmLeader";
-    //
     /** 推送事件PushEvent，参数为：PushEvent */
-    public static final String PushEvent           = "PushEvent";
+    public static final String PushEvent = "PushEvent";
 }

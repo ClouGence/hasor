@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="sp_rsf_class">
+
+	<resultMap id="serviceJoinPortMap" type="net.hasor.rsf.center.domain.entity.ServiceJoinPortDO">
+		<result property="appID"         column="sjp_appID" />
+		<result property="serviceID"     column="sjp_serviceID" />
+		<result property="terminalID"    column="sjp_terminalID" />
+		<result property="timeout"       column="sjp_timeout" />
+		<result property="serializeType" column="sjp_serializeType" />
+		<result property="persona"       column="sjp_persona" />
+	</resultMap>
+
+	<sql id="serviceJoinPortDO_allColumns">
+		sjp_appID,
+		sjp_serviceID,
+		sjp_terminalID,
+		sjp_timeout,
+		sjp_serializeType,
+		sjp_persona
+	</sql>
+
+	<select id="serviceJoinPortDO_getALL" resultMap="serviceJoinPortMap">
+		select
+			<include refid="serviceJoinPortDO_allColumns" />
+		from
+			RSF_ServiceJoinPort
+	</select>
+
+</mapper>

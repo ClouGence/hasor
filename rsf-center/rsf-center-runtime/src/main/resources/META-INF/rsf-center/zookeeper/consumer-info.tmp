@@ -1,6 +1,0 @@
-<info>
-	<bindID>${info.bindID}</bindID>
-	<serializeType>${info.serializeType}</serializeType>
-	<client.timeout>${info.clientTimeout}</client.timeout>
-	<client.maximumRequest>${info.clientMaximumRequest}</client.maximumRequest>
-</info>

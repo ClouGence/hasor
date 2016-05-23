@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="sp_rsf_class">
+
+	<resultMap id="serviceInfoDOMap" type="net.hasor.rsf.center.domain.entity.ServiceInfoDO">
+		<result property="serviceID"    column="si_serviceID" />
+		<result property="appID"        column="si_appID" />
+		<result property="bindName"     column="si_bindName" />
+		<result property="bindGroup"    column="si_bindGroup" />
+		<result property="bindVersion"  column="si_bindVersion" />
+		<result property="bindType"     column="si_bindType" />
+		<result property="onwer"        column="si_onwer" />
+		<result property="contactUsers" column="si_contactUsers" />
+		<result property="description"  column="si_desc" />
+		<result property="consistency"  column="si_hashCode" />
+		<result property="createTime"   column="si_create_time" />
+		<result property="modifyTime"   column="si_modify_time" />
+	</resultMap>
+
+	<sql id="serviceInfoDO_allColumns">
+		si_serviceID,
+		si_appID,
+		si_bindName,
+		si_bindGroup,
+		si_bindVersion,
+		si_bindType,
+		si_onwer,
+		si_desc,
+		si_contactUsers,
+		si_hashCode,
+		si_create_time,
+		si_modify_time
+	</sql>
+
+	<select id="queryServiceInfoDOByForm" resultMap="serviceInfoDOMap">
+		select
+			<include refid="serviceInfoDO_allColumns" />
+		from
+			RSF_ServiceInfo
+		where
+			si_appID = #{pageInfo.appID}
+		order by
+			si_modify_time desc
+		limit
+			#{pageInfo.firstItem} , #{pageInfo.pageSize}
+	</select>
+	
+	<insert id="createServiceInfoDO" parameterType="net.hasor.rsf.center.domain.entity.ServiceInfoDO">
+		insert into RSF_ServiceInfo(
+			si_appID,
+			si_bindName,
+			si_bindGroup,
+			si_bindVersion,
+			si_bindType,
+			si_onwer,
+			si_desc,
+			si_contactUsers,
+			si_hashCode,
+			si_create_time,
+			si_modify_time
+		) values(
+			#{appID},
+			#{bindName},
+			#{bindGroup},
+			#{bindVersion},
+			#{bindType},
+			#{onwer},
+			#{description},
+			#{contactUsers},
+			#{consistency},
+			now(),
+			now()
+		);
+		<selectKey keyProperty="serviceID" resultType="long">
+            CALL IDENTITY() <!-- HSQL -->
+        </selectKey>
+	</insert>
+
+</mapper>

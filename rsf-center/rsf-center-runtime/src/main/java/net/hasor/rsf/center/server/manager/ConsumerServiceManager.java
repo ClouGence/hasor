@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.center.server.manager;
 import java.util.List;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.data.Stat;
+import org.more.bizcommon.Result;
+import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
@@ -29,7 +29,6 @@ import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ReceiveResult;
-import net.hasor.rsf.center.server.core.zookeeper.ZkNodeType;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 订阅者Manager
@@ -49,7 +48,7 @@ public class ConsumerServiceManager extends BaseServiceManager {
         this.paramTypes = new Class<?>[] { String.class, CenterEventBody.class };
     }
     //
-    /**新的提供者出现，向所有订阅者推送提供者列表（同步）。*/
+    /**新的提供者出现，向所有订阅者推送提供者列表（同步）*/
     public void newProviderToPush(String serviceID) {
         List<String> consumerList = this.getConsumerList(serviceID);
         List<String> providerList = this.getProviderList(serviceID);
@@ -86,7 +85,7 @@ public class ConsumerServiceManager extends BaseServiceManager {
     }
     //
     /**订阅服务*/
-    public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws KeeperException, InterruptedException, Throwable {
+    public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws Throwable {
         //
         // 1.注册服务：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
@@ -128,11 +127,12 @@ public class ConsumerServiceManager extends BaseServiceManager {
     }
     //
     /**删除订阅*/
-    public boolean removeRegister(String hostString, String serviceID) throws Throwable {
-        return super.removeRegister(hostString, serviceID, RsfServiceType.Consumer);
+    public Result<Boolean> removeRegister(InterAddress rsfHost, String forBindID) throws Throwable {
+        return super.removeTerminal(rsfHost, forBindID, RsfServiceType.Consumer);
     }
+    //
     /**订阅者心跳*/
-    public boolean serviceBeat(String hostString, String serviceID) throws Throwable {
-        return super.serviceBeat(hostString, serviceID, RsfServiceType.Consumer);
+    public Result<Boolean> serviceBeat(InterAddress rsfHost, String forBindID) throws Throwable {
+        return super.serviceBeat(rsfHost, forBindID, RsfServiceType.Consumer);
     }
 }
