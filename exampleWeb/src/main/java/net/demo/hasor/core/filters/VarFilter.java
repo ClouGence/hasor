@@ -23,6 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.hasor.core.Environment;
 import net.hasor.plugins.templates.ContextMap;
 /**
  * 服务让模版页面可以访问到“ctx_path”变量
@@ -30,6 +31,11 @@ import net.hasor.plugins.templates.ContextMap;
  * @author 赵永春(zyc@hasor.net)
  */
 public class VarFilter implements Filter {
+    private String curentVersion;
+    public VarFilter(Environment environment) {
+        this.curentVersion = environment.getSettings().getString("curentVersion", "2.3.1");
+        /*--*/
+    }
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         /*--*/
@@ -40,6 +46,7 @@ public class VarFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         ContextMap map = ContextMap.genContextMap(req, resp);
         map.put("ctx_path", req.getSession(true).getServletContext().getContextPath());
+        map.put("curentVersion", this.curentVersion);
         chain.doFilter(request, response);
     }
     @Override

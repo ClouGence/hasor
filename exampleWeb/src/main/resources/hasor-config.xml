@@ -12,6 +12,6 @@
 		<encoding requestEncoding="utf-8" responseEncoding="utf-8" />
 	</hasor>
 
-	<!-- Demo程序用到的配置 -->
-	<myName>ZZZ</myName>
+	<!-- 当前最新版本 -->
+	<curentVersion>2.3.2</curentVersion>
 </config>

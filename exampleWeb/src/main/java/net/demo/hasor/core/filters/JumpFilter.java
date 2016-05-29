@@ -23,12 +23,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.hasor.core.Environment;
 /**
  * 负责跳转index.htm
  * @version : 2016年1月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class JumpFilter implements Filter {
+    public JumpFilter(Environment environment) {
+        /*--*/
+    }
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         /*--*/

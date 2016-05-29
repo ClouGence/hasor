@@ -29,8 +29,8 @@ public class MyModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        apiBinder.filter("/*").through(new JumpFilter());
-        apiBinder.filter("/*").through(new VarFilter());
+        apiBinder.filter("/*").through(new JumpFilter(apiBinder.getEnvironment()));
+        apiBinder.filter("/*").through(new VarFilter(apiBinder.getEnvironment()));
         //
         apiBinder.serve("/myServlet.do").with(MyServlet.class);
         //
