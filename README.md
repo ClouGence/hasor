@@ -78,3 +78,8 @@
 * Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
 * QQ群：193943114
+
+### 致项目组成员
+
+* mvn release:prepare -P release
+* mvn deploy -P release
