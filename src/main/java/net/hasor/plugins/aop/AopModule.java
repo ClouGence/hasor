@@ -15,13 +15,13 @@
  */
 package net.hasor.plugins.aop;
 import java.lang.reflect.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
@@ -34,7 +34,7 @@ public class AopModule implements Module {
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Aop.class);//
         //
-        logger.info("Aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
+        logger.info("aops -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
         AopInterceptor aopInterceptor = Hasor.autoAware(apiBinder.getEnvironment(), new AopInterceptor());
         apiBinder.bindInterceptor(matcherClass, matcherMethod, aopInterceptor);
     }

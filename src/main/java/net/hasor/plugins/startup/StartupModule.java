@@ -34,6 +34,10 @@ public class StartupModule implements Module {
         Module mod = this.getStartModule(apiBinder.getEnvironment().getSettings());
         if (mod != null) {
             apiBinder.installModule(mod);
+        } else {
+            if (logger.isInfoEnabled()) {
+                logger.info("startup -> not found root Module.");
+            }
         }
     }
     /**获取启动模块*/
@@ -41,11 +45,15 @@ public class StartupModule implements Module {
         Module startupModule = null;
         String startupModuleName = settings.getString("hasor.startup");
         if (StringUtils.isBlank(startupModuleName)) {
-            logger.warn("startup Module is undefinition.");
+            if (logger.isWarnEnabled()) {
+                logger.warn("startup -> module is undefinition.");
+            }
         } else {
             Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startupModuleName);
             startupModule = startModuleClass.newInstance();
-            logger.info("startup Module is " + startupModuleName);
+            if (logger.isInfoEnabled()) {
+                logger.info("startup -> module is " + startupModuleName);
+            }
         }
         return startupModule;
     }

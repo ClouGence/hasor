@@ -8,6 +8,8 @@
 		<startup>net.demo.hasor.core.MyModule</startup>
 		<!-- 使用模版插件，并指定模版引擎为freemarker -->
 		<template urlPatterns="htm;html;" engine="freemarker" />
+		<!-- web请求响应编码配置 -->
+		<encoding requestEncoding="utf-8" responseEncoding="utf-8" />
 	</hasor>
 
 	<!-- Demo程序用到的配置 -->

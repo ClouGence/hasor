@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.event;
+import java.util.HashSet;
 import java.util.Set;
 import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
@@ -38,12 +39,17 @@ public class EventModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         final Environment env = apiBinder.getEnvironment();
         final EventContext eventContext = env.getEventContext();
-        final Set<Class<?>> eventSet = env.findClass(Event.class);
+        final Set<Class<?>> eventSet = new HashSet<Class<?>>(env.findClass(Event.class));
         final Class<?> listenerClass = EventListener.class;
+        eventSet.remove(Event.class);
         //
         if (eventSet == null || eventSet.isEmpty()) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("event -> init failed , not found any @Event.");
+            }
             return;
         }
+        int count = 0;
         for (final Class<?> eventClass : eventSet) {
             if (eventClass == Event.class || listenerClass.isAssignableFrom(eventClass) == false) {
                 continue;
@@ -55,16 +61,28 @@ public class EventModule implements Module {
                 if (StringUtils.isBlank(eventName)) {
                     continue;
                 }
-                EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventClass));
                 /*   */if (EventType.Once == eventType) {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("event -> ‘{}’ binding[OnceListener] to ‘{}’", eventName, eventClass);
+                    }
+                    EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventClass));
                     eventContext.pushListener(eventName, eventListener);
                 } else if (EventType.Listener == eventType) {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("event -> ‘{}’ binding[Listener] to ‘{}’", eventName, eventClass);
+                    }
+                    EventListenerPropxy eventListener = Hasor.autoAware(env, new EventListenerPropxy(eventClass));
                     eventContext.addListener(eventName, eventListener);
+                } else {
+                    logger.error("event -> ‘{}’ binding[{}] to ‘{}’ , event type not supported.", eventName, eventType.name(), eventClass);
+                    throw new java.lang.UnsupportedOperationException(eventType.name() + " event type not supported");
                 }
-                logger.info("event ‘{}’ binding to ‘{}’", eventName, eventClass);
+                count++;
             }
-            // 当ContextEvent_Start事件到来时注册所有配置文件监听器。
-            logger.info("event binding finish.");
+        }
+        // 当ContextEvent_Start事件到来时注册所有配置文件监听器。
+        if (logger.isInfoEnabled()) {
+            logger.info("event -> finish , count ={}.", count);
         }
     }
     //

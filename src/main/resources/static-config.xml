@@ -53,14 +53,14 @@
 		<!-- 程序入口模块类名【由StartupModule插件提供】 -->
 		<startup></startup>
 
-		<!-- web请求响应编码配置【由EncodingFilterModule插件提供】 -->
-		<encoding urlPatterns="/*;" requestEncoding="UTF-8" responseEncoding="UTF-8" />
+		<!-- web请求响应编码配置【由EncodingModule插件提供】 -->
+		<encoding urlPatterns="/*;" requestEncoding="" responseEncoding="" />
 
 		<!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
 		<restful urlPatterns="htm;html;do;json;" />
 
 		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-		<template urlPatterns="htm;html;" engine="freemarker">
+		<template urlPatterns="htm;html;" engine="">
 			<!-- 可用的引擎 -->
 			<engineSet>
 				<engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>

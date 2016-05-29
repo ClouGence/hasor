@@ -28,7 +28,9 @@ public class TemplateModule extends WebModule {
         Settings settings = apiBinder.getEnvironment().getSettings();
         String engineName = settings.getString("hasor.template.engine", "");
         if (StringUtils.isBlank(engineName)) {
-            logger.info("template Module not be load. -> engineName not configured.");
+            if (logger.isWarnEnabled()) {
+                logger.warn("template -> exit , engineName is empty.");
+            }
             return;
         }
         XmlNode[] engineList = settings.getXmlNodeArray("hasor.template.engineSet.engine");
@@ -48,10 +50,13 @@ public class TemplateModule extends WebModule {
             engineTypeName = engineConfig.getText().trim();
         }
         if (StringUtils.isBlank(engineTypeName)) {
-            logger.info("template Module not be load. -> engineName undefined.");
+            if (logger.isInfoEnabled()) {
+                logger.error("template -> engineName[{}] type undefined.", engineName);
+            }
             return;
-        } else {
-            logger.info("template Module ,engineName {}.", engineTypeName);
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("template -> engineName = {}, engineType = {}.", engineName, engineTypeName);
         }
         //
         try {
@@ -60,9 +65,11 @@ public class TemplateModule extends WebModule {
             apiBinder.filter("/*").through(Integer.MAX_VALUE, new TemplateFilter());
             //
             String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
-            logger.info("template Module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
+            if (logger.isInfoEnabled()) {
+                logger.info("template -> module load. -> servlet[{}], engineName={} , type={}.", interceptNames, engineName, engineType);
+            }
         } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
+            logger.error("template -> " + e.getMessage(), e);
             throw e;
         }
     }

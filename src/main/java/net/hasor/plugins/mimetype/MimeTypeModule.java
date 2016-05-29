@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.plugins.mimetype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.web.WebApiBinder;
@@ -23,6 +25,7 @@ import net.hasor.web.WebApiBinder;
  * @author 赵永春(zyc@hasor.net)
  */
 public class MimeTypeModule implements Module {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         Object context = apiBinder.getEnvironment().getContext();
         InnerMimeTypeContext mimeType = null;
@@ -32,6 +35,9 @@ public class MimeTypeModule implements Module {
         } else {
             mimeType = new InnerMimeTypeContext(context);
             mimeType.loadStream("mime.types.xml");
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("mimeType -> load configs -- mime.types.xml");
         }
         apiBinder.bindType(MimeType.class).toInstance(mimeType);
     }

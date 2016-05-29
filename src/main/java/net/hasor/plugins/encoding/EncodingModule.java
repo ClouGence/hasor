@@ -39,6 +39,7 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class EncodingModule extends WebModule {
+    public static final String ENABLE                = "hasor.encoding.enable";
     public static final String REQUEST_ENCODING      = "hasor.encoding.requestEncoding";
     public static final String RESPONSE_ENCODING     = "hasor.encoding.responseEncoding";
     public static final String URL_PATTERNS_ENCODING = "hasor.encoding.urlPatterns";
@@ -47,8 +48,15 @@ public class EncodingModule extends WebModule {
         Settings settings = apiBinder.getEnvironment().getSettings();
         String requestEncoding = settings.getString(REQUEST_ENCODING);
         String responseEncoding = settings.getString(RESPONSE_ENCODING);
-        logger.info("EncodingFilterPlugin -> requestEncoding = " + requestEncoding);
-        logger.info("EncodingFilterPlugin -> responseEncoding = " + responseEncoding);
+        if (StringUtils.isBlank(requestEncoding) && StringUtils.isBlank(responseEncoding)) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("encodingFilter -> enable is false.");
+            }
+            return;
+        }
+        //
+        logger.info("encodingFilter -> requestEncoding = " + requestEncoding);
+        logger.info("encodingFilter -> responseEncoding = " + responseEncoding);
         //
         HashMap<String, String> initParams = new HashMap<String, String>();
         initParams.put(REQUEST_ENCODING, requestEncoding);
@@ -56,7 +64,7 @@ public class EncodingModule extends WebModule {
         //
         String urlPatternsConfig = settings.getString(URL_PATTERNS_ENCODING);
         String[] patterns = StringUtils.isBlank(urlPatternsConfig) ? new String[0] : urlPatternsConfig.split(";");
-        logger.info("EncodingFilterModule -> urlPatterns = {}.", new Object[] { patterns });
+        logger.info("encodingFilter -> urlPatterns = {}.", new Object[] { patterns });
         //
         apiBinder.filter(patterns).through(Integer.MIN_VALUE, new EncodingFilter(), initParams);
     }
@@ -70,19 +78,29 @@ class EncodingFilter implements Filter {
         /*获取请求响应编码*/
         this.requestEncoding = filterConfig.getInitParameter(EncodingModule.REQUEST_ENCODING);
         this.responseEncoding = filterConfig.getInitParameter(EncodingModule.RESPONSE_ENCODING);
+        //
+        if (StringUtils.isBlank(this.requestEncoding)) {
+            this.requestEncoding = null;
+        }
+        if (StringUtils.isBlank(this.responseEncoding)) {
+            this.responseEncoding = null;
+        }
+        //
         AppContext app = RuntimeListener.getAppContext(filterConfig.getServletContext());
         this.environment = app.getEnvironment();
     }
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
-        if (this.requestEncoding != null)
+        if (this.requestEncoding != null) {
             httpReq.setCharacterEncoding(this.requestEncoding);
-        if (this.requestEncoding != null)
+        }
+        if (this.requestEncoding != null) {
             httpRes.setCharacterEncoding(this.responseEncoding);
+        }
         //
         if (this.environment.isDebug()) {
-            logger.info("at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
+            logger.debug("encodingFilter -> at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         }
         chain.doFilter(request, response);
     }

@@ -15,6 +15,7 @@
  */
 package net.hasor.plugins.restful;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
 import java.util.Set;
 import net.hasor.plugins.restful.api.MappingTo;
 import net.hasor.web.WebApiBinder;
@@ -28,32 +29,44 @@ import net.hasor.web.WebModule;
 public class RestfulModule extends WebModule {
     //
     public final void loadModule(WebApiBinder apiBinder) throws Throwable {
-        logger.info("load RestfulModule...");
-        apiBinder.filter("/*").through(new RestfulFilter());
         //
         Set<Class<?>> serviceSet = apiBinder.findClass(MappingTo.class);
+        serviceSet = new HashSet<Class<?>>(serviceSet);
+        serviceSet.remove(MappingTo.class);
+        //
         if (serviceSet == null || serviceSet.isEmpty()) {
+            logger.warn("restful -> exit , not found any @MappingTo.");
             return;
         } else {
+            int count = 0;
             for (Class<?> type : serviceSet) {
-                loadType(apiBinder, type);
+                if (loadType(apiBinder, type) == true) {
+                    count++;
+                }
+            }
+            if (count > 0) {
+                logger.info("restful -> init restful root filter , found {} MappingTo.", count);
+                apiBinder.filter("/*").through(new RestfulFilter());
+            } else {
+                logger.warn("restful -> exit , not add any @MappingTo.");
             }
         }
     }
-    public void loadType(WebApiBinder apiBinder, Class<?> clazz) {
+    public boolean loadType(WebApiBinder apiBinder, Class<?> clazz) {
         int modifier = clazz.getModifiers();
         if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
-            return;
+            return false;
         }
         //
         if (clazz.isAnnotationPresent(MappingTo.class) == false) {
-            return;
+            return false;
         }
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
-        logger.info("type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        logger.info("restful -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
         MappingToDefine define = new MappingToDefine(clazz);
         apiBinder.bindType(MappingToDefine.class).uniqueName().toInstance(define);
+        return true;
     }
     //
     /** 通过位运算决定check是否在data里。 */
