@@ -24,6 +24,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.test.hasor.core._01_bean.pojo.InitBean;
 import net.test.hasor.core._01_bean.pojo.InitBean2;
+import net.test.hasor.core._01_bean.pojo.IntefaceBean;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
@@ -74,7 +75,10 @@ public class BeanTest {
         });
         //
         //通过类型获取实现类实例。
-        PojoInfo myBean2 = appContext.getInstance(PojoInfo.class);
+        PojoInfo myBean1 = appContext.getInstance(PojoInfo.class);
+        IntefaceBean myBean2 = appContext.getInstance(IntefaceBean.class);
+        //
+        logger.debug(JSON.toString(myBean1));
         logger.debug(JSON.toString(myBean2));
     }
     //

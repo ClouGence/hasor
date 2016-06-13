@@ -36,6 +36,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoAware;
+import net.hasor.core.ImplBy;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectMembers;
@@ -114,11 +115,24 @@ public class TemplateBeanBuilder implements BeanBuilder {
     }
     //
     //
+    protected <T> Class<T> findImplClass(Class<T> notSureType) {
+        ImplBy implBy = notSureType.getAnnotation(ImplBy.class);
+        if (implBy == null) {
+            return notSureType;
+        }
+        Class<?> implClass = implBy.value();
+        if (implClass == notSureType) {
+            return notSureType;
+        }
+        Class<?> implLinkClass = findImplClass(implClass);
+        return (Class<T>) ((implClass == implLinkClass) ? implClass : implLinkClass);
+    }
     /**创建对象*/
     protected <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
         try {
             //
             //1.特殊类型创建处理。
+            targetType = findImplClass(targetType);
             int modifiers = targetType.getModifiers();
             if (targetType.isInterface() || targetType.isEnum() || (modifiers == (modifiers | Modifier.ABSTRACT))) {
                 return null;
@@ -256,6 +270,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             injectFileds.add(field.getName());
         }
     }
+    /**/
     private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
         try {
             Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
@@ -292,6 +307,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
         }
         return initMethod;
     }
+    /** 检测是否为单例。*/
     public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
         Prototype prototype = targetType.getAnnotation(Prototype.class);
         Singleton singleton = targetType.getAnnotation(Singleton.class);
