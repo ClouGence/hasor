@@ -104,7 +104,6 @@ public class TemplateBeanBuilder implements BeanBuilder {
         }
         return instanceProvider.get();
     }
-    //
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(final Class<T> oriType, AppContext appContext) {
         if (oriType == null) {
@@ -184,7 +183,6 @@ public class TemplateBeanBuilder implements BeanBuilder {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
-    //
     /**执行依赖注入*/
     private <T> T doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext) throws Throwable {
         //1.Aware接口的执行
@@ -206,6 +204,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
         //
         return targetBean;
     }
+    /**/
     private <T> void injectObject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
         Set<String> injectFileds = new HashSet<String>();
         /*a.配置注入*/
@@ -284,17 +283,11 @@ public class TemplateBeanBuilder implements BeanBuilder {
             throw e.getTargetException();
         }
     }
-    //
-    //
+    /**/
     /** 查找类的默认初始化方法*/
     public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method initMethod = null;
-        //a.可能存在的配置。
-        if (initMethod == null && bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
-            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-            initMethod = defBinder.getInitMethod(targetBeanType);
-        }
-        //b.注解形式
+        //a.注解形式（注解优先）
         if (initMethod == null && targetBeanType != null) {
             List<Method> methodList = BeanUtils.getMethods(targetBeanType);
             for (Method method : methodList) {
@@ -305,9 +298,14 @@ public class TemplateBeanBuilder implements BeanBuilder {
                 }
             }
         }
+        //b.可能存在的配置。
+        if (initMethod == null && bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            initMethod = defBinder.getInitMethod(targetBeanType);
+        }
         return initMethod;
     }
-    /** 检测是否为单例。*/
+    /** 检测是否为单例（注解优先）*/
     public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
         Prototype prototype = targetType.getAnnotation(Prototype.class);
         Singleton singleton = targetType.getAnnotation(Singleton.class);
