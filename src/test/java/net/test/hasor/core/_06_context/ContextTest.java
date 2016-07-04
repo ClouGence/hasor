@@ -16,6 +16,7 @@
 package net.test.hasor.core._06_context;
 import java.util.Date;
 import java.util.Set;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ import net.hasor.core.context.TemplateAppContext;
  *      环境变量的解析
  * 3.settingsTest
  *      配置信息读取
- * 
+ *
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -97,5 +98,37 @@ public class ContextTest {
         //
         String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
         logger.info("my packages is {}.", (Object) packages);
+        //
+        String source = settings.getString("mySelf.source");
+        logger.info("form source is {}.", source);
+    }
+    //
+    // - 配置信息读取
+    @Test
+    public void propTest() {
+        System.out.println("--->>propTest<<--");
+        AppContext appContext = Hasor.createAppContext("prop-config.properties");
+        Settings settings = appContext.getEnvironment().getSettings();
+        //
+        String myName = settings.getString("mySelf.myName");
+        logger.info("my Name is {}.", myName);
+        //
+        Integer myAge = settings.getInteger("mySelf.myAge");
+        logger.info("my Age is {}.", myAge);
+        //
+        Date myBirthday = settings.getDate("mySelf.myBirthday", "YYYY-MM-DD hh:mm:ss");
+        logger.info("my Birthday is {}.", myBirthday);
+        //
+        String myWork = settings.getString("mySelf.myWork");
+        logger.info("my Work is {}.", myWork);
+        //
+        String myProjectURL = settings.getString("mySelf.myProjectURL");
+        logger.info("my Project is {}.", myProjectURL);
+        //
+        String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
+        logger.info("my packages is {}.", (Object) packages);
+        //
+        String source = settings.getString("mySelf.source");
+        logger.info("form source is {}.", source);
     }
 }

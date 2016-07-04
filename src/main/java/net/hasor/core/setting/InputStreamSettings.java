@@ -14,47 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
+import org.apache.commons.lang.StringUtils;
+import org.more.util.map.Properties;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
 public class InputStreamSettings extends AbstractMergeSettings implements IOSettings {
-    private LinkedList<InputStream> pendingStream = new LinkedList<InputStream>();
+    private LinkedList<InputStreamEntity> pendingStream = new LinkedList<InputStreamEntity>();
     /**子类决定如何添加资源*/
-    public InputStreamSettings() {}
-    //
-    /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(final InputStream inStream) throws IOException {
-        this(new InputStream[] { inStream });
-    }
-    /**创建{@link InputStreamSettings}对象。*/
-    public InputStreamSettings(final InputStream[] inStreams) throws IOException {
-        Hasor.assertIsNotNull(inStreams);
-        if (inStreams.length == 0) {
-            return;
-        }
-        for (InputStream ins : inStreams) {
-            Hasor.assertIsNotNull(ins);
-            this.addStream(ins);
-        }
+    public InputStreamSettings() {
     }
     //
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
-    public void addStream(final InputStream stream) {
+    public synchronized void addStream(final InputStream stream, StreamType streamType) {
         if (stream != null) {
-            if (this.pendingStream.contains(stream) == false) {
-                this.pendingStream.add(stream);
+            for (InputStreamEntity entity : this.pendingStream) {
+                if (entity.inStream == stream) {
+                    return;
+                }
             }
+            this.pendingStream.add(new InputStreamEntity(stream, streamType));
         }
     }
     //
@@ -68,7 +59,7 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                 return;
             }
             //构建装载环境
-            InputStream inStream = null;
+            InputStreamEntity entity = null;
             try {
                 logger.info("parsing...");
                 SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -76,9 +67,31 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                 factory.setFeature("http://xml.org/sax/features/namespaces", true);
                 SAXParser parser = factory.newSAXParser();
                 SaxXmlParser handler = new SaxXmlParser(this);
-                while ((inStream = this.pendingStream.removeFirst()) != null) {
-                    parser.parse(inStream, handler);
-                    inStream.close();
+                while ((entity = this.pendingStream.removeFirst()) != null) {
+                    //根据文件类型选择适合的解析器
+                    if (StreamType.Xml.equals(entity.fileType) == true) {
+                        //加载xml
+                        parser.parse(entity.inStream, handler);
+                        entity.inStream.close();
+                    } else if (StreamType.Properties.equals(entity.fileType) == true) {
+                        //加载属性文件
+                        Properties properties = new Properties();
+                        properties.load(new InputStreamReader(entity.inStream, Settings.DefaultCharset));
+                        entity.inStream.close();
+                        if (properties.isEmpty() == false) {
+                            //
+                            String namespace = properties.get("namespace");
+                            if (StringUtils.isBlank(namespace)) {
+                                namespace = Settings.DefaultNameSpace;
+                            }
+                            for (String propKey : properties.keySet()) {
+                                String propValue = properties.getOrDefault(propKey, "");
+                                if (StringUtils.isNotBlank(propValue)) {
+                                    this.addSetting(propKey, propValue, namespace);
+                                }
+                            }
+                        }
+                    }
                     if (this.pendingStream.isEmpty()) {
                         break;
                     }
@@ -98,7 +111,9 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
         logger.info("loadSettings finish.");
     }
     /**准备装载*/
-    protected void readyLoad() throws IOException {}
+    protected void readyLoad() throws IOException {
+    }
     /**完成装载*/
-    protected void loadFinish() throws IOException {}
+    protected void loadFinish() throws IOException {
+    }
 }

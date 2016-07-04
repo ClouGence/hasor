@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
-	<mySelf>
-		<myName>赵永春</myName>
-		<myAge>12</myAge>
-		<myBirthday>2013-04-12</myBirthday>
-		<myWork>Software Engineer</myWork>
-		<myProjectURL>http://www.hasor.net/</myProjectURL>
-	</mySelf>
+    <mySelf>
+        <myName>赵永春</myName>
+        <myAge>12</myAge>
+        <myBirthday>2013-04-12</myBirthday>
+        <myWork>Software Engineer</myWork>
+        <myProjectURL>http://www.hasor.net/</myProjectURL>
+        <source>Xml</source>
+    </mySelf>
 </config>

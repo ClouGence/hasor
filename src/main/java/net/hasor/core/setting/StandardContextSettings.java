@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import org.apache.commons.lang.StringUtils;
+import org.more.util.ResourcesUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +26,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.more.util.ResourcesUtils;
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
  * 并且自动装载主配置文件（该配置文件应当只有一个）。
@@ -35,7 +37,7 @@ public class StandardContextSettings extends InputStreamSettings {
     public static final String MainSettingName   = "hasor-config.xml";
     /**默认静态配置文件名称*/
     public static final String StaticSettingName = "static-config.xml";
-    private URI                settingURI;
+    private URI settingURI;
     //
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {
@@ -112,7 +114,7 @@ public class StandardContextSettings extends InputStreamSettings {
                 InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
                 if (stream != null) {
                     logger.info("found = {}", resURL);
-                    this.addStream(stream);
+                    _addStream(stream, resURL.toString());
                 } else {
                     logger.error("cannot be read {}", resURL);
                 }
@@ -124,10 +126,17 @@ public class StandardContextSettings extends InputStreamSettings {
             InputStream stream = ResourcesUtils.getResourceAsStream(settingConfig);
             if (stream != null) {
                 logger.info("found = {}", settingConfig);
-                this.addStream(stream);
+                _addStream(stream, settingConfig.toString());
             } else {
                 logger.error("cannot be read {}", settingConfig);
             }
+        }
+    }
+    private void _addStream(InputStream stream, String suffix) {
+        if (StringUtils.endsWithIgnoreCase(suffix, ".xml")) {
+            this.addStream(stream, StreamType.Xml);
+        } else {
+            this.addStream(stream, StreamType.Properties);
         }
     }
     @Override

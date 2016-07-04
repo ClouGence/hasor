@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.hasor.core.Settings;
 import org.more.json.JSON;
 import org.more.util.StringUtils;
 import org.more.util.map.DecSequenceMap;
@@ -55,7 +57,7 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
             if (logger.isDebugEnabled()) {
                 logger.debug("addSetting size = {} ,namespace={}.", atNSEntry.getValue().size(), atNSEntry.getKey());
             }
-            if ("http://project.hasor.net/hasor/schema/main".equalsIgnoreCase(atNSEntry.getKey()) == true) {
+            if (Settings.DefaultNameSpace.equalsIgnoreCase(atNSEntry.getKey()) == true) {
                 mainConfig = atNSEntry.getValue();
             } else {
                 this.mergeSettings.addMap(atNSEntry.getValue());
