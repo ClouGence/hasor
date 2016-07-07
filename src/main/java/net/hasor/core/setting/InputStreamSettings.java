@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
+import java.util.Map;
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
@@ -84,10 +85,11 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                             if (StringUtils.isBlank(namespace)) {
                                 namespace = Settings.DefaultNameSpace;
                             }
-                            for (String propKey : properties.keySet()) {
-                                String propValue = properties.getOrDefault(propKey, "");
-                                if (StringUtils.isNotBlank(propValue)) {
-                                    this.addSetting(propKey, propValue, namespace);
+                            for (Map.Entry<String, String> propEnt : properties.entrySet()) {
+                                String propKey = propEnt.getKey();
+                                String propVal = propEnt.getValue();
+                                if (StringUtils.isNotBlank(propVal)) {
+                                    this.addSetting(propKey, propVal, namespace);
                                 }
                             }
                         }
