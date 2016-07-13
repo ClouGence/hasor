@@ -20,9 +20,11 @@ import static net.hasor.db.transaction.Propagation.NEVER;
 import static net.hasor.db.transaction.Propagation.NOT_SUPPORTED;
 import static net.hasor.db.transaction.Propagation.REQUIRED;
 import static net.hasor.db.transaction.Propagation.REQUIRES_NEW;
+
 import java.sql.SQLException;
 import java.util.LinkedList;
 import javax.sql.DataSource;
+
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.transaction.Isolation;
@@ -35,20 +37,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 某一个数据源的事务管理器
- * 
+ *
  * <p><b><i>事务栈：</i></b>
  * <p>事务管理器允许使用不同的传播属性反复开启新的事务。所有被开启的事务在正确处置（commit,rollback）
  * 它们之前都会按照先后顺序依次压入事务管理器的“事务栈”中。一旦有事务被处理（commit,rollback）这个事务才会被从事务栈中弹出。
  * <p>倘若被弹出的事务(A)并不是栈顶的事务，那么在事务(A)被处理（commit,rollback）时会优先处理自事务(A)以后开启的其它事务。
- * 
+ *
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
 public class JdbcTransactionManager implements TransactionManager {
-    protected Logger                          logger              = LoggerFactory.getLogger(getClass());
-    private LinkedList<JdbcTransactionStatus> tStatusStack        = new LinkedList<JdbcTransactionStatus>();
-    private DataSource                        dataSource          = null;
-    private TransactionTemplateManager        transactionTemplate = null;
+    protected Logger                            logger              = LoggerFactory.getLogger(getClass());
+    private   LinkedList<JdbcTransactionStatus> tStatusStack        = new LinkedList<JdbcTransactionStatus>();
+    private   DataSource                        dataSource          = null;
+    private   TransactionTemplateManager        transactionTemplate = null;
     protected JdbcTransactionManager(final DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
         this.dataSource = dataSource;
@@ -59,7 +61,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**获取当前事务管理器管理的数据源对象。*/
     public DataSource getDataSource() {
         return this.dataSource;
-    };
+    }
     /**是否存在未处理完的事务（包括被挂起的事务）。*/
     @Override
     public boolean hasTransaction() {
@@ -79,7 +81,7 @@ public class JdbcTransactionManager implements TransactionManager {
     @Override
     public final TransactionStatus getTransaction(final Propagation behavior) throws SQLException {
         return this.getTransaction(behavior, Isolation.DEFAULT);
-    };
+    }
     /**开启事务*/
     @Override
     public final TransactionStatus getTransaction(final Propagation behavior, final Isolation level) throws SQLException {
@@ -100,7 +102,7 @@ public class JdbcTransactionManager implements TransactionManager {
         | NEVER        ：排除事务（异常）
         | MANDATORY    ：强制要求事务（不处理）
         ===============================================================*/
-        if (this.isExistingTransaction(defStatus) == true) {
+        if (this.isExistingTransaction(defStatus)) {
             /*REQUIRES_NEW：独立事务*/
             if (behavior == REQUIRES_NEW) {
                 this.suspend(defStatus);/*挂起当前事务*/
@@ -150,7 +152,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**判断连接对象是否处于事务中，该方法会用于评估事务传播属性的处理方式。 */
     private boolean isExistingTransaction(final JdbcTransactionStatus defStatus) throws SQLException {
         return defStatus.getTranConn().hasTransaction();
-    };
+    }
     /**初始化一个新的连接，并开启事务。*/
     protected void doBegin(final JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranConn = defStatus.getTranConn();
@@ -198,7 +200,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**递交前的预处理*/
     private void prepareCommit(final JdbcTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
-        if (this.tStatusStack.contains(defStatus) == false)
+        if (!this.tStatusStack.contains(defStatus))
             throw new SQLException("This transaction is not derived from this Manager.");
         /*-------------------------------------------------------------
         | 如果预处理的事务并非位于栈顶，则进行弹栈操作。
@@ -221,7 +223,7 @@ public class JdbcTransactionManager implements TransactionManager {
     protected void doCommit(final JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.commit();
-    };
+    }
     //
     //
     /**回滚事务*/
@@ -256,7 +258,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**回滚前的预处理*/
     private void prepareRollback(final JdbcTransactionStatus defStatus) throws SQLException {
         /*首先预处理的事务必须存在于管理器的事务栈内某一位置中，否则要处理的事务并非来源于该事务管理器。*/
-        if (this.tStatusStack.contains(defStatus) == false) {
+        if (!this.tStatusStack.contains(defStatus)) {
             throw new SQLException("This transaction is not derived from this Manager.");
         }
         /*-------------------------------------------------------------
@@ -280,13 +282,13 @@ public class JdbcTransactionManager implements TransactionManager {
     protected void doRollback(final JdbcTransactionStatus defStatus) throws SQLException {
         TransactionObject tranObject = defStatus.getTranConn();
         tranObject.rollback();
-    };
+    }
     //
     //
     /**挂起事务。*/
     protected final void suspend(final JdbcTransactionStatus defStatus) throws SQLException {
         /*事务已经被挂起*/
-        if (defStatus.isSuspend() == true) {
+        if (defStatus.isSuspend()) {
             throw new SQLException("the Transaction has Suspend.");
         }
         //
@@ -300,17 +302,17 @@ public class JdbcTransactionManager implements TransactionManager {
     }
     /**恢复被挂起的事务。*/
     protected final void resume(final JdbcTransactionStatus defStatus) throws SQLException {
-        if (defStatus.isCompleted() == false) {
+        if (!defStatus.isCompleted()) {
             throw new SQLException("the Transaction has not completed.");
         }
-        if (defStatus.isSuspend() == false) {
+        if (!defStatus.isSuspend()) {
             throw new SQLException("the Transaction has not Suspend.");
         }
         //
         /*检查事务是否为栈顶事务*/
         this.prepareCheckStack(defStatus);
         /*恢复挂起的事务*/
-        if (defStatus.isSuspend() == true) {
+        if (defStatus.isSuspend()) {
             TransactionObject tranConn = defStatus.getSuspendConn();/*取得挂起的数据库连接*/
             SyncTransactionManager.setSync(tranConn);/*设置线程的数据库连接*/
             defStatus.setTranConn(tranConn);
@@ -357,7 +359,7 @@ public class JdbcTransactionManager implements TransactionManager {
     /**获取数据库连接（线程绑定的）*/
     protected TransactionObject doGetConnection(final JdbcTransactionStatus defStatus) throws SQLException {
         ConnectionHolder holder = TranManager.currentConnectionHolder(dataSource);
-        if (holder.isOpen() == false || holder.hasTransaction() == false) {
+        if (!holder.isOpen() || !holder.hasTransaction()) {
             defStatus.markNewConnection();/*新事物，新连接*/
         }
         holder.requested();//ref++

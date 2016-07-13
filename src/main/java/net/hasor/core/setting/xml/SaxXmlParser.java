@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -30,15 +31,15 @@ import net.hasor.core.XmlNode;
  */
 public class SaxXmlParser extends DefaultHandler {
     private Settings                    dataContainer     = null;
-    private Map<String, StringBuffer>   xmlText           = new HashMap<String, StringBuffer>();
+    private Map<String, StringBuilder>  xmlText           = new HashMap<String, StringBuilder>();
     private Map<String, DefaultXmlNode> currentXmlPropert = new HashMap<String, DefaultXmlNode>();
     //
     public SaxXmlParser(final Settings dataContainer) {
         this.dataContainer = dataContainer;
     }
-    private StringBuffer getText(final String xmlns) {
-        if (this.xmlText.containsKey(xmlns) == false) {
-            this.xmlText.put(xmlns, new StringBuffer(""));
+    private StringBuilder getText(final String xmlns) {
+        if (!this.xmlText.containsKey(xmlns)) {
+            this.xmlText.put(xmlns, new StringBuilder(""));
         }
         return this.xmlText.get(xmlns);
     }
@@ -71,7 +72,7 @@ public class SaxXmlParser extends DefaultHandler {
         this.curXmlns = uri;
     }
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
-        StringBuffer strBuffer = this.getText(uri);
+        StringBuilder strBuffer = this.getText(uri);
         //
         DefaultXmlNode currentNode = this.getCurrentXmlPropert(uri);
         currentNode.setText(strBuffer.toString().trim());
@@ -84,8 +85,8 @@ public class SaxXmlParser extends DefaultHandler {
         if (this.curXmlns == null) {
             return;
         }
+        StringBuilder strBuffer = this.getText(this.curXmlns);
         String content = new String(ch, start, length);
-        StringBuffer strBuffer = this.getText(this.curXmlns);
         strBuffer.append(content);
     }
     public void endDocument() throws SAXException {

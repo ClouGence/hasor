@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.web.startup.RuntimeListener;
@@ -36,7 +37,7 @@ public class TemplateContext {
     private TemplateEngine templateEngine = null;
     //
     public void init(ServletContext servletContext) throws ServletException {
-        if (this.inited.compareAndSet(false, true) == false) {
+        if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         try {
@@ -57,16 +58,16 @@ public class TemplateContext {
             return null;
         }
         File layoutFile = new File(this.layoutPath, tempFile);
-        if (this.templateEngine.exist(layoutFile.getPath()) == true) {
+        if (this.templateEngine.exist(layoutFile.getPath())) {
             return layoutFile.getPath();
         } else {
             layoutFile = new File(layoutFile.getParent(), "default.htm");
-            if (this.templateEngine.exist(layoutFile.getPath()) == true) {
+            if (this.templateEngine.exist(layoutFile.getPath())) {
                 return layoutFile.getPath();
             } else {
                 while (layoutFile.getPath().startsWith(this.layoutPath)) {
                     layoutFile = new File(layoutFile.getParentFile().getParent(), "default.htm");
-                    if (this.templateEngine.exist(layoutFile.getPath()) == true) {
+                    if (this.templateEngine.exist(layoutFile.getPath())) {
                         return layoutFile.getPath();
                     }
                 }

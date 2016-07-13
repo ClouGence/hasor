@@ -16,10 +16,11 @@
 package net.hasor.web.binder.support;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+
 import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 /**
- * 
+ *
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -40,8 +41,7 @@ class HttpSessionListenerDefinition {
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s", //
-                HttpSessionListenerDefinition.class, this.listenerInstance);
+        return String.format("type %s listenerKey=%s", HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /**/
     public void init(final WebAppContext appContext) {

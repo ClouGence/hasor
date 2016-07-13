@@ -17,17 +17,18 @@ package net.hasor.web.binder.support;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
+
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 /**
- * 
+ *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ManagedListenerPipeline implements ListenerPipeline {
-    private HttpSessionListenerDefinition[] sessionListeners = null;
-    private ContextListenerDefinition[]     contextListeners = null;
-    private volatile boolean                initialized      = false;
+    private          HttpSessionListenerDefinition[] sessionListeners = null;
+    private          ContextListenerDefinition[]     contextListeners = null;
+    private volatile boolean                         initialized      = false;
     //
     //
     @Override
@@ -52,7 +53,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     }
     @Override
     public void sessionCreated(final HttpSessionEvent event) {
-        if (this.initialized == false) {
+        if (!this.initialized) {
             return;
         }
         for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
@@ -61,7 +62,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     }
     @Override
     public void sessionDestroyed(final HttpSessionEvent event) {
-        if (this.initialized == false) {
+        if (!this.initialized) {
             return;
         }
         for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
@@ -70,7 +71,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     }
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        if (this.initialized == false) {
+        if (!this.initialized) {
             return;
         }
         for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
@@ -79,7 +80,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     }
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
-        if (this.initialized == false) {
+        if (!this.initialized) {
             return;
         }
         for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {

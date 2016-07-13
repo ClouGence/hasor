@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
@@ -28,7 +29,7 @@ import net.hasor.core.Provider;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 /**
- * 
+ *
  * @version : 2014年7月4日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -76,7 +77,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Collections.sort(ints);
         //check
         int size = ints.size();
-        if (ints.isEmpty() == false && ints.get(size - 1) != (size - 1)) {
+        if (!ints.isEmpty() && ints.get(size - 1) != (size - 1)) {
             throw new java.lang.IllegalStateException("Constructor param index error.");
         }
         //

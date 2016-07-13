@@ -19,6 +19,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -29,15 +30,15 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebTemplateAppContext;
 /**
- * 
+ *
  * @version : 2013-3-25
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
-    protected Logger           logger                  = LoggerFactory.getLogger(getClass());
-    public static final String AppContextName          = AppContext.class.getName();
-    private WebAppContext      appContext              = null;
-    private ListenerPipeline   sessionListenerPipeline = null;
+    protected           Logger           logger                  = LoggerFactory.getLogger(getClass());
+    public static final String           AppContextName          = AppContext.class.getName();
+    private             WebAppContext    appContext              = null;
+    private             ListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link WebAppContext}对象*/
@@ -67,7 +68,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             //1.create AppContext
             final ServletContext sc = servletContextEvent.getServletContext();
             this.appContext = this.createAppContext(sc);
-            if (this.appContext.isStart() == false) {
+            if (!this.appContext.isStart()) {
                 Module startModule = this.getStartModule(sc);
                 this.appContext.start(startModule);
             }

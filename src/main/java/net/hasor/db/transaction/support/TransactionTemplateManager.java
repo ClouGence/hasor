@@ -21,7 +21,7 @@ import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 /**
- * 
+ *
  * @version : 2015年10月22日
  * @author 赵永春(zyc@hasor.net)
  */

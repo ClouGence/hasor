@@ -16,18 +16,20 @@
 package net.hasor.core.binder.aop.matcher;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
 import org.more.util.ClassUtils;
 import org.more.util.MatchUtils;
 import org.more.util.MatchUtils.MatchTypeEnum;
 /**
- * 
+ *
  * @version : 2013-8-20
  * @author 赵永春(zyc@hasor.net)
  */
 public class AopMatchers {
-    private AopMatchers() {}
+    private AopMatchers() {
+    }
     //
     public static <T> MatcherDevice<T> createDevice(final Matcher<T> matcher) {
         return new MatcherDevice<T>(matcher);
@@ -138,18 +140,18 @@ public class AopMatchers {
             this.annotationType = annotationType;
         }
         public boolean matches(final Class<?> matcherType) {
-            if (matcherType.isAnnotationPresent(this.annotationType) == true) {
+            if (matcherType.isAnnotationPresent(this.annotationType)) {
                 return true;
             }
             Method[] m1s = matcherType.getMethods();
             Method[] m2s = matcherType.getDeclaredMethods();
             for (Method m1 : m1s) {
-                if (m1.isAnnotationPresent(this.annotationType) == true) {
+                if (m1.isAnnotationPresent(this.annotationType)) {
                     return true;
                 }
             }
             for (Method m2 : m2s) {
-                if (m2.isAnnotationPresent(this.annotationType) == true) {
+                if (m2.isAnnotationPresent(this.annotationType)) {
                     return true;
                 }
             }
@@ -173,10 +175,10 @@ public class AopMatchers {
             this.annotationType = annotationType;
         }
         public boolean matches(final Method matcherType) {
-            if (matcherType.isAnnotationPresent(this.annotationType) == true) {
+            if (matcherType.isAnnotationPresent(this.annotationType)) {
                 return true;
             }
-            if (matcherType.getDeclaringClass().isAnnotationPresent(this.annotationType) == true) {
+            if (matcherType.getDeclaringClass().isAnnotationPresent(this.annotationType)) {
                 return true;
             }
             return false;

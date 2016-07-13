@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
@@ -48,9 +49,9 @@ import net.hasor.core.module.ModuleHelper;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateAppContext<C extends BeanContainer> implements AppContext {
-    public static final String DefaultSettings = "hasor-config.xml";
-    protected Logger           logger          = LoggerFactory.getLogger(getClass());
-    private final ShutdownHook shutdownHook    = new ShutdownHook(this);
+    public static final String       DefaultSettings = "hasor-config.xml";
+    protected           Logger       logger          = LoggerFactory.getLogger(getClass());
+    private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
     //
     /**通过名获取Bean的类型。*/
     public Class<?> getBeanType(String bindID) {
@@ -73,7 +74,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     public String[] getBindIDs() {
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoIDs();
-        if (nameList == null || nameList.isEmpty() == true) {
+        if (nameList == null || !nameList.isEmpty()) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
@@ -88,7 +89,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoNamesByType(targetClass);
-        if (nameList == null || nameList.isEmpty() == true) {
+        if (nameList == null || !nameList.isEmpty()) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
@@ -141,7 +142,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         //
         final BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(targetClass);
-        if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
+        if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
             for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
                 BindInfo<T> adapter = typeRegisterList.get(i);
                 if (adapter.getBindName() == null) {
@@ -175,7 +176,8 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
             }
         };
         return provider;
-    };
+    }
+    ;
     //
     /**获取用于创建Bean的{@link BeanBuilder}*/
     protected BeanBuilder getBeanBuilder() {
@@ -200,7 +202,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
             returnData.add(instance);
         }
         return returnData;
-    };
+    }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> List<Provider<T>> findBindingProvider(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
@@ -262,7 +264,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         //
         BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.getBindInfoByType(bindType);
-        if (typeRegisterList != null && typeRegisterList.isEmpty() == false) {
+        if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
             for (BindInfo<T> adapter : typeRegisterList) {
                 if (StringUtils.equals(adapter.getBindName(), withName)) {
                     return adapter;

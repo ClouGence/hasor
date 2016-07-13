@@ -29,14 +29,14 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorBean<T> implements FactoryBean, InitializingBean {
-    protected static Logger       logger       = LoggerFactory.getLogger(Hasor.class);
-    private AppContext            factory      = null;
-    private Provider<? extends T> beanProvider = null;
-    private BindInfo<? extends T> beanBindInfo = null;
+    protected static Logger                logger       = LoggerFactory.getLogger(Hasor.class);
+    private          AppContext            factory      = null;
+    private          Provider<? extends T> beanProvider = null;
+    private          BindInfo<? extends T> beanBindInfo = null;
     //
-    private String                refID        = null;
-    private Class<? extends T>    refType      = null;
-    private String                refName      = null;
+    private          String                refID        = null;
+    private          Class<? extends T>    refType      = null;
+    private          String                refName      = null;
     //
     public AppContext getFactory() {
         return factory;

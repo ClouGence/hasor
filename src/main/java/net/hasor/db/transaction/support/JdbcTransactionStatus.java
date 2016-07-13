@@ -16,6 +16,7 @@
 package net.hasor.db.transaction.support;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+
 import net.hasor.db.datasource.SavepointManager;
 import net.hasor.db.transaction.Isolation;
 import net.hasor.db.transaction.Propagation;
@@ -50,27 +51,27 @@ public class JdbcTransactionStatus implements TransactionStatus {
         if (this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has Savepoint");
         }
-        if (this.getSavepointManager().supportSavepoint() == false) {
+        if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
         //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
     public void releaseHeldSavepoint() throws SQLException {
-        if (this.hasSavepoint() == false) {
+        if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
         }
-        if (this.getSavepointManager().supportSavepoint() == false) {
+        if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
         //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
     public void rollbackToHeldSavepoint() throws SQLException {
-        if (this.hasSavepoint() == false) {
+        if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
         }
-        if (this.getSavepointManager().supportSavepoint() == false) {
+        if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
         //
@@ -125,11 +126,11 @@ public class JdbcTransactionStatus implements TransactionStatus {
     }
     @Override
     public boolean isSuspend() {
-        return this.suspendConn != null ? true : false;
+        return this.suspendConn != null;
     }
     @Override
     public boolean hasSavepoint() {
-        return this.savepoint != null ? true : false;
+        return this.savepoint != null;
     }
     @Override
     public void setRollbackOnly() throws SQLException {

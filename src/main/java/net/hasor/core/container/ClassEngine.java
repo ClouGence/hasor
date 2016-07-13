@@ -17,6 +17,7 @@ package net.hasor.core.container;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 import net.hasor.core.info.AopBindInfoAdapter;
 import org.more.classcode.aop.AopClassConfig;
 import org.more.classcode.aop.AopMatcher;
@@ -29,7 +30,7 @@ import org.more.classcode.aop.AopMatcher;
 class ClassEngine {
     private static ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
     public static Class<?> buildType(Class<?> targetType, ClassLoader rootLosder, List<AopBindInfoAdapter> aopList) throws ClassNotFoundException, IOException {
-        if (AopClassConfig.isSupport(targetType) == false) {
+        if (!AopClassConfig.isSupport(targetType)) {
             return targetType;
         }
         //
@@ -38,7 +39,7 @@ class ClassEngine {
         if (engine == null) {
             engine = new AopClassConfig(targetType, rootLosder);
             for (AopBindInfoAdapter aop : aopList) {
-                if (aop.getMatcherClass().matches(targetType) == false) {
+                if (!aop.getMatcherClass().matches(targetType)) {
                     continue;
                 }
                 AopMatcher aopMatcher = new ClassAopMatcher(aop.getMatcherMethod());
@@ -49,7 +50,7 @@ class ClassEngine {
                 engine = buildEngineMap.get(targetType);
             }
         }
-        if (engine.hasChange() == true) {
+        if (engine.hasChange()) {
             newType = engine.toClass();
         } else {
             newType = engine.getSuperClass();

@@ -15,6 +15,7 @@
  */
 package net.hasor.spring.factory;
 import java.util.ArrayList;
+
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ import net.hasor.spring.event.EventType;
 import net.hasor.spring.event.SpringHasorEvent;
 import net.hasor.spring.event.SyncSpringHasorEvent;
 /**
- * 
+ *
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -53,12 +54,12 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         Module {
     //
     //
-    protected static Logger    logger     = LoggerFactory.getLogger(Hasor.class);
+    protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
     private AppContext         appContext;
     private ApplicationContext applicationContext;
     private String             config;
     private ArrayList<Module>  modules;
-    private boolean            shareEvent = false;
+    private boolean shareEvent = false;
     //
     public String getConfig() {
         return config;
@@ -105,7 +106,7 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         ArrayList<Module> moduleList = this.getModules();
         String config = this.getConfig();
         // - initData
-        if (StringUtils.isBlank(config) == false) {
+        if (!StringUtils.isBlank(config)) {
             config = SystemPropertyUtils.resolvePlaceholders(config);
         }
         if (StringUtils.isBlank(config)) {
@@ -148,7 +149,7 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     /*负责将Spring的事件转发到Hasor*/
     @Override
     public final void onApplicationEvent(ApplicationEvent event) {
-        if (this.appContext == null || this.shareEvent == false) {
+        if (this.appContext == null || !this.shareEvent) {
             return;
         }
         //
@@ -164,7 +165,8 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         }
         //
         EventContext eventContext = this.appContext.getEnvironment().getEventContext();
-        /*   */if (event instanceof SyncSpringHasorEvent) {
+        /*   */
+        if (event instanceof SyncSpringHasorEvent) {
             eventContext.fireSyncEvent(eventType, event);
         } else if (event instanceof AsyncSpringHasorEvent) {
             eventContext.fireAsyncEvent(eventType, event);

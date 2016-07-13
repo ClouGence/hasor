@@ -16,6 +16,7 @@
 package net.hasor.spring;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.more.util.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -25,7 +26,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 /**
  * Hasor集成Spring插件
- * 
+ *
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */

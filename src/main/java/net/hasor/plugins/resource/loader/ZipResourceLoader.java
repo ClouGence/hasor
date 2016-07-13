@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import net.hasor.plugins.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
@@ -53,7 +54,7 @@ public class ZipResourceLoader implements ResourceLoader {
         return resourcePath;
     }
     public InputStream getResourceAsStream(String resourcePath) throws IOException {
-        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false) {
+        if (this.zipFile.isDirectory() || !this.zipFile.exists()) {
             return null;
         }
         //
@@ -71,7 +72,7 @@ public class ZipResourceLoader implements ResourceLoader {
         return this.zipEntrySet.contains(resourcePath);
     }
     public URL getResource(String resourcePath) throws IOException {
-        if (this.zipFile.isDirectory() == true || this.zipFile.exists() == false) {
+        if (this.zipFile.isDirectory() || !this.zipFile.exists()) {
             return null;
         }
         //

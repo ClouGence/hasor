@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -67,10 +68,10 @@ class MappingToInvoker {
         Object[] resolveParams = this.resolveParams(context);
         Object resultData = targetMethod.invoke(targetObject, resolveParams);
         //
-        if (targetMethod.isAnnotationPresent(Produces.class) == true) {
+        if (targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
-            if (StringUtils.isBlank(proValue) == false) {
+            if (!StringUtils.isBlank(proValue)) {
                 httpResp.setContentType(proValue);
             }
         }
@@ -111,7 +112,8 @@ class MappingToInvoker {
         Object atData = null;
         //
         if (atData == null) {
-            /*   */if (pAnno instanceof AttributeParam) {
+            /*   */
+            if (pAnno instanceof AttributeParam) {
                 atData = this.getAttributeParam(context, (AttributeParam) pAnno);
             } else if (pAnno instanceof CookieParam) {
                 atData = this.getCookieParam(context, (CookieParam) pAnno);
@@ -144,7 +146,7 @@ class MappingToInvoker {
             return paramObject;
         }
         for (Field field : fieldList) {
-            if (field.isAnnotationPresent(IgnoreParam.class) == true) {
+            if (field.isAnnotationPresent(IgnoreParam.class)) {
                 logger.debug(field + " -> Ignore.");
                 continue;
             }
@@ -269,7 +271,7 @@ class MappingToInvoker {
             //
             List<String> pArray = context.queryParamLocal.get(k);
             pArray = pArray == null ? new ArrayList<String>() : pArray;
-            if (pArray.contains(v) == false) {
+            if (!pArray.contains(v)) {
                 pArray.add(v);
             }
             context.queryParamLocal.put(k, pArray);
@@ -304,7 +306,7 @@ class MappingToInvoker {
             String v = varArray.get(i);
             List<String> pArray = uriParams.get(k);
             pArray = pArray == null ? new ArrayList<String>() : pArray;
-            if (pArray.contains(v) == false) {
+            if (!pArray.contains(v)) {
                 pArray.add(v);
             }
             uriParams.put(k, pArray);

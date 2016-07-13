@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -46,13 +47,13 @@ import net.hasor.core.scope.SingletonScope;
  * @author 赵永春(zyc@hasor.net)
  */
 public class BeanContainer extends TemplateBeanBuilder {
-    protected Logger                                logger           = LoggerFactory.getLogger(getClass());
-    private AtomicBoolean                           inited           = new AtomicBoolean(false);
-    private Scope                                   singletonScope   = new SingletonScope();
-    private List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
-    private ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
-    private ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
-    private ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
+    protected Logger                                  logger           = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean                           inited           = new AtomicBoolean(false);
+    private   Scope                                   singletonScope   = new SingletonScope();
+    private   List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
+    private   ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
+    private   ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
+    private   ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
     //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
@@ -148,7 +149,7 @@ public class BeanContainer extends TemplateBeanBuilder {
         for (BindInfo<?> info : this.tempBindInfoList) {
             String bindID = info.getBindID();
             //只有ID做重复检查
-            if (idDataSource.containsKey(info.getBindID()) == true) {
+            if (idDataSource.containsKey(info.getBindID())) {
                 throw new RepeateException("duplicate bind id value is " + info.getBindID());
             }
             idDataSource.put(bindID, info);

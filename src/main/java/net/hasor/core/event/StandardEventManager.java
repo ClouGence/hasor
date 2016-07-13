@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import org.more.util.StringUtils;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
@@ -33,10 +34,10 @@ import net.hasor.core.EventListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEventManager implements EventContext {
-    private static final EmptyEventCallBackHook      EMPTY_CALLBACK  = new EmptyEventCallBackHook();
+    private static final EmptyEventCallBackHook                   EMPTY_CALLBACK  = new EmptyEventCallBackHook();
     //
-    private ScheduledExecutorService                 executorService = null;
-    private ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
+    private              ScheduledExecutorService                 executorService = null;
+    private              ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
     //
     //
     public StandardEventManager(int eventThreadPoolSize) {
@@ -109,7 +110,8 @@ public class StandardEventManager implements EventContext {
     /**创建事件对象*/
     protected <T> EventObject<T> createEvent(final String eventType, final boolean sync) {
         return new EventObject<T>(eventType, sync);
-    };
+    }
+    ;
     /**引发事件*/
     protected <T> void fireEvent(final EventObject<T> event) {
         if (event.isSync()) {
@@ -123,14 +125,15 @@ public class StandardEventManager implements EventContext {
                 }
             });
         }
-    };
+    }
+    ;
     /**引发事件*/
     protected <T> void executeEvent(final EventObject<T> eventObj) {
         String eventType = eventObj.getEventType();
         T eventData = eventObj.getEventData();
         EventCallBackHook<T> callBack = eventObj.getCallBack();
         callBack = (callBack != null ? callBack : (EventCallBackHook<T>) StandardEventManager.EMPTY_CALLBACK);
-        if (StringUtils.isBlank(eventType) == true) {
+        if (StringUtils.isBlank(eventType)) {
             return;
         }
         //
@@ -162,7 +165,8 @@ public class StandardEventManager implements EventContext {
                 }
             }
         }
-    };
+    }
+    ;
     //
     public void release() {
         this.executorService.shutdownNow();
@@ -171,8 +175,8 @@ public class StandardEventManager implements EventContext {
 }
 //
 class EventListenerPool {
-    private final Object                                 ONCE_LOCK = new Object();
-    private ArrayList<EventListener<?>>                  onceListener;
+    private final Object ONCE_LOCK = new Object();
+    private       ArrayList<EventListener<?>>            onceListener;
     private final CopyOnWriteArrayList<EventListener<?>> listenerList;
     //
     public EventListenerPool() {

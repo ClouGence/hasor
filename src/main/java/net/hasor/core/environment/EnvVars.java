@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * 该类负责处理环境变量相关操作。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public class EnvVars {
-    protected Logger                          logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private Environment                       environment;
     /*最终使用的环境变量Map*/
     private ConcurrentHashMap<String, String> envMap;
@@ -119,25 +116,25 @@ public class EnvVars {
                 keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
             }
             keyMaxSize = keyMaxSize + 2;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append("EnvVars:");
             if (!this.envMap.isEmpty()) {
-                sb.append("\n" + this.formatMap4log(keyMaxSize, this.envMap));
-                sb.append("\n" + StringUtils.fixedString('-', 50));
+                sb.append("\n").append(this.formatMap4log(keyMaxSize, this.envMap));
+                sb.append("\n").append(StringUtils.fixedString('-', 50));
             }
             if (!this.userEnvMap.isEmpty()) {
-                sb.append("\n" + this.formatMap4log(keyMaxSize, this.userEnvMap));
-                sb.append("\n" + StringUtils.fixedString('-', 50));
+                sb.append("\n").append(this.formatMap4log(keyMaxSize, this.userEnvMap));
+                sb.append("\n").append(StringUtils.fixedString('-', 50));
             }
             logger.info(sb.toString());
         }
     }
     private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
         /*输出系统环境变量日志*/
-        StringBuffer outLog = new StringBuffer("");
+        StringBuilder outLog = new StringBuilder("");
         for (String key : mapData.keySet()) {
             String var = mapData.get(key);
-            var = var != null ? var.replace("\r", "\\r").replace("\n", "\\n") : var;
+            var = (var != null) ? (var.replace("\r", "\\r").replace("\n", "\\n")) : "";
             outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
             outLog.append(String.format("%s = %s", key, var));
             outLog.append('\n');
@@ -169,7 +166,7 @@ public class EnvVars {
             data.add(var);
         }
         String[] splitArr = keyPattern.split(evalString);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < splitArr.length; i++) {
             sb.append(splitArr[i]);
             if (data.size() > i) {

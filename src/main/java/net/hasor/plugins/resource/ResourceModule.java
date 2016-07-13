@@ -17,6 +17,7 @@ package net.hasor.plugins.resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.more.json.JSON;
 import org.more.util.StringUtils;
 import net.hasor.core.Environment;
@@ -25,7 +26,7 @@ import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
  * 负责装载jar包中的资源。
- * 
+ *
  * @version : 2013-4-8
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -37,7 +38,7 @@ public class ResourceModule extends WebModule {
         String interceptNames = settings.getString("hasor.resourceLoader.urlPatterns", "");
         List<String> filterList = new ArrayList<String>();
         for (String name : interceptNames.split(";")) {
-            if (StringUtils.isBlank(name) == false) {
+            if (!StringUtils.isBlank(name)) {
                 filterList.add("*." + name);
             }
         }
@@ -63,7 +64,7 @@ public class ResourceModule extends WebModule {
                     logger.error("resource -> loade failed cacheDir no permission. at {}.", cacheDir);
                     return;
                 }
-                cacheDir = new File(env.evalString(cacheSubPath + "_" + String.valueOf(i)));;
+                cacheDir = new File(env.evalString(cacheSubPath + "_" + String.valueOf(i)));
                 if (chekcCacheDir(cacheDir)) {
                     break;
                 }
@@ -84,7 +85,7 @@ public class ResourceModule extends WebModule {
     }
     private static boolean chekcCacheDir(File cacheDir) {
         cacheDir.mkdirs();
-        if (cacheDir.isDirectory() == false && cacheDir.exists() == true) {
+        if (!cacheDir.isDirectory() && cacheDir.exists()) {
             return false;
         } else {
             return true;

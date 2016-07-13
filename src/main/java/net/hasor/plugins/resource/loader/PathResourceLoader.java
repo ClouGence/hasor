@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import net.hasor.plugins.resource.ResourceLoader;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
@@ -46,7 +47,7 @@ public class PathResourceLoader implements ResourceLoader {
     public boolean exist(String resourcePath) {
         resourcePath = formatResourcePath(resourcePath);
         File file = new File(resourcePath);
-        return (file.exists() && file.isFile()) ? true : false;
+        return (file.exists() && file.isFile());
     }
     public URL getResource(String resourcePath) throws IOException {
         File file = new File(resourcePath);

@@ -38,7 +38,7 @@ public class TemplateModule extends WebModule {
         for (XmlNode engineType : engineList) {
             engineConfig = null;
             String etype = engineType.getAttribute("type");
-            if (StringUtils.equals(engineName, etype) == true) {
+            if (StringUtils.equals(engineName, etype)) {
                 engineConfig = engineType;
                 break;
             }

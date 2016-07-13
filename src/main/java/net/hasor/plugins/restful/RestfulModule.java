@@ -17,12 +17,13 @@ package net.hasor.plugins.restful;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.hasor.plugins.restful.api.MappingTo;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /***
  * restful插件
- * 
+ *
  * @version : 2014-1-13
  * @author 赵永春(zyc@hasor.net)
  */
@@ -40,7 +41,7 @@ public class RestfulModule extends WebModule {
         } else {
             int count = 0;
             for (Class<?> type : serviceSet) {
-                if (loadType(apiBinder, type) == true) {
+                if (loadType(apiBinder, type)) {
                     count++;
                 }
             }
@@ -58,7 +59,7 @@ public class RestfulModule extends WebModule {
             return false;
         }
         //
-        if (clazz.isAnnotationPresent(MappingTo.class) == false) {
+        if (!clazz.isAnnotationPresent(MappingTo.class)) {
             return false;
         }
         //

@@ -33,6 +33,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
@@ -42,26 +43,26 @@ import net.hasor.plugins.mimetype.MimeType;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * 负责装载jar包或zip包中的资源
- * 
+ *
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 class ResourceFilter implements Filter {
-    protected static Logger                          logger     = LoggerFactory.getLogger(ResourceFilter.class);
-    private final AtomicBoolean                      inited     = new AtomicBoolean(false);
-    private MimeType                                 mimeType   = null;
-    private ResourceLoader[]                         loaderList = null;
-    private String                                   spacePath  = null;
-    private File                                     cacheDir   = null;
-    private ConcurrentHashMap<String, ReadWriteLock> cachingRes = new ConcurrentHashMap<String, ReadWriteLock>();
-    private boolean                                  isDebug;
+    protected static Logger                                   logger     = LoggerFactory.getLogger(ResourceFilter.class);
+    private final    AtomicBoolean                            inited     = new AtomicBoolean(false);
+    private          MimeType                                 mimeType   = null;
+    private          ResourceLoader[]                         loaderList = null;
+    private          String                                   spacePath  = null;
+    private          File                                     cacheDir   = null;
+    private          ConcurrentHashMap<String, ReadWriteLock> cachingRes = new ConcurrentHashMap<String, ReadWriteLock>();
+    private boolean isDebug;
     public ResourceFilter(File cacheDir) {
         this.cacheDir = cacheDir;
     }
     //
     @Override
     public synchronized void init(FilterConfig config) throws ServletException {
-        if (this.inited.compareAndSet(false, true) == false) {
+        if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
@@ -70,10 +71,6 @@ class ResourceFilter implements Filter {
         //
         List<ResourceLoader> loaderList = appContext.findBindingBean(ResourceLoader.class);
         this.loaderList = loaderList.toArray(new ResourceLoader[loaderList.size()]);
-        if (this.loaderList == null) {
-            this.loaderList = new ResourceLoader[0];
-        }
-        //
         this.mimeType = appContext.getInstance(MimeType.class);
     }
     //
@@ -81,7 +78,7 @@ class ResourceFilter implements Filter {
     //
     /** 响应资源 */
     private void forwardTo(File file, ServletRequest request, ServletResponse response) throws IOException, ServletException {
-        if (response.isCommitted() == true) {
+        if (response.isCommitted()) {
             return;
         }
         HttpServletRequest req = (HttpServletRequest) request;
@@ -119,7 +116,7 @@ class ResourceFilter implements Filter {
     }
     /* 释放 ReadWriteLock 锁 */
     private void releaseReadWriteLock(String requestURI) {
-        if (this.cachingRes.containsKey(requestURI) == true) {
+        if (this.cachingRes.containsKey(requestURI)) {
             this.cachingRes.remove(requestURI);
         }
     }
@@ -130,7 +127,7 @@ class ResourceFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         // 1.确定时候拦截
         String requestURI = request.getRequestURI().substring(request.getContextPath().length());
-        if (requestURI.startsWith(spacePath) == false) {
+        if (!requestURI.startsWith(spacePath)) {
             chain.doFilter(request, response);
             return;
         }
@@ -163,7 +160,7 @@ class ResourceFilter implements Filter {
                 cacheRWLock.readLock().unlock();
                 cacheRWLock.writeLock().lock();
                 /* 三次判断，即使成功拿到写锁也可能因为写锁具有多个而造成重复缓存。因此这里要加以判断。 */
-                if (cacheFile.exists() == false) {
+                if (!cacheFile.exists()) {
                     forwardType = this.cacheRes(cacheFile, requestURI, request, response);// 当缓存失败时返回false
                 }
                 /* 降级锁 */
@@ -188,12 +185,12 @@ class ResourceFilter implements Filter {
             return false;
         }
         // 如果debug模式，无论目标是否已经被缓存都重新缓存。
-        if (this.isDebug == false && cacheFile.exists()) {
+        if (!this.isDebug && cacheFile.exists()) {
             return true;
         }
         //
         for (ResourceLoader loader : loaderList) {
-            if (loader.exist(requestURI) == false) {
+            if (!loader.exist(requestURI)) {
                 continue;
             }
             inStream = loader.getResourceAsStream(requestURI);

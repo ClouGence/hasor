@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -43,7 +44,7 @@ class MappingToDefine {
     private String              mappingTo;
     private String              mappingToMatches;
     private Map<String, Method> httpMapping;
-    private AtomicBoolean       inited = new AtomicBoolean(false);
+    private AtomicBoolean inited = new AtomicBoolean(false);
     //
     protected MappingToDefine(Class<?> targetType) {
         this.targetType = targetType;
@@ -69,7 +70,7 @@ class MappingToDefine {
                         HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
                         if (httpMethodAnno != null) {
                             String bindMethod = httpMethodAnno.value();
-                            if (StringUtils.isBlank(bindMethod) == false) {
+                            if (!StringUtils.isBlank(bindMethod)) {
                                 this.httpMapping.put(bindMethod.toUpperCase(), targetMethod);
                             }
                         }
@@ -100,7 +101,7 @@ class MappingToDefine {
      */
     public boolean matchingMapping(String httpMethod, String requestPath) {
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
-        if (requestPath.matches(this.mappingToMatches) == false) {
+        if (!requestPath.matches(this.mappingToMatches)) {
             return false;
         }
         for (String m : this.httpMapping.keySet()) {
@@ -127,8 +128,8 @@ class MappingToDefine {
     }
     /**
      * 调用目标
-     * @param httpReq 
-     * @param httpResp 
+     * @param httpReq
+     * @param httpResp
      * @throws Throwable 异常抛出
      */
     public final Object invoke(HttpServletRequest httpReq, HttpServletResponse httpResp) throws Throwable {

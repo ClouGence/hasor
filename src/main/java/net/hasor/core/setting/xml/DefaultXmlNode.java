@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.FieldProperty;
 import org.more.convert.ConverterUtils;
@@ -110,10 +111,10 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     }
     @Override
     public <T> T getValue(final Class<T> toType, final T defaultValue) {
-        if (XmlNode.class.isAssignableFrom(toType) == true) {
+        if (XmlNode.class.isAssignableFrom(toType)) {
             return (T) this;
         }
-        if (FieldProperty.class.isAssignableFrom(toType) == true) {
+        if (FieldProperty.class.isAssignableFrom(toType)) {
             return (T) this;
         }
         try {
@@ -126,25 +127,25 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     @Override
     public String getXmlText() {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("<" + this.elementName);
+        strBuilder.append("<").append(this.elementName);
         if (this.arrMap.size() > 0) {
             strBuilder.append(" ");
             for (Entry<String, String> attEnt : this.arrMap.entrySet()) {
-                strBuilder.append(attEnt.getKey() + "=" + "\"");
+                strBuilder.append(attEnt.getKey()).append("=").append("\"");
                 String attVal = attEnt.getValue();
                 attVal = attVal.replace("<", "&lt;");//小于号
                 attVal = attVal.replace(">", "&gt;");//大于号
                 attVal = attVal.replace("'", "&apos;");//'单引号
                 attVal = attVal.replace("\"", "&quot;");//'双引号
                 attVal = attVal.replace("&", "&amp;");//& 和
-                strBuilder.append(attVal + "\" ");
+                strBuilder.append(attVal).append("\" ");
             }
             strBuilder.deleteCharAt(strBuilder.length() - 1);
         }
         strBuilder.append(">");
         //
         for (XmlNode xmlEnt : this.children) {
-            String xmlText = new String(xmlEnt.getXmlText());
+            String xmlText = xmlEnt.getXmlText();
             xmlText = xmlText.replace("<", "&lt;");
             xmlText = xmlText.replace(">", "&gt;");
             xmlText = xmlText.replace("&", "&amp;");
@@ -155,7 +156,7 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
             strBuilder.append(this.getText());
         }
         //
-        strBuilder.append("</" + this.elementName + ">");
+        strBuilder.append("</").append(this.elementName).append(">");
         return strBuilder.toString();
     }
 }

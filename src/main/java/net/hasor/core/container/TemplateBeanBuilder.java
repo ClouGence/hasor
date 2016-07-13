@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.ExceptionUtils;
@@ -78,7 +79,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             scopeProvider = adapter.getScopeProvider();
         }
         //create Provider.
-        if (instanceProvider == null && bindInfo instanceof AbstractBindInfoProviderAdapter == true) {
+        if (instanceProvider == null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
             instanceProvider = new Provider<T>() {
                 public T get() {
                     Class<T> targetType = bindInfo.getBindType();
@@ -216,7 +217,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
                 Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
                 boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
                 //
-                if (canWrite == false) {
+                if (!canWrite) {
                     String logMsg = "doInject, property " + propertyName + " can not write.";
                     logger.error(logMsg);
                     throw new IllegalStateException(logMsg);
@@ -239,7 +240,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             String name = field.getName();
             boolean hasAnno = field.isAnnotationPresent(Inject.class);
             boolean hasInjected = injectFileds.contains(name);
-            if (hasAnno == false) {
+            if (!hasAnno) {
                 continue;
             }
             if (hasInjected) {
@@ -247,7 +248,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
                 logger.warn(logMsg);
                 throw new IllegalStateException(logMsg);
             }
-            if (field.isAccessible() == false) {
+            if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
             Inject inject = field.getAnnotation(Inject.class);

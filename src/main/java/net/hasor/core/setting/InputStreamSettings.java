@@ -55,7 +55,7 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
     public synchronized void loadSettings() throws IOException {
         this.readyLoad();//准备装载
         {
-            if (this.pendingStream.isEmpty() == true) {
+            if (this.pendingStream.isEmpty()) {
                 logger.info("loadSettings finish -> there is no need to be load.");
                 return;
             }
@@ -70,16 +70,16 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                 SaxXmlParser handler = new SaxXmlParser(this);
                 while ((entity = this.pendingStream.removeFirst()) != null) {
                     //根据文件类型选择适合的解析器
-                    if (StreamType.Xml.equals(entity.fileType) == true) {
+                    if (StreamType.Xml.equals(entity.fileType)) {
                         //加载xml
                         parser.parse(entity.inStream, handler);
                         entity.inStream.close();
-                    } else if (StreamType.Properties.equals(entity.fileType) == true) {
+                    } else if (StreamType.Properties.equals(entity.fileType)) {
                         //加载属性文件
                         Properties properties = new Properties();
                         properties.load(new InputStreamReader(entity.inStream, Settings.DefaultCharset));
                         entity.inStream.close();
-                        if (properties.isEmpty() == false) {
+                        if (!properties.isEmpty()) {
                             //
                             String namespace = properties.get("namespace");
                             if (StringUtils.isBlank(namespace)) {

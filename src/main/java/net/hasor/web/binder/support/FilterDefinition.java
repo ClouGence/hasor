@@ -26,12 +26,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**
- * 
+ *
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -99,7 +100,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
         boolean serve = this.matchesUri(path);
         //
         Filter filter = this.getTarget();
-        if (serve == true && filter != null) {
+        if (serve && filter != null) {
             filter.doFilter(request, response, chain);
         } else {
             chain.doFilter(httpRequest, response);

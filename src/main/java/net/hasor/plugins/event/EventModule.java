@@ -16,6 +16,7 @@
 package net.hasor.plugins.event;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 /**
  * 提供 <code>@Event</code>注解 功能支持。
- * 
+ *
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -51,7 +52,7 @@ public class EventModule implements Module {
         }
         int count = 0;
         for (final Class<?> eventClass : eventSet) {
-            if (eventClass == Event.class || listenerClass.isAssignableFrom(eventClass) == false) {
+            if (eventClass == Event.class || !listenerClass.isAssignableFrom(eventClass)) {
                 continue;
             }
             Event eventAnno = eventClass.getAnnotation(Event.class);
@@ -61,7 +62,8 @@ public class EventModule implements Module {
                 if (StringUtils.isBlank(eventName)) {
                     continue;
                 }
-                /*   */if (EventType.Once == eventType) {
+                /*   */
+                if (EventType.Once == eventType) {
                     if (logger.isInfoEnabled()) {
                         logger.info("event -> ‘{}’ binding[OnceListener] to ‘{}’", eventName, eventClass);
                     }
@@ -88,8 +90,8 @@ public class EventModule implements Module {
     //
     private class EventListenerPropxy implements EventListener<Object>, AppContextAware {
         private BasicFuture<AppContext> appContextFuture;
-        private Class<?>                eventClass     = null;
-        private EventListener<Object>   targetListener = null;
+        private Class<?>              eventClass     = null;
+        private EventListener<Object> targetListener = null;
         //
         public EventListenerPropxy(Class<?> eventClass) {
             this.eventClass = eventClass;

@@ -31,22 +31,23 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * action功能的入口。
- * 
+ *
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
 class RestfulFilter implements Filter {
-    private final AtomicBoolean inited         = new AtomicBoolean(false);
-    private String[]            interceptNames = null;
-    private MappingToDefine[]   invokeArray    = new MappingToDefine[0];
+    private final AtomicBoolean     inited         = new AtomicBoolean(false);
+    private       String[]          interceptNames = null;
+    private       MappingToDefine[] invokeArray    = new MappingToDefine[0];
     //
     public void init(FilterConfig filterConfig) throws ServletException {
-        if (this.inited.compareAndSet(false, true) == false) {
+        if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         // 1.拦截
@@ -54,7 +55,7 @@ class RestfulFilter implements Filter {
         String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");
         Set<String> names = new HashSet<String>();
         for (String name : interceptNames.split(";")) {
-            if (StringUtils.isBlank(name) == false) {
+            if (!StringUtils.isBlank(name)) {
                 names.add(name);
             }
         }
@@ -83,7 +84,7 @@ class RestfulFilter implements Filter {
     //
     private MappingToDefine findMapping(String actionMethod, String actionPath) {
         for (MappingToDefine invoke : this.invokeArray) {
-            if (invoke.matchingMapping(actionMethod, actionPath) == true) {
+            if (invoke.matchingMapping(actionMethod, actionPath)) {
                 return invoke;
             }
         }
@@ -106,7 +107,7 @@ class RestfulFilter implements Filter {
             }
         }
         //
-        if (resp.isCommitted() == false) {
+        if (!resp.isCommitted()) {
             chain.doFilter(request, resp);
         }
     }
@@ -154,7 +155,7 @@ class RestfulFilter implements Filter {
                 }
             }
             public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                if (servletResponse.isCommitted() == true)
+                if (servletResponse.isCommitted())
                     throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
                 /* 清空缓冲 */
                 servletResponse.resetBuffer();

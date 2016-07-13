@@ -57,7 +57,7 @@ public abstract class AbstractMergeSettings extends AbstractSettings {
             if (logger.isDebugEnabled()) {
                 logger.debug("addSetting size = {} ,namespace={}.", atNSEntry.getValue().size(), atNSEntry.getKey());
             }
-            if (Settings.DefaultNameSpace.equalsIgnoreCase(atNSEntry.getKey()) == true) {
+            if (Settings.DefaultNameSpace.equalsIgnoreCase(atNSEntry.getKey())) {
                 mainConfig = atNSEntry.getValue();
             } else {
                 this.mergeSettings.addMap(atNSEntry.getValue());

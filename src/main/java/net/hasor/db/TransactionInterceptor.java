@@ -16,6 +16,7 @@
 package net.hasor.db;
 import java.lang.reflect.Method;
 import javax.sql.DataSource;
+
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
@@ -41,7 +42,7 @@ class TransactionInterceptor implements MethodInterceptor {
         //1.test Class
         Class<? extends Throwable>[] noRollBackType = tranAnno.noRollbackFor();
         for (Class<? extends Throwable> cls : noRollBackType) {
-            if (cls.isInstance(e) == true) {
+            if (cls.isInstance(e)) {
                 return true;
             }
         }
@@ -49,7 +50,7 @@ class TransactionInterceptor implements MethodInterceptor {
         String[] noRollBackName = tranAnno.noRollbackForClassName();
         String errorType = e.getClass().getName();
         for (String name : noRollBackName) {
-            if (errorType.equals(name) == true) {
+            if (errorType.equals(name)) {
                 return true;
             }
         }
@@ -77,12 +78,12 @@ class TransactionInterceptor implements MethodInterceptor {
         try {
             return invocation.proceed();
         } catch (Throwable e) {
-            if (this.testNoRollBackFor(tranInfo, e) == false) {
+            if (!this.testNoRollBackFor(tranInfo, e)) {
                 tranStatus.setRollbackOnly();
             }
             throw e;
         } finally {
-            if (tranStatus.isCompleted() == false) {
+            if (!tranStatus.isCompleted()) {
                 manager.commit(tranStatus);
             }
         }

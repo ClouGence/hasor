@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import javax.sql.DataSource;
 /**
- * 
+ *
  * @version : 2014-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -49,7 +49,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
             }
     }
     public synchronized Connection getConnection() throws SQLException {
-        if (this.isOpen() == false) {
+        if (!this.isOpen()) {
             return null;
         }
         if (this.connection == null) {
@@ -72,7 +72,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         if (conn == null)
             return false;
         //AutoCommit被标记为 false 表示开启了事务。
-        return conn.getAutoCommit() == false ? true : false;
+        return !conn.getAutoCommit();
     }
     /**设置事务状态*/
     public void setTransaction() throws SQLException {
@@ -95,8 +95,8 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
             throw new SQLException("Connection is null.");
     }
     public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
-    private int                savepointCounter      = 0;
-    private Boolean            savepointsSupported;
+    private             int    savepointCounter      = 0;
+    private Boolean savepointsSupported;
     /**返回 JDBC 驱动是否支持保存点。*/
     public boolean supportsSavepoints() throws SQLException {
         Connection conn = this.getConnection();
@@ -134,5 +134,6 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         Connection conn = this.getConnection();
         this.checkConn(conn);
         return conn.getMetaData().supportsSavepoints();
-    };
+    }
+    ;
 }

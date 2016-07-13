@@ -43,7 +43,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         return this.bindID;
     }
     public void setBindID(String newID) {
-        if (StringUtils.isBlank(newID) == true) {
+        if (StringUtils.isBlank(newID)) {
             throw new NullPointerException("newID is null.");
         }
         this.bindID = newID;

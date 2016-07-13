@@ -24,6 +24,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
@@ -50,7 +51,7 @@ class TemplateFilter implements Filter {
         String interceptNames = settings.getString("hasor.template.urlPatterns", "htm;html;");
         ArrayList<String> interceptList = new ArrayList<String>();
         for (String name : interceptNames.split(";")) {
-            if (StringUtils.isBlank(name) == false) {
+            if (!StringUtils.isBlank(name)) {
                 interceptList.add("." + name);
             }
         }

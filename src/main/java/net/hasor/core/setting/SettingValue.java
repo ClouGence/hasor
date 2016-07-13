@@ -21,12 +21,12 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SettingValue {
-    private Object       defaultVar;
+    private Object defaultVar;
     private List<Object> varList = new ArrayList<Object>();
     //
     //
     public void newValue(Object value) {
-        if (this.varList.contains(value) == false) {
+        if (!this.varList.contains(value)) {
             this.varList.add(value);
         }
         this.defaultVar = value;
@@ -39,7 +39,7 @@ public class SettingValue {
         return this.varList;
     }
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (Object obj : this.varList) {
             if (obj != null) {
                 buffer.append(obj.toString());

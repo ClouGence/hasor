@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.stream.XMLStreamException;
+
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.xml.stream.EndElementEvent;
@@ -27,13 +28,13 @@ import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlReader;
 import org.more.xml.stream.XmlStreamEvent;
 /**
- * 
+ *
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements MimeType {
     private static final long serialVersionUID = -8955832291109288048L;
-    private Object            content;
+    private Object content;
     public InnerMimeTypeContext(Object content) {
         this.content = content;
     }
@@ -56,9 +57,10 @@ class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements 
     public void loadStream(InputStream inStream) throws XMLStreamException, IOException {
         new XmlReader(inStream).reader(new XmlAccept() {
             private StringBuffer stringBuffer = new StringBuffer();
-            private String       extension    = null;
-            private String       mimeType     = null;
-            public void beginAccept() throws XMLStreamException {}
+            private String extension = null;
+            private String mimeType = null;
+            public void beginAccept() throws XMLStreamException {
+            }
             public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
                 if (e instanceof TextEvent) {
                     TextEvent event = (TextEvent) e;
@@ -73,7 +75,7 @@ class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements 
                         if (!StringUtils.isBlank(this.extension) && !StringUtils.isBlank(this.mimeType)) {
                             String key = this.extension.trim().toLowerCase();
                             String var = this.mimeType.trim();
-                            if (InnerMimeTypeContext.this.containsKey(key) == false) {
+                            if (!InnerMimeTypeContext.this.containsKey(key)) {
                                 InnerMimeTypeContext.this.put(key, var);
                             }
                         }
@@ -84,7 +86,8 @@ class InnerMimeTypeContext extends ConcurrentHashMap<String, String> implements 
                     this.stringBuffer = new StringBuffer();
                 }
             }
-            public void endAccept() throws XMLStreamException {}
+            public void endAccept() throws XMLStreamException {
+            }
         }, null);
     }
 }

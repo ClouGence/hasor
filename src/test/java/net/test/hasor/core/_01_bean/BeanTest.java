@@ -55,6 +55,14 @@ public class BeanTest {
     /* Bean */
     @Test
     public void beanTest() {
+        int[][] array = new  int[86400 / 3][86400 / 3];
+        int a=0;
+        for (int i=0;i<86400 / 3;i++){
+            for (int j=0;j<86400 / 3;j++){
+                a++;
+                array[i][j]=a;
+            }
+        }
         System.out.println("--->>beanTest<<--");
         AppContext appContext = Hasor.createAppContext();
         //

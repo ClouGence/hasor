@@ -25,16 +25,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+
 import net.hasor.core.AppContext;
 import net.hasor.web.WebAppContext;
 /**
- * 
+ *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
-    private volatile boolean    initialized = false;
+    private volatile boolean initialized = false;
     //
     public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         if (this.initialized) {
@@ -93,7 +94,7 @@ public class ManagedServletPipeline {
                 return new RequestDispatcher() {
                     @Override
                     public void forward(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
-                        if (servletResponse.isCommitted() == true) {
+                        if (servletResponse.isCommitted()) {
                             throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
                         }
                         servletResponse.resetBuffer();

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.classcode.MoreClassLoader;
@@ -36,12 +37,12 @@ import net.hasor.core.event.StandardEventManager;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    protected Logger     logger       = LoggerFactory.getLogger(getClass());
-    private String[]     spanPackage  = null;
-    private Settings     settings     = null;
-    private Object       context      = null;
-    private ClassLoader  rootLosder   = null;
-    private EventContext eventManager = null;
+    protected Logger       logger       = LoggerFactory.getLogger(getClass());
+    private   String[]     spanPackage  = null;
+    private   Settings     settings     = null;
+    private   Object       context      = null;
+    private   ClassLoader  rootLosder   = null;
+    private   EventContext eventManager = null;
     //
     //---------------------------------------------------------------------------------Basic Method
     public AbstractEnvironment(Settings settings) {
@@ -126,12 +127,12 @@ public abstract class AbstractEnvironment implements Environment {
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
         for (String packs : spanPackages) {
-            if (StringUtils.isBlank(packs) == true) {
+            if (StringUtils.isBlank(packs)) {
                 continue;
             }
             String[] packArray = packs.split(",");
             for (String pack : packArray) {
-                if (StringUtils.isBlank(packs) == true) {
+                if (StringUtils.isBlank(packs)) {
                     continue;
                 }
                 allPack.add(pack.trim());
@@ -168,12 +169,12 @@ public abstract class AbstractEnvironment implements Environment {
         return tmpFile;
     }
     /**
-    * 生成路径算法生成一个Path
-    * @param number 参考数字
-    * @param size 每个目录下可以拥有的子目录或文件数目。
-    */
+     * 生成路径算法生成一个Path
+     * @param number 参考数字
+     * @param size 每个目录下可以拥有的子目录或文件数目。
+     */
     public String genPath(long number, final int size) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         long b = size;
         long c = number;
         do {
