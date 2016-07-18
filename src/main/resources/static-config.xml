@@ -1,81 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
-	<!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
-	<root:config>
-		<root:hasor.loadPackages>net.*,org.*,com.*</root:hasor.loadPackages>
-	</root:config>
-	<!-- ============================================================================ -->
-	<!-- 框架配置 -->
-	<hasor debug="false">
-		<!-- 包扫描覆盖范围，逗号间隔 -->
-		<loadPackages>net.hasor.*</loadPackages>
+    <!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
+    <root:config>
+        <root:hasor.loadPackages>net.*,org.*,com.*</root:hasor.loadPackages>
+    </root:config>
+    <!-- ============================================================================ -->
+    <!-- 框架配置 -->
+    <hasor>
+        <!-- 包扫描覆盖范围，逗号间隔 -->
+        <loadPackages>net.hasor.*</loadPackages>
 
-		<!-- 默认要装载的模块 -->
-		<modules loadModule="true">
-			<module>net.hasor.plugins.aop.AopModule</module>
-			<module>net.hasor.plugins.event.EventModule</module>
-			<module>net.hasor.plugins.mimetype.MimeTypeModule</module>
+        <!-- 默认要装载的模块 -->
+        <modules loadModule="true" loadErrorShow="true">
+            <module>net.hasor.plugins.aop.AopModule</module>
+            <module>net.hasor.plugins.event.EventModule</module>
+            <module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 
-			<module>net.hasor.plugins.encoding.EncodingModule</module>
-			<module>net.hasor.plugins.restful.RestfulModule</module>
-			<module>net.hasor.plugins.templates.TemplateModule</module>
-			<module>net.hasor.plugins.resource.ResourceModule</module>
+            <module>net.hasor.plugins.encoding.EncodingModule</module>
+            <module>net.hasor.plugins.restful.RestfulModule</module>
+            <module>net.hasor.plugins.templates.TemplateModule</module>
+            <module>net.hasor.plugins.resource.ResourceModule</module>
 
-			<module>net.hasor.plugins.startup.StartupModule</module>
-		</modules>
+            <module>net.hasor.plugins.startup.StartupModule</module>
+        </modules>
 
-		<!-- 默认设置 -->
-		<default>
-			<!-- 默认不启用单例模式 -->
-			<asEagerSingleton>false</asEagerSingleton>
-		</default>
+        <!-- 默认设置 -->
+        <default>
+            <!-- 默认不启用单例模式 -->
+            <asEagerSingleton>false</asEagerSingleton>
+        </default>
 
-		<!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
-		<eventThreadPoolSize>20</eventThreadPoolSize>
+        <!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
+        <eventThreadPoolSize>20</eventThreadPoolSize>
 
-		<!-- 工作空间设置 -->
-		<environmentVar>
-			<!-- 程序目录 -->
-			<RUN_PATH>./</RUN_PATH>
-			<!-- 工作目录 -->
-			<WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
-			<!-- 临时文件位置 -->
-			<HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
-			<!-- 日志存放位置 -->
-			<HASOR_LOG_PATH>%WORK_HOME%/log</HASOR_LOG_PATH>
-			<!-- 插件目录 -->
-			<HASOR_PLUGIN_PATH>%WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
-			<!-- 模块配置目录 -->
-			<HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
-		</environmentVar>
+        <!-- 工作空间设置 -->
+        <environmentVar>
+            <!-- 程序目录 -->
+            <RUN_PATH>./</RUN_PATH>
+            <!-- 工作目录 -->
+            <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
+            <!-- 临时文件位置 -->
+            <HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
+            <!-- 日志存放位置 -->
+            <HASOR_LOG_PATH>%WORK_HOME%/log</HASOR_LOG_PATH>
+            <!-- 插件目录 -->
+            <HASOR_PLUGIN_PATH>%WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+            <!-- 模块配置目录 -->
+            <HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+        </environmentVar>
 
-		<!-- ======================================================================== -->
-		<!-- 程序入口模块类名【由StartupModule插件提供】 -->
-		<startup></startup>
+        <!-- ======================================================================== -->
+        <!-- 程序入口模块类名【由StartupModule插件提供】 -->
+        <startup></startup>
 
-		<!-- web请求响应编码配置【由EncodingModule插件提供】 -->
-		<encoding urlPatterns="/*;" requestEncoding="" responseEncoding="" />
+        <!-- web请求响应编码配置【由EncodingModule插件提供】 -->
+        <encoding urlPatterns="/*;" requestEncoding="" responseEncoding=""/>
 
-		<!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
-		<restful urlPatterns="htm;html;do;json;" />
+        <!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
+        <restful urlPatterns="htm;html;do;json;"/>
 
-		<!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-		<template urlPatterns="htm;html;" engine="">
-			<!-- 可用的引擎 -->
-			<engineSet>
-				<engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>
-				<engine type="velocity">net.hasor.plugins.templates.engine.velocity.VelocityTemplateEngine</engine>
-			</engineSet>
-			<!-- 区块模版位置 -->
-			<controlPath>/control</controlPath>
-			<!-- 布局模版位置 -->
-			<layoutPath>/layout</layoutPath>
-			<!-- 页面模版位置 -->
-			<templatePath>/templates</templatePath>
-		</template>
+        <!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
+        <template urlPatterns="htm;html;" engine="">
+            <!-- 可用的引擎 -->
+            <engineSet>
+                <engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>
+                <engine type="velocity">net.hasor.plugins.templates.engine.velocity.VelocityTemplateEngine</engine>
+            </engineSet>
+            <!-- 区块模版位置 -->
+            <controlPath>/control</controlPath>
+            <!-- 布局模版位置 -->
+            <layoutPath>/layout</layoutPath>
+            <!-- 页面模版位置 -->
+            <templatePath>/templates</templatePath>
+        </template>
 
-		<!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
-		<resourceLoader urlPatterns=";" space="/static" />
-		<!-- ======================================================================== -->
-	</hasor>
+        <!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
+        <resourceLoader urlPatterns=";" space="/static" forceRefreshCache="false"/>
+        <!-- ======================================================================== -->
+    </hasor>
 </config>

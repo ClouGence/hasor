@@ -14,44 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import net.hasor.core.*;
+import net.hasor.core.Type;
+import net.hasor.core.info.*;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoAware;
-import net.hasor.core.ImplBy;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.InjectMembers;
-import net.hasor.core.Prototype;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
-import net.hasor.core.Settings;
-import net.hasor.core.Singleton;
-import net.hasor.core.Type;
-import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import net.hasor.core.info.AopBindInfoAdapter;
-import net.hasor.core.info.CustomerProvider;
-import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.info.ScopeProvider;
+
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.Map.Entry;
 /**
  * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
@@ -238,11 +213,13 @@ public class TemplateBeanBuilder implements BeanBuilder {
         List<Field> fieldList = BeanUtils.findALLFields(targetType);
         for (Field field : fieldList) {
             String name = field.getName();
-            boolean hasAnno = field.isAnnotationPresent(Inject.class);
-            boolean hasInjected = injectFileds.contains(name);
-            if (!hasAnno) {
+            boolean hasAnno_1 = field.isAnnotationPresent(Inject.class);
+            boolean hasAnno_2 = field.isAnnotationPresent(InjectSettings.class);
+            //
+            if (!hasAnno_1 && !hasAnno_2) {
                 continue;
             }
+            boolean hasInjected = injectFileds.contains(name);
             if (hasInjected) {
                 String logMsg = "doInject, property " + name + " duplicate.";
                 logger.warn(logMsg);
@@ -251,25 +228,59 @@ public class TemplateBeanBuilder implements BeanBuilder {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            Inject inject = field.getAnnotation(Inject.class);
-            Type byType = inject.byType();
-            Object obj = null;
-            if (StringUtils.isBlank(inject.value())) {
-                obj = appContext.getInstance(field.getType());
-            } else {
-                /*   */
-                if (Type.ByID == byType) {
-                    obj = appContext.getInstance(inject.value());
-                } else if (Type.ByName == byType) {
-                    obj = appContext.findBindingBean(inject.value(), field.getType());
-                }
+            //
+            boolean inj = injInject(targetBean, appContext, field);// @Inject
+            if (!inj) {
+                injSettings(targetBean, appContext, field); // @InjectSettings
             }
-            if (obj != null) {
-                field.set(targetBean, obj);
-            }
+            //
             injectFileds.add(field.getName());
         }
     }
+    private <T> boolean injInject(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
+        Inject inject = field.getAnnotation(Inject.class);
+        if (inject == null) {
+            return false;
+        }
+        Type byType = inject.byType();
+        Object obj = null;
+        if (StringUtils.isBlank(inject.value())) {
+            obj = appContext.getInstance(field.getType());
+        } else {
+            /*   */
+            if (Type.ByID == byType) {
+                obj = appContext.getInstance(inject.value());
+            } else if (Type.ByName == byType) {
+                obj = appContext.findBindingBean(inject.value(), field.getType());
+            }
+        }
+        if (obj != null) {
+            field.set(targetBean, obj);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private <T> boolean injSettings(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
+        InjectSettings inject = field.getAnnotation(InjectSettings.class);
+        if (inject == null) {
+            return false;
+        }
+        Object obj = null;
+        if (StringUtils.isBlank(inject.value())) {
+            return false;
+        } else {
+            String settingValue = appContext.getEnvironment().getSettings().getString(inject.value(), inject.defaultValue());
+            obj = ConverterUtils.convert(settingValue, field.getType());
+        }
+        if (obj != null) {
+            field.set(targetBean, obj);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //
     /**/
     private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
         try {

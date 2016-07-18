@@ -15,6 +15,7 @@
  */
 package net.hasor.core.environment;
 import java.util.Set;
+
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
@@ -42,8 +43,12 @@ public class EnvironmentWrap implements Environment {
         return this.getEnvironment().findClass(featureType);
     }
     @Override
-    public boolean isDebug() {
-        return this.getEnvironment().isDebug();
+    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
+        return this.getEnvironment().findClass(featureType, loadPackages);
+    }
+    @Override
+    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
+        return this.getEnvironment().findClass(featureType, loadPackages);
     }
     @Override
     public Object getContext() {

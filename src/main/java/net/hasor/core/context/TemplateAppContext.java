@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import net.hasor.core.*;
+import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.binder.BinderHelper;
+import net.hasor.core.container.BeanBuilder;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.context.listener.ContextShutdownListener;
+import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.Provider;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
-import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.container.BeanBuilder;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.context.listener.ContextShutdownListener;
-import net.hasor.core.context.listener.ContextStartListener;
-import net.hasor.core.module.ModuleHelper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -297,6 +287,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         }
         //
         ArrayList<Module> moduleList = new ArrayList<Module>();
+        boolean loadErrorShow = this.getEnvironment().getSettings().getBoolean("hasor.modules.loadErrorShow", true);
         for (String modStr : moduleTyleList) {
             try {
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -304,8 +295,9 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
                 moduleList.add((Module) moduleType.newInstance());
             } catch (Throwable e) {
                 logger.warn("load module Type {} is failure. -> {}:{}", modStr, e.getClass(), e.getMessage());
-                if (this.getEnvironment().isDebug())
+                if (loadErrorShow) {
                     logger.error(e.getMessage(), e);
+                }
             }
         }
         return moduleList.toArray(new Module[moduleList.size()]);
@@ -414,7 +406,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
         //
-        ModuleHelper.onInstall(this.getEnvironment(), module);
+        BinderHelper.onInstall(this.getEnvironment(), module);
     }
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。

@@ -32,8 +32,11 @@ import net.hasor.plugins.templates.ContextMap;
  */
 public class VarFilter implements Filter {
     private String curentVersion;
+    private String qq_admins;
+    //
     public VarFilter(Environment environment) {
         this.curentVersion = environment.getSettings().getString("curentVersion", "2.3.1");
+        this.qq_admins = environment.envVar("admins");//给QQ的登陆接入授权码
         /*--*/
     }
     @Override
@@ -47,6 +50,7 @@ public class VarFilter implements Filter {
         ContextMap map = ContextMap.genContextMap(req, resp);
         map.put("ctx_path", req.getSession(true).getServletContext().getContextPath());
         map.put("curentVersion", this.curentVersion);
+        map.put("qq_admins", this.qq_admins);
         chain.doFilter(request, response);
     }
     @Override

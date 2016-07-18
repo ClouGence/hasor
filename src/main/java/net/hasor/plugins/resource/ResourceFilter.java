@@ -14,33 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.plugins.resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import net.hasor.core.AppContext;
+import net.hasor.plugins.mimetype.MimeType;
+import net.hasor.web.startup.RuntimeListener;
+import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.more.util.StringUtils;
-import org.more.util.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.plugins.mimetype.MimeType;
-import net.hasor.web.startup.RuntimeListener;
 /**
  * 负责装载jar包或zip包中的资源
  *
@@ -55,7 +46,7 @@ class ResourceFilter implements Filter {
     private          String                                   spacePath  = null;
     private          File                                     cacheDir   = null;
     private          ConcurrentHashMap<String, ReadWriteLock> cachingRes = new ConcurrentHashMap<String, ReadWriteLock>();
-    private boolean isDebug;
+    private boolean forceRefreshCache;
     public ResourceFilter(File cacheDir) {
         this.cacheDir = cacheDir;
     }
@@ -66,7 +57,7 @@ class ResourceFilter implements Filter {
             return;
         }
         AppContext appContext = RuntimeListener.getAppContext(config.getServletContext());
-        this.isDebug = appContext.getEnvironment().isDebug();
+        this.forceRefreshCache = appContext.getEnvironment().getSettings().getBoolean("hasor.resourceLoader.forceRefreshCache", false);
         this.spacePath = appContext.getEnvironment().getSettings().getString("hasor.resourceLoader.space", "/static");
         //
         List<ResourceLoader> loaderList = appContext.findBindingBean(ResourceLoader.class);
@@ -138,7 +129,7 @@ class ResourceFilter implements Filter {
         }
         // 2.如果为调试模式每次都重新加载资源（不缓存）
         File cacheFile = new File(cacheDir, requestURI);
-        if (this.isDebug) {
+        if (this.forceRefreshCache) {
             boolean mark = this.cacheRes(cacheFile, requestURI, request, response);
             if (mark) {
                 this.forwardTo(cacheFile, request, response);
@@ -185,7 +176,7 @@ class ResourceFilter implements Filter {
             return false;
         }
         // 如果debug模式，无论目标是否已经被缓存都重新缓存。
-        if (!this.isDebug && cacheFile.exists()) {
+        if (!this.forceRefreshCache && cacheFile.exists()) {
             return true;
         }
         //

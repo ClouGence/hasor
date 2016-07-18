@@ -29,12 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 编码方式注入：
- * 
+ *
  * 1.annoNameIocTest
  *      当同一个类型声明了不同实例时候，你需要通过名称注入你想要的。
  * 2.annoIocTest
  *      一般的注解用法。
- * 
+ *
  * @version : 2015年11月6日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -45,7 +45,7 @@ public class AnnoIocTest {
     @Test
     public void annoIocTest() {
         System.out.println("--->>annoNameIocTest<<--");
-        AppContext appContext = Hasor.createAppContext(new Module() {
+        AppContext appContext = Hasor.createAppContext("simple-config.xml", new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 apiBinder.bindType(PojoInfo.class).idWith("beanA").to(PojoBean.class).injectValue("name", "娇娇");
                 apiBinder.bindType(PojoInfo.class).idWith("beanB").to(PojoBean.class).injectValue("name", "花花");

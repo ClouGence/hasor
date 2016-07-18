@@ -52,9 +52,4 @@ public class StandardEnvironment extends AbstractEnvironment {
         this.getSettings().refresh();
         this.initEnvironment();
     }
-    public StandardEnvironment(Object context, Settings settings) throws IOException {
-        super(context, settings);
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [Settings] mode, settings = {}", settings);
-        this.initEnvironment();
-    }
 }

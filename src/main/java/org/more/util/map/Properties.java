@@ -157,11 +157,11 @@ public class Properties extends HashMap<String, String> {
      * The specified stream remains open after this method returns.
      *
      * @param   reader   the input character stream.
-     * @throws  IOException  if an error occurred when reading from the
+     * @throws IOException  if an error occurred when reading from the
      *          input stream.
-     * @throws  IllegalArgumentException if a malformed Unicode escape
+     * @throws IllegalArgumentException if a malformed Unicode escape
      *          appears in the input.
-     * @since   1.6
+     * @since 1.6
      */
     public synchronized void load(final Reader reader) throws IOException {
         this.load0(new LineReader(reader));
@@ -179,9 +179,9 @@ public class Properties extends HashMap<String, String> {
      * The specified stream remains open after this method returns.
      *
      * @param      inStream   the input stream.
-     * @exception  IOException  if an error occurred when reading from the
+     * @exception IOException  if an error occurred when reading from the
      *             input stream.
-     * @throws     IllegalArgumentException if the input stream contains a
+     * @throws IllegalArgumentException if the input stream contains a
      *         malformed Unicode escape sequence.
      * @since 1.2
      */
@@ -329,11 +329,11 @@ public class Properties extends HashMap<String, String> {
             this.reader = reader;
             this.inCharBuf = new char[8192];
         }
-        byte[]      inByteBuf;
-        char[]      inCharBuf;
-        char[]      lineBuf = new char[1024];
-        int         inLimit = 0;
-        int         inOff   = 0;
+        byte[] inByteBuf;
+        char[] inCharBuf;
+        char[] lineBuf = new char[1024];
+        int    inLimit = 0;
+        int    inOff   = 0;
         InputStream inStream;
         Reader      reader;
         int readLine() throws IOException {

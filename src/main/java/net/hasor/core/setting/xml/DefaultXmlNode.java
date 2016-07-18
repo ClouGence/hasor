@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
+import net.hasor.core.XmlNode;
+import net.hasor.core.setting.FieldProperty;
+import org.more.convert.ConverterUtils;
+import org.more.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.hasor.core.XmlNode;
-import net.hasor.core.setting.FieldProperty;
-import org.more.convert.ConverterUtils;
-import org.more.util.StringUtils;
 /**
  * XmlNode, GlobalProperty 接口实现类。
  * @version : 2013-4-22
@@ -41,15 +41,6 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;
     }
-    public void addAttribute(final String attName, final String attValue) {
-        this.arrMap.put(attName, attValue);
-    }
-    public void addChildren(final DefaultXmlNode xmlProperty) {
-        this.children.add(xmlProperty);
-    }
-    public void setText(final String textString) {
-        this.textString = textString;
-    }
     @Override
     public String getName() {
         return this.elementName;
@@ -58,6 +49,11 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     public String getText() {
         return this.textString;
     }
+    public void setText(final String textString) {
+        this.textString = textString;
+    }
+    //
+    //
     @Override
     public List<XmlNode> getChildren() {
         return this.children;
@@ -73,6 +69,16 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
         return children;
     }
     @Override
+    public XmlNode getOneChildren(final String elementName) {
+        List<XmlNode> subItems = this.getChildren(elementName);
+        return subItems.isEmpty() ? null : subItems.get(0);
+    }
+    public void addChildren(final DefaultXmlNode xmlProperty) {
+        this.children.add(xmlProperty);
+    }
+    //
+    //
+    @Override
     public Map<String, String> getAttributeMap() {
         return this.arrMap;
     }
@@ -80,17 +86,19 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     public String getAttribute(final String attName) {
         return this.getAttributeMap().get(attName);
     }
+    public void addAttribute(final String attName, final String attValue) {
+        this.arrMap.put(attName, attValue);
+    }
+    //
+    //
     public XmlNode getParent() {
         return this.parentXmlProperty;
     }
     public void setParent(final XmlNode parentXmlProperty) {
         this.parentXmlProperty = parentXmlProperty;
     }
-    @Override
-    public XmlNode getOneChildren(final String elementName) {
-        List<XmlNode> subItems = this.getChildren(elementName);
-        return subItems.isEmpty() ? null : subItems.get(0);
-    }
+    //
+    //
     @Override
     public String toString() {
         return this.getXmlText();
@@ -109,6 +117,8 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
         }
         return newData;
     }
+    //
+    //
     @Override
     public <T> T getValue(final Class<T> toType, final T defaultValue) {
         if (XmlNode.class.isAssignableFrom(toType)) {

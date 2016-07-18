@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package org.more.util.map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 import org.more.util.MergeUtils;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * 提供一种栈结构的操作Map序列属性对象，利用该属性装饰器可以在属性集上增加另一个属性栈。
  * @version 2010-9-11
@@ -29,32 +28,27 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
     public DecStackMap() {
         /*创建一个默认的成员*/
         super(true);
-    };
+    }
     /** 创建一个基本属性对象，参数是第一个栈对象。 */
     public DecStackMap(final Map<K, T> entryMap) {
         super(entryMap, true);
-    };
-    @Override
-    public T put(final K key, final T value) {
-        return this.elementMapList().get(0).put(key, value);
     }
-    @Override
-    public T remove(final Object key) {
-        return this.elementMapList().get(0).remove(key);
-    }
+    //
     @Override
     protected StackSimpleSet<K, T> createSet() {
         return new StackSimpleSet<K, T>();
-    };
+    }
+    //
+    //
     /**获取当前堆的深度，该值会随着调用createStack方法而增加，随着dropStack方法而减少。*/
     public final int getDepth() {
         return this.entrySet().mapList.size() - 1;
-    };
+    }
     /**在现有属性栈上创建一个新的栈，操作也会切换到这个新栈上。*/
     public synchronized void createStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
-        stackList.mapList.addFirst(new HashMap<K, T>());
-    };
+        stackList.mapList.add(new ConcurrentHashMap<K, T>());
+    }
     /**销毁当前层次的属性栈，如果在栈顶执行该操作将会引发{@link IndexOutOfBoundsException}类型异常。*/
     public synchronized void dropStack() {
         StackSimpleSet<K, T> stackList = (StackSimpleSet<K, T>) this.entrySet();
@@ -62,16 +56,25 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
             throw new IndexOutOfBoundsException();
         }
         stackList.removeFirst();
-    };
-    /*----------------------------------------------------------------------*/
-    public static class StackSimpleSet<K, T> extends SimpleSet<K, T> {
-        private LinkedList<Map<K, T>> mapList = null;
-        public StackSimpleSet() {
-            this.mapList = new LinkedList<Map<K, T>>();
-            super.mapList = this.mapList;
+    }
+    //
+    //
+    /** 获取指定深度的父堆（如果可能）。0代表当前层，数字越大获取的深度越深。 */
+    public Map<K, T> getParentStack(final int depth) {
+        if (depth < 0 || depth > this.getDepth()) {
+            throw new IndexOutOfBoundsException();
         }
+        return this.entrySet().mapList.get(depth);
+    }
+    /** 获取当前堆的父堆（如果可能）。 */
+    public Map<K, T> getParentStack() {
+        return this.getParentStack(this.getDepth() - 1);
+    }
+    //
+    /*----------------------------------------------------------------------*/
+    protected class StackSimpleSet<K, T> extends SimpleSet<K, T> {
         public void removeFirst() {
-            this.mapList.removeFirst();
+            this.mapList.remove(0);
         }
         @Override
         public Iterator<java.util.Map.Entry<K, T>> iterator() {
@@ -89,16 +92,5 @@ public class DecStackMap<K, T> extends DecSequenceMap<K, T> {
             }
             return count;
         }
-    };
-    /** 获取指定深度的父堆（如果可能）。0代表当前层，数字越大获取的深度越深。 */
-    public Map<K, T> getParentStack(final int depth) {
-        if (depth < 0 || depth > this.getDepth()) {
-            throw new IndexOutOfBoundsException();
-        }
-        return this.entrySet().mapList.get(depth);
-    };
-    /** 获取当前堆的父堆（如果可能）。 */
-    public Map<K, T> getParentStack() {
-        return this.getParentStack(this.getDepth() - 1);
-    };
+    }
 }

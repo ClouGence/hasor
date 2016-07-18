@@ -34,7 +34,6 @@ import net.hasor.core.Scope;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.info.AopBindInfoAdapter;
-import net.hasor.core.module.ModuleHelper;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #getBeanBuilder()} ,会返回一个类( {@link BeanBuilder} )用于配置Bean信息。
@@ -61,7 +60,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public void installModule(final Module module) throws Throwable {
         logger.info("installModule ->" + module);
         module.loadModule(this);
-        ModuleHelper.onInstall(this.getEnvironment(), module);
+        BinderHelper.onInstall(this.getEnvironment(), module);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

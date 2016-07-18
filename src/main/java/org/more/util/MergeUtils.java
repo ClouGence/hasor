@@ -45,7 +45,7 @@ public abstract class MergeUtils {
                 return this.it.nextElement();
             }
         };
-    };
+    }
     /**合并两个迭代器*/
     public static <T> Iterator<T> mergeIterator(final Iterator<T> iterator1, final Iterator<T> iterator2) {
         final Iterator<T> i1 = iterator1 != null ? iterator1 : new ArrayList<T>(0).iterator();
@@ -68,7 +68,7 @@ public abstract class MergeUtils {
                 this.it.remove();
             }
         };
-    };
+    }
     /**合并两个{@link List}，判断依据来源于equals方法。*/
     public static <T> List<T> mergeList(final List<T> data1, final List<T> data2) {
         return MergeUtils.mergeList(data1, data2, new Comparator<T>() {
@@ -98,11 +98,11 @@ public abstract class MergeUtils {
             }
         }
         return array;
-    };
+    }
     /**合并两个{@link Map}，合并不同key的map相同key的只会保留一个。*/
     public static <K, V> Map<K, V> mergeMap(final Map<K, V> dataMap1, final Map<K, V> dataMap2) {
         return MergeUtils.mergeMap(dataMap1, dataMap2, null);
-    };
+    }
     /**合并两个{@link Map}，使用{@link Comparator}接口判断相同的key保留那个（接口返回值大于0使用o2、小于0使用o1、0抛弃冲突属性）。*/
     public static <K, V> Map<K, V> mergeMap(final Map<K, V> dataMap1, final Map<K, V> dataMap2, final Comparator<Map.Entry<K, V>> comparator) {
         //1.准备数据

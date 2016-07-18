@@ -15,6 +15,7 @@
  */
 package net.test.hasor.core._02_ioc.example;
 import net.hasor.core.Inject;
+import net.hasor.core.InjectSettings;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 /**
  * 注解方式注入Bean。
@@ -26,6 +27,10 @@ public class AnnoIocBean {
     private PojoBean iocBean      = null; // <- 自动创建 PojoBean 对象并注入进来。
     @Inject
     private PojoBean iocBeanField = null; // <- 自动创建 PojoBean 对象并注入进来。
+    @InjectSettings("myself.myname")
+    private String   myName       = null; // <- 自动创建 PojoBean 对象并注入进来。
+    @InjectSettings("envName")
+    private String   envName      = null; // <- 自动创建 PojoBean 对象并注入进来。
     //
     public PojoBean getIocBean() {
         return iocBean;

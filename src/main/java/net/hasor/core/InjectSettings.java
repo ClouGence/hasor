@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
-import org.more.UnhandledException;
+package net.hasor.core;
+import java.lang.annotation.*;
 /**
- * 异常工具类
- * @version : 2014年9月25日
+ * 依赖注入，注入settings配置数据。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
+ * @version : 2016年07月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ExceptionUtils {
-    /**将异常包装为 {@link RuntimeException}*/
-    public static RuntimeException toRuntimeException(Throwable proxy) {
-        if (proxy instanceof RuntimeException) {
-            return (RuntimeException) proxy;
-        }
-        return new UnhandledException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+@Documented
+public @interface InjectSettings {
+    /**配置Key*/
+    public String value();
+
+    /**默认值*/
+    public String defaultValue() default "";
 }

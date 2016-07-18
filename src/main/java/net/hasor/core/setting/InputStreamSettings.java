@@ -31,7 +31,7 @@ import java.util.Map;
  * @version : 2013-9-8
  * @author 赵永春 (zyc@byshell.org)
  */
-public class InputStreamSettings extends AbstractMergeSettings implements IOSettings {
+public class InputStreamSettings extends AbstractSettings implements IOSettings {
     private LinkedList<InputStreamEntity> pendingStream = new LinkedList<InputStreamEntity>();
     /**子类决定如何添加资源*/
     public InputStreamSettings() {
@@ -98,7 +98,6 @@ public class InputStreamSettings extends AbstractMergeSettings implements IOSett
                         break;
                     }
                 }
-                super.refresh();
             } catch (Throwable e) {
                 logger.error("parsing failed -> " + e.getMessage(), e);
                 if (e instanceof IOException) {

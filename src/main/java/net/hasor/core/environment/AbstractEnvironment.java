@@ -14,46 +14,48 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.classcode.MoreClassLoader;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.event.StandardEventManager;
+import net.hasor.core.setting.AbstractSettings;
+import net.hasor.core.setting.SettingValue;
+import net.hasor.core.setting.UpdateValue;
+import net.hasor.core.setting.xml.DefaultXmlNode;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.classcode.MoreClassLoader;
+import org.more.util.ScanClassPath;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    protected Logger       logger       = LoggerFactory.getLogger(getClass());
-    private   String[]     spanPackage  = null;
-    private   Settings     settings     = null;
-    private   Object       context      = null;
-    private   ClassLoader  rootLosder   = null;
-    private   EventContext eventManager = null;
+    public static final String           EVN_FILE_NAME = "env.config";
+    protected           Logger           logger        = LoggerFactory.getLogger(getClass());
+    private             String[]         spanPackage   = null;
+    private             ScanClassPath    scanUtils     = null;
+    private             AbstractSettings settings      = null;
+    private             Object           context       = null;
+    private             ClassLoader      rootLosder    = null;
+    private             EventContext     eventManager  = null;
     //
     //---------------------------------------------------------------------------------Basic Method
-    public AbstractEnvironment(Settings settings) {
-        this(null, settings);
-    }
-    public AbstractEnvironment(Object context, Settings settings) {
+    public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
         this.context = context;
         this.rootLosder = new MoreClassLoader();
     }
-    //---------------------------------------------------------------------------------Basic Method
     @Override
     public Object getContext() {
         return this.context;
@@ -71,10 +73,6 @@ public abstract class AbstractEnvironment implements Environment {
             this.rootLosder = classLoader;
         }
     }
-    @Override
-    public boolean isDebug() {
-        return this.getSettings().getBoolean("hasor.debug", false);
-    }
     /**设置扫描路径*/
     public void setSpanPackage(final String[] spanPackage) {
         this.spanPackage = spanPackage;
@@ -83,12 +81,35 @@ public abstract class AbstractEnvironment implements Environment {
     public String[] getSpanPackage() {
         return this.spanPackage;
     }
+    //---------------------------------------------------------------------------------Basic Method
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
-        return this.getSettings().findClass(featureType, this.spanPackage);
+        return this.findClass(featureType, this.spanPackage);
+    }
+    /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
+    public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {
+        if (featureType == null) {
+            return null;
+        }
+        if (loadPackages == null) {
+            loadPackages = new String[] {""};
+        }
+        if (this.scanUtils == null) {
+            this.scanUtils = ScanClassPath.newInstance(loadPackages);
+        }
+        return this.scanUtils.getClassSet(featureType);
+    }
+    /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
+    public Set<Class<?>> findClass(final Class<?> featureType, String loadPackages) {
+        if (featureType == null) {
+            return null;
+        }
+        loadPackages = loadPackages == null ? "" : loadPackages;
+        String[] spanPackage = loadPackages.split(",");
+        return this.findClass(featureType, spanPackage);
     }
     @Override
-    public Settings getSettings() {
+    public AbstractSettings getSettings() {
         return this.settings;
     }
     @Override
@@ -122,7 +143,7 @@ public abstract class AbstractEnvironment implements Environment {
         logger.debug("create envVars...");
         this.envVars = this.createEnvVars();
         logger.debug("reload envVars...");
-        this.envVars.reload(getSettings());
+        this.refreshVariables();
         //
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
@@ -204,12 +225,58 @@ public abstract class AbstractEnvironment implements Environment {
     public void remoteEnvVar(final String varName) {
         this.envVars.remoteEnvVar(varName);
     }
-    @Override
-    public void refreshVariables() {
-        this.envVars.reload(this.getSettings());
-    }
     /**创建{@link EnvVars}接口对象*/
     protected EnvVars createEnvVars() {
         return new EnvVars(this);
+    }
+    //
+    //
+    @Override
+    public void refreshVariables() {
+        this.envVars.reload(this.getSettings());
+        this.getSettings().resetValues(new UpdateValue() {
+            @Override
+            public void update(SettingValue oldValue, Settings context) {
+                ArrayList<Object> varArrays = new ArrayList<Object>(oldValue.getVarList());
+                for (Object var : varArrays) {
+                    if (var instanceof DefaultXmlNode) {
+                        // .引用类型-直接更新引用对象的属性值。
+                        String val = evalSettingString(((DefaultXmlNode) var).getText());
+                        ((DefaultXmlNode) var).setText(val);//引用类型
+                    } else if (var instanceof CharSequence) {
+                        // .String类型-通过replace替换。
+                        StringBuilder strBuilder = new StringBuilder();
+                        strBuilder.append(var);
+                        String oldVal = strBuilder.toString();
+                        String newVal = evalSettingString(oldVal);
+                        oldValue.replace(var, newVal);//值类型
+                    } else {
+                        //TODO 
+                    }
+                }
+            }
+        });
+    }
+    private String evalSettingString(String evalString) {
+        if (StringUtils.isBlank(evalString)) {
+            return "";
+        }
+        Pattern keyPattern = Pattern.compile("(?:\\$\\{([\\w\\._-]+)\\}){1,1}");//  (?:\$\{([\w\._-]+)\})
+        Matcher keyM = keyPattern.matcher(evalString);
+        Map<String, String> data = new HashMap<String, String>();
+        while (keyM.find()) {
+            String varKey = keyM.group(1);
+            String var = this.envVar(varKey);
+            var = StringUtils.isBlank(var) ? "${" + varKey + "}" : var;
+            data.put("${" + varKey + "}", var);
+        }
+        String newEvalString = evalString;
+        for (String key : data.keySet()) {
+            newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("evalSettingString '{}' eval to '{}'.", evalString, newEvalString);
+        }
+        return newEvalString;
     }
 }

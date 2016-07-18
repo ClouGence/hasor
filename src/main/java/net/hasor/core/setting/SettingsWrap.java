@@ -17,11 +17,12 @@ package net.hasor.core.setting;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
+
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 /**
  * Settings接口的抽象实现。
- * 
+ *
  * @version : 2013-4-2
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -35,12 +36,6 @@ public class SettingsWrap implements Settings {
         return settings;
     }
     //
-    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
-        return this.settings.findClass(featureType, loadPackages);
-    }
-    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
-        return this.settings.findClass(featureType, loadPackages);
-    }
     public String[] getSettingArray() {
         return this.settings.getSettingArray();
     }

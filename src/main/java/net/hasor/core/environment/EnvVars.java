@@ -17,11 +17,13 @@ package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import org.more.util.ExceptionUtils;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -68,6 +70,7 @@ public class EnvVars {
     //
     /**特殊配置的环境变量*/
     protected void configEnvironment(Map<String, String> envMap) {
+        // .内部配置文件配置
         Settings settings = environment.getSettings();
         XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
         List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
@@ -79,6 +82,28 @@ public class EnvVars {
         for (String envItem : envNames) {
             envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
+        // .外部环境变量配置
+        try {
+            InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
+            if (inStream == null) {
+                String workHome = this.envVar(Environment.WORK_HOME);
+                File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
+                if (envFile.isFile() && envFile.canRead()) {
+                    inStream = new FileInputStream(envFile);
+                }
+            }
+            if (inStream != null) {
+                Properties properties = new Properties();
+                properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
+                inStream.close();
+                for (String name : properties.stringPropertyNames()) {
+                    envMap.put(name.toUpperCase(), properties.getProperty(name));
+                }
+            }
+        } catch (IOException e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+        //
         /*单独处理RUN_PATH*/
         String runPath = new File("").getAbsolutePath();
         envMap.put("RUN_PATH", runPath);
@@ -89,13 +114,13 @@ public class EnvVars {
      *   实现该接口的目的是，通过注册SettingListener动态更新环境变量相关信息。
      */
     public void reload(final Settings newConfig) {
-        //1.系统环境变量 & Java系统属性
+        // .系统环境变量 & Java系统属性
         logger.debug("envVars.reload -> System.getenv().");
         Map<String, String> envMap = System.getenv();
         for (String key : envMap.keySet()) {
             this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
-        //2.Java属性
+        // .Java属性
         logger.debug("envVars.reload -> System.getProperties().");
         Properties prop = System.getProperties();
         for (Object propKey : prop.keySet()) {
@@ -105,12 +130,12 @@ public class EnvVars {
                 this.envMap.put(k.toUpperCase(), v.toString());
             }
         }
-        //3.Hasor 特有变量
+        // .Hasor 特有变量
         logger.debug("envVars.reload -> configEnvironment().");
         this.configEnvironment(this.envMap);
         //
-        /*日志输出*/
-        if (logger.isInfoEnabled() && this.environment.isDebug()) {
+        // .日志输出
+        if (logger.isInfoEnabled()) {
             int keyMaxSize = 0;
             for (String key : this.envMap.keySet()) {
                 keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
@@ -158,26 +183,21 @@ public class EnvVars {
         }
         Pattern keyPattern = Pattern.compile("(?:%([\\w\\._-]+)%){1,1}");//  (?:%([\w\._-]+)%)
         Matcher keyM = keyPattern.matcher(evalString);
-        ArrayList<String> data = new ArrayList<String>();
+        Map<String, String> data = new HashMap<String, String>();
         while (keyM.find()) {
             String varKey = keyM.group(1);
-            String var = this.evalEnvVar(varKey, paramMap);
+            String var = this.envVar(varKey);
             var = StringUtils.isBlank(var) ? "%" + varKey + "%" : var;
-            data.add(var);
+            data.put("%" + varKey + "%", var);
         }
-        String[] splitArr = keyPattern.split(evalString);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < splitArr.length; i++) {
-            sb.append(splitArr[i]);
-            if (data.size() > i) {
-                sb.append(data.get(i));
-            }
+        String newEvalString = evalString;
+        for (String key : data.keySet()) {
+            newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
         }
-        String returnData = sb.toString();
         if (logger.isInfoEnabled()) {
-            logger.info("evalString '{}' eval to '{}'.", evalString, returnData);
+            logger.info("evalString '{}' eval to '{}'.", evalString, newEvalString);
         }
-        return returnData;
+        return newEvalString;
     }
     private String evalEnvVar(String varName, final Map<String, String> paramMap) {
         varName = varName.toUpperCase();

@@ -16,7 +16,6 @@
 package net.hasor.core;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Set;
 /**
  * <p>
  * 配置文件设置
@@ -28,26 +27,6 @@ import java.util.Set;
 public interface Settings {
     public static final String DefaultNameSpace = "http://project.hasor.net/hasor/schema/main";
     public static final String DefaultCharset   = "UTF-8";
-
-    /**
-     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
-     * -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
-     *
-     * @param featureType 特征类型
-     * @param loadPackages 扫面范围，多个包
-     * @return 返回匹配的类集合。
-     */
-    public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages);
-
-    /**
-     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
-     * -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
-     *
-     * @param featureType 特征类型
-     * @param loadPackages 扫面范围，单个包
-     * @return 返回匹配的类集合。
-     */
-    public Set<Class<?>> findClass(Class<?> featureType, String loadPackages);
 
     /** @return 已解析的命名空间列表。 */
     public String[] getSettingArray();
@@ -66,7 +45,7 @@ public interface Settings {
     public void removeSetting(String key, String namespace);
 
     /** 添加参数，如果参数名称相同则追加一项。 */
-    public void addSetting(String $key, Object var, String currentXmlns);
+    public void addSetting(String key, Object var, String currentXmlns);
     //
 
     /** 解析全局配置参数，并且返回其{@link Character}形式对象。 */

@@ -46,4 +46,4 @@ RUN mkdir -p "$WORK_HOME/webroot" && \
 
 
 WORKDIR $CATALINA_HOME
-CMD ["catalina.sh", "run"]
+CMD ["catalina.sh", "run -Dadmins=21756265276013726654"]

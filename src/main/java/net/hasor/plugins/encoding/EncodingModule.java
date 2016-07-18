@@ -24,6 +24,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,16 +65,16 @@ public class EncodingModule extends WebModule {
         //
         String urlPatternsConfig = settings.getString(URL_PATTERNS_ENCODING);
         String[] patterns = StringUtils.isBlank(urlPatternsConfig) ? new String[0] : urlPatternsConfig.split(";");
-        logger.info("encodingFilter -> urlPatterns = {}.", new Object[] { patterns });
+        logger.info("encodingFilter -> urlPatterns = {}.", new Object[] {patterns});
         //
         apiBinder.filter(patterns).through(Integer.MIN_VALUE, new EncodingFilter(), initParams);
     }
 }
 class EncodingFilter implements Filter {
-    protected Logger    logger           = LoggerFactory.getLogger(getClass());
-    private String      requestEncoding  = null;
-    private String      responseEncoding = null;
-    private Environment environment      = null;
+    protected Logger      logger           = LoggerFactory.getLogger(getClass());
+    private   String      requestEncoding  = null;
+    private   String      responseEncoding = null;
+    private   Environment environment      = null;
     public void init(FilterConfig filterConfig) throws ServletException {
         /*获取请求响应编码*/
         this.requestEncoding = filterConfig.getInitParameter(EncodingModule.REQUEST_ENCODING);
@@ -99,10 +100,11 @@ class EncodingFilter implements Filter {
             httpRes.setCharacterEncoding(this.responseEncoding);
         }
         //
-        if (this.environment.isDebug()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("encodingFilter -> at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
         }
         chain.doFilter(request, response);
     }
-    public void destroy() {}
+    public void destroy() {
+    }
 }

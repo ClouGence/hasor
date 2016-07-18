@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.util;
-import org.more.UnhandledException;
+package net.hasor.core.setting;
+import net.hasor.core.Settings;
 /**
- * 异常工具类
- * @version : 2014年9月25日
+ * @version : 2014年10月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ExceptionUtils {
-    /**将异常包装为 {@link RuntimeException}*/
-    public static RuntimeException toRuntimeException(Throwable proxy) {
-        if (proxy instanceof RuntimeException) {
-            return (RuntimeException) proxy;
-        }
-        return new UnhandledException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
-    }
+public interface UpdateValue {
+    public void update(SettingValue oldValue, Settings context);
 }

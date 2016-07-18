@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
+import org.more.convert.ConverterUtils;
+import org.more.util.StringUtils;
+import org.more.util.map.DecSpaceMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.more.convert.ConverterUtils;
-import org.more.util.ScanClassPath;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
+import java.util.*;
 /**
  * Settings接口的抽象实现。
  *
@@ -41,68 +36,56 @@ import net.hasor.core.XmlNode;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private ScanClassPath scanUtils;
-    /** 获取一个 Map，该Map中保存了所有配置信息。 */
-    protected abstract Map<String, Map<String, SettingValue>> getFullSettingsMap();
-
-    protected abstract Map<String, SettingValue> getLocalSettingData();
+    protected            Logger         logger              = LoggerFactory.getLogger(getClass());
+    private static final SettingValue[] EMPTY_SETTING_VALUE = new SettingValue[0];
+    private DecSpaceMap<String, SettingValue> dataMap;
+    public AbstractSettings() {
+        this.dataMap = new DecSpaceMap<String, SettingValue>();
+    }
     //
-    /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
-    public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {
-        if (featureType == null) {
-            return null;
-        }
-        if (loadPackages == null) {
-            loadPackages = new String[] {""};
-        }
-        if (this.scanUtils == null) {
-            this.scanUtils = ScanClassPath.newInstance(loadPackages);
-        }
-        return this.scanUtils.getClassSet(featureType);
+    //
+    protected DecSpaceMap<String, SettingValue> allSettingValue() {
+        return dataMap;
     }
-    /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
-    public Set<Class<?>> findClass(final Class<?> featureType, String loadPackages) {
-        if (featureType == null) {
-            return null;
+    /**使用{@UpdateValue}接口,遍历所有属性值,将它们重新计算并设置新的参数值。<p>
+     * 注意:该过程不可逆,一旦重新设置了属性值,那么原有从配置文件中读取的属性值将会被替换。
+     * 一个典型的应用场景是配置文件模版化。*/
+    public void resetValues(UpdateValue updateValue) {
+        if (updateValue == null) {
+            return;
         }
-        loadPackages = loadPackages == null ? "" : loadPackages;
-        String[] spanPackage = loadPackages.split(",");
-        return this.findClass(featureType, spanPackage);
+        Set<SettingValue> valueSet = this.allSettingValue().valueSet();
+        if (valueSet != null) {
+            for (SettingValue sv : valueSet) {
+                updateValue.update(sv, this);
+            }
+        }
     }
+    @Override
+    public void refresh() throws IOException {
+    }
+    //
+    //
     /** 获取可用的命名空间。 */
     public String[] getSettingArray() {
-        Set<String> nsSet = this.getFullSettingsMap().keySet();
+        Set<String> nsSet = this.allSettingValue().spaceSet();
         return nsSet.toArray(new String[nsSet.size()]);
     }
     /** 获取指在某个特定命名空间下的Settings接口对象。 */
     public final AbstractSettings getSettings(final String namespace) {
-        final AbstractSettings setting = this;
-        final Map<String, SettingValue> localData = this.getFullSettingsMap().get(namespace);
+        final DecSpaceMap<String, SettingValue> localData = this.allSettingValue().space(namespace);
         if (localData == null) {
             return null;
         }
         return new AbstractSettings() {
-            public void refresh() throws IOException {/**/}
-            protected Map<String, Map<String, SettingValue>> getFullSettingsMap() {
-                return setting.getFullSettingsMap();
-            }
-            protected Map<String, SettingValue> getLocalSettingData() {
+            public DecSpaceMap<String, SettingValue> allSettingValue() {
                 return localData;
             }
         };
     }
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace) {
-        Map<String, Map<String, SettingValue>> nsMap = this.getFullSettingsMap();// 所有命名空间的数据
-        Map<String, SettingValue> atMap = nsMap.get(namespace);// 要 put 的命名空间数据
-        if (atMap != null) {
-            String putKey = key.toLowerCase();
-            SettingValue val = atMap.get(putKey);
-            if (val != null) {
-                val.clear();
-            }
-        }
+        this.allSettingValue().remove(namespace, key);// 所有命名空间的数据
     }
     /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(final String key, final Object value, final String namespace) {
@@ -111,29 +94,38 @@ public abstract class AbstractSettings implements Settings {
     }
     /** 添加参数，如果参数名称相同则追加一项。 */
     public void addSetting(final String key, final Object value, final String namespace) {
-        Map<String, Map<String, SettingValue>> nsMap = this.getFullSettingsMap();// 所有命名空间的数据
-        Map<String, SettingValue> atMap = nsMap.get(namespace);// 要 put 的命名空间数据
-        String putKey = key.toLowerCase();
         //
-        if (atMap == null) {
-            atMap = new ConcurrentHashMap<String, SettingValue>();
-            nsMap.put(namespace, atMap);
-        }
-        SettingValue val = atMap.get(putKey);
+        DecSpaceMap<String, SettingValue> dataMap = this.allSettingValue();
+        SettingValue val = dataMap.get(namespace, key);
         if (val == null) {
-            val = new SettingValue();
-            atMap.put(putKey, val);
+            val = new SettingValue(namespace);
+            dataMap.put(namespace, key, val);
         }
-        //
         val.newValue(value);
     }
     //
     //
-    //
+    /**清空已经装载的所有数据。*/
+    protected void cleanData() {
+        logger.info("cleanData -> clear all data.");
+        this.allSettingValue().deleteAllSpace();
+    }
     protected SettingValue[] findSettingValue(String name) {
         name = StringUtils.isBlank(name) ? "" : name.toLowerCase();
-        SettingValue var = this.getLocalSettingData().get(name);
-        return new SettingValue[] {var};
+        List<SettingValue> svList = this.allSettingValue().get(name);
+        if (svList == null || svList.isEmpty()) {
+            return EMPTY_SETTING_VALUE;
+        }
+        //
+        Collections.sort(svList, new Comparator<SettingValue>() {
+            @Override
+            public int compare(SettingValue o1, SettingValue o2) {
+                int o1Index = StringUtils.equalsBlankIgnoreCase(o1.getSpace(), DefaultNameSpace) ? 0 : 1;
+                int o2Index = StringUtils.equalsBlankIgnoreCase(o2.getSpace(), DefaultNameSpace) ? 0 : 1;
+                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+            }
+        });
+        return svList.toArray(new SettingValue[svList.size()]);
     }
     protected <T> T converTo(Object oriObject, final Class<T> toType, final T defaultValue) {
         if (oriObject == null) {
@@ -158,7 +150,7 @@ public abstract class AbstractSettings implements Settings {
         if (settingvar == null || settingvar.length == 0) {
             return defaultValue;
         }
-        return converTo(settingvar[settingvar.length - 1].getDefaultVar(), toType, defaultValue);
+        return converTo(settingvar[0].getDefaultVar(), toType, defaultValue);
     }
     public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {
         SettingValue[] varArrays = this.findSettingValue(name);
@@ -339,14 +331,10 @@ public abstract class AbstractSettings implements Settings {
         return this.getDate(name, format, new Date(defaultValue));
     }
     public Date[] getDateArray(final String name) {
-        return this.getDateArray(name, null, (Date) null);
+        return this.getDateArray(name, null, null);
     }
     public Date[] getDateArray(final String name, final Date defaultValue) {
-        if (defaultValue == null) {
-            return this.getDateArray(name, null, (Date) null);
-        } else {
-            return this.getDateArray(name, null, defaultValue);
-        }
+        return this.getDateArray(name, null, defaultValue);
     }
     public Date[] getDateArray(final String name, final long defaultValue) {
         return this.getDateArray(name, null, defaultValue);
@@ -429,7 +417,11 @@ public abstract class AbstractSettings implements Settings {
     public String[] getFilePathArray(final String name, final String defaultValue) {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
-            String filePath = this.getSettings(url).getFilePath(name, defaultValue);
+            Settings targetSettings = this.getSettings(url);
+            if (targetSettings == null) {
+                continue;
+            }
+            String filePath = targetSettings.getFilePath(name, defaultValue);
             if (filePath == null || filePath.length() == 0) {
                 continue;// 空
             } //
@@ -465,7 +457,11 @@ public abstract class AbstractSettings implements Settings {
     public String[] getDirectoryPathArray(final String name, final String defaultValue) {
         ArrayList<String> directoryPaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
-            String filePath = this.getSettings(url).getDirectoryPath(name, defaultValue);
+            Settings targetSettings = this.getSettings(url);
+            if (targetSettings == null) {
+                continue;
+            }
+            String filePath = targetSettings.getDirectoryPath(name, defaultValue);
             if (filePath == null || filePath.length() == 0) {
                 continue;// 空
             } //

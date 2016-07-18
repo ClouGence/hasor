@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 package org.more.util.map;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import org.more.util.MergeUtils;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 可以将多个Map合并成一个Map对象给予操作。
  * @version : 2012-2-23
@@ -30,7 +25,6 @@ import org.more.util.MergeUtils;
  */
 public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     private volatile SimpleSet<K, T> entrySet = null;
-    //
     //
     /** 创建DecSequenceMap对象，根据{@link #DecSequenceMap(boolean) DecSequenceMap(true)}规则进行初始化。*/
     public DecSequenceMap() {
@@ -72,7 +66,7 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     }
     /***/
     protected Map<K, T> initMap() {
-        return new HashMap<K, T>();
+        return new ConcurrentHashMap<K, T>();
     }
     //
     @Override
@@ -86,6 +80,8 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     protected SimpleSet<K, T> createSet() {
         return new SimpleSet<K, T>();
     }
+    //
+    //
     /**按照顺序加入一个Map到序列中。*/
     public void addMap(final Map<K, T> newMap) {
         this.entrySet().addMap(newMap);
@@ -104,18 +100,18 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
     }
     /**删除所有已经添加的map*/
     public void removeAllMap() {
-        if (this.entrySet().isEmpty() == false) {
-            this.entrySet().clear();
-        }
+        this.entrySet().clear();
     }
     public List<Map<K, T>> elementMapList() {
         return Collections.unmodifiableList(this.entrySet().mapList);
     }
+    //
+    //
     /**从所有Map中取同名Key的值*/
     public List<T> getAll(K key) {
-        List<T> findT = new ArrayList<T>();
+        List<T> findT = new LinkedList<T>();
         for (Map<K, T> e : this.elementMapList()) {
-            if (e.containsKey(key) == true) {
+            if (e.containsKey(key)) {
                 findT.add(e.get(key));
             }
         }
@@ -139,17 +135,27 @@ public class DecSequenceMap<K, T> extends AbstractMap<K, T> {
         }
         return null;
     }
+    //
+    //
     @Override
     public T put(final K key, final T value) {
-        return this.entrySet().mapList.get(0).put(key, value);
+        throw new UnsupportedOperationException();
+    }
+    public T put(int index, final K key, final T value) {
+        return this.entrySet().mapList.get(index).put(key, value);
     }
     @Override
     public T remove(final Object key) {
-        return this.entrySet().mapList.get(0).remove(key);
+        throw new UnsupportedOperationException();
     }
-    /*----------------------------------------------------------------------*/
-    public static class SimpleSet<K, T> extends AbstractSet<Entry<K, T>> {
-        protected List<Map<K, T>> mapList = new ArrayList<Map<K, T>>();
+    public T remove(int index, final Object key) {
+        return this.entrySet().mapList.get(index).remove(key);
+    }
+    //
+    //
+/*----------------------------------------------------------------------*/
+    protected class SimpleSet<K, T> extends AbstractSet<Map.Entry<K, T>> {
+        public CopyOnWriteArrayList<Map<K, T>> mapList = new CopyOnWriteArrayList<Map<K, T>>();
         public void addMap(final Map<K, T> newMap) {
             this.mapList.add(newMap);
         }

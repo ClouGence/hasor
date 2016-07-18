@@ -8,4 +8,5 @@
         <myProjectURL>http://www.hasor.net/</myProjectURL>
         <source>Xml</source>
     </mySelf>
+    <envName>${env}</envName>
 </config>

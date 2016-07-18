@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.module;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.LifeModule;
-import net.hasor.core.Module;
+package net.hasor.core.binder;
+import net.hasor.core.*;
 /**
- * 
+ *
  * @version : 2015年11月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ModuleHelper {
+public class BinderHelper {
     public static Module onInstall(Environment env, final Module atModule) {
         if (atModule == null) {
             return atModule;
         }
         if (atModule instanceof LifeModule) {
-            /*启动*/Hasor.pushStartListener(env, new EventListener<AppContext>() {
+            /*启动*/
+            Hasor.pushStartListener(env, new EventListener<AppContext>() {
                 public void onEvent(String event, AppContext eventData) throws Throwable {
                     ((LifeModule) atModule).onStart(eventData);
                 }
             });
-            /*停止*/Hasor.pushShutdownListener(env, new EventListener<AppContext>() {
+            /*停止*/
+            Hasor.pushShutdownListener(env, new EventListener<AppContext>() {
                 public void onEvent(String event, AppContext eventData) throws Throwable {
                     ((LifeModule) atModule).onStop(eventData);
                 }

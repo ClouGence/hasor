@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * @version : 2014年10月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class SettingValue {
+    private String space;
     private Object defaultVar;
-    private List<Object> varList = new ArrayList<Object>();
+    private List<Object> varList = new CopyOnWriteArrayList<Object>();
     //
+    SettingValue(String space) {
+        this.space = space;
+    }
+    //
+    public String getSpace() {
+        return space;
+    }
     //
     public void newValue(Object value) {
         if (!this.varList.contains(value)) {
@@ -38,6 +46,12 @@ public class SettingValue {
     public List<Object> getVarList() {
         return this.varList;
     }
+    //
+    public void replace(Object oldVar, Object newVar) {
+        int index = varList.indexOf(oldVar);
+        varList.set(index, newVar);
+    }
+    //
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         for (Object obj : this.varList) {
