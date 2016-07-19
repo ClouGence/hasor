@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.plugins.templates.engine.freemarker;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapperBuilder;
+import freemarker.template.Template;
+import freemarker.template.Version;
+import net.hasor.core.AppContext;
+import net.hasor.plugins.templates.ContextMap;
+import net.hasor.plugins.templates.TemplateEngine;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.TemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import net.hasor.core.AppContext;
-import net.hasor.plugins.templates.ContextMap;
-import net.hasor.plugins.templates.TemplateEngine;
 /**
- * 
+ *
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,6 +40,7 @@ public class FreemarkerTemplateEngine implements TemplateEngine {
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
         configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setTemplateLoader(templateLoader);
+        configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_22).build());
         //
         configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
         configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8

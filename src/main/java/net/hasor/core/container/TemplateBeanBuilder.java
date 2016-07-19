@@ -237,6 +237,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             injectFileds.add(field.getName());
         }
     }
+    //
     private <T> boolean injInject(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
         Inject inject = field.getAnnotation(Inject.class);
         if (inject == null) {
@@ -261,6 +262,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             return false;
         }
     }
+    //
     private <T> boolean injSettings(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
         InjectSettings inject = field.getAnnotation(InjectSettings.class);
         if (inject == null) {
@@ -281,7 +283,6 @@ public class TemplateBeanBuilder implements BeanBuilder {
         }
     }
     //
-    /**/
     private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
         try {
             Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
@@ -295,7 +296,7 @@ public class TemplateBeanBuilder implements BeanBuilder {
             throw e.getTargetException();
         }
     }
-    /**/
+    //
     /** 查找类的默认初始化方法*/
     public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method initMethod = null;
