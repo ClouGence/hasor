@@ -9,6 +9,10 @@
     02.Settings 接口的两个 findClass 方法移动到 Environment 接口中,Settings的职责更佳明确,只负责配置文件相关的操作。
     03.删除 AbstractMergeSettings 不在需要该类承担数据的职责,Settings的数据承载交给 DecSpaceMap。
     04.Settings 小范围重构,内部的数据管理更佳清晰。
+    05.StartupModule插件的类装载,使用 Environment 接口提供的。
+    06.Valid验证框架重构,新版本API使用更佳方便。
+    07.支持多种验证注解: @CharacterSet、@ChoiceValue、@DateValid、@Length、@Max、@Min、@NotNull、@Number、@Range、@Regexp
+    08.通过 @CustomValid 还可以自定义验证逻辑。
 
 ===== Hasor-Core v2.3.3 (2016-06-16)
 * 新增:

@@ -31,7 +31,9 @@ public class StartupModule implements Module {
     private Logger logger = LoggerFactory.getLogger(getClass());
     //
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        Module mod = this.getStartModule(apiBinder.getEnvironment().getSettings());
+        ClassLoader classLoader = apiBinder.getEnvironment().getClassLoader();
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        Module mod = this.getStartModule(settings, classLoader);
         if (mod != null) {
             apiBinder.installModule(mod);
         } else {
@@ -41,7 +43,7 @@ public class StartupModule implements Module {
         }
     }
     /**获取启动模块*/
-    protected Module getStartModule(Settings settings) throws Exception {
+    protected Module getStartModule(Settings settings, ClassLoader loader) throws Exception {
         Module startupModule = null;
         String startupModuleName = settings.getString("hasor.startup");
         if (StringUtils.isBlank(startupModuleName)) {
@@ -49,7 +51,7 @@ public class StartupModule implements Module {
                 logger.warn("startup -> module is undefinition.");
             }
         } else {
-            Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startupModuleName);
+            Class<Module> startModuleClass = (Class<Module>) loader.loadClass(startupModuleName);
             startupModule = startModuleClass.newInstance();
             if (logger.isInfoEnabled()) {
                 logger.info("startup -> module is " + startupModuleName);

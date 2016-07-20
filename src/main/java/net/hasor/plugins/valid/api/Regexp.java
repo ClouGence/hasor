@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.binder.ApiBinderWrap;
+package net.hasor.plugins.valid.api;
+import java.lang.annotation.*;
 /**
- * 
- * @version : 2015年11月20日
- * @author 赵永春(zyc@hasor.net)
+ * 正则表达式校验
+ * @version : 2016-7-20
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidApiBinder extends ApiBinderWrap {
-    public ValidApiBinder(ApiBinder apiBinder) {
-        super(apiBinder);
-    }
-    /***/
-    public void installValid(String value, Class<Validation> validType) throws Throwable {
-        bindType(Validation.class).nameWith(value).to(validType);
-        logger.info("installValid name is {}, class = {}.", value, validType);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Documented
+public @interface Regexp {
+    /**参数名称。*/
+    public String value();
 }
