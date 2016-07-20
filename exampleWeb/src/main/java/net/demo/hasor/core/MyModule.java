@@ -21,7 +21,7 @@ import net.demo.hasor.core.servlet.MyServlet;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
- * 
+ *
  * @version : 2015年12月25日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -30,7 +30,7 @@ public class MyModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
         apiBinder.filter("/*").through(new JumpFilter(apiBinder.getEnvironment()));
-        apiBinder.filter("/*").through(new VarFilter(apiBinder.getEnvironment()));
+        apiBinder.filter("/*").through(VarFilter.class);
         //
         apiBinder.serve("/myServlet.do").with(MyServlet.class);
         //

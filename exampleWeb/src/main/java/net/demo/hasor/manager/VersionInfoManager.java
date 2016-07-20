@@ -21,17 +21,17 @@ import net.demo.hasor.domain.VersionInfoDO;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 /**
- * 
+ *
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class VersionInfoManager {
-    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject(DBConstant.DB_HSQL)
     private JdbcTemplate jdbcTemplate;
     //
     /**根据版本号，查询发布信息。*/
-    public VersionInfoDO queryByVersion(String version) {
+    public VersionInfoDO queryByVersion(String version) throws Exception {
         try {
             VersionInfoDO infoDO = null;
             String query = "select * from VersionInfo where version = ?";
@@ -39,7 +39,7 @@ public class VersionInfoManager {
             return infoDO;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null;
+            throw e;
         }
     }
 }

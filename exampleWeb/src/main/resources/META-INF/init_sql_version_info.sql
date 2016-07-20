@@ -1,4 +1,9 @@
 insert into VersionInfo(version,releaseDate,downloadURL,apiURL,downloadApiURL)
+	values('2.4.0','2016-?',
+	'http://git.oschina.net/zycgit/hasor/repository/archive/Release.Hasor-2.4.0',
+	'http://project.hasor.net/apis/2.4.0/index.html',
+	'http://project.hasor.net/apis/download/2.4.0.zip');
+insert into VersionInfo(version,releaseDate,downloadURL,apiURL,downloadApiURL)
 	values('2.3.3','2016-06-16',
 	'http://git.oschina.net/zycgit/hasor/repository/archive/Release.Hasor-2.3.3',
 	'http://project.hasor.net/apis/2.3.3/index.html',

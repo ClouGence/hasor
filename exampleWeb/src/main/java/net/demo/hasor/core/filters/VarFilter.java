@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 package net.demo.hasor.core.filters;
-import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import net.demo.hasor.domain.EnvBean;
+import net.hasor.core.Inject;
+import net.hasor.plugins.templates.ContextMap;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.hasor.core.Environment;
-import net.hasor.plugins.templates.ContextMap;
+import java.io.IOException;
 /**
  * 服务让模版页面可以访问到“ctx_path”变量
  * @version : 2016年1月5日
  * @author 赵永春(zyc@hasor.net)
  */
 public class VarFilter implements Filter {
-    private String curentVersion;
-    private String qq_admins;
+    @Inject
+    private EnvBean envBean;
     //
-    public VarFilter(Environment environment) {
-        this.curentVersion = environment.getSettings().getString("curentVersion", "2.3.1");
-        this.qq_admins = environment.envVar("admins");//给QQ的登陆接入授权码
-        /*--*/
-    }
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         /*--*/
@@ -49,8 +40,7 @@ public class VarFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         ContextMap map = ContextMap.genContextMap(req, resp);
         map.put("ctx_path", req.getSession(true).getServletContext().getContextPath());
-        map.put("curentVersion", this.curentVersion);
-        map.put("qq_admins", this.qq_admins);
+        map.put("env", this.envBean);
         chain.doFilter(request, response);
     }
     @Override

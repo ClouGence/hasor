@@ -8,12 +8,12 @@ ${rootModel.put('pageTitle','首页')}
 	<div class="col-md-8 rightBorder"><#include "/control/readme.htm"></div>
 	<div class="col-md-4">
 		<div>
-			<h3><#include "/control/macro_download.htm">最新版本&nbsp;&nbsp;${curentVersion}<@downloadSource version='${curentVersion}' small=true/></h3>
+			<h3><#include "/control/macro_download.htm">最新版本&nbsp;&nbsp;${env.curentVersion!}<@downloadSource version='${env.curentVersion!}' small=true/></h3>
 			<pre class="well">
 &lt;dependency&gt;
   &lt;groupId>net.hasor&lt;/groupId&gt;
   &lt;artifactId>hasor-core&lt;/artifactId&gt;
-  &lt;version>${curentVersion}&lt;/version&gt;
+  &lt;version>${env.curentVersion!}&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 		</div>
