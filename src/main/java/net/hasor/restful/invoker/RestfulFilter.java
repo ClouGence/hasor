@@ -123,11 +123,13 @@ class RestfulFilter implements Filter {
         }
         //
         // .render
-        try {
-            this.renderLayout.process(renderData, httpResponse.getWriter());
-        } catch (Throwable e) {
-            logger.error("render '" + renderData.getViewName() + "' failed -> " + e.getMessage(), e);
-            throw ExceptionUtils.toRuntimeException(e);
+        if (!httpResponse.isCommitted()) {
+            try {
+                this.renderLayout.process(renderData, httpResponse.getWriter());
+            } catch (Throwable e) {
+                logger.error("render '" + renderData.getViewName() + "' failed -> " + e.getMessage(), e);
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         }
         // .默认逻辑
         chain.doFilter(httpRequest, httpResponse);

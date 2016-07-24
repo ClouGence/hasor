@@ -99,14 +99,23 @@ class RenderLayout implements RenderEngine {
         tempName = fixTempName(this.templatePath, tempName);
         renderData.setViewName(tempName);
         //
+        //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            engine.process(renderData, tmpWriter);
+            if (engine.exist(renderData.getViewName())) {
+                engine.process(renderData, tmpWriter);
+            } else {
+                tmpWriter.write("");
+            }
             renderData.put("content_placeholder", tmpWriter.toString());
             renderData.setViewName(layoutFile);
-            engine.process(renderData, writer);
+            if (engine.exist(renderData.getViewName())) {
+                engine.process(renderData, writer);
+            }
         } else {
-            engine.process(renderData, writer);
+            if (engine.exist(renderData.getViewName())) {
+                engine.process(renderData, writer);
+            }
         }
         //
     }
