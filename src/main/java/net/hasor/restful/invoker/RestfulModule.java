@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.RestfulContext;
 import net.hasor.restful.api.MappingTo;
-import net.hasor.restful.mime.MimeType;
-import net.hasor.restful.mime.MimeTypeContext;
+import net.hasor.restful.MimeType;
 import net.hasor.restful.resource.ResourceModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,7 +57,6 @@ public class RestfulModule extends WebModule {
         MimeTypeContext mimeTypeContext = new MimeTypeContext(apiBinder.getServletContext());
         mimeTypeContext.loadStream("mime.types.xml");
         apiBinder.bindType(MimeType.class, mimeTypeContext);
-        apiBinder.bindType(RestfulContext.class, RestfulContextImpl.class);
     }
     public boolean loadType(WebApiBinder apiBinder, Class<?> clazz) {
         int modifier = clazz.getModifiers();

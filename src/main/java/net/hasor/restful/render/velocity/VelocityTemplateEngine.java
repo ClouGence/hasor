@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.restful.render.velocity;
-import net.hasor.restful.InvokerContext;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
 import org.apache.velocity.Template;
@@ -23,7 +23,6 @@ import org.apache.velocity.app.VelocityEngine;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 /**
  *
  * @version : 2016年1月3日
@@ -44,7 +43,7 @@ public class VelocityTemplateEngine implements RenderEngine {
         this.velocityEngine = new VelocityEngine();
     }
     @Override
-    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
+    public void process(RenderData data, Writer writer) throws Throwable {
     }
     @Override
     public boolean exist(String template) throws IOException {

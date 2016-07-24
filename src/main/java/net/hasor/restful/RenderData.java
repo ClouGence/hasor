@@ -31,4 +31,12 @@ public interface RenderData {
     public Object get(String key);
 
     public void put(String key, Object value);
+
+    public String getViewName();
+
+    public void setViewName(String viewName);
+
+    public String getViewType();
+
+    public void setViewType(String viewType);
 }

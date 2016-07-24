@@ -16,7 +16,7 @@
 package net.hasor.restful.resource;
 import net.hasor.core.AppContext;
 import org.more.resource.ResourceLoader;
-import net.hasor.restful.mime.MimeType;
+import net.hasor.restful.MimeType;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;

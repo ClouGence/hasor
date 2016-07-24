@@ -19,9 +19,10 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
-import net.hasor.restful.InvokerContext;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 public class FreemarkerTemplateEngine implements RenderEngine {
     protected Configuration configuration;
     @Override
-    public void initEngine(WebAppContext appContext) throws IOException {
+    public void initEngine(WebAppContext appContext) throws Throwable {
         String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
         configuration = new Configuration(Configuration.VERSION_2_3_22);
@@ -47,14 +48,13 @@ public class FreemarkerTemplateEngine implements RenderEngine {
         configuration.setClassicCompatible(true);//null值测处理配置
     }
     @Override
-    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
-        Template temp = configuration.getTemplate(invokerContext.getViewName());
+    public void process(RenderData renderData, Writer writer) throws Throwable {
+        Template temp = configuration.getTemplate(renderData.getViewName());
         //
         HashMap<String, Object> data = new HashMap<String, Object>();
-        for (String key : invokerContext.keySet()) {
-            data.put(key, invokerContext.get(key));
+        for (String key : renderData.keySet()) {
+            data.put(key, renderData.get(key));
         }
-        data.put("rootModel", invokerContext);
         //
         temp.process(data, writer);
     }

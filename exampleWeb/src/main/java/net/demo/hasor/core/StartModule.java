@@ -24,6 +24,7 @@ import net.hasor.web.WebModule;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 /**
  *
@@ -40,7 +41,7 @@ public class StartModule extends WebModule {
         apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class, new FreemarkerTemplateEngine() {
             @Override
-            public void initEngine(WebAppContext appContext) throws IOException {
+            public void initEngine(WebAppContext appContext) throws Throwable {
                 super.initEngine(appContext);
                 try {
                     this.configuration.setSharedVariable("ctx_path", appContext.getServletContext().getContextPath());

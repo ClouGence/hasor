@@ -33,18 +33,18 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class WebController {
-    private ThreadLocal<InvokerContext> invokerContext = new ThreadLocal<InvokerContext>();
+    private ThreadLocal<RenderData> renderData = new ThreadLocal<RenderData>();
     //
-    public void initController(InvokerContext invokerContext) {
-        if (this.invokerContext.get() != null) {
-            this.invokerContext.remove();
+    public void initController(RenderData renderData) {
+        if (this.renderData.get() != null) {
+            this.renderData.remove();
         }
-        if (invokerContext != null) {
-            this.invokerContext.set(invokerContext);
+        if (renderData != null) {
+            this.renderData.set(renderData);
         }
     }
-    protected InvokerContext getInvoker() {
-        return this.invokerContext.get();
+    protected RenderData getInvoker() {
+        return this.renderData.get();
     }
     //
     /** @return Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */

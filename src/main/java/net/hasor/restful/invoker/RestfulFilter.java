@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.core.AppContext;
-import net.hasor.restful.RenderEngine;
-import net.hasor.restful.RestfulContext;
+import net.hasor.restful.MimeType;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
+import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -29,22 +31,25 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * action功能的入口。
- *
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
 class RestfulFilter implements Filter {
-    private       RestfulContext    context        = null;
+    protected     Logger            logger         = LoggerFactory.getLogger(getClass());
     private final AtomicBoolean     inited         = new AtomicBoolean(false);
     private       String[]          interceptNames = null;
     private       MappingToDefine[] invokeArray    = new MappingToDefine[0];
+    private       MimeType          mimeType       = null;
+    private       RenderLayout      renderLayout   = null;
+    //
+    //
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         // 1.拦截
-        AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
+        WebAppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
         String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");
         Set<String> names = new HashSet<String>();
         for (String name : interceptNames.split(";")) {
@@ -71,7 +76,13 @@ class RestfulFilter implements Filter {
         }
         //
         //4.上下文
-        this.context = appContext.getInstance(RestfulContext.class);
+        try {
+            this.mimeType = appContext.getInstance(MimeType.class);
+            this.renderLayout = new RenderLayout();
+            this.renderLayout.initEngine(appContext);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
     //
     public void destroy() {
@@ -88,43 +99,43 @@ class RestfulFilter implements Filter {
     }
     //
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        String actionPath = request.getRequestURI().substring(request.getContextPath().length());
-        String actionMethod = request.getMethod();
+        HttpServletRequest httpRequest = new HttpServletRequestWrapper((HttpServletRequest) req) {
+            public RequestDispatcher getRequestDispatcher(final String path) {
+                final RequestDispatcher dispatcher = getReqDispatcher(path, this);
+                return null != dispatcher ? dispatcher : super.getRequestDispatcher(path);
+            }
+        };
+        HttpServletResponse httpResponse = (HttpServletResponse) resp;
+        String actionPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        String actionMethod = httpRequest.getMethod();
+        InnerRenderData renderData = new InnerRenderData(this.mimeType, httpRequest, httpResponse);
         //
+        // .Action 处理
         for (int i = 0; i < this.interceptNames.length; i++) {
             String name = this.interceptNames[i];
             if (actionPath.endsWith(name)) {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {
-                    doInvoke(define, request, resp);
-                    break;
+                    doInvoke(renderData, define, httpRequest, httpResponse);
+                    return;
                 }
             }
         }
         //
-        //
-        RenderEngine engine = this.context.getRenderEngine();
-        if (engine != null && engine.exist()) {
-            engine.process(invokerContext, httpResponse.getWriter());
-        }
-        //
-        if (!resp.isCommitted()) {
-            chain.doFilter(request, resp);
-        }
-    }
-    private void doInvoke(MappingToDefine define, ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
+        // .render
         try {
-            HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
-            httpReq = new HttpServletRequestWrapper(httpReq) {
-                public RequestDispatcher getRequestDispatcher(final String path) {
-                    final RequestDispatcher dispatcher = getReqDispatcher(path, this);
-                    return null != dispatcher ? dispatcher : super.getRequestDispatcher(path);
-                }
-            };
-            //
-            HttpServletResponse httpResp = (HttpServletResponse) servletResponse;
-            define.invoke(httpReq, httpResp, this.context);
+            this.renderLayout.process(renderData, httpResponse.getWriter());
+        } catch (Throwable e) {
+            logger.error("render '" + renderData.getViewName() + "' failed -> " + e.getMessage(), e);
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+        // .默认逻辑
+        chain.doFilter(httpRequest, httpResponse);
+    }
+    //
+    private void doInvoke(InnerRenderData renderData, MappingToDefine define, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
+        try {
+            define.invoke(renderData);
         } catch (Throwable target) {
             if (target instanceof ServletException)
                 throw (ServletException) target;
@@ -133,6 +144,8 @@ class RestfulFilter implements Filter {
             if (target instanceof RuntimeException)
                 throw (RuntimeException) target;
             throw new ServletException(target);
+        } finally {
+            httpRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
         }
     }
     //
@@ -142,38 +155,27 @@ class RestfulFilter implements Filter {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         // 1.拆分请求字符串
         final MappingToDefine define = this.findMapping(request.getMethod(), newRequestUri);
-        if (define == null)
+        if (define == null) {
             return null;
+        }
         //
         return new RequestDispatcher() {
-            public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                /* 执行servlet */
-                try {
-                    doInvoke(define, servletRequest, servletResponse);
-                } finally {
-                    servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
-                }
+            public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+                request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
+                InnerRenderData renderData = new InnerRenderData(mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
+                doInvoke(renderData, define, (HttpServletRequest) request, (HttpServletResponse) response);
             }
-            public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                if (servletResponse.isCommitted())
+            public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+                if (response.isCommitted())
                     throw new ServletException("Response has been committed--you can only call forward before committing the response (hint: don't flush buffers)");
                 /* 清空缓冲 */
-                servletResponse.resetBuffer();
-                ServletRequest requestToProcess;
-                if (servletRequest instanceof HttpServletRequest) {
-                    requestToProcess = new RequestDispatcherRequestWrapper(servletRequest, newRequestUri);
-                } else {
-                    // 正常情况之下不会执行这段代码。
-                    requestToProcess = servletRequest;
-                }
+                response.resetBuffer();
+                //
                 /* 执行转发 */
-                servletRequest.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);
-                try {
-                    doInvoke(define, requestToProcess, servletResponse);
-                } finally {
-                    servletRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
-                }
+                request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
+                HttpServletRequest requestToProcess = new RequestDispatcherRequestWrapper(request, newRequestUri);
+                InnerRenderData renderData = new InnerRenderData(mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
+                doInvoke(renderData, define, requestToProcess, (HttpServletResponse) response);
             }
         };
     }

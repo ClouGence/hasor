@@ -15,12 +15,11 @@
  */
 package net.hasor.restful;
 /**
- * 上下文
- * @version : 2013-5-9
- * @author 赵永春 (zyc@hasor.net)
+ *
+ * @version : 2015年2月11日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface RestfulContext {
+public interface MimeType {
+    /**获取MimeType类型*/
     public String getMimeType(String suffix);
-
-    public RenderEngine getRenderEngine();
 }

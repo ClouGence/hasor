@@ -17,7 +17,6 @@ package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.restful.RestfulContext;
 import net.hasor.restful.api.HttpMethod;
 import net.hasor.restful.api.MappingTo;
 import org.more.UndefinedException;
@@ -25,9 +24,6 @@ import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -129,21 +125,17 @@ class MappingToDefine {
     }
     /**
      * 调用目标
-     * @param httpReq
-     * @param httpResp
      * @throws Throwable 异常抛出
      */
-    public final void invoke(HttpServletRequest httpReq, HttpServletResponse httpResp, RestfulContext context) throws Throwable {
-        String httpMethod = httpReq.getMethod();
+    public final void invoke(InnerRenderData renderData) throws Throwable {
+        String httpMethod = renderData.getHttpRequest().getMethod();
         Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }
         //
         Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-        InvContext invokerContext = new InvContext(this, targetMethod, context);
-        invokerContext.initParams(httpReq, httpResp);
-        new Invoker().exeCall(this.targetProvider, invokerContext);
+        new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod);
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

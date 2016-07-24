@@ -15,7 +15,7 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.Settings;
-import net.hasor.restful.InvokerContext;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
 
@@ -29,17 +29,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年7月1日
  * @author 赵永春(zyc@hasor.net)
  */
-class LayoutDecorator implements RenderEngine {
-    private AtomicBoolean inited       = new AtomicBoolean(false);
-    private RenderEngine  engine       = null;
-    private String        layoutPath   = null;                    // 布局模版位置
-    private String        templatePath = null;                    // 页面模版位置
+class RenderLayout implements RenderEngine {
+    private AtomicBoolean             inited       = new AtomicBoolean(false);
+    private Map<String, RenderEngine> engineMap    = null;
+    private String                    layoutPath   = null;                    // 布局模版位置
+    private String                    templatePath = null;                    // 页面模版位置
     //
-    public LayoutDecorator(RenderEngine engine) {
-        this.engine = engine;
-    }
     //
-    protected String findLayout(String tempFile) throws IOException {
+    protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
         if (engine == null) {
             return null;
         }
@@ -71,33 +68,41 @@ class LayoutDecorator implements RenderEngine {
     }
     //
     @Override
-    public void initEngine(WebAppContext appContext) throws IOException {
+    public void initEngine(WebAppContext appContext) throws Throwable {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         //
+        this.engine.initEngine(appContext);
         Settings settings = appContext.getEnvironment().getSettings();
         this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
     }
     //
-    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
+    public void process(RenderData renderData, Writer writer) throws Throwable {
+        if (renderData == null) {
+            return;
+        }
+        //
+        String type = renderData.getViewType();
+        RenderEngine engine = this.engineMap.get(type);
         if (engine == null) {
             return;
         }
-        String tempName = invokerContext.getViewName();
-        String layoutFile = findLayout(tempName);
+        //
+        String tempName = renderData.getViewName();
+        String layoutFile = findLayout(engine, tempName);
         tempName = fixTempName(this.templatePath, tempName);
-        invokerContext.setViewName(tempName);
+        renderData.setViewName(tempName);
         //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            engine.process(invokerContext, tmpWriter);
-            invokerContext.put("content_placeholder", tmpWriter.toString());
-            invokerContext.setViewName(layoutFile);
-            engine.process(invokerContext, writer);
+            engine.process(renderData, tmpWriter);
+            renderData.put("content_placeholder", tmpWriter.toString());
+            renderData.setViewName(layoutFile);
+            engine.process(renderData, writer);
         } else {
-            engine.process(invokerContext, writer);
+            engine.process(renderData, writer);
         }
         //
     }

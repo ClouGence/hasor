@@ -14,87 +14,87 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.InvokerContext;
-import net.hasor.restful.RestfulContext;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.MimeType;
+import org.more.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 /**
- * 线程安全
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvContext implements InvokerContext {
-    Map<String, List<String>> queryParamLocal;
-    Map<String, Object>       pathParamsLocal;
-    //
-    private MappingToDefine     define       = null;
-    private Method              targetMethod = null;
+class InnerRenderData implements RenderData {
     private String              viewName     = null;
-    private RestfulContext      context      = null;
     private Map<String, Object> contextMap   = null;
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
+    private MimeType            mimeType     = null;
     //
-    public InvContext(MappingToDefine define, Method targetMethod, RestfulContext context) {
-        this.define = define;
-        this.targetMethod = targetMethod;
-        this.context = context;
+    public InnerRenderData(MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        String contextPath = httpRequest.getContextPath();
+        String requestPath = httpRequest.getRequestURI();
+        if (requestPath.startsWith(contextPath)) {
+            requestPath = requestPath.substring(contextPath.length());
+        }
+        //
+        this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
-    }
-    //
-    public void initParams(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
-        this.viewName = httpRequest.getRequestURI();
+        //
         Enumeration<?> paramEnum = httpRequest.getParameterNames();
         while (paramEnum.hasMoreElements()) {
             Object paramKey = paramEnum.nextElement();
             String key = paramKey.toString();
             String val = httpRequest.getParameter(key);
-            this.put("req_" + key, val);
+            this.contextMap.put("req_" + key, val);
         }
+        this.contextMap.put("rootData", this);
+        this.mimeType = mimeType;
     }
-    public MappingToDefine getDefine() {
-        return define;
+    //
+    /**获取MimeType类型*/
+    public String getMimeType(String suffix) {
+        if (this.mimeType == null) {
+            return null;//TODO return mimeType
+        } else {
+            return this.mimeType.getMimeType(suffix);
+        }
     }
     //
     @Override
     public HttpServletRequest getHttpRequest() {
-        return httpRequest;
+        return this.httpRequest;
     }
     @Override
     public HttpServletResponse getHttpResponse() {
-        return httpResponse;
+        return this.httpResponse;
     }
-    @Override
-    public Method getTarget() {
-        return targetMethod;
-    }
-    @Override
-    public RestfulContext getContext() {
-        return context;
-    }
-    @Override
-    public String getViewName() {
-        return this.viewName;
-    }
-    @Override
-    public String setViewName(String viewName) {
-        return this.viewName = viewName;
-    }
-    //
     @Override
     public Set<String> keySet() {
         return this.contextMap.keySet();
     }
     @Override
     public Object get(String key) {
-        return contextMap.get(key);
+        return this.contextMap.get(key);
     }
     @Override
     public void put(String key, Object value) {
+        if (StringUtils.isBlank(key) || StringUtils.equalsIgnoreCase("rootData", key)) {
+            throw new UnsupportedOperationException("the key must not as 'rootData' or empty");
+        }
         this.contextMap.put(key, value);
+    }
+    @Override
+    public String getViewName() {
+        return this.viewName;
+    }
+    @Override
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
     }
 }

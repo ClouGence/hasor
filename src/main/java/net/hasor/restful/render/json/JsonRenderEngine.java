@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.mime;
+package net.hasor.restful.render.json;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.RenderEngine;
+import net.hasor.web.WebAppContext;
+
+import java.io.IOException;
+import java.io.Writer;
 /**
  *
- * @version : 2015年2月11日
+ * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface MimeType {
-    /**获取MimeType类型*/
-    public String getMimeType(String suffix);
+public class JsonRenderEngine implements RenderEngine {
+    @Override
+    public void initEngine(WebAppContext appContext) throws Throwable {
+    }
+    @Override
+    public void process(RenderData renderData, Writer writer) throws Throwable {
+        //
+    }
+    @Override
+    public boolean exist(String template) throws IOException {
+        return true;
+    }
 }

@@ -15,7 +15,6 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.Provider;
-import net.hasor.restful.RenderEngine;
 import net.hasor.restful.WebController;
 import net.hasor.restful.api.*;
 import org.more.convert.ConverterUtils;
@@ -41,25 +40,34 @@ import java.util.regex.Pattern;
  * @author 赵永春(zyc@hasor.net)
  */
 class Invoker {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger                    logger          = LoggerFactory.getLogger(getClass());
+    private   MappingToDefine           mappingToDefine = null;
+    private   Map<String, List<String>> queryParamLocal = null;
+    private   Map<String, Object>       pathParamsLocal = null;
+    private   InnerRenderData           renderData      = null;
+    //
+    public Invoker(MappingToDefine mappingToDefine, InnerRenderData renderData) {
+        this.mappingToDefine = mappingToDefine;
+        this.renderData = renderData;
+    }
+    //
     /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, InvContext invokerContext) throws Throwable {
+    public void exeCall(Provider<?> targetProvider, Method targetMethod) throws Throwable {
         Object targetObject = targetProvider.get();
-        HttpServletRequest httpRequest = invokerContext.getHttpRequest();
-        HttpServletResponse httpResponse = invokerContext.getHttpResponse();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletResponse httpResponse = this.renderData.getHttpResponse();
         if (targetObject instanceof WebController) {
-            ((WebController) targetObject).initController(invokerContext);
+            ((WebController) targetObject).initController(this.renderData);
         }
         //
-        Method targetMethod = invokerContext.getTarget();
-        Object[] resolveParams = this.resolveParams(invokerContext);
+        Object[] resolveParams = this.resolveParams(targetMethod);
         Object resultData = targetMethod.invoke(targetObject, resolveParams);
         //
         if (targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
             if (!StringUtils.isBlank(proValue)) {
-                String mimeType = invokerContext.getContext().getMimeType(proValue);
+                String mimeType = this.renderData.getMimeType(proValue);
                 if (StringUtils.isBlank(mimeType)) {
                     httpResponse.setContentType(proValue);
                 } else {
@@ -69,9 +77,8 @@ class Invoker {
         }
     }
     /**准备参数*/
-    protected final Object[] resolveParams(InvContext context) throws Throwable {
+    protected final Object[] resolveParams(Method targetMethod) throws Throwable {
         //
-        Method targetMethod = context.getTarget();
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
         targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
@@ -80,16 +87,16 @@ class Invoker {
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.resolveParam(paramClass, targetParamAnno[i], context);//获取参数
+            Object paramObject = this.resolveParam(paramClass, targetParamAnno[i]);//获取参数
             paramsArray.add(paramObject);
         }
         Object[] invokeParams = paramsArray.toArray();
         return invokeParams;
     }
     /**准备参数*/
-    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno, InvContext context) {
+    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno) {
         for (Annotation pAnno : paramAnno) {
-            Object finalValue = resolveParam(paramClass, pAnno, context);
+            Object finalValue = resolveParam(paramClass, pAnno);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
             if (finalValue != null) {
                 return finalValue;
@@ -100,32 +107,32 @@ class Invoker {
     //
     //
     /**/
-    protected Object resolveParam(Class<?> paramClass, Annotation pAnno, InvContext context) {
+    protected Object resolveParam(Class<?> paramClass, Annotation pAnno) {
         Object atData = null;
         //
         if (atData == null) {
             /*   */
             if (pAnno instanceof AttributeParam) {
-                atData = this.getAttributeParam(context, (AttributeParam) pAnno);
+                atData = this.getAttributeParam((AttributeParam) pAnno);
             } else if (pAnno instanceof CookieParam) {
-                atData = this.getCookieParam(context, (CookieParam) pAnno);
+                atData = this.getCookieParam((CookieParam) pAnno);
             } else if (pAnno instanceof HeaderParam) {
-                atData = this.getHeaderParam(context, (HeaderParam) pAnno);
+                atData = this.getHeaderParam((HeaderParam) pAnno);
             } else if (pAnno instanceof QueryParam) {
-                atData = this.getQueryParam(context, (QueryParam) pAnno);
+                atData = this.getQueryParam((QueryParam) pAnno);
             } else if (pAnno instanceof PathParam) {
-                atData = this.getPathParam(context, (PathParam) pAnno, context.getDefine());
+                atData = this.getPathParam((PathParam) pAnno);
             } else if (pAnno instanceof ReqParam) {
-                atData = context.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
+                atData = this.renderData.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
             } else if (pAnno instanceof Params) {
-                atData = this.getParamsParam(context, paramClass);
+                atData = this.getParamsParam(paramClass);
             }
         }
         //
         return atData;
     }
     /**/
-    private Object getParamsParam(InvContext context, Class<?> paramClass) {
+    private Object getParamsParam(Class<?> paramClass) {
         Object paramObject = null;
         try {
             paramObject = paramClass.newInstance();
@@ -139,16 +146,18 @@ class Invoker {
         }
         for (Field field : fieldList) {
             if (field.isAnnotationPresent(IgnoreParam.class)) {
-                logger.debug(field + " -> Ignore.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug(field + " -> Ignore.");
+                }
                 continue;
             }
             try {
                 Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
                 if (annos == null || annos.length == 0) {
-                    fieldValue = context.getHttpRequest().getParameterValues(field.getName());
+                    fieldValue = this.renderData.getHttpRequest().getParameterValues(field.getName());
                 } else {
-                    fieldValue = resolveParam(field.getType(), annos, context);
+                    fieldValue = resolveParam(field.getType(), annos);
                 }
                 if (fieldValue == null) {
                     fieldValue = BeanUtils.getDefaultValue(field.getType());
@@ -163,23 +172,23 @@ class Invoker {
         return paramObject;
     }
     /**/
-    private Object getPathParam(InvContext context, PathParam pAnno, MappingToDefine define) {
+    private Object getPathParam(PathParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(context, define).get(paramName);
+        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap().get(paramName);
     }
     /**/
-    private Object getQueryParam(InvContext context, QueryParam pAnno) {
+    private Object getQueryParam(QueryParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(context).get(paramName);
+        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap().get(paramName);
     }
     /**/
-    private Object getHeaderParam(InvContext context, HeaderParam pAnno) {
+    private Object getHeaderParam(HeaderParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
         //
-        HttpServletRequest httpRequest = context.getHttpRequest();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -195,13 +204,13 @@ class Invoker {
         return null;
     }
     /**/
-    private Object getCookieParam(InvContext context, CookieParam pAnno) {
+    private Object getCookieParam(CookieParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
         //
-        HttpServletRequest httpRequest = context.getHttpRequest();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         Cookie[] cookies = httpRequest.getCookies();
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null) {
@@ -214,12 +223,12 @@ class Invoker {
         return cookieList;
     }
     /**/
-    private Object getAttributeParam(InvContext context, AttributeParam pAnno) {
+    private Object getAttributeParam(AttributeParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
-        HttpServletRequest httpRequest = context.getHttpRequest();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -230,18 +239,18 @@ class Invoker {
         return null;
     }
     /**/
-    private Map<String, List<String>> getQueryParamMap(InvContext context) {
-        if (context.queryParamLocal != null) {
-            return context.queryParamLocal;
+    private Map<String, List<String>> getQueryParamMap() {
+        if (this.queryParamLocal != null) {
+            return this.queryParamLocal;
         }
         //
-        HttpServletRequest httpRequest = context.getHttpRequest();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString)) {
             return Collections.EMPTY_MAP;
         }
         //
-        context.queryParamLocal = new HashMap<String, List<String>>();
+        this.queryParamLocal = new HashMap<String, List<String>>();
         String[] params = queryString.split("&");
         for (String pData : params) {
             String oriData = pData;
@@ -261,26 +270,26 @@ class Invoker {
             String k = kv[0].trim();
             String v = kv[1];
             //
-            List<String> pArray = context.queryParamLocal.get(k);
+            List<String> pArray = this.queryParamLocal.get(k);
             pArray = pArray == null ? new ArrayList<String>() : pArray;
             if (!pArray.contains(v)) {
                 pArray.add(v);
             }
-            context.queryParamLocal.put(k, pArray);
+            this.queryParamLocal.put(k, pArray);
         }
-        return context.queryParamLocal;
+        return this.queryParamLocal;
     }
     /**/
-    private Map<String, Object> getPathParamMap(InvContext context, MappingToDefine define) {
-        if (context.pathParamsLocal != null) {
-            return context.pathParamsLocal;
+    private Map<String, Object> getPathParamMap() {
+        if (this.pathParamsLocal != null) {
+            return this.pathParamsLocal;
         }
         //
-        HttpServletRequest httpRequest = context.getHttpRequest();
+        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        String matchVar = define.getMappingToMatches();
+        String matchVar = this.mappingToDefine.getMappingToMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
-        Matcher keyM = Pattern.compile(matchKey).matcher(define.getMappingTo());
+        Matcher keyM = Pattern.compile(matchKey).matcher(this.mappingToDefine.getMappingTo());
         Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
         ArrayList<String> keyArray = new ArrayList<String>();
         ArrayList<String> varArray = new ArrayList<String>();
@@ -303,12 +312,12 @@ class Invoker {
             }
             uriParams.put(k, pArray);
         }
-        context.pathParamsLocal = new HashMap<String, Object>();
+        this.pathParamsLocal = new HashMap<String, Object>();
         for (Entry<String, List<String>> ent : uriParams.entrySet()) {
             String k = ent.getKey();
             List<String> v = ent.getValue();
-            context.pathParamsLocal.put(k, v.toArray(new String[v.size()]));
+            this.pathParamsLocal.put(k, v.toArray(new String[v.size()]));
         }
-        return context.pathParamsLocal;
+        return this.pathParamsLocal;
     }
 }

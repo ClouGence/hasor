@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.RenderData;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 /**
+ * 线程安全
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderDataImpl implements RenderData {
-    public HttpServletRequest getHttpRequest();
-    public HttpServletResponse getHttpResponse();
-    public Set<String> keySet();
-    public Object get(String key);
-    public void put(String key, Object value);
+public class RenderoDefine {
 }
