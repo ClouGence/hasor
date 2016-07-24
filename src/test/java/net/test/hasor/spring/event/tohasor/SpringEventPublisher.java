@@ -16,8 +16,8 @@
 package net.test.hasor.spring.event.tohasor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import net.hasor.spring.event.AsyncSpringHasorEvent;
-import net.hasor.spring.event.SyncSpringHasorEvent;
+import net.hasor.plugins.spring.event.AsyncSpringHasorEvent;
+import net.hasor.plugins.spring.event.SyncSpringHasorEvent;
 /**
  * 使用Spring的方式发送事件，并使用Hasor的方式接收事件。
  * @version : 2016年2月15日

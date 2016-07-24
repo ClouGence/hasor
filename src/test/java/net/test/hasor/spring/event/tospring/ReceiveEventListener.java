@@ -16,7 +16,7 @@
 package net.test.hasor.spring.event.tospring;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import net.hasor.spring.event.EventType;
+import net.hasor.plugins.spring.event.EventType;
 /**
  * 接受来自Hasor发送的事件
  * @version : 2016年2月15日

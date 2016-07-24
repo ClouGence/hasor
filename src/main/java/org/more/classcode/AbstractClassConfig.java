@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 package org.more.classcode;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicLong;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Modifier;
+import java.util.concurrent.atomic.AtomicLong;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractClassConfig {
     /**默认超类java.lang.Object。*/
-    public static final Class<?> DefaultSuperClass = org.more.classcode.ClassCodeObject.class;
-    private Class<?>             superClass        = DefaultSuperClass;
-    private String               className         = null;                                    //新类名称
-    private byte[]               classBytes        = null;                                    //新类字节码
-    private MoreClassLoader      parentLoader      = new MoreClassLoader();
+    public static final Class<?>        DefaultSuperClass = org.more.classcode.ClassCodeObject.class;
+    private             Class<?>        superClass        = DefaultSuperClass;
+    private             String          className         = null;                                    //新类名称
+    private             byte[]          classBytes        = null;                                    //新类字节码
+    private             MoreClassLoader parentLoader      = new MoreClassLoader();
     //
     /**创建{@link AbstractClassConfig}类型对象。 */
     public AbstractClassConfig(Class<?> superClass) {
@@ -88,14 +89,15 @@ public abstract class AbstractClassConfig {
             this.parentLoader.addClassConfig(this);
         }
         return this.classBytes;
-    };
+    }
+    ;
     /**父类是否支持*/
     public static boolean isSupport(Class<?> superClass) {
         String resName = superClass.getName().replace(".", "/") + ".class";
         if (resName.startsWith("java/") || resName.startsWith("javax/")) {
             return false;
         } else {
-            return true;
+            return ASMEngineTools.checkIn(superClass.getModifiers(), Modifier.PUBLIC);
         }
     }
     /**父类是否支持*/
@@ -129,6 +131,7 @@ public abstract class AbstractClassConfig {
         return writer.toByteArray();
     }
     protected abstract ClassVisitor buildClassVisitor(ClassVisitor parentVisitor);
+
     /**是否包含改变*/
     public abstract boolean hasChange();
 }

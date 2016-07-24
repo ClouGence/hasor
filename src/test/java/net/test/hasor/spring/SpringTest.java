@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.spring.SpringModule;
+import net.hasor.plugins.spring.SpringModule;
 import net.test.hasor.spring.bean.HasorBean;
 import net.test.hasor.spring.bean.SpringBean;
 import net.test.hasor.spring.event.tohasor.SpringEventPublisher;

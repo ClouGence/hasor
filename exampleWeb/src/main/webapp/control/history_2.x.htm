@@ -5,15 +5,14 @@
     02.AbstractSettings 类增加 resetValues 方法,可以通过 UpdateValue 接口更新载入的配置文件数据,一个典型的应用场景是模版化配置文件。
     03.支持配置文件模版化,通过模版化的配置文件。可以在不修改部署包的前提下,替换配置文件的值。使其可以方便的适用于各种环境,例如:日常、预发、线上、隔离。    
     04.新增 @InjectSettings 注解,支持配置文件数据注入。
+    05.Restful、Template、mime 三个小插件整合到一起,提升为 webmvc 框架,编程接口依然以 Restful 为标准。 
 * 改进:
     01.配置文件加载在原有xml格式下新增 "属性类型" 文件的加载支持，属性文件默认采用UTF-8编码方式读取。
     02.Settings 接口的两个 findClass 方法移动到 Environment 接口中,Settings的职责更佳明确,只负责配置文件相关的操作。
     03.删除 AbstractMergeSettings 不在需要该类承担数据的职责,Settings的数据承载交给 DecSpaceMap。
     04.Settings 小范围重构,内部的数据管理更佳清晰。
     05.StartupModule插件的类装载,使用 Environment 接口提供的。
-    06.Valid验证框架重构,新版本API使用更佳方便。
-    07.支持多种验证注解: @CharacterSet、@ChoiceValue、@DateValid、@Length、@Max、@Min、@NotNull、@Number、@Range、@Regexp
-    08.通过 @CustomValid 还可以自定义验证逻辑。
+    07.Resource 插件被拆分成两个部分,web相关的部分与新成立的 Restful 框架整合到一起。资源加载部分沉淀到 org.more 工具包。
 </pre>
 <h3><@downloadSource version='2.3.3'/></h3>
 <pre>

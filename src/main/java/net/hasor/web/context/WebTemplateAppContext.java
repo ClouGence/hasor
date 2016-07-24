@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.context;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import javax.servlet.ServletContext;
-
-import org.more.util.ResourcesUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
@@ -36,6 +30,11 @@ import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
+import org.more.util.ResourcesUtils;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 /**
  *
  * @version : 2013-7-16
@@ -66,11 +65,17 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
         this.servletContext = environment.getServletContext();
     }
     //
+    @Override
+    public WebEnvironment getEnvironment() {
+        return (WebEnvironment) super.getEnvironment();
+    }
     /**获取{@link ServletContext}*/
+    @Override
     public ServletContext getServletContext() {
         return this.servletContext;
     }
     /**为模块创建ApiBinder*/
+    @Override
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder(this.getEnvironment()) {
             protected BeanBuilder getBeanBuilder() {
@@ -81,6 +86,7 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {
         super.doBind(apiBinder);
+        final WebAppContext appContet = this;
         //
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
@@ -94,6 +100,18 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
         apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
             public ServletContext get() {
                 return getServletContext();
+            }
+        });
+        /*绑定AppContext对象的Provider*/
+        apiBinder.bindType(WebAppContext.class).toProvider(new Provider<WebAppContext>() {
+            public WebAppContext get() {
+                return appContet;
+            }
+        });
+           /*绑定AppContext对象的Provider*/
+        apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
+            public WebEnvironment get() {
+                return appContet.getEnvironment();
             }
         });
     }

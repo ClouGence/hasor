@@ -16,7 +16,7 @@
 package net.demo.hasor.manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.demo.hasor.core.constant.DBConstant;
+import net.demo.hasor.domain.DBConstant;
 import net.demo.hasor.domain.VersionInfoDO;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;

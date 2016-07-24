@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.plugins.encoding;
-import java.io.IOException;
-import java.util.HashMap;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.startup.RuntimeListener;
+import org.more.util.StringUtils;
+import java.util.HashMap;
 /**
  * 提供请求相应编码设置。
  * @version : 2013-9-13
@@ -68,43 +53,5 @@ public class EncodingModule extends WebModule {
         logger.info("encodingFilter -> urlPatterns = {}.", new Object[] {patterns});
         //
         apiBinder.filter(patterns).through(Integer.MIN_VALUE, new EncodingFilter(), initParams);
-    }
-}
-class EncodingFilter implements Filter {
-    protected Logger      logger           = LoggerFactory.getLogger(getClass());
-    private   String      requestEncoding  = null;
-    private   String      responseEncoding = null;
-    private   Environment environment      = null;
-    public void init(FilterConfig filterConfig) throws ServletException {
-        /*获取请求响应编码*/
-        this.requestEncoding = filterConfig.getInitParameter(EncodingModule.REQUEST_ENCODING);
-        this.responseEncoding = filterConfig.getInitParameter(EncodingModule.RESPONSE_ENCODING);
-        //
-        if (StringUtils.isBlank(this.requestEncoding)) {
-            this.requestEncoding = null;
-        }
-        if (StringUtils.isBlank(this.responseEncoding)) {
-            this.responseEncoding = null;
-        }
-        //
-        AppContext app = RuntimeListener.getAppContext(filterConfig.getServletContext());
-        this.environment = app.getEnvironment();
-    }
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        final HttpServletRequest httpReq = (HttpServletRequest) request;
-        final HttpServletResponse httpRes = (HttpServletResponse) response;
-        if (this.requestEncoding != null) {
-            httpReq.setCharacterEncoding(this.requestEncoding);
-        }
-        if (this.requestEncoding != null) {
-            httpRes.setCharacterEncoding(this.responseEncoding);
-        }
-        //
-        if (logger.isDebugEnabled()) {
-            logger.debug("encodingFilter -> at http({}/{}) request : {}", this.requestEncoding, this.responseEncoding, httpReq.getRequestURI());
-        }
-        chain.doFilter(request, response);
-    }
-    public void destroy() {
     }
 }

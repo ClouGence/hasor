@@ -16,7 +16,7 @@
 package net.test.hasor.spring.event.tohasor;
 import net.hasor.core.EventListener;
 import net.hasor.plugins.event.Event;
-import net.hasor.spring.event.SpringEventEnum;
+import net.hasor.plugins.spring.event.SpringEventEnum;
 /**
  * 接受来自Spring发送的事件
  * @version : 2016年2月15日

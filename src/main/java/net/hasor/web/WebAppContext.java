@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import javax.servlet.ServletContext;
 import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import javax.servlet.ServletContext;
 /**
- * 
+ *
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebAppContext extends AppContext {
     /**获取{@link ServletContext}*/
     public ServletContext getServletContext();
+
+    /** @return 获取 {@link Environment} */
+    public WebEnvironment getEnvironment();
 }

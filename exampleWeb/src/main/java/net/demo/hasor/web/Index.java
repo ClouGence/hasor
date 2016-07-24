@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 package net.demo.hasor.web;
-import net.demo.hasor.manager.VersionInfoManager;
-import net.hasor.core.Inject;
-import net.hasor.plugins.restful.WebController;
-import net.hasor.plugins.restful.api.MappingTo;
+import net.hasor.restful.WebController;
+import net.hasor.restful.api.MappingTo;
 /**
- * 
+ *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/index.htm")
 public class Index extends WebController {
-    @Inject
-    private VersionInfoManager versionInfoManager;
     //
     public void execute() {
-        getContextMap().put("versionMap", this.versionInfoManager);
     }
 }

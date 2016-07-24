@@ -14,12 +14,9 @@
         <modules loadModule="true" loadErrorShow="true">
             <module>net.hasor.plugins.aop.AopModule</module>
             <module>net.hasor.plugins.event.EventModule</module>
-            <module>net.hasor.plugins.mimetype.MimeTypeModule</module>
 
             <module>net.hasor.plugins.encoding.EncodingModule</module>
-            <module>net.hasor.plugins.restful.RestfulModule</module>
-            <module>net.hasor.plugins.templates.TemplateModule</module>
-            <module>net.hasor.plugins.resource.ResourceModule</module>
+            <module>net.hasor.restful.invoker.RestfulModule</module>
 
             <module>net.hasor.plugins.startup.StartupModule</module>
         </modules>
@@ -53,29 +50,18 @@
         <!-- 程序入口模块类名【由StartupModule插件提供】 -->
         <startup></startup>
 
-        <!-- web请求响应编码配置【由EncodingModule插件提供】 -->
-        <encoding urlPatterns="/*;" requestEncoding="" responseEncoding=""/>
-
         <!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
-        <restful urlPatterns="htm;html;do;json;"/>
-
-        <!-- web上，提供template页面模版渲染功能【由TemplateModule插件提供】 -->
-        <template urlPatterns="htm;html;" engine="">
-            <!-- 可用的引擎 -->
-            <engineSet>
-                <engine type="freemarker">net.hasor.plugins.templates.engine.freemarker.FreemarkerTemplateEngine</engine>
-                <engine type="velocity">net.hasor.plugins.templates.engine.velocity.VelocityTemplateEngine</engine>
-            </engineSet>
-            <!-- 区块模版位置 -->
-            <controlPath>/control</controlPath>
+        <restful urlPatterns="htm;html;do;json;" resourcePatterns=";" forceRefreshCache="false">
+            <!-- 静态资源位置 -->
+            <resourcePath>/static</resourcePath>
             <!-- 布局模版位置 -->
             <layoutPath>/layout</layoutPath>
             <!-- 页面模版位置 -->
             <templatePath>/templates</templatePath>
-        </template>
+        </restful>
 
-        <!-- web上，可以将压缩包的内容做为请求响应【由ResourceModule插件提供】 -->
-        <resourceLoader urlPatterns=";" space="/static" forceRefreshCache="false"/>
+        <!-- web请求响应编码配置【由EncodingModule插件提供】 -->
+        <encoding urlPatterns="/*;" requestEncoding="" responseEncoding=""/>
         <!-- ======================================================================== -->
     </hasor>
 </config>

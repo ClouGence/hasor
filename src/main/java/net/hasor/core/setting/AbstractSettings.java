@@ -47,7 +47,7 @@ public abstract class AbstractSettings implements Settings {
     protected DecSpaceMap<String, SettingValue> allSettingValue() {
         return dataMap;
     }
-    /**使用{@UpdateValue}接口,遍历所有属性值,将它们重新计算并设置新的参数值。<p>
+    /**使用UpdateValue接口,遍历所有属性值,将它们重新计算并设置新的参数值。<p>
      * 注意:该过程不可逆,一旦重新设置了属性值,那么原有从配置文件中读取的属性值将会被替换。
      * 一个典型的应用场景是配置文件模版化。*/
     public void resetValues(UpdateValue updateValue) {
