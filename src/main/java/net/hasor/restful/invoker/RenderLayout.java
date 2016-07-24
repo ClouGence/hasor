@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 class RenderLayout implements RenderEngine {
     private AtomicBoolean             inited       = new AtomicBoolean(false);
-    private Map<String, RenderEngine> engineMap    = null;
+    private Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
     private String                    layoutPath   = null;                    // 布局模版位置
     private String                    templatePath = null;                    // 页面模版位置
     //
