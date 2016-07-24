@@ -51,11 +51,7 @@
         <startup></startup>
 
         <!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
-        <restful urlPatterns="htm;html;do;json;" resourcePatterns=";" forceRefreshCache="false">
-            <renderSet>
-                <render urlPatterns="htm;html;"></render>
-                <render urlPatterns="json;">net.hasor.restful.render.json.JsonRenderEngine</render>
-            </renderSet>
+        <restful urlPatterns="htm;html;do;" renderPatterns="htm;html;" resourcePatterns=";" forceRefreshCache="false">
             <!-- 静态资源位置 -->
             <resourcePath>/static</resourcePath>
             <!-- 布局模版位置 -->

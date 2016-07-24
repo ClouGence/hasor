@@ -73,7 +73,10 @@ class RenderLayout implements RenderEngine {
             return;
         }
         //
-        this.engine.initEngine(appContext);
+        //
+        RenderEngine engine = appContext.getInstance(RenderEngine.class);
+        engine.initEngine(appContext);
+        this.engineMap.put("default", engine);
         Settings settings = appContext.getEnvironment().getSettings();
         this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");

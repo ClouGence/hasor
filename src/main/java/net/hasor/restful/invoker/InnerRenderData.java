@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.RenderData;
 import net.hasor.restful.MimeType;
+import net.hasor.restful.RenderData;
 import org.more.util.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
@@ -29,6 +30,7 @@ import java.util.Set;
  */
 class InnerRenderData implements RenderData {
     private String              viewName     = null;
+    private String              viewType     = null;
     private Map<String, Object> contextMap   = null;
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
@@ -41,6 +43,7 @@ class InnerRenderData implements RenderData {
             requestPath = requestPath.substring(contextPath.length());
         }
         //
+        this.viewType = "default";
         this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
         this.httpRequest = httpRequest;
@@ -96,5 +99,13 @@ class InnerRenderData implements RenderData {
     @Override
     public void setViewName(String viewName) {
         this.viewName = viewName;
+    }
+    @Override
+    public String getViewType() {
+        return this.viewType;
+    }
+    @Override
+    public void setViewType(String viewType) {
+        this.viewType = viewType;
     }
 }
