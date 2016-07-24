@@ -15,9 +15,11 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
+import net.hasor.restful.RenderEngine;
 import net.hasor.restful.RestfulContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.StringUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -101,6 +103,12 @@ class RestfulFilter implements Filter {
             }
         }
         //
+        //
+        RenderEngine engine = this.context.getRenderEngine();
+        if (engine != null && engine.exist()) {
+            engine.process(invokerContext, httpResponse.getWriter());
+        }
+        //
         if (!resp.isCommitted()) {
             chain.doFilter(request, resp);
         }
@@ -117,7 +125,6 @@ class RestfulFilter implements Filter {
             //
             HttpServletResponse httpResp = (HttpServletResponse) servletResponse;
             define.invoke(httpReq, httpResp, this.context);
-            //
         } catch (Throwable target) {
             if (target instanceof ServletException)
                 throw (ServletException) target;

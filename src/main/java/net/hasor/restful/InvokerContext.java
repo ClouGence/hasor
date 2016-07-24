@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Map;
 /**
- * 线程安全
+ * 调用
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerContext extends Map<String, Object> {
-    public HttpServletRequest getHttpRequest();
-
-    public HttpServletResponse getHttpResponse();
-
+public interface InvokerContext extends RenderData {
     public Method getTarget();
 
     public RestfulContext getContext();

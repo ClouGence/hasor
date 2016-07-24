@@ -67,11 +67,6 @@ class Invoker {
                 }
             }
         }
-        //
-        RenderEngine engine = invokerContext.getContext().getRenderEngine();
-        if (engine != null) {
-            engine.process(invokerContext, httpResponse.getWriter(), invokerContext);
-        }
     }
     /**准备参数*/
     protected final Object[] resolveParams(InvContext context) throws Throwable {

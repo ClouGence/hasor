@@ -20,6 +20,7 @@ import net.hasor.web.WebAppContext;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class VelocityTemplateEngine implements RenderEngine {
         this.velocityEngine = new VelocityEngine();
     }
     @Override
-    public void process(InvokerContext invokerContext, Writer writer, Map<String, Object> dataModel) throws Throwable {
+    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
     }
     @Override
     public boolean exist(String template) throws IOException {

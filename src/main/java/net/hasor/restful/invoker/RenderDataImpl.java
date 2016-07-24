@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful;
-import net.hasor.web.WebAppContext;
-import java.io.IOException;
-import java.io.Writer;
+package net.hasor.restful.invoker;
+import net.hasor.restful.RenderData;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface RenderEngine {
-    /** 初始化引擎 */
-    public void initEngine(WebAppContext appContext) throws IOException;
-
-    /** 执行模版引擎 */
-    public void process(RenderData data, Writer writer) throws Throwable;
-
-    /** 获取模版Loader */
-    public boolean exist(String template) throws IOException;
+public class RenderDataImpl implements RenderData {
+    public HttpServletRequest getHttpRequest();
+    public HttpServletResponse getHttpResponse();
+    public Set<String> keySet();
+    public Object get(String key);
+    public void put(String key, Object value);
 }

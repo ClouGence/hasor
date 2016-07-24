@@ -81,7 +81,7 @@ class LayoutDecorator implements RenderEngine {
         this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
     }
     //
-    public void process(InvokerContext invokerContext, Writer writer, Map<String, Object> dataModel) throws Throwable {
+    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
         if (engine == null) {
             return;
         }
@@ -92,12 +92,12 @@ class LayoutDecorator implements RenderEngine {
         //
         if (layoutFile != null) {
             StringWriter tmpWriter = new StringWriter();
-            engine.process(invokerContext, tmpWriter, dataModel);
-            dataModel.put("content_placeholder", tmpWriter.toString());
+            engine.process(invokerContext, tmpWriter);
+            invokerContext.put("content_placeholder", tmpWriter.toString());
             invokerContext.setViewName(layoutFile);
-            engine.process(invokerContext, writer, dataModel);
+            engine.process(invokerContext, writer);
         } else {
-            engine.process(invokerContext, writer, dataModel);
+            engine.process(invokerContext, writer);
         }
         //
     }

@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Map;
 /**
  *
  * @version : 2016年1月3日
@@ -48,14 +47,14 @@ public class FreemarkerTemplateEngine implements RenderEngine {
         configuration.setClassicCompatible(true);//null值测处理配置
     }
     @Override
-    public void process(InvokerContext invokerContext, Writer writer, Map<String, Object> dataModel) throws Throwable {
+    public void process(InvokerContext invokerContext, Writer writer) throws Throwable {
         Template temp = configuration.getTemplate(invokerContext.getViewName());
         //
         HashMap<String, Object> data = new HashMap<String, Object>();
-        for (String key : dataModel.keySet()) {
-            data.put(key, dataModel.get(key));
+        for (String key : invokerContext.keySet()) {
+            data.put(key, invokerContext.get(key));
         }
-        data.put("rootModel", dataModel);
+        data.put("rootModel", invokerContext);
         //
         temp.process(data, writer);
     }

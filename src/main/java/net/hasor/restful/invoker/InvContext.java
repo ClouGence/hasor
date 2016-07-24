@@ -16,37 +16,50 @@
 package net.hasor.restful.invoker;
 import net.hasor.restful.InvokerContext;
 import net.hasor.restful.RestfulContext;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * 线程安全
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvContext extends HashMap<String, Object> implements InvokerContext {
+class InvContext implements InvokerContext {
     Map<String, List<String>> queryParamLocal;
     Map<String, Object>       pathParamsLocal;
     //
-    private MappingToDefine     define;
-    private Method              targetMethod;
-    private String              viewName;
-    private RestfulContext      context;
-    private HttpServletRequest  httpRequest;
-    private HttpServletResponse httpResponse;
-    //
+    private MappingToDefine     define       = null;
+    private Method              targetMethod = null;
+    private String              viewName     = null;
+    private RestfulContext      context      = null;
+    private Map<String, Object> contextMap   = null;
+    private HttpServletRequest  httpRequest  = null;
+    private HttpServletResponse httpResponse = null;
     //
     public InvContext(MappingToDefine define, Method targetMethod, RestfulContext context) {
         this.define = define;
         this.targetMethod = targetMethod;
         this.context = context;
-        //
+        this.contextMap = new HashMap<String, Object>();
     }
+    //
+    public void initParams(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        this.httpRequest = httpRequest;
+        this.httpResponse = httpResponse;
+        this.viewName = httpRequest.getRequestURI();
+        Enumeration<?> paramEnum = httpRequest.getParameterNames();
+        while (paramEnum.hasMoreElements()) {
+            Object paramKey = paramEnum.nextElement();
+            String key = paramKey.toString();
+            String val = httpRequest.getParameter(key);
+            this.put("req_" + key, val);
+        }
+    }
+    public MappingToDefine getDefine() {
+        return define;
+    }
+    //
     @Override
     public HttpServletRequest getHttpRequest() {
         return httpRequest;
@@ -71,20 +84,17 @@ class InvContext extends HashMap<String, Object> implements InvokerContext {
     public String setViewName(String viewName) {
         return this.viewName = viewName;
     }
-    public MappingToDefine getDefine() {
-        return define;
-    }
     //
-    public void initParams(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        this.httpRequest = httpRequest;
-        this.httpResponse = httpResponse;
-        this.viewName = httpRequest.getRequestURI();
-        Enumeration<?> paramEnum = httpRequest.getParameterNames();
-        while (paramEnum.hasMoreElements()) {
-            Object paramKey = paramEnum.nextElement();
-            String key = paramKey.toString();
-            String val = httpRequest.getParameter(key);
-            this.put("req_" + key, val);
-        }
+    @Override
+    public Set<String> keySet() {
+        return this.contextMap.keySet();
+    }
+    @Override
+    public Object get(String key) {
+        return contextMap.get(key);
+    }
+    @Override
+    public void put(String key, Object value) {
+        this.contextMap.put(key, value);
     }
 }
