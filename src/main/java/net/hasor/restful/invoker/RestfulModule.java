@@ -50,8 +50,10 @@ public class RestfulModule extends WebModule {
                     if (StringUtils.isNotBlank(renderTypeStr)) {
                         String[] renderTypeArray = renderTypeStr.split(";");
                         for (String renderType : renderTypeArray) {
-                            logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
-                            renderMap.put(renderType.toUpperCase(), renderClass);
+                            if (StringUtils.isNotBlank(renderType)) {
+                                logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
+                                renderMap.put(renderType.toUpperCase(), renderClass);
+                            }
                         }
                     }
                 }

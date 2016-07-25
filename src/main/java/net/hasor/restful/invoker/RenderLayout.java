@@ -73,6 +73,10 @@ class RenderLayout {
         this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
         this.useLayout = settings.getBoolean("hasor.restful.useLayout", true);
+        //
+        for (RenderEngine engine : this.engineMap.values()) {
+            engine.initEngine(appContext);
+        }
     }
     //
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
