@@ -121,7 +121,7 @@ class RestfulFilter implements Filter {
         //
         // .render
         try {
-            if (this.renderLayout.process(renderData, httpResponse.getWriter())) {
+            if (this.renderLayout.process(renderData)) {
                 return;
             } else {
                 chain.doFilter(httpRequest, httpResponse);

@@ -110,7 +110,7 @@ class RenderLayout {
         }
     }
     //
-    public boolean process(RenderData renderData, Writer writer) throws Throwable {
+    public boolean process(RenderData renderData) throws Throwable {
         if (renderData == null) {
             return false;
         }
@@ -144,14 +144,14 @@ class RenderLayout {
             renderData.put("content_placeholder", tmpWriter.toString());
             renderData.setViewName(layoutFile);
             if (engine.exist(renderData.getViewName())) {
-                engine.process(renderData, writer);
+                engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
             if (engine.exist(renderData.getViewName())) {
-                engine.process(renderData, writer);
+                engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {
                 return false;//没有执行模版
