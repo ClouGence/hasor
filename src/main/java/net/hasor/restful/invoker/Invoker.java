@@ -70,11 +70,15 @@ class Invoker {
                 String mimeType = this.renderData.getMimeType(proValue);
                 if (StringUtils.isBlank(mimeType)) {
                     httpResponse.setContentType(proValue);
+                    this.renderData.setViewType(proValue);
                 } else {
                     httpResponse.setContentType(mimeType);
+                    this.renderData.setViewType(mimeType);
                 }
             }
         }
+        //
+        this.renderData.setReturnData(resultData);
     }
     /**准备参数*/
     protected final Object[] resolveParams(Method targetMethod) throws Throwable {

@@ -16,7 +16,7 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
-import org.apache.commons.lang.StringUtils;
+import org.more.util.StringUtils;
 import org.more.util.map.Properties;
 
 import javax.xml.parsers.SAXParser;

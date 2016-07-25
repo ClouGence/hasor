@@ -22,6 +22,11 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface RenderData {
+    public static final String ROOT_DATA_KEY   = "rootData";
+    public static final String RETURN_DATA_KEY = "returnData";
+
+    //
+    //
     public HttpServletRequest getHttpRequest();
 
     public HttpServletResponse getHttpResponse();
@@ -39,4 +44,10 @@ public interface RenderData {
     public String getViewType();
 
     public void setViewType(String viewType);
+
+    public boolean useLayout();
+
+    public void enableLayout();
+
+    public void disableLayout();
 }

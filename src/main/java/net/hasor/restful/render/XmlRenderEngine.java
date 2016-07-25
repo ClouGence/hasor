@@ -13,17 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.api;
-import java.lang.annotation.*;
+package net.hasor.restful.render;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.RenderEngine;
+import net.hasor.web.WebAppContext;
+
+import java.io.IOException;
+import java.io.Writer;
 /**
  *
- * @version : 2013-8-14
- * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016年1月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Inherited
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value();
+public class XmlRenderEngine implements RenderEngine {
+    @Override
+    public void initEngine(WebAppContext appContext) throws Throwable {
+    }
+    @Override
+    public void process(RenderData data, Writer writer) throws Throwable {
+    }
+    @Override
+    public boolean exist(String template) throws IOException {
+        return false;
+    }
 }

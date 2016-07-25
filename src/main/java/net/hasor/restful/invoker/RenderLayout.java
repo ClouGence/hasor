@@ -35,6 +35,7 @@ class RenderLayout {
     private AtomicBoolean             inited       = new AtomicBoolean(false);
     private Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
     private String                    layoutPath   = null;                    // 布局模版位置
+    private boolean                   useLayout    = true;
     private String                    templatePath = null;                    // 页面模版位置
     //
     //
@@ -43,7 +44,6 @@ class RenderLayout {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
-        //
         //
         RenderEngine engine = appContext.getInstance(RenderEngine.class);
         engine.initEngine(appContext);
@@ -58,6 +58,7 @@ class RenderLayout {
                 this.engineMap.put(renderType, engine);
             }
         }
+        this.useLayout = settings.getBoolean("hasor.restful.useLayout", true);
     }
     //
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
@@ -106,29 +107,39 @@ class RenderLayout {
         //
         //
         String tempName = renderData.getViewName();
-        String layoutFile = findLayout(engine, tempName);
         tempName = fixTempName(this.templatePath, tempName);
         renderData.setViewName(tempName);
         //
+        String layoutFile = null;
+        if (this.useLayout && renderData.useLayout()) {
+            layoutFile = findLayout(engine, tempName);
+        }
         //
         if (layoutFile != null) {
+            //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
             if (engine.exist(renderData.getViewName())) {
                 engine.process(renderData, tmpWriter);
             } else {
                 tmpWriter.write("");
             }
+            //渲染layout
             renderData.put("content_placeholder", tmpWriter.toString());
             renderData.setViewName(layoutFile);
             if (engine.exist(renderData.getViewName())) {
                 engine.process(renderData, writer);
+                return true;
+            } else {
+                throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
             if (engine.exist(renderData.getViewName())) {
                 engine.process(renderData, writer);
+                return true;
+            } else {
+                return false;//没有执行模版
             }
         }
         //
-        return true;
     }
 }

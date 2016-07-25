@@ -1,102 +1,88 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>net.hasor</groupId>
-		<artifactId>hasor-parent</artifactId>
-		<version>0.0.6</version>
-	</parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-parent</artifactId>
+        <version>0.0.6</version>
+    </parent>
 
-	<!-- Maven Info -->
-	<artifactId>hasor-core</artifactId>
-	<version>2.4.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <!-- Maven Info -->
+    <artifactId>hasor-core</artifactId>
+    <version>2.4.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<!-- Project Info -->
-	<name>Hasor-Core</name>
-	<description>the hasor core project.</description>
+    <!-- Project Info -->
+    <name>Hasor-Core</name>
+    <description>the hasor core project.</description>
 
-	<!-- SCM -->
-	<scm>
-		<connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
-		<developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
-		<url>git@git.oschina.net:zycgit/hasor.git</url>
-		<tag>HEAD</tag>
-	</scm>
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/hasor.git</url>
+        <tag>HEAD</tag>
+    </scm>
 
-	<developers>
-		<developer>
-			<name>赵永春(Mr.Zhao)</name>
-			<email>zyc@hasor.net</email>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
 
-	<!-- 引用依赖 -->
-	<dependencies>
-		<!-- Log依赖 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.12</version>
-		</dependency>
-		<!-- Web环境下的编译依赖，最终由web容器提供依赖 -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- 整合 Spring 容器时使用,最终由项目环境的 Spring 提供依赖 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		
-		<!-- 下面是插件的依赖，如需使用该功能在引用依赖 -->
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>2.3.22</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Test -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.30</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <!-- 引用依赖 -->
+    <dependencies>
+        <!-- Log依赖 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <!-- Web环境下的编译依赖，最终由web容器提供依赖 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 整合 Spring 容器时使用,最终由项目环境的 Spring 提供依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.30</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

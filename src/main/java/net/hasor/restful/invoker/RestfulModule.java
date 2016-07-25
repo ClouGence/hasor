@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.api.MappingTo;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 import net.hasor.restful.MimeType;
+import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.resource.ResourceModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.more.util.StringUtils;
 
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 /***
  * restful插件
@@ -32,15 +37,31 @@ public class RestfulModule extends WebModule {
     public final void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.installModule(new ResourceModule());
         //
+        // .Render
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.restful.renderSet");
+        Map<String, String> renderMap = new HashMap<String, String>();
+        for (XmlNode xmlProp : xmlPropArray) {
+            for (XmlNode envItem : xmlProp.getChildren()) {
+                if (StringUtils.equalsIgnoreCase("render", envItem.getName())) {
+                    String renderType = envItem.getAttribute("renderType");
+                    String renderClass = envItem.getText();
+                    if (StringUtils.isNotBlank(renderType)) {
+                        logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
+                        renderMap.put(renderType.toUpperCase(), renderClass);
+                    }
+                }
+            }
+        }
+        //
+        // .MappingTo
         Set<Class<?>> serviceSet = apiBinder.findClass(MappingTo.class);
         serviceSet = new HashSet<Class<?>>(serviceSet);
         serviceSet.remove(MappingTo.class);
-        //
         if (serviceSet == null || serviceSet.isEmpty()) {
             logger.warn("restful -> exit , not found any @MappingTo.");
             return;
         }
-        //
         int count = 0;
         for (Class<?> type : serviceSet) {
             if (loadType(apiBinder, type)) {
@@ -54,6 +75,7 @@ public class RestfulModule extends WebModule {
             logger.warn("restful -> exit , not add any @MappingTo.");
         }
         //
+        // .MimeType
         MimeTypeContext mimeTypeContext = new MimeTypeContext(apiBinder.getServletContext());
         mimeTypeContext.loadStream("mime.types.xml");
         apiBinder.bindType(MimeType.class, mimeTypeContext);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.render.velocity;
+package net.demo.hasor.core;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;

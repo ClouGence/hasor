@@ -31,6 +31,7 @@ import java.util.Set;
 class InnerRenderData implements RenderData {
     private String              viewName     = null;
     private String              viewType     = null;
+    private boolean             useLayout    = true;
     private Map<String, Object> contextMap   = null;
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
@@ -45,9 +46,9 @@ class InnerRenderData implements RenderData {
         //
         int lastIndex = requestPath.lastIndexOf(".");
         if (lastIndex > 0) {
-            this.viewType = requestPath.substring(lastIndex + 1);
+            this.setViewType(requestPath.substring(lastIndex + 1));
         } else {
-            this.viewType = "default";
+            this.setViewType("default");
         }
         this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
@@ -61,7 +62,7 @@ class InnerRenderData implements RenderData {
             String val = httpRequest.getParameter(key);
             this.contextMap.put("req_" + key, val);
         }
-        this.contextMap.put("rootData", this);
+        this.contextMap.put(ROOT_DATA_KEY, this);
         this.mimeType = mimeType;
     }
     //
@@ -72,6 +73,11 @@ class InnerRenderData implements RenderData {
         } else {
             return this.mimeType.getMimeType(suffix);
         }
+    }
+    //
+    /**设置返回值*/
+    public void setReturnData(Object value) {
+        this.contextMap.put(RETURN_DATA_KEY, value);
     }
     //
     @Override
@@ -92,8 +98,10 @@ class InnerRenderData implements RenderData {
     }
     @Override
     public void put(String key, Object value) {
-        if (StringUtils.isBlank(key) || StringUtils.equalsIgnoreCase("rootData", key)) {
-            throw new UnsupportedOperationException("the key must not as 'rootData' or empty");
+        if (StringUtils.isBlank(key) ||//
+                StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key) ||//
+                StringUtils.equalsIgnoreCase(RETURN_DATA_KEY, key)) {
+            throw new UnsupportedOperationException("the key must not as '" + ROOT_DATA_KEY + "' or '" + RETURN_DATA_KEY + "' or empty");
         }
         this.contextMap.put(key, value);
     }
@@ -111,6 +119,22 @@ class InnerRenderData implements RenderData {
     }
     @Override
     public void setViewType(String viewType) {
-        this.viewType = viewType;
+        if (StringUtils.isNotBlank(viewType)) {
+            this.viewType = viewType.trim().toUpperCase();
+        } else {
+            this.viewType = "";
+        }
+    }
+    @Override
+    public boolean useLayout() {
+        return this.useLayout;
+    }
+    @Override
+    public void enableLayout() {
+        this.useLayout = true;
+    }
+    @Override
+    public void disableLayout() {
+        this.useLayout = false;
     }
 }

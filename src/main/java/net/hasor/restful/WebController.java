@@ -15,7 +15,9 @@
  */
 package net.hasor.restful;
 import net.hasor.core.AppContext;
+import net.hasor.restful.api.Produces;
 import net.hasor.web.startup.RuntimeListener;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -543,8 +545,17 @@ public abstract class WebController {
     protected Object getModel(String bindID) {
         return this.getAppContext().getInstance(bindID);
     }
-    /** 更新渲染模版。 */
+    /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
+        this.getInvoker().setViewName(viewName);
+    }
+    /**
+     * 更新渲染模版。
+     * @param renderType 如果注释了 {@link Produces}注解那么该参数将会失效。
+     * @param viewName 模版名称
+     */
+    protected void renderTo(String renderType, String viewName) {
+        this.getInvoker().setViewType(renderType);
         this.getInvoker().setViewName(viewName);
     }
     // --------

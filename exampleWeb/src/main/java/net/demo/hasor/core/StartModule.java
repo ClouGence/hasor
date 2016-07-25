@@ -17,15 +17,12 @@ package net.demo.hasor.core;
 import net.demo.hasor.manager.EnvironmentConfig;
 import net.demo.hasor.manager.VersionInfoManager;
 import net.hasor.restful.RenderEngine;
-import net.hasor.restful.render.freemarker.FreemarkerTemplateEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebModule;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 /**
  *
  * @version : 2015年12月25日
@@ -36,7 +33,7 @@ public class StartModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        apiBinder.filter("/*").through(new JumpFilter(apiBinder.getEnvironment()));
+        apiBinder.filter("/*").through(0, new JumpFilter(apiBinder.getEnvironment()));
         //
         apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class, new FreemarkerTemplateEngine() {
