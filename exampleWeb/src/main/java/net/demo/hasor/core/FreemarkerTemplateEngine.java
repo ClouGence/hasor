@@ -19,6 +19,9 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import net.demo.hasor.manager.EnvironmentConfig;
+import net.demo.hasor.manager.VersionInfoManager;
+import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
@@ -32,24 +35,29 @@ import java.util.HashMap;
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
+@Render({"html", "htm"})
 public class FreemarkerTemplateEngine implements RenderEngine {
     protected Configuration configuration;
     @Override
     public void initEngine(WebAppContext appContext) throws Throwable {
         String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
-        configuration = new Configuration(Configuration.VERSION_2_3_22);
-        configuration.setTemplateLoader(templateLoader);
-        configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_22).build());
+        this.configuration = new Configuration(Configuration.VERSION_2_3_22);
+        this.configuration.setTemplateLoader(templateLoader);
+        this.configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_22).build());
         //
-        configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
-        configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8
-        configuration.setLocalizedLookup(false);//是否开启国际化false
-        configuration.setClassicCompatible(true);//null值测处理配置
+        this.configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
+        this.configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8
+        this.configuration.setLocalizedLookup(false);//是否开启国际化false
+        this.configuration.setClassicCompatible(true);//null值测处理配置
+        //
+        this.configuration.setSharedVariable("ctx_path", appContext.getServletContext().getContextPath());
+        this.configuration.setSharedVariable("env", appContext.getInstance(EnvironmentConfig.class));
+        this.configuration.setSharedVariable("versionMap", appContext.getInstance(VersionInfoManager.class));
     }
     @Override
     public void process(RenderData renderData, Writer writer) throws Throwable {
-        Template temp = configuration.getTemplate(renderData.getViewName());
+        Template temp = this.configuration.getTemplate(renderData.getViewName());
         //
         HashMap<String, Object> data = new HashMap<String, Object>();
         for (String key : renderData.keySet()) {
@@ -60,6 +68,6 @@ public class FreemarkerTemplateEngine implements RenderEngine {
     }
     @Override
     public boolean exist(String template) throws IOException {
-        return configuration.getTemplateLoader().findTemplateSource(template) != null;
+        return this.configuration.getTemplateLoader().findTemplateSource(template) != null;
     }
 }

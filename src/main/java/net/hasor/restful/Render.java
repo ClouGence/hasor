@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.core;
-import net.hasor.restful.RenderEngine;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+package net.hasor.restful;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
- * @version : 2015年12月25日
- * @author 赵永春(zyc@hasor.net)
+ * 渲染器
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class StartModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //
-        apiBinder.filter("/*").through(0, new JumpFilter(apiBinder.getEnvironment()));
-        //
-        apiBinder.installModule(new DataSourceModule());
-        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerTemplateEngine());
-    }
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Render {
+    public String[] value();
 }

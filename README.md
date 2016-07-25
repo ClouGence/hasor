@@ -2,6 +2,8 @@
 
 &emsp;&emsp;Hasor 是一款基于 Java 语言的应用程序开发框架，它的核心设计目标是提供一个简单、切必要的环境给开发者。开发者可以在此基础上，通过Hasor强有力的粘合机制，构建出更加完善的应用场景。同时Hasor的各种内置插件也会帮助开发者进行快速开发。
 
+&emsp;&emsp;基于目前 Hasor 内核上已经发展出 DB、Web、Restful 三大基础框架。
+
 ----------
 ### 设计思想
 
@@ -30,21 +32,17 @@
 10. 支持无缝与Spring集成，在Spring中也可以享受Hasor的插件
 11. 提供丰富的工具箱，帮助您快速开发
 12. web - 无需‘web.xml’配置各种Listener、Servlet、Filter
-13. web - 支持对ServletContextListener、HttpSessionListener、HttpServlet、Filter的IoC注入和Aop
-14. web - 支持restful风格的Web开发（内置插件）
-15. web - 支持freemarker模版引擎（内置插件）
+13. web - 支持对ServletContextListener、HttpSessionListener、HttpServlet、Filter 的注入和Aop
+14. web - 支持restful风格的Web开发，支持各种类型的模版引擎。
 
 ----------
 ### 内置插件
 01. AopModule插件，提供精确到方法级的注解化Aop配置
 02. EncodingModule插件，提供对请求响应编码统一设置的插件，默认编码为：UTF-8
-03. MimeTypeModule插件，提供MimeType接口，支持通过配置文件扩展环境不存在的mime type定义
-04. ResourceModule插件，提供丰富的资源加载模块，可以实现将zip包中的资源响应给web请求
-05. RestfulModule插件，提供restful风格的Api进行Web开发
-06. StartupModule插件，简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module
-07. ValidModule插件，一个简单的对象验证框架
-08. TemplateModule插件，提供一个通用的模版渲染引擎接口
-08. EventModule插件，提供注解化事件监听器，无需编写代码进行注册事件监听器
+03. RestfulModule插件，提供restful风格的Api进行Web开发
+04. StartupModule插件，简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module
+05. ValidModule插件，一个简单的对象验证框架
+06. EventModule插件，提供注解化事件监听器，无需编写代码进行注册事件监听器
 
 ----------
 ### 工具箱

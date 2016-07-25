@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
+import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
-import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
@@ -32,32 +36,42 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春(zyc@hasor.net)
  */
 class RenderLayout {
-    private AtomicBoolean             inited       = new AtomicBoolean(false);
-    private Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
-    private String                    layoutPath   = null;                    // 布局模版位置
-    private boolean                   useLayout    = true;
-    private String                    templatePath = null;                    // 页面模版位置
-    //
-    //
+    protected Logger                    logger       = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean             inited       = new AtomicBoolean(false);
+    private   Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
+    private   String                    layoutPath   = null;                    // 布局模版位置
+    private   boolean                   useLayout    = true;
+    private   String                    templatePath = null;                    // 页面模版位置
     //
     public void initEngine(WebAppContext appContext) throws Throwable {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         //
-        RenderEngine engine = appContext.getInstance(RenderEngine.class);
-        engine.initEngine(appContext);
+        List<BindInfo<RenderEngine>> engineInfoList = appContext.findBindingRegister(RenderEngine.class);
+        for (BindInfo<RenderEngine> info : engineInfoList) {
+            RenderEngine engine = appContext.getInstance(info);
+            if (engine == null) {
+                continue;
+            }
+            if (info.getMetaData("FORM-XML") != null) {
+                //来自XML
+                this.engineMap.put(info.getBindName(), engine);
+            } else {
+                Render renderInfo = engine.getClass().getAnnotation(Render.class);
+                if (renderInfo != null && renderInfo.value().length > 0) {
+                    String[] renderTypeArray = renderInfo.value();
+                    for (String renderType : renderTypeArray) {
+                        logger.info("restful -> renderType {} mappingTo {}.", renderType, engine.getClass());
+                        this.engineMap.put(renderType.toUpperCase(), engine);
+                    }
+                }
+            }
+        }
         //
         Settings settings = appContext.getEnvironment().getSettings();
         this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
-        String renderPatterns = settings.getString("hasor.restful.renderPatterns", "htm;html;");
-        if (StringUtils.isNotBlank(renderPatterns)) {
-            String[] renderArrays = StringUtils.split(renderPatterns, ";");
-            for (String renderType : renderArrays) {
-                this.engineMap.put(renderType, engine);
-            }
-        }
         this.useLayout = settings.getBoolean("hasor.restful.useLayout", true);
     }
     //

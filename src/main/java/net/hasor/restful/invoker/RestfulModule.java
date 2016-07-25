@@ -17,6 +17,7 @@ package net.hasor.restful.invoker;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.restful.MimeType;
+import net.hasor.restful.RenderEngine;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.resource.ResourceModule;
 import net.hasor.web.WebApiBinder;
@@ -44,13 +45,26 @@ public class RestfulModule extends WebModule {
         for (XmlNode xmlProp : xmlPropArray) {
             for (XmlNode envItem : xmlProp.getChildren()) {
                 if (StringUtils.equalsIgnoreCase("render", envItem.getName())) {
-                    String renderType = envItem.getAttribute("renderType");
+                    String renderTypeStr = envItem.getAttribute("renderType");
                     String renderClass = envItem.getText();
-                    if (StringUtils.isNotBlank(renderType)) {
-                        logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
-                        renderMap.put(renderType.toUpperCase(), renderClass);
+                    if (StringUtils.isNotBlank(renderTypeStr)) {
+                        String[] renderTypeArray = renderTypeStr.split(";");
+                        for (String renderType : renderTypeArray) {
+                            logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
+                            renderMap.put(renderType.toUpperCase(), renderClass);
+                        }
                     }
                 }
+            }
+        }
+        //
+        for (String key : renderMap.keySet()) {
+            String type = renderMap.get(key);
+            try {
+                Class<?> renderType = apiBinder.getEnvironment().getClassLoader().loadClass(type);
+                apiBinder.bindType(RenderEngine.class).nameWith(key).to((Class<? extends RenderEngine>) renderType).metaData("FORM-XML", true);
+            } catch (Exception e) {
+                logger.error("restful -> renderType {} load failed {}.", type, e.getMessage(), e);
             }
         }
         //

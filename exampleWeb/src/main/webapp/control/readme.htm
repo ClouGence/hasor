@@ -1,69 +1,68 @@
 <p>
-	&nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>是一款基于<strong>&nbsp;Java&nbsp;</strong>
-	语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上，通过<strong>&nbsp;Hasor&nbsp;</strong>强有力的粘合机制，构建出更加完善的应用场景。同时<strong>&nbsp;Hasor&nbsp;</strong>的各种内置插件也会帮助开发者进行快速开发。而所有内置插件，在初始化的时都做了智能加载，只有用到了它们才会被加载到框架中。否则这些内置插件在初始化期间就会放弃加载自己。
+    &nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>是一款基于<strong>&nbsp;Java&nbsp;</strong>
+    语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上，通过<strong>&nbsp;Hasor&nbsp;</strong>强有力的粘合机制，构建出更加完善的应用场景。同时<strong>&nbsp;Hasor&nbsp;</strong>的各种内置插件也会帮助开发者进行快速开发。而所有内置插件，在初始化的时都做了智能加载，只有用到了它们才会被加载到框架中。否则这些内置插件在初始化期间就会放弃加载自己。基于目前 Hasor 内核上已经发展出 DB、Web、Restful 三大基础框架。
 </p>
 <h2>
-	<b>设计思想</b>
+    <b>设计思想</b>
 </h2>
 <p>
-	&nbsp; &nbsp; <strong>Hasor</strong> 提倡开发者充分利用编程语言的优势进行三方整合和模块化设计。同时<strong>&nbsp;Hasor&nbsp;</strong>也主要是通过这种“<strong>&nbsp;微内核+插件&nbsp;</strong>”的方式丰富开发所需的所有功能。
+    &nbsp; &nbsp; <strong>Hasor</strong> 提倡开发者充分利用编程语言的优势进行三方整合和模块化设计。同时<strong>&nbsp;Hasor&nbsp;</strong>也主要是通过这种“<strong>&nbsp;微内核+插件&nbsp;</strong>”的方式丰富开发所需的所有功能。
 </p>
 <p>
-	&nbsp; &nbsp;决定避开<strong>&nbsp;COC&nbsp;</strong>原则的原因是，<strong>&nbsp;COC&nbsp;</strong>虽然已约定的方式降低了整个框架的设计复杂度，但同时也最大限度的牺牲了框架的灵活性。缺少灵活性的框架在应用场景上会受到极大的制约。而<strong>&nbsp;Hasor&nbsp;</strong>的设计则更加面向底层，因此需要更多的灵活性。
+    &nbsp; &nbsp;决定避开<strong>&nbsp;COC&nbsp;</strong>原则的原因是，<strong>&nbsp;COC&nbsp;</strong>虽然已约定的方式降低了整个框架的设计复杂度，但同时也最大限度的牺牲了框架的灵活性。缺少灵活性的框架在应用场景上会受到极大的制约。而<strong>&nbsp;Hasor&nbsp;</strong>的设计则更加面向底层，因此需要更多的灵活性。
 </p>
 <p>
-	&nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>强大的灵活性表现在模块整合能力上，对于某一个领域开发方面<strong>&nbsp;Hasor&nbsp;</strong>依然强调并力推<strong>&nbsp;COC&nbsp;</strong>。小而美的核心，大而全的生态圈是<strong>&nbsp;Hasor&nbsp;</strong>的目标。
+    &nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>强大的灵活性表现在模块整合能力上，对于某一个领域开发方面<strong>&nbsp;Hasor&nbsp;</strong>依然强调并力推<strong>&nbsp;COC&nbsp;</strong>。小而美的核心，大而全的生态圈是<strong>&nbsp;Hasor&nbsp;</strong>的目标。
 </p>
 <h2>
-	<b>架构</b>
+    <b>架构</b>
 </h2>
 <p>
-	<img src="http://project.hasor.net/resources/185946_9TWV_1166271.png" alt="" data-bd-imgshare-binded="1" />
+    <img src="http://project.hasor.net/resources/185946_9TWV_1166271.png" alt="" data-bd-imgshare-binded="1"/>
 </p>
 <h2>
-	<b>特性</b>
+    <b>特性</b>
 </h2>
 <ul>
-	<li>01. 支持IoC编程，灵活，多种注入方式可选。</li>
-	<li>02. 支持Aop编程，更精准、更强大。</li>
-	<li>03. ‘零’配置文件，所有框架配置全部内置。</li>
-	<li>04. ‘零’开发，解析自定义Xml配置文件。</li>
-	<li>05. 提供事件机制进行业务深度解耦，使业务逻辑更佳清晰。</li>
-	<li>06. 提供完备的数据库操作接口，支持 Result -> Object 映射。</li>
-	<li>07. 提供丰富的JDBC事物控制机制。</li>
-	<li>08. 支持多数据源下的事务控制，无需考虑多数据源下事务切换的问题。</li>
-	<li>09. 支持log4j、logback等多种主流日志框架。</li>
-	<li>10. 支持无缝与Spring集成，在Spring中也可以享受Hasor的插件。</li>
-	<li>11. 提供丰富的工具箱，帮助您快速开发。</li>
-	<li>12. web - 无需‘web.xml’配置各种Listener、Servlet、Filter。</li>
-	<li>13. web - 支持对ServletContextListener、HttpSessionListener、HttpServlet、Filter的IoC注入和Aop。</li>
-	<li>14. web - 支持restful风格的Web开发（内置插件）</li>
-	<li>15. web - 支持freemarker模版引擎（内置插件）</li>
+    <li>01. 支持IoC编程，灵活，多种注入方式可选。</li>
+    <li>02. 支持Aop编程，更精准、更强大。</li>
+    <li>03. ‘零’配置文件，所有框架配置全部内置。</li>
+    <li>04. ‘零’开发，解析自定义Xml配置文件。</li>
+    <li>05. 提供事件机制进行业务深度解耦，使业务逻辑更佳清晰。</li>
+    <li>06. 提供完备的数据库操作接口，支持 Result -> Object 映射。</li>
+    <li>07. 提供丰富的JDBC事物控制机制。</li>
+    <li>08. 支持多数据源下的事务控制，无需考虑多数据源下事务切换的问题。</li>
+    <li>09. 支持log4j、logback等多种主流日志框架。</li>
+    <li>10. 支持无缝与Spring集成，在Spring中也可以享受Hasor的插件。</li>
+    <li>11. 提供丰富的工具箱，帮助您快速开发。</li>
+    <li>12. web - 无需‘web.xml’配置各种Listener、Servlet、Filter。</li>
+    <li>13. web - 支持对ServletContextListener、HttpSessionListener、HttpServlet、Filter的IoC注入和Aop。</li>
+    <li>14. web - 支持restful风格的Web开发，支持各种类型的模版引擎。</li>
 </ul>
 <h2>
-	<b>发展状况</b>
+    <b>发展状况</b>
 </h2>
 <p>
-	&nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>起源于2012年，并在2013年初具雏形。当时尚未开源，并被应用到公司个大项目中。那个时候<strong>&nbsp;Hasor&nbsp;</strong>还是基于<strong>&nbsp;Guice&nbsp;</strong>构建，并且整合了
-	<strong>&nbsp;Spring JDBC&nbsp;</strong>、<strong>&nbsp;Guice-Servlet&nbsp;</strong>等大量三方框架。还有少量自建功能，例如：<strong>&nbsp;WebMVC&nbsp;</strong>。当时整个框架还未从软件产品中完全剥离出来，
-	其中最基本的要素经过打包会产生约 <strong>&nbsp;130MB&nbsp;</strong>的JAR包依赖。与目前相比显得无比臃肿。
+    &nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>起源于2012年，并在2013年初具雏形。当时尚未开源，并被应用到公司个大项目中。那个时候<strong>&nbsp;Hasor&nbsp;</strong>还是基于<strong>&nbsp;Guice&nbsp;</strong>构建，并且整合了
+    <strong>&nbsp;Spring JDBC&nbsp;</strong>、<strong>&nbsp;Guice-Servlet&nbsp;</strong>等大量三方框架。还有少量自建功能，例如：<strong>&nbsp;WebMVC&nbsp;</strong>。当时整个框架还未从软件产品中完全剥离出来，
+    其中最基本的要素经过打包会产生约 <strong>&nbsp;130MB&nbsp;</strong>的JAR包依赖。与目前相比显得无比臃肿。
 </p>
 <p>
-	&nbsp; &nbsp; 随后2013年开始，通过对整套框架的重新梳理。<strong>&nbsp;Hasor&nbsp;</strong>才得以从项目中脱离出来成为独立的框架，依赖也随时聚减。同年开始计划开源版本的实现，也就是如今的Hasor。
+    &nbsp; &nbsp; 随后2013年开始，通过对整套框架的重新梳理。<strong>&nbsp;Hasor&nbsp;</strong>才得以从项目中脱离出来成为独立的框架，依赖也随时聚减。同年开始计划开源版本的实现，也就是如今的Hasor。
 </p>
 <p>
-	&nbsp; &nbsp; 2013年9月15日，0.0.1版本，第一个版本被推送到Maven中央仓库，<strong>&nbsp;Hasor&nbsp;</strong>的雏形被确立，<strong>&nbsp;Module&nbsp;</strong>化的插件概念被提出，依赖减少到只有<strong>&nbsp;Guice&nbsp;</strong>和<strong>&nbsp;slf4j&nbsp;</strong>。
+    &nbsp; &nbsp; 2013年9月15日，0.0.1版本，第一个版本被推送到Maven中央仓库，<strong>&nbsp;Hasor&nbsp;</strong>的雏形被确立，<strong>&nbsp;Module&nbsp;</strong>化的插件概念被提出，依赖减少到只有<strong>&nbsp;Guice&nbsp;</strong>和<strong>&nbsp;slf4j&nbsp;</strong>。
 </p>
 <p>
-	&nbsp; &nbsp; 2014年7月26日，0.0.9版本被推送到<strong>&nbsp;Maven&nbsp;</strong>中央仓库。经历多个版本迭代更新从<strong>&nbsp;0.0.9&nbsp;</strong>开始，最后一个核心依赖<strong>&nbsp;Guice&nbsp;</strong>也被去除。
-	而此时<strong>&nbsp;Hasor&nbsp;</strong>已经拥有了<strong>&nbsp;Web&nbsp;</strong>、<strong>&nbsp;WebMVC&nbsp;</strong>、<strong>&nbsp;JDBC&nbsp;</strong>、和完整的数据库事务能力。在这个阶段中Hasor曾经在<strong>&nbsp;Guice&nbsp;</strong>、<strong>&nbsp;Spring&nbsp;</strong>之间摇摆不定，也对未来的路线和定位发生过几次重大的改变。
+    &nbsp; &nbsp; 2014年7月26日，0.0.9版本被推送到<strong>&nbsp;Maven&nbsp;</strong>中央仓库。经历多个版本迭代更新从<strong>&nbsp;0.0.9&nbsp;</strong>开始，最后一个核心依赖<strong>&nbsp;Guice&nbsp;</strong>也被去除。
+    而此时<strong>&nbsp;Hasor&nbsp;</strong>已经拥有了<strong>&nbsp;Web&nbsp;</strong>、<strong>&nbsp;WebMVC&nbsp;</strong>、<strong>&nbsp;JDBC&nbsp;</strong>、和完整的数据库事务能力。在这个阶段中Hasor曾经在<strong>&nbsp;Guice&nbsp;</strong>、<strong>&nbsp;Spring&nbsp;</strong>之间摇摆不定，也对未来的路线和定位发生过几次重大的改变。
 </p>
 <p>
-	&nbsp; &nbsp; 2015年5月9日，0.0.12版本发布，此时的Hasor拥有<strong>&nbsp;6&nbsp;</strong>大模块和若干小插件，发展上过于零碎。加上精力有限于是开始了<strong>&nbsp;all-in&nbsp;</strong>行动，将众多模块合并到一起。直至2015年7月3日，<strong>&nbsp;Hasor-1.0.0&nbsp;</strong>发布。
+    &nbsp; &nbsp; 2015年5月9日，0.0.12版本发布，此时的Hasor拥有<strong>&nbsp;6&nbsp;</strong>大模块和若干小插件，发展上过于零碎。加上精力有限于是开始了<strong>&nbsp;all-in&nbsp;</strong>行动，将众多模块合并到一起。直至2015年7月3日，<strong>&nbsp;Hasor-1.0.0&nbsp;</strong>发布。
 </p>
 <p>
-	&nbsp; &nbsp; 2015年11月27日，2.0版本发布，提供了@Inject注解方式进行依赖注入，该版本一举解决了在去除Guice和决定不在依赖Spring之后Hasor的<strong>&nbsp;IoC&nbsp;</strong>能力大大下降的问题。同时Hasor2.0开始确立了“小而美的核心，大而全的生态圈”的目标。
+    &nbsp; &nbsp; 2015年11月27日，2.0版本发布，提供了@Inject注解方式进行依赖注入，该版本一举解决了在去除Guice和决定不在依赖Spring之后Hasor的<strong>&nbsp;IoC&nbsp;</strong>能力大大下降的问题。同时Hasor2.0开始确立了“小而美的核心，大而全的生态圈”的目标。
 </p>
 <p>
-	&nbsp; &nbsp; 2016年05月29日，2.3.2版本发布，所有内置插件都增添了智能加载机制。智能加载是指在初始化的插件自己会去做配置检查，只有用到了它们才会被加载到框架中。否则内置插件在初始化期间就会放弃加载自己。此举为Hasor在运行时减少了更多不必要的插件加载，一个小清新的微内核完全展现在面前。
+    &nbsp; &nbsp; 2016年05月29日，2.3.2版本发布，所有内置插件都增添了智能加载机制。智能加载是指在初始化的插件自己会去做配置检查，只有用到了它们才会被加载到框架中。否则内置插件在初始化期间就会放弃加载自己。此举为Hasor在运行时减少了更多不必要的插件加载，一个小清新的微内核完全展现在面前。
 </p>

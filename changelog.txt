@@ -5,7 +5,8 @@
     03.支持配置文件模版化,通过模版化的配置文件。可以在不修改部署包的前提下,替换配置文件的值。使其可以方便的适用于各种环境,例如:日常、预发、线上、隔离。    
     04.新增 @InjectSettings 注解,支持配置文件数据注入。
     05.Restful、Template、mime 三个小插件整合到一起,提升为 webmvc 框架,编程接口依然以 Restful 为标准。
-    06.依赖注入支持 WebAppContext、WebEnvironment 两个接口的注入。
+    06.Render渲染器,支持多种,并通过viewType可以动态指定。
+    07.依赖注入支持 WebAppContext、WebEnvironment 两个接口的注入。
 * 改进:
     01.配置文件加载在原有xml格式下新增 "属性类型" 文件的加载支持，属性文件默认采用UTF-8编码方式读取。
     02.Settings 接口的两个 findClass 方法移动到 Environment 接口中,Settings的职责更佳明确,只负责配置文件相关的操作。
