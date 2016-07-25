@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.resource;
+package net.demo.hasor.resource;
 import net.hasor.core.AppContext;
 import org.more.resource.ResourceLoader;
 import net.hasor.restful.MimeType;

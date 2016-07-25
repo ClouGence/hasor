@@ -19,7 +19,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderEngine;
 import net.hasor.restful.api.MappingTo;
-import net.hasor.restful.resource.ResourceModule;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.util.StringUtils;
@@ -36,7 +35,6 @@ import java.util.Set;
  */
 public class RestfulModule extends WebModule {
     public final void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new ResourceModule());
         //
         // .Render
         Settings settings = apiBinder.getEnvironment().getSettings();

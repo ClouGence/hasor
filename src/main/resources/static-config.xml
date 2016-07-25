@@ -43,18 +43,13 @@
             <!-- 模块配置目录 -->
             <HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
         </environmentVar>
-
         <!-- ======================================================================== -->
-        <!-- 程序入口模块类名【由StartupModule插件提供】 -->
-        <startup></startup>
 
         <!-- web上提供restful风格开发Api【由RestfulModule插件提供】 -->
-        <restful urlPatterns="htm;html;do;" useLayout="true" resourcePatterns=";" forceRefreshCache="false">
+        <restful urlPatterns="htm;html;do;" useLayout="true">
             <!-- 渲染器 -->
             <renderSet>
                 <render renderType="json">net.hasor.restful.render.JsonRenderEngine</render>
-                <render renderType="xml">net.hasor.restful.render.XmlRenderEngine</render>
-                <render renderType="xslt">net.hasor.restful.render.XSLTRenderEngine</render>
             </renderSet>
             <!-- 静态资源位置 -->
             <resourcePath>/static</resourcePath>
@@ -64,8 +59,7 @@
             <templatePath>/templates</templatePath>
         </restful>
 
-        <!-- web请求响应编码配置【由EncodingModule插件提供】 -->
-        <encoding urlPatterns="/*;" requestEncoding="" responseEncoding=""/>
-        <!-- ======================================================================== -->
+        <!-- 程序入口模块类名【由StartupModule插件提供】 -->
+        <startup></startup>
     </hasor>
 </config>

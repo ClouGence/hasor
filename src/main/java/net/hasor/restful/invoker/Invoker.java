@@ -15,6 +15,7 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.Provider;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.WebController;
 import net.hasor.restful.api.*;
 import org.more.convert.ConverterUtils;
@@ -23,6 +24,7 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,6 +101,12 @@ class Invoker {
     }
     /**准备参数*/
     private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno) {
+        // .特殊类型参数
+        Object specialParam = resolveSpecialParam(paramClass);
+        if (specialParam != null) {
+            return specialParam;
+        }
+        // .注解解析
         for (Annotation pAnno : paramAnno) {
             Object finalValue = resolveParam(paramClass, pAnno);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
@@ -108,6 +116,19 @@ class Invoker {
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
+    private Object resolveSpecialParam(Class<?> paramClass) {
+        if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
+            return this.renderData.getHttpRequest();
+        }
+        if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
+            return this.renderData.getHttpRequest();
+        }
+        if (paramClass == RenderData.class) {
+            return this.renderData;
+        }
+        return null;
+    }
+    //
     //
     //
     /**/

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.web;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.WebController;
 import net.hasor.restful.api.MappingTo;
 /**
@@ -24,6 +25,7 @@ import net.hasor.restful.api.MappingTo;
 @MappingTo("/index.htm")
 public class Index extends WebController {
     //
-    public void execute() {
+    public void execute(RenderData data) {
+        //
     }
 }
