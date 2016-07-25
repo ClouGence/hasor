@@ -14,6 +14,7 @@
     04.Settings 小范围重构,内部的数据管理更佳清晰。
     05.StartupModule插件的类装载,使用 Environment 接口提供的。
     07.Resource 插件被拆分成两个部分,web相关的部分与新成立的 Restful 框架整合到一起。资源加载部分沉淀到 org.more 工具包。
+    08.Encoding 插件被降级成为 demo 的一部分。
 
 ===== Hasor-Core v2.3.3 (2016-06-16)
 * 新增:

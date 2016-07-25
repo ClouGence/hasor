@@ -17,7 +17,6 @@ package net.demo.hasor.core;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import net.demo.hasor.manager.EnvironmentConfig;
 import net.demo.hasor.manager.VersionInfoManager;
@@ -36,15 +35,15 @@ import java.util.HashMap;
  * @author 赵永春(zyc@hasor.net)
  */
 @Render({"html", "htm"})
-public class FreemarkerTemplateEngine implements RenderEngine {
+public class FreemarkerRender implements RenderEngine {
     protected Configuration configuration;
     @Override
     public void initEngine(WebAppContext appContext) throws Throwable {
-        String realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
+        String realPath = appContext.getEnvironment().getServletContext().getRealPath("/");
+        //
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
         this.configuration = new Configuration(Configuration.VERSION_2_3_22);
         this.configuration.setTemplateLoader(templateLoader);
-        this.configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_22).build());
         //
         this.configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
         this.configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8

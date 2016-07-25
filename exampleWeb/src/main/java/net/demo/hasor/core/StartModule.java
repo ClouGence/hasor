@@ -26,9 +26,10 @@ public class StartModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        apiBinder.filter("/*").through(0, new JumpFilter(apiBinder.getEnvironment()));
+        apiBinder.filter("/*").through(0, new EncodingFilter());
+        apiBinder.filter("/*").through(0, new JumpFilter());
         //
         apiBinder.installModule(new DataSourceModule());
-        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerTemplateEngine());
+        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
     }
 }

@@ -52,11 +52,6 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.22</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
 
         <!-- servlet -->
         <dependency>

@@ -19,27 +19,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 /**
- * 负责跳转index.htm
- * @version : 2016年1月5日
- * @author 赵永春(zyc@hasor.net)
+ * 提供请求相应编码设置。
+ * @version : 2013-9-13
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class JumpFilter implements Filter {
-    @Override
+public class EncodingFilter implements Filter {
+    //
     public void init(FilterConfig filterConfig) throws ServletException {
-        /*--*/
+        /**/
     }
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if (httpRequest.getRequestURI().endsWith("/")) {
-            ((HttpServletResponse) response).sendRedirect(httpRequest.getRequestURI() + "index.htm");
-            return;
-        }
-        chain.doFilter(httpRequest, httpResponse);
+        final HttpServletRequest httpReq = (HttpServletRequest) request;
+        final HttpServletResponse httpRes = (HttpServletResponse) response;
+        httpReq.setCharacterEncoding("utf-8");
+        httpRes.setCharacterEncoding("utf-8");
+        chain.doFilter(request, response);
     }
-    @Override
     public void destroy() {
-        /*--*/
+        /**/
     }
 }

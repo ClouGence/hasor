@@ -12,13 +12,11 @@
 
         <!-- 默认要装载的模块 -->
         <modules loadModule="true" loadErrorShow="true">
+            <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
             <module>net.hasor.plugins.event.EventModule</module>
 
-            <module>net.hasor.plugins.encoding.EncodingModule</module>
             <module>net.hasor.restful.invoker.RestfulModule</module>
-
-            <module>net.hasor.plugins.startup.StartupModule</module>
         </modules>
 
         <!-- 默认设置 -->
