@@ -42,8 +42,6 @@ class RestfulFilter implements Filter {
     private       MimeType          mimeType       = null;
     private       RenderLayout      renderLayout   = null;
     //
-    //
-    //
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
             return;
@@ -117,22 +115,21 @@ class RestfulFilter implements Filter {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {
                     doInvoke(renderData, define, httpRequest, httpResponse);
-                    return;
                 }
             }
         }
         //
         // .render
-        if (!httpResponse.isCommitted()) {
-            try {
-                this.renderLayout.process(renderData, httpResponse.getWriter());
-            } catch (Throwable e) {
-                logger.error("render '" + renderData.getViewName() + "' failed -> " + e.getMessage(), e);
-                throw ExceptionUtils.toRuntimeException(e);
+        try {
+            if (this.renderLayout.process(renderData, httpResponse.getWriter())) {
+                return;
+            } else {
+                chain.doFilter(httpRequest, httpResponse);
             }
+        } catch (Throwable e) {
+            logger.error("render '" + renderData.getViewName() + "' failed -> " + e.getMessage(), e);
+            throw ExceptionUtils.toRuntimeException(e);
         }
-        // .默认逻辑
-        chain.doFilter(httpRequest, httpResponse);
     }
     //
     private void doInvoke(InnerRenderData renderData, MappingToDefine define, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {

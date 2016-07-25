@@ -43,7 +43,12 @@ class InnerRenderData implements RenderData {
             requestPath = requestPath.substring(contextPath.length());
         }
         //
-        this.viewType = "default";
+        int lastIndex = requestPath.lastIndexOf(".");
+        if (lastIndex > 0) {
+            this.viewType = requestPath.substring(lastIndex + 1);
+        } else {
+            this.viewType = "default";
+        }
         this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
         this.httpRequest = httpRequest;
@@ -63,7 +68,7 @@ class InnerRenderData implements RenderData {
     /**获取MimeType类型*/
     public String getMimeType(String suffix) {
         if (this.mimeType == null) {
-            return null;//TODO return mimeType
+            return httpRequest.getSession(true).getServletContext().getMimeType(suffix);
         } else {
             return this.mimeType.getMimeType(suffix);
         }

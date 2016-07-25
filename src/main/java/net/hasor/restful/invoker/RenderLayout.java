@@ -18,6 +18,7 @@ import net.hasor.core.Settings;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
+import org.more.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +31,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年7月1日
  * @author 赵永春(zyc@hasor.net)
  */
-class RenderLayout implements RenderEngine {
+class RenderLayout {
     private AtomicBoolean             inited       = new AtomicBoolean(false);
     private Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
     private String                    layoutPath   = null;                    // 布局模版位置
     private String                    templatePath = null;                    // 页面模版位置
     //
+    //
+    //
+    public void initEngine(WebAppContext appContext) throws Throwable {
+        if (!this.inited.compareAndSet(false, true)) {
+            return;
+        }
+        //
+        //
+        RenderEngine engine = appContext.getInstance(RenderEngine.class);
+        engine.initEngine(appContext);
+        //
+        Settings settings = appContext.getEnvironment().getSettings();
+        this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
+        this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
+        String renderPatterns = settings.getString("hasor.restful.renderPatterns", "htm;html;");
+        if (StringUtils.isNotBlank(renderPatterns)) {
+            String[] renderArrays = StringUtils.split(renderPatterns, ";");
+            for (String renderType : renderArrays) {
+                this.engineMap.put(renderType, engine);
+            }
+        }
+    }
     //
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
         if (engine == null) {
@@ -68,31 +91,19 @@ class RenderLayout implements RenderEngine {
         }
     }
     //
-    @Override
-    public void initEngine(WebAppContext appContext) throws Throwable {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;
-        }
-        //
-        //
-        RenderEngine engine = appContext.getInstance(RenderEngine.class);
-        engine.initEngine(appContext);
-        this.engineMap.put("default", engine);
-        Settings settings = appContext.getEnvironment().getSettings();
-        this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
-        this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
-    }
-    //
-    public void process(RenderData renderData, Writer writer) throws Throwable {
+    public boolean process(RenderData renderData, Writer writer) throws Throwable {
         if (renderData == null) {
-            return;
+            return false;
         }
-        //
         String type = renderData.getViewType();
         RenderEngine engine = this.engineMap.get(type);
         if (engine == null) {
-            return;
+            return false;
         }
+        if (renderData.getHttpResponse().isCommitted()) {
+            return false;
+        }
+        //
         //
         String tempName = renderData.getViewName();
         String layoutFile = findLayout(engine, tempName);
@@ -118,9 +129,6 @@ class RenderLayout implements RenderEngine {
             }
         }
         //
-    }
-    @Override
-    public boolean exist(String template) throws IOException {
-        return this.exist(template);
+        return true;
     }
 }
