@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.4.0 (2016-07-25)
+﻿===== Hasor-Core v2.4.0 (2016-07-27)
 * 新增:
     01.新增 DecSpaceMap 可以将多个Map合并成一个Map对象给予操作,每个子map可以通过一个空间字符串进行标识。
     02.AbstractSettings 类增加 resetValues 方法,可以通过 UpdateValue 接口更新载入的配置文件数据,一个典型的应用场景是模版化配置文件。
