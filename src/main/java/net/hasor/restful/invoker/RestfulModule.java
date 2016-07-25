@@ -93,6 +93,7 @@ public class RestfulModule extends WebModule {
         //
         // .MimeType
         MimeTypeContext mimeTypeContext = new MimeTypeContext(apiBinder.getServletContext());
+        mimeTypeContext.loadStream("/META-INF/mime.types.xml");
         mimeTypeContext.loadStream("mime.types.xml");
         apiBinder.bindType(MimeType.class, mimeTypeContext);
     }
