@@ -15,6 +15,10 @@
  */
 package net.hasor.rsf.center.server.webmanager.domain.daos;
 import net.hasor.core.Inject;
+import net.hasor.rsf.center.server.core.daos.AppDODao;
+import net.hasor.rsf.center.server.core.daos.ServiceInfoDODao;
+import net.hasor.rsf.center.server.core.daos.ServiceJoinPortDODao;
+import net.hasor.rsf.center.server.core.daos.TerminalDODao;
 import net.hasor.rsf.center.server.webmanager.core.dao.AbstractDao;
 import net.hasor.rsf.center.server.webmanager.core.dao.Dao;
 /**

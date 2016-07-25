@@ -16,10 +16,10 @@
 package net.hasor.rsf.center.server.webmanager.domain.daos;
 import java.util.HashMap;
 import org.more.bizcommon.ResultDO;
+import net.hasor.rsf.center.server.domain.entity.TerminalDO;
 import net.hasor.rsf.center.server.webmanager.core.ErrorCode;
 import net.hasor.rsf.center.server.webmanager.core.dao.AbstractDao;
 import net.hasor.rsf.center.server.webmanager.core.dao.Dao;
-import net.hasor.rsf.center.server.webmanager.domain.entity.TerminalDO;
 /**
  * 终端
  * 

@@ -20,9 +20,9 @@ import net.hasor.core.Inject;
 import net.hasor.plugins.restful.api.MappingTo;
 import net.hasor.plugins.restful.api.Params;
 import net.hasor.plugins.valid.ValidData;
+import net.hasor.rsf.center.server.core.daos.DaoProvider;
+import net.hasor.rsf.center.server.domain.entity.AppDO;
 import net.hasor.rsf.center.server.webmanager.core.controller.BaseController;
-import net.hasor.rsf.center.server.webmanager.domain.daos.DaoProvider;
-import net.hasor.rsf.center.server.webmanager.domain.entity.AppDO;
 /**
  * @version : 2015年7月27日
  * @author 赵永春(zyc@hasor.net)

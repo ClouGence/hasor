@@ -36,8 +36,8 @@ import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.WorkMode;
-import net.hasor.rsf.center.server.webmanager.core.mybatis.SqlExecutorTemplate;
-import net.hasor.rsf.center.server.webmanager.core.mybatis.SqlExecutorTemplateProvider;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorTemplate;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorTemplateProvider;
 /**
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)

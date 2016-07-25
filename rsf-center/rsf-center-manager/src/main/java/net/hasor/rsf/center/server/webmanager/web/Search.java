@@ -18,8 +18,8 @@ import java.io.IOException;
 import org.apache.ibatis.annotations.Param;
 import net.hasor.core.Inject;
 import net.hasor.plugins.restful.api.MappingTo;
+import net.hasor.rsf.center.server.core.daos.DaoProvider;
 import net.hasor.rsf.center.server.webmanager.core.controller.BaseController;
-import net.hasor.rsf.center.server.webmanager.domain.daos.DaoProvider;
 /**
  * @version : 2015年7月27日
  * @author 赵永春(zyc@hasor.net)

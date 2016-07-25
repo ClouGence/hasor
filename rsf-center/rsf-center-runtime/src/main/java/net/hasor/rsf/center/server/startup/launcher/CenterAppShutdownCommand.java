@@ -38,6 +38,7 @@ public class CenterAppShutdownCommand implements RsfCommand {
     }
     @Override
     public String doCommand(RsfCommandRequest request) throws Throwable {
+        logger.error("A valid shutdown command was received via the shutdown port. Stopping the Server instance.");
         request.writeMessageLine("detail Message:");
         int i = 5;
         for (;;) {

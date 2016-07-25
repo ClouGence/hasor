@@ -15,7 +15,9 @@
  */
 package net.hasor.rsf.center.server.manager;
 import java.util.List;
+import org.more.bizcommon.Result;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.server.push.PushEvent;
 import net.hasor.rsf.center.server.push.RsfCenterEventEnum;
@@ -28,7 +30,7 @@ import net.hasor.rsf.domain.RsfServiceType;
 @Singleton
 public class ProviderServiceManager extends BaseServiceManager {
     /**发布服务*/
-    public String publishService(String hostString, ProviderPublishInfo info) throws Throwable {
+    public String publishService(InterAddress hostString, ProviderPublishInfo info) throws Throwable {
         //
         // 1.保存服务信息：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
@@ -100,7 +102,7 @@ public class ProviderServiceManager extends BaseServiceManager {
         return this.readData(providerTermPath);
     }
     /**提供者者心跳*/
-    public boolean serviceBeat(String hostString, String serviceID) throws Throwable {
-        return super.serviceBeat(hostString, serviceID, RsfServiceType.Provider);
+    public Result<Boolean> serviceBeat(InterAddress rsfHost, String forBindID) throws Throwable {
+        return super.serviceBeat(rsfHost, forBindID, RsfServiceType.Provider);
     }
 }

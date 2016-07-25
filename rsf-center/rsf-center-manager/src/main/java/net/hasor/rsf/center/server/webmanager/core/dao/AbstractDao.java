@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.center.server.webmanager.core.dao;
 import net.hasor.core.Inject;
-import net.hasor.rsf.center.server.webmanager.core.mybatis.SqlExecutorOperations;
-import net.hasor.rsf.center.server.webmanager.core.mybatis.SqlExecutorTemplate;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorOperations;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

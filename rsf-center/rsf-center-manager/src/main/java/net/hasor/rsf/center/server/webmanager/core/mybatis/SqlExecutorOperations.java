@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
+import net.hasor.rsf.center.server.mybatis.SqlSessionCallback;
 /**
  * @version : 2015年5月27日
  * @author 赵永春(zyc@hasor.net)

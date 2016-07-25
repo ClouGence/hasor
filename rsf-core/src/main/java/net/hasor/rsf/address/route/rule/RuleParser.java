@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
+import net.hasor.core.setting.StreamType;
 import net.hasor.rsf.RsfSettings;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.input.ReaderInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * 路由规则解析器
  * @version : 2015年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RuleParser {
-    protected Logger              logger      = LoggerFactory.getLogger(getClass());
-    private Map<String, Class<?>> ruleTypeMap = null;
+    protected Logger                logger      = LoggerFactory.getLogger(getClass());
+    private   Map<String, Class<?>> ruleTypeMap = null;
     public RuleParser(RsfSettings rsfSettings) {
         this.ruleTypeMap = new HashMap<String, Class<?>>();
         XmlNode[] flowcontrolNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
@@ -67,7 +69,8 @@ public class RuleParser {
         //
         try {
             ReaderInputStream ris = new ReaderInputStream(new StringReader("<xml>" + rawRoute + "</xml>"));
-            InputStreamSettings ruleSettings = new InputStreamSettings(ris);
+            InputStreamSettings ruleSettings = new InputStreamSettings();
+            ruleSettings.addStream(ris, StreamType.Xml);
             ruleSettings.loadSettings();
             return ruleSettings(ruleSettings);
         } catch (Exception e) {

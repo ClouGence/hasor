@@ -19,8 +19,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.InjectMembers;
 import net.hasor.plugins.valid.ValidDefine;
 import net.hasor.plugins.valid.Validation;
-import net.hasor.rsf.center.server.webmanager.domain.daos.DaoProvider;
-import net.hasor.rsf.center.server.webmanager.domain.entity.TerminalDO;
+import net.hasor.rsf.center.server.core.daos.DaoProvider;
+import net.hasor.rsf.center.server.domain.entity.TerminalDO;
 /**
  * @version : 2015年6月28日
  * @author 赵永春(zyc@hasor.net)

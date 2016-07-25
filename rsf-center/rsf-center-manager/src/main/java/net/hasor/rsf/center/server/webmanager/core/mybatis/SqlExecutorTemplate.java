@@ -22,6 +22,8 @@ import javax.sql.DataSource;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcConnection;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorOperations;
+import net.hasor.rsf.center.server.mybatis.SqlSessionCallback;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

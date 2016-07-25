@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.webmanager.domain.daos;
+import net.hasor.rsf.center.server.domain.entity.TerminalDO;
 import net.hasor.rsf.center.server.webmanager.core.dao.AbstractDao;
 import net.hasor.rsf.center.server.webmanager.core.dao.Dao;
-import net.hasor.rsf.center.server.webmanager.domain.entity.ServiceJoinPortDO;
 /**
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Dao
-public class ServiceJoinPortDODao extends AbstractDao<ServiceJoinPortDO> {}
+public class ServiceJoinPortDODao extends AbstractDao<TerminalDO> {}

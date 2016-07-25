@@ -17,6 +17,7 @@ package net.hasor.rsf.center.server.webmanager.core.mybatis;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import net.hasor.core.Provider;
+import net.hasor.rsf.center.server.mybatis.SqlExecutorTemplate;
 /**
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)

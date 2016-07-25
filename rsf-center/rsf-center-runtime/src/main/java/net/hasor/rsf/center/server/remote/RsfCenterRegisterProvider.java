@@ -17,6 +17,8 @@ package net.hasor.rsf.center.server.remote;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.more.bizcommon.Result;
+import org.more.bizcommon.ResultDO;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +50,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public String publishService(String rsfHostString, ProviderPublishInfo info) {
         try {
-            rsfHostString = converTo(rsfHostString);
-            return this.providerServiceManager.publishService(rsfHostString, info);
+            return this.providerServiceManager.publishService(new InterAddress(rsfHostString), info);
         } catch (Throwable e) {
             logger.error("publishService -> " + e.getMessage(), e);
             return null;
@@ -59,8 +60,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public ReceiveResult receiveService(String rsfHostString, ConsumerPublishInfo info) {
         try {
-            rsfHostString = converTo(rsfHostString);
-            return this.consumerServiceManager.publishService(rsfHostString, info);
+            return this.consumerServiceManager.publishService(new InterAddress(rsfHostString), info);
         } catch (Throwable e) {
             logger.error("receiveService -> " + e.getMessage(), e);
             return null;
@@ -70,7 +70,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public boolean removePublish(String rsfHostString, String serviceID) {
         try {
-            rsfHostString = converTo(rsfHostString);
             return this.providerServiceManager.removeRegister(rsfHostString, serviceID);
         } catch (Throwable e) {
             //虽然数据删除失败，但是客户端不会为其在进行心跳服务。随着leader对数据的清理，注册中心中服务信息的最终一致性可以保障。
@@ -82,8 +81,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public boolean removeReceive(String rsfHostString, String serviceID) {
         try {
-            rsfHostString = converTo(rsfHostString);
-            return this.consumerServiceManager.removeRegister(rsfHostString, serviceID);
+            return this.consumerServiceManager.removeRegister(new InterAddress(rsfHostString), serviceID);
         } catch (Throwable e) {
             //虽然数据删除失败，但是客户端不会为其在进行心跳服务。随着leader对数据的清理，注册中心中服务信息的最终一致性可以保障。
             logger.error("removeRegister, error -> " + e.getMessage(), e);
@@ -92,52 +90,44 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     /**服务心跳*/
     @Override
-    public Map<String, Boolean> publishServiceBeat(String rsfHostString, Map<String, String> beatMap) {
-        rsfHostString = converTo(rsfHostString);
+    public Map<String, String> publishServiceBeat(String rsfHostString, Map<String, String> beatMap) {
         return serviceBeat(rsfHostString, beatMap, RsfServiceType.Provider);
     }
     /**订阅心跳*/
     @Override
-    public Map<String, Boolean> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap) {
-        rsfHostString = converTo(rsfHostString);
+    public Map<String, String> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap) {
         return serviceBeat(rsfHostString, beatMap, RsfServiceType.Consumer);
     }
     //
-    //
-    protected Map<String, Boolean> serviceBeat(String rsfHostString, Map<String, String> beatMap, RsfServiceType rsfServiceType) {
+    /* T：成功,F：失败,E：错误 */
+    protected Map<String, String> serviceBeat(String rsfHostString, Map<String, String> beatMap, RsfServiceType rsfServiceType) {
         if (beatMap == null || StringUtils.isBlank(rsfHostString)) {
             logger.error("serviceBeat failed, hostString or beatMap is empty.");
             return null;
         }
-        Map<String, Boolean> resultArrays = new HashMap<String, Boolean>();
+        Map<String, String> resultArrays = new HashMap<String, String>();
         for (Entry<String, String> ent : beatMap.entrySet()) {
             String serviceID = ent.getKey();
-            resultArrays.put(serviceID, false);
+            resultArrays.put(serviceID, "F:no message.");
             //
             try {
-                boolean beatResult = false;
+                Result<Boolean> beatResult = new ResultDO<Boolean>(false).setResult(false);
                 if (rsfServiceType == RsfServiceType.Consumer) {
-                    beatResult = this.consumerServiceManager.serviceBeat(rsfHostString, serviceID);
+                    beatResult = this.consumerServiceManager.serviceBeat(new InterAddress(rsfHostString), serviceID);
                 } else if (rsfServiceType == RsfServiceType.Provider) {
-                    beatResult = this.providerServiceManager.serviceBeat(rsfHostString, serviceID);
-                } else {
-                    beatResult = false;
+                    beatResult = this.providerServiceManager.serviceBeat(new InterAddress(rsfHostString), serviceID);
                 }
-                resultArrays.put(serviceID, beatResult);
+                if (beatResult.isSuccess()) {
+                    resultArrays.put(serviceID, "T:" + beatResult.getResult());
+                } else {
+                    resultArrays.put(serviceID, "F:" + beatResult.firstMessage().getMessage());
+                }
                 logger.error("serviceBeat {} -> hostString ={} ,serviceID ={}", ((beatResult == false) ? "failed" : "succeed"), rsfHostString, serviceID);
             } catch (Throwable e) {
-                logger.error("serviceBeat error -> hostString ={} ,serviceID ={} ,error={}", rsfHostString, serviceID, e.getMessage(), e);
-                resultArrays.put(serviceID, false);
+                resultArrays.put(serviceID, "E:center error -> " + e.getMessage());
+                logger.error("serviceBeat error -> hostString ={} ,serviceID ={}, error ={}", rsfHostString, serviceID, e.getMessage(), e);
             }
         }
         return resultArrays;
-    }
-    protected String converTo(String rsfHostString) {
-        try {
-            InterAddress rsfAddress = new InterAddress(rsfHostString);
-            return rsfAddress.getHostPort() + "@" + rsfAddress.getFormUnit();
-        } catch (Exception e) {
-            return rsfHostString;
-        }
     }
 }

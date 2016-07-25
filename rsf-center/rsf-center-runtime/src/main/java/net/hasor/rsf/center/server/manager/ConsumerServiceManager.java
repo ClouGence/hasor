@@ -85,7 +85,7 @@ public class ConsumerServiceManager extends BaseServiceManager {
     }
     //
     /**订阅服务*/
-    public ReceiveResult publishService(String hostString, ConsumerPublishInfo info) throws Throwable {
+    public ReceiveResult publishService(InterAddress hostString, ConsumerPublishInfo info) throws Throwable {
         //
         // 1.注册服务：/rsf-center/services/group/name/version/info
         String serviceID = info.getBindID();
@@ -127,12 +127,12 @@ public class ConsumerServiceManager extends BaseServiceManager {
     }
     //
     /**删除订阅*/
-    public Result<Boolean> removeRegister(InterAddress rsfHost, String forBindID) throws Throwable {
+    public Result<Boolean> removeRegister(InterAddress rsfHost, String forBindID) {
         return super.removeTerminal(rsfHost, forBindID, RsfServiceType.Consumer);
     }
     //
     /**订阅者心跳*/
-    public Result<Boolean> serviceBeat(InterAddress rsfHost, String forBindID) throws Throwable {
+    public Result<Boolean> serviceBeat(InterAddress rsfHost, String forBindID) {
         return super.serviceBeat(rsfHost, forBindID, RsfServiceType.Consumer);
     }
 }
