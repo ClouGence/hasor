@@ -124,13 +124,12 @@ class RenderLayout {
         }
         //
         //
-        String tempName = renderData.getViewName();
-        tempName = fixTempName(this.templatePath, tempName);
-        renderData.setViewName(tempName);
+        String oriViewName = renderData.getViewName();
+        renderData.setViewName(fixTempName(this.templatePath, oriViewName));
         //
         String layoutFile = null;
         if (this.useLayout && renderData.useLayout()) {
-            layoutFile = findLayout(engine, tempName);
+            layoutFile = findLayout(engine, oriViewName);
         }
         //
         if (layoutFile != null) {
