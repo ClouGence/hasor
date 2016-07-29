@@ -1,22 +1,14 @@
 FROM java:7
 MAINTAINER ZhaoYongChun "zyc@hasor.net"
 
-# work
-RUN mkdir -p "/work"
-ENV WORK_HOME /work
-ADD . /work/sources
-
-
 # maven
 ENV MAVEN_VERSION 3.3.3
 RUN curl -fsSL http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share \
         && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
         && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 ENV MAVEN_HOME /usr/share/maven
-RUN mkdir -p "$WORK_HOME/repo" && \
-    sed -i '/<!-- localRepository/i\<localRepository>'$WORK_HOME/repo'</localRepository>' $MAVEN_HOME/conf/settings.xml
-# RUN sed -i '/<\/mirrors>/i\<mirror><id>nexus-osc</id><mirrorOf>*</mirrorOf><name>Nexus osc</name><url>http://maven.oschina.net/content/groups/public/</url></mirror>' $MAVEN_HOME/conf/settings.xml
-
+RUN mkdir -p "~/repo" && \
+    sed -i '/<!-- localRepository/i\<localRepository>~/repo</localRepository>' $MAVEN_HOME/conf/settings.xml
 
 # tomcat
 ENV CATALINA_HOME /usr/local/tomcat
@@ -31,19 +23,26 @@ RUN set -x && \
 	tar -xvf tomcat.tar.gz --strip-components=1 && \
 	rm bin/*.bat && \
 	rm tomcat.tar.gz*
-RUN ln -s /work/sources/conf $WORK_HOME/conf &&  \
+
+#
+# work
+ENV WORK_HOME ~/example
+RUN mkdir -p "$WORK_HOME/logs"
+ADD .                ~/example/sources
+ADD ./conf/tomcat    ~/example/conf
+ADD ./conf/work_home ~/example/work
+
+RUN ln -s ~/example/conf $WORK_HOME/conf &&  \
     rm -rf $CATALINA_HOME/conf && ln -s $WORK_HOME/conf $CATALINA_HOME/conf && \
     rm -rf $CATALINA_HOME/logs && ln -s $CATALINA_HOME/logs $WORK_HOME/logs
 EXPOSE 8080
 
-
 # === project ===
-WORKDIR /work/sources
+WORKDIR ~/example/sources
 RUN mkdir -p "$WORK_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $WORK_HOME/webroot/ROOT.war && \
     mvn clean
-
 
 WORKDIR $CATALINA_HOME
 CMD ["catalina.sh", "run -Dadmins=21756265276013726654"]
