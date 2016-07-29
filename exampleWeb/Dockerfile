@@ -26,19 +26,17 @@ RUN set -x && \
 
 #
 # work
-ENV WORK_HOME ~/example
+ENV WORK_HOME /home/example
 RUN mkdir -p "$WORK_HOME/logs"
-ADD .                ~/example/sources
-ADD ./conf/tomcat    ~/example/conf
-ADD ./conf/work_home ~/example/work
-
-RUN ln -s ~/example/conf $WORK_HOME/conf &&  \
-    rm -rf $CATALINA_HOME/conf && ln -s $WORK_HOME/conf $CATALINA_HOME/conf && \
+ADD .                /home/example/sources
+ADD ./conf/tomcat    /home/example/conf
+ADD ./conf/work_home /home/example/work
+RUN rm -rf $CATALINA_HOME/conf && ln -s $WORK_HOME/conf $CATALINA_HOME/conf && \
     rm -rf $CATALINA_HOME/logs && ln -s $CATALINA_HOME/logs $WORK_HOME/logs
 EXPOSE 8080
 
 # === project ===
-WORKDIR ~/example/sources
+WORKDIR /home/example/sources
 RUN mkdir -p "$WORK_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $WORK_HOME/webroot/ROOT.war && \
