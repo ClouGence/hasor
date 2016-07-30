@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Context docBase="~/example/webroot/ROOT.war"/>
+<Context docBase="/home/example/webroot/ROOT.war"/>
