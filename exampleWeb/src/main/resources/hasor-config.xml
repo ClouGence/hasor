@@ -4,24 +4,23 @@
     <hasor>
         <!-- 包扫描路径 -->
         <loadPackages>net.demo.hasor.*</loadPackages>
-        <!-- demo程序启动入口 -->
+        <!-- 程序启动入口 -->
         <startup>net.demo.hasor.core.StartModule</startup>
-        <!-- 使用模版插件，并指定模版引擎为freemarker -->
-        <template urlPatterns="htm;html;" engine="freemarker"/>
-        <!-- web请求响应编码配置 -->
-        <encoding requestEncoding="utf-8" responseEncoding="utf-8"/>
-
+        <!-- 工作目录 -->
         <environmentVar>
+            <!-- 系统环境变量:EXAMPLE_HOME。在本示例项目中,该环境变量在 dockerfile 中进行的声明 -->
             <WORK_HOME>%EXAMPLE_HOME%/work</WORK_HOME>
         </environmentVar>
     </hasor>
 
-
     <injectVars>
+        <!-- 当前最新版本 -->
         <curentVersion>2.4.0</curentVersion>
+        <!-- QQ登录接入,授权key -->
         <qqAdmins>${admins}</qqAdmins>
     </injectVars>
-    <!--  数据库链接 -->
+
+    <!-- 数据库链接: see -> 'env.config' -->
     <jdbcSettings>
         <jdbcDriver>${jdbc.driver}</jdbcDriver>
         <jdbcURL>${jdbc.url}</jdbcURL>
