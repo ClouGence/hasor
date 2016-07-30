@@ -11,7 +11,9 @@
         <!-- web请求响应编码配置 -->
         <encoding requestEncoding="utf-8" responseEncoding="utf-8"/>
 
-        <environmentVar></environmentVar>
+        <environmentVar>
+            <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
+        </environmentVar>
     </hasor>
 
 

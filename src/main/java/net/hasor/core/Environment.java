@@ -21,6 +21,8 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Environment {
+    public static final String EVN_FILE_NAME = "env.config";
+
     /** @return 获取扫描路径*/
     public String[] getSpanPackage();
 

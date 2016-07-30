@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    public static final String           EVN_FILE_NAME = "env.config";
     protected           Logger           logger        = LoggerFactory.getLogger(getClass());
     private             String[]         spanPackage   = null;
     private             ScanClassPath    scanUtils     = null;
