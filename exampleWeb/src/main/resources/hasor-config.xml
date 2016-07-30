@@ -12,7 +12,7 @@
         <encoding requestEncoding="utf-8" responseEncoding="utf-8"/>
 
         <environmentVar>
-            <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
+            <WORK_HOME>%EXAMPLE_HOME%/work</WORK_HOME>
         </environmentVar>
     </hasor>
 
