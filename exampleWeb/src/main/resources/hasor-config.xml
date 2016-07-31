@@ -17,7 +17,7 @@
 
     <injectVars>
         <!-- 当前最新版本 -->
-        <curentVersion>2.4.0</curentVersion>
+        <curentVersion>2.4.1</curentVersion>
         <!-- QQ登录接入,授权key -->
         <qqAdmins>${admins}</qqAdmins>
     </injectVars>
