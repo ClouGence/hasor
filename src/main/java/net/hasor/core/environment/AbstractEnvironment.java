@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -158,7 +159,7 @@ public abstract class AbstractEnvironment implements Environment {
         long markTime = nextLong();
         String atPath = this.genPath(markTime, 512);
         String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(this.envVar(Environment.HASOR_TEMP_PATH), fileName);
+        File tmpFile = new File(this.evalString(Environment.HASOR_TEMP_PATH), fileName);
         tmpFile.getParentFile().mkdirs();
         tmpFile.createNewFile();
         if (logger.isInfoEnabled()) {
@@ -225,19 +226,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
     }
     @Override
-    public String envVar(String varName) {
-        if (StringUtils.isNotBlank(varName)) {
-            return this.evalString("%" + varName + "%");
-        } else {
-            return "";
-        }
-    }
-    @Override
-    public String evalString(String eval) {
-        return this.evalString(eval, new HashMap<String, String>());
-    }
-    //
-    private String evalString(String evalString, final Map<String, String> paramMap) {
+    public String evalString(String evalString) {
         if (StringUtils.isBlank(evalString)) {
             return "";
         }
@@ -245,13 +234,13 @@ public abstract class AbstractEnvironment implements Environment {
         Matcher keyM = keyPattern.matcher(evalString);
         Map<String, String> data = new HashMap<String, String>();
         while (keyM.find()) {
-            String varKey = keyM.group(1);
-            String keyName = "%" + varKey + "%";
-            String var = this.envMap.get(keyName);
-            if (StringUtils.isBlank(var)) {
+            String varKeyOri = keyM.group(1);
+            String keyName = "%" + varKeyOri + "%";
+            String var = this.envMap.get(varKeyOri.toUpperCase());
+            if (var == null) {
                 data.put(keyName, keyName);
             } else {
-                data.put(keyName, evalString(var, paramMap));
+                data.put(keyName, evalString(var));
             }
         }
         String newEvalString = evalString;
@@ -327,26 +316,31 @@ public abstract class AbstractEnvironment implements Environment {
         envMapData.put("RUN_PATH", runPath);
         this.logger.info("runPath at {}", runPath);
         //
+        // .after
+        this.afterInitEnvironment(envMapData);
+        //
         // .外部环境变量属性文件覆盖配置
+        URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
         InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
         if (inStream == null) {
-            String workHome = this.envVar(Environment.WORK_HOME);
+            String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
             File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
             if (envFile.isFile() && envFile.canRead()) {
                 inStream = new FileInputStream(envFile);
+                this.logger.info("env.config -> {}.", envFile.getAbsolutePath());
             }
+        } else {
+            this.logger.info("env.config -> {}.", inStreamURL);
         }
         if (inStream != null) {
             Properties properties = new Properties();
             properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
             inStream.close();
             for (String name : properties.stringPropertyNames()) {
-                envMap.put(name.toUpperCase(), properties.getProperty(name));
+                envMapData.put(name.toUpperCase(), properties.getProperty(name));
             }
         }
-        //
-        // .after
-        this.afterInitEnvironment(envMapData);
+        this.refreshVariables();
         //
         // .日志输出
         if (this.logger.isInfoEnabled()) {
@@ -394,7 +388,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         });
     }
-    private String evalSettingString(String evalString) {
+    private final String evalSettingString(String evalString) {
         if (StringUtils.isBlank(evalString)) {
             return "";
         }
@@ -402,10 +396,14 @@ public abstract class AbstractEnvironment implements Environment {
         Matcher keyM = keyPattern.matcher(evalString);
         Map<String, String> data = new HashMap<String, String>();
         while (keyM.find()) {
-            String varKey = keyM.group(1);
-            String var = this.envVar(varKey);
-            var = StringUtils.isBlank(var) ? "${" + varKey + "}" : var;
-            data.put("${" + varKey + "}", var);
+            String varKeyOri = keyM.group(1);
+            String envKey = "%" + varKeyOri.toUpperCase() + "%";
+            String var = this.evalString(envKey);
+            if (StringUtils.equalsIgnoreCase(envKey, var)) {
+                data.put("${" + varKeyOri + "}", envKey);
+            } else {
+                data.put("${" + varKeyOri + "}", var);
+            }
         }
         String newEvalString = evalString;
         for (String key : data.keySet()) {

@@ -97,13 +97,6 @@ public interface Environment {
     public String evalString(String eval);
 
     /**
-     * 根据环境变量名称获取环境变量的值，如果不存在该环境变量的定义则返回null.
-     * @param varName 环境变量名。
-     * @return 返回环境变量值。
-     */
-    public String envVar(String varName);
-
-    /**
      * 添加环境变量，添加的环境变量并不会影响到系统环境变量，它会使用内部Map保存环境变量从而避免影响JVM正常运行。
      * @param varName 环境变量名。
      * @param value 环境变量值或环境变量表达式。

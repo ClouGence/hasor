@@ -16,10 +16,7 @@
 package net.demo.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import net.demo.hasor.domain.DBConstant;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.LifeModule;
-import net.hasor.core.Settings;
+import net.hasor.core.*;
 import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
@@ -36,11 +33,12 @@ public class DataSourceModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        Settings settings = apiBinder.getEnvironment().getSettings();
-        String driverString = settings.getString("jdbcSettings.jdbcDriver");
-        String urlString = settings.getString("jdbcSettings.jdbcURL");
-        String userString = settings.getString("jdbcSettings.userName");
-        String pwdString = settings.getString("jdbcSettings.userPassword");
+        Environment env = apiBinder.getEnvironment();
+        Settings settings = env.getSettings();
+        String driverString = env.evalString(settings.getString("jdbcSettings.jdbcDriver", ""));
+        String urlString = env.evalString(settings.getString("jdbcSettings.jdbcURL", ""));
+        String userString = env.evalString(settings.getString("jdbcSettings.userName", ""));
+        String pwdString = env.evalString(settings.getString("jdbcSettings.userPassword", ""));
         //
         DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
         apiBinder.installModule(new DBModule(DBConstant.DB_HSQL, dataSource));

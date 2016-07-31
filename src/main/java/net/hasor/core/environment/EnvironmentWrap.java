@@ -79,10 +79,6 @@ public class EnvironmentWrap implements Environment {
         return this.getEnvironment().evalString(eval);
     }
     @Override
-    public String envVar(String varName) {
-        return this.getEnvironment().envVar(varName);
-    }
-    @Override
     public void addEnvVar(String varName, String value) {
         this.getEnvironment().addEnvVar(varName, value);
     }

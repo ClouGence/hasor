@@ -64,13 +64,13 @@ public class ContextTest {
         Environment env = appContext.getEnvironment();
         //
         //JAVA_HOME
-        System.out.println(env.envVar("JAVA_HOME"));
+        System.out.println(env.evalString("%JAVA_HOME%"));
         //WORK_HOME，该环境变量由 hasor 的配置文件提供，仅在Hasor框架内有效
-        System.out.println(env.envVar("WORK_HOME"));
+        System.out.println(env.evalString("%WORK_HOME%"));
         //javac.exe
         System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
         //系统环境变量属性
-        System.out.println(env.envVar("MyVar"));
+        System.out.println(env.evalString("%MyVar%"));
         System.out.println(env.evalString("i say %MyVar%."));
     }
     //

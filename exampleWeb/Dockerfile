@@ -29,10 +29,10 @@ RUN set -x && \
 ENV EXAMPLE_HOME /home/example
 RUN mkdir -p "$EXAMPLE_HOME/logs"
 ADD .                  /home/example/sources
-ADD ./conf/tomcat      /home/example/conf
-ADD ./conf/online_home /home/example/work
 
-RUN rm -rf $CATALINA_HOME/conf && ln -s $EXAMPLE_HOME/conf $CATALINA_HOME/conf && \
+RUN ln -s $EXAMPLE_HOME/sources/conf/online_home $EXAMPLE_HOME && \
+    ln -s $EXAMPLE_HOME/sources/conf/tomcat $EXAMPLE_HOME/tomcat && \
+    rm -rf $CATALINA_HOME/conf && ln -s $EXAMPLE_HOME/tomcat $CATALINA_HOME/conf && \
     rm -rf $CATALINA_HOME/logs && ln -s $CATALINA_HOME/logs $EXAMPLE_HOME/logs
 EXPOSE 8080
 

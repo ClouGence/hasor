@@ -9,7 +9,7 @@
         <!-- 工作目录 -->
         <environmentVar>
             <!-- 系统环境变量:EXAMPLE_HOME。在本示例项目中,该环境变量在 dockerfile 中进行的声明 -->
-            <WORK_HOME>%EXAMPLE_HOME%/work</WORK_HOME>
+            <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
 
             <EXAMPLE_HOME>%HASOR_WEBROOT%/WEB-INF/daily_home</EXAMPLE_HOME>
         </environmentVar>

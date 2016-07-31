@@ -245,15 +245,12 @@ public class TemplateBeanBuilder implements BeanBuilder {
         }
         Type byType = inject.byType();
         Object obj = null;
-        if (StringUtils.isBlank(inject.value())) {
+        if (Type.ByType == byType) {
             obj = appContext.getInstance(field.getType());
-        } else {
-            /*   */
-            if (Type.ByID == byType) {
-                obj = appContext.getInstance(inject.value());
-            } else if (Type.ByName == byType) {
-                obj = appContext.findBindingBean(inject.value(), field.getType());
-            }
+        } else if (Type.ByID == byType) {
+            obj = appContext.getInstance(inject.value());
+        } else if (Type.ByName == byType) {
+            obj = appContext.findBindingBean(inject.value(), field.getType());
         }
         if (obj != null) {
             field.set(targetBean, obj);
