@@ -19,10 +19,12 @@ import net.demo.hasor.domain.DBConstant;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
+import net.hasor.core.Settings;
 import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 /**
@@ -34,10 +36,11 @@ public class DataSourceModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        String driverString = "org.hsqldb.jdbcDriver";
-        String urlString = "jdbc:hsqldb:mem:rsf_memdb";
-        String userString = "sa";
-        String pwdString = "";
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        String driverString = settings.getString("jdbcSettings.jdbcDriver");
+        String urlString = settings.getString("jdbcSettings.jdbcURL");
+        String userString = settings.getString("jdbcSettings.userName");
+        String pwdString = settings.getString("jdbcSettings.userPassword");
         //
         DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
         apiBinder.installModule(new DBModule(DBConstant.DB_HSQL, dataSource));
