@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.web.env;
+import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.web.WebEnvironment;
+
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import javax.servlet.ServletContext;
-import net.hasor.core.environment.EnvVars;
-import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.web.WebEnvironment;
 /**
  * 负责注册MORE_WEB_ROOT环境变量以及Web环境变量的维护。
  * @version : 2013-7-17
@@ -35,24 +35,13 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
         return (ServletContext) this.getContext();
     }
     @Override
-    protected EnvVars createEnvVars() {
-        return new WebEnvVars(this);
-    }
-}
-class WebEnvVars extends EnvVars {
-    private WebStandardEnvironment environment;
-    public WebEnvVars(WebStandardEnvironment environment) {
-        super(environment);
-        this.environment = environment;
-    }
-    @Override
-    protected void configEnvironment(Map<String, String> envMap) {
-        super.configEnvironment(envMap);
-        ServletContext sc = this.environment.getServletContext();
+    protected void afterInitEnvironment(Map<String, String> envMap) {
+        super.afterInitEnvironment(envMap);
+        ServletContext sc = this.getServletContext();
         if (sc == null) {
             throw new NullPointerException("miss of ServletContext.");
         }
-        String webContextDir = this.environment.getServletContext().getRealPath("/");
+        String webContextDir = sc.getRealPath("/");
         envMap.put("HASOR_WEBROOT", webContextDir);
     }
 }

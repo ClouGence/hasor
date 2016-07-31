@@ -17,6 +17,7 @@ package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.SettingValue;
@@ -25,14 +26,15 @@ import net.hasor.core.setting.xml.DefaultXmlNode;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.classcode.MoreClassLoader;
+import org.more.util.ResourcesUtils;
 import org.more.util.ScanClassPath;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
@@ -41,24 +43,27 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    protected           Logger           logger        = LoggerFactory.getLogger(getClass());
-    private             String[]         spanPackage   = null;
-    private             ScanClassPath    scanUtils     = null;
-    private             AbstractSettings settings      = null;
-    private             Object           context       = null;
-    private             ClassLoader      rootLosder    = null;
-    private             EventContext     eventManager  = null;
+    protected Logger              logger       = LoggerFactory.getLogger(getClass());
+    private   String[]            spanPackage  = null;
+    private   ScanClassPath       scanUtils    = null;
+    private   AbstractSettings    settings     = null;
+    private   Object              context      = null;
+    private   ClassLoader         rootLosder   = null;
+    private   EventContext        eventManager = null;
+    private   Map<String, String> envMap       = null;
     //
-    //---------------------------------------------------------------------------------Basic Method
+    /* --------------------------------------------------------------------------------- get/set */
     public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
         this.context = context;
         this.rootLosder = new MoreClassLoader();
+        this.envMap = new ConcurrentHashMap<String, String>();
     }
     @Override
     public Object getContext() {
         return this.context;
     }
+    /**设置或更新 context */
     public void setContext(final Object context) {
         this.context = context;
     }
@@ -80,7 +85,16 @@ public abstract class AbstractEnvironment implements Environment {
     public String[] getSpanPackage() {
         return this.spanPackage;
     }
-    //---------------------------------------------------------------------------------Basic Method
+    @Override
+    public final EventContext getEventContext() {
+        if (this.eventManager == null) {
+            int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
+            this.eventManager = createEventManager(eventThreadPoolSize);
+        }
+        return this.eventManager;
+    }
+    //
+    // ------------------------------------------------------------------------------- findClass */
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.findClass(featureType, this.spanPackage);
@@ -111,20 +125,12 @@ public abstract class AbstractEnvironment implements Environment {
     public AbstractSettings getSettings() {
         return this.settings;
     }
-    @Override
-    public final EventContext getEventContext() {
-        if (this.eventManager == null) {
-            int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
-            this.eventManager = createEventManager(eventThreadPoolSize);
-        }
-        return this.eventManager;
-    }
     /**创建事件管理器*/
     protected StandardEventManager createEventManager(int eventThreadPoolSize) {
         return new StandardEventManager(eventThreadPoolSize);
     }
     //
-    /*----------------------------------------------------------------------------------------Dir*/
+    /* ------------------------------------------------------------------------------------ Toos */
     public String getPluginDir(Class<?> pluginType) {
         String subName = "_";
         if (pluginType != null) {
@@ -134,34 +140,6 @@ public abstract class AbstractEnvironment implements Environment {
     }
     public String getWorkSpaceDir() {
         return evalString("%" + WORK_HOME + "%/");
-    }
-    //
-    /*----------------------------------------------------------------------------------------Env*/
-    /**初始化方法*/
-    protected final void initEnvironment() {
-        logger.debug("create envVars...");
-        this.envVars = this.createEnvVars();
-        logger.debug("reload envVars...");
-        this.refreshVariables();
-        //
-        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
-        Set<String> allPack = new HashSet<String>();
-        for (String packs : spanPackages) {
-            if (StringUtils.isBlank(packs)) {
-                continue;
-            }
-            String[] packArray = packs.split(",");
-            for (String pack : packArray) {
-                if (StringUtils.isBlank(packs)) {
-                    continue;
-                }
-                allPack.add(pack.trim());
-            }
-        }
-        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
-        Collections.sort(spanPackagesArrays);
-        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
-        logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
     }
     //
     private static volatile long lastLong = 0;
@@ -206,33 +184,193 @@ public abstract class AbstractEnvironment implements Environment {
         return buffer.reverse().toString();
     }
     //
-    /*-----------------------------------------------------------------------------------Env Vars*/
-    private EnvVars envVars;
-    @Override
-    public String evalString(String eval) {
-        return this.envVars.evalString(eval);
+    private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
+        /*输出系统环境变量日志*/
+        StringBuilder outLog = new StringBuilder("");
+        for (String key : mapData.keySet()) {
+            String var = mapData.get(key);
+            var = (var != null) ? (var.replace("\r", "\\r").replace("\n", "\\n")) : "";
+            outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
+            outLog.append(String.format("%s = %s", key, var));
+            outLog.append('\n');
+        }
+        if (outLog.length() > 1) {
+            outLog.deleteCharAt(outLog.length() - 1);
+        }
+        return outLog.toString();
     }
-    @Override
-    public String envVar(String varName) {
-        return this.envVars.envVar(varName);
-    }
+    //
+    /* ------------------------------------------------------------------------------------- Env */
     @Override
     public void addEnvVar(final String varName, final String value) {
-        this.envVars.addEnvVar(varName, value);
+        if (StringUtils.isBlank(varName)) {
+            if (logger.isWarnEnabled()) {
+                logger.warn(varName + "{} env, name is empty.");
+            }
+            return;
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("var -> {} = {}.", varName, value);
+        }
+        this.envMap.put(varName.toUpperCase(), StringUtils.isBlank(varName) ? "" : value);
     }
     @Override
     public void remoteEnvVar(final String varName) {
-        this.envVars.remoteEnvVar(varName);
+        if (StringUtils.isBlank(varName)) {
+            return;
+        }
+        this.envMap.remove(varName.toUpperCase());
+        if (logger.isInfoEnabled()) {
+            logger.info(varName + " env removed.");
+        }
     }
-    /**创建{@link EnvVars}接口对象*/
-    protected EnvVars createEnvVars() {
-        return new EnvVars(this);
+    @Override
+    public String envVar(String varName) {
+        if (StringUtils.isNotBlank(varName)) {
+            return this.evalString("%" + varName + "%");
+        } else {
+            return "";
+        }
+    }
+    @Override
+    public String evalString(String eval) {
+        return this.evalString(eval, new HashMap<String, String>());
     }
     //
+    private String evalString(String evalString, final Map<String, String> paramMap) {
+        if (StringUtils.isBlank(evalString)) {
+            return "";
+        }
+        Pattern keyPattern = Pattern.compile("(?:%([\\w\\._-]+)%){1,1}");//  (?:%([\w\._-]+)%)
+        Matcher keyM = keyPattern.matcher(evalString);
+        Map<String, String> data = new HashMap<String, String>();
+        while (keyM.find()) {
+            String varKey = keyM.group(1);
+            String keyName = "%" + varKey + "%";
+            String var = this.envMap.get(keyName);
+            if (StringUtils.isBlank(var)) {
+                data.put(keyName, keyName);
+            } else {
+                data.put(keyName, evalString(var, paramMap));
+            }
+        }
+        String newEvalString = evalString;
+        for (String key : data.keySet()) {
+            newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("evalString '{}' eval to '{}'.", evalString, newEvalString);
+        }
+        return newEvalString;
+    }
     //
+    /* ------------------------------------------------------------------------------------ init */
+    /**初始化方法*/
+    protected final void initEnvironment() throws IOException {
+        //
+        // .load & init
+        Map<String, String> envMapData = new ConcurrentHashMap<String, String>();
+        this.envMap = envMapData;
+        this.logger.debug("load envVars...");
+        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
+        Set<String> allPack = new HashSet<String>();
+        for (String packs : spanPackages) {
+            if (StringUtils.isBlank(packs)) {
+                continue;
+            }
+            String[] packArray = packs.split(",");
+            for (String pack : packArray) {
+                if (StringUtils.isBlank(packs)) {
+                    continue;
+                }
+                allPack.add(pack.trim());
+            }
+        }
+        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
+        Collections.sort(spanPackagesArrays);
+        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
+        this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+        //
+        // .系统环境变量 & Java系统属性
+        this.logger.debug("envVars.reload -> System.getenv().");
+        Map<String, String> envMap = System.getenv();
+        for (String key : envMap.keySet()) {
+            envMapData.put(key.toUpperCase(), envMap.get(key));
+        }
+        // .Java属性
+        this.logger.debug("envVars.reload -> System.getProperties().");
+        Properties prop = System.getProperties();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null) {
+                envMapData.put(k.toUpperCase(), v.toString());
+            }
+        }
+        //
+        // .内部配置文件配置
+        this.logger.debug("envVars.reload -> settings.");
+        Settings settings = getSettings();
+        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
+        List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
+        for (XmlNode xmlProp : xmlPropArray) {
+            for (XmlNode envItem : xmlProp.getChildren()) {
+                envNames.add(envItem.getName().toUpperCase());
+            }
+        }
+        for (String envItem : envNames) {
+            envMapData.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
+        }
+        //
+        // .单独处理RUN_PATH
+        String runPath = new File("").getAbsolutePath();
+        envMapData.put("RUN_PATH", runPath);
+        this.logger.info("runPath at {}", runPath);
+        //
+        // .外部环境变量属性文件覆盖配置
+        InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
+        if (inStream == null) {
+            String workHome = this.envVar(Environment.WORK_HOME);
+            File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
+            if (envFile.isFile() && envFile.canRead()) {
+                inStream = new FileInputStream(envFile);
+            }
+        }
+        if (inStream != null) {
+            Properties properties = new Properties();
+            properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
+            inStream.close();
+            for (String name : properties.stringPropertyNames()) {
+                envMap.put(name.toUpperCase(), properties.getProperty(name));
+            }
+        }
+        //
+        // .after
+        this.afterInitEnvironment(envMapData);
+        //
+        // .日志输出
+        if (this.logger.isInfoEnabled()) {
+            int keyMaxSize = 0;
+            for (String key : envMapData.keySet()) {
+                keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
+            }
+            keyMaxSize = keyMaxSize + 2;
+            StringBuilder sb = new StringBuilder();
+            sb.append("EnvVars:");
+            if (!envMapData.isEmpty()) {
+                sb.append("\n").append(this.formatMap4log(keyMaxSize, envMapData));
+                sb.append("\n").append(StringUtils.fixedString('-', 50));
+            }
+            this.logger.info(sb.toString());
+        }
+    }
+    //
+    protected void afterInitEnvironment(Map<String, String> envMap) {
+    }
+    //
+    /* ------------------------------------------------------------------------------------ init */
     @Override
     public void refreshVariables() {
-        this.envVars.reload(this.getSettings());
         this.getSettings().resetValues(new UpdateValue() {
             @Override
             public void update(SettingValue oldValue, Settings context) {
@@ -273,8 +411,8 @@ public abstract class AbstractEnvironment implements Environment {
         for (String key : data.keySet()) {
             newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("evalSettingString '{}' eval to '{}'.", evalString, newEvalString);
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("evalSettingString '{}' eval to '{}'.", evalString, newEvalString);
         }
         return newEvalString;
     }

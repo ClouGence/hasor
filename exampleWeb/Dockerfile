@@ -28,9 +28,9 @@ RUN set -x && \
 # work
 ENV EXAMPLE_HOME /home/example
 RUN mkdir -p "$EXAMPLE_HOME/logs"
-ADD .                /home/example/sources
-ADD ./conf/tomcat    /home/example/conf
-ADD ./conf/work_home /home/example/work
+ADD .                  /home/example/sources
+ADD ./conf/tomcat      /home/example/conf
+ADD ./conf/online_home /home/example/work
 
 RUN rm -rf $CATALINA_HOME/conf && ln -s $EXAMPLE_HOME/conf $CATALINA_HOME/conf && \
     rm -rf $CATALINA_HOME/logs && ln -s $CATALINA_HOME/logs $EXAMPLE_HOME/logs
