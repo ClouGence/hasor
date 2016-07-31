@@ -20,8 +20,6 @@ package net.hasor.core;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum Type {
-    /**AppContext.getInstance(class)方式*/
-    ByType,
     /**AppContext.getInstance(bindID)方式*/
     ByID,
     /**（默认）AppContext.findBindingBean(withName, bindType)方式*/

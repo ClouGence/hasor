@@ -1,7 +1,6 @@
 ﻿===== Hasor-Core v2.4.1 (2016-08-01)
 * 改进:
-    01.@Inject,注解的 Type 属性增加 Type.ByType 方式,并为默认设置。
-    02.env.config 功能的优化。
+    01.env.config 功能的优化。
 
 ===== Hasor-Core v2.4.0 (2016-07-29)
 * 新增:
