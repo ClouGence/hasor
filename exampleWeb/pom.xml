@@ -32,6 +32,9 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <encoding>UTF8</encoding>
+                    <compilerArguments>
+                        <extdirs>src\main\webapp\WEB-INF\lib</extdirs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>
@@ -50,7 +53,7 @@
             <artifactId>sdk4j</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/jars/sdk4j.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/sdk4j.jar</systemPath>
         </dependency>
 
         <!-- freemarker -->

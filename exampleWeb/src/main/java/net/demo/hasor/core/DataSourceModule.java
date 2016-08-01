@@ -16,9 +16,11 @@
 package net.demo.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import net.demo.hasor.domain.DBConstant;
+import net.demo.hasor.manager.EnvironmentConfig;
 import net.hasor.core.*;
 import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,10 @@ public class DataSourceModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //
+        DataSource dataSource = createDataSource("org.hsqldb.jdbcDriver", "jdbc:hsqldb:mem:example_memdb", "sa", "");
+        apiBinder.installModule(new DBModule(DBConstant.DB_HSQL, dataSource));
+        //
         Environment env = apiBinder.getEnvironment();
         Settings settings = env.getSettings();
         String driverString = env.evalString(settings.getString("jdbcSettings.jdbcDriver", ""));
@@ -40,15 +46,30 @@ public class DataSourceModule implements LifeModule {
         String userString = env.evalString(settings.getString("jdbcSettings.userName", ""));
         String pwdString = env.evalString(settings.getString("jdbcSettings.userPassword", ""));
         //
-        DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
-        apiBinder.installModule(new DBModule(DBConstant.DB_HSQL, dataSource));
+        if (StringUtils.equalsIgnoreCase("daily", env.evalString("%app.env%"))) {
+            //            driverString = "org.hsqldb.jdbcDriver";
+            //            urlString = "jdbc:hsqldb:mem:example_user_memdb";
+            //            userString = "sa";
+            //            pwdString = "";
+        }
+        //
+        DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
+        apiBinder.installModule(new DBModule(DBConstant.DB_MYSQL, mysqlDataSource));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
+        logger.info("loadSQL");
         JdbcTemplate jdbcTemplate = appContext.findBindingBean(DBConstant.DB_HSQL, JdbcTemplate.class);
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_version_info.sql");
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/init_sql_version_info.sql");
-        logger.info("loadSQL");
+        //
+        EnvironmentConfig config = appContext.getInstance(EnvironmentConfig.class);
+        if (StringUtils.equalsIgnoreCase("daily", config.getEnvType())) {
+            logger.info("loadSQL for daily.");
+            jdbcTemplate = appContext.findBindingBean(DBConstant.DB_MYSQL, JdbcTemplate.class);
+            //jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_user_info.sql");
+        }
+        //
     }
     @Override
     public void onStop(AppContext appContext) throws Throwable {

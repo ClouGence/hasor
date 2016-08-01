@@ -23,9 +23,12 @@ import net.hasor.core.Singleton;
  */
 @Singleton
 public class EnvironmentConfig {
-    @InjectSettings("injectVars.curentVersion")
+    @InjectSettings("appExample.curentVersion")
     private String curentVersion;
-    @InjectSettings("injectVars.qqAdmins")
+    @InjectSettings("appExample.envType")
+    private String envType;
+    //
+    @InjectSettings("tencent.qqAdmins")
     private String qqAdmins;
     //
     //
@@ -34,5 +37,8 @@ public class EnvironmentConfig {
     }
     public String getQqAdmins() {
         return qqAdmins;
+    }
+    public String getEnvType() {
+        return envType;
     }
 }

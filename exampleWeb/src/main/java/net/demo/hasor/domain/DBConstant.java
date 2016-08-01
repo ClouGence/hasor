@@ -15,10 +15,11 @@
  */
 package net.demo.hasor.domain;
 /**
- * 
+ *
  * @version : 2016年1月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface DBConstant {
-    public static final String DB_HSQL = "HSQL";
+    public static final String DB_HSQL  = "HSQL";
+    public static final String DB_MYSQL = "MYSQL";
 }

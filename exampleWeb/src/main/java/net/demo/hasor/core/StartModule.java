@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
+import com.qq.connect.utils.QQConnectConfig;
+import net.hasor.core.Settings;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
@@ -31,5 +33,14 @@ public class StartModule extends WebModule {
         //
         apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
+        //
+        Settings settings = apiBinder.getEnvironment().getSettings();
+        String hostName = settings.getString("appExample.hostName", "127.0.0.1");
+        String tencentAppID = settings.getString("tencent.app_id", "");
+        String tencentAppKey = settings.getString("tencent.app_key", "");
+        String tencentRedirectURI = hostName + "/login_callback.do";
+        QQConnectConfig.updateProperties("app_ID", tencentAppID);
+        QQConnectConfig.updateProperties("app_KEY", tencentAppKey);
+        QQConnectConfig.updateProperties("redirect_URI", tencentRedirectURI);
     }
 }

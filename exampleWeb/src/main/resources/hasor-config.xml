@@ -6,26 +6,39 @@
         <loadPackages>net.demo.hasor.*</loadPackages>
         <!-- 程序启动入口 -->
         <startup>net.demo.hasor.core.StartModule</startup>
-        <!-- 工作目录 -->
+        <!-- 环境变量 -->
         <environmentVar>
-            <!-- 系统环境变量:EXAMPLE_HOME。在本示例项目中,该环境变量在 dockerfile 中进行的声明 -->
+            <!-- demo程序的运行主目录通过环境变量 'EXAMPLE_HOME' 来指定。 -->
             <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
 
-            <EXAMPLE_HOME>%HASOR_WEBROOT%/WEB-INF/daily_home</EXAMPLE_HOME>
+            <!-- 下面环境变量为本机调试的配置,正式环境下由 dockfile 在系统环境中声明,并且覆盖程序中的配置 -->
+            <EXAMPLE_HOME>%HASOR_WEBROOT%/WEB-INF/classes/daily_home</EXAMPLE_HOME>
         </environmentVar>
     </hasor>
 
-    <injectVars>
+    <appExample>
+        <!-- 所属环境:daily、online -->
+        <envType>${app.env}</envType>
         <!-- 当前最新版本 -->
         <curentVersion>2.4.1</curentVersion>
-        <!-- QQ登录接入,授权key -->
-        <qqAdmins>${admins}</qqAdmins>
-    </injectVars>
+        <!-- 主机名称 -->
+        <hostName>${app.host}</hostName>
+    </appExample>
 
-    <!-- 数据库链接: see -> 'env.config' -->
+    <!-- 腾讯产品接入(大部分配置引用外部 env.config 配置文件) -->
+    <tencent>
+        <!-- QQ登录接入,授权key -->
+        <qqAdmins>${tencent.admins}</qqAdmins>
+        <!-- 应用ID -->
+        <app_id>${tencent.login.app_id}</app_id>
+        <!-- 应用Key -->
+        <app_key>${tencent.login.app_key}</app_key>
+    </tencent>
+
+    <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->
     <jdbcSettings>
-        <jdbcDriver>${jdbc.driver}</jdbcDriver>
-        <jdbcURL>${jdbc.url}</jdbcURL>
+        <jdbcDriver>com.mysql.jdbc.Driver</jdbcDriver>
+        <jdbcURL>jdbc:mysql://${jdbc.database_host}:3306/${jdbc.database_name}</jdbcURL>
         <userName>${jdbc.user}</userName>
         <userPassword>${jdbc.password}</userPassword>
     </jdbcSettings>
