@@ -53,8 +53,8 @@ public class DataSourceModule implements LifeModule {
             //            pwdString = "";
         }
         //
-        DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
-        apiBinder.installModule(new DBModule(DBConstant.DB_MYSQL, mysqlDataSource));
+        //DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
+        //apiBinder.installModule(new DBModule(DBConstant.DB_MYSQL, mysqlDataSource));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
@@ -66,7 +66,7 @@ public class DataSourceModule implements LifeModule {
         EnvironmentConfig config = appContext.getInstance(EnvironmentConfig.class);
         if (StringUtils.equalsIgnoreCase("daily", config.getEnvType())) {
             logger.info("loadSQL for daily.");
-            jdbcTemplate = appContext.findBindingBean(DBConstant.DB_MYSQL, JdbcTemplate.class);
+            //jdbcTemplate = appContext.findBindingBean(DBConstant.DB_MYSQL, JdbcTemplate.class);
             //jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_user_info.sql");
         }
         //
