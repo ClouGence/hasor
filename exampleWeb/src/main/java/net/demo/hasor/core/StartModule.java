@@ -15,6 +15,8 @@
  */
 package net.demo.hasor.core;
 import com.qq.connect.utils.QQConnectConfig;
+import net.demo.hasor.manager.oauth.AbstractOAuthConfig;
+import net.demo.hasor.manager.oauth.TencentOAuthConfig;
 import net.hasor.core.Settings;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
@@ -34,6 +36,9 @@ public class StartModule extends WebModule {
         apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
         //
+        //
+        //
+        apiBinder.bindType(AbstractOAuthConfig.class, TencentOAuthConfig.class);
         Settings settings = apiBinder.getEnvironment().getSettings();
         String hostName = settings.getString("appExample.hostName", "127.0.0.1");
         String tencentAppID = settings.getString("tencent.app_id", "");

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager;
-import net.hasor.core.InjectSettings;
+import net.demo.hasor.manager.oauth.TencentOAuthConfig;
+import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 /**
  *
@@ -22,16 +23,14 @@ import net.hasor.core.Singleton;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-public class EnvironmentConfig {
-    @InjectSettings("appExample.curentVersion")
-    private String curentVersion;
-    @InjectSettings("appExample.envType")
-    private String envType;
+public class OAuthManager {
+    @Inject
+    private TencentOAuthConfig tencentOAuthConfig;
     //
-    public String getCurentVersion() {
-        return curentVersion;
+    public String getTencentAdmins() {
+        return this.tencentOAuthConfig.getAdmins();
     }
-    public String getEnvType() {
-        return envType;
+    public String getTencentLoginURL() {
+        return this.tencentOAuthConfig.getLoginURL();
     }
 }

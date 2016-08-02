@@ -11,21 +11,28 @@
             <!-- demo程序的运行主目录通过环境变量 'EXAMPLE_HOME' 来指定。 -->
             <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
 
+            <!-- Daily -->
             <!-- 下面环境变量为本机调试的配置,正式环境下由 dockfile 在系统环境中声明,并且覆盖程序中的配置 -->
             <EXAMPLE_HOME>%HASOR_WEBROOT%/WEB-INF/classes/daily_home</EXAMPLE_HOME>
+            <APP.HOST>127.0.0.1</APP.HOST>
         </environmentVar>
     </hasor>
 
     <appExample>
         <!-- 所属环境:daily、online -->
-        <envType>${app.env}</envType>
+        <envType>${app.net}</envType>
         <!-- 当前最新版本 -->
         <curentVersion>2.4.1</curentVersion>
         <!-- 主机名称 -->
         <hostName>${app.host}</hostName>
+        <!-- OAuth登录回调地址 -->
+        <redirectURI>http://${app.host}/login_callback.do?type=webside</redirectURI>
     </appExample>
 
-    <!-- 腾讯产品接入(大部分配置引用外部 env.config 配置文件) -->
+    <!--
+        腾讯产品接入(大部分配置引用外部 env.config 配置文件)
+        http://connect.qq.com/intro/login 
+    -->
     <tencent>
         <!-- QQ登录接入,授权key -->
         <qqAdmins>${tencent.admins}</qqAdmins>
@@ -33,6 +40,8 @@
         <app_id>${tencent.login.app_id}</app_id>
         <!-- 应用Key -->
         <app_key>${tencent.login.app_key}</app_key>
+        <!-- 获取的权限 -->
+        <oauth_scope>get_user_info,get_info,add_t,add_pic_t,get_repost_list,get_other_info,get_fanslist,get_idollist,add_idol</oauth_scope>
     </tencent>
 
     <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->

@@ -1,0 +1,36 @@
+.sina, .baidu, .github, .qq, .wechat {
+    display: inline-block;
+    background-image: url("../images/login-third-party.png");
+    background-repeat: no-repeat;
+    margin-right: 5px;
+    width: 32px;
+    height: 32px;
+}
+
+.sina {
+    background-position: 0px 0;
+}
+
+.baidu {
+    background-position: -74px 0;
+}
+
+.qq {
+    background-position: -112px 0;
+}
+
+.github {
+    background-position: -186px 0;
+}
+
+.wechat {
+    background-position: -224px 0;
+}
+
+.third-part {
+    display: block;
+    top: -34px;
+    float: right;
+    position: relative;
+    margin-right: 20px;
+}

@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.manager;
+package net.demo.hasor.manager.oauth;
 import net.hasor.core.InjectSettings;
-import net.hasor.core.Singleton;
 /**
  *
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-public class EnvironmentConfig {
-    @InjectSettings("appExample.curentVersion")
-    private String curentVersion;
-    @InjectSettings("appExample.envType")
-    private String envType;
+public abstract class AbstractOAuthConfig {
+    @InjectSettings("appExample.redirectURI")
+    private String redirectURI;
+    protected String getRedirectURI() {
+        return this.redirectURI;
+    }
     //
-    public String getCurentVersion() {
-        return curentVersion;
-    }
-    public String getEnvType() {
-        return envType;
-    }
+    public abstract String getLoginURL();
 }

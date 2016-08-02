@@ -19,6 +19,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import net.demo.hasor.manager.EnvironmentConfig;
+import net.demo.hasor.manager.OAuthManager;
 import net.demo.hasor.manager.VersionInfoManager;
 import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
@@ -53,6 +54,7 @@ public class FreemarkerRender implements RenderEngine {
         this.configuration.setSharedVariable("ctx_path", appContext.getServletContext().getContextPath());
         this.configuration.setSharedVariable("env", appContext.getInstance(EnvironmentConfig.class));
         this.configuration.setSharedVariable("versionMap", appContext.getInstance(VersionInfoManager.class));
+        this.configuration.setSharedVariable("oauth", appContext.getInstance(OAuthManager.class));
     }
     @Override
     public void process(RenderData renderData, Writer writer) throws Throwable {
