@@ -16,6 +16,7 @@
 package net.hasor.restful.invoker;
 import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderData;
+import net.hasor.web.WebAppContext;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +36,10 @@ class InnerRenderData implements RenderData {
     private Map<String, Object> contextMap   = null;
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
+    private WebAppContext       appContext   = null;
     private MimeType            mimeType     = null;
     //
-    public InnerRenderData(MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public InnerRenderData(WebAppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String contextPath = httpRequest.getContextPath();
         String requestPath = httpRequest.getRequestURI();
         if (requestPath.startsWith(contextPath)) {
@@ -63,6 +65,7 @@ class InnerRenderData implements RenderData {
             this.contextMap.put("req_" + key, val);
         }
         this.contextMap.put(ROOT_DATA_KEY, this);
+        this.appContext = appContext;
         this.mimeType = mimeType;
     }
     //
@@ -73,6 +76,9 @@ class InnerRenderData implements RenderData {
         } else {
             return this.mimeType.getMimeType(suffix);
         }
+    }
+    public WebAppContext getAppContext() {
+        return appContext;
     }
     //
     /**设置返回值*/

@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.restful;
+import org.more.bizcommon.ResultDO;
 /**
- * 
- * @version : 2015年6月28日
+ * 对象验证，如果验证失败返回验证消息。
+ * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-@Documented
-public @interface ValidDefine {
-    public String value();
+public interface Validation<T> {
+    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
+    public ResultDO<String> doValidation(String validType, T dataForm);
 }

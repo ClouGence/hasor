@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
+package net.demo.hasor.domain.valid;
+import net.hasor.restful.Validation;
+import org.more.bizcommon.ResultDO;
 /**
- * 
- * @version : 2014年8月27日
+ *
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ValidApi {
-    public ValidData doValid(String validName, Object paramObj);
+public class LoginValidation implements Validation {
+    @Override
+    public ResultDO<String> doValidation(String validType, Object dataForm) {
+        return null;
+    }
 }

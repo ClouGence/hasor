@@ -41,14 +41,15 @@ class RestfulFilter implements Filter {
     private       MappingToDefine[] invokeArray    = new MappingToDefine[0];
     private       MimeType          mimeType       = null;
     private       RenderLayout      renderLayout   = null;
+    private       WebAppContext     appContext     = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         // 1.拦截
-        WebAppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
-        String interceptNames = appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");
+        this.appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
+        String interceptNames = this.appContext.getEnvironment().getSettings().getString("hasor.restful.urlPatterns", "do;");
         Set<String> names = new HashSet<String>();
         for (String name : interceptNames.split(";")) {
             if (!StringUtils.isBlank(name)) {
@@ -58,7 +59,7 @@ class RestfulFilter implements Filter {
         this.interceptNames = names.toArray(new String[names.size()]);
         //
         // 2.Find MappingInfoDefine
-        List<MappingToDefine> mappingList = appContext.findBindingBean(MappingToDefine.class);
+        List<MappingToDefine> mappingList = this.appContext.findBindingBean(MappingToDefine.class);
         Collections.sort(mappingList, new Comparator<MappingToDefine>() {
             public int compare(MappingToDefine o1, MappingToDefine o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
@@ -66,7 +67,7 @@ class RestfulFilter implements Filter {
         });
         // 3.初始化
         for (MappingToDefine define : mappingList) {
-            define.init(appContext);
+            define.init(this.appContext);
         }
         MappingToDefine[] defineArrays = mappingList.toArray(new MappingToDefine[mappingList.size()]);
         if (defineArrays != null) {
@@ -75,9 +76,9 @@ class RestfulFilter implements Filter {
         //
         //4.上下文
         try {
-            this.mimeType = appContext.getInstance(MimeType.class);
+            this.mimeType = this.appContext.getInstance(MimeType.class);
             this.renderLayout = new RenderLayout();
-            this.renderLayout.initEngine(appContext);
+            this.renderLayout.initEngine(this.appContext);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -106,7 +107,7 @@ class RestfulFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) resp;
         String actionPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String actionMethod = httpRequest.getMethod();
-        InnerRenderData renderData = new InnerRenderData(this.mimeType, httpRequest, httpResponse);
+        InnerRenderData renderData = new InnerRenderData(this.appContext, this.mimeType, httpRequest, httpResponse);
         //
         // .Action 处理
         for (int i = 0; i < this.interceptNames.length; i++) {
@@ -161,7 +162,7 @@ class RestfulFilter implements Filter {
         return new RequestDispatcher() {
             public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
                 request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
-                InnerRenderData renderData = new InnerRenderData(mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
+                InnerRenderData renderData = new InnerRenderData(appContext, mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
                 doInvoke(renderData, define, (HttpServletRequest) request, (HttpServletResponse) response);
             }
             public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
@@ -173,7 +174,7 @@ class RestfulFilter implements Filter {
                 /* 执行转发 */
                 request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
                 HttpServletRequest requestToProcess = new RequestDispatcherRequestWrapper(request, newRequestUri);
-                InnerRenderData renderData = new InnerRenderData(mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
+                InnerRenderData renderData = new InnerRenderData(appContext, mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
                 doInvoke(renderData, define, requestToProcess, (HttpServletResponse) response);
             }
         };

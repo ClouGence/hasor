@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
+package net.demo.hasor.web;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.WebController;
+import net.hasor.restful.api.MappingTo;
 /**
- * 
- * @version : 2014年8月27日
+ * QQ 登录认证
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ValidationException extends RuntimeException {
-    private static final long serialVersionUID = 18182020433905673L;
-    private ValidData         validData;
+@MappingTo("/login_callback.do")
+public class LoginCallback extends WebController {
     //
-    public ValidationException(ValidData validData) {
-        this.validData = validData;
-    }
-    public ValidData getValidDatat() {
-        return this.validData;
+    public void execute(RenderData data) {
+        //
     }
 }

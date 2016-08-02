@@ -260,7 +260,9 @@ public abstract class AbstractEnvironment implements Environment {
         // .load & init
         Map<String, String> envMapData = new ConcurrentHashMap<String, String>();
         this.envMap = envMapData;
-        this.logger.debug("load envVars...");
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("load envVars...");
+        }
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
         Set<String> allPack = new HashSet<String>();
         for (String packs : spanPackages) {
@@ -278,16 +280,22 @@ public abstract class AbstractEnvironment implements Environment {
         ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
         Collections.sort(spanPackagesArrays);
         this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
-        this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+        }
         //
         // .系统环境变量 & Java系统属性
-        this.logger.debug("envVars.reload -> System.getenv().");
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getenv().");
+        }
         Map<String, String> envMap = System.getenv();
         for (String key : envMap.keySet()) {
             envMapData.put(key.toUpperCase(), envMap.get(key));
         }
         // .Java属性
-        this.logger.debug("envVars.reload -> System.getProperties().");
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getProperties().");
+        }
         Properties prop = System.getProperties();
         for (Object propKey : prop.keySet()) {
             String k = propKey.toString();
@@ -298,7 +306,9 @@ public abstract class AbstractEnvironment implements Environment {
         }
         //
         // .内部配置文件配置
-        this.logger.debug("envVars.reload -> settings.");
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> settings.");
+        }
         Settings settings = getSettings();
         XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
         List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
@@ -308,13 +318,22 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         for (String envItem : envNames) {
-            envMapData.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
+            if (envMapData.containsKey(envItem)) {
+                String val = envMapData.get(envItem);
+                if (StringUtils.isNotBlank(val)) {
+                    this.logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
+                    continue;
+                }
+            }
+            envMapData.put(envItem, settings.getString("hasor.environmentVar." + envItem));
         }
         //
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
         envMapData.put("RUN_PATH", runPath);
-        this.logger.info("runPath at {}", runPath);
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("runPath at {}", runPath);
+        }
         //
         // .after
         this.afterInitEnvironment(envMapData);
@@ -327,10 +346,14 @@ public abstract class AbstractEnvironment implements Environment {
             File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
             if (envFile.isFile() && envFile.canRead()) {
                 inStream = new FileInputStream(envFile);
-                this.logger.info("env.config -> {}.", envFile.getAbsolutePath());
+                if (this.logger.isInfoEnabled()) {
+                    this.logger.info("env.config -> {}.", envFile.getAbsolutePath());
+                }
             }
         } else {
-            this.logger.info("env.config -> {}.", inStreamURL);
+            if (this.logger.isInfoEnabled()) {
+                this.logger.info("env.config -> {}.", inStreamURL);
+            }
         }
         if (inStream != null) {
             Properties properties = new Properties();

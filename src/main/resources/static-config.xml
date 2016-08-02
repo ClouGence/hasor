@@ -28,7 +28,7 @@
         <!-- 执行事件的线程池大小，注意：已经被安排Timer执行的事件，是不受生效之后的池大小限制的 -->
         <eventThreadPoolSize>20</eventThreadPoolSize>
 
-        <!-- 工作空间设置 -->
+        <!-- 环境变量设置,如果和(系统环境变量,java环境变量,java属性)冲突那么将会忽略这个变量冲突变量,并产生一条警告。 -->
         <environmentVar>
             <!-- 程序目录 -->
             <RUN_PATH>./</RUN_PATH>

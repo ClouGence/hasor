@@ -42,7 +42,7 @@ RUN mkdir -p "$EXAMPLE_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $EXAMPLE_HOME/webroot/ROOT.war && \
     mvn clean && \
-    export EXAMPLE_HOME="$EXAMPLE_HOME"
+    export WORK_HOME="$EXAMPLE_HOME"
 
 WORKDIR $CATALINA_HOME
 CMD ["catalina.sh", "run"]

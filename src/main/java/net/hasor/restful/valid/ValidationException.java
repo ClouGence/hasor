@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
-import org.more.bizcommon.ResultDO;
+package net.hasor.restful.valid;
 /**
- * 对象验证，如果验证失败返回验证消息。
+ *
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Validation {
-    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
-    public ResultDO<String> doValidation(Object dataForm);
+public class ValidationException extends RuntimeException {
+    private static final long serialVersionUID = 18182020433905673L;
+    private ValidData validData;
+    //
+    public ValidationException(ValidData validData) {
+        this.validData = validData;
+    }
+    public ValidData getValidDatat() {
+        return this.validData;
+    }
 }

@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web.qq;
-import net.hasor.restful.RenderData;
-import net.hasor.restful.WebController;
-import net.hasor.restful.api.MappingTo;
+package net.hasor.restful.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * QQ 登录认证
- * @version : 2016年1月1日
- * @author 赵永春(zyc@hasor.net)
+ * 验证参数
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-@MappingTo("/login_callback.do")
-public class LoginCallback extends WebController {
-    //
-    public void execute(RenderData data) {
-        //
-    }
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Valid {
+    public String value() default "";
 }

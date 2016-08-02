@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
+package net.hasor.restful.valid;
+import org.more.bizcommon.Message;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.more.bizcommon.Message;
 /**
- * 
+ *
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */

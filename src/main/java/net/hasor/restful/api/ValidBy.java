@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.valid;
-import org.more.bizcommon.ResultDO;
+package net.hasor.restful.api;
+import net.hasor.restful.Validation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 验证表单，如果验证失败返回验证消息。
- * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * 验证实现类
+ * @version : 2013-3-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ValidationForm {
-    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
-    public ResultDO<String> doValidation();
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidBy {
+    public Class<? extends Validation> value();
 }

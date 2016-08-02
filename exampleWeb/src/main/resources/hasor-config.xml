@@ -8,12 +8,9 @@
         <startup>net.demo.hasor.core.StartModule</startup>
         <!-- 环境变量 -->
         <environmentVar>
-            <!-- demo程序的运行主目录通过环境变量 'EXAMPLE_HOME' 来指定。 -->
-            <WORK_HOME>%EXAMPLE_HOME%</WORK_HOME>
-
             <!-- Daily -->
             <!-- 下面环境变量为本机调试的配置,正式环境下由 dockfile 在系统环境中声明,并且覆盖程序中的配置 -->
-            <EXAMPLE_HOME>%HASOR_WEBROOT%/WEB-INF/classes/daily_home</EXAMPLE_HOME>
+            <WORK_HOME>%HASOR_WEBROOT%/WEB-INF/classes/daily_home</WORK_HOME>
             <APP.HOST>127.0.0.1</APP.HOST>
         </environmentVar>
     </hasor>
