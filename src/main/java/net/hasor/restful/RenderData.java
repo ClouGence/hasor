@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.restful;
+import org.more.bizcommon.Message;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Set;
 /**
  * @version : 2013-6-5
@@ -23,7 +26,8 @@ import java.util.Set;
  */
 public interface RenderData {
     public static final String ROOT_DATA_KEY   = "rootData";
-    public static final String RETURN_DATA_KEY = "returnData";
+    public static final String RETURN_DATA_KEY = "resultData";
+    public static final String VALID_DATA_KEY  = "validData";
 
     //
     //
@@ -36,18 +40,40 @@ public interface RenderData {
     public Object get(String key);
 
     public void put(String key, Object value);
+    // --------------------------------------------------
 
-    public String getViewName();
+    /**获取需要渲染的视图名称。*/
+    public String viewName();
 
-    public void setViewName(String viewName);
+    /**设置需要渲染的视图名称。*/
+    public void viewName(String viewName);
 
-    public String getViewType();
+    /**渲染视图时使用的渲染引擎。*/
+    public String viewType();
 
-    public void setViewType(String viewType);
+    /**设置渲染引擎。*/
+    public void viewType(String viewType);
+    // --------------------------------------------------
 
-    public boolean useLayout();
+    /**本次视图渲染是否使用 layout。*/
+    public boolean layout();
 
-    public void enableLayout();
+    /**本次启用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
+    public void layoutEnable();
 
-    public void disableLayout();
+    /**本次禁用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
+    public void layoutDisable();
+    // --------------------------------------------------
+
+    /**验证失败的场景名称。*/
+    public List<String> validFailedScene();
+
+    /**获取某个场景下验证失败信息。*/
+    public List<Message> validErrors(String scene);
+
+    /**是否通过验证。*/
+    public boolean isValid();
+
+    /**某个场景是否通过验证。*/
+    public boolean isValid(String scene);
 }

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db;
-import java.lang.reflect.Method;
-import javax.sql.DataSource;
-import org.more.util.StringUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
@@ -29,9 +26,13 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionTemplate;
+import org.more.util.StringUtils;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
 /**
  * 数据库相关Module。
- * 
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
@@ -71,7 +72,8 @@ public class DBModule implements Module {
         }
         //
         TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
+        Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Transactional.class);
         Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Transactional.class);
-        apiBinder.bindInterceptor(AopMatchers.anyClass(), matcherMethod, tranInter);
+        apiBinder.bindInterceptor(matcherClass, matcherMethod, tranInter);
     }
 }

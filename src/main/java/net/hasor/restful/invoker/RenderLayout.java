@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +113,7 @@ class RenderLayout {
         if (renderData == null) {
             return false;
         }
-        String type = renderData.getViewType();
+        String type = renderData.viewType();
         RenderEngine engine = this.engineMap.get(type);
         if (engine == null) {
             return false;
@@ -124,33 +123,33 @@ class RenderLayout {
         }
         //
         //
-        String oriViewName = renderData.getViewName();
-        renderData.setViewName(fixTempName(this.templatePath, oriViewName));
+        String oriViewName = renderData.viewName();
+        renderData.viewName(fixTempName(this.templatePath, oriViewName));
         //
         String layoutFile = null;
-        if (this.useLayout && renderData.useLayout()) {
+        if (this.useLayout && renderData.layout()) {
             layoutFile = findLayout(engine, oriViewName);
         }
         //
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
-            if (engine.exist(renderData.getViewName())) {
+            if (engine.exist(renderData.viewName())) {
                 engine.process(renderData, tmpWriter);
             } else {
                 tmpWriter.write("");
             }
             //渲染layout
             renderData.put("content_placeholder", tmpWriter.toString());
-            renderData.setViewName(layoutFile);
-            if (engine.exist(renderData.getViewName())) {
+            renderData.viewName(layoutFile);
+            if (engine.exist(renderData.viewName())) {
                 engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
-            if (engine.exist(renderData.getViewName())) {
+            if (engine.exist(renderData.viewName())) {
                 engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {

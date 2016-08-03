@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain.valid;
+import net.demo.hasor.domain.LoginForm;
+import net.hasor.restful.ValidErrors;
 import net.hasor.restful.Validation;
-import org.more.bizcommon.ResultDO;
+import org.more.util.StringUtils;
 /**
  *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LoginValidation implements Validation {
+public class LoginFormValidation implements Validation<LoginForm> {
     @Override
-    public ResultDO<String> doValidation(String validType, Object dataForm) {
-        return null;
+    public void doValidation(String validType, LoginForm dataForm, ValidErrors errors) {
+        if (StringUtils.equalsIgnoreCase("SignIn", validType)) {
+            //
+        } else if (StringUtils.equalsIgnoreCase("SignUp", validType)) {
+            //
+        }
     }
 }

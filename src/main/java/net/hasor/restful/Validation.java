@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import org.more.bizcommon.ResultDO;
+import net.hasor.restful.api.Valid;
 /**
  * 对象验证，如果验证失败返回验证消息。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Validation<T> {
-    /**如果验证失败请返回｛success = false，result = 错误消息。｝*/
-    public ResultDO<String> doValidation(String validType, T dataForm);
+    /**
+     * 验证逻辑
+     * @param scene 场景,由 {@link Valid}注解指定的场景名。
+     * @param dataForm 等待验证的数据。
+     * @param errors 验证结果。
+     */
+    public void doValidation(String scene, T dataForm, ValidErrors errors);
 }

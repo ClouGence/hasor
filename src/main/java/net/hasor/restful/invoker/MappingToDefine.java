@@ -19,11 +19,13 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.restful.api.HttpMethod;
 import net.hasor.restful.api.MappingTo;
+import net.hasor.restful.api.Valid;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -36,11 +38,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 class MappingToDefine {
-    private Class<?>            targetType;
-    private Provider<?>         targetProvider;
-    private String              mappingTo;
-    private String              mappingToMatches;
-    private Map<String, Method> httpMapping;
+    private Class<?>                targetType;
+    private Provider<?>             targetProvider;
+    private String                  mappingTo;
+    private String                  mappingToMatches;
+    private Map<String, Method>     httpMapping;
+    private Map<Method, InnerValid> needValid;
     private AtomicBoolean inited = new AtomicBoolean(false);
     //
     protected MappingToDefine(Class<?> targetType) {
@@ -61,6 +64,7 @@ class MappingToDefine {
         List<Method> mList = BeanUtils.getMethods(targetType);
         if (mList != null && !mList.isEmpty()) {
             for (Method targetMethod : mList) {
+                // .HeepMethod
                 Annotation[] annos = targetMethod.getAnnotations();
                 if (annos != null) {
                     for (Annotation anno : annos) {
@@ -73,11 +77,31 @@ class MappingToDefine {
                         }
                     }
                 }
-                /*default*/
                 if (targetMethod.getName().equals("execute") && !this.httpMapping.containsKey("execute")) {
                     this.httpMapping.put(HttpMethod.ANY, targetMethod);
                 }
             }
+        }
+        //
+        // .执行调用，每个方法的参数都进行判断，一旦查到参数上具有Valid 标签那么就调用doValid进行参数验证。
+        this.needValid = new HashMap<Method, InnerValid>();
+        for (String key : this.httpMapping.keySet()) {
+            Method targetMethod = this.httpMapping.get(key);
+            Annotation[][] paramAnno = targetMethod.getParameterAnnotations();
+            Class<?>[] paramType = targetMethod.getParameterTypes();
+            Map<String, Valid> validMap = new HashMap<String, Valid>();
+            Map<String, Class<?>> paramTypeMap = new HashMap<String, Class<?>>();
+            for (int paramIndex = 0; paramIndex < paramAnno.length; paramIndex++) {
+                Annotation[] annoArrays = paramAnno[paramIndex];
+                for (Annotation anno : annoArrays) {
+                    if (anno == null || anno instanceof Valid == false) {
+                        continue;
+                    }
+                    validMap.put(String.valueOf(paramIndex), (Valid) anno);
+                    paramTypeMap.put(String.valueOf(paramIndex), paramType[paramIndex]);
+                }
+            }
+            this.needValid.put(targetMethod, new InnerValid(validMap, paramTypeMap));
         }
         //
         this.mappingTo = servicePath;
@@ -135,7 +159,8 @@ class MappingToDefine {
         }
         //
         Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-        new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod);
+        InnerValid needValid = this.needValid.get(targetMethod);
+        new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod, needValid);
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

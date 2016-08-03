@@ -22,6 +22,10 @@ package org.more.bizcommon;
 public class Message {
     private MessageTemplate messageTemplate = null;
     private Object[]        messageParams   = null;
+    //
+    public Message(String message) {
+        this(0, message, null);
+    }
     public Message(int messageType, String messageTemplate, Object[] messageParams) {
         this(new MessageTemplateString(messageType, messageTemplate), messageParams);
     }
@@ -39,7 +43,11 @@ public class Message {
     public String getMessage() {
         String messageTemplate = this.messageTemplate.getMessageTemplate();
         try {
-            return String.format(messageTemplate, this.messageParams);
+            if (this.messageParams != null && this.messageParams.length > 0) {
+                return String.format(messageTemplate, this.messageParams);
+            } else {
+                return messageTemplate;
+            }
         } catch (Exception e) {
             return messageTemplate;
         }

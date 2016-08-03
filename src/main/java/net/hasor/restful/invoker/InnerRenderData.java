@@ -17,27 +17,26 @@ package net.hasor.restful.invoker;
 import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderData;
 import net.hasor.web.WebAppContext;
+import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 class InnerRenderData implements RenderData {
-    private String              viewName     = null;
-    private String              viewType     = null;
-    private boolean             useLayout    = true;
-    private Map<String, Object> contextMap   = null;
-    private HttpServletRequest  httpRequest  = null;
-    private HttpServletResponse httpResponse = null;
-    private WebAppContext       appContext   = null;
-    private MimeType            mimeType     = null;
+    private String                 viewName     = null;//模版名称
+    private String                 viewType     = null;//渲染引擎
+    private boolean                useLayout    = true;//是否渲染布局
+    private Map<String, Object>    contextMap   = null;//
+    private HttpServletRequest     httpRequest  = null;
+    private HttpServletResponse    httpResponse = null;
+    private Map<String, ValidData> validDataMap = null;
+    private WebAppContext          appContext   = null;
+    private MimeType               mimeType     = null;
     //
     public InnerRenderData(WebAppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String contextPath = httpRequest.getContextPath();
@@ -48,12 +47,13 @@ class InnerRenderData implements RenderData {
         //
         int lastIndex = requestPath.lastIndexOf(".");
         if (lastIndex > 0) {
-            this.setViewType(requestPath.substring(lastIndex + 1));
+            this.viewType(requestPath.substring(lastIndex + 1));
         } else {
-            this.setViewType("default");
+            this.viewType("default");
         }
         this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
+        this.validDataMap = new HashMap<String, ValidData>();
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
         //
@@ -65,6 +65,8 @@ class InnerRenderData implements RenderData {
             this.contextMap.put("req_" + key, val);
         }
         this.contextMap.put(ROOT_DATA_KEY, this);
+        this.contextMap.put(RETURN_DATA_KEY, null);
+        this.contextMap.put(VALID_DATA_KEY, this.validDataMap);
         this.appContext = appContext;
         this.mimeType = mimeType;
     }
@@ -106,41 +108,76 @@ class InnerRenderData implements RenderData {
     public void put(String key, Object value) {
         if (StringUtils.isBlank(key) ||//
                 StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key) ||//
-                StringUtils.equalsIgnoreCase(RETURN_DATA_KEY, key)) {
-            throw new UnsupportedOperationException("the key must not as '" + ROOT_DATA_KEY + "' or '" + RETURN_DATA_KEY + "' or empty");
+                StringUtils.equalsIgnoreCase(RETURN_DATA_KEY, key) ||//
+                StringUtils.equalsIgnoreCase(VALID_DATA_KEY, key)) {
+            throw new UnsupportedOperationException("the key must not in [" + //
+                    ROOT_DATA_KEY + ", " + RETURN_DATA_KEY + "," + VALID_DATA_KEY + " ] or empty");
         }
         this.contextMap.put(key, value);
     }
+    //
+    // --------------------------------------------------
     @Override
-    public String getViewName() {
+    public String viewName() {
         return this.viewName;
     }
     @Override
-    public void setViewName(String viewName) {
+    public void viewName(String viewName) {
         this.viewName = viewName;
     }
     @Override
-    public String getViewType() {
+    public String viewType() {
         return this.viewType;
     }
     @Override
-    public void setViewType(String viewType) {
+    public void viewType(String viewType) {
         if (StringUtils.isNotBlank(viewType)) {
             this.viewType = viewType.trim().toUpperCase();
         } else {
             this.viewType = "";
         }
     }
+    //
+    // --------------------------------------------------
     @Override
-    public boolean useLayout() {
+    public boolean layout() {
         return this.useLayout;
     }
     @Override
-    public void enableLayout() {
+    public void layoutEnable() {
         this.useLayout = true;
     }
     @Override
-    public void disableLayout() {
+    public void layoutDisable() {
         this.useLayout = false;
     }
+    //
+    // --------------------------------------------------
+    public void addValidResult(Map<String, ValidData> validDataMap) {
+        this.validDataMap.putAll(validDataMap);
+    }
+    @Override
+    public List<String> validFailedScene() {
+        return new ArrayList<String>(this.validDataMap.keySet());
+    }
+    @Override
+    public List<Message> validErrors(String scene) {
+        ValidData data = this.validDataMap.get(scene);
+        return data == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(data);
+    }
+    @Override
+    public boolean isValid() {
+        for (ValidData data : this.validDataMap.values()) {
+            if (data != null && !data.isValid()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean isValid(String scene) {
+        ValidData data = this.validDataMap.get(scene);
+        return data == null ? true : data.isValid();
+    }
+    //
 }

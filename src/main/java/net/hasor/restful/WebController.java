@@ -67,7 +67,6 @@ public abstract class WebController {
     }
     /**
      * Return HttpSession.
-     *
      * @param create a boolean specifying create HttpSession if it not exists
      * @return Return HttpSession.
      */
@@ -77,7 +76,6 @@ public abstract class WebController {
     // --------
     /**
      * 设置{@link HttpServletRequest}属性
-     *
      * @param attKey 属性名
      * @param attValue 属性值
      * @return 返回this
@@ -88,7 +86,6 @@ public abstract class WebController {
     }
     /**
      * 设置{@link HttpServletResponse}Header属性
-     *
      * @param key 参数 key
      * @param value 参数值
      * @return 返回this.
@@ -99,7 +96,6 @@ public abstract class WebController {
     }
     /**
      * 设置{@link HttpServletResponse}Header属性
-     *
      * @param key 参数 key
      * @param value 参数值
      * @return 返回this.
@@ -110,7 +106,6 @@ public abstract class WebController {
     }
     /**
      * Stores an attribute in this request
-     *
      * @param name a String specifying the name of the attribute
      * @param value the Object to be stored
      * @return 返回this.
@@ -121,7 +116,6 @@ public abstract class WebController {
     }
     /**
      * Removes an attribute from this request
-     *
      * @param name a String specifying the name of the attribute to remove
      * @return 返回this.
      */
@@ -131,7 +125,6 @@ public abstract class WebController {
     }
     /**
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
-     *
      * @param attrMap key and value as attribute of the map to be stored
      * @return 返回this.
      */
@@ -146,7 +139,6 @@ public abstract class WebController {
      * You should only use this method when you are sure the parameter has only one value. If the parameter might have more than one value, use getParaValues(java.lang.String).
      * <p>
      * If you use this method with a multivalued parameter, the value returned is equal to the first value in the array returned by getParameterValues.
-     *
      * @param name a String specifying the name of the parameter
      * @return a String representing the single value of the parameter
      */
@@ -155,7 +147,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter as a String, or default value if the parameter does not exist.
-     *
      * @param name a String specifying the name of the parameter
      * @param defaultValue a String value be returned when the value of parameter is null
      * @return a String representing the single value of the parameter
@@ -166,7 +157,6 @@ public abstract class WebController {
     }
     /**
      * Returns the values of the request parameters as a Map.
-     *
      * @return a Map contains all the parameters name and value
      */
     public Map<String, String[]> getParaMap() {
@@ -174,7 +164,6 @@ public abstract class WebController {
     }
     /**
      * Returns an Enumeration of String objects containing the names of the parameters contained in this request. If the request has no parameters, the method returns an empty Enumeration.
-     *
      * @return an Enumeration of String objects, each String containing the name of a request parameter; or an empty Enumeration if the request has no parameters
      */
     public Enumeration<String> getParaNames() {
@@ -182,7 +171,6 @@ public abstract class WebController {
     }
     /**
      * Returns an array of String objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
-     *
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of String objects containing the parameter's values
      */
@@ -191,7 +179,6 @@ public abstract class WebController {
     }
     /**
      * Returns an array of Integer objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
-     *
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of Integer objects containing the parameter's values
      */
@@ -206,7 +193,6 @@ public abstract class WebController {
     }
     /**
      * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
-     *
      * @return an Enumeration of strings containing the names of the request's attributes
      */
     public Enumeration<String> getAttrNames() {
@@ -214,7 +200,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     *
      * @param name a String specifying the name of the attribute
      * @return an Object containing the value of the attribute, or null if the attribute does not exist
      */
@@ -223,7 +208,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     *
      * @param name a String specifying the name of the attribute
      * @return an String Object containing the value of the attribute, or null if the attribute does not exist
      */
@@ -232,7 +216,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     *
      * @param name a String specifying the name of the attribute
      * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
      */
@@ -241,7 +224,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Integer.
-     *
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
@@ -250,7 +232,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Integer with a default value if it is null.
-     *
      * @param name a String specifying the name of the parameter
      * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
@@ -260,7 +241,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Long.
-     *
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
@@ -269,7 +249,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Long with a default value if it is null.
-     *
      * @param name a String specifying the name of the parameter
      * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
@@ -299,7 +278,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Boolean.
-     *
      * @param name a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", null if parameter is not exists
      */
@@ -318,7 +296,6 @@ public abstract class WebController {
     }
     /**
      * Returns the value of a request parameter and convert to Boolean with a default value if it is null.
-     *
      * @param name a String specifying the name of the parameter
      * @param defaultValue default value for the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", default value if it is null
@@ -329,7 +306,6 @@ public abstract class WebController {
     }
     /**
      * Return a Object from session.
-     *
      * @param key a String specifying the key of the Object stored in session
      * @return return session attribute data.
      */
@@ -339,7 +315,6 @@ public abstract class WebController {
     }
     /**
      * Store Object to session.
-     *
      * @param key a String specifying the key of the Object stored in session
      * @param value a Object specifying the value stored in session
      * @return 返回this.
@@ -350,7 +325,6 @@ public abstract class WebController {
     }
     /**
      * Remove Object in session.
-     *
      * @param key a String specifying the key of the Object stored in session
      * @return 返回this.
      */
@@ -363,7 +337,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name.
-     *
      * @param name cookie name
      * @param defaultValue default value
      * @return return cookie value or default value.
@@ -374,7 +347,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name.
-     *
      * @param name cookie name
      * @return return cookie value or null.
      */
@@ -383,7 +355,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Integer.
-     *
      * @param name cookie name
      * @return return cookie value or null.
      */
@@ -393,7 +364,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Integer.
-     *
      * @param name cookie name
      * @param defaultValue default value
      * @return return cookie value or default value.
@@ -404,7 +374,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Long.
-     *
      * @param name cookie name
      * @return return cookie value or null.
      */
@@ -414,7 +383,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie value by cookie name and convert to Long.
-     *
      * @param name cookie name
      * @param defaultValue default value
      * @return return cookie value or default value.
@@ -425,7 +393,6 @@ public abstract class WebController {
     }
     /**
      * Get cookie object by cookie name.
-     *
      * @param name cookie name
      * @return Cookie object
      */
@@ -447,7 +414,6 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     *
      * @param cookie new cookie.
      * @return 返回this.
      */
@@ -457,7 +423,6 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     *
      * @param name cookie name
      * @param value cookie value
      * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
@@ -470,7 +435,6 @@ public abstract class WebController {
     }
     /**
      * Set Cookie to response.
-     *
      * @param name cookie name
      * @param value cookie value
      * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately. n &gt; 0 : max age in n seconds.
@@ -490,7 +454,6 @@ public abstract class WebController {
     }
     /**
      * Set Cookie with path = "/".
-     *
      * @param name cookie name
      * @param value cookie value
      * @param maxAgeInSeconds max age
@@ -502,7 +465,6 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie with path = "/".
-     *
      * @param name cookie name
      * @return 返回this.
      */
@@ -512,7 +474,6 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie.
-     *
      * @param name cookie name
      * @param path cookie with path = "/".
      * @return 返回this.
@@ -523,7 +484,6 @@ public abstract class WebController {
     }
     /**
      * Remove Cookie.
-     *
      * @param name cookie name
      * @param path cookie with path = "/".
      * @param domain domain
@@ -547,7 +507,7 @@ public abstract class WebController {
     }
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
-        this.getInvoker().setViewName(viewName);
+        this.getInvoker().viewName(viewName);
     }
     /**
      * 更新渲染模版。
@@ -555,8 +515,16 @@ public abstract class WebController {
      * @param viewName 模版名称
      */
     protected void renderTo(String renderType, String viewName) {
-        this.getInvoker().setViewType(renderType);
-        this.getInvoker().setViewName(viewName);
+        this.getInvoker().viewType(renderType);
+        this.getInvoker().viewName(viewName);
+    }
+    /**@return 是否通过验证。*/
+    protected boolean isValid() {
+        return this.getInvoker().isValid();
+    }
+    /**@return 某个场景是否通过验证。*/
+    protected boolean isValid(String scene) {
+        return this.getInvoker().isValid(scene);
     }
     // --------
     // private MultipartRequest multipartRequest;

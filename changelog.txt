@@ -1,9 +1,10 @@
 ﻿===== Hasor-Core v2.4.2 (2016-08-03)
 * 新增:
-    01.Restful 框架增加 @Valid 验证功能。
-    02.新增的验证功能支持场景化参数。
+    01.Restful 框架整合 Validation 插件增加请求参数 @Valid 验证功能。
+    02.注解 @Valid 支持场景化验证。
 * 改进:
     01.env.config 加载环境变量遇到名称冲突时的,Bug。
+    02.DBModule 类,在声明 Aop 类匹配的时候从任意类,改为需要标记 @Transactional 注解的类。
 
 ===== Hasor-Core v2.4.1 (2016-08-01)
 * 改进:

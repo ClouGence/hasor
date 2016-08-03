@@ -16,12 +16,8 @@
 package net.hasor.restful.invoker;
 import net.hasor.core.Provider;
 import net.hasor.restful.RenderData;
-import net.hasor.restful.Validation;
 import net.hasor.restful.WebController;
 import net.hasor.restful.api.*;
-import net.hasor.restful.valid.ValidData;
-import net.hasor.restful.valid.ValidationException;
-import org.more.bizcommon.ResultDO;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -58,7 +54,7 @@ class Invoker {
     }
     //
     /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, Method targetMethod) throws Throwable {
+    public void exeCall(Provider<?> targetProvider, Method targetMethod, InnerValid needValid) throws Throwable {
         Object targetObject = targetProvider.get();
         HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         HttpServletResponse httpResponse = this.renderData.getHttpResponse();
@@ -67,8 +63,14 @@ class Invoker {
         }
         //
         Object[] resolveParams = this.resolveParams(targetMethod);
-        //
+        if (needValid != null) {
+            Map<String, ValidData> validDataMap = needValid.doValid(this.renderData.getAppContext(), resolveParams);
+            if (validDataMap != null && !validDataMap.isEmpty()) {
+                this.renderData.addValidResult(validDataMap);
+            }
+        }
         Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
+        this.renderData.setReturnData(resultData);
         //
         if (targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
@@ -77,15 +79,14 @@ class Invoker {
                 String mimeType = this.renderData.getMimeType(proValue);
                 if (StringUtils.isBlank(mimeType)) {
                     httpResponse.setContentType(proValue);
-                    this.renderData.setViewType(proValue);
+                    this.renderData.viewType(proValue);
                 } else {
                     httpResponse.setContentType(mimeType);
-                    this.renderData.setViewType(mimeType);
+                    this.renderData.viewType(mimeType);
                 }
             }
         }
         //
-        this.renderData.setReturnData(resultData);
     }
     /**准备参数*/
     protected final Object[] resolveParams(Method targetMethod) throws Throwable {
@@ -348,60 +349,8 @@ class Invoker {
         }
         return this.pathParamsLocal;
     }
-    //
-    /* 执行调用，每个方法的参数都进行判断，一旦查到参数上具有Valid 标签那么就调用doValid进行参数验证。 */
+    /**/
     public Object invoke(Method targetMethod, Object targetObject, Object[] paramArrays) throws Throwable {
-        Annotation[][] paramAnno = targetMethod.getParameterAnnotations();
-        //
-        for (int paramIndex = 0; paramIndex < paramAnno.length; paramIndex++) {
-            Annotation[] annoArrays = paramAnno[paramIndex];
-            for (Annotation anno : annoArrays) {
-                if (anno == null || anno instanceof Valid == false) {
-                    continue;
-                }
-                Valid valid = (Valid) anno;
-                Object paramObj = paramArrays[paramIndex];
-                ValidData validData = doValid(valid.value(), paramObj);
-                if (validData.isValid() == false) {
-                    throw new ValidationException(validData);
-                }
-                break;
-            }
-        }
-        //
         return targetMethod.invoke(targetObject, paramArrays);
-    }
-    //
-    public ValidData doValid(String validName, Object paramObj) {
-        if (paramObj == null) {
-            return new ValidData(validName, true);
-        }
-        // .ValidClass
-        ValidBy validBy = paramObj.getClass().getAnnotation(ValidBy.class);
-        if (validBy == null) {
-            return new ValidData(validName, true);
-        }
-        //
-        // .Valid
-        Validation validation = this.renderData.getAppContext().getInstance(validBy.value());
-        if (validation != null) {
-            ResultDO<String> result = validation.doValidation(validName, paramObj);
-            ValidData vData = converResult(validName, result);
-            logger.info("doValidation {},result = {}", validName, vData);
-            return vData;
-        } else {
-            ValidData vData = new ValidData(validName, false);
-            String msg = "doValidation " + validName + " program is not exist, valid faild.";
-            vData.addValidString(msg);
-            logger.info(msg);
-            return vData;
-        }
-    }
-    /*将ResultDO转换为ValidData*/
-    private ValidData converResult(String validName, ResultDO<String> result) {
-        ValidData validData = new ValidData(validName, result.isSuccess());
-        validData.addValidString(result.getResult());
-        validData.addValidMessage(result.getMessageList());
-        return validData;
     }
 }

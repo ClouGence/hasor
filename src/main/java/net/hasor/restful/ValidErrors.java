@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.valid;
+package net.hasor.restful;
+import org.more.bizcommon.Message;
+
+import java.util.List;
 /**
- *
+ * 添加验证错误消息。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ValidationException extends RuntimeException {
-    private static final long serialVersionUID = 18182020433905673L;
-    private ValidData validData;
-    //
-    public ValidationException(ValidData validData) {
-        this.validData = validData;
-    }
-    public ValidData getValidDatat() {
-        return this.validData;
-    }
+public interface ValidErrors {
+    /**添加验证失败的消息。*/
+    public void addError(String validString);
+
+    /**添加验证失败的消息。*/
+    public void addError(Message validMessage);
+
+    /**添加验证失败的消息。*/
+    public void addErrors(List<Message> validMessage);
 }

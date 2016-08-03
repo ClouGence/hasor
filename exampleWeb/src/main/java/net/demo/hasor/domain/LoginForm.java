@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain;
-import net.hasor.restful.Validation;
+import net.demo.hasor.domain.valid.LoginFormValidation;
 import net.hasor.restful.api.ValidBy;
-import org.more.bizcommon.ResultDO;
-import org.more.util.StringUtils;
 /**
- * 登录表单,指定验证实现类为它自己。
+ * 登录表单,指定 LoginFormValidation 类为它的验证器。
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@ValidBy(LoginForm.class)
-public class LoginForm implements Validation {
+@ValidBy(LoginFormValidation.class)
+public class LoginForm {
     private String email;
     private String account;
     private String password;
@@ -47,15 +45,5 @@ public class LoginForm implements Validation {
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-    //
-    @Override
-    public ResultDO<String> doValidation(String validType, Object dataForm) {
-        if (StringUtils.equalsIgnoreCase("SignIn", validType)) {
-            //
-        } else if (StringUtils.equalsIgnoreCase("SignUp", validType)) {
-            //
-        }
-        return null;
     }
 }
