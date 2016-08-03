@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.4.2 (2016-08-03)
+﻿===== Hasor-Core v2.4.2 (2016-08-04)
 * 新增:
     01.Restful 框架整合 Validation 插件增加请求参数 @Valid 验证功能。
     02.注解 @Valid 支持场景化验证。
