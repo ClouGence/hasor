@@ -28,7 +28,7 @@ RUN set -x && \
 # work
 ENV EXAMPLE_HOME /home/example
 RUN mkdir -p "$EXAMPLE_HOME/logs"
-ADD .                  /home/example/sources
+ADD . /home/example/sources
 
 RUN ln -s $EXAMPLE_HOME/sources/conf/online_home $EXAMPLE_HOME && \
     ln -s $EXAMPLE_HOME/sources/conf/tomcat $EXAMPLE_HOME/tomcat && \
@@ -41,8 +41,7 @@ WORKDIR /home/example/sources
 RUN mkdir -p "$EXAMPLE_HOME/webroot" && \
     mvn package -Dmaven.test.skip=true && \
     mv ./target/demo-web-1.0.war $EXAMPLE_HOME/webroot/ROOT.war && \
-    mvn clean && \
-    export WORK_HOME="$EXAMPLE_HOME"
+    mvn clean
 
 WORKDIR $CATALINA_HOME
-CMD ["catalina.sh", "run"]
+CMD ["catalina.sh", "run -DWORK_HOME=$EXAMPLE_HOME"]
