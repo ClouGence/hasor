@@ -27,8 +27,9 @@ RUN set -x && \
 #
 # work
 ENV EXAMPLE_HOME /home/example
+ENV WORK_HOME /home/example
 RUN mkdir -p "$EXAMPLE_HOME/logs"
-ADD . /home/example/sources
+ADD .                  /home/example/sources
 
 RUN ln -s $EXAMPLE_HOME/sources/conf/online_home $EXAMPLE_HOME && \
     ln -s $EXAMPLE_HOME/sources/conf/tomcat $EXAMPLE_HOME/tomcat && \
@@ -44,4 +45,4 @@ RUN mkdir -p "$EXAMPLE_HOME/webroot" && \
     mvn clean
 
 WORKDIR $CATALINA_HOME
-CMD ["catalina.sh", "run -DWORK_HOME=$EXAMPLE_HOME"]
+CMD ["catalina.sh", "run"]
