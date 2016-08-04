@@ -55,4 +55,8 @@ public class ValidData extends ArrayList<Message> {
     public void addError(String validString) {
         this.add(new Message(validString));
     }
+    //
+    public String toString() {
+        return this.firstError();
+    }
 }

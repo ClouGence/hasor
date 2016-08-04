@@ -29,13 +29,16 @@ import net.hasor.restful.api.Valid;
 public class Login extends WebController {
     //
     public void execute(@Valid("SignIn") @Params LoginForm loginForm, RenderData data) {
+        //
+        this.putAtt("loginForm", loginForm);
         if (!data.isValid()) {
             //
             //验证失败
+            renderTo("htm", "/login.htm");
         } else {
             //
             //验证通过
+            renderTo("htm", "/login.htm");
         }
-        data.viewName("/login.htm");
     }
 }

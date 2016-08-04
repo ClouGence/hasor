@@ -116,6 +116,7 @@ class RestfulFilter implements Filter {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {
                     doInvoke(renderData, define, httpRequest, httpResponse);
+                    break;
                 }
             }
         }

@@ -27,7 +27,7 @@ public class LoginFormValidation implements Validation<LoginForm> {
     @Override
     public void doValidation(String validType, LoginForm dataForm, ValidErrors errors) {
         if (StringUtils.equalsIgnoreCase("SignIn", validType)) {
-            if (StringUtils.equalsIgnoreCase("admin", dataForm.getAccount())) {
+            if (!StringUtils.equalsIgnoreCase("admin", dataForm.getAccount())) {
                 errors.addError("account", "帐号不是account。");
             }
             //

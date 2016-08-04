@@ -15,6 +15,7 @@
  */
 package net.demo.hasor.domain;
 import net.demo.hasor.domain.valid.LoginFormValidation;
+import net.hasor.restful.api.ReqParam;
 import net.hasor.restful.api.ValidBy;
 /**
  * 登录表单,指定 LoginFormValidation 类为它的验证器。
@@ -23,9 +24,14 @@ import net.hasor.restful.api.ValidBy;
  */
 @ValidBy(LoginFormValidation.class)
 public class LoginForm {
+    @ReqParam("email")
     private String email;
+    @ReqParam("account")
     private String account;
+    @ReqParam("password")
     private String password;
+    @ReqParam("redirectURI")
+    private String redirectURI;
     //
     //
     public String getEmail() {
@@ -45,5 +51,11 @@ public class LoginForm {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public String getRedirectURI() {
+        return redirectURI;
+    }
+    public void setRedirectURI(String redirectURI) {
+        this.redirectURI = redirectURI;
     }
 }
