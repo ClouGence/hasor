@@ -8,8 +8,6 @@
     <version>1.0</version>
     <packaging>war</packaging>
 
-    https://oss.sonatype.org/content/repositories/snapshots/
-
     <!-- Project Info -->
     <name>Hasor Home</name>
     <description>Hasor首页</description>
