@@ -45,7 +45,7 @@ import net.test.hasor.core._01_bean.pojo.PojoInfo;
  *      为Bean起一个唯一的名字，然后通过名字获取它。
  * 8.factoryBeanTest
  *      工厂方式创建Bean。
- * 
+ *
  * @version : 2015年11月6日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -55,12 +55,12 @@ public class BeanTest {
     /* Bean */
     @Test
     public void beanTest() {
-        int[][] array = new  int[86400 / 3][86400 / 3];
-        int a=0;
-        for (int i=0;i<86400 / 3;i++){
-            for (int j=0;j<86400 / 3;j++){
+        int[][] array = new int[86400 / 3][86400 / 3];
+        int a = 0;
+        for (int i = 0; i < 86400 / 3; i++) {
+            for (int j = 0; j < 86400 / 3; j++) {
                 a++;
-                array[i][j]=a;
+                array[i][j] = a;
             }
         }
         System.out.println("--->>beanTest<<--");

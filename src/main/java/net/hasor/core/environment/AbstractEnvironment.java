@@ -340,19 +340,23 @@ public abstract class AbstractEnvironment implements Environment {
         //
         // .外部环境变量属性文件覆盖配置
         URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
+        this.logger.info("load 'env.config' form classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
         InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
         if (inStream == null) {
             String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
             File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
-            if (envFile.isFile() && envFile.canRead()) {
-                inStream = new FileInputStream(envFile);
-                if (this.logger.isInfoEnabled()) {
-                    this.logger.info("env.config -> {}.", envFile.getAbsolutePath());
+            String envFileName = envFile.getAbsolutePath();
+            if (envFile.exists()) {
+                if (envFile.isDirectory()) {
+                    this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
+                } else if (envFile.canRead()) {
+                    this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
+                } else {
+                    inStream = new FileInputStream(envFile);
+                    this.logger.info("load 'env.config' form file -> {}.", envFileName);
                 }
-            }
-        } else {
-            if (this.logger.isInfoEnabled()) {
-                this.logger.info("env.config -> {}.", inStreamURL);
+            } else {
+                this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
             }
         }
         if (inStream != null) {
@@ -363,7 +367,8 @@ public abstract class AbstractEnvironment implements Environment {
                 envMapData.put(name.toUpperCase(), properties.getProperty(name));
             }
         }
-        this.refreshVariables();
+        this.
+                refreshVariables();
         //
         // .日志输出
         if (this.logger.isInfoEnabled()) {

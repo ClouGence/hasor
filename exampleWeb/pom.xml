@@ -8,6 +8,8 @@
     <version>1.0</version>
     <packaging>war</packaging>
 
+    https://oss.sonatype.org/content/repositories/snapshots/
+
     <!-- Project Info -->
     <name>Hasor Home</name>
     <description>Hasor首页</description>
@@ -40,13 +42,23 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <!-- 引用依赖 -->
     <dependencies>
         <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>2.4.2</version>
+            <version>2.4.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>connect.qq.com</groupId>
