@@ -65,15 +65,15 @@ public interface RenderData {
     public void layoutDisable();
     // --------------------------------------------------
 
-    /**验证失败的场景名称。*/
-    public List<String> validFailedScene();
+    /**验证失败的验证keys。*/
+    public List<String> validKeys();
 
-    /**获取某个场景下验证失败信息。*/
-    public List<Message> validErrors(String scene);
+    /**获取某个key下验证失败信息。*/
+    public List<Message> validErrors(String messageKey);
 
     /**是否通过验证。*/
     public boolean isValid();
 
-    /**某个场景是否通过验证。*/
-    public boolean isValid(String scene);
+    /**某个规则是否通过验证。*/
+    public boolean isValid(String messageKey);
 }

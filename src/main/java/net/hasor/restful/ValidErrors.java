@@ -24,11 +24,11 @@ import java.util.List;
  */
 public interface ValidErrors {
     /**添加验证失败的消息。*/
-    public void addError(String validString);
+    public void addError(String key, String validString);
 
     /**添加验证失败的消息。*/
-    public void addError(Message validMessage);
+    public void addError(String key, Message validMessage);
 
     /**添加验证失败的消息。*/
-    public void addErrors(List<Message> validMessage);
+    public void addErrors(String key, List<Message> validMessage);
 }

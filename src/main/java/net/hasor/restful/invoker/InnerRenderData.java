@@ -34,7 +34,7 @@ class InnerRenderData implements RenderData {
     private Map<String, Object>    contextMap   = null;//
     private HttpServletRequest     httpRequest  = null;
     private HttpServletResponse    httpResponse = null;
-    private Map<String, ValidData> validDataMap = null;
+    private Map<String, ValidData> validData    = null;//原始验证数据
     private WebAppContext          appContext   = null;
     private MimeType               mimeType     = null;
     //
@@ -53,7 +53,7 @@ class InnerRenderData implements RenderData {
         }
         this.viewName = requestPath;
         this.contextMap = new HashMap<String, Object>();
-        this.validDataMap = new HashMap<String, ValidData>();
+        this.validData = new HashMap<String, ValidData>();
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
         //
@@ -66,7 +66,7 @@ class InnerRenderData implements RenderData {
         }
         this.contextMap.put(ROOT_DATA_KEY, this);
         this.contextMap.put(RETURN_DATA_KEY, null);
-        this.contextMap.put(VALID_DATA_KEY, this.validDataMap);
+        this.contextMap.put(VALID_DATA_KEY, this.validData);
         this.appContext = appContext;
         this.mimeType = mimeType;
     }
@@ -153,21 +153,22 @@ class InnerRenderData implements RenderData {
     }
     //
     // --------------------------------------------------
-    public void addValidResult(Map<String, ValidData> validDataMap) {
-        this.validDataMap.putAll(validDataMap);
+    public void updateValidResult(Map<String, ValidData> validDataMap) {
+        this.validData.clear();
+        this.validData.putAll(validDataMap);
     }
     @Override
-    public List<String> validFailedScene() {
-        return new ArrayList<String>(this.validDataMap.keySet());
+    public List<String> validKeys() {
+        return new ArrayList<String>(this.validData.keySet());
     }
     @Override
-    public List<Message> validErrors(String scene) {
-        ValidData data = this.validDataMap.get(scene);
+    public List<Message> validErrors(String messageKey) {
+        ValidData data = this.validData.get(messageKey);
         return data == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(data);
     }
     @Override
     public boolean isValid() {
-        for (ValidData data : this.validDataMap.values()) {
+        for (ValidData data : this.validData.values()) {
             if (data != null && !data.isValid()) {
                 return false;
             }
@@ -175,8 +176,8 @@ class InnerRenderData implements RenderData {
         return true;
     }
     @Override
-    public boolean isValid(String scene) {
-        ValidData data = this.validDataMap.get(scene);
+    public boolean isValid(String messageKey) {
+        ValidData data = this.validData.get(messageKey);
         return data == null ? true : data.isValid();
     }
     //

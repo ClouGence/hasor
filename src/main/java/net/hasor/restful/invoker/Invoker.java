@@ -66,7 +66,7 @@ class Invoker {
         if (needValid != null) {
             Map<String, ValidData> validDataMap = needValid.doValid(this.renderData.getAppContext(), resolveParams);
             if (validDataMap != null && !validDataMap.isEmpty()) {
-                this.renderData.addValidResult(validDataMap);
+                this.renderData.updateValidResult(validDataMap);
             }
         }
         Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
