@@ -437,7 +437,9 @@ public abstract class AbstractEnvironment implements Environment {
             newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
         }
         if (this.logger.isInfoEnabled()) {
-            this.logger.info("evalSettingString '{}' eval to '{}'.", evalString, newEvalString);
+            if (!StringUtils.equalsIgnoreCase(evalString, newEvalString)) {
+                this.logger.info("replace settingValue '{}' to '{}'.", evalString, newEvalString);
+            }
         }
         return newEvalString;
     }

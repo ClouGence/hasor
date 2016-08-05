@@ -110,12 +110,14 @@ class RestfulFilter implements Filter {
         InnerRenderData renderData = new InnerRenderData(this.appContext, this.mimeType, httpRequest, httpResponse);
         //
         // .Action 处理
+        boolean doAction = false;
         for (int i = 0; i < this.interceptNames.length; i++) {
             String name = this.interceptNames[i];
             if (actionPath.endsWith(name)) {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {
                     doInvoke(renderData, define, httpRequest, httpResponse);
+                    doAction = true;
                     break;
                 }
             }
@@ -126,7 +128,9 @@ class RestfulFilter implements Filter {
             if (this.renderLayout.process(renderData)) {
                 return;
             } else {
-                chain.doFilter(httpRequest, httpResponse);
+                if (!doAction) {
+                    chain.doFilter(httpRequest, httpResponse);
+                }
             }
         } catch (Throwable e) {
             logger.error("render '" + renderData.viewName() + "' failed -> " + e.getMessage(), e);

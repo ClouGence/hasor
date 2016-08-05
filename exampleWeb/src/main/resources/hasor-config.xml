@@ -17,7 +17,7 @@
 
     <appExample>
         <!-- 所属环境:daily、online -->
-        <envType>${app.net}</envType>
+        <envType>${app.env}</envType>
         <!-- 当前最新版本 -->
         <curentVersion>2.4.2</curentVersion>
         <!-- 主机名称 -->
