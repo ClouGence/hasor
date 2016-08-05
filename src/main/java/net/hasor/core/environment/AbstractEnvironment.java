@@ -349,7 +349,7 @@ public abstract class AbstractEnvironment implements Environment {
             if (envFile.exists()) {
                 if (envFile.isDirectory()) {
                     this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
-                } else if (envFile.canRead()) {
+                } else if (!envFile.canRead()) {
                     this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
                 } else {
                     inStream = new FileInputStream(envFile);
@@ -367,8 +367,7 @@ public abstract class AbstractEnvironment implements Environment {
                 envMapData.put(name.toUpperCase(), properties.getProperty(name));
             }
         }
-        this.
-                refreshVariables();
+        this.refreshVariables();
         //
         // .日志输出
         if (this.logger.isInfoEnabled()) {
