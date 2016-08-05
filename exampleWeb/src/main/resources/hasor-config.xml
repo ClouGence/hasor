@@ -37,7 +37,7 @@
         <app_id>${tencent.login.app_id}</app_id>
         <!-- 应用Key -->
         <app_key>${tencent.login.app_key}</app_key>
-        <!-- 获取的权限 -->
+        <!-- 计划获取的权限 -->
         <oauth_scope>get_user_info,get_info,add_t,add_pic_t,get_repost_list,get_other_info,get_fanslist,get_idollist,add_idol</oauth_scope>
     </tencent>
 
