@@ -105,6 +105,10 @@ class InnerRenderData implements RenderData {
         return this.contextMap.get(key);
     }
     @Override
+    public void remove(String key) {
+        this.contextMap.remove(key);
+    }
+    @Override
     public void put(String key, Object value) {
         if (StringUtils.isBlank(key) ||//
                 StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key) ||//

@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.manager;
-import net.demo.hasor.manager.oauth.TencentOAuthConfig;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
+package net.demo.hasor.domain;
 /**
  *
- * @version : 2016年1月10日
+ * @version : 2016年1月11日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-public class OAuthManager {
-    @Inject
-    private TencentOAuthConfig tencentOAuthConfig;
-    //
-    public String getTencentAdmins() {
-        return this.tencentOAuthConfig.getAdmins();
-    }
-    public String getTencentLoginURL() {
-        return this.tencentOAuthConfig.getLoginURL();
-    }
+public interface AppConstant {
+    public static final String DB_HSQL  = "HSQL";
+    public static final String DB_MYSQL = "MYSQL";
 }

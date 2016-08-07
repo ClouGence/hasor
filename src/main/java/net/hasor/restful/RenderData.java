@@ -39,6 +39,8 @@ public interface RenderData {
 
     public Object get(String key);
 
+    void remove(String key);
+
     public void put(String key, Object value);
     // --------------------------------------------------
 

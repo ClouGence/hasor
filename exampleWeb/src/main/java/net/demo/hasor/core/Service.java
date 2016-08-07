@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.manager.oauth;
-import net.hasor.core.InjectSettings;
+package net.demo.hasor.core;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
- * @version : 2016年1月10日
- * @author 赵永春(zyc@hasor.net)
+ * 标记在类上，用于在模版中使用该服务类。最好和单例配合使用。
+ * @version : 2013-3-20
+ * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractOAuthConfig {
-    @InjectSettings("appExample.redirectURI")
-    private String redirectURI;
-    protected String getRedirectURI() {
-        return this.redirectURI;
-    }
-    //
-    public abstract String getLoginURL();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface Service {
+    public String value();
 }

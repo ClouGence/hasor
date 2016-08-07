@@ -15,8 +15,8 @@
  */
 package net.demo.hasor.core;
 import com.qq.connect.utils.QQConnectConfig;
-import net.demo.hasor.manager.oauth.AbstractOAuthConfig;
-import net.demo.hasor.manager.oauth.TencentOAuthConfig;
+import net.demo.hasor.web.oauth.AbstractOAuthConfig;
+import net.demo.hasor.web.oauth.TencentOAuthConfig;
 import net.hasor.core.Settings;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
@@ -30,20 +30,22 @@ public class StartModule extends WebModule {
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        apiBinder.filter("/*").through(0, new EncodingFilter());
-        apiBinder.filter("/*").through(0, new JumpFilter());
-        //
         apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
         //
+        // .Webs
+        apiBinder.filter("/*").through(0, new EncodingFilter());
+        apiBinder.filter("/*").through(0, new JumpFilter());
+        //
+        // .Tencent
         apiBinder.bindType(AbstractOAuthConfig.class, TencentOAuthConfig.class);
         Settings settings = apiBinder.getEnvironment().getSettings();
         String tencentAppID = settings.getString("tencent.app_id", "");
         QQConnectConfig.updateProperties("app_ID", tencentAppID);
         String tencentAppKey = settings.getString("tencent.app_key", "");
         QQConnectConfig.updateProperties("app_KEY", tencentAppKey);
-        String hostName = settings.getString("appExample.hostName", "127.0.0.1");
-        String tencentRedirectURI = hostName + "/login_callback.do";
+        String redirectURI = settings.getString("appExample.redirectURI", "127.0.0.1");
+        String tencentRedirectURI = redirectURI + "?" + TencentOAuthConfig.URL_DATA;
         QQConnectConfig.updateProperties("redirect_URI", tencentRedirectURI);
         String oauth_scope = settings.getString("tencent.oauth_scope", "");
         QQConnectConfig.updateProperties("scope", oauth_scope);

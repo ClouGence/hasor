@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.manager;
-import net.demo.hasor.core.Service;
-import net.hasor.core.InjectSettings;
-import net.hasor.core.Singleton;
+package net.demo.hasor.web.actions;
+import net.demo.hasor.core.Action;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.api.MappingTo;
 /**
  *
- * @version : 2016年1月10日
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-@Service("env")
-public class EnvironmentConfig {
-    @InjectSettings("appExample.curentVersion")
-    private String curentVersion;
-    @InjectSettings("appExample.envType")
-    private String envType;
+@MappingTo("/index.htm")
+public class Index extends Action {
     //
-    public String getCurentVersion() {
-        return curentVersion;
-    }
-    public String getEnvType() {
-        return envType;
+    public void execute(RenderData data) {
+        //
     }
 }

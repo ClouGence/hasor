@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.demo.hasor.domain.DBConstant;
+import net.demo.hasor.core.Service;
+import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.domain.VersionInfoDO;
 import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
+@Service("versionMap")
 public class VersionInfoManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    @Inject(DBConstant.DB_HSQL)
+    @Inject(AppConstant.DB_HSQL)
     private JdbcTemplate jdbcTemplate;
     //
     /**根据版本号，查询发布信息。*/

@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web;
-import net.demo.hasor.domain.LoginForm;
-import net.hasor.restful.RenderData;
-import net.hasor.restful.WebController;
+package net.demo.hasor.web.actions.account;
+import net.demo.hasor.core.Action;
+import net.demo.hasor.web.forms.LoginCallBackForm;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
-import net.hasor.restful.api.Valid;
 /**
- *
+ * OAuth : 登录回调地址
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/login.do")
-public class Login extends WebController {
-    //
-    public void execute(@Valid("SignIn") @Params LoginForm loginForm, RenderData data) {
+@MappingTo("/account/callback.do")
+public class Callback extends Action {
+    public void execute(@Params LoginCallBackForm loginForm) {
         //
-        this.putAtt("loginForm", loginForm);
-        if (!data.isValid()) {
-            //
-            //验证失败
-            renderTo("htm", "/login.htm");
-        } else {
-            //
-            //验证通过
-            renderTo("htm", "/login.htm");
-        }
+        // .跳转回来立刻展示一个登录中的页面,由这个承接页展现"登陆中...", 然后异步请求后台进行登陆。
+        this.putData("loginForm", loginForm);
+        this.putData("csrfToken", this.csrfTokenString());
+        this.renderTo("htm", "/account/callback.htm");
+        return;
     }
 }

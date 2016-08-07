@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.domain;
-import net.demo.hasor.domain.valid.LoginFormValidation;
+package net.demo.hasor.web.forms;
+import net.demo.hasor.web.valids.LoginFormValidation;
 import net.hasor.restful.api.ReqParam;
 import net.hasor.restful.api.ValidBy;
 /**

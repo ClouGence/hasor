@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 /**
  * Controller <br>
  * 昨夜西风凋碧树。独上高楼，望尽天涯路。 <br>
@@ -61,29 +62,9 @@ public abstract class WebController {
     public AppContext getAppContext() {
         return RuntimeListener.getAppContext(this.getRequest().getSession().getServletContext());
     }
-    /** @return Return HttpSession. */
-    public HttpSession getSession() {
-        return getRequest().getSession();
-    }
-    /**
-     * Return HttpSession.
-     * @param create a boolean specifying create HttpSession if it not exists
-     * @return Return HttpSession.
-     */
-    public HttpSession getSession(boolean create) {
-        return getRequest().getSession(create);
-    }
-    // --------
-    /**
-     * 设置{@link HttpServletRequest}属性
-     * @param attKey 属性名
-     * @param attValue 属性值
-     * @return 返回this
-     */
-    public WebController putAtt(String attKey, Object attValue) {
-        this.getRequest().setAttribute(attKey, attValue);
-        return this;
-    }
+    //
+    //
+    //------------------------
     /**
      * 设置{@link HttpServletResponse}Header属性
      * @param key 参数 key
@@ -104,35 +85,8 @@ public abstract class WebController {
         this.getResponse().addHeader(key, value);
         return this;
     }
-    /**
-     * Stores an attribute in this request
-     * @param name a String specifying the name of the attribute
-     * @param value the Object to be stored
-     * @return 返回this.
-     */
-    public WebController setAttr(String name, Object value) {
-        this.getRequest().setAttribute(name, value);
-        return this;
-    }
-    /**
-     * Removes an attribute from this request
-     * @param name a String specifying the name of the attribute to remove
-     * @return 返回this.
-     */
-    public WebController removeAttr(String name) {
-        this.getRequest().removeAttribute(name);
-        return this;
-    }
-    /**
-     * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
-     * @param attrMap key and value as attribute of the map to be stored
-     * @return 返回this.
-     */
-    public WebController setAttrs(Map<String, Object> attrMap) {
-        for (Map.Entry<String, Object> entry : attrMap.entrySet())
-            this.getRequest().setAttribute(entry.getKey(), entry.getValue());
-        return this;
-    }
+    //
+    //------------------------
     /**
      * Returns the value of a request parameter as a String, or null if the parameter does not exist.
      * <p>
@@ -191,37 +145,8 @@ public abstract class WebController {
             result[i] = Integer.parseInt(values[i]);
         return result;
     }
-    /**
-     * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
-     * @return an Enumeration of strings containing the names of the request's attributes
-     */
-    public Enumeration<String> getAttrNames() {
-        return this.getRequest().getAttributeNames();
-    }
-    /**
-     * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
-     * @return an Object containing the value of the attribute, or null if the attribute does not exist
-     */
-    public <T> T getAttr(String name) {
-        return (T) this.getRequest().getAttribute(name);
-    }
-    /**
-     * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
-     * @return an String Object containing the value of the attribute, or null if the attribute does not exist
-     */
-    public String getAttrForStr(String name) {
-        return (String) this.getRequest().getAttribute(name);
-    }
-    /**
-     * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
-     * @param name a String specifying the name of the attribute
-     * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
-     */
-    public Integer getAttrForInt(String name) {
-        return (Integer) this.getRequest().getAttribute(name);
-    }
+    //
+    //------------------------
     /**
      * Returns the value of a request parameter and convert to Integer.
      * @param name a String specifying the name of the parameter
@@ -239,6 +164,16 @@ public abstract class WebController {
     public Integer getParaToInt(String name, Integer defaultValue) {
         return toInt(this.getRequest().getParameter(name), defaultValue);
     }
+    /* 字符串转换为Integer */
+    private Integer toInt(String value, Integer defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value.startsWith("N") || value.startsWith("n")) {
+            return -Integer.parseInt(value.substring(1));
+        }
+        return Integer.parseInt(value);
+    }
     /**
      * Returns the value of a request parameter and convert to Long.
      * @param name a String specifying the name of the parameter
@@ -255,16 +190,6 @@ public abstract class WebController {
      */
     public Long getParaToLong(String name, Long defaultValue) {
         return toLong(this.getRequest().getParameter(name), defaultValue);
-    }
-    /* 字符串转换为Integer */
-    public Integer toInt(String value, Integer defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        if (value.startsWith("N") || value.startsWith("n")) {
-            return -Integer.parseInt(value.substring(1));
-        }
-        return Integer.parseInt(value);
     }
     /* 字符串转换为long */
     private long toLong(String value, Long defaultValue) {
@@ -304,6 +229,20 @@ public abstract class WebController {
         Boolean result = getParaToBoolean(name);
         return result != null ? result : defaultValue;
     }
+    //
+    //------------------------
+    /** @return Return HttpSession. */
+    public HttpSession getSession() {
+        return getRequest().getSession();
+    }
+    /**
+     * Return HttpSession.
+     * @param create a boolean specifying create HttpSession if it not exists
+     * @return Return HttpSession.
+     */
+    public HttpSession getSession(boolean create) {
+        return getRequest().getSession(create);
+    }
     /**
      * Return a Object from session.
      * @param key a String specifying the key of the Object stored in session
@@ -335,6 +274,8 @@ public abstract class WebController {
         }
         return this;
     }
+    //
+    //------------------------
     /**
      * Get cookie value by cookie name.
      * @param name cookie name
@@ -493,18 +434,111 @@ public abstract class WebController {
         setCookie(name, null, 0, path, domain);
         return this;
     }
+    //
+    //------------------------
+    /**
+     * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
+     * @param name a String specifying the name of the attribute
+     * @return an Object containing the value of the attribute, or null if the attribute does not exist
+     */
+    public <T> T getAttr(String name) {
+        return (T) this.getRequest().getAttribute(name);
+    }
+    /**
+     * Stores an attribute in this request
+     * @param name a String specifying the name of the attribute
+     * @param value the Object to be stored
+     * @return 返回this.
+     */
+    public WebController setAttr(String name, Object value) {
+        this.getRequest().setAttribute(name, value);
+        return this;
+    }
+    /**
+     * Removes an attribute from this request
+     * @param name a String specifying the name of the attribute to remove
+     * @return 返回this.
+     */
+    public WebController removeAttr(String name) {
+        this.getRequest().removeAttribute(name);
+        return this;
+    }
+    /**
+     * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
+     * @param attrMap key and value as attribute of the map to be stored
+     * @return 返回this.
+     */
+    public WebController setAttrs(Map<String, Object> attrMap) {
+        for (Map.Entry<String, Object> entry : attrMap.entrySet()) {
+            this.getRequest().setAttribute(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+    /**
+     * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
+     * @return an Enumeration of strings containing the names of the request's attributes
+     */
+    public Enumeration<String> getAttrNames() {
+        return this.getRequest().getAttributeNames();
+    }
+    //
+    //------------------------
+    /**
+     *  返回 RenderData 保存的数据。
+     *  @return 返回数据
+     */
+    public <T> T getData(String name) {
+        return (T) this.getInvoker().get(name);
+    }
+    /**
+     *  设置 RenderData 保存的数据。
+     *  @return 返回 this
+     */
+    public WebController putData(String name, Object value) {
+        this.getInvoker().put(name, value);
+        return this;
+    }
+    /**
+     *  删除 RenderData 保存的数据。
+     *  @return 返回 this
+     */
+    public WebController removeData(String name) {
+        this.getInvoker().remove(name);
+        return this;
+    }
+    /**
+     *  设置 RenderData 保存的数据。
+     *  @return 返回 this
+     */
+    public WebController setDatas(Map<String, Object> attrMap) {
+        for (Map.Entry<String, Object> entry : attrMap.entrySet()) {
+            this.getInvoker().put(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+    /**
+     *  返回 RenderData 保存的数据keys。
+     *  @return 返回数据
+     */
+    public Set<String> getDataNames() {
+        return this.getInvoker().keySet();
+    }
+    //
+    //------------------------
     /** @return Get model from AppContext. */
-    protected Object getModelByName(Class<?> modelClass, String modelName) {
+    protected Object getInstance(Class<?> modelClass, String modelName) {
         return this.getAppContext().findBindingBean(modelName, modelClass);
     }
     /** @return Get model from AppContext. */
-    protected Object getModel(Class<?> modelClass) {
+    protected Object getInstance(Class<?> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
     /** @return Get model from AppContext. */
-    protected Object getModel(String bindID) {
+    protected Object getInstance(String bindID) {
         return this.getAppContext().getInstance(bindID);
     }
+    //
+    //------------------------
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
         this.getInvoker().viewName(viewName);
@@ -518,6 +552,8 @@ public abstract class WebController {
         this.getInvoker().viewType(renderType);
         this.getInvoker().viewName(viewName);
     }
+    //
+    //------------------------
     /**@return 是否通过验证。*/
     protected boolean isValid() {
         return this.getInvoker().isValid();

@@ -16,14 +16,16 @@
     </hasor>
 
     <appExample>
-        <!-- 所属环境:daily、online -->
-        <envType>${app.env}</envType>
         <!-- 当前最新版本 -->
         <curentVersion>2.4.2</curentVersion>
+
+        <!-- 所属环境:daily、online -->
+        <envType>${app.env}</envType>
         <!-- 主机名称 -->
         <hostName>${app.host}</hostName>
+
         <!-- OAuth登录回调地址 -->
-        <redirectURI>http://${app.host}/login_callback.do?type=webside</redirectURI>
+        <redirectURI>http://${app.host}/account/callback.do</redirectURI>
     </appExample>
 
     <!--
@@ -39,6 +41,7 @@
         <app_key>${tencent.login.app_key}</app_key>
         <!-- 计划获取的权限 -->
         <oauth_scope>get_user_info,get_info,add_t,add_pic_t,get_repost_list,get_other_info,get_fanslist,get_idollist,add_idol</oauth_scope>
+
     </tencent>
 
     <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->

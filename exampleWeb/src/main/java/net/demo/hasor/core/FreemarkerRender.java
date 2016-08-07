@@ -18,18 +18,17 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import net.demo.hasor.manager.EnvironmentConfig;
-import net.demo.hasor.manager.OAuthManager;
-import net.demo.hasor.manager.VersionInfoManager;
 import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
+import org.more.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Set;
 /**
  *
  * @version : 2016年1月3日
@@ -51,10 +50,17 @@ public class FreemarkerRender implements RenderEngine {
         this.configuration.setLocalizedLookup(false);//是否开启国际化false
         this.configuration.setClassicCompatible(true);//null值测处理配置
         //
+        Set<Class<?>> serviceSet = appContext.getEnvironment().findClass(Service.class);
+        for (Class<?> service : serviceSet) {
+            if (service == Service.class) {
+                continue;
+            }
+            Service ser = service.getAnnotation(Service.class);
+            if (ser != null && StringUtils.isNotBlank(ser.value())) {
+                this.configuration.setSharedVariable(ser.value(), appContext.getInstance(service));
+            }
+        }
         this.configuration.setSharedVariable("ctx_path", appContext.getServletContext().getContextPath());
-        this.configuration.setSharedVariable("env", appContext.getInstance(EnvironmentConfig.class));
-        this.configuration.setSharedVariable("versionMap", appContext.getInstance(VersionInfoManager.class));
-        this.configuration.setSharedVariable("oauth", appContext.getInstance(OAuthManager.class));
     }
     @Override
     public void process(RenderData renderData, Writer writer) throws Throwable {

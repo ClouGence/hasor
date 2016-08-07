@@ -15,7 +15,7 @@
  */
 package net.demo.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import net.demo.hasor.domain.DBConstant;
+import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.manager.EnvironmentConfig;
 import net.hasor.core.*;
 import net.hasor.db.DBModule;
@@ -37,7 +37,7 @@ public class DataSourceModule implements LifeModule {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
         DataSource dataSource = createDataSource("org.hsqldb.jdbcDriver", "jdbc:hsqldb:mem:example_memdb", "sa", "");
-        apiBinder.installModule(new DBModule(DBConstant.DB_HSQL, dataSource));
+        apiBinder.installModule(new DBModule(AppConstant.DB_HSQL, dataSource));
         //
         Environment env = apiBinder.getEnvironment();
         Settings settings = env.getSettings();
@@ -54,19 +54,19 @@ public class DataSourceModule implements LifeModule {
         }
         //
         //DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
-        //apiBinder.installModule(new DBModule(DBConstant.DB_MYSQL, mysqlDataSource));
+        //apiBinder.installModule(new DBModule(AppConstant.DB_MYSQL, mysqlDataSource));
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("loadSQL");
-        JdbcTemplate jdbcTemplate = appContext.findBindingBean(DBConstant.DB_HSQL, JdbcTemplate.class);
+        JdbcTemplate jdbcTemplate = appContext.findBindingBean(AppConstant.DB_HSQL, JdbcTemplate.class);
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_version_info.sql");
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/init_sql_version_info.sql");
         //
         EnvironmentConfig config = appContext.getInstance(EnvironmentConfig.class);
         if (StringUtils.equalsIgnoreCase("daily", config.getEnvType())) {
             logger.info("loadSQL for daily.");
-            //jdbcTemplate = appContext.findBindingBean(DBConstant.DB_MYSQL, JdbcTemplate.class);
+            //jdbcTemplate = appContext.findBindingBean(AppConstant.DB_MYSQL, JdbcTemplate.class);
             //jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_user_info.sql");
         }
         //

@@ -13,39 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.domain;
-import net.hasor.restful.api.ReqParam;
+package net.demo.hasor.utils;
+import com.alibaba.fastjson.JSON;
 /**
- * 登录表单回调form。
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LoginCallBackForm {
-    @ReqParam("type")
-    private String type;
-    @ReqParam("provider")
-    private String provider;
+public class JsonUtils {
     //
-    @ReqParam("code")
-    private String code;
+    /** json结果输出在一行中 */
+    public static String toJsonStringSingleLine(Object obj) {
+        return JSON.toJSONString(obj);
+    }
     //
-    //
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-    public String getProvider() {
-        return provider;
-    }
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-    public String getCode() {
-        return code;
-    }
-    public void setCode(String code) {
-        this.code = code;
+    /**  */
+    public static <T> T toObject(String jsonData, Class<T> targetClass) {
+        return JSON.parseObject(jsonData, targetClass);
     }
 }

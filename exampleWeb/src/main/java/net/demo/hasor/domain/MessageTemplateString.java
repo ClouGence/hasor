@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web;
-import net.hasor.restful.RenderData;
-import net.hasor.restful.WebController;
-import net.hasor.restful.api.MappingTo;
+package net.demo.hasor.domain;
+import org.more.bizcommon.MessageTemplate;
 /**
- *
- * @version : 2016年1月1日
+ * 消息。
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/index.htm")
-public class Index extends WebController {
-    //
-    public void execute(RenderData data) {
-        //
+public class MessageTemplateString implements MessageTemplate {
+    private String messageTemplate;
+    private int    messageType;
+    public MessageTemplateString(int messageType, String messageTemplate) {
+        this.messageTemplate = messageTemplate;
+        this.messageType = messageType;
+    }
+    public String getMessageTemplate() {
+        return this.messageTemplate;
+    }
+    public int getMessageType() {
+        return this.messageType;
     }
 }
