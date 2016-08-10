@@ -11,5 +11,5 @@ create table `UserInfo` (
 	`app_create_time`	  DATETIME		  NOT NULL			    	COMMENT '创建时间',
 	`app_modify_time`	  DATETIME		  NOT NULL			    	COMMENT '修改时间',
 	PRIMARY KEY (`app_id`),
-	UNIQUE KEY `UK_RSF_APP_APP_CODE` (`app_code`),
+	UNIQUE KEY `UK_RSF_APP_APP_CODE` (`app_code`)
 );

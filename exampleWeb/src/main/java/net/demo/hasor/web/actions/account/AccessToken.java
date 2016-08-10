@@ -81,7 +81,7 @@ public class AccessToken extends Action {
         // .跳转到目标页面
         if (result.getResult() != null && result.getResult() > 0) {
             this.setSessionAttr(AppConstant.SESSION_KEY_USER_ID, result.getResult());
-            sendJsonRedirectTo(loginForm.getRedirectURI());
+            sendJsonData(loginForm.getRedirectURI());//跳转的目标地址
             return;
         } else {
             //

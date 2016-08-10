@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * 数据库链接 & DAO
  * @version : 2016年1月10日
@@ -67,17 +70,35 @@ public class DataSourceModule implements LifeModule {
         logger.info("loadSQL");
         // .加载内置数据
         JdbcTemplate jdbcTemplate = appContext.findBindingBean(AppConstant.DB_HSQL, JdbcTemplate.class);
-        jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_version_info.sql");
-        jdbcTemplate.loadSQL("UTF-8", "/META-INF/init_sql_version_info.sql");
+        jdbcTemplate.loadSQL("UTF-8", "/META-INF/sqlinner/ddl_sql_version_info.sql");
+        jdbcTemplate.loadSQL("UTF-8", "/META-INF/sqlinner/init_sql_version_info.sql");
         //
         // .日常环境下特殊处理
         EnvironmentConfig config = appContext.getInstance(EnvironmentConfig.class);
         if (StringUtils.equalsIgnoreCase("daily", config.getEnvType())) {
             logger.info("loadSQL for daily.");
             JdbcTemplate dailyTemplate = appContext.findBindingBean(AppConstant.DB_MYSQL, JdbcTemplate.class);
-            //jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_user_info.sql");
+            //
+            Map<String, String> loadMapper = new HashMap<String, String>();
+            loadMapper.put("UserInfo", "/META-INF/sqlddl/ddl_sql_user_info.sql");
+            //
+            List<String> tables = dailyTemplate.queryForList("SHOW TABLES LIKE 'UserInfo';", String.class);
+            for (String tableName : tables) {
+                if (StringUtils.equalsIgnoreCase("UserInfo", tableName)) {
+                    loadMapper.remove("UserInfo");
+                }
+            }
+            //
+            for (String loadItem : loadMapper.keySet()) {
+                String mapperPath = loadMapper.get(loadItem);
+                logger.info("loadSQL for daily. {} -> {}.", loadItem, mapperPath);
+                dailyTemplate.loadSQL("UTF-8", mapperPath);
+            }
+            //
+            logger.info("loadSQL for daily. -> finish.");
         }
         //
+        logger.info("loadSQL -> finish.");
     }
     @Override
     public void onStop(AppContext appContext) throws Throwable {
@@ -94,7 +115,7 @@ public class DataSourceModule implements LifeModule {
         dataSource.setPassword(pwdString);
         dataSource.setMaxPoolSize(poolMaxSize);
         dataSource.setInitialPoolSize(3);
-        dataSource.setAutomaticTestTable("DB_TEST_ATest001");
+        dataSource.setAutomaticTestTable("DB_TEST_FORM_C3P0");
         dataSource.setIdleConnectionTestPeriod(18000);
         dataSource.setCheckoutTimeout(3000);
         dataSource.setTestConnectionOnCheckin(true);

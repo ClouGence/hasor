@@ -16,6 +16,7 @@
 package net.demo.hasor.core;
 import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.domain.ErrorCodes;
+import net.demo.hasor.domain.JsonResultDO;
 import net.demo.hasor.utils.JsonUtils;
 import net.hasor.restful.WebController;
 import org.more.bizcommon.Message;
@@ -25,8 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.Map;
 /**
  * 基类
  * @version : 2016年1月1日
@@ -53,17 +52,24 @@ public class Action extends WebController {
     }
     //
     /**输出Json格式的成功结果,并指定跳转到:redirectURI地址。*/
-    protected void sendJsonRedirectTo(String redirectURI) {
-        //
+    protected void sendJsonData(Object data) throws IOException {
+        JsonResultDO jsonData = new JsonResultDO();
+        jsonData.setSuccess(true);
+        jsonData.setResult(data);
+        String jsonStr = JsonUtils.toJsonStringSingleLine(jsonData);
+        this.getResponse().getWriter().write(jsonStr);
     }
     /**输出Json格式的失败结果。*/
     protected void sendJsonError(Message errorMessage) throws IOException {
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("success", false);
-        data.put("code", errorMessage.getType());
-        data.put("message", errorMessage.getMessage());
-        String jsonData = JsonUtils.toJsonStringSingleLine(data);
-        this.getResponse().getWriter().write(jsonData);
+        if (errorMessage == null) {
+            errorMessage = ErrorCodes.BAD_UNKNOWN.getMsg("因为异常信息丢失引起。");
+        }
+        JsonResultDO jsonData = new JsonResultDO();
+        jsonData.setSuccess(false);
+        jsonData.setErrorCode(errorMessage.getType());
+        jsonData.setErrorMessage(errorMessage.getMessage());
+        String jsonStr = JsonUtils.toJsonStringSingleLine(jsonData);
+        this.getResponse().getWriter().write(jsonStr);
     }
     /**跳转到错误页。*/
     protected void sendError(Message errorMessage) {

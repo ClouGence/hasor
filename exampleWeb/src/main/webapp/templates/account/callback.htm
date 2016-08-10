@@ -2,36 +2,43 @@ ${rootData.put('pageTitle','跳转中...')}
 <script type="application/javascript">
     //
     $(function () {
-
+        doSubmit();
     });
 
     function doSubmit() {
         var formData = {
             type: "${loginForm.type}",
             provider: "${loginForm.provider}",
-            state: "${loginForm.state}",
             code: "${loginForm.code}",
             redirectURI: "${loginForm.redirectURI}",
             csrfToken: "${csrfToken}"
         };
         //
-        var loginResult = $.ajax({
+        $.ajax({
             beforeSend: function (request) {
                 request.setRequestHeader("ajaxTo", "true");
             },
             url: "${ctx_path}/account/access_token.do",
             data: formData,
             dataType: 'json',
-            async: false,
-            success: function (data) {
-                //
+            async: true,
+            success: function (result) {
+                if (result.success == true) {
+                    jumpTo(result.result, "登陆成功,正在为您跳转...");
+                } else {
+                    jumpTo("/error.htm?errorCode=" + result.errorCode, result.errorMessage);
+                }
+            },
+            error: function (result) {
+                jumpTo("/error.htm?errorKey=BAD_REQUEST", result);
             }
         });
-
-        //
-        var loginData = loginResult.responseText;
-        loginData = null ? "failed -> 无返回结果。" : loginData;
-        alert(loginData);
+    }
+    function jumpTo(jumpToURL, message) {
+        $("#messageBody").html(message);
+        window.setTimeout(function () {
+            window.location = jumpToURL;
+        }, 500);
     }
 </script>
-<input type="button" onclick="doSubmit();" value="递交,继续登陆..."/> 
+<div id="messageBody">跳转中...</div>
