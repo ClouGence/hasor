@@ -15,17 +15,23 @@
  */
 package net.demo.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import net.demo.hasor.core.mybatis.SqlExecutorTemplate;
+import net.demo.hasor.core.mybatis.SqlExecutorTemplateProvider;
 import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.manager.EnvironmentConfig;
 import net.hasor.core.*;
 import net.hasor.db.DBModule;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.io.Reader;
 /**
  * 数据库链接 & DAO
  * @version : 2016年1月10日
@@ -35,10 +41,11 @@ public class DataSourceModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //
+        // .内置数据(数据源一)
         DataSource dataSource = createDataSource("org.hsqldb.jdbcDriver", "jdbc:hsqldb:mem:example_memdb", "sa", "");
         apiBinder.installModule(new DBModule(AppConstant.DB_HSQL, dataSource));
         //
+        // .外置数据(数据源二)
         Environment env = apiBinder.getEnvironment();
         Settings settings = env.getSettings();
         String driverString = env.evalString(settings.getString("jdbcSettings.jdbcDriver", ""));
@@ -46,28 +53,28 @@ public class DataSourceModule implements LifeModule {
         String userString = env.evalString(settings.getString("jdbcSettings.userName", ""));
         String pwdString = env.evalString(settings.getString("jdbcSettings.userPassword", ""));
         //
-        if (StringUtils.equalsIgnoreCase("daily", env.evalString("%app.env%"))) {
-            //            driverString = "org.hsqldb.jdbcDriver";
-            //            urlString = "jdbc:hsqldb:mem:example_user_memdb";
-            //            userString = "sa";
-            //            pwdString = "";
-        }
+        DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
+        apiBinder.installModule(new DBModule(AppConstant.DB_MYSQL, mysqlDataSource));
         //
-        //DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
-        //apiBinder.installModule(new DBModule(AppConstant.DB_MYSQL, mysqlDataSource));
+        // .绑定myBatis接口实现(数据源二)
+        Reader reader = Resources.getResourceAsReader("ibatis-sqlmap.xml");
+        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(sessionFactory, mysqlDataSource));
         //
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("loadSQL");
+        // .加载内置数据
         JdbcTemplate jdbcTemplate = appContext.findBindingBean(AppConstant.DB_HSQL, JdbcTemplate.class);
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_version_info.sql");
         jdbcTemplate.loadSQL("UTF-8", "/META-INF/init_sql_version_info.sql");
         //
+        // .日常环境下特殊处理
         EnvironmentConfig config = appContext.getInstance(EnvironmentConfig.class);
         if (StringUtils.equalsIgnoreCase("daily", config.getEnvType())) {
             logger.info("loadSQL for daily.");
-            //jdbcTemplate = appContext.findBindingBean(AppConstant.DB_MYSQL, JdbcTemplate.class);
+            JdbcTemplate dailyTemplate = appContext.findBindingBean(AppConstant.DB_MYSQL, JdbcTemplate.class);
             //jdbcTemplate.loadSQL("UTF-8", "/META-INF/ddl_sql_user_info.sql");
         }
         //
