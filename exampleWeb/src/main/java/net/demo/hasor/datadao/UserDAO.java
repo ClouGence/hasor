@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package net.demo.hasor.datadao;
+import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserDO;
 /**
  *
  * @version : 2016年08月08日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UserDAO {
+public class UserDAO extends AbstractDao {
     //
     public UserDO queryBySource(String sourceID) {
         return null;
