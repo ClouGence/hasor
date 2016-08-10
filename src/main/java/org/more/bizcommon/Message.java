@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import java.io.Serializable;
 /**
  * 消息。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class Message {
-    private MessageTemplate messageTemplate = null;
-    private Object[]        messageParams   = null;
+public class Message implements Serializable {
+    private static final long            serialVersionUID = -4678293554960623786L;
+    private              MessageTemplate messageTemplate  = null;
+    private              Object[]        messageParams    = null;
     //
     public Message(String message) {
         this(0, message, null);
@@ -66,6 +68,7 @@ public class Message {
 }
 /***/
 class MessageTemplateString implements MessageTemplate {
+    private static final long serialVersionUID = -4678293554961623786L;
     private String messageTemplate;
     private int    messageType;
     public MessageTemplateString(int messageType, String messageTemplate) {

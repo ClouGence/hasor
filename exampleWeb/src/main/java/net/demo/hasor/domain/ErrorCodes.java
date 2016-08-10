@@ -28,8 +28,12 @@ public enum ErrorCodes {
     LOGIN_OAUTH_ACCESS_FAILED(2, "认证失败:"),
     LOGIN_OAUTH_ACCESS_ERROR(2, "登陆遇到错误,请重试。"),
     //
-    RESULT_NULL(3, "RESULT_NULL"),
-    SECURITY_CSRF(4, "SECURITY_CSRF"),;
+    LOGIN_USER_SAVE(4, "用户数据保存失败。"),
+    //
+    RESULT_NULL(3, "返回结果为空。"),
+    SECURITY_CSRF(4, "SECURITY_CSRF"),
+    BAD_REQUEST(5, ""),
+    BAD_UNKNOWN(5, "未知类型异常: %s");
     //
     //
     private MessageTemplate temp = null;

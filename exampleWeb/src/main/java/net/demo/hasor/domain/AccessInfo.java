@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.utils;
-import com.alibaba.fastjson.JSON;
-
-import java.util.Map;
+package net.demo.hasor.domain;
 /**
- * @version : 2016年1月10日
+ * 腾讯 Token 信息
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class JsonUtils {
+public abstract class AccessInfo {
+    private String provider = null;
     //
-    /** json结果输出在一行中 */
-    public static String toJsonStringSingleLine(Object obj) {
-        return JSON.toJSONString(obj);
+    public String getProvider() {
+        return provider;
+    }
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
     //
-    /**  */
-    public static <T> T toObject(String jsonData, Class<T> targetClass) {
-        return JSON.parseObject(jsonData, targetClass);
+    public final String getSource() {
+        String provider = this.getProvider();
+        return (provider == null ? "NULL" : provider) + ":" + this.getExternalUserID();
     }
-    /**  */
-    public static Map<String, Object> toMap(String jsonData) {
-        return JSON.parseObject(jsonData);
-    }
+    //
+    public abstract String getExternalUserID();
 }

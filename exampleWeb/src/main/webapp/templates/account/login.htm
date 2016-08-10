@@ -35,7 +35,7 @@ ${rootData.put('pageTitle','登录')}
                 <a class="btn btn-default">Sign Up</a>
             </div>
             <div class="third-part">
-                <a id="qqAuthorizationUrl" class="qq" href="${tencent.loginURL}" target="_blank"></a>
+                <a id="qqAuthorizationUrl" class="qq" href="${tencent.evalLoginURL(req_redirectURI)}" target="_blank"></a>
                 <!-- 
                 <a id="weiboAuthorizationUrl" class="sina" href="javascript:void(0);"></a>
                 <a id="baiduAuthorizationUrl" class="baidu" href="javascript:void(0);"></a>

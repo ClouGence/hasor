@@ -18,6 +18,7 @@ import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderData;
 import net.hasor.web.WebAppContext;
 import org.more.bizcommon.Message;
+import org.more.json.JSON;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,15 +29,17 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InnerRenderData implements RenderData {
-    private String                 viewName     = null;//模版名称
-    private String                 viewType     = null;//渲染引擎
-    private boolean                useLayout    = true;//是否渲染布局
-    private Map<String, Object>    contextMap   = null;//
-    private HttpServletRequest     httpRequest  = null;
-    private HttpServletResponse    httpResponse = null;
-    private Map<String, ValidData> validData    = null;//原始验证数据
-    private WebAppContext          appContext   = null;
-    private MimeType               mimeType     = null;
+    private static final String[]               LOCK_KEYS    = //
+            {ROOT_DATA_KEY, RETURN_DATA_KEY, VALID_DATA_KEY, REQUEST_KEY, RESPONSE_KEY};
+    private              String                 viewName     = null;//模版名称
+    private              String                 viewType     = null;//渲染引擎
+    private              boolean                useLayout    = true;//是否渲染布局
+    private              Map<String, Object>    contextMap   = null;//
+    private              HttpServletRequest     httpRequest  = null;
+    private              HttpServletResponse    httpResponse = null;
+    private              Map<String, ValidData> validData    = null;//原始验证数据
+    private              WebAppContext          appContext   = null;
+    private              MimeType               mimeType     = null;
     //
     public InnerRenderData(WebAppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String contextPath = httpRequest.getContextPath();
@@ -67,6 +70,8 @@ class InnerRenderData implements RenderData {
         this.contextMap.put(ROOT_DATA_KEY, this);
         this.contextMap.put(RETURN_DATA_KEY, null);
         this.contextMap.put(VALID_DATA_KEY, this.validData);
+        this.contextMap.put(REQUEST_KEY, httpRequest);
+        this.contextMap.put(RESPONSE_KEY, httpResponse);
         this.appContext = appContext;
         this.mimeType = mimeType;
     }
@@ -110,12 +115,10 @@ class InnerRenderData implements RenderData {
     }
     @Override
     public void put(String key, Object value) {
-        if (StringUtils.isBlank(key) ||//
-                StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key) ||//
-                StringUtils.equalsIgnoreCase(RETURN_DATA_KEY, key) ||//
-                StringUtils.equalsIgnoreCase(VALID_DATA_KEY, key)) {
-            throw new UnsupportedOperationException("the key must not in [" + //
-                    ROOT_DATA_KEY + ", " + RETURN_DATA_KEY + "," + VALID_DATA_KEY + " ] or empty");
+        for (String keyItem : LOCK_KEYS) {
+            if (StringUtils.isBlank(key) || StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key)) {
+                throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(LOCK_KEYS) + " or empty");
+            }
         }
         this.contextMap.put(key, value);
     }

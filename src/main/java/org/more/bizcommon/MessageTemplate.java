@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import java.io.Serializable;
 /**
  * 业务文本消息。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface MessageTemplate {
+public interface MessageTemplate extends Serializable {
     /**获取消息模版信息。*/
     public String getMessageTemplate();
+
     /**消息类型。*/
     public int getMessageType();
 }

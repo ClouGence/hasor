@@ -21,6 +21,7 @@ import org.more.bizcommon.MessageTemplate;
  * @author 赵永春(zyc@hasor.net)
  */
 public class MessageTemplateString implements MessageTemplate {
+    private static final long serialVersionUID = -4678293554961623796L;
     private String messageTemplate;
     private int    messageType;
     public MessageTemplateString(int messageType, String messageTemplate) {

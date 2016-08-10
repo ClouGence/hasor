@@ -16,6 +16,7 @@
 package org.more.bizcommon;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.datachain.DataChainContext;
@@ -26,13 +27,14 @@ import org.more.datachain.DataFilter;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResultDO<T> implements Result<T> {
-    private static final long serialVersionUID = -4678893554960623786L;
-    private T                 result           = null;
-    private Throwable         throwable        = null;
-    private boolean           success          = true;
-    private List<Message>     messageList      = new ArrayList<Message>();
+    private static final long          serialVersionUID = -4678893554960623786L;
+    private              T             result           = null;
+    private transient    Throwable     throwable        = null;
+    private              boolean       success          = true;
+    private              List<Message> messageList      = new ArrayList<Message>();
     //
-    public ResultDO() {}
+    public ResultDO() {
+    }
     public ResultDO(Result<T> result) {
         this.result = result.getResult();
         this.throwable = result.getThrowable();
@@ -54,7 +56,8 @@ public class ResultDO<T> implements Result<T> {
     }
     @Override
     public <V> ResultDO<V> convertResult(DataFilter<T, V>... filters) throws Throwable {
-        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {};
+        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {
+        };
         if (filters != null && filters.length > 0) {
             for (int i = 0; i <= filters.length; i++) {
                 dataChainContext.addDataFilter("dataFilter_" + i, filters[i]);

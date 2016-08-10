@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.ValidErrors;
 import net.hasor.restful.Validation;
 import net.hasor.restful.api.Valid;
 import net.hasor.restful.api.ValidBy;
-import net.hasor.web.WebAppContext;
-import org.more.bizcommon.Message;
-import org.more.util.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -39,7 +34,7 @@ class InnerValid {
         this.paramTypeMap = paramTypeMap;
     }
     //
-    Map<String, ValidData> doValid(WebAppContext appContext, Object[] resolveParams) {
+    Map<String, ValidData> doValid(InnerRenderData renderData, Object[] resolveParams) {
         final ConcurrentMap<String, ValidData> validDateMap = new ConcurrentHashMap<String, ValidData>();
         for (String paramIndex : this.validMap.keySet()) {
             //
@@ -55,36 +50,17 @@ class InnerValid {
                 continue;
             }
             //
-            Validation validation = appContext.getInstance(validBy.value());
+            Validation validation = renderData.getAppContext().getInstance(validBy.value());
             if (validation == null) {
                 onErrors(validDateMap, new ValidData(validName, "program is not exist."));
                 continue;
             }
             //
             Object paramObj = resolveParams[Integer.valueOf(paramIndex)];
-            validation.doValidation(validName, paramObj, new ValidErrors() {
+            validation.doValidation(validName, paramObj, new InnerValidErrors(renderData) {
                 @Override
-                public void addError(String key, String validString) {
-                    if (StringUtils.isBlank(key)) {
-                        throw new NullPointerException("valid error message key is null.");
-                    }
-                    onErrors(validDateMap, new ValidData(key, validString));
-                }
-                @Override
-                public void addError(String key, Message validMessage) {
-                    if (StringUtils.isBlank(key)) {
-                        throw new NullPointerException("valid error message key is null.");
-                    }
-                    onErrors(validDateMap, new ValidData(key, validMessage));
-                }
-                @Override
-                public void addErrors(String key, List<Message> validMessage) {
-                    if (StringUtils.isBlank(key)) {
-                        throw new NullPointerException("valid error message key is null.");
-                    }
-                    ValidData newDate = new ValidData(key);
-                    newDate.addAll(validMessage);
-                    onErrors(validDateMap, newDate);
+                protected void errors(ValidData messages) {
+                    onErrors(validDateMap, messages);
                 }
             });
         }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
+import net.demo.hasor.domain.AppConstant;
+import net.demo.hasor.domain.ErrorCodes;
 import net.demo.hasor.utils.JsonUtils;
 import net.hasor.restful.WebController;
 import org.more.bizcommon.Message;
@@ -37,19 +39,24 @@ public class Action extends WebController {
     //
     /** 获取 csrf Token */
     protected final String csrfTokenString() {
-        String token = this.getSessionAttr("csrfTokenString");
+        String token = this.getSessionAttr(AppConstant.SESSION_KEY_CSRF_TOKEN);
         if (StringUtils.isBlank(token)) {
             token = Long.toString(this.secureRandom.nextLong(), 24);
-            this.setSessionAttr("csrfTokenString", token);
+            this.setSessionAttr(AppConstant.SESSION_KEY_CSRF_TOKEN, token);
         }
         return token;
     }
     /** 验证 csrf Token */
     protected boolean csrfTokenTest() {
-        String reqToken = this.getPara("csrfToken");
+        String reqToken = this.getPara(AppConstant.REQ_PARAM_KEY_CSRF_TOKEN);
         return StringUtils.equals(reqToken, this.csrfTokenString());
     }
     //
+    /**输出Json格式的成功结果,并指定跳转到:redirectURI地址。*/
+    protected void sendJsonRedirectTo(String redirectURI) {
+        //
+    }
+    /**输出Json格式的失败结果。*/
     protected void sendJsonError(Message errorMessage) throws IOException {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("success", false);
@@ -58,7 +65,11 @@ public class Action extends WebController {
         String jsonData = JsonUtils.toJsonStringSingleLine(data);
         this.getResponse().getWriter().write(jsonData);
     }
+    /**跳转到错误页。*/
     protected void sendError(Message errorMessage) {
+        if (errorMessage == null) {
+            errorMessage = ErrorCodes.BAD_UNKNOWN.getMsg("因为异常信息丢失引起。");
+        }
         int errorCode = errorMessage.getType();
         String errorStr = errorMessage.getMessage();
         //

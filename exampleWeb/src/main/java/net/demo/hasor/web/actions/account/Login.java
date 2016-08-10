@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.actions.account;
+import com.qq.connect.QQConnectException;
 import net.demo.hasor.core.Action;
 import net.demo.hasor.web.forms.LoginForm;
 import net.hasor.restful.RenderData;
@@ -28,7 +29,7 @@ import net.hasor.restful.api.Valid;
 @MappingTo("/account/login.do")
 public class Login extends Action {
     //
-    public void execute(@Valid("SignIn") @Params LoginForm loginForm, RenderData data) {
+    public void execute(@Valid("SignIn") @Params LoginForm loginForm, RenderData data) throws QQConnectException {
         //
         this.putData("loginForm", loginForm);
         if (!data.isValid()) {

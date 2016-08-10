@@ -15,6 +15,7 @@
  */
 package net.demo.hasor.web.actions.account;
 import net.demo.hasor.core.Action;
+import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.domain.ErrorCodes;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.web.forms.LoginCallBackForm;
@@ -22,7 +23,6 @@ import net.demo.hasor.web.oauth.OAuthManager;
 import net.hasor.core.Inject;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
-import org.more.bizcommon.Message;
 import org.more.bizcommon.Result;
 import org.more.util.StringUtils;
 
@@ -41,56 +41,53 @@ public class AccessToken extends Action {
         //
         String ajaxTo = this.getRequest().getHeader("ajaxTo");
         if (StringUtils.isBlank(ajaxTo) || !StringUtils.equalsIgnoreCase(ajaxTo, "true")) {
-            Message errorMsg = ErrorCodes.SECURITY_CSRF.getMsg();
-            logger.error(LogUtils.create("ERROR_000_0001").addMessage(errorMsg)//
-                    .addString("login_error : need ajax header.").toJson());
-            sendError(errorMsg);
+            logger.error(LogUtils.create("ERROR_000_0002")//
+                    .addString("login_error : request not accepted.").toJson());
+            sendError(ErrorCodes.BAD_REQUEST.getMsg());
             return;
         }
         // .csrf
         if (!this.csrfTokenTest()) {
-            Message errorMsg = ErrorCodes.SECURITY_CSRF.getMsg();
-            logger.error(LogUtils.create("ERROR_000_0002").addMessage(errorMsg)//
+            logger.error(LogUtils.create("ERROR_000_0001")//
                     .addString("login_error : csrfToken failed.").toJson());
-            sendJsonError(errorMsg);
+            sendJsonError(ErrorCodes.SECURITY_CSRF.getMsg());
             return;
         }
         //
         if (StringUtils.isBlank(loginForm.getCode())) {
-            Message errorMsg = ErrorCodes.LOGIN_OAUTH_CODE_EMPTY.getMsg(loginForm.getCode());
-            logger.error(LogUtils.create("ERROR_000_0003").addMessage(errorMsg)//
+            logger.error(LogUtils.create("ERROR_000_1001")//
+                    .addLog("provider", loginForm.getProvider())//
+                    .addLog("code", loginForm.getCode())//
                     .addString("login_error : get access_token failed, response is empty.").toJson());
-            sendJsonError(errorMsg);
+            sendJsonError(ErrorCodes.LOGIN_OAUTH_CODE_EMPTY.getMsg(loginForm.getCode()));
             return;
         }
         //
-        Result<Boolean> result = this.oauthManager.processAccess(loginForm.getCode(), loginForm.getProvider());
+        Result<Long> result = this.oauthManager.processAccess(loginForm.getCode(), loginForm.getProvider(), this.csrfTokenString());
         if (result == null) {
-            Message errorMsg = ErrorCodes.RESULT_NULL.getMsg();
-            logger.error(LogUtils.create("ERROR_000_0004").addMessage(errorMsg)//
-                    .addString("login_error : processAccess result is empty.").toJson());
-            sendJsonError(errorMsg);
+            logger.error(LogUtils.create("ERROR_999_0001")//
+                    .addString("login_error : result is null.").toJson());
+            sendJsonError(ErrorCodes.RESULT_NULL.getMsg());
             return;
         }
         //
         if (!result.isSuccess()) {
-            Message errorMsg = result.firstMessage();
-            logger.error(LogUtils.create("ERROR_000_0005").addMessage(errorMsg)//
+            logger.error(LogUtils.create("ERROR_000_1002")//
                     .addString("login_error : access process failed.").toJson());
-            sendJsonError(errorMsg);
+            sendJsonError(result.firstMessage());
             return;
         }
         //
         // .跳转到目标页面
-        if (result.getResult() != null && result.getResult()) {
-            this.getResponse().sendRedirect(loginForm.getRedirectURI());
+        if (result.getResult() != null && result.getResult() > 0) {
+            this.setSessionAttr(AppConstant.SESSION_KEY_USER_ID, result.getResult());
+            sendJsonRedirectTo(loginForm.getRedirectURI());
             return;
         } else {
             //
-            Message errorMsg = ErrorCodes.LOGIN_OAUTH_ACCESS_FAILED.getMsg();
-            logger.error(LogUtils.create("ERROR_000_0006").addMessage(errorMsg)//
+            logger.error(LogUtils.create("ERROR_000_1003")//
                     .addString("login_error : access failed.").toJson());
-            sendJsonError(errorMsg);
+            sendJsonError(ErrorCodes.LOGIN_OAUTH_ACCESS_FAILED.getMsg());
             return;
         }
     }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.restful;
+import net.hasor.web.WebAppContext;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +26,16 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface RenderData {
-    public static final String ROOT_DATA_KEY   = "rootData";
-    public static final String RETURN_DATA_KEY = "resultData";
-    public static final String VALID_DATA_KEY  = "validData";
+    public static final String ROOT_DATA_KEY   = "rootData";//
+    public static final String RETURN_DATA_KEY = "resultData";//
+    public static final String VALID_DATA_KEY  = "validData";//
+    public static final String REQUEST_KEY     = "request";//
+    public static final String RESPONSE_KEY    = "response";//
 
     //
     //
+    public WebAppContext getAppContext();
+
     public HttpServletRequest getHttpRequest();
 
     public HttpServletResponse getHttpResponse();

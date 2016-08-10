@@ -20,6 +20,11 @@ package net.demo.hasor.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface AppConstant {
-    public static final String DB_HSQL  = "HSQL";
-    public static final String DB_MYSQL = "MYSQL";
+    public static final String DB_HSQL                  = "HSQL";
+    public static final String DB_MYSQL                 = "MYSQL";
+    //
+    public static final String SESSION_KEY_USER_ID      = "userid";
+    public static final String SESSION_KEY_CSRF_TOKEN   = "csrfTokenString";
+    //
+    public static final String REQ_PARAM_KEY_CSRF_TOKEN = "csrfToken";
 }

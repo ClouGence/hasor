@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 /**
- *
+ * 数据库链接 & DAO
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -55,6 +55,7 @@ public class DataSourceModule implements LifeModule {
         //
         //DataSource mysqlDataSource = createDataSource(driverString, urlString, userString, pwdString);
         //apiBinder.installModule(new DBModule(AppConstant.DB_MYSQL, mysqlDataSource));
+        //
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {

@@ -36,7 +36,7 @@ public class LogUtils {
     static {
         InputStream in = null;
         try {
-            in = LogUtils.class.getResourceAsStream("/error.properties");
+            in = LogUtils.class.getResourceAsStream("/logger_messages.properties");
             errorProp.load(in);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

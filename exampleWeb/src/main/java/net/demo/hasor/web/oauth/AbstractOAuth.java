@@ -15,20 +15,18 @@
  */
 package net.demo.hasor.web.oauth;
 import net.hasor.core.InjectSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractOAuthConfig {
+public abstract class AbstractOAuth {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @InjectSettings("appExample.redirectURI")
     private String redirectURI;
     protected String getRedirectURI() {
         return this.redirectURI;
     }
-    //
-    //
-    public abstract String getLoginURL() throws Exception;
-
-    public abstract String getTokenURL(String status, String authCode) throws Exception;
 }

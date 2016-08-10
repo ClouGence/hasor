@@ -22,7 +22,7 @@ import java.util.List;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ValidErrors {
+public interface ValidErrors extends RenderData {
     /**添加验证失败的消息。*/
     public void addError(String key, String validString);
 
