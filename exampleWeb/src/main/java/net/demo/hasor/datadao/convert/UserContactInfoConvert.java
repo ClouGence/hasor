@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.datadao.convert;
-import net.demo.hasor.domain.UserContactInfo;
+import net.demo.hasor.domain.futures.UserContactInfo;
 import net.demo.hasor.utils.JsonUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;

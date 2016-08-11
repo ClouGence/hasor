@@ -17,6 +17,7 @@ package net.demo.hasor.domain;
 import net.demo.hasor.domain.enums.GenderType;
 import net.demo.hasor.domain.enums.UserStatus;
 import net.demo.hasor.domain.enums.UserType;
+import net.demo.hasor.domain.futures.UserContactInfo;
 import net.demo.hasor.domain.futures.UserFutures;
 
 import java.util.Date;

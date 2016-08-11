@@ -15,9 +15,8 @@
  */
 package net.demo.hasor.manager.oauth;
 import com.qq.connect.api.OpenID;
-import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
-import com.qq.connect.javabeans.qzone.UserInfoBean;
+import com.qq.connect.javabeans.Birthday;
 import com.qq.connect.utils.QQConnectConfig;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.Response;
@@ -36,6 +35,7 @@ import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.Map;
 /**
  * 封装腾讯登陆
@@ -157,24 +157,47 @@ public class TencentOAuth extends AbstractOAuth {
             AccessToken token = new AccessToken(response);
             OpenID openIDObj = new OpenID(token.getAccessToken());
             String openID = openIDObj.getUserOpenID();
-            UserInfo userInfo = new UserInfo(token.getAccessToken(), openID);
-            UserInfoBean infoBean = userInfo.getUserInfo();
+            com.qq.connect.api.qzone.UserInfo qzoneUserInfo = new com.qq.connect.api.qzone.UserInfo(token.getAccessToken(), openID);
+            com.qq.connect.javabeans.qzone.UserInfoBean qzoneInfoBean = qzoneUserInfo.getUserInfo();
             //
+            // .QQ空间信息
             TencentAccessInfo info = new TencentAccessInfo();
             info.setAccessToken(token.getAccessToken());
             info.setExpiresTime(token.getExpireIn());
             info.setOpenID(openID);
             info.setOriInfo(response.getResponseAsString());
+            info.setGender(qzoneInfoBean.getGender());
+            info.setNickName(qzoneInfoBean.getNickname());
+            info.setLevel(qzoneInfoBean.getLevel());
+            info.setVip(qzoneInfoBean.isVip());
+            info.setYellowYearVip(qzoneInfoBean.isYellowYearVip());
+            info.setAvatarURL30(qzoneInfoBean.getAvatar().getAvatarURL30());
+            info.setAvatarURL50(qzoneInfoBean.getAvatar().getAvatarURL50());
+            info.setAvatarURL100(qzoneInfoBean.getAvatar().getAvatarURL100());
             //
-            info.setGender(infoBean.getGender());
-            info.setNickName(infoBean.getNickname());
-            info.setLevel(infoBean.getLevel());
-            info.setVip(infoBean.isVip());
-            info.setYellowYearVip(infoBean.isYellowYearVip());
-            //
-            info.setAvatarURL30(infoBean.getAvatar().getAvatarURL30());
-            info.setAvatarURL50(infoBean.getAvatar().getAvatarURL50());
-            info.setAvatarURL100(infoBean.getAvatar().getAvatarURL100());
+            // .腾讯微博
+            com.qq.connect.api.weibo.UserInfo weiboUserInfo = new com.qq.connect.api.weibo.UserInfo(token.getAccessToken(), openID);
+            com.qq.connect.javabeans.weibo.UserInfoBean weiboInfoBean = weiboUserInfo.getUserInfo();
+            if (weiboInfoBean.getRet() == 0) {
+                //
+                info.setCityCode(weiboInfoBean.getCityCode());
+                info.setCountryCode(weiboInfoBean.getCountryCode());
+                info.setProvinceCode(weiboInfoBean.getProvinceCode());
+                info.setHomeCityCode(weiboInfoBean.getHomeCityCode());
+                info.setHomeCountryCode(weiboInfoBean.getHomeCountryCode());
+                info.setHomeProvinceCode(weiboInfoBean.getHomeProvinceCode());
+                info.setHomeTownCode(weiboInfoBean.getHomeTownCode());
+                info.setEmail(weiboInfoBean.getEmail());
+                info.setWeiboLevel(weiboInfoBean.getLevel());
+                info.setWeiboName(weiboInfoBean.getName());
+                Birthday birthday = weiboInfoBean.getBirthday();
+                if (birthday != null) {
+                    String yearStr = new DecimalFormat("0000").format(birthday.getYear());
+                    String monthStr = new DecimalFormat("00").format(birthday.getMonth());
+                    String dayStr = new DecimalFormat("00").format(birthday.getDay());
+                    info.setBirthday(yearStr + "-" + monthStr + "-" + dayStr);
+                }
+            }
             //
             logger.error("tencent_access_token : success -> token : {} , sourceID : {} , nick : {}.", //
                     info.getAccessToken(), info.getSource(), info.getNickName());

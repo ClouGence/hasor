@@ -22,6 +22,8 @@ import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.domain.enums.GenderType;
 import net.demo.hasor.domain.enums.UserStatus;
 import net.demo.hasor.domain.enums.UserType;
+import net.demo.hasor.domain.futures.ContactAddressInfo;
+import net.demo.hasor.domain.futures.UserContactInfo;
 import net.demo.hasor.manager.UserManager;
 import net.demo.hasor.utils.LogUtils;
 import net.hasor.core.Inject;
@@ -34,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 /**
  * 集成第三方登陆 & CAS 等
  * @version : 2016年1月10日
@@ -140,7 +141,23 @@ public class OAuthManager {
             userDO.getUserSourceList().add(convertAccessInfo(result));
             userDO.setStatus(UserStatus.Normal);
             userDO.setType(UserType.Temporary);
-            userDO.setCreateTime(new Date());
+            userDO.setBirthday(accessInfo.getBirthday());
+            userDO.setEmail(accessInfo.getEmail());
+            userDO.setName(accessInfo.getWeiboName());
+            //
+            userDO.setContactInfo(new UserContactInfo());
+            ContactAddressInfo userAddressInfo = new ContactAddressInfo();
+            userAddressInfo.setCityCode(accessInfo.getCityCode());
+            userAddressInfo.setCountryCode(accessInfo.getCountryCode());
+            userAddressInfo.setProvinceCode(accessInfo.getProvinceCode());
+            userAddressInfo.setTownCode("");
+            userDO.getContactInfo().setUserAddress(userAddressInfo);
+            ContactAddressInfo homeAddressInfo = new ContactAddressInfo();
+            homeAddressInfo.setCityCode(accessInfo.getHomeCityCode());
+            homeAddressInfo.setCountryCode(accessInfo.getHomeCountryCode());
+            homeAddressInfo.setProvinceCode(accessInfo.getHomeProvinceCode());
+            homeAddressInfo.setTownCode(accessInfo.getHomeTownCode());
+            userDO.getContactInfo().setHomeAddress(homeAddressInfo);
             return userDO;
         } else {
             return null;
