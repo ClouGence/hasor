@@ -15,6 +15,10 @@
  */
 package net.demo.hasor.web.actions.account;
 import net.demo.hasor.core.Action;
+import net.demo.hasor.domain.UserDO;
+import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.manager.UserManager;
+import net.hasor.core.Inject;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.api.MappingTo;
 
@@ -26,6 +30,8 @@ import java.io.IOException;
  */
 @MappingTo("/account/my.htm")
 public class My extends Action {
+    @Inject
+    private UserManager userManager;
     //
     public void execute(RenderData data) throws IOException {
         //
@@ -33,5 +39,12 @@ public class My extends Action {
             String ctx_path = data.getAppContext().getServletContext().getContextPath();
             data.getHttpResponse().sendRedirect(ctx_path + "/account/login.htm?redirectURI=" + ctx_path + "/account/my.htm");
         }
+        //
+        UserDO user = this.userManager.getUserByID(this.getUserID());
+        if (user == null) {
+            sendError(ErrorCodes.RESULT_NULL.getMsg());
+            return;
+        }
+        this.putData("userData", user);
     }
 }

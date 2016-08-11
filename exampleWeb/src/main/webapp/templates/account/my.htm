@@ -1,3 +1,25 @@
 ${rootData.put('pageTitle',' - 个人首页')}
 
 -- 个人首页 --
+<br/>${userData.userID}         &nbsp;&nbsp;&nbsp;&nbsp; -- UserID
+<br/>${userData.account}        &nbsp;&nbsp;&nbsp;&nbsp; -- 帐号
+<br/>${userData.email}          &nbsp;&nbsp;&nbsp;&nbsp; -- email
+<br/>${userData.mobilePhone}    &nbsp;&nbsp;&nbsp;&nbsp; -- 移动电话
+<br/>${userData.password}       &nbsp;&nbsp;&nbsp;&nbsp; -- 密码(非明文)
+<br/>${userData.type.desc}      &nbsp;&nbsp;&nbsp;&nbsp; -- 帐号类型
+<br/>${userData.nick}           &nbsp;&nbsp;&nbsp;&nbsp; -- 昵称
+<br/>${userData.name}           &nbsp;&nbsp;&nbsp;&nbsp; -- 姓名
+<br/>${userData.gender.desc}    &nbsp;&nbsp;&nbsp;&nbsp; -- 用户性别 - 男 女
+<br/><img src="${userData.avatar}"/>         &nbsp;&nbsp;&nbsp;&nbsp; -- 头像
+<br/>${userData.birthday}       &nbsp;&nbsp;&nbsp;&nbsp; -- 生日
+<br/>${userData.present}        &nbsp;&nbsp;&nbsp;&nbsp; -- 介绍
+<br/>${userData.status.desc}    &nbsp;&nbsp;&nbsp;&nbsp; -- 状态
+<br/>${userData.loginCount}     &nbsp;&nbsp;&nbsp;&nbsp; -- 登录次数
+<br/>${userData.present}        &nbsp;&nbsp;&nbsp;&nbsp; -- 介绍
+<hr>
+
+private Date               firstLoginTime = null; // 首次登陆时间
+private Date               lastLoginTime  = null; // 最后一次登陆时间
+private Date               createTime     = null; // 创建时间
+private Date               modifyTime     = null; // 修噶改时间
+//

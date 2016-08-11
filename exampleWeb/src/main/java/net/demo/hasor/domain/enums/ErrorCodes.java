@@ -31,7 +31,7 @@ public enum ErrorCodes {
     //
     LOGIN_USER_SAVE(6, "用户数据保存失败。"),
     //
-    RESULT_NULL(7, "返回结果为空。"),
+    RESULT_NULL(7, "返回结果为空,或者是数据查询失败。"),
     SECURITY_CSRF(8, "SECURITY_CSRF"),
     BAD_REQUEST(9, ""),
     BAD_UNKNOWN(10, "未知类型异常: %s");

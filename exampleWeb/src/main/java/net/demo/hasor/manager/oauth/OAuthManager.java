@@ -19,6 +19,7 @@ import net.demo.hasor.domain.UserDO;
 import net.demo.hasor.domain.UserSourceDO;
 import net.demo.hasor.domain.access.TencentAccessInfo;
 import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.domain.enums.GenderType;
 import net.demo.hasor.domain.enums.UserStatus;
 import net.demo.hasor.domain.enums.UserType;
 import net.demo.hasor.manager.UserManager;
@@ -128,6 +129,13 @@ public class OAuthManager {
             //
             if (userDO.getUserSourceList() == null) {
                 userDO.setUserSourceList(new ArrayList<UserSourceDO>());
+            }
+            if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "男")) {
+                userDO.setGender(GenderType.Male);
+            } else if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "女")) {
+                userDO.setGender(GenderType.Female);
+            } else {
+                userDO.setGender(GenderType.None);
             }
             userDO.getUserSourceList().add(convertAccessInfo(result));
             userDO.setStatus(UserStatus.Normal);
