@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.demo.hasor;
-import net.demo.hasor.core.DataSourceModule;
-import net.demo.hasor.core.FreemarkerRender;
-import net.demo.hasor.manager.oauth.TencentOAuth;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
-import net.hasor.restful.RenderEngine;
+package net.demo.hasor.web.actions.account;
+import net.demo.hasor.core.Action;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.api.MappingTo;
+
+import java.io.IOException;
 /**
- * 单元测试
- * @version : 2015年12月25日
+ * 个人首页
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UnitTestModule implements Module {
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+@MappingTo("/account/my.htm")
+public class My extends Action {
+    //
+    public void execute(RenderData data) throws IOException {
         //
-        apiBinder.installModule(new DataSourceModule());
-        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
-        //
-        // .Tencent
-        TencentOAuth.configTencent(apiBinder);
+        if (!isLogin()) {
+            String ctx_path = data.getAppContext().getServletContext().getContextPath();
+            data.getHttpResponse().sendRedirect(ctx_path + "/account/login.htm?redirectURI=" + ctx_path + "/account/my.htm");
+        }
     }
 }

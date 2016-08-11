@@ -17,6 +17,7 @@ import net.demo.hasor.datadao.UserDAO;
 import net.demo.hasor.datadao.UserSourceDAO;
 import net.demo.hasor.domain.UserDO;
 import net.demo.hasor.domain.UserSourceDO;
+import net.demo.hasor.utils.LogUtils;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.db.Transactional;
@@ -24,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 /**
  * 用户Manager
@@ -48,14 +48,21 @@ public class UserManager {
         if (userDO == null) {
             return null;
         }
-        //
-        if (userDO.getUserSourceList() == null) {
-            userDO.setUserSourceList(new ArrayList<UserSourceDO>());
-        }
-        userDO.getUserSourceList().add(sourceDO);
-        //
         return userDO;
     }
+    public UserDO getUserByID(long userID) {
+        if (userID <= 0) {
+            return null;
+        }
+        try {
+            return this.userDAO.queryById(userID);
+        } catch (Exception e) {
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("UserManager : getUserByID error -> " + e.getMessage()).toJson());
+            return null;
+        }
+    }
+    //
     //
     @Transactional
     public long newUser(UserDO userDO) throws SQLException {
@@ -81,8 +88,13 @@ public class UserManager {
         return this.userSourceDAO.updateUserSource(provider, userDO.getUserID(), result);
     }
     @Transactional
-    public void loginUpdate(UserDO userDO, String provider) throws SQLException {
-        this.userDAO.loginUpdate(userDO.getUserID());
-        this.userSourceDAO.loginUpdateByUserID(provider, userDO.getUserID());
+    public void loginUpdate(UserDO userDO, String provider) {
+        try {
+            this.userDAO.loginUpdate(userDO.getUserID());
+            this.userSourceDAO.loginUpdateByUserID(provider, userDO.getUserID());
+        } catch (Exception e) {
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("loginUpdate : " + e.getMessage()).toJson());
+        }
     }
 }

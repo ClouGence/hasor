@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web.oauth;
+package net.demo.hasor.manager.oauth;
 import net.demo.hasor.domain.AccessInfo;
 import net.demo.hasor.domain.UserDO;
 import net.demo.hasor.domain.UserSourceDO;

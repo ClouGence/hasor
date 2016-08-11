@@ -23,7 +23,8 @@ public interface AppConstant {
     public static final String DB_HSQL                  = "HSQL";
     public static final String DB_MYSQL                 = "MYSQL";
     //
-    public static final String SESSION_KEY_USER_ID      = "userid";
+    public static final String SESSION_KEY_USER_ID      = "user_id";
+    public static final String SESSION_KEY_USER_NICK    = "user_nick";
     public static final String SESSION_KEY_CSRF_TOKEN   = "csrfTokenString";
     //
     public static final String REQ_PARAM_KEY_CSRF_TOKEN = "csrfToken";

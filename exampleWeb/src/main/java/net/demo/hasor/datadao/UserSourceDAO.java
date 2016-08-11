@@ -16,6 +16,7 @@
 package net.demo.hasor.datadao;
 import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserSourceDO;
+import net.demo.hasor.utils.LogUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -33,7 +34,8 @@ public class UserSourceDAO extends AbstractDao {
             int result = this.getSqlExecutor().insert("userSource_insert", sourceDO);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_source_dao : insertUserSource error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -47,7 +49,8 @@ public class UserSourceDAO extends AbstractDao {
             UserSourceDO result = this.getSqlExecutor().selectOne("userSource_queryByUnique", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_source_dao : queryByUnique error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -61,7 +64,8 @@ public class UserSourceDAO extends AbstractDao {
             int result = this.getSqlExecutor().update("userSource_loginUpdateByUserID", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_source_dao : loginUpdateByUserID error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -76,7 +80,8 @@ public class UserSourceDAO extends AbstractDao {
             int result = this.getSqlExecutor().update("userSource_updateInfo", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_source_dao : updateUserSource error -> " + e.getMessage()).toJson());
             throw e;
         }
     }

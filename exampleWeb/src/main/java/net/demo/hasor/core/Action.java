@@ -15,8 +15,8 @@
  */
 package net.demo.hasor.core;
 import net.demo.hasor.domain.AppConstant;
-import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.domain.JsonResultDO;
+import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.utils.JsonUtils;
 import net.hasor.restful.WebController;
 import org.more.bizcommon.Message;
@@ -35,7 +35,6 @@ public class Action extends WebController {
     protected Logger       logger       = LoggerFactory.getLogger(getClass());
     private   SecureRandom secureRandom = new SecureRandom();
     //
-    //
     /** 获取 csrf Token */
     protected final String csrfTokenString() {
         String token = this.getSessionAttr(AppConstant.SESSION_KEY_CSRF_TOKEN);
@@ -45,6 +44,7 @@ public class Action extends WebController {
         }
         return token;
     }
+    //
     /** 验证 csrf Token */
     protected boolean csrfTokenTest() {
         String reqToken = this.getPara(AppConstant.REQ_PARAM_KEY_CSRF_TOKEN);
@@ -59,6 +59,7 @@ public class Action extends WebController {
         String jsonStr = JsonUtils.toJsonStringSingleLine(jsonData);
         this.getResponse().getWriter().write(jsonStr);
     }
+    //
     /**输出Json格式的失败结果。*/
     protected void sendJsonError(Message errorMessage) throws IOException {
         if (errorMessage == null) {
@@ -71,6 +72,7 @@ public class Action extends WebController {
         String jsonStr = JsonUtils.toJsonStringSingleLine(jsonData);
         this.getResponse().getWriter().write(jsonStr);
     }
+    //
     /**跳转到错误页。*/
     protected void sendError(Message errorMessage) {
         if (errorMessage == null) {
@@ -83,5 +85,38 @@ public class Action extends WebController {
         this.putData("errorCode", errorCode);
         this.putData("errorStr", errorStr);
         this.renderTo("htm", "/error.htm");
+    }
+    //
+    /**登录用户的Nick*/
+    protected String getUserNick() {
+        try {
+            String userID = this.getSessionAttr(AppConstant.SESSION_KEY_USER_NICK);
+            if (userID == null) {
+                return "";
+            } else {
+                return userID;
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
+    //
+    /**登录用户的ID*/
+    protected long getUserID() {
+        try {
+            Long userID = this.getSessionAttr(AppConstant.SESSION_KEY_USER_ID);
+            if (userID == null) {
+                return 0;
+            } else {
+                return userID;
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+    //
+    /**是否已登录*/
+    protected boolean isLogin() {
+        return getUserID() > 0 && StringUtils.isNotBlank(getUserNick());
     }
 }

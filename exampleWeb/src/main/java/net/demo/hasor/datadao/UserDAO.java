@@ -16,6 +16,7 @@
 package net.demo.hasor.datadao;
 import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserDO;
+import net.demo.hasor.utils.LogUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,7 +36,8 @@ public class UserDAO extends AbstractDao {
             UserDO result = this.getSqlExecutor().selectOne("user_queryById", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_dao : queryById error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -46,7 +48,8 @@ public class UserDAO extends AbstractDao {
             int result = this.getSqlExecutor().insert("user_insert", userDO);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_dao : insertUser error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -59,7 +62,8 @@ public class UserDAO extends AbstractDao {
             int result = this.getSqlExecutor().update("user_loginUpdate", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_dao : loginUpdate error -> " + e.getMessage()).toJson());
             throw e;
         }
     }
@@ -73,7 +77,8 @@ public class UserDAO extends AbstractDao {
             int result = this.getSqlExecutor().update("user_updateInfo", parameter);
             return result;
         } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_dao : updateUser error -> " + e.getMessage()).toJson());
             throw e;
         }
     }

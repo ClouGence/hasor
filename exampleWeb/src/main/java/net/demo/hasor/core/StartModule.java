@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
-import net.demo.hasor.web.oauth.TencentOAuth;
+import net.demo.hasor.manager.oauth.TencentOAuth;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;

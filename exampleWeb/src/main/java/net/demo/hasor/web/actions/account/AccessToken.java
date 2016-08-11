@@ -16,10 +16,12 @@
 package net.demo.hasor.web.actions.account;
 import net.demo.hasor.core.Action;
 import net.demo.hasor.domain.AppConstant;
+import net.demo.hasor.domain.UserDO;
 import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.manager.UserManager;
+import net.demo.hasor.manager.oauth.OAuthManager;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.web.forms.LoginCallBackForm;
-import net.demo.hasor.web.oauth.OAuthManager;
 import net.hasor.core.Inject;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
@@ -36,6 +38,8 @@ import java.io.IOException;
 public class AccessToken extends Action {
     @Inject
     private OAuthManager oauthManager;
+    @Inject
+    private UserManager  userManager;
     //
     public void execute(@Params LoginCallBackForm loginForm) throws IOException {
         //
@@ -80,9 +84,20 @@ public class AccessToken extends Action {
         //
         // .跳转到目标页面
         if (result.getResult() != null && result.getResult() > 0) {
-            this.setSessionAttr(AppConstant.SESSION_KEY_USER_ID, result.getResult());
-            sendJsonData(loginForm.getRedirectURI());//跳转的目标地址
-            return;
+            long userID = result.getResult();
+            UserDO userDO = this.userManager.getUserByID(userID);
+            if (userDO != null) {
+                this.setSessionAttr(AppConstant.SESSION_KEY_USER_ID, userDO.getUserID());
+                this.setSessionAttr(AppConstant.SESSION_KEY_USER_NICK, userDO.getNick());
+                sendJsonData(loginForm.getRedirectURI());//跳转的目标地址
+                return;
+            } else {
+                //
+                logger.error(LogUtils.create("ERROR_999_0001")//
+                        .addString("login_error : query user by id result is null.").toJson());
+                sendJsonError(ErrorCodes.RESULT_NULL.getMsg());
+                return;
+            }
         } else {
             //
             logger.error(LogUtils.create("ERROR_000_1003")//

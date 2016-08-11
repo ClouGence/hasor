@@ -15,7 +15,7 @@
  */
 package net.demo.hasor.domain.access;
 import net.demo.hasor.domain.AccessInfo;
-import net.demo.hasor.web.oauth.TencentOAuth;
+import net.demo.hasor.manager.oauth.TencentOAuth;
 /**
  * 腾讯 Token 信息
  * @version : 2016年1月1日

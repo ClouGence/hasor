@@ -17,6 +17,7 @@ package net.demo.hasor.manager;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.domain.VersionInfoDO;
+import net.demo.hasor.utils.LogUtils;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -42,7 +43,8 @@ public class VersionInfoManager {
             infoDO = jdbcTemplate.queryForObject(query, VersionInfoDO.class, version);
             return infoDO;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("version : queryByVersion error -> " + e.getMessage()).toJson());
             throw e;
         }
     }

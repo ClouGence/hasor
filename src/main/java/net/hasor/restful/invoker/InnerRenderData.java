@@ -187,5 +187,12 @@ class InnerRenderData implements RenderData {
         ValidData data = this.validData.get(messageKey);
         return data == null ? true : data.isValid();
     }
-    //
+    @Override
+    public void clearValidErrors() {
+        this.validData.clear();
+    }
+    @Override
+    public void clearValidErrors(String messageKey) {
+        this.validData.remove(messageKey);
+    }
 }

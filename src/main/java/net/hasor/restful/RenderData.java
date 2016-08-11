@@ -83,4 +83,10 @@ public interface RenderData {
 
     /**某个规则是否通过验证。*/
     public boolean isValid(String messageKey);
+
+    /**删除某个验证信息。*/
+    public void clearValidErrors();
+
+    /**删除某个验证信息。*/
+    public void clearValidErrors(String messageKey);
 }

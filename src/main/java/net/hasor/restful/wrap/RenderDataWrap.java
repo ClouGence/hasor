@@ -104,4 +104,12 @@ public class RenderDataWrap implements RenderData {
     public boolean isValid(String messageKey) {
         return this.renderData.isValid(messageKey);
     }
+    @Override
+    public void clearValidErrors() {
+        this.renderData.clearValidErrors();
+    }
+    @Override
+    public void clearValidErrors(String messageKey) {
+        this.renderData.clearValidErrors(messageKey);
+    }
 }
