@@ -71,7 +71,7 @@ public class OAuthManager {
         }
         //
         try {
-            String uniqueID = info.getResult().getSource();
+            String uniqueID = info.getResult().getExternalUserID();
             UserDO userDO = this.userManager.getUserByProvider(provider, uniqueID);
             long dataResult = 0L;
             if (userDO == null) {

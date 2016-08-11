@@ -17,6 +17,7 @@ package net.demo.hasor.datadao;
 import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserSourceDO;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -27,46 +28,46 @@ import java.util.Map;
 public class UserSourceDAO extends AbstractDao {
     //
     /** 新增登录类型 */
-    public int insertUserSource(UserSourceDO sourceDO) {
+    public int insertUserSource(UserSourceDO sourceDO) throws SQLException {
         try {
             int result = this.getSqlExecutor().insert("userSource_insert", sourceDO);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
     //
     /** 根据提供商和外部唯一ID,查询登录信息 */
-    public UserSourceDO queryByUnique(String provider, String uniqueID) {
+    public UserSourceDO queryByUnique(String provider, String uniqueID) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("provider", provider);
             parameter.put("uniqueID", uniqueID);
             UserSourceDO result = this.getSqlExecutor().selectOne("userSource_queryByUnique", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return null;
+            throw e;
         }
     }
     //
     /** 登录更新 */
-    public int loginUpdateByUserID(String provider, long userID) {
+    public int loginUpdateByUserID(String provider, long userID) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("provider", provider);
             parameter.put("userID", userID);
             int result = this.getSqlExecutor().update("userSource_loginUpdateByUserID", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
     //
     /** 更新基础信息 */
-    public int updateUserSource(String provider, long userID, UserSourceDO sourceDO) {
+    public int updateUserSource(String provider, long userID, UserSourceDO sourceDO) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("provider", provider);
@@ -74,9 +75,9 @@ public class UserSourceDAO extends AbstractDao {
             parameter.put("sourceInfo", sourceDO);
             int result = this.getSqlExecutor().update("userSource_updateInfo", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
 }

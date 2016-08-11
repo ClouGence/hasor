@@ -7,7 +7,7 @@
         <result property="provider"         column="provider"/>
         <result property="uniqueID"         column="unique_id"/>
         <result property="userID"           column="user_id"/>
-        <result property="status"           column="status"         typeHandler="net.demo.hasor.datadao.convert.UserStatusConvert"/>
+        <result property="status"           column="status"/>
         <result property="accessInfo"       column="access_info"    typeHandler="net.demo.hasor.datadao.convert.AccessInfoConvert"/>
         <result property="loginCount"       column="login_count"/>
         <result property="firstLoginTime"   column="first_login_time"/>
@@ -45,7 +45,7 @@
             #{provider},
             #{uniqueID},
             #{userID},
-            #{status, typeHandler=net.demo.hasor.datadao.convert.UserStatusConvert},
+            #{status},
             #{accessInfo, typeHandler=net.demo.hasor.datadao.convert.AccessInfoConvert},
             #{loginCount},
             now(),
@@ -64,7 +64,7 @@
             last_login_time   = now(),
             modify_time       = now()
         where
-            provider = #{provider} and user_id = #{userID} and status = 0
+            provider = #{provider} and user_id = #{userID} and status = 1
         limit 1
     </update>
     
@@ -72,7 +72,7 @@
     <update id="userSource_updateInfo">
         update USER_SOURCE set
             unique_id     = #{sourceInfo.uniqueID},
-            status        = #{sourceInfo.status, typeHandler=net.demo.hasor.datadao.convert.UserStatusConvert},
+            status        = #{sourceInfo.status},
             access_info   = #{sourceInfo.accessInfo, typeHandler=net.demo.hasor.datadao.convert.AccessInfoConvert},
             modify_time   = now()
         where 
@@ -81,7 +81,7 @@
     </update>
 
     <!-- 根据提供者和外部ID获取登录信息 -->
-    <select id="userSource_queryByUnique" resultMap="userSourceDOMap" parameterType="java.lang.String">
+    <select id="userSource_queryByUnique" resultMap="userSourceDOMap">
         select
             <include refid="userSourceDO_allColumns"/>
         from

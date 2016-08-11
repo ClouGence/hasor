@@ -23,6 +23,7 @@ import net.hasor.db.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -38,7 +39,7 @@ public class UserManager {
     @Inject
     private UserDAO       userDAO;
     //
-    public UserDO getUserByProvider(String provider, String uniqueID) {
+    public UserDO getUserByProvider(String provider, String uniqueID) throws SQLException {
         UserSourceDO sourceDO = this.userSourceDAO.queryByUnique(provider, uniqueID);
         if (sourceDO == null || sourceDO.getUserID() <= 0) {
             return null;
@@ -57,7 +58,7 @@ public class UserManager {
     }
     //
     @Transactional
-    public long newUser(UserDO userDO) {
+    public long newUser(UserDO userDO) throws SQLException {
         // 1. 保存用户数据 2. 保存携带的外部登录信息数据
         int userResult = this.userDAO.insertUser(userDO);
         if (userResult > 0) {
@@ -76,11 +77,11 @@ public class UserManager {
         return userDO.getUserID();
     }
     @Transactional
-    public int updateAccessInfo(UserDO userDO, String provider, UserSourceDO result) {
+    public int updateAccessInfo(UserDO userDO, String provider, UserSourceDO result) throws SQLException {
         return this.userSourceDAO.updateUserSource(provider, userDO.getUserID(), result);
     }
     @Transactional
-    public void loginUpdate(UserDO userDO, String provider) {
+    public void loginUpdate(UserDO userDO, String provider) throws SQLException {
         this.userDAO.loginUpdate(userDO.getUserID());
         this.userSourceDAO.loginUpdateByUserID(provider, userDO.getUserID());
     }

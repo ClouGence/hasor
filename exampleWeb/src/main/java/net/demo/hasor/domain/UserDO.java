@@ -38,7 +38,7 @@ public class UserDO {
     private GenderType         gender         = null; // 用户性别 - 男 女
     private String             avatar         = null; // 头像
     private String             birthday       = null; // 生日
-    private String             desc           = null; // 介绍
+    private String             present        = null; // 介绍
     private UserStatus         status         = null; // 状态
     private long               loginCount     = 0;    // 登录次数
     private Date               firstLoginTime = null; // 首次登陆时间
@@ -129,12 +129,6 @@ public class UserDO {
     public void setFutures(UserFutures futures) {
         this.futures = futures;
     }
-    public String getDesc() {
-        return desc;
-    }
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
     public UserStatus getStatus() {
         return status;
     }
@@ -176,5 +170,11 @@ public class UserDO {
     }
     public void setType(UserType type) {
         this.type = type;
+    }
+    public String getPresent() {
+        return present;
+    }
+    public void setPresent(String present) {
+        this.present = present;
     }
 }

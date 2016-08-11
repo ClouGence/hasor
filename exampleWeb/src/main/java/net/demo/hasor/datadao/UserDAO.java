@@ -17,6 +17,7 @@ package net.demo.hasor.datadao;
 import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserDO;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -27,53 +28,53 @@ import java.util.Map;
 public class UserDAO extends AbstractDao {
     //
     /** 根据用户ID查询用户信息 */
-    public UserDO queryById(long userID) {
+    public UserDO queryById(long userID) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("userID", userID);
             UserDO result = this.getSqlExecutor().selectOne("user_queryById", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return null;
+            throw e;
         }
     }
     //
     /** 新增用户 */
-    public int insertUser(UserDO userDO) {
+    public int insertUser(UserDO userDO) throws SQLException {
         try {
             int result = this.getSqlExecutor().insert("user_insert", userDO);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
     //
     /** 登录更新 */
-    public int loginUpdate(long userID) {
+    public int loginUpdate(long userID) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("userID", userID);
             int result = this.getSqlExecutor().update("user_loginUpdate", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
     //
     /** 更新基础信息 */
-    public long updateUser(long userID, UserDO userDO) {
+    public long updateUser(long userID, UserDO userDO) throws SQLException {
         try {
             Map<String, Object> parameter = new HashMap<String, Object>();
             parameter.put("userID", userID);
             parameter.put("userInfo", userDO);
             int result = this.getSqlExecutor().update("user_updateInfo", parameter);
             return result;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            return 0;
+            throw e;
         }
     }
     //

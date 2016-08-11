@@ -127,7 +127,7 @@
     </update>
 
     <!-- 根据ID查询 -->
-    <select id="user_queryById">
+    <select id="user_queryById" resultMap="userDOMap">
         select
             <include refid="userDO_allColumns"/>
         from
