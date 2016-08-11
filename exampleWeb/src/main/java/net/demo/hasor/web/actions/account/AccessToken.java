@@ -16,7 +16,7 @@
 package net.demo.hasor.web.actions.account;
 import net.demo.hasor.core.Action;
 import net.demo.hasor.domain.AppConstant;
-import net.demo.hasor.domain.ErrorCodes;
+import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.web.forms.LoginCallBackForm;
 import net.demo.hasor.web.oauth.OAuthManager;

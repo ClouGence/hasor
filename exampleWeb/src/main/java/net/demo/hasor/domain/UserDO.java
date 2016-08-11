@@ -14,40 +14,42 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain;
-import org.more.util.StringUtils;
+import net.demo.hasor.domain.enums.GenderType;
+import net.demo.hasor.domain.enums.UserStatus;
+import net.demo.hasor.domain.enums.UserType;
+import net.demo.hasor.domain.futures.UserFutures;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
 /**
- * OAuth AccessToken
- * @version : 2016年1月1日
+ * 用户数据
+ * @version : 2016年08月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserDO {
-    private long   userID   = 0;    //Hasor 平台上的UserID
-    private String account  = null; //帐号
-    private String password = null; //密码
-    private String nick     = null; //Nick
-    private String email    = null; //email
-    private String avatar   = null; //头像
+    private long               userID         = 0;    // UserID（PK，自增）
+    private String             account        = null; // 帐号（唯一）
+    private String             email          = null; // email
+    private String             mobilePhone    = null; // 移动电话
+    private String             password       = null; // 密码(非明文)
+    private UserType           type           = null; // 帐号类型
+    private String             nick           = null; // 昵称
+    private String             name           = null; // 姓名
+    private GenderType         gender         = null; // 用户性别 - 男 女
+    private String             avatar         = null; // 头像
+    private String             birthday       = null; // 生日
+    private String             desc           = null; // 介绍
+    private UserStatus         status         = null; // 状态
+    private long               loginCount     = 0;    // 登录次数
+    private Date               firstLoginTime = null; // 首次登陆时间
+    private Date               lastLoginTime  = null; // 最后一次登陆时间
+    private Date               createTime     = null; // 创建时间
+    private Date               modifyTime     = null; // 修噶改时间
     //
-    private Map<String, AccessInfo> accessInfo;
+    private List<UserSourceDO> userSourceList = null; //外部平台登陆信息
+    private UserContactInfo    contactInfo    = null; //各种联系方式(json格式)
+    private UserFutures        futures        = null; // 扩展信息(json格式)
     //
-    public void putAccessInfo(String providerName, AccessInfo result) {
-        if (StringUtils.isBlank(providerName) || result == null) {
-            return;
-        }
-        if (this.accessInfo == null) {
-            this.accessInfo = new HashMap<String, AccessInfo>();
-        }
-        this.accessInfo.put(providerName.toUpperCase(), result);
-    }
-    public void removeAccessInfo(String providerName) {
-        if (StringUtils.isBlank(providerName) || this.accessInfo == null) {
-            return;
-        }
-        this.accessInfo.remove(providerName.toUpperCase());
-    }
     //
     public long getUserID() {
         return userID;
@@ -61,6 +63,18 @@ public class UserDO {
     public void setAccount(String account) {
         this.account = account;
     }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
     public String getPassword() {
         return password;
     }
@@ -73,11 +87,17 @@ public class UserDO {
     public void setNick(String nick) {
         this.nick = nick;
     }
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public GenderType getGender() {
+        return gender;
+    }
+    public void setGender(GenderType gender) {
+        this.gender = gender;
     }
     public String getAvatar() {
         return avatar;
@@ -85,10 +105,76 @@ public class UserDO {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-    public Map<String, AccessInfo> getAccessInfo() {
-        return accessInfo;
+    public String getBirthday() {
+        return birthday;
     }
-    public void setAccessInfo(Map<String, AccessInfo> accessInfo) {
-        this.accessInfo = accessInfo;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+    public List<UserSourceDO> getUserSourceList() {
+        return userSourceList;
+    }
+    public void setUserSourceList(List<UserSourceDO> userSourceList) {
+        this.userSourceList = userSourceList;
+    }
+    public UserContactInfo getContactInfo() {
+        return contactInfo;
+    }
+    public void setContactInfo(UserContactInfo contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+    public UserFutures getFutures() {
+        return futures;
+    }
+    public void setFutures(UserFutures futures) {
+        this.futures = futures;
+    }
+    public String getDesc() {
+        return desc;
+    }
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+    public UserStatus getStatus() {
+        return status;
+    }
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+    public Date getFirstLoginTime() {
+        return firstLoginTime;
+    }
+    public void setFirstLoginTime(Date firstLoginTime) {
+        this.firstLoginTime = firstLoginTime;
+    }
+    public Date getLastLoginTime() {
+        return lastLoginTime;
+    }
+    public void setLastLoginTime(Date lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+    public Date getCreateTime() {
+        return createTime;
+    }
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    public Date getModifyTime() {
+        return modifyTime;
+    }
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+    public long getLoginCount() {
+        return loginCount;
+    }
+    public void setLoginCount(long loginCount) {
+        this.loginCount = loginCount;
+    }
+    public UserType getType() {
+        return type;
+    }
+    public void setType(UserType type) {
+        this.type = type;
     }
 }

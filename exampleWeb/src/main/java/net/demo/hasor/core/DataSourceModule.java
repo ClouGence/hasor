@@ -80,12 +80,14 @@ public class DataSourceModule implements LifeModule {
             JdbcTemplate dailyTemplate = appContext.findBindingBean(AppConstant.DB_MYSQL, JdbcTemplate.class);
             //
             Map<String, String> loadMapper = new HashMap<String, String>();
-            loadMapper.put("UserInfo", "/META-INF/sqlddl/ddl_sql_user_info.sql");
+            loadMapper.put("USER_INFO", "/META-INF/sqlddl/ddl_sql_user_info.sql");
+            loadMapper.put("USER_SOURCE", "/META-INF/sqlddl/ddl_sql_user_source.sql");
             //
-            List<String> tables = dailyTemplate.queryForList("SHOW TABLES LIKE 'UserInfo';", String.class);
+            List<String> tables = dailyTemplate.queryForList("SHOW TABLES LIKE '%';", String.class);
             for (String tableName : tables) {
-                if (StringUtils.equalsIgnoreCase("UserInfo", tableName)) {
-                    loadMapper.remove("UserInfo");
+                String tabKey = tableName.toUpperCase();
+                if (loadMapper.containsKey(tabKey)) {
+                    loadMapper.remove(tabKey);
                 }
             }
             //

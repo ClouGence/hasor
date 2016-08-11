@@ -15,7 +15,7 @@
  */
 package net.demo.hasor.core;
 import net.demo.hasor.domain.AppConstant;
-import net.demo.hasor.domain.ErrorCodes;
+import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.domain.JsonResultDO;
 import net.demo.hasor.utils.JsonUtils;
 import net.hasor.restful.WebController;

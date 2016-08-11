@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.domain;
+package net.demo.hasor.domain.enums;
+import net.demo.hasor.domain.MessageTemplateString;
 import org.more.bizcommon.Message;
 import org.more.bizcommon.MessageTemplate;
 /**
@@ -22,18 +23,18 @@ import org.more.bizcommon.MessageTemplate;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ErrorCodes {
-    LOGIN_OAUTH_CODE_EMPTY(2, "LOGIN_OAUTH_ACCESS_FAILED"),
-    LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY(1, "LOGIN_OAUTH_ACCESS_TOKEN_EMPTY"),
-    LOGIN_OAUTH_ACCESS_TOKEN_ERROR(1, "LOGIN_OAUTH_ACCESS_TOKEN_ERROR"),
-    LOGIN_OAUTH_ACCESS_FAILED(2, "认证失败:"),
-    LOGIN_OAUTH_ACCESS_ERROR(2, "登陆遇到错误,请重试。"),
+    LOGIN_OAUTH_CODE_EMPTY(1, "LOGIN_OAUTH_ACCESS_FAILED"),
+    LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY(2, "LOGIN_OAUTH_ACCESS_TOKEN_EMPTY"),
+    LOGIN_OAUTH_ACCESS_TOKEN_ERROR(3, "LOGIN_OAUTH_ACCESS_TOKEN_ERROR"),
+    LOGIN_OAUTH_ACCESS_FAILED(4, "认证失败:"),
+    LOGIN_OAUTH_ACCESS_ERROR(5, "登陆遇到错误,请重试。"),
     //
-    LOGIN_USER_SAVE(4, "用户数据保存失败。"),
+    LOGIN_USER_SAVE(6, "用户数据保存失败。"),
     //
-    RESULT_NULL(3, "返回结果为空。"),
-    SECURITY_CSRF(4, "SECURITY_CSRF"),
-    BAD_REQUEST(5, ""),
-    BAD_UNKNOWN(5, "未知类型异常: %s");
+    RESULT_NULL(7, "返回结果为空。"),
+    SECURITY_CSRF(8, "SECURITY_CSRF"),
+    BAD_REQUEST(9, ""),
+    BAD_UNKNOWN(10, "未知类型异常: %s");
     //
     //
     private MessageTemplate temp = null;

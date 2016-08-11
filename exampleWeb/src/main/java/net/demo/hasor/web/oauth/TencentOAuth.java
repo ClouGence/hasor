@@ -23,8 +23,8 @@ import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.AccessInfo;
-import net.demo.hasor.domain.ErrorCodes;
 import net.demo.hasor.domain.access.TencentAccessInfo;
+import net.demo.hasor.domain.enums.ErrorCodes;
 import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
 import net.hasor.core.ApiBinder;
@@ -87,7 +87,7 @@ public class TencentOAuth extends AbstractOAuth {
         apiBinder.bindType(AbstractOAuth.class, TencentOAuth.class);
     }
     //
-    //
+    /**首次登录的跳转地址(参数为回跳地址)*/
     public String evalLoginURL(String redirectTo) {
         //https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=[YOUR_APPID]&redirect_uri=[YOUR_REDIRECT_URI]&scope=[THE_SCOPE]
         try {
@@ -101,6 +101,8 @@ public class TencentOAuth extends AbstractOAuth {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+    //
+    /**拿到远程Code之后通过code获取 AccessInfo 认证信息对象。*/
     public ResultDO<AccessInfo> evalToken(String status, String authCode) {
         //https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=[YOUR_APP_ID]&client_secret=[YOUR_APP_Key]&code=[The_AUTHORIZATION_CODE]&state=[The_CLIENT_STATE]&redirect_uri=[YOUR_REDIRECT_URI]
         String tokenURL = null;

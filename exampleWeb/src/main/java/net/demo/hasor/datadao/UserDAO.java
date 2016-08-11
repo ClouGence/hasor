@@ -16,6 +16,9 @@
 package net.demo.hasor.datadao;
 import net.demo.hasor.core.AbstractDao;
 import net.demo.hasor.domain.UserDO;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @version : 2016年08月08日
@@ -23,14 +26,76 @@ import net.demo.hasor.domain.UserDO;
  */
 public class UserDAO extends AbstractDao {
     //
-    public UserDO queryBySource(String sourceID) {
-        return null;
-    }
-    public long insertUser(UserDO userDO) {
-        return userDO.getUserID() + 1;
-    }
-    public long updateUser(long userID, UserDO userDO) {
-        return userID;
+    /** 根据用户ID查询用户信息 */
+    public UserDO queryById(long userID) {
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("userID", userID);
+            UserDO result = this.getSqlExecutor().selectOne("user_queryById", parameter);
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
     //
+    /** 新增用户 */
+    public int insertUser(UserDO userDO) {
+        try {
+            int result = this.getSqlExecutor().insert("user_insert", userDO);
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+    //
+    /** 登录更新 */
+    public int loginUpdate(long userID) {
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("userID", userID);
+            int result = this.getSqlExecutor().update("user_loginUpdate", parameter);
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+    //
+    /** 更新基础信息 */
+    public long updateUser(long userID, UserDO userDO) {
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("userID", userID);
+            parameter.put("userInfo", userDO);
+            int result = this.getSqlExecutor().update("user_updateInfo", parameter);
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+    //
+    //    /** 查询应用列表 */
+    //    public PageResult<AppDO> queryAppDOByForm(AppQueryForm pageInfo) {
+    //        PageResult<AppDO> resultDO = new PageResult<AppDO>(pageInfo);
+    //        try {
+    //            if (pageInfo.getPageSize() == 0) {
+    //                pageInfo.setPageSize(10);
+    //            }
+    //            Map<String, Object> parameter = new HashMap<String, Object>();
+    //            parameter.put("pageInfo", pageInfo);
+    //            List<AppDO> result = this.getSqlExecutor().selectList("queryAppDOByForm", parameter);
+    //            int resultCount = this.getSqlExecutor().selectOne("queryAppDOCountByForm", parameter);
+    //            resultDO.setTotalCount(resultCount);
+    //            resultDO.setResult(result);
+    //            resultDO.setSuccess(true);
+    //        } catch (Exception e) {
+    //            resultDO.setThrowable(e);
+    //            resultDO.setSuccess(false);
+    //            resultDO.addMessage(ErrorCode.DAO_SELECT.setParams(e.getMessage()));
+    //        }
+    //        return resultDO;
+    //    }
 }
