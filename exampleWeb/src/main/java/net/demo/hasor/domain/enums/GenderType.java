@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain.enums;
+import org.more.util.StringUtils;
 /**
  * 性别
  * @version : 2016年08月11日
@@ -42,6 +43,14 @@ public enum GenderType {
     public static GenderType formType(int type) {
         for (GenderType item : GenderType.values()) {
             if (item.getType() == type) {
+                return item;
+            }
+        }
+        return null;
+    }
+    public static GenderType formName(String name) {
+        for (GenderType item : GenderType.values()) {
+            if (StringUtils.equalsIgnoreCase(item.name(), name)) {
                 return item;
             }
         }

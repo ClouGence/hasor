@@ -15,7 +15,6 @@
  */
 package net.demo.hasor.datadao.convert;
 import net.demo.hasor.domain.enums.GenderType;
-import net.demo.hasor.utils.JsonUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.more.util.StringUtils;
@@ -26,8 +25,6 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 /**
  *
  * @version : 2016年08月11日
@@ -37,28 +34,15 @@ public class GenderTypeConvert extends BaseTypeHandler<GenderType> {
     private static Logger logger = LoggerFactory.getLogger(GenderTypeConvert.class);
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, GenderType parameter, JdbcType jdbcType) throws SQLException {
-        Map<String, String> jsonStatus = new HashMap<String, String>();
-        if (parameter != null) {
-            jsonStatus.put("code", String.valueOf(parameter.getType()));
-            jsonStatus.put("desc", parameter.getDesc());
-        }
-        String jsonData = JsonUtils.toJsonStringSingleLine(jsonStatus);
-        ps.setString(i, jsonData);
+        ps.setString(i, parameter.name());
     }
     @Override
     public GenderType getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        String jsonData = rs.getString(columnName);
-        if (StringUtils.isBlank(jsonData)) {
+        String genderName = rs.getString(columnName);
+        if (StringUtils.isBlank(genderName)) {
             return null;
         }
-        Map<String, Object> jsonStatus = JsonUtils.toMap(jsonData);
-        if (jsonStatus != null) {
-            Object code = jsonStatus.get("code");
-            if (code != null) {
-                return GenderType.formType(Integer.valueOf(code.toString()));
-            }
-        }
-        return null;
+        return GenderType.formName(genderName);
     }
     @Override
     public GenderType getNullableResult(ResultSet rs, int columnIndex) throws SQLException {

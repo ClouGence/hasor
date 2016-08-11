@@ -1,25 +1,76 @@
 ${rootData.put('pageTitle',' - 个人首页')}
-
--- 个人首页 --
-<br/>${userData.userID}         &nbsp;&nbsp;&nbsp;&nbsp; -- UserID
-<br/>${userData.account}        &nbsp;&nbsp;&nbsp;&nbsp; -- 帐号
-<br/>${userData.email}          &nbsp;&nbsp;&nbsp;&nbsp; -- email
-<br/>${userData.mobilePhone}    &nbsp;&nbsp;&nbsp;&nbsp; -- 移动电话
-<br/>${userData.password}       &nbsp;&nbsp;&nbsp;&nbsp; -- 密码(非明文)
-<br/>${userData.type.desc}      &nbsp;&nbsp;&nbsp;&nbsp; -- 帐号类型
-<br/>${userData.nick}           &nbsp;&nbsp;&nbsp;&nbsp; -- 昵称
-<br/>${userData.name}           &nbsp;&nbsp;&nbsp;&nbsp; -- 姓名
-<br/>${userData.gender.desc}    &nbsp;&nbsp;&nbsp;&nbsp; -- 用户性别 - 男 女
-<br/><img src="${userData.avatar}"/>         &nbsp;&nbsp;&nbsp;&nbsp; -- 头像
-<br/>${userData.birthday}       &nbsp;&nbsp;&nbsp;&nbsp; -- 生日
-<br/>${userData.present}        &nbsp;&nbsp;&nbsp;&nbsp; -- 介绍
-<br/>${userData.status.desc}    &nbsp;&nbsp;&nbsp;&nbsp; -- 状态
-<br/>${userData.loginCount}     &nbsp;&nbsp;&nbsp;&nbsp; -- 登录次数
-<br/>${userData.present}        &nbsp;&nbsp;&nbsp;&nbsp; -- 介绍
-<hr>
-
-private Date               firstLoginTime = null; // 首次登陆时间
-private Date               lastLoginTime  = null; // 最后一次登陆时间
-private Date               createTime     = null; // 创建时间
-private Date               modifyTime     = null; // 修噶改时间
-//
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">帐号信息</h3>
+    </div>
+    <div class="panel-body">
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">UserID</span>&nbsp;${userData.userID}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">帐号</span>&nbsp;${userData.account}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">密码</span>&nbsp;${userData.password}(密文)
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">Email</span>&nbsp;${userData.email}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">电话</span>&nbsp;${userData.mobilePhone}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">帐号类型</span>&nbsp;${userData.type.desc}
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">个人信息</h3>
+    </div>
+    <div class="panel-body">
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">昵称</span>&nbsp;${userData.nick}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">姓名</span>&nbsp;${userData.name}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">性别</span>&nbsp;${userData.gender.desc}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">生日</span>&nbsp;${userData.birthday}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">介绍</span>&nbsp;${userData.present}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">头像</span>&nbsp;<img src="${userData.avatar}"/>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">状态数据</h3>
+    </div>
+    <div class="panel-body">
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">状态</span>&nbsp;${userData.status.desc}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">登录次数</span>&nbsp;${userData.loginCount}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">首次登陆</span>&nbsp;${userData.firstLoginTime?string("yyyy-MM-dd HH:mm:ss")}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">最近登陆</span>&nbsp;${userData.lastLoginTime?string("yyyy-MM-dd HH:mm:ss")}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">创建时间</span>&nbsp;${userData.createTime?string("yyyy-MM-dd HH:mm:ss")}
+        </div>
+        <div class="well well-sm">
+            <span class="col-sm-1 label label-success">修改时间</span>&nbsp;${userData.modifyTime?string("yyyy-MM-dd HH:mm:ss")}
+        </div>
+    </div>
+</div>
