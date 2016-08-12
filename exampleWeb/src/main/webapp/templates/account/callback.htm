@@ -5,8 +5,19 @@ ${rootData.put('navIndex',7)}
     $(function () {
         doSubmit();
     });
-
     function doSubmit() {
+        // .超时提示.
+        window.setTimeout(function () {
+            $("#messageBody").html("好长时间了,我还在努力的认证中...");
+        }, 3500);
+        window.setTimeout(function () {
+            $("#messageBody").html("认证中...<br/>您可以换一个方式登录.如果您坚持,那么请稍等,我还在努力的尝试认证...");
+        }, 7000);
+        window.setTimeout(function () {
+            jumpTo("/error.htm?errorCode=" + result.errorCode, "抱歉的通知您,20秒过去了。如果还没登录成功,恐怕是不会成功了。");
+        }, 20000);
+        //
+        // .登录表单(后台执行登录)
         var formData = {
             type: "${loginForm.type}",
             provider: "${loginForm.provider}",
@@ -14,7 +25,6 @@ ${rootData.put('navIndex',7)}
             redirectURI: "${loginForm.redirectURI}",
             csrfToken: "${csrfToken}"
         };
-        //
         $.ajax({
             beforeSend: function (request) {
                 request.setRequestHeader("ajaxTo", "true");
@@ -39,7 +49,7 @@ ${rootData.put('navIndex',7)}
         $("#messageBody").html(message);
         window.setTimeout(function () {
             window.location = jumpToURL;
-        }, 500);
+        }, 1500);
     }
 </script>
-<div id="messageBody">跳转中...</div>
+<div id="messageBody">认证中...</div>
