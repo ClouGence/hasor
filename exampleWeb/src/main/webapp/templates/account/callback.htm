@@ -10,9 +10,9 @@ ${rootData.put('navIndex',7)}
         window.setTimeout(function () {
             $("#messageBody").html("好长时间了,我还在努力的认证中...");
             window.setTimeout(function () {
-                $("#messageBody").html("认证中...<br/>您可以换一个方式登录.如果您坚持,那么请稍等,我还在努力的尝试认证...");
+                $("#messageBody").html("认证中...<br/>建议您换成账号方式登录。如果您坚持,那么请稍等,我还在努力的尝试认证...");
                 window.setTimeout(function () {
-                    jumpTo("/error.htm?errorCode=" + result.errorCode, "抱歉的通知您,20秒过去了。如果还没登录成功,恐怕是不会成功了。");
+                    jumpTo("/account/login.htm", "抱歉的通知您,20秒过去了。恐怕恐怕是不会成功了,建议您通过帐号方式登录。");
                 }, 20000);
             }, 10000);
         }, 5000);
