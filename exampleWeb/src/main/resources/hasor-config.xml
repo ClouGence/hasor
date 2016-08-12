@@ -66,6 +66,7 @@
     <!--
         weibo 接入
         http://open.weibo.com/apps
+        http://open.weibo.com/wiki/index.php/API%E6%96%87%E6%A1%A3
     -->
     <weibo>
         <!-- 微博登录接入,域名所有权 -->
@@ -77,6 +78,4 @@
         <!-- 计划获取的权限 -->
         <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
     </weibo>
-
-
 </config>
