@@ -17,7 +17,6 @@ package net.demo.hasor.manager.oauth;
 import com.qq.connect.api.OpenID;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.Birthday;
-import com.qq.connect.utils.QQConnectConfig;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
@@ -37,7 +36,6 @@ import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.InjectSettings;
-import net.hasor.core.Settings;
 import net.hasor.core.Singleton;
 import org.more.bizcommon.ResultDO;
 import org.more.util.ExceptionUtils;
@@ -53,22 +51,22 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@Service("tencent")
-public class TencentOAuth extends AbstractOAuth {
-    public static final String PROVIDER_NAME = "Tencent";
+@Service("weibo")
+public class WeiboOAuth extends AbstractOAuth {
+    public static final String PROVIDER_NAME = "Weibo";
     public static final String URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
     //
     //QQ登录接入,授权key
-    @InjectSettings("tencent.admins")
+    @InjectSettings("weibo.admins")
     private             String adminsCode    = null;
     //应用ID
-    @InjectSettings("tencent.app_id")
+    @InjectSettings("weibo.app_id")
     private             String appID         = null;
     //应用Key
-    @InjectSettings("tencent.app_key")
+    @InjectSettings("weibo.app_key")
     private             String appKey        = null;
     //权限
-    @InjectSettings("tencent.oauth_scope")
+    @InjectSettings("weibo.oauth_scope")
     private             String scope         = null;
     //
     //
@@ -83,10 +81,10 @@ public class TencentOAuth extends AbstractOAuth {
     }
     //
     //
-    public TencentOAuth() {
+    public WeiboOAuth() {
         super();
     }
-    public TencentOAuth(ApiBinder apiBinder) {
+    public WeiboOAuth(ApiBinder apiBinder) {
         super(apiBinder);
     }
     @Override
@@ -95,16 +93,6 @@ public class TencentOAuth extends AbstractOAuth {
     }
     @Override
     public void configOAuth(ApiBinder apiBinder) {
-        Settings settings = apiBinder.getEnvironment().getSettings();
-        String tencentAppID = settings.getString("tencent.app_id", "");
-        QQConnectConfig.updateProperties("app_ID", tencentAppID);
-        String tencentAppKey = settings.getString("tencent.app_key", "");
-        QQConnectConfig.updateProperties("app_KEY", tencentAppKey);
-        String redirectURI = settings.getString("appExample.redirectURI", "127.0.0.1");
-        String tencentRedirectURI = redirectURI + "?" + TencentOAuth.URL_DATA;
-        QQConnectConfig.updateProperties("redirect_URI", tencentRedirectURI);
-        String oauth_scope = settings.getString("tencent.oauth_scope", "");
-        QQConnectConfig.updateProperties("scope", oauth_scope);
     }
     //
     /**首次登录的跳转地址(参数为回跳地址)*/
@@ -112,7 +100,7 @@ public class TencentOAuth extends AbstractOAuth {
     public String evalLoginURL(String redirectTo) {
         //https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=[YOUR_APPID]&redirect_uri=[YOUR_REDIRECT_URI]&scope=[THE_SCOPE]
         try {
-            String redirectURI = this.getRedirectURI() + "?" + TencentOAuth.URL_DATA + "&redirectURI=" + redirectTo;
+            String redirectURI = this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA + "&redirectURI=" + redirectTo;
             return "https://graph.qq.com/oauth2.0/authorize?response_type=code" //
                     + "&client_id=" + this.appID //
                     + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8") //
@@ -134,7 +122,7 @@ public class TencentOAuth extends AbstractOAuth {
                     + "&client_secret=" + this.appKey//
                     + "&code=" + authCode//
                     + "&state=" + (status == null ? "" : status) //
-                    + "&redirect_uri=" + URLEncoder.encode(this.getRedirectURI() + "?" + TencentOAuth.URL_DATA, "utf-8");
+                    + "&redirect_uri=" + URLEncoder.encode(this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA, "utf-8");
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0002").logException(e).toJson(), e);
             throw ExceptionUtils.toRuntimeException(e);
@@ -243,7 +231,7 @@ public class TencentOAuth extends AbstractOAuth {
         userDO.setNick(accessInfo.getNickName());
         userDO.setAvatar(accessInfo.getAvatarURL100());
         if (StringUtils.isBlank(userDO.getNick())) {
-            userDO.setNick(TencentOAuth.PROVIDER_NAME + "_" + System.currentTimeMillis());
+            userDO.setNick(WeiboOAuth.PROVIDER_NAME + "_" + System.currentTimeMillis());
         }
         //
         userDO.setUserSourceList(new ArrayList<UserSourceDO>());

@@ -42,8 +42,8 @@
         http://connect.qq.com/intro/login 
     -->
     <tencent>
-        <!-- QQ登录接入,授权key -->
-        <qqAdmins>${tencent.admins}</qqAdmins>
+        <!-- QQ登录接入,域名所有权 -->
+        <admins>${tencent.admins}</admins>
         <!-- 应用ID -->
         <app_id>${tencent.login.app_id}</app_id>
         <!-- 应用Key -->
@@ -63,4 +63,20 @@
         <!-- 计划获取的权限 -->
         <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
     </github>
+    <!--
+        weibo 接入
+        http://open.weibo.com/apps
+    -->
+    <weibo>
+        <!-- 微博登录接入,域名所有权 -->
+        <admins>${weibo.admins}</admins>
+        <!-- 应用ID -->
+        <app_id>${weibo.login.app_id}</app_id>
+        <!-- 应用Key -->
+        <app_key>${weibo.login.app_key}</app_key>
+        <!-- 计划获取的权限 -->
+        <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
+    </weibo>
+
+
 </config>
