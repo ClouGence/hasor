@@ -11,14 +11,11 @@
         <result property="type"             column="type"           typeHandler="net.demo.hasor.datadao.convert.UserTypeConvert"/>
 
         <result property="nick"             column="nick"/>
-        <result property="name"             column="name"/>
         <result property="gender"           column="gender"         typeHandler="net.demo.hasor.datadao.convert.GenderTypeConvert"/>
         <result property="avatar"           column="avatar"/>
-        <result property="birthday"         column="birthday"/>
 
         <result property="contactInfo"      column="contact_info"   typeHandler="net.demo.hasor.datadao.convert.UserContactInfoConvert"/>
         <result property="futures"          column="futures"        typeHandler="net.demo.hasor.datadao.convert.UserFuturesConvert"/>
-        <result property="present"          column="present"/>
         <result property="status"           column="status"         typeHandler="net.demo.hasor.datadao.convert.UserStatusConvert"/>
         <result property="loginCount"       column="login_count"/>
         
@@ -36,13 +33,10 @@
         password,
         type,
         nick,
-        name,
         gender,
         avatar,
-        birthday,
         contact_info,
         futures,
-        present,
         status,
         login_count,
         first_login_time,
@@ -60,13 +54,10 @@
             password,
             type,
             nick,
-            name,
             gender,
             avatar,
-            birthday,
             contact_info,
             futures,
-            present,
             status,
             login_count,
             create_time,
@@ -78,13 +69,10 @@
             #{password},
             #{type, typeHandler=net.demo.hasor.datadao.convert.UserTypeConvert},
             #{nick},
-            #{name},
             #{gender, typeHandler=net.demo.hasor.datadao.convert.GenderTypeConvert},
             #{avatar},
-            #{birthday},
             #{contactInfo, typeHandler=net.demo.hasor.datadao.convert.UserContactInfoConvert},
             #{futures, typeHandler=net.demo.hasor.datadao.convert.UserFuturesConvert},
-            #{present},
             #{status, typeHandler=net.demo.hasor.datadao.convert.UserStatusConvert},
             0,
             now(),
@@ -99,13 +87,10 @@
     <update id="user_updateInfo">
         update USER_INFO set
             nick          = #{userInfo.nick},
-            name          = #{userInfo.name},
             gender        = #{userInfo.gender, typeHandler=net.demo.hasor.datadao.convert.GenderTypeConvert},
             avatar        = #{userInfo.avatar},
-            birthday      = #{userInfo.birthday},
             contact_info  = #{userInfo.contactInfo, typeHandler=net.demo.hasor.datadao.convert.UserContactInfoConvert},
             futures       = #{userInfo.futures, typeHandler=net.demo.hasor.datadao.convert.UserFuturesConvert},
-            present       = #{userInfo.present},
             status        = #{userInfo.status, typeHandler=net.demo.hasor.datadao.convert.UserStatusConvert},
             type          = #{userInfo.type, typeHandler=net.demo.hasor.datadao.convert.UserTypeConvert},
             modify_time   = now()

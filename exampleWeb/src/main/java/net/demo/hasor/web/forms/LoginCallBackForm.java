@@ -14,27 +14,37 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.forms;
+import net.demo.hasor.web.valids.LoginCallBackFormValidation;
 import net.hasor.restful.api.ReqParam;
+import net.hasor.restful.api.ValidBy;
 /**
  * 登录表单回调form。
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
+@ValidBy(LoginCallBackFormValidation.class)
 public class LoginCallBackForm {
+    // .Hasor
     @ReqParam("type")
     private String type;
     @ReqParam("provider")
     private String provider;
-    //
+    @ReqParam("tokenString")
+    private String tokenString;
+    // - OAuth
     @ReqParam("state")
     private String state;
     @ReqParam("code")
     private String code;
-    //
     @ReqParam("redirectURI")
     private String redirectURI;
-    @ReqParam("tokenString")
-    private String tokenString;
+    // - Github more.
+    @ReqParam("error")
+    private String error;
+    @ReqParam("error_description")
+    private String errorDescription;
+    @ReqParam("error_uri")
+    private String errorURI;
     //
     public String getType() {
         return type;
@@ -65,5 +75,29 @@ public class LoginCallBackForm {
     }
     public void setRedirectURI(String redirectURI) {
         this.redirectURI = redirectURI;
+    }
+    public String getTokenString() {
+        return tokenString;
+    }
+    public void setTokenString(String tokenString) {
+        this.tokenString = tokenString;
+    }
+    public String getError() {
+        return error;
+    }
+    public void setError(String error) {
+        this.error = error;
+    }
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+    public void setErrorDescription(String errorDescription) {
+        this.errorDescription = errorDescription;
+    }
+    public String getErrorURI() {
+        return errorURI;
+    }
+    public void setErrorURI(String errorURI) {
+        this.errorURI = errorURI;
     }
 }

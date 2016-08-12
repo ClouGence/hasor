@@ -18,13 +18,14 @@ import net.demo.hasor.core.Action;
 import net.demo.hasor.domain.AppConstant;
 import net.demo.hasor.domain.UserDO;
 import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.manager.OAuthManager;
 import net.demo.hasor.manager.UserManager;
-import net.demo.hasor.manager.oauth.OAuthManager;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.web.forms.LoginCallBackForm;
 import net.hasor.core.Inject;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
+import net.hasor.restful.api.Valid;
 import org.more.bizcommon.Result;
 import org.more.util.StringUtils;
 
@@ -41,7 +42,7 @@ public class AccessToken extends Action {
     @Inject
     private UserManager  userManager;
     //
-    public void execute(@Params LoginCallBackForm loginForm) throws IOException {
+    public void execute(@Valid() @Params LoginCallBackForm loginForm) throws IOException {
         //
         String ajaxTo = this.getRequest().getHeader("ajaxTo");
         if (StringUtils.isBlank(ajaxTo) || !StringUtils.equalsIgnoreCase(ajaxTo, "true")) {
@@ -64,6 +65,15 @@ public class AccessToken extends Action {
                     .addLog("code", loginForm.getCode())//
                     .addString("login_error : get access_token failed, response is empty.").toJson());
             sendJsonError(ErrorCodes.LOGIN_OAUTH_CODE_EMPTY.getMsg(loginForm.getCode()));
+            return;
+        }
+        //
+        if (!this.isValid()) {
+            logger.error(LogUtils.create("ERROR_000_1005")//
+                    .addLog("provider", loginForm.getProvider())//
+                    .addLog("code", loginForm.getCode())//
+                    .addString("login_error : form valid failed.").toJson());
+            sendJsonError(ErrorCodes.LOGIN_OAUTH_VALID.getMsg(loginForm.getCode()));
             return;
         }
         //

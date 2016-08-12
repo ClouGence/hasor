@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain;
-import net.demo.hasor.domain.enums.UserStatus;
+import net.demo.hasor.domain.oauth.AccessInfo;
 
 import java.util.Date;
 /**

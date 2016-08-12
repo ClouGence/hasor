@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.domain.access;
-import net.demo.hasor.domain.AccessInfo;
+package net.demo.hasor.domain.oauth;
 import net.demo.hasor.manager.oauth.TencentOAuth;
 /**
  * 腾讯 Token 信息
- * @version : 2016年1月1日
+ * @version : 2016年08月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class TencentAccessInfo extends AccessInfo {
@@ -36,6 +35,7 @@ public class TencentAccessInfo extends AccessInfo {
     private String  avatarURL50      = "";
     private String  avatarURL100     = "";
     //
+    private String  blogHome         = null;   //Blog地址
     private String  cityCode         = null;   //用户所在的城市代码
     private String  countryCode      = null;   //用户所在的国家代码
     private String  provinceCode     = null;   //用户所在的省份代码
@@ -194,5 +194,11 @@ public class TencentAccessInfo extends AccessInfo {
     }
     public void setHomeTownCode(String homeTownCode) {
         this.homeTownCode = homeTownCode;
+    }
+    public String getBlogHome() {
+        return blogHome;
+    }
+    public void setBlogHome(String blogHome) {
+        this.blogHome = blogHome;
     }
 }

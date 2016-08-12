@@ -20,4 +20,26 @@ package net.demo.hasor.domain.futures;
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserFutures {
+    private String present  = null; // 介绍
+    private String name     = null; // 姓名
+    private String birthday = null; // 生日
+    //
+    public String getPresent() {
+        return present;
+    }
+    public void setPresent(String present) {
+        this.present = present;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getBirthday() {
+        return birthday;
+    }
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 }

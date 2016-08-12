@@ -35,11 +35,8 @@ public class UserDO {
     private String             password       = null; // 密码(非明文)
     private UserType           type           = null; // 帐号类型
     private String             nick           = null; // 昵称
-    private String             name           = null; // 姓名
-    private GenderType         gender         = null; // 用户性别 - 男 女
+    private GenderType         gender         = null; // 用户性别(男女)
     private String             avatar         = null; // 头像
-    private String             birthday       = null; // 生日
-    private String             present        = null; // 介绍
     private UserStatus         status         = null; // 状态
     private long               loginCount     = 0;    // 登录次数
     private Date               firstLoginTime = null; // 首次登陆时间
@@ -49,7 +46,7 @@ public class UserDO {
     //
     private List<UserSourceDO> userSourceList = null; //外部平台登陆信息
     private UserContactInfo    contactInfo    = null; //各种联系方式(json格式)
-    private UserFutures        futures        = null; // 扩展信息(json格式)
+    private UserFutures        futures        = null; //扩展信息(json格式)
     //
     //
     public long getUserID() {
@@ -88,12 +85,6 @@ public class UserDO {
     public void setNick(String nick) {
         this.nick = nick;
     }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
     public GenderType getGender() {
         return gender;
     }
@@ -105,12 +96,6 @@ public class UserDO {
     }
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-    public String getBirthday() {
-        return birthday;
-    }
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
     }
     public List<UserSourceDO> getUserSourceList() {
         return userSourceList;
@@ -171,11 +156,5 @@ public class UserDO {
     }
     public void setType(UserType type) {
         this.type = type;
-    }
-    public String getPresent() {
-        return present;
-    }
-    public void setPresent(String present) {
-        this.present = present;
     }
 }

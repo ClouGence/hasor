@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.domain;
+package net.demo.hasor.domain.oauth;
 /**
- * 腾讯 Token 信息
- * @version : 2016年1月1日
+ * OAuth Token 信息
+ * @version : 2016年08月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AccessInfo {

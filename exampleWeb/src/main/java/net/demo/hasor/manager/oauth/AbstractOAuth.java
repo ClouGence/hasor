@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
+import net.demo.hasor.domain.oauth.AccessInfo;
+import net.demo.hasor.domain.UserDO;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.InjectSettings;
+import org.more.bizcommon.ResultDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -26,7 +30,32 @@ public abstract class AbstractOAuth {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @InjectSettings("appExample.redirectURI")
     private String redirectURI;
+    //
+    public AbstractOAuth() {
+    }
+    public AbstractOAuth(ApiBinder apiBinder) {
+        //
+        apiBinder.bindType(this.getClass());
+        apiBinder.bindType(AbstractOAuth.class).nameWith(this.getProviderName()).to(this.getClass());
+        this.configOAuth(apiBinder);
+    }
+    //
     protected String getRedirectURI() {
         return this.redirectURI;
     }
+    //
+    /**配置*/
+    public abstract void configOAuth(ApiBinder apiBinder);
+
+    /**名字*/
+    public abstract String getProviderName();
+    //
+    /**登录的跳转地址(参数为回跳地址)*/
+    public abstract String evalLoginURL(String redirectTo);
+
+    /**获取用户信息*/
+    public abstract ResultDO<AccessInfo> evalToken(String status, String authCode);
+
+    /**类型转换*/
+    public abstract UserDO convertTo(AccessInfo result);
 }

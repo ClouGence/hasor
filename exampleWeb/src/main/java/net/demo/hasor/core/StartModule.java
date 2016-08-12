@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
+import net.demo.hasor.manager.oauth.GithubOAuth;
 import net.demo.hasor.manager.oauth.TencentOAuth;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
@@ -34,7 +35,7 @@ public class StartModule extends WebModule {
         apiBinder.filter("/*").through(0, new EncodingFilter());
         apiBinder.filter("/*").through(0, new JumpFilter());
         //
-        // .Tencent
-        TencentOAuth.configTencent(apiBinder);
+        new TencentOAuth(apiBinder);// .Tencent
+        new GithubOAuth(apiBinder); // .Github
     }
 }

@@ -21,11 +21,20 @@ import com.qq.connect.utils.QQConnectConfig;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
-import net.demo.hasor.domain.AccessInfo;
-import net.demo.hasor.domain.access.TencentAccessInfo;
+import net.demo.hasor.domain.UserDO;
+import net.demo.hasor.domain.UserSourceDO;
 import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.domain.enums.GenderType;
+import net.demo.hasor.domain.enums.UserStatus;
+import net.demo.hasor.domain.enums.UserType;
+import net.demo.hasor.domain.futures.ContactAddressInfo;
+import net.demo.hasor.domain.futures.UserContactInfo;
+import net.demo.hasor.domain.futures.UserFutures;
+import net.demo.hasor.domain.oauth.AccessInfo;
+import net.demo.hasor.domain.oauth.TencentAccessInfo;
 import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
+import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Settings;
@@ -36,6 +45,7 @@ import org.more.util.StringUtils;
 
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Map;
 /**
  * 封装腾讯登陆
@@ -72,7 +82,19 @@ public class TencentOAuth extends AbstractOAuth {
         return appKey;
     }
     //
-    public static void configTencent(ApiBinder apiBinder) {
+    //
+    public TencentOAuth() {
+        super();
+    }
+    public TencentOAuth(ApiBinder apiBinder) {
+        super(apiBinder);
+    }
+    @Override
+    public String getProviderName() {
+        return PROVIDER_NAME;
+    }
+    @Override
+    public void configOAuth(ApiBinder apiBinder) {
         Settings settings = apiBinder.getEnvironment().getSettings();
         String tencentAppID = settings.getString("tencent.app_id", "");
         QQConnectConfig.updateProperties("app_ID", tencentAppID);
@@ -83,11 +105,10 @@ public class TencentOAuth extends AbstractOAuth {
         QQConnectConfig.updateProperties("redirect_URI", tencentRedirectURI);
         String oauth_scope = settings.getString("tencent.oauth_scope", "");
         QQConnectConfig.updateProperties("scope", oauth_scope);
-        //
-        apiBinder.bindType(AbstractOAuth.class, TencentOAuth.class);
     }
     //
     /**首次登录的跳转地址(参数为回跳地址)*/
+    @Override
     public String evalLoginURL(String redirectTo) {
         //https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=[YOUR_APPID]&redirect_uri=[YOUR_REDIRECT_URI]&scope=[THE_SCOPE]
         try {
@@ -103,6 +124,7 @@ public class TencentOAuth extends AbstractOAuth {
     }
     //
     /**拿到远程Code之后通过code获取 AccessInfo 认证信息对象。*/
+    @Override
     public ResultDO<AccessInfo> evalToken(String status, String authCode) {
         //https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=[YOUR_APP_ID]&client_secret=[YOUR_APP_Key]&code=[The_AUTHORIZATION_CODE]&state=[The_CLIENT_STATE]&redirect_uri=[YOUR_REDIRECT_URI]
         String tokenURL = null;
@@ -197,6 +219,7 @@ public class TencentOAuth extends AbstractOAuth {
                     String dayStr = new DecimalFormat("00").format(birthday.getDay());
                     info.setBirthday(yearStr + "-" + monthStr + "-" + dayStr);
                 }
+                info.setBlogHome(weiboInfoBean.getHomePage());
             }
             //
             logger.error("tencent_access_token : success -> token : {} , sourceID : {} , nick : {}.", //
@@ -211,5 +234,49 @@ public class TencentOAuth extends AbstractOAuth {
             return new ResultDO<AccessInfo>(e).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_ERROR.getMsg("OAuth 获取数据失败。"));
         }
         //
+    }
+    @Override
+    public UserDO convertTo(AccessInfo result) {
+        TencentAccessInfo accessInfo = (TencentAccessInfo) result;
+        UserDO userDO = new UserDO();
+        userDO.setPassword("-");
+        userDO.setNick(accessInfo.getNickName());
+        userDO.setAvatar(accessInfo.getAvatarURL100());
+        if (StringUtils.isBlank(userDO.getNick())) {
+            userDO.setNick(TencentOAuth.PROVIDER_NAME + "_" + System.currentTimeMillis());
+        }
+        //
+        userDO.setUserSourceList(new ArrayList<UserSourceDO>());
+        userDO.getUserSourceList().add(OAuthUtils.convertAccessInfo(result));
+        if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "男")) {
+            userDO.setGender(GenderType.Male);
+        } else if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "女")) {
+            userDO.setGender(GenderType.Female);
+        } else {
+            userDO.setGender(GenderType.None);
+        }
+        userDO.setStatus(UserStatus.Normal);
+        userDO.setType(UserType.Temporary);
+        userDO.setEmail(accessInfo.getEmail());
+        //
+        userDO.setFutures(new UserFutures());
+        userDO.getFutures().setBirthday(accessInfo.getBirthday());
+        userDO.getFutures().setName(accessInfo.getWeiboName());
+        //
+        userDO.setContactInfo(new UserContactInfo());
+        ContactAddressInfo userAddressInfo = new ContactAddressInfo();
+        userAddressInfo.setCityCode(accessInfo.getCityCode());
+        userAddressInfo.setCountryCode(accessInfo.getCountryCode());
+        userAddressInfo.setProvinceCode(accessInfo.getProvinceCode());
+        userAddressInfo.setTownCode("");
+        userDO.getContactInfo().setUserAddress(userAddressInfo);
+        ContactAddressInfo homeAddressInfo = new ContactAddressInfo();
+        homeAddressInfo.setCityCode(accessInfo.getHomeCityCode());
+        homeAddressInfo.setCountryCode(accessInfo.getHomeCountryCode());
+        homeAddressInfo.setProvinceCode(accessInfo.getHomeProvinceCode());
+        homeAddressInfo.setTownCode(accessInfo.getHomeTownCode());
+        userDO.getContactInfo().setHomeAddress(homeAddressInfo);
+        userDO.getContactInfo().setBlogHome(accessInfo.getBlogHome());
+        return userDO;
     }
 }

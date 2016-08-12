@@ -28,8 +28,17 @@
         <redirectURI>http://${app.host}/account/callback.do</redirectURI>
     </appExample>
 
+    <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->
+    <jdbcSettings>
+        <jdbcDriver>com.mysql.jdbc.Driver</jdbcDriver>
+        <jdbcURL>jdbc:mysql://${jdbc.database_host}:3306/${jdbc.database_name}?useUnicode=true&amp;characterEncoding=utf-8</jdbcURL>
+        <userName>${jdbc.user}</userName>
+        <userPassword>${jdbc.password}</userPassword>
+    </jdbcSettings>
+
+    <!-- ========================================================= -->
     <!--
-        腾讯产品接入(大部分配置引用外部 env.config 配置文件)
+        腾讯产品接入
         http://connect.qq.com/intro/login 
     -->
     <tencent>
@@ -41,14 +50,17 @@
         <app_key>${tencent.login.app_key}</app_key>
         <!-- 计划获取的权限 -->
         <oauth_scope>get_user_info,get_info,add_t,add_pic_t,get_repost_list,get_other_info,get_fanslist,get_idollist,add_idol</oauth_scope>
-
     </tencent>
-
-    <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->
-    <jdbcSettings>
-        <jdbcDriver>com.mysql.jdbc.Driver</jdbcDriver>
-        <jdbcURL>jdbc:mysql://${jdbc.database_host}:3306/${jdbc.database_name}?useUnicode=true&amp;characterEncoding=utf-8</jdbcURL>
-        <userName>${jdbc.user}</userName>
-        <userPassword>${jdbc.password}</userPassword>
-    </jdbcSettings>
+    <!--
+        GitHub 接入
+        https://developer.github.com/v3/oauth/
+    -->
+    <github>
+        <!-- 应用ID -->
+        <app_id>${github.login.app_id}</app_id>
+        <!-- 应用Key -->
+        <app_key>${github.login.app_key}</app_key>
+        <!-- 计划获取的权限 -->
+        <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
+    </github>
 </config>

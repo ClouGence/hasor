@@ -7,11 +7,8 @@ create table `USER_INFO` (
 	`type`			        INT 	        NOT NULL					      COMMENT '状态',
 	
 	`nick`			        VARCHAR(100)	NULL					          COMMENT '昵称',
-	`name`			        VARCHAR(100)  NULL					          COMMENT '姓名',
 	`gender`			      VARCHAR(10)	  NULL					          COMMENT '用户性别 - 男 女',
 	`avatar`	          VARCHAR(200)	NULL		                COMMENT '头像',
-	`birthday`	        VARCHAR(20)	  NULL		                COMMENT '生日',
-	`present`			      VARCHAR(200)	NULL					          COMMENT '介绍',
 	`status`			      INT	          NOT NULL					      COMMENT '状态',
 	`login_count`			  BIGINT    	  NOT NULL					      COMMENT '登录次数',
 	

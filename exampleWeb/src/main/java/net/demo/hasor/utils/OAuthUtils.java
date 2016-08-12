@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.demo.hasor;
-import net.demo.hasor.core.DataSourceModule;
-import net.demo.hasor.core.FreemarkerRender;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
-import net.hasor.restful.RenderEngine;
+package net.demo.hasor.utils;
+import net.demo.hasor.domain.oauth.AccessInfo;
+import net.demo.hasor.domain.UserSourceDO;
 /**
- * 单元测试
- * @version : 2015年12月25日
+ * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class UnitTestModule implements Module {
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //
-        apiBinder.installModule(new DataSourceModule());
-        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
-        //
-        // .Tencent
+public class OAuthUtils {
+    public static UserSourceDO convertAccessInfo(AccessInfo accessInfo) {
+        UserSourceDO sourceDO = new UserSourceDO();
+        sourceDO.setProvider(accessInfo.getProvider());
+        sourceDO.setUniqueID(accessInfo.getExternalUserID());
+        sourceDO.setAccessInfo(accessInfo);
+        sourceDO.setStatus(true);
+        return sourceDO;
     }
 }

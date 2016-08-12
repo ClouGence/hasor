@@ -15,15 +15,16 @@
  */
 package net.demo.hasor.domain.futures;
 /**
- *
+ * 各种联系渠道
  * @version : 2016年08月08日
  * @author 赵永春(zyc@hasor.net)
  */
 public class UserContactInfo {
     private String             mobilePhone   = null; //电话
     private String             tencentNumber = null; //QQ号码
-    private ContactAddressInfo userAddress   = null;
-    private ContactAddressInfo homeAddress   = null;
+    private ContactAddressInfo userAddress   = null; //
+    private ContactAddressInfo homeAddress   = null; //
+    private String             blogHome      = null; //
     //
     public String getMobilePhone() {
         return mobilePhone;
@@ -48,5 +49,11 @@ public class UserContactInfo {
     }
     public void setHomeAddress(ContactAddressInfo homeAddress) {
         this.homeAddress = homeAddress;
+    }
+    public String getBlogHome() {
+        return blogHome;
+    }
+    public void setBlogHome(String blogHome) {
+        this.blogHome = blogHome;
     }
 }
