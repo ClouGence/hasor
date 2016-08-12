@@ -110,7 +110,6 @@ public class TencentOAuth extends AbstractOAuth {
     /**首次登录的跳转地址(参数为回跳地址)*/
     @Override
     public String evalLoginURL(String redirectTo) {
-        //https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=[YOUR_APPID]&redirect_uri=[YOUR_REDIRECT_URI]&scope=[THE_SCOPE]
         try {
             String redirectURI = this.getRedirectURI() + "?" + TencentOAuth.URL_DATA + "&redirectURI=" + redirectTo;
             return "https://graph.qq.com/oauth2.0/authorize?response_type=code" //
@@ -126,7 +125,6 @@ public class TencentOAuth extends AbstractOAuth {
     /**拿到远程Code之后通过code获取 AccessInfo 认证信息对象。*/
     @Override
     public ResultDO<AccessInfo> evalToken(String status, String authCode) {
-        //https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=[YOUR_APP_ID]&client_secret=[YOUR_APP_Key]&code=[The_AUTHORIZATION_CODE]&state=[The_CLIENT_STATE]&redirect_uri=[YOUR_REDIRECT_URI]
         String tokenURL = null;
         try {
             tokenURL = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code" //

@@ -76,6 +76,6 @@
         <!-- 应用Key -->
         <app_key>${weibo.login.app_key}</app_key>
         <!-- 计划获取的权限 -->
-        <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
+        <oauth_scope>email,friendships_groups_read,statuses_to_me_read,follow_app_official_microblog</oauth_scope>
     </weibo>
 </config>

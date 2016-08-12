@@ -27,15 +27,16 @@ public enum ErrorCodes {
     LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY(2, "LOGIN_OAUTH_ACCESS_TOKEN_EMPTY"),
     LOGIN_OAUTH_ACCESS_TOKEN_ERROR(3, "LOGIN_OAUTH_ACCESS_TOKEN_ERROR"),
     LOGIN_OAUTH_ACCESS_FAILED(4, "认证失败:"),
-    LOGIN_OAUTH_VALID(4, "回调参数验证失败:$s"),
-    LOGIN_OAUTH_ACCESS_ERROR(5, "登陆遇到错误,请重试。"),
+    LOGIN_OAUTH_VALID(5, "回调参数验证失败:$s"),
+    LOGIN_OAUTH_ACCESS_ERROR(6, "登陆遇到错误,请重试。"),
+    LOGIN_OAUTH_NOT_SUPPORT(7, "登陆遇到错误,请重试。"),
     //
-    LOGIN_USER_SAVE(6, "用户数据保存失败。"),
+    LOGIN_USER_SAVE(8, "用户数据保存失败。"),
     //
-    RESULT_NULL(7, "返回结果为空,或者是数据查询失败。"),
-    SECURITY_CSRF(8, "SECURITY_CSRF"),
-    BAD_REQUEST(9, ""),
-    BAD_UNKNOWN(10, "未知类型异常: %s");
+    RESULT_NULL(9, "返回结果为空,或者是数据查询失败。"),
+    SECURITY_CSRF(10, "SECURITY_CSRF"),
+    BAD_REQUEST(11, ""),
+    BAD_UNKNOWN(12, "未知类型异常: %s");
     //
     //
     private MessageTemplate temp = null;

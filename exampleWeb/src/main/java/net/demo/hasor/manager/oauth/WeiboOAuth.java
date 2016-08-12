@@ -46,7 +46,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 /**
- * 封装腾讯登陆
+ * 封装新浪微博登陆
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -98,13 +98,11 @@ public class WeiboOAuth extends AbstractOAuth {
     /**首次登录的跳转地址(参数为回跳地址)*/
     @Override
     public String evalLoginURL(String redirectTo) {
-        //https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=[YOUR_APPID]&redirect_uri=[YOUR_REDIRECT_URI]&scope=[THE_SCOPE]
         try {
             String redirectURI = this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA + "&redirectURI=" + redirectTo;
-            return "https://graph.qq.com/oauth2.0/authorize?response_type=code" //
+            return "https://api.weibo.com/oauth2/authorize?response_type=code" //
                     + "&client_id=" + this.appID //
-                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8") //
-                    + "&scope=" + this.scope;//
+                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8");
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0002").logException(e).toJson(), e);
             throw ExceptionUtils.toRuntimeException(e);
@@ -114,14 +112,12 @@ public class WeiboOAuth extends AbstractOAuth {
     /**拿到远程Code之后通过code获取 AccessInfo 认证信息对象。*/
     @Override
     public ResultDO<AccessInfo> evalToken(String status, String authCode) {
-        //https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=[YOUR_APP_ID]&client_secret=[YOUR_APP_Key]&code=[The_AUTHORIZATION_CODE]&state=[The_CLIENT_STATE]&redirect_uri=[YOUR_REDIRECT_URI]
         String tokenURL = null;
         try {
-            tokenURL = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code" //
+            tokenURL = "https://api.weibo.com/oauth2/access_token?grant_type=authorization_code" //
                     + "&client_id=" + this.appID //
                     + "&client_secret=" + this.appKey//
                     + "&code=" + authCode//
-                    + "&state=" + (status == null ? "" : status) //
                     + "&redirect_uri=" + URLEncoder.encode(this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA, "utf-8");
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0002").logException(e).toJson(), e);
@@ -130,14 +126,14 @@ public class WeiboOAuth extends AbstractOAuth {
         //
         Response response = null;
         try {
-            logger.error("tencent_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
+            logger.error("weibo_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
             response = new HttpClient().get(tokenURL);
             String data = response.getResponseAsString();
             if (StringUtils.isBlank(data)) {
                 //结果为空
                 logger.error(LogUtils.create("ERROR_000_1105")//
                         .addLog("authCode", authCode)//
-                        .addString("tencent_access_token : response is empty.").toJson());
+                        .addString("weibo_access_token : response is empty.").toJson());
                 return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY.getMsg());
             }
             if (data.startsWith("callback(")) {
