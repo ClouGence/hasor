@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
-import com.qq.connect.api.OpenID;
-import com.qq.connect.javabeans.AccessToken;
-import com.qq.connect.javabeans.Birthday;
-import com.qq.connect.utils.http.HttpClient;
+import com.qq.connect.utils.http.HttpClientUtil;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.UserDO;
@@ -31,10 +28,12 @@ import net.demo.hasor.domain.futures.UserContactInfo;
 import net.demo.hasor.domain.futures.UserFutures;
 import net.demo.hasor.domain.oauth.AccessInfo;
 import net.demo.hasor.domain.oauth.TencentAccessInfo;
+import net.demo.hasor.domain.oauth.WeiboAccessInfo;
 import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
 import org.more.bizcommon.ResultDO;
@@ -42,7 +41,6 @@ import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 /**
@@ -53,21 +51,23 @@ import java.util.Map;
 @Singleton
 @Service("weibo")
 public class WeiboOAuth extends AbstractOAuth {
-    public static final String PROVIDER_NAME = "Weibo";
-    public static final String URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
+    public static final String         PROVIDER_NAME = "Weibo";
+    public static final String         URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
     //
+    @Inject
+    private             HttpClientUtil httpClient    = null;
     //QQ登录接入,授权key
     @InjectSettings("weibo.admins")
-    private             String adminsCode    = null;
+    private             String         adminsCode    = null;
     //应用ID
     @InjectSettings("weibo.app_id")
-    private             String appID         = null;
+    private             String         appID         = null;
     //应用Key
     @InjectSettings("weibo.app_key")
-    private             String appKey        = null;
+    private             String         appKey        = null;
     //权限
     @InjectSettings("weibo.oauth_scope")
-    private             String scope         = null;
+    private             String         scope         = null;
     //
     //
     public String getAdmins() {
@@ -102,7 +102,8 @@ public class WeiboOAuth extends AbstractOAuth {
             String redirectURI = this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA + "&redirectURI=" + redirectTo;
             return "https://api.weibo.com/oauth2/authorize?response_type=code" //
                     + "&client_id=" + this.appID //
-                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8");
+                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8")//
+                    + "&scope=" + this.scope;
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0002").logException(e).toJson(), e);
             throw ExceptionUtils.toRuntimeException(e);
@@ -124,10 +125,10 @@ public class WeiboOAuth extends AbstractOAuth {
             throw ExceptionUtils.toRuntimeException(e);
         }
         //
-        Response response = null;
+        Map<String, Object> dataMaps = null;
         try {
             logger.error("weibo_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
-            response = new HttpClient().get(tokenURL);
+            Response response = this.httpClient.post(tokenURL);
             String data = response.getResponseAsString();
             if (StringUtils.isBlank(data)) {
                 //结果为空
@@ -136,20 +137,8 @@ public class WeiboOAuth extends AbstractOAuth {
                         .addString("weibo_access_token : response is empty.").toJson());
                 return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY.getMsg());
             }
-            if (data.startsWith("callback(")) {
-                //返回结果失败
-                String jsonData = data.substring(9, data.length() - 3);//callback( {"error":100020,"error_description":"code is reused error"} );
-                Map<String, Object> errorInfo = JsonUtils.toMap(jsonData);
-                String errorCoe = errorInfo.get("error").toString();
-                String errorDesc = errorInfo.get("error_description").toString();
-                //
-                logger.error(LogUtils.create("ERROR_000_1106")//
-                        .addLog("authCode", authCode)//
-                        .addLog("errorCoe", errorCoe)//
-                        .addLog("errorDesc", errorDesc)//
-                        .addString("tencent_access_token : response failed.").toJson());
-                return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_ERROR.getMsg(errorCoe, errorDesc));
-            }
+            //
+            dataMaps = JsonUtils.toMap(response.getResponseAsString());
         } catch (Exception e) {
             //
             logger.error(LogUtils.create("ERROR_999_0002")//
@@ -159,55 +148,48 @@ public class WeiboOAuth extends AbstractOAuth {
             return new ResultDO<AccessInfo>(e).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_ERROR.getMsg("OAuth 远程认证失败。"));
         }
         //
+        if (dataMaps == null || dataMaps.containsKey("error")) {
+            //返回结果失败
+            String errorKey = dataMaps.get("error").toString();
+            String errorCode = dataMaps.get("error_code").toString();
+            String errorDesc = dataMaps.get("error_description").toString();
+            //
+            logger.error(LogUtils.create("ERROR_000_1106")//
+                    .addLog("authCode", authCode)//
+                    .addLog("errorKey", errorKey)//
+                    .addLog("errorCoe", errorCode)//
+                    .addLog("errorDesc", errorDesc)//
+                    .addString("tencent_access_token : response failed.").toJson());
+            return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_ERROR.getMsg(errorKey, errorDesc));
+        }
+        //
         try {
-            AccessToken token = new AccessToken(response);
-            OpenID openIDObj = new OpenID(token.getAccessToken());
-            String openID = openIDObj.getUserOpenID();
-            com.qq.connect.api.qzone.UserInfo qzoneUserInfo = new com.qq.connect.api.qzone.UserInfo(token.getAccessToken(), openID);
-            com.qq.connect.javabeans.qzone.UserInfoBean qzoneInfoBean = qzoneUserInfo.getUserInfo();
+            String accessToken = dataMaps.get("access_token").toString();
+            String userID = dataMaps.get("uid").toString();
+            Response response = this.httpClient.post("http://api.t.sina.com.cn/users/show.json" //
+                    + "?source=" + this.getAppKey()//
+                    + "?user_id=" + userID//
+                    + "&access_token=" + accessToken);
+            String data = response.getResponseAsString();
             //
-            // .QQ空间信息
-            TencentAccessInfo info = new TencentAccessInfo();
-            info.setAccessToken(token.getAccessToken());
-            info.setExpiresTime(token.getExpireIn());
-            info.setOpenID(openID);
-            info.setOriInfo(response.getResponseAsString());
-            info.setGender(qzoneInfoBean.getGender());
-            info.setNickName(qzoneInfoBean.getNickname());
-            info.setLevel(qzoneInfoBean.getLevel());
-            info.setVip(qzoneInfoBean.isVip());
-            info.setYellowYearVip(qzoneInfoBean.isYellowYearVip());
-            info.setAvatarURL30(qzoneInfoBean.getAvatar().getAvatarURL30());
-            info.setAvatarURL50(qzoneInfoBean.getAvatar().getAvatarURL50());
-            info.setAvatarURL100(qzoneInfoBean.getAvatar().getAvatarURL100());
-            //
-            // .腾讯微博
-            com.qq.connect.api.weibo.UserInfo weiboUserInfo = new com.qq.connect.api.weibo.UserInfo(token.getAccessToken(), openID);
-            com.qq.connect.javabeans.weibo.UserInfoBean weiboInfoBean = weiboUserInfo.getUserInfo();
-            if (weiboInfoBean.getRet() == 0) {
-                //
-                info.setCityCode(weiboInfoBean.getCityCode());
-                info.setCountryCode(weiboInfoBean.getCountryCode());
-                info.setProvinceCode(weiboInfoBean.getProvinceCode());
-                info.setHomeCityCode(weiboInfoBean.getHomeCityCode());
-                info.setHomeCountryCode(weiboInfoBean.getHomeCountryCode());
-                info.setHomeProvinceCode(weiboInfoBean.getHomeProvinceCode());
-                info.setHomeTownCode(weiboInfoBean.getHomeTownCode());
-                info.setEmail(weiboInfoBean.getEmail());
-                info.setWeiboLevel(weiboInfoBean.getLevel());
-                info.setWeiboName(weiboInfoBean.getName());
-                Birthday birthday = weiboInfoBean.getBirthday();
-                if (birthday != null) {
-                    String yearStr = new DecimalFormat("0000").format(birthday.getYear());
-                    String monthStr = new DecimalFormat("00").format(birthday.getMonth());
-                    String dayStr = new DecimalFormat("00").format(birthday.getDay());
-                    info.setBirthday(yearStr + "-" + monthStr + "-" + dayStr);
-                }
-                info.setBlogHome(weiboInfoBean.getHomePage());
+            if (StringUtils.isBlank(data)) {
+                //结果为空
+                logger.error(LogUtils.create("ERROR_000_1105")//
+                        .addLog("authCode", authCode)//
+                        .addString("weibo_access_token : response is empty.").toJson());
+                return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY.getMsg());
             }
             //
+            dataMaps = JsonUtils.toMap(response.getResponseAsString());
+            WeiboAccessInfo info = new WeiboAccessInfo();
+            info.setAccessToken(dataMaps.get("access_token").toString());
+            info.setExpires_in(Long.parseLong(dataMaps.get("expires_in").toString()));
+            info.setRemind_in(dataMaps.get("remind_in").toString());
+            info.setUid(dataMaps.get("uid").toString());
+            //
+            //
             logger.error("tencent_access_token : success -> token : {} , sourceID : {} , nick : {}.", //
-                    info.getAccessToken(), info.getSource(), info.getNickName());
+                    info.getAccessToken(), info.getSource(), ""/*info.getNickName()*/);
             return new ResultDO<AccessInfo>(true).setResult(info);
         } catch (Exception e) {
             //
@@ -263,4 +245,5 @@ public class WeiboOAuth extends AbstractOAuth {
         userDO.getContactInfo().setBlogHome(accessInfo.getBlogHome());
         return userDO;
     }
+    //
 }

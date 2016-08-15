@@ -18,7 +18,7 @@ import com.qq.connect.api.OpenID;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.Birthday;
 import com.qq.connect.utils.QQConnectConfig;
-import com.qq.connect.utils.http.HttpClient;
+import com.qq.connect.utils.http.HttpClientUtil;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.UserDO;
@@ -35,10 +35,7 @@ import net.demo.hasor.domain.oauth.TencentAccessInfo;
 import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.utils.OAuthUtils;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.InjectSettings;
-import net.hasor.core.Settings;
-import net.hasor.core.Singleton;
+import net.hasor.core.*;
 import org.more.bizcommon.ResultDO;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -55,21 +52,23 @@ import java.util.Map;
 @Singleton
 @Service("tencent")
 public class TencentOAuth extends AbstractOAuth {
-    public static final String PROVIDER_NAME = "Tencent";
-    public static final String URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
+    public static final String         PROVIDER_NAME = "Tencent";
+    public static final String         URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
     //
+    @Inject
+    private             HttpClientUtil httpClient    = null;
     //QQ登录接入,授权key
     @InjectSettings("tencent.admins")
-    private             String adminsCode    = null;
+    private             String         adminsCode    = null;
     //应用ID
     @InjectSettings("tencent.app_id")
-    private             String appID         = null;
+    private             String         appID         = null;
     //应用Key
     @InjectSettings("tencent.app_key")
-    private             String appKey        = null;
+    private             String         appKey        = null;
     //权限
     @InjectSettings("tencent.oauth_scope")
-    private             String scope         = null;
+    private             String         scope         = null;
     //
     //
     public String getAdmins() {
@@ -141,7 +140,7 @@ public class TencentOAuth extends AbstractOAuth {
         Response response = null;
         try {
             logger.error("tencent_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
-            response = new HttpClient().get(tokenURL);
+            response = this.httpClient.get(tokenURL);
             String data = response.getResponseAsString();
             if (StringUtils.isBlank(data)) {
                 //结果为空
