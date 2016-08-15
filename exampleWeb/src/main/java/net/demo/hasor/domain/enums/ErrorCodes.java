@@ -35,7 +35,7 @@ public enum ErrorCodes {
     //
     RESULT_NULL(9, "返回结果为空,或者是数据查询失败。"),
     SECURITY_CSRF(10, "SECURITY_CSRF"),
-    BAD_REQUEST(11, ""),
+    BAD_REQUEST(11, "错误的请求链接。"),
     BAD_UNKNOWN(12, "未知类型异常: %s");
     //
     //

@@ -15,9 +15,12 @@
  */
 package net.demo.hasor.web.actions.account;
 import net.demo.hasor.core.Action;
+import net.demo.hasor.domain.enums.ErrorCodes;
+import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.web.forms.LoginCallBackForm;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
+import net.hasor.restful.api.Valid;
 /**
  * OAuth : 登录回调地址
  * @version : 2016年1月1日
@@ -25,7 +28,16 @@ import net.hasor.restful.api.Params;
  */
 @MappingTo("/account/callback.do")
 public class Callback extends Action {
-    public void execute(@Params LoginCallBackForm loginForm) {
+    public void execute(@Valid("Callback") @Params LoginCallBackForm loginForm) {
+        //
+        if (!this.isValid()) {
+            logger.error(LogUtils.create("ERROR_000_1006")//
+                    .addLog("provider", loginForm.getProvider())//
+                    .addLog("code", loginForm.getCode())//
+                    .addString("login_error : form valid failed.").toJson());
+            sendError(ErrorCodes.BAD_REQUEST.getMsg(loginForm.getCode()));
+            return;
+        }
         //
         // .跳转回来立刻展示一个登录中的页面,由这个承接页展现"登陆中...", 然后异步请求后台进行登陆。
         this.putData("loginForm", loginForm);

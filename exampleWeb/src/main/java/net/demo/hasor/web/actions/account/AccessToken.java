@@ -42,7 +42,7 @@ public class AccessToken extends Action {
     @Inject
     private UserManager  userManager;
     //
-    public void execute(@Valid() @Params LoginCallBackForm loginForm) throws IOException {
+    public void execute(@Valid("AccessToken") @Params LoginCallBackForm loginForm) throws IOException {
         //
         String ajaxTo = this.getRequest().getHeader("ajaxTo");
         if (StringUtils.isBlank(ajaxTo) || !StringUtils.equalsIgnoreCase(ajaxTo, "true")) {

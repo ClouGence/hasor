@@ -26,11 +26,21 @@ import org.more.util.StringUtils;
 public class LoginCallBackFormValidation implements Validation<LoginCallBackForm> {
     @Override
     public void doValidation(String validType, LoginCallBackForm dataForm, ValidErrors errors) {
+        if (StringUtils.equalsIgnoreCase(validType, "AccessToken")) {
+            doValidAccessToken(dataForm, errors);
+            return;
+        }
+        if (StringUtils.equalsIgnoreCase(validType, "Callback")) {
+            doValidCallback(dataForm, errors);
+            return;
+        }
+    }
+    private void doValidAccessToken(LoginCallBackForm dataForm, ValidErrors errors) {
         String provider = dataForm.getProvider();
+        //
+        // GitHub 官方的回调包含异常情况
+        //   -- see https://developer.github.com/v3/oauth/
         if (StringUtils.equalsIgnoreCase(provider, "Github")) {
-            //
-            // GitHub 官方的回调包含异常情况
-            //   -- see https://developer.github.com/v3/oauth/
             if (StringUtils.isNotBlank(dataForm.getError())) {
                 errors.addError("github_ori", dataForm.getErrorDescription());
                 if (StringUtils.equalsIgnoreCase("application_suspended", dataForm.getError())) {
@@ -43,9 +53,16 @@ public class LoginCallBackFormValidation implements Validation<LoginCallBackForm
                     errors.addError("github", "用户选择了拒绝。");
                 }
             }
-            //
-        } else if (StringUtils.equalsIgnoreCase("SignUp", validType)) {
-            //
+            return;
         }
+        //
+        // Tencent 腾讯
+        if (StringUtils.equalsIgnoreCase(provider, "Tencent")) {
+            // TODO 如果有在这里进行验证。
+        }
+    }
+    //
+    private void doValidCallback(LoginCallBackForm dataForm, ValidErrors errors) {
+        return;
     }
 }
