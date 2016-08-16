@@ -63,6 +63,7 @@ public class LoginCallBackFormValidation implements Validation<LoginCallBackForm
     }
     //
     private void doValidCallback(LoginCallBackForm dataForm, ValidErrors errors) {
+        //dataForm.setCode(StringEscapeUtils.escapeHtml(dataForm.getCode()));
         return;
     }
 }

@@ -19,10 +19,10 @@ ${rootData.put('navIndex',7)}
         //
         // .登录表单(后台执行登录)
         var formData = {
-            type: "${loginForm.type}",
-            provider: "${loginForm.provider}",
-            code: "${loginForm.code}",
-            redirectURI: "${loginForm.redirectURI}",
+            type: "${loginForm.type?html}",
+            provider: "${loginForm.provider?html}",
+            code: "${loginForm.code?html}",
+            redirectURI: "${loginForm.redirectURI?html}",
             csrfToken: "${csrfToken}"
         };
         $.ajax({

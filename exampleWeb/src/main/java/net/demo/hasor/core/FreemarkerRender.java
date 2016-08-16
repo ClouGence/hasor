@@ -22,6 +22,7 @@ import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
+import org.more.util.StringEscapeUtils;
 import org.more.util.StringUtils;
 
 import java.io.File;
@@ -40,16 +41,19 @@ public class FreemarkerRender implements RenderEngine {
     @Override
     public void initEngine(WebAppContext appContext) throws Throwable {
         String realPath = appContext.getEnvironment().getServletContext().getRealPath("/");
-        //
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
         this.configuration = new Configuration(Configuration.VERSION_2_3_22);
         this.configuration.setTemplateLoader(templateLoader);
-        //
         this.configuration.setDefaultEncoding("utf-8");//默认页面编码UTF-8
         this.configuration.setOutputEncoding("utf-8");//输出编码格式UTF-8
         this.configuration.setLocalizedLookup(false);//是否开启国际化false
         this.configuration.setClassicCompatible(true);//null值测处理配置
         //
+        // - 各种工具
+        this.configuration.setSharedVariable("escapeHtml", new StringEscapeUtils());//HTML 转译,防止XSS使用。
+        this.configuration.setSharedVariable("stringUtils", new StringUtils());
+        //
+        // - 系统服务
         Set<Class<?>> serviceSet = appContext.getEnvironment().findClass(Service.class);
         for (Class<?> service : serviceSet) {
             if (service == Service.class) {
@@ -60,6 +64,8 @@ public class FreemarkerRender implements RenderEngine {
                 this.configuration.setSharedVariable(ser.value(), appContext.getInstance(service));
             }
         }
+        //
+        // - 环境变量
         this.configuration.setSharedVariable("ctx_path", appContext.getServletContext().getContextPath());
     }
     @Override
