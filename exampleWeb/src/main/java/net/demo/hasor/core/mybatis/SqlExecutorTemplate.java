@@ -36,7 +36,7 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
      * Construct a new SqlExecutorTemplate for bean usage.
      * <p>
      * Note: The DataSource has to be set before using the instance.
-     * 
+     *
      * @see #setDataSource
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory) {
@@ -47,9 +47,8 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
      * Construct a new SqlExecutorTemplate, given a DataSource to obtain connections from.
      * <p>
      * Note: This will not trigger initialization of the exception translator.
-     * 
-     * @param dataSource
-     *            the JDBC DataSource to obtain connections from
+     *
+     * @param dataSource the JDBC DataSource to obtain connections from
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory, final DataSource dataSource) {
         super(dataSource);
@@ -59,9 +58,7 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
      * Construct a new SqlExecutorTemplate, given a DataSource to obtain connections from.
      * <p>
      * Note: This will not trigger initialization of the exception translator.
-     * 
-     * @param dataSource
-     *            the JDBC DataSource to obtain connections from
+     *
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory, final Connection conn) {
         super(conn);
