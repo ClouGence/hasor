@@ -118,7 +118,7 @@ public class OAuthManager implements AppContextAware {
             if (dataResult > 0) {
                 this.userManager.loginUpdate(userDO, provider);//更新登录信息(忽略返回值)
                 logger.error("oauth_" + provider + " : login success , userID = {}.", dataResult);
-                return new ResultDO<Long>(true).setResult(dataResult);
+                return new ResultDO<Long>(true).setResult(userDO.getUserID());
             } else {
                 logger.error(LogUtils.create("ERROR_999_0001")//
                         .addLog("result", dataResult) //

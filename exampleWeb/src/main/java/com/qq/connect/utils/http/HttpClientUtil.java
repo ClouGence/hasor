@@ -18,6 +18,8 @@ import com.qq.connect.QQConnectException;
 import net.hasor.core.Singleton;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
@@ -33,18 +35,36 @@ import java.io.IOException;
 public class HttpClientUtil extends com.qq.connect.utils.http.HttpClient {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
-    public Response post(String tokenURL) throws QQConnectException {
+    public Response httpGet(String tokenURL) throws QQConnectException {
+        GetMethod getMethod = new GetMethod(tokenURL);
+        HttpMethodParams var6 = getMethod.getParams();
+        var6.setContentCharset("UTF-8");
+        return doRequest(getMethod);
+    }
+    public Response httpPost(String tokenURL) throws QQConnectException {
+        return this.httpPost(tokenURL, new PostParameter[0], new Header[0]);
+    }
+    public Response httpPost(String tokenURL, PostParameter[] params, Header[] headers) throws QQConnectException {
         PostMethod postMethod = new PostMethod(tokenURL);
+        for (int param = 0; param < params.length; ++param) {
+            postMethod.addParameter(params[param].getName(), params[param].getValue());
+        }
+        for (int param = 0; param < headers.length; ++param) {
+            postMethod.addRequestHeader(headers[param]);
+        }
         HttpMethodParams var6 = postMethod.getParams();
         var6.setContentCharset("UTF-8");
+        return doRequest(postMethod);
+    }
+    private Response doRequest(HttpMethodBase httpMethod) throws QQConnectException {
         byte responseCode = -1;
         //
         Response response;
         try {
-            postMethod.getParams().setParameter("http.method.retry-handler", new DefaultHttpMethodRetryHandler(3, false));
-            this.client.executeMethod(postMethod);
-            Header[] hearders = postMethod.getResponseHeaders();
-            int var18 = postMethod.getStatusCode();
+            httpMethod.getParams().setParameter("http.method.retry-handler", new DefaultHttpMethodRetryHandler(3, false));
+            this.client.executeMethod(httpMethod);
+            Header[] hearders = httpMethod.getResponseHeaders();
+            int var18 = httpMethod.getStatusCode();
             this.logger.info("Response:");
             this.logger.info("https StatusCode:" + String.valueOf(var18));
             int e = hearders.length;
@@ -53,7 +73,7 @@ public class HttpClientUtil extends com.qq.connect.utils.http.HttpClient {
                 this.logger.info(header.getName() + ":" + header.getValue());
             }
             response = new Response();
-            response.setResponseAsString(new String(postMethod.getResponseBody(), "utf-8"));
+            response.setResponseAsString(new String(httpMethod.getResponseBody(), "utf-8"));
             response.setStatusCode(var18);
             //
             this.logger.info(response.toString() + "\n");
@@ -61,7 +81,7 @@ public class HttpClientUtil extends com.qq.connect.utils.http.HttpClient {
         } catch (IOException var16) {
             throw new QQConnectException(var16.getMessage(), var16, responseCode);
         } finally {
-            postMethod.releaseConnection();
+            httpMethod.releaseConnection();
         }
         return response;
     }

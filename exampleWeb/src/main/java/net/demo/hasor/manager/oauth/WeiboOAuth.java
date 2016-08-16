@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
-import com.qq.connect.utils.http.HttpClientUtil;
+import com.qq.connect.utils.http.PostParameter;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.UserDO;
@@ -33,13 +33,14 @@ import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
+import org.apache.commons.httpclient.Header;
 import org.more.bizcommon.ResultDO;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
+import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Map;
@@ -51,23 +52,21 @@ import java.util.Map;
 @Singleton
 @Service("weibo")
 public class WeiboOAuth extends AbstractOAuth {
-    public static final String         PROVIDER_NAME = "Weibo";
-    public static final String         URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
+    public static final String PROVIDER_NAME = "Weibo";
+    public static final String URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
     //
-    @Inject
-    private             HttpClientUtil httpClient    = null;
     //QQ登录接入,授权key
     @InjectSettings("weibo.admins")
-    private             String         adminsCode    = null;
+    private             String adminsCode    = null;
     //应用ID
     @InjectSettings("weibo.app_id")
-    private             String         appID         = null;
+    private             String appID         = null;
     //应用Key
     @InjectSettings("weibo.app_key")
-    private             String         appKey        = null;
+    private             String appKey        = null;
     //权限
     @InjectSettings("weibo.oauth_scope")
-    private             String         scope         = null;
+    private             String scope         = null;
     //
     //
     public String getAdmins() {
@@ -101,8 +100,10 @@ public class WeiboOAuth extends AbstractOAuth {
         try {
             String redirectURI = this.getRedirectURI() + "?" + WeiboOAuth.URL_DATA + "&redirectURI=" + redirectTo;
             return "https://api.weibo.com/oauth2/authorize?response_type=code" //
+                    + "&forcelogin=true" //
+                    + "&display=default" //
                     + "&client_id=" + this.appID //
-                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8")//
+                    + "&redirect_uri=" + URLEncoder.encode(redirectURI, "utf-8") //
                     + "&scope=" + this.scope;
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0002").logException(e).toJson(), e);
@@ -128,7 +129,7 @@ public class WeiboOAuth extends AbstractOAuth {
         Map<String, Object> dataMaps = null;
         try {
             logger.error("weibo_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
-            Response response = this.httpClient.post(tokenURL);
+            Response response = this.httpClient.httpPost(tokenURL);
             String data = response.getResponseAsString();
             if (StringUtils.isBlank(data)) {
                 //结果为空
@@ -166,10 +167,13 @@ public class WeiboOAuth extends AbstractOAuth {
         try {
             String accessToken = dataMaps.get("access_token").toString();
             String userID = dataMaps.get("uid").toString();
-            Response response = this.httpClient.post("http://api.t.sina.com.cn/users/show.json" //
-                    + "?source=" + this.getAppKey()//
-                    + "?user_id=" + userID//
-                    + "&access_token=" + accessToken);
+            Response response = this.httpClient.httpPost("http://api.t.sina.com.cn/users/show.json", new PostParameter[] {//
+                    new PostParameter("uid", userID), //
+                    new PostParameter("uid", userID)  //
+            }, new Header[] {//
+                    new Header("Authorization", "OAuth2 " + accessToken),//
+                    new Header("API-RemoteIP", InetAddress.getLocalHost().getHostAddress())//
+            });
             String data = response.getResponseAsString();
             //
             if (StringUtils.isBlank(data)) {

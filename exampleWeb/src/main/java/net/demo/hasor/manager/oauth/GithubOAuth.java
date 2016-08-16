@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
-import com.qq.connect.utils.http.HttpClientUtil;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.UserDO;
@@ -31,7 +30,6 @@ import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
 import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
 import org.more.bizcommon.ResultDO;
@@ -53,19 +51,17 @@ import java.util.Map;
 @Singleton
 @Service("github")
 public class GithubOAuth extends AbstractOAuth {
-    public static final String         PROVIDER_NAME = "Github";
-    public static final String         URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
+    public static final String PROVIDER_NAME = "Github";
+    public static final String URL_DATA      = "provider=" + PROVIDER_NAME + "&type=website";
     //
-    @Inject
-    private             HttpClientUtil httpClient    = null;
     //应用ID
     @InjectSettings("github.app_id")
-    private             String         appID         = null;
+    private             String appID         = null;
     //应用Key
     @InjectSettings("github.app_key")
-    private             String         appKey        = null;
+    private             String appKey        = null;
     @InjectSettings("github.oauth_scope")
-    private             String         scope         = null;
+    private             String scope         = null;
     //
     //
     public String getAppID() {
@@ -124,7 +120,7 @@ public class GithubOAuth extends AbstractOAuth {
         Map<String, String> dataMaps = new HashMap<String, String>();
         try {
             logger.error("github_access_token :authCode = {} , build token URL -> {}.", authCode, tokenURL);
-            Response response = this.httpClient.get(tokenURL);
+            Response response = this.httpClient.httpGet(tokenURL);
             String data = response.getResponseAsString();
             if (StringUtils.isBlank(data)) {
                 //结果为空
@@ -170,7 +166,7 @@ public class GithubOAuth extends AbstractOAuth {
         //
         try {
             String access_token = (String) dataMaps.get("access_token");
-            Response response = this.httpClient.get("https://api.github.com/user?access_token=" + access_token);
+            Response response = this.httpClient.httpGet("https://api.github.com/user?access_token=" + access_token);
             String data = response.getResponseAsString();
             GithubAccessInfo accessInfo = JsonUtils.toObject(data, GithubAccessInfo.class);
             accessInfo.setAccessToken(access_token);

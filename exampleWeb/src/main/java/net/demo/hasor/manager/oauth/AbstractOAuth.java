@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
-import net.demo.hasor.domain.oauth.AccessInfo;
+import com.qq.connect.utils.http.HttpClientUtil;
 import net.demo.hasor.domain.UserDO;
+import net.demo.hasor.domain.oauth.AccessInfo;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import org.more.bizcommon.ResultDO;
 import org.slf4j.Logger;
@@ -27,9 +29,12 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractOAuth {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger         logger      = LoggerFactory.getLogger(getClass());
     @InjectSettings("appExample.redirectURI")
-    private String redirectURI;
+    private   String         redirectURI = null;
+    @Inject
+    protected HttpClientUtil httpClient  = null;
+    //
     //
     public AbstractOAuth() {
     }
