@@ -22,6 +22,8 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.scope.SingleProvider;
+import net.hasor.db.jdbc.JdbcOperations;
+import net.hasor.db.jdbc.core.JdbcOperationsProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
 import net.hasor.db.transaction.TransactionManager;
@@ -64,11 +66,13 @@ public class DBModule implements Module {
             apiBinder.bindType(TransactionManager.class).toProvider(new SingleProvider<TransactionManager>(managerProvider));
             apiBinder.bindType(TransactionTemplate.class).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
             apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(this.dataSource));
+            apiBinder.bindType(JdbcOperations.class).toProvider(new JdbcOperationsProvider(this.dataSource));
         } else {
             apiBinder.bindType(DataSource.class).nameWith(this.dataSourceID).toProvider(this.dataSource);
             apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionManager>(managerProvider));
             apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
             apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(new JdbcTemplateProvider(this.dataSource));
+            apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(new JdbcOperationsProvider(this.dataSource));
         }
         //
         TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);

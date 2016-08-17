@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.demo.hasor.manager.oauth;
-import com.qq.connect.utils.http.PostParameter;
 import com.qq.connect.utils.http.Response;
 import net.demo.hasor.core.Service;
 import net.demo.hasor.domain.UserDO;
@@ -27,7 +26,6 @@ import net.demo.hasor.domain.futures.ContactAddressInfo;
 import net.demo.hasor.domain.futures.UserContactInfo;
 import net.demo.hasor.domain.futures.UserFutures;
 import net.demo.hasor.domain.oauth.AccessInfo;
-import net.demo.hasor.domain.oauth.TencentAccessInfo;
 import net.demo.hasor.domain.oauth.WeiboAccessInfo;
 import net.demo.hasor.utils.JsonUtils;
 import net.demo.hasor.utils.LogUtils;
@@ -35,12 +33,10 @@ import net.demo.hasor.utils.OAuthUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
-import org.apache.commons.httpclient.Header;
 import org.more.bizcommon.ResultDO;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
-import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Map;
@@ -167,15 +163,10 @@ public class WeiboOAuth extends AbstractOAuth {
         try {
             String accessToken = dataMaps.get("access_token").toString();
             String userID = dataMaps.get("uid").toString();
-            Response response = this.httpClient.httpPost("http://api.t.sina.com.cn/users/show.json", new PostParameter[] {//
-                    new PostParameter("uid", userID), //
-                    new PostParameter("uid", userID)  //
-            }, new Header[] {//
-                    new Header("Authorization", "OAuth2 " + accessToken),//
-                    new Header("API-RemoteIP", InetAddress.getLocalHost().getHostAddress())//
-            });
+            Response response = this.httpClient.httpGet("https://api.weibo.com/2/users/show.json"//
+                    + "?access_token=" + accessToken //
+                    + "&uid=" + userID);//
             String data = response.getResponseAsString();
-            //
             if (StringUtils.isBlank(data)) {
                 //结果为空
                 logger.error(LogUtils.create("ERROR_000_1105")//
@@ -184,13 +175,12 @@ public class WeiboOAuth extends AbstractOAuth {
                 return new ResultDO<AccessInfo>(false).addMessage(ErrorCodes.LOGIN_OAUTH_ACCESS_TOKEN_RESULT_EMPTY.getMsg());
             }
             //
-            dataMaps = JsonUtils.toMap(response.getResponseAsString());
-            WeiboAccessInfo info = new WeiboAccessInfo();
+            //
+            WeiboAccessInfo info = JsonUtils.toObject(response.getResponseAsString(), WeiboAccessInfo.class);
             info.setAccessToken(dataMaps.get("access_token").toString());
             info.setExpires_in(Long.parseLong(dataMaps.get("expires_in").toString()));
             info.setRemind_in(dataMaps.get("remind_in").toString());
-            info.setUid(dataMaps.get("uid").toString());
-            //
+            info.setAccessUserID(dataMaps.get("uid").toString());
             //
             logger.error("tencent_access_token : success -> token : {} , sourceID : {} , nick : {}.", //
                     info.getAccessToken(), info.getSource(), ""/*info.getNickName()*/);
@@ -207,46 +197,41 @@ public class WeiboOAuth extends AbstractOAuth {
     }
     @Override
     public UserDO convertTo(AccessInfo result) {
-        TencentAccessInfo accessInfo = (TencentAccessInfo) result;
+        WeiboAccessInfo accessInfo = (WeiboAccessInfo) result;
         UserDO userDO = new UserDO();
         userDO.setPassword("-");
-        userDO.setNick(accessInfo.getNickName());
-        userDO.setAvatar(accessInfo.getAvatarURL100());
+        userDO.setNick(accessInfo.getScreen_name());
+        userDO.setAvatar(accessInfo.getAvatar_large());
         if (StringUtils.isBlank(userDO.getNick())) {
             userDO.setNick(WeiboOAuth.PROVIDER_NAME + "_" + System.currentTimeMillis());
         }
         //
         userDO.setUserSourceList(new ArrayList<UserSourceDO>());
         userDO.getUserSourceList().add(OAuthUtils.convertAccessInfo(result));
-        if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "男")) {
+        if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "m")) {
             userDO.setGender(GenderType.Male);
-        } else if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "女")) {
+        } else if (StringUtils.equalsIgnoreCase(accessInfo.getGender(), "f")) {
             userDO.setGender(GenderType.Female);
         } else {
             userDO.setGender(GenderType.None);
         }
         userDO.setStatus(UserStatus.Normal);
         userDO.setType(UserType.Temporary);
-        userDO.setEmail(accessInfo.getEmail());
+        userDO.setEmail("");
         //
         userDO.setFutures(new UserFutures());
-        userDO.getFutures().setBirthday(accessInfo.getBirthday());
-        userDO.getFutures().setName(accessInfo.getWeiboName());
+        userDO.getFutures().setName(accessInfo.getName());
+        userDO.getFutures().setPresent(accessInfo.getDescription());
         //
         userDO.setContactInfo(new UserContactInfo());
+        userDO.getContactInfo().setBlogHome(accessInfo.getUrl());
+        //
         ContactAddressInfo userAddressInfo = new ContactAddressInfo();
-        userAddressInfo.setCityCode(accessInfo.getCityCode());
-        userAddressInfo.setCountryCode(accessInfo.getCountryCode());
-        userAddressInfo.setProvinceCode(accessInfo.getProvinceCode());
-        userAddressInfo.setTownCode("");
+        //
+        userAddressInfo.setProvinceCode(String.valueOf(accessInfo.getProvince()));
+        userAddressInfo.setCityCode(String.valueOf(accessInfo.getCity()));
+        userAddressInfo.setLocation(accessInfo.getLocation());
         userDO.getContactInfo().setUserAddress(userAddressInfo);
-        ContactAddressInfo homeAddressInfo = new ContactAddressInfo();
-        homeAddressInfo.setCityCode(accessInfo.getHomeCityCode());
-        homeAddressInfo.setCountryCode(accessInfo.getHomeCountryCode());
-        homeAddressInfo.setProvinceCode(accessInfo.getHomeProvinceCode());
-        homeAddressInfo.setTownCode(accessInfo.getHomeTownCode());
-        userDO.getContactInfo().setHomeAddress(homeAddressInfo);
-        userDO.getContactInfo().setBlogHome(accessInfo.getBlogHome());
         return userDO;
     }
     //

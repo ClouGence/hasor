@@ -67,6 +67,7 @@
         weibo 接入
         http://open.weibo.com/apps
         http://open.weibo.com/wiki/index.php/API%E6%96%87%E6%A1%A3
+        http://open.weibo.com/wiki/2/users/show
     -->
     <weibo>
         <!-- 微博登录接入,域名所有权 -->

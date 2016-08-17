@@ -24,6 +24,7 @@ public class ContactAddressInfo {
     private String provinceCode = null; //省份代码
     private String cityCode     = null; //城市代码
     private String townCode     = null; //城镇代码
+    private String location     = null; //所在地
     //
     public String getCountryCode() {
         return countryCode;
@@ -48,5 +49,11 @@ public class ContactAddressInfo {
     }
     public void setTownCode(String townCode) {
         this.townCode = townCode;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
