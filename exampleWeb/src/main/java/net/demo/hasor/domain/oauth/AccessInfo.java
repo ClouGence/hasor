@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.demo.hasor.domain.oauth;
+import net.demo.hasor.utils.JsonUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  * OAuth Token 信息
  * @version : 2016年08月11日
@@ -21,18 +25,30 @@ package net.demo.hasor.domain.oauth;
  */
 public abstract class AccessInfo {
     private String provider = null;
-    //
     public String getProvider() {
         return provider;
     }
     public void setProvider(String provider) {
         this.provider = provider;
+        this.intType();
     }
-    //
     public final String getSource() {
         String provider = this.getProvider();
         return (provider == null ? "NULL" : provider) + ":" + this.getExternalUserID();
     }
-    //
+    public String toJson() {
+        return JsonUtils.toJsonStringSingleLine(this);
+    }
     public abstract String getExternalUserID();
+    //
+    //
+    private static final Map<String, Class<? extends AccessInfo>> typeMappingInfo = new HashMap<String, Class<? extends AccessInfo>>();
+    private void intType() {
+        if (!typeMappingInfo.containsKey(this.getProvider())) {
+            typeMappingInfo.put(this.getProvider(), this.getClass());
+        }
+    }
+    public static Class<? extends AccessInfo> getTypeByProvider(String provider) {
+        return typeMappingInfo.get(provider);
+    }
 }

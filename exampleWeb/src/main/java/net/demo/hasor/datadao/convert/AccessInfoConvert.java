@@ -47,7 +47,12 @@ public class AccessInfoConvert extends BaseTypeHandler<AccessInfo> {
         if (StringUtils.isBlank(jsonData)) {
             return null;
         }
-        return JsonUtils.toObject(jsonData, AccessInfo.class);
+        String provider = JsonUtils.toMap(jsonData).get("provider").toString();
+        Class<? extends AccessInfo> infoType = AccessInfo.getTypeByProvider(provider);
+        if (infoType == null) {
+            return null;
+        }
+        return JsonUtils.toObject(jsonData, infoType);
     }
     @Override
     public AccessInfo getNullableResult(ResultSet rs, int columnIndex) throws SQLException {

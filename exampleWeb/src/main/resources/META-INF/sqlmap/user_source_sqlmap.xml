@@ -90,4 +90,14 @@
             provider = #{provider} and unique_id = #{uniqueID}
         limit 1
     </select>
+
+    <!-- 根据用户ID获取关联的外部登录帐号 -->
+    <select id="userSource_queryListByUserID" resultMap="userSourceDOMap">
+        select
+            <include refid="userSourceDO_allColumns"/>
+        from
+            USER_SOURCE
+        where
+            user_id = #{userID}
+    </select>
 </mapper>

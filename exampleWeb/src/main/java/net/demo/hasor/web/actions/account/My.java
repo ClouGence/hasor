@@ -40,7 +40,7 @@ public class My extends Action {
             data.getHttpResponse().sendRedirect(ctx_path + "/account/login.htm?redirectURI=" + ctx_path + "/account/my.htm");
         }
         //
-        UserDO user = this.userManager.getUserByID(this.getUserID());
+        UserDO user = this.userManager.getFullUserDataByID(this.getUserID());
         if (user == null) {
             sendError(ErrorCodes.RESULT_NULL.getMsg());
             return;

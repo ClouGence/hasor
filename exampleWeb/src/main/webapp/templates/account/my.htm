@@ -1,25 +1,27 @@
 ${rootData.put('pageTitle','个人首页')}
+<script src="${ctx_path}/static/jquery.plugins/jsonview-1.0/jquery.jsonview.min.js"></script>
+<link rel="stylesheet" href="${ctx_path}/static/jquery.plugins/jsonview-1.0/jquery.jsonview.min.css">
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">帐号信息</h3>
     </div>
     <div class="panel-body">
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">UserID</span>&nbsp;${userData.userID}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">帐号</span>&nbsp;${userData.account}
         </div>
-        <div class="well well-sm">
-            <span class="col-sm-1 label label-success">密码</span>&nbsp;${userData.password}(密文)
+        <div class="">
+            <span class="col-sm-1 label label-success">密码(密文)</span>&nbsp;${userData.password}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">Email</span>&nbsp;${userData.email}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">电话</span>&nbsp;${userData.mobilePhone}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">帐号类型</span>&nbsp;${userData.type.desc}
         </div>
     </div>
@@ -29,22 +31,22 @@ ${rootData.put('pageTitle','个人首页')}
         <h3 class="panel-title">个人信息</h3>
     </div>
     <div class="panel-body">
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">昵称</span>&nbsp;${userData.nick}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">姓名</span>&nbsp;${userData.name}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">性别</span>&nbsp;${userData.gender.desc}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">生日</span>&nbsp;${userData.birthday}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">介绍</span>&nbsp;${userData.present}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">头像</span>&nbsp;<img src="${userData.avatar}"/>
         </div>
     </div>
@@ -54,23 +56,62 @@ ${rootData.put('pageTitle','个人首页')}
         <h3 class="panel-title">状态数据</h3>
     </div>
     <div class="panel-body">
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">状态</span>&nbsp;${userData.status.desc}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">登录次数</span>&nbsp;${userData.loginCount}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">首次登陆</span>&nbsp;${userData.firstLoginTime?string("yyyy-MM-dd HH:mm:ss")}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">最近登陆</span>&nbsp;${userData.lastLoginTime?string("yyyy-MM-dd HH:mm:ss")}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">创建时间</span>&nbsp;${userData.createTime?string("yyyy-MM-dd HH:mm:ss")}
         </div>
-        <div class="well well-sm">
+        <div class="">
             <span class="col-sm-1 label label-success">修改时间</span>&nbsp;${userData.modifyTime?string("yyyy-MM-dd HH:mm:ss")}
         </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">绑定第三方登录</h3>
+    </div>
+    <div class="panel-body">
+        <#list userData.userSourceList as sourceData>
+            <div class="">
+                <span class="col-sm-1 label label-success">来源</span>&nbsp;${sourceData.provider}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">唯一编</span>&nbsp;${sourceData.uniqueID}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">状态</span>&nbsp;${sourceData.status?string("有效", "无效")}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">登录次数</span>&nbsp;${sourceData.loginCount}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">首次登陆</span>&nbsp;${sourceData.firstLoginTime?string("yyyy-MM-dd HH:mm:ss")}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">最近登陆</span>&nbsp;${sourceData.lastLoginTime?string("yyyy-MM-dd HH:mm:ss")}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">创建时间</span>&nbsp;${sourceData.createTime?string("yyyy-MM-dd HH:mm:ss")}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">修改时间</span>&nbsp;${sourceData.modifyTime?string("yyyy-MM-dd HH:mm:ss")}
+            </div>
+            <div class="">
+                <span class="col-sm-1 label label-success">原始数据</span>&nbsp;[<a href="javascript:$('#json_${sourceData.id}').toggle()">展现/隐藏</a>]
+                <div id="json_${sourceData.id}" class="warning" style="display: none;">${sourceData.accessInfo.toJson()}</div>
+                <script>$("#json_${sourceData.id}").JSONView($("#json_${sourceData.id}").html());</script>
+            </div>
+            <hr/>
+        </#list>
     </div>
 </div>

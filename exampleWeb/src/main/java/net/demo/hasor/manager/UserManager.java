@@ -62,6 +62,22 @@ public class UserManager {
             return null;
         }
     }
+    public UserDO getFullUserDataByID(long userID) {
+        UserDO userDO = getUserByID(userID);
+        if (userDO == null) {
+            return null;
+        }
+        try {
+            List<UserSourceDO> sourceList = this.userSourceDAO.queryListByUserID(userID);
+            if (sourceList != null) {
+                userDO.setUserSourceList(sourceList);
+            }
+        } catch (Exception e) {
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("UserManager : getFullUserDataByID error -> " + e.getMessage()).toJson());
+        }
+        return userDO;
+    }
     //
     //
     @Transactional

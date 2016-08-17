@@ -20,6 +20,7 @@ import net.demo.hasor.utils.LogUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  *
@@ -78,6 +79,20 @@ public class UserSourceDAO extends AbstractDao {
             parameter.put("userID", userID);
             parameter.put("sourceInfo", sourceDO);
             int result = this.getSqlExecutor().update("userSource_updateInfo", parameter);
+            return result;
+        } catch (SQLException e) {
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("user_source_dao : updateUserSource error -> " + e.getMessage()).toJson());
+            throw e;
+        }
+    }
+    //
+    /** 获取帐号绑定的所有第三方帐号*/
+    public List<UserSourceDO> queryListByUserID(long userID) throws SQLException {
+        try {
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("userID", userID);
+            List<UserSourceDO> result = this.getSqlExecutor().selectList("userSource_queryListByUserID", parameter);
             return result;
         } catch (SQLException e) {
             logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
