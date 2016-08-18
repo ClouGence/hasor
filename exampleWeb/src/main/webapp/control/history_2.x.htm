@@ -1,6 +1,26 @@
+<h3><@downloadSource version='2.4.3'/></h3>
+<pre>
+* 新增:
+    01.新增 Htmlspace工具类:StringEscapeUtils、EntitiesUtils。工具来源为:apache-common
+* 改进:
+    01.改进启动日志输出。
+    02.WebController 增加一组 putData 方法用于输出到渲染模版中。
+    03.JdbcOperations接口可以通过依赖注入被注入到 Service 中。
+    05.TransactionTemplateManager 代码优化,修复潜在的 npe 异常情况。
+    06.ValidErrors 接口继承自 RenderData 获取参数更加方便。
+    07.WebController 类重度优化,删除了一些重复的方法,增添表单验证相关的方法。
+</pre>
+<h3><@downloadSource version='2.4.2'/></h3>
+<pre>
+* 新增:
+    01.Restful 框架整合 Validation 插件增加请求参数 @Valid 验证功能。
+    02.注解 @Valid 支持场景化验证。
+* 改进:
+    01.env.config 加载环境变量遇到名称冲突时的,Bug。
+    02.DBModule 类,在声明 Aop 类匹配的时候从任意类,改为需要标记 @Transactional 注解的类。
+</pre>
 <h3><@downloadSource version='2.4.1'/></h3>
 <pre>
-===== Hasor-Core v2.4.1 (2016-08-01)
 * 改进:
     01.env.config 功能的优化。
 </pre>

@@ -1,9 +1,13 @@
-﻿===== Hasor-Core v2.4.3 (2016-?)
+﻿===== Hasor-Core v2.4.3 (2016-08-18)
 * 新增:
     01.新增 Htmlspace工具类:StringEscapeUtils、EntitiesUtils。工具来源为:apache-common
 * 改进:
     01.改进启动日志输出。
     02.WebController 增加一组 putData 方法用于输出到渲染模版中。
+    03.JdbcOperations接口可以通过依赖注入被注入到 Service 中。
+    05.TransactionTemplateManager 代码优化,修复潜在的 npe 异常情况。
+    06.ValidErrors 接口继承自 RenderData 获取参数更加方便。
+    07.WebController 类重度优化,删除了一些重复的方法,增添表单验证相关的方法。
 
 ===== Hasor-Core v2.4.2 (2016-08-04)
 * 新增:

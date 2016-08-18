@@ -17,7 +17,7 @@
 
     <appExample>
         <!-- 当前最新版本 -->
-        <curentVersion>2.4.2</curentVersion>
+        <curentVersion>2.4.3</curentVersion>
 
         <!-- 所属环境:daily、online -->
         <envType>${app.env}</envType>
