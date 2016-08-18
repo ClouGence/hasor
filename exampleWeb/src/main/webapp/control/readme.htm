@@ -44,26 +44,20 @@
     <b>发展状况</b>
 </h2>
 <p>
-    &nbsp; &nbsp; <strong>&nbsp;Hasor&nbsp;</strong>起源于2012年，并在2013年初具雏形。当时尚未开源，并被应用到公司个大项目中。那个时候<strong>&nbsp;Hasor&nbsp;</strong>还是基于<strong>&nbsp;Guice&nbsp;</strong>构建，并且整合了
-    <strong>&nbsp;Spring JDBC&nbsp;</strong>、<strong>&nbsp;Guice-Servlet&nbsp;</strong>等大量三方框架。还有少量自建功能，例如：<strong>&nbsp;WebMVC&nbsp;</strong>。当时整个框架还未从软件产品中完全剥离出来，
-    其中最基本的要素经过打包会产生约 <strong>&nbsp;130MB&nbsp;</strong>的JAR包依赖。与目前相比显得无比臃肿。
+    &emsp;&emsp; <strong>&nbsp;Hasor&nbsp;</strong>起源于2012年，并在2013年初具雏形。当时尚未开源，并被应用到公司个大项目中。那个时候<strong>&nbsp;Hasor&nbsp;</strong>还是基于Guice构建，并且整合了Spring JDBC、Guice Servlet等大量三方框架。还有少量自建功能，例如：WebMVC。当时整个框架还未从软件产品中完全剥离出来，其中最基本的要素经过打包会产生约 130MB的 JAR包依赖。与目前相比显得无比臃肿。
 </p>
 <p>
-    &nbsp; &nbsp; 随后2013年开始，通过对整套框架的重新梳理。<strong>&nbsp;Hasor&nbsp;</strong>才得以从项目中脱离出来成为独立的框架，依赖也随时聚减。同年开始计划开源版本的实现，也就是如今的Hasor。
+    &emsp;&emsp; 随后2013年开始，通过对整套框架的重新梳理。<strong>&nbsp;Hasor&nbsp;</strong>才得以从项目中脱离出来成为独立的框架，依赖也随时聚减。同年开始计划开源版本的实现，也就是如今的<strong>&nbsp;Hasor&nbsp;</strong>。
 </p>
 <p>
-    &nbsp; &nbsp; 2013年9月15日，0.0.1版本，第一个版本被推送到Maven中央仓库，<strong>&nbsp;Hasor&nbsp;</strong>的雏形被确立，<strong>&nbsp;Module&nbsp;</strong>化的插件概念被提出，依赖减少到只有<strong>&nbsp;Guice&nbsp;</strong>和<strong>&nbsp;slf4j&nbsp;</strong>。
+    &emsp;&emsp; 2013年9月15日，0.0.1版本，第一个版本被推送到Maven中央仓库，<strong>&nbsp;Hasor&nbsp;</strong>的雏形被确立，Module化的插件概念被提出，依赖减少到只有Guice和slf4j。
 </p>
 <p>
-    &nbsp; &nbsp; 2014年7月26日，0.0.9版本被推送到<strong>&nbsp;Maven&nbsp;</strong>中央仓库。经历多个版本迭代更新从<strong>&nbsp;0.0.9&nbsp;</strong>开始，最后一个核心依赖<strong>&nbsp;Guice&nbsp;</strong>也被去除。
-    而此时<strong>&nbsp;Hasor&nbsp;</strong>已经拥有了<strong>&nbsp;Web&nbsp;</strong>、<strong>&nbsp;WebMVC&nbsp;</strong>、<strong>&nbsp;JDBC&nbsp;</strong>、和完整的数据库事务能力。在这个阶段中Hasor曾经在<strong>&nbsp;Guice&nbsp;</strong>、<strong>&nbsp;Spring&nbsp;</strong>之间摇摆不定，也对未来的路线和定位发生过几次重大的改变。
+    &emsp;&emsp; 2014年7月26日，0.0.9版本被推送到Maven中央仓库。经历多个版本迭代最后一个核心依赖Guice也被去除。而此时<strong>&nbsp;Hasor&nbsp;</strong>已经拥有了Web、JDBC、和完整的数据库事务能力。在这个阶段中<strong>&nbsp;Hasor&nbsp;</strong>曾经在Guice、Spring之间摇摆不定，也对未来的路线和定位发生过几次重大的改变。
 </p>
 <p>
-    &nbsp; &nbsp; 2015年5月9日，0.0.12版本发布，此时的Hasor拥有<strong>&nbsp;6&nbsp;</strong>大模块和若干小插件，发展上过于零碎。加上精力有限于是开始了<strong>&nbsp;all-in&nbsp;</strong>行动，将众多模块合并到一起。直至2015年7月3日，<strong>&nbsp;Hasor-1.0.0&nbsp;</strong>发布。
+    &emsp;&emsp; 2015年7月3日，1.0.0版本发布，这是一个里程碑。首先 1.0 开始<strong>&nbsp;Hasor&nbsp;</strong>许多零碎的项目合并到了一起(all-in行动)，同时<strong>&nbsp;Hasor&nbsp;</strong>的发展方向和目标也更加明确。同年11月27日，2.0版本发布。<strong>&nbsp;Hasor&nbsp;</strong>确立了“小而美的核心，大而全的生态圈”的目标。
 </p>
 <p>
-    &nbsp; &nbsp; 2015年11月27日，2.0版本发布，提供了@Inject注解方式进行依赖注入，该版本一举解决了在去除Guice和决定不在依赖Spring之后Hasor的<strong>&nbsp;IoC&nbsp;</strong>能力大大下降的问题。同时Hasor2.0开始确立了“小而美的核心，大而全的生态圈”的目标。
-</p>
-<p>
-    &nbsp; &nbsp; 2016年05月29日，2.3.2版本发布，所有内置插件都增添了智能加载机制。智能加载是指在初始化的插件自己会去做配置检查，只有用到了它们才会被加载到框架中。否则内置插件在初始化期间就会放弃加载自己。此举为Hasor在运行时减少了更多不必要的插件加载，一个小清新的微内核完全展现在面前。
+    &emsp;&emsp; 2016年8月18日，2.4.3版本，经过持续的沉淀、整合、优化。<strong>&nbsp;Hasor&nbsp;</strong>越来越稳定可靠，基于2.4版本<strong>&nbsp;Hasor&nbsp;</strong>开始孕育全新的子项目 <strong>&nbsp;Hasor-RSF&nbsp;</strong>(分布式RPC)。
 </p>
