@@ -2,16 +2,23 @@ ${rootData.put('pageTitle','跳转中...')}
 ${rootData.put('navIndex',7)}
 <script type="application/javascript">
     //
+    var loginSuccess = false;
     $(function () {
         doSubmit();
     });
     function doSubmit() {
         // .超时提示.
         window.setTimeout(function () {
+            if (loginSuccess)
+                return;
             $("#messageBody").html("好长时间了,我还在努力的认证中...");
             window.setTimeout(function () {
+                if (loginSuccess)
+                    return;
                 $("#messageBody").html("认证中...<br/>建议您换成账号方式登录。如果您坚持,那么请稍等,我还在努力的尝试认证...");
                 window.setTimeout(function () {
+                    if (loginSuccess)
+                        return;
                     jumpTo("/account/login.htm", "抱歉的通知您,20秒过去了。恐怕恐怕是不会成功了,建议您通过帐号方式登录。");
                 }, 20000);
             }, 10000);
@@ -35,6 +42,7 @@ ${rootData.put('navIndex',7)}
             async: true,
             success: function (result) {
                 if (result.success == true) {
+                    loginSuccess = true;
                     jumpTo(result.result, "登陆成功,正在为您跳转...");
                 } else {
                     jumpTo("/error.htm?errorCode=" + result.errorCode, result.errorMessage);
