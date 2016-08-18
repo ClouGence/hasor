@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.transaction;
 /**
- * {@link TransactionCallback}接口的无返回值。
- * @version : 2015年8月11日
- * @author 赵永春(zyc@hasor.net)
+ * 各类接口服务的 wrap。
  */
-public abstract class TransactionCallbackWithoutResult implements TransactionCallback<Void> {
-    public final Void doTransaction(TransactionStatus tranStatus) throws Throwable {
-        this.doTransactionWithoutResult(tranStatus);
-        return null;
-    }
-    /***/
-    public abstract void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable;
-}
+package net.hasor.restful.wrap;

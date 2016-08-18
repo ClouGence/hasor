@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Hasor Restful 框架。</p>
+ * 带有 Restful 风格的 web mvc 框架。
  */
 package net.hasor.restful;

@@ -14,13 +14,37 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction;
+import java.sql.SQLException;
 /**
- * 
+ * 事务模版接口
  * @version : 2015年10月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface TransactionTemplate {
+    /**
+     * 开始执行一个事务。
+     * @param callBack 调用方法执行事务。
+     * @return 返回 {@link TransactionCallback} 接口执行的返回值。
+     * @throws SQLException 执行期间发生SQL异常
+     */
     public <T> T execute(TransactionCallback<T> callBack) throws Throwable;
+
+    /**
+     * 开始执行一个事务。
+     * @param callBack 调用方法执行事务。
+     * @param behavior 传播属性
+     * @return 返回 {@link TransactionCallback} 接口执行的返回值。
+     * @throws SQLException 执行期间发生SQL异常
+     */
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior) throws Throwable;
+
+    /**
+     * 开始执行一个事务。
+     * @param callBack 调用方法执行事务。
+     * @param behavior 传播属性
+     * @param level 事务隔离级别
+     * @return 返回 {@link TransactionCallback} 接口执行的返回值。
+     * @throws SQLException 执行期间发生SQL异常
+     */
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior, Isolation level) throws Throwable;
 }

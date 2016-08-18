@@ -25,18 +25,23 @@ public interface TransactionManager {
      * @see net.hasor.db.transaction.Propagation
      * @see net.hasor.db.transaction.TransactionManager#getTransaction(Propagation, Isolation)*/
     public TransactionStatus getTransaction(Propagation behavior) throws SQLException;
+
     /**开启事务
      * @see net.hasor.db.transaction.Propagation
      * @see java.sql.Connection#setTransactionIsolation(int)*/
     public TransactionStatus getTransaction(Propagation behavior, Isolation level) throws SQLException;
+
     /**递交事务
      * <p>如果递交的事务并不处于事务堆栈顶端，会同时递交该事务的后面其它事务。*/
     public void commit(TransactionStatus status) throws SQLException;
+
     /**回滚事务*/
     public void rollBack(TransactionStatus status) throws SQLException;
     //
+
     /**是否存在未处理完的事务（包括被挂起的事务）。*/
     public boolean hasTransaction();
+
     /**测试事务状态是否位于栈顶。*/
     public boolean isTopTransaction(TransactionStatus status);
 }

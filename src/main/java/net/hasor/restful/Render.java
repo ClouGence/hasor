@@ -19,12 +19,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 渲染器
+ * 渲染器,参数为渲染器支持的请求扩展名。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Render {
+    /** 渲染器支持的请求扩展名。 */
     public String[] value();
 }

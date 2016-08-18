@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.support;
-import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionCallback;
-import net.hasor.db.transaction.TransactionManager;
-import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.TransactionTemplate;
+import net.hasor.db.transaction.*;
 /**
  *
  * @version : 2015年10月22日
@@ -44,10 +39,12 @@ class TransactionTemplateManager implements TransactionTemplate {
             tranStatus = transactionManager.getTransaction(behavior, level);
             return callBack.doTransaction(tranStatus);
         } catch (Throwable e) {
-            tranStatus.setRollbackOnly();
+            if (tranStatus != null) {
+                tranStatus.setRollbackOnly();
+            }
             throw e;
         } finally {
-            if (tranStatus != null && tranStatus.isCompleted() == false) {
+            if (tranStatus != null && !tranStatus.isCompleted()) {
                 transactionManager.commit(tranStatus);
             }
         }

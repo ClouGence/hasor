@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Hasor Web 开发框架。</p>
+ * Hasor Web 开发框架。
  */
 package net.hasor.web;

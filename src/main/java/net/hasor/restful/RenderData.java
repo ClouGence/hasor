@@ -33,7 +33,6 @@ public interface RenderData {
     public static final String RESPONSE_KEY    = "response";//
 
     //
-    //
     public WebAppContext getAppContext();
 
     public HttpServletRequest getHttpRequest();

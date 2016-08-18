@@ -17,12 +17,14 @@ package net.hasor.restful;
 import net.hasor.core.AppContext;
 import net.hasor.restful.api.Produces;
 import net.hasor.web.startup.RuntimeListener;
+import org.more.bizcommon.Message;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
@@ -554,13 +556,49 @@ public abstract class WebController {
     }
     //
     //------------------------
-    /**@return 是否通过验证。*/
+    /**
+     * 返回是否通过验证。
+     * @see net.hasor.restful.Validation
+     * @return 是否通过验证。
+     */
     protected boolean isValid() {
         return this.getInvoker().isValid();
     }
-    /**@return 某个场景是否通过验证。*/
+    /**
+     * 返回某个 key 下是否通过验证。
+     * @see net.hasor.restful.Validation
+     * @return 某个 key 是否通过验证。
+     */
     protected boolean isValid(String scene) {
         return this.getInvoker().isValid(scene);
+    }
+    /**
+     * 验证失败的验证keys。
+     * @see net.hasor.restful.Validation
+     */
+    protected List<String> validKeys() {
+        return this.getInvoker().validKeys();
+    }
+    /**
+     * 获取某个key下验证失败信息。
+     * @see net.hasor.restful.Validation
+     */
+    protected List<Message> validErrors(String messageKey) {
+        return this.getInvoker().validErrors(messageKey);
+    }
+    /**
+     * 删除所有验证信息。
+     * @see net.hasor.restful.Validation
+     */
+    protected void clearValidErrors() {
+        this.getInvoker().clearValidErrors();
+    }
+    /**
+     * 删除某个验证信息。
+     * @see net.hasor.restful.Validation
+     */
+    protected void clearValidErrors(String messageKey) {
+        this.getInvoker().clearValidErrors(messageKey);
     }
     // --------
     // private MultipartRequest multipartRequest;
