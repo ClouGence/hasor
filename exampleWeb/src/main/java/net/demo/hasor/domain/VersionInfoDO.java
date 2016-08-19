@@ -15,17 +15,24 @@
  */
 package net.demo.hasor.domain;
 /**
- * 
+ *
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class VersionInfoDO {
-    private String version;
-    private String releaseDate;
-    private String downloadURL;
-    private String apiURL;
-    private String downloadApiURL;
+    private Integer id;
+    private String  version;
+    private String  releaseDate;
+    private String  downloadURL;
+    private String  apiURL;
+    private String  downloadApiURL;
     //
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getVersion() {
         return version;
     }

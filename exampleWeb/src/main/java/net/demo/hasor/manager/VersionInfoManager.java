@@ -23,6 +23,8 @@ import net.hasor.core.Singleton;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 /**
  *
  * @version : 2016年1月10日
@@ -42,6 +44,19 @@ public class VersionInfoManager {
             String query = "select * from VersionInfo where version = ?";
             infoDO = jdbcTemplate.queryForObject(query, VersionInfoDO.class, version);
             return infoDO;
+        } catch (Exception e) {
+            logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
+                    .addString("version : queryByVersion error -> " + e.getMessage()).toJson());
+            throw e;
+        }
+    }
+    /**查询所有版本(根据版本号排序)*/
+    public List<VersionInfoDO> queryListOrerByVersion() throws Exception {
+        try {
+            List<VersionInfoDO> infoListDO = null;
+            String query = "select * from VersionInfo order by id asc";
+            infoListDO = jdbcTemplate.queryForList(query, VersionInfoDO.class);
+            return infoListDO;
         } catch (Exception e) {
             logger.error(LogUtils.create("ERROR_999_0003").logException(e) //
                     .addString("version : queryByVersion error -> " + e.getMessage()).toJson());

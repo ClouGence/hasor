@@ -2,21 +2,19 @@
 <html lang="cn">
 <head>
     <title>Hasor - 插件集 ${rootData.pageTitle!}</title>
-    <#include "/control/head.htm">
+    <#include "/control/head.htm"/>
 </head>
 <body>
-<#assign navIndex = 2>
-    <#include "/control/nav_top.htm">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 rightBorder">
-                    <#include "/control/nav_plugins.htm">
-                </div>
-                <div class="col-md-9">${content_placeholder!}</div>
-            </div>
+<#assign navIndex = 2/>
+<#include "/control/nav_top.htm"/>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 rightBorder">
+            <#include "/control/nav_plugins.htm"/>
         </div>
-        <#include "/control/foot.htm">
+        <div class="col-md-9">${content_placeholder!}</div>
+    </div>
+</div>
+<#include "/control/foot.htm"/>
 </body>
 </html>
-
-

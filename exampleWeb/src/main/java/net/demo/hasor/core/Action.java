@@ -44,8 +44,10 @@ public class Action extends WebController {
         }
         return token;
     }
-    //
-    /** 验证 csrf Token */
+    /**
+     * Csrf token test boolean.
+     * @return the boolean
+     */
     protected boolean csrfTokenTest() {
         String reqToken = this.getPara(AppConstant.REQ_PARAM_KEY_CSRF_TOKEN);
         return StringUtils.equals(reqToken, this.csrfTokenString());

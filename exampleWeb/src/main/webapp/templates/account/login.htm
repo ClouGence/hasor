@@ -5,23 +5,31 @@ ${rootData.put('navIndex',7)}
     <h1>登录</h1>
     <form class="form-horizontal">
         <input type="hidden" name="redirectURI" value="${req_redirectURI}"/>
-        <#if validData["account"]?? ><#assign acc_hasError="has-error"/></#if>
+        <#if validData["account"]?? >
+            <#assign acc_hasError="has-error"/>
+        </#if>
         <div class="form-group ${acc_hasError}">
             <label for="inputEmail" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
                 <input name="email" type="email" class="form-control" id="inputEmail" placeholder="Email" value="${loginForm.email}" readonly>
             </div>
             <!-- 帐号的验证结果 -->
-            <#if validData["account"]?? ><div class="text-danger" style="float:right;">${escapeHtml.escapeHtml(validData["account"]?join(","))}</div></#if>
+            <#if validData["account"]?? >
+                <div class="text-danger" style="float:right;">${escapeHtml.escapeHtml(validData["account"]?join(","))}</div>
+            </#if>
         </div>
-        <#if validData["password"]?? ><#assign pwd_hasError="has-error"/></#if>
+        <#if validData["password"]?? >
+            <#assign pwd_hasError="has-error"/>
+        </#if>
         <div class="form-group ${pwd_hasError}">
             <label for="inputPassword" class="col-sm-2 control-label">Password</label>
             <div class="col-sm-10">
                 <input name="password" type="password" class="form-control" id="inputPassword" placeholder="Password" readonly>
             </div>
             <!-- 密码的验证结果 -->
-            <#if validData["password"]?? ><div class="text-danger" style="float:right;">${escapeHtml.escapeHtml(validData["password"]?join(","))}</div></#if>
+            <#if validData["password"]?? >
+                <div class="text-danger" style="float:right;">${escapeHtml.escapeHtml(validData["password"]?join(","))}</div>
+            </#if>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
