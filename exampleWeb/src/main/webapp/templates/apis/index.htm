@@ -1,6 +1,12 @@
 ${rootData.put('pageTitle','开发文档')}
 ${rootData.put('navIndex',1)}
+<style>
+    iframe {
+        width: 100px;
+        height: 800px;
+    }
 
+</style>
 <#assign allList=versionMap.queryListOrerByVersion()/>
 <#list allList as versionInfo>
     ${versionInfo.version!} --
@@ -15,7 +21,7 @@ ${rootData.put('navIndex',1)}
     <li role="presentation"><a href="#">Profile</a></li>
     <li role="presentation"><a href="#">Messages</a></li>
 </ul>
-<iframe src="http://apis.hasor.net/apis/2.4.3/index.html" scrolling="no" onload="resizeIframe(this)" frameborder="0" style="width: 100%;"></iframe>
+<iframe src="http://apis.hasor.net/apis/2.4.3/index.html" scrolling="no" onload="resizeIframe(this)" frameborder="0"></iframe>
 
 <!-- 
 ${rootData.put('pageTitle','APIs')}

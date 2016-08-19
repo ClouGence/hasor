@@ -15,8 +15,11 @@
  */
 package net.demo.hasor.manager;
 import net.demo.hasor.core.Service;
+import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
+
+import javax.servlet.ServletContext;
 /**
  *
  * @version : 2016年1月10日
@@ -26,14 +29,21 @@ import net.hasor.core.Singleton;
 @Service("env")
 public class EnvironmentConfig {
     @InjectSettings("appExample.curentVersion")
-    private String curentVersion;
+    private String         curentVersion;
     @InjectSettings("appExample.envType")
-    private String envType;
+    private String         envType;
+    @InjectSettings("appExample.hostName")
+    private String         hostName;
+    @Inject
+    private ServletContext servletContext;
     //
     public String getCurentVersion() {
         return curentVersion;
     }
     public String getEnvType() {
         return envType;
+    }
+    public String getHostPath() {
+        return hostName + this.servletContext.getContextPath();
     }
 }
