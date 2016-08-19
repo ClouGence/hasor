@@ -3,7 +3,7 @@
 <head>
     <title>Hasor - ${rootData.pageTitle!}</title>
     <#include "/control/head.htm"/>
-    <script>document.domain='apis.hasor.net';</script>
+    <script>document.domain = document.location.protocol + '://apis.hasor.net';</script>
 </head>
 <body>
 <#include "/control/nav_top.htm"/>
