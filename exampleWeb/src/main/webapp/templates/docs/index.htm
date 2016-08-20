@@ -20,7 +20,7 @@ ${rootData.put('navIndex',1)}
                 <#assign className="active"/>
                 <#assign isTop=true/>
             </#if>
-            <li class="${className}"><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
+            <li class="${className}"><a href="${ctx_path}/docs/${versionInfo.version}/index.htm">Hasor-${versionInfo.version!}</a></li>
         </#if>
     </#list>
     <#if isTop == false>
@@ -41,7 +41,7 @@ ${rootData.put('navIndex',1)}
                         <#else/>
                         <#assign className=""/>
                     </#if>
-                    <li class="${className}"><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
+                    <li class="${className}"><a href="${ctx_path}/docs/${versionInfo.version}/index.htm">Hasor-${versionInfo.version!}</a></li>
                 </#if>
             </#list>
         </ul>

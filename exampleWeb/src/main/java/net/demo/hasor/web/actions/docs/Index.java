@@ -20,7 +20,6 @@ import net.demo.hasor.manager.EnvironmentConfig;
 import net.demo.hasor.manager.VersionInfoManager;
 import net.hasor.core.Inject;
 import net.hasor.restful.api.MappingTo;
-import net.hasor.restful.api.ReqParam;
 import org.more.util.StringUtils;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class Index extends Action {
     @Inject
     private VersionInfoManager versionManager;
     //
-    public void execute(@ReqParam("apiFrame") String apiFrame) throws Exception {
+    public void execute(String apiFrame) throws Exception {
         if (StringUtils.isBlank(apiFrame)) {
             apiFrame = envConfig.getCurentVersion();
         }
@@ -45,6 +44,7 @@ public class Index extends Action {
         //
         this.putData("curVersion", curVersion);
         this.putData("allVersion", allVersion);
+        this.renderTo("htm", "/docs/index.htm");
         //
         //
         //        Parser parser = Parser.builder().build();
