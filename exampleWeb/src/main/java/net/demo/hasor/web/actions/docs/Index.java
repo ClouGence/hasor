@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web.actions.apis;
+package net.demo.hasor.web.actions.docs;
 import net.demo.hasor.core.Action;
 import net.demo.hasor.domain.VersionInfoDO;
 import net.demo.hasor.manager.EnvironmentConfig;
@@ -29,7 +29,7 @@ import java.util.List;
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/apis/index.htm")
+@MappingTo("/docs/index.htm")
 public class Index extends Action {
     @Inject
     private EnvironmentConfig  envConfig;

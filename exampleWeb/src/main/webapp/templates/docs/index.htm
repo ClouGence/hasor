@@ -25,17 +25,23 @@ ${rootData.put('navIndex',1)}
     </#list>
     <#if isTop == false>
         <#assign className="active"/>
+        <#assign curTitle="(v${curVersion.version})"/>
         <#else/>
         <#assign className=""/>
     </#if>
     <li class="dropdown ${className}">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            其它版本<b class="caret"></b>
+            其它版本${curTitle}<b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
             <#list allVersion as versionInfo>
                 <#if versionInfo_index gt 2 >
-                    <li><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
+                    <#if versionInfo.version == curVersion.version>
+                        <#assign className="active"/>
+                        <#else/>
+                        <#assign className=""/>
+                    </#if>
+                    <li class="${className}"><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
                 </#if>
             </#list>
         </ul>
