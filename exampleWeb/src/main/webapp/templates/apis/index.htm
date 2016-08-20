@@ -1,48 +1,48 @@
-${rootData.put('pageTitle','开发文档')}
+${rootData.put('pageTitle','APIs')}
 ${rootData.put('navIndex',1)}
 <style>
     iframe {
-        width: 100px;
+        width: 100%;
         height: 800px;
     }
-
 </style>
-<#assign allList=versionMap.queryListOrerByVersion()/>
-<#list allList as versionInfo>
-    ${versionInfo.version!} --
-</#list>
 <script language="javascript" type="text/javascript">
     function resizeIframe(obj) {
-        obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+        obj.style.height = obj.contentWindow.frames["classFrame"].document.body.scrollHeight + 'px';
     }
 </script>
 <ul class="nav nav-tabs">
-    <li role="presentation" class="active"><a href="#">Home</a></li>
-    <li role="presentation"><a href="#">Profile</a></li>
-    <li role="presentation"><a href="#">Messages</a></li>
-</ul>
-<iframe src="http://apis.hasor.net/apis/2.4.3/index.html" scrolling="no" onload="resizeIframe(this)" frameborder="0"></iframe>
-
-<!-- 
-${rootData.put('pageTitle','APIs')}
-${rootData.put('navIndex',1)}
-<#assign allList=versionMap.queryListOrerByVersion()/>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>Version</th>
-        <th>Release Date</th>
-        <th>Username</th>
-    </tr>
-    </thead>
-    <tbody>
-    <#list allList as versionInfo>
-        <tr>
-            <td>Release.Hasor-${versionInfo.version!}</td>
-            <td>${versionInfo.releaseDate!}</td>
-            <td>@mdo</td>
-        </tr>
+    <#assign isTop=false/>
+    <#list allVersion as versionInfo>
+        <#if versionInfo_index lt 3 >
+            <#assign className=""/>
+            <#if versionInfo.version == curVersion.version>
+                <#assign className="active"/>
+                <#assign isTop=true/>
+            </#if>
+            <li class="${className}"><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
+        </#if>
     </#list>
-    </tbody>
-</table>
---> 
+    <#if isTop == false>
+        <#assign className="active"/>
+        <#else/>
+        <#assign className=""/>
+    </#if>
+    <li class="dropdown ${className}">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            其它版本<b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <#list allVersion as versionInfo>
+                <#if versionInfo_index gt 2 >
+                    <li><a href="?apiFrame=${versionInfo.version}">Hasor-${versionInfo.version!}</a></li>
+                </#if>
+            </#list>
+        </ul>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active">
+        <iframe name="apiFrame" src="//apis.hasor.net/apis/${curVersion.version}/index.html" scrolling="no" onload="resizeIframe(this)" frameborder="0"></iframe>
+    </div>
+</div>

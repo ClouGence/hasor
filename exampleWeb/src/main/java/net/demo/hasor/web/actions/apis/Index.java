@@ -13,21 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.web.actions.docs;
+package net.demo.hasor.web.actions.apis;
 import net.demo.hasor.core.Action;
-import net.hasor.restful.RenderData;
+import net.demo.hasor.domain.VersionInfoDO;
+import net.demo.hasor.manager.EnvironmentConfig;
+import net.demo.hasor.manager.VersionInfoManager;
+import net.hasor.core.Inject;
 import net.hasor.restful.api.MappingTo;
+import net.hasor.restful.api.ReqParam;
+import org.more.util.StringUtils;
 
-import java.io.IOException;
+import java.util.List;
 /**
  *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/docs/index.htm")
+@MappingTo("/apis/index.htm")
 public class Index extends Action {
+    @Inject
+    private EnvironmentConfig  envConfig;
+    @Inject
+    private VersionInfoManager versionManager;
     //
-    public void execute(RenderData data) throws IOException {
+    public void execute(@ReqParam("apiFrame") String apiFrame) throws Exception {
+        if (StringUtils.isBlank(apiFrame)) {
+            apiFrame = envConfig.getCurentVersion();
+        }
+        VersionInfoDO curVersion = versionManager.queryByVersion(apiFrame);
+        List<VersionInfoDO> allVersion = versionManager.queryListOrerByVersion();
+        //
+        this.putData("curVersion", curVersion);
+        this.putData("allVersion", allVersion);
+        //
         //
         //        Parser parser = Parser.builder().build();
         //        Node document = parser.parse("### 一、基本IoC\n" +
