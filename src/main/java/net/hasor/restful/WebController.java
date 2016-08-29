@@ -16,6 +16,7 @@
 package net.hasor.restful;
 import net.hasor.core.AppContext;
 import net.hasor.restful.api.Produces;
+import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
 import org.more.fileupload.real.FileUpload;
@@ -62,7 +63,7 @@ public abstract class WebController {
         return this.getInvoker().getHttpResponse();
     }
     /** @return Return AppContext. */
-    public AppContext getAppContext() {
+    public WebAppContext getAppContext() {
         return RuntimeListener.getAppContext(this.getRequest().getSession().getServletContext());
     }
     //
