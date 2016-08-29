@@ -16,7 +16,6 @@
  */
 package net.hasor.restful.fileupload.real;
 import net.hasor.restful.fileupload.FileUploadException;
-import net.hasor.restful.fileupload.ProgressListener;
 import net.hasor.restful.fileupload.UploadErrorCodes;
 import net.hasor.restful.fileupload.util.Closeable;
 import net.hasor.restful.fileupload.util.Streams;
@@ -80,46 +79,6 @@ import static java.lang.String.format;
  * @version $Id: MultipartStream.java 1745065 2016-05-22 14:56:37Z britter $
  */
 public class MultipartStream {
-    /** Internal class, which is used to invoke the {@link ProgressListener}. */
-    public static class ProgressNotifier {
-        /** The listener to invoke. */
-        private final ProgressListener listener;
-        /** Number of expected bytes, if known, or -1. */
-        private final long             contentLength;
-        /** Number of bytes, which have been read so far. */
-        private       long             bytesRead;
-        /** Number of items, which have been read so far. */
-        private       int              items;
-        /**
-         * Creates a new instance with the given listener and content length.
-         * @param pListener The listener to invoke.
-         * @param pContentLength The expected content length.
-         */
-        ProgressNotifier(ProgressListener pListener, long pContentLength) {
-            listener = pListener;
-            contentLength = pContentLength;
-        }
-        /**
-         * Called to indicate that bytes have been read.
-         * @param pBytes Number of bytes, which have been read.
-         */
-        void noteBytesRead(int pBytes) {
-            /* Indicates, that the given number of bytes have been read from the input stream. */
-            bytesRead += pBytes;
-            notifyListener();
-        }
-        /** Called to indicate, that a new file item has been detected. */
-        void noteItem() {
-            ++items;
-            notifyListener();
-        }
-        /** Called for notifying the listener. */
-        private void notifyListener() {
-            if (listener != null) {
-                listener.update(bytesRead, contentLength, items);
-            }
-        }
-    }
     // ----------------------------------------------------- Manifest constants
     /** The Carriage Return ASCII character value. */
     public static final    byte   CR                   = 0x0D;
@@ -141,25 +100,23 @@ public class MultipartStream {
     protected static final byte[] BOUNDARY_PREFIX      = {CR, LF, DASH, DASH};
     // ----------------------------------------------------------- Data members
     /** The input stream from which data is read. */
-    private final InputStream      input;
+    private final InputStream input;
     /** The length of the boundary token plus the leading <code>CRLF--</code>. */
-    private       int              boundaryLength;
+    private       int         boundaryLength;
     /** The amount of data, in bytes, that must be kept in the buffer in order to detect delimiters reliably. */
-    private       int              keepRegion;
+    private       int         keepRegion;
     /** The byte sequence that partitions the stream. */
-    private       byte[]           boundary;
+    private       byte[]      boundary;
     /** The length of the buffer used for processing the request. */
-    private final int              bufSize;
+    private final int         bufSize;
     /** The buffer used for processing the request. */
-    private final byte[]           buffer;
+    private final byte[]      buffer;
     /** The index of first valid character in the buffer. <br> 0 <= head < bufSize */
-    private       int              head;
+    private       int         head;
     /** The index of last valid character in the buffer + 1. <br> 0 <= tail <= bufSize */
-    private       int              tail;
+    private       int         tail;
     /** The content encoding to use when reading headers. */
-    private       String           headerEncoding;
-    /** The progress notifier, if any, or null. */
-    private final ProgressNotifier notifier;
+    private       String      headerEncoding;
     // ----------------------------------------------------------- Constructors
     /**
      * <p> Constructs a <code>MultipartStream</code> with a custom size buffer.
@@ -173,11 +130,10 @@ public class MultipartStream {
      * @param boundary The token used for dividing the stream into
      *                 <code>encapsulations</code>.
      * @param bufSize  The size of the buffer to be used, in bytes.
-     * @param pNotifier The notifier, which is used for calling the progress listener, if any.
      * @throws IllegalArgumentException If the buffer size is too small
      * @since 1.3.1
      */
-    public MultipartStream(InputStream input, byte[] boundary, int bufSize, ProgressNotifier pNotifier) {
+    public MultipartStream(InputStream input, byte[] boundary, int bufSize) {
         if (boundary == null) {
             throw new IllegalArgumentException("boundary may not be null");
         }
@@ -189,7 +145,6 @@ public class MultipartStream {
         this.input = input;
         this.bufSize = Math.max(bufSize, boundaryLength * 2);
         this.buffer = new byte[this.bufSize];
-        this.notifier = pNotifier;
         this.boundary = new byte[this.boundaryLength];
         this.keepRegion = this.boundary.length;
         System.arraycopy(BOUNDARY_PREFIX, 0, this.boundary, 0, BOUNDARY_PREFIX.length);
@@ -201,11 +156,10 @@ public class MultipartStream {
      * <p> Constructs a <code>MultipartStream</code> with a default size buffer.
      * @param input    The <code>InputStream</code> to serve as a data source.
      * @param boundary The token used for dividing the stream into <code>encapsulations</code>.
-     * @param pNotifier An object for calling the progress listener, if any.
-     * @see #MultipartStream(InputStream, byte[], int, ProgressNotifier)
+     * @see #MultipartStream(InputStream, byte[], int)
      */
-    MultipartStream(InputStream input, byte[] boundary, ProgressNotifier pNotifier) {
-        this(input, boundary, DEFAULT_BUFSIZE, pNotifier);
+    MultipartStream(InputStream input, byte[] boundary) {
+        this(input, boundary, DEFAULT_BUFSIZE);
     }
     // --------------------------------------------------------- Public methods
     /**
@@ -239,9 +193,6 @@ public class MultipartStream {
             if (tail == -1) {
                 // No more data available.
                 throw new IOException("No more data is available");
-            }
-            if (notifier != null) {
-                notifier.noteBytesRead(tail);
             }
         }
         return buffer[head++];
@@ -627,9 +578,6 @@ public class MultipartStream {
                     // The last pad amount is left in the buffer. Boundary can't be in there so signal an error condition.
                     final String msg = "Stream ended unexpectedly";
                     throw new FileUploadException(UploadErrorCodes.MalformedStreamException, msg);
-                }
-                if (notifier != null) {
-                    notifier.noteBytesRead(bytesRead);
                 }
                 tail += bytesRead;
                 findSeparator();

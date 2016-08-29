@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 package net.hasor.restful.fileupload.real;
-import org.more.FormatException;
-import net.hasor.restful.fileupload.*;
+import net.hasor.restful.fileupload.FileItemHeaders;
+import net.hasor.restful.fileupload.FileUploadException;
+import net.hasor.restful.fileupload.UploadErrorCodes;
+import net.hasor.restful.fileupload.UploadRequestContext;
 import net.hasor.restful.fileupload.util.Closeable;
 import net.hasor.restful.fileupload.util.HeadersSet;
 import net.hasor.restful.fileupload.util.LimitedInputStream;
 import net.hasor.restful.fileupload.util.Streams;
+import org.more.FormatException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -83,9 +86,7 @@ public class FileUpload {
     /** The maximum size permitted for a single uploaded file, as opposed to {@link #sizeMax}. A value of -1 indicates no maximum. */
     private long fileSizeMax = -1;
     /** The content encoding to use when reading part headers. */
-    private String           headerEncoding;
-    /** The progress listener. */
-    private ProgressListener listener;
+    private String headerEncoding;
     // ----------------------------------------------------- Property accessors
     /**
      * Returns the maximum allowed size of a complete request, as opposed to {@link #getFileSizeMax()}.
@@ -136,20 +137,6 @@ public class FileUpload {
      */
     public void setHeaderEncoding(String encoding) {
         headerEncoding = encoding;
-    }
-    /**
-     * Returns the progress listener.
-     * @return The progress listener, if any, or null.
-     */
-    public ProgressListener getProgressListener() {
-        return listener;
-    }
-    /**
-     * Sets the progress listener.
-     * @param pListener The progress listener, if any. Defaults to null.
-     */
-    public void setProgressListener(ProgressListener pListener) {
-        listener = pListener;
     }
     // --------------------------------------------------------- Public methods
     /**
@@ -470,21 +457,19 @@ public class FileUpload {
             }
         }
         /** The multi part stream to process. */
-        private final MultipartStream                  multi;
-        /** The notifier, which used for triggering the {@link ProgressListener}. */
-        private final MultipartStream.ProgressNotifier notifier;
+        private final MultipartStream    multi;
         /** The boundary, which separates the various parts. */
-        private final byte[]                           boundary;
+        private final byte[]             boundary;
         /** The item, which we currently process. */
-        private       FileItemStreamImpl               currentItem;
+        private       FileItemStreamImpl currentItem;
         /** The current items field name. */
-        private       String                           currentFieldName;
+        private       String             currentFieldName;
         /** Whether we are currently skipping the preamble. */
-        private       boolean                          skipPreamble;
+        private       boolean            skipPreamble;
         /** Whether the current item may still be read. */
-        private       boolean                          itemValid;
+        private       boolean            itemValid;
         /** Whether we have seen the end of the file. */
-        private       boolean                          eof;
+        private       boolean            eof;
         /**
          * Creates a new instance.
          * @param ctx The request context.
@@ -524,9 +509,8 @@ public class FileUpload {
             if (boundary == null) {
                 throw new FileUploadException("the request was rejected because no multipart boundary was found");
             }
-            notifier = new MultipartStream.ProgressNotifier(listener, requestSize);
             try {
-                multi = new MultipartStream(input, boundary, notifier);
+                multi = new MultipartStream(input, boundary);
             } catch (IllegalArgumentException iae) {
                 String logMessage = format("The boundary specified in the %s header is too long", CONTENT_TYPE);
                 throw new FileUploadException(UploadErrorCodes.InvalidContentTypeException, logMessage);
@@ -580,7 +564,6 @@ public class FileUpload {
                         }
                         String fileName = getFileName(headers);
                         currentItem = new FileItemStreamImpl(headers, fileName, fieldName, fileName == null, getContentLength(headers));
-                        notifier.noteItem();
                         itemValid = true;
                         return true;
                     }
@@ -588,7 +571,6 @@ public class FileUpload {
                     String fileName = getFileName(headers);
                     if (fileName != null) {
                         currentItem = new FileItemStreamImpl(headers, fileName, currentFieldName, false, getContentLength(headers));
-                        notifier.noteItem();
                         itemValid = true;
                         return true;
                     }
