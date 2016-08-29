@@ -62,6 +62,7 @@
 ### 相关连接
 
 * WebSite：[http://www.hasor.net](http://www.hasor.net)
+* Docs : [http://hasor-guide.mydoc.io/](http://hasor-guide.mydoc.io/)
 * Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
 * QQ群：193943114
