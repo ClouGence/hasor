@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real.util.mime;
+package org.more.fileupload.real.util;
 import org.more.FormatException;
 
 import java.io.ByteArrayOutputStream;

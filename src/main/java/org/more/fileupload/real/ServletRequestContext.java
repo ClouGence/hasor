@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real.servlet;
+package org.more.fileupload.real;
 import org.more.fileupload.FileUploadConstant;
 import org.more.fileupload.UploadRequestContext;
 
@@ -24,23 +24,17 @@ import java.io.InputStream;
 
 import static java.lang.String.format;
 /**
- * <p>Provides access to the request information needed for a request made to
- * an HTTP servlet.</p>
- *
+ * <p>Provides access to the request information needed for a request made to an HTTP servlet.</p>
  * @since FileUpload 1.1
- *
  * @version $Id: ServletRequestContext.java 1564788 2014-02-05 14:36:41Z markt $
  */
-public class ServletRequestContext implements UploadRequestContext {
+class ServletRequestContext implements UploadRequestContext {
     // ----------------------------------------------------- Instance Variables
-    /**
-     * The request for which the context is being provided.
-     */
+    /** The request for which the context is being provided. */
     private final HttpServletRequest request;
     // ----------------------------------------------------------- Constructors
     /**
      * Construct a context for this request.
-     *
      * @param request The request to which this context applies.
      */
     public ServletRequestContext(HttpServletRequest request) {
@@ -49,7 +43,6 @@ public class ServletRequestContext implements UploadRequestContext {
     // --------------------------------------------------------- Public Methods
     /**
      * Retrieve the character encoding for the request.
-     *
      * @return The character encoding for the request.
      */
     public String getCharacterEncoding() {
@@ -57,7 +50,6 @@ public class ServletRequestContext implements UploadRequestContext {
     }
     /**
      * Retrieve the content type of the request.
-     *
      * @return The content type of the request.
      */
     public String getContentType() {
@@ -65,7 +57,6 @@ public class ServletRequestContext implements UploadRequestContext {
     }
     /**
      * Retrieve the content length of the request.
-     *
      * @return The content length of the request.
      * @since 1.3
      */
@@ -80,7 +71,6 @@ public class ServletRequestContext implements UploadRequestContext {
     }
     /**
      * Retrieve the input stream for the request.
-     *
      * @return The input stream for the request.
      *
      * @throws IOException if a problem occurs.
@@ -90,7 +80,6 @@ public class ServletRequestContext implements UploadRequestContext {
     }
     /**
      * Returns a string representation of this object.
-     *
      * @return a string representation of this object.
      */
     @Override

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package org.more.fileupload.real;
-import org.more.fileupload.real.util.mime.MimeUtility;
+import org.more.fileupload.real.util.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -35,39 +35,24 @@ import java.util.Map;
  * @version $Id: ParameterParser.java 1565253 2014-02-06 13:48:16Z ggregory $
  */
 public class ParameterParser {
-    /**
-     * String to be parsed.
-     */
+    /** String to be parsed. */
     private char[]  chars          = null;
-    /**
-     * Current position in the string.
-     */
+    /** Current position in the string. */
     private int     pos            = 0;
-    /**
-     * Maximum position in the string.
-     */
+    /** Maximum position in the string. */
     private int     len            = 0;
-    /**
-     * Start of a token.
-     */
+    /** Start of a token. */
     private int     i1             = 0;
-    /**
-     * End of a token.
-     */
+    /** End of a token. */
     private int     i2             = 0;
-    /**
-     * Whether names stored in the map should be converted to lower case.
-     */
+    /** Whether names stored in the map should be converted to lower case. */
     private boolean lowerCaseNames = false;
-    /**
-     * Default ParameterParser constructor.
-     */
+    /** Default ParameterParser constructor. */
     public ParameterParser() {
         super();
     }
     /**
      * Are there any characters left to parse?
-     *
      * @return <tt>true</tt> if there are unparsed characters,
      *         <tt>false</tt> otherwise.
      */
@@ -78,7 +63,6 @@ public class ParameterParser {
      * A helper method to process the parsed token. This method removes
      * leading and trailing blanks as well as enclosing quotation marks,
      * when necessary.
-     *
      * @param quoted <tt>true</tt> if quotation marks are expected,
      *               <tt>false</tt> otherwise.
      * @return the token
@@ -105,10 +89,8 @@ public class ParameterParser {
     }
     /**
      * Tests if the given character is present in the array of characters.
-     *
      * @param ch the character to test for presense in the array of characters
      * @param charray the array of characters to test against
-     *
      * @return <tt>true</tt> if the character is present in the array of
      *   characters, <tt>false</tt> otherwise.
      */
@@ -123,12 +105,8 @@ public class ParameterParser {
         return result;
     }
     /**
-     * Parses out a token until any of the given terminators
-     * is encountered.
-     *
-     * @param terminators the array of terminating characters. Any of these
-     * characters when encountered signify the end of the token
-     *
+     * Parses out a token until any of the given terminators is encountered.
+     * @param terminators the array of terminating characters. Any of these characters when encountered signify the end of the token
      * @return the token
      */
     private String parseToken(final char[] terminators) {
@@ -146,13 +124,8 @@ public class ParameterParser {
         return getToken(false);
     }
     /**
-     * Parses out a token until any of the given terminators
-     * is encountered outside the quotation marks.
-     *
-     * @param terminators the array of terminating characters. Any of these
-     * characters when encountered outside the quotation marks signify the end
-     * of the token
-     *
+     * Parses out a token until any of the given terminators is encountered outside the quotation marks.
+     * @param terminators the array of terminating characters. Any of these characters when encountered outside the quotation marks signify the end of the token
      * @return the token
      */
     private String parseQuotedToken(final char[] terminators) {
@@ -176,22 +149,14 @@ public class ParameterParser {
         return getToken(true);
     }
     /**
-     * Returns <tt>true</tt> if parameter names are to be converted to lower
-     * case when name/value pairs are parsed.
-     *
-     * @return <tt>true</tt> if parameter names are to be
-     * converted to lower case when name/value pairs are parsed.
-     * Otherwise returns <tt>false</tt>
+     * @return <tt>true</tt> if parameter names are to be converted to lower case when name/value pairs are parsed. Otherwise returns <tt>false</tt>
      */
     public boolean isLowerCaseNames() {
         return this.lowerCaseNames;
     }
     /**
-     * Sets the flag if parameter names are to be converted to lower case when
-     * name/value pairs are parsed.
-     *
-     * @param b <tt>true</tt> if parameter names are to be
-     * converted to lower case when name/value pairs are parsed.
+     * Sets the flag if parameter names are to be converted to lower case when name/value pairs are parsed.
+     * @param b <tt>true</tt> if parameter names are to be converted to lower case when name/value pairs are parsed.
      * <tt>false</tt> otherwise.
      */
     public void setLowerCaseNames(boolean b) {
@@ -201,10 +166,8 @@ public class ParameterParser {
      * Extracts a map of name/value pairs from the given string. Names are
      * expected to be unique. Multiple separators may be specified and
      * the earliest found in the input string is used.
-     *
      * @param str the string that contains a sequence of name/value pairs
      * @param separators the name/value pairs separators
-     *
      * @return a map of name/value pairs
      */
     public Map<String, String> parse(final String str, char[] separators) {
@@ -225,12 +188,9 @@ public class ParameterParser {
         return parse(str, separator);
     }
     /**
-     * Extracts a map of name/value pairs from the given string. Names are
-     * expected to be unique.
-     *
+     * Extracts a map of name/value pairs from the given string. Names are expected to be unique.
      * @param str the string that contains a sequence of name/value pairs
      * @param separator the name/value pairs separator
-     *
      * @return a map of name/value pairs
      */
     public Map<String, String> parse(final String str, char separator) {
@@ -240,13 +200,9 @@ public class ParameterParser {
         return parse(str.toCharArray(), separator);
     }
     /**
-     * Extracts a map of name/value pairs from the given array of
-     * characters. Names are expected to be unique.
-     *
-     * @param charArray the array of characters that contains a sequence of
-     * name/value pairs
+     * Extracts a map of name/value pairs from the given array of characters. Names are expected to be unique.
+     * @param charArray the array of characters that contains a sequence of name/value pairs
      * @param separator the name/value pairs separator
-     *
      * @return a map of name/value pairs
      */
     public Map<String, String> parse(final char[] charArray, char separator) {
@@ -256,15 +212,13 @@ public class ParameterParser {
         return parse(charArray, 0, charArray.length, separator);
     }
     /**
-     * Extracts a map of name/value pairs from the given array of
-     * characters. Names are expected to be unique.
+     * Extracts a map of name/value pairs from the given array of characters. Names are expected to be unique.
      *
      * @param charArray the array of characters that contains a sequence of
      * name/value pairs
      * @param offset - the initial offset.
      * @param length - the length.
      * @param separator the name/value pairs separator
-     *
      * @return a map of name/value pairs
      */
     public Map<String, String> parse(final char[] charArray, int offset, int length, char separator) {

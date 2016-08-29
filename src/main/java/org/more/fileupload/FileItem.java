@@ -64,13 +64,6 @@ public interface FileItem {
     public String getName();
 
     /**
-     * Provides a hint as to whether or not the file contents will be read from memory.
-     * @return <code>true</code> if the file contents will be read from memory;
-     *         <code>false</code> otherwise.
-     */
-    public boolean isInMemory();
-
-    /**
      * Returns the size of the file item.
      * @return The size of the file item, in bytes.
      */

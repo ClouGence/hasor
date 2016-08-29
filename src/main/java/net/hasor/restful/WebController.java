@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.restful.api.Produces;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
-import org.more.fileupload.real.servlet.ServletFileUpload;
+import org.more.fileupload.real.FileUpload;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -607,7 +607,7 @@ public abstract class WebController {
      * @see net.hasor.restful.Validation
      */
     protected boolean isMultipart() {
-        return ServletFileUpload.isMultipartContent(this.getRequest());
+        return FileUpload.isMultipartContent(this.getRequest());
     }
     //    private MultipartRequest multipartRequest;
     //    /** Get upload file from multipart request. */

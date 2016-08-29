@@ -16,7 +16,6 @@
  */
 package org.more.fileupload.real.servlet;
 import org.more.fileupload.FileItem;
-import org.more.fileupload.real.FileItemFactory;
 
 import java.io.File;
 /**
@@ -66,7 +65,7 @@ import java.io.File;
  *
  * @version $Id: DiskFileItemFactory.java 1564788 2014-02-05 14:36:41Z markt $
  */
-public class DiskFileItemFactory implements FileItemFactory {
+public class DiskFileItemFactory {//implements FileItemFactory {
     // ----------------------------------------------------- Manifest constants
     /**
      * The default threshold above which uploads will be stored on disk.
