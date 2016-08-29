@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real;
-import org.more.fileupload.FileUploadException;
-import org.more.fileupload.ProgressListener;
-import org.more.fileupload.UploadErrorCodes;
-import org.more.fileupload.real.util.Closeable;
-import org.more.fileupload.real.util.Streams;
+package net.hasor.restful.fileupload.real;
+import net.hasor.restful.fileupload.FileUploadException;
+import net.hasor.restful.fileupload.ProgressListener;
+import net.hasor.restful.fileupload.UploadErrorCodes;
+import net.hasor.restful.fileupload.util.Closeable;
+import net.hasor.restful.fileupload.util.Streams;
 
 import java.io.*;
 

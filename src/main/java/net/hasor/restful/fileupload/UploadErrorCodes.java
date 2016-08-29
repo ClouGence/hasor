@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload;
+package net.hasor.restful.fileupload;
 /**
  *
  * @version : 2016年1月1日

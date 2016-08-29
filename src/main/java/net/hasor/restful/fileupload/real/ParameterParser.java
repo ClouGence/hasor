@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real;
-import org.more.fileupload.real.util.MimeUtility;
+package net.hasor.restful.fileupload.real;
+import net.hasor.restful.fileupload.util.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

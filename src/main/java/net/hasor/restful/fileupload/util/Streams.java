@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real.util;
+package net.hasor.restful.fileupload.util;
 import org.more.FormatException;
 import org.more.util.io.IOUtils;
 
@@ -111,7 +111,7 @@ public final class Streams {
         }
     }
     /**
-     * This convenience method allows to read a {@link org.more.fileupload.real.FileItemStream}'s
+     * This convenience method allows to read a {@link net.hasor.restful.fileupload.real.FileItemStream}'s
      * content into a string. The platform's default character encoding is used for converting bytes into characters.
      * @param inputStream The input stream to read.
      * @see #asString(InputStream, String)
@@ -124,7 +124,7 @@ public final class Streams {
         return baos.toString();
     }
     /**
-     * This convenience method allows to read a {@link org.more.fileupload.real.FileItemStream}'s
+     * This convenience method allows to read a {@link net.hasor.restful.fileupload.real.FileItemStream}'s
      * content into a string, using the given character encoding.
      *
      * @param inputStream The input stream to read.

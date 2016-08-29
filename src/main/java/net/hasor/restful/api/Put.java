@@ -24,7 +24,8 @@ import java.lang.annotation.Target;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod(HttpMethod.PUT)
-public @interface Put {}
+public @interface Put {
+}

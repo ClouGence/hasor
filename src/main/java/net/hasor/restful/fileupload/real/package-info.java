@@ -22,6 +22,19 @@
  * and portlets (JSR 168).
  * </p>
  * <p>
+ * While this package provides the generic functionality for file uploads,
+ * these classes are not typically used directly. Instead, normal usage
+ * involves one of the provided extensions of
+ * {@link org.apache.commons.fileupload.FileUpload FileUpload} such as
+ * {@link org.apache.commons.fileupload.servlet.ServletFileUpload ServletFileUpload}
+ * or
+ * {@link org.apache.commons.fileupload.portlet.PortletFileUpload PortletFileUpload},
+ * together with a factory for
+ * {@link org.apache.commons.fileupload.FileItem FileItem} instances,
+ * such as
+ * {@link org.apache.commons.fileupload.disk.DiskFileItemFactory DiskFileItemFactory}.
+ * </p>
+ * <p>
  * The following is a brief example of typical usage in a servlet, storing
  * the uploaded files on disk.
  * </p>
@@ -68,4 +81,4 @@
  * for further details and examples of how to use this package.
  * </p>
  */
-package org.more.fileupload;
+package net.hasor.restful.fileupload.real;

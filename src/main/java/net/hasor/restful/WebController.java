@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import net.hasor.core.AppContext;
 import net.hasor.restful.api.Produces;
+import net.hasor.restful.fileupload.real.FileUpload;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
-import org.more.fileupload.real.FileUpload;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -604,8 +603,9 @@ public abstract class WebController {
     }
     // --------
     /**
-     * 返回是否包含文件的上传。
-     * @see net.hasor.restful.Validation
+     * 返回为 Multipart 请求,通常 Multipart 请求都包含一个或多个的文件上传。
+     * @return 返回为 Multipart 请求,通常 Multipart 请求都包含一个或多个的文件上传。
+     * @see FileUpload#isMultipartContent(HttpServletRequest)
      */
     protected boolean isMultipart() {
         return FileUpload.isMultipartContent(this.getRequest());

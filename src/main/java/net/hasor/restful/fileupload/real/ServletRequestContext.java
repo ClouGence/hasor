@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real;
-import org.more.fileupload.FileUploadConstant;
-import org.more.fileupload.UploadRequestContext;
+package net.hasor.restful.fileupload.real;
+import net.hasor.restful.fileupload.FileUploadConstant;
+import net.hasor.restful.fileupload.UploadRequestContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

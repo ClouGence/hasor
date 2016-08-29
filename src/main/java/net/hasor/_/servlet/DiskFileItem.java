@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real.servlet;
-import org.more.fileupload.FileItem;
-import org.more.fileupload.FileItemHeaders;
-import org.more.fileupload.real.ParameterParser;
-import org.more.fileupload.FileUploadException;
+package net.hasor._.servlet;
+import net.hasor.restful.fileupload.FileItem;
+import net.hasor.restful.fileupload.FileItemHeaders;
+import net.hasor.restful.fileupload.FileUploadException;
+import net.hasor.restful.fileupload.real.ParameterParser;
+import net.hasor.restful.fileupload.util.Streams;
 import org.more.util.io.IOUtils;
 import org.more.util.io.output.DeferredFileOutputStream;
 
@@ -30,11 +31,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.lang.String.format;
 /**
  * <p> The default implementation of the
- * {@link org.more.fileupload.FileItem FileItem} interface.
+ * {@link net.hasor.restful.fileupload.FileItem FileItem} interface.
  *
  * <p> After retrieving an instance of this class from a {@link
  * DiskFileItemFactory} instance (see
- * {@link org.more.fileupload.UploadRequestContext #parseRequest(javax.servlet.http.HttpServletRequest)}), you may
+ * {@link net.hasor.restful.fileupload.UploadRequestContext #parseRequest(javax.servlet.http.HttpServletRequest)}), you may
  * either request all contents of file at once using {@link #get()} or
  * request an {@link java.io.InputStream InputStream} with
  * {@link #getInputStream()} and process the file without attempting to load
@@ -42,13 +43,13 @@ import static java.lang.String.format;
  *
  * <p>Temporary files, which are created for file items, should be
  * deleted later on. The best way to do this is using a
- * {@link org.more.fileupload.real.servlet.FileCleaningTracker}, which you can set on the
+ * {@link FileCleaningTracker}, which you can set on the
  * {@link DiskFileItemFactory}. However, if you do use such a tracker,
  * then you must consider the following: Temporary files are automatically
  * deleted as soon as they are no longer needed. (More precisely, when the
  * corresponding instance of {@link java.io.File} is garbage collected.)
  * This is done by the so-called reaper thread, which is started and stopped
- * automatically by the {@link org.more.fileupload.real.servlet.FileCleaningTracker} when
+ * automatically by the {@link FileCleaningTracker} when
  * there are files to be tracked.
  * It might make sense to terminate that thread, for example, if
  * your web application ends. See the section on "Resource cleanup"
@@ -204,7 +205,7 @@ public class DiskFileItem implements FileItem {
      * @return The original filename in the client's filesystem.
      */
     public String getName() {
-        return org.more.fileupload.real.util.Streams.checkFileName(fileName);
+        return Streams.checkFileName(fileName);
     }
     // ------------------------------------------------------- FileItem methods
     /**

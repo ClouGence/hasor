@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real;
+package net.hasor.restful.fileupload.real;
 import org.more.FormatException;
-import org.more.fileupload.*;
-import org.more.fileupload.real.util.Closeable;
-import org.more.fileupload.real.util.HeadersSet;
-import org.more.fileupload.real.util.LimitedInputStream;
-import org.more.fileupload.real.util.Streams;
+import net.hasor.restful.fileupload.*;
+import net.hasor.restful.fileupload.util.Closeable;
+import net.hasor.restful.fileupload.util.HeadersSet;
+import net.hasor.restful.fileupload.util.LimitedInputStream;
+import net.hasor.restful.fileupload.util.Streams;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
-import static org.more.fileupload.FileUploadConstant.*;
+import static net.hasor.restful.fileupload.FileUploadConstant.*;
 /**
  * <p>High level API for processing file uploads.</p>
  *

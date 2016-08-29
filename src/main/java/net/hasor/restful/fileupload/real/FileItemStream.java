@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload.real;
-import org.more.fileupload.FileItemHeaders;
+package net.hasor.restful.fileupload.real;
+import net.hasor.restful.fileupload.FileItemHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.fileupload;
+package net.hasor.restful.fileupload;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
